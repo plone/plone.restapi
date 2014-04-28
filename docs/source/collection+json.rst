@@ -21,80 +21,82 @@ Collection-like objects in Plone:
 Portal Root
 -----------
 
-{
-  "collection":
+Example representation of the Plone portal root object::
+
   {
-    "version" : "1.0",
-    "href" : "http://www.plone.org/++api++v1/",
-    "items" : [
-      {
-        "href" : "http://www.plone.org/++api++v1/front-page/",
+    "collection":
+    {
+      "version" : "1.0",
+      "href" : "http://www.plone.org/++api++v1/",
+      "items" : [
+        {
+          "href" : "http://www.plone.org/++api++v1/front-page/",
+          "data" : [
+            {"name": "title", "value": "Welcome to Plone"},
+            {"name": "description", "value": "Plone is an Open Source CMS."},
+            {"name": "text", "value": "<p>Plone rocks!</p>"},
+            {"name": "portal_type", "value": "Document"},
+            {"name": "created", "value": "2013-04-22T05:33:58.930Z"}
+          ],
+          "links" : []
+        },
+        {
+          "href" : "http://www.plone.org/++api++v1/news/",
+          "data" : [
+            {"name": "title", "value": "News"},
+            {"name": "description", "value": "A news folder."},
+            {"name": "text", "value": "<p>This is a news folder.</p>"},
+            {"name": "portal_type", "value": "Folder"},
+            {"name": "created", "value": "2013-04-22T05:33:58.930Z"}
+          ],
+          "links" : []
+        },
+        {
+          "href" : "http://www.plone.org/++api++v1/events/",
+          "data" : [
+            {"name": "title", "value": "Events"},
+            {"name": "description", "value": "An events folder."},
+            {"name": "text", "value": "<p>This is an events folder.</p>"},
+            {"name": "portal_type", "value": "Folder"},
+            {"name": "created", "value": "2013-04-22T05:33:58.930Z"}
+          ],
+          "links" : [
+            {"rel": "next", "href": "/events?page=2"},
+            {"rel": "previous", "href": "/events?page=0"},
+            {"rel": "first", "href": "/events?page=1"},
+            {"rel": "last", "href": "/events?page=5"}
+          ]
+        },
+      ],
+      "queries" : [
+        {
+          "href" : "/api/search",
+          "rel" : "search",
+          "prompt" : "Search the website",
+          "data": [
+            {
+              "name": "SearchableText", "value" : "",
+              "name": "effective", "value": "",
+            }
+          ]
+        }
+      ],
+      "template" : {
         "data" : [
-          {"name": "title", "value": "Welcome to Plone"},
-          {"name": "description", "value": "Plone is an Open Source CMS."},
-          {"name": "text", "value": "<p>Plone rocks!</p>"},
-          {"name": "portal_type", "value": "Document"},
-          {"name": "created", "value": "2013-04-22T05:33:58.930Z"}
-        ],
-        "links" : []
-      },
-      {
-        "href" : "http://www.plone.org/++api++v1/news/",
-        "data" : [
-          {"name": "title", "value": "News"},
-          {"name": "description", "value": "A news folder."},
-          {"name": "text", "value": "<p>This is a news folder.</p>"},
-          {"name": "portal_type", "value": "Folder"},
-          {"name": "created", "value": "2013-04-22T05:33:58.930Z"}
-        ],
-        "links" : []
-      },
-      {
-        "href" : "http://www.plone.org/++api++v1/events/",
-        "data" : [
-          {"name": "title", "value": "Events"},
-          {"name": "description", "value": "An events folder."},
-          {"name": "text", "value": "<p>This is an events folder.</p>"},
-          {"name": "portal_type", "value": "Folder"},
-          {"name": "created", "value": "2013-04-22T05:33:58.930Z"}
-        ],
-        "links" : [
-          {"rel": "next", "href": "/events?page=2"},
-          {"rel": "previous", "href": "/events?page=0"},
-          {"rel": "first", "href": "/events?page=1"},
-          {"rel": "last", "href": "/events?page=5"}
-        ]
-      },
-    ],
-    "queries" : [
-      {
-        "href" : "/api/search",
-        "rel" : "search",
-        "prompt" : "Search the website",
-        "data": [
           {
-            "name": "SearchableText", "value" : "",
-            "name": "effective", "value": "",
-          }
+            "prompt" : "Title of the content object",
+            "name" : "title",
+            "value" : ""
+          },
+          {
+            "prompt" : "Portal Type of the content object",
+            "name" : "portal_type",
+            "value" : ""
+          },
         ]
       }
-    ],
-    "template" : {
-      "data" : [
-        {
-          "prompt" : "Title of the content object",
-          "name" : "title",
-          "value" : ""
-        },
-        {
-          "prompt" : "Portal Type of the content object",
-          "name" : "portal_type",
-          "value" : ""
-        },
-      ]
     }
   }
-}
 
 * href: A permanent link to the collection itself. (full url?)
 * items: Links to the members of the collection, and partial representations of them. (brains?)
@@ -102,38 +104,41 @@ Portal Root
 * queries: Hypermedia controls for searching the collection.
 * template: A hypermedia control for adding a new item to the collection.
 
-// sample collection object
-{
-  "collection" :
+Sample collection object::
+
   {
-    "version" : "1.0",
-    "href" : URI,
-    "links" : [ARRAY],
-    "items" : [ARRAY],
-    "queries" : [ARRAY],
-    "template" : {OBJECT},
-    "error" : {OBJECT}
+    "collection" :
+    {
+      "version" : "1.0",
+      "href" : URI,
+      "links" : [ARRAY],
+      "items" : [ARRAY],
+      "queries" : [ARRAY],
+      "template" : {OBJECT},
+      "error" : {OBJECT}
+    }
   }
-}
 
 
 Document
 --------
 
-{
-  "document":
+Example of a simple document::
+
   {
-    "version" : "1.0",
-    "href" : "http://www.plone.org/++api++v1/front-page",
-    "data" : [
-      {"name": "title", "value": "Welcome to Plone"},
-      {"name": "description", "value": "Plone is an Open Source CMS."},
-      {"name": "text", "value": "<p>Plone rocks!</p>"},
-      {"name": "portal_type", "value": "Document"},
-      {"name": "created", "value": "2013-04-22T05:33:58.930Z"}
-    ],
+    "document":
+    {
+      "version" : "1.0",
+      "href" : "http://www.plone.org/++api++v1/front-page",
+      "data" : [
+        {"name": "title", "value": "Welcome to Plone"},
+        {"name": "description", "value": "Plone is an Open Source CMS."},
+        {"name": "text", "value": "<p>Plone rocks!</p>"},
+        {"name": "portal_type", "value": "Document"},
+        {"name": "created", "value": "2013-04-22T05:33:58.930Z"}
+      ],
+    }
   }
-}
 
 * GET: Get the representation of a resource.
 * POST: Creates a new resource.
