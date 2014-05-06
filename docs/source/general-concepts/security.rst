@@ -1,5 +1,6 @@
-.. include:: alert-noindex.rst
+.. include:: /alert-noindex.rst
 
+********
 Security
-========
+********
 

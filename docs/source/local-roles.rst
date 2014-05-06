@@ -1,6 +1,7 @@
-.. include:: alert-noindex.rst
+.. include:: /alert-noindex.rst
 
+###########
 Local roles
-***********
+###########
 
 .. todo:: Implement

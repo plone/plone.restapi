@@ -1,7 +1,9 @@
-.. include:: alert-noindex.rst
+.. include:: /alert-noindex.rst
 
+################
 General concepts
-****************
+################
+
 
 Prefix and versioning
 =====================
