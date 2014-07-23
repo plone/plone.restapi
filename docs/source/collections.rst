@@ -23,7 +23,7 @@ This is the JSON representation of the front page in Plone (and hence of any pag
     "@href": "http://nohost/++api++1/front-page",
     "@info": {
       "portal_type": {
-        "@href": "http://http://nohost/++api++1/++globals++types/Page",
+        "@href": "http://nohost/++api++1/++globals++types/Page",
         "@info": {
           "id": "Page"
         }
@@ -32,7 +32,7 @@ This is the JSON representation of the front page in Plone (and hence of any pag
     },
     "@actions": {
       "workflow": {
-        "@href": "http://http://nohost/++api++1/front-page/++actions++workflow/",
+        "@href": "http://nohost/++api++1/front-page/++actions++workflow/",
         "@template": {
            "type": {
              "@type": "string",
@@ -57,7 +57,7 @@ This is the JSON representation of the front page in Plone (and hence of any pag
       "effective": null,
       "expires": null,
       "creator": {
-        "@href": "http://http://nohost/++api++1/++globals++users/admin"
+        "@href": "http://nohost/++api++1/++globals++users/admin"
         "@info": {
           "id": "admin"
         }
@@ -66,7 +66,7 @@ This is the JSON representation of the front page in Plone (and hence of any pag
       "rights": ""
     },
     "@template": {
-      "@href": "http://http://nohost/++api++1/++globals++types/Page/@@template"
+      "@href": "http://nohost/++api++1/++globals++types/Page/@@template"
     }
   }
 

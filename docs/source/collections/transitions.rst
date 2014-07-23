@@ -46,7 +46,7 @@ represented as JSON object::
       "effective": null,
       "expires": null,
       "creator": {
-        "@href": "http://http://nohost/++api++1/++globals++users/admin"
+        "@href": "http://nohost/++api++1/++globals++users/admin"
         "@info": {
           "id": "admin"
         }
@@ -58,7 +58,7 @@ represented as JSON object::
       "enable_next_previous": false
     },
     "@template": {
-      "@href": "http://http://nohost/++api++1/++globals++types/Folder/@@template"
+      "@href": "http://nohost/++api++1/++globals++types/Folder/@@template"
     },
     "@items": [
       {
@@ -104,7 +104,7 @@ represented as JSON object::
     },
     "@actions": {
       "workflow": {
-        "@href": "http://http://nohost/++api++1/my-folder/++actions++workflow/",
+        "@href": "http://nohost/++api++1/my-folder/++actions++workflow/",
         "@template": {
            "type": {
              "@type": "string",
@@ -195,7 +195,7 @@ A ``GET`` request retrieves the representation of an element::
     "@href": "http://nohost/++api++1/my-folder/yet-another-page/",
     "@info": {
       "portal_type": {
-        "@href": "http://http://nohost/++api++1/++globals++types/Page",
+        "@href": "http://nohost/++api++1/++globals++types/Page",
         "@info": {
           "id": "Page"
         }
@@ -204,7 +204,7 @@ A ``GET`` request retrieves the representation of an element::
     },
     "@actions": {
       "workflow": {
-        "@href": "http://http://nohost/++api++1/my-folder/yet-another-page/++actions++workflow/",
+        "@href": "http://nohost/++api++1/my-folder/yet-another-page/++actions++workflow/",
         "@template": {
            "type": {
              "@type": "string",
@@ -230,7 +230,7 @@ A ``GET`` request retrieves the representation of an element::
       "effective": null,
       "expires": null,
       "creator": {
-        "@href": "http://http://nohost/++api++1/++globals++users/admin"
+        "@href": "http://nohost/++api++1/++globals++users/admin"
         "@info": {
           "id": "admin"
         }
@@ -239,7 +239,7 @@ A ``GET`` request retrieves the representation of an element::
       "rights": ""
     },
     "@template": {
-      "@href": "http://http://nohost/++api++1/++globals++types/Page/@@template"
+      "@href": "http://nohost/++api++1/++globals++types/Page/@@template"
     }
   }
 
@@ -273,7 +273,7 @@ For example::
     "@href": "http://nohost/++api++1/my-folder/yet-another-page/",
     "@info": {
       "portal_type": {
-        "@href": "http://http://nohost/++api++1/++globals++types/Page",
+        "@href": "http://nohost/++api++1/++globals++types/Page",
         "@info": {
           "id": "Page"
         }
@@ -282,7 +282,7 @@ For example::
     },
     "@actions": {
       "workflow": {
-        "@href": "http://http://nohost/++api++1/my-folder/yet-another-page/++actions++workflow/",
+        "@href": "http://nohost/++api++1/my-folder/yet-another-page/++actions++workflow/",
         "@template": {
            "type": {
              "@type": "string",
@@ -308,7 +308,7 @@ For example::
       "effective": null,
       "expires": null,
       "creator": {
-        "@href": "http://http://nohost/++api++1/++globals++users/admin"
+        "@href": "http://nohost/++api++1/++globals++users/admin"
         "@info": {
           "id": "admin"
         }
@@ -317,7 +317,7 @@ For example::
       "rights": ""
     },
     "@template": {
-      "@href": "http://http://nohost/++api++1/++globals++types/Page/@@template"
+      "@href": "http://nohost/++api++1/++globals++types/Page/@@template"
     }
   }
 
@@ -388,7 +388,7 @@ Let's see with an example::
       "effective": null,
       "expires": null,
       "creator": {
-        "@href": "http://http://nohost/++api++1/++globals++users/admin"
+        "@href": "http://nohost/++api++1/++globals++users/admin"
         "@info": {
           "id": "admin"
         }
@@ -400,7 +400,7 @@ Let's see with an example::
       "enable_next_previous": false
     },
     "@template": {
-      "@href": "http://http://nohost/++api++1/++globals++types/Folder/@@template"
+      "@href": "http://nohost/++api++1/++globals++types/Folder/@@template"
     }
     "@items": [],
     "@queries": {
@@ -421,7 +421,7 @@ Let's see with an example::
     },
     "@actions": {
       "workflow": {
-        "@href": "http://http://nohost/++api++1/my-folder/yet-another-page/++actions++workflow/",
+        "@href": "http://nohost/++api++1/my-folder/yet-another-page/++actions++workflow/",
         "@template": {
            "type": {
              "@type": "string",
