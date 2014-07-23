@@ -4,7 +4,7 @@
 Security
 ********
 
-To provide security, the current most popular approach seems to be `JSON Web Toekns <http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html>`.
+To provide security, the current most popular approach seems to be `JSON Web Tokens <http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html>`_.
 
 In short, the functioning is quite simple:
 
