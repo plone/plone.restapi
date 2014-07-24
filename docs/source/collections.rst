@@ -28,7 +28,8 @@ This is the JSON representation of the front page in Plone (and hence of any pag
           "id": "Page"
         }
       },
-      "created": "2014-04-22T05:33:58.930Z"
+      "created": "2014-04-22T05:33:58.930Z",
+      "review_state": "published"
     },
     "@actions": {
       "workflow": {
@@ -93,6 +94,7 @@ Example representation of the Plone portal root object that contains three items
         "@id": "Plone Site"
       },
       "created": "2014-04-22T05:33:58.930Z",
+      "review_state": "published",
       "items_count": 3
     },
     "@data": {

@@ -34,6 +34,7 @@ represented as JSON object::
         "@id": "Folder"
       },
       "created": "2014-04-22T05:33:58.930Z",
+      "review_state": "private",
       "items_count": 2
     },
     "@data": {
