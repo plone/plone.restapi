@@ -8,7 +8,7 @@ To provide security, the current most popular approach seems to be `JSON Web Tok
 
 In short, the functioning is quite simple:
 
- * The client authenticates with cerdentials on the server and gets back a token
+ * The client authenticates with credentials on the server and gets back a token
  * The client can then provide the token at every request (a little bit like it's done by HTTP basic auth, except the password isn't revealed)
 
 How it works
