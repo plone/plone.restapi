@@ -29,7 +29,7 @@ Should we revise this API with backard-incompatible changes, the new API would h
 
   /++api++2/
 
-While the system will continue to reply to the calls made to ``/++api++1/``. Therefore, new clients will use the new URLs, and od clients will not be aware of the change.
+While the system will continue to reply to the calls made to ``/++api++1/``. Therefore, new clients will use the new URLs, and old clients will not be aware of the change.
 
 .. note::
    This is not entirely true, we plan to provide a way for clients to discover whether the API they are using is the latest, via special calls.
