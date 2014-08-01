@@ -4,7 +4,7 @@
 Batching
 ********
 
-Returning the whole objects contained in a collection might be problematic for a number of reasons:
+Returning all objects contained in a collection might be problematic for a number of reasons:
 
  #. Forces the server to read all the content
  #. Might produce a heavy response (in terms of byte size)
