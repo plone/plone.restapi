@@ -6,7 +6,7 @@ Searching
 
 Search results can be viewed as *virtual collections*. The representation and some of the attributes exposed by search results are therefore similar to the ones we saw until now.
 
-A search is always contextual, i.e. it is bound to a specific collectiuon and searches within that collection and any sub-collections. Since a Plone site is also a collection, we therefore have a global search and contextual searches all exposed with the same pattern.
+A search is always contextual, i.e. it is bound to a specific collection and searches within that collection and any sub-collections. Since a Plone site is also a collection, we therefore have a global search and contextual searches all exposed with the same pattern.
 
 A search is discoverable via the ``@queries`` attribute within a collection's representation: this attribute provides the URI of the search and also a template describing on which indexes the filtering can be done.
 
