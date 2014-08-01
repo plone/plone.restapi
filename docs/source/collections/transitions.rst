@@ -344,7 +344,7 @@ Replacing an element
 ====================
 
 .. note::
-   This is equivalent of doing a deletion and then adding a new element, althugh this is done in a single request and is therefore guaranteed to be transactional.
+   This is equivalent of doing a deletion and then adding a new element, although this is done in a single request and is therefore guaranteed to be transactional.
 
 To entirely replace an existing element, a ``PUT`` request can be used. This doesn't work as we saw in :ref:`updating-an-element`, because the semantic of the request are similar to that of :ref:`adding-an-element`.
 
