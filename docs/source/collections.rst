@@ -189,7 +189,7 @@ The collection hence has the following keywords:
     A permanent link to the collection itself.
 
 @elements
-    Links to the members of the collection, and partial representations of them
+    Links to the members of the collection, and partial representations of them.
 
 @info
     Metadata related to the collection.
@@ -201,4 +201,4 @@ The collection hence has the following keywords:
     A serie of hypermedia controls for adding a new item to the collection.
 
 @error : optional
-    The error object contains additional information on the latest error condition reported by the server (see :ref:`error-handling`)
+    The error object contains additional information on the latest error condition reported by the server (see :ref:`error-handling`).
