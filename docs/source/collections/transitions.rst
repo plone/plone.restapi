@@ -153,7 +153,7 @@ Adding an element
 
 Doing a ``POST`` request on a collection adds an item to the collection.
 
-The ``GET`` request on the collection contained a ``@templates`` section with links to other parts of the API (see :doc:`global-objects`) that tells the client which params need to be provided in order to create a new item.
+The ``GET`` request on the collection contained a ``@templates`` section with links to other parts of the API (see :doc:`/global-objects`) that tells the client which params need to be provided in order to create a new item.
 
 The server replies with a ``201 Created`` status and the new URI in a ``Location`` header::
 
