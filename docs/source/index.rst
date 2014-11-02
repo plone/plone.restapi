@@ -44,7 +44,7 @@ Nejc Zupan offered to review our process and provide advice, if necessary.
 Scope
 -----
 
-Start with a minimal viable API and go on from there:
+Start with a minimal viable API and go on from there (while iterating over the 'Process' steps):
 
 1) Browse as anonymous user (GET ONLY), most basic Plone functionality
 2) Search and other basic Plone functionalities, that do not require authentication
@@ -83,8 +83,10 @@ Testing
 Proof of Concept Implementations
 --------------------------------
 
-- ZServer - Support for GET/POST/PUT/DELETE: https://github.com/tisto/plone.app.angularjs/commit/828440770c22991c38d146bfcf0e1c67559f60d9
-- Transformation - Dexerity Object -> JSON: https://github.com/tisto/plone.app.angularjs/blob/master/src/plone/app/angularjs/utils.py#L9
+- ZServer (Support for GET/POST/PUT/DELETE):
+  https://github.com/tisto/plone.app.angularjs/commit/828440770c22991c38d146bfcf0e1c67559f60d9
+- Transformation (Dexerity Object + Behavior -> JSON):
+  https://github.com/tisto/plone.app.angularjs/blob/master/src/plone/app/angularjs/utils.py#L9
 
 
 Contents
@@ -93,16 +95,16 @@ Contents
 .. toctree::
    :maxdepth: 3
 
-#   general-concepts
-#   general-concepts/error-handling
-#   general-concepts/security
-#   collections
-#   collections/transitions
-#   collections/batching
-#   collections/searching
-#   workflow
-#   local-roles
-#   global-objects
+..   general-concepts
+..   general-concepts/error-handling
+..   general-concepts/security
+..   collections
+..   collections/transitions
+..   collections/batching
+..   collections/searching
+..   workflow
+..   local-roles
+..   global-objects
 
 
 References
