@@ -22,7 +22,7 @@ Contents
 
    item
    folder
-   search
+   site-search
 
 ..   general-concepts
 ..   general-concepts/error-handling

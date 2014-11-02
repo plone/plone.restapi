@@ -8,15 +8,14 @@ Standards that address search actions are Collection+JSON, Hydra and Siren.
 Collection+JSON::
 
   {
-    "queries" :
-    [
+    "queries": [
       {
-        "href" : "plone/@@search",
-        "rel" : "search",
-        "prompt" : "Enter search string",
-        "data" : [
+        "href": "plone/@@search",
+        "rel": "search",
+        "prompt": "Enter search string",
+        "data": [
           {"name": "search", "value" : ""},
-          {"name": "sort_on", "value": ""}
+          {"name": "sort_on", "value": ""},
           {"name": "sort_order", "value": ""},
           {"name": "portal_type", "value": ""},
         ]
@@ -47,18 +46,17 @@ Hydra::
 Siren::
 
   {
-    "actions": [{
+    "actions": [
+      {
         "class": "add-friend",
         "href": "plone/@@search",
         "method": "GET",
         "fields": [
           {"name": "search", "type" : "string"},
-          {"name": "sort_on", "type": "string"}
+          {"name": "sort_on", "type": "string"},
           {"name": "sort_order", "type": "string"},
           {"name": "portal_type", "type": "string"},
         ]
-    }],
-    "properties": {
-        "size": "2"
-    },
+      }
+    ]
   }
