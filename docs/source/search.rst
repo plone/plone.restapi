@@ -1,4 +1,4 @@
-SEARCH
+Search
 ======
 
 JSON-LD lacks support for specifying the actions you can take on a resource.

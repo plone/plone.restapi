@@ -14,6 +14,28 @@ plone.restapi's documentation
 Its main focus in to enable clients (be it other services, Javascript frontends, command line clients or desktop applications, to name a few) to access the content management functionalities offered by Plone.
 
 
+Contents
+========
+
+.. toctree::
+   :maxdepth: 3
+
+   item
+   folder
+   search
+
+..   general-concepts
+..   general-concepts/error-handling
+..   general-concepts/security
+..   collections
+..   collections/transitions
+..   collections/batching
+..   collections/searching
+..   workflow
+..   local-roles
+..   global-objects
+
+
 Design Decisions
 ----------------
 
@@ -87,24 +109,6 @@ Proof of Concept Implementations
   https://github.com/tisto/plone.app.angularjs/commit/828440770c22991c38d146bfcf0e1c67559f60d9
 - Transformation (Dexerity Object + Behavior -> JSON):
   https://github.com/tisto/plone.app.angularjs/blob/master/src/plone/app/angularjs/utils.py#L9
-
-
-Contents
-========
-
-.. toctree::
-   :maxdepth: 3
-
-..   general-concepts
-..   general-concepts/error-handling
-..   general-concepts/security
-..   collections
-..   collections/transitions
-..   collections/batching
-..   collections/searching
-..   workflow
-..   local-roles
-..   global-objects
 
 
 References
