@@ -89,3 +89,5 @@ People willing to review API:
 - Maurits
 - Harald friesenegger
 - Gil
+- davisagli
+- martior
