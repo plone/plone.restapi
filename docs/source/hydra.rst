@@ -5,14 +5,14 @@ A JSON-LD / Hydra Web API for Plone
 Introduction
 ------------
 
-"Linked Data is a way to create a network of standards-based machine interpretable data across different documents and Web sites. It allows an application to start at one piece of Linked Data, and follow embedded links to other pieces of Linked Data that are hosted on different sites across the Web."
+"Linked Data is a way to create a network of standards-based machine interpretable data across different documents and Web sites. It allows an application to start at one piece of Linked Data, and follow embedded links to other pieces of Linked Data that are hosted on different sites across the Web." -- http://www.w3.org/TR/json-ld
 
-http://www.w3.org/TR/json-ld
+"Hydra is a lightweight vocabulary to create hypermedia-driven Web APIs. By specifying a number of concepts commonly used in Web APIs it enables the creation of generic API clients." -- http://www.w3.org/ns/hydra/spec/latest/core/
 
 JSON-LD / Hydra provides a schema and a way to link resources.
 
 Schema => @context / @type
-Links => @id / Collection.member
+Links => @id (member property in a Hydra Collection)
 
 
 Linked Data / Hypermedia / HATEOAS
@@ -22,21 +22,21 @@ Plone Portal Root (A Hydra Collection)::
 
   {
     "@context": "http://www.w3.org/ns/hydra/context.jsonld",
-    "@id": "http://localhost:8080/Plone/++api++v1/",
+    "@id": "http://localhost:8080/Plone/"
     "@type": "Collection",
     "member": [
       {
-        "@id": "http://localhost:8080/Plone/++api++v1/front-page",
+        "@id": "http://localhost:8080/Plone/front-page",
         "title": "Welcome to Plone",
         "description": "Congratulations! You have successfully installed Plone."
       },
       {
-        "@id": "http://localhost:8080/Plone/++api++v1/news",
+        "@id": "http://localhost:8080/Plone/news",
         "title": "News",
         "description": "Plone Site News"
       },
       {
-        "@id": "http://localhost:8080/Plone/++api++v1/events",
+        "@id": "http://localhost:8080/Plone/events",
         "title": "Events",
         "description": "Plone Site Events"
       }
@@ -51,15 +51,14 @@ Plone Portal Root (A Hydra Collection)::
 - @type: Set the data type of a node or typed value
 - member: A member (item/object/child) of the collection
 
-=> You can follow links (@id property) to other resources. Those resources can
-be collections or resources.
+=> A web client can follow the links (@id property) to other resources.
 
 
 Plone Document (A Hydra Resource)::
 
   {
     "@context": "http://www.w3.org/ns/hydra/context.jsonld",
-    "@id": "http://localhost:8080/Plone/++api++v1/doc1",
+    "@id": "http://localhost:8080/Plone/doc1",
     "@type": "Resource",
     "title": "Welcome to Plone",
     "description": "Congratulations! You have successfully installed Plone."
@@ -78,25 +77,42 @@ Plone Document (A Hydra Resource)::
   }
 
 
-Entry Point
------------
+Resource Operations / CRUD
+--------------------------
 
-Every resource contains a link to the entrypoint of the API
+"Hydra has three predefined operation classes, namely CreateResourceOperation, ReplaceResourceOperation, and DeleteResourceOperation. As their names suggest, they can be used to implement simple CRUD functionality. More specialized operations can be easily created by subclassing these classes or their base class Operation." -- http://www.w3.org/ns/hydra/spec/latest/core/
+
+DeleteResourceOperation on a Plone document::
 
   {
     "@context": "http://www.w3.org/ns/hydra/context.jsonld",
-    "entrypoint": "http://localhost:8080/Plone/++api++v1",
-    ...
+    "@id": "http://localhost:8080/Plone/"
+    "@type": "Collection",
+    "operation": [
+      {
+        "@type": "DeleteResourceOperation",
+        "method": "DELETE"
+      }
+    ]
   }
 
+CRUD Operations on a Plone collection::
 
-API Documentation
------------------
-
-{
-  "@context": "http://www.w3.org/ns/hydra/context.jsonld",
-  "@id": "http://localhost:8080/Plone/++api++v1/doc/",
-  "@type": "ApiDocumentation",
-  "title": "Plone RESTful API Documentation",
-  "description": "A short description of the API",
-}
+  {
+    "@context": "http://www.w3.org/ns/hydra/context.jsonld",
+    "@id": "http://localhost:8080/Plone/"
+    "@type": "Collection",
+    "operation": [
+      {
+        "@type": "CreateResourceOperation",
+        "method": "POST",
+      },
+      {
+        "@type": "ReplaceResourceOperation",
+        "method": "PUT",
+      },
+      {
+        "@type": "DeleteResourceOperation",
+        "method": "DELETE",
+      }
+    ]
