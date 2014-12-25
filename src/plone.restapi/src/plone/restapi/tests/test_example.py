@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import unittest2 as unittest
 
 from Products.CMFCore.utils import getToolByName

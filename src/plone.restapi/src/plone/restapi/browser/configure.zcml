@@ -1,0 +1,16 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- @@json view -->
+  <browser:page
+      name="json"
+      for="plone.dexterity.interfaces.IDexterityContent"
+      class=".traversal.ApiTraverse"
+      permission="zope2.View"
+      />
+
+  <adapter factory=".traversal.APIInnerTraverser" />
+
+</configure>

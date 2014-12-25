@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.app.testing import ROBOT_TEST_LEVEL
 from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
 from plone.testing import layered
