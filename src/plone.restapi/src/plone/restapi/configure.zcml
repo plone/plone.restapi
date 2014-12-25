@@ -5,8 +5,6 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="plone.restapi">
 
-  <five:registerPackage package="." initialize=".initialize" />
-
   <includeDependencies package="." />
 
   <genericsetup:registerProfile
@@ -16,6 +14,5 @@
       description="Installs the plone.restapi package"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
-  <!-- -*- extra stuff goes here -*- -->
 
 </configure>
