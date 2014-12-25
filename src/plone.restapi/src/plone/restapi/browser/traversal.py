@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from OFS.SimpleItem import SimpleItem
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -7,11 +8,10 @@ from zope.interface import alsoProvides
 from plone.dexterity.interfaces import IDexterityContent
 from zope.component import adapter
 from ZPublisher.BaseRequest import DefaultPublishTraverse
-from Products.Five.browser import BrowserView
 from plone.restapi.interfaces import ISerializeToJson
 
 
-class ApiTraverse(SimpleItem):
+class MarkAsApiRequest(SimpleItem):
     """Mark the @@json view with the IAPIRequest interface.
     """
     implements(IPublishTraverse)
@@ -21,16 +21,17 @@ class ApiTraverse(SimpleItem):
         return self.context
 
 
-class JsonView(BrowserView):
+@adapter(IPloneSiteRoot, IAPIRequest)
+class APISiteRootTraverser(DefaultPublishTraverse):
 
-    def __call__(self):
+    def publishTraverse(self, request, name):
         self.request.response.setHeader('Content-Type', 'application/json')
         return ISerializeToJson(self.context)
 
 
 @adapter(IDexterityContent, IAPIRequest)
-class APIInnerTraverser(DefaultPublishTraverse):
+class APIDexterityTraverser(DefaultPublishTraverse):
 
     def publishTraverse(self, request, name):
-        return JsonView(self.context, request)
-        return super(APIInnerTraverser, self).publishTraverse(request, name)
+        self.request.response.setHeader('Content-Type', 'application/json')
+        return ISerializeToJson(self.context)

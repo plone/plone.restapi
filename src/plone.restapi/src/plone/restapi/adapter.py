@@ -1,20 +1,40 @@
 # -*- coding: utf-8 -*-
-from plone.app.textfield import RichText
-from zope.schema import Datetime
+from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.interfaces import IFolderish
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 
-import json
+from plone.app.textfield import RichText
+from plone.restapi.utils import get_object_schema
+from plone.restapi.interfaces import ISerializeToJson
 
+from zope.schema import Datetime
 from zope.interface import implementer
 from zope.component import adapter
 
-from plone.restapi.utils import get_object_schema
-from plone.restapi.interfaces import ISerializeToJson
-from plone.dexterity.interfaces import IDexterityContent
+import json
 
 
 @implementer(ISerializeToJson)
-@adapter(IDexterityContent)
+@adapter(IPloneSiteRoot)
+def SerializeSiteRootToJson(context):
+    result = {
+        "@context": "http://www.w3.org/ns/hydra/context.jsonld",
+        "@id": context.absolute_url(),
+        '@type': 'Collection',
+    }
+    result['member'] = [
+        {
+            '@id': member.absolute_url() + '/@@json',
+            'title': member.title
+        }
+        for member_id, member in context.objectItems()
+        if IContentish.providedBy(member)
+    ]
+    return json.dumps(result, indent=2, sort_keys=True)
+
+
+@implementer(ISerializeToJson)
+@adapter(IContentish)
 def SerializeToJson(context):
     result = {
         "@context": "http://www.w3.org/ns/hydra/context.jsonld",
@@ -61,4 +81,4 @@ def SerializeToJson(context):
                 result[title] = value
             else:
                 result[title] = str(value)
-    return json.dumps(result)
+    return json.dumps(result, indent=2, sort_keys=True)

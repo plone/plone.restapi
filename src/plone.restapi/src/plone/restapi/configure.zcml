@@ -18,5 +18,6 @@
   <include package=".browser" />
 
   <adapter factory=".adapter.SerializeToJson" />
+  <adapter factory=".adapter.SerializeSiteRootToJson" />
 
 </configure>

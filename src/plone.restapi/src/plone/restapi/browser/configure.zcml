@@ -3,14 +3,23 @@
     xmlns:five="http://namespaces.zope.org/five"
     xmlns:browser="http://namespaces.zope.org/browser">
 
-  <!-- @@json view -->
+  <!-- @@json view for portal root -->
   <browser:page
       name="json"
-      for="plone.dexterity.interfaces.IDexterityContent"
-      class=".traversal.ApiTraverse"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".traversal.MarkAsApiRequest"
       permission="zope2.View"
       />
 
-  <adapter factory=".traversal.APIInnerTraverser" />
+  <!-- @@json view for content objects -->
+  <browser:page
+      name="json"
+      for="Products.CMFCore.interfaces.IContentish"
+      class=".traversal.MarkAsApiRequest"
+      permission="zope2.View"
+      />
+
+  <adapter factory=".traversal.APISiteRootTraverser" />
+  <adapter factory=".traversal.APIDexterityTraverser" />
 
 </configure>
