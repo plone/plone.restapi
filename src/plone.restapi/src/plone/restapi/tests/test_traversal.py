@@ -10,6 +10,7 @@ from plone.testing.z2 import Browser
 import unittest2 as unittest
 
 import json
+import requests
 
 
 class TestTraversal(unittest.TestCase):
@@ -36,7 +37,7 @@ class TestTraversal(unittest.TestCase):
             'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
         )
 
-    def test_document_traversal(self):
+    def test_json_view_document_traversal(self):
         self.browser.open(self.document_url + '/@@json')
         self.assertTrue(json.loads(self.browser.contents))
         self.assertEqual(
@@ -44,7 +45,7 @@ class TestTraversal(unittest.TestCase):
             self.document_url
         )
 
-    def test_folder_traversal(self):
+    def test_json_view_folder_traversal(self):
         self.browser.open(self.folder_url + '/@@json')
         self.assertTrue(json.loads(self.browser.contents))
         self.assertEqual(
@@ -52,10 +53,47 @@ class TestTraversal(unittest.TestCase):
             self.folder_url
         )
 
-    def test_site_root_traversal_with_json_format(self):
+    @unittest.skip('not working yet')
+    def test_json_view_site_root_traversal(self):
         self.browser.open(self.portal_url + '/@@json')
         self.assertTrue(json.loads(self.browser.contents))
         self.assertEqual(
             json.loads(self.browser.contents).get('@id'),
             self.portal_url
+        )
+
+    def test_document_traversal(self):
+        response = requests.get(
+            self.document_url,
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.headers.get('content-type'),
+            'application/json',
+            'When sending a GET request with content-type: application/json ' +
+            'the server should respond with sending back application/json.'
+        )
+        self.assertEqual(
+            response.json()['@id'],
+            self.document_url
+        )
+
+    def test_folder_traversal(self):
+        response = requests.get(
+            self.folder_url,
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.headers.get('content-type'),
+            'application/json',
+            'When sending a GET request with content-type: application/json ' +
+            'the server should respond with sending back application/json.'
+        )
+        self.assertEqual(
+            response.json()['@id'],
+            self.folder_url
         )

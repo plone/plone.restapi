@@ -39,11 +39,12 @@ setup(name='plone.restapi',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          # -*- Extra requirements: -*-
+          'plone.validatehook',
       ],
       extras_require={'test': [
           'plone.app.contenttypes',
-          'plone.app.testing[robot]>=4.2.2'
+          'plone.app.testing[robot]>=4.2.2',
+          'requests',
       ]},
       entry_points="""
       # -*- Entry points: -*-

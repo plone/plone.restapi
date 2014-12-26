@@ -19,7 +19,14 @@
       permission="zope2.View"
       />
 
-  <adapter factory=".traversal.APISiteRootTraverser" />
+  <subscriber
+     for="*
+          zope.app.publication.interfaces.IBeforeTraverseEvent"
+     handler=".traversal.mark_as_api_request"
+     />
+
   <adapter factory=".traversal.APIDexterityTraverser" />
+  <!--<adapter factory=".traversal.APISiteRootTraverser" />-->
+
 
 </configure>
