@@ -52,4 +52,13 @@ class APIDexterityTraverser(DefaultPublishTraverse):
 class APISiteRootTraverser(DefaultPublishTraverse):
 
     def publishTraverse(self, request, name):
-        return SerializeToJsonView(self.context, request)
+        # Traversal in Plone always starts with the site root. Therefore we
+        # have to guess if this is a real request for the portal root. What
+        # Plone does on portal root is pretty complex, therefore we have to
+        # check for multiple different scenarios. It would be good if this
+        # could be refactored to be simpler and more reliable.
+        if name == '' or name == 'folder_listing' or name == 'front-page':
+            return SerializeToJsonView(self.context, request)
+        # If this is just the first traversal step, make sure the traversal
+        # continues.
+        return DefaultPublishTraverse.publishTraverse(self, request, name)
