@@ -25,6 +25,8 @@ class MarkAsApiRequest(SimpleItem):
 class SerializeToJsonView(BrowserView):
 
     def __call__(self):
+        # The json response needs to be wrapped in a browser view to have
+        # access to context and request.
         self.request.response.setHeader('Content-Type', 'application/json')
         return ISerializeToJson(self.context)
 
