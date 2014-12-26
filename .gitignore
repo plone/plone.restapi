@@ -22,4 +22,5 @@ docs/Makefile
 docs/make.bat
 docs/doctrees
 docs/html
+htmlcov
 bower_components
