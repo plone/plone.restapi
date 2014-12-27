@@ -1,15 +1,21 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.testing import \
-    PLONE_RESTAPI_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.textfield.value import RichTextValue
+from plone.namedfile.file import NamedBlobImage
+from plone.namedfile.file import NamedBlobFile
 from plone.testing.z2 import Browser
+
+from z3c.relationfield import RelationValue
+from zope.component import getUtility
+from zope.app.intid.interfaces import IIntIds
 
 import unittest2 as unittest
 
+import os
 import requests
 
 
@@ -58,3 +64,114 @@ class TestTraversal(unittest.TestCase):
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
         save_response_for_documentation('document.json', response)
+
+    def test_documentation_news_item(self):
+        self.portal.invokeFactory('News Item', id='newsitem')
+        self.portal.newsitem.title = 'News'
+        self.portal.newsitem.description = u'A news item'
+        self.portal.newsitem.text = RichTextValue(
+            u"Lorem ipsum",
+            'text/plain',
+            'text/html'
+        )
+        import transaction
+        transaction.commit()
+        response = requests.get(
+            self.portal.newsitem.absolute_url(),
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        save_response_for_documentation('newsitem.json', response)
+
+    def test_documentation_link(self):
+        self.portal.invokeFactory('Link', id='link')
+        self.portal.link.title = 'Link'
+        self.portal.link.description = u'A link'
+        self.portal.remoteUrl = 'http://plone.org'
+        import transaction
+        transaction.commit()
+        response = requests.get(
+            self.portal.link.absolute_url(),
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        save_response_for_documentation('link.json', response)
+
+    @unittest.skip('The @@json view currently returns the file itself.')
+    def test_documentation_file(self):
+        self.portal.invokeFactory('File', id='file')
+        self.portal.file.title = 'File'
+        self.portal.file.description = u'A file'
+        pdf_file = os.path.join(
+            os.path.dirname(__file__), u'file.pdf'
+        )
+        self.portal.file.file = NamedBlobFile(
+            data=open(pdf_file, 'r').read(),
+            contentType='application/pdf',
+            filename=u'file.pdf'
+        )
+        intids = getUtility(IIntIds)
+        file_id = intids.getId(self.portal.file)
+        self.portal.file.file = RelationValue(file_id)
+        import transaction
+        transaction.commit()
+        response = requests.get(
+            self.portal.file.absolute_url(),
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        save_response_for_documentation('file.json', response)
+
+    @unittest.skip('The @@json view currently returns the image itself.')
+    def test_documentation_image(self):
+        self.portal.invokeFactory('Image', id='image')
+        self.portal.image.title = 'Image'
+        self.portal.image.description = u'An image'
+        image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        self.portal.image.image = NamedBlobImage(
+            data=open(image_file, 'r').read(),
+            contentType='image/png',
+            filename=u'image.png'
+        )
+        import transaction
+        transaction.commit()
+        response = requests.get(
+            self.portal.image.absolute_url(),
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        save_response_for_documentation('image.json', response)
+
+    def test_documentation_folder(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        self.portal.folder.title = 'Folder'
+        self.portal.folder.description = u'A folder'
+        import transaction
+        transaction.commit()
+        response = requests.get(
+            self.portal.folder.absolute_url(),
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        save_response_for_documentation('folder.json', response)
+
+    def test_documentation_collection(self):
+        self.portal.invokeFactory('Collection', id='collection')
+        self.portal.collection.title = 'Collection'
+        self.portal.collection.description = u'A collection'
+        import transaction
+        transaction.commit()
+        response = requests.get(
+            self.portal.collection.absolute_url(),
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        save_response_for_documentation('collection.json', response)
+
+    def test_documentation_siteroot(self):
+        response = requests.get(
+            self.portal.absolute_url(),
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        save_response_for_documentation('siteroot.json', response)

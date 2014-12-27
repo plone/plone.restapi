@@ -88,10 +88,34 @@ Plone Folder:
 .. literalinclude:: _json/folder.json
    :language: jsonld
 
-
 Plone Portal Root:
 
 .. literalinclude:: _json/siteroot.json
+   :language: json-ld
+
+Collection:
+
+.. literalinclude:: _json/collection.json
+   :language: json-ld
+
+Plone Image:
+
+.. literalinclude:: _json/image.json
+   :language: json-ld
+
+File:
+
+.. literalinclude:: _json/file.json
+   :language: json-ld
+
+Link:
+
+.. literalinclude:: _json/link.json
+   :language: json-ld
+
+News Item:
+
+.. literalinclude:: _json/newsitem.json
    :language: json-ld
 
 
