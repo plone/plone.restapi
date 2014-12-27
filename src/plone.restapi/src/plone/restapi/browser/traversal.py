@@ -57,7 +57,7 @@ class APISiteRootTraverser(DefaultPublishTraverse):
         # Plone does on portal root is pretty complex, therefore we have to
         # check for multiple different scenarios. It would be good if this
         # could be refactored to be simpler and more reliable.
-        if name == '' or name == 'folder_listing' or name == 'front-page':
+        if name == '' or name == 'folder_listing':
             return SerializeToJsonView(self.context, request)
         # If this is just the first traversal step, make sure the traversal
         # continues.

@@ -13,12 +13,6 @@ import json
 import requests
 
 
-def save_response_for_documentation(filename, response):
-    f = open('../../docs/source/_json/%s' % filename, 'w')
-    f.write(response.text)
-    f.close()
-
-
 class TestTraversal(unittest.TestCase):
 
     layer = PLONE_RESTAPI_FUNCTIONAL_TESTING
@@ -84,7 +78,6 @@ class TestTraversal(unittest.TestCase):
             response.json()['@id'],
             self.document_url
         )
-        save_response_for_documentation('document.json', response)
 
     def test_folder_traversal(self):
         response = requests.get(
@@ -103,7 +96,6 @@ class TestTraversal(unittest.TestCase):
             response.json()['@id'],
             self.folder_url
         )
-        save_response_for_documentation('folder.json', response)
 
     def test_site_root_traversal(self):
         response = requests.get(
@@ -122,4 +114,3 @@ class TestTraversal(unittest.TestCase):
             response.json()['@id'],
             self.portal_url
         )
-        save_response_for_documentation('siteroot.json', response)
