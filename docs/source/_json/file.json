@@ -1,0 +1,333 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+
+    
+    
+    
+    
+    
+
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    
+        <base href="http://localhost:55001/plone/file" /><!--[if lt IE 7]></base><![endif]-->
+    
+
+    
+        <meta content="A file" name="description" />
+
+  
+    <link rel="stylesheet" type="text/css" media="screen" href="http://localhost:55001/plone/portal_css/Sunburst%20Theme/reset-cachekey-a1f149741a7d2c991870693d4e2c2c83.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="http://localhost:55001/plone/portal_css/Sunburst%20Theme/member-cachekey-d7aa683aea3b7bae6aa68a83f443bb43.css" />
+    <link rel="stylesheet" type="text/css" href="http://localhost:55001/plone/portal_css/Sunburst%20Theme/base-cachekey-019ef6b20fe4b070cc38ab7ae029f704.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="http://localhost:55001/plone/portal_css/Sunburst%20Theme/resourceplone.app.jquerytools.dateinput-cachekey-e87e3d86ab7f500e92fc545c8285f91f.css" />
+    <style type="text/css" media="screen">@import url(http://localhost:55001/plone/portal_css/Sunburst%20Theme/resourceplone.formwidget.autocompletejquery.autocomplete-cachekey-8d11957af8a065f4fc8ca770369e9794.css);</style>
+    <link rel="stylesheet" type="text/css" href="http://localhost:55001/plone/portal_css/Sunburst%20Theme/resourceplone.formwidget.querystring.querywidget-cachekey-606ce70689041212ad8be5a7456299c7.css" />
+
+  
+  
+    <script type="text/javascript" src="http://localhost:55001/plone/portal_javascripts/Sunburst%20Theme/resourceplone.app.jquery-cachekey-b6bfb51673364cc16e6614c2060e255b.js"></script>
+    <script type="text/javascript" src="http://localhost:55001/plone/portal_javascripts/Sunburst%20Theme/table_sorter-cachekey-cd4346ff2fc7816e4340450b3e0dad31.js"></script>
+    <script type="text/javascript" src="http://localhost:55001/plone/portal_javascripts/Sunburst%20Theme/resourceplone.formwidget.autocompletejquery.autocomplete.min-cachekey-281737a3bca720799c1ea76362766185.js"></script>
+
+
+<title>File &mdash; Plone site</title>
+        
+    <link rel="author" href="http://localhost:55001/plone/author/test_user_1_" title="Author information" />
+
+
+    <link rel="canonical" href="http://localhost:55001/plone/file" />
+
+    <link rel="shortcut icon" type="image/x-icon" href="http://localhost:55001/plone/favicon.ico" />
+    <link rel="apple-touch-icon" href="http://localhost:55001/plone/touch_icon.png" />
+
+
+
+
+
+
+    <link rel="search" href="http://localhost:55001/plone/@@search" title="Search this site" />
+
+
+
+        
+        
+        
+        
+        
+
+        <meta name="viewport" content="width=device-width, initial-scale=0.6666, maximum-scale=1.0, minimum-scale=0.6666" />
+        <meta name="generator" content="Plone - http://plone.org" />
+    
+</head>
+
+<body class="template-default_error_message portaltype-file site-plone section-file icons-on userrole-owner userrole-manager userrole-authenticated" dir="ltr">
+
+<div id="visual-portal-wrapper">
+
+        <div id="portal-top" class="row">
+<div class="cell width-full position-0">
+            <div id="portal-header">
+    <p class="hiddenStructure">
+  <a accesskey="2" href="http://localhost:55001/plone/file#content">Skip to content.</a> |
+
+  <a accesskey="6" href="http://localhost:55001/plone/file#portal-globalnav">Skip to navigation</a>
+</p>
+
+<div id="portal-personaltools-wrapper">
+
+<p class="hiddenStructure">Personal tools</p>
+
+<dl class="actionMenu deactivated" id="portal-personaltools">
+  
+  <dt class="actionMenuHeader">
+    <a id="user-name" href="http://localhost:55001/plone/useractions">admin</a>
+  </dt>
+  <dd class="actionMenuContent">
+    <ul>
+        <li id="personaltools-dashboard">
+            <a href="http://localhost:55001/plone/dashboard">Dashboard</a>
+        </li>
+        <li id="personaltools-preferences">
+            <a href="http://localhost:55001/plone/@@personal-preferences">Preferences</a>
+        </li>
+        <li id="personaltools-plone_setup">
+            <a href="http://localhost:55001/plone/@@overview-controlpanel">Site Setup</a>
+        </li>
+        <li id="personaltools-logout">
+            <a href="http://localhost:55001/plone/logout">Log out</a>
+        </li>
+    </ul>
+  </dd>
+  
+</dl>
+
+
+
+</div>
+
+
+
+<div id="portal-searchbox">
+
+    <form id="searchGadget_form" action="http://localhost:55001/plone/@@search">
+
+        <div class="LSBox">
+        <label class="hiddenStructure" for="searchGadget">Search Site</label>
+
+        <input name="SearchableText" type="text" size="18" title="Search Site" placeholder="Search Site" accesskey="4" class="searchField" id="searchGadget" />
+
+        <input class="searchButton" type="submit" value="Search" />
+
+        <div class="searchSection">
+            <input id="searchbox_currentfolder_only" class="noborder" type="checkbox" name="path" value="/plone" />
+            <label for="searchbox_currentfolder_only" style="cursor: pointer">
+                only in current section
+            </label>
+        </div>
+
+        <div class="LSResult" id="LSResult"><div class="LSShadow" id="LSShadow"></div></div>
+        </div>
+    </form>
+
+    <div id="portal-advanced-search" class="hiddenStructure">
+        <a href="http://localhost:55001/plone/@@search" accesskey="5">
+            Advanced Search&hellip;
+        </a>
+    </div>
+
+</div>
+
+<a id="portal-logo" title="Plone site" accesskey="1" href="http://localhost:55001/plone">
+    <img src="http://localhost:55001/plone/logo.png" alt="Plone site" title="Plone site" height="56" width="215" /></a>
+
+
+    <p class="hiddenStructure">Navigation</p>
+
+    <ul id="portal-globalnav"><li id="portaltab-index_html" class="selected"><a href="http://localhost:55001/plone" title="">Home</a></li><li id="portaltab-robot-test-folder" class="plain"><a href="http://localhost:55001/plone/robot-test-folder" title="">Test Folder</a></li><li id="portaltab-front-page" class="plain"><a href="http://localhost:55001/plone/front-page" title="">front-page</a></li><li id="portaltab-file" class="plain"><a href="http://localhost:55001/plone/file/view" title="">file</a></li></ul>
+
+
+</div>
+
+</div>
+        </div>
+    <div id="portal-columns" class="row">
+
+        <div id="portal-column-content" class="cell width-full position-0">
+
+            <div id="viewlet-above-content"><div id="portal-breadcrumbs">
+
+    <span id="breadcrumbs-you-are-here">You
+are here:</span>
+    <span id="breadcrumbs-home">
+        <a href="http://localhost:55001/plone">Home</a>
+        <span class="breadcrumbSeparator">
+            /
+            
+        </span>
+    </span>
+    <span id="breadcrumbs-1" dir="ltr">
+        
+            
+            
+            <span id="breadcrumbs-current">File</span>
+         
+    </span>
+
+</div>
+</div>
+
+            
+                <div class="">
+
+                    
+
+                    
+
+    <dl class="portalMessage info" id="kssPortalMessage" style="display:none">
+        <dt>Info</dt>
+        <dd></dd>
+    </dl>
+
+
+
+                    
+                        <div id="content">
+
+                            
+
+                            
+
+        
+
+        
+
+            <h1 class="documentFirstHeading">
+                We&#8217;re sorry, but there seems to be an error&hellip;
+            </h1>
+
+            <div id="content-core">
+                
+                    
+
+                    
+
+                    <div>
+                       <p>
+                       Here is the full error message:
+                       </p>
+
+                       <p><a href="error_log/getLogEntryAsText?id=1419697025.310.996871743618">Display traceback as text</a></p>
+
+                       <p>Traceback (innermost last):</p>
+<ul>
+
+<li>  Module ZPublisher.Publish, line 138, in publish</li>
+
+<li>  Module ZPublisher.mapply, line 77, in mapply</li>
+
+<li>  Module ZPublisher.Publish, line 48, in call_object</li>
+
+<li>  Module plone.namedfile.browser, line 44, in __call__</li>
+
+<li>  Module plone.namedfile.browser, line 76, in set_headers</li>
+
+<li>  Module plone.namedfile.utils, line 45, in set_headers</li>
+
+</ul><p>AttributeError: 'RelationValue' object has no attribute 'getSize'
+</p>
+                    </div>
+
+                
+
+                
+            </div>
+
+        
+        
+
+
+                        </div>
+                    
+
+                    
+                </div>
+            
+
+            <div id="viewlet-below-content">
+
+
+
+<div class="row">
+    <a class="managePortletsFallback" href="http://localhost:55001/plone/file/@@manage-portlets">
+        Manage portlets
+    </a>
+</div>
+
+</div>
+        </div>
+
+        
+        
+
+        
+        
+    </div>
+
+
+    <div id="portal-footer-wrapper" class="row">
+        <div class="cell width-full position-0">
+            <div id="portal-footer">
+          <p>
+               
+               The
+               <a href="http://plone.org">Plone<sup>&reg;</sup> Open Source CMS/WCM</a>
+               is
+               <abbr title="Copyright">&copy;</abbr>
+               2000-2014
+               by the
+               <a href="http://plone.org/foundation">Plone Foundation</a>
+               and friends.
+               
+
+               
+               Distributed under the
+                    <a href="http://creativecommons.org/licenses/GPL/2.0/">GNU GPL license</a>.
+               
+          </p>
+
+</div>
+
+<div id="portal-colophon">
+<div class="colophonWrapper">
+<ul>
+  <li>
+    <a href="http://plone.org" title="This site was built using the Plone Open Source CMS/WCM.">
+      Powered by Plone &amp; Python</a>
+  </li>
+</ul>
+</div>
+</div>
+
+<ul id="portal-siteactions">
+
+    <li id="siteaction-sitemap"><a href="http://localhost:55001/plone/sitemap" accesskey="3" title="Site Map">Site Map</a></li>
+    <li id="siteaction-accessibility"><a href="http://localhost:55001/plone/accessibility-info" accesskey="0" title="Accessibility">Accessibility</a></li>
+    <li id="siteaction-contact"><a href="http://localhost:55001/plone/contact-info" accesskey="9" title="Contact">Contact</a></li>
+</ul>
+
+
+        </div>
+    </div>
+
+
+
+</div>
+</body>
+</html>
+
+
