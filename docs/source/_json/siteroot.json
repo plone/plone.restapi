@@ -1,0 +1,19 @@
+{
+  "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
+  "@id": "http://localhost:55001/plone", 
+  "@type": "Collection", 
+  "member": [
+    {
+      "@id": "http://localhost:55001/plone/robot-test-folder/@@json", 
+      "title": "Test Folder"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/document1/@@json", 
+      "title": ""
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/folder1/@@json", 
+      "title": ""
+    }
+  ]
+}

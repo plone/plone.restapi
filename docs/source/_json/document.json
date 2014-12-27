@@ -1,0 +1,20 @@
+{
+  "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
+  "@id": "http://localhost:55001/plone/document1", 
+  "@type": "Resource", 
+  "contributors": [], 
+  "creators": [
+    "test_user_1_"
+  ], 
+  "description": "", 
+  "effective": "1969-12-31T00:00:00+01:00", 
+  "exclude_from_nav": "False", 
+  "expires": "2499-12-31T00:00:00+01:00", 
+  "icon": "++resource++plone.dexterity.item.gif", 
+  "isPrincipiaFolderish": "0", 
+  "language": "", 
+  "meta_type": "Dexterity Item", 
+  "relatedItems": [], 
+  "rights": "", 
+  "title": ""
+}
