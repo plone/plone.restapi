@@ -1,0 +1,3 @@
+[report]
+omit =
+    src/plone.restapi/src/plone/restapi/tests/test_robot

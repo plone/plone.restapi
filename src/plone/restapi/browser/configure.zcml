@@ -1,0 +1,32 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:browser="http://namespaces.zope.org/browser">
+
+  <!-- @@json view for portal root -->
+  <browser:page
+      name="json"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".traversal.MarkAsApiRequest"
+      permission="zope2.View"
+      />
+
+  <!-- @@json view for content objects -->
+  <browser:page
+      name="json"
+      for="Products.CMFCore.interfaces.IContentish"
+      class=".traversal.MarkAsApiRequest"
+      permission="zope2.View"
+      />
+
+  <subscriber
+     for="*
+          zope.app.publication.interfaces.IBeforeTraverseEvent"
+     handler=".traversal.mark_as_api_request"
+     />
+
+  <adapter factory=".traversal.APIDexterityTraverser" />
+  <adapter factory=".traversal.APISiteRootTraverser" />
+
+
+</configure>
