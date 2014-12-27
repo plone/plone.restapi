@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.testing import\
+from plone.restapi.testing import \
     PLONE_RESTAPI_FUNCTIONAL_TESTING
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
@@ -32,7 +32,8 @@ class TestTraversal(unittest.TestCase):
         self.portal.invokeFactory('Document', id='front-page')
         self.document = self.portal['front-page']
         self.document.title = u"Welcome to Plone"
-        self.document.description = u"Congratulations! You have successfully installed Plone."
+        self.document.description = \
+            u"Congratulations! You have successfully installed Plone."
         self.document.text = RichTextValue(
             u"If you're seeing this instead of the web site you were " +
             u"expecting, the owner of this web site has just installed " +
