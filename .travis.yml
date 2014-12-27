@@ -5,7 +5,7 @@ before_install:
 install:
   - mkdir -p buildout-cache/eggs
   - mkdir -p buildout-cache/downloads
-  - python bootstrap.py --setuptools-version=8.3 -c travis.cfg
+  - python bootstrap-buildout.py --setuptools-version=8.3 -c travis.cfg
   - bin/buildout -N -t 3 -c travis.cfg
 script:
   - bin/test
