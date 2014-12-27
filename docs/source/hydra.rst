@@ -43,7 +43,6 @@ Plone Portal Root (A Hydra Collection)::
     ]
   }
 
-
 - @context: Defines what kind of resource this is and the meaning of the
   terms used within this resource.
 - @id: Unique identifier for resources (IRIs). The @id property can be used to
@@ -75,6 +74,25 @@ Plone Document (A Hydra Resource)::
     "rights": "",
     "text": "<p>Lorem Ipsum</p>",
   }
+
+Implementation
+--------------
+
+Plone Document:
+
+.. literalinclude:: _json/document.json
+   :language: jsonld
+
+Plone Folder:
+
+.. literalinclude:: _json/folder.json
+   :language: jsonld
+
+
+Plone Portal Root:
+
+.. literalinclude:: _json/siteroot.json
+   :language: json-ld
 
 
 Resource Operations / CRUD

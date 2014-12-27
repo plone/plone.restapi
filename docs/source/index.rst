@@ -20,6 +20,7 @@ Contents
 .. toctree::
    :maxdepth: 3
 
+   hydra
    item
    folder
    site-search
