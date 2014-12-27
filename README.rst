@@ -8,3 +8,6 @@ Introduction
 
 .. image:: https://coveralls.io/repos/plone/plone.restapi/badge.png?branch=master
     :target: https://coveralls.io/r/plone/plone.restapi
+
+.. image:: https://readthedocs.org/projects/pip/badge/
+    :target: https://plonerestapi.readthedocs.org
