@@ -64,9 +64,6 @@ def SerializeToJson(context):
                 # http://www.w3.org/TR/NOTE-datetime for details.
                 # XXX: We might want to change that in the future.
                 result[title] = value().ISO8601()
-            # Callables
-            elif callable(schema_object):
-                result[title] = value()
             # Tuple
             elif isinstance(value, tuple):
                 result[title] = list(value)
