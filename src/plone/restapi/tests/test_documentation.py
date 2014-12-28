@@ -97,10 +97,8 @@ class TestTraversal(unittest.TestCase):
         )
         save_response_for_documentation('link.json', response)
 
-    @unittest.skip(
-        'The @@json view currently returns the file itself.'
-    )  # pragma: no cover
-    def test_documentation_file(self):
+    @unittest.skip('The @@json view currently returns the file itself.')
+    def test_documentation_file(self):  # pragma: no cover
         self.portal.invokeFactory('File', id='file')
         self.portal.file.title = 'File'
         self.portal.file.description = u'A file'
@@ -125,9 +123,8 @@ class TestTraversal(unittest.TestCase):
         save_response_for_documentation('file.json', response)
 
     @unittest.skip(
-        'The @@json view currently returns the image itself.'
-    )  # pragma: no cover
-    def test_documentation_image(self):
+        'The @@json view currently returns the image itself.')
+    def test_documentation_image(self):  # pragma: no cover
         self.portal.invokeFactory('Image', id='image')
         self.portal.image.title = 'Image'
         self.portal.image.description = u'An image'
