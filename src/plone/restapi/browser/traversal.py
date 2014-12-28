@@ -19,7 +19,7 @@ def mark_as_api_request(context, event):
        interface.
     """
     if event.request.getHeader('Content-Type') == 'application/json':
-        alsoProvides(event.request, IAPIRequest)
+        alsoProvides(event.request, IAPIRequest)  # pragma: no cover
 
 
 class MarkAsApiRequest(SimpleItem):
@@ -60,7 +60,9 @@ class APISiteRootTraverser(DefaultPublishTraverse):
 
         # If we are at the default page, return the site root
         if self.context.getDefaultPage() == name:
-            return SerializeToJsonView(self.context, request)
+            return SerializeToJsonView(
+                self.context, request
+            )  # pragma: no cover
 
         # Traversal returns folder_listing on the site root
         if name == '' or name == 'folder_listing':
@@ -68,4 +70,6 @@ class APISiteRootTraverser(DefaultPublishTraverse):
 
         # If this is just the first traversal step, make sure the traversal
         # continues, so the APIDexterityTraverser is reached.
-        return DefaultPublishTraverse.publishTraverse(self, request, name)
+        return DefaultPublishTraverse.publishTraverse(
+            self, request, name
+        )  # pragma: no cover
