@@ -12,7 +12,6 @@ install:
   - python bootstrap-buildout.py --setuptools-version=8.3 -c travis.cfg
   - bin/buildout -N -t 3 -c travis.cfg
 script:
-  - bin/test
   - bin/code-analysis
   - bin/test-coverage
 after_success:
