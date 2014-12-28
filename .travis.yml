@@ -14,7 +14,7 @@ install:
 script:
   - bin/test
   - bin/code-analysis
-after_success:
   - bin/test-coverage
+after_success:
   - pip install -q coveralls
   - coveralls

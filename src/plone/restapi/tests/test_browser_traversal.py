@@ -114,3 +114,22 @@ class TestTraversal(unittest.TestCase):
             response.json()['@id'],
             self.portal_url
         )
+
+    def test_site_root_traversal_with_default_page(self):
+        self.portal.setDefaultPage('document1')
+        response = requests.get(
+            self.portal_url,
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.headers.get('content-type'),
+            'application/json',
+            'When sending a GET request with content-type: application/json ' +
+            'the server should respond with sending back application/json.'
+        )
+        self.assertEqual(
+            response.json()['@id'],
+            self.portal_url
+        )
