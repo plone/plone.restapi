@@ -11,6 +11,7 @@ import unittest2 as unittest
 
 import json
 import requests
+import transaction
 
 
 class TestTraversal(unittest.TestCase):
@@ -28,7 +29,6 @@ class TestTraversal(unittest.TestCase):
         self.portal.invokeFactory('Folder', id='folder1')
         self.folder = self.portal.folder1
         self.folder_url = self.folder.absolute_url()
-        import transaction
         transaction.commit()
         self.browser = Browser(self.app)
         self.browser.handleErrors = False
@@ -116,7 +116,9 @@ class TestTraversal(unittest.TestCase):
         )
 
     def test_site_root_traversal_with_default_page(self):
-        self.portal.setDefaultPage('document1')
+        self.portal.invokeFactory('Document', id='front-page')
+        self.portal.setDefaultPage('front-page')
+        transaction.commit()
         response = requests.get(
             self.portal_url,
             headers={'content-type': 'application/json'},

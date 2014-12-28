@@ -57,8 +57,15 @@ class APISiteRootTraverser(DefaultPublishTraverse):
         # Plone does on portal root is pretty complex, therefore we have to
         # check for multiple different scenarios. It would be good if this
         # could be refactored to be simpler and more reliable.
+
+        # If we are at the default page, return the site root
+        if self.context.getDefaultPage() == name:
+            return SerializeToJsonView(self.context, request)
+
+        # Traversal returns folder_listing on the site root
         if name == '' or name == 'folder_listing':
             return SerializeToJsonView(self.context, request)
+
         # If this is just the first traversal step, make sure the traversal
-        # continues.
+        # continues, so the APIDexterityTraverser is reached.
         return DefaultPublishTraverse.publishTraverse(self, request, name)
