@@ -79,6 +79,26 @@ class TestTraversal(unittest.TestCase):
             self.document_url
         )
 
+    def test_news_item_traversal(self):
+        self.portal.invokeFactory('News Item', id='news1')
+        transaction.commit()
+        response = requests.get(
+            self.portal.news1.absolute_url(),
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.headers.get('content-type'),
+            'application/json',
+            'When sending a GET request with content-type: application/json ' +
+            'the server should respond with sending back application/json.'
+        )
+        self.assertEqual(
+            response.json()['@id'],
+            self.portal.news1.absolute_url()
+        )
+
     def test_folder_traversal(self):
         response = requests.get(
             self.folder_url,
