@@ -5,11 +5,13 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.namedfile.file import NamedBlobImage
 from plone.testing.z2 import Browser
 
 import unittest2 as unittest
 
 import json
+import os
 import requests
 import transaction
 
@@ -154,4 +156,33 @@ class TestTraversal(unittest.TestCase):
         self.assertEqual(
             response.json()['@id'],
             self.portal_url
+        )
+
+    @unittest.skip('Not implemented yet.')
+    def test_image_traversal(self):  # pragma: no cover
+        self.portal.invokeFactory('Image', id='img1')
+        self.portal.img1.title = 'Image'
+        self.portal.img1.description = u'An image'
+        image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        self.portal.img1.image = NamedBlobImage(
+            data=open(image_file, 'r').read(),
+            contentType='image/png',
+            filename=u'image.png'
+        )
+        transaction.commit()
+        response = requests.get(
+            self.portal.img1.absolute_url(),
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.headers.get('content-type'),
+            'application/json',
+            'When sending a GET request with content-type: application/json ' +
+            'the server should respond with sending back application/json.'
+        )
+        self.assertEqual(
+            response.json()['@id'],
+            self.portal.img1.absolute_url()
         )
