@@ -77,6 +77,22 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             '2017-01-01T00:00:00'
         )
 
+    def test_serialize_to_json_adapter_on_folder_returns_member_attr(self):
+        self.portal.invokeFactory('Folder', id='folder1', title='Folder 1')
+        self.portal.folder1.invokeFactory('Document', id='doc1')
+        self.portal.folder1.doc1.title = u'Document 1'
+        self.portal.folder1.doc1.description = u'This is a document'
+        self.assertEqual(
+            json.loads(ISerializeToJson(self.portal.folder1))['member'],
+            [
+                {
+                    u'@id': u'http://nohost/plone/folder1/doc1/@@json',
+                    u'description': u'This is a document',
+                    u'title': u'Document 1'
+                }
+            ]
+        )
+
     def test_serialize_to_json_adapter_ignores_underscore_values(self):
         self.assertFalse(
             '__name__' in json.loads(ISerializeToJson(self.portal.doc1))

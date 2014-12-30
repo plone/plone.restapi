@@ -25,7 +25,8 @@ def SerializeSiteRootToJson(context):
     result['member'] = [
         {
             '@id': member.absolute_url() + '/@@json',
-            'title': member.title
+            'title': member.title,
+            'description': member.description
         }
         for member_id, member in context.objectItems()
         if IContentish.providedBy(member)
@@ -45,7 +46,8 @@ def SerializeToJson(context):
         result['member'] = [
             {
                 '@id': member.absolute_url() + '/@@json',
-                'title': member.title
+                'title': member.title,
+                'description': member.description
             }
             for member_id, member in context.objectItems()
         ]
