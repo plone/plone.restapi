@@ -17,7 +17,7 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
 
-    def test_document(self):
+    def test_get_object_schema_for_document(self):
         self.portal.invokeFactory('Document', id='doc1', title='Doc 1')
         schema = [x[0] for x in get_object_schema(self.portal.doc1)]
         self.assertEqual(
@@ -40,11 +40,12 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
                 'subjects',
                 'creators',
                 'description',
-                'changeNote'
+                'changeNote',
+                'portal_type'
             ]
         )
 
-    def test_folder(self):
+    def test_get_object_schema_for_folder(self):
         self.portal.invokeFactory('Folder', id='folder1', title='Folder 1')
         schema = [x[0] for x in get_object_schema(self.portal.folder1)]
         self.assertEqual(
@@ -67,7 +68,8 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
                 'language',
                 'subjects',
                 'creators',
-                'description'
+                'description',
+                'portal_type'
             ]
         )
 

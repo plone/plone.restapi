@@ -18,6 +18,7 @@
   "meta_type": "Dexterity Container", 
   "meta_types": [], 
   "nextPreviousEnabled": "False", 
+  "portal_type": "Folder", 
   "relatedItems": [], 
   "rights": "", 
   "title": "Folder"

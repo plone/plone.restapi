@@ -16,6 +16,7 @@
   "language": "", 
   "limit": "1000", 
   "meta_type": "Dexterity Item", 
+  "portal_type": "Collection", 
   "relatedItems": [], 
   "rights": "", 
   "title": "Collection"
