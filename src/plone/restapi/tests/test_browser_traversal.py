@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.testing import\
-    PLONE_RESTAPI_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.testing.z2 import Browser
+
+from z3c.relationfield import RelationValue
+from zope.component import getUtility
+from zope.app.intid.interfaces import IIntIds
 
 import unittest2 as unittest
 
@@ -156,6 +160,40 @@ class TestTraversal(unittest.TestCase):
         self.assertEqual(
             response.json()['@id'],
             self.portal_url
+        )
+
+    @unittest.skip('Not implemented yet.')
+    def test_file_traversal(self):  # pragma: no cover
+        self.portal.invokeFactory('File', id='file1')
+        self.portal.file1.title = 'File'
+        self.portal.file1.description = u'A file'
+        pdf_file = os.path.join(
+            os.path.dirname(__file__), u'file.pdf'
+        )
+        self.portal.file1.file = NamedBlobFile(
+            data=open(pdf_file, 'r').read(),
+            contentType='application/pdf',
+            filename=u'file.pdf'
+        )
+        intids = getUtility(IIntIds)
+        file_id = intids.getId(self.portal.file1)
+        self.portal.file1.file = RelationValue(file_id)
+        transaction.commit()
+        response = requests.get(
+            self.portal.file1.absolute_url(),
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.headers.get('content-type'),
+            'application/json',
+            'When sending a GET request with content-type: application/json ' +
+            'the server should respond with sending back application/json.'
+        )
+        self.assertEqual(
+            response.json()['@id'],
+            self.portal.file1.absolute_url()
         )
 
     @unittest.skip('Not implemented yet.')
