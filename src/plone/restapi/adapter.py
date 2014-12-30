@@ -21,6 +21,7 @@ def SerializeSiteRootToJson(context):
         "@context": "http://www.w3.org/ns/hydra/context.jsonld",
         "@id": context.absolute_url(),
         '@type': 'Collection',
+        'portal_type': 'SiteRoot'
     }
     result['member'] = [
         {

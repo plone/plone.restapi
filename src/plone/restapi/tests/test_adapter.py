@@ -103,6 +103,16 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             u'Document'
         )
 
+    def test_serialize_to_json_adapter_returns_site_root_portal_type(self):
+        self.assertTrue(
+            json.loads(ISerializeToJson(self.portal)).get('portal_type'),
+            'The portal_type attribute should be present.'
+        )
+        self.assertEqual(
+            json.loads(ISerializeToJson(self.portal))['portal_type'],
+            u'SiteRoot'
+        )
+
     def test_serialize_to_json_adapter_ignores_underscore_values(self):
         self.assertFalse(
             '__name__' in json.loads(ISerializeToJson(self.portal.doc1))

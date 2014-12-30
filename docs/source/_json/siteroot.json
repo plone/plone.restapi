@@ -13,5 +13,6 @@
       "description": "Congratulations! You have successfully installed Plone.", 
       "title": "Welcome to Plone"
     }
-  ]
+  ], 
+  "portal_type": "SiteRoot"
 }
