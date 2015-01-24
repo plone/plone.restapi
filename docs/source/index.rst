@@ -117,6 +117,10 @@ References
 
 The design of the API has been influenced by the following resources, books, and projects:
 
+REST in Practice: Hypermedia and Systems Architecture
+
+    by Jim Webber, Savas Parastatidis, Ian S Robinson
+
 RESTful Web APIs
 
    by Leonard Richardson, Mike Amundsen, Sam Ruby
