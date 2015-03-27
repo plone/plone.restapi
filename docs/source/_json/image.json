@@ -1,0 +1,9 @@
+{
+  "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
+  "@id": "http://localhost:55001/plone/image", 
+  "@type": "Resource", 
+  "description": "An image", 
+  "download": "http://localhost:55001/plone/image/@@download", 
+  "portal_type": "Image", 
+  "title": "Image"
+}

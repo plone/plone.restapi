@@ -97,8 +97,7 @@ class TestTraversal(unittest.TestCase):
         )
         save_response_for_documentation('link.json', response)
 
-    @unittest.skip('The @@json view currently returns the file itself.')
-    def test_documentation_file(self):  # pragma: no cover
+    def test_documentation_file(self):
         self.portal.invokeFactory('File', id='file')
         self.portal.file.title = 'File'
         self.portal.file.description = u'A file'
@@ -115,16 +114,16 @@ class TestTraversal(unittest.TestCase):
         self.portal.file.file = RelationValue(file_id)
         import transaction
         transaction.commit()
+        # XXX: We are cheating here, @@json should not be necessary! Remove as
+        # soon as this has been fixed.
         response = requests.get(
-            self.portal.file.absolute_url(),
+            self.portal.file.absolute_url() + '/@@json',
             headers={'content-type': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
         save_response_for_documentation('file.json', response)
 
-    @unittest.skip(
-        'The @@json view currently returns the image itself.')
-    def test_documentation_image(self):  # pragma: no cover
+    def test_documentation_image(self):
         self.portal.invokeFactory('Image', id='image')
         self.portal.image.title = 'Image'
         self.portal.image.description = u'An image'
@@ -136,8 +135,10 @@ class TestTraversal(unittest.TestCase):
         )
         import transaction
         transaction.commit()
+        # XXX: We are cheating here, @@json should not be necessary! Remove as
+        # soon as this has been fixed.
         response = requests.get(
-            self.portal.image.absolute_url(),
+            self.portal.image.absolute_url() + '/@@json',
             headers={'content-type': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
