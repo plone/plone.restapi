@@ -11,3 +11,15 @@ Introduction
 
 .. image:: https://readthedocs.org/projects/pip/badge/
     :target: https://plonerestapi.readthedocs.org
+
+
+Documentation
+=============
+
+http://plonerestapi.readthedocs.org
+
+
+Live Demo
+=========
+
+http://arcane-sierra-8467.herokuapp.com/Plone/@@json
