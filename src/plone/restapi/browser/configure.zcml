@@ -19,6 +19,22 @@
       permission="zope2.View"
       />
 
+  <!-- @@json view for file objects -->
+  <browser:page
+      name="json"
+      for="plone.app.contenttypes.interfaces.IFile"
+      class=".traversal.SerializeToJsonView"
+      permission="zope2.View"
+      />
+
+  <!-- @@json view for image objects -->
+  <browser:page
+      name="json"
+      for="plone.app.contenttypes.interfaces.IImage"
+      class=".traversal.SerializeToJsonView"
+      permission="zope2.View"
+      />
+
   <subscriber
      for="*
           zope.app.publication.interfaces.IBeforeTraverseEvent"
@@ -27,6 +43,5 @@
 
   <adapter factory=".traversal.APIDexterityTraverser" />
   <adapter factory=".traversal.APISiteRootTraverser" />
-
 
 </configure>

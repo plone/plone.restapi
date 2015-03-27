@@ -4,6 +4,8 @@ from Products.CMFCore.interfaces import IFolderish
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 
 from plone.app.textfield import RichText
+from plone.app.contenttypes.interfaces import IFile
+from plone.app.contenttypes.interfaces import IImage
 from plone.restapi.utils import get_object_schema
 from plone.restapi.interfaces import ISerializeToJson
 
@@ -81,4 +83,34 @@ def SerializeToJson(context):
                 result[title] = value
             else:
                 result[title] = str(value)
+    return json.dumps(result, indent=2, sort_keys=True)
+
+
+@implementer(ISerializeToJson)
+@adapter(IFile)
+def SerializeFileToJson(context):
+    result = {
+        "@context": "http://www.w3.org/ns/hydra/context.jsonld",
+        "@id": context.absolute_url(),
+        '@type': 'Resource',
+        'portal_type': 'File',
+        'title': context.title,
+        'description': context.description,
+        'download': '{0}/@@download'.format(context.absolute_url()),
+    }
+    return json.dumps(result, indent=2, sort_keys=True)
+
+
+@implementer(ISerializeToJson)
+@adapter(IImage)
+def SerializeImageToJson(context):
+    result = {
+        "@context": "http://www.w3.org/ns/hydra/context.jsonld",
+        "@id": context.absolute_url(),
+        '@type': 'Resource',
+        'portal_type': 'Image',
+        'title': context.title,
+        'description': context.description,
+        'download': '{0}/@@download'.format(context.absolute_url()),
+    }
     return json.dumps(result, indent=2, sort_keys=True)

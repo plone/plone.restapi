@@ -19,5 +19,7 @@
 
   <adapter factory=".adapter.SerializeToJson" />
   <adapter factory=".adapter.SerializeSiteRootToJson" />
+  <adapter factory=".adapter.SerializeImageToJson" />
+  <adapter factory=".adapter.SerializeFileToJson" />
 
 </configure>

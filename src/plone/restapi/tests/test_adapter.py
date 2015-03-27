@@ -120,3 +120,17 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.assertFalse(
             'manage_options' in json.loads(ISerializeToJson(self.portal.doc1))
         )
+
+    def test_serialize_to_json_adapter_file(self):
+        self.portal.invokeFactory('File', id='file1', title='File 1')
+        self.assertEqual(
+            '{0}/@@download'.format(self.portal.file1.absolute_url()),
+            json.loads(ISerializeToJson(self.portal.file1)).get('download')
+        )
+
+    def test_serialize_to_json_adapter_image(self):
+        self.portal.invokeFactory('Image', id='image1', title='Image 1')
+        self.assertEqual(
+            '{0}/@@download'.format(self.portal.image1.absolute_url()),
+            json.loads(ISerializeToJson(self.portal.image1)).get('download')
+        )
