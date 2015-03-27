@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import unittest2 as unittest
-from plone.restapi.utils import underscore_to_camelcase
+from plone.restapi.utils import append_json_to_links
 from plone.restapi.utils import get_object_schema
+from plone.restapi.utils import underscore_to_camelcase
 from plone.restapi.testing import\
     PLONE_RESTAPI_INTEGRATION_TESTING
 from plone.app.testing import setRoles
@@ -84,3 +85,27 @@ class UnderscoreToCamelcaseUnitTest(unittest.TestCase):
 
     def test_two_simple_terms(self):
         self.assertEqual(underscore_to_camelcase('lorem_ipsum'), 'LoremIpsum')
+
+
+class AppendJsonToLinksUnitTest(unittest.TestCase):
+
+    def test_empty(self):
+        self.assertEqual([], append_json_to_links([]))
+
+    def test_append_json_to_id(self):
+        self.assertEqual(
+            [{'@id': 'http://foo.com/@@json'}],
+            append_json_to_links([{'@id': 'http://foo.com'}])
+        )
+
+    def test_append_json_to_parent(self):
+        self.assertEqual(
+            [{'parent': 'http://foo.com/@@json'}],
+            append_json_to_links([{'parent': 'http://foo.com'}])
+        )
+
+    def test_append_json_to_member_ids(self):
+        self.assertEqual(
+            [{'member': [{'@id': 'http://foo.com/@@json'}]}],
+            append_json_to_links([{'member': [{'@id': 'http://foo.com'}]}])
+        )
