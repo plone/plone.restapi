@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.interfaces import IFolderish
+from Products.CMFCore.interfaces import IPropertiesTool
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 
 from plone.app.textfield import RichText
@@ -12,6 +13,7 @@ from plone.restapi.interfaces import ISerializeToJson
 from zope.schema import Datetime
 from zope.interface import implementer
 from zope.component import adapter
+from zope.component import getUtility
 
 import json
 
@@ -104,6 +106,9 @@ def SerializeFileToJson(context):
 @implementer(ISerializeToJson)
 @adapter(IImage)
 def SerializeImageToJson(context):
+    ptool = getUtility(IPropertiesTool)
+    image_properties = ptool.imaging_properties
+    allowed_sizes = image_properties.getProperty('allowed_sizes')
     result = {
         "@context": "http://www.w3.org/ns/hydra/context.jsonld",
         "@id": context.absolute_url(),
@@ -112,5 +117,11 @@ def SerializeImageToJson(context):
         'title': context.title,
         'description': context.description,
         'download': '{0}/@@download'.format(context.absolute_url()),
+        'versions': [
+            '{0}/@@images/image/{1}'.format(
+                context.absolute_url(),
+                x.split(' ')[0]
+            ) for x in allowed_sizes
+        ]
     }
     return json.dumps(result, indent=2, sort_keys=True)
