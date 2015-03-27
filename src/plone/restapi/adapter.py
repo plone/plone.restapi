@@ -5,11 +5,13 @@ from Products.CMFCore.interfaces import IPropertiesTool
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 
 from plone.app.textfield import RichText
+from plone.app.contenttypes.interfaces import ICollection
 from plone.app.contenttypes.interfaces import IFile
 from plone.app.contenttypes.interfaces import IImage
 from plone.restapi.utils import get_object_schema
 from plone.restapi.interfaces import ISerializeToJson
 
+from zope.site.hooks import getSite
 from zope.schema import Datetime
 from zope.interface import implementer
 from zope.component import adapter
@@ -55,6 +57,20 @@ def SerializeToJson(context):
                 'description': member.description
             }
             for member_id, member in context.objectItems()
+        ]
+    elif ICollection.providedBy(context):
+        result['@type'] = 'Collection'
+        portal = getSite()
+        result['member'] = [
+            {
+                '@id': '{0}/{1}/@@json'.format(
+                    portal.absolute_url(),
+                    '/'.join(member.getPhysicalPath())
+                ),
+                'title': member.title,
+                'description': member.description
+            }
+            for member in context.results()
         ]
     else:
         result['@type'] = 'Resource'

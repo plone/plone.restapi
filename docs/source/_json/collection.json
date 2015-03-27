@@ -1,7 +1,7 @@
 {
   "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone/collection", 
-  "@type": "Resource", 
+  "@type": "Collection", 
   "contributors": [], 
   "creators": [
     "test_user_1_"
@@ -15,11 +15,28 @@
   "item_count": "30", 
   "language": "", 
   "limit": "1000", 
+  "member": [
+    {
+      "@id": "http://localhost:55001/plone/front-page/@@json", 
+      "description": "Congratulations! You have successfully installed Plone.", 
+      "title": "Welcome to Plone"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/doc1/@@json", 
+      "description": "", 
+      "title": "Document 1"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/doc2/@@json", 
+      "description": "", 
+      "title": "Document 2"
+    }
+  ], 
   "meta_type": "Dexterity Item", 
   "portal_type": "Collection", 
   "query": [
     {
-      "i": "Type", 
+      "i": "portal_type", 
       "o": "plone.app.querystring.operation.string.is", 
       "v": "Document"
     }

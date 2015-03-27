@@ -173,7 +173,7 @@ class TestTraversal(unittest.TestCase):
         self.portal.collection.description = \
             u'This is a collection with two documents'
         self.portal.collection.query = [{
-            'i': 'Type',
+            'i': 'portal_type',
             'o': 'plone.app.querystring.operation.string.is',
             'v': 'Document',
         }]

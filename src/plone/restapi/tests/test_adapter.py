@@ -134,3 +134,48 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             '{0}/@@download'.format(self.portal.image1.absolute_url()),
             json.loads(ISerializeToJson(self.portal.image1)).get('download')
         )
+
+    def test_serialize_to_json_collection(self):
+        self.portal.invokeFactory('Collection', id='collection1')
+        self.portal.collection1.title = 'My Collection'
+        self.portal.collection1.description = \
+            u'This is a collection with two documents'
+        self.portal.collection1.query = [{
+            'i': 'portal_type',
+            'o': 'plone.app.querystring.operation.string.is',
+            'v': 'Document',
+        }]
+        self.portal.invokeFactory(
+            'Document',
+            id='doc2',
+            title='Document 2'
+        )
+        self.portal.doc1.reindexObject()
+        self.portal.doc2.reindexObject()
+        self.assertEqual(
+            u'Collection',
+            json.loads(ISerializeToJson(self.portal.collection1)).get('@type')
+        )
+        self.assertEqual(
+            u'Collection',
+            json.loads(
+                ISerializeToJson(self.portal.collection1)
+            ).get('portal_type')
+        )
+        self.assertEqual(
+            [
+                {
+                    u'@id': self.portal.doc1.absolute_url() + '/@@json',
+                    u'description': u'',
+                    u'title': u'Document 1'
+                },
+                {
+                    u'@id': self.portal.doc2.absolute_url() + '/@@json',
+                    u'description': u'',
+                    u'title': u'Document 2'
+                }
+            ],
+            json.loads(
+                ISerializeToJson(self.portal.collection1)
+            ).get('member')
+        )
