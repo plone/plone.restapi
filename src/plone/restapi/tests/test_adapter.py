@@ -93,6 +93,28 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             ]
         )
 
+    def test_serialize_to_json_adapter_returns_parent(self):
+        self.assertTrue(
+            json.loads(ISerializeToJson(self.portal.doc1)).get('parent'),
+            'The parent attribute should be present.'
+        )
+        self.assertEqual(
+            json.loads(ISerializeToJson(self.portal.doc1))['parent'],
+            self.portal_url
+        )
+
+    def test_serialize_to_json_adapter_does_not_returns_parent_on_root(self):
+        self.assertEqual(
+            json.loads(ISerializeToJson(self.portal)).get('parent'),
+            None,
+            'The parent attribute should be present, even on portal root.'
+        )
+        self.assertEqual(
+            self.portal_url,
+            json.loads(ISerializeToJson(self.portal.doc1))['parent'],
+            'The parent attribute on portal root should be None'
+        )
+
     def test_serialize_to_json_adapter_returns_portal_type(self):
         self.assertTrue(
             json.loads(ISerializeToJson(self.portal.doc1)).get('portal_type'),

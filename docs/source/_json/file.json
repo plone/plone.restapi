@@ -4,6 +4,7 @@
   "@type": "Resource", 
   "description": "This is a file", 
   "download": "http://localhost:55001/plone/file/@@download", 
+  "parent": "http://localhost:55001/plone", 
   "portal_type": "File", 
   "title": "My File"
 }

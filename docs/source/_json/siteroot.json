@@ -14,5 +14,6 @@
       "title": "Welcome to Plone"
     }
   ], 
+  "parent": null, 
   "portal_type": "SiteRoot"
 }

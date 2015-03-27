@@ -14,6 +14,7 @@
   "isPrincipiaFolderish": "0", 
   "language": "", 
   "meta_type": "Dexterity Item", 
+  "parent": "http://localhost:55001/plone", 
   "portal_type": "News Item", 
   "relatedItems": [], 
   "rights": "", 

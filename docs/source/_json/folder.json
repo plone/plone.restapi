@@ -29,6 +29,7 @@
   "meta_type": "Dexterity Container", 
   "meta_types": [], 
   "nextPreviousEnabled": "False", 
+  "parent": "http://localhost:55001/plone", 
   "portal_type": "Folder", 
   "relatedItems": [], 
   "rights": "", 
