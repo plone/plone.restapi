@@ -6,7 +6,7 @@
   "creators": [
     "test_user_1_"
   ], 
-  "description": "A news item", 
+  "description": "This is a news item", 
   "effective": "1969-12-31T00:00:00+01:00", 
   "exclude_from_nav": "False", 
   "expires": "2499-12-31T00:00:00+01:00", 
@@ -18,5 +18,5 @@
   "relatedItems": [], 
   "rights": "", 
   "text": "<p>Lorem ipsum</p>", 
-  "title": "News"
+  "title": "My News Item"
 }

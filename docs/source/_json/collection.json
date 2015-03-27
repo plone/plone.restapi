@@ -6,7 +6,7 @@
   "creators": [
     "test_user_1_"
   ], 
-  "description": "A collection", 
+  "description": "This is a collection with two documents", 
   "effective": "1969-12-31T00:00:00+01:00", 
   "exclude_from_nav": "False", 
   "expires": "2499-12-31T00:00:00+01:00", 
@@ -17,7 +17,14 @@
   "limit": "1000", 
   "meta_type": "Dexterity Item", 
   "portal_type": "Collection", 
+  "query": [
+    {
+      "i": "Type", 
+      "o": "plone.app.querystring.operation.string.is", 
+      "v": "Document"
+    }
+  ], 
   "relatedItems": [], 
   "rights": "", 
-  "title": "Collection"
+  "title": "My Collection"
 }

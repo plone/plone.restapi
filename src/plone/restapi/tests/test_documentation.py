@@ -67,8 +67,8 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_news_item(self):
         self.portal.invokeFactory('News Item', id='newsitem')
-        self.portal.newsitem.title = 'News'
-        self.portal.newsitem.description = u'A news item'
+        self.portal.newsitem.title = 'My News Item'
+        self.portal.newsitem.description = u'This is a news item'
         self.portal.newsitem.text = RichTextValue(
             u"Lorem ipsum",
             'text/plain',
@@ -85,8 +85,8 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_link(self):
         self.portal.invokeFactory('Link', id='link')
-        self.portal.link.title = 'Link'
-        self.portal.link.description = u'A link'
+        self.portal.link.title = 'My Link'
+        self.portal.link.description = u'This is a link'
         self.portal.remoteUrl = 'http://plone.org'
         import transaction
         transaction.commit()
@@ -99,8 +99,8 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_file(self):
         self.portal.invokeFactory('File', id='file')
-        self.portal.file.title = 'File'
-        self.portal.file.description = u'A file'
+        self.portal.file.title = 'My File'
+        self.portal.file.description = u'This is a file'
         pdf_file = os.path.join(
             os.path.dirname(__file__), u'file.pdf'
         )
@@ -125,8 +125,8 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_image(self):
         self.portal.invokeFactory('Image', id='image')
-        self.portal.image.title = 'Image'
-        self.portal.image.description = u'An image'
+        self.portal.image.title = 'My Image'
+        self.portal.image.description = u'This is an image'
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
         self.portal.image.image = NamedBlobImage(
             data=open(image_file, 'r').read(),
@@ -146,8 +146,18 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_folder(self):
         self.portal.invokeFactory('Folder', id='folder')
-        self.portal.folder.title = 'Folder'
-        self.portal.folder.description = u'A folder'
+        self.portal.folder.title = 'My Folder'
+        self.portal.folder.description = u'This is a folder with two documents'
+        self.portal.folder.invokeFactory(
+            'Document',
+            id='doc1',
+            title='A document within a folder'
+        )
+        self.portal.folder.invokeFactory(
+            'Document',
+            id='doc2',
+            title='A document within a folder'
+        )
         import transaction
         transaction.commit()
         response = requests.get(
@@ -159,8 +169,24 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_collection(self):
         self.portal.invokeFactory('Collection', id='collection')
-        self.portal.collection.title = 'Collection'
-        self.portal.collection.description = u'A collection'
+        self.portal.collection.title = 'My Collection'
+        self.portal.collection.description = \
+            u'This is a collection with two documents'
+        self.portal.collection.query = [{
+            'i': 'Type',
+            'o': 'plone.app.querystring.operation.string.is',
+            'v': 'Document',
+        }]
+        self.portal.invokeFactory(
+            'Document',
+            id='doc1',
+            title='Document 1'
+        )
+        self.portal.invokeFactory(
+            'Document',
+            id='doc2',
+            title='Document 2'
+        )
         import transaction
         transaction.commit()
         response = requests.get(

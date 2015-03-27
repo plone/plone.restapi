@@ -2,8 +2,8 @@
   "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone/file", 
   "@type": "Resource", 
-  "description": "A file", 
+  "description": "This is a file", 
   "download": "http://localhost:55001/plone/file/@@download", 
   "portal_type": "File", 
-  "title": "File"
+  "title": "My File"
 }

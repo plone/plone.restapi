@@ -6,7 +6,7 @@
   "creators": [
     "test_user_1_"
   ], 
-  "description": "A link", 
+  "description": "This is a link", 
   "effective": "1969-12-31T00:00:00+01:00", 
   "exclude_from_nav": "False", 
   "expires": "2499-12-31T00:00:00+01:00", 
@@ -17,5 +17,5 @@
   "portal_type": "Link", 
   "remoteUrl": "http://", 
   "rights": "", 
-  "title": "Link"
+  "title": "My Link"
 }

@@ -6,7 +6,7 @@
   "creators": [
     "test_user_1_"
   ], 
-  "description": "A folder", 
+  "description": "This is a folder with two documents", 
   "effective": "1969-12-31T00:00:00+01:00", 
   "exclude_from_nav": "False", 
   "expires": "2499-12-31T00:00:00+01:00", 
@@ -14,12 +14,23 @@
   "isAnObjectManager": "1", 
   "isPrincipiaFolderish": "1", 
   "language": "", 
-  "member": [], 
+  "member": [
+    {
+      "@id": "http://localhost:55001/plone/folder/doc1/@@json", 
+      "description": "", 
+      "title": "A document within a folder"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/folder/doc2/@@json", 
+      "description": "", 
+      "title": "A document within a folder"
+    }
+  ], 
   "meta_type": "Dexterity Container", 
   "meta_types": [], 
   "nextPreviousEnabled": "False", 
   "portal_type": "Folder", 
   "relatedItems": [], 
   "rights": "", 
-  "title": "Folder"
+  "title": "My Folder"
 }
