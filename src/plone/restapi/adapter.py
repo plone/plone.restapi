@@ -24,8 +24,8 @@ import json
 @adapter(IPloneSiteRoot)
 def SerializeSiteRootToJson(context):
     result = {
-        "@context": "http://www.w3.org/ns/hydra/context.jsonld",
-        "@id": context.absolute_url(),
+        '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
+        '@id': context.absolute_url(),
         '@type': 'Collection',
         'portal_type': 'SiteRoot'
     }
@@ -45,8 +45,8 @@ def SerializeSiteRootToJson(context):
 @adapter(IContentish)
 def SerializeToJson(context):
     result = {
-        "@context": "http://www.w3.org/ns/hydra/context.jsonld",
-        "@id": context.absolute_url(),
+        '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
+        '@id': context.absolute_url(),
     }
     if IFolderish.providedBy(context):
         result['@type'] = 'Collection'
@@ -108,8 +108,8 @@ def SerializeToJson(context):
 @adapter(IFile)
 def SerializeFileToJson(context):
     result = {
-        "@context": "http://www.w3.org/ns/hydra/context.jsonld",
-        "@id": context.absolute_url(),
+        '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
+        '@id': context.absolute_url(),
         '@type': 'Resource',
         'portal_type': 'File',
         'title': context.title,
@@ -126,8 +126,8 @@ def SerializeImageToJson(context):
     image_properties = ptool.imaging_properties
     allowed_sizes = image_properties.getProperty('allowed_sizes')
     result = {
-        "@context": "http://www.w3.org/ns/hydra/context.jsonld",
-        "@id": context.absolute_url(),
+        '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
+        '@id': context.absolute_url(),
         '@type': 'Resource',
         'portal_type': 'Image',
         'title': context.title,
