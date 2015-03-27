@@ -10,6 +10,7 @@ from plone.app.textfield import RichText
 from plone.app.contenttypes.interfaces import ICollection
 from plone.app.contenttypes.interfaces import IFile
 from plone.app.contenttypes.interfaces import IImage
+from plone.restapi.utils import append_json_to_links
 from plone.restapi.utils import get_object_schema
 from plone.restapi.interfaces import ISerializeToJson
 
@@ -34,13 +35,16 @@ def SerializeSiteRootToJson(context):
     }
     result['member'] = [
         {
-            '@id': member.absolute_url() + '/@@json',
+            '@id': member.absolute_url(),
             'title': member.title,
             'description': member.description
         }
         for member_id, member in context.objectItems()
         if IContentish.providedBy(member)
     ]
+    if getattr(context, 'request', False):
+        if context.request.get('append_json_to_hyperlinks', False):
+            result = append_json_to_links(result)
     return json.dumps(result, indent=2, sort_keys=True)
 
 
@@ -56,7 +60,7 @@ def SerializeToJson(context):
         result['@type'] = 'Collection'
         result['member'] = [
             {
-                '@id': member.absolute_url() + '/@@json',
+                '@id': member.absolute_url(),
                 'title': member.title,
                 'description': member.description
             }
@@ -105,6 +109,9 @@ def SerializeToJson(context):
                 result[title] = value
             else:
                 result[title] = str(value)
+    if getattr(context, 'request', False):
+        if context.request.get('append_json_to_hyperlinks', False):
+            result = append_json_to_links(result)
     return json.dumps(result, indent=2, sort_keys=True)
 
 

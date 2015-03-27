@@ -16,12 +16,12 @@
   "language": "", 
   "member": [
     {
-      "@id": "http://localhost:55001/plone/folder/doc1/@@json", 
+      "@id": "http://localhost:55001/plone/folder/doc1", 
       "description": "", 
       "title": "A document within a folder"
     }, 
     {
-      "@id": "http://localhost:55001/plone/folder/doc2/@@json", 
+      "@id": "http://localhost:55001/plone/folder/doc2", 
       "description": "", 
       "title": "A document within a folder"
     }

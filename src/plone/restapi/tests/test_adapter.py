@@ -86,7 +86,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             json.loads(ISerializeToJson(self.portal.folder1))['member'],
             [
                 {
-                    u'@id': u'http://nohost/plone/folder1/doc1/@@json',
+                    u'@id': u'http://nohost/plone/folder1/doc1',
                     u'description': u'This is a document',
                     u'title': u'Document 1'
                 }

@@ -48,7 +48,7 @@ class TestTraversal(unittest.TestCase):
         self.assertTrue(json.loads(self.browser.contents))
         self.assertEqual(
             json.loads(self.browser.contents).get('@id'),
-            self.document_url
+            self.document_url + '/@@json'
         )
 
     def test_json_view_folder_traversal(self):
@@ -56,7 +56,7 @@ class TestTraversal(unittest.TestCase):
         self.assertTrue(json.loads(self.browser.contents))
         self.assertEqual(
             json.loads(self.browser.contents).get('@id'),
-            self.folder_url
+            self.folder_url + '/@@json'
         )
 
     def test_json_view_site_root_traversal(self):
@@ -64,7 +64,7 @@ class TestTraversal(unittest.TestCase):
         self.assertTrue(json.loads(self.browser.contents))
         self.assertEqual(
             json.loads(self.browser.contents).get('@id'),
-            self.portal_url
+            self.portal_url + '/@@json'
         )
 
     def test_document_traversal(self):

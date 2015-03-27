@@ -90,22 +90,22 @@ class UnderscoreToCamelcaseUnitTest(unittest.TestCase):
 class AppendJsonToLinksUnitTest(unittest.TestCase):
 
     def test_empty(self):
-        self.assertEqual([], append_json_to_links([]))
+        self.assertEqual({}, append_json_to_links({}))
 
     def test_append_json_to_id(self):
         self.assertEqual(
-            [{'@id': 'http://foo.com/@@json'}],
-            append_json_to_links([{'@id': 'http://foo.com'}])
+            {'@id': 'http://foo.com/@@json'},
+            append_json_to_links({'@id': 'http://foo.com'})
         )
 
     def test_append_json_to_parent(self):
         self.assertEqual(
-            [{'parent': 'http://foo.com/@@json'}],
-            append_json_to_links([{'parent': 'http://foo.com'}])
+            {'parent': 'http://foo.com/@@json'},
+            append_json_to_links({'parent': 'http://foo.com'})
         )
 
     def test_append_json_to_member_ids(self):
         self.assertEqual(
-            [{'member': [{'@id': 'http://foo.com/@@json'}]}],
-            append_json_to_links([{'member': [{'@id': 'http://foo.com'}]}])
+            {'member': [{'@id': 'http://foo.com/@@json'}]},
+            append_json_to_links({'member': [{'@id': 'http://foo.com'}]})
         )

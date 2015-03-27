@@ -43,16 +43,15 @@ def underscore_to_camelcase(underscore_string):
 def append_json_to_links(result):
     """
     """
-    for index, item in enumerate(result):
-        if '@id' in item:
-            result[index]['@id'] = '{0}/@@json'.format(item['@id'])
-        if 'parent' in item:
-            result[index]['parent'] = '{0}/@@json'.format(item['parent'])
-        if 'member' in item:
-            for mem_index, mem in enumerate(item['member']):
-                if '@id' in mem:
-                    result[index]['member'][mem_index]['@id'] = \
-                        '{0}/@@json'.format(
-                            result[index]['member'][mem_index]['@id']
-                        )
+    if '@id' in result:
+        result['@id'] = '{0}/@@json'.format(result['@id'])
+    if 'parent' in result:
+        result['parent'] = '{0}/@@json'.format(result['parent'])
+    if 'member' in result:
+        for index, item in enumerate(result['member']):
+            if '@id' in item:
+                result['member'][index]['@id'] = \
+                    '{0}/@@json'.format(
+                        result['member'][index]['@id']
+                    )
     return result

@@ -28,6 +28,7 @@ class MarkAsApiRequest(SimpleItem):
     implements(IPublishTraverse)
 
     def publishTraverse(self, request, name):
+        self.request.set('append_json_to_hyperlinks', True)
         alsoProvides(self.request, IAPIRequest)
         return self.context
 
