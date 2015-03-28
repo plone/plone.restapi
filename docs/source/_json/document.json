@@ -14,7 +14,11 @@
   "isPrincipiaFolderish": "0", 
   "language": "", 
   "meta_type": "Dexterity Item", 
-  "parent": "http://localhost:55001/plone", 
+  "parent": {
+    "@id": "http://localhost:55001/plone", 
+    "description": "", 
+    "title": "Plone site"
+  }, 
   "portal_type": "Document", 
   "relatedItems": [], 
   "rights": "", 

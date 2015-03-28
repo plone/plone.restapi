@@ -30,7 +30,7 @@ def SerializeSiteRootToJson(context):
         '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
         '@id': context.absolute_url(),
         '@type': 'Collection',
-        'parent': None,
+        'parent': {},
         'portal_type': 'SiteRoot'
     }
     result['member'] = [
@@ -54,7 +54,11 @@ def SerializeToJson(context):
     result = {
         '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
         '@id': context.absolute_url(),
-        'parent': aq_parent(aq_inner(context)).absolute_url(),
+        'parent': {
+            '@id': aq_parent(aq_inner(context)).absolute_url(),
+            'title': aq_parent(aq_inner(context)).title,
+            'description': aq_parent(aq_inner(context)).description
+        }
     }
     if IFolderish.providedBy(context):
         result['@type'] = 'Collection'
@@ -122,7 +126,11 @@ def SerializeFileToJson(context):
         '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
         '@id': context.absolute_url(),
         '@type': 'Resource',
-        'parent': aq_parent(aq_inner(context)).absolute_url(),
+        'parent': {
+            '@id': aq_parent(aq_inner(context)).absolute_url(),
+            'title': aq_parent(aq_inner(context)).title,
+            'description': aq_parent(aq_inner(context)).description
+        },
         'portal_type': 'File',
         'title': context.title,
         'description': context.description,
@@ -141,7 +149,11 @@ def SerializeImageToJson(context):
         '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
         '@id': context.absolute_url(),
         '@type': 'Resource',
-        'parent': aq_parent(aq_inner(context)).absolute_url(),
+        'parent': {
+            '@id': aq_parent(aq_inner(context)).absolute_url(),
+            'title': aq_parent(aq_inner(context)).title,
+            'description': aq_parent(aq_inner(context)).description
+        },
         'portal_type': 'Image',
         'title': context.title,
         'description': context.description,

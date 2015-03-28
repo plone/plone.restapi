@@ -98,14 +98,14 @@ class AppendJsonToLinksUnitTest(unittest.TestCase):
             append_json_to_links({'@id': 'http://foo.com'})
         )
 
-    def test_append_json_to_parent(self):
-        self.assertEqual(
-            {'parent': 'http://foo.com/@@json'},
-            append_json_to_links({'parent': 'http://foo.com'})
-        )
-
     def test_append_json_to_member_ids(self):
         self.assertEqual(
             {'member': [{'@id': 'http://foo.com/@@json'}]},
             append_json_to_links({'member': [{'@id': 'http://foo.com'}]})
+        )
+
+    def test_append_json_to_parent_ids(self):
+        self.assertEqual(
+            {'parent': {'@id': 'http://foo.com/@@json'}},
+            append_json_to_links({'parent': {'@id': 'http://foo.com'}})
         )
