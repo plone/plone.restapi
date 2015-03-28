@@ -158,11 +158,11 @@ def SerializeImageToJson(context):
         'title': context.title,
         'description': context.description,
         'download': '{0}/@@download'.format(context.absolute_url()),
-        'versions': [
-            '{0}/@@images/image/{1}'.format(
+        'versions': {
+            x.split(' ')[0]: '{0}/@@images/image/{1}'.format(
                 context.absolute_url(),
                 x.split(' ')[0]
             ) for x in allowed_sizes
-        ]
+        }
     }
     return json.dumps(result, indent=2, sort_keys=True)

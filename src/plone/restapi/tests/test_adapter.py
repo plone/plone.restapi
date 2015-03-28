@@ -164,6 +164,10 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             '{0}/@@download'.format(self.portal.image1.absolute_url()),
             json.loads(ISerializeToJson(self.portal.image1)).get('download')
         )
+        self.assertEqual(
+            [u'mini', u'thumb', u'large', u'listing', u'tile', u'preview', u'icon'],  # noqa
+            [x for x in json.loads(ISerializeToJson(self.portal.image1)).get('versions')]  # noqa
+        )
 
     def test_serialize_to_json_collection(self):
         self.portal.invokeFactory('Collection', id='collection1')
