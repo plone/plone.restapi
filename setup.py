@@ -15,7 +15,7 @@ long_description = (
 
 setup(name='plone.restapi',
       version=version,
-      description="RESTful API for Plone",
+      description="plone.restapi is a RESTful hypermedia API for Plone.",
       long_description=long_description,
       # Get more strings from
       # http://pypi.python.org/pypi?%3Aaction=list_classifiers
@@ -24,7 +24,7 @@ setup(name='plone.restapi',
           "Framework :: Plone",
           "Operating System :: OS Independent",
           "Programming Language :: Python",
-          "Programming Language :: Python :: 2.6",
+          "Programming Language :: Python :: 2.7",
           "Topic :: Software Development :: Libraries :: Python Modules",
       ],
       keywords='',
@@ -51,6 +51,4 @@ setup(name='plone.restapi',
       [z3c.autoinclude.plugin]
       target = plone
       """,
-      setup_requires=["PasteScript"],
-      paster_plugins=["templer.localcommands"],
       )

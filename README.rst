@@ -12,6 +12,7 @@ Introduction
 .. image:: https://readthedocs.org/projects/pip/badge/
     :target: https://plonerestapi.readthedocs.org
 
+plone.restapi is a RESTful hypermedia API for Plone.
 
 Documentation
 =============
