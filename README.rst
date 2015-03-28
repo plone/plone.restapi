@@ -14,7 +14,7 @@ Introduction
 
 plone.restapi is a RESTful hypermedia API for Plone.
 
-RESTful and Hypermedia
+RESTful Hypermedia API
 ----------------------
 
 REST stands for `Representational State Transfer`_. It is a software architectural principle to create loosly coupled web APIs.
