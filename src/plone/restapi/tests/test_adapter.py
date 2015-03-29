@@ -166,7 +166,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         )
         self.assertEqual(
             [u'mini', u'thumb', u'large', u'listing', u'tile', u'preview', u'icon'],  # noqa
-            [x for x in json.loads(ISerializeToJson(self.portal.image1)).get('versions')]  # noqa
+            [x for x in json.loads(ISerializeToJson(self.portal.image1)).get('scales')]  # noqa
         )
 
     def test_serialize_to_json_collection(self):
