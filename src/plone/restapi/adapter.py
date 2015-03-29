@@ -115,9 +115,9 @@ def SerializeToJson(context):
                 result[title] = value
             # Image
             elif isinstance(value, NamedBlobImage):
-                result[title] = '{0}/{1}'.format(
+                result[title] = '{0}/@@images/{1}'.format(
                     context.absolute_url(),
-                    value.filename
+                    title
                 )
             # File
             elif isinstance(value, NamedBlobFile):

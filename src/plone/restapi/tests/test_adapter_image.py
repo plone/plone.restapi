@@ -52,6 +52,6 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.portal.imagedoc1.image_caption = u'This is an image caption.'
 
         self.assertEqual(
-            u'http://nohost/plone/imagedoc1/image.png',
+            u'http://nohost/plone/imagedoc1/@@images/image',
             json.loads(ISerializeToJson(self.portal.imagedoc1)).get('image')
         )

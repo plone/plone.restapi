@@ -116,7 +116,7 @@ class TestTraversal(unittest.TestCase):
             response.json()['image_caption']
         )
         self.assertEqual(
-            u'http://localhost:55001/plone/news1/image.png',
+            u'http://localhost:55001/plone/news1/@@images/image',
             response.json()['image']
         )
 
