@@ -7,9 +7,9 @@
     "test_user_1_"
   ], 
   "description": "This is a folder with two documents", 
-  "effective": "1969-12-31T00:00:00+01:00", 
+  "effective": "1969-12-31T00:00:00+02:00", 
   "exclude_from_nav": "False", 
-  "expires": "2499-12-31T00:00:00+01:00", 
+  "expires": "2499-12-31T00:00:00+02:00", 
   "icon": "++resource++plone.dexterity.item.gif", 
   "isAnObjectManager": "1", 
   "isPrincipiaFolderish": "1", 

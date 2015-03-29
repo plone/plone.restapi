@@ -87,6 +87,13 @@ class TestTraversal(unittest.TestCase):
 
     def test_news_item_traversal(self):
         self.portal.invokeFactory('News Item', id='news1')
+        image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        self.portal.news1.image = NamedBlobImage(
+            data=open(image_file, 'r').read(),
+            contentType='image/png',
+            filename=u'image.png'
+        )
+        self.portal.news1.image_caption = u'This is an image caption.'
         transaction.commit()
         response = requests.get(
             self.portal.news1.absolute_url(),
@@ -103,6 +110,14 @@ class TestTraversal(unittest.TestCase):
         self.assertEqual(
             response.json()['@id'],
             self.portal.news1.absolute_url()
+        )
+        self.assertEqual(
+            u'This is an image caption.',
+            response.json()['image_caption']
+        )
+        self.assertEqual(
+            u'http://localhost:55001/plone/news1/image.png',
+            response.json()['image']
         )
 
     def test_folder_traversal(self):

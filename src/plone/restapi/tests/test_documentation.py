@@ -74,6 +74,13 @@ class TestTraversal(unittest.TestCase):
             'text/plain',
             'text/html'
         )
+        image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        self.portal.newsitem.image = NamedBlobImage(
+            data=open(image_file, 'r').read(),
+            contentType='image/png',
+            filename=u'image.png'
+        )
+        self.portal.newsitem.image_caption = u'This is an image caption.'
         import transaction
         transaction.commit()
         response = requests.get(

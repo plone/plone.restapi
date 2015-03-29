@@ -10,6 +10,7 @@ from plone.app.textfield import RichText
 from plone.app.contenttypes.interfaces import ICollection
 from plone.app.contenttypes.interfaces import IFile
 from plone.app.contenttypes.interfaces import IImage
+from plone.namedfile.file import NamedBlobImage
 from plone.restapi.utils import append_json_to_links
 from plone.restapi.utils import get_object_schema
 from plone.restapi.interfaces import ISerializeToJson
@@ -111,6 +112,12 @@ def SerializeToJson(context):
             # Unicode
             elif isinstance(value, unicode):
                 result[title] = value
+            # Image
+            elif isinstance(value, NamedBlobImage):
+                result[title] = '{0}/{1}'.format(
+                    context.absolute_url(),
+                    value.filename
+                )
             else:
                 result[title] = str(value)
     if getattr(context, 'request', False):
