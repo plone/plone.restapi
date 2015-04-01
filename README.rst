@@ -17,7 +17,7 @@ plone.restapi is a RESTful hypermedia API for Plone.
 RESTful Hypermedia API
 ----------------------
 
-REST stands for `Representational State Transfer`_. It is a software architectural principle to create loosly coupled web APIs.
+REST stands for `Representational State Transfer`_. It is a software architectural principle to create loosely coupled web APIs.
 
 Most web APIs have a tight coupling between client and server. This makes them brittle and hard to change over time. It requires them not only to fully document every small detail of the API, but also write a client implementation that follows that specification 100% and breaks as soon as you change any detail.
 
