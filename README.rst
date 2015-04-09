@@ -30,6 +30,12 @@ Documentation
 http://plonerestapi.readthedocs.org
 
 
+Roadmap
+=======
+
+https://github.com/plone/plone.restapi/milestones
+
+
 Live Demo
 =========
 
