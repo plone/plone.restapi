@@ -1,0 +1,143 @@
+People
+------
+
+- Laurence
+- Ramon
+- Timo
+
+
+Objects
+-------
+
+GET /plone
+x-frame object
+x-version 1.0
+accept application/json
+-----------------------
+
+{
+    @context
+    @id
+    @type
+    __parent__
+
+    title
+    description
+    text
+    -> dexterity schema + behaviour schema
+}
+
+-> full URLs vs. relative URLs
+
+children (parent <-> children)
+items (items <-> container)
+contents (items <-> container)
+
+__children__: [
+    {
+        @type: 'Image'
+    },
+    {
+        @type: 'Document'
+    }
+]
+
+(children attributes might change dependent on the type)
+
+Framing
+-------
+
+- object (minimal, default)
+- folder_listing
+- folder_full_view
+- ...
+
+File
+----
+
+{
+    contentType:
+    size (kb)
+    data/download
+    filename
+}
+
+Image
+-----
+
+{
+    contentType
+    size
+    data/download
+    filename
+    scale: {
+        'mini': {
+            href: ...
+            width: 400,
+            height: 200,
+        }
+    }
+}
+
+
+Batching
+--------
+
+{
+    @type:
+    total_items: 42,
+    items: [],
+    batch_actions: [
+        {
+            'name': 'previous',
+            'title': 'Previous',
+            url: 'http://...'
+        },
+        {
+            'name': 'next',
+            'title': 'Next',
+            url: 'http://...'
+        },
+        {
+            'name': 'first',
+            'title': 'First',
+            url: 'http://...'
+        },
+        {
+            'name': 'last',
+            'title': 'Last',
+            url: 'http://...'
+        }
+    ]
+
+
+Search
+------
+
+{
+    @type: PortalRoot,
+    global_actions: [
+        'name': 'search',
+        'title': 'search',
+        'href': 'http://nohost/search',
+        'schema': our own search schema (schema.org)
+    ]
+}
+
+
+json schema
+-----------
+
+- ietf draft
+
+- PYTHON: pythonjsonschema (laurence has a branch to work better with colander, default field)
+- JAVASCRIPT: jsonschema
+
+
+Documentation
+-------------
+
+- sphinx directive (sphinx-robotframework)
+- readthedocs (won't work)
+- copy-paste of examples is important
+
