@@ -42,4 +42,16 @@ Live Demo
 http://arcane-sierra-8467.herokuapp.com/Plone/@@json
 
 
+Design Decisions
+================
+
+* RESTful API
+* Hypermedia / HATEOAS / Linked-data
+* Use JSON as main format, support other formats (HTML, XML) later
+* Use HTTP headers (to set format and versioning, also provide URL-based option to make it easier for people to try it out)
+* Versioning should be included (we will decide later, if we actually want to support multiple versions at the same time)
+* Field names just map over (we will not try to clean up attributes or enforce naming standards like pep8 (e.g. isPrincipiaFoldish -> is_folderish)
+* Dexterity only. We will not put effort into supporting Archetypes.
+
+
 .. _`Representational State Transfer`: http://en.wikipedia.org/wiki/Representational_state_transfer
