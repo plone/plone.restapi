@@ -1,7 +1,7 @@
 {
   "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone/newsitem", 
-  "@type": "Resource", 
+  "@type": "News Item", 
   "contributors": [], 
   "creators": [
     "test_user_1_"
@@ -21,7 +21,6 @@
     "description": "", 
     "title": "Plone site"
   }, 
-  "portal_type": "News Item", 
   "relatedItems": [], 
   "rights": "", 
   "text": "<p>Lorem ipsum</p>", 

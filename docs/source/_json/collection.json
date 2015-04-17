@@ -38,7 +38,6 @@
     "description": "", 
     "title": "Plone site"
   }, 
-  "portal_type": "Collection", 
   "query": [
     {
       "i": "portal_type", 

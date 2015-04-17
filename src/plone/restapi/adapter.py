@@ -31,9 +31,8 @@ def SerializeSiteRootToJson(context):
     result = {
         '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
         '@id': context.absolute_url(),
-        '@type': 'Collection',
+        '@type': 'SiteRoot',
         'parent': {},
-        'portal_type': 'SiteRoot'
     }
     result['member'] = [
         {
@@ -56,6 +55,7 @@ def SerializeToJson(context):
     result = {
         '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
         '@id': context.absolute_url(),
+        '@type': context.portal_type,
         'parent': {
             '@id': aq_parent(aq_inner(context)).absolute_url(),
             'title': aq_parent(aq_inner(context)).title,
@@ -63,7 +63,6 @@ def SerializeToJson(context):
         }
     }
     if IFolderish.providedBy(context):
-        result['@type'] = 'Collection'
         result['member'] = [
             {
                 '@id': member.absolute_url(),
@@ -72,8 +71,7 @@ def SerializeToJson(context):
             }
             for member_id, member in context.objectItems()
         ]
-    elif ICollection.providedBy(context):
-        result['@type'] = 'Collection'
+    if ICollection.providedBy(context):
         portal = getSite()
         result['member'] = [
             {
@@ -86,8 +84,6 @@ def SerializeToJson(context):
             }
             for member in context.results()
         ]
-    else:
-        result['@type'] = 'Resource'
     for title, schema_object in get_object_schema(context):
         value = getattr(context, title, None)
         if value is not None:
@@ -139,13 +135,12 @@ def SerializeFileToJson(context):
     result = {
         '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
         '@id': context.absolute_url(),
-        '@type': 'Resource',
+        '@type': 'File',
         'parent': {
             '@id': aq_parent(aq_inner(context)).absolute_url(),
             'title': aq_parent(aq_inner(context)).title,
             'description': aq_parent(aq_inner(context)).description
         },
-        'portal_type': 'File',
         'title': context.title,
         'description': context.description,
         'download': '{0}/@@download'.format(context.absolute_url()),
@@ -162,13 +157,12 @@ def SerializeImageToJson(context):
     result = {
         '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
         '@id': context.absolute_url(),
-        '@type': 'Resource',
+        '@type': 'Image',
         'parent': {
             '@id': aq_parent(aq_inner(context)).absolute_url(),
             'title': aq_parent(aq_inner(context)).title,
             'description': aq_parent(aq_inner(context)).description
         },
-        'portal_type': 'Image',
         'title': context.title,
         'description': context.description,
         'download': '{0}/@@download'.format(context.absolute_url()),

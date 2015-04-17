@@ -41,8 +41,7 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
                 'subjects',
                 'creators',
                 'description',
-                'changeNote',
-                'portal_type'
+                'changeNote'
             ]
         )
 
@@ -69,8 +68,7 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
                 'language',
                 'subjects',
                 'creators',
-                'description',
-                'portal_type'
+                'description'
             ]
         )
 

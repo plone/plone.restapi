@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from zope.schema import getFields
-from zope.schema import TextLine
 from zope.interface import providedBy
 from plone.behavior.interfaces import IBehaviorAssignable
 
@@ -27,11 +26,6 @@ def get_object_schema(obj):
                 if name not in object_schema:
                     object_schema.add(name)
                     yield name, field
-
-    # The portal_type is declared in IDexterityFactory and not included in the
-    # interfaces that are provided by the object.
-    # https://github.com/plone/plone.dexterity/blob/master/plone/dexterity/interfaces.py#L94  # noqa
-    yield 'portal_type', TextLine
 
 
 def underscore_to_camelcase(underscore_string):

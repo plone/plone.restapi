@@ -1,7 +1,7 @@
 {
   "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone/link", 
-  "@type": "Resource", 
+  "@type": "Link", 
   "contributors": [], 
   "creators": [
     "test_user_1_"
@@ -19,7 +19,6 @@
     "description": "", 
     "title": "Plone site"
   }, 
-  "portal_type": "Link", 
   "remoteUrl": "http://", 
   "rights": "", 
   "title": "My Link"

@@ -1,7 +1,7 @@
 {
   "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone/image", 
-  "@type": "Resource", 
+  "@type": "Image", 
   "description": "This is an image", 
   "download": "http://localhost:55001/plone/image/@@download", 
   "parent": {
@@ -9,7 +9,6 @@
     "description": "", 
     "title": "Plone site"
   }, 
-  "portal_type": "Image", 
   "scales": {
     "icon": "http://localhost:55001/plone/image/@@images/image/icon", 
     "large": "http://localhost:55001/plone/image/@@images/image/large", 

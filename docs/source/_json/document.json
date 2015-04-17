@@ -1,7 +1,7 @@
 {
   "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone/front-page", 
-  "@type": "Resource", 
+  "@type": "Document", 
   "contributors": [], 
   "creators": [
     "test_user_1_"
@@ -19,7 +19,6 @@
     "description": "", 
     "title": "Plone site"
   }, 
-  "portal_type": "Document", 
   "relatedItems": [], 
   "rights": "", 
   "text": "<p>If you're seeing this instead of the web site you were expecting, the owner of this web site has just installed Plone. Do not contact the Plone Team or the Plone mailing lists about this.</p>", 

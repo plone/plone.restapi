@@ -4,8 +4,7 @@ import unittest2 as unittest
 from plone.restapi.interfaces import ISerializeToJson
 from plone.app.textfield.value import RichTextValue
 
-from plone.restapi.testing import \
-    PLONE_RESTAPI_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_INTEGRATION_TESTING
 from DateTime import DateTime
 
 import json
@@ -21,22 +20,26 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         self.portal.invokeFactory('Document', id='doc1', title='Document 1')
 
-    def test_serialize_to_json_adapter_returns_hydra_context(self):
+    def test_serialize_to_json_adapter_returns_context(self):
         self.assertEqual(
             json.loads(ISerializeToJson(self.portal.doc1))['@context'],
             u'http://www.w3.org/ns/hydra/context.jsonld'
         )
 
-    def test_serialize_to_json_adapter_returns_hydra_id(self):
+    def test_serialize_to_json_adapter_returns_id(self):
         self.assertEqual(
             json.loads(ISerializeToJson(self.portal.doc1))['@id'],
             self.portal_url + '/doc1'
         )
 
-    def test_serialize_to_json_adapter_returns_hydra_type(self):
+    def test_serialize_to_json_adapter_returns_type(self):
+        self.assertTrue(
+            json.loads(ISerializeToJson(self.portal.doc1)).get('@type'),
+            'The @type attribute should be present.'
+        )
         self.assertEqual(
             json.loads(ISerializeToJson(self.portal.doc1))['@type'],
-            u'Resource'
+            u'Document'
         )
 
     def test_serialize_to_json_adapter_returns_title(self):
@@ -123,23 +126,13 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             'The parent attribute on portal root should be None'
         )
 
-    def test_serialize_to_json_adapter_returns_portal_type(self):
+    def test_serialize_to_json_adapter_returns_site_root_type(self):
         self.assertTrue(
-            json.loads(ISerializeToJson(self.portal.doc1)).get('portal_type'),
-            'The portal_type attribute should be present.'
+            json.loads(ISerializeToJson(self.portal)).get('@type'),
+            'The @type attribute should be present.'
         )
         self.assertEqual(
-            json.loads(ISerializeToJson(self.portal.doc1))['portal_type'],
-            u'Document'
-        )
-
-    def test_serialize_to_json_adapter_returns_site_root_portal_type(self):
-        self.assertTrue(
-            json.loads(ISerializeToJson(self.portal)).get('portal_type'),
-            'The portal_type attribute should be present.'
-        )
-        self.assertEqual(
-            json.loads(ISerializeToJson(self.portal))['portal_type'],
+            json.loads(ISerializeToJson(self.portal))['@type'],
             u'SiteRoot'
         )
 
@@ -194,7 +187,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             u'Collection',
             json.loads(
                 ISerializeToJson(self.portal.collection1)
-            ).get('portal_type')
+            ).get('@type')
         )
         self.assertEqual(
             [
