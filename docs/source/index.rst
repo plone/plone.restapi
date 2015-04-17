@@ -15,10 +15,12 @@ Contents
 .. toctree::
    :maxdepth: 3
 
-   hydra
-   item
-   folder
-   site-search
+   introduction
+
+..   hydra
+..   item
+..   folder
+..   site-search
 
 ..   general-concepts
 ..   general-concepts/error-handling
