@@ -53,10 +53,19 @@ Design Decisions
 * Field names just map over (we will not try to clean up attributes or enforce naming standards like pep8 (e.g. isPrincipiaFoldish -> is_folderish)
 * Dexterity only. We will not put effort into supporting Archetypes.
 
+
 Software Quality
 ================
 
 * 100% Test Coverage
 * 100% PEP8 compliant
 
+
+Further Reading
+===============
+
+* `REST in Practice: Hypermedia and Systems Architecture (Webber, Parastatidis, Robinson)`_
+
 .. _`Representational State Transfer`: http://en.wikipedia.org/wiki/Representational_state_transfer
+
+.. _`REST in Practice: Hypermedia and Systems Architecture (Webber, Parastatidis, Robinson)`: http://www.amazon.com/gp/product/0596805829
