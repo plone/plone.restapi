@@ -179,6 +179,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         )
         self.portal.doc1.reindexObject()
         self.portal.doc2.reindexObject()
+
         self.assertEqual(
             u'Collection',
             json.loads(ISerializeToJson(self.portal.collection1)).get('@type')
@@ -192,12 +193,12 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.assertEqual(
             [
                 {
-                    u'@id': self.portal.doc1.absolute_url() + '/@@json',
+                    u'@id': self.portal.doc1.absolute_url(),
                     u'description': u'',
                     u'title': u'Document 1'
                 },
                 {
-                    u'@id': self.portal.doc2.absolute_url() + '/@@json',
+                    u'@id': self.portal.doc2.absolute_url(),
                     u'description': u'',
                     u'title': u'Document 2'
                 }

@@ -75,7 +75,7 @@ def SerializeToJson(context):
         portal = getSite()
         result['member'] = [
             {
-                '@id': '{0}/{1}/@@json'.format(
+                '@id': '{0}/{1}'.format(
                     portal.absolute_url(),
                     '/'.join(member.getPhysicalPath())
                 ),
