@@ -1,0 +1,25 @@
+{
+  "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
+  "@id": "http://localhost:55001/plone/event", 
+  "@type": "Event", 
+  "contributors": [], 
+  "creators": [
+    "test_user_1_"
+  ], 
+  "description": "This is an event", 
+  "effective": "1969-12-31T00:00:00+02:00", 
+  "exclude_from_nav": "False", 
+  "expires": "2499-12-31T00:00:00+02:00", 
+  "icon": "++resource++plone.dexterity.item.gif", 
+  "isPrincipiaFolderish": "0", 
+  "language": "", 
+  "meta_type": "Dexterity Item", 
+  "parent": {
+    "@id": "http://localhost:55001/plone", 
+    "description": "", 
+    "title": "Plone site"
+  }, 
+  "relatedItems": [], 
+  "rights": "", 
+  "title": "Event"
+}

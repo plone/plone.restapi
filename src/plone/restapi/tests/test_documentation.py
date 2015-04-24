@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
@@ -89,6 +90,21 @@ class TestTraversal(unittest.TestCase):
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
         save_response_for_documentation('newsitem.json', response)
+
+    def test_documentation_event(self):
+        self.portal.invokeFactory('Event', id='event')
+        self.portal.event.title = 'Event'
+        self.portal.event.description = u'This is an event'
+        self.portal.event.start = datetime(2013, 1, 1, 10, 0)
+        self.portal.event.end = datetime(2013, 1, 1, 12, 0)
+        import transaction
+        transaction.commit()
+        response = requests.get(
+            self.portal.event.absolute_url(),
+            headers={'content-type': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        save_response_for_documentation('event.json', response)
 
     def test_documentation_link(self):
         self.portal.invokeFactory('Link', id='link')

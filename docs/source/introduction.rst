@@ -48,6 +48,11 @@ News Item:
 .. literalinclude:: _json/newsitem.json
    :language: json-ld
 
+Event:
+
+.. literalinclude:: _json/event.json
+   :language: json-ld
+
 Image:
 
 .. literalinclude:: _json/image.json
