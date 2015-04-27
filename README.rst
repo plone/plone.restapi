@@ -10,6 +10,10 @@ Introduction
 .. image:: https://readthedocs.org/projects/pip/badge/
     :target: https://plonerestapi.readthedocs.org
 
+.. image:: https://landscape.io/github/plone/plone.restapi/master/landscape.svg?style=plastic
+   :target: https://landscape.io/github/plone/plone.restapi/master
+   :alt: Code Health
+
 plone.restapi is a RESTful hypermedia API for Plone.
 
 

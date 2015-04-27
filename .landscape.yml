@@ -1,0 +1,2 @@
+ignore-patterns:
+    - ^bootstrap.*\.py$
