@@ -42,10 +42,9 @@ def append_json_to_links(result):
     if 'member' in result:
         for index, item in enumerate(result['member']):
             if '@id' in item:
-                result['member'][index]['@id'] = \
-                    '{0}/@@json'.format(
-                        result['member'][index]['@id']
-                    )
+                result['member'][index]['@id'] = '{0}/@@json'.format(
+                    result['member'][index]['@id']
+                )
     if 'parent' in result and result != {} and '@id' in result['parent']:
         result['parent']['@id'] = '{0}/@@json'.format(
             result['parent']['@id']
