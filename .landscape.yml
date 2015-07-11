@@ -1,2 +1,5 @@
 ignore-patterns:
     - ^bootstrap.*\.py$
+pylint:
+  disable:
+    - inherit-non-class  # zope.interface
