@@ -1,11 +1,14 @@
 language: python
-python: "2.7"
+python: 2.7
+cache:
+  pip: true
+  directories:
+    - $HOME/buildout-cache
 before_install:
-  - pip install http://effbot.org/downloads/Imaging-1.1.7.tar.gz
+  - mkdir -p $HOME/buildout-cache/{eggs,downloads}
+  - virtualenv .
+  - bin/pip install --upgrade pip setuptools zc.buildout
 install:
-  - mkdir -p buildout-cache/eggs
-  - mkdir -p buildout-cache/downloads
-  - python bootstrap-buildout.py --setuptools-version=8.3 -c travis.cfg
   - bin/buildout -N -t 3 -c travis.cfg
 script:
   - bin/code-analysis
