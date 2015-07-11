@@ -18,7 +18,7 @@ def mark_as_api_request(context, event):
     """Mark views with application/json as Content-Type with the IAPIRequest
        interface.
     """
-    if event.request.getHeader('Content-Type') == 'application/json':
+    if event.request.getHeader('Accept') == 'application/json':
         alsoProvides(event.request, IAPIRequest)  # pragma: no cover
 
 

@@ -70,14 +70,14 @@ class TestTraversal(unittest.TestCase):
     def test_document_traversal(self):
         response = requests.get(
             self.document_url,
-            headers={'content-type': 'application/json'},
+            headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.headers.get('content-type'),
             'application/json',
-            'When sending a GET request with content-type: application/json ' +
+            'When sending a GET request with Accept: application/json ' +
             'the server should respond with sending back application/json.'
         )
         self.assertEqual(
@@ -97,7 +97,7 @@ class TestTraversal(unittest.TestCase):
         transaction.commit()
         response = requests.get(
             self.portal.news1.absolute_url(),
-            headers={'content-type': 'application/json'},
+            headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
         self.assertEqual(response.status_code, 200)
@@ -123,7 +123,7 @@ class TestTraversal(unittest.TestCase):
     def test_folder_traversal(self):
         response = requests.get(
             self.folder_url,
-            headers={'content-type': 'application/json'},
+            headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
         self.assertEqual(response.status_code, 200)
@@ -141,7 +141,7 @@ class TestTraversal(unittest.TestCase):
     def test_site_root_traversal(self):
         response = requests.get(
             self.portal_url,
-            headers={'content-type': 'application/json'},
+            headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
         self.assertEqual(response.status_code, 200)
@@ -162,7 +162,7 @@ class TestTraversal(unittest.TestCase):
         transaction.commit()
         response = requests.get(
             self.portal_url,
-            headers={'content-type': 'application/json'},
+            headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
         self.assertEqual(response.status_code, 200)
@@ -196,7 +196,7 @@ class TestTraversal(unittest.TestCase):
         transaction.commit()
         response = requests.get(
             self.portal.file1.absolute_url(),
-            headers={'content-type': 'application/json'},
+            headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
         self.assertEqual(response.status_code, 200)
@@ -225,7 +225,7 @@ class TestTraversal(unittest.TestCase):
         transaction.commit()
         response = requests.get(
             self.portal.img1.absolute_url(),
-            headers={'content-type': 'application/json'},
+            headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
         self.assertEqual(response.status_code, 200)
