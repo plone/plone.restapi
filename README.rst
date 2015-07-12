@@ -1,21 +1,23 @@
-.. image:: https://badge.waffle.io/plone/plone.restapi.png?label=ready&title=Ready 
- :target: https://waffle.io/plone/plone.restapi
- :alt: 'Stories in Ready'
-Introduction
-============
-
 .. image:: https://secure.travis-ci.org/plone/plone.restapi.png?branch=master
-    :target: http://travis-ci.org/plone/plone.restapi
+  :target: http://travis-ci.org/plone/plone.restapi
 
 .. image:: https://coveralls.io/repos/plone/plone.restapi/badge.png?branch=master
-    :target: https://coveralls.io/r/plone/plone.restapi
+  :target: https://coveralls.io/r/plone/plone.restapi
 
 .. image:: https://readthedocs.org/projects/pip/badge/
-    :target: https://plonerestapi.readthedocs.org
+  :target: https://plonerestapi.readthedocs.org
 
 .. image:: https://landscape.io/github/plone/plone.restapi/master/landscape.svg?style=plastic
-   :target: https://landscape.io/github/plone/plone.restapi/master
-   :alt: Code Health
+  :target: https://landscape.io/github/plone/plone.restapi/master
+  :alt: Code Health
+
+.. image:: https://badge.waffle.io/plone/plone.restapi.png?label=ready&title=Ready
+ :target: https://waffle.io/plone/plone.restapi
+ :alt: 'Stories in Ready'
+
+
+Introduction
+============
 
 plone.restapi is a RESTful hypermedia API for Plone.
 
@@ -72,6 +74,7 @@ Further Reading
 ===============
 
 * `REST in Practice: Hypermedia and Systems Architecture (Webber, Parastatidis, Robinson)`_
+
 
 .. _`Representational State Transfer`: http://en.wikipedia.org/wiki/Representational_state_transfer
 
