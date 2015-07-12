@@ -43,20 +43,14 @@ if request.getHeader('Accept') == 'application/json':
     return json.dumps(
         {
             'type': error_type,
+            'message': error_message,
+            'traceback': error_tb,
+            'log_url': error_log_url,
+            'log_id': error_log_id,
         },
         indent=2,
         sort_keys=True
     )
-    foo = {
-        'error_type': error_type,
-        'error_message': error_message,
-        'error_tb': error_tb,
-        'error_value': error_value,
-        'error_log_url': error_log_url,
-        'error_log_id': error_log_id,
-        'no_portlets': True,
-        'actions': no_actions
-    }
 # plone.restapi customization END
 
 error_page = context.default_error_message(

@@ -248,3 +248,11 @@ class TestTraversal(unittest.TestCase):
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
         save_response_for_documentation('siteroot.json', response)
+
+    def test_documentation_404_not_found(self):
+        response = requests.get(
+            self.portal.absolute_url() + '/non-existing-resource',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        )
+        save_response_for_documentation('404_not_found.json', response)

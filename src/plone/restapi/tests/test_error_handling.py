@@ -54,3 +54,9 @@ class TestErrorHandling(unittest.TestCase):
             'NotFound',
             response.json()['type']
         )
+
+    def test_500_internal_server_error(self):
+        pass
+
+    def test_401_unauthorized(self):
+        pass
