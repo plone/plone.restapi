@@ -49,6 +49,7 @@ class TestErrorHandling(unittest.TestCase):
             'When sending a GET request with Accept: application/json ' +
             'the server should respond with sending back application/json.'
         )
+        self.assertTrue(json.loads(response.content))
         self.assertEqual(
             'NotFound',
             response.json()['type']
