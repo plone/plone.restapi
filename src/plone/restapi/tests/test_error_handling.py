@@ -18,7 +18,7 @@ import unittest
 
 class InternalServerErrorView(BrowserView):
 
-    def __call__(self):
+    def __call__(self):  # pragma: no cover
         from urllib2 import HTTPError
         raise HTTPError(
             'http://nohost/plone/internal_server_error',
