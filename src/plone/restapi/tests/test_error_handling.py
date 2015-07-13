@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
 from plone.testing.z2 import Browser
-
-import unittest2 as unittest
 
 import json
 import requests
 import transaction
+import unittest
 
 
 class TestErrorHandling(unittest.TestCase):
@@ -58,5 +57,21 @@ class TestErrorHandling(unittest.TestCase):
     def test_500_internal_server_error(self):
         pass
 
+    @unittest.skip('Not implemented yet')
     def test_401_unauthorized(self):
-        pass
+        response = requests.get(
+            self.document_url,
+            headers={'Accept': 'application/json'}
+        )
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            response.headers.get('content-type'),
+            'application/json',
+            'When sending a GET request with Accept: application/json ' +
+            'the server should respond with sending back application/json.'
+        )
+        self.assertTrue(json.loads(response.content))
+        self.assertEqual(
+            'Unauthorized',
+            response.json()['type']
+        )
