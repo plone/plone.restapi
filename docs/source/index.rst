@@ -18,6 +18,7 @@ Contents
    introduction
    content-negotiation
    error-handling
+   crud
 
 ..   hydra
 ..   item
