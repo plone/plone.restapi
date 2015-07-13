@@ -57,7 +57,6 @@ class TestErrorHandling(unittest.TestCase):
     def test_500_internal_server_error(self):
         pass
 
-    @unittest.skip('Not implemented yet')
     def test_401_unauthorized(self):  # pragma: no cover
         response = requests.get(
             self.document_url,
