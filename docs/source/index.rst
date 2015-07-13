@@ -17,6 +17,7 @@ Contents
 
    introduction
    content-negotiation
+   error-handling
 
 ..   hydra
 ..   item

@@ -15,7 +15,7 @@ from zope.publisher.interfaces import IPublishTraverse
 
 
 def mark_as_api_request(context, event):
-    """Mark views with application/json as Content-Type with the IAPIRequest
+    """Mark views with application/json as Accept with the IAPIRequest
        interface.
     """
     if event.request.getHeader('Accept') == 'application/json':
