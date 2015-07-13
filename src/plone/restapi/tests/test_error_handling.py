@@ -58,7 +58,7 @@ class TestErrorHandling(unittest.TestCase):
         pass
 
     @unittest.skip('Not implemented yet')
-    def test_401_unauthorized(self):
+    def test_401_unauthorized(self):  # pragma: no cover
         response = requests.get(
             self.document_url,
             headers={'Accept': 'application/json'}
