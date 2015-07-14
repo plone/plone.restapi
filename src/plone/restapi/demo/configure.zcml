@@ -13,4 +13,12 @@
     permission="zope2.View"
     />
 
+  <browser:page
+    for="*"
+    name="500-internal-server-error"
+    class="plone.restapi.tests.test_error_handling.InternalServerErrorView"
+    permission="zope2.View"
+    />
+
+
 </configure>
