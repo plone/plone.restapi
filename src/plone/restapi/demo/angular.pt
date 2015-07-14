@@ -1,0 +1,110 @@
+<!doctype html>
+<html ng-app="myApp">
+<head>
+  <meta charset="utf-8" />
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>
+  <script type="text/javascript">
+
+(function() {
+  'use strict';
+
+  angular.module('myApp', []);
+
+  angular.module('myApp').factory('httpRequestInterceptor', [
+    function() {
+      return {
+        request: function(config) {
+          config.headers = {'Accept': 'application/json'};
+          return config;
+        }
+      }
+    }
+  ]);
+
+  angular.module('myApp').config(['$httpProvider', function ($httpProvider) {
+    delete $httpProvider.defaults.headers.common['X-Requested-With'];
+    $httpProvider.interceptors.push('httpRequestInterceptor')
+    //$httpProvider.defaults.headers.common.Authorization = 'Basic admin:admin';
+    $httpProvider.defaults.headers.common = 'application/json';
+    $httpProvider.defaults.headers.post['Accept'] = 'application/json';
+    $httpProvider.defaults.headers.post['Content-Type'] = 'application/json; charset=utf-8';
+  }]);
+
+  angular.module('myApp').controller('TextController',
+
+    function($scope, $http) {
+      var someText = {};
+      someText.message = 'Plone REST API - Demo - Angular';
+      $scope.someText = someText;
+      $scope.get = '';
+      $scope.get_successful = '';
+      $scope.get_unauthorized = '';
+      $scope.get_internal_server_error = '';
+
+      $http.get('front-page').
+        success(function(data, status, headers, config) {
+          // this callback will be called asynchronously
+          // when the response is available
+          $scope.get_successful = JSON.stringify(data, null, 2);
+        }).
+        error(function(data, status, headers, config) {
+          // called asynchronously if an error occurs
+          // or server returns response with an error status.
+          $scope.get_successful = JSON.stringify(data, null, 2);
+        });
+
+      $http.get('private').
+        success(function(data, status, headers, config) {
+          // this callback will be called asynchronously
+          // when the response is available
+          $scope.get_unauthorized = JSON.stringify(data, null, 2);
+        }).
+        error(function(data, status, headers, config) {
+          // called asynchronously if an error occurs
+          // or server returns response with an error status.
+          $scope.get_unauthorized = JSON.stringify(data, null, 2);
+        });
+
+      $http.get('non-existing-url').
+        success(function(data, status, headers, config) {
+          // this callback will be called asynchronously
+          // when the response is available
+          $scope.get = JSON.stringify(data, null, 2);
+        }).
+        error(function(data, status, headers, config) {
+          // called asynchronously if an error occurs
+          // or server returns response with an error status.
+          $scope.get = JSON.stringify(data, null, 2);
+        });
+
+      $http.get('500-internal-server-error').
+        success(function(data, status, headers, config) {
+          // this callback will be called asynchronously
+          // when the response is available
+          $scope.get_internal_server_error = JSON.stringify(data, null, 2);
+        }).
+        error(function(data, status, headers, config) {
+          // called asynchronously if an error occurs
+          // or server returns response with an error status.
+          $scope.get_internal_server_error = JSON.stringify(data, null, 2);
+        });
+
+    }
+  );
+
+})();
+
+  </script>
+</head>
+<body ng-controller="TextController">
+  <p>{{someText.message}}</p>
+  <h4>GET /front-page</h4>
+  <pre ng-bind="get_successful"></pre>
+  <h4>GET /non-existing-resource</h4>
+  <pre ng-bind="get"></pre>
+  <h4>GET /private</h4>
+  <pre ng-bind="get_unauthorized"></pre>
+  <h4>GET /500-internal-server-error</h4>
+  <pre ng-bind="get_internal_server_error"></pre>
+</body>
+</html>

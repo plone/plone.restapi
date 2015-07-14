@@ -15,6 +15,7 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
+  <include package=".demo" />
   <include package=".browser" />
 
   <adapter factory=".adapter.SerializeToJson" />
