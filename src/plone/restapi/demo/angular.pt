@@ -38,6 +38,7 @@
       $scope.someText = someText;
       $scope.get = '';
       $scope.get_successful = '';
+      $scope.get_unauthorized = '';
 
       $http.get('front-page').
         success(function(data, status, headers, config) {
@@ -49,6 +50,18 @@
           // called asynchronously if an error occurs
           // or server returns response with an error status.
           $scope.get_successful = JSON.stringify(data, null, 2);
+        });
+
+      $http.get('private').
+        success(function(data, status, headers, config) {
+          // this callback will be called asynchronously
+          // when the response is available
+          $scope.get_unauthorized = JSON.stringify(data, null, 2);
+        }).
+        error(function(data, status, headers, config) {
+          // called asynchronously if an error occurs
+          // or server returns response with an error status.
+          $scope.get_unauthorized = JSON.stringify(data, null, 2);
         });
 
       $http.get('non-existing-url').
@@ -76,5 +89,7 @@
   <pre ng-bind="get_successful"></pre>
   <h4>GET /non-existing-resource</h4>
   <pre ng-bind="get"></pre>
+  <h4>GET /private</h4>
+  <pre ng-bind="get_unauthorized"></pre>
 </body>
 </html>
