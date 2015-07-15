@@ -1,3 +1,4 @@
+=================
 CRUD Web Services
 =================
 
@@ -14,7 +15,7 @@ DELETE  /folder/{documentId}    Remove the document
 
 
 Creating a Resource with POST
------------------------------
+=============================
 
 To create a new resource, we send a POST request to the resource container.  If we want to create a new document within an existing folder, we send a POST request to that folder::
 
@@ -36,18 +37,8 @@ The 'Content-Type' header indicates that the body uses the 'application/json' fo
 The request body contains the necessary information that is needed to create a document (the type and the title).
 
 
-POST Responses
-**************
-
-Possible server reponses for a POST request are:
-
-* :ref:`201 Created` (Resource has been created successfully)
-* :ref:`400 Bad Request` (malformed request to the service)
-* :ref:`500 Internal Server Error` (server fault, can not recover internally)
-
-
 Successful Response (201 Created)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------
 
 If a resource has been created, the server responds with the '201 Created' status code. The 'Location' header contains the URL of the newly created resource and the resource represenation in the payload::
 
@@ -63,7 +54,7 @@ If a resource has been created, the server responds with the '201 Created' statu
   }
 
 Unsuccessful Response (400 Bad Request)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------------
 
 If the resource could not be created, for instance because the title was missing in the request, the server responds with '400 Bad Request'::
 
@@ -78,7 +69,7 @@ The response body can contain information about why the request failed.
 
 
 Unsuccessful Response (500 Internal Server Error)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------------
 
 If the server can not properly process a request, it responds with '500 Internal Server Error'::
 
@@ -92,8 +83,18 @@ If the server can not properly process a request, it responds with '500 Internal
 The response body can contain further information such as an error trace or a link to the documentation.
 
 
+Possible POST Responses
+-----------------------
+
+Possible server reponses for a POST request are:
+
+* :ref:`201 Created` (Resource has been created successfully)
+* :ref:`400 Bad Request` (malformed request to the service)
+* :ref:`500 Internal Server Error` (server fault, can not recover internally)
+
+
 POST Implementation
-*******************
+-------------------
 
 A pseudo-code example of the POST implementation on the server::
 
@@ -113,7 +114,7 @@ TODO: Link to the real implementation...
 
 
 Reading a Resource with GET
----------------------------
+===========================
 
 After a successful POST, we can access the resource by sending a GET request to the resource URL::
 
@@ -122,18 +123,8 @@ After a successful POST, we can access the resource by sending a GET request to 
   Accept: application/json
 
 
-GET Responses
-*************
-
-Possible server reponses for a GET request are:
-
-* :ref:`200 OK`
-* :ref:`404 Not Found`
-* :ref:`500 Internal Server Error`
-
-
 Successful Response (200 OK)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------
 
 If a resource has been retrieved successfully, the server responds with '200 OK'::
 
@@ -148,7 +139,7 @@ If a resource has been retrieved successfully, the server responds with '200 OK'
   }
 
 Unsuccessful response (404 Not Found)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------
 
 If a resource could not be found, the server will respond with '404 Not Found'::
 
@@ -161,7 +152,7 @@ If a resource could not be found, the server will respond with '404 Not Found'::
 
 
 GET Implementation
-******************
+------------------
 
 A pseudo-code example of the GET implementation on the server::
 
@@ -180,8 +171,18 @@ A pseudo-code example of the GET implementation on the server::
 TODO: Link to the real implementation...
 
 
+GET Responses
+-------------
+
+Possible server reponses for a GET request are:
+
+* :ref:`200 OK`
+* :ref:`404 Not Found`
+* :ref:`500 Internal Server Error`
+
+
 Updating a Resource with PUT
-----------------------------
+============================
 
 To update an existing resource we send a PUT request to the server::
 
@@ -203,19 +204,9 @@ An alternative is to use the PATCH HTTP verb, that allows to provide just a subs
 
 When the PUT request is accepted and processed by the service, the consumer will receive either a 200 OK response or a 204 No Content response.
 
-PUT Responses
-*************
-
-Possible server reponses for a PUT request are:
-
-* :ref:`200 OK`
-* :ref:`404 Not Found`
-* :ref:`409 Conflict`
-* :ref:`500 Internal Server Error`
-
 
 Successful Update (200 OK)
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------
 
 When a resource has been updated successfully, the server sends a '200 OK' response::
 
@@ -231,14 +222,14 @@ When a resource has been updated successfully, the server sends a '200 OK' respo
 An alternative would be to return a '204 No Content' response. This is more efficent since it does not contain a body. We choose do use '200 OK' for now though.
 
 Unsuccessful Update (409 Conflict)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------
 
 Sometimes requests fail due to incompatible changes. The response body should include additional information about the problem.
 
 TODO: We need to check if we can find a valid example for this in Plone.
 
 PUT Implementation
-******************
+------------------
 
 A pseudo-code example of the PUT implementation on the server::
 
@@ -260,8 +251,20 @@ A pseudo-code example of the PUT implementation on the server::
 
 TODO: Link to the real implementation...
 
+
+PUT Responses
+-------------
+
+Possible server reponses for a PUT request are:
+
+* :ref:`200 OK`
+* :ref:`404 Not Found`
+* :ref:`409 Conflict`
+* :ref:`500 Internal Server Error`
+
+
 POST vs. PUT
-************
+------------
 
 Difference POST and PUT:
 
@@ -271,7 +274,7 @@ Difference POST and PUT:
 
 
 Removing a Resource with DELETE
--------------------------------
+===============================
 
 We can delete an existing resource by sending a DELETE request::
 
@@ -282,19 +285,9 @@ A successful response will be indicated by a '204 No Content' response::
 
   HTTP/1.1  204 No Content
 
-DELETE Responses
-****************
-
-Possible responses to a delete request are::
-
-  * :ref:`204 No Content
-  * :ref:`404 Not Found (if the resource does not exist)
-  * :ref:`405 Not Allowed (if deleting the resource is not allowed)
-  * :ref:`500 Internal Server Error
-
 
 DELETE Implementation
-*********************
+---------------------
 
 A pseudo-code example of the DELETE implementation on the server::
 
@@ -316,6 +309,16 @@ A pseudo-code example of the DELETE implementation on the server::
 
 TODO: Link to the real implementation...
 
+
+DELETE Responses
+----------------
+
+Possible responses to a delete request are:
+
+  * :ref:`204 No Content
+  * :ref:`404 Not Found (if the resource does not exist)
+  * :ref:`405 Not Allowed (if deleting the resource is not allowed)
+  * :ref:`500 Internal Server Error
 
 
 
