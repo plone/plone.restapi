@@ -8,6 +8,7 @@
 /build
 /dist
 /local.cfg
+/src/plone.rest
 .coverage
 *.egg-info
 *.eggs
