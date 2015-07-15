@@ -1,15 +1,40 @@
 GET /plone/collection
 Accept: application/json
 
-HTTP 404 Not Found
-content-type: text/html; charset=iso-8859-15
+HTTP 500 Internal Server Error
+content-type: application/json
 
   <h2>Site Error</h2>
   <p>An error was encountered while publishing this resource.
   </p>
-  <p><strong>Resource not found</strong></p>
+  <p><strong><type 'exceptions.TypeError'></strong></p>
 
-  Sorry, the requested resource does not exist.<p>Check the URL and try again.</p><p><b>Resource:</b> http://localhost:55001/plone/collection/listing_view</p>
+  ('Could not adapt', <Collection at /plone/collection>, <SchemaClass plone.app.contenttypes.behaviors.collection.ICollection>)Traceback (innermost last):
+
+  Module ZPublisher.Publish, line 249, in publish_module_standard
+
+  Module ZPublisher.Publish, line 177, in publish
+
+  Module ZPublisher.Publish, line 138, in publish
+
+  Module ZPublisher.mapply, line 77, in mapply
+
+  Module ZPublisher.Publish, line 48, in call_object
+
+  Module plone.rest.service, line 21, in __call__
+
+  Module plone.restapi.services, line 9, in render
+
+  Module zope.component.hookable, line 33, in __call__
+
+  Module zope.component.hooks, line 104, in adapter_hook
+
+  Module plone.restapi.adapter, line 91, in SerializeToJson
+
+  Module plone.app.contenttypes.content, line 57, in results
+
+TypeError: (see above)
+
   <hr noshade="noshade"/>
 
   <p>Troubleshooting Suggestions</p>
