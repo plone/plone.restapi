@@ -10,9 +10,9 @@ from plone.testing.z2 import Browser
 
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
-from zope.app.intid.interfaces import IIntIds
+from zope.intid.interfaces import IIntIds
 
-import unittest2 as unittest
+import unittest
 
 import json
 import os
