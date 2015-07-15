@@ -135,7 +135,7 @@ Possible server reponses for a GET request are:
 Successful Response (200 OK)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If a resource has been create successfully, the server responds with '200 OK'::
+If a resource has been retrieved successfully, the server responds with '200 OK'::
 
   HTTP/1.1 200 OK
   Content-Type: application/json
@@ -266,7 +266,7 @@ Difference POST and PUT:
 
   * Use POST to create a resource identified by a service-generated URI
   * Use POST to append a resource to a collection identified by a service-generated URI
-  * Use PUT to create or overwrite a resource
+  * Use PUT to overwrite a resource
 
 
 Removing a Resource with DELETE
