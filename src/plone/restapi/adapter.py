@@ -22,7 +22,13 @@ from zope.interface import implementer
 from zope.component import adapter
 from zope.component import getUtility
 
-import json
+
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    PLONE_5 = False
+else:
+    PLONE_5 = True
 
 
 @implementer(ISerializeToJson)
@@ -151,9 +157,19 @@ def SerializeFileToJson(context):
 @implementer(ISerializeToJson)
 @adapter(IImage)
 def SerializeImageToJson(context):
-    ptool = getUtility(IPropertiesTool)
-    image_properties = ptool.imaging_properties
-    allowed_sizes = image_properties.getProperty('allowed_sizes')
+    if PLONE_5:
+        from plone.registry.interfaces import IRegistry
+        registry = getUtility(IRegistry)
+        from Products.CMFPlone.interfaces import IImagingSchema
+        imaging_settings = registry.forInterface(
+            IImagingSchema,
+            prefix='plone'
+        )
+        allowed_sizes = imaging_settings.allowed_sizes
+    else:
+        ptool = getUtility(IPropertiesTool)
+        image_properties = ptool.imaging_properties
+        allowed_sizes = image_properties.getProperty('allowed_sizes')
     result = {
         '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
         '@id': context.absolute_url(),

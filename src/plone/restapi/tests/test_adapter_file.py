@@ -12,7 +12,6 @@ from plone.restapi.interfaces import ISerializeToJson
 
 from Products.CMFCore.utils import getToolByName
 
-import json
 import os
 
 
@@ -52,5 +51,5 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
 
         self.assertEqual(
             u'http://nohost/plone/filedoc1/file.pdf',
-            json.loads(ISerializeToJson(self.portal.filedoc1)).get('file')
+            ISerializeToJson(self.portal.filedoc1).get('file')
         )

@@ -15,13 +15,12 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
+  <include package="plone.rest" />
   <include package="plone.rest" file="meta.zcml" />
   <include file="services.zcml" />
 
-  <!--
   <include package=".browser" />
   <include package=".demo" />
-  -->
 
   <adapter factory=".adapter.SerializeToJson" />
   <adapter factory=".adapter.SerializeSiteRootToJson" />

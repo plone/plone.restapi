@@ -28,9 +28,18 @@ RESPONSE_HEADER_KEYS = [
     'allow',
 ]
 
+base_path = os.path.join(
+    os.path.dirname(__file__),
+    '..',
+    '..',
+    '..',
+    '..',
+    'docs/source/_json'
+)
+
 
 def save_response_for_documentation(filename, response):
-    f = open('../../docs/source/_json/%s' % filename, 'w')
+    f = open('{}/{}'.format(base_path, filename), 'w')
     f.write('{} {}\n'.format(
         response.request.method,
         response.request.path_url

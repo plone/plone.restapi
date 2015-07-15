@@ -12,7 +12,6 @@ from plone.restapi.interfaces import ISerializeToJson
 
 from Products.CMFCore.utils import getToolByName
 
-import json
 import os
 
 
@@ -53,5 +52,5 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
 
         self.assertEqual(
             u'http://nohost/plone/imagedoc1/@@images/image',
-            json.loads(ISerializeToJson(self.portal.imagedoc1)).get('image')
+            ISerializeToJson(self.portal.imagedoc1).get('image')
         )

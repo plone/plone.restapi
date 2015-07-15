@@ -24,6 +24,7 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
         self.assertEqual(
             set(schema),
             set([
+                'id',  # Plone 5
                 'text',
                 'title',
                 'allow_discussion',
@@ -55,6 +56,7 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
         self.assertEqual(
             set(schema),
             set([
+                'id',  # Plone 5
                 'text',
                 'title',
                 'allow_discussion',
@@ -87,6 +89,7 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
         self.assertEqual(
             set(schema),
             set([
+                'id',  # Plone 5
                 'image',
                 'description',
                 'title',
@@ -113,6 +116,7 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
         self.assertEqual(
             set(schema),
             set([
+                'id',  # Plone 5
                 'title',
                 'allow_discussion',
                 'exclude_from_nav',

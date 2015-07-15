@@ -4,7 +4,6 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
-from plone.testing.z2 import Browser
 from Products.Five.browser import BrowserView
 from zope.component import provideAdapter
 from zope.interface import Interface
@@ -47,12 +46,6 @@ class TestErrorHandling(unittest.TestCase):
         self.folder = self.portal.folder1
         self.folder_url = self.folder.absolute_url()
         transaction.commit()
-        self.browser = Browser(self.app)
-        self.browser.handleErrors = False
-        self.browser.addHeader(
-            'Authorization',
-            'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
-        )
 
     def test_404_not_found(self):
         response = requests.get(
@@ -62,7 +55,7 @@ class TestErrorHandling(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 404)
         self.assertEqual(
-            response.headers.get('content-type'),
+            response.headers.get('Content-Type'),
             'application/json',
             'When sending a GET request with Accept: application/json ' +
             'the server should respond with sending back application/json.'
@@ -80,7 +73,7 @@ class TestErrorHandling(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 401)
         self.assertEqual(
-            response.headers.get('content-type'),
+            response.headers.get('Content-Type'),
             'application/json',
             'When sending a GET request with Accept: application/json ' +
             'the server should respond with sending back application/json.'
@@ -108,7 +101,7 @@ class TestErrorHandling(unittest.TestCase):
 
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
-            response.headers.get('content-type'),
+            response.headers.get('Content-Type'),
             'application/json',
             'When sending a GET request with Accept: application/json ' +
             'the server should respond with sending back application/json.'
