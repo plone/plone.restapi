@@ -15,7 +15,7 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
-  <include package="plone.rest" file="meta.zcml" />
+  <include package="plone.rest" file="configure.zcml" />
   <include file="services.zcml" />
 
   <!--
