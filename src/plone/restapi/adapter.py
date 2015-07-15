@@ -46,7 +46,7 @@ def SerializeSiteRootToJson(context):
     if getattr(context, 'request', False):
         if context.request.get('append_json_to_hyperlinks', False):
             result = append_json_to_links(result)
-    return json.dumps(result, indent=2, sort_keys=True)
+    return result
 
 
 @implementer(ISerializeToJson)
@@ -126,7 +126,7 @@ def SerializeToJson(context):
     if getattr(context, 'request', False):
         if context.request.get('append_json_to_hyperlinks', False):
             result = append_json_to_links(result)
-    return json.dumps(result, indent=2, sort_keys=True)
+    return result
 
 
 @implementer(ISerializeToJson)
@@ -145,7 +145,7 @@ def SerializeFileToJson(context):
         'description': context.description,
         'download': '{0}/@@download'.format(context.absolute_url()),
     }
-    return json.dumps(result, indent=2, sort_keys=True)
+    return result
 
 
 @implementer(ISerializeToJson)
@@ -173,4 +173,4 @@ def SerializeImageToJson(context):
             ) for x in allowed_sizes
         }
     }
-    return json.dumps(result, indent=2, sort_keys=True)
+    return result

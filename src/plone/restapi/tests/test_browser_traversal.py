@@ -6,15 +6,12 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
-from plone.testing.z2 import Browser
 
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 
 import unittest
-
-import json
 import os
 import requests
 import transaction
@@ -36,56 +33,39 @@ class TestTraversal(unittest.TestCase):
         self.folder = self.portal.folder1
         self.folder_url = self.folder.absolute_url()
         transaction.commit()
-        self.browser = Browser(self.app)
-        self.browser.handleErrors = False
-        self.browser.addHeader(
-            'Authorization',
-            'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
-        )
 
-    def test_json_view_document_traversal(self):
-        self.browser.open(self.document_url + '/@@json')
-        self.assertTrue(json.loads(self.browser.contents))
-        self.assertEqual(
-            json.loads(self.browser.contents).get('@id'),
-            self.document_url + '/@@json'
-        )
-
-    def test_json_view_folder_traversal(self):
-        self.browser.open(self.folder_url + '/@@json')
-        self.assertTrue(json.loads(self.browser.contents))
-        self.assertEqual(
-            json.loads(self.browser.contents).get('@id'),
-            self.folder_url + '/@@json'
-        )
-
-    def test_json_view_site_root_traversal(self):
-        self.browser.open(self.portal_url + '/@@json')
-        self.assertTrue(json.loads(self.browser.contents))
-        self.assertEqual(
-            json.loads(self.browser.contents).get('@id'),
-            self.portal_url + '/@@json'
-        )
-
-    def test_document_traversal(self):
+    def test_get_document(self):
         response = requests.get(
             self.document_url,
             headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.headers.get('content-type'),
+            response.headers.get('Content-Type'),
             'application/json',
             'When sending a GET request with Accept: application/json ' +
-            'the server should respond with sending back application/json.'
+            'the server should respond with sending back application/json: ' +
+            '{}'.format(response.headers.get('Content-Type'))
         )
         self.assertEqual(
-            response.json()['@id'],
-            self.document_url
+            'Document',
+            response.json().get('@type'),
+            "Response should be @type 'Document', not '{}'".format(
+                response.json().get('@type')
+            )
+        )
+        self.assertEqual(
+            response.json().get('@id'),
+            self.document_url,
+            '@id attribute != {}: {}'.format(
+                self.document_url,
+                response.json()
+            )
         )
 
-    def test_news_item_traversal(self):
+    def test_get_news_item(self):
         self.portal.invokeFactory('News Item', id='news1')
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
         self.portal.news1.image = NamedBlobImage(
@@ -102,13 +82,20 @@ class TestTraversal(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.headers.get('content-type'),
+            response.headers.get('Content-Type'),
             'application/json',
-            'When sending a GET request with content-type: application/json ' +
+            'When sending a GET request with Content-Type: application/json ' +
             'the server should respond with sending back application/json.'
         )
         self.assertEqual(
-            response.json()['@id'],
+            'News Item',
+            response.json().get('@type'),
+            "Response should be @type 'News Item', not '{}'".format(
+                response.json().get('@type')
+            )
+        )
+        self.assertEqual(
+            response.json().get('@id'),
             self.portal.news1.absolute_url()
         )
         self.assertEqual(
@@ -120,7 +107,7 @@ class TestTraversal(unittest.TestCase):
             response.json()['image']
         )
 
-    def test_folder_traversal(self):
+    def test_get_folder(self):
         response = requests.get(
             self.folder_url,
             headers={'Accept': 'application/json'},
@@ -128,17 +115,24 @@ class TestTraversal(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.headers.get('content-type'),
+            response.headers.get('Content-Type'),
             'application/json',
-            'When sending a GET request with content-type: application/json ' +
+            'When sending a GET request with Content-Type: application/json ' +
             'the server should respond with sending back application/json.'
         )
         self.assertEqual(
-            response.json()['@id'],
-            self.folder_url
+            'Folder',
+            response.json().get('@type'),
+            "Response should be @type 'Folder', not '{}'".format(
+                response.json().get('@type')
+            )
+        )
+        self.assertEqual(
+            self.folder_url,
+            response.json().get('@id')
         )
 
-    def test_site_root_traversal(self):
+    def test_get_site_root(self):
         response = requests.get(
             self.portal_url,
             headers={'Accept': 'application/json'},
@@ -146,17 +140,21 @@ class TestTraversal(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.headers.get('content-type'),
+            response.headers.get('Content-Type'),
             'application/json',
-            'When sending a GET request with content-type: application/json ' +
+            'When sending a GET request with Content-Type: application/json ' +
             'the server should respond with sending back application/json.'
         )
         self.assertEqual(
-            response.json()['@id'],
-            self.portal_url
+            self.portal_url,
+            response.json().get('@id')
+        )
+        self.assertEqual(
+            'SiteRoot',
+            response.json().get('@type')
         )
 
-    def test_site_root_traversal_with_default_page(self):
+    def test_get_site_root_with_default_page(self):
         self.portal.invokeFactory('Document', id='front-page')
         self.portal.setDefaultPage('front-page')
         transaction.commit()
@@ -167,18 +165,22 @@ class TestTraversal(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.headers.get('content-type'),
+            response.headers.get('Content-Type'),
             'application/json',
-            'When sending a GET request with content-type: application/json ' +
+            'When sending a GET request with Content-Type: application/json ' +
             'the server should respond with sending back application/json.'
         )
         self.assertEqual(
-            response.json()['@id'],
+            response.json().get('@id'),
             self.portal_url
+        )
+        self.assertEqual(
+            'SiteRoot',
+            response.json().get('@type')
         )
 
     @unittest.skip('Not implemented yet.')
-    def test_file_traversal(self):  # pragma: no cover
+    def test_get_file(self):  # pragma: no cover
         self.portal.invokeFactory('File', id='file1')
         self.portal.file1.title = 'File'
         self.portal.file1.description = u'A file'
@@ -201,9 +203,9 @@ class TestTraversal(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.headers.get('content-type'),
+            response.headers.get('Content-Type'),
             'application/json',
-            'When sending a GET request with content-type: application/json ' +
+            'When sending a GET request with Content-Type: application/json ' +
             'the server should respond with sending back application/json.'
         )
         self.assertEqual(
@@ -212,7 +214,7 @@ class TestTraversal(unittest.TestCase):
         )
 
     @unittest.skip('Not implemented yet.')
-    def test_image_traversal(self):  # pragma: no cover
+    def test_get_image(self):  # pragma: no cover
         self.portal.invokeFactory('Image', id='img1')
         self.portal.img1.title = 'Image'
         self.portal.img1.description = u'An image'
@@ -230,9 +232,9 @@ class TestTraversal(unittest.TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.headers.get('content-type'),
+            response.headers.get('Content-Type'),
             'application/json',
-            'When sending a GET request with content-type: application/json ' +
+            'When sending a GET request with Content-Type: application/json ' +
             'the server should respond with sending back application/json.'
         )
         self.assertEqual(

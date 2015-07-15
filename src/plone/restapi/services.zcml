@@ -1,0 +1,50 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <!-- Dexterity -->
+
+  <plone:service
+    method="GET"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    factory=".services.DexterityGet"
+    />
+
+  <!--
+  <plone:service
+    method="POST"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    factory=".services.DexterityPost"
+    />
+
+  <plone:service
+    method="PUT"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    factory=".services.DexterityPut"
+    />
+
+  <plone:service
+    method="DELETE"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    factory=".services.DexterityDelete"
+    />
+  -->
+
+  <!-- Plone Site Root -->
+  <plone:service
+    method="GET"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".services.PloneSiteRootGet"
+    />
+
+  <!--
+  <plone:service
+    method="POST"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".services.PloneSiteRootPost"
+    />
+  -->
+
+</configure>

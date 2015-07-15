@@ -11,12 +11,17 @@
       name="default"
       title="plone.restapi"
       directory="profiles/default"
-      description="Installs the plone.restapi package"
+      description="RESTful hypermedia API for Plone."
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
-  <include package=".demo" />
+  <include package="plone.rest" file="meta.zcml" />
+  <include file="services.zcml" />
+
+  <!--
   <include package=".browser" />
+  <include package=".demo" />
+  -->
 
   <adapter factory=".adapter.SerializeToJson" />
   <adapter factory=".adapter.SerializeSiteRootToJson" />
