@@ -18,6 +18,7 @@ Contents
    introduction
    content-negotiation
    error-handling
+   http-status-codes
    crud
 
 ..   hydra
