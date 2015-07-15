@@ -41,9 +41,9 @@ POST Responses
 
 Possible server reponses for a POST request are:
 
-* 201 Created (Resource has been created successfully)
-* 400 Bad Request (malformed request to the service)
-* 500 Internal Server Error (server fault, can not recover internally)
+* :ref:`201 Created` (Resource has been created successfully)
+* :ref:`400 Bad Request` (malformed request to the service)
+* :ref:`500 Internal Server Error` (server fault, can not recover internally)
 
 
 Successful Response (201 Created)
@@ -127,9 +127,9 @@ GET Responses
 
 Possible server reponses for a GET request are:
 
-* 200 OK
-* 404 Not Found
-* 500 Internal Server Error
+* :ref:`200 OK`
+* :ref:`404 Not Found`
+* :ref:`500 Internal Server Error`
 
 
 Successful Response (200 OK)
@@ -208,10 +208,11 @@ PUT Responses
 
 Possible server reponses for a PUT request are:
 
-* 200 OK
-* 404 Not Found
-* 409 Conflict
-* 500 Internal Server Error
+* :ref:`200 OK`
+* :ref:`404 Not Found`
+* :ref:`409 Conflict`
+* :ref:`500 Internal Server Error`
+
 
 Successful Update (200 OK)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -286,10 +287,10 @@ DELETE Responses
 
 Possible responses to a delete request are::
 
-  * 204 No Content
-  * 404 Not Found (if the resource does not exist)
-  * 405 Not Allowed (if deleting the resource is not allowed)
-  * 500 Internal Server Error
+  * :ref:`204 No Content
+  * :ref:`404 Not Found (if the resource does not exist)
+  * :ref:`405 Not Allowed (if deleting the resource is not allowed)
+  * :ref:`500 Internal Server Error
 
 
 DELETE Implementation

@@ -16,10 +16,11 @@ Contents
    :maxdepth: 3
 
    introduction
+   crud
    content-negotiation
    error-handling
    http-status-codes
-   crud
+
 
 ..   hydra
 ..   item
