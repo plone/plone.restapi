@@ -1,13 +1,12 @@
 CRUD Web Services
 =================
 
-CRUD (Create, Read, Update, Delete) is a pattern for manipulating resources across the network by using HTTP as an application protocol by mapping the CRUD operations to the corresponding HTTP verbs POST, GET, PUT and DELETE:
-
+CRUD is a pattern for manipulating resources across the network by using HTTP as an application protocol. The CRUD operations (Create, Read, Update, Delete) can be mapped to the corresponding HTTP verbs POST (Create), GET (Read), PUT (Update) and DELETE (Delete). This allows us to interact with a specific resource in a standardized way:
 
 ======= ======================= ==============================================
 Verb    URL                     Action
 ======= ======================= ==============================================
-POST    /folder                 Creates a new document with the folder
+POST    /folder                 Creates a new document within the folder
 GET     /folder/{documentId}    Request the current state of the document
 PUT     /folder/{documentId}    Update the document details
 DELETE  /folder/{documentId}    Remove the document
@@ -17,12 +16,12 @@ DELETE  /folder/{documentId}    Remove the document
 Creating a Resource with POST
 -----------------------------
 
-Request::
+To create a new resource, we send a POST request to the resource container.  If we want to create a new document within an existing folder, we send a POST request to that folder::
 
   POST /folder HTTP/1.1
   Host: localhost:8080
+  Accept: application/json
   Content-Type: application/json
-  Content-Length: 239
 
   {
       '@context': '/@@context.jsonld',
@@ -30,18 +29,30 @@ Request::
       'title': 'My Document',
   }
 
-Possible Responses:
+By setting the 'Accept' header, we tell the server that we would like to recieve the response in the 'application/json' representation format.
 
-* 201 Created (location header containing the newly created resource URL)
+The 'Content-Type' header indicates that the body uses the 'application/json' format.
+
+The request body contains the necessary information that is needed to create a document (the type and the title).
+
+
+POST Responses
+**************
+
+Possible server reponses for a POST request are:
+
+* 201 Created (Resource has been created successfully)
 * 400 Bad Request (malformed request to the service)
 * 500 Internal Server Error (server fault, can not recover internally)
 
-Successful Response (201 Created)::
+
+Successful Response (201 Created)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If a resource has been created, the server responds with the '201 Created' status code. The 'Location' header contains the URL of the newly created resource and the resource represenation in the payload::
 
   HTTP/1.1 201 Created
-  Content-Length: 267
   Content-Type: application/json
-  Date:
   Location: http://localhost:8080/folder/my-document
 
   {
@@ -51,28 +62,40 @@ Successful Response (201 Created)::
       'title': 'My Document',
   }
 
-Unsuccessful Response (400 Bad Request)::
+Unsuccessful Response (400 Bad Request)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If the resource could not be created, for instance because the title was missing in the request, the server responds with '400 Bad Request'::
 
   HTTP/1.1 400 Bad Request
-  Content-Length: 250
   Content-Type: application/json
 
   {
     'message': 'Required title field is missing'
   }
 
-Unsuccessful Response (500 Internal Server Error)::
+The response body can contain information about why the request failed.
+
+
+Unsuccessful Response (500 Internal Server Error)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If the server can not properly process a request, it responds with '500 Internal Server Error'::
 
   HTTP/1.1 500 Internal Server Error
-  Content-Length: 250
   Content-Type: application/json
 
   {
     'message': 'Internal Server Error'
   }
 
+The response body can contain further information such as an error trace or a link to the documentation.
 
-POST Implementation (Pseudo Code Example)::
+
+POST Implementation
+*******************
+
+A pseudo-code example of the POST implementation on the server::
 
     try:
         order = createOrder()
@@ -86,16 +109,33 @@ POST Implementation (Pseudo Code Example)::
         # Internal Server Error
         response.setStatus(500)
 
+TODO: Link to the real implementation...
 
-Reading Resource State with GET
--------------------------------
 
-Request::
+Reading a Resource with GET
+---------------------------
+
+After a successful POST, we can access the resource by sending a GET request to the resource URL::
 
   GET /folder/my-document HTTP/1.1
   Host: localhost:8080
+  Accept: application/json
 
-Response::
+
+GET Responses
+*************
+
+Possible server reponses for a GET request are:
+
+* 200 OK
+* 404 Not Found
+* 500 Internal Server Error
+
+
+Successful Response (200 OK)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If a resource has been create successfully, the server responds with '200 OK'::
 
   HTTP/1.1 200 OK
   Content-Type: application/json
@@ -107,7 +147,10 @@ Response::
       'title': 'My Document',
   }
 
-Unsuccessful response::
+Unsuccessful response (404 Not Found)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If a resource could not be found, the server will respond with '404 Not Found'::
 
   HTTP/1.1 404 Not Found
   Content-Type: application/json
@@ -117,25 +160,39 @@ Unsuccessful response::
   }
 
 
-Updating a Rescurce with PUT
+GET Implementation
+******************
+
+A pseudo-code example of the GET implementation on the server::
+
+    try:
+        order = getOrder()
+        if order == None:
+            # Not Found
+            response.setStatus(404)
+        else:
+            # OK
+            response.setStatus(200)
+    except:
+        # Internal Server Error
+        response.setStatus(500)
+
+TODO: Link to the real implementation...
+
+
+Updating a Resource with PUT
 ----------------------------
 
-Difference POST and PUT:
+To update an existing resource we send a PUT request to the server::
 
-  * Use POST to create a resource identified by a service-generated URI
-  * Use POST to append a resource to a collection identified by a service-generated URI
-  * Use PUT to create or overwrite a resource
-
-Request::
-
-  PUT: /folder/my-document HTTP/1.1
+  PUT /folder/my-document HTTP/1.1
   Host: localhost:8080
-  Content-Type: application/xml
+  Content-Type: application/json
 
   {
       '@context': '/@@context.jsonld',
       '@type': 'Document',
-      'title': 'My New Document',
+      'title': 'My New Document Title',
   }
 
 In accordance with the HTTP specification, a successful PUT will not create a new resource or produce a new URL.
@@ -146,9 +203,23 @@ An alternative is to use the PATCH HTTP verb, that allows to provide just a subs
 
 When the PUT request is accepted and processed by the service, the consumer will receive either a 200 OK response or a 204 No Content response.
 
-Successful Update with 200 Response::
+PUT Responses
+*************
+
+Possible server reponses for a PUT request are:
+
+* 200 OK
+* 404 Not Found
+* 409 Conflict
+* 500 Internal Server Error
+
+Successful Update (200 OK)
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When a resource has been updated successfully, the server sends a '200 OK' response::
 
   HTTP/1.1 200 OK
+  Content-Type:: application/json
 
   {
       '@context': '/@@context.jsonld',
@@ -156,27 +227,93 @@ Successful Update with 200 Response::
       'title': 'My New Document',
   }
 
-An alternative would be to return a '204 No Content' response. This is more efficent since it does not contain a body.
+An alternative would be to return a '204 No Content' response. This is more efficent since it does not contain a body. We choose do use '200 OK' for now though.
+
+Unsuccessful Update (409 Conflict)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Sometimes requests fail due to incompatible changes. The response body should include additional information about the problem.
+
+TODO: We need to check if we can find a valid example for this in Plone.
+
+PUT Implementation
+******************
+
+A pseudo-code example of the PUT implementation on the server::
+
+    try:
+        order = getOrder()
+        if order:
+            try:
+                saveOrder()
+            except conflict:
+                response.setStatus(409)
+            # OK
+            response.setStatus(200)
+        else:
+            # Not Found
+            response.setStatus(404)
+    except:
+        # Internal Server Error
+        response.setStatus(500)
+
+TODO: Link to the real implementation...
+
+POST vs. PUT
+************
+
+Difference POST and PUT:
+
+  * Use POST to create a resource identified by a service-generated URI
+  * Use POST to append a resource to a collection identified by a service-generated URI
+  * Use PUT to create or overwrite a resource
 
 
 Removing a Resource with DELETE
 -------------------------------
 
-Request::
+We can delete an existing resource by sending a DELETE request::
 
   DELETE /folder/my-document HTTP/1.1
   Host: localhost:8080
 
-Successful response::
+A successful response will be indicated by a '204 No Content' response::
 
   HTTP/1.1  204 No Content
 
-Response:
+DELETE Responses
+****************
 
-  * 404 Resource does not exist
-  * 405 Method not allowed
-  *
+Possible responses to a delete request are::
 
+  * 204 No Content
+  * 404 Not Found (if the resource does not exist)
+  * 405 Not Allowed (if deleting the resource is not allowed)
+  * 500 Internal Server Error
+
+
+DELETE Implementation
+*********************
+
+A pseudo-code example of the DELETE implementation on the server::
+
+    try:
+        order = getOrder()
+        if order:
+            if can_delete(order):
+                # No Content
+                response.setStatus(204)
+            else:
+                # Not Allowed
+                response.setStatus(405)
+        else:
+            # Not Found
+            response.setStatus(404)
+    except:
+        # Internal Server Error
+        response.setStatus(500)
+
+TODO: Link to the real implementation...
 
 
 
