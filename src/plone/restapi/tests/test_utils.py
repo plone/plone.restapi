@@ -1,12 +1,19 @@
 # -*- coding: utf-8 -*-
-import unittest2 as unittest
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
 from plone.restapi.utils import append_json_to_links
 from plone.restapi.utils import get_object_schema
 from plone.restapi.utils import underscore_to_camelcase
-from plone.restapi.testing import\
-    PLONE_RESTAPI_INTEGRATION_TESTING
-from plone.app.testing import setRoles
-from plone.app.testing import TEST_USER_ID
+from plone.restapi.testing import PLONE_RESTAPI_INTEGRATION_TESTING
+
+import unittest
+
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    ADDITIONAL_PLONE_5_FIELDS = []
+else:
+    ADDITIONAL_PLONE_5_FIELDS = ['id']
 
 
 class GetObjectSchemaUnitTest(unittest.TestCase):
@@ -24,7 +31,6 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
         self.assertEqual(
             set(schema),
             set([
-                'id',  # Plone 5
                 'text',
                 'title',
                 'allow_discussion',
@@ -56,7 +62,6 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
         self.assertEqual(
             set(schema),
             set([
-                'id',  # Plone 5
                 'text',
                 'title',
                 'allow_discussion',
@@ -76,7 +81,7 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
                 'creators',
                 'description',
                 'changeNote'
-            ])
+            ] + ADDITIONAL_PLONE_5_FIELDS)
         )
 
     def test_get_object_schema_for_image(self):
@@ -89,7 +94,6 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
         self.assertEqual(
             set(schema),
             set([
-                'id',  # Plone 5
                 'image',
                 'description',
                 'title',
@@ -116,7 +120,6 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
         self.assertEqual(
             set(schema),
             set([
-                'id',  # Plone 5
                 'title',
                 'allow_discussion',
                 'exclude_from_nav',
