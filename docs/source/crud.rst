@@ -315,10 +315,10 @@ DELETE Responses
 
 Possible responses to a delete request are:
 
-  * :ref:`204 No Content
-  * :ref:`404 Not Found (if the resource does not exist)
-  * :ref:`405 Not Allowed (if deleting the resource is not allowed)
-  * :ref:`500 Internal Server Error
+  * :ref:`204 No Content`
+  * :ref:`404 Not Found` (if the resource does not exist)
+  * :ref:`405 Not Allowed` (if deleting the resource is not allowed)
+  * :ref:`500 Internal Server Error`
 
 
 
