@@ -49,7 +49,7 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
                 'creators',
                 'description',
                 'changeNote'
-            ])
+            ] + ADDITIONAL_PLONE_5_FIELDS)
         )
 
     def test_get_object_schema_for_news_item(self):
@@ -111,7 +111,7 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
                 'creators',
                 'contributors',
                 'rights',
-            ])
+            ] + ADDITIONAL_PLONE_5_FIELDS)
         )
 
     def test_get_object_schema_for_folder(self):
@@ -138,7 +138,7 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
                 'subjects',
                 'creators',
                 'description'
-            ])
+            ] + ADDITIONAL_PLONE_5_FIELDS)
         )
 
 
