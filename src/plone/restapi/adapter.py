@@ -125,39 +125,39 @@ def SerializeToJson(context):
                 result[title] = str(value)
 
     # Operations
-    # result["operation"] = [
-    #     {
-    #         "@type": "CreateResourceOperation",
-    #         "name": "Create Resource",
-    #         "method": "POST",
-    #         "expects": {
-    #             "supportedProperty": [
-    #                 {
-    #                     "@type": "PropertyValueSpecification",
-    #                     "hydra:property": "id",
-    #                     "hydra:required": "true",
-    #                     "readOnlyValue": "true"
-    #                 },
-    #                 {
-    #                     "@type": "PropertyValueSpecification",
-    #                     "hydra:property": "title",
-    #                     "hydra:required": "true",
-    #                     "readOnlyValue": "false"
-    #                 },
-    #             ],
-    #         }
-    #     },
-    #     {
-    #         "@type": "ReplaceResourceOperation",
-    #         "name": "Update Resource",
-    #         "method": "PUT",
-    #     },
-    #     {
-    #         "@type": "DeleteResourceOperation",
-    #         "name": "Delete Resource",
-    #         "method": "DELETE",
-    #     }
-    # ]
+    #result["operation"] = [
+    #    {
+    #        "@type": "CreateResourceOperation",
+    #        "name": "Create Resource",
+    #        "method": "POST",
+    #        "expects": {
+    #            "supportedProperty": [
+    #                {
+    #                    "@type": "PropertyValueSpecification",
+    #                    "hydra:property": "id",
+    #                    "hydra:required": "true",
+    #                    "readOnlyValue": "true"
+    #                },
+    #                {
+    #                    "@type": "PropertyValueSpecification",
+    #                    "hydra:property": "title",
+    #                    "hydra:required": "true",
+    #                    "readOnlyValue": "false"
+    #                },
+    #            ],
+    #        }
+    #    },
+    #    {
+    #        "@type": "ReplaceResourceOperation",
+    #        "name": "Update Resource",
+    #        "method": "PUT",
+    #    },
+    #    {
+    #        "@type": "DeleteResourceOperation",
+    #        "name": "Delete Resource",
+    #        "method": "DELETE",
+    #    }
+    #]
 
     if getattr(context, 'request', False):
         if context.request.get('append_json_to_hyperlinks', False):
