@@ -4,6 +4,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 
@@ -26,17 +27,23 @@ class TestTraversal(unittest.TestCase):
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
-        self.portal.invokeFactory('Document', id='document1')
-        self.document = self.portal.document1
-        self.document_url = self.document.absolute_url()
-        self.portal.invokeFactory('Folder', id='folder1')
-        self.folder = self.portal.folder1
-        self.folder_url = self.folder.absolute_url()
-        transaction.commit()
 
     def test_get_document(self):
+        self.portal.invokeFactory(
+            'Document',
+            id='doc1',
+            title='My Document'
+        )
+        self.portal.doc1.description = "This is a document"
+        self.portal.doc1.text = RichTextValue(
+            u"Lorem ipsum",
+            'text/plain',
+            'text/html'
+        )
+        transaction.commit()
+
         response = requests.get(
-            self.document_url,
+            self.portal.doc1.absolute_url(),
             headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
@@ -58,15 +65,31 @@ class TestTraversal(unittest.TestCase):
         )
         self.assertEqual(
             response.json().get('@id'),
-            self.document_url,
+            self.portal.doc1.absolute_url(),
             '@id attribute != {}: {}'.format(
-                self.document_url,
+                self.portal.doc1.absolute_url(),
                 response.json()
             )
         )
+        self.assertEqual(
+            'My Document',
+            response.json().get('title'),
+        )
+        self.assertEqual(
+            'This is a document',
+            response.json().get('description')
+        )
+        self.assertEqual(
+            'Lorem Ipsum',
+            response.json().get('text')
+        )
 
     def test_get_news_item(self):
-        self.portal.invokeFactory('News Item', id='news1')
+        self.portal.invokeFactory(
+            'News Item',
+            id='news1',
+            title='News Item 1'
+        )
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
         self.portal.news1.image = NamedBlobImage(
             data=open(image_file, 'r').read(),
@@ -75,11 +98,13 @@ class TestTraversal(unittest.TestCase):
         )
         self.portal.news1.image_caption = u'This is an image caption.'
         transaction.commit()
+
         response = requests.get(
             self.portal.news1.absolute_url(),
             headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.headers.get('Content-Type'),
@@ -99,6 +124,10 @@ class TestTraversal(unittest.TestCase):
             self.portal.news1.absolute_url()
         )
         self.assertEqual(
+            'News Item 1',
+            response.json().get('title')
+        )
+        self.assertEqual(
             u'This is an image caption.',
             response.json()['image_caption']
         )
@@ -108,11 +137,19 @@ class TestTraversal(unittest.TestCase):
         )
 
     def test_get_folder(self):
+        self.portal.invokeFactory(
+            'Folder',
+            id='folder1',
+            title='My Folder'
+        )
+        transaction.commit()
+
         response = requests.get(
-            self.folder_url,
+            self.portal.folder1.absolute_url(),
             headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.headers.get('Content-Type'),
@@ -128,8 +165,12 @@ class TestTraversal(unittest.TestCase):
             )
         )
         self.assertEqual(
-            self.folder_url,
+            self.portal.folder1.absolute_url(),
             response.json().get('@id')
+        )
+        self.assertEqual(
+            'My Folder',
+            response.json().get('title')
         )
 
     def test_get_site_root(self):
@@ -158,11 +199,13 @@ class TestTraversal(unittest.TestCase):
         self.portal.invokeFactory('Document', id='front-page')
         self.portal.setDefaultPage('front-page')
         transaction.commit()
+
         response = requests.get(
             self.portal_url,
             headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.headers.get('Content-Type'),
@@ -196,11 +239,13 @@ class TestTraversal(unittest.TestCase):
         file_id = intids.getId(self.portal.file1)
         self.portal.file1.file = RelationValue(file_id)
         transaction.commit()
+
         response = requests.get(
             self.portal.file1.absolute_url(),
             headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.headers.get('Content-Type'),
@@ -225,6 +270,7 @@ class TestTraversal(unittest.TestCase):
             filename=u'image.png'
         )
         transaction.commit()
+
         response = requests.get(
             self.portal.img1.absolute_url(),
             headers={'Accept': 'application/json'},
