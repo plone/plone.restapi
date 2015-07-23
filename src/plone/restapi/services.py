@@ -9,22 +9,22 @@ class DexterityGet(Service):
         return ISerializeToJson(self.context)
 
 
-class DexterityPost(Service):
-
-    def render(self):
-        return {'service': 'post'}
-
-
-class DexterityPut(Service):
-
-    def render(self):
-        return {'service': 'put'}
+# class DexterityPost(Service):
+#
+#     def render(self):
+#         return {'service': 'post'}
 
 
-class DexterityDelete(Service):
+# class DexterityPut(Service):
+#
+#     def render(self):
+#         return {'service': 'put'}
 
-    def render(self):
-        return {'service': 'delete'}
+
+# class DexterityDelete(Service):
+#
+#     def render(self):
+#         return {'service': 'delete'}
 
 
 class PloneSiteRootGet(Service):
@@ -33,7 +33,7 @@ class PloneSiteRootGet(Service):
         return ISerializeToJson(self.context)
 
 
-class PloneSiteRootPost(Service):
-
-    def render(self):
-        return {'service': 'options'}
+# class PloneSiteRootPost(Service):
+#
+#     def render(self):
+#         return {'service': 'options'}
