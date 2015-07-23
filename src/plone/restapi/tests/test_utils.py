@@ -11,9 +11,9 @@ import unittest
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
 except ImportError:
-    ADDITIONAL_PLONE_5_FIELDS = []
+    ADDITIONAL_PLONE_5_FIELDS = []  # pragma: no cover
 else:
-    ADDITIONAL_PLONE_5_FIELDS = ['id']
+    ADDITIONAL_PLONE_5_FIELDS = ['id']  # pragma: no cover
 
 BASE_SCHEMA = [
     'title',
