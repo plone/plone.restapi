@@ -145,16 +145,36 @@ CRUD Operations on a Plone collection::
     "@id": "http://localhost:8080/Plone/"
     "@type": "Collection",
     "operation": [
-      {
-        "@type": "CreateResourceOperation",
-        "method": "POST",
-      },
-      {
-        "@type": "ReplaceResourceOperation",
-        "method": "PUT",
-      },
-      {
-        "@type": "DeleteResourceOperation",
-        "method": "DELETE",
-      }
+        {
+            "@type": "CreateResourceOperation",
+            "name": "Create Resource",
+            "method": "POST",
+            "expects": {
+                "supportedProperty": [
+                    {
+                        "@type": "PropertyValueSpecification",
+                        "hydra:property": "id",
+                        "hydra:required": "true",
+                        "readOnlyValue": "true"
+                    },
+                    {
+                        "@type": "PropertyValueSpecification",
+                        "hydra:property": "title",
+                        "hydra:required": "true",
+                        "readOnlyValue": "false"
+                    },
+                ],
+            }
+        },
+        {
+            "@type": "ReplaceResourceOperation",
+            "name": "Update Resource",
+            "method": "PUT",
+        },
+        {
+            "@type": "DeleteResourceOperation",
+            "name": "Delete Resource",
+            "method": "DELETE",
+        }
     ]
+  }
