@@ -2,12 +2,29 @@ GET /plone/file/@@json
 Accept: application/json
 
 HTTP 404 Not Found
-content-type: application/json
+content-type: text/html; charset=iso-8859-15
 
-{
-  "log_id": null, 
-  "log_url": null, 
-  "message": "  &lt;h2&gt;Site Error&lt;/h2&gt;\n  &lt;p&gt;An error was encountered while publishing this resource.\n  &lt;/p&gt;\n  &lt;p&gt;&lt;strong&gt;Resource not found&lt;/strong&gt;&lt;/p&gt;\n\n  Sorry, the requested resource does not exist.&lt;p&gt;Check the URL and try again.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Resource:&lt;/b&gt; http://localhost:55001/plone/file/@@json&lt;/p&gt;\n  &lt;hr noshade=\"noshade\"/&gt;\n\n  &lt;p&gt;Troubleshooting Suggestions&lt;/p&gt;\n\n  &lt;ul&gt;\n  &lt;li&gt;The URL may be incorrect.&lt;/li&gt;\n  &lt;li&gt;The parameters passed to this resource may be incorrect.&lt;/li&gt;\n  &lt;li&gt;A resource that this resource relies on may be\n      encountering an error.&lt;/li&gt;\n  &lt;/ul&gt;\n\n  &lt;p&gt;For more detailed information about the error, please\n  refer to the error log.\n  &lt;/p&gt;\n\n  &lt;p&gt;If the error persists please contact the site maintainer.\n  Thank you for your patience.\n  &lt;/p&gt;", 
-  "traceback": "<p>Traceback (innermost last):</p>\r\n<ul>\n\n<li>  Module ZPublisher.Publish, line 127, in publish</li>\n\n<li>  Module ZPublisher.BaseRequest, line 518, in traverse</li>\n\n<li>  Module ZPublisher.HTTPResponse, line 718, in notFoundError</li>\n\n</ul><p>NotFound:   &lt;h2&gt;Site Error&lt;/h2&gt;\n  &lt;p&gt;An error was encountered while publishing this resource.\n  &lt;/p&gt;\n  &lt;p&gt;&lt;strong&gt;Resource not found&lt;/strong&gt;&lt;/p&gt;\n\n  Sorry, the requested resource does not exist.&lt;p&gt;Check the URL and try again.&lt;/p&gt;&lt;p&gt;&lt;b&gt;Resource:&lt;/b&gt; http://localhost:55001/plone/file/@@json&lt;/p&gt;\n  &lt;hr noshade=\"noshade\"/&gt;\n\n  &lt;p&gt;Troubleshooting Suggestions&lt;/p&gt;\n\n  &lt;ul&gt;\n  &lt;li&gt;The URL may be incorrect.&lt;/li&gt;\n  &lt;li&gt;The parameters passed to this resource may be incorrect.&lt;/li&gt;\n  &lt;li&gt;A resource that this resource relies on may be\n      encountering an error.&lt;/li&gt;\n  &lt;/ul&gt;\n\n  &lt;p&gt;For more detailed information about the error, please\n  refer to the error log.\n  &lt;/p&gt;\n\n  &lt;p&gt;If the error persists please contact the site maintainer.\n  Thank you for your patience.\n  &lt;/p&gt;\n</p>", 
-  "type": "NotFound"
-}
+  <h2>Site Error</h2>
+  <p>An error was encountered while publishing this resource.
+  </p>
+  <p><strong>Resource not found</strong></p>
+
+  Sorry, the requested resource does not exist.<p>Check the URL and try again.</p><p><b>Resource:</b> http://localhost:55001/plone/file/@@json</p>
+  <hr noshade="noshade"/>
+
+  <p>Troubleshooting Suggestions</p>
+
+  <ul>
+  <li>The URL may be incorrect.</li>
+  <li>The parameters passed to this resource may be incorrect.</li>
+  <li>A resource that this resource relies on may be
+      encountering an error.</li>
+  </ul>
+
+  <p>For more detailed information about the error, please
+  refer to the error log.
+  </p>
+
+  <p>If the error persists please contact the site maintainer.
+  Thank you for your patience.
+  </p>

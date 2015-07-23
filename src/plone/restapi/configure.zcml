@@ -18,8 +18,10 @@
   <include package="plone.rest" file="configure.zcml" />
   <include file="services.zcml" />
 
+  <!--
   <include package=".browser" />
   <include package=".demo" />
+  -->
 
   <adapter factory=".adapter.SerializeToJson" />
   <adapter factory=".adapter.SerializeSiteRootToJson" />

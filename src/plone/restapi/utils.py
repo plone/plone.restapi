@@ -5,7 +5,6 @@ from plone.behavior.interfaces import IBehaviorAssignable
 
 
 def get_object_schema(obj):
-    object_schema = set()
 
     # Iterate over all interfaces that are provided by the object and filter
     # out all attributes that start with '_' or 'manage'.
@@ -14,18 +13,14 @@ def get_object_schema(obj):
             no_underscore_method = not name.startswith('_')
             no_manage_method = not name.startswith('manage')
             if no_underscore_method and no_manage_method:
-                if name not in object_schema:
-                    object_schema.add(name)
-                    yield name, field
+                yield name, field
 
     # Iterate over all behaviors that are assigned to the object.
     assignable = IBehaviorAssignable(obj, None)
     if assignable:
         for behavior in assignable.enumerateBehaviors():
             for name, field in getFields(behavior.interface).items():
-                if name not in object_schema:
-                    object_schema.add(name)
-                    yield name, field
+                yield name, field
 
 
 def underscore_to_camelcase(underscore_string):

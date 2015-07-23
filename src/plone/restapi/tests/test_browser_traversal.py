@@ -34,7 +34,7 @@ class TestTraversal(unittest.TestCase):
             id='doc1',
             title='My Document'
         )
-        self.portal.doc1.description = "This is a document"
+        self.portal.doc1.description = u"This is a document"
         self.portal.doc1.text = RichTextValue(
             u"Lorem ipsum",
             'text/plain',
@@ -80,7 +80,7 @@ class TestTraversal(unittest.TestCase):
             response.json().get('description')
         )
         self.assertEqual(
-            'Lorem Ipsum',
+            '<p>Lorem ipsum</p>',
             response.json().get('text')
         )
 
