@@ -23,25 +23,19 @@ def get_object_schema(obj):
                 yield name, field
 
 
-def underscore_to_camelcase(underscore_string):
-    return ''.join(
-        x for x in underscore_string.title() if not x.isspace()
-    ).replace('_', '')
-
-
 def append_json_to_links(result):
     """
     """
     if '@id' in result:
-        result['@id'] = '{0}/@@json'.format(result['@id'])
+        result['@id'] = '{0}?format=json'.format(result['@id'])
     if 'member' in result:
         for index, item in enumerate(result['member']):
             if '@id' in item:
-                result['member'][index]['@id'] = '{0}/@@json'.format(
+                result['member'][index]['@id'] = '{0}?format=json'.format(
                     result['member'][index]['@id']
                 )
     if 'parent' in result and result != {} and '@id' in result['parent']:
-        result['parent']['@id'] = '{0}/@@json'.format(
+        result['parent']['@id'] = '{0}?format=json'.format(
             result['parent']['@id']
         )
     return result

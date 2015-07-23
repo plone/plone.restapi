@@ -12,7 +12,6 @@ from plone.app.contenttypes.interfaces import IFile
 from plone.app.contenttypes.interfaces import IImage
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
-from plone.restapi.utils import append_json_to_links
 from plone.restapi.utils import get_object_schema
 from plone.restapi.interfaces import ISerializeToJson
 
@@ -26,9 +25,9 @@ from zope.component import getUtility
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
 except ImportError:
-    PLONE_5 = False
+    PLONE_5 = False  # pragma: no cover
 else:
-    PLONE_5 = True
+    PLONE_5 = True  # pragma: no cover
 
 
 @implementer(ISerializeToJson)
@@ -49,9 +48,6 @@ def SerializeSiteRootToJson(context):
         for member_id, member in context.objectItems()
         if IContentish.providedBy(member)
     ]
-    if getattr(context, 'request', False):
-        if context.request.get('append_json_to_hyperlinks', False):
-            result = append_json_to_links(result)
     return result
 
 
@@ -165,9 +161,6 @@ def SerializeToJson(context):
     #     }
     # ]
 
-    if getattr(context, 'request', False):
-        if context.request.get('append_json_to_hyperlinks', False):
-            result = append_json_to_links(result)
     return result
 
 

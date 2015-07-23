@@ -3,7 +3,6 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.utils import append_json_to_links
 from plone.restapi.utils import get_object_schema
-from plone.restapi.utils import underscore_to_camelcase
 from plone.restapi.testing import PLONE_RESTAPI_INTEGRATION_TESTING
 
 import unittest
@@ -98,18 +97,6 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
         )
 
 
-class UnderscoreToCamelcaseUnitTest(unittest.TestCase):
-
-    def test_empty(self):
-        self.assertEqual(underscore_to_camelcase(''), '')
-
-    def test_simple_term(self):
-        self.assertEqual(underscore_to_camelcase('lorem'), 'Lorem')
-
-    def test_two_simple_terms(self):
-        self.assertEqual(underscore_to_camelcase('lorem_ipsum'), 'LoremIpsum')
-
-
 class AppendJsonToLinksUnitTest(unittest.TestCase):
 
     def test_empty(self):
@@ -117,18 +104,18 @@ class AppendJsonToLinksUnitTest(unittest.TestCase):
 
     def test_append_json_to_id(self):
         self.assertEqual(
-            {'@id': 'http://foo.com/@@json'},
+            {'@id': 'http://foo.com?format=json'},
             append_json_to_links({'@id': 'http://foo.com'})
         )
 
     def test_append_json_to_member_ids(self):
         self.assertEqual(
-            {'member': [{'@id': 'http://foo.com/@@json'}]},
+            {'member': [{'@id': 'http://foo.com?format=json'}]},
             append_json_to_links({'member': [{'@id': 'http://foo.com'}]})
         )
 
     def test_append_json_to_parent_ids(self):
         self.assertEqual(
-            {'parent': {'@id': 'http://foo.com/@@json'}},
+            {'parent': {'@id': 'http://foo.com?format=json'}},
             append_json_to_links({'parent': {'@id': 'http://foo.com'}})
         )
