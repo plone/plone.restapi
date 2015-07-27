@@ -79,3 +79,8 @@ Further Reading
 .. _`Representational State Transfer`: http://en.wikipedia.org/wiki/Representational_state_transfer
 
 .. _`REST in Practice: Hypermedia and Systems Architecture (Webber, Parastatidis, Robinson)`: http://www.amazon.com/gp/product/0596805829
+
+License
+=======
+
+The project is licensed under the GPLv2.
