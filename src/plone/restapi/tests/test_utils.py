@@ -21,56 +21,58 @@ class GetObjectSchemaUnitTest(unittest.TestCase):
     def test_get_object_schema_for_document(self):
         self.portal.invokeFactory('Document', id='doc1', title='Doc 1')
         schema = [x[0] for x in get_object_schema(self.portal.doc1)]
-        self.assertEqual(
-            schema,
-            [
-                'text',
-                'title',
-                'allow_discussion',
-                'exclude_from_nav',
-                'relatedItems',
-                'table_of_contents',
-                'meta_type',
-                'isPrincipiaFolderish',
-                'icon',
-                'rights',
-                'contributors',
-                'effective',
-                'expires',
-                'language',
-                'subjects',
-                'creators',
-                'description',
-                'changeNote'
-            ]
-        )
+        expected_fields = [
+            'text',
+            'title',
+            'allow_discussion',
+            'exclude_from_nav',
+            'relatedItems',
+            'table_of_contents',
+            'meta_type',
+            'isPrincipiaFolderish',
+            'icon',
+            'rights',
+            'contributors',
+            'effective',
+            'expires',
+            'language',
+            'subjects',
+            'creators',
+            'description',
+            'changeNote'
+        ]
+        for expected_field in expected_fields:
+            self.assertTrue(
+                expected_field in schema,
+            )
 
     def test_get_object_schema_for_folder(self):
         self.portal.invokeFactory('Folder', id='folder1', title='Folder 1')
         schema = [x[0] for x in get_object_schema(self.portal.folder1)]
-        self.assertEqual(
-            schema,
-            [
-                'title',
-                'allow_discussion',
-                'exclude_from_nav',
-                'relatedItems',
-                'nextPreviousEnabled',
-                'isAnObjectManager',
-                'meta_type',
-                'meta_types',
-                'isPrincipiaFolderish',
-                'icon',
-                'rights',
-                'contributors',
-                'effective',
-                'expires',
-                'language',
-                'subjects',
-                'creators',
-                'description'
-            ]
-        )
+        expected_fields = [
+            'title',
+            'allow_discussion',
+            'exclude_from_nav',
+            'relatedItems',
+            'nextPreviousEnabled',
+            'isAnObjectManager',
+            'meta_type',
+            'meta_types',
+            'isPrincipiaFolderish',
+            'icon',
+            'rights',
+            'contributors',
+            'effective',
+            'expires',
+            'language',
+            'subjects',
+            'creators',
+            'description'
+        ]
+        for expected_field in expected_fields:
+            self.assertTrue(
+                expected_field in schema,
+            )
 
 
 class UnderscoreToCamelcaseUnitTest(unittest.TestCase):
