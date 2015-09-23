@@ -12,7 +12,7 @@ from plone.testing.z2 import Browser
 
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
-from zope.app.intid.interfaces import IIntIds
+from zope.intid.interfaces import IIntIds
 
 import unittest2 as unittest
 
@@ -28,9 +28,18 @@ RESPONSE_HEADER_KEYS = [
     'allow',
 ]
 
+base_path = os.path.join(
+    os.path.dirname(__file__),
+    '..',
+    '..',
+    '..',
+    '..',
+    'docs/source/_json'
+)
+
 
 def save_response_for_documentation(filename, response):
-    f = open('../../docs/source/_json/%s' % filename, 'w')
+    f = open('{}/{}'.format(base_path, filename), 'w')
     f.write('{} {}\n'.format(
         response.request.method,
         response.request.path_url
@@ -159,10 +168,8 @@ class TestTraversal(unittest.TestCase):
         self.portal.file.file = RelationValue(file_id)
         import transaction
         transaction.commit()
-        # XXX: We are cheating here, @@json should not be necessary! Remove as
-        # soon as this has been fixed.
         response = requests.get(
-            self.portal.file.absolute_url() + '/@@json',
+            self.portal.file.absolute_url(),
             headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
@@ -180,10 +187,8 @@ class TestTraversal(unittest.TestCase):
         )
         import transaction
         transaction.commit()
-        # XXX: We are cheating here, @@json should not be necessary! Remove as
-        # soon as this has been fixed.
         response = requests.get(
-            self.portal.image.absolute_url() + '/@@json',
+            self.portal.image.absolute_url(),
             headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )

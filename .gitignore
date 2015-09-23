@@ -8,6 +8,7 @@
 /build
 /dist
 /local.cfg
+/extras
 .coverage
 *.egg-info
 *.eggs

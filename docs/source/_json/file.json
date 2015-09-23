@@ -1,4 +1,4 @@
-GET /plone/file/@@json
+GET /plone/file
 Accept: application/json
 
 HTTP 200 OK

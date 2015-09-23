@@ -12,7 +12,6 @@ from plone.app.contenttypes.interfaces import IFile
 from plone.app.contenttypes.interfaces import IImage
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
-from plone.restapi.utils import append_json_to_links
 from plone.restapi.utils import get_object_schema
 from plone.restapi.interfaces import ISerializeToJson
 
@@ -22,7 +21,13 @@ from zope.interface import implementer
 from zope.component import adapter
 from zope.component import getUtility
 
-import json
+
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    PLONE_5 = False  # pragma: no cover
+else:
+    PLONE_5 = True  # pragma: no cover
 
 
 @implementer(ISerializeToJson)
@@ -43,10 +48,7 @@ def SerializeSiteRootToJson(context):
         for member_id, member in context.objectItems()
         if IContentish.providedBy(member)
     ]
-    if getattr(context, 'request', False):
-        if context.request.get('append_json_to_hyperlinks', False):
-            result = append_json_to_links(result)
-    return json.dumps(result, indent=2, sort_keys=True)
+    return result
 
 
 @implementer(ISerializeToJson)
@@ -159,10 +161,7 @@ def SerializeToJson(context):
     #     }
     # ]
 
-    if getattr(context, 'request', False):
-        if context.request.get('append_json_to_hyperlinks', False):
-            result = append_json_to_links(result)
-    return json.dumps(result, indent=2, sort_keys=True)
+    return result
 
 
 @implementer(ISerializeToJson)
@@ -181,15 +180,25 @@ def SerializeFileToJson(context):
         'description': context.description,
         'download': '{0}/@@download'.format(context.absolute_url()),
     }
-    return json.dumps(result, indent=2, sort_keys=True)
+    return result
 
 
 @implementer(ISerializeToJson)
 @adapter(IImage)
 def SerializeImageToJson(context):
-    ptool = getUtility(IPropertiesTool)
-    image_properties = ptool.imaging_properties
-    allowed_sizes = image_properties.getProperty('allowed_sizes')
+    if PLONE_5:
+        from plone.registry.interfaces import IRegistry
+        registry = getUtility(IRegistry)
+        from Products.CMFPlone.interfaces import IImagingSchema
+        imaging_settings = registry.forInterface(
+            IImagingSchema,
+            prefix='plone'
+        )
+        allowed_sizes = imaging_settings.allowed_sizes
+    else:
+        ptool = getUtility(IPropertiesTool)
+        image_properties = ptool.imaging_properties
+        allowed_sizes = image_properties.getProperty('allowed_sizes')
     result = {
         '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
         '@id': context.absolute_url(),
@@ -209,4 +218,4 @@ def SerializeImageToJson(context):
             ) for x in allowed_sizes
         }
     }
-    return json.dumps(result, indent=2, sort_keys=True)
+    return result
