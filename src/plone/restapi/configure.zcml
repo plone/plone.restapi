@@ -18,9 +18,16 @@
   <include package="plone.rest" file="configure.zcml" />
   <include file="services.zcml" />
 
-  <adapter factory=".serializer.SerializeToJson" />
-  <adapter factory=".serializer.SerializeSiteRootToJson" />
-  <adapter factory=".serializer.SerializeImageToJson" />
-  <adapter factory=".serializer.SerializeFileToJson" />
+  <adapter factory=".interaction.SerializeToJson" name="interaction"/>
+
+  <adapter factory=".serializer.SerializeToJson" name="content"/>
+  <adapter factory=".serializer.SerializeSiteRootToJson" name="content"/>
+  <adapter factory=".serializer.SerializeImageToJson" name="content"/>
+  <adapter factory=".serializer.SerializeFileToJson" name="content"/>
+
+  <adapter factory=".context.ContextSiteRoot" />
+  <adapter factory=".context.ContextContentish" />
+  <adapter factory=".context.ContextFile" />
+  <adapter factory=".context.ContextImage" />
 
 </configure>

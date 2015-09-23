@@ -13,6 +13,7 @@ from plone.app.contenttypes.interfaces import IImage
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.restapi.utils import get_object_schema
+from plone.restapi.interfaces import IContext
 from plone.restapi.interfaces import ISerializeToJson
 
 from zope.site.hooks import getSite
@@ -34,7 +35,7 @@ else:
 @adapter(IPloneSiteRoot)
 def SerializeSiteRootToJson(context):
     result = {
-        '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
+        '@context': IContext(context),
         '@id': context.absolute_url(),
         '@type': 'SiteRoot',
         'parent': {},
@@ -55,7 +56,7 @@ def SerializeSiteRootToJson(context):
 @adapter(IContentish)
 def SerializeToJson(context):
     result = {
-        '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
+        '@context': IContext(context),
         '@id': context.absolute_url(),
         '@type': context.portal_type,
         'parent': {
@@ -68,6 +69,7 @@ def SerializeToJson(context):
         result['member'] = [
             {
                 '@id': member.absolute_url(),
+                '@type': member.portal_type,
                 'title': member.title,
                 'description': member.description
             }
@@ -81,6 +83,7 @@ def SerializeToJson(context):
                     portal.absolute_url(),
                     '/'.join(member.getPhysicalPath())
                 ),
+                '@type': member.portal_type,
                 'title': member.title,
                 'description': member.description
             }
@@ -126,41 +129,6 @@ def SerializeToJson(context):
             else:
                 result[title] = str(value)
 
-    # Operations
-    # result["operation"] = [
-    #     {
-    #         "@type": "CreateResourceOperation",
-    #         "name": "Create Resource",
-    #         "method": "POST",
-    #         "expects": {
-    #             "supportedProperty": [
-    #                 {
-    #                     "@type": "PropertyValueSpecification",
-    #                     "hydra:property": "id",
-    #                     "hydra:required": "true",
-    #                     "readOnlyValue": "true"
-    #                 },
-    #                 {
-    #                     "@type": "PropertyValueSpecification",
-    #                     "hydra:property": "title",
-    #                     "hydra:required": "true",
-    #                     "readOnlyValue": "false"
-    #                 },
-    #             ],
-    #         }
-    #     },
-    #     {
-    #         "@type": "ReplaceResourceOperation",
-    #         "name": "Update Resource",
-    #         "method": "PUT",
-    #     },
-    #     {
-    #         "@type": "DeleteResourceOperation",
-    #         "name": "Delete Resource",
-    #         "method": "DELETE",
-    #     }
-    # ]
-
     return result
 
 
@@ -168,7 +136,7 @@ def SerializeToJson(context):
 @adapter(IFile)
 def SerializeFileToJson(context):
     result = {
-        '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
+        '@context': IContext(context),
         '@id': context.absolute_url(),
         '@type': 'File',
         'parent': {
@@ -200,7 +168,7 @@ def SerializeImageToJson(context):
         image_properties = ptool.imaging_properties
         allowed_sizes = image_properties.getProperty('allowed_sizes')
     result = {
-        '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
+        '@context': IContext(context),
         '@id': context.absolute_url(),
         '@type': 'Image',
         'parent': {

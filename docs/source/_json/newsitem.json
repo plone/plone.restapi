@@ -5,7 +5,12 @@ HTTP 200 OK
 content-type: application/json
 
 {
-  "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
+  "@context": [
+    "http://www.w3.org/ns/hydra/context.jsonld", 
+    {
+      "@vocab": "http://localhost:55001/plone/@@contexts#"
+    }
+  ], 
   "@id": "http://localhost:55001/plone/newsitem", 
   "@type": "News Item", 
   "contributors": [], 
@@ -17,6 +22,7 @@ content-type: application/json
   "exclude_from_nav": "False", 
   "expires": "2499-12-31T00:00:00+02:00", 
   "icon": "++resource++plone.dexterity.item.gif", 
+  "id": "newsitem", 
   "image": "http://localhost:55001/plone/newsitem/@@images/image", 
   "image_caption": "This is an image caption.", 
   "isPrincipiaFolderish": "0", 

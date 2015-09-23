@@ -1,31 +1,56 @@
 GET /plone/event
 Accept: application/json
 
-HTTP 200 OK
+HTTP 500 Internal Server Error
 content-type: application/json
 
-{
-  "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
-  "@id": "http://localhost:55001/plone/event", 
-  "@type": "Event", 
-  "contributors": [], 
-  "creators": [
-    "test_user_1_"
-  ], 
-  "description": "This is an event", 
-  "effective": "1969-12-31T00:00:00+02:00", 
-  "exclude_from_nav": "False", 
-  "expires": "2499-12-31T00:00:00+02:00", 
-  "icon": "++resource++plone.dexterity.item.gif", 
-  "isPrincipiaFolderish": "0", 
-  "language": "", 
-  "meta_type": "Dexterity Item", 
-  "parent": {
-    "@id": "http://localhost:55001/plone", 
-    "description": "", 
-    "title": "Plone site"
-  }, 
-  "relatedItems": [], 
-  "rights": "", 
-  "title": "Event"
-}
+  <h2>Site Error</h2>
+  <p>An error was encountered while publishing this resource.
+  </p>
+  <p><strong><type 'exceptions.TypeError'></strong></p>
+
+  Sorry, a site error occurred.<p><p>Traceback (innermost last):</p>
+<ul>
+
+<li>  Module ZPublisher.Publish, line 249, in publish_module_standard</li>
+
+<li>  Module ZPublisher.Publish, line 177, in publish</li>
+
+<li>  Module ZPublisher.Publish, line 138, in publish</li>
+
+<li>  Module ZPublisher.mapply, line 77, in mapply</li>
+
+<li>  Module ZPublisher.Publish, line 48, in call_object</li>
+
+<li>  Module plone.rest.service, line 21, in __call__</li>
+
+<li>  Module plone.restapi.services, line 14, in render</li>
+
+<li>  Module zope.component._api, line 102, in queryAdapter</li>
+
+<li>  Module zope.component.hookable, line 33, in __call__</li>
+
+<li>  Module zope.component.hooks, line 104, in adapter_hook</li>
+
+<li>  Module plone.restapi.serializer, line 104, in SerializeToJson</li>
+
+</ul><p>TypeError: 'datetime.datetime' object is not callable
+</p></p>
+  <hr noshade="noshade"/>
+
+  <p>Troubleshooting Suggestions</p>
+
+  <ul>
+  <li>The URL may be incorrect.</li>
+  <li>The parameters passed to this resource may be incorrect.</li>
+  <li>A resource that this resource relies on may be
+      encountering an error.</li>
+  </ul>
+
+  <p>For more detailed information about the error, please
+  refer to the error log.
+  </p>
+
+  <p>If the error persists please contact the site maintainer.
+  Thank you for your patience.
+  </p>

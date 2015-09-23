@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
 from plone.rest import Service
 from plone.restapi.interfaces import ISerializeToJson
+from zope.component import queryAdapter
 
 
-class DexterityGet(Service):
-
+class DefaultGetService(Service):
     def render(self):
-        return ISerializeToJson(self.context)
+        frame = self.request.get('frame', 'content')
+        return queryAdapter(
+            self.context,
+            interface=ISerializeToJson,
+            name=frame,
+            default={})
+
+
+class DexterityGet(DefaultGetService):
+    """ Default Dexterity Get
+    """
 
 
 # class DexterityPost(Service):
@@ -27,10 +37,9 @@ class DexterityGet(Service):
 #         return {'service': 'delete'}
 
 
-class PloneSiteRootGet(Service):
-
-    def render(self):
-        return ISerializeToJson(self.context)
+class PloneSiteRootGet(DefaultGetService):
+    """ Default Plone Get
+    """
 
 
 # class PloneSiteRootPost(Service):

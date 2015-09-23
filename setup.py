@@ -41,6 +41,7 @@ setup(name='plone.restapi',
           'setuptools',
           'plone.validatehook',
           'plone.rest',
+          'pyld',
           'z3c.jbot',
       ],
       extras_require={'test': [

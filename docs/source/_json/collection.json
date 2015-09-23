@@ -5,18 +5,30 @@ HTTP 200 OK
 content-type: application/json
 
 {
-  "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
+  "@context": [
+    "http://www.w3.org/ns/hydra/context.jsonld", 
+    {
+      "@vocab": "http://localhost:55001/plone/@@contexts#"
+    }
+  ], 
   "@id": "http://localhost:55001/plone/collection", 
   "@type": "Collection", 
   "contributors": [], 
   "creators": [
     "test_user_1_"
   ], 
+  "customViewFields": [
+    "Title", 
+    "Creator", 
+    "Type", 
+    "ModificationDate"
+  ], 
   "description": "This is a collection with two documents", 
   "effective": "1969-12-31T00:00:00+02:00", 
   "exclude_from_nav": "False", 
   "expires": "2499-12-31T00:00:00+02:00", 
   "icon": "++resource++plone.dexterity.item.gif", 
+  "id": "collection", 
   "isPrincipiaFolderish": "0", 
   "item_count": "30", 
   "language": "", 
@@ -24,16 +36,19 @@ content-type: application/json
   "member": [
     {
       "@id": "http://localhost:55001/plone/front-page", 
+      "@type": "Document", 
       "description": "Congratulations! You have successfully installed Plone.", 
       "title": "Welcome to Plone"
     }, 
     {
       "@id": "http://localhost:55001/plone/doc1", 
+      "@type": "Document", 
       "description": "", 
       "title": "Document 1"
     }, 
     {
       "@id": "http://localhost:55001/plone/doc2", 
+      "@type": "Document", 
       "description": "", 
       "title": "Document 2"
     }
