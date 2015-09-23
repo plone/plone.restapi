@@ -1,5 +1,10 @@
 language: python
-python: "2.7"
+python:
+  - 2.7
+cache:
+  pip: true
+  directories:
+    - $HOME/buildout-cache
 before_install:
   - pip install http://effbot.org/downloads/Imaging-1.1.7.tar.gz
 install:
