@@ -18,3 +18,7 @@ script:
 after_success:
   - pip install -q coveralls
   - coveralls
+notifications:
+  email:
+    - tisto@plone.org
+    - ramon.nb@gmail.com
