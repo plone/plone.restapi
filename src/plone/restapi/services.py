@@ -7,11 +7,16 @@ from zope.component import queryAdapter
 class DefaultGetService(Service):
     def render(self):
         frame = self.request.get('frame', 'content')
-        return queryAdapter(
+        adapter = queryAdapter(
             self.context,
             interface=ISerializeToJson,
             name=frame,
             default={})
+        if callable(adapter):
+            result = adapter()
+        else:
+            result = adapter
+        return result
 
 
 class DexterityGet(DefaultGetService):
