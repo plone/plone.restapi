@@ -4,6 +4,7 @@ from plone.app.textfield.value import RichTextValue
 from plone.restapi.testing import PLONE_RESTAPI_INTEGRATION_TESTING
 from plone.namedfile.file import NamedBlobImage
 from DateTime import DateTime
+from zope.component import queryAdapter
 
 import os
 import unittest
@@ -21,36 +22,36 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
 
     def test_serialize_returns_context(self):
         self.assertEqual(
-            ISerializeToJson(self.portal.doc1)['@context'],
-            u'http://www.w3.org/ns/hydra/context.jsonld'
+            queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content')['@context'],
+            ['http://www.w3.org/ns/hydra/context.jsonld', {'@vocab': 'http://nohost/plone/@@contexts#'}]
         )
 
     def test_serialize_returns_id(self):
         self.assertEqual(
-            ISerializeToJson(self.portal.doc1)['@id'],
+            queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content')['@id'],
             self.portal_url + '/doc1'
         )
 
     def test_serialize_returns_type(self):
         self.assertTrue(
-            ISerializeToJson(self.portal.doc1).get('@type'),
+            queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content').get('@type'),
             'The @type attribute should be present.'
         )
         self.assertEqual(
-            ISerializeToJson(self.portal.doc1)['@type'],
+            queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content')['@type'],
             u'Document'
         )
 
     def test_serialize_returns_title(self):
         self.assertEqual(
-            ISerializeToJson(self.portal.doc1)['title'],
+            queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content')['title'],
             u'Document 1'
         )
 
     def test_serialize_returns_desciption(self):
         self.portal.doc1.description = u'This is a document'
         self.assertEqual(
-            ISerializeToJson(self.portal.doc1)['description'],
+            queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content')['description'],
             u'This is a document'
         )
 
@@ -61,21 +62,21 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             'text/html'
         )
         self.assertEqual(
-            ISerializeToJson(self.portal.doc1).get('text'),
+            queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content').get('text'),
             u'<p>Lorem ipsum.</p>'
         )
 
     def test_serialize_returns_effective(self):
         self.portal.doc1.setEffectiveDate(DateTime('2014/04/04'))
         self.assertEqual(
-            ISerializeToJson(self.portal.doc1)['effective'],
+            queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content')['effective'],
             '2014-04-04T00:00:00'
         )
 
     def test_serialize_returns_expires(self):
         self.portal.doc1.setExpirationDate(DateTime('2017/01/01'))
         self.assertEqual(
-            ISerializeToJson(self.portal.doc1)['expires'],
+            queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content')['expires'],
             '2017-01-01T00:00:00'
         )
 
@@ -85,10 +86,11 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.portal.folder1.doc1.title = u'Document 1'
         self.portal.folder1.doc1.description = u'This is a document'
         self.assertEqual(
-            ISerializeToJson(self.portal.folder1)['member'],
+            queryAdapter(self.portal.folder1, interface=ISerializeToJson, name='content')['member'],
             [
                 {
                     u'@id': u'http://nohost/plone/folder1/doc1',
+                    u'@type': u'Document',
                     u'description': u'This is a document',
                     u'title': u'Document 1'
                 }
@@ -97,7 +99,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
 
     def test_serialize_returns_parent(self):
         self.assertTrue(
-            ISerializeToJson(self.portal.doc1).get('parent'),
+            queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content').get('parent'),
             'The parent attribute should be present.'
         )
         self.assertEqual(
@@ -106,13 +108,13 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 'title': self.portal.title,
                 'description': self.portal.description
             },
-            ISerializeToJson(self.portal.doc1)['parent']
+            queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content')['parent']
         )
 
     def test_serialize_does_not_returns_parent_on_root(self):
         self.assertEqual(
             {},
-            ISerializeToJson(self.portal).get('parent'),
+            queryAdapter(self.portal, interface=ISerializeToJson, name='content').get('parent'),
             'The parent attribute should be present, even on portal root.'
         )
         self.assertEqual(
@@ -121,33 +123,33 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 'title': self.portal.title,
                 'description': self.portal.description
             },
-            ISerializeToJson(self.portal.doc1)['parent'],
+            queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content')['parent'],
             'The parent attribute on portal root should be None'
         )
 
     def test_serialize_returns_site_root_type(self):
         self.assertTrue(
-            ISerializeToJson(self.portal).get('@type'),
+            queryAdapter(self.portal, interface=ISerializeToJson, name='content').get('@type'),
             'The @type attribute should be present.'
         )
         self.assertEqual(
-            ISerializeToJson(self.portal)['@type'],
+            queryAdapter(self.portal, interface=ISerializeToJson, name='content')['@type'],
             u'SiteRoot'
         )
 
     def test_serialize_ignores_underscore_values(self):
         self.assertFalse(
-            '__name__' in ISerializeToJson(self.portal.doc1)
+            '__name__' in queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content')
         )
         self.assertFalse(
-            'manage_options' in ISerializeToJson(self.portal.doc1)
+            'manage_options' in queryAdapter(self.portal.doc1, interface=ISerializeToJson, name='content')
         )
 
     def test_serialize_file(self):
         self.portal.invokeFactory('File', id='file1', title='File 1')
         self.assertEqual(
             '{0}/@@download'.format(self.portal.file1.absolute_url()),
-            ISerializeToJson(self.portal.file1).get('download')
+            queryAdapter(self.portal.file1, interface=ISerializeToJson, name='content').get('download')
         )
 
     def test_serialize_image(self):
@@ -160,11 +162,11 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         )
         self.assertEqual(
             '{0}/@@download'.format(self.portal.image1.absolute_url()),
-            ISerializeToJson(self.portal.image1).get('download')
+            queryAdapter(self.portal.image1, interface=ISerializeToJson, name='content').get('download')
         )
         self.assertEqual(
             [u'mini', u'thumb', u'large', u'listing', u'tile', u'preview', u'icon'],  # noqa
-            [x for x in ISerializeToJson(self.portal.image1).get('scales')]  # noqa
+            [x for x in queryAdapter(self.portal.image1, interface=ISerializeToJson, name='content').get('scales')]  # noqa
         )
 
     def test_serialize_to_json_collection(self):
@@ -187,24 +189,26 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
 
         self.assertEqual(
             u'Collection',
-            ISerializeToJson(self.portal.collection1).get('@type')
+            queryAdapter(self.portal.collection1, interface=ISerializeToJson, name='content').get('@type')
         )
         self.assertEqual(
             u'Collection',
-            ISerializeToJson(self.portal.collection1).get('@type')
+            queryAdapter(self.portal.collection1, interface=ISerializeToJson, name='content').get('@type')
         )
         self.assertEqual(
             [
                 {
                     u'@id': self.portal.doc1.absolute_url(),
+                    u'@type': 'Document',
                     u'description': u'',
                     u'title': u'Document 1'
                 },
                 {
                     u'@id': self.portal.doc2.absolute_url(),
+                    u'@type': 'Document',
                     u'description': u'',
                     u'title': u'Document 2'
                 }
             ],
-            ISerializeToJson(self.portal.collection1).get('member')
+            queryAdapter(self.portal.collection1, interface=ISerializeToJson, name='content').get('member')
         )

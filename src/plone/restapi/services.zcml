@@ -10,6 +10,7 @@
     method="GET"
     for="plone.dexterity.interfaces.IDexterityContent"
     factory=".services.DexterityGet"
+    cors_origin="*"
     />
 
   <!--

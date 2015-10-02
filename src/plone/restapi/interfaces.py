@@ -15,3 +15,8 @@ class IAPIRequest(Interface):
 class ISerializeToJson(Interface):
     """Adapter to serialize a Dexterity object into a JSON object.
     """
+
+
+class IContext(Interface):
+    """Adapter to get the context of JSON-LD on a context
+    """
