@@ -51,7 +51,7 @@ def save_response_for_documentation(filename, response):
     f.write('HTTP {} {}\n'.format(response.status_code, response.reason))
     for key, value in response.headers.items():
         if key.lower() in RESPONSE_HEADER_KEYS:
-            f.write('{}: {}\n'.format(key, value))
+            f.write('{}: {}\n'.format(key.lower(), value))
     f.write('\n')
     f.write(response.content)
     f.close()
