@@ -12,6 +12,12 @@ content-type: application/json
   "creators": [
     "test_user_1_"
   ], 
+  "customViewFields": [
+    "Title", 
+    "Creator", 
+    "Type", 
+    "ModificationDate"
+  ], 
   "description": "This is a collection with two documents", 
   "effective": "1969-12-31T00:00:00+02:00", 
   "exclude_from_nav": "False", 
