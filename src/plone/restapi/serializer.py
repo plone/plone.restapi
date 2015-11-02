@@ -20,6 +20,7 @@ from zope.schema import Datetime
 from zope.interface import implementer
 from zope.component import adapter
 from zope.component import getUtility
+from datetime import datetime
 
 
 try:
@@ -92,7 +93,9 @@ def SerializeToJson(context):
             # RichText
             if isinstance(schema_object, RichText):
                 result[title] = value.output
-            # DateTime
+            # datetime / DateTime
+            elif isinstance(value, datetime):
+                result[title] = value.isoformat()
             elif isinstance(schema_object, Datetime):
                 # Return DateTime in ISO-8601 format. See
                 # https://pypi.python.org/pypi/DateTime/3.0 and
