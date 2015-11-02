@@ -19,9 +19,9 @@ content-type: application/json
     "ModificationDate"
   ], 
   "description": "This is a collection with two documents", 
-  "effective": "1969-12-31T00:00:00+02:00", 
+  "effective": "1969-12-31T00:00:00+00:00", 
   "exclude_from_nav": "False", 
-  "expires": "2499-12-31T00:00:00+02:00", 
+  "expires": "2499-12-31T00:00:00+00:00", 
   "icon": "++resource++plone.dexterity.item.gif", 
   "isPrincipiaFolderish": "0", 
   "item_count": "30", 

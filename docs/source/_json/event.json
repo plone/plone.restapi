@@ -14,10 +14,10 @@ content-type: application/json
     "test_user_1_"
   ], 
   "description": "This is an event", 
-  "effective": "1969-12-31T00:00:00+02:00", 
+  "effective": "1969-12-31T00:00:00+00:00", 
   "end": "2013-01-01T12:00:00", 
   "exclude_from_nav": "False", 
-  "expires": "2499-12-31T00:00:00+02:00", 
+  "expires": "2499-12-31T00:00:00+00:00", 
   "icon": "++resource++plone.dexterity.item.gif", 
   "isPrincipiaFolderish": "0", 
   "language": "", 
