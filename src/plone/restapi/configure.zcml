@@ -20,7 +20,7 @@
 
   <adapter factory=".serializer.SerializeToJson" />
   <adapter factory=".serializer.SerializeSiteRootToJson" />
-  <adapter factory=".serializer.SerializeImageToJson" />
-  <adapter factory=".serializer.SerializeFileToJson" />
+
+  <include package=".serializer" />
 
 </configure>

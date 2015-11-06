@@ -126,17 +126,11 @@ After a successful POST, we can access the resource by sending a GET request to 
 Successful Response (200 OK)
 ----------------------------
 
-If a resource has been retrieved successfully, the server responds with '200 OK'::
+If a resource has been retrieved successfully, the server responds with '200 OK':
 
-  HTTP/1.1 200 OK
-  Content-Type: application/json
+.. literalinclude:: _json/document.json
+   :language: js
 
-  {
-      '@context': '/@@context.jsonld',
-      '@type': 'Document',
-      'id': 'my-document',
-      'title': 'My Document',
-  }
 
 Unsuccessful response (404 Not Found)
 -------------------------------------
@@ -319,6 +313,3 @@ Possible responses to a delete request are:
   * :ref:`404 Not Found` (if the resource does not exist)
   * :ref:`405 Not Allowed` (if deleting the resource is not allowed)
   * :ref:`500 Internal Server Error`
-
-
-

@@ -8,12 +8,25 @@ content-type: application/json
   "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone/file", 
   "@type": "File", 
+  "allow_discussion": null, 
+  "contributors": [], 
+  "creators": [
+    "test_user_1_", 
+    "admin"
+  ], 
   "description": "This is a file", 
-  "download": "http://localhost:55001/plone/file/@@download", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "file": "http://localhost:55001/plone/file/@@download/file", 
+  "language": "", 
   "parent": {
     "@id": "http://localhost:55001/plone", 
     "description": "", 
     "title": "Plone site"
   }, 
+  "relatedItems": [], 
+  "rights": "", 
+  "subjects": [], 
   "title": "My File"
 }
