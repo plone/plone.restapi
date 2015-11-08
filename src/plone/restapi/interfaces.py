@@ -39,3 +39,20 @@ class IFieldSerializer(Interface):
     def __call__():
         """Returns JSON compatible python data.
         """
+
+
+class IDeserializeFromJson(Interface):
+    """An adapter to deserialize a JSON object into an object in Plone."""
+
+
+class IFieldDeserializer(Interface):
+    """An adapter to deserialize a JSON value into a field value.
+    """
+
+    def __init__(field, context, request):
+        """Adapts a field, it's context and the request.
+        """
+
+    def __call__(value):
+        """Convert the provided JSON value to a field value.
+        """

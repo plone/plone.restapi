@@ -1,0 +1,8 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    i18n_domain="plone.restapi">
+
+  <adapter factory=".dxcontent.DeserializeFromJson" />
+  <adapter factory=".dxfields.DefaultFieldDeserializer" />
+
+</configure>

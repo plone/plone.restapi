@@ -12,6 +12,12 @@
     factory=".services.DexterityGet"
     />
 
+  <plone:service
+    method="PATCH"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".services.ContentPatch"
+    />
+
   <!--
   <plone:service
     method="POST"
