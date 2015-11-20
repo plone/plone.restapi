@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
+from plone.restapi.testing import RelativeSession
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
@@ -14,7 +15,6 @@ from zope.intid.interfaces import IIntIds
 
 import unittest
 import os
-import requests
 import transaction
 
 
@@ -27,6 +27,10 @@ class TestTraversal(unittest.TestCase):
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
+
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
     def test_get_document(self):
         self.portal.invokeFactory(
@@ -42,11 +46,7 @@ class TestTraversal(unittest.TestCase):
         )
         transaction.commit()
 
-        response = requests.get(
-            self.portal.doc1.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.doc1.absolute_url())
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -99,11 +99,7 @@ class TestTraversal(unittest.TestCase):
         self.portal.news1.image_caption = u'This is an image caption.'
         transaction.commit()
 
-        response = requests.get(
-            self.portal.news1.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.news1.absolute_url())
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -144,11 +140,7 @@ class TestTraversal(unittest.TestCase):
         )
         transaction.commit()
 
-        response = requests.get(
-            self.portal.folder1.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.folder1.absolute_url())
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -174,11 +166,7 @@ class TestTraversal(unittest.TestCase):
         )
 
     def test_get_site_root(self):
-        response = requests.get(
-            self.portal_url,
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.headers.get('Content-Type'),
@@ -200,12 +188,7 @@ class TestTraversal(unittest.TestCase):
         self.portal.setDefaultPage('front-page')
         transaction.commit()
 
-        response = requests.get(
-            self.portal_url,
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
-
+        response = self.api_session.get(self.portal_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.headers.get('Content-Type'),
@@ -240,11 +223,7 @@ class TestTraversal(unittest.TestCase):
         self.portal.file1.file = RelationValue(file_id)
         transaction.commit()
 
-        response = requests.get(
-            self.portal.file1.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.file1.absolute_url())
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -271,11 +250,7 @@ class TestTraversal(unittest.TestCase):
         )
         transaction.commit()
 
-        response = requests.get(
-            self.portal.img1.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.img1.absolute_url())
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.headers.get('Content-Type'),
