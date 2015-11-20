@@ -21,6 +21,8 @@ Contents
    error-handling
    http-status-codes
 
+   customization
+
 
 ..   hydra
 ..   item
@@ -48,4 +50,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-

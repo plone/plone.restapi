@@ -1,4 +1,9 @@
 # -*- coding: utf-8 -*-
+
+# pylint: disable=E0211, W0221
+# E0211: Method has no argument
+# W0221: Arguments number differs from overridden '__call__' method
+
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
@@ -15,3 +20,22 @@ class IAPIRequest(Interface):
 class ISerializeToJson(Interface):
     """Adapter to serialize a Dexterity object into a JSON object.
     """
+
+
+class IJsonCompatible(Interface):
+    """Convert a value to a JSON compatible data structure.
+    """
+
+
+class IFieldSerializer(Interface):
+    """The field serializer multi adapter serializes the field value into
+    JSON compatible python data.
+    """
+
+    def __init__(field, context, request):
+        """Adapts field, context and request.
+        """
+
+    def __call__():
+        """Returns JSON compatible python data.
+        """

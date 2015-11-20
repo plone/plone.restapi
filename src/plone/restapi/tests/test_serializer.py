@@ -146,8 +146,8 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
     def test_serialize_file(self):
         self.portal.invokeFactory('File', id='file1', title='File 1')
         self.assertEqual(
-            '{0}/@@download'.format(self.portal.file1.absolute_url()),
-            ISerializeToJson(self.portal.file1).get('download')
+            '{0}/@@download/file'.format(self.portal.file1.absolute_url()),
+            ISerializeToJson(self.portal.file1).get('file')
         )
 
     def test_serialize_image(self):
@@ -158,14 +158,18 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             contentType='image/png',
             filename=u'image.png'
         )
-        self.assertEqual(
-            '{0}/@@download'.format(self.portal.image1.absolute_url()),
-            ISerializeToJson(self.portal.image1).get('download')
-        )
-        self.assertEqual(
-            [u'mini', u'thumb', u'large', u'listing', u'tile', u'preview', u'icon'],  # noqa
-            [x for x in ISerializeToJson(self.portal.image1).get('scales')]  # noqa
-        )
+
+        obj_url = self.portal.image1.absolute_url()
+        self.assertDictEqual(
+            {u'original': u'{}/@@images/image'.format(obj_url),
+             u'mini': u'{}/@@images/image/mini'.format(obj_url),
+             u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
+             u'large': u'{}/@@images/image/large'.format(obj_url),
+             u'listing': u'{}/@@images/image/listing'.format(obj_url),
+             u'tile': u'{}/@@images/image/tile'.format(obj_url),
+             u'preview': u'{}/@@images/image/preview'.format(obj_url),
+             u'icon': u'{}/@@images/image/icon'.format(obj_url)},
+            ISerializeToJson(self.portal.image1)['image'])
 
     def test_serialize_to_json_collection(self):
         self.portal.invokeFactory('Collection', id='collection1')

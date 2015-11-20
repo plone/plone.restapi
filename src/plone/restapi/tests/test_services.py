@@ -131,8 +131,8 @@ class TestTraversal(unittest.TestCase):
             u'This is an image caption.',
             response.json()['image_caption']
         )
-        self.assertEqual(
-            u'http://localhost:55001/plone/news1/@@images/image',
+        self.assertDictContainsSubset(
+            {'original': u'http://localhost:55001/plone/news1/@@images/image'},
             response.json()['image']
         )
 
