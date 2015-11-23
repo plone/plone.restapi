@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
+from plone.restapi.testing import RelativeSession
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
@@ -17,7 +18,6 @@ from zope.intid.interfaces import IIntIds
 import unittest2 as unittest
 
 import os
-import requests
 
 REQUEST_HEADER_KEYS = [
     'accept'
@@ -66,6 +66,11 @@ class TestTraversal(unittest.TestCase):
         self.request = self.layer['request']
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
+
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         self.portal.invokeFactory('Document', id='front-page')
         self.document = self.portal['front-page']
@@ -90,11 +95,7 @@ class TestTraversal(unittest.TestCase):
         )
 
     def test_documentation_document(self):
-        response = requests.get(
-            self.document.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.document.absolute_url())
         save_response_for_documentation('document.json', response)
 
     def test_documentation_news_item(self):
@@ -115,11 +116,7 @@ class TestTraversal(unittest.TestCase):
         self.portal.newsitem.image_caption = u'This is an image caption.'
         import transaction
         transaction.commit()
-        response = requests.get(
-            self.portal.newsitem.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.newsitem.absolute_url())
         save_response_for_documentation('newsitem.json', response)
 
     def test_documentation_event(self):
@@ -130,11 +127,7 @@ class TestTraversal(unittest.TestCase):
         self.portal.event.end = datetime(2013, 1, 1, 12, 0)
         import transaction
         transaction.commit()
-        response = requests.get(
-            self.portal.event.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.event.absolute_url())
         save_response_for_documentation('event.json', response)
 
     def test_documentation_link(self):
@@ -144,11 +137,7 @@ class TestTraversal(unittest.TestCase):
         self.portal.remoteUrl = 'http://plone.org'
         import transaction
         transaction.commit()
-        response = requests.get(
-            self.portal.link.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.link.absolute_url())
         save_response_for_documentation('link.json', response)
 
     def test_documentation_file(self):
@@ -168,11 +157,7 @@ class TestTraversal(unittest.TestCase):
         self.portal.file.file = RelationValue(file_id)
         import transaction
         transaction.commit()
-        response = requests.get(
-            self.portal.file.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.file.absolute_url())
         save_response_for_documentation('file.json', response)
 
     def test_documentation_image(self):
@@ -187,11 +172,7 @@ class TestTraversal(unittest.TestCase):
         )
         import transaction
         transaction.commit()
-        response = requests.get(
-            self.portal.image.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.image.absolute_url())
         save_response_for_documentation('image.json', response)
 
     def test_documentation_folder(self):
@@ -210,11 +191,7 @@ class TestTraversal(unittest.TestCase):
         )
         import transaction
         transaction.commit()
-        response = requests.get(
-            self.portal.folder.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.folder.absolute_url())
         save_response_for_documentation('folder.json', response)
 
     def test_documentation_collection(self):
@@ -239,25 +216,13 @@ class TestTraversal(unittest.TestCase):
         )
         import transaction
         transaction.commit()
-        response = requests.get(
-            self.portal.collection.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.collection.absolute_url())
         save_response_for_documentation('collection.json', response)
 
     def test_documentation_siteroot(self):
-        response = requests.get(
-            self.portal.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get(self.portal.absolute_url())
         save_response_for_documentation('siteroot.json', response)
 
     def test_documentation_404_not_found(self):
-        response = requests.get(
-            self.portal.absolute_url() + '/non-existing-resource',
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get('non-existing-resource')
         save_response_for_documentation('404_not_found.json', response)

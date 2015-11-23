@@ -4,13 +4,13 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
+from plone.restapi.testing import RelativeSession
 from Products.Five.browser import BrowserView
 from zope.component import provideAdapter
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import json
-import requests
 import transaction
 import unittest
 
@@ -38,6 +38,11 @@ class TestErrorHandling(unittest.TestCase):
         self.request = self.layer['request']
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
+
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         self.portal.invokeFactory('Document', id='document1')
         self.document = self.portal.document1
@@ -49,11 +54,7 @@ class TestErrorHandling(unittest.TestCase):
 
     @unittest.skip('Not working since we moved to plone.rest')
     def test_404_not_found(self):
-        response = requests.get(
-            self.portal_url + '/non-existing-resource',
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+        response = self.api_session.get('non-existing-resource')
         self.assertEqual(response.status_code, 404)
         self.assertEqual(
             response.headers.get('Content-Type'),
@@ -69,10 +70,7 @@ class TestErrorHandling(unittest.TestCase):
 
     @unittest.skip('Not working since we moved to plone.rest')
     def test_401_unauthorized(self):
-        response = requests.get(
-            self.document_url,
-            headers={'Accept': 'application/json'}
-        )
+        response = self.api_session.get(self.document_url)
         self.assertEqual(response.status_code, 401)
         self.assertEqual(
             response.headers.get('Content-Type'),
@@ -97,10 +95,7 @@ class TestErrorHandling(unittest.TestCase):
         import transaction
         transaction.commit()
 
-        response = requests.get(
-            self.portal_url + '/internal_server_error',
-            headers={'Accept': 'application/json'}
-        )
+        response = self.api_session.get('internal_server_error')
 
         self.assertEqual(response.status_code, 500)
         self.assertEqual(
