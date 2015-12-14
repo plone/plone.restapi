@@ -18,6 +18,12 @@
     factory=".services.ContentPatch"
     />
 
+  <plone:service
+    method="POST"
+    for="Products.CMFCore.interfaces.IFolderish"
+    factory=".services.FolderPost"
+    />
+
   <!--
   <plone:service
     method="POST"
