@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
 from Products.Archetypes.interfaces import IBaseObject
