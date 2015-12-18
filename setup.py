@@ -48,6 +48,7 @@ setup(name='plone.restapi',
           'plone.app.robotframework',
           'plone.app.testing [robot] >= 4.2.2',
           'requests',
+          'Products.ATContentTypes',
       ]},
       entry_points="""
       # -*- Entry points: -*-
