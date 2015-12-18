@@ -7,6 +7,41 @@
     <adapter factory=".dxfields.FileFieldSerializer" />
     <adapter factory=".dxfields.ImageFieldSerializer" />
 
+    <adapter factory=".atfields.DefaultFieldSerializer" />
+
+    <!-- Specific adapter of ITextField, because ITextField inherits IFileField -->
+    <adapter factory=".atfields.DefaultFieldSerializer"
+        for="Products.Archetypes.interfaces.ITextField
+             Products.Archetypes.interfaces.IBaseObject
+             zope.interface.Interface"
+        provides="plone.restapi.interfaces.IFieldSerializer" />
+         />
+
+    <adapter factory=".atfields.FileFieldSerializer"
+        for="Products.Archetypes.interfaces.IFileField
+             Products.Archetypes.interfaces.IBaseObject
+             zope.interface.Interface"
+        provides="plone.restapi.interfaces.IFieldSerializer" />
+
+    <adapter factory=".atfields.FileFieldSerializer"
+        for="plone.app.blob.interfaces.IBlobField
+             Products.Archetypes.interfaces.IBaseObject
+             zope.interface.Interface"
+        provides="plone.restapi.interfaces.IFieldSerializer" />
+
+    <adapter factory=".atfields.ImageFieldSerializer"
+        for="plone.app.blob.interfaces.IBlobImageField
+             Products.Archetypes.interfaces.IBaseObject
+             zope.interface.Interface"
+        provides="plone.restapi.interfaces.IFieldSerializer" />
+
+    <adapter factory=".atfields.ImageFieldSerializer"
+        for="Products.Archetypes.interfaces.IImageField
+             Products.Archetypes.interfaces.IBaseObject
+             zope.interface.Interface"
+        provides="plone.restapi.interfaces.IFieldSerializer" />
+
+
     <adapter factory=".converters.date_converter" />
     <adapter factory=".converters.default_converter" />
     <adapter factory=".converters.dict_converter" />
