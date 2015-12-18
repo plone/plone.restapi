@@ -14,13 +14,13 @@ class TestArchetypesSerializers(TestCase):
 
     def test_document(self):
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
-        _ = self.portal.invokeFactory(
+        document_id = self.portal.invokeFactory(
             id='document',
             type_name='Document',
             title='Document Title',
             text='<p>Some Text</p>')
 
-        document = self.portal.get('document')
+        document = self.portal.get(document_id)
         self.maxDiff = None
 
         data_dict = ISerializeToJson(document)
