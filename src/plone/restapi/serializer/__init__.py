@@ -153,8 +153,8 @@ def SerializeATToJson(context):
                     portal.absolute_url(),
                     '/'.join(member.getPhysicalPath())
                 ),
-                'title': member.title,
-                'description': member.description
+                'title': member.Title(),
+                'description': member.Description()
             }
             for member in context.results()
         ]
