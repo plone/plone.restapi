@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
 from DateTime import DateTime
-from Products.Archetypes.event import ObjectInitializedEvent
-from Products.Archetypes.interfaces.base import IBaseObject
 from plone.rest import Service
 from plone.restapi.deserializer import DeserializationError
+from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
 from random import randint
 from zExceptions import BadRequest
-from zope import event
 from zope.component import queryMultiAdapter
 from zope.container.interfaces import INameChooser
 
-import json
 import transaction
 
 
@@ -51,12 +48,7 @@ class FolderPost(Service):
     """
 
     def render(self):
-        try:
-            data = json.loads(self.request.get('BODY', '{}'))
-        except ValueError:
-            raise DeserializationError('No JSON object could be decoded')
-        if not isinstance(data, dict):
-            raise DeserializationError('Malformed body')
+        data = json_body(self.request)
 
         type_ = data.get('@type', None)
         id_ = data.get('id', None)

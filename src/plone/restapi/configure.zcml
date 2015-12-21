@@ -7,12 +7,23 @@
 
   <includeDependencies package="." />
 
+  <five:registerPackage package="." initialize=".initialize" />
+
   <genericsetup:registerProfile
       name="default"
       title="plone.restapi"
       directory="profiles/default"
       description="RESTful hypermedia API for Plone."
       provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:registerProfile
+      name="testing"
+      title="plone.restapi"
+      directory="profiles/testing"
+      description="Adds sample content types for testing"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
       />
 
   <include package="plone.rest" file="configure.zcml" />

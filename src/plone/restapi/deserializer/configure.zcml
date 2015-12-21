@@ -5,4 +5,9 @@
   <adapter factory=".dxcontent.DeserializeFromJson" />
   <adapter factory=".dxfields.DefaultFieldDeserializer" />
 
+  <adapter factory=".atcontent.DeserializeFromJson" />
+  <adapter factory=".atfields.DefaultFieldDeserializer" />
+  <adapter factory=".atfields.FileFieldDeserializer" />
+  <adapter factory=".atfields.ReferenceFieldDeserializer" />
+
 </configure>
