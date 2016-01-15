@@ -9,8 +9,8 @@ from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.testing import PLONE_RESTAPI_INTEGRATION_TESTING
-from z3c.relationfield.relation import RelationValue
 from zope.component import getMultiAdapter
+from zope.schema.interfaces import ValidationError
 
 import unittest
 
@@ -78,7 +78,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
     def test_datetime_deserialization_returns_datetime(self):
         value = self.deserialize('test_datetime_field',
                                  u'2015-12-20T10:39:54.361Z')
-        self.assertTrue(isinstance(value, datetime))
+        self.assertTrue(isinstance(value, datetime), 'Not a <datetime>')
         self.assertEqual(datetime(2015, 12, 20, 10, 39, 54, 361000), value)
 
     def test_datetime_deserialization_handles_timezone(self):
@@ -224,6 +224,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         value = self.deserialize('test_namedimage_field', {
             u'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
             u'encoding': u'base64',
+            u'content-type': u'image/gif',
         })
         self.assertTrue(isinstance(value, namedfile.NamedImage),
                         'Not a <NamedImage>')
@@ -241,41 +242,33 @@ class TestDXFieldDeserializer(unittest.TestCase):
         value = self.deserialize('test_namedblobimage_field', {
             u'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
             u'encoding': u'base64',
+            u'content-type': u'image/gif',
         })
         self.assertTrue(isinstance(value, namedfile.NamedBlobImage),
                         'Not a <NamedBlobImage>')
         self.assertTrue(value.data.startswith('GIF89a'))
 
-    def test_relationchoice_deserialization_from_uid_returns_relationvalue(
-            self):
+    def test_relationchoice_deserialization_from_uid_returns_document(self):
         doc2 = self.portal[self.portal.invokeFactory(
             'DXTestDocument', id='doc2', title='Referenceable Document')]
         value = self.deserialize('test_relationchoice_field',
                                  unicode(doc2.UID()))
-        self.assertTrue(isinstance(value, RelationValue),
-                        'Not a <RelationValue>')
-        self.assertEqual(doc2, value.to_object)
+        self.assertEqual(doc2, value)
 
-    def test_relationchoice_deserialization_from_url_returns_relationvalue(
-            self):
+    def test_relationchoice_deserialization_from_url_returns_document(self):
         doc2 = self.portal[self.portal.invokeFactory(
             'DXTestDocument', id='doc2', title='Referenceable Document')]
         value = self.deserialize('test_relationchoice_field',
                                  unicode(doc2.absolute_url()))
-        self.assertTrue(isinstance(value, RelationValue),
-                        'Not a <RelationValue>')
-        self.assertEqual(doc2, value.to_object)
+        self.assertEqual(doc2, value)
 
-    def test_relationchoice_deserialization_from_path_returns_relationvalue(
-            self):
+    def test_relationchoice_deserialization_from_path_returns_document(self):
         doc2 = self.portal[self.portal.invokeFactory(
             'DXTestDocument', id='doc2', title='Referenceable Document')]
         value = self.deserialize('test_relationchoice_field', u'/doc2')
-        self.assertTrue(isinstance(value, RelationValue),
-                        'Not a <RelationValue>')
-        self.assertEqual(doc2, value.to_object)
+        self.assertEqual(doc2, value)
 
-    def test_relationlist_deserialization_returns_list(self):
+    def test_relationlist_deserialization_returns_list_of_documents(self):
         doc2 = self.portal[self.portal.invokeFactory(
             'DXTestDocument', id='doc2', title='Referenceable Document')]
         doc3 = self.portal[self.portal.invokeFactory(
@@ -283,5 +276,81 @@ class TestDXFieldDeserializer(unittest.TestCase):
         value = self.deserialize('test_relationlist_field',
                                  [unicode(doc2.UID()), unicode(doc3.UID())])
         self.assertTrue(isinstance(value, list), 'Not a <list>')
-        self.assertEqual(doc2, value[0].to_object)
-        self.assertEqual(doc3, value[1].to_object)
+        self.assertEqual(doc2, value[0])
+        self.assertEqual(doc3, value[1])
+
+    def test_default_deserializer_validates_value(self):
+        with self.assertRaises(ValidationError):
+            self.deserialize('test_maxlength_field', u'01234567890')
+
+    def test_datetime_deserializer_handles_invalid_value(self):
+        with self.assertRaises(ValueError) as cm:
+            self.deserialize('test_datetime_field',
+                             u'2015-15-15T10:39:54.361Z')
+        self.assertEqual(u'Invalid date: 2015-15-15T10:39:54.361Z',
+                         cm.exception.message)
+
+    def test_datetime_deserializer_validates_value(self):
+        with self.assertRaises(ValidationError):
+            self.deserialize('test_datetime_min_field',
+                             u'1999-12-20T10:39:54.361Z')
+
+    def test_collection_deserializer_validates_value(self):
+        with self.assertRaises(ValidationError) as cm:
+            self.deserialize('test_list_value_type_field', [1, '2', 3])
+        self.assertEqual(u'Wrong contained type', cm.exception.doc())
+
+    def test_dict_deserializer_validates_value(self):
+        with self.assertRaises(ValidationError) as cm:
+            self.deserialize('test_dict_key_type_field', {'k': 'v'})
+        self.assertEqual(u'Wrong contained type', cm.exception.doc())
+
+    def test_time_deserializer_handles_invalid_value(self):
+        with self.assertRaises(ValueError) as cm:
+            self.deserialize('test_time_field',
+                             u'midnight')
+        self.assertEqual(u'Invalid time: midnight',
+                         cm.exception.message)
+
+    def test_time_deserializer_validates_value(self):
+        with self.assertRaises(ValidationError) as cm:
+            self.deserialize('test_time_min_field', u'00:39:54.361Z')
+        self.assertEqual(u'Value is too small',
+                         cm.exception.doc())
+
+    def test_timedelta_deserializer_handles_invalid_value(self):
+        with self.assertRaises(ValueError) as cm:
+            self.deserialize('test_timedelta_field',
+                             u'2h')
+        self.assertEqual(
+            u'unsupported type for timedelta seconds component: unicode',
+            cm.exception.message)
+
+    def test_timedelta_deserializer_validates_value(self):
+        with self.assertRaises(ValidationError) as cm:
+            self.deserialize('test_timedelta_min_field', 50)
+        self.assertEqual(u'Value is too small',
+                         cm.exception.doc())
+
+    def test_namedfield_deserializer_validates_value(self):
+        with self.assertRaises(ValidationError) as cm:
+            self.deserialize('test_namedimage_field', {
+                u'data': u'Spam and eggs!',
+                u'content-type': u'text/plain',
+            })
+        self.assertEqual(u'Invalid image file', cm.exception.doc())
+
+    def test_richtextfield_deserializer_validates_value(self):
+        with self.assertRaises(ValidationError) as cm:
+            self.deserialize('test_richtext_field', {
+                u'data': u'Spam and eggs!',
+                u'content-type': u'text/xml',
+            })
+        self.assertEqual(u'Object is of wrong type.', cm.exception.doc())
+
+    def test_relationchoicefield_deserializer_validates_value(self):
+        self.portal[self.portal.invokeFactory(
+            'DXTestDocument', id='doc3', title='Referenceable Document')]
+        with self.assertRaises(ValidationError) as cm:
+            self.deserialize('test_relationchoice_field', u'/doc3')
+        self.assertEqual(u'Constraint not satisfied', cm.exception.doc())

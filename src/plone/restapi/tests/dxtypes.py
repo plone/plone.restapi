@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
+from datetime import time
+from datetime import timedelta
 from plone.app.textfield import RichText
+from plone.app.vocabularies.catalog import CatalogSource
+from plone.autoform.directives import write_permission
 from plone.dexterity.content import Item
 from plone.namedfile import field as namedfile
 from plone.supermodel import model
 from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList
 from zope import schema
+from zope.interface import Invalid
+from zope.interface import invariant
 
 
 class IDXTestDocumentSchema(model.Schema):
@@ -37,7 +44,8 @@ class IDXTestDocumentSchema(model.Schema):
         required=False, key_type=schema.ASCIILine(), value_type=schema.Tuple())
 
     # plone.app.textfield
-    test_richtext_field = RichText(required=False)
+    test_richtext_field = RichText(
+        required=False, allowed_mime_types=['text/html', 'text/plain'])
 
     # plone.namedfile fields
     test_namedfile_field = namedfile.NamedFile(required=False)
@@ -47,10 +55,35 @@ class IDXTestDocumentSchema(model.Schema):
 
     # z3c.relationfield
     test_relationchoice_field = RelationChoice(
-        required=False, vocabulary="plone.app.vocabularies.Catalog")
+        required=False, source=CatalogSource(id=['doc1', 'doc2']))
     test_relationlist_field = RelationList(
         required=False, value_type=RelationChoice(
             vocabulary="plone.app.vocabularies.Catalog"))
+
+    # Test fields for validation
+    test_readonly_field = schema.TextLine(required=False, readonly=True)
+    test_maxlength_field = schema.TextLine(required=False, max_length=10)
+    test_constraint_field = schema.TextLine(required=False,
+                                            constraint=lambda x: u'00' in x)
+    test_datetime_min_field = schema.Datetime(required=False,
+                                              min=datetime(2000, 1, 1))
+    test_time_min_field = schema.Time(required=False, min=time(1))
+    test_timedelta_min_field = schema.Timedelta(required=False,
+                                                min=timedelta(100))
+    test_list_value_type_field = schema.List(required=False,
+                                             value_type=schema.Int())
+    test_dict_key_type_field = schema.Dict(required=False,
+                                           key_type=schema.Int())
+    write_permission(test_write_permission_field='cmf.ManagePortal')
+    test_write_permission_field = schema.TextLine(required=False)
+
+    test_invariant_field1 = schema.TextLine(required=False)
+    test_invariant_field2 = schema.TextLine(required=False)
+
+    @invariant
+    def validate_same_value(data):
+        if data.test_invariant_field1 != data.test_invariant_field2:
+            raise Invalid(u'Must have same values')
 
 
 class DXTestDocument(Item):

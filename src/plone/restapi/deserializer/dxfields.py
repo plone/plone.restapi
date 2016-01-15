@@ -9,8 +9,6 @@ from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedField
 from plone.restapi.interfaces import IFieldDeserializer
 from z3c.relationfield.interfaces import IRelationChoice
-from z3c.relationfield.relation import RelationValue
-from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryUtility
@@ -24,7 +22,6 @@ from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
-from zope.schema.interfaces import ValidationError
 
 
 @implementer(IFieldDeserializer)
@@ -39,10 +36,7 @@ class DefaultFieldDeserializer(object):
     def __call__(self, value):
         if not isinstance(value, unicode):
             return value
-        try:
-            return IFromUnicode(self.field).fromUnicode(value)
-        except ValidationError as e:
-            raise BadRequest(e.doc())
+        return IFromUnicode(self.field).fromUnicode(value)
 
 
 @implementer(IFieldDeserializer)
@@ -53,10 +47,13 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
         try:
             # Parse ISO 8601 string with Zope's DateTime module
             # and convert to a timezone naive datetime in local time
-            return DateTime(value).toZone(DateTime().localZone()).asdatetime(
+            value = DateTime(value).toZone(DateTime().localZone()).asdatetime(
             ).replace(tzinfo=None)
         except (SyntaxError, DateTimeError) as e:
-            raise BadRequest(e.message)
+            raise ValueError(e.message)
+
+        self.field.validate(value)
+        return value
 
 
 @implementer(IFieldDeserializer)
@@ -75,10 +72,10 @@ class CollectionFieldDeserializer(DefaultFieldDeserializer):
             for i, v in enumerate(value):
                 value[i] = deserializer(v)
 
-        try:
-            return self.field._type(value)
-        except TypeError as e:
-            raise BadRequest(e.message)
+        value = self.field._type(value)
+        self.field.validate(value)
+
+        return value
 
 
 @implementer(IFieldDeserializer)
@@ -100,6 +97,8 @@ class DictFieldDeserializer(DefaultFieldDeserializer):
         new_value = {}
         for k, v in value.items():
             new_value[kdeserializer(k)] = vdeserializer(v)
+
+        self.field.validate(new_value)
         return new_value
 
 
@@ -109,12 +108,16 @@ class TimeFieldDeserializer(DefaultFieldDeserializer):
 
     def __call__(self, value):
         try:
-            # Parse ISO 8601 string with Zope's DateTime module
-            # and convert to a timezone naive time in local time
-            return DateTime(u'2000-01-01T' + value).toZone(DateTime(
+            # Create an ISO 8601 datetime string and parse it with Zope's
+            # DateTime module and then convert it to a timezone naive time
+            # in local time
+            value = DateTime(u'2000-01-01T' + value).toZone(DateTime(
             ).localZone()).asdatetime().replace(tzinfo=None).time()
-        except (SyntaxError, DateTimeError) as e:
-            raise BadRequest(e.message)
+        except (SyntaxError, DateTimeError):
+            raise ValueError(u'Invalid time: {}'.format(value))
+
+        self.field.validate(value)
+        return value
 
 
 @implementer(IFieldDeserializer)
@@ -123,9 +126,12 @@ class TimedeltaFieldDeserializer(DefaultFieldDeserializer):
 
     def __call__(self, value):
         try:
-            return timedelta(seconds=value)
+            value = timedelta(seconds=value)
         except TypeError as e:
-            raise BadRequest(e.message)
+            raise ValueError(e.message)
+
+        self.field.validate(value)
+        return value
 
 
 @implementer(IFieldDeserializer)
@@ -136,7 +142,8 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
         content_type = 'application/octet-stream'
         filename = None
         if isinstance(value, dict):
-            content_type = value.get(u'content-type', content_type)
+            content_type = value.get(u'content-type', content_type).encode(
+                'utf8')
             filename = value.get(u'filename', filename)
             if u'encoding' in value:
                 data = value.get('data', '').decode(value[u'encoding'])
@@ -144,8 +151,11 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
                 data = value.get('data', '')
         else:
             data = value
-        return self.field._type(
+
+        value = self.field._type(
             data=data, contentType=content_type, filename=filename)
+        self.field.validate(value)
+        return value
 
 
 @implementer(IFieldDeserializer)
@@ -161,12 +171,15 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
             data = value.get(u'data', u'')
         else:
             data = value
-        return RichTextValue(
+
+        value = RichTextValue(
             raw=data,
             mimeType=content_type,
             outputMimeType=self.field.output_mime_type,
             encoding=encoding,
         )
+        self.field.validate(value)
+        return value
 
 
 @implementer(IFieldDeserializer)
@@ -174,32 +187,30 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
 class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
 
     def __call__(self, value):
-        intids = queryUtility(IIntIds)
-        # Resolve by intid
+        obj = None
+
         if isinstance(value, int):
-            to_obj = intids.queryObject(value)
-            if to_obj:
-                return RelationValue(value)
+            # Resolve by intid
+            intids = queryUtility(IIntIds)
+            obj = intids.queryObject(value)
         elif isinstance(value, basestring):
             portal = getMultiAdapter((self.context, self.request),
                                      name='plone_portal_state').portal()
             portal_url = portal.absolute_url()
             if value.startswith(portal_url):
                 # Resolve by URL
-                to_obj = portal.restrictedTraverse(
+                obj = portal.restrictedTraverse(
                     value[len(portal_url) + 1:].encode('utf8'), None)
-                to_id = intids.queryId(to_obj)
             elif value.startswith('/'):
                 # Resolve by path
-                to_obj = portal.restrictedTraverse(
+                obj = portal.restrictedTraverse(
                     value.encode('utf8').lstrip('/'), None)
-                to_id = intids.queryId(to_obj)
             else:
                 # Resolve by UID
                 catalog = getToolByName(self.context, 'portal_catalog')
                 brain = catalog(UID=value)
                 if brain:
-                    to_id = intids.queryId(brain[0].getObject())
+                    obj = brain[0].getObject()
 
-            if to_id:
-                return RelationValue(to_id)
+        self.field.validate(obj)
+        return obj
