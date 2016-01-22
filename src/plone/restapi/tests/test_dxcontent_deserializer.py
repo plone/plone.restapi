@@ -5,6 +5,7 @@ from plone.dexterity.interfaces import IDexterityItem
 from plone.restapi.deserializer import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_INTEGRATION_TESTING
+from plone.restapi.tests.dxtypes import ITestAnnotationsBehavior
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.component import provideHandler
@@ -80,3 +81,15 @@ class TestDXContentDeserializer(unittest.TestCase):
                                   ' "test_invariant_field2": "Bar"}')
         self.assertEquals(u'Must have same values',
                           cm.exception.message[0]['message'])
+
+    def test_deserializer_updates_behavior_field_value(self):
+        self.deserialize(body='{"test_behavior_field": "My Value"}')
+        self.assertEquals(u'My Value', self.portal.doc1.test_behavior_field)
+
+    def test_deserializer_updates_behavior_field_value_in_annotations(self):
+        self.deserialize(
+            body='{"test_annotations_behavior_field": "My Value"}')
+        self.assertEquals(
+            u'My Value',
+            ITestAnnotationsBehavior(self.portal.doc1)
+            .test_annotations_behavior_field)

@@ -20,8 +20,9 @@
   <property name="klass">plone.restapi.tests.dxtypes.DXTestDocument</property>
 
   <property name="behaviors">
-    <!-- <element value="plone.app.content.interfaces.INameFromTitle"/> -->
-   </property>
+    <element value="plone.restapi.tests.dxtypes.ITestBehavior"/>
+    <element value="plone.restapi.tests.dxtypes.ITestAnnotationsBehavior"/>
+  </property>
 
   <!-- View information -->
   <property name="link_target"></property>

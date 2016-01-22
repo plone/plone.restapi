@@ -5,6 +5,7 @@ from datetime import timedelta
 from plone.app.textfield import RichText
 from plone.app.vocabularies.catalog import CatalogSource
 from plone.autoform.directives import write_permission
+from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.content import Item
 from plone.namedfile import field as namedfile
 from plone.supermodel import model
@@ -13,6 +14,7 @@ from z3c.relationfield.schema import RelationList
 from zope import schema
 from zope.interface import Invalid
 from zope.interface import invariant
+from zope.interface import provider
 
 
 class IDXTestDocumentSchema(model.Schema):
@@ -88,3 +90,15 @@ class IDXTestDocumentSchema(model.Schema):
 
 class DXTestDocument(Item):
     """A Dexterity based test type containing a set of standard fields."""
+
+
+@provider(IFormFieldProvider)
+class ITestBehavior(model.Schema):
+
+    test_behavior_field = schema.TextLine(required=False)
+
+
+@provider(IFormFieldProvider)
+class ITestAnnotationsBehavior(model.Schema):
+
+    test_annotations_behavior_field = schema.TextLine(required=False)

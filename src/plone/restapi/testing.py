@@ -29,6 +29,11 @@ class PlonerestapiLayer(PloneSandboxLayer):
             plone.restapi,
             context=configurationContext
         )
+        xmlconfig.file(
+            'testing.zcml',
+            plone.restapi,
+            context=configurationContext
+        )
 
         z2.installProduct(app, 'plone.restapi')
 
