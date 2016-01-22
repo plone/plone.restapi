@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.PortalContent import PortalContent
+from Products.CMFCore.utils import getToolByName
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
+from plone.app.testing import TEST_USER_PASSWORD
+from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
+
 import requests
 import transaction
 import unittest
@@ -17,12 +22,15 @@ class TestContentPatch(unittest.TestCase):
     def setUp(self):
         self.app = self.layer['app']
         self.portal = self.layer['portal']
-        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        login(self.portal, SITE_OWNER_NAME)
         self.portal.invokeFactory(
             'Document',
             id='doc1',
             title='My Document'
         )
+        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool.doActionFor(self.portal.doc1, 'publish')
         transaction.commit()
 
     def test_patch_document(self):
@@ -61,3 +69,12 @@ class TestContentPatch(unittest.TestCase):
         )
         self.assertEqual(501, response.status_code)
         self.assertIn('Undeserializable Type', response.text)
+
+    def test_patch_document_returns_401_unauthorized(self):
+        response = requests.patch(
+            self.portal.doc1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
+            data='{"title": "Patched Document"}',
+        )
+        self.assertEqual(401, response.status_code)

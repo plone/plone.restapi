@@ -1,9 +1,14 @@
 # -*- coding: utf-8 -*-
+from Products.CMFCore.utils import getToolByName
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
+from plone.app.testing import TEST_USER_PASSWORD
+from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
+
 import requests
 import transaction
 import unittest
@@ -16,12 +21,15 @@ class TestFolderCreate(unittest.TestCase):
     def setUp(self):
         self.app = self.layer['app']
         self.portal = self.layer['portal']
-        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        login(self.portal, SITE_OWNER_NAME)
         self.portal.invokeFactory(
             'Folder',
             id='folder1',
             title='My Folder'
         )
+        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool.doActionFor(self.portal.folder1, 'publish')
         transaction.commit()
 
     def test_post_to_folder_creates_document(self):
@@ -80,3 +88,16 @@ class TestFolderCreate(unittest.TestCase):
             },
         )
         self.assertEqual(400, response.status_code)
+
+    def test_post_to_folder_returns_401_unauthorized(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My Document",
+            },
+        )
+        self.assertEqual(401, response.status_code)

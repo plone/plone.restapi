@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from AccessControl import Unauthorized
+from AccessControl import getSecurityManager
 from DateTime import DateTime
 from plone.rest import Service
 from plone.restapi.deserializer import DeserializationError
@@ -22,6 +24,10 @@ class DexterityGet(Service):
 class ContentPatch(Service):
 
     def render(self):
+        sm = getSecurityManager()
+        if not sm.checkPermission('Modify portal content', self.context):
+            raise Unauthorized
+
         deserializer = queryMultiAdapter((self.context, self.request),
                                          IDeserializeFromJson)
         if deserializer is None:
@@ -48,6 +54,10 @@ class FolderPost(Service):
     """
 
     def render(self):
+        sm = getSecurityManager()
+        if not sm.checkPermission('Add portal content', self.context):
+            raise Unauthorized
+
         data = json_body(self.request)
 
         type_ = data.get('@type', None)
