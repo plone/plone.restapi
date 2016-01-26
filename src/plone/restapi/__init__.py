@@ -2,9 +2,6 @@
 from AccessControl import allow_module
 allow_module('json')
 
-from Products.Archetypes.ArchetypeTool import process_types, listTypes
-from Products.CMFCore import permissions
-
 import pkg_resources
 
 try:
@@ -17,6 +14,8 @@ else:
 
 def initialize(context):
     if REGISTER_TEST_TYPES:
+        from Products.Archetypes.ArchetypeTool import process_types, listTypes
+        from Products.CMFCore import permissions
         from Products.CMFCore import utils
         from plone.restapi.tests.attypes import PROJECTNAME
 
