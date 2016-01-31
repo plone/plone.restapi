@@ -98,7 +98,7 @@ class FolderPost(Service):
                 message='Cannot deserialize type {}'.format(obj.portal_type)))
 
         try:
-            deserializer()
+            deserializer(validate_all=True)
         except DeserializationError as e:
             self.request.response.setStatus(400)
             return dict(error=dict(

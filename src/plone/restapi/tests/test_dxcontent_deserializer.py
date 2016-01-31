@@ -28,11 +28,11 @@ class TestDXContentDeserializer(unittest.TestCase):
             test_textline_field=u'Test Document',
             test_readonly_field=u'readonly')
 
-    def deserialize(self, body='{}'):
+    def deserialize(self, body='{}', validate_all=False):
         self.request['BODY'] = body
         deserializer = getMultiAdapter((self.portal.doc1, self.request),
                                        IDeserializeFromJson)
-        return deserializer()
+        return deserializer(validate_all)
 
     def test_deserializer_raises_with_invalid_body(self):
         with self.assertRaises(DeserializationError) as cm:
@@ -93,3 +93,15 @@ class TestDXContentDeserializer(unittest.TestCase):
             u'My Value',
             ITestAnnotationsBehavior(self.portal.doc1)
             .test_annotations_behavior_field)
+
+    def test_deserializer_raises_if_required_value_is_missing(self):
+        with self.assertRaises(BadRequest) as cm:
+            self.deserialize(body='{"test_textline_field": "My Value"}',
+                             validate_all=True)
+        self.assertEquals(u'Required input is missing.',
+                          cm.exception.message[0]['message'])
+
+    def test_deserializer_succeeds_if_required_value_is_provided(self):
+        self.deserialize(body='{"test_required_field": "My Value"}',
+                         validate_all=True)
+        self.assertEquals(u'My Value', self.portal.doc1.test_required_field)

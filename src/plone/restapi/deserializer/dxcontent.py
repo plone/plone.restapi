@@ -32,7 +32,7 @@ class DeserializeFromJson(object):
         self.sm = getSecurityManager()
         self.permission_cache = {}
 
-    def __call__(self):
+    def __call__(self, validate_all=False):
         data = json_body(self.request)
 
         modified = False
@@ -77,6 +77,21 @@ class DeserializeFromJson(object):
                         field_data[name] = value
                         dm.set(value)
                         modified = True
+
+                elif validate_all:
+                    # Never validate the changeNote of p.a.versioningbehavior
+                    # The Versionable adapter always returns an empty string
+                    # which is the wrong type. Should be unicode and should be
+                    # fixed in p.a.versioningbehavior
+                    if name == 'changeNote':
+                        continue
+                    dm = queryMultiAdapter((self.context, field), IDataManager)
+                    bound = field.bind(self.context)
+                    try:
+                        bound.validate(dm.get())
+                    except ValidationError as e:
+                        errors.append({
+                            'message': e.doc(), 'field': name, 'error': e})
 
         # Validate schemata
         for schema, field_data in schema_data.items():

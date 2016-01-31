@@ -63,6 +63,7 @@ class IDXTestDocumentSchema(model.Schema):
             vocabulary="plone.app.vocabularies.Catalog"))
 
     # Test fields for validation
+    test_required_field = schema.TextLine(required=True)
     test_readonly_field = schema.TextLine(required=False, readonly=True)
     test_maxlength_field = schema.TextLine(required=False, max_length=10)
     test_constraint_field = schema.TextLine(required=False,
