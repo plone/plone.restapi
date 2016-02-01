@@ -32,7 +32,7 @@ class TestDXContentDeserializer(unittest.TestCase):
         self.request['BODY'] = body
         deserializer = getMultiAdapter((self.portal.doc1, self.request),
                                        IDeserializeFromJson)
-        return deserializer(validate_all)
+        return deserializer(validate_all=validate_all)
 
     def test_deserializer_raises_with_invalid_body(self):
         with self.assertRaises(DeserializationError) as cm:

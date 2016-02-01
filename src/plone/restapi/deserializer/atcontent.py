@@ -5,6 +5,7 @@ from Products.Archetypes.interfaces import IBaseObject
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import IFieldDeserializer
+from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.event import notify
@@ -22,7 +23,7 @@ class DeserializeFromJson(object):
         self.context = context
         self.request = request
 
-    def __call__(self, validate=True):
+    def __call__(self, validate_all=False):
         data = json_body(self.request)
 
         obj = self.context
@@ -45,10 +46,15 @@ class DeserializeFromJson(object):
                 modified = True
 
         if modified:
-            if validate:
-                errors = obj.validate(data=True, metadata=True)
-                if errors:
-                    raise ValueError(errors)
+            errors = obj.validate(data=True, metadata=True)
+            if not validate_all:
+                errors = {f: e for f, e in errors.items() if f in data}
+            if errors:
+                errors = [{
+                    'message': e,
+                    'field': f,
+                    'error': 'ValidationError'} for f, e in errors.items()]
+                raise BadRequest(errors)
 
             if obj.checkCreationFlag():
                 obj.unmarkCreationFlag()

@@ -20,6 +20,7 @@ ATTestDocumentSchema = ATDocumentSchema.copy() + atapi.Schema((
     atapi.ImageField('testImageField'),
     atapi.ReferenceField('testReferenceField', relationship='testrelation'),
 
+    atapi.StringField('testRequiredField', required=True),
     atapi.StringField('testReadonlyField', mode='r'),
     atapi.StringField('testURLField', validators=('isURL',)),
 ))
