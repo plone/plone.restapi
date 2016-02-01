@@ -2,6 +2,7 @@
 from AccessControl import Unauthorized
 from AccessControl import getSecurityManager
 from DateTime import DateTime
+from plone.app.content.interfaces import INameFromTitle
 from plone.rest import Service
 from plone.restapi.deserializer import DeserializationError
 from plone.restapi.deserializer import json_body
@@ -108,7 +109,14 @@ class FolderPost(Service):
         # Rename if generated id
         if not id_:
             chooser = INameChooser(self.context)
-            name = chooser.chooseName(title, obj)
+            # INameFromTitle adaptable objects should not get a name
+            # suggestion. NameChooser would prefer the given name instead of
+            # the one provided by the INameFromTitle adapter.
+            name_from_title = INameFromTitle(obj, None)
+            if name_from_title is None:
+                name = chooser.chooseName(title, obj)
+            else:
+                name = chooser.chooseName(None, obj)
             transaction.savepoint(optimistic=True)
             self.context.manage_renameObject(new_id, name)
 

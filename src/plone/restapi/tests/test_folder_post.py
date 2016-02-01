@@ -74,6 +74,40 @@ class TestFolderCreate(unittest.TestCase):
         transaction.begin()
         self.assertIn('my-document', self.portal.folder1)
 
+    def test_post_without_id_creates_id_from_title_for_archetypes(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "ATTestDocument",
+                "title": "My Document",
+                "testRequiredField": "My Value"
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        self.assertIn('my-document', self.portal.folder1)
+
+    def test_post_without_id_creates_id_from_filename(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "File",
+                "title": "My File",
+                "file": {
+                    "filename": "test.txt",
+                    "data": "Spam and Eggs",
+                    "content_type": "text/plain",
+                },
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        self.assertIn('test.txt', self.portal.folder1)
+
     def test_post_with_id_already_in_use_returns_400(self):
         self.portal.folder1.invokeFactory('Document', 'mydocument')
         transaction.commit()
