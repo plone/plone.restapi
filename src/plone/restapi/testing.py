@@ -29,9 +29,17 @@ class PlonerestapiLayer(PloneSandboxLayer):
             plone.restapi,
             context=configurationContext
         )
+        xmlconfig.file(
+            'testing.zcml',
+            plone.restapi,
+            context=configurationContext
+        )
+
+        z2.installProduct(app, 'plone.restapi')
 
     def setUpPloneSite(self, portal):
         applyProfile(portal, 'plone.restapi:default')
+        applyProfile(portal, 'plone.restapi:testing')
 
 PLONE_RESTAPI_FIXTURE = PlonerestapiLayer()
 PLONE_RESTAPI_INTEGRATION_TESTING = IntegrationTesting(

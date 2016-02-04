@@ -44,6 +44,7 @@ setup(name='plone.restapi',
           'z3c.jbot',
       ],
       extras_require={'test': [
+          'Products.Archetypes',
           'plone.app.contenttypes',
           'plone.app.robotframework',
           'plone.app.testing [robot] >= 4.2.2',
