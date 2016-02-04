@@ -15,6 +15,7 @@ from zope import schema
 from zope.interface import Invalid
 from zope.interface import invariant
 from zope.interface import provider
+from zope.schema.interfaces import IContextAwareDefaultFactory
 
 
 class IDXTestDocumentSchema(model.Schema):
@@ -87,6 +88,17 @@ class IDXTestDocumentSchema(model.Schema):
     def validate_same_value(data):
         if data.test_invariant_field1 != data.test_invariant_field2:
             raise Invalid(u'Must have same values')
+
+    # Test fields with default values
+    test_default_value_field = schema.TextLine(
+        required=True, default=u'Default')
+
+    @provider(IContextAwareDefaultFactory)
+    def default_factory(context):
+        return u'DefaultFactory'
+
+    test_default_factory_field = schema.TextLine(
+        required=True, defaultFactory=default_factory)
 
 
 class DXTestDocument(Item):

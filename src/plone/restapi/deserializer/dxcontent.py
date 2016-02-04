@@ -75,8 +75,9 @@ class DeserializeFromJson(object):
                             'message': e.doc(), 'field': name, 'error': e})
                     else:
                         field_data[name] = value
-                        dm.set(value)
-                        modified = True
+                        if value != dm.get():
+                            dm.set(value)
+                            modified = True
 
                 elif validate_all:
                     # Never validate the changeNote of p.a.versioningbehavior

@@ -105,3 +105,25 @@ class TestDXContentDeserializer(unittest.TestCase):
         self.deserialize(body='{"test_required_field": "My Value"}',
                          validate_all=True)
         self.assertEquals(u'My Value', self.portal.doc1.test_required_field)
+
+    def test_deserializer_does_not_store_default_value(self):
+        # XXX: Dexterity has an odd behavior with default values.
+        # If a field's value is set to it's default value, it is not stored
+        # because z3c.form only updates a field's value if the new value is
+        # different from the previous one. Dexterity has a fallback to lookup
+        # an attribute's value from the schema's default value if the attribute
+        # doesn't exist. Thus the previous value is the default value and the
+        # field doesn't get updated if the new value is also the default value.
+        # Right now, we want to have the same behavior in the API for
+        # consistency reasons.
+        self.deserialize(body='{"test_default_value_field": "Default"}')
+        self.assertNotIn('test_default_value_field', dir(self.portal.doc1),
+                         'Default value unexpectedly stored.')
+
+    def test_deserializer_passes_validation_with_not_provided_defaults(self):
+        self.deserialize(body='{"test_required_field": "My Value"}',
+                         validate_all=True)
+        self.assertEquals(u'Default',
+                          self.portal.doc1.test_default_value_field)
+        self.assertEquals(u'DefaultFactory',
+                          self.portal.doc1.test_default_factory_field)
