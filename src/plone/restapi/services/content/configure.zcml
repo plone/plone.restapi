@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <plone:service
+    method="GET"
+    for="plone.dexterity.interfaces.IDexterityContent"
+    factory=".get.DexterityGet"
+    />
+
+  <plone:service
+    method="GET"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".get.PloneSiteRootGet"
+    />
+
+  <plone:service
+    method="PATCH"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".update.ContentPatch"
+    />
+
+  <plone:service
+    method="POST"
+    for="Products.CMFCore.interfaces.IFolderish"
+    factory=".add.FolderPost"
+    />
+
+</configure>
