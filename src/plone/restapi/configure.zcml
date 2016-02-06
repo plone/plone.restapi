@@ -29,8 +29,10 @@
   <include package="plone.rest" file="configure.zcml" />
   <include file="services.zcml" />
 
+  <adapter factory=".serializer.SerializeATToJson" />
   <adapter factory=".serializer.SerializeToJson" />
   <adapter factory=".serializer.SerializeSiteRootToJson" />
+
 
   <include package=".serializer" />
 

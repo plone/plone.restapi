@@ -152,3 +152,8 @@ class PloneSiteRootGet(Service):
 #
 #     def render(self):
 #         return {'service': 'options'}
+
+
+class ArchetypesGet(Service):
+    def render(self):
+        return ISerializeToJson(self.context)

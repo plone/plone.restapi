@@ -59,4 +59,12 @@
     />
   -->
 
+
+  <!-- Archetypes -->
+  <plone:service
+    method="GET"
+    for="Products.Archetypes.interfaces.IBaseObject"
+    factory=".services.ArchetypesGet"
+    />
+
 </configure>

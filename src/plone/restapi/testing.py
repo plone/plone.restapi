@@ -8,6 +8,7 @@ from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import applyProfile
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import FunctionalTesting
+from plone.app.testing.bbb import PTC_FIXTURE
 from urlparse import urljoin
 from urlparse import urlparse
 
@@ -49,6 +50,33 @@ PLONE_RESTAPI_INTEGRATION_TESTING = IntegrationTesting(
 PLONE_RESTAPI_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PlonerestapiLayer:Functional"
+)
+
+
+class PlonerestapiATLayer(PloneSandboxLayer):
+    defaultBases = (PTC_FIXTURE,)
+
+    def setUpZope(self, app, configurationContext):
+        import plone.restapi
+        xmlconfig.file(
+            'configure.zcml',
+            plone.restapi,
+            context=configurationContext
+        )
+
+    def setUpPloneSite(self, portal):
+        applyProfile(portal, 'plone.restapi:default')
+
+PLONE_RESTAPI_AT_FIXTURE = PlonerestapiATLayer()
+
+PLONE_RESTAPI_AT_INTEGRATION_TESTING = IntegrationTesting(
+    bases=(PLONE_RESTAPI_AT_FIXTURE,),
+    name="PlonerestapiATLayer:Integration"
+)
+
+PLONE_RESTAPI_AT_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(PLONE_RESTAPI_AT_FIXTURE, z2.ZSERVER_FIXTURE),
+    name="PlonerestapiATLayer:Functional"
 )
 
 
