@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISerializeToJson
 from plone.app.textfield.value import RichTextValue
-from plone.restapi.testing import PLONE_RESTAPI_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.namedfile.file import NamedBlobImage
 from DateTime import DateTime
 
@@ -11,7 +11,7 @@ import unittest
 
 class TestSerializeToJsonAdapter(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_INTEGRATION_TESTING
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
         self.app = self.layer['app']

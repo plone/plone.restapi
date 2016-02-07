@@ -4,7 +4,7 @@ from plone.app.testing import setRoles
 from plone.dexterity.interfaces import IDexterityItem
 from plone.restapi.deserializer import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.testing import PLONE_RESTAPI_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import ITestAnnotationsBehavior
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
@@ -16,7 +16,7 @@ import unittest
 
 class TestDXContentDeserializer(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_INTEGRATION_TESTING
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer['portal']

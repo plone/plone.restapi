@@ -2,8 +2,10 @@
 from Products.Archetypes.interfaces import IBaseObject
 from Products.Archetypes.interfaces import IObjectEditedEvent
 from Products.Archetypes.interfaces import IObjectInitializedEvent
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import setRoles
 from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.testing import PLONE_RESTAPI_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.component import provideHandler
@@ -13,11 +15,12 @@ import unittest
 
 class TestATContentDeserializer(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_INTEGRATION_TESTING
+    layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
+        setRoles(self.portal, TEST_USER_ID, ['Contributor'])
 
         self.doc1 = self.portal[self.portal.invokeFactory(
             'ATTestDocument', id='doc1', title='Test Document')]
