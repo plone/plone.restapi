@@ -2,29 +2,9 @@ GET /plone/non-existing-resource
 Accept: application/json
 
 HTTP 404 Not Found
-content-type: text/html; charset=iso-8859-15
+content-type: application/json
 
-  <h2>Site Error</h2>
-  <p>An error was encountered while publishing this resource.
-  </p>
-  <p><strong>Resource not found</strong></p>
-
-  Sorry, the requested resource does not exist.<p>Check the URL and try again.</p><p><b>Resource:</b> http://localhost:55001/plone/non-existing-resource</p>
-  <hr noshade="noshade"/>
-
-  <p>Troubleshooting Suggestions</p>
-
-  <ul>
-  <li>The URL may be incorrect.</li>
-  <li>The parameters passed to this resource may be incorrect.</li>
-  <li>A resource that this resource relies on may be
-      encountering an error.</li>
-  </ul>
-
-  <p>For more detailed information about the error, please
-  refer to the error log.
-  </p>
-
-  <p>If the error persists please contact the site maintainer.
-  Thank you for your patience.
-  </p>
+{
+  "message": "  <h2>Site Error</h2>\n  <p>An error was encountered while publishing this resource.\n  </p>\n  <p><strong>Resource not found</strong></p>\n\n  Sorry, the requested resource does not exist.<p>Check the URL and try again.</p><p><b>Resource:</b> http://localhost:55001/plone/non-existing-resource</p>\n  <hr noshade=\"noshade\"/>\n\n  <p>Troubleshooting Suggestions</p>\n\n  <ul>\n  <li>The URL may be incorrect.</li>\n  <li>The parameters passed to this resource may be incorrect.</li>\n  <li>A resource that this resource relies on may be\n      encountering an error.</li>\n  </ul>\n\n  <p>For more detailed information about the error, please\n  refer to the error log.\n  </p>\n\n  <p>If the error persists please contact the site maintainer.\n  Thank you for your patience.\n  </p>", 
+  "type": "NotFound"
+}
