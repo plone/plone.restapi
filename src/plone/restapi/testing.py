@@ -38,6 +38,7 @@ class PlonerestapiLayer(PloneSandboxLayer):
         z2.installProduct(app, 'plone.restapi')
 
     def setUpPloneSite(self, portal):
+        applyProfile(portal, 'Products.Archetypes:Archetypes')
         applyProfile(portal, 'plone.restapi:default')
         applyProfile(portal, 'plone.restapi:testing')
 
