@@ -4,12 +4,12 @@ import unittest2 as unittest
 from Products.CMFCore.utils import getToolByName
 
 from plone.restapi.testing import \
-    PLONE_RESTAPI_INTEGRATION_TESTING
+    PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
 
 class TestExample(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_INTEGRATION_TESTING
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
         self.app = self.layer['app']

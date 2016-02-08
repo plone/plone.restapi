@@ -9,7 +9,7 @@ from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
-from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from unittest2 import TestCase
 from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
@@ -18,7 +18,7 @@ import json
 
 
 class TestDexterityFieldSerializing(TestCase):
-    layer = PLONE_RESTAPI_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.portal = self.layer['portal']

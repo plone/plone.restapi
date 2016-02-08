@@ -8,7 +8,7 @@ from plone import namedfile
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.interfaces import IFieldDeserializer
-from plone.restapi.testing import PLONE_RESTAPI_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
 from zope.schema.interfaces import ValidationError
 
@@ -17,7 +17,7 @@ import unittest
 
 class TestDXFieldDeserializer(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_INTEGRATION_TESTING
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer['portal']

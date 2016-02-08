@@ -3,7 +3,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.Five.browser import BrowserView
 from zope.component import provideAdapter
@@ -31,7 +31,7 @@ class InternalServerErrorView(BrowserView):
 
 class TestErrorHandling(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.app = self.layer['app']

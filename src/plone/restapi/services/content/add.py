@@ -11,7 +11,9 @@ from random import randint
 from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
 from zope.container.interfaces import INameChooser
+from zope.interface import alsoProvides
 
+import plone.protect.interfaces
 import transaction
 
 
@@ -32,6 +34,11 @@ class FolderPost(Service):
 
         if not type_:
             raise BadRequest("Property '@type' is required")
+
+        # Disable CSRF protection
+        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
 
         # Generate a temporary id if the id is not given
         if not id_:

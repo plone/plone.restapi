@@ -5,11 +5,15 @@ cache:
   pip: true
   directories:
     - $HOME/buildout-cache
+env:
+  - PLONE_VERSION=4.3.x
+  - PLONE_VERSION=5.0.x
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
   - virtualenv .
   - bin/pip install --upgrade pip setuptools zc.buildout
 install:
+  - sed -ie "s#plone-x.x.x.cfg#plone-$PLONE_VERSION.cfg#" travis.cfg
   - bin/buildout -N -t 3 -c travis.cfg
 script:
   - bin/code-analysis

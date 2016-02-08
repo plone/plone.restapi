@@ -2,12 +2,12 @@
 from plone.app.contenttypes.behaviors.richtext import IRichText
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from unittest2 import TestCase
 
 
 class TestDexteritySerializers(TestCase):
-    layer = PLONE_RESTAPI_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.portal = self.layer['portal']

@@ -7,7 +7,8 @@ from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.testing import login
 from plone.app.testing import setRoles
-from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 
 import requests
 import transaction
@@ -16,7 +17,7 @@ import unittest
 
 class TestFolderCreate(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.app = self.layer['app']
@@ -74,21 +75,6 @@ class TestFolderCreate(unittest.TestCase):
         transaction.begin()
         self.assertIn('my-document', self.portal.folder1)
 
-    def test_post_without_id_creates_id_from_title_for_archetypes(self):
-        response = requests.post(
-            self.portal.folder1.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-            json={
-                "@type": "ATTestDocument",
-                "title": "My Document",
-                "testRequiredField": "My Value"
-            },
-        )
-        self.assertEqual(201, response.status_code)
-        transaction.begin()
-        self.assertIn('my-document', self.portal.folder1)
-
     def test_post_without_id_creates_id_from_filename(self):
         response = requests.post(
             self.portal.folder1.absolute_url(),
@@ -135,3 +121,37 @@ class TestFolderCreate(unittest.TestCase):
             },
         )
         self.assertEqual(401, response.status_code)
+
+
+class TestFolderCreateAT(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer['app']
+        self.portal = self.layer['portal']
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        login(self.portal, TEST_USER_NAME)
+        self.portal.invokeFactory(
+            'Folder',
+            id='folder1',
+            title='My Folder'
+        )
+        # wftool = getToolByName(self.portal, 'portal_workflow')
+        # wftool.doActionFor(self.portal.folder1, 'publish')
+        transaction.commit()
+
+    def test_post_without_id_creates_id_from_title_for_archetypes(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
+            json={
+                "@type": "ATTestDocument",
+                "title": "My Document",
+                "testRequiredField": "My Value"
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        self.assertIn('my-document', self.portal.folder1)

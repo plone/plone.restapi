@@ -8,7 +8,7 @@ from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.testing import login
 from plone.app.testing import setRoles
-from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
 import requests
 import transaction
@@ -17,7 +17,7 @@ import unittest
 
 class TestContentPatch(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.app = self.layer['app']

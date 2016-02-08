@@ -6,13 +6,13 @@ from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
 from plone.app.textfield.value import RichTextValue
 from plone.restapi.serializer.converters import json_compatible
-from plone.restapi.testing import PLONE_RESTAPI_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from unittest2 import TestCase
 import json
 
 
 class TestJsonCompatibleConverters(TestCase):
-    layer = PLONE_RESTAPI_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def test_None(self):
         self.assertEquals(None, json_compatible(None))
