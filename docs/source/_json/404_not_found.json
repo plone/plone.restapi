@@ -5,6 +5,6 @@ HTTP 404 Not Found
 content-type: application/json
 
 {
-  "message": "  <h2>Site Error</h2>\n  <p>An error was encountered while publishing this resource.\n  </p>\n  <p><strong>Resource not found</strong></p>\n\n  Sorry, the requested resource does not exist.<p>Check the URL and try again.</p><p><b>Resource:</b> http://localhost:55001/plone/non-existing-resource</p>\n  <hr noshade=\"noshade\"/>\n\n  <p>Troubleshooting Suggestions</p>\n\n  <ul>\n  <li>The URL may be incorrect.</li>\n  <li>The parameters passed to this resource may be incorrect.</li>\n  <li>A resource that this resource relies on may be\n      encountering an error.</li>\n  </ul>\n\n  <p>For more detailed information about the error, please\n  refer to the error log.\n  </p>\n\n  <p>If the error persists please contact the site maintainer.\n  Thank you for your patience.\n  </p>", 
+  "message": "Resource not found: http://localhost:55001/plone/non-existing-resource", 
   "type": "NotFound"
 }

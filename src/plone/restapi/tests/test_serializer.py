@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import setRoles
 from plone.restapi.interfaces import ISerializeToJson
 from plone.app.textfield.value import RichTextValue
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from Products.CMFCore.utils import getToolByName
 from plone.namedfile.file import NamedBlobImage
 from DateTime import DateTime
 
@@ -16,8 +19,14 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
     def setUp(self):
         self.app = self.layer['app']
         self.portal = self.layer['portal']
+        self.workflowTool = getToolByName(self.portal, 'portal_workflow')
         self.portal_url = self.portal.absolute_url()
         self.portal.invokeFactory('Document', id='doc1', title='Document 1')
+        self.portal.invokeFactory(
+            'DXTestDocument',
+            id='dxdoc',
+            title='DX Test Document'
+        )
 
     def test_serialize_returns_context(self):
         self.assertEqual(
@@ -47,7 +56,25 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             u'Document 1'
         )
 
-    def test_serialize_returns_desciption(self):
+    def test_serialize_can_read_as_manager(self):
+        self.portal.dxdoc.test_read_permission_field = u'Test Read Permission'
+        self.workflowTool.doActionFor(self.portal.dxdoc, 'publish')
+        setRoles(self.portal, TEST_USER_ID, ['Member', 'Manager'])
+        self.assertIn(
+            'Test Read Permission',
+            ISerializeToJson(self.portal.dxdoc).values()
+        )
+
+    def test_serialize_cannot_read_as_member(self):
+        self.portal.dxdoc.test_read_permission_field = u'Test Read Permission'
+        self.workflowTool.doActionFor(self.portal.dxdoc, 'publish')
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        self.assertNotIn(
+            'Test Read Permission',
+            ISerializeToJson(self.portal.dxdoc).values()
+        )
+
+    def test_serialize_returns_description(self):
         self.portal.doc1.description = u'This is a document'
         self.assertEqual(
             ISerializeToJson(self.portal.doc1)['description'],

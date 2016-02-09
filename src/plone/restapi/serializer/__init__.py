@@ -18,6 +18,12 @@ from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.schema import getFields
 
+from plone.autoform.interfaces import READ_PERMISSIONS_KEY
+from AccessControl import getSecurityManager
+from plone.supermodel.utils import mergedTaggedValueDict
+from zope.component import queryUtility
+from zope.security.interfaces import IPermission
+
 
 def lookup_field_serializer(context, field):
     objects = (field, context, context.REQUEST)
@@ -93,7 +99,30 @@ def SerializeToJson(context):
 
     for schema in iterSchemata(context):
         for field_name, field in getFields(schema).items():
+            read_permissions = mergedTaggedValueDict(
+                schema, READ_PERMISSIONS_KEY)
+
+            if not check_permission(context, read_permissions.get(field_name)):
+                continue
             value = lookup_field_serializer(context, field)()
             result[json_compatible(field_name)] = value
 
     return result
+
+
+def check_permission(context, permission_name):
+    permission_cache = {}
+
+    sm = getSecurityManager()
+    if permission_name is None:
+        return True
+
+    if permission_name not in permission_cache:
+        permission = queryUtility(IPermission,
+                                  name=permission_name)
+        if permission is None:
+            permission_cache[permission_name] = True
+        else:
+            permission_cache[permission_name] = bool(
+                sm.checkPermission(permission.title, context))
+    return permission_cache[permission_name]
