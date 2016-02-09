@@ -8,6 +8,9 @@ cache:
 env:
   - PLONE_VERSION=4.3.x
   - PLONE_VERSION=5.0.x
+matrix:
+  allow_failures:
+    - PLONE_VERSION=5.0.x
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
   - virtualenv .
