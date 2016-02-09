@@ -47,7 +47,7 @@ https://github.com/plone/plone.restapi/milestones
 Live Demo
 =========
 
-Heroku live demo:: http://arcane-sierra-8467.herokuapp.com/Plone/@@json
+Heroku live demo:: http://stormy-headland-44390.herokuapp.com/Plone/@@json
 
 .. note:: The demo works best with a browser plugin that makes json links clickable in the browser (e.g. https://addons.mozilla.org/de/firefox/addon/jsonview/).
 
