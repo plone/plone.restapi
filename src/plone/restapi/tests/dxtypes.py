@@ -4,6 +4,7 @@ from datetime import time
 from datetime import timedelta
 from plone.app.textfield import RichText
 from plone.app.vocabularies.catalog import CatalogSource
+from plone.autoform.directives import read_permission
 from plone.autoform.directives import write_permission
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.content import Item
@@ -80,6 +81,9 @@ class IDXTestDocumentSchema(model.Schema):
                                            key_type=schema.Int())
     write_permission(test_write_permission_field='cmf.ManagePortal')
     test_write_permission_field = schema.TextLine(required=False)
+
+    read_permission(test_read_permission_field='cmf.ManagePortal')
+    test_read_permission_field = schema.TextLine(required=False)
 
     test_invariant_field1 = schema.TextLine(required=False)
     test_invariant_field2 = schema.TextLine(required=False)
