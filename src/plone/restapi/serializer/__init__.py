@@ -5,7 +5,7 @@ from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 
-from plone.app.contenttypes.interfaces import ICollection
+from plone.restapi import HAS_PLONE_APP_CONTENTTYPES
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
@@ -77,19 +77,24 @@ def SerializeToJson(context):
             }
             for member in context.objectValues()
         ]
-    if ICollection.providedBy(context):
-        portal = getSite()
-        result['member'] = [
-            {
-                '@id': '{0}/{1}'.format(
-                    portal.absolute_url(),
-                    '/'.join(member.getPhysicalPath())
-                ),
-                'title': member.title,
-                'description': member.description
-            }
-            for member in context.results()
-        ]
+
+    if HAS_PLONE_APP_CONTENTTYPES:
+        # Conditional import in order to avoid a hard dependency on p.a.ct
+        from plone.app.contenttypes.interfaces import ICollection
+
+        if ICollection.providedBy(context):
+            portal = getSite()
+            result['member'] = [
+                {
+                    '@id': '{0}/{1}'.format(
+                        portal.absolute_url(),
+                        '/'.join(member.getPhysicalPath())
+                    ),
+                    'title': member.title,
+                    'description': member.description
+                }
+                for member in context.results()
+            ]
 
     for schema in iterSchemata(context):
         for field_name, field in getFields(schema).items():

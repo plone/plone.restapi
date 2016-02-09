@@ -12,6 +12,14 @@ else:
     REGISTER_TEST_TYPES = True
 
 
+try:
+    pkg_resources.get_distribution('plone.app.contenttypes')
+except pkg_resources.DistributionNotFound:
+    HAS_PLONE_APP_CONTENTTYPES = False
+else:
+    HAS_PLONE_APP_CONTENTTYPES = True
+
+
 def initialize(context):
     if REGISTER_TEST_TYPES:
         from Products.Archetypes.ArchetypeTool import process_types, listTypes
