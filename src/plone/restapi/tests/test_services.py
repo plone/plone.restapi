@@ -179,7 +179,7 @@ class TestTraversal(unittest.TestCase):
             response.json().get('@id')
         )
         self.assertEqual(
-            'SiteRoot',
+            'Plone Site',
             response.json().get('@type')
         )
 
@@ -201,7 +201,7 @@ class TestTraversal(unittest.TestCase):
             self.portal_url
         )
         self.assertEqual(
-            'SiteRoot',
+            'Plone Site',
             response.json().get('@type')
         )
 

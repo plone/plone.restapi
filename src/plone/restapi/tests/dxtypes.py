@@ -79,6 +79,9 @@ class IDXTestDocumentSchema(model.Schema):
                                              value_type=schema.Int())
     test_dict_key_type_field = schema.Dict(required=False,
                                            key_type=schema.Int())
+
+    read_permission(test_read_permission_field='cmf.ManagePortal')
+    test_read_permission_field = schema.TextLine(required=False)
     write_permission(test_write_permission_field='cmf.ManagePortal')
     test_write_permission_field = schema.TextLine(required=False)
 

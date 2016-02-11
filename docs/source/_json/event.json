@@ -27,7 +27,7 @@ content-type: application/json
   "expires": null, 
   "language": "", 
   "location": null, 
-  "open_end": false, 
+  "open_end": null, 
   "parent": {
     "@id": "http://localhost:55001/plone", 
     "description": "", 
@@ -42,5 +42,5 @@ content-type: application/json
   "text": null, 
   "timezone": null, 
   "title": "Event", 
-  "whole_day": false
+  "whole_day": null
 }

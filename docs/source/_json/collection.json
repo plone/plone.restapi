@@ -14,12 +14,7 @@ content-type: application/json
     "test_user_1_", 
     "admin"
   ], 
-  "customViewFields": [
-    "Title", 
-    "Creator", 
-    "Type", 
-    "ModificationDate"
-  ], 
+  "customViewFields": [], 
   "description": "This is a collection with two documents", 
   "effective": null, 
   "exclude_from_nav": false, 
