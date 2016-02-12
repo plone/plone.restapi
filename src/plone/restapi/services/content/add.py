@@ -80,7 +80,7 @@ class FolderPost(Service):
             # the one provided by the INameFromTitle adapter.
             name_from_title = INameFromTitle(obj, None)
             if name_from_title is None:
-                name = chooser.chooseName(title, obj)
+                name = chooser.chooseName(obj.Title(), obj)
             else:
                 name = chooser.chooseName(None, obj)
             transaction.savepoint(optimistic=True)
