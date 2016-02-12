@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
+from DateTime import DateTime
+from datetime import date
+from datetime import datetime
+from datetime import time
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import setRoles
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from zope.component import getMultiAdapter
 from plone.restapi.interfaces import ISerializeToJson
-from datetime import datetime
-from datetime import date
-from datetime import time
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.uuid.interfaces import IMutableUUID
+from zope.component import getMultiAdapter
 # from datetime import timedelta
 
 import json
@@ -46,6 +48,11 @@ class TestDXContentSerializer(unittest.TestCase):
             test_tuple_field=(1, 1),
             test_readonly_field=u'readonly')
 
+        self.portal.doc1.creation_date = DateTime('2015-04-27T10:14:48+00:00')
+        self.portal.doc1.modification_date = DateTime(
+            '2015-04-27T10:24:11+00:00')
+        IMutableUUID(self.portal.doc1).set('30314724b77a4ec0abbad03d262837aa')
+
     def serialize(self):
         serializer = getMultiAdapter((self.portal.doc1, self.request),
                                      ISerializeToJson)
@@ -57,6 +64,9 @@ class TestDXContentSerializer(unittest.TestCase):
             u'@context': u'http://www.w3.org/ns/hydra/context.jsonld',
             u'@id': u'http://nohost/plone/doc1',
             u'@type': u'DXTestDocument',
+            u'UID': u'30314724b77a4ec0abbad03d262837aa',
+            u'created': u'2015-04-27T10:14:48+00:00',
+            u'modified': u'2015-04-27T10:24:11+00:00',
             u'parent': {u'@id': u'http://nohost/plone',
                         u'description': u'',
                         u'title': u'Plone site'},

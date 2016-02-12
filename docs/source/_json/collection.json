@@ -8,8 +8,10 @@ content-type: application/json
   "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone/collection", 
   "@type": "Collection", 
+  "UID": "d0c89bc77f874ce1aad5720921d875c0", 
   "allow_discussion": null, 
   "contributors": [], 
+  "created": "2016-01-21T08:14:48+00:00", 
   "creators": [
     "test_user_1_", 
     "admin"
@@ -39,6 +41,7 @@ content-type: application/json
       "title": "Document 2"
     }
   ], 
+  "modified": "2016-01-21T08:24:11+00:00", 
   "parent": {
     "@id": "http://localhost:55001/plone", 
     "description": "", 

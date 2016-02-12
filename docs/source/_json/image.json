@@ -8,8 +8,10 @@ content-type: application/json
   "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone/image", 
   "@type": "Image", 
+  "UID": "2166e81a0c224fe3b62e197c7fdc9c3e", 
   "allow_discussion": null, 
   "contributors": [], 
+  "created": "2016-01-21T06:14:48+00:00", 
   "creators": [
     "test_user_1_", 
     "admin"
@@ -29,6 +31,7 @@ content-type: application/json
     "tile": "http://localhost:55001/plone/image/@@images/image/tile"
   }, 
   "language": "", 
+  "modified": "2016-01-21T06:24:11+00:00", 
   "parent": {
     "@id": "http://localhost:55001/plone", 
     "description": "", 

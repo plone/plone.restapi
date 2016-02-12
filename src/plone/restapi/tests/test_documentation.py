@@ -10,6 +10,8 @@ from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedBlobFile
 from plone.testing.z2 import Browser
+from plone.uuid.interfaces import IMutableUUID
+from DateTime import DateTime
 
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
@@ -85,6 +87,9 @@ class TestTraversal(unittest.TestCase):
             'text/plain',
             'text/html'
         )
+        self.document.creation_date = DateTime('2016-01-21T01:14:48+00:00')
+        self.document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
+        IMutableUUID(self.document).set('1f699ffa110e45afb1ba502f75f7ec33')
         import transaction
         transaction.commit()
         self.browser = Browser(self.app)
@@ -114,6 +119,12 @@ class TestTraversal(unittest.TestCase):
             filename=u'image.png'
         )
         self.portal.newsitem.image_caption = u'This is an image caption.'
+        self.portal.newsitem.creation_date = DateTime(
+            '2016-01-21T02:14:48+00:00')
+        self.portal.newsitem.modification_date = DateTime(
+            '2016-01-21T02:24:11+00:00')
+        IMutableUUID(self.portal.newsitem).set(
+            '80c2a074cb4240d08c9a129e3a834c74')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.newsitem.absolute_url())
@@ -125,6 +136,10 @@ class TestTraversal(unittest.TestCase):
         self.portal.event.description = u'This is an event'
         self.portal.event.start = datetime(2013, 1, 1, 10, 0)
         self.portal.event.end = datetime(2013, 1, 1, 12, 0)
+        self.portal.event.creation_date = DateTime('2016-01-21T03:14:48+00:00')
+        self.portal.event.modification_date = DateTime(
+            '2016-01-21T03:24:11+00:00')
+        IMutableUUID(self.portal.event).set('846d632bc0854c5aa6d3dcae171ed2db')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.event.absolute_url())
@@ -135,6 +150,10 @@ class TestTraversal(unittest.TestCase):
         self.portal.link.title = 'My Link'
         self.portal.link.description = u'This is a link'
         self.portal.remoteUrl = 'http://plone.org'
+        self.portal.link.creation_date = DateTime('2016-01-21T04:14:48+00:00')
+        self.portal.link.modification_date = DateTime(
+            '2016-01-21T04:24:11+00:00')
+        IMutableUUID(self.portal.link).set('6ff48d27762143a0ae8d63cee73d9fc2')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.link.absolute_url())
@@ -155,6 +174,10 @@ class TestTraversal(unittest.TestCase):
         intids = getUtility(IIntIds)
         file_id = intids.getId(self.portal.file)
         self.portal.file.file = RelationValue(file_id)
+        self.portal.file.creation_date = DateTime('2016-01-21T05:14:48+00:00')
+        self.portal.file.modification_date = DateTime(
+            '2016-01-21T05:24:11+00:00')
+        IMutableUUID(self.portal.file).set('9b6a4eadb9074dde97d86171bb332ae9')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.file.absolute_url())
@@ -170,6 +193,10 @@ class TestTraversal(unittest.TestCase):
             contentType='image/png',
             filename=u'image.png'
         )
+        self.portal.image.creation_date = DateTime('2016-01-21T06:14:48+00:00')
+        self.portal.image.modification_date = DateTime(
+            '2016-01-21T06:24:11+00:00')
+        IMutableUUID(self.portal.image).set('2166e81a0c224fe3b62e197c7fdc9c3e')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.image.absolute_url())
@@ -189,6 +216,12 @@ class TestTraversal(unittest.TestCase):
             id='doc2',
             title='A document within a folder'
         )
+        self.portal.folder.creation_date = DateTime(
+            '2016-01-21T07:14:48+00:00')
+        self.portal.folder.modification_date = DateTime(
+            '2016-01-21T07:24:11+00:00')
+        IMutableUUID(self.portal.folder).set(
+            'fc7881c46d61452db4177bc059d9dcb5')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.folder.absolute_url())
@@ -214,6 +247,12 @@ class TestTraversal(unittest.TestCase):
             id='doc2',
             title='Document 2'
         )
+        self.portal.collection.creation_date = DateTime(
+            '2016-01-21T08:14:48+00:00')
+        self.portal.collection.modification_date = DateTime(
+            '2016-01-21T08:24:11+00:00')
+        IMutableUUID(self.portal.collection).set(
+            'd0c89bc77f874ce1aad5720921d875c0')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.collection.absolute_url())

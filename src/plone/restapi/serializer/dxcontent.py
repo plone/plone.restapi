@@ -38,7 +38,10 @@ class SerializeToJson(object):
                 '@id': aq_parent(aq_inner(self.context)).absolute_url(),
                 'title': aq_parent(aq_inner(self.context)).title,
                 'description': aq_parent(aq_inner(self.context)).description
-            }
+            },
+            'created': json_compatible(self.context.created()),
+            'modified': json_compatible(self.context.modified()),
+            'UID': self.context.UID(),
         }
 
         for schema in iterSchemata(self.context):
