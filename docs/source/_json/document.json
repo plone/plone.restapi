@@ -32,6 +32,10 @@ content-type: application/json
   "rights": "", 
   "subjects": [], 
   "table_of_contents": null, 
-  "text": "<p>If you're seeing this instead of the web site you were expecting, the owner of this web site has just installed Plone. Do not contact the Plone Team or the Plone mailing lists about this.</p>", 
+  "text": {
+    "content-type": "text/plain", 
+    "data": "If you're seeing this instead of the web site you were expecting, the owner of this web site has just installed Plone. Do not contact the Plone Team or the Plone mailing lists about this.", 
+    "encoding": "utf-8"
+  }, 
   "title": "Welcome to Plone"
 }

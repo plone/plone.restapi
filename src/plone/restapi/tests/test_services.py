@@ -80,7 +80,9 @@ class TestTraversal(unittest.TestCase):
             response.json().get('description')
         )
         self.assertEqual(
-            '<p>Lorem ipsum</p>',
+            {u'data': u'Lorem ipsum',
+             u'content-type': u'text/plain',
+             u'encoding': u'utf-8'},
             response.json().get('text')
         )
 

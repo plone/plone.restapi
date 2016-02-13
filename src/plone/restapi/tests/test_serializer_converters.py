@@ -1,18 +1,23 @@
 # -*- coding: utf-8 -*-
-from datetime import date
 from DateTime import DateTime
+from datetime import date
 from datetime import time
+from datetime import timedelta
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
 from plone.app.textfield.value import RichTextValue
 from plone.restapi.serializer.converters import json_compatible
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest2 import TestCase
+from z3c.relationfield.relation import RelationValue
+from zope.component import getUtility
+from zope.intid.interfaces import IIntIds
+
 import json
 
 
 class TestJsonCompatibleConverters(TestCase):
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def test_None(self):
         self.assertEquals(None, json_compatible(None))
@@ -98,6 +103,14 @@ class TestJsonCompatibleConverters(TestCase):
                               unicode,
                               'Tuple values should be converted recursively.')
 
+    def test_frozenset(self):
+        self.assertEquals([[1, 1], [2, 2]],
+                          sorted(json_compatible(frozenset([(1, 1), (2, 2)]))))
+
+    def test_set(self):
+        self.assertEquals([[1, 1], [2, 2]],
+                          sorted(json_compatible(set([(1, 1), (2, 2)]))))
+
     def test_dict(self):
         self.assertEquals({u'foo': True,
                            u'bar': None,
@@ -153,18 +166,24 @@ class TestJsonCompatibleConverters(TestCase):
         self.assertEquals(u'19:45:55', json_compatible(value))
         self.assertEquals('"19:45:55"', json.dumps(json_compatible(value)))
 
-    def test_richtext_from_html(self):
+    def test_timedelta(self):
+        self.assertEquals(9.58, json_compatible(timedelta(seconds=9.58)))
+
+    def test_richtext(self):
         value = RichTextValue(u'<p>Hallöchen</p>',
                               mimeType='text/html',
                               outputMimeType='text/html')
-        self.assertEquals(u'<p>Hallöchen</p>', json_compatible(value))
-        self.assertEquals(u'"<p>Hall\\u00f6chen</p>"',
-                          json.dumps(json_compatible(value)))
+        self.assertEquals({
+            u'content-type': u'text/html',
+            u'data': u'<p>Hallöchen</p>',
+            u'encoding': u'utf-8'}, json_compatible(value))
 
-    def test_richtext_from_text(self):
-        value = RichTextValue(u'Hall\xf6chen',
-                              mimeType='text/plain',
-                              outputMimeType='text/html')
-        self.assertEquals(u'<p>Hallöchen</p>', json_compatible(value))
-        self.assertEquals(u'"<p>Hall\\u00f6chen</p>"',
-                          json.dumps(json_compatible(value)))
+    def test_broken_relation_value(self):
+        self.assertEquals(None, json_compatible(RelationValue(12345)))
+
+    def test_relation_value(self):
+        portal = self.layer['portal']
+        doc1 = portal[portal.invokeFactory('DXTestDocument', id='doc1')]
+        intids = getUtility(IIntIds)
+        self.assertEquals(doc1.absolute_url(),
+                          json_compatible(RelationValue(intids.getId(doc1))))

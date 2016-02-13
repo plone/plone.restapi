@@ -42,6 +42,10 @@ content-type: application/json
   "relatedItems": [], 
   "rights": "", 
   "subjects": [], 
-  "text": "<p>Lorem ipsum</p>", 
+  "text": {
+    "content-type": "text/plain", 
+    "data": "Lorem ipsum", 
+    "encoding": "utf-8"
+  }, 
   "title": "My News Item"
 }

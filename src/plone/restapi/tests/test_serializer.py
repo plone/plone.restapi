@@ -96,7 +96,9 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         )
         self.assertEqual(
             self.serialize(self.portal.doc1).get('text'),
-            u'<p>Lorem ipsum.</p>'
+            {u'data': u'Lorem ipsum.',
+             u'content-type': u'text/plain',
+             u'encoding': u'utf-8'}
         )
 
     def test_serialize_returns_effective(self):
