@@ -26,4 +26,10 @@
     factory=".add.FolderPost"
     />
 
+  <plone:service
+    method="DELETE"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".delete.ContentDelete"
+    />
+
 </configure>
