@@ -25,3 +25,4 @@ docs/doctrees
 docs/html
 htmlcov
 bower_components
+pip-selfcheck.json
