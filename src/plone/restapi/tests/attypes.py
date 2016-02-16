@@ -4,6 +4,9 @@ from Products.ATContentTypes.content.document import ATDocumentBase
 from Products.ATContentTypes.content.document import ATDocumentSchema
 from Products.Archetypes import atapi
 from Products.CMFCore import permissions
+from plone.app.blob.field import BlobField
+from plone.app.blob.field import FileField
+from plone.app.blob.field import ImageField
 from plone.app.folder.folder import ATFolder
 from plone.app.folder.folder import ATFolderSchema
 
@@ -24,6 +27,9 @@ ATTestDocumentSchema = ATDocumentSchema.copy() + atapi.Schema((
     atapi.ReferenceField('testReferenceField', relationship='testrelation'),
     atapi.ReferenceField('testMVReferenceField', relationship='testrelation',
                          multiValued=True),
+    BlobField('testBlobField'),
+    FileField('testBlobFileField'),
+    ImageField('testBlobImageField'),
 
     atapi.StringField('testRequiredField', required=True),
     atapi.StringField('testReadonlyField', mode='r'),

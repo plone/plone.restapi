@@ -95,6 +95,30 @@ class TestATFieldSerializer(unittest.TestCase):
         self.assertEqual(u'http://nohost/plone/doc1/@@images/testImageField',
                          value)
 
+    def test_blob_field_serialization_returns_unicode(self):
+        value = self.serialize('testBlobField', 'spam and eggs',
+                               filename='spam.txt', mimetype='text/plain')
+        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertEqual(u'http://nohost/plone/doc1/@@download/testBlobField',
+                         value)
+
+    def test_blobfile_field_serialization_returns_unicode(self):
+        value = self.serialize('testBlobFileField', 'spam and eggs',
+                               filename='spam.txt', mimetype='text/plain')
+        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertEqual(
+            u'http://nohost/plone/doc1/@@download/testBlobFileField', value)
+
+    def test_blobimage_field_serialization_returns_unicode(self):
+        image_data = (
+            'GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00,\x00'
+            '\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;')
+        value = self.serialize('testBlobImageField', image_data,
+                               filename='image.gif', mimetype='image/gif')
+        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertEqual(
+            u'http://nohost/plone/doc1/@@images/testBlobImageField', value)
+
     def test_reference_field_serialization_returns_unicode(self):
         doc2 = self.portal[self.portal.invokeFactory(
             'ATTestDocument', id='doc2', title='Referenceable Document')]

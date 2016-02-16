@@ -2,9 +2,11 @@
 from Products.Archetypes.interfaces import IBaseObject
 from Products.Archetypes.interfaces.field import IField
 from Products.Archetypes.interfaces.field import IFileField
-from Products.Archetypes.interfaces.field import ITextField
 from Products.Archetypes.interfaces.field import IImageField
 from Products.Archetypes.interfaces.field import IReferenceField
+from Products.Archetypes.interfaces.field import ITextField
+from plone.app.blob.interfaces import IBlobField
+from plone.app.blob.interfaces import IBlobImageField
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
 from zope.component import adapter
@@ -60,6 +62,18 @@ class ImageFieldSerializer(DefaultFieldSerializer):
                         '@@images',
                         self.field.getName()))
         return json_compatible(url)
+
+
+@adapter(IBlobField, IBaseObject, Interface)
+@implementer(IFieldSerializer)
+class BlobFieldSerializer(FileFieldSerializer):
+    pass
+
+
+@adapter(IBlobImageField, IBaseObject, Interface)
+@implementer(IFieldSerializer)
+class BlobImageFieldSerializer(ImageFieldSerializer):
+    pass
 
 
 @adapter(IReferenceField, IBaseObject, Interface)
