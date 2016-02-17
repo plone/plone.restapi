@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from AccessControl import Unauthorized
-from AccessControl import getSecurityManager
 from plone.rest import Service
 from plone.restapi.deserializer import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -12,10 +10,6 @@ class ContentPatch(Service):
     """
 
     def render(self):
-        sm = getSecurityManager()
-        if not sm.checkPermission('Modify portal content', self.context):
-            raise Unauthorized
-
         deserializer = queryMultiAdapter((self.context, self.request),
                                          IDeserializeFromJson)
         if deserializer is None:
