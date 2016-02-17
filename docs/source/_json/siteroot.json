@@ -7,7 +7,7 @@ content-type: application/json
 {
   "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone", 
-  "@type": "SiteRoot", 
+  "@type": "Plone Site", 
   "member": [
     {
       "@id": "http://localhost:55001/plone/robot-test-folder", 

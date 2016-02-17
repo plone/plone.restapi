@@ -4,14 +4,14 @@
 
   <plone:service
     method="GET"
-    for="plone.dexterity.interfaces.IDexterityContent"
-    factory=".get.DexterityGet"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".get.ContentGet"
     />
 
   <plone:service
     method="GET"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".get.PloneSiteRootGet"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".get.ContentGet"
     />
 
   <plone:service

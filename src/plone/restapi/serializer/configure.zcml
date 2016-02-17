@@ -1,22 +1,46 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="plone.restapi">
+
+    <adapter factory=".site.SerializeSiteRootToJson" />
+    <adapter factory=".dxcontent.SerializeToJson" />
+    <adapter factory=".dxcontent.SerializeFolderToJson" />
+
+    <configure zcml:condition="installed plone.app.contenttypes">
+        <adapter factory=".collection.SerializeCollectionToJson" />
+    </configure>
 
     <adapter factory=".dxfields.DefaultFieldSerializer" />
     <adapter factory=".dxfields.FileFieldSerializer" />
     <adapter factory=".dxfields.ImageFieldSerializer" />
 
+    <configure zcml:condition="installed Products.Archetypes">
+        <adapter factory=".atcontent.SerializeToJson" />
+        <adapter factory=".atcontent.SerializeFolderToJson" />
+        <adapter factory=".atfields.BlobFieldSerializer" />
+        <adapter factory=".atfields.BlobImageFieldSerializer" />
+        <adapter factory=".atfields.DefaultFieldSerializer" />
+        <adapter factory=".atfields.FileFieldSerializer" />
+        <adapter factory=".atfields.ImageFieldSerializer" />
+        <adapter factory=".atfields.ReferenceFieldSerializer" />
+        <adapter factory=".atfields.TextFieldSerializer" />
+    </configure>
+
     <adapter factory=".converters.date_converter" />
     <adapter factory=".converters.default_converter" />
     <adapter factory=".converters.dict_converter" />
+    <adapter factory=".converters.frozenset_converter" />
     <adapter factory=".converters.list_converter" />
     <adapter factory=".converters.persistent_list_converter" />
     <adapter factory=".converters.persistent_mapping_converter" />
     <adapter factory=".converters.python_datetime_converter" />
+    <adapter factory=".converters.relationvalue_converter" />
     <adapter factory=".converters.richtext_converter" />
+    <adapter factory=".converters.set_converter" />
     <adapter factory=".converters.string_converter" />
     <adapter factory=".converters.time_converter" />
+    <adapter factory=".converters.timedelta_converter" />
     <adapter factory=".converters.tuple_converter" />
     <adapter factory=".converters.zope_DateTime_converter" />
 

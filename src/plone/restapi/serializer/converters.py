@@ -1,18 +1,20 @@
 # -*- coding: utf-8 -*-
+from DateTime import DateTime
+from Products.CMFPlone.utils import getSiteEncoding
+from Products.CMFPlone.utils import safe_unicode
 from datetime import date
 from datetime import datetime
-from DateTime import DateTime
 from datetime import time
+from datetime import timedelta
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
 from plone.app.textfield.interfaces import IRichTextValue
 from plone.restapi.interfaces import IJsonCompatible
-from Products.CMFPlone.utils import getSiteEncoding
-from Products.CMFPlone.utils import safe_unicode
+from z3c.relationfield.interfaces import IRelationValue
 from zope.component import adapter
 from zope.component.hooks import getSite
-from zope.interface import implementer
 from zope.interface import Interface
+from zope.interface import implementer
 
 
 def json_compatible(value):
@@ -66,6 +68,18 @@ def tuple_converter(value):
     return map(json_compatible, value)
 
 
+@adapter(frozenset)
+@implementer(IJsonCompatible)
+def frozenset_converter(value):
+    return map(json_compatible, value)
+
+
+@adapter(set)
+@implementer(IJsonCompatible)
+def set_converter(value):
+    return map(json_compatible, value)
+
+
 @adapter(dict)
 @implementer(IJsonCompatible)
 def dict_converter(value):
@@ -108,7 +122,24 @@ def time_converter(value):
     return json_compatible(value.isoformat())
 
 
+@adapter(timedelta)
+@implementer(IJsonCompatible)
+def timedelta_converter(value):
+    return json_compatible(value.total_seconds())
+
+
 @adapter(IRichTextValue)
 @implementer(IJsonCompatible)
 def richtext_converter(value):
-    return json_compatible(value.output)
+    return {
+        u'data': json_compatible(value.raw),
+        u'content-type': json_compatible(value.mimeType),
+        u'encoding': json_compatible(value.encoding),
+    }
+
+
+@adapter(IRelationValue)
+@implementer(IJsonCompatible)
+def relationvalue_converter(value):
+    if value.to_object:
+        return json_compatible(value.to_object.absolute_url())

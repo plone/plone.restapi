@@ -80,7 +80,9 @@ class TestTraversal(unittest.TestCase):
             response.json().get('description')
         )
         self.assertEqual(
-            '<p>Lorem ipsum</p>',
+            {u'data': u'Lorem ipsum',
+             u'content-type': u'text/plain',
+             u'encoding': u'utf-8'},
             response.json().get('text')
         )
 
@@ -179,7 +181,7 @@ class TestTraversal(unittest.TestCase):
             response.json().get('@id')
         )
         self.assertEqual(
-            'SiteRoot',
+            'Plone Site',
             response.json().get('@type')
         )
 
@@ -201,7 +203,7 @@ class TestTraversal(unittest.TestCase):
             self.portal_url
         )
         self.assertEqual(
-            'SiteRoot',
+            'Plone Site',
             response.json().get('@type')
         )
 
