@@ -32,9 +32,9 @@ class FileFieldDeserializer(DefaultFieldDeserializer):
         kwargs = {}
         if isinstance(value, dict):
             if u'content-type' in value:
-                kwargs[u'mimetype'] = value[u'content-type']
+                kwargs[u'mimetype'] = value[u'content-type'].encode('utf8')
             if u'filename' in value:
-                kwargs[u'filename'] = value[u'filename']
+                kwargs[u'filename'] = value[u'filename'].encode('utf8')
             if u'encoding' in value:
                 value = value.get('data', '').decode(value[u'encoding'])
             else:

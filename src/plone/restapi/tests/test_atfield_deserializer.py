@@ -89,13 +89,13 @@ class TestATFieldDeserializer(unittest.TestCase):
     def test_file_field_deserialization_returns_mimetype_and_filename(self):
         value, kwargs = self.deserialize('testFileField', {
             u'data': u'Spam and eggs!',
-            u'filename': u'doc.txt',
-            u'content-type': u'text/plain',
+            u'filename': 'doc.txt',
+            u'content-type': 'text/plain',
         })
         self.assertTrue(isinstance(value, basestring), 'Not a <basestring>')
         self.assertEquals(u'Spam and eggs!', value)
-        self.assertEquals(u'text/plain', kwargs[u'mimetype'])
-        self.assertEquals(u'doc.txt', kwargs[u'filename'])
+        self.assertEquals('text/plain', kwargs[u'mimetype'])
+        self.assertEquals('doc.txt', kwargs[u'filename'])
 
     def test_text_field_deserialization_returns_string(self):
         value, kwargs = self.deserialize('testTextField', u'Käfer')
@@ -105,23 +105,23 @@ class TestATFieldDeserializer(unittest.TestCase):
     def test_text_field_deserialization_returns_mimetype(self):
         value, kwargs = self.deserialize('testTextField', {
             u'data': u'Käfer',
-            u'content-type': u'text/html',
+            u'content-type': 'text/html',
         })
         self.assertTrue(isinstance(value, basestring), 'Not a <basestring>')
         self.assertEquals(u'Käfer', value)
-        self.assertEquals(u'text/html', kwargs[u'mimetype'])
+        self.assertEquals('text/html', kwargs[u'mimetype'])
 
     def test_image_field_deserialization_returns_mimetype_and_filename(self):
         value, kwargs = self.deserialize('testImageField', {
             u'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
             u'encoding': u'base64',
-            u'filename': u'image.gif',
-            u'content-type': u'image/gif',
+            u'filename': 'image.gif',
+            u'content-type': 'image/gif',
         })
         self.assertTrue(isinstance(value, basestring), 'Not a <basestring>')
         self.assertTrue(value.startswith('GIF89a'))
-        self.assertEquals(u'image/gif', kwargs[u'mimetype'])
-        self.assertEquals(u'image.gif', kwargs[u'filename'])
+        self.assertEquals('image/gif', kwargs[u'mimetype'])
+        self.assertEquals('image.gif', kwargs[u'filename'])
 
     def test_blob_field_deserialization_returns_string(self):
         value, kwargs = self.deserialize('testBlobField', u'Spam and eggs!')
@@ -131,38 +131,38 @@ class TestATFieldDeserializer(unittest.TestCase):
     def test_blob_field_deserialization_returns_mimetype_and_filename(self):
         value, kwargs = self.deserialize('testBlobField', {
             u'data': u'Spam and eggs!',
-            u'filename': u'doc.txt',
-            u'content-type': u'text/plain',
+            u'filename': 'doc.txt',
+            u'content-type': 'text/plain',
         })
         self.assertTrue(isinstance(value, basestring), 'Not a <basestring>')
         self.assertEquals(u'Spam and eggs!', value)
-        self.assertEquals(u'text/plain', kwargs[u'mimetype'])
-        self.assertEquals(u'doc.txt', kwargs[u'filename'])
+        self.assertEquals('text/plain', kwargs[u'mimetype'])
+        self.assertEquals('doc.txt', kwargs[u'filename'])
 
     def test_blobfile_field_deserialization_returns_mimetype_and_filename(
             self):
         value, kwargs = self.deserialize('testBlobFileField', {
             u'data': u'Spam and eggs!',
-            u'filename': u'doc.txt',
-            u'content-type': u'text/plain',
+            u'filename': 'doc.txt',
+            u'content-type': 'text/plain',
         })
         self.assertTrue(isinstance(value, basestring), 'Not a <basestring>')
         self.assertEquals(u'Spam and eggs!', value)
-        self.assertEquals(u'text/plain', kwargs[u'mimetype'])
-        self.assertEquals(u'doc.txt', kwargs[u'filename'])
+        self.assertEquals('text/plain', kwargs[u'mimetype'])
+        self.assertEquals('doc.txt', kwargs[u'filename'])
 
     def test_blobimage_field_deserialization_returns_mimetype_and_filename(
             self):
         value, kwargs = self.deserialize('testBlobImageField', {
             u'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
             u'encoding': u'base64',
-            u'filename': u'image.gif',
-            u'content-type': u'image/gif',
+            u'filename': 'image.gif',
+            u'content-type': 'image/gif',
         })
         self.assertTrue(isinstance(value, basestring), 'Not a <basestring>')
         self.assertTrue(value.startswith('GIF89a'))
-        self.assertEquals(u'image/gif', kwargs[u'mimetype'])
-        self.assertEquals(u'image.gif', kwargs[u'filename'])
+        self.assertEquals('image/gif', kwargs[u'mimetype'])
+        self.assertEquals('image.gif', kwargs[u'filename'])
 
     def test_reference_field_deserialization_returns_uid_in_list(self):
         value, kwargs = self.deserialize('testReferenceField',
