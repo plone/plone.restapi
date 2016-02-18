@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from AccessControl import Unauthorized
-from AccessControl import getSecurityManager
 from DateTime import DateTime
 from plone.app.content.interfaces import INameFromTitle
 from plone.rest import Service
@@ -22,10 +20,6 @@ class FolderPost(Service):
     """
 
     def render(self):
-        sm = getSecurityManager()
-        if not sm.checkPermission('Add portal content', self.context):
-            raise Unauthorized
-
         data = json_body(self.request)
 
         type_ = data.get('@type', None)

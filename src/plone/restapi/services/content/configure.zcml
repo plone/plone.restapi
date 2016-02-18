@@ -1,35 +1,41 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:plone="http://namespaces.plone.org/plone">
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
 
   <plone:service
     method="GET"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".get.ContentGet"
+    permission="zope2.View"
     />
 
   <plone:service
     method="GET"
     for="Products.CMFCore.interfaces.IContentish"
     factory=".get.ContentGet"
+    permission="zope2.View"
     />
 
   <plone:service
     method="PATCH"
     for="Products.CMFCore.interfaces.IContentish"
     factory=".update.ContentPatch"
+    permission="cmf.ModifyPortalContent"
     />
 
   <plone:service
     method="POST"
     for="Products.CMFCore.interfaces.IFolderish"
     factory=".add.FolderPost"
+    permission="cmf.AddPortalContent"
     />
 
   <plone:service
     method="DELETE"
     for="Products.CMFCore.interfaces.IContentish"
     factory=".delete.ContentDelete"
+    permission="zope2.DeleteObjects"
     />
 
 </configure>
