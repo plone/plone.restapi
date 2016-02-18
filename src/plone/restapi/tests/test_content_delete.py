@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
+from ZPublisher.pubevents import PubStart
+from base64 import b64encode
 from pkg_resources import get_distribution
 from pkg_resources import parse_version
-from plone.app.testing import login
-from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
-from plone.restapi.services.content.delete import ContentDelete
+from plone.app.testing import login
+from plone.app.testing import setRoles
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from zope.event import notify
 
 import requests
 import transaction
@@ -71,6 +73,17 @@ class TestATContentDelete(unittest.TestCase):
             title='My Document'
         )]
 
+    def traverse(self, path='/plone', accept='application/json', method='GET'):
+        request = self.layer['request']
+        request.environ['PATH_INFO'] = path
+        request.environ['PATH_TRANSLATED'] = path
+        request.environ['HTTP_ACCEPT'] = accept
+        request.environ['REQUEST_METHOD'] = method
+        request._auth = 'Basic %s' % b64encode(
+            '%s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
+        notify(PubStart(request))
+        return request.traverse(path)
+
     def test_delete_content_succeeds_with_link_integrity_breach(self):
         doc2 = self.portal[self.portal.invokeFactory(
             'Document',
@@ -80,6 +93,7 @@ class TestATContentDelete(unittest.TestCase):
         from plone.app.linkintegrity.interfaces import ILinkIntegrityInfo
         info = ILinkIntegrityInfo(self.layer['request'])
         info.addBreach(doc2, self.doc1)
-        ContentDelete(self.doc1, info.context)()
+        service = self.traverse('/plone/doc1', method='DELETE')
+        service()
         self.assertEqual(204, info.context.response.status)
         self.assertNotIn('doc1', self.portal.objectIds())
