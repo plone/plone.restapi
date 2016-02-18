@@ -39,9 +39,7 @@ setup(name='plone.restapi',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'plone.validatehook',
           'plone.rest',
-          'z3c.jbot',
       ],
       extras_require={'test': [
           'Products.Archetypes',
