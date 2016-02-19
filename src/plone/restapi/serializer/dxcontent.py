@@ -2,15 +2,18 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from plone.app.contentlisting.interfaces import IContentListing
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
+from plone.restapi.interfaces import IContentListingSerializer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.converters import json_compatible
 from plone.supermodel.utils import mergedTaggedValueDict
 from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
 from zope.interface import Interface
@@ -84,12 +87,10 @@ class SerializeFolderToJson(SerializeToJson):
 
     def __call__(self):
         result = super(SerializeFolderToJson, self).__call__()
-        result['member'] = [
-            {
-                '@id': member.absolute_url(),
-                'title': member.title,
-                'description': member.description
-            }
-            for member in self.context.objectValues()
-        ]
+
+        members = self.context.objectValues() or []
+        result['member'] = getMultiAdapter(
+            (IContentListing(members), self.request),
+            IContentListingSerializer)()
+
         return result

@@ -88,8 +88,9 @@ class TestTraversal(unittest.TestCase):
             'text/html'
         )
         self.document.creation_date = DateTime('2016-01-21T01:14:48+00:00')
-        self.document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
         IMutableUUID(self.document).set('1f699ffa110e45afb1ba502f75f7ec33')
+        self.document.reindexObject()
+        self.document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
         import transaction
         transaction.commit()
         self.browser = Browser(self.app)

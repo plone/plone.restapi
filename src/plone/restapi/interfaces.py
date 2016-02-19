@@ -56,3 +56,36 @@ class IFieldDeserializer(Interface):
     def __call__(value):
         """Convert the provided JSON value to a field value.
         """
+
+
+class IContentListingSerializer(Interface):
+    """Adapter to serialize an IContentListing into a JSON compatible
+    representation.
+
+    This is used to produce compact content listings that only contain the
+    most basic information about the listed objects.
+    """
+
+    def __init__(listing, request):
+        """Adapts an IContentListing and the request.
+        """
+
+    def __call__():
+        """Returns a JSON compatible Python list containing summarized
+        representations of the objects wrapped by the adapted IContentListing.
+        """
+
+
+class IContentListingObjectSerializer(Interface):
+    """Adapter to serialize an IContentListingObject into a compact JSON
+    compatible representation for use in content listings.
+    """
+
+    def __init__(listing_obj, request):
+        """Adapts an IContentListingObject and the request.
+        """
+
+    def __call__():
+        """Returns a summarized representation of the object wrapped by the
+        adapted IContentListingObject (as JSON compatible Python data).
+        """
