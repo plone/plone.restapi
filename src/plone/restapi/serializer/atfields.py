@@ -12,6 +12,7 @@ from plone.restapi.serializer.converters import json_compatible
 from zope.component import adapter
 from zope.interface import Interface
 from zope.interface import implementer
+from archetypes.querywidget.interfaces import IQueryField
 
 
 @adapter(IField, IBaseObject, Interface)
@@ -89,3 +90,11 @@ class ReferenceFieldSerializer(DefaultFieldSerializer):
             if refs is None:
                 return None
             return json_compatible(refs.absolute_url())
+
+
+@adapter(IQueryField, IBaseObject, Interface)
+@implementer(IFieldSerializer)
+class QueryFieldSerializer(DefaultFieldSerializer):
+    def __call__(self):
+        raw_value = self.field.getRaw(self.context)
+        return json_compatible(map(dict, raw_value))

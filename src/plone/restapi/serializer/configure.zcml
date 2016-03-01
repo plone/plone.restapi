@@ -28,6 +28,7 @@
         <adapter factory=".atfields.ImageFieldSerializer" />
         <adapter factory=".atfields.ReferenceFieldSerializer" />
         <adapter factory=".atfields.TextFieldSerializer" />
+        <adapter factory=".atfields.QueryFieldSerializer" />
     </configure>
 
     <adapter factory=".converters.date_converter" />
