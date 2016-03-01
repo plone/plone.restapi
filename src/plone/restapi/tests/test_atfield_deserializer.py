@@ -164,6 +164,23 @@ class TestATFieldDeserializer(unittest.TestCase):
         self.assertEquals('image/gif', kwargs[u'mimetype'])
         self.assertEquals('image.gif', kwargs[u'filename'])
 
+    def test_query_field_deserialization_requests_list(self):
+        query_data = [
+            {
+                "i": "portal_type",
+                "o": "plone.app.querystring.operation.selection.is",
+                "v": ["News Item"]
+            },
+            {
+                "i": "path",
+                "o": "plone.app.querystring.operation.string.path",
+                "v": "/Plone/news"
+            }
+        ]
+        value, kwargs = self.deserialize('testQueryField', query_data)
+        self.assertTrue(isinstance(value, list), 'Not a <list>')
+        self.assertEqual(value, query_data)
+
     def test_reference_field_deserialization_returns_uid_in_list(self):
         value, kwargs = self.deserialize('testReferenceField',
                                          u'0fc0dac495034b869b3b90c9179499a9')
