@@ -96,10 +96,13 @@ class FolderPost(Service):
         # INameFromTitle adaptable objects should not get a name
         # suggestion. NameChooser would prefer the given name instead of
         # the one provided by the INameFromTitle adapter.
+        suggestion = None
         name_from_title = INameFromTitle(obj, None)
         if name_from_title is None:
-            name = chooser.chooseName(obj.Title(), obj)
-        else:
-            name = chooser.chooseName(None, obj)
+            if base_hasattr(obj, 'generateNewId'):
+                suggestion = obj.generateNewId()
+            else:
+                suggestion = obj.Title()
+        name = chooser.chooseName(suggestion, obj)
         transaction.savepoint(optimistic=True)
         self.context.manage_renameObject(obj.getId(), name)
