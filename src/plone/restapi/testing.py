@@ -72,6 +72,7 @@ class PloneRestApiATLayer(PloneSandboxLayer):
 
         z2.installProduct(app, 'Products.Archetypes')
         z2.installProduct(app, 'Products.ATContentTypes')
+        z2.installProduct(app, 'plone.app.blob')
         z2.installProduct(app, 'plone.restapi')
 
     def setUpPloneSite(self, portal):
