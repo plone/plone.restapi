@@ -6,6 +6,8 @@
     <adapter factory=".site.SerializeSiteRootToJson" />
     <adapter factory=".dxcontent.SerializeToJson" />
     <adapter factory=".dxcontent.SerializeFolderToJson" />
+    <adapter factory=".listing.ContentListingObjectSerializer" />
+    <adapter factory=".listing.ContentListingSerializer" />
 
     <configure zcml:condition="installed plone.app.contenttypes">
         <adapter factory=".collection.SerializeCollectionToJson" />

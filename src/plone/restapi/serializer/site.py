@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+from plone.app.contentlisting.interfaces import IContentListing
+from plone.restapi.interfaces import IContentListingSerializer
+from plone.restapi.interfaces import ISerializeToJson
 from Products.CMFCore.interfaces import IContentish
 from Products.CMFPlone.interfaces import IPloneSiteRoot
-from plone.restapi.interfaces import ISerializeToJson
 from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.interface import Interface
 from zope.interface import implementer
 
@@ -22,13 +25,12 @@ class SerializeSiteRootToJson(object):
             '@type': 'Plone Site',
             'parent': {},
         }
-        result['member'] = [
-            {
-                '@id': member.absolute_url(),
-                'title': member.title,
-                'description': member.description
-            }
-            for member in self.context.objectValues()
-            if IContentish.providedBy(member)
-        ]
+
+        members = [obj for obj in self.context.objectValues()
+                   if IContentish.providedBy(obj)]
+
+        result['member'] = getMultiAdapter(
+            (IContentListing(members), self.request),
+            IContentListingSerializer)()
+
         return result

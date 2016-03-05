@@ -2,9 +2,12 @@
 from Acquisition import aq_parent
 from Products.Archetypes.interfaces import IBaseFolder
 from Products.Archetypes.interfaces import IBaseObject
+from plone.app.contentlisting.interfaces import IContentListing
+from plone.restapi.interfaces import IContentListingSerializer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.interface import Interface
 from zope.interface import implementer
@@ -54,12 +57,10 @@ class SerializeFolderToJson(SerializeToJson):
 
     def __call__(self):
         result = super(SerializeFolderToJson, self).__call__()
-        result['member'] = [
-            {
-                '@id': member.absolute_url(),
-                'title': member.Title(),
-                'description': member.Description(),
-            }
-            for member in self.context.objectValues()
-        ]
+
+        members = self.context.objectValues() or []
+        result['member'] = getMultiAdapter(
+            (IContentListing(members), self.request),
+            IContentListingSerializer)()
+
         return result

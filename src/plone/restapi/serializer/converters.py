@@ -8,11 +8,15 @@ from datetime import time
 from datetime import timedelta
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
+from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.app.textfield.interfaces import IRichTextValue
+from plone.restapi.interfaces import IContentListingObjectSerializer
 from plone.restapi.interfaces import IJsonCompatible
 from z3c.relationfield.interfaces import IRelationValue
 from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.component.hooks import getSite
+from zope.globalrequest import getRequest
 from zope.interface import Interface
 from zope.interface import implementer
 
@@ -142,4 +146,6 @@ def richtext_converter(value):
 @implementer(IJsonCompatible)
 def relationvalue_converter(value):
     if value.to_object:
-        return json_compatible(value.to_object.absolute_url())
+        return getMultiAdapter(
+            (IContentListingObject(value.to_object), getRequest()),
+            IContentListingObjectSerializer)()
