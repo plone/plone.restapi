@@ -59,7 +59,6 @@ class TestJsonSchemaUtils(TestCase):
         self.assertEqual(jsonschema['title'], 'Document')
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', jsonschema['properties'].keys())
-        self.assertEqual(len(jsonschema['properties']), 15)
         self.assertIn('title', jsonschema['required'])
 
     def test_get_jsonschema_for_portal_type(self):
@@ -68,7 +67,6 @@ class TestJsonSchemaUtils(TestCase):
         self.assertEqual(jsonschema['title'], 'Document')
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', jsonschema['properties'].keys())
-        self.assertEqual(len(jsonschema['properties']), 15)
         self.assertIn('title', jsonschema['required'])
 
 
