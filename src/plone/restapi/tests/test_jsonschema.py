@@ -56,7 +56,7 @@ class TestJsonSchemaUtils(TestCase):
         ttool = getToolByName(self.portal, 'portal_types')
         jsonschema = get_jsonschema_for_fti(
             ttool['Document'], self.portal, self.request)
-        self.assertEqual(jsonschema['title'], 'Document')
+        self.assertEqual(jsonschema['title'], 'Page')
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', jsonschema['properties'].keys())
         self.assertIn('title', jsonschema['required'])
@@ -64,7 +64,7 @@ class TestJsonSchemaUtils(TestCase):
     def test_get_jsonschema_for_portal_type(self):
         jsonschema = get_jsonschema_for_portal_type(
             'Document', self.portal, self.request)
-        self.assertEqual(jsonschema['title'], 'Document')
+        self.assertEqual(jsonschema['title'], 'Page')
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', jsonschema['properties'].keys())
         self.assertIn('title', jsonschema['required'])
