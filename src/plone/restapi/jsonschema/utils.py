@@ -91,7 +91,7 @@ def get_jsonschema_for_fti(fti, context, request):
 
     return {
         'type': 'object',
-        'title': fti.getId(),
+        'title': fti.Title(),
         'properties': fields_info,
         'required': required,
     }
