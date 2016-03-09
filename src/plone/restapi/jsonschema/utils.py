@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Utils for jsonschema."""
+from collections import OrderedDict
+
 from zope.component import getUtility
 from zope.component import getMultiAdapter
 from zope.schema import getFieldsInOrder
@@ -64,7 +66,7 @@ def get_ordered_fields(fti):
 
 def get_fields_from_schema(schema, context, request):
     """Get jsonschema from zope schema."""
-    fields_info = {}
+    fields_info = OrderedDict()
     for fieldname, field in getFieldsInOrder(schema):
         adapter = getMultiAdapter(
             (field, context, request),
@@ -76,7 +78,7 @@ def get_fields_from_schema(schema, context, request):
 
 def get_jsonschema_for_fti(fti, context, request):
     """Get jsonschema for given fti."""
-    fields_info = {}
+    fields_info = OrderedDict()
     required = []
     for fieldname, field in get_ordered_fields(fti):
         adapter = getMultiAdapter(
