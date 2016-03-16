@@ -248,12 +248,19 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
 
+    prefix = ''
+
     def get_type(self):
         return 'object'
 
     def get_properties(self):
+        if self.prefix:
+            prefix = '.'.join([self.prefix, self.field.__name__])
+        else:
+            prefix = self.field.__name__
+
         return get_fields_from_schema(
-            self.field.schema, self.context, self.request)
+            self.field.schema, self.context, self.request, prefix)
 
     def additional(self):
         info = super(ObjectJsonSchemaProvider, self).additional()

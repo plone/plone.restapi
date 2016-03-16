@@ -64,13 +64,18 @@ def get_ordered_fields(fti):
     return fields
 
 
-def get_fields_from_schema(schema, context, request):
+def get_fields_from_schema(schema, context, request, prefix=''):
     """Get jsonschema from zope schema."""
     fields_info = OrderedDict()
     for fieldname, field in getFieldsInOrder(schema):
         adapter = getMultiAdapter(
             (field, context, request),
             interface=IJsonSchemaProvider)
+
+        adapter.prefix = prefix
+        if prefix:
+            fieldname = '.'.join([prefix, fieldname])
+
         fields_info[fieldname] = adapter.get_schema()
 
     return fields_info
