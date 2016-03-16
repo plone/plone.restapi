@@ -64,35 +64,44 @@ def get_ordered_fields(fti):
     return fields
 
 
-def get_fields_from_schema(schema, context, request, prefix=''):
+def get_fields_from_schema(schema, context, request, prefix='',
+                           excluded_fields=None):
     """Get jsonschema from zope schema."""
     fields_info = OrderedDict()
+    if excluded_fields is None:
+        excluded_fields = []
+
     for fieldname, field in getFieldsInOrder(schema):
-        adapter = getMultiAdapter(
-            (field, context, request),
-            interface=IJsonSchemaProvider)
+        if fieldname not in excluded_fields:
+            adapter = getMultiAdapter(
+                (field, context, request),
+                interface=IJsonSchemaProvider)
 
-        adapter.prefix = prefix
-        if prefix:
-            fieldname = '.'.join([prefix, fieldname])
+            adapter.prefix = prefix
+            if prefix:
+                fieldname = '.'.join([prefix, fieldname])
 
-        fields_info[fieldname] = adapter.get_schema()
+            fields_info[fieldname] = adapter.get_schema()
 
     return fields_info
 
 
-def get_jsonschema_for_fti(fti, context, request):
+def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     """Get jsonschema for given fti."""
     fields_info = OrderedDict()
+    if excluded_fields is None:
+        excluded_fields = []
+
     required = []
     for fieldname, field in get_ordered_fields(fti):
-        adapter = getMultiAdapter(
-            (field, context, request),
-            interface=IJsonSchemaProvider)
-        # get name from z3c.form field to have full name (behavior)
-        fields_info[fieldname] = adapter.get_schema()
-        if field.required:
-            required.append(fieldname)
+        if fieldname not in excluded_fields:
+            adapter = getMultiAdapter(
+                (field, context, request),
+                interface=IJsonSchemaProvider)
+            # get name from z3c.form field to have full name (behavior)
+            fields_info[fieldname] = adapter.get_schema()
+            if field.required:
+                required.append(fieldname)
 
     return {
         'type': 'object',
@@ -102,8 +111,10 @@ def get_jsonschema_for_fti(fti, context, request):
     }
 
 
-def get_jsonschema_for_portal_type(portal_type, context, request):
+def get_jsonschema_for_portal_type(portal_type, context, request,
+                                   excluded_fields=None):
     """Get jsonschema for given portal type name."""
     ttool = getToolByName(context, 'portal_types')
     fti = ttool[portal_type]
-    return get_jsonschema_for_fti(fti, context, request)
+    return get_jsonschema_for_fti(
+        fti, context, request, excluded_fields=excluded_fields)

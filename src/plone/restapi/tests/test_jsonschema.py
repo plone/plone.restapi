@@ -53,21 +53,33 @@ class TestJsonSchemaUtils(TestCase):
         self.assertEqual(info, expected)
 
     def test_get_jsonschema_for_fti(self):
-        ttool = getToolByName(self.portal, 'portal_types')
+        portal = self.portal
+        request = self.request
+        ttool = getToolByName(portal, 'portal_types')
         jsonschema = get_jsonschema_for_fti(
-            ttool['Document'], self.portal, self.request)
+            ttool['Document'], portal, request)
         self.assertEqual(jsonschema['title'], 'Page')
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', jsonschema['properties'].keys())
         self.assertIn('title', jsonschema['required'])
 
+        jsonschema = get_jsonschema_for_fti(
+            ttool['Document'], portal, request, excluded_fields=['title'])
+        self.assertNotIn('title', jsonschema['properties'].keys())
+
     def test_get_jsonschema_for_portal_type(self):
+        portal = self.portal
+        request = self.request
         jsonschema = get_jsonschema_for_portal_type(
-            'Document', self.portal, self.request)
+            'Document', portal, request)
         self.assertEqual(jsonschema['title'], 'Page')
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', jsonschema['properties'].keys())
         self.assertIn('title', jsonschema['required'])
+
+        jsonschema = get_jsonschema_for_portal_type(
+            'Document', portal, request, excluded_fields=['title'])
+        self.assertNotIn('title', jsonschema['properties'].keys())
 
 
 class TestJsonSchemaProviders(TestCase):
