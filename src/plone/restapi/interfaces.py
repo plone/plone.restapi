@@ -22,6 +22,12 @@ class ISerializeToJson(Interface):
     """
 
 
+class ISerializeToJsonSummary(Interface):
+    """Adapter to serialize an object into a JSON compatible summary that
+    contains only the most basic information.
+    """
+
+
 class IJsonCompatible(Interface):
     """Convert a value to a JSON compatible data structure.
     """

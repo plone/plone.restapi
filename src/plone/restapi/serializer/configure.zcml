@@ -11,6 +11,9 @@
         <adapter factory=".collection.SerializeCollectionToJson" />
     </configure>
 
+    <adapter factory=".summary.DefaultJSONSummarySerializer" />
+    <adapter factory=".summary.SiteRootJSONSummarySerializer" />
+
     <adapter factory=".dxfields.DefaultFieldSerializer" />
     <adapter factory=".dxfields.FileFieldSerializer" />
     <adapter factory=".dxfields.ImageFieldSerializer" />
