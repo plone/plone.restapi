@@ -2,7 +2,9 @@
 from Products.CMFCore.interfaces import IContentish
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import ISerializeToJsonSummary
 from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.interface import Interface
 from zope.interface import implementer
 
@@ -23,11 +25,7 @@ class SerializeSiteRootToJson(object):
             'parent': {},
         }
         result['member'] = [
-            {
-                '@id': member.absolute_url(),
-                'title': member.title,
-                'description': member.description
-            }
+            getMultiAdapter((member, self.request), ISerializeToJsonSummary)()
             for member in self.context.objectValues()
             if IContentish.providedBy(member)
         ]

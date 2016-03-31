@@ -183,7 +183,14 @@ class TestJsonCompatibleConverters(TestCase):
 
     def test_relation_value(self):
         portal = self.layer['portal']
-        doc1 = portal[portal.invokeFactory('DXTestDocument', id='doc1')]
+        doc1 = portal[portal.invokeFactory(
+            'DXTestDocument', id='doc1',
+            title='Document 1',
+            description='Description',
+        )]
         intids = getUtility(IIntIds)
-        self.assertEquals(doc1.absolute_url(),
-                          json_compatible(RelationValue(intids.getId(doc1))))
+        self.assertEquals(
+            {'@id': 'http://nohost/plone/doc1',
+             'title': 'Document 1',
+             'description': 'Description'},
+            json_compatible(RelationValue(intids.getId(doc1))))
