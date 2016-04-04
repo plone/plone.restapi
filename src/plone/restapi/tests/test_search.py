@@ -47,6 +47,8 @@ class TestSearchFunctional(unittest.TestCase):
             test_list_field=['Keyword1', 'Keyword2', 'Keyword3'],
             test_bool_field=True,
         )
+        IMutableUUID(self.doc).set('77779ffa110e45afb1ba502f75f77777')
+        self.doc.reindexObject()
 
         # /plone/folder/other-document
         self.doc2 = createContentInContainer(
@@ -94,6 +96,60 @@ class TestSearchFunctional(unittest.TestCase):
              u'/plone/folder/doc',
              u'/plone/folder/other-document'},
             set(result_paths(response.json())))
+
+    def test_partial_metadata_retrieval(self):
+        query = {'SearchableText': 'lorem',
+                 'metadata_fields': ['portal_type', 'review_state']}
+        response = self.api_session.get('/search', params=query)
+
+        self.assertDictContainsSubset(
+            {u'@id': u'http://localhost:55001/plone/folder/doc',
+             u'title': u'Lorem Ipsum',
+             u'portal_type': u'DXTestDocument',
+             u'review_state': u'private'},
+            response.json()['member'][0])
+
+    def test_full_metadata_retrieval(self):
+        query = {'SearchableText': 'lorem', 'metadata_fields': '_all'}
+        response = self.api_session.get('/search', params=query)
+
+        self.assertDictContainsSubset(
+            {u'@id': u'http://localhost:55001/plone/folder/doc',
+             u'Creator': u'test_user_1_',
+             u'Description': u'',
+             u'EffectiveDate': u'None',
+             u'ExpirationDate': u'None',
+             u'Subject': [],
+             u'Title': u'Lorem Ipsum',
+             u'Type': u'DX Test Document',
+             u'UID': u'77779ffa110e45afb1ba502f75f77777',
+             u'author_name': None,
+             u'cmf_uid': None,
+             u'commentators': [],
+             u'description': u'',
+             u'effective': u'1995-01-01T00:00:00+00:00',
+             u'end': None,
+             u'exclude_from_nav': False,
+             u'expires': u'1999-01-01T00:00:00+00:00',
+             u'getId': u'doc',
+             u'getObjSize': u'0 KB',
+             u'getPath': u'/plone/folder/doc',
+             u'getRemoteUrl': None,
+             u'getURL': u'http://localhost:55001/plone/folder/doc',
+             u'id': u'doc',
+             u'in_response_to': None,
+             u'is_folderish': False,
+             u'last_comment_date': None,
+             u'listCreators': [u'test_user_1_'],
+             u'location': None,
+             u'meta_type': u'Dexterity Item',
+             u'portal_type': u'DXTestDocument',
+             u'review_state': u'private',
+             u'start': None,
+             u'sync_uid': None,
+             u'title': u'Lorem Ipsum',
+             u'total_comments': 0},
+            response.json()['member'][0])
 
     # ZCTextIndex
 

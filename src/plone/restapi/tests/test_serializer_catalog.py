@@ -3,6 +3,7 @@ from DateTime import DateTime
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 
@@ -30,6 +31,9 @@ class TestCatalogSerializers(unittest.TestCase):
             created=DateTime(2015, 12, 31, 23, 45),
             title=u'My Document')
 
+        IMutableUUID(self.doc).set('77779ffa110e45afb1ba502f75f77777')
+        self.doc.reindexObject()
+
     def test_lazy_cat_serialization_empty_resultset(self):
         # Force an empty resultset (Products.ZCatalog.Lazy.LazyCat)
         lazy_cat = self.catalog(path='doesnt-exist')
@@ -55,3 +59,62 @@ class TestCatalogSerializers(unittest.TestCase):
              'title': 'My Document',
              'description': ''},
             results['member'])
+
+    def test_brain_partial_metadata_representation(self):
+        lazy_map = self.catalog(path='/plone/my-folder/my-document')
+        results = getMultiAdapter(
+            (lazy_map, self.request),
+            ISerializeToJson)(metadata_fields=['portal_type', 'review_state'])
+
+        self.assertDictEqual(
+            {'@id': 'http://nohost/plone/my-folder/my-document',
+             'title': 'My Document',
+             'description': '',
+             'portal_type': u'Document',
+             'review_state': u'private'},
+            results['member'][0])
+
+    def test_brain_full_metadata_representation(self):
+        lazy_map = self.catalog(path='/plone/my-folder/my-document')
+        results = getMultiAdapter(
+            (lazy_map, self.request),
+            ISerializeToJson)(metadata_fields=['_all'])
+
+        self.assertDictContainsSubset(
+            {'@id': 'http://nohost/plone/my-folder/my-document',
+             'Creator': u'test_user_1_',
+             'Description': u'',
+             'EffectiveDate': u'None',
+             'ExpirationDate': u'None',
+             'Subject': [],
+             'Title': u'My Document',
+             'Type': u'Page',
+             'UID': u'77779ffa110e45afb1ba502f75f77777',
+             'author_name': None,
+             'cmf_uid': 1,
+             'commentators': [],
+             'created': u'2015-12-31T23:45:00+00:00',
+             'description': '',
+             'effective': u'1969-12-31T00:00:00+00:00',
+             'end': None,
+             'exclude_from_nav': False,
+             'expires': u'2499-12-31T00:00:00+00:00',
+             'getId': u'my-document',
+             'getObjSize': u'0 KB',
+             'getPath': '/plone/my-folder/my-document',
+             'getRemoteUrl': None,
+             'getURL': 'http://nohost/plone/my-folder/my-document',
+             'id': u'my-document',
+             'in_response_to': None,
+             'is_folderish': False,
+             'last_comment_date': None,
+             'listCreators': [u'test_user_1_'],
+             'location': None,
+             'meta_type': u'Dexterity Item',
+             'portal_type': u'Document',
+             'review_state': u'private',
+             'start': None,
+             'sync_uid': None,
+             'title': 'My Document',
+             'total_comments': 0},
+            results['member'][0])
