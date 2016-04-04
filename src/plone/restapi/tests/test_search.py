@@ -72,6 +72,15 @@ class TestSearchFunctional(unittest.TestCase):
             'items_count property should match actual item count.'
         )
 
+    def test_search_on_context_constrains_query_by_path(self):
+        response = self.api_session.get('/folder/search')
+
+        self.assertSetEqual(
+            {u'/plone/folder',
+             u'/plone/folder/doc',
+             u'/plone/folder/other-document'},
+            set(result_paths(response.json())))
+
     def test_fulltext_search(self):
         query = {'SearchableText': 'lorem'}
         response = self.api_session.get('/search', params=query)
