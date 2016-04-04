@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
 from datetime import date
+from DateTime import DateTime
 from datetime import time
 from datetime import timedelta
 from persistent.list import PersistentList
@@ -11,9 +11,11 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest2 import TestCase
 from z3c.relationfield.relation import RelationValue
 from zope.component import getUtility
+from zope.i18nmessageid import MessageFactory
 from zope.intid.interfaces import IIntIds
 
 import json
+import Missing
 
 
 class TestJsonCompatibleConverters(TestCase):
@@ -194,3 +196,11 @@ class TestJsonCompatibleConverters(TestCase):
              'title': 'Document 1',
              'description': 'Description'},
             json_compatible(RelationValue(intids.getId(doc1))))
+
+    def test_i18n_message(self):
+        _ = MessageFactory('plone.restapi.tests')
+        msg = _(u'message_id', default=u'default message')
+        self.assertEquals(u'default message', json_compatible(msg))
+
+    def test_missing_value(self):
+        self.assertEquals(None, json_compatible(Missing.Value))
