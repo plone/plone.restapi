@@ -19,6 +19,13 @@ from zope.interface import provider
 from zope.schema.interfaces import IContextAwareDefaultFactory
 
 
+INDEXES = (
+    ("test_int_field", "FieldIndex"),
+    ("test_list_field", "KeywordIndex"),
+    ("test_bool_field", "BooleanIndex"),
+)
+
+
 class IDXTestDocumentSchema(model.Schema):
 
     # zope.schema fields

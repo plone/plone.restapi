@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 
@@ -14,6 +15,11 @@ class SearchHandler(object):
         self.request = request
         self.catalog = getToolByName(self.context, 'portal_catalog')
 
+    def _parse_query(self, query):
+        catalog_compatible_query = getMultiAdapter(
+            (self.context, self.request), IZCatalogCompatibleQuery)(query)
+        return catalog_compatible_query
+
     def _constrain_query_by_path(self, query):
         # If no 'path' parameter was supplied, restrict search to current
         # context and its children by adding a path constraint
@@ -25,6 +31,7 @@ class SearchHandler(object):
         if query is None:
             query = {}
 
+        query = self._parse_query(query)
         self._constrain_query_by_path(query)
 
         lazy_resultset = self.catalog.searchResults(query)
