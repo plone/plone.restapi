@@ -17,6 +17,7 @@ Contents
 
    introduction
    crud
+   searching
    content-negotiation
    error-handling
    http-status-codes
