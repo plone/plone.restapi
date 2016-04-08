@@ -12,7 +12,10 @@
   <adapter factory=".dxfields.TimedeltaFieldDeserializer" />
   <adapter factory=".dxfields.NamedFieldDeserializer" />
   <adapter factory=".dxfields.RichTextFieldDeserializer" />
-  <adapter factory=".dxfields.RelationChoiceFieldDeserializer" />
+
+  <configure zcml:condition="installed z3c.relationfield">
+    <adapter factory=".relationfield.RelationChoiceFieldDeserializer" />
+  </configure>
 
   <configure zcml:condition="installed Products.Archetypes">
     <adapter factory=".atcontent.DeserializeFromJson" />
