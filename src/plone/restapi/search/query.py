@@ -25,6 +25,9 @@ Index types used in a default Plone 4.3:
 Plone 5.0:
 
 - DateRecurringIndex (plus all of the above)
+
+The adapter for DateRecurringIndex is in a separate module and registered
+conditionally in order to avoid breaking compatibility with vanilla Plone 4.3.
 """
 
 from DateTime import DateTime
@@ -32,7 +35,6 @@ from DateTime.interfaces import SyntaxError as DTSyntaxError
 from plone.restapi.interfaces import IIndexQueryParser
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
-from Products.DateRecurringIndex.index import DateRecurringIndex
 from Products.ExtendedPathIndex.ExtendedPathIndex import ExtendedPathIndex
 from Products.PluginIndexes.BooleanIndex.BooleanIndex import BooleanIndex
 from Products.PluginIndexes.DateIndex.DateIndex import DateIndex
@@ -252,16 +254,6 @@ class DateRangeIndexQueryParser(BaseIndexQueryParser):
 
     query_value_type = DateTime
     query_options = {}
-
-
-@implementer(IIndexQueryParser)
-@adapter(DateRecurringIndex, Interface, Interface)
-class DateRecurringIndexQueryParser(BaseIndexQueryParser):
-
-    query_value_type = DateTime
-    query_options = {
-        'range': str,
-    }
 
 
 @implementer(IIndexQueryParser)

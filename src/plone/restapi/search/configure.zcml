@@ -13,7 +13,10 @@
     <adapter factory=".query.ExtendedPathIndexQueryParser" />
     <adapter factory=".query.DateIndexQueryParser" />
     <adapter factory=".query.DateRangeIndexQueryParser" />
-    <adapter factory=".query.DateRecurringIndexQueryParser" />
     <adapter factory=".query.UUIDIndexQueryParser" />
+
+    <configure zcml:condition="installed Products.DateRecurringIndex">
+        <adapter factory=".date_recurring_index.DateRecurringIndexQueryParser" />
+    </configure>
 
 </configure>
