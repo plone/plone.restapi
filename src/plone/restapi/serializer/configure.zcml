@@ -34,7 +34,9 @@
     <adapter factory=".converters.default_converter" />
     <adapter factory=".converters.dict_converter" />
     <adapter factory=".converters.frozenset_converter" />
+    <adapter factory=".converters.i18n_message_converter" />
     <adapter factory=".converters.list_converter" />
+    <adapter factory=".converters.missing_value_converter" />
     <adapter factory=".converters.persistent_list_converter" />
     <adapter factory=".converters.persistent_mapping_converter" />
     <adapter factory=".converters.python_datetime_converter" />
@@ -49,5 +51,8 @@
     <configure zcml:condition="installed z3c.relationfield">
         <adapter factory=".relationfield.relationvalue_converter" />
     </configure>
+
+    <adapter factory=".catalog.BrainSerializer" />
+    <adapter factory=".catalog.LazyCatalogResultSerializer" />
 
 </configure>
