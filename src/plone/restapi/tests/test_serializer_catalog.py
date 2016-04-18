@@ -46,9 +46,9 @@ class TestCatalogSerializers(unittest.TestCase):
     def test_lazy_map_serialization(self):
         lazy_map = self.catalog()
         results = getMultiAdapter((lazy_map, self.request), ISerializeToJson)()
-        self.assertEqual(3, len(results['member']))
+        self.assertEqual(2, len(results['member']))
         self.assertDictContainsSubset(
-            {'items_count': 3},
+            {'items_count': 2},
             results)
 
     def test_brain_summary_representation(self):
