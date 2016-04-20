@@ -221,6 +221,7 @@ class TestDexterityFieldSerializing(TestCase):
         value = self.serialize('test_relationchoice_field', doc2)
         self.assertEqual(
             {'@id': 'http://nohost/plone/doc2',
+             '@type': 'DXTestDocument',
              'title': 'Referenceable Document',
              'description': 'Description 2',
              },
@@ -241,10 +242,12 @@ class TestDexterityFieldSerializing(TestCase):
         self.assertTrue(isinstance(value, list), 'Not a <list>')
         self.assertEqual([
             {'@id': 'http://nohost/plone/doc2',
+             '@type': 'DXTestDocument',
              'title': 'Referenceable Document',
              'description': 'Description 2',
              },
             {'@id': 'http://nohost/plone/doc3',
+             '@type': 'DXTestDocument',
              'title': 'Referenceable Document',
              'description': 'Description 3',
              }],

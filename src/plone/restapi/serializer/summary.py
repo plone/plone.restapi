@@ -24,6 +24,7 @@ class DefaultJSONSummarySerializer(object):
         obj = IContentListingObject(self.context)
         summary = {
             '@id': obj.getURL(),
+            '@type': obj.PortalType(),
             'title': obj.Title(),
             'description': obj.Description()
         }
@@ -43,6 +44,7 @@ class SiteRootJSONSummarySerializer(object):
     def __call__(self):
         summary = {
             '@id': self.context.absolute_url(),
+            '@type': self.context.portal_type,
             'title': self.context.title,
             'description': self.context.description
         }

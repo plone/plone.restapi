@@ -125,6 +125,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             [
                 {
                     u'@id': u'http://nohost/plone/folder1/doc1',
+                    u'@type': u'Document',
                     u'description': u'This is a document',
                     u'title': u'Document 1'
                 }
@@ -139,6 +140,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.assertEqual(
             {
                 '@id': self.portal.absolute_url(),
+                '@type': self.portal.portal_type,
                 'title': self.portal.title,
                 'description': self.portal.description
             },
@@ -154,6 +156,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.assertEqual(
             {
                 '@id': self.portal.absolute_url(),
+                '@type': self.portal.portal_type,
                 'title': self.portal.title,
                 'description': self.portal.description
             },
@@ -237,11 +240,13 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             [
                 {
                     u'@id': self.portal.doc1.absolute_url(),
+                    u'@type': u'Document',
                     u'description': u'',
                     u'title': u'Document 1'
                 },
                 {
                     u'@id': self.portal.doc2.absolute_url(),
+                    u'@type': u'Document',
                     u'description': u'',
                     u'title': u'Document 2'
                 }
