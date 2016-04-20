@@ -9,6 +9,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 
+import Missing
 import unittest
 
 
@@ -62,6 +63,20 @@ class TestSummarySerializers(unittest.TestCase):
              '@type': 'DXTestDocument',
              'title': 'Lorem Ipsum',
              'description': 'Description'},
+            summary)
+
+    def test_brain_summary_with_missing_value(self):
+        brain = self.catalog(UID=self.doc1.UID())[0]
+        brain.Description = Missing.Value
+
+        summary = getMultiAdapter(
+            (brain, self.request), ISerializeToJsonSummary)()
+
+        self.assertDictEqual(
+            {'@id': 'http://nohost/plone/doc1',
+             '@type': 'DXTestDocument',
+             'title': 'Lorem Ipsum',
+             'description': None},
             summary)
 
     def test_dx_type_summary(self):

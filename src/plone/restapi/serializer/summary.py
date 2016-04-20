@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.serializer.converters import json_compatible
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.interface import implementer
@@ -22,12 +23,12 @@ class DefaultJSONSummarySerializer(object):
 
     def __call__(self):
         obj = IContentListingObject(self.context)
-        summary = {
+        summary = json_compatible({
             '@id': obj.getURL(),
             '@type': obj.PortalType(),
             'title': obj.Title(),
             'description': obj.Description()
-        }
+        })
         return summary
 
 
@@ -42,10 +43,10 @@ class SiteRootJSONSummarySerializer(object):
         self.request = request
 
     def __call__(self):
-        summary = {
+        summary = json_compatible({
             '@id': self.context.absolute_url(),
             '@type': self.context.portal_type,
             'title': self.context.title,
             'description': self.context.description
-        }
+        })
         return summary
