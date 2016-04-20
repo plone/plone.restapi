@@ -193,6 +193,7 @@ class TestJsonCompatibleConverters(TestCase):
         intids = getUtility(IIntIds)
         self.assertEquals(
             {'@id': 'http://nohost/plone/doc1',
+             '@type': 'DXTestDocument',
              'title': 'Document 1',
              'description': 'Description'},
             json_compatible(RelationValue(intids.getId(doc1))))

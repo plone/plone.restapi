@@ -56,6 +56,7 @@ class TestCatalogSerializers(unittest.TestCase):
         results = getMultiAdapter((lazy_map, self.request), ISerializeToJson)()
         self.assertIn(
             {'@id': 'http://nohost/plone/my-folder/my-document',
+             '@type': 'Document',
              'title': 'My Document',
              'description': ''},
             results['member'])
@@ -68,6 +69,7 @@ class TestCatalogSerializers(unittest.TestCase):
 
         self.assertDictEqual(
             {'@id': 'http://nohost/plone/my-folder/my-document',
+             '@type': 'Document',
              'title': 'My Document',
              'description': '',
              'portal_type': u'Document',

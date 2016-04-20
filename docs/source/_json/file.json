@@ -25,6 +25,7 @@ content-type: application/json
   "modified": "2016-01-21T05:24:11+00:00", 
   "parent": {
     "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
     "description": "", 
     "title": "Plone site"
   }, 
