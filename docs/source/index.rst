@@ -21,6 +21,7 @@ Contents
    content-negotiation
    error-handling
    http-status-codes
+   additional-endpoints
 
    customization
 
