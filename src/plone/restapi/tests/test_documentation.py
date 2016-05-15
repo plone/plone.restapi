@@ -303,7 +303,7 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.get('/actions_')
         save_response_for_documentation('actions.json', response)
 
-    def test_frame_object(self):
+    def test_documentation_frame_object(self):
         response = self.api_session.get(
             self.document.absolute_url() + '?frame=object')
         save_response_for_documentation('frame_object.json', response)
