@@ -1,3 +1,4 @@
+=================================
 Additional Endpoints (MOCKS ONLY)
 =================================
 
@@ -104,4 +105,19 @@ Get the available actions for the given context
 Example:
 
 .. literalinclude:: _json/actions.json
+  :language: js
+
+
+Framed Responses
+================
+
+.. code::
+
+ GET /:path?frame=object HTTP/1.1
+ Host: localhost:8080
+ Accept: application/json
+
+Example:
+
+.. literalinclude:: _json/frame_object.json
   :language: js
