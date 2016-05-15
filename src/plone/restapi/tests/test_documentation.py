@@ -294,3 +294,7 @@ class TestTraversal(unittest.TestCase):
         query = {'resource': '/style/main.css'}
         response = self.api_session.get('/theme_', params=query)
         save_response_for_documentation('theme.json', response)
+
+    def test_documentation_components(self):
+        response = self.api_session.get('/components_/navigation')
+        save_response_for_documentation('components.json', response)

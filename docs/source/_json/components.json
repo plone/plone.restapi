@@ -1,0 +1,21 @@
+GET /plone/components_/navigation
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+{
+  "data": {
+    "items": [
+      {
+        "label": "News", 
+        "uri": "http://plone/news"
+      }, 
+      {
+        "label": "Events", 
+        "uri": "http://plone/events"
+      }
+    ]
+  }, 
+  "id": "navigation"
+}
