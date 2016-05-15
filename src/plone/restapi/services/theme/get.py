@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.rest import Service
 
-MOCKEDRESOURCE = {
+MOCKEDRESPONSE = {
     "href": "http://plone/++theme++mytheme/style/main.css"
 }
 
@@ -11,6 +11,6 @@ class ThemeEditedResource(Service):
     def render(self):
         resource = self.request.form.get('resource')
         if resource == '/style/main.css':
-            return MOCKEDRESOURCE
+            return MOCKEDRESPONSE
         else:
             self.request.response.setStatus(404)
