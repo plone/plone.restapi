@@ -3,5 +3,6 @@
 
   <include package=".content"/>
   <include package=".search"/>
+  <include package=".theme"/>
 
 </configure>
