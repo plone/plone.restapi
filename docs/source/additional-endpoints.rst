@@ -28,3 +28,20 @@ Example:
 
 .. literalinclude:: _json/registry.json
    :language: js
+
+Theme
+========
+
+Requesting for overridden resources
+-----------------------------------
+
+.. code::
+
+  GET /:site/theme_ HTTP/1.1
+  Host: localhost:8080
+  Accept: application/json
+
+Example:
+
+.. literalinclude:: _json/theme.json
+  :language: js

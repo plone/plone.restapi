@@ -1,0 +1,9 @@
+GET /plone/theme_?resource=%2Fstyle%2Fmain.css
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+{
+  "href": "http://plone/++theme++mytheme/style/main.css"
+}
