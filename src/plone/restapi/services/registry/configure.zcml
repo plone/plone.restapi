@@ -5,7 +5,15 @@
   <plone:service
     method="GET"
     for="Products.CMFCore.interfaces.ISiteRoot"
-    factory=".read.RegistryGet"
+    factory=".get.RegistryGet"
+    name="registry_"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="PUT"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".update.RegistryUpdate"
     name="registry_"
     permission="zope2.View"
     />
