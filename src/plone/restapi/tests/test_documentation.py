@@ -271,3 +271,8 @@ class TestTraversal(unittest.TestCase):
         query = {'sort_on': 'path'}
         response = self.api_session.get('/search', params=query)
         save_response_for_documentation('search.json', response)
+
+    def test_documentation_registry(self):
+        response = self.api_session.get(
+            '/registry_/plone.app.event.first_weekday')
+        save_response_for_documentation('registry.json', response)

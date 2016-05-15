@@ -1,0 +1,9 @@
+GET /plone/registry_/plone.app.event.first_weekday
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+{
+  "key": "value"
+}

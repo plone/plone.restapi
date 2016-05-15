@@ -5,4 +5,7 @@
   <include package=".search"/>
   <include package=".theme"/>
 
+  <!-- Mocked Endpoints -->
+  <include package=".registry" />
+
 </configure>
