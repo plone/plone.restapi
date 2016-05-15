@@ -8,5 +8,6 @@
   <include package=".registry" />
   <include package=".theme"/>
   <include package=".components"/>
+  <include package=".actions"/>
 
 </configure>

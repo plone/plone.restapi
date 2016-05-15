@@ -298,3 +298,7 @@ class TestTraversal(unittest.TestCase):
     def test_documentation_components(self):
         response = self.api_session.get('/components_/navigation')
         save_response_for_documentation('components.json', response)
+
+    def test_documentation_actions(self):
+        response = self.api_session.get('/actions_')
+        save_response_for_documentation('actions.json', response)

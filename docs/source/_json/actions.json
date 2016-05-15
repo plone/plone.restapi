@@ -1,0 +1,28 @@
+GET /plone/actions_
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+{
+  "object_actions": [
+    {
+      "@id": "Collection", 
+      "category": "factories", 
+      "title": "Collection", 
+      "uri": "http://localhost:8080/Plone/++add++Collection"
+    }, 
+    {
+      "@id": "Document", 
+      "category": "factories", 
+      "title": "Document", 
+      "uri": "http://localhost:8080/Plone/++add++Document"
+    }, 
+    {
+      "@id": "reject", 
+      "category": "workflow", 
+      "title": "Send back", 
+      "uri": "http://localhost:8080/Plone//content_status_modify?workflow_action=reject"
+    }
+  ]
+}

@@ -87,3 +87,21 @@ Example:
 
 .. literalinclude:: _json/components.json
   :language: js
+
+
+Actions
+==========
+
+Get the available actions for the given context
+-----------------------------------------------
+
+.. code::
+
+ GET /:path/actions_ HTTP/1.1
+ Host: localhost:8080
+ Accept: application/json
+
+Example:
+
+.. literalinclude:: _json/actions.json
+  :language: js
