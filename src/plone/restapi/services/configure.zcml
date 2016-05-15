@@ -7,5 +7,6 @@
   <!-- Mocked Endpoints -->
   <include package=".registry" />
   <include package=".theme"/>
+  <include package=".components"/>
 
 </configure>

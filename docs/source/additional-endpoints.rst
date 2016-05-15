@@ -68,4 +68,22 @@ Requesting for overridden resources
 Example:
 
 .. literalinclude:: _json/theme.json
+   :language: js
+
+
+Components
+==========
+
+Get the required component(s)
+------------------------------
+
+.. code::
+
+ GET /:site/components_/:[id,] HTTP/1.1
+ Host: localhost:8080
+ Accept: application/json
+
+Example:
+
+.. literalinclude:: _json/components.json
   :language: js
