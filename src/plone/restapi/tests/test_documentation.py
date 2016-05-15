@@ -42,14 +42,22 @@ base_path = os.path.join(
 
 def save_response_for_documentation(filename, response):
     f = open('{}/{}'.format(base_path, filename), 'w')
-    f.write('{} {}\n'.format(
-        response.request.method,
-        response.request.path_url
-    ))
-    for key, value in response.request.headers.items():
+    request = response.request
+    request_contents = '{} {}\n'.format(
+        request.method,
+        request.path_url,
+    )
+
+    for key, value in request.headers.items():
         if key.lower() in REQUEST_HEADER_KEYS:
-            f.write('{}: {}\n'.format(key, value))
+            request_contents += '{}: {}\n'.format(key, value)
+
+    if request.body:
+        request_contents += '\n{}\n'.format(request.body)
+
+    f.write(request_contents)
     f.write('\n')
+
     f.write('HTTP {} {}\n'.format(response.status_code, response.reason))
     for key, value in response.headers.items():
         if key.lower() in RESPONSE_HEADER_KEYS:
