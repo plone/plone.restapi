@@ -16,7 +16,7 @@ Registry
 ========
 
 Registry records can be addressed by using the fully qualified dotted name of
-the registry record to be read/written as the ``:record_name``.
+the registry record to be read/written as the ``:name`` parameter.
 
 Reading registry records
 ------------------------
@@ -25,7 +25,7 @@ Reading a single record:
 
 .. code::
 
-  GET /:site/registry_/:record_name HTTP/1.1
+  GET /:portal/registry_/:name HTTP/1.1
   Host: localhost:8080
   Accept: application/json
 
@@ -41,11 +41,11 @@ Updating an existing record:
 
 .. code::
 
-  PUT /:site/registry_/ HTTP/1.1
+  PUT /:portal/registry_/ HTTP/1.1
   Host: localhost:8080
   Accept: application/json
 
-  {record_name: value}
+  {name: value}
 
 Example:
 
@@ -61,7 +61,7 @@ Requesting for overridden resources
 
 .. code::
 
-  GET /:site/theme_ HTTP/1.1
+  GET /:portal/theme_ HTTP/1.1
   Host: localhost:8080
   Accept: application/json
 
@@ -79,7 +79,7 @@ Get the required component(s)
 
 .. code::
 
- GET /:site/components_/:[id,] HTTP/1.1
+ GET /:portal/components_/:[id,] HTTP/1.1
  Host: localhost:8080
  Accept: application/json
 
