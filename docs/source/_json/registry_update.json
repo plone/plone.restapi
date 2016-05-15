@@ -1,7 +1,7 @@
 PUT /plone/registry_/
 Accept: application/json
 
-{"key": "value"}
+{"plone.app.querystring.field.path.title": "Value"}
 
 HTTP 204 No Content
 

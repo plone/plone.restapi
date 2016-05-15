@@ -1,7 +1,7 @@
-GET /plone/registry_/plone.app.event.first_weekday
+GET /plone/registry_/plone.app.querystring.field.path.title
 Accept: application/json
 
 HTTP 200 OK
 content-type: application/json
 
-"value"
+"Location"

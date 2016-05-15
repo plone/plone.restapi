@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from plone.registry.interfaces import IRegistry
 from plone.rest import Service
+from zope.component import getUtility
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 
@@ -17,5 +19,16 @@ class RegistryGet(Service):
         self.params.append(name)
         return self
 
+    @property
+    def _get_record_name(self):
+        if len(self.params) != 1:
+            raise Exception(
+                "Must supply exactly one parameter (dotted name of"
+                "the record to be retrieved)")
+
+        return self.params[0]
+
     def render(self):
-        return 'value'
+        registry = getUtility(IRegistry)
+        value = registry[self._get_record_name]
+        return value

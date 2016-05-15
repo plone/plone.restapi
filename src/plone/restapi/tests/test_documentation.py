@@ -282,12 +282,13 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_registry_get(self):
         response = self.api_session.get(
-            '/registry_/plone.app.event.first_weekday')
+            '/registry_/plone.app.querystring.field.path.title')
         save_response_for_documentation('registry_get.json', response)
 
     def test_documentation_registry_update(self):
         response = self.api_session.put(
-            '/registry_/', json={'key': 'value'})
+            '/registry_/',
+            json={'plone.app.querystring.field.path.title': 'Value'})
         save_response_for_documentation('registry_update.json', response)
 
     def test_documentation_theme(self):
