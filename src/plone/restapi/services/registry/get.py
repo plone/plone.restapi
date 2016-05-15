@@ -18,4 +18,4 @@ class RegistryGet(Service):
         return self
 
     def render(self):
-        return {'key': 'value'}
+        return 'value'

@@ -4,6 +4,4 @@ Accept: application/json
 HTTP 200 OK
 content-type: application/json
 
-{
-  "key": "value"
-}
+"value"
