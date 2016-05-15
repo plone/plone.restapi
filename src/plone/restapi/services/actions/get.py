@@ -20,7 +20,8 @@ MOCKEDRESPONSE = {
         {
             '@id': 'reject',
             'title': 'Send back',
-            'uri': 'http://localhost:8080/Plone//content_status_modify?workflow_action=reject',
+            'uri': 'http://localhost:8080/Plone/content_status_modify?'
+                   'workflow_action=reject',
             'category': 'workflow',
         },
     ]
