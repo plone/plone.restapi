@@ -24,24 +24,6 @@ Contents
 
    customization
 
-
-..   hydra
-..   item
-..   folder
-..   site-search
-
-..   general-concepts
-..   general-concepts/error-handling
-..   general-concepts/security
-..   collections
-..   collections/transitions
-..   collections/batching
-..   collections/searching
-..   workflow
-..   local-roles
-..   global-objects
-
-
 .. include:: ../../README.rst
 
 

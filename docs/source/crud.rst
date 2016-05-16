@@ -17,17 +17,29 @@ DELETE  /folder/{documentId}    Remove the document
 Creating a Resource with POST
 =============================
 
-To create a new resource, we send a POST request to the resource container.  If we want to create a new document within an existing folder, we send a POST request to that folder::
+To create a new resource, we send a POST request to the resource container.  If we want to create a new document within an existing folder, we send a POST request to that folder:
 
-  POST /folder HTTP/1.1
-  Host: localhost:8080
-  Accept: application/json
-  Content-Type: application/json
+.. example-code::
 
-  {
-      '@type': 'Document',
-      'title': 'My Document',
-  }
+  .. code-block:: http
+
+    POST /folder HTTP/1.1
+    Host: localhost:8080
+    Accept: application/json
+    Content-Type: application/json
+
+    {
+        '@type': 'Document',
+        'title': 'My Document',
+    }
+
+  .. code-block:: curl
+
+    curl -i -H "Accept: application/json" -H "Content-type: application/json" --data-raw '{"@type":"Document", "title": "My Document"}' --user admin:admin -X POST http://localhost:8080/Plone/folder
+
+  .. code-block:: httpie
+
+    http -a admin:admin POST http://localhost:8080/Plone/folder \\@type=Document title=My Document Accept:application/json
 
 By setting the 'Accept' header, we tell the server that we would like to recieve the response in the 'application/json' representation format.
 
@@ -114,11 +126,23 @@ TODO: Link to the real implementation...
 Reading a Resource with GET
 ===========================
 
-After a successful POST, we can access the resource by sending a GET request to the resource URL::
+After a successful POST, we can access the resource by sending a GET request to the resource URL:
 
-  GET /folder/my-document HTTP/1.1
-  Host: localhost:8080
-  Accept: application/json
+.. example-code::
+
+  .. code-block:: http
+
+    GET /folder/my-document HTTP/1.1
+    Host: localhost:8080
+    Accept: application/json
+
+  .. code-block:: curl
+
+    curl -i -H "Accept: application/json" --user admin:admin -X GET http://localhost:8080/Plone/folder/my-document
+
+  .. code-block:: httpie
+
+    http -a admin:admin GET http://localhost:8080/Plone/folder/my-document Accept:application/json
 
 
 Successful Response (200 OK)
@@ -176,16 +200,28 @@ Possible server reponses for a GET request are:
 Updating a Resource with PUT
 ============================
 
-To update an existing resource we send a PUT request to the server::
+To update an existing resource we send a PUT request to the server:
 
-  PUT /folder/my-document HTTP/1.1
-  Host: localhost:8080
-  Content-Type: application/json
+.. example-code::
 
-  {
-      '@type': 'Document',
-      'title': 'My New Document Title',
-  }
+  .. code-block:: http
+
+    PUT /folder/my-document HTTP/1.1
+    Host: localhost:8080
+    Content-Type: application/json
+
+    {
+        '@type': 'Document',
+        'title': 'My New Document Title',
+    }
+
+  .. code-block:: curl
+
+    curl -i -H "Accept: application/json" -X PATCH http://localhost:8080/Plone/folder
+
+  .. code-block:: httpie
+
+    http -a admin:admin PATCH http://localhost:8080/Plone/folder title="My New Document Title" Accept:application/json
 
 In accordance with the HTTP specification, a successful PUT will not create a new resource or produce a new URL.
 
@@ -266,10 +302,22 @@ Difference POST and PUT:
 Removing a Resource with DELETE
 ===============================
 
-We can delete an existing resource by sending a DELETE request::
+We can delete an existing resource by sending a DELETE request:
 
-  DELETE /folder/my-document HTTP/1.1
-  Host: localhost:8080
+.. example-code::
+
+  .. code-block:: http
+
+    DELETE /folder/my-document HTTP/1.1
+    Host: localhost:8080
+
+  .. code-block:: curl
+
+      curl -i -H "Accept: application/json" -X DELETE --user admin:admin http://localhost:8080/Plone/folder/my-document
+
+  .. code-block:: httpie
+
+      http -a admin:admin DELETE http://localhost:8080/Plone/folder/my-document Accept:application/json
 
 A successful response will be indicated by a '204 No Content' response::
 
