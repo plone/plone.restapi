@@ -1,0 +1,27 @@
+GET /plone/front-page/workflow
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+{
+  "history": [
+    {
+      "action": null, 
+      "actor": "test_user_1_", 
+      "comments": "", 
+      "review_state": "private", 
+      "time": "2016-05-16T13:42:42+00:00"
+    }
+  ], 
+  "transitions": [
+    {
+      "@id": "http://localhost:55001/plone/front-page/workflow/publish", 
+      "title": "Publish"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/front-page/workflow/submit", 
+      "title": "Submit for publication"
+    }
+  ]
+}

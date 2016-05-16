@@ -1,0 +1,13 @@
+POST /plone/front-page/workflow/publish
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+{
+  "action": "publish", 
+  "actor": "admin", 
+  "comments": "", 
+  "review_state": "published", 
+  "time": "2016-05-16T13:42:42+00:00"
+}
