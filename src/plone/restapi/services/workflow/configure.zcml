@@ -11,12 +11,12 @@
     permission="zope2.View"
     />
 
-<!--   <plone:service
+  <plone:service
     method="POST"
     name="workflow"
     for="Products.CMFCore.interfaces.IContentish"
     factory=".transition.WorkflowTransition"
     permission="zope2.View"
-    /> -->
+    />
 
 </configure>
