@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <plone:service
+    method="GET"
+    name="workflow"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".info.WorkflowInfo"
+    permission="zope2.View"
+    />
+
+<!--   <plone:service
+    method="POST"
+    name="workflow"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".transition.WorkflowTransition"
+    permission="zope2.View"
+    /> -->
+
+</configure>
