@@ -26,7 +26,7 @@ class SerializeToJson(object):
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary)()
         result = {
-            '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
+            # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             '@id': self.context.absolute_url(),
             '@type': self.context.portal_type,
             'parent': parent_summary,

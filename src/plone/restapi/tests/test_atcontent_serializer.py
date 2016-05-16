@@ -36,6 +36,7 @@ class TestATContentSerializer(unittest.TestCase):
         self.assertTrue(isinstance(json.dumps(obj), str),
                         'Not JSON serializable')
 
+    @unittest.skip('We do not include the context at this point')
     def test_serializer_includes_context(self):
         obj = self.serialize(self.doc1)
         self.assertIn(u'@context', obj)

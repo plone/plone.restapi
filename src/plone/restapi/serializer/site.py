@@ -19,7 +19,7 @@ class SerializeSiteRootToJson(object):
 
     def __call__(self):
         result = {
-            '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
+            # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             '@id': self.context.absolute_url(),
             '@type': 'Plone Site',
             'parent': {},
