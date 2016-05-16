@@ -18,6 +18,7 @@ Contents
    introduction
    authentication
    crud
+   workflow
    serialization
    searching
    content-negotiation

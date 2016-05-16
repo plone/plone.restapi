@@ -271,3 +271,13 @@ class TestTraversal(unittest.TestCase):
         query = {'sort_on': 'path'}
         response = self.api_session.get('/search', params=query)
         save_response_for_documentation('search.json', response)
+
+    def test_documentation_workflow(self):
+        response = self.api_session.get(
+            '{}/workflow'.format(self.document.absolute_url()))
+        save_response_for_documentation('workflow_get.json', response)
+
+    def test_documentation_workflow_transition(self):
+        response = self.api_session.post(
+            '{}/workflow/publish'.format(self.document.absolute_url()))
+        save_response_for_documentation('workflow_post.json', response)
