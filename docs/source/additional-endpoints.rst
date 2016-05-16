@@ -84,9 +84,13 @@ Get the required component(s)
  Host: localhost:8080
  Accept: application/json
 
-Example:
+Examples:
 
-.. literalinclude:: _json/components.json
+.. literalinclude:: _json/components_navigation.json
+  :language: js
+
+
+.. literalinclude:: _json/components_breadcrumbs.json
   :language: js
 
 

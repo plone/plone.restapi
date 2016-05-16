@@ -296,9 +296,15 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.get('/theme_', params=query)
         save_response_for_documentation('theme.json', response)
 
-    def test_documentation_components(self):
+    def test_documentation_components_navigation(self):
         response = self.api_session.get('/components_/navigation')
-        save_response_for_documentation('components.json', response)
+        save_response_for_documentation(
+            'components_navigation.json', response)
+
+    def test_documentation_components_breadcrumbs(self):
+        response = self.api_session.get('/components_/breadcrumbs')
+        save_response_for_documentation(
+            'components_breadcrumbs.json', response)
 
     def test_documentation_actions(self):
         response = self.api_session.get('/actions_')

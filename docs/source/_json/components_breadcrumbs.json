@@ -1,0 +1,23 @@
+GET /plone/components_/breadcrumbs
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+[
+  {
+    "data": {
+      "items": [
+        {
+          "label": "Junk", 
+          "uri": "http://plone/junk"
+        }, 
+        {
+          "label": "More Junk", 
+          "uri": "http://plone/junk/more-junk"
+        }
+      ]
+    }, 
+    "id": "breadcrumbs"
+  }
+]
