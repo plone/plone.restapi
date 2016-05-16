@@ -19,7 +19,6 @@ Contents
    crud
    searching
    content-negotiation
-   error-handling
    http-status-codes
 
    customization
