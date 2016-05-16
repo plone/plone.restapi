@@ -80,6 +80,16 @@ Further Reading
 
 .. _`REST in Practice: Hypermedia and Systems Architecture (Webber, Parastatidis, Robinson)`: http://www.amazon.com/gp/product/0596805829
 
+Standards
+=========
+
+- JSON-LD: http://www.w3.org/TR/json-ld/
+- JSON Schema: http://json-schema.org/
+- Schema.org: http://schema.org/
+- Hydra: http://www.w3.org/ns/hydra/spec/latest/core/
+- Collection+JSON: http://amundsen.com/media-types/collection/
+- Siren: https://github.com/kevinswiber/siren
+
 License
 =======
 
