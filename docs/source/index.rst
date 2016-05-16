@@ -17,6 +17,7 @@ Contents
 
    introduction
    crud
+   serialization
    searching
    content-negotiation
    http-status-codes
