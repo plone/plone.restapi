@@ -16,6 +16,7 @@ Contents
    :maxdepth: 3
 
    introduction
+   authentication
    crud
    serialization
    searching
