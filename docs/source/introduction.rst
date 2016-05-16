@@ -14,8 +14,6 @@ The server will then respond with the portal root in the JSON format:
 .. literalinclude:: _json/siteroot.json
    :language: json-ld
 
-`@context` defines what kind of resource this is and the meaning of the terms used within this resource.
-
 `@id` is a unique identifier for resources (IRIs). The @id property can be used to navigate through the web API by following the links.
 
 `@type` sets the data type of a node or typed value
