@@ -16,10 +16,12 @@ Contents
    :maxdepth: 3
 
    introduction
+   authentication
    crud
+   workflow
+   serialization
    searching
    content-negotiation
-   error-handling
    http-status-codes
    additional-endpoints
 

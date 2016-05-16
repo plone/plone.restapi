@@ -3,6 +3,7 @@
 
   <include package=".content"/>
   <include package=".search"/>
+  <include package=".workflow"/>
 
   <!-- Mocked Endpoints -->
   <include package=".registry" />

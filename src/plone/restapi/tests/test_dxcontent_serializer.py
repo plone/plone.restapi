@@ -47,7 +47,7 @@ class TestDXContentSerializer(unittest.TestCase):
             test_timedelta_field=timedelta(44),
             test_tuple_field=(1, 1),
             test_readonly_field=u'readonly',
-            test_read_permission_field = u'Secret Stuff')
+            test_read_permission_field=u'Secret Stuff')
 
         self.portal.doc1.creation_date = DateTime('2015-04-27T10:14:48+00:00')
         self.portal.doc1.modification_date = DateTime(
@@ -64,6 +64,7 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertTrue(isinstance(json.dumps(obj), str),
                         'Not JSON serializable')
 
+    @unittest.skip('We do not include the context at this point')
     def test_serializer_includes_context(self):
         obj = self.serialize()
         self.assertIn(u'@context', obj)

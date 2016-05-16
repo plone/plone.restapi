@@ -5,7 +5,6 @@ HTTP 200 OK
 content-type: application/json
 
 {
-  "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone/newsitem", 
   "@type": "News Item", 
   "UID": "80c2a074cb4240d08c9a129e3a834c74", 
