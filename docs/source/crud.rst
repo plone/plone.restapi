@@ -25,7 +25,6 @@ To create a new resource, we send a POST request to the resource container.  If 
   Content-Type: application/json
 
   {
-      '@context': '/@@context.jsonld',
       '@type': 'Document',
       'title': 'My Document',
   }
@@ -47,7 +46,6 @@ If a resource has been created, the server responds with the '201 Created' statu
   Location: http://localhost:8080/folder/my-document
 
   {
-      '@context': '/@@context.jsonld',
       '@type': 'Document',
       'id': 'my-document',
       'title': 'My Document',
@@ -185,7 +183,6 @@ To update an existing resource we send a PUT request to the server::
   Content-Type: application/json
 
   {
-      '@context': '/@@context.jsonld',
       '@type': 'Document',
       'title': 'My New Document Title',
   }
@@ -208,7 +205,6 @@ When a resource has been updated successfully, the server sends a '200 OK' respo
   Content-Type:: application/json
 
   {
-      '@context': '/@@context.jsonld',
       '@type': 'Document',
       'title': 'My New Document',
   }

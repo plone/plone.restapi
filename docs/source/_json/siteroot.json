@@ -5,10 +5,15 @@ HTTP 200 OK
 content-type: application/json
 
 {
-  "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone", 
   "@type": "Plone Site", 
   "member": [
+    {
+      "@id": "http://localhost:55001/plone/robot-test-folder", 
+      "@type": "Folder", 
+      "description": "", 
+      "title": "Test Folder"
+    }, 
     {
       "@id": "http://localhost:55001/plone/front-page", 
       "@type": "Document", 
