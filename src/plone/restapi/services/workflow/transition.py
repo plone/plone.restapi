@@ -35,6 +35,7 @@ class WorkflowTransition(Service):
 
         data = json_body(self.request)
         if data.keys() not in [[], ['comment']]:
+            self.request.response.setStatus(400)
             return dict(error=dict(
                 type='BadRequest',
                 message='Invalid body'))
