@@ -1,5 +1,5 @@
- Customizing the API
-=====================
+Customizing the API
+===================
 
 Content serialization
 ---------------------
