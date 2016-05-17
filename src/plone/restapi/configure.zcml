@@ -30,6 +30,7 @@
   <include package=".services" />
   <include package=".serializer" />
   <include package=".deserializer" />
+  <include package=".jsonschema" />
   <include package=".search" />
 
 </configure>
