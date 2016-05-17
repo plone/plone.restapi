@@ -1,4 +1,4 @@
-GET /plone/components_/breadcrumbs
+GET /plone/front-page/components_/breadcrumbs
 Accept: application/json
 
 HTTP 200 OK
@@ -9,12 +9,8 @@ content-type: application/json
     "data": {
       "items": [
         {
-          "title": "Junk", 
-          "url": "http://plone/junk"
-        }, 
-        {
-          "title": "More Junk", 
-          "url": "http://plone/junk/more-junk"
+          "title": "Welcome to Plone", 
+          "url": "http://localhost:55001/plone/front-page"
         }
       ]
     }, 

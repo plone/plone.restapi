@@ -312,7 +312,7 @@ class TestTraversal(unittest.TestCase):
             'components_navigation.json', response)
 
     def test_documentation_components_breadcrumbs(self):
-        response = self.api_session.get('/components_/breadcrumbs')
+        response = self.api_session.get('/front-page/components_/breadcrumbs')
         save_response_for_documentation(
             'components_breadcrumbs.json', response)
 

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.rest import Service
+from zope.component import getMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 
@@ -31,21 +32,33 @@ class ComponentsGet(Service):
         }
         return component
 
+    def get_navigation(self):
+        tabs = getMultiAdapter((self.context, self.request),
+                               name="portal_tabs_view")
+        result = []
+        for tab in tabs.topLevelTabs():
+            result.append({
+                'title': tab.get('title', tab.get('name')),
+                'url': tab['url'] + ''
+            })
+        return result
+
+    def get_breadcrumbs(self):
+        breadcrumbs_view = getMultiAdapter((self.context, self.request),
+                                           name="breadcrumbs_view")
+        result = []
+        for crumb in breadcrumbs_view.breadcrumbs():
+            result.append({
+                'title': crumb['Title'],
+                'url': crumb['absolute_url']
+            })
+        return result
+
     def _render_component(self, component_id):
         if component_id == 'navigation':
-            items = [
-                {'title': 'News',
-                 'url': 'http://plone/news'},
-                {'title': 'Events',
-                 'url': 'http://plone/events'}
-            ]
+            items = self.get_navigation()
         elif component_id == 'breadcrumbs':
-            items = [
-                {'title': 'Junk',
-                 'url': 'http://plone/junk'},
-                {'title': 'More Junk',
-                 'url': 'http://plone/junk/more-junk'}
-            ]
+            items = self.get_breadcrumbs()
         else:
             raise NotImplementedError(
                 'This endpoint does not currently support the '
