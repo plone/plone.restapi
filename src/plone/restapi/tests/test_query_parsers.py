@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from DateTime import DateTime
+from plone.restapi.exceptions import QueryParsingError
 from plone.restapi.search.query import BaseIndexQueryParser
 from plone.restapi.search.query import BooleanIndexQueryParser
 from plone.restapi.search.query import DateIndexQueryParser
@@ -7,7 +8,6 @@ from plone.restapi.search.query import DateRangeIndexQueryParser
 from plone.restapi.search.query import ExtendedPathIndexQueryParser
 from plone.restapi.search.query import FieldIndexQueryParser
 from plone.restapi.search.query import KeywordIndexQueryParser
-from plone.restapi.search.query import QueryParsingException
 from plone.restapi.search.query import UUIDIndexQueryParser
 from plone.restapi.search.query import ZCTextIndexQueryParser
 import unittest
@@ -30,7 +30,7 @@ class TestBaseIndexQueryParser(unittest.TestCase):
 
     def test_raises_on_missing_query_key_for_complex_queries(self):
         qp = BaseIndexQueryParser()
-        with self.assertRaises(QueryParsingException):
+        with self.assertRaises(QueryParsingError):
             qp.parse({})
 
 
@@ -92,7 +92,7 @@ class TestBooleanIndexQueryParser(unittest.TestCase):
 
     def test_raises_for_invalid_query_type(self):
         qp = BooleanIndexQueryParser()
-        with self.assertRaises(QueryParsingException):
+        with self.assertRaises(QueryParsingError):
             qp.parse(42)
 
 

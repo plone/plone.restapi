@@ -1,13 +1,7 @@
 # -*- coding: utf-8 -*-
+from plone.restapi.exceptions import DeserializationError
+
 import json
-
-
-class DeserializationError(Exception):
-    def __init__(self, msg):
-        self.msg = msg
-
-    def __str__(self):
-        return repr(self.msg)
 
 
 def json_body(request):
