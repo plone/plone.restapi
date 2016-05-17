@@ -7,13 +7,6 @@ HTTP 200 OK
 content-type: application/json
 
 {
-  "jwt": {
-    "algorithm": "HS256", 
-    "expires": 1463534055.943888, 
-    "fullname": "Foo bar", 
-    "type": "JWT", 
-    "username": "admin"
-  }, 
-  "signature": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZnVsbG5hbWUiOiJGb28gYmFyIiwiZXhwaXJlcyI6MTQ2MzUzNDA1NS45NDM4ODgsInR5cGUiOiJKV1QiLCJhbGdvcml0aG0iOiJIUzI1NiJ9.3IafcTKFwcaiSqwuWJ9yxt3iotTYYhLCv7P8_K32hD0", 
-  "success": true
+  "success": true, 
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZnVsbG5hbWUiOiJGb28gYmFyIiwiZXhwaXJlcyI6MTQ2MzU0MDkzNS4wMjYyNzgsInR5cGUiOiJKV1QiLCJhbGdvcml0aG0iOiJIUzI1NiJ9.jhNWjzVg6OIWUVGu6Z4Svy6-5E-VM6aK-Sw6ZJHbdVE"
 }

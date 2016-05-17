@@ -21,11 +21,9 @@ class Login(Service):
             'fullname': 'Foo bar',
             'expires': time.time() + (60 * 60 * 12)  # 12 hour length?
         }
-        encoded = jwt.encode(data, self.secret, algorithm='HS256')
         return {
             'success': True,
-            'jwt': data,
-            'signature': encoded
+            'token': jwt.encode(data, self.secret, algorithm='HS256')
         }
 
 
