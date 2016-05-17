@@ -27,10 +27,30 @@ Plone Content
 
 Plone Portal Root:
 
+.. example-code::
+
+    .. code-block:: curl
+
+        curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone
+
+    .. code-block:: http
+
+        http GET http://localhost:8080/Plone Accept:application/json
+
 .. literalinclude:: _json/siteroot.json
    :language: json-ld
 
 Plone Folder:
+
+.. example-code::
+
+    .. code-block:: curl
+
+        curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone/folder
+
+    .. code-block:: http
+
+        http GET http://localhost:8080/Plone/folder Accept:application/json
 
 .. literalinclude:: _json/folder.json
    :language: jsonld

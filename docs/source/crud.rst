@@ -19,17 +19,29 @@ Creating a Resource with POST
 -----------------------------
 
 To create a new resource, we send a POST request to the resource container.
-If we want to create a new document within an existing folder, we send a POST request to that folder::
+If we want to create a new document within an existing folder, we send a POST request to that folder:
 
-  POST /folder HTTP/1.1
-  Host: localhost:8080
-  Accept: application/json
-  Content-Type: application/json
+.. example-code::
 
-  {
-      '@type': 'Document',
-      'title': 'My Document',
-  }
+  .. code-block:: http
+
+    POST /folder HTTP/1.1
+    Host: localhost:8080
+    Accept: application/json
+    Content-Type: application/json
+
+    {
+        '@type': 'Document',
+        'title': 'My Document',
+    }
+
+  .. code-block:: curl
+
+    curl -i -H "Accept: application/json" -H "Content-type: application/json" --data-raw '{"@type":"Document", "title": "My Document"}' --user admin:admin -X POST http://localhost:8080/Plone/folder
+
+  .. code-block:: httpie
+
+    http -a admin:admin POST http://localhost:8080/Plone/folder \\@type=Document title=My Document Accept:application/json
 
 By setting the 'Accept' header, we tell the server that we would like to recieve the response in the 'application/json' representation format.
 
@@ -41,7 +53,8 @@ The request body contains the necessary information that is needed to create a d
 Successful Response (201 Created)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If a resource has been created, the server responds with the '201 Created' status code. The 'Location' header contains the URL of the newly created resource and the resource represenation in the payload::
+If a resource has been created, the server responds with the '201 Created' status code.
+The 'Location' header contains the URL of the newly created resource and the resource represenation in the payload::
 
   HTTP/1.1 201 Created
   Content-Type: application/json
@@ -116,11 +129,23 @@ TODO: Link to the real implementation...
 Reading a Resource with GET
 ---------------------------
 
-After a successful POST, we can access the resource by sending a GET request to the resource URL::
+After a successful POST, we can access the resource by sending a GET request to the resource URL:
 
-  GET /folder/my-document HTTP/1.1
-  Host: localhost:8080
-  Accept: application/json
+.. example-code::
+
+  .. code-block:: http
+
+    GET /folder/my-document HTTP/1.1
+    Host: localhost:8080
+    Accept: application/json
+
+  .. code-block:: curl
+
+    curl -i -H "Accept: application/json" --user admin:admin -X GET http://localhost:8080/Plone/folder/my-document
+
+  .. code-block:: httpie
+
+    http -a admin:admin GET http://localhost:8080/Plone/folder/my-document Accept:application/json
 
 
 Successful Response (200 OK)
@@ -175,54 +200,99 @@ Possible server reponses for a GET request are:
 * :ref:`500 Internal Server Error`
 
 
-Updating a Resource with PUT
-----------------------------
+Updating a Resource with PATCH
+------------------------------
 
-To update an existing resource we send a PUT request to the server::
+To update an existing resource we send a PATCH request to the server.
+PATCH allows to provide just a subset of the resource (the values you actually want to change):
 
-  PUT /folder/my-document HTTP/1.1
-  Host: localhost:8080
-  Content-Type: application/json
+.. example-code::
 
-  {
-      '@type': 'Document',
-      'title': 'My New Document Title',
-  }
+  .. code-block:: http
+
+    PATCH /folder/my-document HTTP/1.1
+    Host: localhost:8080/Plone
+    Content-Type: application/json
+
+    {
+        '@type': 'Document',
+        'title': 'My New Document Title',
+    }
+
+  .. code-block:: curl
+
+    curl -i -H "Accept: application/json" -H "Content-type: application/json" --data-raw '{title": "My Document"}' --user admin:admin -X PATCH http://localhost:8080/Plone/folder/my-document
+
+  .. code-block:: httpie
+
+    http -a admin:admin PATCH http://localhost:8080/Plone/folder/my-document title="My New Document Title" Accept:application/json
+
+Successful Response (204 No Content)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A successful response to a PATCH request will be indicated by a '204 No Content' response::
+
+  HTTP/1.1  204 No Content
+
+.. note::
+
+  `RFC 5789: PATCH Method for HTTP <http://tools.ietf.org/html/rfc5789>`_
+
+
+Replacing a Resource with PUT
+-----------------------------
+
+.. note::
+
+  PUT is not implemented yet.
+
+To replace an existing resource we send a PUT request to the server:
+
+.. example-code::
+
+  .. code-block:: http
+
+    PUT /folder/my-document HTTP/1.1
+    Host: localhost:8080
+    Content-Type: application/json
+
+    {
+        '@type': 'Document',
+        'title': 'My New Document Title',
+    }
+
+  .. code-block:: curl
+
+    curl -i -H "Accept: application/json" -X PUT http://localhost:8080/Plone/folder
+
+  .. code-block:: httpie
+
+    http -a admin:admin PATCH http://localhost:8080/Plone/folder title="My New Document Title" Accept:application/json
 
 In accordance with the HTTP specification, a successful PUT will not create a new resource or produce a new URL.
 
 PUT expects the entire resource representation to be supplied to the server, rather than just changes to the resource state.
 This is usually not a problem since the consumer application requested the resource representation before a PUT anyways.
 
-An alternative is to use the PATCH HTTP verb, that allows to provide just a subset of the resource.
-We do not implement PATCH for now though.
-
-When the PUT request is accepted and processed by the service, the consumer will receive either a 200 OK response or a 204 No Content response.
+When the PUT request is accepted and processed by the service, the consumer will receive a 204 No Content response (200 OK would be a valid alternative).
 
 
-Successful Update (200 OK)
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+Successful Update (204 No Content)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When a resource has been updated successfully, the server sends a '200 OK' response::
+When a resource has been updated successfully, the server sends a '204 NO CONTENT' response::
 
-  HTTP/1.1 200 OK
+  HTTP/1.1 204 No Content
   Content-Type:: application/json
 
-  {
-      '@type': 'Document',
-      'title': 'My New Document',
-  }
-
-An alternative would be to return a '204 No Content' response.
-This is more efficent since it does not contain a body.
-We choose do use '200 OK' for now though.
 
 Unsuccessful Update (409 Conflict)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Sometimes requests fail due to incompatible changes. The response body should include additional information about the problem.
+Sometimes requests fail due to incompatible changes. The response body includes additional information about the problem.
 
-TODO: We need to check if we can find a valid example for this in Plone.
+TODO: Add example.
+
 
 PUT Implementation
 ^^^^^^^^^^^^^^^^^^
@@ -268,14 +338,30 @@ Difference POST and PUT:
   * Use POST to append a resource to a collection identified by a service-generated URI
   * Use PUT to overwrite a resource
 
+.. note::
+
+  `RFC 7231: HTTP 1.1: PUT Method <https://tools.ietf.org/html/rfc7231#section-4.3.4>`_.
+
 
 Removing a Resource with DELETE
 -------------------------------
 
-We can delete an existing resource by sending a DELETE request::
+We can delete an existing resource by sending a DELETE request:
 
-  DELETE /folder/my-document HTTP/1.1
-  Host: localhost:8080
+.. example-code::
+
+  .. code-block:: http
+
+    DELETE /folder/my-document HTTP/1.1
+    Host: localhost:8080
+
+  .. code-block:: curl
+
+      curl -i -H "Accept: application/json" -X DELETE --user admin:admin http://localhost:8080/Plone/folder/my-document
+
+  .. code-block:: httpie
+
+      http -a admin:admin DELETE http://localhost:8080/Plone/folder/my-document Accept:application/json
 
 A successful response will be indicated by a '204 No Content' response::
 
