@@ -4,27 +4,27 @@ from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 
 MOCKEDRESPONSE = {
-    'object_actions': [
-        {
-            '@id': 'Collection',
-            'title': 'Collection',
-            'uri': 'http://localhost:8080/Plone/++add++Collection',
-            'category': 'factories',
-        },
-        {
-            '@id': 'Document',
-            'title': 'Document',
-            'uri': 'http://localhost:8080/Plone/++add++Document',
-            'category': 'factories',
-        },
-        {
-            '@id': 'reject',
-            'title': 'Send back',
-            'uri': 'http://localhost:8080/Plone/content_status_modify?'
-                   'workflow_action=reject',
-            'category': 'workflow',
-        },
-    ]
+    "actions": [{
+        "@id": "view",
+        "title": "View",
+        "category": ""
+    }, {
+        "@id": "edit",
+        "title": "Edit",
+        "category": ""
+    }, {
+        "@id": "Collection",
+        "title": "Collection",
+        "category": "factories"
+    }, {
+        "@id": "Document",
+        "title": "Document",
+        "category": "factories"
+    }, {
+        "@id": "reject",
+        "title": "Send back",
+        "category": "workflow"
+    }]
 }
 
 

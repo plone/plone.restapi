@@ -95,7 +95,7 @@ Examples:
 
 
 Actions
-==========
+=======
 
 Get the available actions for the given context
 -----------------------------------------------
@@ -124,4 +124,22 @@ Framed Responses
 Example:
 
 .. literalinclude:: _json/frame_object.json
+  :language: js
+
+
+Authentication
+==============
+
+Login
+-----
+
+.. code::
+
+ POST /:path/login_ HTTP/1.1
+ Host: localhost:8080
+ Accept: application/json
+
+Example:
+
+.. literalinclude:: _json/login.json
   :language: js

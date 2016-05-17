@@ -5,24 +5,31 @@ HTTP 200 OK
 content-type: application/json
 
 {
-  "object_actions": [
+  "actions": [
+    {
+      "@id": "view", 
+      "category": "", 
+      "title": "View"
+    }, 
+    {
+      "@id": "edit", 
+      "category": "", 
+      "title": "Edit"
+    }, 
     {
       "@id": "Collection", 
       "category": "factories", 
-      "title": "Collection", 
-      "uri": "http://localhost:8080/Plone/++add++Collection"
+      "title": "Collection"
     }, 
     {
       "@id": "Document", 
       "category": "factories", 
-      "title": "Document", 
-      "uri": "http://localhost:8080/Plone/++add++Document"
+      "title": "Document"
     }, 
     {
       "@id": "reject", 
       "category": "workflow", 
-      "title": "Send back", 
-      "uri": "http://localhost:8080/Plone/content_status_modify?workflow_action=reject"
+      "title": "Send back"
     }
   ]
 }

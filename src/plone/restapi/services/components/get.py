@@ -34,17 +34,17 @@ class ComponentsGet(Service):
     def _render_component(self, component_id):
         if component_id == 'navigation':
             items = [
-                {'label': 'News',
-                 'uri': 'http://plone/news'},
-                {'label': 'Events',
-                 'uri': 'http://plone/events'}
+                {'title': 'News',
+                 'url': 'http://plone/news'},
+                {'title': 'Events',
+                 'url': 'http://plone/events'}
             ]
         elif component_id == 'breadcrumbs':
             items = [
-                {'label': 'Junk',
-                 'uri': 'http://plone/junk'},
-                {'label': 'More Junk',
-                 'uri': 'http://plone/junk/more-junk'}
+                {'title': 'Junk',
+                 'url': 'http://plone/junk'},
+                {'title': 'More Junk',
+                 'url': 'http://plone/junk/more-junk'}
             ]
         else:
             raise NotImplementedError(

@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <plone:service
+    method="POST"
+    for="zope.interface.Interface"
+    factory=".Login"
+    name="login_"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="POST"
+    for="zope.interface.Interface"
+    factory=".Logout"
+    name="logout_"
+    permission="zope2.View"
+    />
+
+</configure>
