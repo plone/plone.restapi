@@ -23,7 +23,7 @@ If we want to create a new document within an existing folder, we send a POST re
 
 .. example-code::
 
-  .. code-block:: http
+  .. code-block:: http request
 
     POST /folder HTTP/1.1
     Host: localhost:8080
