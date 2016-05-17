@@ -1,25 +1,19 @@
-=============
 Serialization
 =============
 
-Throughout the REST API, content needs to be serialized and deserialized
-to and from JSON representations.
+Throughout the REST API, content needs to be serialized and deserialized to and from JSON representations.
 
-In general, the format used for serializing content when reading from the API
-is the same as is used to submit content to the API for writing.
+In general, the format used for serializing content when reading from the API is the same as is used to submit content to the API for writing.
 
 Basic Types
-===========
+-----------
 
-Basic Python data types that have a corresponding type in JSON, like integers
-or strings, will simply be translated between the Python type and the
-respective JSON type.
+Basic Python data types that have a corresponding type in JSON, like integers or strings, will simply be translated between the Python type and the respective JSON type.
 
 Dates and Times
-===============
+---------------
 
-Since JSON doesn't have native support for dates/times, the Python/Zope
-datetime types will be serialized to an ISO 8601 datestring.
+Since JSON doesn't have native support for dates/times, the Python/Zope datetime types will be serialized to an ISO 8601 datestring.
 
 ======================================= ======================================
 Python                                  JSON
@@ -32,7 +26,7 @@ Python                                  JSON
 
 
 RichText fields
-===============
+---------------
 
 RichText fields will be serialized as follows:
 
@@ -55,13 +49,12 @@ will be serialized to
     }
 
 File Fields
-===========
+-----------
 
 Download (serialization)
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-For download, the file field will simply be serialized to a string that
-contains the download URL for the file.
+For download, the file field will simply be serialized to a string that contains the download URL for the file.
 
 .. code:: json
 
@@ -75,15 +68,13 @@ contains the download URL for the file.
 That URL points to the regular Plone
 download view.
 
-This means that when accessing that URL, your request won't be handled by
-the API but a regular Plone browser view. Therefore you must **not** send
-the ``Accept: application/json`` header in this case.
+This means that when accessing that URL, your request won't be handled by the API but a regular Plone browser view.
+Therefore you must **not** send the ``Accept: application/json`` header in this case.
 
 Upload (deserialization)
-------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-For a field of type ``Named[Blob]File`` (Dexterity) or ``FileField``
-(Archetypes), represent the field content as a dictionary with these four keys:
+For a field of type ``Named[Blob]File`` (Dexterity) or ``FileField`` (Archetypes), represent the field content as a dictionary with these four keys:
 
 - ``data`` - the base64 encoded contents of the file
 - ``encoding`` - the encoding you used to encode the data, so usually `base64`
@@ -105,13 +96,12 @@ For a field of type ``Named[Blob]File`` (Dexterity) or ``FileField``
 
 
 Relations
-=========
+---------
 
 Serialization
--------------
+^^^^^^^^^^^^^
 
-A ``RelationValue`` will be serialized to a short summary representation of
-the referenced object:
+A ``RelationValue`` will be serialized to a short summary representation of the referenced object:
 
 .. code:: json
 
@@ -122,11 +112,10 @@ the referenced object:
       'description': 'Description'
     }
 
-The ``RelationList`` containing that reference will be represended as a list
-in JSON.
+The ``RelationList`` containing that reference will be represended as a list in JSON.
 
 Deserialization
----------------
+^^^^^^^^^^^^^^^
 
 In order to set a relation when creating or updating content, you can use one
 of several ways to specify relations:

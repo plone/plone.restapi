@@ -1,15 +1,11 @@
-==============
 Authentication
 ==============
 
 ``plone.restapi`` uses Plone PAS for Authentication.
 
-That means that any authentication method supported by an installed PAS Plugin
-should work, assuming it's an authentication method that makes sense to use
-with an API.
+That means that any authentication method supported by an installed PAS Plugin should work, assuming it's an authentication method that makes sense to use with an API.
 
-For example, to authenticate using HTTP basic auth, you'd set an
-``Authorization`` header:
+For example, to authenticate using HTTP basic auth, you'd set an ``Authorization`` header:
 
 .. code::
 
@@ -17,11 +13,9 @@ For example, to authenticate using HTTP basic auth, you'd set an
   Authorization: Basic Zm9vYmFyOmZvb2Jhcgo=
   Accept: application/json
 
-HTTP client libraries usually contain helper functions to produce a proper
-``Authorization`` header for you based on given credentials.
+HTTP client libraries usually contain helper functions to produce a proper ``Authorization`` header for you based on given credentials.
 
-Using the ``requests`` library, you'd set up a session with basic auth like
-this:
+Using the ``requests`` library, you'd set up a session with basic auth like this:
 
 .. code:: python
 
