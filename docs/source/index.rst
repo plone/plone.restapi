@@ -13,7 +13,7 @@ Contents
 --------
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    introduction
    authentication
@@ -22,15 +22,18 @@ Contents
    serialization
    searching
    content-negotiation
-   http-status-codes
-
    customization
 
 .. include:: ../../README.rst
 
 
-Indices and tables
-------------------
+Appendix, Indices and tables
+----------------------------
+
+.. toctree::
+
+   http-status-codes
+   glossary
 
 * :ref:`genindex`
 * :ref:`modindex`

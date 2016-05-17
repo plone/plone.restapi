@@ -53,7 +53,7 @@ The request body contains the necessary information that is needed to create a d
 Successful Response (201 Created)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If a resource has been created, the server responds with the '201 Created' status code.
+If a resource has been created, the server responds with the :term:`201 Created` status code.
 The 'Location' header contains the URL of the newly created resource and the resource represenation in the payload::
 
   HTTP/1.1 201 Created
@@ -69,7 +69,7 @@ The 'Location' header contains the URL of the newly created resource and the res
 Unsuccessful Response (400 Bad Request)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If the resource could not be created, for instance because the title was missing in the request, the server responds with '400 Bad Request'::
+If the resource could not be created, for instance because the title was missing in the request, the server responds with :term:`400 Bad Request`::
 
   HTTP/1.1 400 Bad Request
   Content-Type: application/json
@@ -84,7 +84,7 @@ The response body can contain information about why the request failed.
 Unsuccessful Response (500 Internal Server Error)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If the server can not properly process a request, it responds with '500 Internal Server Error'::
+If the server can not properly process a request, it responds with :term:`500 Internal Server Error`::
 
   HTTP/1.1 500 Internal Server Error
   Content-Type: application/json
@@ -101,9 +101,9 @@ Possible POST Responses
 
 Possible server reponses for a POST request are:
 
-* :ref:`201 Created` (Resource has been created successfully)
-* :ref:`400 Bad Request` (malformed request to the service)
-* :ref:`500 Internal Server Error` (server fault, can not recover internally)
+* :term:`201 Created` (Resource has been created successfully)
+* :term:`400 Bad Request` (malformed request to the service)
+* :term:`500 Internal Server Error` (server fault, can not recover internally)
 
 
 POST Implementation
@@ -151,7 +151,7 @@ After a successful POST, we can access the resource by sending a GET request to 
 Successful Response (200 OK)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If a resource has been retrieved successfully, the server responds with '200 OK':
+If a resource has been retrieved successfully, the server responds with :term:`200 OK`:
 
 .. literalinclude:: _json/document.json
    :language: js
@@ -160,7 +160,7 @@ If a resource has been retrieved successfully, the server responds with '200 OK'
 Unsuccessful response (404 Not Found)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If a resource could not be found, the server will respond with '404 Not Found'::
+If a resource could not be found, the server will respond with :term:`404 Not Found`::
 
   HTTP/1.1 404 Not Found
   Content-Type: application/json
@@ -195,9 +195,9 @@ GET Responses
 
 Possible server reponses for a GET request are:
 
-* :ref:`200 OK`
-* :ref:`404 Not Found`
-* :ref:`500 Internal Server Error`
+* :term:`200 OK`
+* :term:`404 Not Found`
+* :term:`500 Internal Server Error`
 
 
 Updating a Resource with PATCH
@@ -230,7 +230,7 @@ PATCH allows to provide just a subset of the resource (the values you actually w
 Successful Response (204 No Content)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A successful response to a PATCH request will be indicated by a '204 No Content' response::
+A successful response to a PATCH request will be indicated by a :term:`204 No Content` response::
 
   HTTP/1.1  204 No Content
 
@@ -274,13 +274,13 @@ In accordance with the HTTP specification, a successful PUT will not create a ne
 PUT expects the entire resource representation to be supplied to the server, rather than just changes to the resource state.
 This is usually not a problem since the consumer application requested the resource representation before a PUT anyways.
 
-When the PUT request is accepted and processed by the service, the consumer will receive a 204 No Content response (200 OK would be a valid alternative).
+When the PUT request is accepted and processed by the service, the consumer will receive a :term:`204 No Content` response (:term:`200 OK` would be a valid alternative).
 
 
 Successful Update (204 No Content)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When a resource has been updated successfully, the server sends a '204 NO CONTENT' response::
+When a resource has been updated successfully, the server sends a :term:`204 No Content` response::
 
   HTTP/1.1 204 No Content
   Content-Type:: application/json
@@ -289,7 +289,8 @@ When a resource has been updated successfully, the server sends a '204 NO CONTEN
 Unsuccessful Update (409 Conflict)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Sometimes requests fail due to incompatible changes. The response body includes additional information about the problem.
+Sometimes requests fail due to incompatible changes.
+The response body includes additional information about the problem.
 
 TODO: Add example.
 
@@ -323,10 +324,10 @@ PUT Responses
 
 Possible server reponses for a PUT request are:
 
-* :ref:`200 OK`
-* :ref:`404 Not Found`
-* :ref:`409 Conflict`
-* :ref:`500 Internal Server Error`
+* :term:`200 OK`
+* :term:`404 Not Found`
+* :term:`409 Conflict`
+* :term:`500 Internal Server Error`
 
 
 POST vs. PUT
@@ -363,7 +364,7 @@ We can delete an existing resource by sending a DELETE request:
 
       http -a admin:admin DELETE http://localhost:8080/Plone/folder/my-document Accept:application/json
 
-A successful response will be indicated by a '204 No Content' response::
+A successful response will be indicated by a :term:`204 No Content` response::
 
   HTTP/1.1  204 No Content
 
@@ -397,7 +398,7 @@ DELETE Responses
 
 Possible responses to a delete request are:
 
-  * :ref:`204 No Content`
-  * :ref:`404 Not Found` (if the resource does not exist)
-  * :ref:`405 Not Allowed` (if deleting the resource is not allowed)
-  * :ref:`500 Internal Server Error`
+  * :term:`204 No Content`
+  * :term:`404 Not Found` (if the resource does not exist)
+  * :term:`405 Method Not Allowed` (if deleting the resource is not allowed)
+  * :term:`500 Internal Server Error`
