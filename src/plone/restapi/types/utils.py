@@ -11,7 +11,7 @@ from plone.behavior.interfaces import IBehavior
 from plone.supermodel.interfaces import FIELDSETS_KEY
 from Products.CMFCore.utils import getToolByName
 
-from plone.restapi.jsonschema.interfaces import IJsonSchemaProvider
+from plone.restapi.types.interfaces import IJsonSchemaProvider
 
 
 def non_fieldset_fields(schema):

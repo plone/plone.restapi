@@ -1,0 +1,56 @@
+GET /plone/@types
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+[
+  {
+    "@id": "http://localhost:55001/plone/@types/Collection", 
+    "title": "Collection"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Discussion Item", 
+    "title": "Discussion Item"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/DXTestDocument", 
+    "title": "DXTestDocument"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Event", 
+    "title": "Event"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/File", 
+    "title": "File"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Folder", 
+    "title": "Folder"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Image", 
+    "title": "Image"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Link", 
+    "title": "Link"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/News Item", 
+    "title": "News Item"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Document", 
+    "title": "Document"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/ATTestDocument", 
+    "title": "ATTestDocument"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/ATTestFolder", 
+    "title": "ATTestFolder"
+  }
+]

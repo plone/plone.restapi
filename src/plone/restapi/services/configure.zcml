@@ -3,6 +3,7 @@
 
   <include package=".content"/>
   <include package=".search"/>
+  <include package=".types"/>
   <include package=".workflow"/>
 
 </configure>

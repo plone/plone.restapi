@@ -10,10 +10,10 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
 
-from plone.restapi.jsonschema.interfaces import IJsonSchemaProvider
-from plone.restapi.jsonschema.utils import get_fields_from_schema
-from plone.restapi.jsonschema.utils import get_jsonschema_for_fti
-from plone.restapi.jsonschema.utils import get_jsonschema_for_portal_type
+from plone.restapi.types.interfaces import IJsonSchemaProvider
+from plone.restapi.types.utils import get_fields_from_schema
+from plone.restapi.types.utils import get_jsonschema_for_fti
+from plone.restapi.types.utils import get_jsonschema_for_portal_type
 
 
 class IDummySchema(model.Schema):

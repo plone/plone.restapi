@@ -25,8 +25,8 @@ from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITuple
 from zope.schema.interfaces import IVocabularyFactory
 
-from plone.restapi.jsonschema.interfaces import IJsonSchemaProvider
-from plone.restapi.jsonschema.utils import get_fields_from_schema
+from plone.restapi.types.interfaces import IJsonSchemaProvider
+from plone.restapi.types.utils import get_fields_from_schema
 
 
 @adapter(IField, Interface, Interface)
