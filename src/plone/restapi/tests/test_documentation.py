@@ -88,8 +88,9 @@ class TestTraversal(unittest.TestCase):
             'text/html'
         )
         self.document.creation_date = DateTime('2016-01-21T01:14:48+00:00')
-        self.document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
         IMutableUUID(self.document).set('1f699ffa110e45afb1ba502f75f7ec33')
+        self.document.reindexObject()
+        self.document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
         import transaction
         transaction.commit()
         self.browser = Browser(self.app)
@@ -265,3 +266,18 @@ class TestTraversal(unittest.TestCase):
     def test_documentation_404_not_found(self):
         response = self.api_session.get('non-existing-resource')
         save_response_for_documentation('404_not_found.json', response)
+
+    def test_documentation_search(self):
+        query = {'sort_on': 'path'}
+        response = self.api_session.get('/search', params=query)
+        save_response_for_documentation('search.json', response)
+
+    def test_documentation_workflow(self):
+        response = self.api_session.get(
+            '{}/workflow'.format(self.document.absolute_url()))
+        save_response_for_documentation('workflow_get.json', response)
+
+    def test_documentation_workflow_transition(self):
+        response = self.api_session.post(
+            '{}/workflow/publish'.format(self.document.absolute_url()))
+        save_response_for_documentation('workflow_post.json', response)

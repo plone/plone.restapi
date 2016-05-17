@@ -3,22 +3,25 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-==================================================
+
 plone.restapi: A RESTful hypermedia API for Plone.
 ==================================================
 
 .. include:: /alert-noindex.rst
 
 Contents
-========
+--------
 
 .. toctree::
    :maxdepth: 3
 
    introduction
+   authentication
    crud
+   workflow
+   serialization
+   searching
    content-negotiation
-   error-handling
    http-status-codes
 
    customization
@@ -45,7 +48,7 @@ Contents
 
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`

@@ -8,9 +8,11 @@ from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.supermodel.utils import mergedTaggedValueDict
 from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
 from zope.interface import Interface
@@ -30,15 +32,14 @@ class SerializeToJson(object):
         self.permission_cache = {}
 
     def __call__(self):
+        parent = aq_parent(aq_inner(self.context))
+        parent_summary = getMultiAdapter(
+            (parent, self.request), ISerializeToJsonSummary)()
         result = {
-            '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
+            # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             '@id': self.context.absolute_url(),
             '@type': self.context.portal_type,
-            'parent': {
-                '@id': aq_parent(aq_inner(self.context)).absolute_url(),
-                'title': aq_parent(aq_inner(self.context)).title,
-                'description': aq_parent(aq_inner(self.context)).description
-            },
+            'parent': parent_summary,
             'created': json_compatible(self.context.created()),
             'modified': json_compatible(self.context.modified()),
             'UID': self.context.UID(),
@@ -85,11 +86,7 @@ class SerializeFolderToJson(SerializeToJson):
     def __call__(self):
         result = super(SerializeFolderToJson, self).__call__()
         result['member'] = [
-            {
-                '@id': member.absolute_url(),
-                'title': member.title,
-                'description': member.description
-            }
+            getMultiAdapter((member, self.request), ISerializeToJsonSummary)()
             for member in self.context.objectValues()
         ]
         return result

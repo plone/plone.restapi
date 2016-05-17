@@ -155,3 +155,17 @@ class TestFolderCreateAT(unittest.TestCase):
         self.assertEqual(201, response.status_code)
         transaction.begin()
         self.assertIn('my-document', self.portal.folder1)
+
+    def test_id_from_filename(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
+            json={
+                "@type": "File",
+                "file": {"filename": "test.txt", "data": "Foo bar"},
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        self.assertIn('test.txt', self.portal.folder1)

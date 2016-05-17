@@ -212,21 +212,46 @@ class TestDexterityFieldSerializing(TestCase):
             u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
             u'tile': u'{}/@@images/image/tile'.format(obj_url)}, value)
 
-    def test_relationchoice_field_serialization_returns_unicode(self):
+    def test_relationchoice_field_serialization_returns_summary_dict(self):
         doc2 = self.portal[self.portal.invokeFactory(
-            'DXTestDocument', id='doc2', title='Referenceable Document')]
+            'DXTestDocument', id='doc2',
+            title='Referenceable Document',
+            description='Description 2',
+        )]
         value = self.serialize('test_relationchoice_field', doc2)
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
-        self.assertEqual(doc2.absolute_url(), value)
+        self.assertEqual(
+            {'@id': 'http://nohost/plone/doc2',
+             '@type': 'DXTestDocument',
+             'title': 'Referenceable Document',
+             'description': 'Description 2',
+             },
+            value)
 
     def test_relationlist_field_serialization_returns_list(self):
         doc2 = self.portal[self.portal.invokeFactory(
-            'DXTestDocument', id='doc2', title='Referenceable Document')]
+            'DXTestDocument', id='doc2',
+            title='Referenceable Document',
+            description='Description 2',
+        )]
         doc3 = self.portal[self.portal.invokeFactory(
-            'DXTestDocument', id='doc3', title='Referenceable Document')]
+            'DXTestDocument', id='doc3',
+            title='Referenceable Document',
+            description='Description 3',
+        )]
         value = self.serialize('test_relationlist_field', [doc2, doc3])
         self.assertTrue(isinstance(value, list), 'Not a <list>')
-        self.assertEqual([doc2.absolute_url(), doc3.absolute_url()], value)
+        self.assertEqual([
+            {'@id': 'http://nohost/plone/doc2',
+             '@type': 'DXTestDocument',
+             'title': 'Referenceable Document',
+             'description': 'Description 2',
+             },
+            {'@id': 'http://nohost/plone/doc3',
+             '@type': 'DXTestDocument',
+             'title': 'Referenceable Document',
+             'description': 'Description 3',
+             }],
+            value)
 
 
 class TestDexterityFieldSerializers(TestCase):

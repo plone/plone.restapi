@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
-from Products.CMFPlone.utils import getSiteEncoding
-from Products.CMFPlone.utils import safe_unicode
 from datetime import date
+from DateTime import DateTime
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
@@ -10,11 +8,17 @@ from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
 from plone.app.textfield.interfaces import IRichTextValue
 from plone.restapi.interfaces import IJsonCompatible
-from z3c.relationfield.interfaces import IRelationValue
+from Products.CMFPlone.utils import getSiteEncoding
+from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component.hooks import getSite
-from zope.interface import Interface
+from zope.globalrequest import getRequest
+from zope.i18n import translate
+from zope.i18nmessageid.message import Message
 from zope.interface import implementer
+from zope.interface import Interface
+
+import Missing
 
 
 def json_compatible(value):
@@ -138,8 +142,14 @@ def richtext_converter(value):
     }
 
 
-@adapter(IRelationValue)
+@adapter(Message)
 @implementer(IJsonCompatible)
-def relationvalue_converter(value):
-    if value.to_object:
-        return json_compatible(value.to_object.absolute_url())
+def i18n_message_converter(value):
+    value = translate(value, context=getRequest())
+    return value
+
+
+@adapter(Missing.Value.__class__)
+@implementer(IJsonCompatible)
+def missing_value_converter(value):
+    return None

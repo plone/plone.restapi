@@ -36,6 +36,7 @@ class TestATContentSerializer(unittest.TestCase):
         self.assertTrue(isinstance(json.dumps(obj), str),
                         'Not JSON serializable')
 
+    @unittest.skip('We do not include the context at this point')
     def test_serializer_includes_context(self):
         obj = self.serialize(self.doc1)
         self.assertIn(u'@context', obj)
@@ -89,11 +90,13 @@ class TestATContentSerializer(unittest.TestCase):
         self.assertIn('member', obj)
         self.assertDictEqual({
             '@id': 'http://nohost/plone/folder/subfolder',
+            '@type': 'ATTestFolder',
             'description': '',
             'title': u'Subfolder'},
             obj['member'][0])
         self.assertDictEqual({
             '@id': 'http://nohost/plone/folder/doc',
+            '@type': 'ATTestDocument',
             'description': '',
             'title': u'A Document'},
             obj['member'][1])

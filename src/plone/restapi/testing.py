@@ -4,11 +4,13 @@
 # E1002: Use of super on an old style class
 
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
+from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
-from plone.app.testing import applyProfile
+from plone.restapi.tests.dxtypes import INDEXES as DX_TYPES_INDEXES
+from plone.restapi.tests.helpers import add_catalog_indexes
 from urlparse import urljoin
 from urlparse import urlparse
 
@@ -41,6 +43,7 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
     def setUpPloneSite(self, portal):
         applyProfile(portal, 'plone.restapi:default')
         applyProfile(portal, 'plone.restapi:testing')
+        add_catalog_indexes(portal, DX_TYPES_INDEXES)
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
 PLONE_RESTAPI_DX_INTEGRATION_TESTING = IntegrationTesting(
@@ -72,6 +75,7 @@ class PloneRestApiATLayer(PloneSandboxLayer):
 
         z2.installProduct(app, 'Products.Archetypes')
         z2.installProduct(app, 'Products.ATContentTypes')
+        z2.installProduct(app, 'plone.app.blob')
         z2.installProduct(app, 'plone.restapi')
 
     def setUpPloneSite(self, portal):

@@ -11,6 +11,9 @@
         <adapter factory=".collection.SerializeCollectionToJson" />
     </configure>
 
+    <adapter factory=".summary.DefaultJSONSummarySerializer" />
+    <adapter factory=".summary.SiteRootJSONSummarySerializer" />
+
     <adapter factory=".dxfields.DefaultFieldSerializer" />
     <adapter factory=".dxfields.FileFieldSerializer" />
     <adapter factory=".dxfields.ImageFieldSerializer" />
@@ -31,11 +34,12 @@
     <adapter factory=".converters.default_converter" />
     <adapter factory=".converters.dict_converter" />
     <adapter factory=".converters.frozenset_converter" />
+    <adapter factory=".converters.i18n_message_converter" />
     <adapter factory=".converters.list_converter" />
+    <adapter factory=".converters.missing_value_converter" />
     <adapter factory=".converters.persistent_list_converter" />
     <adapter factory=".converters.persistent_mapping_converter" />
     <adapter factory=".converters.python_datetime_converter" />
-    <adapter factory=".converters.relationvalue_converter" />
     <adapter factory=".converters.richtext_converter" />
     <adapter factory=".converters.set_converter" />
     <adapter factory=".converters.string_converter" />
@@ -43,5 +47,12 @@
     <adapter factory=".converters.timedelta_converter" />
     <adapter factory=".converters.tuple_converter" />
     <adapter factory=".converters.zope_DateTime_converter" />
+
+    <configure zcml:condition="installed z3c.relationfield">
+        <adapter factory=".relationfield.relationvalue_converter" />
+    </configure>
+
+    <adapter factory=".catalog.BrainSerializer" />
+    <adapter factory=".catalog.LazyCatalogResultSerializer" />
 
 </configure>

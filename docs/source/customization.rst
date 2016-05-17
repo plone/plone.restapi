@@ -1,22 +1,16 @@
-
-=====================
  Customizing the API
 =====================
 
 Content serialization
-=====================
+---------------------
 
 Dexterity fields
-----------------
+^^^^^^^^^^^^^^^^
 
-The API automatically converts all field values to JSON compatible
-data, whenever possible.
-However, you might use fields which store data that cannot be automatically
-converted, or you might want to customize the representation of certain
-fields.
+The API automatically converts all field values to JSON compatible data, whenever possible.
+However, you might use fields which store data that cannot be automatically converted, or you might want to customize the representation of certain fields.
 
-For extending or changing the serializing of certain dexterity fields you
-need to register an ``IFieldSerializer``-adapter.
+For extending or changing the serializing of certain dexterity fields you need to register an ``IFieldSerializer``-adapter.
 
 Example:
 
@@ -56,14 +50,10 @@ Register the adapter in ZCML:
     </configure>
 
 
-The ``json_compatible`` function recursively converts the value
-to JSON compatible data, when possible.
+The ``json_compatible`` function recursively converts the value to JSON compatible data, when possible.
 When a value cannot be converted, a ``TypeError`` is raised.
-It is recommended to pass all values through ``json_compatible``
-in order to validate and convert them.
+It is recommended to pass all values through ``json_compatible`` in order to validate and convert them.
 
-For customizing a specific field instance, a named ``IFieldSerializer``
-adapter can be registered. The name may either be the full dottedname
-of the field
-(``plone.app.dexterity.behaviors.exclfromnav.IExcludeFromNavigation.exclude_from_nav``)
-or the shortname of the field (``exclude_from_nav``).
+For customizing a specific field instance, a named ``IFieldSerializer`` adapter can be registered.
+The name may either be the full dottedname of the field
+(``plone.app.dexterity.behaviors.exclfromnav.IExcludeFromNavigation.exclude_from_nav``) or the shortname of the field (``exclude_from_nav``).

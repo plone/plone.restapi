@@ -1,8 +1,9 @@
-=================
 CRUD Web Services
 =================
 
-CRUD is a pattern for manipulating resources across the network by using HTTP as an application protocol. The CRUD operations (Create, Read, Update, Delete) can be mapped to the corresponding HTTP verbs POST (Create), GET (Read), PUT (Update) and DELETE (Delete). This allows us to interact with a specific resource in a standardized way:
+CRUD is a pattern for manipulating resources across the network by using HTTP as an application protocol.
+The CRUD operations (Create, Read, Update, Delete) can be mapped to the corresponding HTTP verbs POST (Create), GET (Read), PUT (Update) and DELETE (Delete).
+This allows us to interact with a specific resource in a standardized way:
 
 ======= ======================= ==============================================
 Verb    URL                     Action
@@ -15,9 +16,10 @@ DELETE  /folder/{documentId}    Remove the document
 
 
 Creating a Resource with POST
-=============================
+-----------------------------
 
-To create a new resource, we send a POST request to the resource container.  If we want to create a new document within an existing folder, we send a POST request to that folder::
+To create a new resource, we send a POST request to the resource container.
+If we want to create a new document within an existing folder, we send a POST request to that folder::
 
   POST /folder HTTP/1.1
   Host: localhost:8080
@@ -25,7 +27,6 @@ To create a new resource, we send a POST request to the resource container.  If 
   Content-Type: application/json
 
   {
-      '@context': '/@@context.jsonld',
       '@type': 'Document',
       'title': 'My Document',
   }
@@ -38,7 +39,7 @@ The request body contains the necessary information that is needed to create a d
 
 
 Successful Response (201 Created)
----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If a resource has been created, the server responds with the '201 Created' status code. The 'Location' header contains the URL of the newly created resource and the resource represenation in the payload::
 
@@ -47,14 +48,13 @@ If a resource has been created, the server responds with the '201 Created' statu
   Location: http://localhost:8080/folder/my-document
 
   {
-      '@context': '/@@context.jsonld',
       '@type': 'Document',
       'id': 'my-document',
       'title': 'My Document',
   }
 
 Unsuccessful Response (400 Bad Request)
----------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If the resource could not be created, for instance because the title was missing in the request, the server responds with '400 Bad Request'::
 
@@ -69,7 +69,7 @@ The response body can contain information about why the request failed.
 
 
 Unsuccessful Response (500 Internal Server Error)
--------------------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If the server can not properly process a request, it responds with '500 Internal Server Error'::
 
@@ -84,7 +84,7 @@ The response body can contain further information such as an error trace or a li
 
 
 Possible POST Responses
------------------------
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Possible server reponses for a POST request are:
 
@@ -94,7 +94,7 @@ Possible server reponses for a POST request are:
 
 
 POST Implementation
--------------------
+^^^^^^^^^^^^^^^^^^^
 
 A pseudo-code example of the POST implementation on the server::
 
@@ -114,7 +114,7 @@ TODO: Link to the real implementation...
 
 
 Reading a Resource with GET
-===========================
+---------------------------
 
 After a successful POST, we can access the resource by sending a GET request to the resource URL::
 
@@ -124,7 +124,7 @@ After a successful POST, we can access the resource by sending a GET request to 
 
 
 Successful Response (200 OK)
-----------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If a resource has been retrieved successfully, the server responds with '200 OK':
 
@@ -133,7 +133,7 @@ If a resource has been retrieved successfully, the server responds with '200 OK'
 
 
 Unsuccessful response (404 Not Found)
--------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If a resource could not be found, the server will respond with '404 Not Found'::
 
@@ -146,7 +146,7 @@ If a resource could not be found, the server will respond with '404 Not Found'::
 
 
 GET Implementation
-------------------
+^^^^^^^^^^^^^^^^^^
 
 A pseudo-code example of the GET implementation on the server::
 
@@ -166,7 +166,7 @@ TODO: Link to the real implementation...
 
 
 GET Responses
--------------
+^^^^^^^^^^^^^
 
 Possible server reponses for a GET request are:
 
@@ -176,7 +176,7 @@ Possible server reponses for a GET request are:
 
 
 Updating a Resource with PUT
-============================
+----------------------------
 
 To update an existing resource we send a PUT request to the server::
 
@@ -185,22 +185,23 @@ To update an existing resource we send a PUT request to the server::
   Content-Type: application/json
 
   {
-      '@context': '/@@context.jsonld',
       '@type': 'Document',
       'title': 'My New Document Title',
   }
 
 In accordance with the HTTP specification, a successful PUT will not create a new resource or produce a new URL.
 
-PUT expects the entire resource representation to be supplied to the server, rather than just changes to the resource state. This is usually not a problem since the consumer application requested the resource representation before a PUT anyways.
+PUT expects the entire resource representation to be supplied to the server, rather than just changes to the resource state.
+This is usually not a problem since the consumer application requested the resource representation before a PUT anyways.
 
-An alternative is to use the PATCH HTTP verb, that allows to provide just a subset of the resource. We do not implement PATCH for now though.
+An alternative is to use the PATCH HTTP verb, that allows to provide just a subset of the resource.
+We do not implement PATCH for now though.
 
 When the PUT request is accepted and processed by the service, the consumer will receive either a 200 OK response or a 204 No Content response.
 
 
 Successful Update (200 OK)
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 When a resource has been updated successfully, the server sends a '200 OK' response::
 
@@ -208,22 +209,23 @@ When a resource has been updated successfully, the server sends a '200 OK' respo
   Content-Type:: application/json
 
   {
-      '@context': '/@@context.jsonld',
       '@type': 'Document',
       'title': 'My New Document',
   }
 
-An alternative would be to return a '204 No Content' response. This is more efficent since it does not contain a body. We choose do use '200 OK' for now though.
+An alternative would be to return a '204 No Content' response.
+This is more efficent since it does not contain a body.
+We choose do use '200 OK' for now though.
 
 Unsuccessful Update (409 Conflict)
-----------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Sometimes requests fail due to incompatible changes. The response body should include additional information about the problem.
 
 TODO: We need to check if we can find a valid example for this in Plone.
 
 PUT Implementation
-------------------
+^^^^^^^^^^^^^^^^^^
 
 A pseudo-code example of the PUT implementation on the server::
 
@@ -247,7 +249,7 @@ TODO: Link to the real implementation...
 
 
 PUT Responses
--------------
+^^^^^^^^^^^^^
 
 Possible server reponses for a PUT request are:
 
@@ -258,7 +260,7 @@ Possible server reponses for a PUT request are:
 
 
 POST vs. PUT
-------------
+^^^^^^^^^^^^
 
 Difference POST and PUT:
 
@@ -268,7 +270,7 @@ Difference POST and PUT:
 
 
 Removing a Resource with DELETE
-===============================
+-------------------------------
 
 We can delete an existing resource by sending a DELETE request::
 
@@ -281,7 +283,7 @@ A successful response will be indicated by a '204 No Content' response::
 
 
 DELETE Implementation
----------------------
+^^^^^^^^^^^^^^^^^^^^^
 
 A pseudo-code example of the DELETE implementation on the server::
 
@@ -305,7 +307,7 @@ TODO: Link to the real implementation...
 
 
 DELETE Responses
-----------------
+^^^^^^^^^^^^^^^^
 
 Possible responses to a delete request are:
 

@@ -3,6 +3,7 @@ from Products.Archetypes.interfaces import IBaseObject
 from Products.Archetypes.interfaces.field import IField
 from Products.Archetypes.interfaces.field import IFileField
 from Products.Archetypes.interfaces.field import IReferenceField
+from plone.app.blob.interfaces import IBlobField
 from plone.restapi.interfaces import IFieldDeserializer
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -31,14 +32,20 @@ class FileFieldDeserializer(DefaultFieldDeserializer):
         kwargs = {}
         if isinstance(value, dict):
             if u'content-type' in value:
-                kwargs[u'mimetype'] = value[u'content-type']
+                kwargs[u'mimetype'] = value[u'content-type'].encode('utf8')
             if u'filename' in value:
-                kwargs[u'filename'] = value[u'filename']
+                kwargs[u'filename'] = value[u'filename'].encode('utf8')
             if u'encoding' in value:
-                value = value.get('value', '').decode(value[u'encoding'])
+                value = value.get('data', '').decode(value[u'encoding'])
             else:
-                value = value.get('value', '')
+                value = value.get('data', '')
         return value, kwargs
+
+
+@implementer(IFieldDeserializer)
+@adapter(IBlobField, IBaseObject, IBrowserRequest)
+class BlobFieldDeserializer(FileFieldDeserializer):
+    pass
 
 
 @implementer(IFieldDeserializer)

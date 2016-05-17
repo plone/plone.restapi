@@ -35,6 +35,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                                      ISerializeToJson)
         return serializer()
 
+    @unittest.skip('We do not include the context at this point')
     def test_serialize_returns_context(self):
         self.assertEqual(
             self.serialize(self.portal.doc1)['@context'],
@@ -125,6 +126,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             [
                 {
                     u'@id': u'http://nohost/plone/folder1/doc1',
+                    u'@type': u'Document',
                     u'description': u'This is a document',
                     u'title': u'Document 1'
                 }
@@ -139,6 +141,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.assertEqual(
             {
                 '@id': self.portal.absolute_url(),
+                '@type': self.portal.portal_type,
                 'title': self.portal.title,
                 'description': self.portal.description
             },
@@ -154,6 +157,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.assertEqual(
             {
                 '@id': self.portal.absolute_url(),
+                '@type': self.portal.portal_type,
                 'title': self.portal.title,
                 'description': self.portal.description
             },
@@ -237,11 +241,13 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             [
                 {
                     u'@id': self.portal.doc1.absolute_url(),
+                    u'@type': u'Document',
                     u'description': u'',
                     u'title': u'Document 1'
                 },
                 {
                     u'@id': self.portal.doc2.absolute_url(),
+                    u'@type': u'Document',
                     u'description': u'',
                     u'title': u'Document 2'
                 }

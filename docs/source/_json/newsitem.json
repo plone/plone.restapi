@@ -5,7 +5,6 @@ HTTP 200 OK
 content-type: application/json
 
 {
-  "@context": "http://www.w3.org/ns/hydra/context.jsonld", 
   "@id": "http://localhost:55001/plone/newsitem", 
   "@type": "News Item", 
   "UID": "80c2a074cb4240d08c9a129e3a834c74", 
@@ -36,6 +35,7 @@ content-type: application/json
   "modified": "2016-01-21T02:24:11+00:00", 
   "parent": {
     "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
     "description": "", 
     "title": "Plone site"
   }, 
