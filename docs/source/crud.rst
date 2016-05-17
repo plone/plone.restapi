@@ -18,7 +18,8 @@ DELETE  /folder/{documentId}    Remove the document
 Creating a Resource with POST
 -----------------------------
 
-To create a new resource, we send a POST request to the resource container.  If we want to create a new document within an existing folder, we send a POST request to that folder:
+To create a new resource, we send a POST request to the resource container.
+If we want to create a new document within an existing folder, we send a POST request to that folder:
 
 .. example-code::
 
@@ -52,7 +53,8 @@ The request body contains the necessary information that is needed to create a d
 Successful Response (201 Created)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If a resource has been created, the server responds with the '201 Created' status code. The 'Location' header contains the URL of the newly created resource and the resource represenation in the payload::
+If a resource has been created, the server responds with the '201 Created' status code.
+The 'Location' header contains the URL of the newly created resource and the resource represenation in the payload::
 
   HTTP/1.1 201 Created
   Content-Type: application/json
@@ -199,9 +201,10 @@ Possible server reponses for a GET request are:
 
 
 Updating a Resource with PATCH
-----------------------------
+------------------------------
 
-To update an existing resource we send a PATCH request to the server. PATCH allows to provide just a subset of the resource (the values you actually want to change):
+To update an existing resource we send a PATCH request to the server.
+PATCH allows to provide just a subset of the resource (the values you actually want to change):
 
 .. example-code::
 
@@ -225,7 +228,7 @@ To update an existing resource we send a PATCH request to the server. PATCH allo
     http -a admin:admin PATCH http://localhost:8080/Plone/folder/my-document title="My New Document Title" Accept:application/json
 
 Successful Response (204 No Content)
-------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 A successful response to a PATCH request will be indicated by a '204 No Content' response::
 
@@ -237,7 +240,7 @@ A successful response to a PATCH request will be indicated by a '204 No Content'
 
 
 Replacing a Resource with PUT
-=============================
+-----------------------------
 
 .. note::
 
@@ -271,7 +274,6 @@ In accordance with the HTTP specification, a successful PUT will not create a ne
 PUT expects the entire resource representation to be supplied to the server, rather than just changes to the resource state.
 This is usually not a problem since the consumer application requested the resource representation before a PUT anyways.
 
-<<<<<<< HEAD
 When the PUT request is accepted and processed by the service, the consumer will receive a 204 No Content response (200 OK would be a valid alternative).
 
 
