@@ -1,0 +1,5 @@
+PATCH /plone/@registry/
+Accept: application/json
+
+HTTP 204 No Content
+

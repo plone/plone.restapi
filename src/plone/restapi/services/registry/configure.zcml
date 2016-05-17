@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <plone:service
+    method="GET"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".get.RegistryGet"
+    name="@registry"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="PATCH"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".update.RegistryUpdate"
+    name="@registry"
+    permission="zope2.View"
+    />
+
+</configure>

@@ -281,3 +281,14 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '{}/workflow/publish'.format(self.document.absolute_url()))
         save_response_for_documentation('workflow_post.json', response)
+
+    def test_documentation_registry_get(self):
+        response = self.api_session.get(
+            '/@registry/plone.app.querystring.field.path.title')
+        save_response_for_documentation('registry_get.json', response)
+
+    def test_documentation_registry_update(self):
+        response = self.api_session.patch(
+            '/@registry/',
+            json={'plone.app.querystring.field.path.title': 'Value'})
+        save_response_for_documentation('registry_update.json', response)

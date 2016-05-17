@@ -4,5 +4,6 @@
   <include package=".content"/>
   <include package=".search"/>
   <include package=".workflow"/>
+  <include package=".registry"/>
 
 </configure>
