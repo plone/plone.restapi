@@ -3,7 +3,7 @@ Introduction
 
 A hypermedia API just provides an entry point to the API that contains hyperlinks the clients can follow. Just like a human user of a regular website, that knows the initial URL of a website and then follows hyperlinks to navigate through the site. This has the advantage, that the client just needs to understand how to detect and follow links. The URL and other details of the API can change without breaking the client.
 
-The entry point to the Plone RESTful API is the portal root. The client can ask for a REST API response by setting the 'Accept' HTTP header to 'application/json'::
+The entry point to the Plone RESTful API is the portal root. The client can ask for a :term:`REST` API response by setting the 'Accept' HTTP header to 'application/json'::
 
   GET /
   Accept: application/json
@@ -27,10 +27,30 @@ Plone Content
 
 Plone Portal Root:
 
+.. example-code::
+
+    .. code-block:: curl
+
+        curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone
+
+    .. code-block:: http
+
+        http GET http://localhost:8080/Plone Accept:application/json
+
 .. literalinclude:: _json/siteroot.json
    :language: json-ld
 
 Plone Folder:
+
+.. example-code::
+
+    .. code-block:: curl
+
+        curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone/folder
+
+    .. code-block:: http
+
+        http GET http://localhost:8080/Plone/folder Accept:application/json
 
 .. literalinclude:: _json/folder.json
    :language: jsonld

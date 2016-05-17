@@ -13,7 +13,7 @@ Contents
 --------
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    introduction
    authentication
@@ -24,32 +24,18 @@ Contents
    content-negotiation
    types
    http-status-codes
-
    customization
-
-
-..   hydra
-..   item
-..   folder
-..   site-search
-
-..   general-concepts
-..   general-concepts/error-handling
-..   general-concepts/security
-..   collections
-..   collections/transitions
-..   collections/batching
-..   collections/searching
-..   workflow
-..   local-roles
-..   global-objects
-
 
 .. include:: ../../README.rst
 
 
-Indices and tables
-------------------
+Appendix, Indices and tables
+----------------------------
+
+.. toctree::
+
+   http-status-codes
+   glossary
 
 * :ref:`genindex`
 * :ref:`modindex`
