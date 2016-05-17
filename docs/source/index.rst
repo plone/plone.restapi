@@ -23,7 +23,6 @@ Contents
    searching
    content-negotiation
    types
-   http-status-codes
    customization
 
 .. include:: ../../README.rst
