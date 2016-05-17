@@ -1,0 +1,61 @@
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "0.0.1"
+  title: Plone Rest API
+  description: A hypermedia API, with the portal root as the entry point. The client can ask for a REST API response by setting the 'Accept' HTTP header to 'application/json'
+
+schemes:
+  - http
+host: localhost:9090
+consumes:
+  - application/json
+produces:
+  - application/json
+
+
+# Describe your paths here
+paths:
+  # This is a path endpoint. Change it.
+  /Plone:
+    # This is a HTTP operation
+    get:
+      # Describe this verb here. Note: you can use markdown
+      description:
+        Gets the ste root object.
+
+      # Expected responses for this operation:
+      responses:
+        # Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            title: Siteroot
+            type: object
+            required: 
+            - \@id
+            properties:
+              \@id:
+                type: string
+              \@type:
+                type: string
+              member:
+                type: array
+                items:
+                  required:
+                    - \@id
+                  properties:
+                    \@id:
+                       type: string
+                    \@type:
+                      type: string
+                    title:
+                      type: string
+                    description:
+                      type: string
+            
+            
+                
