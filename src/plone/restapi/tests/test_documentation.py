@@ -281,3 +281,11 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '{}/workflow/publish'.format(self.document.absolute_url()))
         save_response_for_documentation('workflow_post.json', response)
+
+    def test_documentation_types(self):
+        response = self.api_session.get('/@types')
+        save_response_for_documentation('types.json', response)
+
+    def test_documentation_types_document(self):
+        response = self.api_session.get('@types/Document')
+        save_response_for_documentation('types_document.json', response)

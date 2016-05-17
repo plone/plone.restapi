@@ -1,0 +1,1298 @@
+GET /plone/@types/Document
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json+schema
+
+{
+  "properties": {
+    "allow_discussion": {
+      "choices": [
+        [
+          "True", 
+          "Yes"
+        ], 
+        [
+          "False", 
+          "No"
+        ]
+      ], 
+      "description": "Allow discussion for this content object.", 
+      "enum": [
+        "True", 
+        "False"
+      ], 
+      "enumNames": [
+        "Yes", 
+        "No"
+      ], 
+      "title": "Allow discussion", 
+      "type": "string"
+    }, 
+    "changeNote": {
+      "description": "Enter a comment that describes the changes you made.", 
+      "title": "Change Note", 
+      "type": "string"
+    }, 
+    "contributors": {
+      "additionalItems": true, 
+      "description": "The names of people that have contributed to this item. Each contributor should be on a separate line.", 
+      "items": {
+        "description": "", 
+        "title": "", 
+        "type": "string"
+      }, 
+      "title": "Contributors", 
+      "type": "array", 
+      "uniqueItems": true
+    }, 
+    "creators": {
+      "additionalItems": true, 
+      "description": "Persons responsible for creating the content of this item. Please enter a list of user names, one per line. The principal creator should come first.", 
+      "items": {
+        "description": "", 
+        "title": "", 
+        "type": "string"
+      }, 
+      "title": "Creators", 
+      "type": "array", 
+      "uniqueItems": true
+    }, 
+    "description": {
+      "description": "Used in item listings and search results.", 
+      "minLength": 0, 
+      "title": "Summary", 
+      "type": "string"
+    }, 
+    "effective": {
+      "description": "If this date is in the future, the content will not show up in listings and searches until this date.", 
+      "title": "Publishing Date", 
+      "type": "string"
+    }, 
+    "exclude_from_nav": {
+      "default": false, 
+      "description": "If selected, this item will not appear in the navigation tree", 
+      "title": "Exclude from navigation", 
+      "type": "boolean"
+    }, 
+    "expires": {
+      "description": "When this date is reached, the content will nolonger be visible in listings and searches.", 
+      "title": "Expiration Date", 
+      "type": "string"
+    }, 
+    "language": {
+      "choices": [
+        [
+          "af", 
+          "Afrikaans"
+        ], 
+        [
+          "ak", 
+          "Akan"
+        ], 
+        [
+          "ig", 
+          "As\u1ee5s\u1ee5 Igbo"
+        ], 
+        [
+          "ay", 
+          "Aymara"
+        ], 
+        [
+          "az", 
+          "Az\u0259ri T\u00fcrk\u00e7\u0259si"
+        ], 
+        [
+          "id", 
+          "Bahasa Indonesia"
+        ], 
+        [
+          "ms", 
+          "Bahasa Melayu"
+        ], 
+        [
+          "ba", 
+          "Bashkir"
+        ], 
+        [
+          "dz", 
+          "Bhutani"
+        ], 
+        [
+          "bh", 
+          "Bihari"
+        ], 
+        [
+          "bi", 
+          "Bislama"
+        ], 
+        [
+          "bs", 
+          "Bosanski"
+        ], 
+        [
+          "my", 
+          "Burmese"
+        ], 
+        [
+          "ca", 
+          "Catal\u00e0"
+        ], 
+        [
+          "ch", 
+          "Chamoru"
+        ], 
+        [
+          "co", 
+          "Corsu"
+        ], 
+        [
+          "cy", 
+          "Cymraeg"
+        ], 
+        [
+          "da", 
+          "Dansk"
+        ], 
+        [
+          "de", 
+          "Deutsch"
+        ], 
+        [
+          "nv", 
+          "Din\u00e9 bizaad"
+        ], 
+        [
+          "dv", 
+          "Divehi"
+        ], 
+        [
+          "et", 
+          "Eesti"
+        ], 
+        [
+          "en", 
+          "English"
+        ], 
+        [
+          "es", 
+          "Espa\u00f1ol"
+        ], 
+        [
+          "eo", 
+          "Esperanto"
+        ], 
+        [
+          "eu", 
+          "Euskara"
+        ], 
+        [
+          "ee", 
+          "E\u028begbe"
+        ], 
+        [
+          "fj", 
+          "Fiji"
+        ], 
+        [
+          "fr", 
+          "Fran\u00e7ais"
+        ], 
+        [
+          "fy", 
+          "Frysk"
+        ], 
+        [
+          "ff", 
+          "Fulfulde"
+        ], 
+        [
+          "fo", 
+          "F\u00f8royska"
+        ], 
+        [
+          "ga", 
+          "Gaeilge"
+        ], 
+        [
+          "gv", 
+          "Gaelg"
+        ], 
+        [
+          "gl", 
+          "Galego"
+        ], 
+        [
+          "kl", 
+          "Greenlandic"
+        ], 
+        [
+          "gn", 
+          "Guarani"
+        ], 
+        [
+          "gd", 
+          "G\u00e0idhlig"
+        ], 
+        [
+          "ki", 
+          "G\u0129k\u0169y\u0169"
+        ], 
+        [
+          "ho", 
+          "Hiri Motu"
+        ], 
+        [
+          "hr", 
+          "Hrvatski"
+        ], 
+        [
+          "io", 
+          "Ido"
+        ], 
+        [
+          "ia", 
+          "Interlingua"
+        ], 
+        [
+          "ie", 
+          "Interlingue"
+        ], 
+        [
+          "nr", 
+          "IsiNdebele"
+        ], 
+        [
+          "xh", 
+          "IsiXhosa"
+        ], 
+        [
+          "zu", 
+          "IsiZulu"
+        ], 
+        [
+          "it", 
+          "Italiano"
+        ], 
+        [
+          "ik", 
+          "I\u00f1upiaq"
+        ], 
+        [
+          "jv", 
+          "Javanese"
+        ], 
+        [
+          "mh", 
+          "Kajin M\u0327aje\u013c"
+        ], 
+        [
+          "kr", 
+          "Kanuri"
+        ], 
+        [
+          "kw", 
+          "Kernewek"
+        ], 
+        [
+          "kg", 
+          "KiKongo"
+        ], 
+        [
+          "rw", 
+          "Kinyarwanda"
+        ], 
+        [
+          "rn", 
+          "Kirundi"
+        ], 
+        [
+          "sw", 
+          "Kiswahili"
+        ], 
+        [
+          "ht", 
+          "Krey\u00f2l ayisyen"
+        ], 
+        [
+          "kj", 
+          "Kuanyama"
+        ], 
+        [
+          "ku", 
+          "Kurd\u00ed"
+        ], 
+        [
+          "la", 
+          "Latin"
+        ], 
+        [
+          "lv", 
+          "Latvie\u0161u"
+        ], 
+        [
+          "lt", 
+          "Lietuviskai"
+        ], 
+        [
+          "li", 
+          "Limburgs"
+        ], 
+        [
+          "ln", 
+          "Lingala"
+        ], 
+        [
+          "lg", 
+          "Luganda"
+        ], 
+        [
+          "lb", 
+          "L\u00ebtzebuergesch"
+        ], 
+        [
+          "hu", 
+          "Magyar"
+        ], 
+        [
+          "mg", 
+          "Malagasy"
+        ], 
+        [
+          "mt", 
+          "Malti"
+        ], 
+        [
+          "mi", 
+          "Maori"
+        ], 
+        [
+          "mo", 
+          "Moldavian"
+        ], 
+        [
+          "na", 
+          "Nauru"
+        ], 
+        [
+          "nd", 
+          "Ndebele (North)"
+        ], 
+        [
+          "nl", 
+          "Nederlands"
+        ], 
+        [
+          "no", 
+          "Norsk"
+        ], 
+        [
+          "nb", 
+          "Norsk bokm\u00e5l"
+        ], 
+        [
+          "se", 
+          "Northern S\u00e1mi"
+        ], 
+        [
+          "ii", 
+          "Nuosu"
+        ], 
+        [
+          "nn", 
+          "Nynorsk"
+        ], 
+        [
+          "oc", 
+          "Occitan"
+        ], 
+        [
+          "om", 
+          "Oromo"
+        ], 
+        [
+          "hz", 
+          "Otjiherero"
+        ], 
+        [
+          "vk", 
+          "Ovalingo"
+        ], 
+        [
+          "ng", 
+          "Owambo"
+        ], 
+        [
+          "pl", 
+          "Polski"
+        ], 
+        [
+          "pt", 
+          "Portugu\u00eas"
+        ], 
+        [
+          "qu", 
+          "Quechua"
+        ], 
+        [
+          "ty", 
+          "Reo Tahiti"
+        ], 
+        [
+          "rm", 
+          "Rhaeto-Romance"
+        ], 
+        [
+          "ro", 
+          "Rom\u00e2n\u0103"
+        ], 
+        [
+          "sm", 
+          "Samoan"
+        ], 
+        [
+          "sg", 
+          "Sangho"
+        ], 
+        [
+          "sh", 
+          "Serbo-Croatian"
+        ], 
+        [
+          "st", 
+          "Sesotho"
+        ], 
+        [
+          "tn", 
+          "Setswana"
+        ], 
+        [
+          "sn", 
+          "Shona"
+        ], 
+        [
+          "sq", 
+          "Shqip"
+        ], 
+        [
+          "ss", 
+          "SiSwati"
+        ], 
+        [
+          "sd", 
+          "Sindhi"
+        ], 
+        [
+          "si", 
+          "Singhalese"
+        ], 
+        [
+          "sk", 
+          "Sloven\u010dina"
+        ], 
+        [
+          "sl", 
+          "Sloven\u0161\u010dina"
+        ], 
+        [
+          "so", 
+          "Somali"
+        ], 
+        [
+          "su", 
+          "Sudanese"
+        ], 
+        [
+          "fi", 
+          "Suomi"
+        ], 
+        [
+          "sv", 
+          "Svenska"
+        ], 
+        [
+          "tl", 
+          "Tagalog"
+        ], 
+        [
+          "vi", 
+          "Ti\u1ebfng Vi\u1ec7t"
+        ], 
+        [
+          "to", 
+          "Tonga"
+        ], 
+        [
+          "lu", 
+          "Tshiluba"
+        ], 
+        [
+          "ve", 
+          "Tshiven\u1e13a"
+        ], 
+        [
+          "tw", 
+          "Twi"
+        ], 
+        [
+          "tr", 
+          "T\u00fcrk\u00e7e"
+        ], 
+        [
+          "ug", 
+          "Uigur"
+        ], 
+        [
+          "vo", 
+          "Volap\u00fck"
+        ], 
+        [
+          "wa", 
+          "Walon"
+        ], 
+        [
+          "wo", 
+          "Wolof"
+        ], 
+        [
+          "ts", 
+          "Xitsonga"
+        ], 
+        [
+          "yo", 
+          "Yor\u00f9b\u00e1"
+        ], 
+        [
+          "za", 
+          "Zhuang"
+        ], 
+        [
+          "an", 
+          "aragon\u00e9s"
+        ], 
+        [
+          "ae", 
+          "avesta"
+        ], 
+        [
+          "bm", 
+          "bamanankan"
+        ], 
+        [
+          "br", 
+          "brezhoneg"
+        ], 
+        [
+          "ny", 
+          "chiChe\u0175a"
+        ], 
+        [
+          "sc", 
+          "sardu"
+        ], 
+        [
+          "is", 
+          "\u00cdslenska"
+        ], 
+        [
+          "cs", 
+          "\u010ce\u0161tina"
+        ], 
+        [
+          "el", 
+          "\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac"
+        ], 
+        [
+          "uz", 
+          "\u040e\u0437\u0431\u0435\u043a\u0447\u0430"
+        ], 
+        [
+          "be", 
+          "\u0411\u0435\u043b\u0430\u0440\u0443\u0441\u043a\u0456"
+        ], 
+        [
+          "bg", 
+          "\u0411\u044a\u043b\u0433\u0430\u0440\u0441\u043a\u0438"
+        ], 
+        [
+          "ky", 
+          "\u041a\u044b\u0440\u0433\u044b\u0437"
+        ], 
+        [
+          "mk", 
+          "\u041c\u0430\u043a\u0435\u0434\u043e\u043d\u0441\u043a\u0438"
+        ], 
+        [
+          "mn", 
+          "\u041c\u043e\u043d\u0433\u043e\u043b"
+        ], 
+        [
+          "ru", 
+          "\u0420\u0443\u0441\u0441\u043a\u0438\u0439"
+        ], 
+        [
+          "tg", 
+          "\u0422\u043e\u04b7\u0438\u043a\u0438"
+        ], 
+        [
+          "uk", 
+          "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430"
+        ], 
+        [
+          "ab", 
+          "\u0431\u044b\u0437\u0448\u04d9\u0430"
+        ], 
+        [
+          "os", 
+          "\u0438\u0440\u043e\u043d \u00e6\u0432\u0437\u0430\u0433"
+        ], 
+        [
+          "kv", 
+          "\u043a\u043e\u043c\u0438 \u043a\u044b\u0432"
+        ], 
+        [
+          "aa", 
+          "\u043c\u0430\u0433I\u0430\u0440\u0443\u043b \u043c\u0430\u0446I"
+        ], 
+        [
+          "ce", 
+          "\u043d\u043e\u0445\u0447\u0438\u0439\u043d \u043c\u043e\u0442\u0442"
+        ], 
+        [
+          "sr", 
+          "\u0441\u0440\u043f\u0441\u043a\u0438"
+        ], 
+        [
+          "tt", 
+          "\u0442\u0430\u0442\u0430\u0440\u0447\u0430"
+        ], 
+        [
+          "tk", 
+          "\u0442\u04af\u0440\u043am\u0435\u043d\u0447\u0435"
+        ], 
+        [
+          "cv", 
+          "\u0447\u04d1\u0432\u0430\u0448 \u0447\u04d7\u043b\u0445\u0438"
+        ], 
+        [
+          "cu", 
+          "\u0469\u0437\u044b\u043a\u044a \u0441\u043b\u043e\u0432\u0463\u043d\u044c\u0441\u043a\u044a"
+        ], 
+        [
+          "hy", 
+          "\u0540\u0561\u0575\u0565\u0580\u0567\u0576"
+        ], 
+        [
+          "he", 
+          "\u05e2\u05d1\u05e8\u05d9\u05ea"
+        ], 
+        [
+          "yi", 
+          "\u05f2\u05b4\u05d3\u05d9\u05e9"
+        ], 
+        [
+          "ur", 
+          "\u0627\u0631\u062f\u0648"
+        ], 
+        [
+          "ar", 
+          "\u0627\u0644\u0639\u0631\u0628\u064a\u0629"
+        ], 
+        [
+          "fa", 
+          "\u0641\u0627\u0631\u0633\u06cc"
+        ], 
+        [
+          "ha", 
+          "\u0647\u064e\u0648\u064f\u0633"
+        ], 
+        [
+          "ps", 
+          "\u067e\u069a\u062a\u0648"
+        ], 
+        [
+          "ks", 
+          "\u0915\u093e\u093d\u0936\u0941\u0930"
+        ], 
+        [
+          "ne", 
+          "\u0928\u0947\u092a\u093e\u0932\u0940"
+        ], 
+        [
+          "pi", 
+          "\u092a\u093e\u0934\u093f"
+        ], 
+        [
+          "mr", 
+          "\u092e\u0930\u093e\u0920\u0940"
+        ], 
+        [
+          "sa", 
+          "\u0938\u0902\u0938\u094d\u0915\u0943\u0924"
+        ], 
+        [
+          "hi", 
+          "\u0939\u093f\u0902\u0926\u0940"
+        ], 
+        [
+          "as", 
+          "\u0985\u09b8\u09ae\u09bf\u09df\u09be"
+        ], 
+        [
+          "bn", 
+          "\u09ac\u09be\u0982\u09b2\u09be"
+        ], 
+        [
+          "pa", 
+          "\u0a2a\u0a70\u0a1c\u0a3e\u0a2c\u0a40"
+        ], 
+        [
+          "gu", 
+          "\u0a97\u0ac1\u0a9c\u0ab0\u0abe\u0aa4\u0ac0"
+        ], 
+        [
+          "or", 
+          "\u0b13\u0b5c\u0b3f\u0b06"
+        ], 
+        [
+          "ta", 
+          "\u0ba4\u0bae\u0bbf\u0bb4"
+        ], 
+        [
+          "te", 
+          "\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41"
+        ], 
+        [
+          "kn", 
+          "\u0c95\u0ca8\u0ccd\u0ca8\u0ca1"
+        ], 
+        [
+          "ml", 
+          "\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02"
+        ], 
+        [
+          "th", 
+          "\u0e44\u0e17\u0e22"
+        ], 
+        [
+          "lo", 
+          "\u0e9e\u0eb2\u0eaa\u0eb2\u0ea5\u0eb2\u0ea7"
+        ], 
+        [
+          "bo", 
+          "\u0f56\u0f7c\u0f51\u0f0b\u0f66\u0f90\u0f51\u0f0b"
+        ], 
+        [
+          "ka", 
+          "\u10e5\u10d0\u10e0\u10d7\u10e3\u10da\u10d8"
+        ], 
+        [
+          "ti", 
+          "\u1275\u130d\u122d\u129b"
+        ], 
+        [
+          "am", 
+          "\u12a0\u121b\u122d\u129b"
+        ], 
+        [
+          "iu", 
+          "\u1403\u14c4\u1483\u144e\u1450\u1466"
+        ], 
+        [
+          "oj", 
+          "\u140a\u14c2\u1511\u14c8\u142f\u14a7\u140e\u14d0"
+        ], 
+        [
+          "cr", 
+          "\u14c0\u1426\u1403\u152d\u140d\u140f\u1423"
+        ], 
+        [
+          "km", 
+          "\u1781\u17d2\u1798\u17c2\u179a"
+        ], 
+        [
+          "zh", 
+          "\u4e2d\u6587"
+        ], 
+        [
+          "ja", 
+          "\u65e5\u672c\u8a9e"
+        ], 
+        [
+          "ko", 
+          "\ud55c\uad6d\uc5b4"
+        ], 
+        [
+          "kk", 
+          "\ufed7\ufe8e\ufeaf\ufe8d\ufed7\ufeb8\ufe8e"
+        ]
+      ], 
+      "default": "en", 
+      "description": "", 
+      "enum": [
+        "af", 
+        "ak", 
+        "ig", 
+        "ay", 
+        "az", 
+        "id", 
+        "ms", 
+        "ba", 
+        "dz", 
+        "bh", 
+        "bi", 
+        "bs", 
+        "my", 
+        "ca", 
+        "ch", 
+        "co", 
+        "cy", 
+        "da", 
+        "de", 
+        "nv", 
+        "dv", 
+        "et", 
+        "en", 
+        "es", 
+        "eo", 
+        "eu", 
+        "ee", 
+        "fj", 
+        "fr", 
+        "fy", 
+        "ff", 
+        "fo", 
+        "ga", 
+        "gv", 
+        "gl", 
+        "kl", 
+        "gn", 
+        "gd", 
+        "ki", 
+        "ho", 
+        "hr", 
+        "io", 
+        "ia", 
+        "ie", 
+        "nr", 
+        "xh", 
+        "zu", 
+        "it", 
+        "ik", 
+        "jv", 
+        "mh", 
+        "kr", 
+        "kw", 
+        "kg", 
+        "rw", 
+        "rn", 
+        "sw", 
+        "ht", 
+        "kj", 
+        "ku", 
+        "la", 
+        "lv", 
+        "lt", 
+        "li", 
+        "ln", 
+        "lg", 
+        "lb", 
+        "hu", 
+        "mg", 
+        "mt", 
+        "mi", 
+        "mo", 
+        "na", 
+        "nd", 
+        "nl", 
+        "no", 
+        "nb", 
+        "se", 
+        "ii", 
+        "nn", 
+        "oc", 
+        "om", 
+        "hz", 
+        "vk", 
+        "ng", 
+        "pl", 
+        "pt", 
+        "qu", 
+        "ty", 
+        "rm", 
+        "ro", 
+        "sm", 
+        "sg", 
+        "sh", 
+        "st", 
+        "tn", 
+        "sn", 
+        "sq", 
+        "ss", 
+        "sd", 
+        "si", 
+        "sk", 
+        "sl", 
+        "so", 
+        "su", 
+        "fi", 
+        "sv", 
+        "tl", 
+        "vi", 
+        "to", 
+        "lu", 
+        "ve", 
+        "tw", 
+        "tr", 
+        "ug", 
+        "vo", 
+        "wa", 
+        "wo", 
+        "ts", 
+        "yo", 
+        "za", 
+        "an", 
+        "ae", 
+        "bm", 
+        "br", 
+        "ny", 
+        "sc", 
+        "is", 
+        "cs", 
+        "el", 
+        "uz", 
+        "be", 
+        "bg", 
+        "ky", 
+        "mk", 
+        "mn", 
+        "ru", 
+        "tg", 
+        "uk", 
+        "ab", 
+        "os", 
+        "kv", 
+        "aa", 
+        "ce", 
+        "sr", 
+        "tt", 
+        "tk", 
+        "cv", 
+        "cu", 
+        "hy", 
+        "he", 
+        "yi", 
+        "ur", 
+        "ar", 
+        "fa", 
+        "ha", 
+        "ps", 
+        "ks", 
+        "ne", 
+        "pi", 
+        "mr", 
+        "sa", 
+        "hi", 
+        "as", 
+        "bn", 
+        "pa", 
+        "gu", 
+        "or", 
+        "ta", 
+        "te", 
+        "kn", 
+        "ml", 
+        "th", 
+        "lo", 
+        "bo", 
+        "ka", 
+        "ti", 
+        "am", 
+        "iu", 
+        "oj", 
+        "cr", 
+        "km", 
+        "zh", 
+        "ja", 
+        "ko", 
+        "kk"
+      ], 
+      "enumNames": [
+        "Afrikaans", 
+        "Akan", 
+        "As\u1ee5s\u1ee5 Igbo", 
+        "Aymara", 
+        "Az\u0259ri T\u00fcrk\u00e7\u0259si", 
+        "Bahasa Indonesia", 
+        "Bahasa Melayu", 
+        "Bashkir", 
+        "Bhutani", 
+        "Bihari", 
+        "Bislama", 
+        "Bosanski", 
+        "Burmese", 
+        "Catal\u00e0", 
+        "Chamoru", 
+        "Corsu", 
+        "Cymraeg", 
+        "Dansk", 
+        "Deutsch", 
+        "Din\u00e9 bizaad", 
+        "Divehi", 
+        "Eesti", 
+        "English", 
+        "Espa\u00f1ol", 
+        "Esperanto", 
+        "Euskara", 
+        "E\u028begbe", 
+        "Fiji", 
+        "Fran\u00e7ais", 
+        "Frysk", 
+        "Fulfulde", 
+        "F\u00f8royska", 
+        "Gaeilge", 
+        "Gaelg", 
+        "Galego", 
+        "Greenlandic", 
+        "Guarani", 
+        "G\u00e0idhlig", 
+        "G\u0129k\u0169y\u0169", 
+        "Hiri Motu", 
+        "Hrvatski", 
+        "Ido", 
+        "Interlingua", 
+        "Interlingue", 
+        "IsiNdebele", 
+        "IsiXhosa", 
+        "IsiZulu", 
+        "Italiano", 
+        "I\u00f1upiaq", 
+        "Javanese", 
+        "Kajin M\u0327aje\u013c", 
+        "Kanuri", 
+        "Kernewek", 
+        "KiKongo", 
+        "Kinyarwanda", 
+        "Kirundi", 
+        "Kiswahili", 
+        "Krey\u00f2l ayisyen", 
+        "Kuanyama", 
+        "Kurd\u00ed", 
+        "Latin", 
+        "Latvie\u0161u", 
+        "Lietuviskai", 
+        "Limburgs", 
+        "Lingala", 
+        "Luganda", 
+        "L\u00ebtzebuergesch", 
+        "Magyar", 
+        "Malagasy", 
+        "Malti", 
+        "Maori", 
+        "Moldavian", 
+        "Nauru", 
+        "Ndebele (North)", 
+        "Nederlands", 
+        "Norsk", 
+        "Norsk bokm\u00e5l", 
+        "Northern S\u00e1mi", 
+        "Nuosu", 
+        "Nynorsk", 
+        "Occitan", 
+        "Oromo", 
+        "Otjiherero", 
+        "Ovalingo", 
+        "Owambo", 
+        "Polski", 
+        "Portugu\u00eas", 
+        "Quechua", 
+        "Reo Tahiti", 
+        "Rhaeto-Romance", 
+        "Rom\u00e2n\u0103", 
+        "Samoan", 
+        "Sangho", 
+        "Serbo-Croatian", 
+        "Sesotho", 
+        "Setswana", 
+        "Shona", 
+        "Shqip", 
+        "SiSwati", 
+        "Sindhi", 
+        "Singhalese", 
+        "Sloven\u010dina", 
+        "Sloven\u0161\u010dina", 
+        "Somali", 
+        "Sudanese", 
+        "Suomi", 
+        "Svenska", 
+        "Tagalog", 
+        "Ti\u1ebfng Vi\u1ec7t", 
+        "Tonga", 
+        "Tshiluba", 
+        "Tshiven\u1e13a", 
+        "Twi", 
+        "T\u00fcrk\u00e7e", 
+        "Uigur", 
+        "Volap\u00fck", 
+        "Walon", 
+        "Wolof", 
+        "Xitsonga", 
+        "Yor\u00f9b\u00e1", 
+        "Zhuang", 
+        "aragon\u00e9s", 
+        "avesta", 
+        "bamanankan", 
+        "brezhoneg", 
+        "chiChe\u0175a", 
+        "sardu", 
+        "\u00cdslenska", 
+        "\u010ce\u0161tina", 
+        "\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac", 
+        "\u040e\u0437\u0431\u0435\u043a\u0447\u0430", 
+        "\u0411\u0435\u043b\u0430\u0440\u0443\u0441\u043a\u0456", 
+        "\u0411\u044a\u043b\u0433\u0430\u0440\u0441\u043a\u0438", 
+        "\u041a\u044b\u0440\u0433\u044b\u0437", 
+        "\u041c\u0430\u043a\u0435\u0434\u043e\u043d\u0441\u043a\u0438", 
+        "\u041c\u043e\u043d\u0433\u043e\u043b", 
+        "\u0420\u0443\u0441\u0441\u043a\u0438\u0439", 
+        "\u0422\u043e\u04b7\u0438\u043a\u0438", 
+        "\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430", 
+        "\u0431\u044b\u0437\u0448\u04d9\u0430", 
+        "\u0438\u0440\u043e\u043d \u00e6\u0432\u0437\u0430\u0433", 
+        "\u043a\u043e\u043c\u0438 \u043a\u044b\u0432", 
+        "\u043c\u0430\u0433I\u0430\u0440\u0443\u043b \u043c\u0430\u0446I", 
+        "\u043d\u043e\u0445\u0447\u0438\u0439\u043d \u043c\u043e\u0442\u0442", 
+        "\u0441\u0440\u043f\u0441\u043a\u0438", 
+        "\u0442\u0430\u0442\u0430\u0440\u0447\u0430", 
+        "\u0442\u04af\u0440\u043am\u0435\u043d\u0447\u0435", 
+        "\u0447\u04d1\u0432\u0430\u0448 \u0447\u04d7\u043b\u0445\u0438", 
+        "\u0469\u0437\u044b\u043a\u044a \u0441\u043b\u043e\u0432\u0463\u043d\u044c\u0441\u043a\u044a", 
+        "\u0540\u0561\u0575\u0565\u0580\u0567\u0576", 
+        "\u05e2\u05d1\u05e8\u05d9\u05ea", 
+        "\u05f2\u05b4\u05d3\u05d9\u05e9", 
+        "\u0627\u0631\u062f\u0648", 
+        "\u0627\u0644\u0639\u0631\u0628\u064a\u0629", 
+        "\u0641\u0627\u0631\u0633\u06cc", 
+        "\u0647\u064e\u0648\u064f\u0633", 
+        "\u067e\u069a\u062a\u0648", 
+        "\u0915\u093e\u093d\u0936\u0941\u0930", 
+        "\u0928\u0947\u092a\u093e\u0932\u0940", 
+        "\u092a\u093e\u0934\u093f", 
+        "\u092e\u0930\u093e\u0920\u0940", 
+        "\u0938\u0902\u0938\u094d\u0915\u0943\u0924", 
+        "\u0939\u093f\u0902\u0926\u0940", 
+        "\u0985\u09b8\u09ae\u09bf\u09df\u09be", 
+        "\u09ac\u09be\u0982\u09b2\u09be", 
+        "\u0a2a\u0a70\u0a1c\u0a3e\u0a2c\u0a40", 
+        "\u0a97\u0ac1\u0a9c\u0ab0\u0abe\u0aa4\u0ac0", 
+        "\u0b13\u0b5c\u0b3f\u0b06", 
+        "\u0ba4\u0bae\u0bbf\u0bb4", 
+        "\u0c24\u0c46\u0c32\u0c41\u0c17\u0c41", 
+        "\u0c95\u0ca8\u0ccd\u0ca8\u0ca1", 
+        "\u0d2e\u0d32\u0d2f\u0d3e\u0d33\u0d02", 
+        "\u0e44\u0e17\u0e22", 
+        "\u0e9e\u0eb2\u0eaa\u0eb2\u0ea5\u0eb2\u0ea7", 
+        "\u0f56\u0f7c\u0f51\u0f0b\u0f66\u0f90\u0f51\u0f0b", 
+        "\u10e5\u10d0\u10e0\u10d7\u10e3\u10da\u10d8", 
+        "\u1275\u130d\u122d\u129b", 
+        "\u12a0\u121b\u122d\u129b", 
+        "\u1403\u14c4\u1483\u144e\u1450\u1466", 
+        "\u140a\u14c2\u1511\u14c8\u142f\u14a7\u140e\u14d0", 
+        "\u14c0\u1426\u1403\u152d\u140d\u140f\u1423", 
+        "\u1781\u17d2\u1798\u17c2\u179a", 
+        "\u4e2d\u6587", 
+        "\u65e5\u672c\u8a9e", 
+        "\ud55c\uad6d\uc5b4", 
+        "\ufed7\ufe8e\ufeaf\ufe8d\ufed7\ufeb8\ufe8e"
+      ], 
+      "title": "Language", 
+      "type": "string"
+    }, 
+    "relatedItems": {
+      "additionalItems": true, 
+      "default": [], 
+      "description": "", 
+      "items": {
+        "description": "", 
+        "title": "Related", 
+        "type": "string"
+      }, 
+      "title": "Related Items", 
+      "type": "array", 
+      "uniqueItems": true
+    }, 
+    "rights": {
+      "description": "Copyright statement or other rights information on this item.", 
+      "minLength": 0, 
+      "title": "Rights", 
+      "type": "string"
+    }, 
+    "subjects": {
+      "additionalItems": true, 
+      "description": "Tags are commonly used for ad-hoc organization of content.", 
+      "items": {
+        "description": "", 
+        "title": "", 
+        "type": "string"
+      }, 
+      "title": "Tags", 
+      "type": "array", 
+      "uniqueItems": true
+    }, 
+    "table_of_contents": {
+      "description": "If selected, this will show a table of contents at the top of the page.", 
+      "title": "Table of contents", 
+      "type": "boolean"
+    }, 
+    "text": {
+      "description": "", 
+      "properties": {
+        "text.encoding": {
+          "description": "Mainly used internally", 
+          "title": "Default encoding for the value", 
+          "type": "string"
+        }, 
+        "text.mimeType": {
+          "description": "", 
+          "title": "MIME type", 
+          "type": "string"
+        }, 
+        "text.output": {
+          "description": "May be None if the transform cannot be completed", 
+          "minLength": 0, 
+          "title": "Transformed value in the target MIME type", 
+          "type": "string"
+        }, 
+        "text.outputMimeType": {
+          "description": "", 
+          "title": "Default output MIME type", 
+          "type": "string"
+        }, 
+        "text.raw": {
+          "description": "", 
+          "minLength": 0, 
+          "title": "Raw value in the original MIME type", 
+          "type": "string"
+        }, 
+        "text.raw_encoded": {
+          "description": "Mainly used internally", 
+          "title": "Get the raw value as an encoded string", 
+          "type": "string"
+        }
+      }, 
+      "title": "Text", 
+      "type": "object"
+    }, 
+    "title": {
+      "description": "", 
+      "title": "Title", 
+      "type": "string"
+    }
+  }, 
+  "required": [
+    "title", 
+    "exclude_from_nav"
+  ], 
+  "title": "Page", 
+  "type": "object"
+}
