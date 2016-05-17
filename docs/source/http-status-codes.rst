@@ -63,6 +63,13 @@ The 4xx class of status code is intended for cases in which the client seems to 
 
     The requested resource could not be found but may be available again in the future. Subsequent requests by the client are permissible.
 
+.. _`405 Method Not Allowed`:
+
+405 Method Not Allowed
+**********************
+
+    A request method is not supported for the requested resource; for example, a GET request on a form which requires data to be presented via POST, or a PUT request on a read-only resource.
+
 .. _`409 Conflict`:
 
 409 Conflict

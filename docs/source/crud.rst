@@ -197,10 +197,52 @@ Possible server reponses for a GET request are:
 * :ref:`500 Internal Server Error`
 
 
-Updating a Resource with PUT
-============================
+Updating a Resource with PATCH
+==============================
 
-To update an existing resource we send a PUT request to the server:
+To update an existing resource we send a PATCH request to the server. PATCH allows to provide just a subset of the resource (the values you actually want to change):
+
+.. example-code::
+
+  .. code-block:: http
+
+    PATCH /folder/my-document HTTP/1.1
+    Host: localhost:8080/Plone
+    Content-Type: application/json
+
+    {
+        '@type': 'Document',
+        'title': 'My New Document Title',
+    }
+
+  .. code-block:: curl
+
+    curl -i -H "Accept: application/json" -H "Content-type: application/json" --data-raw '{title": "My Document"}' --user admin:admin -X PATCH http://localhost:8080/Plone/folder/my-document
+
+  .. code-block:: httpie
+
+    http -a admin:admin PATCH http://localhost:8080/Plone/folder/my-document title="My New Document Title" Accept:application/json
+
+Successful Response (204 No Content)
+------------------------------------
+
+A successful response to a PATCH request will be indicated by a '204 No Content' response::
+
+  HTTP/1.1  204 No Content
+
+.. note::
+
+  `RFC 5789: PATCH Method for HTTP <http://tools.ietf.org/html/rfc5789>`_
+
+
+Replacing a Resource with PUT
+=============================
+
+.. note::
+
+  PUT is not implemented yet.
+
+To replace an existing resource we send a PUT request to the server:
 
 .. example-code::
 
@@ -217,7 +259,7 @@ To update an existing resource we send a PUT request to the server:
 
   .. code-block:: curl
 
-    curl -i -H "Accept: application/json" -X PATCH http://localhost:8080/Plone/folder
+    curl -i -H "Accept: application/json" -X PUT http://localhost:8080/Plone/folder
 
   .. code-block:: httpie
 
@@ -227,32 +269,25 @@ In accordance with the HTTP specification, a successful PUT will not create a ne
 
 PUT expects the entire resource representation to be supplied to the server, rather than just changes to the resource state. This is usually not a problem since the consumer application requested the resource representation before a PUT anyways.
 
-An alternative is to use the PATCH HTTP verb, that allows to provide just a subset of the resource. We do not implement PATCH for now though.
-
-When the PUT request is accepted and processed by the service, the consumer will receive either a 200 OK response or a 204 No Content response.
+When the PUT request is accepted and processed by the service, the consumer will receive a 204 No Content response (200 OK would be a valid alternative).
 
 
-Successful Update (200 OK)
+Successful Update (204 OK)
 --------------------------
 
-When a resource has been updated successfully, the server sends a '200 OK' response::
+When a resource has been updated successfully, the server sends a '204 NO CONTENT' response::
 
-  HTTP/1.1 200 OK
+  HTTP/1.1 204 No Content
   Content-Type:: application/json
 
-  {
-      '@type': 'Document',
-      'title': 'My New Document',
-  }
-
-An alternative would be to return a '204 No Content' response. This is more efficent since it does not contain a body. We choose do use '200 OK' for now though.
 
 Unsuccessful Update (409 Conflict)
 ----------------------------------
 
-Sometimes requests fail due to incompatible changes. The response body should include additional information about the problem.
+Sometimes requests fail due to incompatible changes. The response body includes additional information about the problem.
 
-TODO: We need to check if we can find a valid example for this in Plone.
+TODO: Add example.
+
 
 PUT Implementation
 ------------------
@@ -297,6 +332,10 @@ Difference POST and PUT:
   * Use POST to create a resource identified by a service-generated URI
   * Use POST to append a resource to a collection identified by a service-generated URI
   * Use PUT to overwrite a resource
+
+.. note::
+
+  `RFC 7231: HTTP 1.1: PUT Method <https://tools.ietf.org/html/rfc7231#section-4.3.4>`_.
 
 
 Removing a Resource with DELETE
