@@ -3,8 +3,8 @@ from DateTime import DateTime
 from Products.CMFPlone.utils import base_hasattr
 from plone.app.content.interfaces import INameFromTitle
 from plone.rest import Service
-from plone.restapi.deserializer import DeserializationError
 from plone.restapi.deserializer import json_body
+from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from random import randint
 from zExceptions import BadRequest

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.rest import Service
-from plone.restapi.deserializer import DeserializationError
+from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from zope.component import queryMultiAdapter
 

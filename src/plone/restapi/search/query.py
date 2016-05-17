@@ -32,6 +32,7 @@ conditionally in order to avoid breaking compatibility with vanilla Plone 4.3.
 
 from DateTime import DateTime
 from DateTime.interfaces import SyntaxError as DTSyntaxError
+from plone.restapi.exceptions import QueryParsingError
 from plone.restapi.interfaces import IIndexQueryParser
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
@@ -55,11 +56,6 @@ log = logging.getLogger(__name__)
 
 # Marker value to signal that query values may be of an arbitrary type
 ANY_TYPE = object()
-
-
-class QueryParsingException(Exception):
-    """An error happened while parsing a search query.
-    """
 
 
 @implementer(IZCatalogCompatibleQuery)
@@ -141,7 +137,7 @@ class BaseIndexQueryParser(object):
             query_value = self.query_value_type(query_value)
 
         except (ValueError, DTSyntaxError):
-            raise QueryParsingException(
+            raise QueryParsingError(
                 "Query value %r for index %s must be of type %r" % (
                     query_value, self.index, self.query_value_type))
         return self.query_value_type(query_value)
@@ -159,7 +155,7 @@ class BaseIndexQueryParser(object):
             qv = idx_query.pop('query')
             parsed_query['query'] = self.parse_simple_query(qv)
         except KeyError:
-            raise QueryParsingException(
+            raise QueryParsingError(
                 "Query for index %r is missing a 'query' key!" % self.index)
 
         for opt_key, opt_value in idx_query.items():
@@ -168,7 +164,7 @@ class BaseIndexQueryParser(object):
                 try:
                     parsed_query[opt_key] = opt_type(opt_value)
                 except ValueError:
-                    raise QueryParsingException(
+                    raise QueryParsingError(
                         "Value %r for query option %r (index %r) could not be"
                         " casted to %r" % (
                             opt_value, opt_key, self.index, opt_type))
@@ -209,7 +205,7 @@ class BooleanIndexQueryParser(BaseIndexQueryParser):
 
     def parse_query_value(self, query_value):
         if not str(query_value).lower() in ('true', 'false', '1', '0'):
-            raise QueryParsingException(
+            raise QueryParsingError(
                 'Could not parse query value %r as boolean' % query_value)
         return str(query_value).lower() in ('true', '1')
 
