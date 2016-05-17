@@ -47,6 +47,7 @@ setup(name='plone.restapi',
           'plone.app.robotframework',
           'plone.app.testing [robot] >= 4.2.2',
           'requests',
+          'pyjwt'
       ]},
       entry_points="""
       # -*- Entry points: -*-

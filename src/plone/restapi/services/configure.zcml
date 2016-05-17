@@ -10,5 +10,6 @@
   <include package=".theme"/>
   <include package=".components"/>
   <include package=".actions"/>
+  <include package=".authentication"/>
 
 </configure>

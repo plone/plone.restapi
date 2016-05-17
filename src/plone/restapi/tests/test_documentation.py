@@ -1,25 +1,25 @@
 # -*- coding: utf-8 -*-
+from DateTime import DateTime
 from datetime import datetime
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
 from plone.app.testing import setRoles
-from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
-from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedBlobFile
+from plone.namedfile.file import NamedBlobImage
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import RelativeSession
 from plone.testing.z2 import Browser
 from plone.uuid.interfaces import IMutableUUID
-from DateTime import DateTime
-
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 
+import json
+import os
 import unittest2 as unittest
 
-import os
 
 REQUEST_HEADER_KEYS = [
     'accept'
@@ -324,3 +324,10 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.get(
             self.document.absolute_url() + '?frame=object')
         save_response_for_documentation('frame_object.json', response)
+
+    def test_documentation_login(self):
+        response = self.api_session.post('/login_', data=json.dumps({
+            'username': 'admin',
+            'password': 'admin'
+        }))
+        save_response_for_documentation('login.json', response)

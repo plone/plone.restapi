@@ -9,12 +9,12 @@ content-type: application/json
     "data": {
       "items": [
         {
-          "label": "News", 
-          "uri": "http://plone/news"
+          "title": "News", 
+          "url": "http://plone/news"
         }, 
         {
-          "label": "Events", 
-          "uri": "http://plone/events"
+          "title": "Events", 
+          "url": "http://plone/events"
         }
       ]
     }, 
