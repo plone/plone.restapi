@@ -19,7 +19,8 @@ The server will then respond with the portal root in the JSON format:
 
 `member` is a list that contains all objects within that resource.
 
-A client application can "follow" the links (by calling the @id property) to other resources. This allows to build a losely coupled client that does not break if the URL changes.
+A client application can "follow" the links (by calling the @id property) to other resources. 
+This allows to build a losely coupled client that does not break if some of the URLs change, only the entry point of the entire API (in our case the portal root) needs to be known in advance.
 
 
 Plone Content
