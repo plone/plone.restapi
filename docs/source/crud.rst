@@ -43,6 +43,10 @@ If we want to create a new document within an existing folder, we send a POST re
 
     http -a admin:admin POST http://localhost:8080/Plone/folder \\@type=Document title=My Document Accept:application/json
 
+    .. code-block:: python-requests
+
+      requests.post('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, params={'@type': 'Document'})
+
 By setting the 'Accept' header, we tell the server that we would like to recieve the response in the 'application/json' representation format.
 
 The 'Content-Type' header indicates that the body uses the 'application/json' format.
@@ -147,6 +151,10 @@ After a successful POST, we can access the resource by sending a GET request to 
 
     http -a admin:admin GET http://localhost:8080/Plone/folder/my-document Accept:application/json
 
+  .. code-block:: python-requests
+
+      requests.get('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'})
+
 
 Successful Response (200 OK)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -227,6 +235,11 @@ PATCH allows to provide just a subset of the resource (the values you actually w
 
     http -a admin:admin PATCH http://localhost:8080/Plone/folder/my-document title="My New Document Title" Accept:application/json
 
+  .. code-block:: python-requests
+
+    requests.patch('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, data={'title': 'My New Document Title'})
+
+
 Successful Response (204 No Content)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -267,7 +280,11 @@ To replace an existing resource we send a PUT request to the server:
 
   .. code-block:: httpie
 
-    http -a admin:admin PATCH http://localhost:8080/Plone/folder title="My New Document Title" Accept:application/json
+    http -a admin:admin PUT http://localhost:8080/Plone/folder title="My New Document Title" Accept:application/json
+
+  .. code-block:: python-requests
+
+    requests.put('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, data={'title': 'My New Document Title', ...})
 
 In accordance with the HTTP specification, a successful PUT will not create a new resource or produce a new URL.
 
@@ -363,6 +380,10 @@ We can delete an existing resource by sending a DELETE request:
   .. code-block:: httpie
 
       http -a admin:admin DELETE http://localhost:8080/Plone/folder/my-document Accept:application/json
+
+  .. code-block:: python-requests
+
+    requests.delete('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'})
 
 A successful response will be indicated by a :term:`204 No Content` response::
 
