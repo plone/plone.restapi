@@ -19,6 +19,7 @@ Contents
    authentication
    crud
    workflow
+   registry
    serialization
    searching
    content-negotiation
