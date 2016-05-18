@@ -70,9 +70,9 @@ class JWTAuthenticationPlugin(BasePlugin):
 
         realm = response.realm
         if realm:
-            response.addHeader('WWW-Authenticate',
+            response.setHeader('WWW-Authenticate',
                                'Bearer realm="%s"' % realm)
-        m = "<strong>You are not authorized to access this resource.</strong>"
+        m = "You are not authorized to access this resource."
 
         response.setBody(m, is_error=1)
         response.setStatus(401)
@@ -102,6 +102,8 @@ class JWTAuthenticationPlugin(BasePlugin):
             return None
 
         payload = self._decode_token(credentials['token'])
+        if not payload:
+            return None
 
         if 'sub' not in payload:
             return None
@@ -127,16 +129,22 @@ class JWTAuthenticationPlugin(BasePlugin):
 
     def _decode_token(self, token):
         payload = None
-        manager = getUtility(IKeyManager)
-        for secret in manager[u"_system"]:
-            if secret is None:
-                continue
+        if self.use_keyring:
+            manager = getUtility(IKeyManager)
+            for secret in manager[u"_system"]:
+                if secret is None:
+                    continue
+                try:
+                    payload = jwt.decode(token, secret)
+                except jwt.DecodeError:
+                    pass
+                else:
+                    break
+        else:
             try:
-                payload = jwt.decode(token, secret)
+                payload = jwt.decode(token, self._secret)
             except jwt.DecodeError:
                 pass
-            else:
-                break
         return payload
 
     def _signing_secret(self):
