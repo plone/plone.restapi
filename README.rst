@@ -49,7 +49,8 @@ Live Demo
 
 Heroku live demo:: http://stormy-headland-44390.herokuapp.com/Plone/
 
-.. note:: You will need some kind of API browser application to explore the API. We recommend to use `Postman <http://www.getpostman.com/>`_.
+.. note:: You will need some kind of API browser application to explore the API. 
+          We recommend to use `Postman <http://www.getpostman.com/>`_.
 
 
 Design Decisions
