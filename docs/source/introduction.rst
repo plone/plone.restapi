@@ -33,7 +33,7 @@ Plone Portal Root:
 
         curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone
 
-    .. code-block:: http
+    .. code-block:: http-request
 
         http GET http://localhost:8080/Plone Accept:application/json
 
@@ -48,7 +48,7 @@ Plone Folder:
 
         curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone/folder
 
-    .. code-block:: http
+    .. code-block:: http-request
 
         http GET http://localhost:8080/Plone/folder Accept:application/json
 

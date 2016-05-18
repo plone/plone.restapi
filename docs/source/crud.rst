@@ -23,7 +23,7 @@ If we want to create a new document within an existing folder, we send a POST re
 
 .. example-code::
 
-  .. code-block:: http
+  .. code-block:: http-request
 
     POST /folder HTTP/1.1
     Host: localhost:8080
@@ -133,7 +133,7 @@ After a successful POST, we can access the resource by sending a GET request to 
 
 .. example-code::
 
-  .. code-block:: http
+  .. code-block:: http-request
 
     GET /folder/my-document HTTP/1.1
     Host: localhost:8080
@@ -208,7 +208,7 @@ PATCH allows to provide just a subset of the resource (the values you actually w
 
 .. example-code::
 
-  .. code-block:: http
+  .. code-block:: http-request
 
     PATCH /folder/my-document HTTP/1.1
     Host: localhost:8080/Plone
@@ -250,7 +250,7 @@ To replace an existing resource we send a PUT request to the server:
 
 .. example-code::
 
-  .. code-block:: http
+  .. code-block:: http-request
 
     PUT /folder/my-document HTTP/1.1
     Host: localhost:8080
@@ -351,7 +351,7 @@ We can delete an existing resource by sending a DELETE request:
 
 .. example-code::
 
-  .. code-block:: http
+  .. code-block:: http-request
 
     DELETE /folder/my-document HTTP/1.1
     Host: localhost:8080

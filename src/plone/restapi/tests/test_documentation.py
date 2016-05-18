@@ -292,3 +292,11 @@ class TestTraversal(unittest.TestCase):
             '/@registry/',
             json={'plone.app.querystring.field.path.title': 'Value'})
         save_response_for_documentation('registry_update.json', response)
+
+    def test_documentation_types(self):
+        response = self.api_session.get('/@types')
+        save_response_for_documentation('types.json', response)
+
+    def test_documentation_types_document(self):
+        response = self.api_session.get('@types/Document')
+        save_response_for_documentation('types_document.json', response)

@@ -1,0 +1,24 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="plone.restapi">
+
+    <adapter factory=".adapters.DefaultJsonSchemaProvider" />
+    <adapter factory=".adapters.TextLineJsonSchemaProvider" />
+    <adapter factory=".adapters.TextJsonSchemaProvider" />
+    <adapter factory=".adapters.ASCIIJsonSchemaProvider" />
+    <adapter factory=".adapters.ASCIILineJsonSchemaProvider" />
+    <adapter factory=".adapters.FloatJsonSchemaProvider" />
+    <adapter factory=".adapters.DecimalJsonSchemaProvider" />
+    <adapter factory=".adapters.IntegerJsonSchemaProvider" />
+    <adapter factory=".adapters.BoolJsonSchemaProvider" />
+    <adapter factory=".adapters.CollectionJsonSchemaProvider" />
+    <adapter factory=".adapters.ListJsonSchemaProvider" />
+    <adapter factory=".adapters.SetJsonSchemaProvider" />
+    <adapter factory=".adapters.TupleJsonSchemaProvider" />
+    <adapter factory=".adapters.ChoiceJsonSchemaProvider" />
+    <adapter factory=".adapters.ObjectJsonSchemaProvider" />
+    <adapter factory=".adapters.DateJsonSchemaProvider" />
+    <adapter factory=".adapters.DatetimeJsonSchemaProvider" />
+
+</configure>
