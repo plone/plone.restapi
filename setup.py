@@ -37,6 +37,7 @@ setup(name='plone.restapi',
       install_requires=[
           'setuptools',
           'plone.rest >= 1.0a6',
+          'PyJWT',
       ],
       extras_require={'test': [
           'Products.Archetypes',

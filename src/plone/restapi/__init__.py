@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 from AccessControl import allow_module
-allow_module('json')
+from AccessControl.Permissions import add_user_folders
+from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin
+from plone.restapi.pas import plugin
 
 import pkg_resources
+
+allow_module('json')
 
 try:
     pkg_resources.get_distribution('plone.app.testing')
@@ -21,6 +25,15 @@ else:
 
 
 def initialize(context):
+    registerMultiPlugin(plugin.JWTAuthenticationPlugin.meta_type)
+    context.registerClass(
+        plugin.JWTAuthenticationPlugin,
+        permission=add_user_folders,
+        constructors=(plugin.manage_addJWTAuthenticationPlugin,
+                      plugin.addJWTAuthenticationPlugin),
+        visibility=None,
+    )
+
     if REGISTER_TEST_TYPES:
         from Products.Archetypes.ArchetypeTool import process_types, listTypes
         from Products.CMFCore import permissions

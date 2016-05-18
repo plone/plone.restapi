@@ -1,0 +1,37 @@
+<h1 tal:replace="structure here/manage_page_header"> PAGE HEADER </h1>
+<h2 tal:replace="structure here/manage_tabs"> PAGE HEADER </h2>
+
+<h3>JWT Authentication</h3>
+
+    <p class="form-help">
+      Plone PAS plugin for authentication with JSON web tokens (JWT).
+    </p>
+
+    <form action="manage_updateConfig" method="post">
+      <table>
+        <tr valign="top">
+          <td><div class="form-label">Token Validity Timeout (in seconds)</div>
+          <div class="form-help">After this, the token is invalid and the user
+          must login again. Set to 0 for the token to remain valid indefinitely.</div>
+          </td>
+          <td><input type="text" name="token_timeout"
+                     tal:attributes="value context/token_timeout|nothing"/></td>
+        </tr>
+        <tr>
+          <td align="left" valign="top" class="form-label">
+            <input type="checkbox" name="use_keyring" id="use-keyring"
+                   tal:attributes="checked python: context.use_keyring and 'checked'"/>&nbsp;<label for="use-keyring">Use Keyring</label>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            <div class="form-element">
+              <input type="submit" value="Update"/>
+            </div>
+          </td>
+        </tr>
+      </table>
+    </form>
+
+
+<h1 tal:replace="structure here/manage_page_footer"> PAGE FOOTER </h1>

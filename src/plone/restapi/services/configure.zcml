@@ -1,6 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope">
 
+  <include package=".auth" />
   <include package=".content"/>
   <include package=".search"/>
   <include package=".types"/>
