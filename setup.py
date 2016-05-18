@@ -3,15 +3,12 @@ from setuptools import setup, find_packages
 version = '0.1'
 
 long_description = (
-    open('README.rst').read()
-    + '\n' +
+    open('README.rst').read() + '\n' +
     'Contributors\n'
-    '============\n'
-    + '\n' +
-    open('CONTRIBUTORS.rst').read()
-    + '\n' +
-    open('CHANGES.rst').read()
-    + '\n')
+    '============\n' + '\n' +
+    open('CONTRIBUTORS.rst').read() + '\n' +
+    open('CHANGES.rst').read() + '\n'
+)
 
 setup(name='plone.restapi',
       version=version,
