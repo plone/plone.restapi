@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.requestmethod import postonly
 from Products.CMFCore.permissions import ManagePortal
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
-from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
+from Products.PluggableAuthService.interfaces.plugins import (
+    IAuthenticationPlugin)
 from Products.PluggableAuthService.interfaces.plugins import IChallengePlugin
 from Products.PluggableAuthService.interfaces.plugins import IExtractionPlugin
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
@@ -45,7 +47,7 @@ class JWTAuthenticationPlugin(BasePlugin):
     meta_type = "JWT Authentication Plugin"
     security = ClassSecurityInfo()
 
-    token_timeout = 60*60*12  # 12 hours
+    token_timeout = 60 * 60 * 12  # 12 hours
     use_keyring = True
     _secret = None
 

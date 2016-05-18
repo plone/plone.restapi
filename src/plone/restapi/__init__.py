@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from AccessControl import allow_module
 from AccessControl.Permissions import add_user_folders
-from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin
+from Products.PluggableAuthService.PluggableAuthService import (
+    registerMultiPlugin)
 from plone.restapi.pas import plugin
 
 import pkg_resources

@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from Products.CMFCore.utils import getToolByName
-from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
+from Products.PluggableAuthService.interfaces.plugins import (
+    IAuthenticationPlugin)
 from plone.rest import Service
 from plone.restapi.deserializer import json_body
 
