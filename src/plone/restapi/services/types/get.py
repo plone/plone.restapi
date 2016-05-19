@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.services import Service
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
-
+from Products.CMFCore.utils import getToolByName
+from zExceptions import Unauthorized
 from zope.component import getUtility
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -30,7 +31,15 @@ class TypesGet(Service):
 
         return self.params[0]
 
+    def check_security(self):
+        # Only expose type information to authenticated users
+        portal_membership = getToolByName(self.context, 'portal_membership')
+        if portal_membership.isAnonymousUser():
+            raise Unauthorized
+
     def reply(self):
+        self.check_security()
+
         if self.params and len(self.params) > 0:
             self.content_type = "application/json+schema"
             try:
