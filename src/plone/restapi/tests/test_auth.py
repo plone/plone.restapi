@@ -15,7 +15,7 @@ class TestLogin(TestCase):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
 
-    def traverse(self, path='/plone/login', accept='application/json',
+    def traverse(self, path='/plone/@login', accept='application/json',
                  method='POST'):
         request = self.layer['request']
         request.environ['PATH_INFO'] = path
