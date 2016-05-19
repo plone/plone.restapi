@@ -1,4 +1,4 @@
-GET /plone/search?sort_on=path
+GET /plone/@search?sort_on=path
 Accept: application/json
 
 HTTP 200 OK

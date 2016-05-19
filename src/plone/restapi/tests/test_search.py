@@ -73,7 +73,7 @@ class TestSearchFunctional(unittest.TestCase):
         transaction.commit()
 
     def test_overall_response_format(self):
-        response = self.api_session.get('/search')
+        response = self.api_session.get('/@search')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -89,7 +89,7 @@ class TestSearchFunctional(unittest.TestCase):
         )
 
     def test_search_on_context_constrains_query_by_path(self):
-        response = self.api_session.get('/folder/search')
+        response = self.api_session.get('/folder/@search')
 
         self.assertSetEqual(
             {u'/plone/folder',
@@ -100,7 +100,7 @@ class TestSearchFunctional(unittest.TestCase):
     def test_partial_metadata_retrieval(self):
         query = {'SearchableText': 'lorem',
                  'metadata_fields': ['portal_type', 'review_state']}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertDictContainsSubset(
             {u'@id': u'http://localhost:55001/plone/folder/doc',
@@ -111,7 +111,7 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_full_metadata_retrieval(self):
         query = {'SearchableText': 'lorem', 'metadata_fields': '_all'}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertDictContainsSubset(
             {u'@id': u'http://localhost:55001/plone/folder/doc',
@@ -155,7 +155,7 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_fulltext_search(self):
         query = {'SearchableText': 'lorem'}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/doc'],
@@ -164,7 +164,7 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_fulltext_search_with_non_ascii_characters(self):
         query = {'SearchableText': u'\xfcbersicht'}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/other-document'],
@@ -175,7 +175,7 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_keyword_index_str_query(self):
         query = {'test_list_field': 'Keyword1'}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/doc'],
@@ -184,7 +184,7 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_keyword_index_str_query_or(self):
         query = {'test_list_field': ['Keyword2', 'Keyword3']}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/doc',
@@ -197,7 +197,7 @@ class TestSearchFunctional(unittest.TestCase):
             'test_list_field.query': ['Keyword1', 'Keyword2'],
             'test_list_field.operator': 'and',
         }
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/doc'],
@@ -210,7 +210,7 @@ class TestSearchFunctional(unittest.TestCase):
         transaction.commit()
 
         query = {'test_list_field:int': 42}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/doc'],
@@ -221,14 +221,14 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_boolean_index_query(self):
         query = {'test_bool_field': True, 'portal_type': 'DXTestDocument'}
-        response = self.api_session.get('/folder/search', params=query)
+        response = self.api_session.get('/folder/@search', params=query)
         self.assertEqual(
             [u'/plone/folder/doc'],
             result_paths(response.json())
         )
 
         query = {'test_bool_field': False, 'portal_type': 'DXTestDocument'}
-        response = self.api_session.get('/folder/search', params=query)
+        response = self.api_session.get('/folder/@search', params=query)
         self.assertEqual(
             [u'/plone/folder/other-document'],
             result_paths(response.json())
@@ -238,7 +238,7 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_field_index_int_query(self):
         query = {'test_int_field:int': 42}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/doc'],
@@ -250,7 +250,7 @@ class TestSearchFunctional(unittest.TestCase):
             'test_int_field.query:int': [41, 43],
             'test_int_field.range': 'min:max',
         }
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/doc'],
@@ -262,7 +262,7 @@ class TestSearchFunctional(unittest.TestCase):
     def test_extended_path_index_query(self):
         query = {'path': '/'.join(self.folder.getPhysicalPath())}
 
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder',
@@ -281,7 +281,7 @@ class TestSearchFunctional(unittest.TestCase):
 
         # Depth 0 - only object identified by path
         query = {'path.query': path, 'path.depth': 0}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/lvl1'],
@@ -289,7 +289,7 @@ class TestSearchFunctional(unittest.TestCase):
 
         # Depth 1 - immediate children
         query = {'path.query': path, 'path.depth': 1}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/lvl1/lvl2'],
@@ -297,7 +297,7 @@ class TestSearchFunctional(unittest.TestCase):
 
         # No depth - object itself and all children
         query = {'path': path}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertSetEqual(
             {u'/plone/lvl1', u'/plone/lvl1/lvl2', u'/plone/lvl1/lvl2/lvl3'},
@@ -307,7 +307,7 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_date_index_query(self):
         query = {'created': date(1950, 1, 1).isoformat()}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/doc'],
@@ -320,7 +320,7 @@ class TestSearchFunctional(unittest.TestCase):
                               date(1951, 1, 1).isoformat()],
             'created.range': 'min:max',
         }
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/doc'],
@@ -331,7 +331,7 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_date_range_index_query(self):
         query = {'effectiveRange': date(1997, 1, 1).isoformat()}
-        response = self.api_session.get('/folder/search', params=query)
+        response = self.api_session.get('/folder/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder',
@@ -357,7 +357,7 @@ class TestSearchFunctional(unittest.TestCase):
 
         # First occurrence
         query = {'start': date(2013, 1, 1).isoformat()}
-        response = self.api_session.get('/folder/search', params=query)
+        response = self.api_session.get('/folder/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/event'],
@@ -366,7 +366,7 @@ class TestSearchFunctional(unittest.TestCase):
 
         # No event that day
         query = {'start': date(2013, 1, 2).isoformat()}
-        response = self.api_session.get('/folder/search', params=query)
+        response = self.api_session.get('/folder/@search', params=query)
 
         self.assertEqual(
             [],
@@ -375,7 +375,7 @@ class TestSearchFunctional(unittest.TestCase):
 
         # Second occurrence
         query = {'start': date(2013, 1, 3).isoformat()}
-        response = self.api_session.get('/folder/search', params=query)
+        response = self.api_session.get('/folder/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/event'],
@@ -388,7 +388,7 @@ class TestSearchFunctional(unittest.TestCase):
                             date(2013, 1, 5).isoformat()],
             'start.range': 'min:max',
         }
-        response = self.api_session.get('/folder/search', params=query)
+        response = self.api_session.get('/folder/@search', params=query)
 
         self.assertEqual(
             [u'/plone/folder/event'],
@@ -403,7 +403,7 @@ class TestSearchFunctional(unittest.TestCase):
         transaction.commit()
 
         query = {'UID': '7777a074cb4240d08c9a129e3a837777'}
-        response = self.api_session.get('/search', params=query)
+        response = self.api_session.get('/@search', params=query)
         self.assertEqual(
             [u'/plone/folder/doc'],
             result_paths(response.json())
