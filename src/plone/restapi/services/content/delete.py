@@ -2,14 +2,14 @@
 from Acquisition import aq_parent
 from plone.app.linkintegrity.exceptions import (
     LinkIntegrityNotificationException)
-from plone.rest import Service
+from plone.restapi.services import Service
 
 
 class ContentDelete(Service):
     """Deletes a content object.
     """
 
-    def render(self):
+    def reply(self):
 
         parent = aq_parent(self.context)
         try:

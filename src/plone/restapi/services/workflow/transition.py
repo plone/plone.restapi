@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.WorkflowCore import WorkflowException
 from Products.CMFCore.utils import getToolByName
-from plone.rest import Service
 from plone.restapi.deserializer import json_body
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.services import Service
 from zope.i18n import translate
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -26,7 +26,7 @@ class WorkflowTransition(Service):
             raise NotFound(self, name, request)
         return self
 
-    def render(self):
+    def reply(self):
         if self.transition is None:
             self.request.response.setStatus(400)
             return dict(error=dict(

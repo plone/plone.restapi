@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.registry.interfaces import IRegistry
-from plone.rest import Service
+from plone.restapi.services import Service
 from zope.component import getUtility
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -28,7 +28,7 @@ class RegistryGet(Service):
 
         return self.params[0]
 
-    def render(self):
+    def reply(self):
         registry = getUtility(IRegistry)
         value = registry[self._get_record_name]
         return value

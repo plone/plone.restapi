@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.utils import getToolByName
-from plone.rest import Service
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.services import Service
 
 
 class WorkflowInfo(Service):
     """Get workflow information
     """
-    def render(self):
+    def reply(self):
         wftool = getToolByName(self.context, 'portal_workflow')
         history = wftool.getInfoFor(self.context, "review_history")
 
