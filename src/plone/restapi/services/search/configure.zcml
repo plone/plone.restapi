@@ -6,7 +6,7 @@
     method="GET"
     for="zope.interface.Interface"
     factory=".get.SearchGet"
-    name="search"
+    name="@search"
     permission="zope2.View"
     />
 

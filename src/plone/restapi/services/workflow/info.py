@@ -18,7 +18,7 @@ class WorkflowInfo(Service):
                 continue
 
             transitions.append({
-                '@id': '{}/workflow/{}'.format(
+                '@id': '{}/@workflow/{}'.format(
                     self.context.absolute_url(), action['id']),
                 'title': action['title'],
             })

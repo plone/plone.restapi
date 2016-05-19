@@ -27,7 +27,7 @@ class TestWorkflowInfo(TestCase):
 
     def test_workflow_info_includes_history(self):
         wfinfo = getMultiAdapter((self.doc1, self.request),
-                                 name=u'GET_application_json_workflow')
+                                 name=u'GET_application_json_@workflow')
         info = wfinfo.render()
         self.assertIn('history', info)
         history = info['history']
@@ -36,7 +36,7 @@ class TestWorkflowInfo(TestCase):
 
     def test_workflow_info_includes_transitions(self):
         wfinfo = getMultiAdapter((self.doc1, self.request),
-                                 name=u'GET_application_json_workflow')
+                                 name=u'GET_application_json_@workflow')
         info = wfinfo.render()
         self.assertIn('transitions', info)
         transitions = info['transitions']
@@ -67,7 +67,7 @@ class TestWorkflowTransition(TestCase):
         return request.traverse(path)
 
     def test_transition_action_succeeds(self):
-        service = self.traverse('/plone/doc1/workflow/publish')
+        service = self.traverse('/plone/doc1/@workflow/publish')
         res = service.render()
         self.assertEqual(u'published', res[u'review_state'])
         self.assertEqual(
@@ -75,7 +75,7 @@ class TestWorkflowTransition(TestCase):
             self.wftool.getInfoFor(self.portal.doc1, u'review_state'))
 
     def test_calling_endpoint_without_transition_gives_400(self):
-        service = self.traverse('/plone/doc1/workflow')
+        service = self.traverse('/plone/doc1/@workflow')
         res = service.render()
         self.assertEqual(400, self.request.response.getStatus())
         self.assertEqual('Missing transition', res['error']['message'])
@@ -83,23 +83,23 @@ class TestWorkflowTransition(TestCase):
     def test_calling_workflow_with_additional_path_segments_results_in_404(
             self):
         with self.assertRaises(NotFound):
-            self.traverse('/plone/doc1/workflow/publish/test')
+            self.traverse('/plone/doc1/@workflow/publish/test')
 
     def test_transition_with_comment(self):
         self.request['BODY'] = '{"comment": "A comment"}'
-        service = self.traverse('/plone/doc1/workflow/publish')
+        service = self.traverse('/plone/doc1/@workflow/publish')
         res = service.render()
         self.assertEqual(u'A comment', res[u'comments'])
 
     def test_transition_with_invalid_body(self):
         self.request['BODY'] = '{"comment": "A comment", "test": "123"}'
-        service = self.traverse('/plone/doc1/workflow/publish')
+        service = self.traverse('/plone/doc1/@workflow/publish')
         res = service.render()
         self.assertEqual(400, self.request.response.getStatus())
         self.assertEqual('Invalid body', res['error']['message'])
 
     def test_invalid_transition_results_in_400(self):
-        service = self.traverse('/plone/doc1/workflow/foo')
+        service = self.traverse('/plone/doc1/@workflow/foo')
         res = service.render()
         self.assertEqual(400, self.request.response.getStatus())
         self.assertEqual('WorkflowException', res['error']['type'])
