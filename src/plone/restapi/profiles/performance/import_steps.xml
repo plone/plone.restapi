@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<import-steps>
+ <import-step id="plone.restapi" version="20160601-01"
+              handler="plone.restapi.tests.performance.step_setup_content"
+              title="plone.restapi perfomance testing content">
+    plone.performancetesting installation step.
+ </import-step>
+</import-steps>
