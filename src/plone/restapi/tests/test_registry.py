@@ -50,7 +50,8 @@ class TestRegistry(unittest.TestCase):
 
     def test_update_several_registry_records(self):
         registry = getUtility(IRegistry)
-        record = Record(field.TextLine(title=u"Foo Bar Baz"), u"Lorem Ipsum Dolor")
+        record = Record(field.TextLine(title=u"Foo Bar Baz"),
+                        u"Lorem Ipsum Dolor")
         registry.records['foo.bar.baz'] = record
         transaction.commit()
         payload = {'foo.bar': 'lorem ipsum',

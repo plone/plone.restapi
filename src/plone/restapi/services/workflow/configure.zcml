@@ -5,7 +5,7 @@
 
   <plone:service
     method="GET"
-    name="workflow"
+    name="@workflow"
     for="Products.CMFCore.interfaces.IContentish"
     factory=".info.WorkflowInfo"
     permission="zope2.View"
@@ -13,7 +13,7 @@
 
   <plone:service
     method="POST"
-    name="workflow"
+    name="@workflow"
     for="Products.CMFCore.interfaces.IContentish"
     factory=".transition.WorkflowTransition"
     permission="zope2.View"

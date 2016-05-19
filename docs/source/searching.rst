@@ -1,9 +1,9 @@
 Search
 ======
 
-Content in a Plone site can be searched for by invoking the ``/search`` endpoint on any context::
+Content in a Plone site can be searched for by invoking the ``/@search`` endpoint on any context::
 
-  GET /plone/search HTTP/1.1
+  GET /plone/@search HTTP/1.1
   Accept: application/json
 
 A search is **contextual** by default, i.e. it is bound to a specific collection and searches within that collection and any sub-collections.
@@ -24,9 +24,9 @@ In order to return specific metadata columns, see the documentation of the ``met
 Query format
 ------------
 
-Queries and query-wide options (like ``sort_on``) are submitted as query string parameters to the ``/search`` request::
+Queries and query-wide options (like ``sort_on``) are submitted as query string parameters to the ``/@search`` request::
 
-  GET /plone/search?SearchableText=lorem
+  GET /plone/@search?SearchableText=lorem
 
 This is nearly identical to the way that queries are passed to the Plone ``@@search`` browser view, with only a few minor differences.
 
@@ -44,7 +44,7 @@ For example, to specify the ``depth`` query option for a path query, the origina
 
 This dictionary will need to be flattened in dotted notation in order to pass it in a query string::
 
-  GET /plone/search?path.query=%2Ffolder&path.depth=2
+  GET /plone/@search?path.query=%2Ffolder&path.depth=2
 
 Again, this is very similar to how `Record Arguments <http://docs.zope.org/zope2/zdgbook/ObjectPublishing.html?highlight=record#record-arguments>`_ are parsed by ZPublisher, except that you can omit the ``:record`` suffix.
 
@@ -61,7 +61,7 @@ If you pass it ``path.query=foo&path.depth=1``, it has the necessary knowledge a
 However, certain index types (a ``FieldIndex`` for example) may take arbitrary data types as query values.
 In that case, ``plone.restapi`` simply can't know what data type to cast your query value to, and you'll need to specify it using ZPublisher type hints::
 
-  GET /plone/search?numeric_field=42:int HTTP/1.1
+  GET /plone/@search?numeric_field=42:int HTTP/1.1
   Accept: application/json
 
 
@@ -74,7 +74,7 @@ Retrieving additional metadata
 By default the results are represented as summaries that only contain the most basic information about the items, like their URL and title.
 If you need to retrieve additional metadata columns, you can do so by specifying the additional column names in the ``metadata_fields`` parameter::
 
-  GET /plone/search?SearchableText=lorem&metadata_fields=modified HTTP/1.1
+  GET /plone/@search?SearchableText=lorem&metadata_fields=modified HTTP/1.1
   Accept: application/json
 
 The metadata from those columns then will be included in the results.
