@@ -1,4 +1,4 @@
-POST /plone/front-page/workflow/publish
+POST /plone/front-page/@workflow/publish
 Accept: application/json
 
 HTTP 200 OK
@@ -9,5 +9,5 @@ content-type: application/json
   "actor": "admin", 
   "comments": "", 
   "review_state": "published", 
-  "time": "2016-05-17T14:50:20+00:00"
+  "time": "2016-05-19T10:32:40+00:00"
 }
