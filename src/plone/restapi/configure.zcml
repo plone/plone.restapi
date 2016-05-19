@@ -19,11 +19,19 @@
 
   <genericsetup:registerProfile
       name="testing"
-      title="plone.restapi"
+      title="plone.restapi testing"
       directory="profiles/testing"
       description="Adds sample content types for testing"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
+      />
+
+  <genericsetup:registerProfile
+      name="performance"
+      title="plone.restapi performance testing"
+      directory="profiles/performance"
+      description="Adds sample content for performance testing"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
   <include package="plone.rest" file="configure.zcml" />
