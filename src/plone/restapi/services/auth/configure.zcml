@@ -19,4 +19,12 @@
     permission="zope.Public"
     />
 
+  <plone:service
+    method="POST"
+    name="@refresh-login"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".refresh.Refresh"
+    permission="zope.Public"
+    />
+
 </configure>
