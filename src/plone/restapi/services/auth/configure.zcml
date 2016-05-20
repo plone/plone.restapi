@@ -8,7 +8,15 @@
     name="@login"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".login.Login"
-    permission="zope2.View"
+    permission="zope.Public"
+    />
+
+  <plone:service
+    method="POST"
+    name="@logout"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".logout.Logout"
+    permission="zope.Public"
     />
 
 </configure>

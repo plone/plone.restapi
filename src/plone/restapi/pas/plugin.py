@@ -92,6 +92,8 @@ class JWTAuthenticationPlugin(BasePlugin):
     def extractCredentials(self, request):
         creds = {}
         auth = request._auth
+        if auth is None:
+            return None
         if auth[:7].lower() == 'bearer ':
             creds['token'] = auth.split()[-1]
         else:
@@ -174,10 +176,11 @@ class JWTAuthenticationPlugin(BasePlugin):
     def delete_token(self, token):
         payload = self._decode_token(token, verify=False)
         if 'sub' not in payload:
-            return
+            return False
         userid = payload['sub']
         if userid in self._tokens and token in self._tokens[userid]:
             del self._tokens[userid][token]
+            return True
 
     def create_token(self, userid, timeout=None, data=None):
         payload = {}

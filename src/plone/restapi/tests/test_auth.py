@@ -51,3 +51,50 @@ class TestLogin(TestCase):
         service = self.traverse()
         res = service.render()
         self.assertIn('token', res)
+
+
+class TestLogout(TestCase):
+
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.portal = self.layer['portal']
+        self.request = self.layer['request']
+
+    def traverse(self, path='/plone/@logout', accept='application/json',
+                 method='POST'):
+        request = self.layer['request']
+        request.environ['PATH_INFO'] = path
+        request.environ['PATH_TRANSLATED'] = path
+        request.environ['HTTP_ACCEPT'] = accept
+        request.environ['REQUEST_METHOD'] = method
+        notify(PubStart(request))
+        return request.traverse(path)
+
+    def test_logout_without_pas_plugin_fails(self):
+        self.portal.acl_users._delOb('jwt_auth')
+        service = self.traverse()
+        res = service.reply()
+        self.assertIn('error', res)
+
+    def test_logout_with_not_stored_token_fails(self):
+        self.portal.acl_users.jwt_auth.store_tokens = False
+        service = self.traverse()
+        res = service.reply()
+        self.assertEqual(501, self.request.response.getStatus())
+        self.assertEqual("Token can't be invalidated", res['error']['message'])
+
+    def test_logout_with_without_credentials_fails(self):
+        self.portal.acl_users.jwt_auth.store_tokens = True
+        service = self.traverse()
+        res = service.reply()
+        self.assertEqual(400, self.request.response.getStatus())
+        self.assertEqual("Unknown token", res['error']['message'])
+
+    def test_logout_succeeds(self):
+        self.portal.acl_users.jwt_auth.store_tokens = True
+        token = self.portal.acl_users.jwt_auth.create_token('admin')
+        self.request._auth = 'Bearer {}'.format(token)
+        service = self.traverse()
+        service.reply()
+        self.assertEqual(200, self.request.response.getStatus())
