@@ -65,8 +65,7 @@ For download, the file field will simply be serialized to a string that contains
         "file": "http://localhost:55001/plone/file/@@download/file"
       }
 
-That URL points to the regular Plone
-download view.
+That URL points to the regular Plone download view.
 
 This means that when accessing that URL, your request won't be handled by the API but a regular Plone browser view.
 Therefore you must **not** send the ``Accept: application/json`` header in this case.

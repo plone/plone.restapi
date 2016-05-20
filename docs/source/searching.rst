@@ -7,9 +7,10 @@ Content in a Plone site can be searched for by invoking the ``/@search`` endpoin
   Accept: application/json
 
 A search is **contextual** by default, i.e. it is bound to a specific collection and searches within that collection and any sub-collections.
-Since a Plone site is also a collection, we therefore have a global search and contextual searches all exposed with the same pattern.
 
-In terms of the resulting catalog query this means that, by default, a search will be constrained by path to the context it's invoked on, unless you explicitly supply your own ``path`` query.
+Since a Plone site is also a collection, we therefore have a global search (by invoking the ``/@search`` endpoint on the site root) and contextual searches (by invoking that endpoint on any other context) all using the same pattern.
+
+In terms of the resulting catalog query this means that, by default, a search will be constrained by the path to the context it's invoked on, unless you explicitly supply your own ``path`` query.
 
 Search results are represented similar to collections:
 

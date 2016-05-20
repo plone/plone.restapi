@@ -12,6 +12,14 @@ The client can ask for a :term:`REST` API response by setting the ``'Accept'`` H
   GET /
   Accept: application/json
 
+
+This uses so-called 'content negotiation'
+
+  .. toctree::
+   :maxdepth: 1
+
+    More on Content Negotiation <content-negotiation>
+
 The server will then respond with the portal root in the JSON format:
 
 .. literalinclude:: _json/siteroot.json
@@ -48,4 +56,9 @@ Click on the buttons below to show the different syntaxes for the request.
 .. literalinclude:: _json/document.json
    :language: jsonld
 
-You can :doc:`see the representation of all standard Plone contenttypes here <plone-content>`
+And so on, see
+
+  .. toctree::
+   :maxdepth: 1
+
+     Reprentation of all standard Plone contenttypes<plone-content>

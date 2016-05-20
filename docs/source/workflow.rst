@@ -1,12 +1,10 @@
-.. include:: /alert-noindex.rst
-
 Workflow
 ========
 
 .. note::
    Currently the workflow support is limited to executing transitions on content.
 
-In Plone, content almost always has a workflow attached.
+In Plone, content almost always has a :term:`workflow` attached.
 We can get the current state and history of an object by issuing a ``GET`` request using on any context:
 
 .. literalinclude:: _json/workflow_get.json
