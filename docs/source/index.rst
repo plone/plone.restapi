@@ -12,18 +12,20 @@ plone.restapi: A RESTful hypermedia API for Plone.
 Contents
 --------
 
+
+.. toctree::
+   :maxdepth: 1
+
+   introduction
 .. toctree::
    :maxdepth: 2
 
-   introduction
    authentication
    crud
    workflow
    registry
    serialization
    searching
-   content-negotiation
-   types
    customization
 
 .. include:: ../../README.rst
@@ -34,9 +36,9 @@ Appendix, Indices and tables
 
 .. toctree::
 
+   Available content types <types>
    http-status-codes
    glossary
 
 * :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+

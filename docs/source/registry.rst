@@ -1,5 +1,3 @@
-.. include:: /alert-noindex.rst
-
 Registry
 ========
 
