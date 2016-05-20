@@ -4,14 +4,14 @@ from Acquisition import aq_parent
 from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService.interfaces.plugins import (
     IAuthenticationPlugin)
-from plone.rest import Service
 from plone.restapi.deserializer import json_body
+from plone.restapi.services import Service
 
 
 class Login(Service):
     """Handles login and returns a JSON web token (JWT).
     """
-    def render(self):
+    def reply(self):
         plugin = None
         acl_users = getToolByName(self, "acl_users")
         plugins = acl_users._getOb('plugins')
