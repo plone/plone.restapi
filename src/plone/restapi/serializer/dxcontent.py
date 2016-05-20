@@ -11,12 +11,13 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.supermodel.utils import mergedTaggedValueDict
+from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
-from zope.interface import Interface
 from zope.interface import implementer
+from zope.interface import Interface
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
 
@@ -42,6 +43,7 @@ class SerializeToJson(object):
             'parent': parent_summary,
             'created': json_compatible(self.context.created()),
             'modified': json_compatible(self.context.modified()),
+            'review_state': self._get_workflow_state(),
             'UID': self.context.UID(),
         }
 
@@ -62,6 +64,12 @@ class SerializeToJson(object):
                 result[json_compatible(name)] = value
 
         return result
+
+    def _get_workflow_state(self):
+        wftool = getToolByName(self.context, 'portal_workflow')
+        review_state = wftool.getInfoFor(
+            ob=self.context, name='review_state', default=None)
+        return review_state
 
     def check_permission(self, permission_name):
         if permission_name is None:

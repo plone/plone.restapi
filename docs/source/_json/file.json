@@ -29,6 +29,7 @@ content-type: application/json
     "title": "Plone site"
   }, 
   "relatedItems": [], 
+  "review_state": null, 
   "rights": "", 
   "subjects": [], 
   "title": "My File"

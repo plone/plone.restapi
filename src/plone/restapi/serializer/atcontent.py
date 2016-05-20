@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Products.Archetypes.interfaces import IBaseFolder
-from Products.Archetypes.interfaces import IBaseObject
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from Products.Archetypes.interfaces import IBaseFolder
+from Products.Archetypes.interfaces import IBaseObject
+from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
-from zope.interface import Interface
 from zope.interface import implementer
+from zope.interface import Interface
 
 
 @implementer(ISerializeToJson)
@@ -30,6 +31,7 @@ class SerializeToJson(object):
             '@id': self.context.absolute_url(),
             '@type': self.context.portal_type,
             'parent': parent_summary,
+            'review_state': self._get_workflow_state(),
             'UID': self.context.UID(),
         }
 
@@ -48,6 +50,12 @@ class SerializeToJson(object):
                 result[name] = serializer()
 
         return result
+
+    def _get_workflow_state(self):
+        wftool = getToolByName(self.context, 'portal_workflow')
+        review_state = wftool.getInfoFor(
+            ob=self.context, name='review_state', default=None)
+        return review_state
 
 
 @implementer(ISerializeToJson)
