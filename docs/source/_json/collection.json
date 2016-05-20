@@ -58,6 +58,7 @@ content-type: application/json
     }
   ], 
   "relatedItems": [], 
+  "review_state": "private", 
   "rights": "", 
   "sort_on": null, 
   "sort_reversed": null, 

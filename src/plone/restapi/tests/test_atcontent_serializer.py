@@ -53,6 +53,11 @@ class TestATContentSerializer(unittest.TestCase):
         self.assertIn(u'@type', obj)
         self.assertEqual(self.doc1.portal_type, obj[u'@type'])
 
+    def test_serializer_includes_review_state(self):
+        obj = self.serialize(self.doc1)
+        self.assertIn(u'review_state', obj)
+        self.assertEqual(u'private', obj[u'review_state'])
+
     def test_serializer_includes_uid(self):
         obj = self.serialize(self.doc1)
         self.assertIn(u'UID', obj)

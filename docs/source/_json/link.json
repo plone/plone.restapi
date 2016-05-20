@@ -29,6 +29,7 @@ content-type: application/json
     "title": "Plone site"
   }, 
   "remoteUrl": "http://", 
+  "review_state": "private", 
   "rights": "", 
   "subjects": [], 
   "title": "My Link"

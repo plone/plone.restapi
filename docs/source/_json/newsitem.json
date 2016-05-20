@@ -40,6 +40,7 @@ content-type: application/json
     "title": "Plone site"
   }, 
   "relatedItems": [], 
+  "review_state": "private", 
   "rights": "", 
   "subjects": [], 
   "text": {
