@@ -47,11 +47,12 @@ If we want to create a new document within an existing folder, we send a POST re
 
       requests.post('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, params={'@type': 'Document'})
 
-By setting the 'Accept' header, we tell the server that we would like to recieve the response in the 'application/json' representation format.
+By setting the 'Accept' header, we tell the server that we would like to receive the response in the 'application/json' representation format.
 
 The 'Content-Type' header indicates that the body uses the 'application/json' format.
 
-The request body contains the necessary information that is needed to create a document (the type and the title).
+The request body contains the minimal necessary information needed to create a document (the type and the title).
+You could set other properties, like "description" here as well.
 
 
 Successful Response (201 Created)
@@ -247,9 +248,9 @@ A successful response to a PATCH request will be indicated by a :term:`204 No Co
 
   HTTP/1.1  204 No Content
 
-.. note::
 
-  `RFC 5789: PATCH Method for HTTP <http://tools.ietf.org/html/rfc5789>`_
+
+See for full specs the `RFC 5789: PATCH Method for HTTP <http://tools.ietf.org/html/rfc5789>`_
 
 
 Replacing a Resource with PUT
@@ -350,15 +351,13 @@ Possible server reponses for a PUT request are:
 POST vs. PUT
 ^^^^^^^^^^^^
 
-Difference POST and PUT:
+Difference between POST and PUT:
 
   * Use POST to create a resource identified by a service-generated URI
   * Use POST to append a resource to a collection identified by a service-generated URI
   * Use PUT to overwrite a resource
 
-.. note::
-
-  `RFC 7231: HTTP 1.1: PUT Method <https://tools.ietf.org/html/rfc7231#section-4.3.4>`_.
+This follows `RFC 7231: HTTP 1.1: PUT Method <https://tools.ietf.org/html/rfc7231#section-4.3.4>`_.
 
 
 Removing a Resource with DELETE
