@@ -61,4 +61,4 @@ And so on, see
   .. toctree::
    :maxdepth: 1
 
-     Reprentation of all standard Plone contenttypes<plone-content>
+     Representation of all standard Plone contenttypes<plone-content>
