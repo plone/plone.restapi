@@ -73,14 +73,14 @@ class TestJWTAuthenticationPlugin(unittest.TestCase):
             self.plugin.authenticateCredentials(creds))
 
     def test_decode_token_after_key_rotation(self):
-        token = self.plugin.create_token({'sub': 'admin'}, timeout=0)
+        token = self.plugin.create_token('admin', timeout=0)
         key_manager = getUtility(IKeyManager)
         key_manager.rotate()
         self.assertEqual({'sub': 'admin'}, self.plugin._decode_token(token))
 
     def test_decode_with_static_secret(self):
         self.plugin.use_keyring = False
-        token = self.plugin.create_token({'sub': 'admin'}, timeout=0)
+        token = self.plugin.create_token('admin', timeout=0)
         self.assertEqual({'sub': 'admin'}, self.plugin._decode_token(token))
 
     def test_authenticate_credentials_with_stored_token(self):
