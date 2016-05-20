@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from plone.rest import Service
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.services import Service
 from zope.component import queryMultiAdapter
 
 
@@ -9,7 +9,7 @@ class ContentPatch(Service):
     """Updates an existing content object.
     """
 
-    def render(self):
+    def reply(self):
         deserializer = queryMultiAdapter((self.context, self.request),
                                          IDeserializeFromJson)
         if deserializer is None:

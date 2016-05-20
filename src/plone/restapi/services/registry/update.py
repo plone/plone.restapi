@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.registry.interfaces import IRegistry
-from plone.rest import Service
+from plone.restapi.services import Service
 from zope.component import getUtility
 
 import json
@@ -8,7 +8,7 @@ import json
 
 class RegistryUpdate(Service):
 
-    def render(self):
+    def reply(self):
         records_to_update = json.loads(self.request.get('BODY', '{}'))
         registry = getUtility(IRegistry)
 

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from plone.rest import Service
+from plone.restapi.services import Service
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
 
 from zope.component import getUtility
@@ -30,12 +30,9 @@ class TypesGet(Service):
 
         return self.params[0]
 
-    def render(self):
+    def reply(self):
         if self.params and len(self.params) > 0:
-            self.request.response.setHeader(
-                "Content-Type",
-                "application/json+schema"
-            )
+            self.content_type = "application/json+schema"
             try:
                 portal_type = self.params.pop()
                 return get_jsonschema_for_portal_type(
@@ -44,10 +41,7 @@ class TypesGet(Service):
                     self.request
                 )
             except KeyError:
-                self.request.response.setHeader(
-                    "Content-Type",
-                    "application/json"
-                )
+                self.content_type = "application/json"
                 self.request.response.setStatus(404)
                 return {
                     'type': 'NotFound',
