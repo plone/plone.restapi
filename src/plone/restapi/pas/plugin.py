@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.requestmethod import postonly
+from BTrees.OIBTree import OIBTree
+from BTrees.OOBTree import OOBTree
 from Products.CMFCore.permissions import ManagePortal
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import (
@@ -16,6 +18,7 @@ from zope.component import getUtility
 from zope.interface import implements
 
 import jwt
+import time
 
 
 manage_addJWTAuthenticationPlugin = PageTemplateFile(
@@ -49,7 +52,9 @@ class JWTAuthenticationPlugin(BasePlugin):
 
     token_timeout = 60 * 60 * 12  # 12 hours
     use_keyring = True
+    store_tokens = False
     _secret = None
+    _tokens = None
 
     # ZMI tab for configuration page
     manage_options = (
@@ -112,6 +117,12 @@ class JWTAuthenticationPlugin(BasePlugin):
 
         userid = payload['sub']
 
+        if self.store_tokens:
+            if userid not in self._tokens:
+                return None
+            if credentials['token'] not in self._tokens[userid]:
+                return None
+
         return (userid, userid)
 
     security.declareProtected(ManagePortal, 'manage_updateConfig')
@@ -125,11 +136,14 @@ class JWTAuthenticationPlugin(BasePlugin):
         self.token_timeout = int(REQUEST.form.get('token_timeout',
                                                   self.token_timeout))
         self.use_keyring = bool(REQUEST.form.get('use_keyring', True))
+        self.store_tokens = bool(REQUEST.form.get('store_tokens', False))
+        if self.store_tokens and self._tokens is None:
+            self._tokens = OOBTree()
 
         response.redirect('%s/manage_config?manage_tabs_message=%s' %
                           (self.absolute_url(), 'Configuration+updated.'))
 
-    def _decode_token(self, token):
+    def _decode_token(self, token, verify=True):
         payload = None
         if self.use_keyring:
             manager = getUtility(IKeyManager)
@@ -144,7 +158,7 @@ class JWTAuthenticationPlugin(BasePlugin):
                     break
         else:
             try:
-                payload = jwt.decode(token, self._secret)
+                payload = jwt.decode(token, self._secret, verify=verify)
             except jwt.DecodeError:
                 pass
         return payload
@@ -157,9 +171,28 @@ class JWTAuthenticationPlugin(BasePlugin):
             self._secret = GenerateSecret()
         return self._secret
 
-    def create_token(self, payload, timeout=None):
+    def delete_token(self, token):
+        payload = self._decode_token(token, verify=False)
+        if 'sub' not in payload:
+            return
+        userid = payload['sub']
+        if userid in self._tokens and token in self._tokens[userid]:
+            del self._tokens[userid][token]
+
+    def create_token(self, userid, timeout=None, data=None):
+        payload = {}
+        payload['sub'] = userid
         if timeout is None:
             timeout = self.token_timeout
         if timeout:
             payload['exp'] = datetime.utcnow() + timedelta(seconds=timeout)
-        return jwt.encode(payload, self._signing_secret(), algorithm='HS256')
+        if data is not None:
+            payload.update(data)
+        token = jwt.encode(payload, self._signing_secret(), algorithm='HS256')
+        if self.store_tokens:
+            if self._tokens is None:
+                self._tokens = OOBTree()
+            if userid not in self._tokens:
+                self._tokens[userid] = OIBTree()
+            self._tokens[userid][token] = int(time.time())
+        return token

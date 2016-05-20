@@ -50,10 +50,9 @@ class Login(Service):
                 message='Wrong login and/or password.'))
 
         payload = {}
-        payload['sub'] = user.getId()
         payload['fullname'] = user.getProperty('fullname')
         return {
-            'token': plugin.create_token(payload)
+            'token': plugin.create_token(user.getId(), data=payload)
         }
 
     def _find_userfolder(self, userid):

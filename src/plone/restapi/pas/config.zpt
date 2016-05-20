@@ -18,9 +18,19 @@
                      tal:attributes="value context/token_timeout|nothing"/></td>
         </tr>
         <tr>
-          <td align="left" valign="top" class="form-label">
+          <td align="left" valign="top">
             <input type="checkbox" name="use_keyring" id="use-keyring"
-                   tal:attributes="checked python: context.use_keyring and 'checked'"/>&nbsp;<label for="use-keyring">Use Keyring</label>
+                   tal:attributes="checked python: context.use_keyring and 'checked'"/>&nbsp;<label class="form-label" for="use-keyring">Use Keyring</label>
+            <div class="form-help">If enabled, tokens are signed with a secret from
+            Plone's keyring. If you want tokens that remain valid indefinitely you should disable this.</div>
+          </td>
+        </tr>
+        <tr>
+          <td align="left" valign="top">
+            <input type="checkbox" name="store_tokens" id="store-tokens"
+                   tal:attributes="checked python: context.store_tokens and 'checked'"/>&nbsp;<label class="form-label" for="store-tokens">Store tokens</label>
+            <div class="form-help">By default tokens are not stored on the server and
+            thus can't be invalidated. If enabled, tokens that don't expire can be invalidated.</div>
           </td>
         </tr>
         <tr>

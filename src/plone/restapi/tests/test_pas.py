@@ -67,7 +67,7 @@ class TestJWTAuthenticationPlugin(unittest.TestCase):
     def test_authenticate_credentials_with_valid_token(self):
         creds = {}
         creds['extractor'] = 'jwt_auth'
-        creds['token'] = self.plugin.create_token({'sub': 'admin'})
+        creds['token'] = self.plugin.create_token('admin')
         self.assertEqual(
             ('admin', 'admin'),
             self.plugin.authenticateCredentials(creds))
@@ -82,3 +82,22 @@ class TestJWTAuthenticationPlugin(unittest.TestCase):
         self.plugin.use_keyring = False
         token = self.plugin.create_token({'sub': 'admin'}, timeout=0)
         self.assertEqual({'sub': 'admin'}, self.plugin._decode_token(token))
+
+    def test_authenticate_credentials_with_stored_token(self):
+        self.plugin.store_tokens = True
+        creds = {}
+        creds['extractor'] = 'jwt_auth'
+        creds['token'] = self.plugin.create_token('admin')
+        self.assertEqual(
+            ('admin', 'admin'),
+            self.plugin.authenticateCredentials(creds))
+
+    def test_authenticate_credentials_with_deleted_token_fails(self):
+        self.plugin.store_tokens = True
+        creds = {}
+        creds['extractor'] = 'jwt_auth'
+        creds['token'] = self.plugin.create_token('admin')
+        self.plugin.delete_token(creds['token'])
+        self.assertEqual(
+            None,
+            self.plugin.authenticateCredentials(creds))
