@@ -1,7 +1,7 @@
 Types
 =====
 
-Available content types in a Plone site can be listed and queried by accessing the ``/@types`` endpoint on portal root:
+Available content types in a Plone site can be listed and queried by accessing the ``/@types`` endpoint on portal root (requires an authenticated user):
 
 .. literalinclude:: _json/types.json
    :language: js

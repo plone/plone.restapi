@@ -100,3 +100,10 @@ class TestServicesTypes(unittest.TestCase):
             'Content-Type: "application/json", not ' +
             '"{}"'.format(response.headers.get('Content-Type'))
         )
+
+    def test_types_endpoint_only_accessible_for_authenticated_users(self):
+        self.api_session.auth = ()
+        response = self.api_session.get(
+            '{}/@types'.format(self.portal.absolute_url())
+        )
+        self.assertEqual(response.status_code, 401)
