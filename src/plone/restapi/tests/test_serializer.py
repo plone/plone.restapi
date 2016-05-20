@@ -116,13 +116,13 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             '2017-01-01T00:00:00'
         )
 
-    def test_serialize_on_folder_returns_member_attr(self):
+    def test_serialize_on_folder_returns_items_attr(self):
         self.portal.invokeFactory('Folder', id='folder1', title='Folder 1')
         self.portal.folder1.invokeFactory('Document', id='doc1')
         self.portal.folder1.doc1.title = u'Document 1'
         self.portal.folder1.doc1.description = u'This is a document'
         self.assertEqual(
-            self.serialize(self.portal.folder1)['member'],
+            self.serialize(self.portal.folder1)['items'],
             [
                 {
                     u'@id': u'http://nohost/plone/folder1/doc1',
@@ -252,5 +252,5 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     u'title': u'Document 2'
                 }
             ],
-            self.serialize(self.portal.collection1).get('member')
+            self.serialize(self.portal.collection1).get('items')
         )

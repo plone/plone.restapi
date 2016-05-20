@@ -70,7 +70,7 @@ class LazyCatalogResultSerializer(object):
     def __call__(self, metadata_fields=()):
         results = {}
         results['items_count'] = self.lazy_resultset.actual_result_count
-        results['member'] = []
+        results['items'] = []
 
         for brain in self.lazy_resultset:
             result = getMultiAdapter(
@@ -82,5 +82,5 @@ class LazyCatalogResultSerializer(object):
                     ISerializeToJson)(metadata_fields=metadata_fields)
                 result.update(metadata)
 
-            results['member'].append(result)
+            results['items'].append(result)
         return results

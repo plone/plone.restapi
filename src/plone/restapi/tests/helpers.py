@@ -12,7 +12,7 @@ def result_paths(results):
             return item['getPath']
         return urlparse(item['@id']).path
 
-    return [get_path(item) for item in results['member']]
+    return [get_path(item) for item in results['items']]
 
 
 def add_catalog_indexes(portal, indexes):

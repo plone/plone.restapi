@@ -24,9 +24,9 @@ class SerializeSiteRootToJson(object):
             '@type': 'Plone Site',
             'parent': {},
         }
-        result['member'] = [
-            getMultiAdapter((member, self.request), ISerializeToJsonSummary)()
-            for member in self.context.objectValues()
-            if IContentish.providedBy(member)
+        result['items'] = [
+            getMultiAdapter((item, self.request), ISerializeToJsonSummary)()
+            for item in self.context.objectValues()
+            if IContentish.providedBy(item)
         ]
         return result

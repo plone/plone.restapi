@@ -40,13 +40,13 @@ class TestCatalogSerializers(unittest.TestCase):
         results = getMultiAdapter((lazy_cat, self.request), ISerializeToJson)()
 
         self.assertDictEqual(
-            {'member': [], 'items_count': 0},
+            {'items': [], 'items_count': 0},
             results)
 
     def test_lazy_map_serialization(self):
         lazy_map = self.catalog()
         results = getMultiAdapter((lazy_map, self.request), ISerializeToJson)()
-        self.assertEqual(3, len(results['member']))
+        self.assertEqual(3, len(results['items']))
         self.assertDictContainsSubset(
             {'items_count': 3},
             results)
@@ -59,7 +59,7 @@ class TestCatalogSerializers(unittest.TestCase):
              '@type': 'Document',
              'title': 'My Document',
              'description': ''},
-            results['member'])
+            results['items'])
 
     def test_brain_partial_metadata_representation(self):
         lazy_map = self.catalog(path='/plone/my-folder/my-document')
@@ -74,7 +74,7 @@ class TestCatalogSerializers(unittest.TestCase):
              'description': '',
              'portal_type': u'Document',
              'review_state': u'private'},
-            results['member'][0])
+            results['items'][0])
 
     def test_brain_full_metadata_representation(self):
         lazy_map = self.catalog(path='/plone/my-folder/my-document')
@@ -119,4 +119,4 @@ class TestCatalogSerializers(unittest.TestCase):
              'sync_uid': None,
              'title': 'My Document',
              'total_comments': 0},
-            results['member'][0])
+            results['items'][0])

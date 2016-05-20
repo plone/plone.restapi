@@ -84,7 +84,7 @@ class TestSearchFunctional(unittest.TestCase):
         results = response.json()
         self.assertEqual(
             results[u'items_count'],
-            len(results[u'member']),
+            len(results[u'items']),
             'items_count property should match actual item count.'
         )
 
@@ -107,7 +107,7 @@ class TestSearchFunctional(unittest.TestCase):
              u'title': u'Lorem Ipsum',
              u'portal_type': u'DXTestDocument',
              u'review_state': u'private'},
-            response.json()['member'][0])
+            response.json()['items'][0])
 
     def test_full_metadata_retrieval(self):
         query = {'SearchableText': 'lorem', 'metadata_fields': '_all'}
@@ -149,7 +149,7 @@ class TestSearchFunctional(unittest.TestCase):
              u'sync_uid': None,
              u'title': u'Lorem Ipsum',
              u'total_comments': 0},
-            response.json()['member'][0])
+            response.json()['items'][0])
 
     # ZCTextIndex
 
