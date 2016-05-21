@@ -15,8 +15,8 @@ class SerializeCollectionToJson(SerializeToJson):
 
     def __call__(self):
         result = super(SerializeCollectionToJson, self).__call__()
-        result['member'] = [
-            getMultiAdapter((member, self.request), ISerializeToJsonSummary)()
-            for member in self.context.results()
+        result['items'] = [
+            getMultiAdapter((item, self.request), ISerializeToJsonSummary)()
+            for item in self.context.results()
         ]
         return result

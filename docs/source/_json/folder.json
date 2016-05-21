@@ -19,8 +19,7 @@ content-type: application/json
   "effective": null, 
   "exclude_from_nav": false, 
   "expires": null, 
-  "language": "", 
-  "member": [
+  "items": [
     {
       "@id": "http://localhost:55001/plone/folder/doc1", 
       "@type": "Document", 
@@ -34,6 +33,7 @@ content-type: application/json
       "title": "A document within a folder"
     }
   ], 
+  "language": "", 
   "modified": "2016-01-21T07:24:11+00:00", 
   "nextPreviousEnabled": false, 
   "parent": {

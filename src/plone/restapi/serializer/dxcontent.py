@@ -93,8 +93,8 @@ class SerializeFolderToJson(SerializeToJson):
 
     def __call__(self):
         result = super(SerializeFolderToJson, self).__call__()
-        result['member'] = [
-            getMultiAdapter((member, self.request), ISerializeToJsonSummary)()
-            for member in self.context.objectValues()
+        result['items'] = [
+            getMultiAdapter((item, self.request), ISerializeToJsonSummary)()
+            for item in self.context.objectValues()
         ]
         return result
