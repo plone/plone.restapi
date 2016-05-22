@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.utils import getToolByName
 from zope.component.hooks import getSite
+from datetime import datetime
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
 
 import os
+import pytz
 
 LOREMIPSUM_HTML_10_PARAGRAPHS = '''<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p><p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p><p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p><p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p><p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis.</p><p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, At accusam aliquyam diam diam dolore dolores duo eirmod eos erat, et nonumy sed tempor et et invidunt justo labore Stet clita ea et gubergren, kasd magna no rebum. sanctus sea sed takimata ut vero voluptua. est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.</p><p>Consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus.</p><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p><p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p><p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.'''  # noqa
 
@@ -48,7 +50,8 @@ def set_file(obj):
         filename = os.path.join(os.path.dirname(__file__), u'file.pdf')
         obj.file = NamedBlobFile(
             data=open(filename, 'r').read(),
-            filename=filename
+            filename=filename,
+            contentType='application/pdf'
         )
     else:
         filename = os.path.join(os.path.dirname(__file__), u'file.pdf')
@@ -70,6 +73,23 @@ def step_setup_content(context):
         return
     portal = getSite()
 
+    # Testfolder WRITE
+    portal.invokeFactory(
+        'Folder',
+        id='testfolder-write',
+        title='Testfolder Write'
+    )
+    publish(portal['testfolder-write'])
+
+    # Testfolder READ
+    portal.invokeFactory(
+        'Folder',
+        id='testfolder-read',
+        title='Testfolder Read'
+    )
+    publish(portal['testfolder-read'])
+    portal = portal['testfolder-read']
+
     # Document
     portal.invokeFactory('Document', id='document', title='Document')
     portal.document.description = LOREMIPSUM_TEXT_PARAGRAPH
@@ -84,13 +104,6 @@ def step_setup_content(context):
     set_text(portal.newsitem)
     publish(portal.newsitem)
     portal.newsitem.reindexObject()
-
-    # Collection
-    portal.invokeFactory('Collection', id='collection', title='Collection')
-    set_description(portal.collection)
-    set_text(portal.collection)
-    publish(portal.collection)
-    portal.collection.reindexObject()
 
     # Folder
     portal.invokeFactory('Folder', id='folder', title='Folder')
@@ -148,10 +161,39 @@ def step_setup_content(context):
         )
         publish(folder1000['doc{}'.format(i)])
 
+    # Collection
+    portal.invokeFactory('Collection', id='collection', title='Collection')
+    set_description(portal.collection)
+    set_text(portal.collection)
+    publish(portal.collection)
+    portal.collection.reindexObject()
+
+    # Collection with Items
+    portal.invokeFactory(
+        'Collection',
+        id='collectionitems',
+        title='Collection with Items'
+    )
+    set_description(portal.collectionitems)
+    set_text(portal.collectionitems)
+    if IDexterityContent.providedBy(portal.collectionitems):
+        portal.collectionitems.query = [{
+            'i': 'Type',
+            'o': 'plone.app.querystring.operation.string.is',
+            'v': 'Document',
+        }]
+    publish(portal.collectionitems)
+    portal.collectionitems.reindexObject()
+
     # Event
     portal.invokeFactory('Event', id='event', title='Event')
     set_description(portal.event)
     publish(portal.event)
+    if IDexterityContent.providedBy(portal.event):
+        portal.event.timezone = 'Europe/Vienna'
+        tz = pytz.timezone("Europe/Vienna")
+        portal.event.start = tz.localize(datetime(2010, 10, 10, 12, 12))
+        portal.event.end = tz.localize(datetime(2010, 10, 10, 13, 13))
 
     # Link
     portal.invokeFactory('Link', id='link', title='Link')
