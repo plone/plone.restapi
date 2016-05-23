@@ -36,7 +36,7 @@ setup(name='plone.restapi',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'plone.rest',
+          'plone.rest >= 1.0a6',
       ],
       extras_require={'test': [
           'Products.Archetypes',
