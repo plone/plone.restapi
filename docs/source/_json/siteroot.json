@@ -21,5 +21,6 @@ content-type: application/json
       "title": "Welcome to Plone"
     }
   ], 
+  "items_total": 2, 
   "parent": {}
 }

@@ -4,6 +4,11 @@ Plone Content
 How to get all standard Plone content representations.
 The syntax is given in various tools, click on 'curl', 'http-request' or 'python-requests' to see examples.
 
+.. note::
+        For folderish types, collections or search results, the results will
+        be **batched** if the size of the resultset exceeds the batch size.
+        See :doc:`/batching` for more details on how to work with batched
+        results.
 
 
 Plone Portal Root:

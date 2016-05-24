@@ -33,6 +33,7 @@ content-type: application/json
       "title": "A document within a folder"
     }
   ], 
+  "items_total": 2, 
   "language": "", 
   "modified": "2016-01-21T07:24:11+00:00", 
   "nextPreviousEnabled": false, 

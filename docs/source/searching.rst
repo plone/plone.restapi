@@ -21,6 +21,11 @@ Search results are represented similar to collections:
 The default representation for search results is a summary that contains only the most basic information.
 In order to return specific metadata columns, see the documentation of the ``metadata_fields`` parameter below.
 
+.. note::
+        Search results results will be **batched** if the size of the
+        resultset exceeds the batch size. See :doc:`/batching` for more
+        details on how to work with batched results.
+
 
 Query format
 ------------

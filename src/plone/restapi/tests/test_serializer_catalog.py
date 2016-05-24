@@ -2,6 +2,7 @@
 from DateTime import DateTime
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
@@ -34,37 +35,23 @@ class TestCatalogSerializers(unittest.TestCase):
         IMutableUUID(self.doc).set('77779ffa110e45afb1ba502f75f77777')
         self.doc.reindexObject()
 
-    def test_lazy_cat_serialization_empty_resultset(self):
-        # Force an empty resultset (Products.ZCatalog.Lazy.LazyCat)
-        lazy_cat = self.catalog(path='doesnt-exist')
-        results = getMultiAdapter((lazy_cat, self.request), ISerializeToJson)()
-
-        self.assertDictEqual(
-            {'items': [], 'items_count': 0},
-            results)
-
-    def test_lazy_map_serialization(self):
-        lazy_map = self.catalog()
-        results = getMultiAdapter((lazy_map, self.request), ISerializeToJson)()
-        self.assertEqual(3, len(results['items']))
-        self.assertDictContainsSubset(
-            {'items_count': 3},
-            results)
-
     def test_brain_summary_representation(self):
-        lazy_map = self.catalog()
-        results = getMultiAdapter((lazy_map, self.request), ISerializeToJson)()
-        self.assertIn(
+        lazy_map = self.catalog(path='/plone/my-folder/my-document')
+        brain = lazy_map[0]
+        result = getMultiAdapter(
+            (brain, self.request), ISerializeToJsonSummary)()
+        self.assertEquals(
             {'@id': 'http://nohost/plone/my-folder/my-document',
              '@type': 'Document',
              'title': 'My Document',
              'description': ''},
-            results['items'])
+            result)
 
     def test_brain_partial_metadata_representation(self):
         lazy_map = self.catalog(path='/plone/my-folder/my-document')
-        results = getMultiAdapter(
-            (lazy_map, self.request),
+        brain = lazy_map[0]
+        result = getMultiAdapter(
+            (brain, self.request),
             ISerializeToJson)(metadata_fields=['portal_type', 'review_state'])
 
         self.assertDictEqual(
@@ -74,12 +61,13 @@ class TestCatalogSerializers(unittest.TestCase):
              'description': '',
              'portal_type': u'Document',
              'review_state': u'private'},
-            results['items'][0])
+            result)
 
     def test_brain_full_metadata_representation(self):
         lazy_map = self.catalog(path='/plone/my-folder/my-document')
-        results = getMultiAdapter(
-            (lazy_map, self.request),
+        brain = lazy_map[0]
+        result = getMultiAdapter(
+            (brain, self.request),
             ISerializeToJson)(metadata_fields=['_all'])
 
         self.assertDictContainsSubset(
@@ -119,4 +107,4 @@ class TestCatalogSerializers(unittest.TestCase):
              'sync_uid': None,
              'title': 'My Document',
              'total_comments': 0},
-            results['items'][0])
+            result)

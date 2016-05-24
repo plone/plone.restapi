@@ -41,6 +41,7 @@ content-type: application/json
       "title": "Document 2"
     }
   ], 
+  "items_total": 3, 
   "language": "", 
   "limit": 1000, 
   "modified": "2016-01-21T08:24:11+00:00", 

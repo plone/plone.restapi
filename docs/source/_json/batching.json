@@ -1,0 +1,48 @@
+GET /plone/folder/@search?b_size=5&sort_on=path
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/folder/@search", 
+  "batching": {
+    "@id": "http://localhost:55001/plone/folder/@search?b_size=5&sort_on=path", 
+    "first": "http://localhost:55001/plone/folder/@search?b_size=5&sort_on=path&b_start=0", 
+    "last": "http://localhost:55001/plone/folder/@search?b_size=5&sort_on=path&b_start=5", 
+    "next": "http://localhost:55001/plone/folder/@search?b_size=5&sort_on=path&b_start=5"
+  }, 
+  "items": [
+    {
+      "@id": "http://localhost:55001/plone/folder", 
+      "@type": "Folder", 
+      "description": "", 
+      "title": "Folder"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/folder/doc-1", 
+      "@type": "Document", 
+      "description": "", 
+      "title": "Document 1"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/folder/doc-2", 
+      "@type": "Document", 
+      "description": "", 
+      "title": "Document 2"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/folder/doc-3", 
+      "@type": "Document", 
+      "description": "", 
+      "title": "Document 3"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/folder/doc-4", 
+      "@type": "Document", 
+      "description": "", 
+      "title": "Document 4"
+    }
+  ], 
+  "items_total": 8
+}

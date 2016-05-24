@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
@@ -38,8 +40,29 @@ class SearchHandler(object):
         query = self._parse_query(query)
         self._constrain_query_by_path(query)
 
-        lazy_resultset = self.catalog.searchResults(query)
-        results = getMultiAdapter(
-            (lazy_resultset, self.request),
-            ISerializeToJson)(metadata_fields=metadata_fields)
+        catalog = getToolByName(self.context, 'portal_catalog')
+        brains = catalog(query)
+
+        batch = HypermediaBatch(self.context, self.request, brains)
+
+        results = {}
+        results['@id'] = batch.canonical_url
+        results['items_total'] = batch.items_total
+        if batch.links:
+            results['batching'] = batch.links
+
+        results['items'] = []
+        for brain in batch:
+            result = getMultiAdapter(
+                (brain, self.request), ISerializeToJsonSummary)()
+
+            if metadata_fields:
+                # Merge additional metadata into the summary we already have
+                metadata = getMultiAdapter(
+                    (brain, self.request),
+                    ISerializeToJson)(metadata_fields=metadata_fields)
+                result.update(metadata)
+
+            results['items'].append(result)
+
         return results

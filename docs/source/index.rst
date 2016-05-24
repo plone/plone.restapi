@@ -22,6 +22,7 @@ Contents
 
    authentication
    crud
+   batching
    workflow
    registry
    serialization
