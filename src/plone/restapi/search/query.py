@@ -72,6 +72,8 @@ class ZCatalogCompatibleQueryAdapter(object):
         'sort_on': str,
         'sort_order': str,
         'sort_limit': int,
+        'b_start': int,
+        'b_size': int,
     }
 
     def __init__(self, context, request):

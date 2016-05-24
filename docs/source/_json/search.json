@@ -5,6 +5,12 @@ HTTP 200 OK
 content-type: application/json
 
 {
+  "@id": "http://localhost:55001/plone/@search?sort_on=path", 
+  "batching": {
+    "@id": "http://localhost:55001/plone/@search?sort_on=path", 
+    "first": "http://localhost:55001/plone/@search?sort_on=path&b_start=0", 
+    "last": "http://localhost:55001/plone/@search?sort_on=path&b_start=0"
+  }, 
   "items": [
     {
       "@id": "http://localhost:55001/plone/front-page", 
@@ -19,5 +25,5 @@ content-type: application/json
       "title": "Test Folder"
     }
   ], 
-  "items_count": 2
+  "items_total": 2
 }

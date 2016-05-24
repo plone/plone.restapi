@@ -4,7 +4,6 @@ from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from Products.CMFCore.utils import getToolByName
 from Products.ZCatalog.interfaces import ICatalogBrain
-from Products.ZCatalog.Lazy import Lazy
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component.hooks import getSite
@@ -38,7 +37,10 @@ class BrainSerializer(object):
     def __call__(self, metadata_fields=('_all',)):
         metadata_to_include = self._get_metadata_to_include(metadata_fields)
 
-        result = {}
+        # Start with a summary representation as our base
+        result = getMultiAdapter(
+            (self.brain, self.request), ISerializeToJsonSummary)()
+
         for attr in metadata_to_include:
             value = getattr(self.brain, attr, None)
 
@@ -54,33 +56,3 @@ class BrainSerializer(object):
             result[attr] = value
 
         return result
-
-
-@implementer(ISerializeToJson)
-@adapter(Lazy, Interface)
-class LazyCatalogResultSerializer(object):
-    """Serializes a ZCatalog resultset (one of the subclasses of `Lazy`) to
-    a Python data structure that can in turn be serialized to JSON.
-    """
-
-    def __init__(self, lazy_resultset, request):
-        self.lazy_resultset = lazy_resultset
-        self.request = request
-
-    def __call__(self, metadata_fields=()):
-        results = {}
-        results['items_count'] = self.lazy_resultset.actual_result_count
-        results['items'] = []
-
-        for brain in self.lazy_resultset:
-            result = getMultiAdapter(
-                (brain, self.request), ISerializeToJsonSummary)()
-
-            if metadata_fields:
-                metadata = getMultiAdapter(
-                    (brain, self.request),
-                    ISerializeToJson)(metadata_fields=metadata_fields)
-                result.update(metadata)
-
-            results['items'].append(result)
-        return results

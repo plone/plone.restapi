@@ -83,9 +83,9 @@ class TestSearchFunctional(unittest.TestCase):
 
         results = response.json()
         self.assertEqual(
-            results[u'items_count'],
+            results[u'items_total'],
             len(results[u'items']),
-            'items_count property should match actual item count.'
+            'items_total property should match actual item count.'
         )
 
     def test_search_on_context_constrains_query_by_path(self):
