@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -75,10 +76,15 @@ class SerializeFolderToJson(SerializeToJson):
         catalog = getToolByName(self.context, 'portal_catalog')
         brains = catalog(query)
 
+        batch = HypermediaBatch(self.context, self.request, brains)
+
         result = folder_metadata
+        result['@id'] = batch.canonical_url
+        result['items_total'] = batch.items_total
+        result['batching'] = batch.links
 
         result['items'] = [
             getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
-            for brain in brains
+            for brain in batch
         ]
         return result
