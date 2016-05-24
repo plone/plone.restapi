@@ -1,0 +1,9 @@
+POST /plone/@login-renew
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsbmFtZSI6IiIsInN1YiI6ImFkbWluIn0.SZDnl_baH5M_StJJrzfbj7o-5My30NmSFbMrhpSX5I4"
+}
