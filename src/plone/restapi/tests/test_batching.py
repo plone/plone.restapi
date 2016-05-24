@@ -230,6 +230,60 @@ class TestBatchingDXFolders(TestBatchingDXBase):
         self.assertEqual(5, response.json()['items_total'])
 
 
+class TestBatchingSiteRoot(TestBatchingDXBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super(TestBatchingSiteRoot, self).setUp()
+
+        for i in range(5):
+            self._create_doc(self.portal, i)
+        transaction.commit()
+
+    def test_contains_canonical_url(self):
+        # Fetch the second page of the batch
+        response = self.api_session.get('/?b_start=2&b_size=2')
+
+        # Response should contain canonical URL without batching params
+        self.assertEqual(
+            response.json()['@id'],
+            u'http://localhost:55001/plone/')
+
+    def test_contains_batching_links(self):
+        # Fetch the second page of the batch
+        response = self.api_session.get('/?b_start=2&b_size=2')
+
+        # Batch info in response should contain appropriate batching links
+        batch_info = response.json()['batching']
+
+        self.assertDictEqual(
+            {u'@id': self.portal_url + '/?b_start=2&b_size=2',
+             u'first': self.portal_url + '/?b_size=2&b_start=0',
+             u'next': self.portal_url + '/?b_size=2&b_start=4',
+             u'prev': self.portal_url + '/?b_size=2&b_start=0',
+             u'last': self.portal_url + '/?b_size=2&b_start=4',
+             },
+            batch_info)
+
+    def test_contains_correct_batch_of_items(self):
+        # Fetch the second page of the batch
+        response = self.api_session.get('/?b_start=2&b_size=2')
+
+        # Response should contain second batch of items
+        self.assertEquals([
+            u'/plone/doc-3',
+            u'/plone/doc-4'],
+            result_paths(response.json()))
+
+    def test_total_item_count_is_correct(self):
+        # Fetch the second page of the batch
+        response = self.api_session.get('/?b_start=2&b_size=2')
+
+        # Total count of items should be in items_total
+        self.assertEqual(5, response.json()['items_total'])
+
+
 class TestBatchingArchetypes(unittest.TestCase):
 
     layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING

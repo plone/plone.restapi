@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from Products.CMFCore.utils import getToolByName
@@ -19,8 +20,8 @@ class SerializeSiteRootToJson(object):
 
     def _build_query(self):
         path = '/'.join(self.context.getPhysicalPath())
-        query = {'path': {'depth': 1, 'query': path,
-                 'sort_on': 'getObjPositionInParent'}}
+        query = {'path': {'depth': 1, 'query': path},
+                 'sort_on': 'getObjPositionInParent'}
         return query
 
     def __call__(self):
@@ -29,16 +30,21 @@ class SerializeSiteRootToJson(object):
         catalog = getToolByName(self.context, 'portal_catalog')
         brains = catalog(query)
 
+        batch = HypermediaBatch(self.context, self.request, brains)
+
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
-            '@id': self.context.absolute_url(),
+            '@id': batch.canonical_url,
             '@type': 'Plone Site',
             'parent': {},
         }
 
+        result['items_total'] = batch.items_total
+        result['batching'] = batch.links
+
         result['items'] = [
             getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
-            for brain in brains
+            for brain in batch
         ]
 
         return result
