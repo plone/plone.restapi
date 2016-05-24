@@ -100,7 +100,7 @@ class TestLogout(TestCase):
         self.assertEqual(200, self.request.response.getStatus())
 
 
-class TestRefresh(TestCase):
+class TestRenew(TestCase):
 
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
@@ -108,7 +108,7 @@ class TestRefresh(TestCase):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
 
-    def traverse(self, path='/plone/@refresh-login', accept='application/json',
+    def traverse(self, path='/plone/@login-renew', accept='application/json',
                  method='POST'):
         request = self.layer['request']
         request.environ['PATH_INFO'] = path
@@ -118,18 +118,18 @@ class TestRefresh(TestCase):
         notify(PubStart(request))
         return request.traverse(path)
 
-    def test_refresh_without_pas_plugin_fails(self):
+    def test_renew_without_pas_plugin_fails(self):
         self.portal.acl_users._delOb('jwt_auth')
         service = self.traverse()
         res = service.reply()
         self.assertIn('error', res)
 
-    def test_refresh_returns_token(self):
+    def test_renew_returns_token(self):
         service = self.traverse()
         res = service.reply()
         self.assertIn('token', res)
 
-    def test_refresh_deletes_old_token(self):
+    def test_renew_deletes_old_token(self):
         self.portal.acl_users.jwt_auth.store_tokens = True
         token = self.portal.acl_users.jwt_auth.create_token('admin')
         self.request._auth = 'Bearer {}'.format(token)

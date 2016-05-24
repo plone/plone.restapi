@@ -21,9 +21,9 @@
 
   <plone:service
     method="POST"
-    name="@refresh-login"
+    name="@login-renew"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".refresh.Refresh"
+    factory=".renew.Renew"
     permission="zope.Public"
     />
 

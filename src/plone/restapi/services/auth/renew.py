@@ -5,8 +5,8 @@ from Products.PluggableAuthService.interfaces.plugins import (
 from plone.restapi.services import Service
 
 
-class Refresh(Service):
-    """Refresh authentication token
+class Renew(Service):
+    """Renew authentication token
     """
     def reply(self):
         plugin = None
@@ -21,7 +21,7 @@ class Refresh(Service):
         if plugin is None:
             self.request.response.setStatus(501)
             return dict(error=dict(
-                type='Refresh failed',
+                type='Renew failed',
                 message='JWT authentication plugin not installed.'))
 
         mtool = getToolByName(self.context, 'portal_membership')
