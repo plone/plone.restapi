@@ -38,8 +38,9 @@ class HypermediaBatch(object):
         url = self.request['ACTUAL_URL']
         qs_params = dict(parse_qsl(self.request['QUERY_STRING']))
 
-        # Remove any batching related parameters
-        for key in ('b_size', 'b_start'):
+        # Remove any batching / sorting related parameters
+        for key in ('b_size', 'b_start',
+                    'sort_on', 'sort_order', 'sort_limit'):
             qs_params.pop(key, None)
 
         qs = urlencode(qs_params)

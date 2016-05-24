@@ -449,6 +449,19 @@ class TestHypermediaBatch(unittest.TestCase):
         self.assertEquals('nohost', parsed_url.netloc)
         self.assertEquals('', parsed_url.path)
 
+    def test_canonical_url_strips_sorting_params(self):
+        items = range(1, 26)
+
+        self.request['QUERY_STRING'] = 'one=1&sort_on=path&two=2'
+        batch = HypermediaBatch(self.portal, self.request, items)
+
+        parsed_url = urlparse(batch.canonical_url)
+        qs_params = dict(parse_qsl(parsed_url.query))
+
+        self.assertEquals({'one': '1', 'two': '2'}, qs_params)
+        self.assertEquals('nohost', parsed_url.netloc)
+        self.assertEquals('', parsed_url.path)
+
     def test_current_batch_url(self):
         items = range(1, 26)
 
