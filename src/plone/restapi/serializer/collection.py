@@ -22,7 +22,8 @@ class SerializeCollectionToJson(SerializeToJson):
         results = collection_metadata
         results['@id'] = batch.canonical_url
         results['items_total'] = batch.items_total
-        results['batching'] = batch.links
+        if batch.links:
+            results['batching'] = batch.links
 
         results['items'] = [
             getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()

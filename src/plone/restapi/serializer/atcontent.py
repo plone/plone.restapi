@@ -81,7 +81,8 @@ class SerializeFolderToJson(SerializeToJson):
         result = folder_metadata
         result['@id'] = batch.canonical_url
         result['items_total'] = batch.items_total
-        result['batching'] = batch.links
+        if batch.links:
+            result['batching'] = batch.links
 
         result['items'] = [
             getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()

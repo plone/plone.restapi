@@ -1,7 +1,8 @@
 Batching
 ========
 
-Representations of collection-like resources are batched / paginated:
+Representations of collection-like resources are batched / paginated if the
+size of the resulset exceeds the batching size:
 
 .. code:: json
 
@@ -19,6 +20,9 @@ Representations of collection-like resources are batched / paginated:
       ],
       "items_total": 175,
     }
+
+If the entire resulset fits into a single batch page (as determined by
+``b_size``), the top-level ``batching`` links will be omitted.
 
 
 Top-level attributes
@@ -39,8 +43,10 @@ Attribute        Description
 Batching links
 --------------
 
-The top-level attribute ``batching`` contains a dictionary with links that
-can be used to navigate batches in a Hypermedia fashion:
+If, and only if, the resultset has been batched over several pages, the
+response body will contain a top-level attribute ``batching`` that contains
+batching links. These links that can be used to navigate batches in a
+Hypermedia fashion:
 
 ================ ===========================================================
 Attribute        Description

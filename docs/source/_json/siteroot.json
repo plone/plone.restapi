@@ -7,11 +7,6 @@ content-type: application/json
 {
   "@id": "http://localhost:55001/plone", 
   "@type": "Plone Site", 
-  "batching": {
-    "@id": "http://localhost:55001/plone", 
-    "first": "http://localhost:55001/plone?b_start=0", 
-    "last": "http://localhost:55001/plone?b_start=0"
-  }, 
   "items": [
     {
       "@id": "http://localhost:55001/plone/robot-test-folder", 

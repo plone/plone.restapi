@@ -48,7 +48,8 @@ class SearchHandler(object):
         results = {}
         results['@id'] = batch.canonical_url
         results['items_total'] = batch.items_total
-        results['batching'] = batch.links
+        if batch.links:
+            results['batching'] = batch.links
 
         results['items'] = []
         for brain in batch:

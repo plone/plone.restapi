@@ -171,6 +171,10 @@ class TestBatchingCollections(TestBatchingDXBase):
         # Total count of items should be in items_total
         self.assertEqual(6, response.json()['items_total'])
 
+    def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
+        response = self.api_session.get('/collection?b_size=100')
+        self.assertNotIn('batching', response.json().keys())
+
 
 class TestBatchingDXFolders(TestBatchingDXBase):
 
@@ -229,6 +233,10 @@ class TestBatchingDXFolders(TestBatchingDXBase):
         # Total count of items should be in items_total
         self.assertEqual(5, response.json()['items_total'])
 
+    def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
+        response = self.api_session.get('/folder?b_size=100')
+        self.assertNotIn('batching', response.json().keys())
+
 
 class TestBatchingSiteRoot(TestBatchingDXBase):
 
@@ -282,6 +290,10 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
 
         # Total count of items should be in items_total
         self.assertEqual(5, response.json()['items_total'])
+
+    def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
+        response = self.api_session.get('/folder?b_size=100')
+        self.assertNotIn('batching', response.json().keys())
 
 
 class TestBatchingArchetypes(unittest.TestCase):
@@ -358,6 +370,10 @@ class TestBatchingArchetypes(unittest.TestCase):
 
         # Total count of items should be in items_total
         self.assertEqual(5, response.json()['items_total'])
+
+    def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
+        response = self.api_session.get('/folder?b_size=100')
+        self.assertNotIn('batching', response.json().keys())
 
 
 class TestHypermediaBatch(unittest.TestCase):
@@ -471,6 +487,13 @@ class TestHypermediaBatch(unittest.TestCase):
         batch = HypermediaBatch(self.portal, self.request, items)
         self.assertEqual(
             'http://nohost?b_size=10&b_start=20', batch.current_batch_url)
+
+    def test_batching_links_omitted_if_resultset_fits_in_single_batch(self):
+        items = range(1, 5)
+
+        self.request.form['b_size'] = 10
+        batch = HypermediaBatch(self.portal, self.request, items)
+        self.assertEqual(None, batch.links)
 
     def test_first_link_contained(self):
         items = range(1, 26)

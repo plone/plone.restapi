@@ -61,6 +61,10 @@ class HypermediaBatch(object):
     def links(self):
         """Get a dictionary with batching links.
         """
+        # Don't provide batching links if resultset isn't batched
+        if self.items_total <= self.b_size:
+            return None
+
         links = {}
 
         first = self._batch_for_page(1)
