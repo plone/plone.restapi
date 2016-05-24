@@ -121,6 +121,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.portal.folder1.invokeFactory('Document', id='doc1')
         self.portal.folder1.doc1.title = u'Document 1'
         self.portal.folder1.doc1.description = u'This is a document'
+        self.portal.folder1.doc1.reindexObject()
         self.assertEqual(
             self.serialize(self.portal.folder1)['items'],
             [

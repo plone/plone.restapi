@@ -62,10 +62,22 @@ class SerializeToJson(object):
 @adapter(IBaseFolder, Interface)
 class SerializeFolderToJson(SerializeToJson):
 
+    def _build_query(self):
+        path = '/'.join(self.context.getPhysicalPath())
+        query = {'path': {'depth': 1, 'query': path}}
+        return query
+
     def __call__(self):
-        result = super(SerializeFolderToJson, self).__call__()
+        folder_metadata = super(SerializeFolderToJson, self).__call__()
+        query = self._build_query()
+
+        catalog = getToolByName(self.context, 'portal_catalog')
+        brains = catalog(query)
+
+        result = folder_metadata
+
         result['items'] = [
-            getMultiAdapter((item, self.request), ISerializeToJsonSummary)()
-            for item in self.context.objectValues()
+            getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
+            for brain in brains
         ]
         return result
