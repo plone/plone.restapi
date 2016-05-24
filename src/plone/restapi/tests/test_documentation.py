@@ -1,25 +1,26 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
+from DateTime import DateTime
 from plone.app.testing import setRoles
-from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
-from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedBlobFile
+from plone.namedfile.file import NamedBlobImage
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import RelativeSession
 from plone.testing.z2 import Browser
 from plone.uuid.interfaces import IMutableUUID
-from DateTime import DateTime
-
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 
 import json
 import os
+import transaction
 import unittest2 as unittest
+
 
 REQUEST_HEADER_KEYS = [
     'accept'
@@ -345,3 +346,22 @@ class TestTraversal(unittest.TestCase):
             '{}/@logout'.format(self.portal.absolute_url()),
             headers={'Authorization': 'Bearer {}'.format(token)})
         save_response_for_documentation('logout.json', response)
+
+    def test_documentation_batching(self):
+        folder = self.portal[self.portal.invokeFactory(
+            'Folder',
+            id='folder',
+            title='Folder'
+        )]
+        for i in range(7):
+            folder.invokeFactory(
+                'Document',
+                id='doc-%s' % str(i + 1),
+                title='Document %s' % str(i + 1)
+            )
+        transaction.commit()
+
+        query = {'sort_on': 'path'}
+        response = self.api_session.get(
+            '/folder/@search?b_size=5', params=query)
+        save_response_for_documentation('batching.json', response)
