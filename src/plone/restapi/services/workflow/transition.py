@@ -8,6 +8,9 @@ from zope.i18n import translate
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
+from zope.interface import alsoProvides
+
+import plone.protect.interfaces
 
 
 class WorkflowTransition(Service):
@@ -41,6 +44,11 @@ class WorkflowTransition(Service):
                 message='Invalid body'))
 
         wftool = getToolByName(self.context, 'portal_workflow')
+
+        # Disable CSRF protection
+        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
 
         try:
             wftool.doActionFor(self.context, self.transition, **data)

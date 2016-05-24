@@ -2,8 +2,10 @@
 from plone.registry.interfaces import IRegistry
 from plone.restapi.services import Service
 from zope.component import getUtility
+from zope.interface import alsoProvides
 
 import json
+import plone.protect.interfaces
 
 
 class RegistryUpdate(Service):
@@ -11,6 +13,11 @@ class RegistryUpdate(Service):
     def reply(self):
         records_to_update = json.loads(self.request.get('BODY', '{}'))
         registry = getUtility(IRegistry)
+
+        # Disable CSRF protection
+        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
 
         for key, value in records_to_update.items():
             if key not in registry:
