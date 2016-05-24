@@ -1,0 +1,30 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <plone:service
+    method="POST"
+    name="@login"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".login.Login"
+    permission="zope.Public"
+    />
+
+  <plone:service
+    method="POST"
+    name="@logout"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".logout.Logout"
+    permission="zope.Public"
+    />
+
+  <plone:service
+    method="POST"
+    name="@login-renew"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".renew.Renew"
+    permission="zope.Public"
+    />
+
+</configure>

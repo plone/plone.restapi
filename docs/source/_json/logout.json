@@ -1,0 +1,5 @@
+POST /plone/@logout
+Accept: application/json
+
+HTTP 204 No Content
+

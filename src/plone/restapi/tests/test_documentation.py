@@ -17,9 +17,9 @@ from z3c.relationfield import RelationValue
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 
-import unittest2 as unittest
-
+import json
 import os
+import unittest2 as unittest
 
 REQUEST_HEADER_KEYS = [
     'accept'
@@ -300,3 +300,48 @@ class TestTraversal(unittest.TestCase):
     def test_documentation_types_document(self):
         response = self.api_session.get('@types/Document')
         save_response_for_documentation('types_document.json', response)
+
+    def test_documentation_login(self):
+        self.portal.acl_users.jwt_auth._secret = 'secret'
+        self.portal.acl_users.jwt_auth.use_keyring = False
+        self.portal.acl_users.jwt_auth.token_timeout = 0
+        import transaction
+        transaction.commit()
+        self.api_session.auth = None
+        response = self.api_session.post(
+            '{}/@login'.format(self.portal.absolute_url()),
+            json={'login': SITE_OWNER_NAME, 'password': SITE_OWNER_PASSWORD})
+        save_response_for_documentation('login.json', response)
+
+    def test_documentation_login_renew(self):
+        self.portal.acl_users.jwt_auth._secret = 'secret'
+        self.portal.acl_users.jwt_auth.use_keyring = False
+        self.portal.acl_users.jwt_auth.token_timeout = 0
+        import transaction
+        transaction.commit()
+        self.api_session.auth = None
+        response = self.api_session.post(
+            '{}/@login'.format(self.portal.absolute_url()),
+            json={'login': SITE_OWNER_NAME, 'password': SITE_OWNER_PASSWORD})
+        token = json.loads(response.content)['token']
+        response = self.api_session.post(
+            '{}/@login-renew'.format(self.portal.absolute_url()),
+            headers={'Authorization': 'Bearer {}'.format(token)})
+        save_response_for_documentation('login_renew.json', response)
+
+    def test_documentation_logout(self):
+        self.portal.acl_users.jwt_auth._secret = 'secret'
+        self.portal.acl_users.jwt_auth.use_keyring = False
+        self.portal.acl_users.jwt_auth.token_timeout = 0
+        self.portal.acl_users.jwt_auth.store_tokens = True
+        import transaction
+        transaction.commit()
+        self.api_session.auth = None
+        response = self.api_session.post(
+            '{}/@login'.format(self.portal.absolute_url()),
+            json={'login': SITE_OWNER_NAME, 'password': SITE_OWNER_PASSWORD})
+        token = json.loads(response.content)['token']
+        response = self.api_session.post(
+            '{}/@logout'.format(self.portal.absolute_url()),
+            headers={'Authorization': 'Bearer {}'.format(token)})
+        save_response_for_documentation('logout.json', response)
