@@ -29,6 +29,7 @@
         <adapter factory=".atfields.ReferenceFieldSerializer" />
         <adapter factory=".atfields.TextFieldSerializer" />
         <adapter factory=".atfields.QueryFieldSerializer" />
+        <adapter factory=".atcollection.SerializeCollectionToJson" />
     </configure>
 
     <adapter factory=".converters.date_converter" />
