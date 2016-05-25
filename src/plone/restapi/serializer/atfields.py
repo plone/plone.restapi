@@ -12,7 +12,13 @@ from plone.restapi.serializer.converters import json_compatible
 from zope.component import adapter
 from zope.interface import Interface
 from zope.interface import implementer
-from archetypes.querywidget.interfaces import IQueryField
+
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    from archetypes.querywidget.interfaces import IQueryField
+else:
+    from plone.app.collection.field import IQueryField
 
 
 @adapter(IField, IBaseObject, Interface)

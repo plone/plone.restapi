@@ -9,7 +9,12 @@ from plone.app.blob.field import FileField
 from plone.app.blob.field import ImageField
 from plone.app.folder.folder import ATFolder
 from plone.app.folder.folder import ATFolderSchema
-from archetypes.querywidget.field import QueryField
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    from archetypes.querywidget.field import QueryField
+else:
+    from plone.app.collection.field import QueryField
 
 PROJECTNAME = 'plone.restapi.tests'
 
