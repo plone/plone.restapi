@@ -75,6 +75,7 @@ class PloneRestApiATLayer(PloneSandboxLayer):
 
         z2.installProduct(app, 'Products.Archetypes')
         z2.installProduct(app, 'Products.ATContentTypes')
+        z2.installProduct(app, 'plone.app.collection')
         z2.installProduct(app, 'plone.app.blob')
         z2.installProduct(app, 'plone.restapi')
 
@@ -82,6 +83,10 @@ class PloneRestApiATLayer(PloneSandboxLayer):
         if portal.portal_setup.profileExists(
                 'Products.ATContentTypes:default'):
             applyProfile(portal, 'Products.ATContentTypes:default')
+        if portal.portal_setup.profileExists(
+                'plone.app.collection:default'):
+            applyProfile(portal, 'plone.app.collection:default')
+
         applyProfile(portal, 'plone.app.dexterity:default')
         applyProfile(portal, 'plone.restapi:default')
         applyProfile(portal, 'plone.restapi:testing')
