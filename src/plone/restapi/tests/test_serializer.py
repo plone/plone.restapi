@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-from plone.app.testing import TEST_USER_ID
+from DateTime import DateTime
 from plone.app.testing import setRoles
-from plone.restapi.interfaces import ISerializeToJson
+from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
+from plone.namedfile.file import NamedBlobImage
+from plone.namedfile.file import NamedFile
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
-from plone.namedfile.file import NamedBlobImage
-from DateTime import DateTime
 from zope.component import getMultiAdapter
 
 import os
@@ -186,10 +187,25 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
 
     def test_serialize_file(self):
         self.portal.invokeFactory('File', id='file1', title='File 1')
+        self.portal.file1.file = NamedFile(
+            data=u'Spam and eggs',
+            contentType=u'text/plain',
+            filename=u'test.txt')
+
+        file_url = self.portal.file1.absolute_url()
+        download_url = '{0}/@@download/file'.format(file_url)
         self.assertEqual(
-            '{0}/@@download/file'.format(self.portal.file1.absolute_url()),
+            {u'filename': u'test.txt',
+             u'content-type': u'text/plain',
+             u'download': download_url,
+             u'size': 13},
             self.serialize(self.portal.file1).get('file')
         )
+
+    def test_serialize_empty_file_returns_none(self):
+        self.portal.invokeFactory('File', id='file1', title='File 1')
+
+        self.assertEqual(None, self.serialize(self.portal.file1).get('file'))
 
     def test_serialize_image(self):
         self.portal.invokeFactory('Image', id='image1', title='Image 1')

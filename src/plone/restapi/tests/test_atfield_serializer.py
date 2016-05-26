@@ -24,7 +24,7 @@ class TestATFieldSerializer(unittest.TestCase):
     def serialize(self, fieldname, value, **kwargs):
         field = self.doc1.getField(fieldname)
         mutator = field.getMutator(self.doc1)
-        mutator(value)
+        mutator(value, **kwargs)
         serializer = getMultiAdapter((field, self.doc1, self.request),
                                      IFieldSerializer)
         return serializer()
@@ -70,12 +70,18 @@ class TestATFieldSerializer(unittest.TestCase):
         self.assertTrue(isinstance(value, list), 'Not a <list>')
         self.assertEqual([u'foo', u'bar'], value)
 
-    def test_file_field_serialization_returns_unicode(self):
+    def test_file_field_serialization_returns_dict(self):
         value = self.serialize('testFileField', 'spam and eggs',
                                filename='spam.txt', mimetype='text/plain')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
-        self.assertEqual(u'http://nohost/plone/doc1/@@download/testFileField',
-                         value)
+        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+
+        url = u'http://nohost/plone/doc1/@@download/testFileField'
+        self.assertEqual(
+            {u'filename': u'spam.txt',
+             u'content-type': u'text/plain',
+             u'size': 13,
+             u'download': url},
+            value)
 
     def test_text_field_serialization_returns_dict(self):
         value = self.serialize('testTextField', '<p>spam and eggs</p>',
@@ -95,19 +101,30 @@ class TestATFieldSerializer(unittest.TestCase):
         self.assertEqual(u'http://nohost/plone/doc1/@@images/testImageField',
                          value)
 
-    def test_blob_field_serialization_returns_unicode(self):
+    def test_blob_field_serialization_returns_dict(self):
         value = self.serialize('testBlobField', 'spam and eggs',
                                filename='spam.txt', mimetype='text/plain')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
-        self.assertEqual(u'http://nohost/plone/doc1/@@download/testBlobField',
-                         value)
+        self.assertTrue(isinstance(value, dict), 'Not an <dict>')
+        url = u'http://nohost/plone/doc1/@@download/testBlobField'
+        self.assertEqual(
+            {u'filename': 'spam.txt',
+             u'size': 13,
+             u'content-type': 'text/plain',
+             u'download': url},
+            value)
 
-    def test_blobfile_field_serialization_returns_unicode(self):
+    def test_blobfile_field_serialization_returns_dict(self):
         value = self.serialize('testBlobFileField', 'spam and eggs',
                                filename='spam.txt', mimetype='text/plain')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+
+        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+        url = u'http://nohost/plone/doc1/@@download/testBlobFileField'
         self.assertEqual(
-            u'http://nohost/plone/doc1/@@download/testBlobFileField', value)
+            {u'filename': 'spam.txt',
+             u'content-type': u'text/plain',
+             u'size': 13,
+             u'download': url},
+            value)
 
     def test_blobimage_field_serialization_returns_unicode(self):
         image_data = (

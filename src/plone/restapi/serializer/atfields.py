@@ -38,7 +38,13 @@ class FileFieldSerializer(DefaultFieldSerializer):
         url = '/'.join((self.context.absolute_url(),
                         '@@download',
                         self.field.getName()))
-        return json_compatible(url)
+        result = {
+            'filename': self.field.getFilename(self.context),
+            'content-type': self.field.getContentType(self.context),
+            'size': self.field.get_size(self.context),
+            'download': url
+        }
+        return json_compatible(result)
 
 
 @adapter(ITextField, IBaseObject, Interface)

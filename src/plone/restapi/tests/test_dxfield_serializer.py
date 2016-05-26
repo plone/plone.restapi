@@ -151,14 +151,20 @@ class TestDexterityFieldSerializing(TestCase):
             u'data': u'<p>Some Text</p>',
             u'encoding': u'utf-8'}, value)
 
-    def test_namedfile_field_serialization_returns_unicode(self):
+    def test_namedfile_field_serialization_returns_dict(self):
         value = self.serialize(
             'test_namedfile_field',
             NamedFile(data=u'Spam and eggs', contentType=u'text/plain',
                       filename=u'test.txt'))
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+        download_url = u'/'.join([
+            self.doc1.absolute_url(),
+            u'@@download/test_namedfile_field'])
         self.assertEqual(
-            self.doc1.absolute_url() + u'/@@download/test_namedfile_field',
+            {u'filename': u'test.txt',
+             u'content-type': u'text/plain',
+             u'size': 13,
+             u'download': download_url},
             value)
 
     def test_namedimage_field_serialization_returns_dict(self):
@@ -181,14 +187,21 @@ class TestDexterityFieldSerializing(TestCase):
             u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
             u'tile': u'{}/@@images/image/tile'.format(obj_url)}, value)
 
-    def test_namedblobfile_field_serialization_returns_unicode(self):
+    def test_namedblobfile_field_serialization_returns_dict(self):
         value = self.serialize(
             'test_namedblobfile_field',
             NamedBlobFile(data=u'Spam and eggs', contentType=u'text/plain',
                           filename=u'test.txt'))
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+
+        download_url = u'/'.join([
+            self.doc1.absolute_url(),
+            u'@@download/test_namedblobfile_field'])
         self.assertEqual(
-            self.doc1.absolute_url() + u'/@@download/test_namedblobfile_field',
+            {u'filename': u'test.txt',
+             u'content-type': u'text/plain',
+             u'size': 13,
+             u'download': download_url},
             value)
 
     def test_namedblobimage_field_serialization_returns_dict(self):
