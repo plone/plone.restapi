@@ -12,9 +12,6 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from plone.testing.z2 import Browser
 from plone.uuid.interfaces import IMutableUUID
-from z3c.relationfield import RelationValue
-from zope.component import getUtility
-from zope.intid.interfaces import IIntIds
 
 import json
 import os
@@ -173,9 +170,6 @@ class TestTraversal(unittest.TestCase):
             contentType='application/pdf',
             filename=u'file.pdf'
         )
-        intids = getUtility(IIntIds)
-        file_id = intids.getId(self.portal.file)
-        self.portal.file.file = RelationValue(file_id)
         self.portal.file.creation_date = DateTime('2016-01-21T05:14:48+00:00')
         self.portal.file.modification_date = DateTime(
             '2016-01-21T05:24:11+00:00')
