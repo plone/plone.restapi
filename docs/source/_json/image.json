@@ -20,14 +20,19 @@ content-type: application/json
   "exclude_from_nav": false, 
   "expires": null, 
   "image": {
-    "icon": "http://localhost:55001/plone/image/@@images/image/icon", 
-    "large": "http://localhost:55001/plone/image/@@images/image/large", 
-    "listing": "http://localhost:55001/plone/image/@@images/image/listing", 
-    "mini": "http://localhost:55001/plone/image/@@images/image/mini", 
-    "original": "http://localhost:55001/plone/image/@@images/image", 
-    "preview": "http://localhost:55001/plone/image/@@images/image/preview", 
-    "thumb": "http://localhost:55001/plone/image/@@images/image/thumb", 
-    "tile": "http://localhost:55001/plone/image/@@images/image/tile"
+    "content-type": "image/png", 
+    "download": "http://localhost:55001/plone/image/@@images/image", 
+    "filename": "image.png", 
+    "scales": {
+      "icon": "http://localhost:55001/plone/image/@@images/image/icon", 
+      "large": "http://localhost:55001/plone/image/@@images/image/large", 
+      "listing": "http://localhost:55001/plone/image/@@images/image/listing", 
+      "mini": "http://localhost:55001/plone/image/@@images/image/mini", 
+      "preview": "http://localhost:55001/plone/image/@@images/image/preview", 
+      "thumb": "http://localhost:55001/plone/image/@@images/image/thumb", 
+      "tile": "http://localhost:55001/plone/image/@@images/image/tile"
+    }, 
+    "size": 1185
   }, 
   "language": "", 
   "modified": "2016-01-21T06:24:11+00:00", 

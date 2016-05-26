@@ -176,16 +176,25 @@ class TestDexterityFieldSerializing(TestCase):
             NamedImage(data=image_data, contentType=u'image/gif',
                        filename=u'test.gif'))
         self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+
         obj_url = self.doc1.absolute_url()
-        self.assertEqual({
+        download_url = u'{}/@@images/test_namedimage_field'.format(obj_url)
+        scales = {
             u'icon': u'{}/@@images/image/icon'.format(obj_url),
             u'large': u'{}/@@images/image/large'.format(obj_url),
             u'listing': u'{}/@@images/image/listing'.format(obj_url),
             u'mini': u'{}/@@images/image/mini'.format(obj_url),
-            u'original': u'{}/@@images/test_namedimage_field'.format(obj_url),
             u'preview': u'{}/@@images/image/preview'.format(obj_url),
             u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
-            u'tile': u'{}/@@images/image/tile'.format(obj_url)}, value)
+            u'tile': u'{}/@@images/image/tile'.format(obj_url),
+        }
+        self.assertEqual(
+            {u'filename': u'test.gif',
+             u'content-type': u'image/gif',
+             u'size': 35,
+             u'download': download_url,
+             u'scales': scales},
+            value)
 
     def test_namedblobfile_field_serialization_returns_dict(self):
         value = self.serialize(
@@ -213,17 +222,25 @@ class TestDexterityFieldSerializing(TestCase):
             NamedBlobImage(data=image_data, contentType=u'image/gif',
                            filename=u'test.gif'))
         self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+
         obj_url = self.doc1.absolute_url()
-        self.assertEqual({
+        download_url = u'{}/@@images/test_namedblobimage_field'.format(obj_url)
+        scales = {
             u'icon': u'{}/@@images/image/icon'.format(obj_url),
             u'large': u'{}/@@images/image/large'.format(obj_url),
             u'listing': u'{}/@@images/image/listing'.format(obj_url),
             u'mini': u'{}/@@images/image/mini'.format(obj_url),
-            u'original':
-                u'{}/@@images/test_namedblobimage_field'.format(obj_url),
             u'preview': u'{}/@@images/image/preview'.format(obj_url),
             u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
-            u'tile': u'{}/@@images/image/tile'.format(obj_url)}, value)
+            u'tile': u'{}/@@images/image/tile'.format(obj_url),
+        }
+        self.assertEqual(
+            {u'filename': u'test.gif',
+             u'content-type': u'image/gif',
+             u'size': 35,
+             u'download': download_url,
+             u'scales': scales},
+            value)
 
     def test_relationchoice_field_serialization_returns_summary_dict(self):
         doc2 = self.portal[self.portal.invokeFactory(

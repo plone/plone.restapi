@@ -217,16 +217,27 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         )
 
         obj_url = self.portal.image1.absolute_url()
-        self.assertDictEqual(
-            {u'original': u'{}/@@images/image'.format(obj_url),
-             u'mini': u'{}/@@images/image/mini'.format(obj_url),
-             u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
-             u'large': u'{}/@@images/image/large'.format(obj_url),
-             u'listing': u'{}/@@images/image/listing'.format(obj_url),
-             u'tile': u'{}/@@images/image/tile'.format(obj_url),
-             u'preview': u'{}/@@images/image/preview'.format(obj_url),
-             u'icon': u'{}/@@images/image/icon'.format(obj_url)},
+        download_url = u'{}/@@images/image'.format(obj_url)
+        scales = {
+            u'icon': u'{}/@@images/image/icon'.format(obj_url),
+            u'large': u'{}/@@images/image/large'.format(obj_url),
+            u'listing': u'{}/@@images/image/listing'.format(obj_url),
+            u'mini': u'{}/@@images/image/mini'.format(obj_url),
+            u'preview': u'{}/@@images/image/preview'.format(obj_url),
+            u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
+            u'tile': u'{}/@@images/image/tile'.format(obj_url),
+        }
+        self.assertEqual(
+            {u'filename': u'image.png',
+             u'content-type': u'image/png',
+             u'size': 1185,
+             u'download': download_url,
+             u'scales': scales},
             self.serialize(self.portal.image1)['image'])
+
+    def test_serialize_empty_image_returns_none(self):
+        self.portal.invokeFactory('Image', id='image1', title='Image 1')
+        self.assertEqual(None, self.serialize(self.portal.image1)['image'])
 
     def test_serialize_to_json_collection(self):
         self.portal.invokeFactory('Collection', id='collection1')

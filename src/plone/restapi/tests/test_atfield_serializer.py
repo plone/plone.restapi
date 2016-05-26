@@ -91,15 +91,32 @@ class TestATFieldSerializer(unittest.TestCase):
             'content-type': u'text/html',
             'data': u'<p>spam and eggs</p>'}, value)
 
-    def test_image_field_serialization_returns_unicode(self):
+    def test_image_field_serialization_returns_dict(self):
         image_data = (
             'GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00,\x00'
             '\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;')
         value = self.serialize('testImageField', image_data,
                                filename='image.gif', mimetype='image/gif')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
-        self.assertEqual(u'http://nohost/plone/doc1/@@images/testImageField',
-                         value)
+        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+
+        obj_url = self.doc1.absolute_url()
+        download_url = u'{}/@@images/testImageField'.format(obj_url)
+        scales = {
+            u'icon': u'{}/@@images/image/icon'.format(obj_url),
+            u'large': u'{}/@@images/image/large'.format(obj_url),
+            u'listing': u'{}/@@images/image/listing'.format(obj_url),
+            u'mini': u'{}/@@images/image/mini'.format(obj_url),
+            u'preview': u'{}/@@images/image/preview'.format(obj_url),
+            u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
+            u'tile': u'{}/@@images/image/tile'.format(obj_url),
+        }
+        self.assertEqual(
+            {u'filename': 'image.gif',
+             u'content-type': u'image/gif',
+             u'size': 73,
+             u'download': download_url,
+             u'scales': scales},
+            value)
 
     def test_blob_field_serialization_returns_dict(self):
         value = self.serialize('testBlobField', 'spam and eggs',
@@ -126,15 +143,32 @@ class TestATFieldSerializer(unittest.TestCase):
              u'download': url},
             value)
 
-    def test_blobimage_field_serialization_returns_unicode(self):
+    def test_blobimage_field_serialization_returns_dict(self):
         image_data = (
             'GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00,\x00'
             '\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;')
         value = self.serialize('testBlobImageField', image_data,
                                filename='image.gif', mimetype='image/gif')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+
+        obj_url = self.doc1.absolute_url()
+        download_url = u'{}/@@images/testBlobImageField'.format(obj_url)
+        scales = {
+            u'icon': u'{}/@@images/image/icon'.format(obj_url),
+            u'large': u'{}/@@images/image/large'.format(obj_url),
+            u'listing': u'{}/@@images/image/listing'.format(obj_url),
+            u'mini': u'{}/@@images/image/mini'.format(obj_url),
+            u'preview': u'{}/@@images/image/preview'.format(obj_url),
+            u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
+            u'tile': u'{}/@@images/image/tile'.format(obj_url),
+        }
         self.assertEqual(
-            u'http://nohost/plone/doc1/@@images/testBlobImageField', value)
+            {u'filename': u'image.gif',
+             u'content-type': u'image/gif',
+             u'size': 35,
+             u'download': download_url,
+             u'scales': scales},
+            value)
 
     def test_reference_field_serialization_returns_unicode(self):
         doc2 = self.portal[self.portal.invokeFactory(

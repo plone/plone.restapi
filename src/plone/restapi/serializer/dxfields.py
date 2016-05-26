@@ -42,13 +42,28 @@ class DefaultFieldSerializer(object):
 class ImageFieldSerializer(DefaultFieldSerializer):
 
     def __call__(self):
+        image = self.field.get(self.context)
+        if not image:
+            return None
+
+        scales = self.get_scales()
+        download_url = scales.pop('original')
+        result = {
+            'filename': image.filename,
+            'content-type': image.contentType,
+            'size': image.getSize(),
+            'download': download_url,
+            'scales': scales
+        }
+        return json_compatible(result)
+
+    def get_scales(self):
         absolute_url = self.context.absolute_url()
-        urls = {name: '{0}/@@images/image/{1}'.format(absolute_url, name)
-                for name in self.get_scale_names()}
-        urls['original'] = '/'.join((self.context.absolute_url(),
-                                     '@@images',
-                                     self.field.__name__))
-        return json_compatible(urls)
+        scales = {name: '{0}/@@images/image/{1}'.format(absolute_url, name)
+                  for name in self.get_scale_names()}
+        scales['original'] = '/'.join((
+            absolute_url, '@@images', self.field.__name__))
+        return scales
 
     def get_scale_names(self):
         if PLONE_5:
