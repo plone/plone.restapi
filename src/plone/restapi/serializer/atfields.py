@@ -72,11 +72,13 @@ class ImageFieldSerializer(DefaultFieldSerializer):
         url = '/'.join((self.context.absolute_url(),
                         '@@images',
                         self.field.__name__))
-        scales = get_scales(self.context)
+
+        width, height = image.width, image.height
+        scales = get_scales(self.context, self.field, width, height)
         result = {
             'filename': self.field.getFilename(self.context),
-            'content-type': self.field.getContentType(self.context),
-            'size': self.field.get_size(self.context),
+            'content-type': self.field.get(self.context).getContentType(),
+            'size': self.field.get(self.context).get_size(),
             'download': url,
             'scales': scales,
         }

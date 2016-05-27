@@ -219,13 +219,34 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         obj_url = self.portal.image1.absolute_url()
         download_url = u'{}/@@images/image'.format(obj_url)
         scales = {
-            u'icon': u'{}/@@images/image/icon'.format(obj_url),
-            u'large': u'{}/@@images/image/large'.format(obj_url),
-            u'listing': u'{}/@@images/image/listing'.format(obj_url),
-            u'mini': u'{}/@@images/image/mini'.format(obj_url),
-            u'preview': u'{}/@@images/image/preview'.format(obj_url),
-            u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
-            u'tile': u'{}/@@images/image/tile'.format(obj_url),
+            u'listing': {
+                u'download': u'{}/@@images/image/listing'.format(obj_url),
+                u'width': 16,
+                u'height': 4},
+            u'icon': {
+                u'download': u'{}/@@images/image/icon'.format(obj_url),
+                u'width': 32,
+                u'height': 8},
+            u'tile': {
+                u'download': u'{}/@@images/image/tile'.format(obj_url),
+                u'width': 64,
+                u'height': 16},
+            u'thumb': {
+                u'download': u'{}/@@images/image/thumb'.format(obj_url),
+                u'width': 128,
+                u'height': 33},
+            u'mini': {
+                u'download': u'{}/@@images/image/mini'.format(obj_url),
+                u'width': 200,
+                u'height': 52},
+            u'preview': {
+                u'download': u'{}/@@images/image/preview'.format(obj_url),
+                u'width': 215,
+                u'height': 56},
+            u'large': {
+                u'download': u'{}/@@images/image/large'.format(obj_url),
+                u'width': 215,
+                u'height': 56},
         }
         self.assertEqual(
             {u'filename': u'image.png',

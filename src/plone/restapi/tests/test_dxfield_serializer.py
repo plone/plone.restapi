@@ -17,6 +17,8 @@ from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
 
+import os
+
 
 class TestDexterityFieldSerializing(TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -168,30 +170,50 @@ class TestDexterityFieldSerializing(TestCase):
             value)
 
     def test_namedimage_field_serialization_returns_dict(self):
-        image_data = (
-            'GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00,\x00'
-            '\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;')
+        image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
+        image_data = open(image_file, 'rb').read()
         value = self.serialize(
             'test_namedimage_field',
             NamedImage(data=image_data, contentType=u'image/gif',
-                       filename=u'test.gif'))
+                       filename=u'1024x768.gif'))
         self.assertTrue(isinstance(value, dict), 'Not a <dict>')
 
         obj_url = self.doc1.absolute_url()
         download_url = u'{}/@@images/test_namedimage_field'.format(obj_url)
         scales = {
-            u'icon': u'{}/@@images/image/icon'.format(obj_url),
-            u'large': u'{}/@@images/image/large'.format(obj_url),
-            u'listing': u'{}/@@images/image/listing'.format(obj_url),
-            u'mini': u'{}/@@images/image/mini'.format(obj_url),
-            u'preview': u'{}/@@images/image/preview'.format(obj_url),
-            u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
-            u'tile': u'{}/@@images/image/tile'.format(obj_url),
+            u'listing': {
+                u'download': u'{}/@@images/image/listing'.format(obj_url),
+                u'width': 16,
+                u'height': 12},
+            u'icon': {
+                u'download': u'{}/@@images/image/icon'.format(obj_url),
+                u'width': 32,
+                u'height': 24},
+            u'tile': {
+                u'download': u'{}/@@images/image/tile'.format(obj_url),
+                u'width': 64,
+                u'height': 48},
+            u'thumb': {
+                u'download': u'{}/@@images/image/thumb'.format(obj_url),
+                u'width': 128,
+                u'height': 96},
+            u'mini': {
+                u'download': u'{}/@@images/image/mini'.format(obj_url),
+                u'width': 200,
+                u'height': 150},
+            u'preview': {
+                u'download': u'{}/@@images/image/preview'.format(obj_url),
+                u'width': 400,
+                u'height': 300},
+            u'large': {
+                u'download': u'{}/@@images/image/large'.format(obj_url),
+                u'width': 768,
+                u'height': 576},
         }
         self.assertEqual(
-            {u'filename': u'test.gif',
+            {u'filename': u'1024x768.gif',
              u'content-type': u'image/gif',
-             u'size': 35,
+             u'size': 1514,
              u'download': download_url,
              u'scales': scales},
             value)
@@ -214,30 +236,50 @@ class TestDexterityFieldSerializing(TestCase):
             value)
 
     def test_namedblobimage_field_serialization_returns_dict(self):
-        image_data = (
-            'GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00,\x00'
-            '\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;')
+        image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
+        image_data = open(image_file, 'rb').read()
         value = self.serialize(
             'test_namedblobimage_field',
             NamedBlobImage(data=image_data, contentType=u'image/gif',
-                           filename=u'test.gif'))
+                           filename=u'1024x768.gif'))
         self.assertTrue(isinstance(value, dict), 'Not a <dict>')
 
         obj_url = self.doc1.absolute_url()
         download_url = u'{}/@@images/test_namedblobimage_field'.format(obj_url)
         scales = {
-            u'icon': u'{}/@@images/image/icon'.format(obj_url),
-            u'large': u'{}/@@images/image/large'.format(obj_url),
-            u'listing': u'{}/@@images/image/listing'.format(obj_url),
-            u'mini': u'{}/@@images/image/mini'.format(obj_url),
-            u'preview': u'{}/@@images/image/preview'.format(obj_url),
-            u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
-            u'tile': u'{}/@@images/image/tile'.format(obj_url),
+            u'listing': {
+                u'download': u'{}/@@images/image/listing'.format(obj_url),
+                u'width': 16,
+                u'height': 12},
+            u'icon': {
+                u'download': u'{}/@@images/image/icon'.format(obj_url),
+                u'width': 32,
+                u'height': 24},
+            u'tile': {
+                u'download': u'{}/@@images/image/tile'.format(obj_url),
+                u'width': 64,
+                u'height': 48},
+            u'thumb': {
+                u'download': u'{}/@@images/image/thumb'.format(obj_url),
+                u'width': 128,
+                u'height': 96},
+            u'mini': {
+                u'download': u'{}/@@images/image/mini'.format(obj_url),
+                u'width': 200,
+                u'height': 150},
+            u'preview': {
+                u'download': u'{}/@@images/image/preview'.format(obj_url),
+                u'width': 400,
+                u'height': 300},
+            u'large': {
+                u'download': u'{}/@@images/image/large'.format(obj_url),
+                u'width': 768,
+                u'height': 576},
         }
         self.assertEqual(
-            {u'filename': u'test.gif',
+            {u'filename': u'1024x768.gif',
              u'content-type': u'image/gif',
-             u'size': 35,
+             u'size': 1514,
              u'download': download_url,
              u'scales': scales},
             value)
