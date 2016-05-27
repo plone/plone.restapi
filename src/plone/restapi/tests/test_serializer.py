@@ -253,6 +253,8 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
              u'content-type': u'image/png',
              u'size': 1185,
              u'download': download_url,
+             u'width': 215,
+             u'height': 56,
              u'scales': scales},
             self.serialize(self.portal.image1)['image'])
 

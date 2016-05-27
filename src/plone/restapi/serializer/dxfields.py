@@ -48,6 +48,8 @@ class ImageFieldSerializer(DefaultFieldSerializer):
             'content-type': image.contentType,
             'size': image.getSize(),
             'download': url,
+            'width': width,
+            'height': height,
             'scales': scales
         }
         return json_compatible(result)

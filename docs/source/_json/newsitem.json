@@ -24,6 +24,7 @@ content-type: application/json
     "content-type": "image/png", 
     "download": "http://localhost:55001/plone/newsitem/@@images/image", 
     "filename": "image.png", 
+    "height": 56, 
     "scales": {
       "icon": {
         "download": "http://localhost:55001/plone/newsitem/@@images/image/icon", 
@@ -61,7 +62,8 @@ content-type: application/json
         "width": 64
       }
     }, 
-    "size": 1185
+    "size": 1185, 
+    "width": 215
   }, 
   "image_caption": "This is an image caption.", 
   "language": "", 

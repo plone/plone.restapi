@@ -137,6 +137,8 @@ class TestATFieldSerializer(unittest.TestCase):
              u'content-type': u'image/gif',
              u'size': 1514,
              u'download': download_url,
+             u'width': 1024,
+             u'height': 768,
              u'scales': scales},
             value)
 
@@ -209,6 +211,8 @@ class TestATFieldSerializer(unittest.TestCase):
              u'content-type': u'image/gif',
              u'size': 1514,
              u'download': download_url,
+             u'width': 1024,
+             u'height': 768,
              u'scales': scales},
             value)
 
