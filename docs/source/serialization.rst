@@ -48,13 +48,15 @@ will be serialized to
       "encoding": "utf-8"
     }
 
-File Fields
------------
+File / Image Fields
+-------------------
 
 Download (serialization)
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-For download, the file field will simply be serialized to a string that contains the download URL for the file.
+For download, a file field will be serialized to a mapping that contains the
+file's most basic metadata, and a hyperlink that the client can follow to
+download the file:
 
 .. code:: json
 
@@ -62,18 +64,45 @@ For download, the file field will simply be serialized to a string that contains
         "...": "",
         "@type": "File",
         "title": "My file",
-        "file": "http://localhost:55001/plone/file/@@download/file"
+        "file": {
+          "content-type": "application/pdf",
+          "download": "http://localhost:55001/plone/file/@@download/file",
+          "filename": "file.pdf",
+          "size": 74429
+        }
       }
 
-That URL points to the regular Plone download view.
+That URL in the ``download`` property points to the regular Plone download
+view. The client can send a ``GET`` request to that URL with an ``Accept``
+header containing the MIME type indicated in the ``content-type`` property,
+and will get a response containing the file.
 
-This means that when accessing that URL, your request won't be handled by the API but a regular Plone browser view.
-Therefore you must **not** send the ``Accept: application/json`` header in this case.
+Image fields are serialized in the same way, except that their serialization
+contains their ``width`` and ``height``, and an additional property
+``scales`` that contains a mapping with the available image scales:
+
+.. code:: json
+
+    {
+      "icon": {
+        "download": "http://localhost:55001/plone/image/@@images/image/icon",
+        "height": 32,
+        "width": 24
+      },
+      "large": {
+        "download": "http://localhost:55001/plone/image/@@images/image/large",
+        "height": 768,
+        "width": 576
+      },
+      "..." : {}
+    }
+
 
 Upload (deserialization)
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-For a field of type ``Named[Blob]File`` (Dexterity) or ``FileField`` (Archetypes), represent the field content as a dictionary with these four keys:
+For file or image fields, the client must provide the file's data as a mapping
+containg the file data and some additional metadata:
 
 - ``data`` - the base64 encoded contents of the file
 - ``encoding`` - the encoding you used to encode the data, so usually `base64`
