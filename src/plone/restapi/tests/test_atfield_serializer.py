@@ -6,6 +6,7 @@ from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
 
+import os
 import unittest
 
 
@@ -24,7 +25,7 @@ class TestATFieldSerializer(unittest.TestCase):
     def serialize(self, fieldname, value, **kwargs):
         field = self.doc1.getField(fieldname)
         mutator = field.getMutator(self.doc1)
-        mutator(value)
+        mutator(value, **kwargs)
         serializer = getMultiAdapter((field, self.doc1, self.request),
                                      IFieldSerializer)
         return serializer()
@@ -70,12 +71,18 @@ class TestATFieldSerializer(unittest.TestCase):
         self.assertTrue(isinstance(value, list), 'Not a <list>')
         self.assertEqual([u'foo', u'bar'], value)
 
-    def test_file_field_serialization_returns_unicode(self):
+    def test_file_field_serialization_returns_dict(self):
         value = self.serialize('testFileField', 'spam and eggs',
                                filename='spam.txt', mimetype='text/plain')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
-        self.assertEqual(u'http://nohost/plone/doc1/@@download/testFileField',
-                         value)
+        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+
+        url = u'http://nohost/plone/doc1/@@download/testFileField'
+        self.assertEqual(
+            {u'filename': u'spam.txt',
+             u'content-type': u'text/plain',
+             u'size': 13,
+             u'download': url},
+            value)
 
     def test_text_field_serialization_returns_dict(self):
         value = self.serialize('testTextField', '<p>spam and eggs</p>',
@@ -85,39 +92,129 @@ class TestATFieldSerializer(unittest.TestCase):
             'content-type': u'text/html',
             'data': u'<p>spam and eggs</p>'}, value)
 
-    def test_image_field_serialization_returns_unicode(self):
-        image_data = (
-            'GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00,\x00'
-            '\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;')
+    def test_image_field_serialization_returns_dict(self):
+        image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
+        image_data = open(image_file, 'rb').read()
         value = self.serialize('testImageField', image_data,
-                               filename='image.gif', mimetype='image/gif')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
-        self.assertEqual(u'http://nohost/plone/doc1/@@images/testImageField',
-                         value)
+                               filename='1024x768.gif', mimetype='image/gif')
+        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
 
-    def test_blob_field_serialization_returns_unicode(self):
+        self.maxDiff = 99999
+        obj_url = self.doc1.absolute_url()
+        download_url = u'{}/@@images/testImageField'.format(obj_url)
+        scales = {
+            u'listing': {
+                u'download': u'{}/@@images/image/listing'.format(obj_url),
+                u'width': 16,
+                u'height': 12},
+            u'icon': {
+                u'download': u'{}/@@images/image/icon'.format(obj_url),
+                u'width': 32,
+                u'height': 24},
+            u'tile': {
+                u'download': u'{}/@@images/image/tile'.format(obj_url),
+                u'width': 64,
+                u'height': 48},
+            u'thumb': {
+                u'download': u'{}/@@images/image/thumb'.format(obj_url),
+                u'width': 128,
+                u'height': 96},
+            u'mini': {
+                u'download': u'{}/@@images/image/mini'.format(obj_url),
+                u'width': 200,
+                u'height': 150},
+            u'preview': {
+                u'download': u'{}/@@images/image/preview'.format(obj_url),
+                u'width': 400,
+                u'height': 300},
+            u'large': {
+                u'download': u'{}/@@images/image/large'.format(obj_url),
+                u'width': 768,
+                u'height': 576},
+        }
+        self.assertEqual(
+            {u'filename': u'1024x768.gif',
+             u'content-type': u'image/gif',
+             u'size': 1514,
+             u'download': download_url,
+             u'width': 1024,
+             u'height': 768,
+             u'scales': scales},
+            value)
+
+    def test_blob_field_serialization_returns_dict(self):
         value = self.serialize('testBlobField', 'spam and eggs',
                                filename='spam.txt', mimetype='text/plain')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
-        self.assertEqual(u'http://nohost/plone/doc1/@@download/testBlobField',
-                         value)
+        self.assertTrue(isinstance(value, dict), 'Not an <dict>')
+        url = u'http://nohost/plone/doc1/@@download/testBlobField'
+        self.assertEqual(
+            {u'filename': 'spam.txt',
+             u'size': 13,
+             u'content-type': 'text/plain',
+             u'download': url},
+            value)
 
-    def test_blobfile_field_serialization_returns_unicode(self):
+    def test_blobfile_field_serialization_returns_dict(self):
         value = self.serialize('testBlobFileField', 'spam and eggs',
                                filename='spam.txt', mimetype='text/plain')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
-        self.assertEqual(
-            u'http://nohost/plone/doc1/@@download/testBlobFileField', value)
 
-    def test_blobimage_field_serialization_returns_unicode(self):
-        image_data = (
-            'GIF89a\x01\x00\x01\x00\x80\x00\x00\xff\xff\xff\x00\x00\x00,\x00'
-            '\x00\x00\x00\x01\x00\x01\x00\x00\x02\x02D\x01\x00;')
-        value = self.serialize('testBlobImageField', image_data,
-                               filename='image.gif', mimetype='image/gif')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+        url = u'http://nohost/plone/doc1/@@download/testBlobFileField'
         self.assertEqual(
-            u'http://nohost/plone/doc1/@@images/testBlobImageField', value)
+            {u'filename': 'spam.txt',
+             u'content-type': u'text/plain',
+             u'size': 13,
+             u'download': url},
+            value)
+
+    def test_blobimage_field_serialization_returns_dict(self):
+        image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
+        image_data = open(image_file, 'rb').read()
+        value = self.serialize('testBlobImageField', image_data,
+                               filename='1024x768.gif', mimetype='image/gif')
+        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+
+        obj_url = self.doc1.absolute_url()
+        download_url = u'{}/@@images/testBlobImageField'.format(obj_url)
+        scales = {
+            u'listing': {
+                u'download': u'{}/@@images/image/listing'.format(obj_url),
+                u'width': 16,
+                u'height': 12},
+            u'icon': {
+                u'download': u'{}/@@images/image/icon'.format(obj_url),
+                u'width': 32,
+                u'height': 24},
+            u'tile': {
+                u'download': u'{}/@@images/image/tile'.format(obj_url),
+                u'width': 64,
+                u'height': 48},
+            u'thumb': {
+                u'download': u'{}/@@images/image/thumb'.format(obj_url),
+                u'width': 128,
+                u'height': 96},
+            u'mini': {
+                u'download': u'{}/@@images/image/mini'.format(obj_url),
+                u'width': 200,
+                u'height': 150},
+            u'preview': {
+                u'download': u'{}/@@images/image/preview'.format(obj_url),
+                u'width': 400,
+                u'height': 300},
+            u'large': {
+                u'download': u'{}/@@images/image/large'.format(obj_url),
+                u'width': 768,
+                u'height': 576},
+        }
+        self.assertEqual(
+            {u'filename': u'1024x768.gif',
+             u'content-type': u'image/gif',
+             u'size': 1514,
+             u'download': download_url,
+             u'width': 1024,
+             u'height': 768,
+             u'scales': scales},
+            value)
 
     def test_query_field_serialization_returns_list(self):
         query_data = [

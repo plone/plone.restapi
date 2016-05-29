@@ -7,6 +7,7 @@ from Products.Archetypes.interfaces.field import IReferenceField
 from Products.Archetypes.interfaces.field import ITextField
 from plone.app.blob.interfaces import IBlobField
 from plone.app.blob.interfaces import IBlobImageField
+from plone.restapi.imaging import get_scales
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
 from zope.component import adapter
@@ -45,7 +46,13 @@ class FileFieldSerializer(DefaultFieldSerializer):
         url = '/'.join((self.context.absolute_url(),
                         '@@download',
                         self.field.getName()))
-        return json_compatible(url)
+        result = {
+            'filename': self.field.getFilename(self.context),
+            'content-type': self.field.getContentType(self.context),
+            'size': self.field.get_size(self.context),
+            'download': url
+        }
+        return json_compatible(result)
 
 
 @adapter(ITextField, IBaseObject, Interface)
@@ -65,10 +72,26 @@ class TextFieldSerializer(DefaultFieldSerializer):
 class ImageFieldSerializer(DefaultFieldSerializer):
 
     def __call__(self):
+        image = self.field.get(self.context)
+        if not image:
+            return None
+
         url = '/'.join((self.context.absolute_url(),
                         '@@images',
-                        self.field.getName()))
-        return json_compatible(url)
+                        self.field.__name__))
+
+        width, height = image.width, image.height
+        scales = get_scales(self.context, self.field, width, height)
+        result = {
+            'filename': self.field.getFilename(self.context),
+            'content-type': self.field.get(self.context).getContentType(),
+            'size': self.field.get(self.context).get_size(),
+            'download': url,
+            'width': width,
+            'height': height,
+            'scales': scales,
+        }
+        return json_compatible(result)
 
 
 @adapter(IBlobField, IBaseObject, Interface)

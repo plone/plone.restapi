@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-from plone.app.testing import TEST_USER_ID
+from DateTime import DateTime
 from plone.app.testing import setRoles
-from plone.restapi.interfaces import ISerializeToJson
+from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
+from plone.namedfile.file import NamedBlobImage
+from plone.namedfile.file import NamedFile
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
-from plone.namedfile.file import NamedBlobImage
-from DateTime import DateTime
 from zope.component import getMultiAdapter
 
 import os
@@ -186,10 +187,25 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
 
     def test_serialize_file(self):
         self.portal.invokeFactory('File', id='file1', title='File 1')
+        self.portal.file1.file = NamedFile(
+            data=u'Spam and eggs',
+            contentType=u'text/plain',
+            filename=u'test.txt')
+
+        file_url = self.portal.file1.absolute_url()
+        download_url = '{0}/@@download/file'.format(file_url)
         self.assertEqual(
-            '{0}/@@download/file'.format(self.portal.file1.absolute_url()),
+            {u'filename': u'test.txt',
+             u'content-type': u'text/plain',
+             u'download': download_url,
+             u'size': 13},
             self.serialize(self.portal.file1).get('file')
         )
+
+    def test_serialize_empty_file_returns_none(self):
+        self.portal.invokeFactory('File', id='file1', title='File 1')
+
+        self.assertEqual(None, self.serialize(self.portal.file1).get('file'))
 
     def test_serialize_image(self):
         self.portal.invokeFactory('Image', id='image1', title='Image 1')
@@ -201,16 +217,50 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         )
 
         obj_url = self.portal.image1.absolute_url()
-        self.assertDictEqual(
-            {u'original': u'{}/@@images/image'.format(obj_url),
-             u'mini': u'{}/@@images/image/mini'.format(obj_url),
-             u'thumb': u'{}/@@images/image/thumb'.format(obj_url),
-             u'large': u'{}/@@images/image/large'.format(obj_url),
-             u'listing': u'{}/@@images/image/listing'.format(obj_url),
-             u'tile': u'{}/@@images/image/tile'.format(obj_url),
-             u'preview': u'{}/@@images/image/preview'.format(obj_url),
-             u'icon': u'{}/@@images/image/icon'.format(obj_url)},
+        download_url = u'{}/@@images/image'.format(obj_url)
+        scales = {
+            u'listing': {
+                u'download': u'{}/@@images/image/listing'.format(obj_url),
+                u'width': 16,
+                u'height': 4},
+            u'icon': {
+                u'download': u'{}/@@images/image/icon'.format(obj_url),
+                u'width': 32,
+                u'height': 8},
+            u'tile': {
+                u'download': u'{}/@@images/image/tile'.format(obj_url),
+                u'width': 64,
+                u'height': 16},
+            u'thumb': {
+                u'download': u'{}/@@images/image/thumb'.format(obj_url),
+                u'width': 128,
+                u'height': 33},
+            u'mini': {
+                u'download': u'{}/@@images/image/mini'.format(obj_url),
+                u'width': 200,
+                u'height': 52},
+            u'preview': {
+                u'download': u'{}/@@images/image/preview'.format(obj_url),
+                u'width': 215,
+                u'height': 56},
+            u'large': {
+                u'download': u'{}/@@images/image/large'.format(obj_url),
+                u'width': 215,
+                u'height': 56},
+        }
+        self.assertEqual(
+            {u'filename': u'image.png',
+             u'content-type': u'image/png',
+             u'size': 1185,
+             u'download': download_url,
+             u'width': 215,
+             u'height': 56,
+             u'scales': scales},
             self.serialize(self.portal.image1)['image'])
+
+    def test_serialize_empty_image_returns_none(self):
+        self.portal.invokeFactory('Image', id='image1', title='Image 1')
+        self.assertEqual(None, self.serialize(self.portal.image1)['image'])
 
     def test_serialize_to_json_collection(self):
         self.portal.invokeFactory('Collection', id='collection1')
