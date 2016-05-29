@@ -17,14 +17,18 @@ setup(name='plone.restapi',
       # Get more strings from
       # http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
+          "Development Status :: 3 - Alpha",
           "Environment :: Web Environment",
           "Framework :: Plone",
+          "Framework :: Plone :: 4.3",
+          "Framework :: Plone :: 5.0",
+          "Intended Audience :: Developers",
           "Operating System :: OS Independent",
           "Programming Language :: Python",
           "Programming Language :: Python :: 2.7",
           "Topic :: Software Development :: Libraries :: Python Modules",
       ],
-      keywords='',
+      keywords='plone rest restful hypermedia api json',
       author='Timo Stollenwerk',
       author_email='tisto@plone.org',
       url='https://github.com/plone/plone.restapi/',
@@ -36,7 +40,7 @@ setup(name='plone.restapi',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'plone.rest >= 1.0a6',
+          'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
           'PyJWT',
       ],
       extras_require={'test': [
@@ -44,7 +48,7 @@ setup(name='plone.restapi',
           'plone.app.collection',
           'plone.app.contenttypes',
           'plone.app.robotframework',
-          'plone.app.testing [robot] >= 4.2.2',
+          'plone.app.testing [robot] >= 4.2.2',  # ROBOT_TEST_LEVEL added
           'requests',
       ]},
       entry_points="""
