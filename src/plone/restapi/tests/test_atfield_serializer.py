@@ -119,6 +119,23 @@ class TestATFieldSerializer(unittest.TestCase):
         self.assertEqual(
             u'http://nohost/plone/doc1/@@images/testBlobImageField', value)
 
+    def test_query_field_serialization_returns_list(self):
+        query_data = [
+            {
+                "i": "portal_type",
+                "o": "plone.app.querystring.operation.selection.is",
+                "v": ["News Item"]
+            },
+            {
+                "i": "path",
+                "o": "plone.app.querystring.operation.string.path",
+                "v": "/Plone/news"
+            }
+        ]
+        value = self.serialize('testQueryField', query_data)
+        self.assertTrue(isinstance(value, list), 'Not a list')
+        self.assertEqual(value, query_data)
+
     def test_reference_field_serialization_returns_unicode(self):
         doc2 = self.portal[self.portal.invokeFactory(
             'ATTestDocument', id='doc2', title='Referenceable Document')]

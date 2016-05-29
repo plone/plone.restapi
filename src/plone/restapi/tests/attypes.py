@@ -9,6 +9,12 @@ from plone.app.blob.field import FileField
 from plone.app.blob.field import ImageField
 from plone.app.folder.folder import ATFolder
 from plone.app.folder.folder import ATFolderSchema
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    from archetypes.querywidget.field import QueryField
+else:
+    from plone.app.collection.field import QueryField
 
 PROJECTNAME = 'plone.restapi.tests'
 
@@ -30,6 +36,7 @@ ATTestDocumentSchema = ATDocumentSchema.copy() + atapi.Schema((
     BlobField('testBlobField'),
     FileField('testBlobFileField'),
     ImageField('testBlobImageField'),
+    QueryField('testQueryField'),
 
     atapi.StringField('testRequiredField', required=True),
     atapi.StringField('testReadonlyField', mode='r'),

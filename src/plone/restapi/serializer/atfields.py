@@ -13,6 +13,13 @@ from zope.component import adapter
 from zope.interface import Interface
 from zope.interface import implementer
 
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    from archetypes.querywidget.interfaces import IQueryField
+else:
+    from plone.app.collection.field import IQueryField
+
 
 @adapter(IField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
@@ -89,3 +96,11 @@ class ReferenceFieldSerializer(DefaultFieldSerializer):
             if refs is None:
                 return None
             return json_compatible(refs.absolute_url())
+
+
+@adapter(IQueryField, IBaseObject, Interface)
+@implementer(IFieldSerializer)
+class QueryFieldSerializer(DefaultFieldSerializer):
+    def __call__(self):
+        raw_value = self.field.getRaw(self.context)
+        return json_compatible(map(dict, raw_value))

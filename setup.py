@@ -41,6 +41,7 @@ setup(name='plone.restapi',
       ],
       extras_require={'test': [
           'Products.Archetypes',
+          'plone.app.collection',
           'plone.app.contenttypes',
           'plone.app.robotframework',
           'plone.app.testing [robot] >= 4.2.2',
