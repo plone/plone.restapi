@@ -33,9 +33,6 @@ class TestBatchingDXBase(unittest.TestCase):
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-        # Delete robot test folder to get a clean fixture
-        self.portal.manage_delObjects(['robot-test-folder'])
-
     def _create_doc(self, container, number):
         createContentInContainer(
             container, u'DXTestDocument',
