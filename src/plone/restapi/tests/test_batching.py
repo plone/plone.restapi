@@ -384,20 +384,20 @@ class TestHypermediaBatch(unittest.TestCase):
     def test_items_total(self):
         items = range(1, 26)
         self.request.form['b_size'] = 10
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         # items_total should be total number of items in the sequence
         self.assertEqual(
             25, batch.items_total)
 
     def test_default_batch_size(self):
         items = range(1, 27)
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         self.assertEqual(DEFAULT_BATCH_SIZE, len(list(batch)))
 
     def test_custom_batch_size(self):
         items = range(1, 26)
         self.request.form['b_size'] = 5
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         # Batch size should be customizable via request
         self.assertEqual(
             5, len(list(batch)))
@@ -405,7 +405,7 @@ class TestHypermediaBatch(unittest.TestCase):
     def test_default_batch_start(self):
         items = range(1, 26)
         self.request.form['b_size'] = 10
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         # Batch should start on first item by default
         self.assertEqual(
             range(1, 11), list(batch))
@@ -414,7 +414,7 @@ class TestHypermediaBatch(unittest.TestCase):
         items = range(1, 26)
         self.request.form['b_size'] = 10
         self.request.form['b_start'] = 5
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         # Batch start should be customizable via request
         self.assertEqual(
             range(6, 16), list(batch))
@@ -423,7 +423,7 @@ class TestHypermediaBatch(unittest.TestCase):
         items = range(1, 26)
         self.request.form['b_size'] = 5
         self.request.form['b_start'] = 5
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         # Should be able to combine custom batch start and size
         self.assertListEqual(
             range(6, 11), list(batch))
@@ -431,7 +431,7 @@ class TestHypermediaBatch(unittest.TestCase):
     def test_canonical_url(self):
         items = range(1, 26)
         self.request.form['b_size'] = 10
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         self.assertEqual('http://nohost', batch.canonical_url)
 
     def test_canonical_url_preserves_query_string_params(self):
@@ -439,7 +439,7 @@ class TestHypermediaBatch(unittest.TestCase):
 
         self.request.form['b_size'] = 10
         self.request['QUERY_STRING'] = 'one=1&two=2'
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
 
         parsed_url = urlparse(batch.canonical_url)
         qs_params = dict(parse_qsl(parsed_url.query))
@@ -453,7 +453,7 @@ class TestHypermediaBatch(unittest.TestCase):
 
         self.request.form['b_size'] = 10
         self.request['QUERY_STRING'] = 'one=1&b_size=10&b_start=20&two=2'
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
 
         parsed_url = urlparse(batch.canonical_url)
         qs_params = dict(parse_qsl(parsed_url.query))
@@ -466,7 +466,7 @@ class TestHypermediaBatch(unittest.TestCase):
         items = range(1, 26)
 
         self.request['QUERY_STRING'] = 'one=1&sort_on=path&two=2'
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
 
         parsed_url = urlparse(batch.canonical_url)
         qs_params = dict(parse_qsl(parsed_url.query))
@@ -481,7 +481,7 @@ class TestHypermediaBatch(unittest.TestCase):
         self.request.form['b_size'] = 10
         self.request['ACTUAL_URL'] = 'http://nohost'
         self.request['QUERY_STRING'] = 'b_size=10&b_start=20'
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         self.assertEqual(
             'http://nohost?b_size=10&b_start=20', batch.current_batch_url)
 
@@ -489,14 +489,14 @@ class TestHypermediaBatch(unittest.TestCase):
         items = range(1, 5)
 
         self.request.form['b_size'] = 10
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         self.assertEqual(None, batch.links)
 
     def test_first_link_contained(self):
         items = range(1, 26)
 
         self.request.form['b_size'] = 10
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         self.assertDictContainsSubset(
             {'first': 'http://nohost?b_start=0'}, batch.links)
 
@@ -504,7 +504,7 @@ class TestHypermediaBatch(unittest.TestCase):
         items = range(1, 26)
 
         self.request.form['b_size'] = 10
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         self.assertDictContainsSubset(
             {'last': 'http://nohost?b_start=20'}, batch.links)
 
@@ -512,7 +512,7 @@ class TestHypermediaBatch(unittest.TestCase):
         items = range(1, 26)
 
         self.request.form['b_size'] = 10
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         self.assertDictContainsSubset(
             {'next': 'http://nohost?b_start=10'}, batch.links)
 
@@ -522,7 +522,7 @@ class TestHypermediaBatch(unittest.TestCase):
         # Start on last page
         self.request.form['b_size'] = 10
         self.request.form['b_start'] = 20
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         self.assertSetEqual(
             set(['@id', 'first', 'prev', 'last']),
             set(batch.links.keys()))
@@ -533,7 +533,7 @@ class TestHypermediaBatch(unittest.TestCase):
         # Start on third page
         self.request.form['b_size'] = 10
         self.request.form['b_start'] = 20
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         self.assertDictContainsSubset(
             {'prev': 'http://nohost?b_start=10'}, batch.links)
 
@@ -541,7 +541,7 @@ class TestHypermediaBatch(unittest.TestCase):
         items = range(1, 26)
 
         self.request.form['b_size'] = 10
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         self.assertSetEqual(
             set(['@id', 'first', 'next', 'last']),
             set(batch.links.keys()))
@@ -555,7 +555,7 @@ class TestHypermediaBatch(unittest.TestCase):
 
         for pagenumber in range(3):
             self.request.form['b_start'] = pagenumber * size
-            batch = HypermediaBatch(self.portal, self.request, items)
+            batch = HypermediaBatch(self.request, items)
             items_from_all_batches.extend(list(batch))
 
         self.assertEqual(items, items_from_all_batches)
@@ -566,6 +566,6 @@ class TestHypermediaBatch(unittest.TestCase):
         # Start in the middle of what would otherwise be the first batch
         self.request.form['b_size'] = 10
         self.request.form['b_start'] = 5
-        batch = HypermediaBatch(self.portal, self.request, items)
+        batch = HypermediaBatch(self.request, items)
         self.assertEquals(
             'http://nohost?b_start=0', batch.links['prev'])

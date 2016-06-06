@@ -9,8 +9,7 @@ DEFAULT_BATCH_SIZE = 25
 
 class HypermediaBatch(object):
 
-    def __init__(self, context, request, results):
-        self.context = context
+    def __init__(self, request, results):
         self.request = request
 
         self.b_start = int(self.request.form.get('b_start', 0))
