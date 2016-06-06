@@ -55,5 +55,6 @@
     </configure>
 
     <adapter factory=".catalog.BrainSerializer" />
+    <adapter factory=".catalog.LazyCatalogResultSerializer" />
 
 </configure>
