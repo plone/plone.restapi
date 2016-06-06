@@ -30,7 +30,7 @@ class SerializeSiteRootToJson(object):
         catalog = getToolByName(self.context, 'portal_catalog')
         brains = catalog(query)
 
-        batch = HypermediaBatch(self.context, self.request, brains)
+        batch = HypermediaBatch(self.request, brains)
 
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',

@@ -106,7 +106,7 @@ class SerializeFolderToJson(SerializeToJson):
         catalog = getToolByName(self.context, 'portal_catalog')
         brains = catalog(query)
 
-        batch = HypermediaBatch(self.context, self.request, brains)
+        batch = HypermediaBatch(self.request, brains)
 
         result = folder_metadata
         result['@id'] = batch.canonical_url

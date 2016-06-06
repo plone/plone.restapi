@@ -17,7 +17,7 @@ class SerializeCollectionToJson(SerializeToJson):
     def __call__(self):
         collection_metadata = super(SerializeCollectionToJson, self).__call__()
         results = self.context.results(batch=False)
-        batch = HypermediaBatch(self.context, self.request, results)
+        batch = HypermediaBatch(self.request, results)
 
         results = collection_metadata
         results['@id'] = batch.canonical_url

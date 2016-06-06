@@ -35,6 +35,24 @@ class TestCatalogSerializers(unittest.TestCase):
         IMutableUUID(self.doc).set('77779ffa110e45afb1ba502f75f77777')
         self.doc.reindexObject()
 
+    def test_lazy_cat_serialization_empty_resultset(self):
+        # Force an empty resultset (Products.ZCatalog.Lazy.LazyCat)
+        lazy_cat = self.catalog(path='doesnt-exist')
+        results = getMultiAdapter((lazy_cat, self.request), ISerializeToJson)()
+
+        self.assertDictEqual(
+            {'@id': 'http://nohost', 'items': [], 'items_total': 0},
+            results)
+
+    def test_lazy_map_serialization(self):
+        # Test serialization of a Products.ZCatalog.Lazy.LazyMap
+        lazy_map = self.catalog()
+        results = getMultiAdapter((lazy_map, self.request), ISerializeToJson)()
+
+        self.assertDictContainsSubset({'@id': 'http://nohost'}, results)
+        self.assertDictContainsSubset({'items_total': 2}, results)
+        self.assertEqual(2, len(results['items']))
+
     def test_brain_summary_representation(self):
         lazy_map = self.catalog(path='/plone/my-folder/my-document')
         brain = lazy_map[0]

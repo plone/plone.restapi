@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
+from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from Products.CMFCore.utils import getToolByName
 from Products.ZCatalog.interfaces import ICatalogBrain
+from Products.ZCatalog.Lazy import Lazy
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component.hooks import getSite
@@ -56,3 +58,40 @@ class BrainSerializer(object):
             result[attr] = value
 
         return result
+
+
+@implementer(ISerializeToJson)
+@adapter(Lazy, Interface)
+class LazyCatalogResultSerializer(object):
+    """Serializes a ZCatalog resultset (one of the subclasses of `Lazy`) to
+    a Python data structure that can in turn be serialized to JSON.
+    """
+
+    def __init__(self, lazy_resultset, request):
+        self.lazy_resultset = lazy_resultset
+        self.request = request
+
+    def __call__(self, metadata_fields=()):
+        batch = HypermediaBatch(self.request, self.lazy_resultset)
+
+        results = {}
+        results['@id'] = batch.canonical_url
+        results['items_total'] = batch.items_total
+        if batch.links:
+            results['batching'] = batch.links
+
+        results['items'] = []
+        for brain in batch:
+            result = getMultiAdapter(
+                (brain, self.request), ISerializeToJsonSummary)()
+
+            if metadata_fields:
+                # Merge additional metadata into the summary we already have
+                metadata = getMultiAdapter(
+                    (brain, self.request),
+                    ISerializeToJson)(metadata_fields=metadata_fields)
+                result.update(metadata)
+
+            results['items'].append(result)
+
+        return results
