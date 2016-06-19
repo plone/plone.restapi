@@ -89,21 +89,21 @@ To retrieve all details for a particular user, send a GET request to the ``/@use
 
   .. code-block:: http-request
 
-    GET /@user/noam HTTP/1.1
+    GET /@users/noam HTTP/1.1
     Host: localhost:8080
     Accept: application/json
 
   .. code-block:: curl
 
-    curl -i -H "Accept: application/json" --user admin:admin -X GET http://localhost:8080/Plone/@user/noam
+    curl -i -H "Accept: application/json" --user admin:admin -X GET http://localhost:8080/Plone/@users/noam
 
   .. code-block:: httpie
 
-    http -a admin:admin GET http://localhost:8080/Plone/@user/noam Accept:application/json
+    http -a admin:admin GET http://localhost:8080/Plone/@users/noam Accept:application/json
 
   .. code-block:: python-requests
 
-    requests.post('http://localhost:8080/Plone/@user/noam', auth=('admin', 'admin'), headers={'Accept': 'application/json'})
+    requests.post('http://localhost:8080/Plone/@users/noam', auth=('admin', 'admin'), headers={'Accept': 'application/json'})
 
 The server will respond with a 200 OK status code and the JSON representation of the user in the body:
 
