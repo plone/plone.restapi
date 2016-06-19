@@ -114,7 +114,7 @@ The server will respond with a 200 OK status code and the JSON representation of
 Update User
 -----------
 
-To update the settings of a usersend a PATCH request with the user details you want to amend to the URL of that particular user, e.g. if you want to update the email address of the admin user to:
+To update the settings of a user, send a PATCH request with the user details you want to amend to the URL of that particular user, e.g. if you want to update the email address of the admin user to:
 
 .. example-code::
 
