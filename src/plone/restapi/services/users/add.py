@@ -3,7 +3,9 @@ from plone import api
 from plone.api.exc import MissingParameterError
 from plone.api.exc import InvalidParameterError
 from plone.restapi.deserializer import json_body
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from zope.component import queryMultiAdapter
 from zExceptions import BadRequest
 from zope.interface import alsoProvides
 
@@ -61,12 +63,8 @@ class UsersPost(Service):
         self.request.response.setHeader(
             'Location', api.portal.get().absolute_url() + '/@users/' + username
         )
-        return {
-            'id': user.id,
-            'email': user.getProperty('email'),
-            'username': user.getUserName(),
-            'fullname': user.getProperty('fullname'),
-            'home_page': user.getProperty('home_page'),
-            'description': user.getProperty('description'),
-            'location': user.getProperty('location')
-        }
+        serializer = queryMultiAdapter(
+            (user, self.request),
+            ISerializeToJson
+        )
+        return serializer()
