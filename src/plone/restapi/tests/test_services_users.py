@@ -51,6 +51,10 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertTrue('noam' in user_ids)
         noam = [x for x in response.json() if x.get('username') == 'noam'][0]
         self.assertEqual('noam', noam.get('id'))
+        self.assertEqual(
+            self.portal.absolute_url() + '/@users/noam',
+            noam.get('@id')
+        )
         self.assertEqual('noam.chomsky@example.com', noam.get('email'))
         self.assertEqual('Noam Avram Chomsky', noam.get('fullname'))
         self.assertEqual('web.mit.edu/chomsky', noam.get('home_page'))  # noqa
@@ -77,7 +81,14 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual('noam', response.json().get('id'))
-        self.assertEqual('noam.chomsky@example.com', response.json().get('email'))
+        self.assertEqual(
+            self.portal.absolute_url() + '/@users/noam',
+            response.json().get('@id')
+        )
+        self.assertEqual(
+            'noam.chomsky@example.com',
+            response.json().get('email')
+        )
         self.assertEqual('Noam Avram Chomsky', response.json().get('fullname'))
         self.assertEqual('web.mit.edu/chomsky', response.json().get('home_page'))  # noqa
         self.assertEqual('Professor of Linguistics', response.json().get('description'))  # noqa
