@@ -46,9 +46,9 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(3, len(response.json()))
         user_ids = [user['id'] for user in response.json()]
-        self.assertTrue('admin' in user_ids)
-        self.assertTrue('test_user_1_' in user_ids)
-        self.assertTrue('noam' in user_ids)
+        self.assertIn('admin', user_ids)
+        self.assertIn('test_user_1_', user_ids)
+        self.assertIn('noam', user_ids)
         noam = [x for x in response.json() if x.get('username') == 'noam'][0]
         self.assertEqual('noam', noam.get('id'))
         self.assertEqual(
