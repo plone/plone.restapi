@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <plone:service
+    method="GET"
+    name="@users"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".get.UsersGet"
+    permission="cmf.ManagePortal"
+    />
+
+  <plone:service
+    method="PATCH"
+    name="@users"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".update.UsersPatch"
+    permission="cmf.ManagePortal"
+    />
+
+  <plone:service
+    method="POST"
+    name="@users"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".add.UsersPost"
+    permission="cmf.ManagePortal"
+    />
+
+  <plone:service
+    method="DELETE"
+    name="@users"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".delete.UsersDelete"
+    permission="cmf.ManagePortal"
+    />
+
+</configure>

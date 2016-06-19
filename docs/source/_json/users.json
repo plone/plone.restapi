@@ -1,0 +1,26 @@
+GET /plone/@users
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+[
+  {
+    "description": "This is an admin user", 
+    "email": "admin@example.com", 
+    "fullname": "Administrator", 
+    "home_page": "http://www.example.com", 
+    "id": "admin", 
+    "location": "Berlin", 
+    "username": "admin"
+  }, 
+  {
+    "description": "This is a test user", 
+    "email": "test@example.com", 
+    "fullname": "Test User", 
+    "home_page": "http://www.example.com", 
+    "id": "test_user_1_", 
+    "location": "Bonn", 
+    "username": "test-user"
+  }
+]

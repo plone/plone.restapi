@@ -26,5 +26,6 @@ docs/html
 htmlcov
 bower_components
 *.hprof
+.DS_Store
 jmeter.log
 pip-selfcheck.json

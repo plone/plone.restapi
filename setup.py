@@ -40,6 +40,7 @@ setup(name='plone.restapi',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'plone.api',
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
           'PyJWT',
       ],
