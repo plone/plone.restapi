@@ -21,7 +21,7 @@ class RegistryUpdate(Service):
 
         for key, value in records_to_update.items():
             if key not in registry:
-                raise NotImplemented(
+                raise NotImplementedError(
                     "This endpoint is only intended to update existing "
                     "records! Couldn't find key %r" % key)
             registry[key] = value

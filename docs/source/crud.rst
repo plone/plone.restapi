@@ -10,7 +10,7 @@ Verb    URL                     Action
 ======= ======================= ==============================================
 POST    /folder                 Creates a new document within the folder
 GET     /folder/{documentId}    Request the current state of the document
-PUT     /folder/{documentId}    Update the document details
+PATCH   /folder/{documentId}    Update the document details
 DELETE  /folder/{documentId}    Remove the document
 ======= ======================= ==============================================
 

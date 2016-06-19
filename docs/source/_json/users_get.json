@@ -1,0 +1,15 @@
+GET /plone/@users/noam
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+{
+  "description": "Professor of Linguistics", 
+  "email": "noam.chomsky@mit.edu", 
+  "fullname": "Noam Avram Chomsky", 
+  "home_page": "web.mit.edu/chomsky", 
+  "id": "noam", 
+  "location": "Cambridge, MA", 
+  "username": "noam"
+}

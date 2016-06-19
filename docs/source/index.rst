@@ -25,6 +25,7 @@ Contents
    batching
    workflow
    registry
+   users
    serialization
    searching
    customization
