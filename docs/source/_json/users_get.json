@@ -6,7 +6,7 @@ content-type: application/json
 
 {
   "description": "Professor of Linguistics", 
-  "email": "noam.chomsky@mit.edu", 
+  "email": "noam.chomsky@example.com", 
   "fullname": "Noam Avram Chomsky", 
   "home_page": "web.mit.edu/chomsky", 
   "id": "noam", 

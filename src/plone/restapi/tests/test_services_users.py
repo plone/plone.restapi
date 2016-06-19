@@ -26,7 +26,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         properties = {
-            'email': 'noam.chomsky@mit.edu',
+            'email': 'noam.chomsky@example.com',
             'username': 'noamchomsky',
             'fullname': 'Noam Avram Chomsky',
             'home_page': 'web.mit.edu/chomsky',
@@ -34,7 +34,7 @@ class TestUsersEndpoint(unittest.TestCase):
             'location': 'Cambridge, MA'
         }
         api.user.create(
-            email='noam.chomsky@mit.edu',
+            email='noam.chomsky@example.com',
             username='noam',
             properties=properties
         )
@@ -51,7 +51,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertTrue('noam' in user_ids)
         noam = [x for x in response.json() if x.get('username') == 'noam'][0]
         self.assertEqual('noam', noam.get('id'))
-        self.assertEqual('noam.chomsky@mit.edu', noam.get('email'))
+        self.assertEqual('noam.chomsky@example.com', noam.get('email'))
         self.assertEqual('Noam Avram Chomsky', noam.get('fullname'))
         self.assertEqual('web.mit.edu/chomsky', noam.get('home_page'))  # noqa
         self.assertEqual('Professor of Linguistics', noam.get('description'))  # noqa
@@ -77,7 +77,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual('noam', response.json().get('id'))
-        self.assertEqual('noam.chomsky@mit.edu', response.json().get('email'))
+        self.assertEqual('noam.chomsky@example.com', response.json().get('email'))
         self.assertEqual('Noam Avram Chomsky', response.json().get('fullname'))
         self.assertEqual('web.mit.edu/chomsky', response.json().get('home_page'))  # noqa
         self.assertEqual('Professor of Linguistics', response.json().get('description'))  # noqa

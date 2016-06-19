@@ -7,7 +7,7 @@ location: http://localhost:55001/plone/@users/noamchomsky
 
 {
   "description": "", 
-  "email": "noam.chomsky@mit.edu", 
+  "email": "noam.chomsky@example.com", 
   "fullname": "", 
   "home_page": "", 
   "id": "noamchomsky", 

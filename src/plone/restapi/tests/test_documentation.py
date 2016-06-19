@@ -389,7 +389,7 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_users_get(self):
         properties = {
-            'email': 'noam.chomsky@mit.edu',
+            'email': 'noam.chomsky@example.com',
             'username': 'noamchomsky',
             'fullname': 'Noam Avram Chomsky',
             'home_page': 'web.mit.edu/chomsky',
@@ -397,7 +397,7 @@ class TestTraversal(unittest.TestCase):
             'location': 'Cambridge, MA'
         }
         api.user.create(
-            email='noam.chomsky@mit.edu',
+            email='noam.chomsky@example.com',
             username='noam',
             properties=properties
         )
@@ -410,7 +410,7 @@ class TestTraversal(unittest.TestCase):
             '/@users',
             json={
                 'username': 'noam',
-                'email': 'noam.chomsky@mit.edu',
+                'email': 'noam.chomsky@example.com',
                 'password': 'colorlessgreenideas',
                 'username': 'noamchomsky',
                 'fullname': 'Noam Avram Chomsky',
@@ -423,7 +423,7 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_users_update(self):
         properties = {
-            'email': 'noam.chomsky@mit.edu',
+            'email': 'noam.chomsky@example.com',
             'username': 'noamchomsky',
             'fullname': 'Noam Avram Chomsky',
             'home_page': 'web.mit.edu/chomsky',
@@ -431,7 +431,7 @@ class TestTraversal(unittest.TestCase):
             'location': 'Cambridge, MA'
         }
         api.user.create(
-            email='noam.chomsky@mit.edu',
+            email='noam.chomsky@example.com',
             username='noam',
             properties=properties
         )
@@ -447,7 +447,7 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_users_delete(self):
         properties = {
-            'email': 'noam.chomsky@mit.edu',
+            'email': 'noam.chomsky@example.com',
             'username': 'noamchomsky',
             'fullname': 'Noam Avram Chomsky',
             'home_page': 'web.mit.edu/chomsky',
@@ -455,7 +455,7 @@ class TestTraversal(unittest.TestCase):
             'location': 'Cambridge, MA'
         }
         api.user.create(
-            email='noam.chomsky@mit.edu',
+            email='noam.chomsky@example.com',
             username='noam',
             properties=properties
         )

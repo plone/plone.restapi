@@ -16,7 +16,7 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         properties = {
-            'email': 'noam.chomsky@mit.edu',
+            'email': 'noam.chomsky@example.com',
             'username': 'noamchomsky',
             'fullname': 'Noam Avram Chomsky',
             'home_page': 'web.mit.edu/chomsky',
@@ -24,7 +24,7 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
             'location': 'Cambridge, MA'
         }
         self.user = api.user.create(
-            email='noam.chomsky@mit.edu',
+            email='noam.chomsky@example.com',
             username='noam',
             properties=properties
         )
@@ -38,7 +38,7 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
         user = self.serialize(self.user)
         self.assertTrue(user)
         self.assertEqual('noam', user.get('id'))
-        self.assertEqual('noam.chomsky@mit.edu', user.get('email'))
+        self.assertEqual('noam.chomsky@example.com', user.get('email'))
         self.assertEqual('Noam Avram Chomsky', user.get('fullname'))
         self.assertEqual('web.mit.edu/chomsky', user.get('home_page'))  # noqa
         self.assertEqual('Professor of Linguistics', user.get('description'))  # noqa
