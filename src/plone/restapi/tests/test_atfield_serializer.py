@@ -95,40 +95,41 @@ class TestATFieldSerializer(unittest.TestCase):
     def test_image_field_serialization_returns_dict(self):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
         image_data = open(image_file, 'rb').read()
-        value = self.serialize('testImageField', image_data,
+        fn = 'testImageField'
+        value = self.serialize(fn, image_data,
                                filename='1024x768.gif', mimetype='image/gif')
         self.assertTrue(isinstance(value, dict), 'Not a <dict>')
 
         self.maxDiff = 99999
         obj_url = self.doc1.absolute_url()
-        download_url = u'{}/@@images/testImageField'.format(obj_url)
+        download_url = u'{}/@@images/{}'.format(obj_url, fn)
         scales = {
             u'listing': {
-                u'download': u'{}/@@images/image/listing'.format(obj_url),
+                u'download': u'{}/@@images/{}/listing'.format(obj_url, fn),
                 u'width': 16,
                 u'height': 12},
             u'icon': {
-                u'download': u'{}/@@images/image/icon'.format(obj_url),
+                u'download': u'{}/@@images/{}/icon'.format(obj_url, fn),
                 u'width': 32,
                 u'height': 24},
             u'tile': {
-                u'download': u'{}/@@images/image/tile'.format(obj_url),
+                u'download': u'{}/@@images/{}/tile'.format(obj_url, fn),
                 u'width': 64,
                 u'height': 48},
             u'thumb': {
-                u'download': u'{}/@@images/image/thumb'.format(obj_url),
+                u'download': u'{}/@@images/{}/thumb'.format(obj_url, fn),
                 u'width': 128,
                 u'height': 96},
             u'mini': {
-                u'download': u'{}/@@images/image/mini'.format(obj_url),
+                u'download': u'{}/@@images/{}/mini'.format(obj_url, fn),
                 u'width': 200,
                 u'height': 150},
             u'preview': {
-                u'download': u'{}/@@images/image/preview'.format(obj_url),
+                u'download': u'{}/@@images/{}/preview'.format(obj_url, fn),
                 u'width': 400,
                 u'height': 300},
             u'large': {
-                u'download': u'{}/@@images/image/large'.format(obj_url),
+                u'download': u'{}/@@images/{}/large'.format(obj_url, fn),
                 u'width': 768,
                 u'height': 576},
         }
@@ -170,39 +171,40 @@ class TestATFieldSerializer(unittest.TestCase):
     def test_blobimage_field_serialization_returns_dict(self):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
         image_data = open(image_file, 'rb').read()
-        value = self.serialize('testBlobImageField', image_data,
+        fn = 'testBlobImageField'
+        value = self.serialize(fn, image_data,
                                filename='1024x768.gif', mimetype='image/gif')
         self.assertTrue(isinstance(value, dict), 'Not a <dict>')
 
         obj_url = self.doc1.absolute_url()
-        download_url = u'{}/@@images/testBlobImageField'.format(obj_url)
+        download_url = u'{}/@@images/{}'.format(obj_url, fn)
         scales = {
             u'listing': {
-                u'download': u'{}/@@images/image/listing'.format(obj_url),
+                u'download': u'{}/@@images/{}/listing'.format(obj_url, fn),
                 u'width': 16,
                 u'height': 12},
             u'icon': {
-                u'download': u'{}/@@images/image/icon'.format(obj_url),
+                u'download': u'{}/@@images/{}/icon'.format(obj_url, fn),
                 u'width': 32,
                 u'height': 24},
             u'tile': {
-                u'download': u'{}/@@images/image/tile'.format(obj_url),
+                u'download': u'{}/@@images/{}/tile'.format(obj_url, fn),
                 u'width': 64,
                 u'height': 48},
             u'thumb': {
-                u'download': u'{}/@@images/image/thumb'.format(obj_url),
+                u'download': u'{}/@@images/{}/thumb'.format(obj_url, fn),
                 u'width': 128,
                 u'height': 96},
             u'mini': {
-                u'download': u'{}/@@images/image/mini'.format(obj_url),
+                u'download': u'{}/@@images/{}/mini'.format(obj_url, fn),
                 u'width': 200,
                 u'height': 150},
             u'preview': {
-                u'download': u'{}/@@images/image/preview'.format(obj_url),
+                u'download': u'{}/@@images/{}/preview'.format(obj_url, fn),
                 u'width': 400,
                 u'height': 300},
             u'large': {
-                u'download': u'{}/@@images/image/large'.format(obj_url),
+                u'download': u'{}/@@images/{}/large'.format(obj_url, fn),
                 u'width': 768,
                 u'height': 576},
         }
