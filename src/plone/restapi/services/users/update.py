@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone import api
 from plone.restapi.services import Service
+from Products.CMFPlone.utils import set_own_login_name
 from zope.interface import alsoProvides
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -41,7 +42,12 @@ class UsersPatch(Service):
                          plone.protect.interfaces.IDisableCSRFProtection)
 
         for key, value in user_settings_to_update.items():
-            user.setMemberProperties(mapping={key: value})
+            if key == 'password':
+                user.userSetPassword(user.getUserId(), value)
+            elif key == 'username':
+                set_own_login_name(user, value)
+            else:
+                user.setMemberProperties(mapping={key: value})
 
         self.request.response.setStatus(204)
         return None

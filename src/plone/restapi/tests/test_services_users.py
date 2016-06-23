@@ -95,13 +95,35 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual('Cambridge, MA', response.json().get('location'))
 
     def test_update_user(self):
-        payload = {'email': 'avram.chomsky@mit.edu'}
+        payload = {
+            'fullname': 'Noam A. Chomsky',
+            'username': 'avram',
+            'email': 'avram.chomsky@mit.edu'
+        }
         response = self.api_session.patch('/@users/noam', json=payload)
         transaction.commit()
 
         self.assertEqual(response.status_code, 204)
         noam = api.user.get(userid='noam')
+        self.assertEqual('noam', noam.getUserId())  # user id never changes
+        self.assertEqual('avram', noam.getUserName())
+        self.assertEqual('Noam A. Chomsky', noam.getProperty('fullname'))
         self.assertEqual('avram.chomsky@mit.edu', noam.getProperty('email'))
+
+    def test_update_user_password(self):
+        old_password_hashes = dict(
+            self.portal.acl_users.source_users._user_passwords
+        )
+        payload = {'password': 'secret'}
+        self.api_session.patch('/@users/noam', json=payload)
+        transaction.commit()
+
+        new_password_hashes = dict(
+            self.portal.acl_users.source_users._user_passwords
+        )
+        self.assertNotEqual(
+            old_password_hashes['noam'], new_password_hashes['noam']
+        )
 
     def test_delete_user(self):
         response = self.api_session.delete('/@users/noam')
