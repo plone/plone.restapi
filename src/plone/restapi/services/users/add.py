@@ -5,11 +5,17 @@ from plone.api.exc import InvalidParameterError
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from zope.component import getAdapter
 from zope.component import queryMultiAdapter
 from zExceptions import BadRequest
 from zope.interface import alsoProvides
 
 import plone.protect.interfaces
+
+try:
+    from Products.CMFPlone.interfaces import ISecuritySchema
+except ImportError:
+    from plone.app.controlpanel.security import ISecuritySchema
 
 
 class UsersPost(Service):
@@ -25,10 +31,13 @@ class UsersPost(Service):
         roles = data.get('roles', [])
         properties = data.get('properties', {})
 
-        if not username:
+        security_settings = getAdapter(self.context, ISecuritySchema)
+        use_email_as_login = security_settings.use_email_as_login
+
+        if not username and not use_email_as_login:
             raise BadRequest("Property 'username' is required")
 
-        if not email:
+        if not email and use_email_as_login:
             raise BadRequest("Property 'email' is required")
 
         if not password:
@@ -58,6 +67,9 @@ class UsersPost(Service):
             return dict(error=dict(
                 type='InvalidParameterError',
                 message=str(e.message)))
+
+        if not username and use_email_as_login:
+            username = email
 
         self.request.response.setStatus(201)
         self.request.response.setHeader(

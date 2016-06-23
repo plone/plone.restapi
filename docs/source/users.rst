@@ -72,9 +72,9 @@ To create a new user, send a POST request to the global ``/@users`` endpoint wit
     requests.post('http://localhost:8080/Plone/@users', auth=('admin', 'admin'), headers={'Accept': 'application/json', 'Content-Type': 'application/json'}, params={'username': 'noam', 'email': 'chomsky@mit.edu', 'password': 'colorlessgreenideas'})
 
 .. note::
-    username, email, and password are required. All other fields in the example are optional.
+    By default, "username", and "password" are required fields. If email login is enabled, "email" and "password" are required fields. All other fields in the example are optional.
 
-If the user has been created successfully, the server will respond with a status 201 (Created). The 'Location' header contains the URL of the newly created user and the resource representaion in the payload:
+If the user has been created successfully, the server will respond with a status 201 (Created). The 'Location' header contains the URL of the newly created user and the resource representation in the payload:
 
 .. literalinclude:: _json/users_created.json
    :language: js

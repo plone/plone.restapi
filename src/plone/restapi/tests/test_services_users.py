@@ -6,6 +6,12 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from zope.component import getAdapter
+
+try:
+    from Products.CMFPlone.interfaces import ISecuritySchema
+except ImportError:
+    from plone.app.controlpanel.security import ISecuritySchema
 
 import transaction
 import unittest
@@ -75,6 +81,63 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(201, response.status_code)
         howard = api.user.get(userid='howard')
         self.assertEqual("howard.zinn@bu.edu", howard.getProperty('email'))
+
+    def test_add_user_username_is_required(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "password": "noamchomsky"
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(400, response.status_code)
+        self.assertTrue('"Property \'username\' is required' in response.text)
+
+    def test_add_user_password_is_required(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "username": "noamchomsky"
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(400, response.status_code)
+        self.assertTrue('"Property \'password\' is required' in response.text)
+
+    def test_add_user_email_is_required_if_email_login_is_enabled(self):
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "username": "noam",
+                "password": "secret"
+            },
+        )
+
+        self.assertEqual(400, response.status_code)
+        self.assertTrue('"Property \'email\' is required' in response.text)
+
+    def test_add_user_email_with_email_login_enabled(self):
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "email": "howard.zinn@example.com",
+                "password": "secret"
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+        self.assertTrue(api.user.get(userid='howard.zinn@example.com'))
 
     def test_get_user(self):
         response = self.api_session.get('/@users/noam')
