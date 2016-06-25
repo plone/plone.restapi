@@ -161,7 +161,7 @@ class TestUsersEndpoint(unittest.TestCase):
         payload = {
             'fullname': 'Noam A. Chomsky',
             'username': 'avram',
-            'email': 'avram.chomsky@mit.edu'
+            'email': 'avram.chomsky@example.com'
         }
         response = self.api_session.patch('/@users/noam', json=payload)
         transaction.commit()
@@ -171,7 +171,10 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual('noam', noam.getUserId())  # user id never changes
         self.assertEqual('avram', noam.getUserName())
         self.assertEqual('Noam A. Chomsky', noam.getProperty('fullname'))
-        self.assertEqual('avram.chomsky@mit.edu', noam.getProperty('email'))
+        self.assertEqual(
+            'avram.chomsky@example.com',
+            noam.getProperty('email')
+        )
 
     def test_update_user_password(self):
         old_password_hashes = dict(

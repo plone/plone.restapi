@@ -440,7 +440,7 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.patch(
             '/@users/noam',
             json={
-                'email': 'avram.chomsky@mit.edu',
+                'email': 'avram.chomsky@example.com',
             },
         )
         save_response_for_documentation('users_update.json', response)
