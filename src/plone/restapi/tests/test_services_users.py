@@ -139,6 +139,27 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(201, response.status_code)
         self.assertTrue(api.user.get(userid='howard.zinn@example.com'))
 
+    def test_add_user_with_email_login_enabled(self):
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "password": "secret"
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+        user = api.user.get(userid='howard.zinn@example.com')
+        self.assertTrue(user)
+        self.assertEqual('howard.zinn@example.com', user.getUserName())
+        self.assertEqual('howard.zinn@example.com', user.getProperty('email'))
+
     def test_get_user(self):
         response = self.api_session.get('/@users/noam')
 
