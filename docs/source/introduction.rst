@@ -1,5 +1,5 @@
-Getting Started
-===============
+Introduction
+============
 
 A hypermedia API provides an entry point to the API, which contains hyperlinks the clients can follow.
 Just like a human user of a regular website, who knows the initial URL of a website and then follows hyperlinks to navigate through the site.
