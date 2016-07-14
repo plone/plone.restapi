@@ -1,0 +1,7 @@
+graft src/plone/restapi
+graft docs
+include *.rst
+exclude *.cfg
+exclude *.yml
+exclude bootstrap-buildout.py
+global-exclude *.pyc
