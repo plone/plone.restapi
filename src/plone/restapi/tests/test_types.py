@@ -42,11 +42,13 @@ class TestJsonSchemaUtils(TestCase):
             'field1': {
                 'title': u'Foo',
                 'description': u'',
+                'required': True,
                 'type': 'boolean'
             },
             'field2': {
                 'title': u'Bar',
                 'description': u'',
+                'required': True,
                 'type': 'string'
             },
         }
@@ -106,6 +108,7 @@ class TestJsonSchemaProviders(TestCase):
             'type': 'string',
             'title': u'My field',
             'description': u'My great field',
+            'required': True,
             'default': u'foobar',
         }
         self.assertEqual(jsonschema, expected)
@@ -124,6 +127,8 @@ class TestJsonSchemaProviders(TestCase):
             'type': 'string',
             'title': u'My field',
             'description': u'My great field',
+            'required': True,
+            'widget': 'textarea',
             'default': u'Lorem ipsum dolor sit amet',
             'minLength': 10,
         }
@@ -142,6 +147,7 @@ class TestJsonSchemaProviders(TestCase):
             'type': 'boolean',
             'title': u'My field',
             'description': u'My great field',
+            'required': True,
             'default': False,
         }
         self.assertEqual(jsonschema, expected)
@@ -163,6 +169,7 @@ class TestJsonSchemaProviders(TestCase):
             'type': 'number',
             'title': u'My field',
             'description': u'My great field',
+            'required': True,
             'default': 0.5,
         }
         self.assertEqual(jsonschema, expected)
@@ -184,6 +191,7 @@ class TestJsonSchemaProviders(TestCase):
             'type': 'number',
             'title': u'My field',
             'description': u'My great field',
+            'required': True,
             'default': 0.5,
         }
         self.assertEqual(jsonschema, expected)
@@ -205,6 +213,7 @@ class TestJsonSchemaProviders(TestCase):
             'type': 'integer',
             'title': u'My field',
             'description': u'My great field',
+            'required': True,
             'default': 50,
         }
         self.assertEqual(jsonschema, expected)
@@ -224,6 +233,7 @@ class TestJsonSchemaProviders(TestCase):
             'description': u'My great field',
             'enum': ['foo', 'bar'],
             'enumNames': ['Foo', 'Bar'],
+            'required': True,
             'choices': [('foo', 'Foo'), ('bar', 'Bar')],
         }
         self.assertEqual(jsonschema, expected)
@@ -251,9 +261,11 @@ class TestJsonSchemaProviders(TestCase):
             'minItems': 1,
             'uniqueItems': False,
             'additionalItems': True,
+            'required': True,
             'items': {
                 'type': 'string',
                 'title': u'Text',
+                'required': True,
                 'description': u'Text field',
                 'default': u'Default text',
             }
@@ -273,11 +285,13 @@ class TestJsonSchemaProviders(TestCase):
             'type': 'array',
             'title': u'My field',
             'description': u'',
+            'required': True,
             'uniqueItems': True,
             'additionalItems': True,
             'items': {
                 'title': u'',
                 'description': u'',
+                'required': True,
                 'type': 'integer',
             },
             'default': (1, 2),
@@ -296,11 +310,13 @@ class TestJsonSchemaProviders(TestCase):
             'type': 'array',
             'title': u'My field',
             'description': u'',
+            'required': True,
             'uniqueItems': True,
             'additionalItems': True,
             'items': {
                 'title': u'',
                 'description': u'',
+                'required': True,
                 'type': 'string',
             }
         }
@@ -320,11 +336,13 @@ class TestJsonSchemaProviders(TestCase):
             'type': 'array',
             'title': u'My field',
             'description': u'',
+            'required': True,
             'uniqueItems': True,
             'additionalItems': True,
             'items': {
                 'title': u'',
                 'description': u'',
+                'required': True,
                 'type': 'string',
                 'enum': ['foo', 'bar'],
                 'enumNames': ['Foo', 'Bar'],
@@ -346,15 +364,18 @@ class TestJsonSchemaProviders(TestCase):
             'type': 'object',
             'title': u'My field',
             'description': u'My great field',
+            'required': True,
             'properties': {
                 'field1': {
                     'title': u'Foo',
                     'description': u'',
+                    'required': True,
                     'type': 'boolean'
                 },
                 'field2': {
                     'title': u'Bar',
                     'description': u'',
+                    'required': True,
                     'type': 'string'
                 },
             }
@@ -373,6 +394,7 @@ class TestJsonSchemaProviders(TestCase):
         expected = {
             'type': 'string',
             'title': u'My field',
+            'required': True,
             'description': u'My great field',
             'default': date(2016, 1, 1),
         }
@@ -389,6 +411,7 @@ class TestJsonSchemaProviders(TestCase):
         expected = {
             'type': 'string',
             'title': u'My field',
+            'required': True,
             'description': u'My great field',
         }
         self.assertEqual(jsonschema, expected)
