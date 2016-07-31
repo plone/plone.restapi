@@ -4,7 +4,8 @@ Changelog
 1.0a2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- @types improvments: add `required` and `widget`, support RichText field
+  [ebrehault]
 
 
 1.0a1 (2016-07-14)
