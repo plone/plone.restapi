@@ -4,7 +4,8 @@ Changelog
 1.0a2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Implements navigation and breadcrumbs components (copied from barcelona-mocks)
+  [ebrehault]
 
 
 1.0a1 (2016-07-14)
