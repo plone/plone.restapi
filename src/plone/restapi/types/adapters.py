@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """JsonSchema providers."""
+from plone.app.textfield.interfaces import IRichText
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtility
@@ -278,6 +279,19 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
         info = super(ObjectJsonSchemaProvider, self).additional()
         info['properties'] = self.get_properties()
         return info
+
+
+@adapter(IRichText, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class RichTextJsonSchemaProvider(DefaultJsonSchemaProvider):
+
+    prefix = ''
+
+    def get_type(self):
+        return 'string'
+
+    def get_widget(self):
+        return 'richtext'
 
 
 @adapter(IDate, Interface, Interface)
