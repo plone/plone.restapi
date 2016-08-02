@@ -26,11 +26,13 @@ content-type: application/json+schema
         "Yes", 
         "No"
       ], 
+      "required": false, 
       "title": "Allow discussion", 
       "type": "string"
     }, 
     "changeNote": {
       "description": "Enter a comment that describes the changes you made.", 
+      "required": false, 
       "title": "Change Note", 
       "type": "string"
     }, 
@@ -39,9 +41,11 @@ content-type: application/json+schema
       "description": "The names of people that have contributed to this item. Each contributor should be on a separate line.", 
       "items": {
         "description": "", 
+        "required": true, 
         "title": "", 
         "type": "string"
       }, 
+      "required": false, 
       "title": "Contributors", 
       "type": "array", 
       "uniqueItems": true
@@ -51,9 +55,11 @@ content-type: application/json+schema
       "description": "Persons responsible for creating the content of this item. Please enter a list of user names, one per line. The principal creator should come first.", 
       "items": {
         "description": "", 
+        "required": true, 
         "title": "", 
         "type": "string"
       }, 
+      "required": false, 
       "title": "Creators", 
       "type": "array", 
       "uniqueItems": true
@@ -61,23 +67,34 @@ content-type: application/json+schema
     "description": {
       "description": "Used in item listings and search results.", 
       "minLength": 0, 
+      "required": false, 
       "title": "Summary", 
-      "type": "string"
+      "type": "string", 
+      "widget": "textarea"
     }, 
     "effective": {
       "description": "If this date is in the future, the content will not show up in listings and searches until this date.", 
+      "required": false, 
       "title": "Publishing Date", 
       "type": "string"
     }, 
     "exclude_from_nav": {
       "default": false, 
       "description": "If selected, this item will not appear in the navigation tree", 
+      "required": true, 
       "title": "Exclude from navigation", 
       "type": "boolean"
     }, 
     "expires": {
       "description": "When this date is reached, the content will nolonger be visible in listings and searches.", 
+      "required": false, 
       "title": "Expiration Date", 
+      "type": "string"
+    }, 
+    "id": {
+      "description": "This name will be displayed in the URL.", 
+      "required": false, 
+      "title": "Short name", 
       "type": "string"
     }, 
     "language": {
@@ -157,6 +174,10 @@ content-type: application/json+schema
         [
           "de", 
           "Deutsch"
+        ], 
+        [
+          "de-at", 
+          "Deutsch (\u00d6sterreich)"
         ], 
         [
           "nv", 
@@ -431,6 +452,34 @@ content-type: application/json+schema
           "Portugu\u00eas"
         ], 
         [
+          "pt-ao", 
+          "Portugu\u00eas (Angola)"
+        ], 
+        [
+          "pt-br", 
+          "Portugu\u00eas (Brasil)"
+        ], 
+        [
+          "pt-cv", 
+          "Portugu\u00eas (Cabo Verde)"
+        ], 
+        [
+          "pt-gw", 
+          "Portugu\u00eas (Guin\u00e9-Bissau)"
+        ], 
+        [
+          "pt-mz", 
+          "Portugu\u00eas (Mo\u00e7ambique)"
+        ], 
+        [
+          "pt-pt", 
+          "Portugu\u00eas (Portugal)"
+        ], 
+        [
+          "pt-st", 
+          "Portugu\u00eas (S\u00e3o Tom\u00e9 e Pr\u00edncipe)"
+        ], 
+        [
           "qu", 
           "Quechua"
         ], 
@@ -567,6 +616,94 @@ content-type: application/json+schema
           "Zhuang"
         ], 
         [
+          "ar-ae", 
+          "ar-ae"
+        ], 
+        [
+          "ar-bh", 
+          "ar-bh"
+        ], 
+        [
+          "ar-dz", 
+          "ar-dz"
+        ], 
+        [
+          "ar-eg", 
+          "ar-eg"
+        ], 
+        [
+          "ar-il", 
+          "ar-il"
+        ], 
+        [
+          "ar-iq", 
+          "ar-iq"
+        ], 
+        [
+          "ar-jo", 
+          "ar-jo"
+        ], 
+        [
+          "ar-kw", 
+          "ar-kw"
+        ], 
+        [
+          "ar-lb", 
+          "ar-lb"
+        ], 
+        [
+          "ar-ly", 
+          "ar-ly"
+        ], 
+        [
+          "ar-ma", 
+          "ar-ma"
+        ], 
+        [
+          "ar-mr", 
+          "ar-mr"
+        ], 
+        [
+          "ar-om", 
+          "ar-om"
+        ], 
+        [
+          "ar-ps", 
+          "ar-ps"
+        ], 
+        [
+          "ar-qa", 
+          "ar-qa"
+        ], 
+        [
+          "ar-sa", 
+          "ar-sa"
+        ], 
+        [
+          "ar-sd", 
+          "ar-sd"
+        ], 
+        [
+          "ar-so", 
+          "ar-so"
+        ], 
+        [
+          "ar-sy", 
+          "ar-sy"
+        ], 
+        [
+          "ar-td", 
+          "ar-td"
+        ], 
+        [
+          "ar-tn", 
+          "ar-tn"
+        ], 
+        [
+          "ar-ye", 
+          "ar-ye"
+        ], 
+        [
           "an", 
           "aragon\u00e9s"
         ], 
@@ -579,16 +716,780 @@ content-type: application/json+schema
           "bamanankan"
         ], 
         [
+          "bn-bd", 
+          "bn-bd"
+        ], 
+        [
+          "bn-in", 
+          "bn-in"
+        ], 
+        [
+          "bn-sg", 
+          "bn-sg"
+        ], 
+        [
           "br", 
           "brezhoneg"
+        ], 
+        [
+          "ch-gu", 
+          "ch-gu"
+        ], 
+        [
+          "ch-mp", 
+          "ch-mp"
         ], 
         [
           "ny", 
           "chiChe\u0175a"
         ], 
         [
+          "da-dk", 
+          "da-dk"
+        ], 
+        [
+          "da-gl", 
+          "da-gl"
+        ], 
+        [
+          "de-be", 
+          "de-be"
+        ], 
+        [
+          "de-ch", 
+          "de-ch"
+        ], 
+        [
+          "de-de", 
+          "de-de"
+        ], 
+        [
+          "de-dk", 
+          "de-dk"
+        ], 
+        [
+          "de-li", 
+          "de-li"
+        ], 
+        [
+          "de-lu", 
+          "de-lu"
+        ], 
+        [
+          "el-cy", 
+          "el-cy"
+        ], 
+        [
+          "el-gr", 
+          "el-gr"
+        ], 
+        [
+          "en-ag", 
+          "en-ag"
+        ], 
+        [
+          "en-ai", 
+          "en-ai"
+        ], 
+        [
+          "en-as", 
+          "en-as"
+        ], 
+        [
+          "en-au", 
+          "en-au"
+        ], 
+        [
+          "en-bb", 
+          "en-bb"
+        ], 
+        [
+          "en-bm", 
+          "en-bm"
+        ], 
+        [
+          "en-bn", 
+          "en-bn"
+        ], 
+        [
+          "en-bs", 
+          "en-bs"
+        ], 
+        [
+          "en-bw", 
+          "en-bw"
+        ], 
+        [
+          "en-bz", 
+          "en-bz"
+        ], 
+        [
+          "en-ca", 
+          "en-ca"
+        ], 
+        [
+          "en-ck", 
+          "en-ck"
+        ], 
+        [
+          "en-cm", 
+          "en-cm"
+        ], 
+        [
+          "en-dm", 
+          "en-dm"
+        ], 
+        [
+          "en-er", 
+          "en-er"
+        ], 
+        [
+          "en-et", 
+          "en-et"
+        ], 
+        [
+          "en-fj", 
+          "en-fj"
+        ], 
+        [
+          "en-fk", 
+          "en-fk"
+        ], 
+        [
+          "en-fm", 
+          "en-fm"
+        ], 
+        [
+          "en-gb", 
+          "en-gb"
+        ], 
+        [
+          "en-gd", 
+          "en-gd"
+        ], 
+        [
+          "en-gh", 
+          "en-gh"
+        ], 
+        [
+          "en-gi", 
+          "en-gi"
+        ], 
+        [
+          "en-gm", 
+          "en-gm"
+        ], 
+        [
+          "en-gu", 
+          "en-gu"
+        ], 
+        [
+          "en-gy", 
+          "en-gy"
+        ], 
+        [
+          "en-ie", 
+          "en-ie"
+        ], 
+        [
+          "en-il", 
+          "en-il"
+        ], 
+        [
+          "en-io", 
+          "en-io"
+        ], 
+        [
+          "en-jm", 
+          "en-jm"
+        ], 
+        [
+          "en-ke", 
+          "en-ke"
+        ], 
+        [
+          "en-ki", 
+          "en-ki"
+        ], 
+        [
+          "en-kn", 
+          "en-kn"
+        ], 
+        [
+          "en-ky", 
+          "en-ky"
+        ], 
+        [
+          "en-lc", 
+          "en-lc"
+        ], 
+        [
+          "en-lr", 
+          "en-lr"
+        ], 
+        [
+          "en-ls", 
+          "en-ls"
+        ], 
+        [
+          "en-mp", 
+          "en-mp"
+        ], 
+        [
+          "en-ms", 
+          "en-ms"
+        ], 
+        [
+          "en-mt", 
+          "en-mt"
+        ], 
+        [
+          "en-mu", 
+          "en-mu"
+        ], 
+        [
+          "en-mw", 
+          "en-mw"
+        ], 
+        [
+          "en-na", 
+          "en-na"
+        ], 
+        [
+          "en-nf", 
+          "en-nf"
+        ], 
+        [
+          "en-ng", 
+          "en-ng"
+        ], 
+        [
+          "en-nr", 
+          "en-nr"
+        ], 
+        [
+          "en-nu", 
+          "en-nu"
+        ], 
+        [
+          "en-nz", 
+          "en-nz"
+        ], 
+        [
+          "en-pg", 
+          "en-pg"
+        ], 
+        [
+          "en-ph", 
+          "en-ph"
+        ], 
+        [
+          "en-pk", 
+          "en-pk"
+        ], 
+        [
+          "en-pn", 
+          "en-pn"
+        ], 
+        [
+          "en-pr", 
+          "en-pr"
+        ], 
+        [
+          "en-pw", 
+          "en-pw"
+        ], 
+        [
+          "en-rw", 
+          "en-rw"
+        ], 
+        [
+          "en-sb", 
+          "en-sb"
+        ], 
+        [
+          "en-sc", 
+          "en-sc"
+        ], 
+        [
+          "en-sg", 
+          "en-sg"
+        ], 
+        [
+          "en-sh", 
+          "en-sh"
+        ], 
+        [
+          "en-sl", 
+          "en-sl"
+        ], 
+        [
+          "en-so", 
+          "en-so"
+        ], 
+        [
+          "en-sz", 
+          "en-sz"
+        ], 
+        [
+          "en-tc", 
+          "en-tc"
+        ], 
+        [
+          "en-tk", 
+          "en-tk"
+        ], 
+        [
+          "en-to", 
+          "en-to"
+        ], 
+        [
+          "en-tt", 
+          "en-tt"
+        ], 
+        [
+          "en-ug", 
+          "en-ug"
+        ], 
+        [
+          "en-us", 
+          "en-us"
+        ], 
+        [
+          "en-vc", 
+          "en-vc"
+        ], 
+        [
+          "en-vg", 
+          "en-vg"
+        ], 
+        [
+          "en-vi", 
+          "en-vi"
+        ], 
+        [
+          "en-vu", 
+          "en-vu"
+        ], 
+        [
+          "en-ws", 
+          "en-ws"
+        ], 
+        [
+          "en-za", 
+          "en-za"
+        ], 
+        [
+          "en-zm", 
+          "en-zm"
+        ], 
+        [
+          "en-zw", 
+          "en-zw"
+        ], 
+        [
+          "es-ar", 
+          "es-ar"
+        ], 
+        [
+          "es-bo", 
+          "es-bo"
+        ], 
+        [
+          "es-cl", 
+          "es-cl"
+        ], 
+        [
+          "es-co", 
+          "es-co"
+        ], 
+        [
+          "es-cr", 
+          "es-cr"
+        ], 
+        [
+          "es-cu", 
+          "es-cu"
+        ], 
+        [
+          "es-do", 
+          "es-do"
+        ], 
+        [
+          "es-ec", 
+          "es-ec"
+        ], 
+        [
+          "es-es", 
+          "es-es"
+        ], 
+        [
+          "es-gq", 
+          "es-gq"
+        ], 
+        [
+          "es-gt", 
+          "es-gt"
+        ], 
+        [
+          "es-hn", 
+          "es-hn"
+        ], 
+        [
+          "es-mx", 
+          "es-mx"
+        ], 
+        [
+          "es-ni", 
+          "es-ni"
+        ], 
+        [
+          "es-pa", 
+          "es-pa"
+        ], 
+        [
+          "es-pe", 
+          "es-pe"
+        ], 
+        [
+          "es-pr", 
+          "es-pr"
+        ], 
+        [
+          "es-py", 
+          "es-py"
+        ], 
+        [
+          "es-sv", 
+          "es-sv"
+        ], 
+        [
+          "es-us", 
+          "es-us"
+        ], 
+        [
+          "es-uy", 
+          "es-uy"
+        ], 
+        [
+          "es-ve", 
+          "es-ve"
+        ], 
+        [
+          "fr-ad", 
+          "fr-ad"
+        ], 
+        [
+          "fr-be", 
+          "fr-be"
+        ], 
+        [
+          "fr-bf", 
+          "fr-bf"
+        ], 
+        [
+          "fr-bi", 
+          "fr-bi"
+        ], 
+        [
+          "fr-bj", 
+          "fr-bj"
+        ], 
+        [
+          "fr-ca", 
+          "fr-ca"
+        ], 
+        [
+          "fr-cd", 
+          "fr-cd"
+        ], 
+        [
+          "fr-cf", 
+          "fr-cf"
+        ], 
+        [
+          "fr-cg", 
+          "fr-cg"
+        ], 
+        [
+          "fr-ch", 
+          "fr-ch"
+        ], 
+        [
+          "fr-ci", 
+          "fr-ci"
+        ], 
+        [
+          "fr-cm", 
+          "fr-cm"
+        ], 
+        [
+          "fr-dj", 
+          "fr-dj"
+        ], 
+        [
+          "fr-fr", 
+          "fr-fr"
+        ], 
+        [
+          "fr-ga", 
+          "fr-ga"
+        ], 
+        [
+          "fr-gb", 
+          "fr-gb"
+        ], 
+        [
+          "fr-gf", 
+          "fr-gf"
+        ], 
+        [
+          "fr-gn", 
+          "fr-gn"
+        ], 
+        [
+          "fr-gp", 
+          "fr-gp"
+        ], 
+        [
+          "fr-ht", 
+          "fr-ht"
+        ], 
+        [
+          "fr-it", 
+          "fr-it"
+        ], 
+        [
+          "fr-km", 
+          "fr-km"
+        ], 
+        [
+          "fr-lb", 
+          "fr-lb"
+        ], 
+        [
+          "fr-lu", 
+          "fr-lu"
+        ], 
+        [
+          "fr-mc", 
+          "fr-mc"
+        ], 
+        [
+          "fr-mg", 
+          "fr-mg"
+        ], 
+        [
+          "fr-ml", 
+          "fr-ml"
+        ], 
+        [
+          "fr-mq", 
+          "fr-mq"
+        ], 
+        [
+          "fr-nc", 
+          "fr-nc"
+        ], 
+        [
+          "fr-pf", 
+          "fr-pf"
+        ], 
+        [
+          "fr-pm", 
+          "fr-pm"
+        ], 
+        [
+          "fr-re", 
+          "fr-re"
+        ], 
+        [
+          "fr-rw", 
+          "fr-rw"
+        ], 
+        [
+          "fr-sc", 
+          "fr-sc"
+        ], 
+        [
+          "fr-td", 
+          "fr-td"
+        ], 
+        [
+          "fr-tg", 
+          "fr-tg"
+        ], 
+        [
+          "fr-vu", 
+          "fr-vu"
+        ], 
+        [
+          "fr-wf", 
+          "fr-wf"
+        ], 
+        [
+          "fr-yt", 
+          "fr-yt"
+        ], 
+        [
+          "hr-ba", 
+          "hr-ba"
+        ], 
+        [
+          "hr-hr", 
+          "hr-hr"
+        ], 
+        [
+          "hu-hu", 
+          "hu-hu"
+        ], 
+        [
+          "hu-si", 
+          "hu-si"
+        ], 
+        [
+          "it-ch", 
+          "it-ch"
+        ], 
+        [
+          "it-hr", 
+          "it-hr"
+        ], 
+        [
+          "it-it", 
+          "it-it"
+        ], 
+        [
+          "it-si", 
+          "it-si"
+        ], 
+        [
+          "it-sm", 
+          "it-sm"
+        ], 
+        [
+          "ko-kp", 
+          "ko-kp"
+        ], 
+        [
+          "ko-kr", 
+          "ko-kr"
+        ], 
+        [
+          "ln-cd", 
+          "ln-cd"
+        ], 
+        [
+          "ln-cg", 
+          "ln-cg"
+        ], 
+        [
+          "ms-bn", 
+          "ms-bn"
+        ], 
+        [
+          "ms-my", 
+          "ms-my"
+        ], 
+        [
+          "ms-sg", 
+          "ms-sg"
+        ], 
+        [
+          "nl-an", 
+          "nl-an"
+        ], 
+        [
+          "nl-aw", 
+          "nl-aw"
+        ], 
+        [
+          "nl-be", 
+          "nl-be"
+        ], 
+        [
+          "nl-nl", 
+          "nl-nl"
+        ], 
+        [
+          "nl-sr", 
+          "nl-sr"
+        ], 
+        [
           "sc", 
           "sardu"
+        ], 
+        [
+          "sd-in", 
+          "sd-in"
+        ], 
+        [
+          "sd-pk", 
+          "sd-pk"
+        ], 
+        [
+          "sr-ba", 
+          "sr-ba"
+        ], 
+        [
+          "ss-sz", 
+          "ss-sz"
+        ], 
+        [
+          "ss-za", 
+          "ss-za"
+        ], 
+        [
+          "sv-fi", 
+          "sv-fi"
+        ], 
+        [
+          "sv-se", 
+          "sv-se"
+        ], 
+        [
+          "sw-ke", 
+          "sw-ke"
+        ], 
+        [
+          "sw-tz", 
+          "sw-tz"
+        ], 
+        [
+          "ta-in", 
+          "ta-in"
+        ], 
+        [
+          "ta-sg", 
+          "ta-sg"
+        ], 
+        [
+          "tn-bw", 
+          "tn-bw"
+        ], 
+        [
+          "tn-za", 
+          "tn-za"
+        ], 
+        [
+          "tr-bg", 
+          "tr-bg"
+        ], 
+        [
+          "tr-cy", 
+          "tr-cy"
+        ], 
+        [
+          "tr-tr", 
+          "tr-tr"
+        ], 
+        [
+          "ur-in", 
+          "ur-in"
+        ], 
+        [
+          "ur-pk", 
+          "ur-pk"
         ], 
         [
           "is", 
@@ -597,6 +1498,10 @@ content-type: application/json+schema
         [
           "cs", 
           "\u010ce\u0161tina"
+        ], 
+        [
+          "cs-cz", 
+          "\u010ce\u0161tina (\u010cesk\u00e1 republika)"
         ], 
         [
           "el", 
@@ -819,6 +1724,22 @@ content-type: application/json+schema
           "\u65e5\u672c\u8a9e"
         ], 
         [
+          "zh-cn", 
+          "\u7b80\u4f53\u4e2d\u6587(\u4e2d\u56fd)"
+        ], 
+        [
+          "zh-sg", 
+          "\u7b80\u4f53\u4e2d\u6587(\u65b0\u52a0\u5761)"
+        ], 
+        [
+          "zh-tw", 
+          "\u7e41\u9ad4\u4e2d\u6587(\u81fa\u7063)"
+        ], 
+        [
+          "zh-hk", 
+          "\u7e41\u9ad4\u4e2d\u6587(\u9999\u6e2f)"
+        ], 
+        [
           "ko", 
           "\ud55c\uad6d\uc5b4"
         ], 
@@ -849,6 +1770,7 @@ content-type: application/json+schema
         "cy", 
         "da", 
         "de", 
+        "de-at", 
         "nv", 
         "dv", 
         "et", 
@@ -917,6 +1839,13 @@ content-type: application/json+schema
         "ng", 
         "pl", 
         "pt", 
+        "pt-ao", 
+        "pt-br", 
+        "pt-cv", 
+        "pt-gw", 
+        "pt-mz", 
+        "pt-pt", 
+        "pt-st", 
         "qu", 
         "ty", 
         "rm", 
@@ -951,14 +1880,228 @@ content-type: application/json+schema
         "ts", 
         "yo", 
         "za", 
+        "ar-ae", 
+        "ar-bh", 
+        "ar-dz", 
+        "ar-eg", 
+        "ar-il", 
+        "ar-iq", 
+        "ar-jo", 
+        "ar-kw", 
+        "ar-lb", 
+        "ar-ly", 
+        "ar-ma", 
+        "ar-mr", 
+        "ar-om", 
+        "ar-ps", 
+        "ar-qa", 
+        "ar-sa", 
+        "ar-sd", 
+        "ar-so", 
+        "ar-sy", 
+        "ar-td", 
+        "ar-tn", 
+        "ar-ye", 
         "an", 
         "ae", 
         "bm", 
+        "bn-bd", 
+        "bn-in", 
+        "bn-sg", 
         "br", 
+        "ch-gu", 
+        "ch-mp", 
         "ny", 
+        "da-dk", 
+        "da-gl", 
+        "de-be", 
+        "de-ch", 
+        "de-de", 
+        "de-dk", 
+        "de-li", 
+        "de-lu", 
+        "el-cy", 
+        "el-gr", 
+        "en-ag", 
+        "en-ai", 
+        "en-as", 
+        "en-au", 
+        "en-bb", 
+        "en-bm", 
+        "en-bn", 
+        "en-bs", 
+        "en-bw", 
+        "en-bz", 
+        "en-ca", 
+        "en-ck", 
+        "en-cm", 
+        "en-dm", 
+        "en-er", 
+        "en-et", 
+        "en-fj", 
+        "en-fk", 
+        "en-fm", 
+        "en-gb", 
+        "en-gd", 
+        "en-gh", 
+        "en-gi", 
+        "en-gm", 
+        "en-gu", 
+        "en-gy", 
+        "en-ie", 
+        "en-il", 
+        "en-io", 
+        "en-jm", 
+        "en-ke", 
+        "en-ki", 
+        "en-kn", 
+        "en-ky", 
+        "en-lc", 
+        "en-lr", 
+        "en-ls", 
+        "en-mp", 
+        "en-ms", 
+        "en-mt", 
+        "en-mu", 
+        "en-mw", 
+        "en-na", 
+        "en-nf", 
+        "en-ng", 
+        "en-nr", 
+        "en-nu", 
+        "en-nz", 
+        "en-pg", 
+        "en-ph", 
+        "en-pk", 
+        "en-pn", 
+        "en-pr", 
+        "en-pw", 
+        "en-rw", 
+        "en-sb", 
+        "en-sc", 
+        "en-sg", 
+        "en-sh", 
+        "en-sl", 
+        "en-so", 
+        "en-sz", 
+        "en-tc", 
+        "en-tk", 
+        "en-to", 
+        "en-tt", 
+        "en-ug", 
+        "en-us", 
+        "en-vc", 
+        "en-vg", 
+        "en-vi", 
+        "en-vu", 
+        "en-ws", 
+        "en-za", 
+        "en-zm", 
+        "en-zw", 
+        "es-ar", 
+        "es-bo", 
+        "es-cl", 
+        "es-co", 
+        "es-cr", 
+        "es-cu", 
+        "es-do", 
+        "es-ec", 
+        "es-es", 
+        "es-gq", 
+        "es-gt", 
+        "es-hn", 
+        "es-mx", 
+        "es-ni", 
+        "es-pa", 
+        "es-pe", 
+        "es-pr", 
+        "es-py", 
+        "es-sv", 
+        "es-us", 
+        "es-uy", 
+        "es-ve", 
+        "fr-ad", 
+        "fr-be", 
+        "fr-bf", 
+        "fr-bi", 
+        "fr-bj", 
+        "fr-ca", 
+        "fr-cd", 
+        "fr-cf", 
+        "fr-cg", 
+        "fr-ch", 
+        "fr-ci", 
+        "fr-cm", 
+        "fr-dj", 
+        "fr-fr", 
+        "fr-ga", 
+        "fr-gb", 
+        "fr-gf", 
+        "fr-gn", 
+        "fr-gp", 
+        "fr-ht", 
+        "fr-it", 
+        "fr-km", 
+        "fr-lb", 
+        "fr-lu", 
+        "fr-mc", 
+        "fr-mg", 
+        "fr-ml", 
+        "fr-mq", 
+        "fr-nc", 
+        "fr-pf", 
+        "fr-pm", 
+        "fr-re", 
+        "fr-rw", 
+        "fr-sc", 
+        "fr-td", 
+        "fr-tg", 
+        "fr-vu", 
+        "fr-wf", 
+        "fr-yt", 
+        "hr-ba", 
+        "hr-hr", 
+        "hu-hu", 
+        "hu-si", 
+        "it-ch", 
+        "it-hr", 
+        "it-it", 
+        "it-si", 
+        "it-sm", 
+        "ko-kp", 
+        "ko-kr", 
+        "ln-cd", 
+        "ln-cg", 
+        "ms-bn", 
+        "ms-my", 
+        "ms-sg", 
+        "nl-an", 
+        "nl-aw", 
+        "nl-be", 
+        "nl-nl", 
+        "nl-sr", 
         "sc", 
+        "sd-in", 
+        "sd-pk", 
+        "sr-ba", 
+        "ss-sz", 
+        "ss-za", 
+        "sv-fi", 
+        "sv-se", 
+        "sw-ke", 
+        "sw-tz", 
+        "ta-in", 
+        "ta-sg", 
+        "tn-bw", 
+        "tn-za", 
+        "tr-bg", 
+        "tr-cy", 
+        "tr-tr", 
+        "ur-in", 
+        "ur-pk", 
         "is", 
         "cs", 
+        "cs-cz", 
         "el", 
         "uz", 
         "be", 
@@ -1014,6 +2157,10 @@ content-type: application/json+schema
         "km", 
         "zh", 
         "ja", 
+        "zh-cn", 
+        "zh-sg", 
+        "zh-tw", 
+        "zh-hk", 
         "ko", 
         "kk"
       ], 
@@ -1037,6 +2184,7 @@ content-type: application/json+schema
         "Cymraeg", 
         "Dansk", 
         "Deutsch", 
+        "Deutsch (\u00d6sterreich)", 
         "Din\u00e9 bizaad", 
         "Divehi", 
         "Eesti", 
@@ -1105,6 +2253,13 @@ content-type: application/json+schema
         "Owambo", 
         "Polski", 
         "Portugu\u00eas", 
+        "Portugu\u00eas (Angola)", 
+        "Portugu\u00eas (Brasil)", 
+        "Portugu\u00eas (Cabo Verde)", 
+        "Portugu\u00eas (Guin\u00e9-Bissau)", 
+        "Portugu\u00eas (Mo\u00e7ambique)", 
+        "Portugu\u00eas (Portugal)", 
+        "Portugu\u00eas (S\u00e3o Tom\u00e9 e Pr\u00edncipe)", 
         "Quechua", 
         "Reo Tahiti", 
         "Rhaeto-Romance", 
@@ -1139,14 +2294,228 @@ content-type: application/json+schema
         "Xitsonga", 
         "Yor\u00f9b\u00e1", 
         "Zhuang", 
+        "ar-ae", 
+        "ar-bh", 
+        "ar-dz", 
+        "ar-eg", 
+        "ar-il", 
+        "ar-iq", 
+        "ar-jo", 
+        "ar-kw", 
+        "ar-lb", 
+        "ar-ly", 
+        "ar-ma", 
+        "ar-mr", 
+        "ar-om", 
+        "ar-ps", 
+        "ar-qa", 
+        "ar-sa", 
+        "ar-sd", 
+        "ar-so", 
+        "ar-sy", 
+        "ar-td", 
+        "ar-tn", 
+        "ar-ye", 
         "aragon\u00e9s", 
         "avesta", 
         "bamanankan", 
+        "bn-bd", 
+        "bn-in", 
+        "bn-sg", 
         "brezhoneg", 
+        "ch-gu", 
+        "ch-mp", 
         "chiChe\u0175a", 
+        "da-dk", 
+        "da-gl", 
+        "de-be", 
+        "de-ch", 
+        "de-de", 
+        "de-dk", 
+        "de-li", 
+        "de-lu", 
+        "el-cy", 
+        "el-gr", 
+        "en-ag", 
+        "en-ai", 
+        "en-as", 
+        "en-au", 
+        "en-bb", 
+        "en-bm", 
+        "en-bn", 
+        "en-bs", 
+        "en-bw", 
+        "en-bz", 
+        "en-ca", 
+        "en-ck", 
+        "en-cm", 
+        "en-dm", 
+        "en-er", 
+        "en-et", 
+        "en-fj", 
+        "en-fk", 
+        "en-fm", 
+        "en-gb", 
+        "en-gd", 
+        "en-gh", 
+        "en-gi", 
+        "en-gm", 
+        "en-gu", 
+        "en-gy", 
+        "en-ie", 
+        "en-il", 
+        "en-io", 
+        "en-jm", 
+        "en-ke", 
+        "en-ki", 
+        "en-kn", 
+        "en-ky", 
+        "en-lc", 
+        "en-lr", 
+        "en-ls", 
+        "en-mp", 
+        "en-ms", 
+        "en-mt", 
+        "en-mu", 
+        "en-mw", 
+        "en-na", 
+        "en-nf", 
+        "en-ng", 
+        "en-nr", 
+        "en-nu", 
+        "en-nz", 
+        "en-pg", 
+        "en-ph", 
+        "en-pk", 
+        "en-pn", 
+        "en-pr", 
+        "en-pw", 
+        "en-rw", 
+        "en-sb", 
+        "en-sc", 
+        "en-sg", 
+        "en-sh", 
+        "en-sl", 
+        "en-so", 
+        "en-sz", 
+        "en-tc", 
+        "en-tk", 
+        "en-to", 
+        "en-tt", 
+        "en-ug", 
+        "en-us", 
+        "en-vc", 
+        "en-vg", 
+        "en-vi", 
+        "en-vu", 
+        "en-ws", 
+        "en-za", 
+        "en-zm", 
+        "en-zw", 
+        "es-ar", 
+        "es-bo", 
+        "es-cl", 
+        "es-co", 
+        "es-cr", 
+        "es-cu", 
+        "es-do", 
+        "es-ec", 
+        "es-es", 
+        "es-gq", 
+        "es-gt", 
+        "es-hn", 
+        "es-mx", 
+        "es-ni", 
+        "es-pa", 
+        "es-pe", 
+        "es-pr", 
+        "es-py", 
+        "es-sv", 
+        "es-us", 
+        "es-uy", 
+        "es-ve", 
+        "fr-ad", 
+        "fr-be", 
+        "fr-bf", 
+        "fr-bi", 
+        "fr-bj", 
+        "fr-ca", 
+        "fr-cd", 
+        "fr-cf", 
+        "fr-cg", 
+        "fr-ch", 
+        "fr-ci", 
+        "fr-cm", 
+        "fr-dj", 
+        "fr-fr", 
+        "fr-ga", 
+        "fr-gb", 
+        "fr-gf", 
+        "fr-gn", 
+        "fr-gp", 
+        "fr-ht", 
+        "fr-it", 
+        "fr-km", 
+        "fr-lb", 
+        "fr-lu", 
+        "fr-mc", 
+        "fr-mg", 
+        "fr-ml", 
+        "fr-mq", 
+        "fr-nc", 
+        "fr-pf", 
+        "fr-pm", 
+        "fr-re", 
+        "fr-rw", 
+        "fr-sc", 
+        "fr-td", 
+        "fr-tg", 
+        "fr-vu", 
+        "fr-wf", 
+        "fr-yt", 
+        "hr-ba", 
+        "hr-hr", 
+        "hu-hu", 
+        "hu-si", 
+        "it-ch", 
+        "it-hr", 
+        "it-it", 
+        "it-si", 
+        "it-sm", 
+        "ko-kp", 
+        "ko-kr", 
+        "ln-cd", 
+        "ln-cg", 
+        "ms-bn", 
+        "ms-my", 
+        "ms-sg", 
+        "nl-an", 
+        "nl-aw", 
+        "nl-be", 
+        "nl-nl", 
+        "nl-sr", 
         "sardu", 
+        "sd-in", 
+        "sd-pk", 
+        "sr-ba", 
+        "ss-sz", 
+        "ss-za", 
+        "sv-fi", 
+        "sv-se", 
+        "sw-ke", 
+        "sw-tz", 
+        "ta-in", 
+        "ta-sg", 
+        "tn-bw", 
+        "tn-za", 
+        "tr-bg", 
+        "tr-cy", 
+        "tr-tr", 
+        "ur-in", 
+        "ur-pk", 
         "\u00cdslenska", 
         "\u010ce\u0161tina", 
+        "\u010ce\u0161tina (\u010cesk\u00e1 republika)", 
         "\u0395\u03bb\u03bb\u03b7\u03bd\u03b9\u03ba\u03ac", 
         "\u040e\u0437\u0431\u0435\u043a\u0447\u0430", 
         "\u0411\u0435\u043b\u0430\u0440\u0443\u0441\u043a\u0456", 
@@ -1202,9 +2571,14 @@ content-type: application/json+schema
         "\u1781\u17d2\u1798\u17c2\u179a", 
         "\u4e2d\u6587", 
         "\u65e5\u672c\u8a9e", 
+        "\u7b80\u4f53\u4e2d\u6587(\u4e2d\u56fd)", 
+        "\u7b80\u4f53\u4e2d\u6587(\u65b0\u52a0\u5761)", 
+        "\u7e41\u9ad4\u4e2d\u6587(\u81fa\u7063)", 
+        "\u7e41\u9ad4\u4e2d\u6587(\u9999\u6e2f)", 
         "\ud55c\uad6d\uc5b4", 
         "\ufed7\ufe8e\ufeaf\ufe8d\ufed7\ufeb8\ufe8e"
       ], 
+      "required": false, 
       "title": "Language", 
       "type": "string"
     }, 
@@ -1213,10 +2587,24 @@ content-type: application/json+schema
       "default": [], 
       "description": "", 
       "items": {
+        "choices": [
+          [
+            "1f699ffa110e45afb1ba502f75f7ec33", 
+            "1f699ffa110e45afb1ba502f75f7ec33"
+          ]
+        ], 
         "description": "", 
+        "enum": [
+          "1f699ffa110e45afb1ba502f75f7ec33"
+        ], 
+        "enumNames": [
+          "1f699ffa110e45afb1ba502f75f7ec33"
+        ], 
+        "required": true, 
         "title": "Related", 
         "type": "string"
       }, 
+      "required": false, 
       "title": "Related Items", 
       "type": "array", 
       "uniqueItems": true
@@ -1224,67 +2612,41 @@ content-type: application/json+schema
     "rights": {
       "description": "Copyright statement or other rights information on this item.", 
       "minLength": 0, 
+      "required": false, 
       "title": "Rights", 
-      "type": "string"
+      "type": "string", 
+      "widget": "textarea"
     }, 
     "subjects": {
       "additionalItems": true, 
       "description": "Tags are commonly used for ad-hoc organization of content.", 
       "items": {
         "description": "", 
+        "required": true, 
         "title": "", 
         "type": "string"
       }, 
+      "required": false, 
       "title": "Tags", 
       "type": "array", 
       "uniqueItems": true
     }, 
     "table_of_contents": {
       "description": "If selected, this will show a table of contents at the top of the page.", 
+      "required": false, 
       "title": "Table of contents", 
       "type": "boolean"
     }, 
     "text": {
       "description": "", 
-      "properties": {
-        "text.encoding": {
-          "description": "Mainly used internally", 
-          "title": "Default encoding for the value", 
-          "type": "string"
-        }, 
-        "text.mimeType": {
-          "description": "", 
-          "title": "MIME type", 
-          "type": "string"
-        }, 
-        "text.output": {
-          "description": "May be None if the transform cannot be completed", 
-          "minLength": 0, 
-          "title": "Transformed value in the target MIME type", 
-          "type": "string"
-        }, 
-        "text.outputMimeType": {
-          "description": "", 
-          "title": "Default output MIME type", 
-          "type": "string"
-        }, 
-        "text.raw": {
-          "description": "", 
-          "minLength": 0, 
-          "title": "Raw value in the original MIME type", 
-          "type": "string"
-        }, 
-        "text.raw_encoded": {
-          "description": "Mainly used internally", 
-          "title": "Get the raw value as an encoded string", 
-          "type": "string"
-        }
-      }, 
+      "required": false, 
       "title": "Text", 
-      "type": "object"
+      "type": "string", 
+      "widget": "richtext"
     }, 
     "title": {
       "description": "", 
+      "required": true, 
       "title": "Title", 
       "type": "string"
     }
