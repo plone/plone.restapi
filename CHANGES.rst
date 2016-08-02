@@ -4,7 +4,7 @@ Changelog
 1.0a2 (unreleased)
 ------------------
 
-- @types improvments: add `required` and `widget`, support RichText field
+- @types improvments: add `widget` and support RichText field
   [ebrehault]
 
 - Implements navigation and breadcrumbs components (copied from barcelona-mocks)

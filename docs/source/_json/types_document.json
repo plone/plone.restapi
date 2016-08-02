@@ -26,13 +26,11 @@ content-type: application/json+schema
         "Yes", 
         "No"
       ], 
-      "required": false, 
       "title": "Allow discussion", 
       "type": "string"
     }, 
     "changeNote": {
       "description": "Enter a comment that describes the changes you made.", 
-      "required": false, 
       "title": "Change Note", 
       "type": "string"
     }, 
@@ -41,11 +39,9 @@ content-type: application/json+schema
       "description": "The names of people that have contributed to this item. Each contributor should be on a separate line.", 
       "items": {
         "description": "", 
-        "required": true, 
         "title": "", 
         "type": "string"
       }, 
-      "required": false, 
       "title": "Contributors", 
       "type": "array", 
       "uniqueItems": true
@@ -55,11 +51,9 @@ content-type: application/json+schema
       "description": "Persons responsible for creating the content of this item. Please enter a list of user names, one per line. The principal creator should come first.", 
       "items": {
         "description": "", 
-        "required": true, 
         "title": "", 
         "type": "string"
       }, 
-      "required": false, 
       "title": "Creators", 
       "type": "array", 
       "uniqueItems": true
@@ -67,33 +61,28 @@ content-type: application/json+schema
     "description": {
       "description": "Used in item listings and search results.", 
       "minLength": 0, 
-      "required": false, 
       "title": "Summary", 
       "type": "string", 
       "widget": "textarea"
     }, 
     "effective": {
       "description": "If this date is in the future, the content will not show up in listings and searches until this date.", 
-      "required": false, 
       "title": "Publishing Date", 
       "type": "string"
     }, 
     "exclude_from_nav": {
       "default": false, 
       "description": "If selected, this item will not appear in the navigation tree", 
-      "required": true, 
       "title": "Exclude from navigation", 
       "type": "boolean"
     }, 
     "expires": {
       "description": "When this date is reached, the content will nolonger be visible in listings and searches.", 
-      "required": false, 
       "title": "Expiration Date", 
       "type": "string"
     }, 
     "id": {
       "description": "This name will be displayed in the URL.", 
-      "required": false, 
       "title": "Short name", 
       "type": "string"
     }, 
@@ -2578,7 +2567,6 @@ content-type: application/json+schema
         "\ud55c\uad6d\uc5b4", 
         "\ufed7\ufe8e\ufeaf\ufe8d\ufed7\ufeb8\ufe8e"
       ], 
-      "required": false, 
       "title": "Language", 
       "type": "string"
     }, 
@@ -2600,11 +2588,9 @@ content-type: application/json+schema
         "enumNames": [
           "1f699ffa110e45afb1ba502f75f7ec33"
         ], 
-        "required": true, 
         "title": "Related", 
         "type": "string"
       }, 
-      "required": false, 
       "title": "Related Items", 
       "type": "array", 
       "uniqueItems": true
@@ -2612,7 +2598,6 @@ content-type: application/json+schema
     "rights": {
       "description": "Copyright statement or other rights information on this item.", 
       "minLength": 0, 
-      "required": false, 
       "title": "Rights", 
       "type": "string", 
       "widget": "textarea"
@@ -2622,31 +2607,26 @@ content-type: application/json+schema
       "description": "Tags are commonly used for ad-hoc organization of content.", 
       "items": {
         "description": "", 
-        "required": true, 
         "title": "", 
         "type": "string"
       }, 
-      "required": false, 
       "title": "Tags", 
       "type": "array", 
       "uniqueItems": true
     }, 
     "table_of_contents": {
       "description": "If selected, this will show a table of contents at the top of the page.", 
-      "required": false, 
       "title": "Table of contents", 
       "type": "boolean"
     }, 
     "text": {
       "description": "", 
-      "required": false, 
       "title": "Text", 
       "type": "string", 
       "widget": "richtext"
     }, 
     "title": {
       "description": "", 
-      "required": true, 
       "title": "Title", 
       "type": "string"
     }
