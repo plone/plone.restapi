@@ -65,6 +65,8 @@ class TestJsonSchemaUtils(TestCase):
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', jsonschema['properties'].keys())
         self.assertIn('title', jsonschema['required'])
+        self.assertEquals('default', jsonschema['fieldsets'][0]['id'])
+        self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
 
         jsonschema = get_jsonschema_for_fti(
             ttool['Document'], portal, request, excluded_fields=['title'])
@@ -79,6 +81,8 @@ class TestJsonSchemaUtils(TestCase):
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', jsonschema['properties'].keys())
         self.assertIn('title', jsonschema['required'])
+        self.assertEquals('default', jsonschema['fieldsets'][0]['id'])
+        self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
 
         jsonschema = get_jsonschema_for_portal_type(
             'Document', portal, request, excluded_fields=['title'])

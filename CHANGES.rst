@@ -7,6 +7,8 @@ Changelog
 - @types improvments: add `required` and `widget`, support RichText field
   [ebrehault]
 
+- add fieldsets in @types
+  [ebrehault]
 
 1.0a1 (2016-07-14)
 ------------------
