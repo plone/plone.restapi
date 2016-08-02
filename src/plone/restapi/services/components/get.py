@@ -14,7 +14,7 @@ class ComponentsGet(Service):
         self.params = []
 
     def publishTraverse(self, request, name):
-        # Consume any path segments after /components_ as parameters
+        # Consume any path segments after /@components as parameters
         for component_id in name.split(','):
             self.params.append(component_id)
         return self
@@ -23,7 +23,7 @@ class ComponentsGet(Service):
     def _component_ids(self):
         return self.params
 
-    def _frame_component_items(self, items, component_id):
+    def _wrap_component_items(self, items, component_id):
         component = {
             'id': component_id,
             'data': {
@@ -64,7 +64,7 @@ class ComponentsGet(Service):
                 'This endpoint does not currently support the '
                 'component type %r' % component_id)
 
-        return self._frame_component_items(items, component_id)
+        return self._wrap_component_items(items, component_id)
 
     def reply(self):
         components = []
