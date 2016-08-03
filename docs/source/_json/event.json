@@ -17,19 +17,19 @@ content-type: application/json
   "contributors": [], 
   "created": "2016-01-21T03:14:48+00:00", 
   "creators": [
-    "test_user_1_"
+    "test_user_1_", 
+    "admin"
   ], 
   "description": "This is an event", 
   "effective": null, 
-  "end": "2013-01-01T12:00:00", 
+  "end": null, 
   "event_url": null, 
   "exclude_from_nav": false, 
   "expires": null, 
-  "id": "event", 
   "language": "", 
   "location": null, 
   "modified": "2016-01-21T03:24:11+00:00", 
-  "open_end": false, 
+  "open_end": null, 
   "parent": {
     "@id": "http://localhost:55001/plone", 
     "@type": "Plone Site", 
@@ -40,10 +40,11 @@ content-type: application/json
   "relatedItems": [], 
   "review_state": "private", 
   "rights": "", 
-  "start": "2013-01-01T10:00:00", 
+  "start": null, 
   "subjects": [], 
   "sync_uid": null, 
   "text": null, 
+  "timezone": null, 
   "title": "Event", 
-  "whole_day": false
+  "whole_day": null
 }

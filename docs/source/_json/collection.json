@@ -12,19 +12,14 @@ content-type: application/json
   "contributors": [], 
   "created": "2016-01-21T08:14:48+00:00", 
   "creators": [
-    "test_user_1_"
+    "test_user_1_", 
+    "admin"
   ], 
-  "customViewFields": [
-    "Title", 
-    "Creator", 
-    "Type", 
-    "ModificationDate"
-  ], 
+  "customViewFields": [], 
   "description": "This is a collection with two documents", 
   "effective": null, 
   "exclude_from_nav": false, 
   "expires": null, 
-  "id": "collection", 
   "item_count": 30, 
   "items": [
     {

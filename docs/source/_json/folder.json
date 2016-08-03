@@ -12,13 +12,13 @@ content-type: application/json
   "contributors": [], 
   "created": "2016-01-21T07:14:48+00:00", 
   "creators": [
-    "test_user_1_"
+    "test_user_1_", 
+    "admin"
   ], 
   "description": "This is a folder with two documents", 
   "effective": null, 
   "exclude_from_nav": false, 
   "expires": null, 
-  "id": "folder", 
   "items": [
     {
       "@id": "http://localhost:55001/plone/folder/doc1", 
