@@ -4,26 +4,39 @@
 # E1002: Use of super on an old style class
 
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
+from plone.app.i18n.locales.interfaces import IContentLanguages
+from plone.app.i18n.locales.interfaces import IMetadataLanguages
+from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
+from plone.app.testing import login
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
+from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
-from plone.app.testing import applyProfile
-from plone.app.testing import login
-from plone.app.testing import setRoles
 from plone.restapi.tests.dxtypes import INDEXES as DX_TYPES_INDEXES
 from plone.restapi.tests.helpers import add_catalog_indexes
+from plone.testing import z2
 from urlparse import urljoin
 from urlparse import urlparse
-
-from plone.testing import z2
-
+from zope.component import getUtility
 from zope.configuration import xmlconfig
 
 import requests
+
+
+def set_available_languages():
+    """Limit available languages to a small set.
+
+    We're doing this to avoid excessive language lists in dumped responses
+    for docs. Depends on our own ModifiableLanguages components
+    (see plone.restapi:testing profile).
+    """
+    enabled_languages = ['de', 'en', 'es', 'fr']
+    getUtility(IContentLanguages).setAvailableLanguages(enabled_languages)
+    getUtility(IMetadataLanguages).setAvailableLanguages(enabled_languages)
 
 
 class PloneRestApiDXLayer(PloneSandboxLayer):
@@ -53,6 +66,7 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         applyProfile(portal, 'plone.restapi:default')
         applyProfile(portal, 'plone.restapi:testing')
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
+        set_available_languages()
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
 PLONE_RESTAPI_DX_INTEGRATION_TESTING = IntegrationTesting(
@@ -99,6 +113,7 @@ class PloneRestApiATLayer(PloneSandboxLayer):
         applyProfile(portal, 'plone.app.dexterity:default')
         applyProfile(portal, 'plone.restapi:default')
         applyProfile(portal, 'plone.restapi:testing')
+        set_available_languages()
 
 PLONE_RESTAPI_AT_FIXTURE = PloneRestApiATLayer()
 PLONE_RESTAPI_AT_INTEGRATION_TESTING = IntegrationTesting(
