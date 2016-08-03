@@ -7,6 +7,10 @@ Changelog
 - Implements navigation and breadcrumbs components (copied from barcelona-mocks)
   [ebrehault]
 
+- Tests: Use `freezegun` to freeze hard to control timestamps in
+  response dumps used for documentation.
+  [lgraf]
+
 - Tests: Limit available languages to a small set to avoid excessive
   language lists in response dumps used for documentation.
   [lgraf]
@@ -20,4 +24,4 @@ Changelog
 
 - Initial release.
   [timo,buchi,lukasgraf,et al.]
- 
+
