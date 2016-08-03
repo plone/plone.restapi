@@ -50,6 +50,7 @@ setup(name='plone.restapi',
           'plone.app.robotframework',
           'plone.app.testing [robot] >= 4.2.2',  # ROBOT_TEST_LEVEL added
           'requests',
+          'freezegun',
       ]},
       entry_points="""
       # -*- Entry points: -*-
