@@ -42,16 +42,15 @@ class TestComponents(unittest.TestCase):
         self.assertEqual(
             response.json(),
             [{
-                u'id': u'breadcrumbs',
-                u'data': {
-                    u'items': [{
-                        u'url': u'http://localhost:55001/plone/folder',
-                        u'title': u'Some Folder'
-                    }, {
-                        u'url': u'http://localhost:55001/plone/folder/doc1',
-                        u'title': u'A document'
-                    }]
-                },
+                u'@id': u'http://localhost:55001/plone/folder/doc1/'
+                '@components/breadcrumbs',
+                u'items': [{
+                    u'url': u'http://localhost:55001/plone/folder',
+                    u'title': u'Some Folder'
+                }, {
+                    u'url': u'http://localhost:55001/plone/folder/doc1',
+                    u'title': u'A document'
+                }],
             }]
         )
 
@@ -62,15 +61,14 @@ class TestComponents(unittest.TestCase):
         self.assertEqual(
             response.json(),
             [{
-                u'id': u'navigation',
-                u'data': {
-                    u'items': [{
-                        u'title': u'Home',
-                        u'url': u'http://localhost:55001/plone'
-                    }, {
-                        u'title': u'Some Folder',
-                        u'url': u'http://localhost:55001/plone/folder'
-                    }]
-                },
+                u'@id': u'http://localhost:55001/plone/folder/@components/'
+                'navigation',
+                u'items': [{
+                    u'title': u'Home',
+                    u'url': u'http://localhost:55001/plone'
+                }, {
+                    u'title': u'Some Folder',
+                    u'url': u'http://localhost:55001/plone/folder'
+                }],
             }]
         )

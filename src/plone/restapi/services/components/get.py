@@ -25,10 +25,10 @@ class ComponentsGet(Service):
 
     def _wrap_component_items(self, items, component_id):
         component = {
-            'id': component_id,
-            'data': {
-                'items': items
-            }
+            '@id': '{}/@components/{}'.format(
+                self.context.absolute_url(),
+                component_id),
+            'items': items
         }
         return component
 

@@ -15,7 +15,7 @@ Changelog
   language lists in response dumps used for documentation.
   [lgraf]
 
-- @types improvements: add `required` and `widget`, support RichText field
+- @types improvements: add `widget`, support RichText field
   [ebrehault]
 
 
