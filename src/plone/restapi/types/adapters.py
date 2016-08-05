@@ -61,7 +61,6 @@ class DefaultJsonSchemaProvider(object):
             'type': self.get_type(),
             'title': self.get_title(),
             'description': self.get_description(),
-            'required': self.field.required,
         }
 
         widget = self.get_widget()

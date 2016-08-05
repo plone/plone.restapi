@@ -62,7 +62,8 @@ content-type: application/json+schema
       "description": "Used in item listings and search results.", 
       "minLength": 0, 
       "title": "Summary", 
-      "type": "string"
+      "type": "string", 
+      "widget": "textarea"
     }, 
     "effective": {
       "description": "If this date is in the future, the content will not show up in listings and searches until this date.", 
@@ -133,7 +134,8 @@ content-type: application/json+schema
       "description": "Copyright statement or other rights information on this item.", 
       "minLength": 0, 
       "title": "Rights", 
-      "type": "string"
+      "type": "string", 
+      "widget": "textarea"
     }, 
     "subjects": {
       "additionalItems": true, 
@@ -154,42 +156,9 @@ content-type: application/json+schema
     }, 
     "text": {
       "description": "", 
-      "properties": {
-        "text.encoding": {
-          "description": "Mainly used internally", 
-          "title": "Default encoding for the value", 
-          "type": "string"
-        }, 
-        "text.mimeType": {
-          "description": "", 
-          "title": "MIME type", 
-          "type": "string"
-        }, 
-        "text.output": {
-          "description": "May be None if the transform cannot be completed", 
-          "minLength": 0, 
-          "title": "Transformed value in the target MIME type", 
-          "type": "string"
-        }, 
-        "text.outputMimeType": {
-          "description": "", 
-          "title": "Default output MIME type", 
-          "type": "string"
-        }, 
-        "text.raw": {
-          "description": "", 
-          "minLength": 0, 
-          "title": "Raw value in the original MIME type", 
-          "type": "string"
-        }, 
-        "text.raw_encoded": {
-          "description": "Mainly used internally", 
-          "title": "Get the raw value as an encoded string", 
-          "type": "string"
-        }
-      }, 
       "title": "Text", 
-      "type": "object"
+      "type": "string", 
+      "widget": "richtext"
     }, 
     "title": {
       "description": "", 
