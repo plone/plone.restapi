@@ -1,0 +1,17 @@
+GET /plone/front-page/@components/breadcrumbs
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+[
+  {
+    "@id": "http://localhost:55001/plone/front-page/@components/breadcrumbs", 
+    "items": [
+      {
+        "title": "Welcome to Plone", 
+        "url": "http://localhost:55001/plone/front-page"
+      }
+    ]
+  }
+]

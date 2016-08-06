@@ -4,6 +4,9 @@ Changelog
 1.0a2 (unreleased)
 ------------------
 
+- Implements navigation and breadcrumbs components (copied from barcelona-mocks)
+  [ebrehault]
+
 - Tests: Use `freezegun` to freeze hard to control timestamps in
   response dumps used for documentation.
   [lgraf]
@@ -12,7 +15,7 @@ Changelog
   language lists in response dumps used for documentation.
   [lgraf]
 
-- @types improvments: add `required` and `widget`, support RichText field
+- @types improvements: add `widget`, support RichText field
   [ebrehault]
 
 - add fieldsets in @types
@@ -23,4 +26,4 @@ Changelog
 
 - Initial release.
   [timo,buchi,lukasgraf,et al.]
- 
+

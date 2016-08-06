@@ -1,0 +1,13 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <plone:service
+    method="GET"
+    for="zope.interface.Interface"
+    factory=".get.ComponentsGet"
+    name="@components"
+    permission="zope2.View"
+    />
+
+</configure>

@@ -368,3 +368,13 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.get(
             '/folder/@search?b_size=5', params=query)
         save_response_for_documentation('batching.json', response)
+
+    def test_documentation_breadcrumbs(self):
+        response = self.api_session.get(
+            '{}/@components/breadcrumbs'.format(self.document.absolute_url()))
+        save_response_for_documentation('breadcrumbs.json', response)
+
+    def test_documentation_navigation(self):
+        response = self.api_session.get(
+            '{}/@components/navigation'.format(self.document.absolute_url()))
+        save_response_for_documentation('navigation.json', response)
