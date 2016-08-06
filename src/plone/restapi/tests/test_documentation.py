@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from DateTime import DateTime
+from datetime import timedelta
+from freezegun import freeze_time
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -67,6 +69,9 @@ class TestTraversal(unittest.TestCase):
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
 
+        self.time_freezer = freeze_time("2016-10-21 19:00:00")
+        self.frozen_time = self.time_freezer.start()
+
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
@@ -97,6 +102,9 @@ class TestTraversal(unittest.TestCase):
             'Authorization',
             'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
         )
+
+    def tearDown(self):
+        self.time_freezer.stop()
 
     def test_documentation_document(self):
         response = self.api_session.get(self.document.absolute_url())
@@ -273,6 +281,7 @@ class TestTraversal(unittest.TestCase):
         save_response_for_documentation('workflow_get.json', response)
 
     def test_documentation_workflow_transition(self):
+        self.frozen_time.tick(timedelta(minutes=5))
         response = self.api_session.post(
             '{}/@workflow/publish'.format(self.document.absolute_url()))
         save_response_for_documentation('workflow_post.json', response)

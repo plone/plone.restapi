@@ -13,13 +13,13 @@ content-type: application/json
   "contributors": [], 
   "created": "2016-01-21T01:14:48+00:00", 
   "creators": [
-    "test_user_1_"
+    "test_user_1_", 
+    "admin"
   ], 
   "description": "Congratulations! You have successfully installed Plone.", 
   "effective": null, 
   "exclude_from_nav": false, 
   "expires": null, 
-  "id": "front-page", 
   "language": "", 
   "modified": "2016-01-21T01:24:11+00:00", 
   "parent": {
