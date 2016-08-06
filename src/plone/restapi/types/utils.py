@@ -35,8 +35,10 @@ def get_ordered_fields(fti):
     schema = fti.lookupSchema()
     fieldset_fields = {}
     ordered_fieldsets = ['default']
+    labels = {'default': u'Default'}
     for fieldset in schema.queryTaggedValue(FIELDSETS_KEY, []):
         ordered_fieldsets.append(fieldset.__name__)
+        labels[fieldset.__name__] = fieldset.label
         fieldset_fields[fieldset.__name__] = fieldset.fields
 
     fieldset_fields['default'] = non_fieldset_fields(schema)
@@ -52,7 +54,9 @@ def get_ordered_fields(fti):
         for fieldset in schema.queryTaggedValue(FIELDSETS_KEY, []):
             fieldset_fields.setdefault(fieldset.__name__, []).extend(
                 fieldset.fields)
-            ordered_fieldsets.append(fieldset.__name__)
+            if fieldset.__name__ not in ordered_fieldsets:
+                ordered_fieldsets.append(fieldset.__name__)
+                labels[fieldset.__name__] = fieldset.label
 
         fieldset_fields['default'].extend(non_fieldset_fields(schema))
 
@@ -60,8 +64,14 @@ def get_ordered_fields(fti):
     for fieldset in ordered_fieldsets:
         ordered_fields.extend(fieldset_fields[fieldset])
 
+    ordered_fieldsets_fields = [{
+        'id': fieldset,
+        'fields': fieldset_fields[fieldset],
+        'title': labels[fieldset],
+    } for fieldset in ordered_fieldsets]
+
     fields.sort(key=lambda field: ordered_fields.index(field[0]))
-    return fields
+    return (fields, ordered_fieldsets_fields)
 
 
 def get_fields_from_schema(schema, context, request, prefix='',
@@ -93,7 +103,8 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
         excluded_fields = []
 
     required = []
-    for fieldname, field in get_ordered_fields(fti):
+    (ordered_fields, fieldsets) = get_ordered_fields(fti)
+    for fieldname, field in ordered_fields:
         if fieldname not in excluded_fields:
             adapter = getMultiAdapter(
                 (field, context, request),
@@ -108,6 +119,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
         'title': fti.Title(),
         'properties': fields_info,
         'required': required,
+        'fieldsets': fieldsets,
     }
 
 
