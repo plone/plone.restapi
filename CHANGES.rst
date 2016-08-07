@@ -4,6 +4,9 @@ Changelog
 1.0a2 (unreleased)
 ------------------
 
+- Fail tests on uncommitted changes to docs/source/_json/
+  [lgraf]
+
 - Implements navigation and breadcrumbs components (copied from barcelona-mocks)
   [ebrehault]
 
