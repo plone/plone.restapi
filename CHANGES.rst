@@ -4,6 +4,11 @@ Changelog
 1.0a2 (unreleased)
 ------------------
 
+- Disable automatic CSRF protection for @login and @login-renew endpoints:
+  If persisting tokens server-side is enabled, those requests need to be allowed
+  to cause DB writes.
+  [lgraf]
+
 - Fixed parameter 'data' to JSON format in JWT Authentication documentation
   [lccruz]
 
