@@ -4,6 +4,9 @@ Changelog
 1.0a2 (unreleased)
 ------------------
 
+- Fixed parameter 'data' to JSON format in JWT Authentication documentation
+  [lccruz]
+
 - Fail tests on uncommitted changes to docs/source/_json/
   [lgraf]
 
