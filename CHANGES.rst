@@ -5,8 +5,7 @@ Changelog
 ------------------
 
 - Disable automatic CSRF protection for @login and @login-renew endpoints:
-  If persisting tokens server-side is enabled, those requests need to be allowed
-  to cause DB writes.
+  If persisting tokens server-side is enabled, those requests need to be allowed to cause DB writes.
   [lgraf]
 
 - Fixed parameter 'data' to JSON format in JWT Authentication documentation
@@ -15,15 +14,15 @@ Changelog
 - Fail tests on uncommitted changes to docs/source/_json/
   [lgraf]
 
-- Implements navigation and breadcrumbs components (copied from barcelona-mocks)
+- Implements navigation and breadcrumbs components
   [ebrehault]
 
-- Tests: Use `freezegun` to freeze hard to control timestamps in
-  response dumps used for documentation.
+- Tests: Use `freezegun` to freeze hard to control timestamps in response
+  dumps used for documentation.
   [lgraf]
 
-- Tests: Limit available languages to a small set to avoid excessive
-  language lists in response dumps used for documentation.
+- Tests: Limit available languages to a small set to avoid excessive language
+  lists in response dumps used for documentation.
   [lgraf]
 
 - @types improvements: add `widget`, support RichText field
@@ -31,6 +30,7 @@ Changelog
 
 - add fieldsets in @types
   [ebrehault]
+
 
 1.0a1 (2016-07-14)
 ------------------
