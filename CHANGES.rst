@@ -4,18 +4,29 @@ Changelog
 1.0a2 (unreleased)
 ------------------
 
+New Features:
+
+- Implements navigation and breadcrumbs components
+  [ebrehault]
+
+- Add `widget` and support for RichText field in @types component.
+  [ebrehault]
+
+- Add fieldsets in @types
+  [ebrehault]
+
+Bugfixes:
+
 - Disable automatic CSRF protection for @login and @login-renew endpoints:
   If persisting tokens server-side is enabled, those requests need to be allowed to cause DB writes.
   [lgraf]
 
-- Fixed parameter 'data' to JSON format in JWT Authentication documentation
+- Documentation: Fixed parameter 'data' to JSON format in JWT Authentication
+  documentation
   [lccruz]
 
-- Fail tests on uncommitted changes to docs/source/_json/
+- Tests: Fail tests on uncommitted changes to docs/source/_json/
   [lgraf]
-
-- Implements navigation and breadcrumbs components
-  [ebrehault]
 
 - Tests: Use `freezegun` to freeze hard to control timestamps in response
   dumps used for documentation.
@@ -24,12 +35,6 @@ Changelog
 - Tests: Limit available languages to a small set to avoid excessive language
   lists in response dumps used for documentation.
   [lgraf]
-
-- @types improvements: add `widget`, support RichText field
-  [ebrehault]
-
-- add fieldsets in @types
-  [ebrehault]
 
 
 1.0a1 (2016-07-14)
