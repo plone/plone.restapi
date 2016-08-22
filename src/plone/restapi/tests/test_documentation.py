@@ -473,7 +473,7 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.delete(
             '/@users/noam')
         save_response_for_documentation('users_delete.json', response)
-    
+
     def test_documentation_breadcrumbs(self):
         response = self.api_session.get(
             '{}/@components/breadcrumbs'.format(self.document.absolute_url()))
