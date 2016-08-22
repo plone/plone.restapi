@@ -4,7 +4,10 @@ Changelog
 1.0a3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+New Features:
+
+- Add @users endpoint.
+  [timo]
 
 
 1.0a2 (2016-08-20)
