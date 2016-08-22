@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """JsonSchema providers."""
+from plone.app.textfield.interfaces import IRichText
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtility
@@ -61,6 +62,11 @@ class DefaultJsonSchemaProvider(object):
             'title': self.get_title(),
             'description': self.get_description(),
         }
+
+        widget = self.get_widget()
+        if widget:
+            schema['widget'] = widget
+
         if self.field.default is not None:
             schema['default'] = self.field.default
 
@@ -69,6 +75,9 @@ class DefaultJsonSchemaProvider(object):
 
     def get_type(self):
         raise NotImplementedError
+
+    def get_widget(self):
+        return None
 
 
 @adapter(ITextLine, Interface, Interface)
@@ -92,6 +101,9 @@ class TextJsonSchemaProvider(TextLineJsonSchemaProvider):
             info['maxLength'] = self.field.max_length
 
         return info
+
+    def get_widget(self):
+        return 'textarea'
 
 
 @adapter(IASCII, Interface, Interface)
@@ -266,6 +278,19 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
         info = super(ObjectJsonSchemaProvider, self).additional()
         info['properties'] = self.get_properties()
         return info
+
+
+@adapter(IRichText, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class RichTextJsonSchemaProvider(DefaultJsonSchemaProvider):
+
+    prefix = ''
+
+    def get_type(self):
+        return 'string'
+
+    def get_widget(self):
+        return 'richtext'
 
 
 @adapter(IDate, Interface, Interface)

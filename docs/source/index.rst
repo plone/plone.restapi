@@ -26,6 +26,7 @@ Contents
    workflow
    registry
    users
+   components
    serialization
    searching
    customization

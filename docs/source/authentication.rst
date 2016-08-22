@@ -69,7 +69,7 @@ endpoint.
 
     requests.post('http://localhost:8080/Plone/@login',
                   headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
-                  data={'login': 'admin', 'password': 'admin'})
+                  data='{"login": "admin", "password": "admin"}')
 
 
 The server responds with a JSON object containing the token.

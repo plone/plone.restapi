@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Products.CMFCore.utils import getToolByName
-from Products.PluggableAuthService.interfaces.plugins import (
-    IAuthenticationPlugin)
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from Products.CMFCore.utils import getToolByName
+from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin  # noqa
+from zope.interface import alsoProvides
+
+import plone.protect.interfaces
 
 
 class Login(Service):
@@ -33,6 +35,11 @@ class Login(Service):
             return dict(error=dict(
                 type='Missing credentials',
                 message='Login and password must be provided in body.'))
+
+        # Disable CSRF protection
+        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
 
         userid = data['login'].encode('utf8')
         password = data['password'].encode('utf8')

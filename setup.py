@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '0.1'
+version = '1.0a3.dev0'
 
 long_description = (
     open('README.rst').read() + '\n' +
@@ -51,6 +51,7 @@ setup(name='plone.restapi',
           'plone.app.robotframework',
           'plone.app.testing [robot] >= 4.2.2',  # ROBOT_TEST_LEVEL added
           'requests',
+          'freezegun',
       ]},
       entry_points="""
       # -*- Entry points: -*-

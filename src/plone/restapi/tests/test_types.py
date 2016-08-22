@@ -6,6 +6,7 @@ from unittest2 import TestCase
 from zope.component import getMultiAdapter
 from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
+from plone.app.textfield import RichText
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
@@ -62,6 +63,8 @@ class TestJsonSchemaUtils(TestCase):
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', jsonschema['properties'].keys())
         self.assertIn('title', jsonschema['required'])
+        self.assertEquals('default', jsonschema['fieldsets'][0]['id'])
+        self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
 
         jsonschema = get_jsonschema_for_fti(
             ttool['Document'], portal, request, excluded_fields=['title'])
@@ -76,6 +79,8 @@ class TestJsonSchemaUtils(TestCase):
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', jsonschema['properties'].keys())
         self.assertIn('title', jsonschema['required'])
+        self.assertEquals('default', jsonschema['fieldsets'][0]['id'])
+        self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
 
         jsonschema = get_jsonschema_for_portal_type(
             'Document', portal, request, excluded_fields=['title'])
@@ -124,6 +129,7 @@ class TestJsonSchemaProviders(TestCase):
             'type': 'string',
             'title': u'My field',
             'description': u'My great field',
+            'widget': 'textarea',
             'default': u'Lorem ipsum dolor sit amet',
             'minLength': 10,
         }
@@ -358,6 +364,22 @@ class TestJsonSchemaProviders(TestCase):
                     'type': 'string'
                 },
             }
+        }
+        self.assertEqual(jsonschema, expected)
+
+    def test_richtext(self):
+        field = RichText(
+            title=u'My field',
+            description=u'My great field',
+        )
+        adapter = getMultiAdapter((field, self.portal, self.request),
+                                  IJsonSchemaProvider)
+        jsonschema = adapter.get_schema()
+        expected = {
+            'type': 'string',
+            'title': u'My field',
+            'description': u'My great field',
+            'widget': 'richtext',
         }
         self.assertEqual(jsonschema, expected)
 

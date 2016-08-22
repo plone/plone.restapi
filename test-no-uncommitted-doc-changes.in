@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# CI test that should fail if there are uncommitted changes to the directory
+# containing the request/response dumps
+#
+# (To be executed after running tests in test_documentation.py)
+
+DUMPS_DIR="docs/source/_json/"
+
+function red {
+    RED=$(tput setaf 1)
+    RESET=$(tput sgr0)
+    echo "$RED $1 $RESET"
+}
+
+if [ "$PLONE_VERSION" = "5.0.x" ]; then
+    # request/response dumps have known differences for Plone 5
+    # => skip, we can't have the Plone 5 build fail because of those
+    echo "Skipping checks for undocumented changes for Plone 5.0.x"
+    exit 0
+fi
+
+changes=$(git diff --exit-code $DUMPS_DIR)
+if [ $? -ne 0 ]; then
+    red "ERROR: There are modified files in $DUMPS_DIR after running test_documentation.py!"
+    red
+    red "That means your changeset introduced API changes that cause a different behavior"
+    red "than what is currently documented, and docs probably need to be updated."
+    red
+    red "Please review the changes below, and"
+    red "1) verify that those behavior changes are actually *intended*"
+    red "2) if they are, add and commit them using git and include them with your changeset"
+    red
+
+    git diff --exit-code $DUMPS_DIR
+    exit 1
+fi

@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
-from Products.PluggableAuthService.interfaces.plugins import (
-    IAuthenticationPlugin)
 from plone.restapi.services import Service
+from Products.CMFCore.utils import getToolByName
+from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin  # noqa
+from zope.interface import alsoProvides
+
+import plone.protect.interfaces
 
 
 class Renew(Service):
@@ -23,6 +25,11 @@ class Renew(Service):
             return dict(error=dict(
                 type='Renew failed',
                 message='JWT authentication plugin not installed.'))
+
+        # Disable CSRF protection
+        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
 
         mtool = getToolByName(self.context, 'portal_membership')
         user = mtool.getAuthenticatedMember()
