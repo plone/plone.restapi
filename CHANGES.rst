@@ -4,7 +4,10 @@ Changelog
 1.0a3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Fix bug where disabling the "Use Keyring" flag wasn't persisted in jwt_auth plugin.
+  [lgraf]
 
 
 1.0a2 (2016-08-20)
