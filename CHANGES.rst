@@ -9,6 +9,11 @@ New Features:
 - Add @users endpoint.
   [timo]
 
+Bugfixes:
+
+- Fix bug where disabling the "Use Keyring" flag wasn't persisted in jwt_auth plugin.
+  [lgraf]
+
 
 1.0a2 (2016-08-20)
 ------------------

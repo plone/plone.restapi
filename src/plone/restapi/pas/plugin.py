@@ -137,7 +137,7 @@ class JWTAuthenticationPlugin(BasePlugin):
 
         self.token_timeout = int(REQUEST.form.get('token_timeout',
                                                   self.token_timeout))
-        self.use_keyring = bool(REQUEST.form.get('use_keyring', True))
+        self.use_keyring = bool(REQUEST.form.get('use_keyring', False))
         self.store_tokens = bool(REQUEST.form.get('store_tokens', False))
         if self.store_tokens and self._tokens is None:
             self._tokens = OOBTree()
