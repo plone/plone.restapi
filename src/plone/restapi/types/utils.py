@@ -4,6 +4,8 @@ from collections import OrderedDict
 
 from zope.component import getUtility
 from zope.component import getMultiAdapter
+from zope.globalrequest import getRequest
+from zope.i18n import translate
 from zope.schema import getFieldsInOrder
 
 from plone.autoform.interfaces import IFormFieldProvider
@@ -116,7 +118,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
 
     return {
         'type': 'object',
-        'title': fti.Title(),
+        'title': translate(fti.Title(), context=getRequest()),
         'properties': fields_info,
         'required': required,
         'fieldsets': fieldsets,
