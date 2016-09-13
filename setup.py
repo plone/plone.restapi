@@ -40,7 +40,6 @@ setup(name='plone.restapi',
       zip_safe=False,
       install_requires=[
           'setuptools',
-          'plone.api',
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
           'PyJWT',
       ],
@@ -50,6 +49,7 @@ setup(name='plone.restapi',
           'plone.app.contenttypes',
           'plone.app.robotframework',
           'plone.app.testing [robot] >= 4.2.2',  # ROBOT_TEST_LEVEL added
+          'plone.api',
           'requests',
           'freezegun',
       ]},

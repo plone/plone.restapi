@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from plone import api
 from plone.restapi.services import Service
 from Products.CMFPlone.utils import set_own_login_name
+from Products.CMFCore.utils import getToolByName
+from zope.component.hooks import getSite
 from zope.interface import alsoProvides
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -32,9 +33,14 @@ class UsersPatch(Service):
                 "Must supply exactly one parameter (user id)")
         return self.params[0]
 
+    def _get_user(self, user_id):
+        portal = getSite()
+        portal_membership = getToolByName(portal, 'portal_membership')
+        return portal_membership.getMemberById(user_id)
+
     def reply(self):
         user_settings_to_update = json.loads(self.request.get('BODY', '{}'))
-        user = api.user.get(userid=self._get_user_id)
+        user = self._get_user(self._get_user_id)
 
         # Disable CSRF protection
         if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):

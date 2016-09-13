@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-from plone import api
 from plone.api.exc import MissingParameterError
 from plone.api.exc import InvalidParameterError
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from Products.CMFCore.utils import getToolByName
 from zope.component import getAdapter
 from zope.component import queryMultiAdapter
+from zope.component.hooks import getSite
 from zExceptions import BadRequest
 from zope.interface import alsoProvides
 
@@ -23,6 +24,7 @@ class UsersPost(Service):
     """
 
     def reply(self):
+        portal = getSite()
         data = json_body(self.request)
 
         username = data.get('username', None)
@@ -48,13 +50,24 @@ class UsersPost(Service):
             alsoProvides(self.request,
                          plone.protect.interfaces.IDisableCSRFProtection)
 
+        # set username based on the login settings (username or email)
+        if use_email_as_login:
+            username = email
+            properties['username'] = email
+        else:
+            properties['username'] = username
+
+        # set email property
+        if email:
+            properties['email'] = email
+
         # Create user
         try:
-            user = api.user.create(
-                email=email,
-                username=username,
-                password=password,
-                roles=roles,
+            registration = getToolByName(portal, 'portal_registration')
+            user = registration.addMember(
+                username,
+                password,
+                roles,
                 properties=properties
             )
         except MissingParameterError as e:
@@ -73,7 +86,7 @@ class UsersPost(Service):
 
         self.request.response.setStatus(201)
         self.request.response.setHeader(
-            'Location', api.portal.get().absolute_url() + '/@users/' + username
+            'Location', portal.absolute_url() + '/@users/' + username
         )
         serializer = queryMultiAdapter(
             (user, self.request),
