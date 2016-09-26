@@ -31,6 +31,11 @@ class UsersDelete(Service):
     def reply(self):
         portal = getSite()
         portal_membership = getToolByName(portal, 'portal_membership')
-        portal_membership.deleteMembers((self._get_user_id,))
-        self.request.response.setStatus(204)
+        delete_successful = portal_membership.deleteMembers(
+            (self._get_user_id,)
+        )
+        if delete_successful:
+            self.request.response.setStatus(204)
+        else:
+            self.request.response.setStatus(404)
         return None

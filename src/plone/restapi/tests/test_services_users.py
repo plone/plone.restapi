@@ -218,3 +218,9 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(None, api.user.get(userid='noam'))
+
+    def test_delete_non_existing_user(self):
+        response = self.api_session.delete('/@users/non-existing-user')
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 404)
