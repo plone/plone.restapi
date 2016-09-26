@@ -50,6 +50,9 @@ class UsersGet(Service):
             return result
         # we retrieve the user on the user id not the username
         user = self._get_user(self._get_user_id)
+        if not user:
+            self.request.response.setStatus(404)
+            return
         serializer = queryMultiAdapter(
             (user, self.request),
             ISerializeToJson

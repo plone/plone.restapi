@@ -72,7 +72,7 @@ class TestUsersEndpoint(unittest.TestCase):
             '/@users',
             json={
                 "username": "howard",
-                "email": "howard.zinn@bu.edu",
+                "email": "howard.zinn@example.com",
                 "password": "peopleshistory"
             },
         )
@@ -80,7 +80,9 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(201, response.status_code)
         howard = api.user.get(userid='howard')
-        self.assertEqual("howard.zinn@bu.edu", howard.getProperty('email'))
+        self.assertEqual(
+            "howard.zinn@example.com", howard.getProperty('email')
+        )
 
     def test_add_user_username_is_required(self):
         response = self.api_session.post(
@@ -177,6 +179,11 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual('web.mit.edu/chomsky', response.json().get('home_page'))  # noqa
         self.assertEqual('Professor of Linguistics', response.json().get('description'))  # noqa
         self.assertEqual('Cambridge, MA', response.json().get('location'))
+
+    def test_get_non_existing_user(self):
+        response = self.api_session.get('/@users/non-existing-user')
+
+        self.assertEqual(response.status_code, 404)
 
     def test_update_user(self):
         payload = {
