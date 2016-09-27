@@ -1,0 +1,17 @@
+POST /plone/@users
+Accept: application/json
+
+HTTP 201 Created
+content-type: application/json
+location: http://localhost:55001/plone/@users/noamchomsky
+
+{
+  "@id": "http://localhost:55001/plone/@users/noamchomsky", 
+  "description": "", 
+  "email": "noam.chomsky@example.com", 
+  "fullname": "", 
+  "home_page": "", 
+  "id": "noamchomsky", 
+  "location": "", 
+  "username": "noamchomsky"
+}

@@ -8,5 +8,6 @@
   <include package=".types"/>
   <include package=".workflow"/>
   <include package=".registry"/>
+  <include package=".users"/>
 
 </configure>

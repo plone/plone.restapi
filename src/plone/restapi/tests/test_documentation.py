@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from DateTime import DateTime
+from plone import api
 from datetime import timedelta
 from freezegun import freeze_time
 from plone.app.testing import setRoles
@@ -28,6 +29,7 @@ REQUEST_HEADER_KEYS = [
 RESPONSE_HEADER_KEYS = [
     'content-type',
     'allow',
+    'location',
 ]
 
 base_path = os.path.join(
@@ -368,6 +370,109 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.get(
             '/folder/@search?b_size=5', params=query)
         save_response_for_documentation('batching.json', response)
+
+    def test_documentation_users(self):
+        test_user = api.user.get(username=TEST_USER_ID)
+        properties = {
+            "description": "This is a test user",
+            "email": "test@example.com",
+            "fullname": "Test User",
+            "home_page": "http://www.example.com",
+            "location": "Bonn",
+            "username": "test-user"
+        }
+        test_user.setMemberProperties(mapping=properties)
+        admin = api.user.get(username='admin')
+        properties = {
+            "description": "This is an admin user",
+            "email": "admin@example.com",
+            "fullname": "Administrator",
+            "home_page": "http://www.example.com",
+            "location": "Berlin",
+            "username": "admin"
+        }
+        admin.setMemberProperties(mapping=properties)
+        transaction.commit()
+        response = self.api_session.get('/@users')
+        save_response_for_documentation('users.json', response)
+
+    def test_documentation_users_get(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            properties=properties
+        )
+        transaction.commit()
+        response = self.api_session.get('@users/noam')
+        save_response_for_documentation('users_get.json', response)
+
+    def test_documentation_users_created(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                'username': 'noam',
+                'email': 'noam.chomsky@example.com',
+                'password': 'colorlessgreenideas',
+                'username': 'noamchomsky',
+                'fullname': 'Noam Avram Chomsky',
+                'home_page': 'web.mit.edu/chomsky',
+                'description': 'Professor of Linguistics',
+                'location': 'Cambridge, MA'
+            },
+        )
+        save_response_for_documentation('users_created.json', response)
+
+    def test_documentation_users_update(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            properties=properties
+        )
+        transaction.commit()
+
+        response = self.api_session.patch(
+            '/@users/noam',
+            json={
+                'email': 'avram.chomsky@example.com',
+            },
+        )
+        save_response_for_documentation('users_update.json', response)
+
+    def test_documentation_users_delete(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            properties=properties
+        )
+        transaction.commit()
+
+        response = self.api_session.delete(
+            '/@users/noam')
+        save_response_for_documentation('users_delete.json', response)
 
     def test_documentation_breadcrumbs(self):
         response = self.api_session.get(

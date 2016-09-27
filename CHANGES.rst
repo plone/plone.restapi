@@ -4,6 +4,11 @@ Changelog
 1.0a3 (unreleased)
 ------------------
 
+New Features:
+
+- Add @users endpoint.
+  [timo]
+
 Bugfixes:
 
 - Fix bug where disabling the "Use Keyring" flag wasn't persisted in jwt_auth plugin.
