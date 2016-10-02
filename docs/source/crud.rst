@@ -59,7 +59,7 @@ Successful Response (201 Created)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If a resource has been created, the server responds with the :term:`201 Created` status code.
-The 'Location' header contains the URL of the newly created resource and the resource represenation in the payload::
+The 'Location' header contains the URL of the newly created resource and the resource representation in the payload::
 
   HTTP/1.1 201 Created
   Content-Type: application/json
