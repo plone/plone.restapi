@@ -43,9 +43,9 @@ If we want to create a new document within an existing folder, we send a POST re
 
     http -a admin:admin POST http://localhost:8080/Plone/folder \\@type=Document title=My Document Accept:application/json
 
-    .. code-block:: python-requests
+  .. code-block:: python-requests
 
-      requests.post('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, params={'@type': 'Document'})
+    requests.post('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, params={'@type': 'Document'})
 
 By setting the 'Accept' header, we tell the server that we would like to receive the response in the 'application/json' representation format.
 
