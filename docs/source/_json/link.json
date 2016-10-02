@@ -20,6 +20,7 @@ content-type: application/json
   "effective": null, 
   "exclude_from_nav": false, 
   "expires": null, 
+  "id": "link", 
   "language": "", 
   "modified": "2016-01-21T04:24:11+00:00", 
   "parent": {

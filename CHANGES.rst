@@ -4,7 +4,10 @@ Changelog
 1.0a4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+New Features:
+
+- Include 'id' attribute in responses.
+  [Timo]
 
 
 1.0a3 (2016-09-27)

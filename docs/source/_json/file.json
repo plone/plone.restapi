@@ -25,6 +25,7 @@ content-type: application/json
     "filename": "file.pdf", 
     "size": 74429
   }, 
+  "id": "file", 
   "language": "", 
   "modified": "2016-01-21T05:24:11+00:00", 
   "parent": {

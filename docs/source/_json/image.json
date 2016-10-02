@@ -19,6 +19,7 @@ content-type: application/json
   "effective": null, 
   "exclude_from_nav": false, 
   "expires": null, 
+  "id": "image", 
   "image": {
     "content-type": "image/png", 
     "download": "http://localhost:55001/plone/image/@@images/image", 
