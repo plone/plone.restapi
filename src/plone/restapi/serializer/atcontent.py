@@ -30,6 +30,7 @@ class SerializeToJson(object):
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             '@id': self.context.absolute_url(),
+            'id': self.context.id,
             '@type': self.context.portal_type,
             'parent': parent_summary,
             'review_state': self._get_workflow_state(),
