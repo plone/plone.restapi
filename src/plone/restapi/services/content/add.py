@@ -4,6 +4,7 @@ from Products.CMFPlone.utils import base_hasattr
 from plone.app.content.interfaces import INameFromTitle
 from plone.restapi.deserializer import json_body
 from plone.restapi.exceptions import DeserializationError
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.services import Service
 from random import randint
@@ -83,7 +84,12 @@ class FolderPost(Service):
 
         self.request.response.setStatus(201)
         self.request.response.setHeader('Location', obj.absolute_url())
-        return None
+
+        serializer = queryMultiAdapter(
+            (obj, self.request),
+            ISerializeToJson
+        )
+        return serializer()
 
     def rename_object(self, obj):
         # Archetypes objects may get renamed during deserialization.

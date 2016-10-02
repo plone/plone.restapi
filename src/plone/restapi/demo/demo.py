@@ -13,4 +13,3 @@ class InternalServerErrorView(BrowserView):  # pragma: no cover
             {},
             None
         )
-        raise HTTPError
