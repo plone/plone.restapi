@@ -43,10 +43,15 @@ class TestATContentSerializer(unittest.TestCase):
         self.assertEqual(u'http://www.w3.org/ns/hydra/context.jsonld',
                          obj[u'@context'])
 
-    def test_serializer_includes_id(self):
+    def test_serializer_includes_json_ld_id(self):
         obj = self.serialize(self.doc1)
         self.assertIn(u'@id', obj)
         self.assertEqual(self.doc1.absolute_url(), obj[u'@id'])
+
+    def test_serializer_includes_id(self):
+        obj = self.serialize(self.doc1)
+        self.assertIn(u'id', obj)
+        self.assertEqual(self.doc1.id, obj[u'id'])
 
     def test_serializer_includes_type(self):
         obj = self.serialize(self.doc1)

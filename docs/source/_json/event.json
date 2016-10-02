@@ -26,6 +26,7 @@ content-type: application/json
   "event_url": null, 
   "exclude_from_nav": false, 
   "expires": null, 
+  "id": "event", 
   "language": "", 
   "location": null, 
   "modified": "2016-01-21T03:24:11+00:00", 

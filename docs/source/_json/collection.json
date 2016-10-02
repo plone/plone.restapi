@@ -20,6 +20,7 @@ content-type: application/json
   "effective": null, 
   "exclude_from_nav": false, 
   "expires": null, 
+  "id": "collection", 
   "item_count": 30, 
   "items": [
     {
