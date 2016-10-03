@@ -47,6 +47,9 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(201, response.status_code)
         transaction.begin()
         self.assertEqual("My Document", self.portal.folder1.mydocument.Title())
+        self.assertEqual("Document", response.json().get('@type'))
+        self.assertEqual("mydocument", response.json().get('id'))
+        self.assertEqual("My Document", response.json().get('title'))
 
     def test_post_without_type_returns_400(self):
         response = requests.post(

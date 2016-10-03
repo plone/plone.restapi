@@ -6,8 +6,11 @@ Changelog
 
 New Features:
 
+- Make POST request return the serialized object.
+  [timo]
+
 - Include 'id' attribute in responses.
-  [Timo]
+  [timo]
 
 
 1.0a3 (2016-09-27)
