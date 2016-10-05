@@ -24,7 +24,7 @@ docs/make.bat
 docs/doctrees
 docs/html
 htmlcov
-bower_components
+npm-debug.log
 *.hprof
 .DS_Store
 jmeter.log
