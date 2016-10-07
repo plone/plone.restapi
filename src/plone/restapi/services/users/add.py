@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from plone.api.exc import MissingParameterError
-from plone.api.exc import InvalidParameterError
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
@@ -70,15 +68,10 @@ class UsersPost(Service):
                 roles,
                 properties=properties
             )
-        except MissingParameterError as e:
+        except ValueError as e:
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='MissingParameterError',
-                message=str(e.message)))
-        except InvalidParameterError as e:
-            self.request.response.setStatus(400)
-            return dict(error=dict(
-                type='InvalidParameterError',
                 message=str(e.message)))
 
         if not username and use_email_as_login:
