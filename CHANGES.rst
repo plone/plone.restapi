@@ -4,7 +4,10 @@ Changelog
 1.0a5 (unreleased)
 ------------------
 
-- Remove plone.api dependency from users service. This fixes https://github.com/plone/plone.restapi/issues/145.
+Bugfixes:
+
+- Remove plone.api dependency from users service. This fixes
+  https://github.com/plone/plone.restapi/issues/145.
   [timo]
 
 
