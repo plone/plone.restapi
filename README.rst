@@ -56,7 +56,7 @@ Design Decisions
 ================
 
 * A truly RESTful API (Hypermedia / HATEOAS / Linked-data)
-* JSON is the main target formt, support other formats (HTML, XML) later
+* JSON is the main target format, support other formats (HTML, XML) later
 * Use HTTP headers (to set format and versioning, also provide URL-based option to make it easier for people to try it out)
 * No versioning, version in the HTTP header can be added later
 * Field names just map over (we will not try to clean up attributes or enforce naming standards like pep8 (e.g. isPrincipiaFoldish -> is_folderish)
