@@ -25,6 +25,7 @@ Contents
    batching
    workflow
    registry
+   types
    users
    components
    serialization
