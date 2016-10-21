@@ -4,7 +4,8 @@ Changelog
 1.0a6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- When token expires, PAS plugin should return an empty credential.
+  [ebrehault]
 
 
 1.0a5 (2016-10-07)

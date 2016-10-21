@@ -156,6 +156,8 @@ class JWTAuthenticationPlugin(BasePlugin):
                     payload = jwt.decode(token, secret)
                 except jwt.DecodeError:
                     pass
+                except jwt.ExpiredSignatureError:
+                    pass
                 else:
                     break
         else:
