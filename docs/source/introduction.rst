@@ -7,13 +7,13 @@ This has the advantage that the client only needs to understand how to detect an
 The URLs (apart from the inital entry point) and other details of the API can change without breaking the client.
 
 The entry point to the Plone RESTful API is the portal root.
-The client can ask for a :term:`REST` API response by setting the ``'Accept'`` HTTP header to ``'application/json'``::
+The client can ask for a :term:`REST` API response by setting the ``Accept`` HTTP header to ``application/json``::
 
   GET /
   Accept: application/json
 
 
-This uses so-called 'content negotiation'
+This makes use of so-called 'content negotiation'
 
   .. toctree::
    :maxdepth: 1
@@ -25,15 +25,15 @@ The server will then respond with the portal root in the JSON format:
 .. literalinclude:: _json/siteroot.json
    :language: json-ld
 
-`@id` is a unique identifier for resources (IRIs).
-The `@id` property can be used to navigate through the web API by following the links.
+``@id`` is a unique identifier for resources (IRIs).
+The ``@id`` property can be used to navigate through the web API by following the links.
 
-`@type` sets the data type of a node or typed value
+``@type`` indicates the data type of a node or typed value, or the portal type in the case of content types.
 
-`items` is a list that contains all objects within that resource.
+``items`` is a list that contains all objects within that resource.
 
-A client application can "follow" the links (by calling the @id property) to other resources.
-This allows to build a losely coupled client that does not break if some of the URLs change, only the entry point of the entire API (in our case the portal root) needs to be known in advance.
+A client application can "follow" the links (by using the @id property) to other resources.
+This allows to build a loosely coupled client that does not break if some of the URLs change, only the entry point of the entire API (in our case the portal root) needs to be known in advance.
 
 Another example, this time showing syntax in curl, as an http-request and how a python request would look like.
 Click on the buttons below to show the different syntaxes for the request.

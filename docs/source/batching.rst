@@ -2,7 +2,7 @@ Batching
 ========
 
 Representations of collection-like resources are batched / paginated if the
-size of the resulset exceeds the batching size:
+size of the resultset exceeds the batching size:
 
 .. code:: json
 
@@ -21,7 +21,7 @@ size of the resulset exceeds the batching size:
       "items_total": 175,
     }
 
-If the entire resulset fits into a single batch page (as determined by
+If the entire resultset fits into a single batch page (as determined by
 ``b_size``), the top-level ``batching`` links will be omitted.
 
 

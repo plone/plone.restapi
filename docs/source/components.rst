@@ -1,7 +1,7 @@
 Components
 ==========
 
-How to get pages components (i.e. everything but the main content), like breadcrumbs, navigations, actions, etc.
+How to get pages' components (i.e. everything but the main content), like breadcrumbs, navigations, actions, etc.
 
 Breadcrumbs
 -----------

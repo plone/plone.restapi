@@ -50,9 +50,9 @@ If we want to create a new document within an existing folder, we send a POST re
 
     requests.post('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, params={'@type': 'Document'})
 
-By setting the 'Accept' header, we tell the server that we would like to receive the response in the 'application/json' representation format.
+By setting the ``Accept`` header, we tell the server that we would like to receive the response in the ``application/json`` representation format.
 
-The 'Content-Type' header indicates that the body uses the 'application/json' format.
+The ``Content-Type`` header indicates that the body uses the ``application/json`` format.
 
 The request body contains the minimal necessary information needed to create a document (the type and the title).
 You could set other properties, like "description" here as well.
@@ -62,7 +62,7 @@ Successful Response (201 Created)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If a resource has been created, the server responds with the :term:`201 Created` status code.
-The 'Location' header contains the URL of the newly created resource and the resource representation in the payload::
+The ``Location`` header contains the URL of the newly created resource and the resource representation in the payload::
 
   HTTP/1.1 201 Created
   Content-Type: application/json

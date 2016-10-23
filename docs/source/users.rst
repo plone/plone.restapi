@@ -74,7 +74,7 @@ To create a new user, send a POST request to the global ``/@users`` endpoint wit
 .. note::
     By default, "username", and "password" are required fields. If email login is enabled, "email" and "password" are required fields. All other fields in the example are optional.
 
-If the user has been created successfully, the server will respond with a status 201 (Created). The 'Location' header contains the URL of the newly created user and the resource representation in the payload:
+If the user has been created successfully, the server will respond with a status 201 (Created). The ``Location`` header contains the URL of the newly created user and the resource representation in the payload:
 
 .. literalinclude:: _json/users_created.json
    :language: js
@@ -114,7 +114,7 @@ The server will respond with a 200 OK status code and the JSON representation of
 Update User
 -----------
 
-To update the settings of a user, send a PATCH request with the user details you want to amend to the URL of that particular user, e.g. if you want to update the email address of the admin user to:
+To update the settings of a user, send a PATCH request with the user details you want to amend to the URL of that particular user. E.g. if you want to update the email address of the admin user:
 
 .. example-code::
 

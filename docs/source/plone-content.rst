@@ -2,7 +2,7 @@ Plone Content
 =============
 
 How to get all standard Plone content representations.
-The syntax is given in various tools, click on 'curl', 'http-request' or 'python-requests' to see examples.
+The syntax is given in various tools, click on **curl**, **http-request** or **python-requests** to see examples.
 
 .. note::
         For folderish types, collections or search results, the results will

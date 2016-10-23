@@ -1,9 +1,12 @@
 Authentication
 ==============
 
-``plone.restapi`` uses Plone PAS for Authentication.
+``plone.restapi`` uses **Plone PAS** for Authentication.
 
 That means that any authentication method supported by an installed PAS Plugin should work, assuming it's an authentication method that makes sense to use with an API.
+
+HTTP Basic Auth
+---------------
 
 For example, to authenticate using HTTP basic auth, you'd set an ``Authorization`` header:
 
@@ -38,10 +41,9 @@ JSON Web Tokens (JWT)
 ---------------------
 
 ``plone.restapi`` includes a Plone PAS plugin for authentication with JWT. The
-plugin is installed automatically when installing the product. 
+plugin is installed automatically when installing the product.
 
-A JWT token can be acquired by posting a users credentials to the ``@login`` 
-endpoint.
+A JWT token can be acquired by posting a user's credentials to the ``@login`` endpoint.
 
 .. example-code::
 
@@ -78,7 +80,7 @@ The server responds with a JSON object containing the token.
    :language: js
 
 The token can now be used in subsequent requests by including it in the
-``Authorization`` header:
+``Authorization`` header with the ``Bearer`` scheme:
 
 .. code::
 
@@ -101,10 +103,10 @@ The server returns a JSON object with a new token:
    :language: js
 
 
-The ``@logout`` endpoint can be used to invalidate tokens. However by default
+The ``@logout`` endpoint can be used to invalidate tokens. However, by default
 tokens are not persisted on the server and thus can not be invalidated. To enable
-token invaldiation, activate the ``store_tokes`` option in the PAS plugin. If you
-need tokens that are valid indefinitely you should also disable the use of Plone's
+token invalidation, activate the ``store_tokens`` option in the PAS plugin. If you
+need tokens that are valid indefinitely, you should also disable the use of Plone's
 keyring in the PAS plugin (option ``use_keyring``).
 
 The logout request must contain the existing token in the ``Authorization`` header.
