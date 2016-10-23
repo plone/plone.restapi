@@ -20,7 +20,7 @@ Plone Portal Root:
 
       curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone
 
-    .. code-block:: http-request
+    .. code-block:: httpie
 
       http GET http://localhost:8080/Plone Accept:application/json
 
@@ -40,7 +40,7 @@ Plone Folder:
 
         curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone/folder
 
-    .. code-block:: http-request
+    .. code-block:: httpie
 
         http GET http://localhost:8080/Plone/folder Accept:application/json
 
@@ -60,7 +60,7 @@ Plone Document:
 
       curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone/document
 
-    .. code-block:: http-request
+    .. code-block:: httpie
 
       http GET http://localhost:8080/Plone/document Accept:application/json
 
@@ -80,7 +80,7 @@ News Item:
 
       curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone/newsitem
 
-    .. code-block:: http-request
+    .. code-block:: httpie
 
       http GET http://localhost:8080/Plone/newsitem Accept:application/json
 
@@ -101,7 +101,7 @@ Event:
 
       curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone/event
 
-    .. code-block:: http-request
+    .. code-block:: httpie
 
       http GET http://localhost:8080/Plone/event Accept:application/json
 
@@ -121,7 +121,7 @@ Image:
 
       curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone/image
 
-    .. code-block:: http-request
+    .. code-block:: httpie
 
       http GET http://localhost:8080/Plone/image Accept:application/json
 
@@ -141,7 +141,7 @@ File:
 
       curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone/file
 
-    .. code-block:: http-request
+    .. code-block:: httpie
 
       http GET http://localhost:8080/Plone/file Accept:application/json
 
@@ -161,7 +161,7 @@ Link:
 
       curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone/link
 
-    .. code-block:: http-request
+    .. code-block:: httpie
 
       http GET http://localhost:8080/Plone/link Accept:application/json
 
@@ -181,7 +181,7 @@ Collection:
 
       curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone/collection
 
-    .. code-block:: http-request
+    .. code-block:: httpie
 
       http GET http://localhost:8080/Plone/collection Accept:application/json
 

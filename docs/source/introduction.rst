@@ -45,7 +45,7 @@ Click on the buttons below to show the different syntaxes for the request.
 
       curl -i -H "Accept: application/json" -X GET http://localhost:8080/Plone/document
 
-    .. code-block:: http-request
+    .. code-block:: httpie
 
       http GET http://localhost:8080/Plone/document Accept:application/json
 
