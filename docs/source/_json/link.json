@@ -13,8 +13,7 @@ content-type: application/json
   "contributors": [], 
   "created": "2016-01-21T04:14:48+00:00", 
   "creators": [
-    "test_user_1_", 
-    "admin"
+    "test_user_1_"
   ], 
   "description": "This is a link", 
   "effective": null, 

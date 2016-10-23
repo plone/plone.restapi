@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from DateTime import DateTime
-from plone import api
 from datetime import timedelta
 from freezegun import freeze_time
+from plone import api
 from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
@@ -76,7 +76,7 @@ class TestTraversal(unittest.TestCase):
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
 
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         self.portal.invokeFactory('Document', id='front-page')
@@ -102,7 +102,7 @@ class TestTraversal(unittest.TestCase):
         self.browser.handleErrors = False
         self.browser.addHeader(
             'Authorization',
-            'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
+            'Basic %s:%s' % (TEST_USER_NAME, TEST_USER_PASSWORD,)
         )
 
     def tearDown(self):
@@ -316,7 +316,7 @@ class TestTraversal(unittest.TestCase):
         self.api_session.auth = None
         response = self.api_session.post(
             '{}/@login'.format(self.portal.absolute_url()),
-            json={'login': SITE_OWNER_NAME, 'password': SITE_OWNER_PASSWORD})
+            json={'login': TEST_USER_NAME, 'password': TEST_USER_PASSWORD})
         save_response_for_documentation('login.json', response)
 
     def test_documentation_login_renew(self):
@@ -328,7 +328,7 @@ class TestTraversal(unittest.TestCase):
         self.api_session.auth = None
         response = self.api_session.post(
             '{}/@login'.format(self.portal.absolute_url()),
-            json={'login': SITE_OWNER_NAME, 'password': SITE_OWNER_PASSWORD})
+            json={'login': TEST_USER_NAME, 'password': TEST_USER_PASSWORD})
         token = json.loads(response.content)['token']
         response = self.api_session.post(
             '{}/@login-renew'.format(self.portal.absolute_url()),
@@ -345,7 +345,7 @@ class TestTraversal(unittest.TestCase):
         self.api_session.auth = None
         response = self.api_session.post(
             '{}/@login'.format(self.portal.absolute_url()),
-            json={'login': SITE_OWNER_NAME, 'password': SITE_OWNER_PASSWORD})
+            json={'login': TEST_USER_NAME, 'password': TEST_USER_PASSWORD})
         token = json.loads(response.content)['token']
         response = self.api_session.post(
             '{}/@logout'.format(self.portal.absolute_url()),

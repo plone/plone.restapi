@@ -6,7 +6,7 @@ content-type: application/json
 
 {
   "action": "publish", 
-  "actor": "admin", 
+  "actor": "test_user_1_", 
   "comments": "", 
   "review_state": "published", 
   "time": "2016-10-21T19:05:00+00:00"
