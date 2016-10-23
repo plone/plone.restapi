@@ -2,6 +2,11 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
+  "@components": {
+    "navigation": {
+      "@id": "http://localhost:55001/plone/front-page/@components/navigation"
+    }
+  }, 
   "@id": "http://localhost:55001/plone/front-page", 
   "@type": "Document", 
   "@workflow": {

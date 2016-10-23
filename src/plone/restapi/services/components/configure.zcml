@@ -10,4 +10,6 @@
     permission="zope2.View"
     />
 
+    <adapter factory=".navigation.Navigation" name="navigation"/>
+
 </configure>

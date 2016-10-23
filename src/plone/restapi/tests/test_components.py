@@ -72,3 +72,23 @@ class TestComponents(unittest.TestCase):
                 }],
             }]
         )
+
+    def test_collapsed_navigation_in_content_serialization(self):
+        obj = self.api_session.get('/folder').json()
+        self.assertIn('@components', obj)
+        self.assertIn('navigation', obj['@components'])
+        self.assertIn('@id', obj['@components']['navigation'])
+
+    def test_expanded_navigation_in_content_serialization(self):
+        obj = self.api_session.get('/folder?expand=navigation').json()
+        self.assertIn('@components', obj)
+        self.assertIn('navigation', obj['@components'])
+        self.assertEqual(
+            [{
+                u'title': u'Home',
+                u'url': u'http://localhost:55001/plone'
+            }, {
+                u'title': u'Some Folder',
+                u'url': u'http://localhost:55001/plone/folder'
+            }],
+            obj['@components']['navigation'])
