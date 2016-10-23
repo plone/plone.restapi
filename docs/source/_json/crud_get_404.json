@@ -1,0 +1,10 @@
+GET /plone/doesnt-exist
+Accept: application/json
+
+HTTP 404 Not Found
+content-type: application/json
+
+{
+  "message": "Resource not found: http://localhost:55001/plone/doesnt-exist", 
+  "type": "NotFound"
+}

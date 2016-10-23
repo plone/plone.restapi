@@ -483,3 +483,61 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.get(
             '{}/@components/navigation'.format(self.document.absolute_url()))
         save_response_for_documentation('navigation.json', response)
+
+    def test_documentation_crud_post_201(self):
+        setRoles(self.portal, TEST_USER_ID, ['Contributor'])
+        transaction.commit()
+
+        response = self.api_session.post(
+            self.portal_url,
+            json={'@type': 'Document', 'title': 'My Document'})
+        save_response_for_documentation('crud_post_201.json', response)
+
+    def test_documentation_crud_post_400(self):
+        setRoles(self.portal, TEST_USER_ID, ['Contributor'])
+        transaction.commit()
+
+        response = self.api_session.post(
+            self.portal_url, json={'field': 'foo'})
+        save_response_for_documentation('crud_post_400.json', response)
+
+    def test_documentation_crud_get_200(self):
+        my_document = self.portal[self.portal.invokeFactory(
+            'Document',
+            id='my-document',
+            title='My Document'
+        )]
+        transaction.commit()
+
+        response = self.api_session.get(my_document.absolute_url())
+        save_response_for_documentation('crud_get_200.json', response)
+
+    def test_documentation_crud_get_404(self):
+        response = self.api_session.get('/doesnt-exist')
+        save_response_for_documentation('crud_get_404.json', response)
+
+    def test_documentation_crud_patch_204(self):
+        my_document = self.portal[self.portal.invokeFactory(
+            'Document',
+            id='my-document',
+            title='My Document'
+        )]
+        transaction.commit()
+
+        setRoles(self.portal, TEST_USER_ID, ['Contributor'])
+        transaction.commit()
+
+        response = self.api_session.patch(
+            my_document.absolute_url(), json={'title': 'My new title'})
+        save_response_for_documentation('crud_patch_204.json', response)
+
+    def test_documentation_crud_delete_204(self):
+        my_document = self.portal[self.portal.invokeFactory(
+            'Document',
+            id='my-document',
+            title='My Document'
+        )]
+        transaction.commit()
+
+        response = self.api_session.delete(my_document.absolute_url())
+        save_response_for_documentation('crud_delete_204.json', response)

@@ -1,0 +1,5 @@
+DELETE /plone/my-document
+Accept: application/json
+
+HTTP 204 No Content
+

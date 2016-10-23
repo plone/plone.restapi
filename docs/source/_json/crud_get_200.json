@@ -1,0 +1,38 @@
+GET /plone/my-document
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/my-document", 
+  "@type": "Document", 
+  "UID": "a82a7c808aab499cb6c30c1383e21ac2", 
+  "allow_discussion": null, 
+  "changeNote": "", 
+  "contributors": [], 
+  "created": "2016-10-21T19:00:00+00:00", 
+  "creators": [
+    "test_user_1_"
+  ], 
+  "description": "", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "id": "my-document", 
+  "language": "", 
+  "modified": "2016-10-21T19:00:00+00:00", 
+  "parent": {
+    "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
+    "description": "", 
+    "title": "Plone site"
+  }, 
+  "relatedItems": [], 
+  "review_state": "private", 
+  "rights": "", 
+  "subjects": [], 
+  "table_of_contents": null, 
+  "text": null, 
+  "title": "My Document"
+}

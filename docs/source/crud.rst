@@ -28,7 +28,7 @@ If we want to create a new document within an existing folder, we send a POST re
 
   .. code-block:: http-request
 
-    POST /folder HTTP/1.1
+    POST /plone HTTP/1.1
     Host: localhost:8080
     Accept: application/json
     Content-Type: application/json
@@ -40,15 +40,15 @@ If we want to create a new document within an existing folder, we send a POST re
 
   .. code-block:: curl
 
-    curl -i -H "Accept: application/json" -H "Content-type: application/json" --data-raw '{"@type":"Document", "title": "My Document"}' --user admin:admin -X POST http://localhost:8080/Plone/folder
+    curl -i -H "Accept: application/json" -H "Content-type: application/json" --data-raw '{"@type":"Document", "title": "My Document"}' --user admin:admin -X POST http://localhost:8080/plone
 
   .. code-block:: httpie
 
-    http -a admin:admin POST http://localhost:8080/Plone/folder \\@type=Document title=My Document Accept:application/json
+    http -a admin:admin POST http://localhost:8080/plone \\@type=Document title=My Document Accept:application/json
 
   .. code-block:: python-requests
 
-    requests.post('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, params={'@type': 'Document'})
+    requests.post('http://localhost:8080/plone', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, params={'@type': 'Document', 'title': 'My Document'})
 
 By setting the ``Accept`` header, we tell the server that we would like to receive the response in the ``application/json`` representation format.
 
@@ -62,29 +62,19 @@ Successful Response (201 Created)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If a resource has been created, the server responds with the :term:`201 Created` status code.
-The ``Location`` header contains the URL of the newly created resource and the resource representation in the payload::
+The ``Location`` header contains the URL of the newly created resource and the response body contains the resource representation:
 
-  HTTP/1.1 201 Created
-  Content-Type: application/json
-  Location: http://localhost:8080/folder/my-document
+.. literalinclude:: _json/crud_post_201.json
+   :language: js
 
-  {
-      '@type': 'Document',
-      'id': 'my-document',
-      'title': 'My Document',
-  }
 
 Unsuccessful Response (400 Bad Request)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If the resource could not be created, for instance because the title was missing in the request, the server responds with :term:`400 Bad Request`::
+If the resource could not be created, for instance because the ``@type`` property with the portal_type was missing in the request, the server responds with :term:`400 Bad Request`:
 
-  HTTP/1.1 400 Bad Request
-  Content-Type: application/json
-
-  {
-    'message': 'Required title field is missing'
-  }
+.. literalinclude:: _json/crud_post_400.json
+   :language: js
 
 The response body can contain information about why the request failed.
 
@@ -92,7 +82,9 @@ The response body can contain information about why the request failed.
 Unsuccessful Response (500 Internal Server Error)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If the server can not properly process a request, it responds with :term:`500 Internal Server Error`::
+If the server can not properly process a request, it responds with :term:`500 Internal Server Error`:
+
+.. code-block:: js
 
   HTTP/1.1 500 Internal Server Error
   Content-Type: application/json
@@ -145,21 +137,21 @@ After a successful POST, we can access the resource by sending a GET request to 
 
   .. code-block:: http-request
 
-    GET /folder/my-document HTTP/1.1
+    GET /plone/my-document HTTP/1.1
     Host: localhost:8080
     Accept: application/json
 
   .. code-block:: curl
 
-    curl -i -H "Accept: application/json" --user admin:admin -X GET http://localhost:8080/Plone/folder/my-document
+    curl -i -H "Accept: application/json" --user admin:admin -X GET http://localhost:8080/plone/my-document
 
   .. code-block:: httpie
 
-    http -a admin:admin GET http://localhost:8080/Plone/folder/my-document Accept:application/json
+    http -a admin:admin GET http://localhost:8080/plone/my-document Accept:application/json
 
   .. code-block:: python-requests
 
-      requests.get('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'})
+      requests.get('http://localhost:8080/plone/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'})
 
 
 Successful Response (200 OK)
@@ -167,7 +159,7 @@ Successful Response (200 OK)
 
 If a resource has been retrieved successfully, the server responds with :term:`200 OK`:
 
-.. literalinclude:: _json/document.json
+.. literalinclude:: _json/crud_get_200.json
    :language: js
 
 .. note::
@@ -179,14 +171,10 @@ If a resource has been retrieved successfully, the server responds with :term:`2
 Unsuccessful response (404 Not Found)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If a resource could not be found, the server will respond with :term:`404 Not Found`::
+If a resource could not be found, the server will respond with :term:`404 Not Found`:
 
-  HTTP/1.1 404 Not Found
-  Content-Type: application/json
-
-  {
-    'error': 'NotFound'
-  }
+.. literalinclude:: _json/crud_get_404.json
+   :language: js
 
 
 GET Implementation
@@ -231,7 +219,7 @@ PATCH allows to provide just a subset of the resource (the values you actually w
 
   .. code-block:: http-request
 
-    PATCH /folder/my-document HTTP/1.1
+    PATCH /plone/my-document HTTP/1.1
     Host: localhost:8080/Plone
     Content-Type: application/json
 
@@ -242,24 +230,24 @@ PATCH allows to provide just a subset of the resource (the values you actually w
 
   .. code-block:: curl
 
-    curl -i -H "Accept: application/json" -H "Content-type: application/json" --data-raw '{title": "My Document"}' --user admin:admin -X PATCH http://localhost:8080/Plone/folder/my-document
+    curl -i -H "Accept: application/json" -H "Content-type: application/json" --data-raw '{title": "My Document"}' --user admin:admin -X PATCH http://localhost:8080/plone/my-document
 
   .. code-block:: httpie
 
-    http -a admin:admin PATCH http://localhost:8080/Plone/folder/my-document title="My New Document Title" Accept:application/json
+    http -a admin:admin PATCH http://localhost:8080/plone/my-document title="My New Document Title" Accept:application/json
 
   .. code-block:: python-requests
 
-    requests.patch('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, data={'title': 'My New Document Title'})
+    requests.patch('http://localhost:8080/plone/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, data={'title': 'My New Document Title'})
 
 
 Successful Response (204 No Content)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A successful response to a PATCH request will be indicated by a :term:`204 No Content` response::
+A successful response to a PATCH request will be indicated by a :term:`204 No Content` response:
 
-  HTTP/1.1  204 No Content
-
+.. literalinclude:: _json/crud_patch_204.json
+   :language: js
 
 
 See for full specs the `RFC 5789: PATCH Method for HTTP <http://tools.ietf.org/html/rfc5789>`_
@@ -280,7 +268,7 @@ To replace an existing resource we send a PUT request to the server:
 
   .. code-block:: http-request
 
-    PUT /folder/my-document HTTP/1.1
+    PUT /plone/my-document HTTP/1.1
     Host: localhost:8080
     Content-Type: application/json
 
@@ -291,15 +279,15 @@ To replace an existing resource we send a PUT request to the server:
 
   .. code-block:: curl
 
-    curl -i -H "Accept: application/json" -X PUT http://localhost:8080/Plone/folder
+    curl -i -H "Accept: application/json" -X PUT http://localhost:8080/plone/my-document
 
   .. code-block:: httpie
 
-    http -a admin:admin PUT http://localhost:8080/Plone/folder title="My New Document Title" Accept:application/json
+    http -a admin:admin PUT http://localhost:8080/plone/my-document title="My New Document Title" Accept:application/json
 
   .. code-block:: python-requests
 
-    requests.put('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, data={'title': 'My New Document Title', ...})
+    requests.put('http://localhost:8080/plone/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, data={'title': 'My New Document Title', ...})
 
 In accordance with the HTTP specification, a successful PUT will not create a new resource or produce a new URL.
 
@@ -385,24 +373,25 @@ We can delete an existing resource by sending a DELETE request:
 
   .. code-block:: http-request
 
-    DELETE /folder/my-document HTTP/1.1
+    DELETE /plone/my-document HTTP/1.1
     Host: localhost:8080
 
   .. code-block:: curl
 
-      curl -i -H "Accept: application/json" -X DELETE --user admin:admin http://localhost:8080/Plone/folder/my-document
+      curl -i -H "Accept: application/json" -X DELETE --user admin:admin http://localhost:8080/plone/my-document
 
   .. code-block:: httpie
 
-      http -a admin:admin DELETE http://localhost:8080/Plone/folder/my-document Accept:application/json
+      http -a admin:admin DELETE http://localhost:8080/plone/my-document Accept:application/json
 
   .. code-block:: python-requests
 
-    requests.delete('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'})
+    requests.delete('http://localhost:8080/plone/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'})
 
-A successful response will be indicated by a :term:`204 No Content` response::
+A successful response will be indicated by a :term:`204 No Content` response:
 
-  HTTP/1.1  204 No Content
+.. literalinclude:: _json/crud_delete_204.json
+   :language: js
 
 
 DELETE Implementation

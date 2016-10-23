@@ -1,0 +1,10 @@
+POST /plone
+Accept: application/json
+
+HTTP 400 Bad Request
+content-type: application/json
+
+{
+  "message": "Property '@type' is required", 
+  "type": "BadRequest"
+}
