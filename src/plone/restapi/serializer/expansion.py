@@ -11,7 +11,17 @@ def expandable_elements(context, request):
     res = {}
     for element in elements:
         if element[0] in expands:
-            res.update(element[1](expand=True))
+            update_dict_recursively(res, element[1](expand=True))
         else:
-            res.update(element[1](expand=False))
+            update_dict_recursively(res, element[1](expand=False))
     return res
+
+
+def update_dict_recursively(d, u):
+    for key, value in u.iteritems():
+        if isinstance(value, dict):
+            r = update_dict_recursively(d.get(key, {}), value)
+            d[key] = r
+        else:
+            d[key] = u[key]
+    return d

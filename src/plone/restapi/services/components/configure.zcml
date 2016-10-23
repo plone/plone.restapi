@@ -11,5 +11,6 @@
     />
 
     <adapter factory=".navigation.Navigation" name="navigation"/>
+    <adapter factory=".breadcrumbs.Breadcrumbs" name="breadcrumbs"/>
 
 </configure>

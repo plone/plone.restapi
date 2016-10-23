@@ -54,6 +54,26 @@ class TestComponents(unittest.TestCase):
             }]
         )
 
+    def test_collapsed_breadcrumbs_in_content_serialization(self):
+        obj = self.api_session.get('/folder').json()
+        self.assertIn('@components', obj)
+        self.assertIn('breadcrumbs', obj['@components'])
+        self.assertIn('@id', obj['@components']['breadcrumbs'])
+
+    def test_expanded_breadcrumbs_in_content_serialization(self):
+        obj = self.api_session.get('/folder/doc1?expand=breadcrumbs').json()
+        self.assertIn('@components', obj)
+        self.assertIn('breadcrumbs', obj['@components'])
+        self.assertEqual(
+            [{
+                u'url': u'http://localhost:55001/plone/folder',
+                u'title': u'Some Folder'
+            }, {
+                u'url': u'http://localhost:55001/plone/folder/doc1',
+                u'title': u'A document'
+            }],
+            obj['@components']['breadcrumbs'])
+
     def test_navigation(self):
         response = self.api_session.get('/folder/@components/navigation')
 

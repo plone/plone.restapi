@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.services import Service
+from plone.restapi.services.components.breadcrumbs import Breadcrumbs
 from plone.restapi.services.components.navigation import Navigation
 from zope.deprecation import deprecate
-from zope.component import getMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 
@@ -34,23 +34,13 @@ class ComponentsGet(Service):
         }
         return component
 
-    def get_breadcrumbs(self):
-        breadcrumbs_view = getMultiAdapter((self.context, self.request),
-                                           name="breadcrumbs_view")
-        result = []
-        for crumb in breadcrumbs_view.breadcrumbs():
-            result.append({
-                'title': crumb['Title'],
-                'url': crumb['absolute_url']
-            })
-        return result
-
     def _render_component(self, component_id):
         if component_id == 'navigation':
             items = Navigation(self.context, self.request)(expand=True)[
                 '@components']['navigation']
         elif component_id == 'breadcrumbs':
-            items = self.get_breadcrumbs()
+            items = Breadcrumbs(self.context, self.request)(expand=True)[
+                '@components']['breadcrumbs']
         else:
             raise NotImplementedError(
                 'This endpoint does not currently support the '
