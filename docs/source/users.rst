@@ -107,7 +107,7 @@ To retrieve all details for a particular user, send a GET request to the ``/@use
 
 The server will respond with a 200 OK status code and the JSON representation of the user in the body:
 
-.. literalinclude:: _json/users_noam.json
+.. literalinclude:: _json/users_get.json
    :language: js
 
 
