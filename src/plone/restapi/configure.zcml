@@ -9,6 +9,8 @@
 
   <five:registerPackage package="." initialize=".initialize" />
 
+  <include file="permissions.zcml" />
+
   <genericsetup:registerProfile
       name="default"
       title="plone.restapi"
