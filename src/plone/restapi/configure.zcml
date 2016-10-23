@@ -51,4 +51,6 @@
   <include package=".types" />
   <include package=".search" />
 
+  <include package=".upgrades" />
+
 </configure>

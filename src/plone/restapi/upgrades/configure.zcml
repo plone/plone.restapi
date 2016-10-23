@@ -1,0 +1,25 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    i18n_domain="plone.restapi">
+
+    <!-- 0001 -> 0002 -->
+    <genericsetup:upgradeStep
+        title="Assign 'plone.restapi: Use REST API' permission to Anonymous"
+        description=""
+        source="0001"
+        destination="0002"
+        handler="plone.restapi.upgrades.to0002.assign_use_api_permission"
+        profile="plone.restapi:default"
+        />
+
+    <genericsetup:registerProfile
+        name="0002"
+        title="plone.restapi.upgrades.0002"
+        description=""
+        directory="profiles/0002"
+        for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
+
+</configure>
