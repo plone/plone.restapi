@@ -5,15 +5,18 @@ CRUD is a pattern for manipulating resources across the network by using HTTP as
 The CRUD operations (Create, Read, Update, Delete) can be mapped to the corresponding HTTP verbs POST (Create), GET (Read), PUT (Update) and DELETE (Delete).
 This allows us to interact with a specific resource in a standardized way:
 
-======= ======================= ==============================================
-Verb    URL                     Action
-======= ======================= ==============================================
-POST    /folder                 Creates a new document within the folder
-GET     /folder/{documentId}    Request the current state of the document
-PATCH   /folder/{documentId}    Update the document details
-DELETE  /folder/{documentId}    Remove the document
-======= ======================= ==============================================
 
+============================ ======================= ==============================================
+Verb    URL                     Action
+============================ ======================= ==============================================
+:ref:`POST <crud-post>`      /folder                 Creates a new document within the folder
+:ref:`GET <crud-get>`        /folder/{documentId}    Request the current state of the document
+:ref:`PATCH <crud-patch>`    /folder/{documentId}    Update the document details
+:ref:`DELETE <crud-delete>`  /folder/{documentId}    Remove the document
+============================ ======================= ==============================================
+
+
+.. _crud-post:
 
 Creating a Resource with POST
 -----------------------------
@@ -131,6 +134,8 @@ A pseudo-code example of the POST implementation on the server::
 TODO: Link to the real implementation...
 
 
+.. _crud-get:
+
 Reading a Resource with GET
 ---------------------------
 
@@ -214,6 +219,8 @@ Possible server reponses for a GET request are:
 * :term:`500 Internal Server Error`
 
 
+.. _crud-patch:
+
 Updating a Resource with PATCH
 ------------------------------
 
@@ -257,6 +264,8 @@ A successful response to a PATCH request will be indicated by a :term:`204 No Co
 
 See for full specs the `RFC 5789: PATCH Method for HTTP <http://tools.ietf.org/html/rfc5789>`_
 
+
+.. _crud-put:
 
 Replacing a Resource with PUT
 -----------------------------
@@ -364,6 +373,8 @@ Difference between POST and PUT:
 
 This follows `RFC 7231: HTTP 1.1: PUT Method <https://tools.ietf.org/html/rfc7231#section-4.3.4>`_.
 
+
+.. _crud-delete:
 
 Removing a Resource with DELETE
 -------------------------------
