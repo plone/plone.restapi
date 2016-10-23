@@ -1,0 +1,7 @@
+<rolemap>
+  <permissions>
+    <permission name="plone.restapi: Use REST API" acquire="True">
+      <role name="Anonymous"/>
+    </permission>
+  </permissions>
+</rolemap>

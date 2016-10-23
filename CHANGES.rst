@@ -4,6 +4,14 @@ Changelog
 1.0a6 (unreleased)
 ------------------
 
+New Features:
+
+- Introduce dedicated permission required to use REST API at all
+  (assigned to everybody by default).
+  [lgraf]
+
+Bugfixes:
+
 - When token expires, PAS plugin should return an empty credential.
   [ebrehault]
 
