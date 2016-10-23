@@ -7,7 +7,7 @@
     method="GET"
     name="@workflow"
     for="Products.CMFCore.interfaces.IContentish"
-    factory=".info.WorkflowInfo"
+    factory=".info.WorkflowInfoService"
     permission="zope2.View"
     />
 
@@ -18,5 +18,7 @@
     factory=".transition.WorkflowTransition"
     permission="zope2.View"
     />
+
+  <adapter factory=".info.WorkflowInfo" name="workflow"/>
 
 </configure>
