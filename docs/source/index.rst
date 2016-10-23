@@ -40,7 +40,6 @@ Appendix, Indices and tables
 
 .. toctree::
 
-   Available content types <types>
    http-status-codes
    glossary
 
