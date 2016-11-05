@@ -112,7 +112,7 @@ content-type: application/json+schema
       "type": "boolean"
     }, 
     "expires": {
-      "description": "When this date is reached, the content will no longer be visible in listings and searches.", 
+      "description": "When this date is reached, the content will nolonger be visible in listings and searches.", 
       "title": "Expiration Date", 
       "type": "string"
     }, 
