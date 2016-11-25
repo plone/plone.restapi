@@ -47,10 +47,20 @@ class TestLogin(TestCase):
 
     def test_successful_login_returns_token(self):
         self.request['BODY'] = '{"login": "%s", "password": "%s"}' % (
-            SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+            SITE_OWNER_NAME,
+            SITE_OWNER_PASSWORD
+        )
         service = self.traverse()
         res = service.reply()
+        self.assertEqual(200, self.request.response.getStatus())
         self.assertIn('token', res)
+
+    def test_invalid_token_returns_400(self):
+        invalid_token = 'abc123'
+        self.request._auth = 'Bearer {}'.format(invalid_token)
+        service = self.traverse()
+        service.reply()
+        self.assertEqual(400, self.request.response.getStatus())
 
 
 class TestLogout(TestCase):
