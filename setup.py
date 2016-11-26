@@ -52,6 +52,7 @@ setup(name='plone.restapi',
           'plone.api',
           'requests',
           'freezegun',
+          'robotframework-requests',
       ]},
       entry_points="""
       # -*- Entry points: -*-
