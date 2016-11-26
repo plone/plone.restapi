@@ -5,6 +5,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest2 import TestCase
 from zope.event import notify
+from zExceptions import Unauthorized
 
 
 class TestLogin(TestCase):
@@ -58,9 +59,16 @@ class TestLogin(TestCase):
     def test_invalid_token_returns_400(self):
         invalid_token = 'abc123'
         self.request._auth = 'Bearer {}'.format(invalid_token)
-        service = self.traverse()
-        service.reply()
-        self.assertEqual(400, self.request.response.getStatus())
+        self.assertRaises(Unauthorized, self.traverse, path='/plone')
+
+    def test_expired_token_returns_400(self):
+        self.portal.acl_users.jwt_auth.store_tokens = True
+        token = self.portal.acl_users.jwt_auth.create_token(
+            'admin',
+            timeout=-60
+        )
+        self.request._auth = 'Bearer {}'.format(token)
+        self.assertRaises(Unauthorized, self.traverse, path='/plone')
 
 
 class TestLogout(TestCase):
