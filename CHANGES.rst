@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0a6 (unreleased)
+1.0a6 (2016-11-30)
 ------------------
 
 New Features:
