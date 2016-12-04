@@ -80,3 +80,6 @@ class Login(Service):
         if info:
             return uf
         return None
+
+    def check_permission(self):
+        return
