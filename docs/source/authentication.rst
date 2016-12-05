@@ -146,3 +146,6 @@ Plone permissions are also required, depending on the particular service.
 For example, retrieving a resource using GET will require ``View``, adding an
 object using POST will require ``Add portal content``, and so on.
 
+In order to modify/override this behavior, if your custom service class
+inherits from ``plone.restapi.services.Service``, just override the method
+``check_permission`` and add your custom checks accordingly.
