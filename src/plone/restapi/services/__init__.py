@@ -15,13 +15,13 @@ class Service(RestService):
     content_type = 'application/json'
 
     def render(self):
-        self._check_permission()
+        self.check_permission()
         content = self.reply()
         if content is not _no_content_marker:
             self.request.response.setHeader("Content-Type", self.content_type)
             return json.dumps(content, indent=2, sort_keys=True)
 
-    def _check_permission(self):
+    def check_permission(self):
         sm = getSecurityManager()
         if not sm.checkPermission(UseRESTAPI, self):
             raise Unauthorized('Missing %r permission' % UseRESTAPI)

@@ -4,7 +4,11 @@ Changelog
 1.0a7 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Make login endpoint accessible without UseRESTAPI permission. This fixes
+  https://github.com/plone/plone.restapi/issues/166.
+  [buchi]
 
 
 1.0a6 (2016-11-30)
