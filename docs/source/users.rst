@@ -43,16 +43,6 @@ The endpoint supports some basic filtering:
     Host: localhost:8080
     Accept: application/json
 
-    [{
-        'username': 'noam',
-        'email': 'noam.chomsky@mit.edu',
-        'password': 'colorlessgreenideas',
-        'username': 'noamchomsky',
-        'fullname': 'Noam Avram Chomsky',
-        'home_page': 'web.mit.edu/chomsky',
-        'description': 'Professor of Linguistics',
-        'location': 'Cambridge, MA'
-    }]
   .. code-block:: curl
 
     curl -i -H "Accept: application/json" --user admin:admin -X GET http://localhost:8080/Plone/@users?username=noam
