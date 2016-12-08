@@ -13,7 +13,8 @@ content-type: application/json
   "contributors": [], 
   "created": "2016-01-21T02:14:48+00:00", 
   "creators": [
-    "test_user_1_"
+    "test_user_1_", 
+    "admin"
   ], 
   "description": "This is a news item", 
   "effective": null, 

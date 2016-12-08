@@ -12,7 +12,8 @@ content-type: application/json
   "contributors": [], 
   "created": "2016-01-21T05:14:48+00:00", 
   "creators": [
-    "test_user_1_"
+    "test_user_1_", 
+    "admin"
   ], 
   "description": "This is a file", 
   "effective": null, 

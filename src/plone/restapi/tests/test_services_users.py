@@ -180,36 +180,6 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual('Professor of Linguistics', response.json().get('description'))  # noqa
         self.assertEqual('Cambridge, MA', response.json().get('location'))
 
-    def test_get_search_user_with_filter(self):
-        response = self.api_session.post(
-            '/@users',
-            json={
-                "username": "howard",
-                "email": "howard.zinn@example.com",
-                "password": "peopleshistory"
-            },
-        )
-        transaction.commit()
-        response = self.api_session.get('/@users', params={'query': 'noa'})
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 1)
-        self.assertEqual('noam', response.json()[0].get('id'))
-        self.assertEqual(
-            self.portal.absolute_url() + '/@users/noam',
-            response.json()[0].get('@id')
-        )
-        self.assertEqual(
-            'noam.chomsky@example.com',
-            response.json()[0].get('email')
-        )
-        self.assertEqual('Noam Avram Chomsky', response.json()[0].get('fullname'))  # noqa
-
-        response = self.api_session.get('/@users', params={'query': 'howa'})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()), 1)
-        self.assertEqual('howard', response.json()[0].get('id'))
-
     def test_get_non_existing_user(self):
         response = self.api_session.get('/@users/non-existing-user')
 
