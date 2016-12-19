@@ -414,6 +414,24 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.get('@users/noam')
         save_response_for_documentation('users_get.json', response)
 
+    def test_documentation_users_filtered_get(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            properties=properties
+        )
+        transaction.commit()
+        response = self.api_session.get('@users', params={'query': 'noa'})
+        save_response_for_documentation('users_filtered_by_username.json', response)  # noqa
+
     def test_documentation_users_created(self):
         response = self.api_session.post(
             '/@users',

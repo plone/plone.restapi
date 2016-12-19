@@ -4,7 +4,8 @@ Changelog
 1.0a8 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add simple user search capabilities in the GET @users endpoint.
+  [sneridagh]
 
 
 1.0a7 (2016-12-05)
@@ -109,4 +110,3 @@ Bugfixes:
 
 - Initial release.
   [timo,buchi,lukasgraf,et al.]
-
