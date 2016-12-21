@@ -46,7 +46,7 @@ class FileFieldSerializer(DefaultFieldSerializer):
                         '@@download',
                         self.field.getName()))
         result = {
-            'filename': self.field.getFilename(self.context),
+            'filename': self.field.getFilename(self.context, fromBaseUnit=False),
             'content-type': self.field.getContentType(self.context),
             'size': self.field.get_size(self.context),
             'download': url

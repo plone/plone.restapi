@@ -475,6 +475,8 @@ Bugfixes:
 - Fix queries to ensure ordering of container items by getObjectPositionInParent.
   [lgraf]
 
+- Prevent duplicate calls when we get filename from at file field value.
+  [thomasdesvenain]
 
 1.0a8 (2017-01-12)
 ------------------
