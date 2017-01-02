@@ -2,6 +2,7 @@
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
+from persistent import Persistent
 from plone.app.textfield import RichText
 from plone.app.vocabularies.catalog import CatalogSource
 from plone.autoform.directives import read_permission
@@ -14,8 +15,10 @@ from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList
 from zope import schema
 from zope.interface import Invalid
+from zope.interface import implements
 from zope.interface import invariant
 from zope.interface import provider
+from zope.schema.fieldproperty import FieldProperty
 from zope.schema.interfaces import IContextAwareDefaultFactory
 
 
@@ -24,6 +27,20 @@ INDEXES = (
     ("test_list_field", "KeywordIndex"),
     ("test_bool_field", "BooleanIndex"),
 )
+
+
+class ITestSchema(model.Schema):
+
+    test_bool_field = schema.Bool(required=False)
+    test_textline_field = schema.TextLine(required=False)
+
+
+class TestSchema(Persistent):
+
+    implements(ITestSchema)
+
+    test_bool_field = FieldProperty(ITestSchema["test_bool_field"])
+    test_textline_field = FieldProperty(ITestSchema["test_textline_field"])
 
 
 class IDXTestDocumentSchema(model.Schema):
@@ -53,6 +70,8 @@ class IDXTestDocumentSchema(model.Schema):
         required=False, value_type=schema.Tuple())
     test_nested_dict_field = schema.Dict(
         required=False, key_type=schema.ASCIILine(), value_type=schema.Tuple())
+    test_object_field = schema.Object(
+        required=False, schema=ITestSchema)
 
     # plone.app.textfield
     test_richtext_field = RichText(

@@ -15,8 +15,11 @@
     <adapter factory=".summary.SiteRootJSONSummarySerializer" />
 
     <adapter factory=".dxfields.DefaultFieldSerializer" />
+    <adapter factory=".dxfields.RichTextFieldSerializer" />
+    <adapter factory=".dxfields.SchemaFieldSerializer" />
     <adapter factory=".dxfields.FileFieldSerializer" />
     <adapter factory=".dxfields.ImageFieldSerializer" />
+    <adapter factory=".dxfields.ObjectFieldSerializer" />
 
     <configure zcml:condition="installed Products.Archetypes">
         <adapter factory=".atcontent.SerializeToJson" />

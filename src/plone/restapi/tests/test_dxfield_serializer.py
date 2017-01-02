@@ -12,6 +12,7 @@ from plone.namedfile.file import NamedImage
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi.tests.dxtypes import TestSchema
 from unittest2 import TestCase
 from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
@@ -330,6 +331,15 @@ class TestDexterityFieldSerializing(TestCase):
              'description': 'Description 3',
              }],
             value)
+
+    def test_object_field_serialization_returns_dict(self):
+        object_value = TestSchema()
+        object_value.test_bool_field = False
+        object_value.test_textline_field = u"Lorem ipsum"
+        value = self.serialize('test_object_field', object_value)
+        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+        self.assertEqual(value['test_bool_field'], False)
+        self.assertEqual(value['test_textline_field'], u"Lorem ipsum")
 
 
 class TestDexterityFieldSerializers(TestCase):

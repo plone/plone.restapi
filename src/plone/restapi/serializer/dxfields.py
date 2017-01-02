@@ -1,14 +1,21 @@
 # -*- coding: utf-8 -*-
+from plone.app.textfield.interfaces import IRichText
+from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedFileField
 from plone.namedfile.interfaces import INamedImageField
 from plone.restapi.imaging import get_scales
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
+from plone.supermodel.model import Schema
+from plone.supermodel.utils import mergedTaggedValueDict
 from zope.component import adapter
+from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.schema import getFields
 from zope.schema.interfaces import IField
+from zope.schema.interfaces import IObject
 
 
 @adapter(IField, IDexterityContent, Interface)
@@ -27,6 +34,20 @@ class DefaultFieldSerializer(object):
         return getattr(self.field.interface(self.context),
                        self.field.__name__,
                        default)
+
+
+@adapter(IRichText, Schema, Interface)
+@implementer(IFieldSerializer)
+class RichTextFieldSerializer(DefaultFieldSerializer):
+
+    pass
+
+
+@adapter(IField, Schema, Interface)
+@implementer(IFieldSerializer)
+class SchemaFieldSerializer(DefaultFieldSerializer):
+
+    pass
 
 
 @adapter(INamedImageField, IDexterityContent, Interface)
@@ -73,3 +94,31 @@ class FileFieldSerializer(DefaultFieldSerializer):
             'download': url
         }
         return json_compatible(result)
+
+
+@adapter(IObject, IDexterityContent, Interface)
+class ObjectFieldSerializer(DefaultFieldSerializer):
+
+    def check_permission(self, permission_name):
+        return True
+
+    def get_value(self, default=None):
+        result = {}
+        fieldname = self.field.getName()
+        field_value = getattr(self.context, fieldname, None)
+        if field_value:
+            read_permissions = mergedTaggedValueDict(
+                self.field.schema, READ_PERMISSIONS_KEY)
+            for name, field in getFields(self.field.schema).items():
+
+                if not self.check_permission(read_permissions.get(name)):
+                    continue
+
+                serializer = queryMultiAdapter(
+                    (field, field_value, self.request),
+                    IFieldSerializer)
+                if serializer:
+                    value = serializer()
+                    result[json_compatible(name)] = value
+
+        return result
