@@ -6,6 +6,9 @@ Changelog
 
 New Features:
 
+- Add serializer for Object fields.
+  [cedricmessiant]
+
 - Add simple user search capabilities in the GET @users endpoint.
   [sneridagh]
 
