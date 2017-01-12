@@ -9,6 +9,12 @@ New Features:
 - Add simple user search capabilities in the GET @users endpoint.
   [sneridagh]
 
+Bugfixes:
+
+- Allow installation of plone.restapi if JWT plugin already exists. This fixes
+  https://github.com/plone/plone.restapi/issues/119.
+  [buchi]
+
 
 1.0a7 (2016-12-05)
 ------------------

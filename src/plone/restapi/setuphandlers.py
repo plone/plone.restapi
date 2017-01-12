@@ -5,6 +5,8 @@ from plone.restapi.pas.plugin import JWTAuthenticationPlugin
 
 def install_pas_plugin(context):
     uf = getToolByName(context, 'acl_users')
+    if 'jwt_auth' in uf:
+        return
     plugin = JWTAuthenticationPlugin('jwt_auth')
     uf._setObject(plugin.getId(), plugin)
     plugin = uf['jwt_auth']
