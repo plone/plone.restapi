@@ -4,7 +4,10 @@ Changelog
 1.0a9 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Fix queries to ensure ordering of container items by getObjectPositionInParent.
+  [lgraf]
 
 
 1.0a8 (2017-01-12)

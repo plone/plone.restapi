@@ -66,8 +66,8 @@ class SerializeFolderToJson(SerializeToJson):
 
     def _build_query(self):
         path = '/'.join(self.context.getPhysicalPath())
-        query = {'path': {'depth': 1, 'query': path,
-                 'sort_on': 'getObjPositionInParent'}}
+        query = {'path': {'depth': 1, 'query': path},
+                 'sort_on': 'getObjPositionInParent'}
         return query
 
     def __call__(self):
