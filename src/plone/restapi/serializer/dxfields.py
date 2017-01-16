@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from plone.app.textfield.interfaces import IRichText
-from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedFileField
 from plone.namedfile.interfaces import INamedImageField
@@ -8,7 +7,6 @@ from plone.restapi.imaging import get_scales
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
 from plone.supermodel.model import Schema
-from plone.supermodel.utils import mergedTaggedValueDict
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.interface import implementer
