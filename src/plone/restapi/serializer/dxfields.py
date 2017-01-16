@@ -99,21 +99,12 @@ class FileFieldSerializer(DefaultFieldSerializer):
 @adapter(IObject, IDexterityContent, Interface)
 class ObjectFieldSerializer(DefaultFieldSerializer):
 
-    def check_permission(self, permission_name):
-        return True
-
     def get_value(self, default=None):
         result = {}
         fieldname = self.field.getName()
         field_value = getattr(self.context, fieldname, None)
         if field_value:
-            read_permissions = mergedTaggedValueDict(
-                self.field.schema, READ_PERMISSIONS_KEY)
             for name, field in getFields(self.field.schema).items():
-
-                if not self.check_permission(read_permissions.get(name)):
-                    continue
-
                 serializer = queryMultiAdapter(
                     (field, field_value, self.request),
                     IFieldSerializer)
