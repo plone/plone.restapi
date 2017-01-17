@@ -45,7 +45,7 @@ If we want to create a new document within an existing folder, we send a POST re
 
   .. code-block:: python-requests
 
-    requests.post('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, json={'@type': 'Document'})
+    requests.post('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, json={'@type': 'Document', 'title': 'My Document'})
 
 By setting the 'Accept' header, we tell the server that we would like to receive the response in the 'application/json' representation format.
 
@@ -229,13 +229,12 @@ PATCH allows to provide just a subset of the resource (the values you actually w
     Content-Type: application/json
 
     {
-        '@type': 'Document',
         'title': 'My New Document Title',
     }
 
   .. code-block:: curl
 
-    curl -i -H "Accept: application/json" -H "Content-type: application/json" --data-raw '{title": "My Document"}' --user admin:admin -X PATCH http://localhost:8080/Plone/folder/my-document
+    curl -i -H "Accept: application/json" -H "Content-type: application/json" --data-raw '{title": "My New Document Title"}' --user admin:admin -X PATCH http://localhost:8080/Plone/folder/my-document
 
   .. code-block:: httpie
 
