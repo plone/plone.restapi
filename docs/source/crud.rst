@@ -45,7 +45,7 @@ If we want to create a new document within an existing folder, we send a POST re
 
   .. code-block:: python-requests
 
-    requests.post('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, params={'@type': 'Document'})
+    requests.post('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, json={'@type': 'Document'})
 
 By setting the 'Accept' header, we tell the server that we would like to receive the response in the 'application/json' representation format.
 
@@ -243,7 +243,7 @@ PATCH allows to provide just a subset of the resource (the values you actually w
 
   .. code-block:: python-requests
 
-    requests.patch('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, data={'title': 'My New Document Title'})
+    requests.patch('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, json={'title': 'My New Document Title'})
 
 
 Successful Response (204 No Content)
@@ -290,7 +290,7 @@ To replace an existing resource we send a PUT request to the server:
 
   .. code-block:: python-requests
 
-    requests.put('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, data={'title': 'My New Document Title', ...})
+    requests.put('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, json={'title': 'My New Document Title', ...})
 
 In accordance with the HTTP specification, a successful PUT will not create a new resource or produce a new URL.
 
