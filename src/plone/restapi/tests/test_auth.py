@@ -70,7 +70,7 @@ class TestLogin(TestCase):
         )
         self.request._auth = 'Bearer {}'.format(token)
         self.assertRaises(Unauthorized, self.traverse, path='/plone')
-    
+
     def test_login_without_api_permission(self):
         self.portal.manage_permission(UseRESTAPI, roles=[])
         self.request['BODY'] = '{"login": "%s", "password": "%s"}' % (
