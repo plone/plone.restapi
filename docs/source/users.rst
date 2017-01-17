@@ -33,6 +33,35 @@ The server will respond with a list of all users in the portal:
 .. literalinclude:: _json/users.json
    :language: js
 
+The endpoint supports some basic filtering:
+
+.. example-code::
+
+  .. code-block:: http-request
+
+    GET /@users?username=noam HTTP/1.1
+    Host: localhost:8080
+    Accept: application/json
+
+  .. code-block:: curl
+
+    curl -i -H "Accept: application/json" --user admin:admin -X GET http://localhost:8080/Plone/@users?username=noam
+
+  .. code-block:: httpie
+
+    http -a admin:admin GET http://localhost:8080/Plone/@users username=='noam' Accept:application/json
+
+  .. code-block:: python-requests
+
+    requests.get('http://localhost:8080/Plone/@users', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, params={'username': 'noam'})
+
+The server will respond with a list the filtered users in the portal with username starts with the query.
+
+The endpoint also takes a ``limit`` parameter that defaults to a maximum of 25 users at a time for performance reasons.
+
+.. literalinclude:: _json/users_filtered_by_username.json
+   :language: js
+
 
 Create User
 -----------
@@ -160,4 +189,3 @@ A successful response will be indicated by a :term:`204 No Content` response:
 
 .. literalinclude:: _json/users_delete.json
    :language: js
-

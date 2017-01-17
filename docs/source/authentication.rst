@@ -38,9 +38,9 @@ JSON Web Tokens (JWT)
 ---------------------
 
 ``plone.restapi`` includes a Plone PAS plugin for authentication with JWT. The
-plugin is installed automatically when installing the product. 
+plugin is installed automatically when installing the product.
 
-A JWT token can be acquired by posting a users credentials to the ``@login`` 
+A JWT token can be acquired by posting a users credentials to the ``@login``
 endpoint.
 
 .. example-code::
@@ -80,11 +80,18 @@ The server responds with a JSON object containing the token.
 The token can now be used in subsequent requests by including it in the
 ``Authorization`` header:
 
-.. code::
+.. example-code::
 
-  GET /Plone HTTP/1.1
-  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsbmFtZSI6IiIsInN1YiI6ImFkbWluIiwiZXhwIjoxNDY0MDQyMTAzfQ.aOyvMwdcIMV6pzC0GYQ3ZMdGaHR1_W7DxT0W0ok4FxI
-  Accept: application/json
+  .. code-block:: http-request
+
+    GET /Plone HTTP/1.1
+    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsbmFtZSI6IiIsInN1YiI6ImFkbWluIiwiZXhwIjoxNDY0MDQyMTAzfQ.aOyvMwdcIMV6pzC0GYQ3ZMdGaHR1_W7DxT0W0ok4FxI
+    Accept: application/json
+
+  .. code-block:: curl
+
+    curl -i -H "Accept: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkXVCJ9.eyJmdWxsbmFtZSI6bnVsbCwic3ViIjoiYWRtaW4iLCJleHAiOjE0Nzk4NjY4NDd9.vE8LAMluz7xFB5Px1X5sBbrPHeMWrx1Ff-P9qwMI614" -X GET http://localhost:8080/Plone
+
 
 By default the token will expire after 12 hours and thus must be renewed before
 expiration. To renew the token simply post to the ``@login-renew`` endpoint.
@@ -139,3 +146,6 @@ Plone permissions are also required, depending on the particular service.
 For example, retrieving a resource using GET will require ``View``, adding an
 object using POST will require ``Add portal content``, and so on.
 
+In order to modify/override this behavior, if your custom service class
+inherits from ``plone.restapi.services.Service``, just override the method
+``check_permission`` and add your custom checks accordingly.

@@ -2,6 +2,7 @@
 from ZPublisher.pubevents import PubStart
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.restapi.permissions import UseRESTAPI
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest2 import TestCase
 from zope.event import notify
@@ -69,6 +70,14 @@ class TestLogin(TestCase):
         )
         self.request._auth = 'Bearer {}'.format(token)
         self.assertRaises(Unauthorized, self.traverse, path='/plone')
+    
+    def test_login_without_api_permission(self):
+        self.portal.manage_permission(UseRESTAPI, roles=[])
+        self.request['BODY'] = '{"login": "%s", "password": "%s"}' % (
+            SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        service = self.traverse()
+        res = service.render()
+        self.assertIn('token', res)
 
 
 class TestLogout(TestCase):
