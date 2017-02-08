@@ -39,7 +39,6 @@ class TypesGet(Service):
 
     def reply(self):
         self.check_security()
-
         if self.params and len(self.params) > 0:
             self.content_type = "application/json+schema"
             try:
@@ -62,12 +61,14 @@ class TypesGet(Service):
             IVocabularyFactory,
             name="plone.app.vocabularies.ReallyUserFriendlyTypes"
         )
+        types_tool = getToolByName(self.context, 'portal_types')
         return [
             {
                 '@id': '{}/@types/{}'.format(
                     self.context.absolute_url(),
                     x.token
                 ),
-                'title': x.value
+                'title': x.value,
+                'global_allow': types_tool.get(x.value).global_allow
             } for x in vocab_factory(self.context)
         ]

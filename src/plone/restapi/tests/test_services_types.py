@@ -39,37 +39,43 @@ class TestServicesTypes(unittest.TestCase):
         self.assertTrue(
             {
                 u'@id': u'http://localhost:55001/plone/@types/Collection',
-                u'title': u'Collection'
+                u'title': u'Collection',
+                u'global_allow': True,
             } in response.json()
         )
         self.assertTrue(
             {
                 u'@id': u'http://localhost:55001/plone/@types/Discussion Item',
-                u'title': u'Discussion Item'
+                u'title': u'Discussion Item',
+                u'global_allow': False,
             } in response.json()
         )
         self.assertTrue(
             {
                 u'@id': u'http://localhost:55001/plone/@types/Event',
-                u'title': u'Event'
+                u'title': u'Event',
+                u'global_allow': True,
             } in response.json()
         )
         self.assertTrue(
             {
                 u'@id': u'http://localhost:55001/plone/@types/File',
-                u'title': u'File'
+                u'title': u'File',
+                u'global_allow': True,
             } in response.json()
         )
         self.assertTrue(
             {
                 u'@id': u'http://localhost:55001/plone/@types/Folder',
-                u'title': u'Folder'
+                u'title': u'Folder',
+                u'global_allow': True,
             } in response.json()
         )
         self.assertTrue(
             {
                 u'@id': u'http://localhost:55001/plone/@types/Image',
-                u'title': u'Image'
+                u'title': u'Image',
+                u'global_allow': True,
             } in response.json()
         )
 
