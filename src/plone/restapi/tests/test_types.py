@@ -31,6 +31,7 @@ class IDummySchema(model.Schema):
 
 
 class TestJsonSchemaUtils(TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -58,7 +59,9 @@ class TestJsonSchemaUtils(TestCase):
         request = self.request
         ttool = getToolByName(portal, 'portal_types')
         jsonschema = get_jsonschema_for_fti(
-            ttool['Document'], portal, request)
+            ttool['Document'],
+            portal, request
+        )
         self.assertEqual(jsonschema['title'], 'Page')
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', jsonschema['properties'].keys())
@@ -67,14 +70,21 @@ class TestJsonSchemaUtils(TestCase):
         self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
 
         jsonschema = get_jsonschema_for_fti(
-            ttool['Document'], portal, request, excluded_fields=['title'])
+            ttool['Document'],
+            portal,
+            request,
+            excluded_fields=['title']
+        )
         self.assertNotIn('title', jsonschema['properties'].keys())
 
     def test_get_jsonschema_for_portal_type(self):
         portal = self.portal
         request = self.request
         jsonschema = get_jsonschema_for_portal_type(
-            'Document', portal, request)
+            'Document',
+            portal,
+            request
+        )
         self.assertEqual(jsonschema['title'], 'Page')
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', jsonschema['properties'].keys())
@@ -88,14 +98,17 @@ class TestJsonSchemaUtils(TestCase):
 
 
 class TestJsonSchemaProviders(TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         self.dummy_vocabulary = SimpleVocabulary(
-            [SimpleTerm(value=u'foo', title=u'Foo'),
-             SimpleTerm(value=u'bar', title=u'Bar')]
+            [
+                SimpleTerm(value=u'foo', title=u'Foo'),
+                SimpleTerm(value=u'bar', title=u'Bar')
+            ]
         )
 
     def test_textline(self):
