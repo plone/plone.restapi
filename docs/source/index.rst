@@ -24,6 +24,7 @@ Contents
    crud
    batching
    workflow
+   sharing
    registry
    types
    users
