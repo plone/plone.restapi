@@ -1,17 +1,17 @@
-CRUD Web Services
-=================
+Content Manipulation
+====================
 
-CRUD is a pattern for manipulating resources across the network by using HTTP as an application protocol.
-The CRUD operations (Create, Read, Update, Delete) can be mapped to the corresponding HTTP verbs POST (Create), GET (Read), PUT (Update) and DELETE (Delete).
-This allows us to interact with a specific resource in a standardized way:
+plone.restapi does not only expose content objects via a RESTful API. The API consumer can create, read, update, and delete a content object. Those operations can be mapped to the HTTP verbs POST (Create), GET (Read), PUT (Update) and DELETE (Delete).
+
+Manipulating resources across the network by using HTTP as an application protocol is one of core principles of the REST architectural pattern. This allows us to interact with a specific resource in a standardized way:
 
 ======= ======================= ==============================================
 Verb    URL                     Action
 ======= ======================= ==============================================
 POST    /folder                 Creates a new document within the folder
-GET     /folder/{documentId}    Request the current state of the document
-PATCH   /folder/{documentId}    Update the document details
-DELETE  /folder/{documentId}    Remove the document
+GET     /folder/{document-id}   Request the current state of the document
+PATCH   /folder/{document-id}   Update the document details
+DELETE  /folder/{document-id}   Remove the document
 ======= ======================= ==============================================
 
 
