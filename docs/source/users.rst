@@ -189,3 +189,34 @@ A successful response will be indicated by a :term:`204 No Content` response:
 
 .. literalinclude:: _json/users_delete.json
    :language: js
+
+
+Reset User Password
+-------------------
+
+Plone allows to reset a password for a user by sending a POST request to the user resource and appending `/reset-password` to the URL::
+
+  POST /plone/@users/noam/reset-password HTTP/1.1
+  Host: localhost:8080
+  Accept: application/json
+
+The server will respond with a :term:`200 OK` response and send an email to the user to reset her password.
+
+Reset Own Password
+^^^^^^^^^^^^^^^^^^
+
+Plone also allows a user to reset her own password directly without sending an email. The endpoint and the request is the same as above, but now the user can send the old password and the new password as payload::
+
+  POST /plone/@users/noam/reset-password HTTP/1.1
+  Host: localhost:8080
+  Accept: application/json
+  Content-Type: application/json
+
+  {
+    'old_password': 'secret',
+    'new_password': 'verysecret',
+  }
+
+The server will respond with a :term:`200 OK` response without sending an email.
+
+If an API consumer tries to send a password in the payload that is not the same as the currently logged in user, the server will respond with a :term:`400 Bad Request` response.

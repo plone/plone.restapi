@@ -4,6 +4,11 @@ Changelog
 1.0a9 (unreleased)
 ------------------
 
+New Features:
+
+- Add reset-password action to the user endpoint.
+  [timo]
+
 Bugfixes:
 
 - Fix queries to ensure ordering of container items by getObjectPositionInParent.
