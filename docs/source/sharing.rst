@@ -76,7 +76,7 @@ You can update the 'sharing' information by sending a POST request to the object
 
 .. code:: json
 
-  POST /plone/folder
+  POST /plone/folder/@sharing
   Host: localhost:8080
   Accept: application/json
   Content-Type: application/json
