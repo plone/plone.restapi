@@ -7,6 +7,7 @@ from zope.component import getMultiAdapter
 from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from plone.app.textfield import RichText
+from plone.autoform import directives as form
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
@@ -26,6 +27,12 @@ class IDummySchema(model.Schema):
 
     field2 = schema.TextLine(
         title=u"Bar",
+        description=u"",
+    )
+
+    form.mode(secret='hidden')
+    secret = schema.TextLine(
+        title=u"Secret",
         description=u"",
     )
 
@@ -50,6 +57,11 @@ class TestJsonSchemaUtils(TestCase):
                 'description': u'',
                 'type': 'string'
             },
+            'secret': {
+                'title': u'Secret',
+                'description': u'',
+                'type': 'string',
+            }
         }
         self.assertEqual(info, expected)
 
@@ -67,7 +79,11 @@ class TestJsonSchemaUtils(TestCase):
         self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
 
         jsonschema = get_jsonschema_for_fti(
-            ttool['Document'], portal, request, excluded_fields=['title'])
+            ttool['Document'],
+            portal,
+            request,
+            excluded_fields=['title']
+        )
         self.assertNotIn('title', jsonschema['properties'].keys())
 
     def test_get_jsonschema_for_portal_type(self):
@@ -83,7 +99,11 @@ class TestJsonSchemaUtils(TestCase):
         self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
 
         jsonschema = get_jsonschema_for_portal_type(
-            'Document', portal, request, excluded_fields=['title'])
+            'Document',
+            portal,
+            request,
+            excluded_fields=['title']
+        )
         self.assertNotIn('title', jsonschema['properties'].keys())
 
 
@@ -363,6 +383,11 @@ class TestJsonSchemaProviders(TestCase):
                     'description': u'',
                     'type': 'string'
                 },
+                'secret': {
+                    'title': u'Secret',
+                    'description': u'',
+                    'type': 'string'
+                }
             }
         }
         self.assertEqual(jsonschema, expected)
