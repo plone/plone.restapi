@@ -80,7 +80,7 @@ To create a new group, send a POST request to the global ``/@groups`` endpoint w
     {
         'groupname': 'ploneteam',
         'title': 'Plone Team',
-        'description': 'The most awesome group of people',
+        'description': 'We are Plone',
         'email': 'ploneteam@plone.org',
     }
 
