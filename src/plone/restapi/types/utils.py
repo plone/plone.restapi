@@ -103,6 +103,8 @@ def get_fields_from_schema(schema, context, request, prefix='',
             fields_info[fieldname] = adapter.get_schema()
         if fieldname in hidden_fields.keys():
             fields_info[fieldname]['mode'] = hidden_fields[fieldname]
+        else:
+            fields_info[fieldname]['mode'] = u'input'
 
     return fields_info
 

@@ -45,25 +45,38 @@ class TestJsonSchemaUtils(TestCase):
         self.request = self.layer['request']
 
     def test_get_fields_from_schema(self):
-        info = get_fields_from_schema(IDummySchema, self.portal, self.request)
-        expected = {
-            'field1': {
+        fields = get_fields_from_schema(
+            IDummySchema,
+            self.portal,
+            self.request
+        )
+        self.assertEqual(
+            {
                 'title': u'Foo',
                 'description': u'',
-                'type': 'boolean'
+                'type': 'boolean',
+                'mode': u'input',
             },
-            'field2': {
+            fields['field1'],
+        )
+        self.assertEqual(
+            {
                 'title': u'Bar',
                 'description': u'',
-                'type': 'string'
+                'type': 'string',
+                'mode': u'input',
             },
-            'secret': {
+            fields['field2']
+        )
+        self.assertEqual(
+            {
                 'title': u'Secret',
                 'description': u'',
                 'type': 'string',
-            }
-        }
-        self.assertEqual(info, expected)
+                'mode': u'hidden',
+            },
+            fields['secret']
+        )
 
     def test_get_jsonschema_for_fti(self):
         portal = self.portal
@@ -368,45 +381,62 @@ class TestJsonSchemaProviders(TestCase):
         adapter = getMultiAdapter((field, self.portal, self.request),
                                   IJsonSchemaProvider)
         jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'object',
-            'title': u'My field',
-            'description': u'My great field',
-            'properties': {
+
+        self.assertEqual(u'object', jsonschema['type'])
+        self.assertEqual(u'My field', jsonschema['title'])
+        self.assertEqual(u'My great field', jsonschema['description'])
+        self.assertDictContainsSubset(
+            {
                 'field1': {
                     'title': u'Foo',
                     'description': u'',
-                    'type': 'boolean'
+                    'type': 'boolean',
+                    'mode': u'input',
                 },
+            },
+            jsonschema['properties']
+        )
+        self.assertDictContainsSubset(
+            {
                 'field2': {
                     'title': u'Bar',
                     'description': u'',
-                    'type': 'string'
+                    'type': 'string',
+                    'mode': u'input',
                 },
+            },
+            jsonschema['properties']
+        )
+        self.assertDictContainsSubset(
+            {
                 'secret': {
                     'title': u'Secret',
                     'description': u'',
-                    'type': 'string'
-                }
-            }
-        }
-        self.assertEqual(jsonschema, expected)
+                    'type': 'string',
+                    'mode': u'hidden',
+                },
+            },
+            jsonschema['properties']
+        )
 
     def test_richtext(self):
         field = RichText(
             title=u'My field',
             description=u'My great field',
         )
-        adapter = getMultiAdapter((field, self.portal, self.request),
-                                  IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'string',
-            'title': u'My field',
-            'description': u'My great field',
-            'widget': 'richtext',
-        }
-        self.assertEqual(jsonschema, expected)
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request),
+            IJsonSchemaProvider
+        )
+        self.assertEqual(
+            {
+                'type': 'string',
+                'title': u'My field',
+                'description': u'My great field',
+                'widget': 'richtext',
+            },
+            adapter.get_schema()
+        )
 
     def test_date(self):
         field = schema.Date(
