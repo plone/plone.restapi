@@ -4,6 +4,11 @@ Changelog
 1.0a9 (unreleased)
 ------------------
 
+New Features:
+
+- Make @types endpoint include a 'mode' attribute. This fixes https://github.com/plone/plone.restapi/issues/198.
+  [timo]
+
 Bugfixes:
 
 - Fix queries to ensure ordering of container items by getObjectPositionInParent.
