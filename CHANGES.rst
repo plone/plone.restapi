@@ -4,6 +4,11 @@ Changelog
 1.0a9 (unreleased)
 ------------------
 
+Breaking Change:
+
+- Make types endpoint return 'string' for the widget attribute by default.
+  [timo]
+
 Bugfixes:
 
 - Fix queries to ensure ordering of container items by getObjectPositionInParent.
