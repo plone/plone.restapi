@@ -210,7 +210,7 @@ Tuple
 
 Zope Schema::
 
-    field = schema.Tuple(
+    field = zope.schema.Tuple(
         title=u'My field',
         value_type=schema.Int(),
         default=(1, 2),
@@ -238,7 +238,7 @@ Set
 
 Zope Schema::
 
-    field = schema.Set(
+    field = zope.schema.Set(
         title=u'My field',
         value_type=schema.TextLine(),
     )
@@ -264,7 +264,7 @@ List of Choices
 
 Zope Schema::
 
-    field = schema.List(
+    field = zope.schema.List(
         title=u'My field',
         value_type=schema.Choice(
             vocabulary=self.dummy_vocabulary,
