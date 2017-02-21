@@ -62,12 +62,14 @@ content-type: application/json+schema
         "No"
       ], 
       "title": "Allow discussion", 
-      "type": "string"
+      "type": "string", 
+      "widget": "string"
     }, 
     "changeNote": {
       "description": "Enter a comment that describes the changes you made.", 
       "title": "Change Note", 
-      "type": "string"
+      "type": "string", 
+      "widget": "string"
     }, 
     "contributors": {
       "additionalItems": true, 
@@ -75,11 +77,13 @@ content-type: application/json+schema
       "items": {
         "description": "", 
         "title": "", 
-        "type": "string"
+        "type": "string", 
+        "widget": "string"
       }, 
       "title": "Contributors", 
       "type": "array", 
-      "uniqueItems": true
+      "uniqueItems": true, 
+      "widget": "string"
     }, 
     "creators": {
       "additionalItems": true, 
@@ -87,11 +91,13 @@ content-type: application/json+schema
       "items": {
         "description": "", 
         "title": "", 
-        "type": "string"
+        "type": "string", 
+        "widget": "string"
       }, 
       "title": "Creators", 
       "type": "array", 
-      "uniqueItems": true
+      "uniqueItems": true, 
+      "widget": "string"
     }, 
     "description": {
       "description": "Used in item listings and search results.", 
@@ -103,18 +109,21 @@ content-type: application/json+schema
     "effective": {
       "description": "If this date is in the future, the content will not show up in listings and searches until this date.", 
       "title": "Publishing Date", 
-      "type": "string"
+      "type": "string", 
+      "widget": "string"
     }, 
     "exclude_from_nav": {
       "default": false, 
       "description": "If selected, this item will not appear in the navigation tree", 
       "title": "Exclude from navigation", 
-      "type": "boolean"
+      "type": "boolean", 
+      "widget": "string"
     }, 
     "expires": {
       "description": "When this date is reached, the content will nolonger be visible in listings and searches.", 
       "title": "Expiration Date", 
-      "type": "string"
+      "type": "string", 
+      "widget": "string"
     }, 
     "language": {
       "choices": [
@@ -150,7 +159,8 @@ content-type: application/json+schema
         "Fran\u00e7ais"
       ], 
       "title": "Language", 
-      "type": "string"
+      "type": "string", 
+      "widget": "string"
     }, 
     "relatedItems": {
       "additionalItems": true, 
@@ -159,11 +169,13 @@ content-type: application/json+schema
       "items": {
         "description": "", 
         "title": "Related", 
-        "type": "string"
+        "type": "string", 
+        "widget": "string"
       }, 
       "title": "Related Items", 
       "type": "array", 
-      "uniqueItems": true
+      "uniqueItems": true, 
+      "widget": "string"
     }, 
     "rights": {
       "description": "Copyright statement or other rights information on this item.", 
@@ -178,16 +190,19 @@ content-type: application/json+schema
       "items": {
         "description": "", 
         "title": "", 
-        "type": "string"
+        "type": "string", 
+        "widget": "string"
       }, 
       "title": "Tags", 
       "type": "array", 
-      "uniqueItems": true
+      "uniqueItems": true, 
+      "widget": "string"
     }, 
     "table_of_contents": {
       "description": "If selected, this will show a table of contents at the top of the page.", 
       "title": "Table of contents", 
-      "type": "boolean"
+      "type": "boolean", 
+      "widget": "string"
     }, 
     "text": {
       "description": "", 
@@ -198,7 +213,8 @@ content-type: application/json+schema
     "title": {
       "description": "", 
       "title": "Title", 
-      "type": "string"
+      "type": "string", 
+      "widget": "string"
     }
   }, 
   "required": [

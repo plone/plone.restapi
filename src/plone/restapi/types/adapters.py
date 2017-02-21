@@ -77,7 +77,7 @@ class DefaultJsonSchemaProvider(object):
         raise NotImplementedError
 
     def get_widget(self):
-        return None
+        return 'string'
 
 
 @adapter(ITextLine, Interface, Interface)
