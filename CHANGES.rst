@@ -12,6 +12,9 @@ New Features:
 - Add documentation for types endpoint schema.
   [timo]
 
+- Add basic groups CRUD operations in @groups endpoints
+  [sneridagh]
+
 Bugfixes:
 
 - Fix queries to ensure ordering of container items by getObjectPositionInParent.
