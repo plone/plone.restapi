@@ -310,9 +310,13 @@ class DateJsonSchemaProvider(DefaultJsonSchemaProvider):
 
         return info
 
+    def get_widget(self):
+        return 'date'
+
 
 @adapter(IDatetime, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
 
-    pass
+    def get_widget(self):
+        return 'datetime'

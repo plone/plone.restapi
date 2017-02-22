@@ -9,6 +9,12 @@ New Features:
 - Make @types endpoint include a 'mode' attribute. This fixes https://github.com/plone/plone.restapi/issues/198.
   [timo]
 
+- Make date and datetime fields provide a 'widget' attribute.
+  [timo]
+
+- Add documentation for types endpoint schema.
+  [timo]
+
 Bugfixes:
 
 - Fix queries to ensure ordering of container items by getObjectPositionInParent.
