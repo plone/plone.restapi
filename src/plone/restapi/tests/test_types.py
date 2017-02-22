@@ -445,6 +445,7 @@ class TestJsonSchemaProviders(TestCase):
                 'title': u'My field',
                 'description': u'My great field',
                 'default': date(2016, 1, 1),
+                'widget': u'date',
             },
             adapter.get_schema()
         )
@@ -464,6 +465,7 @@ class TestJsonSchemaProviders(TestCase):
                 'type': 'string',
                 'title': u'My field',
                 'description': u'My great field',
+                'widget': u'datetime',
             },
             adapter.get_schema()
         )
