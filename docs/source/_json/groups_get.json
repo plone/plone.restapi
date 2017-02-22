@@ -5,10 +5,10 @@ HTTP 200 OK
 content-type: application/json
 
 {
-  "@id": "http://localhost:55001/plone/@groups/ploneteam",
-  "description": "We are Plone",
-  "email": "ploneteam@plone.org",
-  "groupname": "ploneteam",
-  "id": "ploneteam",
+  "@id": "http://localhost:55001/plone/@groups/ploneteam", 
+  "description": "We are Plone", 
+  "email": "ploneteam@plone.org", 
+  "groupname": "ploneteam", 
+  "id": "ploneteam", 
   "title": "Plone Team"
 }
