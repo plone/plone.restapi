@@ -9,6 +9,9 @@ New Features:
 - Make date and datetime fields provide a 'widget' attribute.
   [timo]
 
+- Add documentation for types endpoint schema.
+  [timo]
+
 Bugfixes:
 
 - Fix queries to ensure ordering of container items by getObjectPositionInParent.
