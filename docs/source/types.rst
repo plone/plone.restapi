@@ -9,10 +9,7 @@ Available content types in a Plone site can be listed and queried by accessing t
 .. literalinclude:: _json/types.json
    :language: js
 
-To get the schema of a content type, access the ``/@types`` endpoint  with the name of the content type, e.g.:
-
-.. note::
-	Due to Plone's extensive language support, there are some long 'language' fields in here. Just scroll on...
+To get the schema of a content type, access the ``/@types`` endpoint  with the name of the content type, e.g. '/plone/@types/Document':
 
 .. literalinclude:: _json/types_document.json
    :language: js
