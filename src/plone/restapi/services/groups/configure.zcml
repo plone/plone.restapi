@@ -11,4 +11,28 @@
     permission="cmf.ManagePortal"
     />
 
+  <plone:service
+    method="PATCH"
+    name="@groups"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".update.GroupsPatch"
+    permission="cmf.ManagePortal"
+    />
+
+  <plone:service
+    method="POST"
+    name="@groups"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".add.GroupsPost"
+    permission="cmf.ManagePortal"
+    />
+
+  <plone:service
+    method="DELETE"
+    name="@groups"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".delete.GroupsDelete"
+    permission="cmf.ManagePortal"
+    />
+
 </configure>

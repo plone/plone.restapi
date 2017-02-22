@@ -1,0 +1,15 @@
+POST /plone/@groups
+Accept: application/json
+
+HTTP 201 Created
+content-type: application/json
+location: http://localhost:55001/plone/@groups/fwt
+
+{
+  "@id": "http://localhost:55001/plone/@groups/fwt",
+  "description": "The Plone Framework Team",
+  "email": "fwt@plone.org",
+  "groupname": "fwt",
+  "id": "fwt",
+  "title": "Framework Team"
+}

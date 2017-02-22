@@ -59,46 +59,37 @@ class TestGroupsEndpoint(unittest.TestCase):
         self.assertEqual('Plone Team', ptgroup.get('title'))
         self.assertEqual('We are Plone', ptgroup.get('description'))
 
-    def test_add_user(self):
+    def test_add_group(self):
         response = self.api_session.post(
-            '/@users',
+            '/@groups',
             json={
-                "username": "howard",
-                "email": "howard.zinn@example.com",
-                "password": "peopleshistory"
+                'groupname': 'fwt',
+                'email': 'fwt@plone.org',
+                'title': 'Framework Team',
+                'description': 'The Plone Framework Team',
+                'roles': ['Manager'],
+                'groups': ['Administrators']
             },
         )
         transaction.commit()
 
         self.assertEqual(201, response.status_code)
-        howard = api.user.get(userid='howard')
+        fwt = self.gtool.getGroupById('fwt')
         self.assertEqual(
-            "howard.zinn@example.com", howard.getProperty('email')
+            "fwt@plone.org", fwt.getProperty('email')
         )
 
-    def test_add_user_username_is_required(self):
+    def test_add_group_groupname_is_required(self):
         response = self.api_session.post(
-            '/@users',
+            '/@groups',
             json={
-                "password": "noamchomsky"
+                "title": "Framework Team"
             },
         )
         transaction.commit()
 
         self.assertEqual(400, response.status_code)
-        self.assertTrue('"Property \'username\' is required' in response.text)
-
-    def test_add_user_password_is_required(self):
-        response = self.api_session.post(
-            '/@users',
-            json={
-                "username": "noamchomsky"
-            },
-        )
-        transaction.commit()
-
-        self.assertEqual(400, response.status_code)
-        self.assertTrue('"Property \'password\' is required' in response.text)
+        self.assertTrue('"Property \'groupname\' is required' in response.text)
 
     def test_get_group(self):
         response = self.api_session.get('/@groups/ploneteam')
@@ -139,5 +130,36 @@ class TestGroupsEndpoint(unittest.TestCase):
 
     def test_get_non_existing_group(self):
         response = self.api_session.get('/@groups/non-existing-group')
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_update_group(self):
+        payload = {
+            'groupname': 'ploneteam',
+            'email': 'ploneteam2@plone.org'
+        }
+        response = self.api_session.patch('/@groups/ploneteam', json=payload)
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+
+        ploneteam = self.gtool.getGroupById('ploneteam')
+        self.assertEqual('ploneteam', ploneteam.id)
+        self.assertEqual('Plone Team', ploneteam.getProperty('title'))
+        self.assertEqual(
+            'ploneteam2@plone.org',
+            ploneteam.getProperty('email')
+        )
+
+    def test_delete_group(self):
+        response = self.api_session.delete('/@groups/ploneteam')
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(None, self.gtool.getGroupById('ploneteam'))
+
+    def test_delete_non_existing_group(self):
+        response = self.api_session.delete('/@groups/non-existing-group')
+        transaction.commit()
 
         self.assertEqual(response.status_code, 404)

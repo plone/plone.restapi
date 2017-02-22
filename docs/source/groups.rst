@@ -59,7 +59,7 @@ The server will respond with a list the filtered groups in the portal with group
 
 The endpoint also takes a ``limit`` parameter that defaults to a maximum of 25 groups at a time for performance reasons.
 
-.. literalinclude:: _json/groups_filtered_by_username.json
+.. literalinclude:: _json/groups_filtered_by_groupname.json
    :language: js
 
 
@@ -82,6 +82,8 @@ To create a new group, send a POST request to the global ``/@groups`` endpoint w
         'title': 'Plone Team',
         'description': 'We are Plone',
         'email': 'ploneteam@plone.org',
+        'roles': 'Manager',
+        'groups': 'Administrators'
     }
 
   .. code-block:: curl
@@ -97,7 +99,7 @@ To create a new group, send a POST request to the global ``/@groups`` endpoint w
     requests.post('http://localhost:8080/Plone/@groups', auth=('admin', 'admin'), headers={'Accept': 'application/json', 'Content-Type': 'application/json'}, params={'username': 'noam', 'email': 'chomsky@mit.edu', 'password': 'colorlessgreenideas'})
 
 .. note::
-    By default, "username", and "password" are required fields. If email login is enabled, "email" and "password" are required fields. All other fields in the example are optional.
+    By default, "groupname" is a required field.
 
 If the user has been created successfully, the server will respond with a status 201 (Created). The 'Location' header contains the URL of the newly created user and the resource representation in the payload:
 
@@ -132,7 +134,7 @@ To retrieve all details for a particular user, send a GET request to the ``/@gro
 
 The server will respond with a 200 OK status code and the JSON representation of the user in the body:
 
-.. literalinclude:: _json/groups_ploneteam.json
+.. literalinclude:: _json/groups_get.json
    :language: js
 
 
