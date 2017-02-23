@@ -39,7 +39,7 @@ class TestUsersEndpoint(unittest.TestCase):
             'description': 'Professor of Linguistics',
             'location': 'Cambridge, MA'
         }
-        user = api.user.create(
+        api.user.create(
             email='noam.chomsky@example.com',
             username='noam',
             properties=properties,
