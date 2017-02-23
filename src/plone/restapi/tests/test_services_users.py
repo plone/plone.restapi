@@ -39,10 +39,11 @@ class TestUsersEndpoint(unittest.TestCase):
             'description': 'Professor of Linguistics',
             'location': 'Cambridge, MA'
         }
-        api.user.create(
+        user = api.user.create(
             email='noam.chomsky@example.com',
             username='noam',
-            properties=properties
+            properties=properties,
+            password=u'password'
         )
         transaction.commit()
 
@@ -248,6 +249,50 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertNotEqual(
             old_password_hashes['noam'], new_password_hashes['noam']
         )
+
+    def test_user_requests_password_reset_mail(self):
+        self.api_session.auth = ('noam', 'password')
+        payload = {}
+        response = self.api_session.post('/@users/noam/reset-password',
+                                         json=payload)
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 200)
+        # FIXME: Test that mail is sent
+
+    def test_user_set_own_password(self):
+        self.api_session.auth = ('noam', 'password')
+
+        payload = {'old_password': 'password',
+                   'new_password': 'new_password'}
+        response = self.api_session.post('/@users/noam/reset-password',
+                                         json=payload)
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 200)
+        authed = self.portal.acl_users.authenticate('noam', 'new_password',
+                                                    {})
+        self.assertTrue(authed)
+
+    def test_user_set_own_password_requires_old_and_new_password(self):
+        self.api_session.auth = ('noam', 'password')
+        payload = {'old_password': 'password'}
+        response = self.api_session.post('/@users/noam/reset-password',
+                                         json=payload)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertTrue(("You have to post a json request with the "
+                         "keys 'old_password' and 'new_password' to set "
+                         "the password.") in response.content)
+        payload = {'new_password': 'new_password'}
+        response = self.api_session.post('/@users/noam/reset-password',
+                                         json=payload)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertTrue(("You have to post a json request with the "
+                         "keys 'old_password' and 'new_password' to set "
+                         "the password.") in response.content)
+        # FIXME: Test that mail is sent
 
     def test_delete_user(self):
         response = self.api_session.delete('/@users/noam')
