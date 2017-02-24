@@ -58,5 +58,6 @@
     <adapter factory=".catalog.LazyCatalogResultSerializer" />
 
     <adapter factory=".user.SerializeUserToJson" />
+    <adapter factory=".group.SerializeGroupToJson" />
 
 </configure>
