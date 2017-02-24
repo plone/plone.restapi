@@ -7,7 +7,7 @@ Changelog
 New Features:
 
 - Add reset-password action to the user endpoint.
-  [timo]
+  [timo][csenger]
 
 Bugfixes:
 

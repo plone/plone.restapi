@@ -202,6 +202,20 @@ Plone allows to reset a password for a user by sending a POST request to the use
 
 The server will respond with a :term:`200 OK` response and send an email to the user to reset her password.
 
+The token that is part of the reset url in the email can be used to
+authorize setting a new password::
+
+  POST /plone/@users/noam/reset-password HTTP/1.1
+  Host: localhost:8080
+  Accept: application/json
+  Content-Type: application/json
+
+  {
+    'reset_token': 'ef3d2aabacdc2345df63d6acf2edbef4',
+    'new_password': 'verysecret',
+  }
+
+
 Reset Own Password
 ^^^^^^^^^^^^^^^^^^
 
@@ -220,3 +234,16 @@ Plone also allows a user to reset her own password directly without sending an e
 The server will respond with a :term:`200 OK` response without sending an email.
 
 If an API consumer tries to send a password in the payload that is not the same as the currently logged in user, the server will respond with a :term:`400 Bad Request` response.
+
+
+Return Values
+^^^^^^^^^^^^^
+
+* :term:`200 OK`
+* :term:`400 Bad Request`
+* `403` (Unknown Token)
+* `403` (Expired Token)
+* `403` (Wrong user)
+* `403` (Wrong password)
+* :term:`500 Internal Server Error` (server fault, can not recover internally)
+

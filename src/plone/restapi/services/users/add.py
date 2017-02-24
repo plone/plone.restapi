@@ -3,6 +3,8 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from Products.PasswordResetTool.PasswordResetTool import ExpiredRequestError
+from Products.PasswordResetTool.PasswordResetTool import InvalidRequestError
 from zope.component import getAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
@@ -116,22 +118,25 @@ class UsersPost(Service):
         portal_membership = getToolByName(portal, 'portal_membership')
         return portal_membership.getMemberById(user_id)
 
+    def _error(self, status, type, message):
+        self.request.response.setStatus(status)
+        return {'error': {'type': type,
+                          'message': message}}
+
     def update_password(self, data):
         username = self.params[0]
         target_user = self._get_user(username)
+        reset_token = data.get('reset_token', None)
+        old_password = data.get('old_password', None)
+        new_password = data.get('new_password', None)
+
+        pas = getToolByName(self.context, 'acl_users')
+        mt = getToolByName(self.context, 'portal_membership')
+        pwt = getToolByName(self.context, 'portal_password_reset')
 
         if target_user is None:
             self.request.response.setStatus(404)
             return
-
-        # Check permissionis
-        # FIXME: Check manager permission
-        # FIXME: Check SetOwnPassword Permission
-        pas = getToolByName(self.context, 'acl_users')
-        mt = getToolByName(self.context, 'portal_membership')
-        authenticated_user_id = mt.getAuthenticatedMember().getId()
-        if username != authenticated_user_id:
-            raise Exception("You can only set your own password")
 
         # Send password reset mail
         if data.keys() == []:
@@ -140,19 +145,51 @@ class UsersPost(Service):
             registration_tool.mailPassword(username, self.request)
             return
 
-        # Check data and set password
-        old_password = data.get('old_password', None)
-        new_password = data.get('new_password', None)
+        if reset_token and old_password:
+            return self._error(
+                400, 'Invalid parameters',
+                "You can't use 'reset_token' and 'old_password' together.")
+        if reset_token and not new_password:
+            return self._error(
+                400, 'Invalid parameters',
+                "If you pass 'reset_token' you have to pass 'new_password'")
+        if old_password and not new_password:
+            return self._error(
+                400, 'Invalid parameters',
+                "If you pass 'old_password' you have to pass 'new_password'")
 
-        if old_password is None or new_password is None:
-            raise Exception("You have to post a json request with the "
-                            "keys 'old_password' and 'new_password' to set "
-                            "the password.")
+        # Reset the password with a reset token
+        if reset_token:
+            try:
+                pwt.resetPassword(username, reset_token, new_password)
+            except InvalidRequestError:
+                return self._error(403, 'Unknown Token',
+                                   'The reset_token is unknown/not valid.')
+            except ExpiredRequestError:
+                return self._error(403, 'Expired Token',
+                                   'The reset_token is expired.')
+            return
 
-        check_password_auth = pas.authenticate(username,
-                                               old_password.encode('utf-8'),
-                                               self.request)
-        if not check_password_auth:
-            raise Exception("old_password is wrong.")
-        mt.setPassword(new_password)
-        return
+        if old_password:
+            # Check permissions
+            # FIXME: Check manager permission
+            # FIXME: Check SetOwnPassword Permission
+            authenticated_user_id = mt.getAuthenticatedMember().getId()
+            if username != authenticated_user_id:
+                return self._error(
+                    403, "Wrong user"
+                    ("You need to be logged in as the user '%s' to set "
+                     "the password.") % username)
+
+            check_password_auth = pas.authenticate(
+                username, old_password.encode('utf-8'), self.request)
+            if not check_password_auth:
+                return self._error(403, "Wrong password"
+                                   "The password passed as 'old_password' "
+                                   "is wrong.")
+            mt.setPassword(new_password)
+            return
+
+        return self._error(400, 'Invalid parameters',
+                           'See the user endpoint documentation for the '
+                           'valid parameters.')

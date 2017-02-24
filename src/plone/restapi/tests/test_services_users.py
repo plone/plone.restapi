@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from Products.CMFCore.utils import getToolByName
+
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -280,19 +282,43 @@ class TestUsersEndpoint(unittest.TestCase):
         response = self.api_session.post('/@users/noam/reset-password',
                                          json=payload)
 
-        self.assertEqual(response.status_code, 500)
-        self.assertTrue(("You have to post a json request with the "
-                         "keys 'old_password' and 'new_password' to set "
-                         "the password.") in response.content)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['error']['type'],
+                         'Invalid parameters')
         payload = {'new_password': 'new_password'}
         response = self.api_session.post('/@users/noam/reset-password',
                                          json=payload)
 
-        self.assertEqual(response.status_code, 500)
-        self.assertTrue(("You have to post a json request with the "
-                         "keys 'old_password' and 'new_password' to set "
-                         "the password.") in response.content)
-        # FIXME: Test that mail is sent
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['error']['type'],
+                         'Invalid parameters')
+
+    def test_user_set_reset_token_requires_new_password(self):
+        self.api_session.auth = ('noam', 'password')
+        payload = {'reset_token': 'abc'}
+        response = self.api_session.post('/@users/noam/reset-password',
+                                         json=payload)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.json()['error']['type'],
+                         'Invalid parameters')
+
+    def test_reset_with_token(self):
+        reset_tool = getToolByName(self.portal, 'portal_password_reset')
+        reset_info = reset_tool.requestReset('noam')
+        token = reset_info['randomstring']
+        transaction.commit()
+
+        payload = {'reset_token': token,
+                   'new_password': 'new_password'}
+        response = self.api_session.post('/@users/noam/reset-password',
+                                         json=payload)
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 200)
+        authed = self.portal.acl_users.authenticate('noam', 'new_password',
+                                                    {})
+        self.assertTrue(authed)
 
     def test_delete_user(self):
         response = self.api_session.delete('/@users/noam')
