@@ -7,6 +7,7 @@ from zope.component import getMultiAdapter
 from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from plone.app.textfield import RichText
+from plone.autoform import directives as form
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
@@ -29,6 +30,12 @@ class IDummySchema(model.Schema):
         description=u"",
     )
 
+    form.mode(secret='hidden')
+    secret = schema.TextLine(
+        title=u"Secret",
+        description=u"",
+    )
+
 
 class TestJsonSchemaUtils(TestCase):
 
@@ -39,20 +46,38 @@ class TestJsonSchemaUtils(TestCase):
         self.request = self.layer['request']
 
     def test_get_fields_from_schema(self):
-        info = get_fields_from_schema(IDummySchema, self.portal, self.request)
-        expected = {
-            'field1': {
+        fields = get_fields_from_schema(
+            IDummySchema,
+            self.portal,
+            self.request
+        )
+        self.assertEqual(
+            {
                 'title': u'Foo',
                 'description': u'',
-                'type': 'boolean'
+                'type': 'boolean',
+                'mode': u'input',
             },
-            'field2': {
+            fields['field1'],
+        )
+        self.assertEqual(
+            {
                 'title': u'Bar',
                 'description': u'',
-                'type': 'string'
+                'type': 'string',
+                'mode': u'input',
             },
-        }
-        self.assertEqual(info, expected)
+            fields['field2']
+        )
+        self.assertEqual(
+            {
+                'title': u'Secret',
+                'description': u'',
+                'type': 'string',
+                'mode': u'hidden',
+            },
+            fields['secret']
+        )
 
     def test_get_jsonschema_for_fti(self):
         portal = self.portal
@@ -93,7 +118,11 @@ class TestJsonSchemaUtils(TestCase):
         self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
 
         jsonschema = get_jsonschema_for_portal_type(
-            'Document', portal, request, excluded_fields=['title'])
+            'Document',
+            portal,
+            request,
+            excluded_fields=['title']
+        )
         self.assertNotIn('title', jsonschema['properties'].keys())
 
 
@@ -382,30 +411,45 @@ class TestJsonSchemaProviders(TestCase):
             description=u'My great field',
             schema=IDummySchema,
         )
-        adapter = getMultiAdapter(
-            (field, self.portal, self.request),
-            IJsonSchemaProvider
-        )
+        adapter = getMultiAdapter((field, self.portal, self.request),
+                                  IJsonSchemaProvider)
+        jsonschema = adapter.get_schema()
 
-        self.assertEqual(
+        self.assertEqual(u'object', jsonschema['type'])
+        self.assertEqual(u'My field', jsonschema['title'])
+        self.assertEqual(u'My great field', jsonschema['description'])
+        self.assertDictContainsSubset(
             {
-                'type': 'object',
-                'title': u'My field',
-                'description': u'My great field',
-                'properties': {
-                    'field1': {
-                        'title': u'Foo',
-                        'description': u'',
-                        'type': 'boolean'
-                    },
-                    'field2': {
-                        'title': u'Bar',
-                        'description': u'',
-                        'type': 'string'
-                    },
-                }
+                'field1': {
+                    'title': u'Foo',
+                    'description': u'',
+                    'type': 'boolean',
+                    'mode': u'input',
+                },
             },
-            adapter.get_schema()
+            jsonschema['properties']
+        )
+        self.assertDictContainsSubset(
+            {
+                'field2': {
+                    'title': u'Bar',
+                    'description': u'',
+                    'type': 'string',
+                    'mode': u'input',
+                },
+            },
+            jsonschema['properties']
+        )
+        self.assertDictContainsSubset(
+            {
+                'secret': {
+                    'title': u'Secret',
+                    'description': u'',
+                    'type': 'string',
+                    'mode': u'hidden',
+                },
+            },
+            jsonschema['properties']
         )
 
     def test_richtext(self):

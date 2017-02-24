@@ -7,8 +7,9 @@ from zope.component import getMultiAdapter
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.schema import getFieldsInOrder
-
 from plone.autoform.interfaces import IFormFieldProvider
+from plone.autoform.interfaces import MODES_KEY
+from plone.autoform.utils import mergedTaggedValuesForForm
 from plone.behavior.interfaces import IBehavior
 from plone.supermodel.interfaces import FIELDSETS_KEY
 from Products.CMFCore.utils import getToolByName
@@ -76,13 +77,25 @@ def get_ordered_fields(fti):
     return (fields, ordered_fieldsets_fields)
 
 
+def get_hidden_fields_from_schema(schema, form):
+    hidden_fields = {}
+    merged_tagged_values = mergedTaggedValuesForForm(
+        schema,
+        MODES_KEY,
+        form
+    )
+    for (title, display_mode) in merged_tagged_values.items():
+        hidden_fields[title] = display_mode
+    return hidden_fields
+
+
 def get_fields_from_schema(schema, context, request, prefix='',
                            excluded_fields=None):
     """Get jsonschema from zope schema."""
     fields_info = OrderedDict()
     if excluded_fields is None:
         excluded_fields = []
-
+    hidden_fields = get_hidden_fields_from_schema(schema, request.form)
     for fieldname, field in getFieldsInOrder(schema):
         if fieldname not in excluded_fields:
             adapter = getMultiAdapter(
@@ -94,6 +107,10 @@ def get_fields_from_schema(schema, context, request, prefix='',
                 fieldname = '.'.join([prefix, fieldname])
 
             fields_info[fieldname] = adapter.get_schema()
+        if fieldname in hidden_fields.keys():
+            fields_info[fieldname]['mode'] = hidden_fields[fieldname]
+        else:
+            fields_info[fieldname]['mode'] = u'input'
 
     return fields_info
 
