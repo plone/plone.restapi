@@ -15,6 +15,9 @@ New Features:
 - Add basic groups CRUD operations in @groups endpoints
   [sneridagh]
 
+- Make @types endpoint include a 'mode' attribute. This fixes https://github.com/plone/plone.restapi/issues/198.
+  [timo]
+
 Bugfixes:
 
 - Fix queries to ensure ordering of container items by getObjectPositionInParent.
