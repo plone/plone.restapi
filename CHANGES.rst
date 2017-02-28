@@ -7,7 +7,19 @@ Changelog
 New Features:
 
 - Add reset-password action to the user endpoint.
-  [timo][csenger]
+  [timo,csenger]
+
+- Make date and datetime fields provide a 'widget' attribute.
+  [timo]
+
+- Add documentation for types endpoint schema.
+  [timo]
+
+- Add basic groups CRUD operations in @groups endpoints
+  [sneridagh]
+
+- Make @types endpoint include a 'mode' attribute. This fixes https://github.com/plone/plone.restapi/issues/198.
+  [timo]
 
 Bugfixes:
 

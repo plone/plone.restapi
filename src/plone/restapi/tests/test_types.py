@@ -7,10 +7,12 @@ from zope.component import getMultiAdapter
 from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from plone.app.textfield import RichText
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.autoform import directives as form
+from plone.dexterity.fti import DexterityFTI
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
 
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fields_from_schema
 from plone.restapi.types.utils import get_jsonschema_for_fti
@@ -26,6 +28,32 @@ class IDummySchema(model.Schema):
 
     field2 = schema.TextLine(
         title=u"Bar",
+        description=u"",
+    )
+
+
+class ITaggedValuesSchema(model.Schema):
+
+    form.mode(field_mode_hidden='hidden')
+    field_mode_hidden = schema.TextLine(
+        title=u"ModeHidden",
+        description=u"",
+    )
+
+    form.mode(field_mode_display='display')
+    field_mode_display = schema.TextLine(
+        title=u"ModeDisplay",
+        description=u"",
+    )
+
+    form.mode(field_mode_input='input')
+    field_mode_input = schema.TextLine(
+        title=u"ModeInput",
+        description=u"",
+    )
+
+    field_mode_default = schema.TextLine(
+        title=u"ModeInput",
         description=u"",
     )
 
@@ -95,6 +123,45 @@ class TestJsonSchemaUtils(TestCase):
         jsonschema = get_jsonschema_for_portal_type(
             'Document', portal, request, excluded_fields=['title'])
         self.assertNotIn('title', jsonschema['properties'].keys())
+
+
+class TestTaggedValuesJsonSchemaUtils(TestCase):
+
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.portal = self.layer['portal']
+        self.request = self.layer['request']
+        fti = DexterityFTI('TaggedDocument')
+        self.portal.portal_types._setObject('TaggedDocument', fti)
+        fti.klass = 'plone.dexterity.content.Container'
+        fti.schema = 'plone.restapi.tests.test_types.ITaggedValuesSchema'
+
+    def test_get_jsonschema_with_hidden_field(self):
+        ttool = getToolByName(self.portal, 'portal_types')
+        jsonschema = get_jsonschema_for_fti(
+            ttool['TaggedDocument'],
+            self.portal,
+            self.request
+        )
+
+        self.assertEqual(
+            'hidden',
+            jsonschema['properties']['field_mode_hidden']['mode']
+        )
+        self.assertEqual(
+            'display',
+            jsonschema['properties']['field_mode_display']['mode']
+        )
+        self.assertEqual(
+            'input',
+            jsonschema['properties']['field_mode_input']['mode']
+        )
+        # XXX: To be decided if we always return a mode attribute
+        # self.assertEqual(
+        #     'input',
+        #     jsonschema['properties']['field_mode_default']['mode']
+        # )
 
 
 class TestJsonSchemaProviders(TestCase):
@@ -445,6 +512,7 @@ class TestJsonSchemaProviders(TestCase):
                 'title': u'My field',
                 'description': u'My great field',
                 'default': date(2016, 1, 1),
+                'widget': u'date',
             },
             adapter.get_schema()
         )
@@ -464,6 +532,7 @@ class TestJsonSchemaProviders(TestCase):
                 'type': 'string',
                 'title': u'My field',
                 'description': u'My great field',
+                'widget': u'datetime',
             },
             adapter.get_schema()
         )

@@ -492,6 +492,103 @@ class TestTraversal(unittest.TestCase):
             '/@users/noam')
         save_response_for_documentation('users_delete.json', response)
 
+    def test_documentation_groups(self):
+        gtool = api.portal.get_tool('portal_groups')
+        properties = {
+            'title': 'Plone Team',
+            'description': 'We are Plone',
+            'email': 'ploneteam@plone.org',
+        }
+        gtool.addGroup('ploneteam', (), (),
+                       properties=properties,
+                       title=properties['title'],
+                       description=properties['description'])
+        transaction.commit()
+        response = self.api_session.get('/@groups')
+        save_response_for_documentation('groups.json', response)
+
+    def test_documentation_groups_get(self):
+        gtool = api.portal.get_tool('portal_groups')
+        properties = {
+            'title': 'Plone Team',
+            'description': 'We are Plone',
+            'email': 'ploneteam@plone.org',
+        }
+        gtool.addGroup('ploneteam', (), (),
+                       properties=properties,
+                       title=properties['title'],
+                       description=properties['description'])
+        transaction.commit()
+        response = self.api_session.get('@groups/ploneteam')
+        save_response_for_documentation('groups_get.json', response)
+
+    def test_documentation_groups_filtered_get(self):
+        gtool = api.portal.get_tool('portal_groups')
+        properties = {
+            'title': 'Plone Team',
+            'description': 'We are Plone',
+            'email': 'ploneteam@plone.org',
+        }
+        gtool.addGroup('ploneteam', (), (),
+                       properties=properties,
+                       title=properties['title'],
+                       description=properties['description'])
+        transaction.commit()
+        response = self.api_session.get('@groups', params={'query': 'plo'})
+        save_response_for_documentation('groups_filtered_by_groupname.json', response)  # noqa
+
+    def test_documentation_groups_created(self):
+        response = self.api_session.post(
+            '/@groups',
+            json={
+                'groupname': 'fwt',
+                'email': 'fwt@plone.org',
+                'title': 'Framework Team',
+                'description': 'The Plone Framework Team',
+                'roles': ['Manager'],
+                'groups': ['Administrators']
+            },
+        )
+        save_response_for_documentation('groups_created.json', response)
+
+    def test_documentation_groups_update(self):
+        gtool = api.portal.get_tool('portal_groups')
+        properties = {
+            'title': 'Plone Team',
+            'description': 'We are Plone',
+            'email': 'ploneteam@plone.org',
+        }
+        gtool.addGroup('ploneteam', (), (),
+                       properties=properties,
+                       title=properties['title'],
+                       description=properties['description'])
+        transaction.commit()
+
+        response = self.api_session.patch(
+            '/@groups/ploneteam',
+            json={
+                'email': 'ploneteam2@plone.org',
+            },
+        )
+        save_response_for_documentation('groups_update.json', response)
+
+    def test_documentation_groups_delete(self):
+        gtool = api.portal.get_tool('portal_groups')
+        properties = {
+            'title': 'Plone Team',
+            'description': 'We are Plone',
+            'email': 'ploneteam@plone.org',
+        }
+        gtool.addGroup('ploneteam', (), (),
+                       properties=properties,
+                       title=properties['title'],
+                       description=properties['description'])
+        transaction.commit()
+
+        response = self.api_session.delete(
+            '/@groups/ploneteam')
+        save_response_for_documentation('groups_delete.json', response)
+
     def test_documentation_breadcrumbs(self):
         response = self.api_session.get(
             '{}/@components/breadcrumbs'.format(self.document.absolute_url()))

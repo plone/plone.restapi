@@ -9,5 +9,6 @@
   <include package=".workflow"/>
   <include package=".registry"/>
   <include package=".users"/>
+  <include package=".groups"/>
 
 </configure>
