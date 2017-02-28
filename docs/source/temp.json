@@ -1,0 +1,10 @@
+{"entries": [{
+    "id": "test_user_1_",
+    "roles": {"Contributor": false,
+              "Editor": false,
+               "Reader": true,
+               "Reviewer": true},
+               "type": "user"}
+    ],
+    "inherit": true
+  }
