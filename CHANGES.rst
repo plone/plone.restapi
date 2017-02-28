@@ -4,6 +4,20 @@ Changelog
 1.0a9 (unreleased)
 ------------------
 
+New Features:
+
+- Make date and datetime fields provide a 'widget' attribute.
+  [timo]
+
+- Add documentation for types endpoint schema.
+  [timo]
+
+- Add basic groups CRUD operations in @groups endpoints
+  [sneridagh]
+
+- Make @types endpoint include a 'mode' attribute. This fixes https://github.com/plone/plone.restapi/issues/198.
+  [timo]
+
 Bugfixes:
 
 - Fix queries to ensure ordering of container items by getObjectPositionInParent.

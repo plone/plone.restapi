@@ -8,9 +8,12 @@ from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.schema import getFieldsInOrder
 
+from plone.autoform.interfaces import MODES_KEY
 from plone.autoform.interfaces import IFormFieldProvider
+from plone.autoform.utils import mergedTaggedValuesForForm
 from plone.behavior.interfaces import IBehavior
 from plone.supermodel.interfaces import FIELDSETS_KEY
+
 from Products.CMFCore.utils import getToolByName
 
 from plone.restapi.types.interfaces import IJsonSchemaProvider
@@ -115,6 +118,15 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
             fields_info[fieldname] = adapter.get_schema()
             if field.required:
                 required.append(fieldname)
+
+    # look up hidden fields from plone.autoform tagged values
+    hidden_fields = mergedTaggedValuesForForm(
+        fti.lookupSchema(),
+        MODES_KEY,
+        []
+    )
+    for field_title, mode_value in hidden_fields.items():
+        fields_info[field_title]['mode'] = mode_value
 
     return {
         'type': 'object',

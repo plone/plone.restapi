@@ -103,7 +103,8 @@ content-type: application/json+schema
     "effective": {
       "description": "If this date is in the future, the content will not show up in listings and searches until this date.", 
       "title": "Publishing Date", 
-      "type": "string"
+      "type": "string", 
+      "widget": "datetime"
     }, 
     "exclude_from_nav": {
       "default": false, 
@@ -114,7 +115,8 @@ content-type: application/json+schema
     "expires": {
       "description": "When this date is reached, the content will nolonger be visible in listings and searches.", 
       "title": "Expiration Date", 
-      "type": "string"
+      "type": "string", 
+      "widget": "datetime"
     }, 
     "language": {
       "choices": [

@@ -21,7 +21,7 @@ Contents
    :maxdepth: 2
 
    authentication
-   crud
+   content
    batching
    workflow
    sharing
