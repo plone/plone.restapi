@@ -50,6 +50,10 @@ Bugfixes:
 
 New Features:
 
+- Add @vocabularies endpoint.
+  https://github.com/plone/plone.restapi/issues/212
+  [csenger]
+
 - Make date and datetime fields provide a 'widget' attribute.
   [timo]
 
