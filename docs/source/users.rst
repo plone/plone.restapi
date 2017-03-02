@@ -64,7 +64,9 @@ The endpoint also takes a ``limit`` parameter that defaults to a maximum of 25 u
 
 
 Create User
------------
+===========
+
+You can create a user if you have the ``cmf.AddPortalMember`` permission. This is possible for anonymous users if self registration is enabled. The valid fields depend on the settings of the plone portal and should be in sync with the fields available/required in the plone registration forms (see below).
 
 To create a new user, send a POST request to the global ``/@users`` endpoint with a JSON representation of the user you want to create in the body:
 
@@ -81,11 +83,12 @@ To create a new user, send a POST request to the global ``/@users`` endpoint wit
         'username': 'noam',
         'email': 'noam.chomsky@mit.edu',
         'password': 'colorlessgreenideas',
-        'username': 'noamchomsky',
-        'fullname': 'Noam Avram Chomsky',
-        'home_page': 'web.mit.edu/chomsky',
-        'description': 'Professor of Linguistics',
-        'location': 'Cambridge, MA'
+        'properties': {
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
     }
 
   .. code-block:: curl
@@ -100,13 +103,54 @@ To create a new user, send a POST request to the global ``/@users`` endpoint wit
 
     requests.post('http://localhost:8080/Plone/@users', auth=('admin', 'admin'), headers={'Accept': 'application/json', 'Content-Type': 'application/json'}, params={'username': 'noam', 'email': 'chomsky@mit.edu', 'password': 'colorlessgreenideas'})
 
-.. note::
-    By default, "username", and "password" are required fields. If email login is enabled, "email" and "password" are required fields. All other fields in the example are optional.
 
-If the user has been created successfully, the server will respond with a status 201 (Created). The 'Location' header contains the URL of the newly created user and the resource representation in the payload:
+Available and Required Fields
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. literalinclude:: _json/users_created.json
-   :language: js
+The available and required fields depend on
+* the settings ``Let users select their own passwords`` and ``Use email address as login name`` in the Plone Security control panel.
+* For managers if they set a password for the new user or send out a reset password email.
+
+
+  username (string)
+  
+    Required and allowed unless email as login name is enabled. 
+    It needs to be a valid username and no duplicate username.
+
+  password (string)
+
+    ``Anonymous``: Required and allowed if ``Let users select their own passwords`` is enabled. If not allowed, a password reset mail is automatically send.
+
+    ``Manager``: Either set password or user ``sendPasswordReset``
+
+  email (string, valid email address)
+
+     required. If email login is enabled it can't be a duplicate.
+
+  properties (object object with user properties)
+
+     allowed
+
+  sendPasswordReset (boolean)
+
+     ``Anonymous``: not allowed
+
+     ``Manager``: Either set ``sendPasswordReset`` or set a password
+
+
+Response
+~~~~~~~~
+
+  201 (Created)
+
+    If the user has been created successfully, the server will respond with a status 201 (Created). The 'Location' header contains the URL of the newly created user and the resource representation in the payload:
+
+    .. literalinclude:: _json/users_created.json
+       :language: js
+
+  400 (Invalid data)
+
+    FIXME: Define error response for invalid fields.
 
 
 Read User
