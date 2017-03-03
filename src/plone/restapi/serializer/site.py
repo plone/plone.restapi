@@ -35,6 +35,7 @@ class SerializeSiteRootToJson(object):
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             '@id': batch.canonical_url,
+            'id': self.context.id,
             '@type': 'Plone Site',
             'parent': {},
         }
