@@ -4,8 +4,10 @@ Changelog
 1.0a10 (unreleased)
 -------------------
 
-- Nothing changed yet.
+Bugfixes:
 
+- Add missing id to the Plone site serialization, related to issue #186
+  [sneridagh]
 
 1.0a9 (2017-03-03)
 ------------------
