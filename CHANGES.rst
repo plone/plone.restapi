@@ -6,6 +6,9 @@ Changelog
 
 New Features:
 
+- Make @types endpoint include field permissions (read/write).
+  [lgraf]
+
 - Make @types endpoint include an 'omitted' attribute.
   [lgraf]
 
