@@ -130,7 +130,8 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     u'@id': u'http://nohost/plone/folder1/doc1',
                     u'@type': u'Document',
                     u'description': u'This is a document',
-                    u'title': u'Document 1'
+                    u'title': u'Document 1',
+                    u'review_state': u'private'
                 }
             ]
         )
@@ -157,13 +158,15 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     u'@id': u'http://nohost/plone/folder1/doc2',
                     u'@type': u'Document',
                     u'description': u'Second doc',
-                    u'title': u'Document 2'
+                    u'title': u'Document 2',
+                    u'review_state': u'private'
                 },
                 {
                     u'@id': u'http://nohost/plone/folder1/doc1',
                     u'@type': u'Document',
                     u'description': u'This is a document',
-                    u'title': u'Document 1'
+                    u'title': u'Document 1',
+                    u'review_state': u'private'
                 }
             ]
         )
@@ -221,13 +224,15 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     u'@id': u'http://nohost/plone/dxdoc',
                     u'@type': u'DXTestDocument',
                     u'description': u'',
-                    u'title': u'DX Test Document'
+                    u'title': u'DX Test Document',
+                    u'review_state': u'private'
                 },
                 {
                     u'@id': u'http://nohost/plone/doc1',
                     u'@type': u'Document',
                     u'description': u'',
-                    u'title': u'Document 1'
+                    u'title': u'Document 1',
+                    u'review_state': u'private'
                 },
             ]
         )
@@ -349,13 +354,15 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     u'@id': self.portal.doc1.absolute_url(),
                     u'@type': u'Document',
                     u'description': u'',
-                    u'title': u'Document 1'
+                    u'title': u'Document 1',
+                    u'review_state': u'private'
                 },
                 {
                     u'@id': self.portal.doc2.absolute_url(),
                     u'@type': u'Document',
                     u'description': u'',
-                    u'title': u'Document 2'
+                    u'title': u'Document 2',
+                    u'review_state': u'private'
                 }
             ],
             self.serialize(self.portal.collection1).get('items')

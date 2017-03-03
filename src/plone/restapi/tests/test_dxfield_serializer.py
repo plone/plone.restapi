@@ -302,6 +302,7 @@ class TestDexterityFieldSerializing(TestCase):
              '@type': 'DXTestDocument',
              'title': 'Referenceable Document',
              'description': 'Description 2',
+             'review_state': 'private'
              },
             value)
 
@@ -323,11 +324,14 @@ class TestDexterityFieldSerializing(TestCase):
              '@type': 'DXTestDocument',
              'title': 'Referenceable Document',
              'description': 'Description 2',
+             'review_state': 'private'
+
              },
             {'@id': 'http://nohost/plone/doc3',
              '@type': 'DXTestDocument',
              'title': 'Referenceable Document',
              'description': 'Description 3',
+             'review_state': 'private'
              }],
             value)
 
