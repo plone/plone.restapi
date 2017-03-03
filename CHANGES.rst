@@ -1,6 +1,15 @@
 Changelog
 =========
 
+1.0a10 (unreleased)
+-------------------
+
+Bugfixes:
+
+- Return correct @id for folderish objects created via POST.
+  [lgraf]
+
+
 1.0a9 (2017-03-03)
 ------------------
 
