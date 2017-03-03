@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from Products.CMFCore.utils import getToolByName
 
 # pylint: disable=E1002
 # E1002: Use of super on an old style class
@@ -85,6 +86,50 @@ PLONE_RESTAPI_DX_INTEGRATION_TESTING = IntegrationTesting(
 PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApiDXLayer:Functional"
+)
+
+
+class PloneRestApiDXPAMLayer(PloneSandboxLayer):
+    defaultBases = (PLONE_APP_CONTENTTYPES_FIXTURE,)
+
+    def setUpZope(self, app, configurationContext):
+        import plone.restapi
+        xmlconfig.file(
+            'configure.zcml',
+            plone.restapi,
+            context=configurationContext
+        )
+        xmlconfig.file(
+            'testing.zcml',
+            plone.restapi,
+            context=configurationContext
+        )
+
+        z2.installProduct(app, 'plone.restapi')
+
+    def setUpPloneSite(self, portal):
+        portal.acl_users.userFolderAddUser(
+            SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ['Manager'], [])
+        login(portal, SITE_OWNER_NAME)
+        setRoles(portal, TEST_USER_ID, ['Manager'])
+        language_tool = getToolByName(portal, 'portal_languages')
+        language_tool.addSupportedLanguage('en')
+        language_tool.addSupportedLanguage('es')
+        applyProfile(portal, 'plone.app.multilingual:default')
+        applyProfile(portal, 'plone.restapi:default')
+        applyProfile(portal, 'plone.restapi:testing')
+        add_catalog_indexes(portal, DX_TYPES_INDEXES)
+        set_available_languages()
+
+
+PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()
+PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING = IntegrationTesting(
+    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE,),
+    name="PloneRestApiDXPAMLayer:Integration"
+)
+PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
+    name="PloneRestApiDXPAMLayer:Functional"
 )
 
 
