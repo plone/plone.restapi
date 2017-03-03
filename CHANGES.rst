@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0a10 (2017-03-03)
+1.0a10 (unreleased)
 -------------------
 
 - Nothing changed yet.
