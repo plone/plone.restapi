@@ -6,6 +6,11 @@ Changelog
 
 Bugfixes:
 
+- @search endpoint: Also prefill path query dict with context path.
+  This will allow users to supply an argument like path.depth=1, and still
+  have path.query be prefilled server-side to the context's path.
+  [lgraf]
+
 - Overhaul JSON schema generation for @types endpoint. It now returns
   fields in correct order and in their appropriate fieldsets.
   [lgraf]

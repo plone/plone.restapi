@@ -90,11 +90,17 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_search_on_context_constrains_query_by_path(self):
         response = self.api_session.get('/folder/@search')
-
         self.assertSetEqual(
             {u'/plone/folder',
              u'/plone/folder/doc',
              u'/plone/folder/other-document'},
+            set(result_paths(response.json())))
+
+    def test_path_gets_prefilled_if_missing_from_path_query_dict(self):
+        response = self.api_session.get('/@search?path.depth=1')
+        self.assertSetEqual(
+            {u'/plone/folder',
+             u'/plone/doc-outside-folder'},
             set(result_paths(response.json())))
 
     def test_partial_metadata_retrieval(self):
