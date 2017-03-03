@@ -57,6 +57,12 @@ class ITaggedValuesSchema(model.Schema):
         description=u"",
     )
 
+    form.omitted('field_omitted_true')
+    field_omitted_true = schema.TextLine(
+        title=u"OmittedTrue",
+        description=u"",
+    )
+
 
 class TestJsonSchemaUtils(TestCase):
 
@@ -161,6 +167,25 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
         # self.assertEqual(
         #     'input',
         #     jsonschema['properties']['field_mode_default']['mode']
+        # )
+
+    def test_get_jsonschema_with_omitted_field(self):
+        ttool = getToolByName(self.portal, 'portal_types')
+        jsonschema = get_jsonschema_for_fti(
+            ttool['TaggedDocument'],
+            self.portal,
+            self.request
+        )
+
+        self.assertEqual(
+            True,
+            jsonschema['properties']['field_omitted_true']['omitted']
+        )
+
+        # XXX: To be decided if we always return an omitted attribute
+        # self.assertEqual(
+        #     False,
+        #     jsonschema['properties']['field_omitted_false']['omitted']
         # )
 
 
