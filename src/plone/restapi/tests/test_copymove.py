@@ -102,6 +102,7 @@ class TestCopyMove(unittest.TestCase):
         self.assertEqual(self.doc1, obj)
 
     def test_copy_without_source_raises_400(self):
-        service = self.traverse('/plone/@copy', method='POST')
+        self.portal.invokeFactory('Folder', id='folder')
+        service = self.traverse('/plone/folder/@copy', method='POST')
         with self.assertRaises(BadRequest):
             service()

@@ -1,0 +1,12 @@
+POST /plone/folder/@move
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+[
+  {
+    "new": "http://localhost:55001/plone/folder/front-page", 
+    "old": "http://localhost:55001/plone/front-page"
+  }
+]
