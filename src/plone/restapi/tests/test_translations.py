@@ -12,7 +12,6 @@ from zope.interface import alsoProvides
 import requests
 import transaction
 
-
 if PAM_INSTALLED:  #  noqa
     from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled  # noqa
     from plone.app.multilingual.interfaces import ITranslationManager

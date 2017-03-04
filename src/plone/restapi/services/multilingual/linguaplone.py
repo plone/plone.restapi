@@ -16,7 +16,8 @@ class TranslationInfo(Service):
             '@id': self.context.absolute_url(),
             'language': self.context.Language(),
             'translations': []}
-        for language, translation in self.context.getTranslations(review_state=False).items():
+        for language, translation in self.context.getTranslations(
+                review_state=False).items():
             if language != self.context.Language():
                 info['translations'].append({
                     '@id': translation.absolute_url(),
@@ -52,7 +53,7 @@ class LinkTranslations(Service):
                 message='Content does not exist'))
 
         target_language = target.Language()
-        if target.hasTranslation(target_language):
+        if self.context.hasTranslation(target_language):
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='BadRequest',
