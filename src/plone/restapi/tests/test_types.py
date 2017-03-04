@@ -57,6 +57,24 @@ class ITaggedValuesSchema(model.Schema):
         description=u"",
     )
 
+    form.omitted('field_omitted_true')
+    field_omitted_true = schema.TextLine(
+        title=u"OmittedTrue",
+        description=u"",
+    )
+
+    form.read_permission(field_read_protected='cmf.ManagePortal')
+    field_read_protected = schema.TextLine(
+        title=u"ReadProtected",
+        description=u"",
+    )
+
+    form.write_permission(field_write_protected='cmf.ManagePortal')
+    field_write_protected = schema.TextLine(
+        title=u"WriteProtected",
+        description=u"",
+    )
+
 
 class TestJsonSchemaUtils(TestCase):
 
@@ -162,6 +180,43 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
         #     'input',
         #     jsonschema['properties']['field_mode_default']['mode']
         # )
+
+    def test_get_jsonschema_with_omitted_field(self):
+        ttool = getToolByName(self.portal, 'portal_types')
+        jsonschema = get_jsonschema_for_fti(
+            ttool['TaggedDocument'],
+            self.portal,
+            self.request
+        )
+
+        self.assertEqual(
+            True,
+            jsonschema['properties']['field_omitted_true']['omitted']
+        )
+
+        # XXX: To be decided if we always return an omitted attribute
+        # self.assertEqual(
+        #     False,
+        #     jsonschema['properties']['field_omitted_false']['omitted']
+        # )
+
+    def test_get_jsonschema_with_field_permissions(self):
+        ttool = getToolByName(self.portal, 'portal_types')
+        jsonschema = get_jsonschema_for_fti(
+            ttool['TaggedDocument'],
+            self.portal,
+            self.request
+        )
+
+        self.assertEqual(
+            'cmf.ManagePortal',
+            jsonschema['properties']['field_read_protected']['read_permission']
+        )
+
+        self.assertEqual(
+            'cmf.ManagePortal',
+            jsonschema['properties']['field_write_protected']['write_permission']  # noqa
+        )
 
 
 class TestJsonSchemaProviders(TestCase):

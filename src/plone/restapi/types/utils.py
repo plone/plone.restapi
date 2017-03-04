@@ -8,11 +8,17 @@ from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.schema import getFieldsInOrder
 
-from plone.autoform.interfaces import MODES_KEY
+from plone.autoform.directives import no_omit
+from plone.autoform.directives import omitted
 from plone.autoform.interfaces import IFormFieldProvider
+from plone.autoform.interfaces import MODES_KEY
+from plone.autoform.interfaces import OMITTED_KEY
+from plone.autoform.interfaces import READ_PERMISSIONS_KEY
+from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.autoform.utils import mergedTaggedValuesForForm
 from plone.behavior.interfaces import IBehavior
 from plone.supermodel.interfaces import FIELDSETS_KEY
+from plone.supermodel.utils import mergedTaggedValueDict
 
 from Products.CMFCore.utils import getToolByName
 
@@ -127,6 +133,32 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     )
     for field_title, mode_value in hidden_fields.items():
         fields_info[field_title]['mode'] = mode_value
+
+    # look up omitted fields from plone.autoform tagged values
+    omitted_fields = mergedTaggedValuesForForm(
+        fti.lookupSchema(),
+        OMITTED_KEY,
+        []
+    )
+    for field_title, omitted_value in omitted_fields.items():
+        field = fields_info[field_title]
+        if omitted_value == omitted.value:
+            field['omitted'] = True
+        elif omitted_value == no_omit.value:
+            field['omitted'] = False
+
+    # look up field permissions from plone.autoform tagged values
+    read_permission_fields = mergedTaggedValueDict(
+        fti.lookupSchema(), READ_PERMISSIONS_KEY)
+
+    write_permission_fields = mergedTaggedValueDict(
+        fti.lookupSchema(), WRITE_PERMISSIONS_KEY)
+
+    for field_title, permission in read_permission_fields.items():
+        fields_info[field_title]['read_permission'] = permission
+
+    for field_title, permission in write_permission_fields.items():
+        fields_info[field_title]['write_permission'] = permission
 
     return {
         'type': 'object',
