@@ -4,6 +4,11 @@ Changelog
 1.0a10 (unreleased)
 -------------------
 
+New Features:
+- Added 'addable' to @types endpoint. It specifies if the content type can be added to the current context.
+  Refs https://github.com/plone/plone.restapi/issues/173
+  [jaroel]
+
 Bugfixes:
 
 - Add missing id to the Plone site serialization, related to issue #186
