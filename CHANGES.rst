@@ -4,6 +4,11 @@ Changelog
 1.0a10 (unreleased)
 -------------------
 
+New Features:
+
+- Make @types endpoint include an 'omitted' attribute.
+  [lgraf]
+
 Bugfixes:
 
 - Add missing id to the Plone site serialization, related to issue #186
