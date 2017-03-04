@@ -4,10 +4,16 @@ Changelog
 1.0a10 (unreleased)
 -------------------
 
+New Features:
+
+- Implement @copy and @move endpoints.
+  [buchi]
+
 Bugfixes:
 
 - Add missing id to the Plone site serialization, related to issue #186
   [sneridagh]
+
 
 1.0a9 (2017-03-03)
 ------------------
