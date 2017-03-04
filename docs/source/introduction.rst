@@ -1,6 +1,8 @@
 Introduction
 ============
 
+.. note:: You will need some kind of API browser application to explore the API. We recommend to use `Postman <http://www.getpostman.com/>`_. For easy onboarding take look at the API :ref:`Exploring`_ Quick-Guide.
+
 A hypermedia API provides an entry point to the API, which contains hyperlinks the clients can follow.
 Just like a human user of a regular website, who knows the initial URL of a website and then follows hyperlinks to navigate through the site.
 This has the advantage that the client only needs to understand how to detect and follow links.
