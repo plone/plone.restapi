@@ -1,3 +1,5 @@
 [report]
 include =
   src/*
+omit =
+  src/plone/restapi/tests/*
