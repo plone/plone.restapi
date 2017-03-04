@@ -45,6 +45,7 @@ setup(name='plone.restapi',
       ],
       extras_require={'test': [
           'Products.Archetypes',
+          'collective.MockMailHost',
           'plone.app.collection',
           'plone.app.contenttypes',
           'plone.app.robotframework',
