@@ -1,0 +1,241 @@
+# This is the OpenAPI implementation of the plone.restapi endpoints for
+# Products.CMFCore.interfaces.IFolderish objects and complements the main file
+# at plonesiteroot.yaml
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "1.0a10"
+  title: Plone Rest API - Folder content type
+  description: |
+    A hypermedia API, with the portal root as the entry point. The client can ask for a REST API response by setting the 'Accept' HTTP header to 'application/json'. These are the definitions of the ``Folder`` content type endpoints.
+
+host: localhost:8080
+consumes:
+  - application/json
+produces:
+  - application/json
+
+basePath: /Plone
+
+################################################################################
+#                                  Security                                    #
+################################################################################
+# Next is valid only for OpenAPI 3.0
+# securityScheme:
+#   Authorization:
+#     type: http
+#     scheme: bearer
+#     bearerFormat: JWT
+
+# Describe your paths here
+paths:
+  /{folder_path}:
+    get:
+      x-for:
+        - Products.CMFCore.interfaces.IFolderish
+      description: |
+        Get the summary contents of a "folderish" object.
+          It's defined for the interfaces:
+          - Products.CMFCore.interfaces.IFolderish
+      parameters:
+        -
+          name: folder_path
+          in: path
+          description: ID of the object to fetch
+          required: true
+          type: string
+
+        - $ref: '#/parameters/AcceptHeader'
+
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/SummaryObject'
+
+    post:
+      x-for:
+        - Products.CMFCore.interfaces.IFolderish
+      description: |
+        Creates a content in a folderish object.
+      parameters:
+        -
+          name: folder_path
+          in: path
+          description: ID of the object to fetch
+          required: true
+          type: string
+        -
+          name: payload
+          in: body
+          description: The endpoint body payload
+          schema:
+            $ref: '#/definitions/PloneObject'
+
+        - $ref: '#/parameters/AcceptHeader'
+        - $ref: '#/parameters/AuthorizationBearerHeader'
+
+      responses:
+        201:
+          description: Successful response object created [TODO Needs schema object]
+
+  /{folder_path}/@workflow:
+    get:
+      x-for:
+        - Products.CMFCore.interfaces.IFolderish
+      description: |
+        Get the workflow of a "folderish" object.
+          It's defined for the interfaces:
+          - Products.CMFCore.interfaces.IFolderish
+      parameters:
+        -
+          name: folder_path
+          in: path
+          description: ID of the object to fetch
+          required: true
+          type: string
+
+        - $ref: '#/parameters/AcceptHeader'
+
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/ContentWorkflowObject'
+
+  /{folder_path}/@workflow/{transition}:
+    get:
+      x-for:
+        - Products.CMFCore.interfaces.IFolderish
+      description: |
+        Get the workflow of a "folderish" object.
+          It's defined for the interfaces:
+          - Products.CMFCore.interfaces.IFolderish
+      parameters:
+        -
+          name: folder_path
+          in: path
+          description: ID of the object to fetch
+          required: true
+          type: string
+        -
+          name: transition
+          in: path
+          description: ID of the transition to trigger
+          required: true
+          type: string
+
+        - $ref: '#/parameters/AcceptHeader'
+
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/ContentWorkflowHistoryObject'
+
+################################################################################
+#                                 Parameters                                   #
+################################################################################
+parameters:
+  AuthorizationBearerHeader:
+    name: Authorization
+    in: header
+    description: |
+      The JWT Authorization Bearer header in the form of ``Authorization: Bearer <JWT_TOKEN>``
+    required: true
+    type: string
+    format: string
+
+  AcceptHeader:
+    name: Accept
+    in: header
+    description: Accept header
+    required: true
+    type: string
+    format: string
+    default: application/json
+
+
+################################################################################
+#                                 Definitions                                  #
+################################################################################
+definitions:
+  PloneObject:
+    type: object
+    required:
+      - "@type"
+    properties:
+      "@id":
+         type: string
+      "@type":
+        type: string
+      title:
+        type: string
+      description:
+        type: string
+
+  PloneContentSummaryObject:
+    type: object
+    required:
+      - "@id"
+    properties:
+      "@id":
+         type: string
+      "@type":
+        type: string
+      title:
+        type: string
+      description:
+        type: string
+
+  SummaryObject:
+    type: object
+    required:
+    - "@id"
+    properties:
+      "@id":
+        type: string
+      "@type":
+        type: string
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/PloneContentSummaryObject'
+
+  ContentWorkflowHistoryObject:
+    type: object
+    properties:
+      action:
+        type: string
+      actor:
+        type: string
+      comments:
+        type: string
+      review_state:
+        type: string
+      time:
+        type: string
+        format: date
+
+  ContentWorkflowTransitionsObject:
+    type: array
+    items:
+      type: object
+      properties:
+        "@id":
+          type: string
+        title:
+          type: string
+
+  ContentWorkflowObject:
+    type: object
+    properties:
+      history:
+        type: array
+        items:
+          $ref: '#/definitions/ContentWorkflowHistoryObject'
+      transitions:
+        type: array
+        items:
+          $ref: '#/definitions/ContentWorkflowTransitionsObject'

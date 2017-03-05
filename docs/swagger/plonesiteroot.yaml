@@ -1,0 +1,430 @@
+# This is the OpenAPI implementation of the plone.restapi endpoints for
+# Products.CMFPlone.interfaces.IPloneSiteRoot
+swagger: '2.0'
+
+# This is your document metadata
+info:
+  version: "1.0a10"
+  title: Plone Rest API
+  description: A hypermedia API, with the portal root as the entry point. The client can ask for a REST API response by setting the 'Accept' HTTP header to 'application/json'
+
+host: localhost:8080
+consumes:
+  - application/json
+produces:
+  - application/json
+
+basePath: /Plone
+
+################################################################################
+#                                  Security                                    #
+################################################################################
+# Next is valid only for OpenAPI 3.0
+# securityScheme:
+#   Authorization:
+#     type: http
+#     scheme: bearer
+#     bearerFormat: JWT
+
+# Describe your paths here
+paths:
+  /:
+    # This is a HTTP operation
+    get:
+      # This is an extended property that defines the interface of the object
+      # that this endpoint is available for.
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      # Describe this verb here. Note: you can use markdown :thumbsup:
+      description: |
+        Get the summary contents of the ``Plone`` site root.
+      # This is array of GET operation parameters:
+      parameters:
+        # An example parameter that is in query and is required
+        -
+          name: Accept
+          in: header
+          description: Accept header
+          required: true
+          type: string
+          format: string
+          default: application/json
+      # Expected responses for this operation:
+      responses:
+        # Response code
+        200:
+          description: Successful response
+          # A schema describing your response object.
+          # Use JSON Schema format
+          schema:
+            $ref: '#/definitions/SummaryObject'
+
+  /@login:
+    post:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      description: |
+        Requests for an JWT token for authentication on the Plone site endpoints
+      parameters:
+        -
+          name: Payload
+          in: body
+          description: The endpoint body payload
+          schema:
+            $ref: '#/definitions/LoginObject'
+
+        - $ref: '#/parameters/AcceptHeader'
+
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Token'
+
+  /@login-renew:
+    post:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      description: |
+        Requests for the renew of an existing token.
+      parameters:
+        -
+          name: Payload
+          in: body
+          description: The endpoint body payload
+          schema:
+            $ref: '#/definitions/Token'
+
+        - $ref: '#/parameters/AcceptHeader'
+        - $ref: '#/parameters/AuthorizationBearerHeader'
+      responses:
+        200:
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Token'
+
+  /@logout:
+    post:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      description: |
+        Request for a token invalidation. However by default tokens are not persisted on the server and thus can not be invalidated. To enable token invalidation, activate the ``store_tokes`` option in the PAS plugin. If you need tokens that are valid indefinitely you should also disable the use of Plone’s keyring in the PAS plugin (option ``use_keyring``).
+      parameters:
+        -
+          name: Payload
+          in: body
+          description: The endpoint body payload
+          schema:
+            $ref: '#/definitions/Token'
+
+        - $ref: '#/parameters/AcceptHeader'
+
+      responses:
+        204:
+          description: Empty response
+
+  /@registry/{registry_name}:
+    get:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      description: |
+        Gets a key from the registry. Registry records can be addressed by using the fully qualified dotted name of the registry record.
+      parameters:
+        -
+          name: registry_name
+          in: path
+          description: The endpoint body payload
+          required: true
+          type: string
+
+        - $ref: '#/parameters/AcceptHeader'
+        - $ref: '#/parameters/AuthorizationBearerHeader'
+
+      responses:
+        200:
+          description: Successful response containing the object requested
+
+    patch:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      description: |
+        Sets a registry key in the registry. Registry records can be addressed by using the fully qualified dotted name of the registry record.
+      parameters:
+        -
+          name: registry_name
+          in: path
+          description: The endpoint body payload
+          required: true
+          type: string
+
+        - $ref: '#/parameters/AcceptHeader'
+        - $ref: '#/parameters/AuthorizationBearerHeader'
+
+      responses:
+        200:
+          description: Successful response containing the object requested
+
+  /@search:
+    get:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+        - Products.CMFCore.interfaces.IContentish
+      description: |
+        Search for a content in the site. A search is contextual by default, i.e. it is bound to a specific collection and searches within that collection and any sub-collections. Since a Plone site is also a collection, we therefore have a global search (by invoking the /@search endpoint on the site root) and contextual searches (by invoking that endpoint on any other context) all using the same pattern. In terms of the resulting catalog query this means that, by default, a search will be constrained by the path to the context it’s invoked on, unless you explicitly supply your own path query.
+
+          Queries and query-wide options (like ``sort_on``) are submitted as query string parameters to the /@search request. This is nearly identical to the way that queries are passed to the Plone @@search browser view, with only a few minor differences. For general information on how to query the Plone catalog, please refer to the [Plone Documentation on Querying](http://docs.plone.org/develop/plone/searching_and_indexing/query.html).
+
+      parameters:
+        -
+          name: plone_catalog_query
+          in: query
+          description: |
+            The Plone Catalog query string syntax can take any number of indexes and custom indexes from the catalog and query-wide options, like ``sort_on``.
+          required: true
+          type: string
+
+        - $ref: '#/parameters/AcceptHeader'
+        - $ref: '#/parameters/AuthorizationBearerHeader'
+
+      responses:
+        200:
+          description: Successful response [TODO add schema of the response]
+
+  /@types:
+    get:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      description: |
+        Gets a key from the registry. Registry records can be addressed by using the fully qualified dotted name of the registry record.
+      parameters:
+        - $ref: '#/parameters/AcceptHeader'
+        - $ref: '#/parameters/AuthorizationBearerHeader'
+
+      responses:
+        200:
+          description: Successful response [TODO Needs schema object]
+
+  /@types/{content_type}:
+    get:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      description: |
+        Gets the type schema information for a particular content type.
+      parameters:
+        -
+          name: content_type
+          in: path
+          description: The name of the content type
+          required: true
+          type: string
+
+        - $ref: '#/parameters/AcceptHeader'
+        - $ref: '#/parameters/AuthorizationBearerHeader'
+
+      responses:
+        200:
+          description: Successful response [TODO Needs schema object]
+
+  /@users:
+    get:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      description: |
+        Gets all the objects of the site.
+      parameters:
+        - $ref: '#/parameters/AcceptHeader'
+        - $ref: '#/parameters/AuthorizationBearerHeader'
+
+      responses:
+        200:
+          description: Successful response [TODO Needs schema object]
+
+    post:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      description: |
+        Creates an user in the site.
+      parameters:
+        -
+          name: payload
+          in: body
+          description: The endpoint body payload
+          schema:
+            $ref: '#/definitions/UserObject'
+
+        - $ref: '#/parameters/AcceptHeader'
+        - $ref: '#/parameters/AuthorizationBearerHeader'
+
+      responses:
+        201:
+          description: Successful response object created [TODO Needs schema object]
+
+  /@users/{username}:
+    get:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      description: |
+        Gets a particular user of the site.
+      parameters:
+        -
+          name: username
+          in: path
+          description: The username
+          required: true
+          type: string
+
+        - $ref: '#/parameters/AcceptHeader'
+        - $ref: '#/parameters/AuthorizationBearerHeader'
+
+      responses:
+        200:
+          description: Successful response [TODO Needs schema object]
+
+    patch:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      description: |
+        Changes the properties of an user in the site.
+      parameters:
+        -
+          name: username
+          in: path
+          description: The username
+          required: true
+          type: string
+        -
+          name: payload
+          in: body
+          description: The endpoint body payload
+          schema:
+            $ref: '#/definitions/UserObject'
+
+        - $ref: '#/parameters/AcceptHeader'
+        - $ref: '#/parameters/AuthorizationBearerHeader'
+
+      responses:
+        201:
+          description: Successful response object created [TODO Needs schema object]
+
+    delete:
+      x-for:
+        - Products.CMFPlone.interfaces.IPloneSiteRoot
+      description: |
+        Deletes an user in the site.
+      parameters:
+        -
+          name: username
+          in: path
+          description: The username
+          required: true
+          type: string
+
+        - $ref: '#/parameters/AcceptHeader'
+        - $ref: '#/parameters/AuthorizationBearerHeader'
+
+      responses:
+        204:
+          description: Empty object
+
+################################################################################
+#                                 Parameters                                   #
+################################################################################
+parameters:
+  AuthorizationBearerHeader:
+    name: Authorization
+    in: header
+    description: |
+      The JWT Authorization Bearer header in the form of ``Authorization: Bearer <JWT_TOKEN>``
+    required: true
+    type: string
+    format: string
+
+  AcceptHeader:
+    name: Accept
+    in: header
+    description: Accept header
+    required: true
+    type: string
+    format: string
+    default: application/json
+
+################################################################################
+#                                 Definitions                                  #
+################################################################################
+definitions:
+  LoginObject:
+    type: object
+    required:
+      - login
+      - password
+    properties:
+      login:
+         type: string
+      password:
+        type: string
+
+  PloneObject:
+    type: object
+    required:
+      - "@type"
+    properties:
+      "@id":
+         type: string
+      "@type":
+        type: string
+      title:
+        type: string
+      description:
+        type: string
+
+  PloneContentSummaryObject:
+    type: object
+    required:
+      - "@id"
+    properties:
+      "@id":
+         type: string
+      "@type":
+        type: string
+      title:
+        type: string
+      description:
+        type: string
+
+  SummaryObject:
+    type: object
+    required:
+    - "@id"
+    properties:
+      "@id":
+        type: string
+      "@type":
+        type: string
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/PloneContentSummaryObject'
+
+  Token:
+    type: object
+    properties:
+      token:
+         type: string
+
+  UserObject:
+    type: object
+    properties:
+      username:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      fullname:
+        type: string
+      home_page:
+        type: string
+      description:
+        type: string
+      location:
+        type: string
