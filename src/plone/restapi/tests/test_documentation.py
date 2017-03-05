@@ -52,6 +52,9 @@ def save_request_and_response_for_docs(name, response):
         for key, value in response.request.headers.items():
             if key.lower() in REQUEST_HEADER_KEYS:
                 req.write('{}: {}\n'.format(key, value))
+        if response.request.body:
+            req.write('\n')
+            req.write(response.request.body)
 
     with open('{}/{}'.format(base_path, '%s.resp' % name), 'w') as resp:
         status = response.status_code
