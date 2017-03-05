@@ -20,6 +20,9 @@ New Features:
 
 Bugfixes:
 
+- Fix timezone-related failures when running tests through `coverage`.
+  [witsch]
+
 - Fix queries to ensure ordering of container items by getObjectPositionInParent.
   [lgraf]
 
