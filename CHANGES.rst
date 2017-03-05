@@ -5,6 +5,7 @@ Changelog
 -------------------
 
 New Features:
+
 - Added 'addable' to @types endpoint. It specifies if the content type can be added to the current context.
   Refs https://github.com/plone/plone.restapi/issues/173
   [jaroel]
@@ -13,6 +14,9 @@ New Features:
   This allows us to prevent rendering all choices in relatedItems.
   Refs https://github.com/plone/plone.restapi/issues/199
   [jaroel]
+
+- Add review_state to the folderish summary serializer.
+  [sneridagh]
 
 Bugfixes:
 
@@ -31,10 +35,6 @@ Bugfixes:
 - Add missing id to the Plone site serialization, related to issue #186
   [sneridagh]
 
-New Features:
-
-- Add review_state to the folderish summary serializer.
-  [sneridagh]
 
 1.0a9 (2017-03-03)
 ------------------
