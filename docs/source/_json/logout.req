@@ -1,2 +1,2 @@
-POST /plone/@logout
+POST /plone/@logout HTTP/1.1
 Accept: application/json

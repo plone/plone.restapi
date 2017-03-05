@@ -1,2 +1,2 @@
-PATCH /plone/@groups/ploneteam
+PATCH /plone/@groups/ploneteam HTTP/1.1
 Accept: application/json

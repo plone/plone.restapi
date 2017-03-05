@@ -1,2 +1,2 @@
-GET /plone/collection
+GET /plone/collection HTTP/1.1
 Accept: application/json

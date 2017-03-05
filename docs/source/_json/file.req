@@ -1,2 +1,2 @@
-GET /plone/file
+GET /plone/file HTTP/1.1
 Accept: application/json

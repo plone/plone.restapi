@@ -1,2 +1,2 @@
-GET /plone/@search?sort_on=path
+GET /plone/@search?sort_on=path HTTP/1.1
 Accept: application/json

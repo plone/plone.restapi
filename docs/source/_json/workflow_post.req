@@ -1,2 +1,2 @@
-POST /plone/front-page/@workflow/publish
+POST /plone/front-page/@workflow/publish HTTP/1.1
 Accept: application/json

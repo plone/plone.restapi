@@ -1,2 +1,2 @@
-POST /plone/@users
+POST /plone/@users HTTP/1.1
 Accept: application/json

@@ -1,2 +1,2 @@
-GET /plone/non-existing-resource
+GET /plone/non-existing-resource HTTP/1.1
 Accept: application/json

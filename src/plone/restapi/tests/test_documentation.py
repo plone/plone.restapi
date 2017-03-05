@@ -44,7 +44,7 @@ base_path = os.path.join(
 
 def save_request_and_response_for_docs(name, response):
     with open('{}/{}'.format(base_path, '%s.req' % name), 'w') as req:
-        req.write('{} {}\n'.format(
+        req.write('{} {} HTTP/1.1\n'.format(
             response.request.method,
             response.request.path_url
         ))
