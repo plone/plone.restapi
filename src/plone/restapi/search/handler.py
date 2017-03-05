@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
-from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
+import plone.api.portal
 
 
 class SearchHandler(object):
@@ -13,7 +13,7 @@ class SearchHandler(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        self.catalog = getToolByName(self.context, 'portal_catalog')
+        self.catalog = plone.api.portal.get_tool('portal_catalog')
 
     def _parse_query(self, query):
         catalog_compatible_query = getMultiAdapter(

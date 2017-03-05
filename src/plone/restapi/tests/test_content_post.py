@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
@@ -13,6 +12,7 @@ from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 import requests
 import transaction
 import unittest
+import plone.api.portal
 
 
 class TestFolderCreate(unittest.TestCase):
@@ -29,7 +29,7 @@ class TestFolderCreate(unittest.TestCase):
             id='folder1',
             title='My Folder'
         )
-        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool = plone.api.portal.get_tool('portal_workflow')
         wftool.doActionFor(self.portal.folder1, 'publish')
         transaction.commit()
 

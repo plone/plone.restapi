@@ -35,7 +35,6 @@ from DateTime.interfaces import SyntaxError as DTSyntaxError
 from plone.restapi.exceptions import QueryParsingError
 from plone.restapi.interfaces import IIndexQueryParser
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
-from Products.CMFCore.utils import getToolByName
 from Products.ExtendedPathIndex.ExtendedPathIndex import ExtendedPathIndex
 from Products.PluginIndexes.BooleanIndex.BooleanIndex import BooleanIndex
 from Products.PluginIndexes.DateIndex.DateIndex import DateIndex
@@ -50,6 +49,7 @@ from zope.interface import implementer
 from zope.interface import Interface
 
 import logging
+import plone.api.portal
 
 
 log = logging.getLogger(__name__)
@@ -79,7 +79,7 @@ class ZCatalogCompatibleQueryAdapter(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        self.catalog = getToolByName(self.context, 'portal_catalog')
+        self.catalog = plone.api.portal.get_tool('portal_catalog')
 
     def get_index(self, name):
         return self.catalog._catalog.indexes.get(name)

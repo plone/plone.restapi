@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
-from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component.hooks import getSite
 from zope.component import queryMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
+import plone.api.portal
 
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
 
@@ -34,18 +34,18 @@ class UsersGet(Service):
 
     def _get_user(self, user_id):
         portal = getSite()
-        portal_membership = getToolByName(portal, 'portal_membership')
+        portal_membership = plone.api.portal.get_tool('portal_membership')
         return portal_membership.getMemberById(user_id)
 
     def _get_users(self):
         portal = getSite()
-        portal_membership = getToolByName(portal, 'portal_membership')
+        portal_membership = plone.api.portal.get_tool('portal_membership')
         return portal_membership.listMembers()
 
     def _get_filtered_users(self, query, limit):
         portal = getSite()
-        acl_users = getToolByName(portal, 'acl_users')
-        portal_membership = getToolByName(portal, 'portal_membership')
+        acl_users = plone.api.portal.get_tool('acl_users')
+        portal_membership = plone.api.portal.get_tool('portal_membership')
         results = acl_users.searchUsers(id=query, max_results=limit)
         return [portal_membership.getMemberById(user['userid'])
                 for user in results]

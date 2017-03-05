@@ -3,11 +3,11 @@ from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
-from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin  # noqa
 from zope.interface import alsoProvides
 
 import plone.protect.interfaces
+import plone.api.portal
 
 
 class Login(Service):
@@ -15,7 +15,7 @@ class Login(Service):
     """
     def reply(self):
         plugin = None
-        acl_users = getToolByName(self, "acl_users")
+        acl_users = plone.api.portal.get_tool("acl_users")
         plugins = acl_users._getOb('plugins')
         authenticators = plugins.listPlugins(IAuthenticationPlugin)
         for id_, authenticator in authenticators:
@@ -70,7 +70,7 @@ class Login(Service):
         info = None
 
         while not info:
-            uf = getToolByName(uf_parent, 'acl_users')
+            uf = plone.api.portal.get_tool('acl_users')
             if uf:
                 info = uf._verifyUser(uf.plugins, login=userid)
             if uf_parent is self.context.getPhysicalRoot():

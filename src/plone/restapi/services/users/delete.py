@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.services import Service
-from Products.CMFCore.utils import getToolByName
 from zope.component.hooks import getSite
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
+import plone.api.portal
 
 
 class UsersDelete(Service):
@@ -30,7 +30,7 @@ class UsersDelete(Service):
 
     def reply(self):
         portal = getSite()
-        portal_membership = getToolByName(portal, 'portal_membership')
+        portal_membership = plone.api.portal.get_tool('portal_membership')
         delete_successful = portal_membership.deleteMembers(
             (self._get_user_id,)
         )

@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
 from ZPublisher.pubevents import PubStart
 from base64 import b64encode
 from plone.app.testing import SITE_OWNER_NAME
@@ -10,6 +9,7 @@ from unittest2 import TestCase
 from zExceptions import NotFound
 from zope.component import getMultiAdapter
 from zope.event import notify
+import plone.api.portal
 
 
 class TestWorkflowInfo(TestCase):
@@ -21,7 +21,7 @@ class TestWorkflowInfo(TestCase):
         self.request = self.layer['request']
         self.doc1 = self.portal[self.portal.invokeFactory(
             'Document', id='doc1', title='Test Document')]
-        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool = plone.api.portal.get_tool('portal_workflow')
         wftool.doActionFor(self.portal.doc1, 'submit')
         wftool.doActionFor(self.portal.doc1, 'publish')
 
@@ -50,7 +50,7 @@ class TestWorkflowTransition(TestCase):
     def setUp(self):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
-        self.wftool = getToolByName(self.portal, 'portal_workflow')
+        self.wftool = plone.api.portal.get_tool('portal_workflow')
         login(self.portal, SITE_OWNER_NAME)
         self.portal.invokeFactory('Document', id='doc1')
 

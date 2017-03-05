@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.services import Service
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
-from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
 from zope.component import getUtility
 from zope.component import getMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
+import plone.api.portal
 
 
 class TypesGet(Service):
@@ -34,7 +34,7 @@ class TypesGet(Service):
 
     def check_security(self):
         # Only expose type information to authenticated users
-        portal_membership = getToolByName(self.context, 'portal_membership')
+        portal_membership = plone.api.portal.get_tool('portal_membership')
         if portal_membership.isAnonymousUser():
             raise Unauthorized
 

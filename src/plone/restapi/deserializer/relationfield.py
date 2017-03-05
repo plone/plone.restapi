@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
 from plone.restapi.interfaces import IFieldDeserializer
@@ -10,6 +9,7 @@ from zope.component import queryUtility
 from zope.interface import implementer
 from zope.intid.interfaces import IIntIds
 from zope.publisher.interfaces.browser import IBrowserRequest
+import plone.api.portal
 
 
 @implementer(IFieldDeserializer)
@@ -37,7 +37,7 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
                     value.encode('utf8').lstrip('/'), None)
             else:
                 # Resolve by UID
-                catalog = getToolByName(self.context, 'portal_catalog')
+                catalog = plone.api.portal.get_tool('portal_catalog')
                 brain = catalog(UID=value)
                 if brain:
                     obj = brain[0].getObject()

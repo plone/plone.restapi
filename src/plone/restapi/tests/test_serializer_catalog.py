@@ -5,10 +5,10 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.uuid.interfaces import IMutableUUID
-from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 
 import unittest
+import plone.api.portal
 
 
 class TestCatalogSerializers(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestCatalogSerializers(unittest.TestCase):
         self.app = self.layer['app']
         self.portal = self.layer['portal']
         self.request = self.portal.REQUEST
-        self.catalog = getToolByName(self.portal, 'portal_catalog')
+        self.catalog = plone.api.portal.get_tool('portal_catalog')
 
         # /plone/my-folder
         self.folder = createContentInContainer(

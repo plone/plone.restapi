@@ -8,10 +8,10 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import result_paths
 from plone.uuid.interfaces import IMutableUUID
-from Products.CMFCore.utils import getToolByName
 
 import transaction
 import unittest
+import plone.api.portal
 
 
 class TestSearchFunctional(unittest.TestCase):
@@ -23,7 +23,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
         self.request = self.portal.REQUEST
-        self.catalog = getToolByName(self.portal, 'portal_catalog')
+        self.catalog = plone.api.portal.get_tool('portal_catalog')
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})

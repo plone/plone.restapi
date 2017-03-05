@@ -3,7 +3,6 @@ from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
-from Products.CMFCore.utils import getToolByName
 from Products.ZCatalog.interfaces import ICatalogBrain
 from Products.ZCatalog.Lazy import Lazy
 from zope.component import adapter
@@ -11,6 +10,7 @@ from zope.component import getMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.interface import Interface
+import plone.api.portal
 
 
 BRAIN_METHODS = ['getPath', 'getURL']
@@ -30,7 +30,7 @@ class BrainSerializer(object):
     def _get_metadata_to_include(self, metadata_fields):
         if metadata_fields and '_all' in metadata_fields:
             site = getSite()
-            catalog = getToolByName(site, 'portal_catalog')
+            catalog = plone.api.portal.get_tool('portal_catalog')
             metadata_attrs = catalog.schema() + BRAIN_METHODS
             return metadata_attrs
 

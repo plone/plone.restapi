@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
 from plone.keyring.interfaces import IKeyManager
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getUtility
 
 import unittest
+import plone.api.portal
 
 
 class TestJWTAuthenticationPlugin(unittest.TestCase):
@@ -14,7 +14,7 @@ class TestJWTAuthenticationPlugin(unittest.TestCase):
     def setUp(self):
 
         self.portal = self.layer['portal']
-        uf = getToolByName(self.portal, 'acl_users')
+        uf = plone.api.portal.get_tool('acl_users')
         self.plugin = uf['jwt_auth']
 
     def test_challenge(self):

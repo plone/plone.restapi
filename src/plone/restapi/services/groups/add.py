@@ -2,13 +2,13 @@
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
-from Products.CMFCore.utils import getToolByName
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zExceptions import BadRequest
 from zope.interface import alsoProvides
 
 import plone.protect.interfaces
+import plone.api.portal
 
 
 class GroupsPost(Service):
@@ -36,8 +36,8 @@ class GroupsPost(Service):
             'email': email,
         }
 
-        gtool = getToolByName(self.context, 'portal_groups')
-        regtool = getToolByName(self.context, 'portal_registration')
+        gtool = plone.api.portal.get_tool('portal_groups')
+        regtool = plone.api.portal.get_tool('portal_registration')
 
         if not regtool.isMemberIdAllowed(groupname):
             raise BadRequest("The group name you entered is not valid.")

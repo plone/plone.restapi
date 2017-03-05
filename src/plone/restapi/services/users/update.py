@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.services import Service
 from Products.CMFPlone.utils import set_own_login_name
-from Products.CMFCore.utils import getToolByName
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 
 import json
-import plone
+import plone.api.portal
 
 
 class UsersPatch(Service):
@@ -35,7 +34,7 @@ class UsersPatch(Service):
 
     def _get_user(self, user_id):
         portal = getSite()
-        portal_membership = getToolByName(portal, 'portal_membership')
+        portal_membership = plone.api.portal.get_tool('portal_membership')
         return portal_membership.getMemberById(user_id)
 
     def reply(self):

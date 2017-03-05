@@ -7,12 +7,12 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from Products.Archetypes.interfaces import IBaseFolder
 from Products.Archetypes.interfaces import IBaseObject
-from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.interface import Interface
+import plone.api.portal
 
 
 @implementer(ISerializeToJson)
@@ -54,7 +54,7 @@ class SerializeToJson(object):
         return result
 
     def _get_workflow_state(self):
-        wftool = getToolByName(self.context, 'portal_workflow')
+        wftool = plone.api.portal.get_tool('portal_workflow')
         review_state = wftool.getInfoFor(
             ob=self.context, name='review_state', default=None)
         return review_state
@@ -74,7 +74,7 @@ class SerializeFolderToJson(SerializeToJson):
         folder_metadata = super(SerializeFolderToJson, self).__call__()
         query = self._build_query()
 
-        catalog = getToolByName(self.context, 'portal_catalog')
+        catalog = plone.api.portal.get_tool('portal_catalog')
         brains = catalog(query)
 
         batch = HypermediaBatch(self.request, brains)

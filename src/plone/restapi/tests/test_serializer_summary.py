@@ -6,11 +6,11 @@ from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 
 import Missing
 import unittest
+import plone.api.portal
 
 
 class TestSummarySerializers(unittest.TestCase):
@@ -20,7 +20,7 @@ class TestSummarySerializers(unittest.TestCase):
     def setUp(self):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
-        self.catalog = getToolByName(self.portal, 'portal_catalog')
+        self.catalog = plone.api.portal.get_tool('portal_catalog')
 
         self.doc1 = createContentInContainer(
             self.portal, u'DXTestDocument',
