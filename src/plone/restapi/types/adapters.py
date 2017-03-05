@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """JsonSchema providers."""
 from plone.app.textfield.interfaces import IRichText
+from z3c.relationfield.interfaces import IRelationList
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtility
@@ -205,9 +206,9 @@ class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
         return info
 
 
-@adapter(IList, Interface, Interface)
+@adapter(IRelationList, Interface, Interface)
 @implementer(IJsonSchemaProvider)
-class ChoiceslessSchemaProvider(ListJsonSchemaProvider):
+class ChoiceslessRelationListSchemaProvider(ListJsonSchemaProvider):
 
     def get_items(self):
         """Get items properties."""
