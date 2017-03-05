@@ -23,7 +23,8 @@ import unittest2 as unittest
 
 
 REQUEST_HEADER_KEYS = [
-    'accept'
+    'accept',
+    'authorization',
 ]
 
 RESPONSE_HEADER_KEYS = [
