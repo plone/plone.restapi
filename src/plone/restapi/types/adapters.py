@@ -207,7 +207,7 @@ class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
 
 @adapter(IList, Interface, Interface)
 @implementer(IJsonSchemaProvider)
-class RelatedItemsSchemaProvider(ListJsonSchemaProvider):
+class ChoiceslessSchemaProvider(ListJsonSchemaProvider):
 
     def get_items(self):
         """Get items properties."""
@@ -216,8 +216,7 @@ class RelatedItemsSchemaProvider(ListJsonSchemaProvider):
             IJsonSchemaProvider)
 
         # Prevent rendering all choices.
-        should_render_choices = self.field.__name__ != 'relatedItems'
-        value_type_adapter.should_render_choices = should_render_choices
+        value_type_adapter.should_render_choices = False
 
         return value_type_adapter.get_schema()
 
