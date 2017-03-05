@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.services import Service
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
+from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
 from zope.component import getUtility
@@ -70,10 +71,14 @@ class TypesGet(Service):
                                  name='plone_portal_state').portal()
         portal_url = portal.absolute_url()
 
+        pm = getToolByName(self.context, 'portal_membership')
+        can_add = pm.checkPermission('cmf.AddPortalContent', self.context)
+        can_add = can_add and IFolderish.providedBy(self.context)
+
         return [
             {
                 '@id': '{}/@types/{}'.format(portal_url, x.token),
                 'title': x.value,
-                'addable': x.token in allowed_types,
+                'addable': x.token in allowed_types if can_add else False,
             } for x in vocab_factory(self.context)
         ]
