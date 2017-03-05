@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """JsonSchema providers."""
 from plone.app.textfield.interfaces import IRichText
+from z3c.relationfield.interfaces import IRelationList
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtility
@@ -205,6 +206,22 @@ class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
         return info
 
 
+@adapter(IRelationList, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class ChoiceslessRelationListSchemaProvider(ListJsonSchemaProvider):
+
+    def get_items(self):
+        """Get items properties."""
+        value_type_adapter = getMultiAdapter(
+            (self.field.value_type, self.context, self.request),
+            IJsonSchemaProvider)
+
+        # Prevent rendering all choices.
+        value_type_adapter.should_render_choices = False
+
+        return value_type_adapter.get_schema()
+
+
 @adapter(ISet, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class SetJsonSchemaProvider(CollectionJsonSchemaProvider):
@@ -226,6 +243,10 @@ class TupleJsonSchemaProvider(SetJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
 
+    # optionally prevent rendering all choices in the vocab,
+    # ie relatedItems, which contains UUIDs for all content in the site.
+    should_render_choices = True
+
     def get_type(self):
         return 'string'
 
@@ -241,7 +262,7 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
         else:
             vocabulary = self.field.vocabulary
 
-        if hasattr(vocabulary, '__iter__'):
+        if hasattr(vocabulary, '__iter__') and self.should_render_choices:
             for term in vocabulary:
                 title = translate(term.title, context=self.request)
                 choices.append((term.token, title))
