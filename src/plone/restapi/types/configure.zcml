@@ -14,7 +14,7 @@
     <adapter factory=".adapters.BoolJsonSchemaProvider" />
     <adapter factory=".adapters.CollectionJsonSchemaProvider" />
     <adapter factory=".adapters.ListJsonSchemaProvider" />
-    <adapter factory=".adapters.ChoiceslessSchemaProvider" name="IRelatedItems.relatedItems" />
+    <adapter factory=".adapters.ChoiceslessRelationListSchemaProvider" name="IRelatedItems.relatedItems" />
     <adapter factory=".adapters.SetJsonSchemaProvider" />
     <adapter factory=".adapters.TupleJsonSchemaProvider" />
     <adapter factory=".adapters.ChoiceJsonSchemaProvider" />
