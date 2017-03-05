@@ -1,2 +1,3 @@
 # for readthedocs.org
 sphinxcontrib-httpdomain
+sphinxcontrib-httpexample

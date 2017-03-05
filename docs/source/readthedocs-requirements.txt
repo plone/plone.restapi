@@ -1,1 +1,3 @@
 -e git+https://github.com/svx/sphinxcontrib-osexample.git@plone#egg=sphinxcontrib-osexample
+sphinxcontrib-httpdomain
+sphinxcontrib-httpexample
