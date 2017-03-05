@@ -81,7 +81,6 @@ To create a new user, send a POST request to the global ``/@users`` endpoint wit
         'username': 'noam',
         'email': 'noam.chomsky@mit.edu',
         'password': 'colorlessgreenideas',
-        'username': 'noamchomsky',
         'fullname': 'Noam Avram Chomsky',
         'home_page': 'web.mit.edu/chomsky',
         'description': 'Professor of Linguistics',
