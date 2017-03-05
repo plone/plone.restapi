@@ -9,6 +9,11 @@ New Features:
   Refs https://github.com/plone/plone.restapi/issues/173
   [jaroel]
 
+- Added support for named IJsonSchemaProvider adapter to target a single field in a schema.
+  This allows us to prevent rendering all choices in relatedItems.
+  Refs https://github.com/plone/plone.restapi/issues/199
+  [jaroel]
+
 Bugfixes:
 
 - Fix timezone-related failures when running tests through `coverage`.

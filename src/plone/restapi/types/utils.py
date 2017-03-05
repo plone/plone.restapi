@@ -21,6 +21,7 @@ from plone.restapi.types.interfaces import IJsonSchemaProvider
 from Products.CMFCore.utils import getToolByName
 from z3c.form import form as z3c_form
 from zope.component import getMultiAdapter
+from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 
@@ -101,7 +102,15 @@ def get_jsonschema_properties(context, request, fieldsets, prefix='',
     for field in iter_fields(fieldsets):
         fieldname = field.field.getName()
         if fieldname not in excluded_fields:
-            adapter = getMultiAdapter(
+
+            # We need to special case relatedItems not to render choices
+            # so we try a named adapter first and fallback to unnamed ones.
+            adapter = queryMultiAdapter(
+                (field.field, context, request),
+                interface=IJsonSchemaProvider,
+                name=field.__name__)
+
+            adapter = adapter or getMultiAdapter(
                 (field.field, context, request),
                 interface=IJsonSchemaProvider)
 
