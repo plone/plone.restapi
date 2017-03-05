@@ -4,6 +4,7 @@ from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
 from zope.component import getUtility
+from zope.component import getMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
@@ -62,12 +63,17 @@ class TypesGet(Service):
             IVocabularyFactory,
             name="plone.app.vocabularies.ReallyUserFriendlyTypes"
         )
+
+        allowed_types = [x.getId() for x in self.context.allowedContentTypes()]
+
+        portal = getMultiAdapter((self.context, self.request),
+                                 name='plone_portal_state').portal()
+        portal_url = portal.absolute_url()
+
         return [
             {
-                '@id': '{}/@types/{}'.format(
-                    self.context.absolute_url(),
-                    x.token
-                ),
-                'title': x.value
+                '@id': '{}/@types/{}'.format(portal_url, x.token),
+                'title': x.value,
+                'addable': x.token in allowed_types,
             } for x in vocab_factory(self.context)
         ]

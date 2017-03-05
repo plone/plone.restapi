@@ -4,11 +4,37 @@ Changelog
 1.0a10 (unreleased)
 -------------------
 
+New Features:
+
+- Added 'addable' to @types endpoint. It specifies if the content type can be added to the current context.
+  Refs https://github.com/plone/plone.restapi/issues/173
+  [jaroel]
+
 Bugfixes:
 
 - Return correct @id for folderish objects created via POST.
   [lgraf]
 
+- Fix timezone-related failures when running tests through `coverage`.
+  [witsch]
+
+- @search endpoint: Also prefill path query dict with context path.
+  This will allow users to supply an argument like path.depth=1, and still
+  have path.query be prefilled server-side to the context's path.
+  [lgraf]
+
+- Overhaul JSON schema generation for @types endpoint. It now returns
+  fields in correct order and in their appropriate fieldsets.
+  [lgraf]
+
+- Add missing id to the Plone site serialization, related to issue #186
+  [sneridagh]
+
+New Features:
+
+- Add review_state to the folderish summary serializer.
+  [sneridagh]
+>>>>>>> master
 
 1.0a9 (2017-03-03)
 ------------------

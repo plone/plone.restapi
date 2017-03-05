@@ -10,13 +10,6 @@ content-type: application/json+schema
       "fields": [
         "title", 
         "description", 
-        "subjects", 
-        "language", 
-        "effective", 
-        "expires", 
-        "creators", 
-        "contributors", 
-        "rights", 
         "text", 
         "changeNote"
       ], 
@@ -34,10 +27,29 @@ content-type: application/json+schema
     }, 
     {
       "fields": [
+        "subjects", 
+        "language", 
         "relatedItems"
       ], 
       "id": "categorization", 
       "title": "Categorization"
+    }, 
+    {
+      "fields": [
+        "effective", 
+        "expires"
+      ], 
+      "id": "dates", 
+      "title": "Dates"
+    }, 
+    {
+      "fields": [
+        "creators", 
+        "contributors", 
+        "rights"
+      ], 
+      "id": "ownership", 
+      "title": "Ownership"
     }
   ], 
   "properties": {
