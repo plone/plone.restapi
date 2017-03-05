@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.PortalContent import PortalContent
-from Products.CMFCore.utils import getToolByName
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
@@ -13,6 +12,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 import requests
 import transaction
 import unittest
+import plone.api.portal
 
 
 class TestContentPatch(unittest.TestCase):
@@ -29,7 +29,7 @@ class TestContentPatch(unittest.TestCase):
             id='doc1',
             title='My Document'
         )
-        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool = plone.api.portal.get_tool('portal_workflow')
         wftool.doActionFor(self.portal.doc1, 'publish')
         transaction.commit()
 

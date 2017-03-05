@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
-from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides, implements
 from zope.publisher.interfaces import IPublishTraverse
 
-import plone
+import plone.api.portal
 
 
 class GroupsPatch(Service):
@@ -34,7 +33,7 @@ class GroupsPatch(Service):
 
     def _get_group(self, group_id):
         portal = getSite()
-        portal_groups = getToolByName(portal, 'portal_groups')
+        portal_groups = plone.api.portal.get_tool('portal_groups')
         return portal_groups.getGroupById(group_id)
 
     def reply(self):
@@ -54,7 +53,7 @@ class GroupsPatch(Service):
             alsoProvides(self.request,
                          plone.protect.interfaces.IDisableCSRFProtection)
 
-        portal_groups = getToolByName(self.context, 'portal_groups')
+        portal_groups = plone.api.portal.get_tool('portal_groups')
 
         portal_groups.editGroup(self._get_group_id, roles=roles, groups=groups,
                                 title=title, description=description)

@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 import unittest2 as unittest
 
-from Products.CMFCore.utils import getToolByName
-
 from plone.restapi.testing import \
     PLONE_RESTAPI_DX_INTEGRATION_TESTING
+import plone.api.portal
 
 
 class TestExample(unittest.TestCase):
@@ -14,7 +13,7 @@ class TestExample(unittest.TestCase):
     def setUp(self):
         self.app = self.layer['app']
         self.portal = self.layer['portal']
-        self.qi_tool = getToolByName(self.portal, 'portal_quickinstaller')
+        self.qi_tool = plone.api.portal.get_tool('portal_quickinstaller')
 
     def test_product_is_installed(self):
         """ Validate that our products GS profile has been run and the product

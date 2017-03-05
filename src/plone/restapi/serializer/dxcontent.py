@@ -12,7 +12,6 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.supermodel.utils import mergedTaggedValueDict
-from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
@@ -21,6 +20,7 @@ from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
+import plone.api.portal
 
 
 @implementer(ISerializeToJson)
@@ -68,7 +68,7 @@ class SerializeToJson(object):
         return result
 
     def _get_workflow_state(self):
-        wftool = getToolByName(self.context, 'portal_workflow')
+        wftool = plone.api.portal.get_tool('portal_workflow')
         review_state = wftool.getInfoFor(
             ob=self.context, name='review_state', default=None)
         return review_state
@@ -104,7 +104,7 @@ class SerializeFolderToJson(SerializeToJson):
 
         query = self._build_query()
 
-        catalog = getToolByName(self.context, 'portal_catalog')
+        catalog = plone.api.portal.get_tool('portal_catalog')
         brains = catalog(query)
 
         batch = HypermediaBatch(self.request, brains)

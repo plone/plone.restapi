@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService.interfaces.plugins import (
     IAuthenticationPlugin)
 from plone.restapi.services import Service
+import plone.api.portal
 
 
 class Logout(Service):
@@ -10,7 +10,7 @@ class Logout(Service):
     """
     def reply(self):
         plugin = None
-        acl_users = getToolByName(self, "acl_users")
+        acl_users = plone.api.portal.get_tool("acl_users")
         plugins = acl_users._getOb('plugins')
         authenticators = plugins.listPlugins(IAuthenticationPlugin)
         for id_, authenticator in authenticators:

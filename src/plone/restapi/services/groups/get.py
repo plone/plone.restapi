@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
-from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component.hooks import getSite
 from zope.component import queryMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
+import plone.api.portal
 
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
 
@@ -34,17 +34,17 @@ class GroupsGet(Service):
 
     def _get_group(self, group_id):
         portal = getSite()
-        portal_groups = getToolByName(portal, 'portal_groups')
+        portal_groups = plone.api.portal.get_tool('portal_groups')
         return portal_groups.getGroupById(group_id)
 
     def _get_groups(self):
         portal = getSite()
-        portal_groups = getToolByName(portal, 'portal_groups')
+        portal_groups = plone.api.portal.get_tool('portal_groups')
         return portal_groups.listGroups()
 
     def _get_filtered_groups(self, query, limit):
         portal = getSite()
-        portal_groups = getToolByName(portal, 'portal_groups')
+        portal_groups = plone.api.portal.get_tool('portal_groups')
         results = portal_groups.searchGroups(id=query, max_results=limit)
         return [portal_groups.getGroupById(group['groupid'])
                 for group in results]

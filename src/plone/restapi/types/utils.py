@@ -18,12 +18,12 @@ from copy import copy
 from plone.autoform.form import AutoExtensibleForm
 from plone.dexterity.utils import getAdditionalSchemata
 from plone.restapi.types.interfaces import IJsonSchemaProvider
-from Products.CMFCore.utils import getToolByName
 from z3c.form import form as z3c_form
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
 from zope.i18n import translate
+import plone.api.portal
 
 
 def create_form(context, request, base_schema, additional_schemata=None):
@@ -162,7 +162,7 @@ def get_jsonschema_for_portal_type(portal_type, context, request,
                                    excluded_fields=None):
     """Build a complete JSON schema for the given portal_type.
     """
-    ttool = getToolByName(context, 'portal_types')
+    ttool = plone.api.portal.get_tool('portal_types')
     fti = ttool[portal_type]
     return get_jsonschema_for_fti(
         fti, context, request, excluded_fields=excluded_fields)

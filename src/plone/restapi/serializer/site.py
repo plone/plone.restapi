@@ -2,12 +2,12 @@
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.interface import Interface
+import plone.api.portal
 
 
 @implementer(ISerializeToJson)
@@ -27,7 +27,7 @@ class SerializeSiteRootToJson(object):
     def __call__(self):
         query = self._build_query()
 
-        catalog = getToolByName(self.context, 'portal_catalog')
+        catalog = plone.api.portal.get_tool('portal_catalog')
         brains = catalog(query)
 
         batch = HypermediaBatch(self.request, brains)

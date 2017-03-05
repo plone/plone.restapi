@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.WorkflowCore import WorkflowException
-from Products.CMFCore.utils import getToolByName
 from plone.restapi.deserializer import json_body
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
@@ -11,6 +10,7 @@ from zope.publisher.interfaces import NotFound
 from zope.interface import alsoProvides
 
 import plone.protect.interfaces
+import plone.api.portal
 
 
 class WorkflowTransition(Service):
@@ -43,7 +43,7 @@ class WorkflowTransition(Service):
                 type='BadRequest',
                 message='Invalid body'))
 
-        wftool = getToolByName(self.context, 'portal_workflow')
+        wftool = plone.api.portal.get_tool('portal_workflow')
 
         # Disable CSRF protection
         if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
 from plone.restapi.pas.plugin import JWTAuthenticationPlugin
+import plone.api.portal
 
 
 def install_pas_plugin(context):
-    uf = getToolByName(context, 'acl_users')
+    uf = plone.api.portal.get_tool('acl_users')
     if 'jwt_auth' in uf:
         return
     plugin = JWTAuthenticationPlugin('jwt_auth')

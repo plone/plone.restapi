@@ -7,11 +7,11 @@ from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 
 import os
 import unittest
+import plone.api.portal
 
 
 class TestSerializeToJsonAdapter(unittest.TestCase):
@@ -22,7 +22,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.app = self.layer['app']
         self.portal = self.layer['portal']
         self.request = self.layer['request']
-        self.workflowTool = getToolByName(self.portal, 'portal_workflow')
+        self.workflowTool = plone.api.portal.get_tool('portal_workflow')
         self.portal_url = self.portal.absolute_url()
         self.portal.invokeFactory('Document', id='doc1', title='Document 1')
         self.portal.invokeFactory(

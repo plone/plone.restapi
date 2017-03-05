@@ -10,7 +10,6 @@ from plone.app.textfield import RichText
 from plone.autoform import directives as form
 from plone.dexterity.fti import DexterityFTI
 from plone.supermodel import model
-from Products.CMFCore.utils import getToolByName
 
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.types.interfaces import IJsonSchemaProvider
@@ -18,6 +17,7 @@ from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from plone.restapi.types.utils import get_jsonschema_properties
+import plone.api.portal
 
 
 class IDummySchema(model.Schema):
@@ -87,7 +87,7 @@ class TestJsonSchemaUtils(TestCase):
     def test_get_jsonschema_for_fti(self):
         portal = self.portal
         request = self.request
-        ttool = getToolByName(portal, 'portal_types')
+        ttool = plone.api.portal.get_tool('portal_types')
         jsonschema = get_jsonschema_for_fti(
             ttool['Document'],
             portal, request
@@ -140,7 +140,7 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
         fti.schema = 'plone.restapi.tests.test_types.ITaggedValuesSchema'
 
     def test_get_jsonschema_with_hidden_field(self):
-        ttool = getToolByName(self.portal, 'portal_types')
+        ttool = plone.api.portal.get_tool('portal_types')
         jsonschema = get_jsonschema_for_fti(
             ttool['TaggedDocument'],
             self.portal,

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
 from urlparse import urlparse
+import plone.api.portal
 
 
 def result_paths(results):
@@ -24,7 +24,7 @@ def add_catalog_indexes(portal, indexes):
     `ZCTextIndex` index).
 
     """
-    catalog = getToolByName(portal, 'portal_catalog')
+    catalog = plone.api.portal.get_tool('portal_catalog')
     current_indexes = catalog.indexes()
 
     indexables = []
