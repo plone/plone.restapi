@@ -27,7 +27,8 @@ class DefaultJSONSummarySerializer(object):
             '@id': obj.getURL(),
             '@type': obj.PortalType(),
             'title': obj.Title(),
-            'description': obj.Description()
+            'description': obj.Description(),
+            'review_state': obj.review_state()
         })
         return summary
 

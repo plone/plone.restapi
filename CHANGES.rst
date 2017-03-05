@@ -26,6 +26,11 @@ Bugfixes:
 - Add missing id to the Plone site serialization, related to issue #186
   [sneridagh]
 
+New Features:
+
+- Add review_state to the folderish summary serializer.
+  [sneridagh]
+
 1.0a9 (2017-03-03)
 ------------------
 
