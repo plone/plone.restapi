@@ -14,9 +14,10 @@ from Products.CMFCore.utils import getToolByName
 
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.types.interfaces import IJsonSchemaProvider
-from plone.restapi.types.utils import get_fields_from_schema
+from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
+from plone.restapi.types.utils import get_jsonschema_properties
 
 
 class IDummySchema(model.Schema):
@@ -66,8 +67,9 @@ class TestJsonSchemaUtils(TestCase):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
 
-    def test_get_fields_from_schema(self):
-        info = get_fields_from_schema(IDummySchema, self.portal, self.request)
+    def test_get_jsonschema_properties(self):
+        fieldsets = get_fieldsets(self.portal, self.request, IDummySchema)
+        info = get_jsonschema_properties(self.portal, self.request, fieldsets)
         expected = {
             'field1': {
                 'title': u'Foo',

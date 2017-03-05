@@ -7,6 +7,7 @@ content-type: application/json
 {
   "@id": "http://localhost:55001/plone", 
   "@type": "Plone Site", 
+  "id": "plone", 
   "items": [
     {
       "@id": "http://localhost:55001/plone/front-page", 

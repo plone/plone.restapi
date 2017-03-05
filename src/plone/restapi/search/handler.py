@@ -21,11 +21,26 @@ class SearchHandler(object):
         return catalog_compatible_query
 
     def _constrain_query_by_path(self, query):
-        # If no 'path' parameter was supplied, restrict search to current
-        # context and its children by adding a path constraint
+        """If no 'path' query was supplied, restrict search to current
+        context and its children by adding a path constraint.
+
+        The following cases can happen here:
+        - No 'path' parameter at all
+        - 'path' query dict with options, but no actual 'query' inside
+        - 'path' supplied as a string
+        - 'path' supplied as a complete query dict
+        """
         if 'path' not in query:
+            query['path'] = {}
+
+        if isinstance(query['path'], dict) and 'query' not in query['path']:
+            # We either had no 'path' parameter at all, or an incomplete
+            # 'path' query dict (with just ExtendedPathIndex options (like
+            # 'depth'), but no actual path 'query' in it).
+            #
+            # In either case, we'll prefill with the context's path
             path = '/'.join(self.context.getPhysicalPath())
-            query['path'] = path
+            query['path']['query'] = path
 
     def search(self, query=None):
         if query is None:
@@ -35,8 +50,8 @@ class SearchHandler(object):
         if not isinstance(metadata_fields, list):
             metadata_fields = [metadata_fields]
 
-        query = self._parse_query(query)
         self._constrain_query_by_path(query)
+        query = self._parse_query(query)
 
         lazy_resultset = self.catalog.searchResults(query)
         results = getMultiAdapter(
