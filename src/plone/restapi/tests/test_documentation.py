@@ -56,7 +56,7 @@ def save_request_and_response_for_docs(name, response):
     with open('{}/{}'.format(base_path, '%s.resp' % name), 'w') as resp:
         status = response.status_code
         reason = response.reason
-        resp.write('HTTP {} {}\n'.format(status, reason))
+        resp.write('HTTP/1.1 {} {}\n'.format(status, reason))
         for key, value in response.headers.items():
             if key.lower() in RESPONSE_HEADER_KEYS:
                 resp.write('{}: {}\n'.format(key, value))
