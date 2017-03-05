@@ -7,7 +7,6 @@
 /var
 /build
 /dist
-/buildout.cfg
 /local.cfg
 /extras
 .coverage
