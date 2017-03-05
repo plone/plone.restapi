@@ -6,6 +6,9 @@ Changelog
 
 Bugfixes:
 
+- Fix timezone-related failures when running tests through `coverage`.
+  [witsch]
+
 - @search endpoint: Also prefill path query dict with context path.
   This will allow users to supply an argument like path.depth=1, and still
   have path.query be prefilled server-side to the context's path.
@@ -36,9 +39,6 @@ New Features:
   [timo]
 
 Bugfixes:
-
-- Fix timezone-related failures when running tests through `coverage`.
-  [witsch]
 
 - Fix queries to ensure ordering of container items by getObjectPositionInParent.
   [lgraf]
