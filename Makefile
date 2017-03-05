@@ -1,6 +1,6 @@
 # convenience makefile to boostrap & run buildout
 
-virtualenv = virtualenv-2.7
+version = 2.7
 
 all: .installed.cfg
 	bin/test
@@ -13,7 +13,7 @@ bin/buildout: bin/pip
 	@touch -c $@
 
 bin/python bin/pip:
-	$(virtualenv) --clear .
+	virtualenv --clear --python=python$(version) .
 
 clean:
 	git clean -Xdf
