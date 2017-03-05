@@ -27,7 +27,8 @@ from zope.schema.interfaces import ITuple
 from zope.schema.interfaces import IVocabularyFactory
 
 from plone.restapi.types.interfaces import IJsonSchemaProvider
-from plone.restapi.types.utils import get_fields_from_schema
+from plone.restapi.types.utils import get_fieldsets
+from plone.restapi.types.utils import get_jsonschema_properties
 
 
 @adapter(IField, Interface, Interface)
@@ -271,8 +272,10 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
         else:
             prefix = self.field.__name__
 
-        return get_fields_from_schema(
-            self.field.schema, self.context, self.request, prefix)
+        context = self.context
+        request = self.request
+        fieldsets = get_fieldsets(context, request, self.field.schema)
+        return get_jsonschema_properties(context, request, fieldsets, prefix)
 
     def additional(self):
         info = super(ObjectJsonSchemaProvider, self).additional()

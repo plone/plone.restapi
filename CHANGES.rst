@@ -6,6 +6,10 @@ Changelog
 
 Bugfixes:
 
+- Overhaul JSON schema generation for @types endpoint. It now returns
+  fields in correct order and in their appropriate fieldsets.
+  [lgraf]
+
 - Add missing id to the Plone site serialization, related to issue #186
   [sneridagh]
 
