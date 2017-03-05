@@ -1,8 +1,10 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:plone="http://namespaces.plone.org/plone">
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
 
     <plone:service
+      zcml:condition="installed plone.app.multilingual"
       method="GET"
       name="@translations"
       for="Products.CMFCore.interfaces.IContentish"
@@ -11,6 +13,7 @@
       />
 
     <plone:service
+      zcml:condition="installed plone.app.multilingual"
       method="POST"
       name="@translations"
       for="Products.CMFCore.interfaces.IContentish"
@@ -19,11 +22,42 @@
     />
 
     <plone:service
+      zcml:condition="installed plone.app.multilingual"
       method="DELETE"
       name="@translations"
       for="Products.CMFCore.interfaces.IContentish"
       factory=".pam.UnlinkTranslations"
       permission="plone.app.multilingual.ManageTranslations"
     />
+
+    <plone:service
+      zcml:condition="installed Products.LinguaPlone"
+      method="GET"
+      name="@translations"
+      for="Products.CMFCore.interfaces.IContentish"
+      factory=".linguaplone.TranslationInfo"
+      permission="zope2.View"
+      />
+
+    <plone:service
+      zcml:condition="installed Products.LinguaPlone"
+      method="POST"
+      name="@translations"
+      for="Products.CMFCore.interfaces.IContentish"
+      factory=".linguaplone.LinkTranslations"
+      permission="cmf.ModifyPortalContent"
+    />
+
+    <plone:service
+      zcml:condition="installed Products.LinguaPlone"
+      method="DELETE"
+      name="@translations"
+      for="Products.CMFCore.interfaces.IContentish"
+      factory=".linguaplone.UnlinkTranslations"
+      permission="cmf.ModifyPortalContent"
+    />
+
+
+
 
 </configure>
