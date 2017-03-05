@@ -1,0 +1,2 @@
+GET /plone/@users?query=noa
+Accept: application/json

@@ -1,0 +1,2 @@
+GET /plone/folder/@search?b_size=5&sort_on=path
+Accept: application/json

@@ -1,0 +1,2 @@
+GET /plone/@users
+Accept: application/json

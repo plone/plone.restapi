@@ -1,0 +1,2 @@
+GET /plone/front-page
+Accept: application/json

@@ -1,0 +1,2 @@
+GET /plone/@registry/plone.app.querystring.field.path.title
+Accept: application/json

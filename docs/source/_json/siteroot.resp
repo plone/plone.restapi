@@ -1,0 +1,18 @@
+HTTP 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone", 
+  "@type": "Plone Site", 
+  "id": "plone", 
+  "items": [
+    {
+      "@id": "http://localhost:55001/plone/front-page", 
+      "@type": "Document", 
+      "description": "Congratulations! You have successfully installed Plone.", 
+      "title": "Welcome to Plone"
+    }
+  ], 
+  "items_total": 1, 
+  "parent": {}
+}

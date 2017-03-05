@@ -1,0 +1,2 @@
+DELETE /plone/@users/noam
+Accept: application/json

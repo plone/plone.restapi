@@ -1,0 +1,2 @@
+GET /plone/folder
+Accept: application/json

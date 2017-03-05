@@ -1,0 +1,2 @@
+GET /plone/newsitem
+Accept: application/json

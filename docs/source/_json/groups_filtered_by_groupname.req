@@ -1,0 +1,2 @@
+GET /plone/@groups?query=plo
+Accept: application/json

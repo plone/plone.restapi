@@ -1,0 +1,2 @@
+GET /plone/@types
+Accept: application/json

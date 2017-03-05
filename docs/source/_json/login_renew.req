@@ -1,0 +1,2 @@
+POST /plone/@login-renew
+Accept: application/json

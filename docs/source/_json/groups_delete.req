@@ -1,0 +1,2 @@
+DELETE /plone/@groups/ploneteam
+Accept: application/json
