@@ -53,6 +53,10 @@ def save_request_and_response_for_docs(name, response):
             if key.lower() in REQUEST_HEADER_KEYS:
                 req.write('{}: {}\n'.format(key, value))
         if response.request.body:
+            if 'content-type' not in REQUEST_HEADER_KEYS:
+                content_type = response.request.headers['Content-Type']
+                req.write('Content-Type: %s\n' % content_type)
+
             req.write('\n')
             req.write(response.request.body)
 
