@@ -76,7 +76,11 @@ Parameter        Description
 ================ ===========================================================
 
 
-Full example of a batched response:
+Full example of a batched request and response:
 
-.. literalinclude:: _json/batching.json
-   :language: js
+..  http:example:: curl httpie python-requests
+    :request: _json/types.req
+
+.. literalinclude:: _json/types.resp
+   :language: http
+
