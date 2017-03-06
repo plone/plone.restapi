@@ -20,6 +20,9 @@ New Features:
 
 Bugfixes:
 
+- Return correct @id for folderish objects created via POST.
+  [lgraf]
+
 - Fix timezone-related failures when running tests through `coverage`.
   [witsch]
 
@@ -39,6 +42,7 @@ New Features:
 
 - Add review_state to the folderish summary serializer.
   [sneridagh]
+>>>>>>> master
 
 1.0a9 (2017-03-03)
 ------------------

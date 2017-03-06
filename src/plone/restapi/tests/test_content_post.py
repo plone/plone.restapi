@@ -51,6 +51,30 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual("mydocument", response.json().get('id'))
         self.assertEqual("My Document", response.json().get('title'))
 
+        expected_url = "http://localhost:55001/plone/folder1/mydocument"
+        self.assertEqual(expected_url, response.json().get('@id'))
+
+    def test_post_to_folder_creates_folder(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Folder",
+                "id": "myfolder",
+                "title": "My Folder",
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        self.assertEqual("My Folder", self.portal.folder1.myfolder.Title())
+        self.assertEqual("Folder", response.json().get('@type'))
+        self.assertEqual("myfolder", response.json().get('id'))
+        self.assertEqual("My Folder", response.json().get('title'))
+
+        expected_url = "http://localhost:55001/plone/folder1/myfolder"
+        self.assertEqual(expected_url, response.json().get('@id'))
+
     def test_post_without_type_returns_400(self):
         response = requests.post(
             self.portal.folder1.absolute_url(),
