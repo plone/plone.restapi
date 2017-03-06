@@ -1,0 +1,65 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  {
+    "@id": "http://localhost:55001/plone/@types/Collection", 
+    "addable": true, 
+    "title": "Collection"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Discussion Item", 
+    "addable": false, 
+    "title": "Discussion Item"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/DXTestDocument", 
+    "addable": true, 
+    "title": "DXTestDocument"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Event", 
+    "addable": true, 
+    "title": "Event"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/File", 
+    "addable": true, 
+    "title": "File"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Folder", 
+    "addable": true, 
+    "title": "Folder"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Image", 
+    "addable": true, 
+    "title": "Image"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Link", 
+    "addable": true, 
+    "title": "Link"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/News Item", 
+    "addable": true, 
+    "title": "News Item"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Document", 
+    "addable": true, 
+    "title": "Document"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/ATTestDocument", 
+    "addable": true, 
+    "title": "ATTestDocument"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/ATTestFolder", 
+    "addable": true, 
+    "title": "ATTestFolder"
+  }
+]

@@ -136,25 +136,8 @@ Reading a Resource with GET
 
 After a successful POST, we can access the resource by sending a GET request to the resource URL:
 
-.. example-code::
-
-  .. code-block:: http-request
-
-    GET /folder/my-document HTTP/1.1
-    Host: localhost:8080
-    Accept: application/json
-
-  .. code-block:: curl
-
-    curl -i -H "Accept: application/json" --user admin:admin -X GET http://localhost:8080/Plone/folder/my-document
-
-  .. code-block:: httpie
-
-    http -a admin:admin GET http://localhost:8080/Plone/folder/my-document Accept:application/json
-
-  .. code-block:: python-requests
-
-      requests.get('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'})
+..  http:example:: curl httpie python-requests
+    :request: _json/document.req
 
 
 Successful Response (200 OK)
@@ -162,8 +145,8 @@ Successful Response (200 OK)
 
 If a resource has been retrieved successfully, the server responds with :term:`200 OK`:
 
-.. literalinclude:: _json/document.json
-   :language: js
+.. literalinclude:: _json/document.resp
+   :language: http
 
 .. note::
         For folderish types, collections or search results, the results will

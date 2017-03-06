@@ -43,39 +43,15 @@ plugin is installed automatically when installing the product.
 A JWT token can be acquired by posting a users credentials to the ``@login``
 endpoint.
 
-.. example-code::
-
-  .. code-block:: http-request
-
-    POST /@login HTTP/1.1
-    Accept: application/json
-    Content-Type: application/json
-
-    {
-        'login': 'admin',
-        'password': 'admin',
-    }
-
-  .. code-block:: curl
-
-    curl -i \
-    -X POST \
-    -H "Accept: application/json" \
-    -H "Content-type: application/json" \
-    --data-raw '{"login":"admin", "password": "admin"}' \
-    http://localhost:8080/Plone/@login
-
-  .. code-block:: python-requests
-
-    requests.post('http://localhost:8080/Plone/@login',
-                  headers={'Accept': 'application/json', 'Content-Type': 'application/json'},
-                  data='{"login": "admin", "password": "admin"}')
-
+..  http:example:: curl httpie python-requests
+    :request: _json/login.req
 
 The server responds with a JSON object containing the token.
 
-.. literalinclude:: _json/login.json
-   :language: js
+
+.. literalinclude:: _json/login.resp
+   :language: http
+
 
 The token can now be used in subsequent requests by including it in the
 ``Authorization`` header:
@@ -96,16 +72,13 @@ The token can now be used in subsequent requests by including it in the
 By default the token will expire after 12 hours and thus must be renewed before
 expiration. To renew the token simply post to the ``@login-renew`` endpoint.
 
-.. code::
-
-    POST /@login-renew HTTP/1.1
-    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsbmFtZSI6IiIsInN1YiI6ImFkbWluIiwiZXhwIjoxNDY0MDQyMTAzfQ.aOyvMwdcIMV6pzC0GYQ3ZMdGaHR1_W7DxT0W0ok4FxI
-    Accept: application/json
+..  http:example:: curl httpie python-requests
+    :request: _json/login_renew.req
 
 The server returns a JSON object with a new token:
 
-.. literalinclude:: _json/login_renew.json
-   :language: js
+.. literalinclude:: _json/login_renew.resp
+   :language: http
 
 
 The ``@logout`` endpoint can be used to invalidate tokens. However by default
@@ -116,17 +89,13 @@ keyring in the PAS plugin (option ``use_keyring``).
 
 The logout request must contain the existing token in the ``Authorization`` header.
 
-.. code::
-
-    POST /@logout HTTP/1.1
-    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsbmFtZSI6IiIsInN1YiI6ImFkbWluIiwiZXhwIjoxNDY0MDQyMTAzfQ.aOyvMwdcIMV6pzC0GYQ3ZMdGaHR1_W7DxT0W0ok4FxI
-    Accept: application/json
+..  http:example:: curl httpie python-requests
+    :request: _json/logout.req
 
 If invalidation succeeds, the server responds with an empty 204 reponse:
 
-.. literalinclude:: _json/logout.json
-   :language: js
-
+.. literalinclude:: _json/logout.resp
+   :language: http
 
 Permissions
 -----------

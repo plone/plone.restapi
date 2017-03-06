@@ -1,41 +1,36 @@
 Registry
 ========
 
-Registry records can be addressed by using the fully qualified dotted name of
-the registry record to be read/written as the ``:name`` parameter.
+Registry records can be addressed through the ``@registry`` endpoint on the
+Plone site. In order to address a specific record, the fully qualified dotted
+name of the registry record has to be passed as a path segment
+(e.g. `/plone/@registy/my.record`).
 
-Reading or writing registry records requires the ``cmf.ManagePortal`` permission.
+Reading or writing registry records require the ``cmf.ManagePortal``
+permission.
 
 Reading registry records
 ------------------------
 
 Reading a single record:
 
-.. code::
+..  http:example:: curl httpie python-requests
+    :request: _json/registry_get.req
 
-  GET /:portal/@registry/:name HTTP/1.1
-  Host: localhost:8080
-  Accept: application/json
+Example Response:
 
-Example:
-
-.. literalinclude:: _json/registry_get.json
-   :language: js
+.. literalinclude:: _json/registry_get.resp
+   :language: http
 
 Updating registry records
 -------------------------
 
 Updating an existing record:
 
-.. code::
+..  http:example:: curl httpie python-requests
+    :request: _json/registry_update.req
 
-  PATCH /:portal/@registry/ HTTP/1.1
-  Host: localhost:8080
-  Accept: application/json
+Example Response:
 
-  {name: value}
-
-Example:
-
-.. literalinclude:: _json/registry_update.json
-   :language: js
+.. literalinclude:: _json/registry_update.resp
+   :language: http

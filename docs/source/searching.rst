@@ -1,10 +1,12 @@
 Search
 ======
 
-Content in a Plone site can be searched for by invoking the ``/@search`` endpoint on any context::
+Content in a Plone site can be searched for by invoking the ``/@search`` endpoint on any context:
 
-  GET /plone/@search HTTP/1.1
-  Accept: application/json
+.. code:: http
+
+    GET /plone/@search HTTP/1.1
+    Accept: application/json
 
 A search is **contextual** by default, i.e. it is bound to a specific collection and searches within that collection and any sub-collections.
 
@@ -14,9 +16,11 @@ In terms of the resulting catalog query this means that, by default, a search wi
 
 Search results are represented similar to collections:
 
+..  http:example:: curl httpie python-requests
+    :request: _json/search.req
 
-.. literalinclude:: _json/search.json
-   :language: js
+.. literalinclude:: _json/search.resp
+   :language: http
 
 The default representation for search results is a summary that contains only the most basic information.
 In order to return specific metadata columns, see the documentation of the ``metadata_fields`` parameter below.
