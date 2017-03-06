@@ -9,8 +9,8 @@ New Features:
 - Docs: Use sphinxcontrib-httpexample and convert existing examples.
   [lgraf]
 
-- Added 'addable' to @types endpoint. It specifies if the content type can be added to the current context.
-  Refs https://github.com/plone/plone.restapi/issues/173
+- Added 'addable' to @types endpoint. It specifies if the content type can be
+  added to the current context. See https://github.com/plone/plone.restapi/issues/173
   [jaroel]
 
 - Added support for named IJsonSchemaProvider adapter to target a single
