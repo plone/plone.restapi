@@ -13,10 +13,13 @@ New Features:
   Refs https://github.com/plone/plone.restapi/issues/173
   [jaroel]
 
-- Added support for named IJsonSchemaProvider adapter to target a single field in a schema.
-  This allows us to prevent rendering all choices in relatedItems.
-  Refs https://github.com/plone/plone.restapi/issues/199
+- Added support for named IJsonSchemaProvider adapter to target a single
+  field in a schema. This allows us to prevent rendering all choices in
+  relatedItems. See https://github.com/plone/plone.restapi/issues/199
   [jaroel]
+
+- Add review_state to the folderish summary serializer.
+  [sneridagh]
 
 Bugfixes:
 
@@ -36,11 +39,6 @@ Bugfixes:
   [lgraf]
 
 - Add missing id to the Plone site serialization, related to issue #186
-  [sneridagh]
-
-New Features:
-
-- Add review_state to the folderish summary serializer.
   [sneridagh]
 
 
