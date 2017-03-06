@@ -3,7 +3,10 @@ from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from zope.interface import alsoProvides
 from zope.component import queryMultiAdapter
+
+import plone.protect.interfaces
 
 
 class SharingGet(Service):
@@ -26,6 +29,11 @@ class SharingPost(Service):
         deserializer = queryMultiAdapter((self.context, self.request),
                                          interface=IDeserializeFromJson,
                                          name='local_roles')
+        # Disable CSRF protection
+        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
+
         if deserializer is None:
             self.request.response.setStatus(501)
             return dict(error=dict(
