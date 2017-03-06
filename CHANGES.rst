@@ -42,7 +42,7 @@ New Features:
 
 - Add review_state to the folderish summary serializer.
   [sneridagh]
->>>>>>> master
+
 
 1.0a9 (2017-03-03)
 ------------------
