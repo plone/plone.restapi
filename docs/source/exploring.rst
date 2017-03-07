@@ -1,10 +1,9 @@
-.. _exploring:
+.. _exploring-api-postman-onboarding:
 
 Explore the API using Postman
 =============================
 
 To discover the API interactively, the Chrome-Extension Postman_ is a suitable solution.
-
 
 Configuration
 -------------
@@ -25,9 +24,9 @@ The option **"Send anonymous usage data to Postman"** should be deactivatet.
 Usage
 -----
 
-Choose the suitable **HTTP verb** to be used for your request. This can be selected using the :gui-label:`Postman Drop-Down Menu`. 
+Choose the suitable **HTTP verb** to be used for your request. This can be selected using the :guilabel:`Postman Drop-Down Menu`. 
 
-Enter the **object URL** of the object that should be the target of a request into the :gui-label:`field` right to the HTTP verb:
+Enter the **object URL** of the object that should be the target of a request into the :guilabel:`field` right to the HTTP verb:
 
 |postman-request|
 
@@ -62,14 +61,16 @@ The request is now ready and can be send by clicking on **"Send"** button.
 
 The **response** of the server is now displayed below the request. You can easily follow the links on the ``@id`` attributes by clicking on them. For every link Postman has prepared another request sharing the same headers that can be send again by licking on the  **"Send"** button.
 
-You can now explore the whole stucture of your application easily via the API using ``GET`` requests.
+.. admonition:: Conclusion
+
+    You can now explore the whole stucture of your application easily via the API using ``GET`` requests.
 
 
 .. _Postman: http://www.getpostman.com/
 
-.. |postman-retain-headers| image:: ../_static/img/postman_retain_headers.png
-.. |postman-request| image:: ../_static/img/postman_request.png
-.. |postman-basic-auth| image:: ../_static/img/postman_basic_auth.png
-.. |postman-headers| image:: ../_static/img/postman_headers.png
+.. |postman-retain-headers| image:: ./_static/img/postman_retain_headers.png
+.. |postman-request| image:: ./_static/img/postman_request.png
+.. |postman-basic-auth| image:: ./_static/img/postman_basic_auth.png
+.. |postman-headers| image:: ./_static/img/postman_headers.png
 
 .. disqus::
