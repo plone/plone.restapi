@@ -22,37 +22,47 @@ This option makes sure, once a HTTP-Header is configured, it will be reused duri
 
 The option **"Send anonymous usage data to Postman"** should be deactivatet.
 
-Verwendung
-----------
+Usage
+-----
 
-Als erstes muss das zu verwendende **HTTP Verb** für den Request bestimmt werden. Dieses kann über das entsprechende Drop-Down Menü ausgewählt werden. Als nächstes muss im Feld rechts vom ausgewählten HTTP Verb die **URL des Objekts** eingetragen werden, auf welches ein Request gemacht werden soll:
+Choose the suitable **HTTP verb** to be used for your request. This can be selected using the :gui-label:`Postman Drop-Down Menu`. 
+
+Enter the **object URL** of the object that should be the target of a request into the :gui-label:`field` right to the HTTP verb:
 
 |postman-request|
 
 
-Anschliessend müssen die notwendigen HTTP Header gesetzt werden. Zum einen ist dies der ``Authorization`` Header für die Authentisierung mit dem richtigen Benutzer, und zum anderen der ``Accept`` Header welcher bewirkt, dass der Request von der API behandelt wird.
+Now set the appropriate HTTP headers. 
+
+* The ``Authorization`` header for the authentication related to the right user
+* The ``Accept`` header to initiate the right behaviour by the API related to this request.
 
 ----------
 
-Für das Setzen des ``Authorization`` Headers gibt es eine eigenes Tab, welches den endültigen Header aus den gewählten Authentisierungsmethode und Benutzernamen + Passwort generiert.
+To set the ``Authorization`` header, there is a reserved tab, that is responsible to generate the final header based on the authentication method and username + password.
 
-Als Authentisierungsmethode muss **"Basic Auth"** gewählt werden, und als Benutzer ein existierender und entsprechend berechtigter Benutzer. Nachdem diese Parameter angegeben wurde, kann mittels Klick auf **"Update Request"** der entsprechende ``Authorization`` Header erzeugt und in den vorbereiteten Request übernommen werden.
+You have to select 
+* *"Basic Auth"** as the authentication method
+* A valid existing user with appropriate permissions 
+
+After providing these parameters angegeben wurde, kann mittels Klick auf **"Update Request"** der entsprechende ``Authorization`` Header erzeugt und in den vorbereiteten Request übernommen werden.
+
+After providing these parameters you can create the resulting ``Authorization`` Header and insert it into the prepared request by clicking on **"Update Request"**.
 
 |postman-basic-auth|
 
 ----------
 
-Im **"Headers"** Tab muss nun noch der ``Accept: application/json`` Header hinzugefügt werden:
+In the  **"Headers"** tab you now need to insert the ``Accept: application/json`` header as well:
 
 |postman-headers|
 
 
-Der Request ist nun vorbereitet und kann durch einen Klick auf **"Send"** abgeschickt werden.
+The request is now ready and can be send by clicking on **"Send"** button.
 
-Die Antwort des Servers (Response) erscheint nun unter dem Request. Den Links in den ``@id`` Attributen kann nun durch einen Klick gefolgt werden, und Postman bereitet für den angeklickten Link einen weiteren Request mit den den gleichen Headern vor, welcher durch einen Klick auf **"Send"** wieder abgesendet werden kann.
+The **response** of the server is now displayed below the request. You can easily follow the links on the ``@id`` attributes by clicking on them. For every link Postman has prepared another request sharing the same headers that can be send again by licking on the  **"Send"** button.
 
-So lässt sich die Struktur des GEVER-Mandandanten über die API mittels ``GET`` Requests sehr einfach navigieren.
-
+You can now explore the whole stucture of your application easily via the API using ``GET`` requests.
 
 
 .. _Postman: http://www.getpostman.com/
