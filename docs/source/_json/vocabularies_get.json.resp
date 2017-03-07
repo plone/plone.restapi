@@ -1,0 +1,68 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes", 
+  "terms": [
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/Collection", 
+      "title": "Collection", 
+      "token": "Collection"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/Discussion Item", 
+      "title": "Comment", 
+      "token": "Discussion Item"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/DXTestDocument", 
+      "title": "DX Test Document", 
+      "token": "DXTestDocument"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/Event", 
+      "title": "Event", 
+      "token": "Event"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/File", 
+      "title": "File", 
+      "token": "File"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/Folder", 
+      "title": "Folder", 
+      "token": "Folder"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/Image", 
+      "title": "Image", 
+      "token": "Image"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/Link", 
+      "title": "Link", 
+      "token": "Link"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/News Item", 
+      "title": "News Item", 
+      "token": "News Item"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/Document", 
+      "title": "Page", 
+      "token": "Document"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/ATTestDocument", 
+      "title": "Test Document", 
+      "token": "ATTestDocument"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/ATTestFolder", 
+      "title": "Test Folder", 
+      "token": "ATTestFolder"
+    }
+  ]
+}

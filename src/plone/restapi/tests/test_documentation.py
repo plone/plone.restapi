@@ -628,3 +628,13 @@ class TestTraversal(unittest.TestCase):
             },
         )
         save_request_and_response_for_docs('move.json', response)
+
+    def test_documentation_vocabularies_all(self):
+        response = self.api_session.get('/@vocabularies')
+        save_request_and_response_for_docs('vocabularies.json', response)
+
+    def test_documentation_vocabularies_get(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes'
+        )
+        save_request_and_response_for_docs('vocabularies_get.json', response)
