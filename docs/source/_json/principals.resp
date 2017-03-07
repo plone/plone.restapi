@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "groups": [
+    {
+      "@id": "http://localhost:55001/plone/@groups/ploneteam", 
+      "description": "We are Plone", 
+      "email": "ploneteam@plone.org", 
+      "groupname": "ploneteam", 
+      "id": "ploneteam", 
+      "title": "Plone Team"
+    }
+  ], 
+  "users": []
+}
