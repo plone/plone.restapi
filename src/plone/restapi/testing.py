@@ -114,6 +114,8 @@ class PloneRestApiATLayer(PloneSandboxLayer):
         applyProfile(portal, 'plone.restapi:default')
         applyProfile(portal, 'plone.restapi:testing')
         set_available_languages()
+        portal.portal_workflow.setDefaultChain("simple_publication_workflow")
+
 
 PLONE_RESTAPI_AT_FIXTURE = PloneRestApiATLayer()
 PLONE_RESTAPI_AT_INTEGRATION_TESTING = IntegrationTesting(

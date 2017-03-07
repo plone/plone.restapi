@@ -1,0 +1,39 @@
+HTTP/1.1 200 OK
+content-type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/file", 
+  "@type": "File", 
+  "UID": "9b6a4eadb9074dde97d86171bb332ae9", 
+  "allow_discussion": null, 
+  "contributors": [], 
+  "created": "2016-01-21T05:14:48+00:00", 
+  "creators": [
+    "test_user_1_", 
+    "admin"
+  ], 
+  "description": "This is a file", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "file": {
+    "content-type": "application/pdf", 
+    "download": "http://localhost:55001/plone/file/@@download/file", 
+    "filename": "file.pdf", 
+    "size": 74429
+  }, 
+  "id": "file", 
+  "language": "", 
+  "modified": "2016-01-21T05:24:11+00:00", 
+  "parent": {
+    "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
+    "description": "", 
+    "title": "Plone site"
+  }, 
+  "relatedItems": [], 
+  "review_state": null, 
+  "rights": "", 
+  "subjects": [], 
+  "title": "My File"
+}

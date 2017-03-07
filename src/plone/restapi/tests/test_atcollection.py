@@ -59,17 +59,20 @@ class TestATContentSerializer(unittest.TestCase):
             u'@id': u'http://nohost/plone/folder',
             u'@type': u'ATTestFolder',
             u'description': u'',
-            u'title': u'Test Folder'},
+            u'title': u'Test Folder',
+            'review_state': 'private'},
             obj['items'][0])
         self.assertDictEqual({
             u'@id': u'http://nohost/plone/folder/subfolder-1',
             u'@type': u'ATTestFolder',
             u'description': u'',
-            u'title': u'Subfolder 1'},
+            u'title': u'Subfolder 1',
+            'review_state': 'private'},
             obj['items'][1])
         self.assertDictEqual({
             u'@id': u'http://nohost/plone/folder/subfolder-2',
             u'@type': u'ATTestFolder',
             u'description': u'',
-            u'title': u'Subfolder 2'},
+            u'title': u'Subfolder 2',
+            'review_state': 'private'},
             obj['items'][2])

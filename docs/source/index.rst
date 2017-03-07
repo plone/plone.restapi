@@ -32,6 +32,7 @@ Contents
    serialization
    searching
    customization
+   conventions
 
 .. include:: ../../README.rst
 

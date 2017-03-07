@@ -9,7 +9,37 @@ New Features:
 - Implement @copy and @move endpoints.
   [buchi]
 
+- Docs: Use sphinxcontrib-httpexample and convert existing examples.
+  [lgraf]
+
+- Added 'addable' to @types endpoint. It specifies if the content type can be
+  added to the current context. See https://github.com/plone/plone.restapi/issues/173
+  [jaroel]
+
+- Added support for named IJsonSchemaProvider adapter to target a single
+  field in a schema. This allows us to prevent rendering all choices in
+  relatedItems. See https://github.com/plone/plone.restapi/issues/199
+  [jaroel]
+
+- Add review_state to the folderish summary serializer.
+  [sneridagh]
+
 Bugfixes:
+
+- Return correct @id for folderish objects created via POST.
+  [lgraf]
+
+- Fix timezone-related failures when running tests through `coverage`.
+  [witsch]
+
+- @search endpoint: Also prefill path query dict with context path.
+  This will allow users to supply an argument like path.depth=1, and still
+  have path.query be prefilled server-side to the context's path.
+  [lgraf]
+
+- Overhaul JSON schema generation for @types endpoint. It now returns
+  fields in correct order and in their appropriate fieldsets.
+  [lgraf]
 
 - Add missing id to the Plone site serialization, related to issue #186
   [sneridagh]
