@@ -7,6 +7,7 @@ from zope.component import getUtility
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
+from zope.component import getUtilitiesFor
 
 
 class VocabulariesGet(Service):
@@ -28,10 +29,8 @@ class VocabulariesGet(Service):
                           'message': message}}
 
     def reply(self):
-        if len(self.params) != 1:
-            return self._error(
-                400, "Vocabulary name required",
-                "Must supply the dotted name of the vocabulary in the url")
+        if len(self.params) == 0:
+            return [vocab[0] for vocab in getUtilitiesFor(IVocabularyFactory)]
 
         name = self.params[0]
         try:

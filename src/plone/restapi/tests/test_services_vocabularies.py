@@ -74,14 +74,14 @@ class TestVocabularyEndpoint(unittest.TestCase):
         response = response.json()
         self.assertEqual(response['error']['type'], u"Not Found")
 
-    def test_get_without_vocabulary_name(self):
+    def test_get_all_vocabularies(self):
         response = self.api_session.get(
             '/@vocabularies')
 
-        self.assertEqual(400, response.status_code)
+        self.assertEqual(200, response.status_code)
         response = response.json()
-        self.assertEqual(response['error']['type'],
-                         u"Vocabulary name required")
+        self.assertTrue(len(response) > 0)
+        self.assertIn('plone.app.vocabularies.Roles', response)
 
     def test_context_vocabulary(self):
 
