@@ -23,6 +23,7 @@ Contents
    authentication
    content
    batching
+   copymove
    workflow
    registry
    types
