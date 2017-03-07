@@ -608,3 +608,23 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.get(
             '{}/@components/navigation'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('navigation', response)
+
+    def test_documentation_copy(self):
+        response = self.api_session.post(
+            '/@copy',
+            json={
+                'source': '{}'.format(self.document.absolute_url()),
+            },
+        )
+        save_request_and_response_for_docs('copy.json', response)
+
+    def test_documentation_move(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        transaction.commit()
+        response = self.api_session.post(
+            '/folder/@move',
+            json={
+                'source': '{}'.format(self.document.absolute_url()),
+            },
+        )
+        save_request_and_response_for_docs('move.json', response)

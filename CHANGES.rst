@@ -6,6 +6,9 @@ Changelog
 
 New Features:
 
+- Implement @copy and @move endpoints.
+  [buchi]
+
 - Docs: Use sphinxcontrib-httpexample and convert existing examples.
   [lgraf]
 
