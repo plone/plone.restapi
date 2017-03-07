@@ -8,7 +8,7 @@
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".get.VocabulariesGet"
     name="@vocabularies"
-    permission="zope2.View"
+    permission="plone.restapi.vocabularies"
     />
 
   <plone:service
@@ -17,7 +17,7 @@
     for="Products.CMFCore.interfaces.IContentish"
     factory=".get.VocabulariesGet"
     name="@vocabularies"
-    permission="zope2.View"
+    permission="plone.restapi.vocabularies"
     />
 
 </configure>
