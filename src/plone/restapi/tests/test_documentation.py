@@ -436,7 +436,6 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '/@users',
             json={
-                'username': 'noam',
                 'email': 'noam.chomsky@example.com',
                 'password': 'colorlessgreenideas',
                 'username': 'noamchomsky',

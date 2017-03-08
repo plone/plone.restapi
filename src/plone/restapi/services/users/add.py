@@ -21,10 +21,17 @@ class UsersPost(Service):
     """Creates a new user.
     """
 
-    def validate_input_data(self, portal, data):
+    def validate_input_data(self, portal, original_data):
         '''Returns a tuple of (required_fields, allowed_fields)'''
         security = getAdapter(portal, ISecuritySchema)
         security.use_email_as_login
+
+        # remove data we don't want to check for
+        data = {}
+        for key in ['username', 'email', 'password',
+                    'roles', 'sendPasswordReset']:
+            if key in original_data:
+                data[key] = original_data[key]
 
         required = ['email']
         allowed = ['email']
@@ -80,18 +87,13 @@ class UsersPost(Service):
 
     def reply(self):
         portal = getSite()
+
+        # validate important data
         data = json_body(self.request)
         self.errors = []
         self.validate_input_data(portal, data)
         security = getAdapter(self.context, ISecuritySchema)
         registration = getToolByName(self.context, 'portal_registration')
-
-        username = data.get('username', None)
-        email = data.get('email', None)
-        password = data.get('password', None)
-        roles = data.get('roles', [])
-        properties = data.get('properties', {})
-        send_password_reset = data.get('sendPasswordReset', None)
 
         if self.errors:
             self.request.response.setStatus(400)
@@ -99,6 +101,16 @@ class UsersPost(Service):
                 type='WrongParameterError',
                 message='Error in fields. {}'.format(self.errors_to_string()),
                 errors=self.errors))
+
+        username = data.pop('username', None)
+        email = data.pop('email', None)
+        password = data.pop('password', None)
+        roles = data.pop('roles', [])
+        send_password_reset = data.pop('sendPasswordReset', None)
+        properties = data
+
+        if not self.can_manage_users:
+            properties = {}
 
         # Disable CSRF protection
         if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):

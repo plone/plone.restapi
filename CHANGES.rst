@@ -6,6 +6,10 @@ Changelog
 
 New Features:
 
+- Add user registration to @users POST
+  https://github.com/plone/plone.restapi/pull/255
+  [csenger]
+
 - Make date and datetime fields provide a 'widget' attribute.
   [timo]
 

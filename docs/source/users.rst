@@ -83,12 +83,10 @@ To create a new user, send a POST request to the global ``/@users`` endpoint wit
         'username': 'noam',
         'email': 'noam.chomsky@mit.edu',
         'password': 'colorlessgreenideas',
-        'properties': {
-            'fullname': 'Noam Avram Chomsky',
-            'home_page': 'web.mit.edu/chomsky',
-            'description': 'Professor of Linguistics',
-            'location': 'Cambridge, MA'
-        }
+        'fullname': 'Noam Avram Chomsky',
+        'home_page': 'web.mit.edu/chomsky',
+        'description': 'Professor of Linguistics',
+        'location': 'Cambridge, MA'
     }
 
   .. code-block:: curl
@@ -127,15 +125,23 @@ The available and required fields depend on
 
      required. If email login is enabled it can't be a duplicate.
 
-  properties (object object with user properties)
-
-     allowed
-
   sendPasswordReset (boolean)
 
      ``Anonymous``: not allowed
 
      ``Manager``: Either set ``sendPasswordReset`` or set a password
+
+  roles (array)
+
+     allowed for users with ``plone.app.controlpanel.UsersAndGroups``
+     permission
+
+  other properties
+
+     Other Properties are allowed for users with
+     ``plone.app.controlpanel.UsersAndGroups`` and will be set for the user
+     if they are configured as MemberProperties. These properties won't
+     raise an error if the usage or the properties are not allowed.
 
 
 Response

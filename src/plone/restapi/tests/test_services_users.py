@@ -204,6 +204,41 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertTrue('To: howard.zinn@example.com' in
                         self.mailhost.messages[0])
 
+    def test_add_user_send_properties(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "password": "secret",
+                "email": "howard.zinn@example.com",
+                "fullname": "Howard Zinn",
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+        member = api.user.get(username='howard')
+        self.assertEqual(member.getProperty('fullname'), 'Howard Zinn')
+
+    def test_add_anon_user_sends_properties_are_not_saved(self):
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.enable_self_reg = True
+        transaction.commit()
+
+        response = self.anon_api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "fullname": "Howard Zinn",
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+        member = api.user.get(username='howard')
+        self.assertEqual(member.getProperty('fullname'), '')
+
     def test_get_user(self):
         response = self.api_session.get('/@users/noam')
 
