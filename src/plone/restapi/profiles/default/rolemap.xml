@@ -3,5 +3,9 @@
     <permission name="plone.restapi: Use REST API" acquire="True">
       <role name="Anonymous"/>
     </permission>
+    <permission name="plone.restapi: Access Plone vocabularies" acquire="True">
+      <role name="Manager"/>
+      <role name="Site Administrator"/>
+    </permission>
   </permissions>
 </rolemap>
