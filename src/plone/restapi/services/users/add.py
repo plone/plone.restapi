@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+from AccessControl import getSecurityManager
+
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.permissions import SetOwnPassword
 from Products.PasswordResetTool.PasswordResetTool import ExpiredRequestError
 from Products.PasswordResetTool.PasswordResetTool import InvalidRequestError
 from zope.component import getAdapter
@@ -123,6 +126,17 @@ class UsersPost(Service):
         return {'error': {'type': type,
                           'message': message}}
 
+    @property
+    def can_manage_users(self):
+        sm = getSecurityManager()
+        return sm.checkPermission('plone.app.controlpanel.UsersAndGroups',
+                                  self.context)
+
+    @property
+    def can_set_own_password(self):
+        sm = getSecurityManager()
+        return sm.checkPermission(SetOwnPassword, self.context)
+
     def update_password(self, data):
         username = self.params[0]
         target_user = self._get_user(username)
@@ -170,10 +184,12 @@ class UsersPost(Service):
                                    'The reset_token is expired.')
             return
 
+        # set the new password by giving the old password
         if old_password:
-            # Check permissions
-            # FIXME: Check manager permission
-            # FIXME: Check SetOwnPassword Permission
+            if not (self.can_manage_users or self.can_set_own_password):
+                return self._error(
+                    403, 'Not allowed', 'You can\'t set a password without '
+                    'a password reset token.')
             authenticated_user_id = mt.getAuthenticatedMember().getId()
             if username != authenticated_user_id:
                 return self._error(

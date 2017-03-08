@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
 
 from plone import api
@@ -264,6 +265,9 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_user_set_own_password(self):
         self.api_session.auth = ('noam', 'password')
+        self.portal.manage_permission(
+            SetOwnPassword, roles=['Authenticated', 'Manager'], acquire=False)
+        transaction.commit()
 
         payload = {'old_password': 'password',
                    'new_password': 'new_password'}
@@ -275,6 +279,20 @@ class TestUsersEndpoint(unittest.TestCase):
         authed = self.portal.acl_users.authenticate('noam', 'new_password',
                                                     {})
         self.assertTrue(authed)
+
+    def test_user_set_own_password_requires_set_own_password_permission(self):
+        self.api_session.auth = ('noam', 'password')
+        self.portal.manage_permission(SetOwnPassword, roles=['Manager'],
+                                      acquire=False)
+        transaction.commit()
+
+        payload = {'old_password': 'password_old',
+                   'new_password': 'new_password'}
+        response = self.api_session.post('/@users/noam/reset-password',
+                                         json=payload)
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 403)
 
     def test_user_set_own_password_requires_old_and_new_password(self):
         self.api_session.auth = ('noam', 'password')

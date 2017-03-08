@@ -233,6 +233,8 @@ Plone also allows a user to reset her own password directly without sending an e
 
 The server will respond with a :term:`200 OK` response without sending an email.
 
+To set the password with the old password you need either the ``Set own password`` or the ``plone.app.controlpanel.UsersAndGroups`` permission.
+
 If an API consumer tries to send a password in the payload that is not the same as the currently logged in user, the server will respond with a :term:`400 Bad Request` response.
 
 
@@ -244,6 +246,7 @@ Return Values
 * `403` (Unknown Token)
 * `403` (Expired Token)
 * `403` (Wrong user)
+* `403` (Not allowed)
 * `403` (Wrong password)
 * :term:`500 Internal Server Error` (server fault, can not recover internally)
 
