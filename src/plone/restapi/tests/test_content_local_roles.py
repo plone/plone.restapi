@@ -38,6 +38,15 @@ class TestFolderCreate(unittest.TestCase):
                     '__ac_local_roles_block__',
                     False))
 
+    def test_sharing_requires_delegate_roles_permission(self):
+        '''A response for an object without any roles assigned'''
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '/@sharing',
+            headers={'Accept': 'application/json'},
+        )
+
+        self.assertEqual(response.status_code, 403)
+
     def test_get_local_roles_none_assigned(self):
         '''A response for an object without any roles assigned'''
         response = requests.get(

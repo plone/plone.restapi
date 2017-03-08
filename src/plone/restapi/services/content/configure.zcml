@@ -43,7 +43,7 @@
     name="@sharing"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".sharing.SharingGet"
-    permission="plone.DelegateRoles"
+    permission="zope2.View"
     />
 
   <plone:service
@@ -51,7 +51,7 @@
     name="@sharing"
     for="Products.CMFCore.interfaces.IContentish"
     factory=".sharing.SharingGet"
-    permission="plone.DelegateRoles"
+    permission="zope2.View"
     />
 
   <plone:service
@@ -59,7 +59,7 @@
     name="@sharing"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".sharing.SharingPost"
-    permission="plone.DelegateRoles"
+    permission="zope2.View"
     />
 
   <plone:service
@@ -67,7 +67,7 @@
     name="@sharing"
     for="Products.CMFCore.interfaces.IContentish"
     factory=".sharing.SharingPost"
-    permission="plone.DelegateRoles"
+    permission="zope2.View"
     />
 
 
