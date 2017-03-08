@@ -53,6 +53,9 @@ Bugfixes:
 - Add missing id to the Plone site serialization, related to issue #186
   [sneridagh]
 
+- Propose a fix for the issue #253 by not comparing IDatetime fields when
+  patching and set the value always.
+  [sneridagh]
 
 1.0a9 (2017-03-03)
 ------------------

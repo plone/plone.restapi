@@ -20,6 +20,7 @@ from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFields
 from zope.schema.interfaces import ValidationError
 from zope.security.interfaces import IPermission
+from zope.schema.interfaces import IDatetime
 
 
 @implementer(IDeserializeFromJson)
@@ -75,9 +76,16 @@ class DeserializeFromJson(object):
                             'message': e.doc(), 'field': name, 'error': e})
                     else:
                         field_data[name] = value
-                        if value != dm.get():
+
+                        if IDatetime.providedBy(dm.field):
+                            # Do not compare both, just set the value. See
+                            # https://github.com/plone/plone.restapi/issues/253
                             dm.set(value)
                             modified = True
+                        else:
+                            if value != dm.get():
+                                dm.set(value)
+                                modified = True
 
                 elif validate_all:
                     # Never validate the changeNote of p.a.versioningbehavior
