@@ -36,42 +36,11 @@ class TestServicesTypes(unittest.TestCase):
             'Content-Type: "application/json", not ' +
             '"{}"'.format(response.headers.get('Content-Type'))
         )
-        self.assertTrue(
-            {
-                u'@id': u'http://localhost:55001/plone/@types/Collection',
-                u'title': u'Collection'
-            } in response.json()
-        )
-        self.assertTrue(
-            {
-                u'@id': u'http://localhost:55001/plone/@types/Discussion Item',
-                u'title': u'Discussion Item'
-            } in response.json()
-        )
-        self.assertTrue(
-            {
-                u'@id': u'http://localhost:55001/plone/@types/Event',
-                u'title': u'Event'
-            } in response.json()
-        )
-        self.assertTrue(
-            {
-                u'@id': u'http://localhost:55001/plone/@types/File',
-                u'title': u'File'
-            } in response.json()
-        )
-        self.assertTrue(
-            {
-                u'@id': u'http://localhost:55001/plone/@types/Folder',
-                u'title': u'Folder'
-            } in response.json()
-        )
-        self.assertTrue(
-            {
-                u'@id': u'http://localhost:55001/plone/@types/Image',
-                u'title': u'Image'
-            } in response.json()
-        )
+        for item in response.json():
+            self.assertEqual(
+                sorted(item.keys()),
+                sorted(['@id', 'title', 'addable'])
+            )
 
     def test_get_types_document(self):
         response = self.api_session.get(
@@ -107,3 +76,18 @@ class TestServicesTypes(unittest.TestCase):
             '{}/@types'.format(self.portal.absolute_url())
         )
         self.assertEqual(response.status_code, 401)
+
+    def test_contextaware_addable(self):
+        response = self.api_session.get(
+            '{}/@types'.format(self.portal.absolute_url())
+        )
+
+        allowed_ids = [x.getId() for x in self.portal.allowedContentTypes()]
+
+        response_allowed_ids = [
+            x['@id'].split('/')[-1]
+            for x in response.json()
+            if x['addable']
+        ]
+
+        self.assertEqual(sorted(allowed_ids), sorted(response_allowed_ids))

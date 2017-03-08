@@ -23,6 +23,7 @@ Contents
    authentication
    content
    batching
+   copymove
    workflow
    registry
    types
@@ -30,7 +31,9 @@ Contents
    components
    serialization
    searching
+   vocabularies
    customization
+   conventions
 
 .. include:: ../../README.rst
 

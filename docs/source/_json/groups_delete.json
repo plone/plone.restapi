@@ -1,5 +1,0 @@
-DELETE /plone/@groups/ploneteam
-Accept: application/json
-
-HTTP 204 No Content
-

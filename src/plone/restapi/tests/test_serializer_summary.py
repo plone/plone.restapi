@@ -48,7 +48,8 @@ class TestSummarySerializers(unittest.TestCase):
             {'@id': 'http://nohost/plone/doc1',
              '@type': 'DXTestDocument',
              'title': 'Lorem Ipsum',
-             'description': 'Description'},
+             'description': 'Description',
+             'review_state': 'private'},
             summary)
 
         # Must also work if we're dealing with a CatalogContentListingObject
@@ -62,7 +63,8 @@ class TestSummarySerializers(unittest.TestCase):
             {'@id': 'http://nohost/plone/doc1',
              '@type': 'DXTestDocument',
              'title': 'Lorem Ipsum',
-             'description': 'Description'},
+             'description': 'Description',
+             'review_state': 'private'},
             summary)
 
     def test_brain_summary_with_missing_value(self):
@@ -76,7 +78,8 @@ class TestSummarySerializers(unittest.TestCase):
             {'@id': 'http://nohost/plone/doc1',
              '@type': 'DXTestDocument',
              'title': 'Lorem Ipsum',
-             'description': None},
+             'description': None,
+             'review_state': 'private'},
             summary)
 
     def test_dx_type_summary(self):
@@ -87,7 +90,8 @@ class TestSummarySerializers(unittest.TestCase):
             {'@id': 'http://nohost/plone/doc1',
              '@type': 'DXTestDocument',
              'title': 'Lorem Ipsum',
-             'description': 'Description'},
+             'description': 'Description',
+             'review_state': 'private'},
             summary)
 
 
@@ -114,5 +118,6 @@ class TestSummarySerializersATTypes(unittest.TestCase):
             {'@id': 'http://nohost/plone/doc1',
              '@type': 'ATTestDocument',
              'title': 'Lorem Ipsum',
-             'description': 'Description'},
+             'description': 'Description',
+             'review_state': 'private'},
             summary)

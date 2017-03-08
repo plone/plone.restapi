@@ -1,145 +1,167 @@
 # -*- coding: utf-8 -*-
-"""Utils for jsonschema."""
-from collections import OrderedDict
+"""Utils to translate FTIs / zope.schema interfaces to JSON schemas.
 
-from zope.component import getUtility
+The basic idea here is to instantiate a minimal z3c form, and then have
+plone.autoform work its magic on it to process all the fields, and apply
+any p.autoform directives (fieldsets, field modes, omitted fields, field
+permissions, widgets).
+
+Also schema interface inheritance (IRO) and additional schemata from behaviors
+are factored into how the final resulting fieldsets are composed.
+
+This approach should ensure that all these directives get respected and
+processed the same way they would for a server-rendered form.
+"""
+
+from collections import OrderedDict
+from copy import copy
+from plone.autoform.form import AutoExtensibleForm
+from plone.dexterity.utils import getAdditionalSchemata
+from plone.restapi.types.interfaces import IJsonSchemaProvider
+from Products.CMFCore.utils import getToolByName
+from z3c.form import form as z3c_form
 from zope.component import getMultiAdapter
+from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
 from zope.i18n import translate
-from zope.schema import getFieldsInOrder
-
-from plone.autoform.interfaces import MODES_KEY
-from plone.autoform.interfaces import IFormFieldProvider
-from plone.autoform.utils import mergedTaggedValuesForForm
-from plone.behavior.interfaces import IBehavior
-from plone.supermodel.interfaces import FIELDSETS_KEY
-
-from Products.CMFCore.utils import getToolByName
-
-from plone.restapi.types.interfaces import IJsonSchemaProvider
 
 
-def non_fieldset_fields(schema):
-    fieldset_fields = []
-    fieldsets = schema.queryTaggedValue(FIELDSETS_KEY, [])
+def create_form(context, request, base_schema, additional_schemata=None):
+    """Create a minimal, standalone z3c form and run the field processing
+    logic of plone.autoform on it.
+    """
+    if additional_schemata is None:
+        additional_schemata = ()
 
+    class SchemaForm(AutoExtensibleForm, z3c_form.AddForm):
+        schema = base_schema
+        additionalSchemata = additional_schemata
+        ignoreContext = True
+
+    form = SchemaForm(context, request)
+    form.updateFieldsFromSchemata()
+    return form
+
+
+def iter_fields(fieldsets):
+    """Iterate over a flat list of fields, given a list of fieldset dicts
+    as returned by `get_fieldsets`.
+    """
     for fieldset in fieldsets:
-        fieldset_fields.extend(fieldset.fields)
-
-    fields = [info[0] for info in getFieldsInOrder(schema)]
-    return [f for f in fields if f not in fieldset_fields]
+        for field in fieldset['fields']:
+            yield field
 
 
-def get_ordered_fields(fti):
-    # this code is much complicated because we have to get sure
-    # we get the fields in the order of the fieldsets
-    # the order of the fields in the fieldsets can differ
-    # of the getFieldsInOrder(schema) order...
-    # that's because fields from different schemas
-    # can take place in the same fieldset
-    schema = fti.lookupSchema()
-    fieldset_fields = {}
-    ordered_fieldsets = ['default']
-    labels = {'default': u'Default'}
-    for fieldset in schema.queryTaggedValue(FIELDSETS_KEY, []):
-        ordered_fieldsets.append(fieldset.__name__)
-        labels[fieldset.__name__] = fieldset.label
-        fieldset_fields[fieldset.__name__] = fieldset.fields
+def get_fieldsets(context, request, schema, additional_schemata=None):
+    """Given a base schema, and optionally some additional schemata,
+    build a list of fieldsets with the corresponding z3c.form fields in them.
+    """
+    form = create_form(context, request, schema, additional_schemata)
 
-    fieldset_fields['default'] = non_fieldset_fields(schema)
+    # Default fieldset
+    fieldsets = [{
+        'id': 'default',
+        'title': u'Default',
+        'fields': form.fields.values(),
+    }]
 
-    # Get the behavior fields
-    fields = getFieldsInOrder(schema)
-    for behavior_id in fti.behaviors:
-        schema = getUtility(IBehavior, behavior_id).interface
-        if not IFormFieldProvider.providedBy(schema):
-            continue
+    # Additional fieldsets (AKA z3c.form groups)
+    for group in form.groups:
+        fieldset = {
+            'id': group.__name__,
+            'title': translate(group.label, context=getRequest()),
+            'fields': group.fields.values(),
+        }
+        fieldsets.append(fieldset)
 
-        fields.extend(getFieldsInOrder(schema))
-        for fieldset in schema.queryTaggedValue(FIELDSETS_KEY, []):
-            fieldset_fields.setdefault(fieldset.__name__, []).extend(
-                fieldset.fields)
-            if fieldset.__name__ not in ordered_fieldsets:
-                ordered_fieldsets.append(fieldset.__name__)
-                labels[fieldset.__name__] = fieldset.label
-
-        fieldset_fields['default'].extend(non_fieldset_fields(schema))
-
-    ordered_fields = []
-    for fieldset in ordered_fieldsets:
-        ordered_fields.extend(fieldset_fields[fieldset])
-
-    ordered_fieldsets_fields = [{
-        'id': fieldset,
-        'fields': fieldset_fields[fieldset],
-        'title': labels[fieldset],
-    } for fieldset in ordered_fieldsets]
-
-    fields.sort(key=lambda field: ordered_fields.index(field[0]))
-    return (fields, ordered_fieldsets_fields)
+    return fieldsets
 
 
-def get_fields_from_schema(schema, context, request, prefix='',
-                           excluded_fields=None):
-    """Get jsonschema from zope schema."""
-    fields_info = OrderedDict()
+def get_fieldset_infos(fieldsets):
+    """Given a list of fieldset dicts as returned by `get_fieldsets()`,
+    return a list of fieldset info dicts that contain the (short) field name
+    instead of the actual field instance.
+    """
+    fieldset_infos = []
+    for fieldset in fieldsets:
+        fs_info = copy(fieldset)
+        fs_info['fields'] = [f.field.getName() for f in fs_info['fields']]
+        fieldset_infos.append(fs_info)
+    return fieldset_infos
+
+
+def get_jsonschema_properties(context, request, fieldsets, prefix='',
+                              excluded_fields=None):
+    """Build a JSON schema 'properties' list, based on a list of fieldset
+    dicts as returned by `get_fieldsets()`.
+    """
+    properties = OrderedDict()
     if excluded_fields is None:
         excluded_fields = []
 
-    for fieldname, field in getFieldsInOrder(schema):
+    for field in iter_fields(fieldsets):
+        fieldname = field.field.getName()
         if fieldname not in excluded_fields:
-            adapter = getMultiAdapter(
-                (field, context, request),
+
+            # We need to special case relatedItems not to render choices
+            # so we try a named adapter first and fallback to unnamed ones.
+            adapter = queryMultiAdapter(
+                (field.field, context, request),
+                interface=IJsonSchemaProvider,
+                name=field.__name__)
+
+            adapter = adapter or getMultiAdapter(
+                (field.field, context, request),
                 interface=IJsonSchemaProvider)
 
             adapter.prefix = prefix
             if prefix:
                 fieldname = '.'.join([prefix, fieldname])
 
-            fields_info[fieldname] = adapter.get_schema()
+            properties[fieldname] = adapter.get_schema()
 
-    return fields_info
+    return properties
 
 
 def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
-    """Get jsonschema for given fti."""
-    fields_info = OrderedDict()
+    """Build a complete JSON schema for the given FTI.
+    """
     if excluded_fields is None:
         excluded_fields = []
 
-    required = []
-    (ordered_fields, fieldsets) = get_ordered_fields(fti)
-    for fieldname, field in ordered_fields:
-        if fieldname not in excluded_fields:
-            adapter = getMultiAdapter(
-                (field, context, request),
-                interface=IJsonSchemaProvider)
-            # get name from z3c.form field to have full name (behavior)
-            fields_info[fieldname] = adapter.get_schema()
-            if field.required:
-                required.append(fieldname)
+    schema = fti.lookupSchema()
+    additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
 
-    # look up hidden fields from plone.autoform tagged values
-    hidden_fields = mergedTaggedValuesForForm(
-        fti.lookupSchema(),
-        MODES_KEY,
-        []
-    )
-    for field_title, mode_value in hidden_fields.items():
-        fields_info[field_title]['mode'] = mode_value
+    fieldsets = get_fieldsets(context, request, schema, additional_schemata)
+
+    # Build JSON schema properties
+    properties = get_jsonschema_properties(
+        context, request, fieldsets, excluded_fields=excluded_fields)
+
+    # Determine required fields
+    required = []
+    for field in iter_fields(fieldsets):
+        if field.field.required:
+            required.append(field.field.getName())
+
+    # Include field modes
+    for field in iter_fields(fieldsets):
+        if field.mode:
+            properties[field.field.getName()]['mode'] = field.mode
 
     return {
         'type': 'object',
         'title': translate(fti.Title(), context=getRequest()),
-        'properties': fields_info,
+        'properties': properties,
         'required': required,
-        'fieldsets': fieldsets,
+        'fieldsets': get_fieldset_infos(fieldsets),
     }
 
 
 def get_jsonschema_for_portal_type(portal_type, context, request,
                                    excluded_fields=None):
-    """Get jsonschema for given portal type name."""
+    """Build a complete JSON schema for the given portal_type.
+    """
     ttool = getToolByName(context, 'portal_types')
     fti = ttool[portal_type]
     return get_jsonschema_for_fti(

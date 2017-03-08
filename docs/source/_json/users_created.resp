@@ -1,0 +1,14 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: http://localhost:55001/plone/@users/noamchomsky
+
+{
+  "@id": "http://localhost:55001/plone/@users/noamchomsky", 
+  "description": "Professor of Linguistics", 
+  "email": "noam.chomsky@example.com", 
+  "fullname": "Noam Avram Chomsky", 
+  "home_page": "web.mit.edu/chomsky", 
+  "id": "noamchomsky", 
+  "location": "Cambridge, MA", 
+  "username": "noamchomsky"
+}

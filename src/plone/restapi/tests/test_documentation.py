@@ -23,7 +23,8 @@ import unittest2 as unittest
 
 
 REQUEST_HEADER_KEYS = [
-    'accept'
+    'accept',
+    'authorization',
 ]
 
 RESPONSE_HEADER_KEYS = [
@@ -42,23 +43,32 @@ base_path = os.path.join(
 )
 
 
-def save_response_for_documentation(filename, response):
-    f = open('{}/{}'.format(base_path, filename), 'w')
-    f.write('{} {}\n'.format(
-        response.request.method,
-        response.request.path_url
-    ))
-    for key, value in response.request.headers.items():
-        if key.lower() in REQUEST_HEADER_KEYS:
-            f.write('{}: {}\n'.format(key, value))
-    f.write('\n')
-    f.write('HTTP {} {}\n'.format(response.status_code, response.reason))
-    for key, value in response.headers.items():
-        if key.lower() in RESPONSE_HEADER_KEYS:
-            f.write('{}: {}\n'.format(key.lower(), value))
-    f.write('\n')
-    f.write(response.content)
-    f.close()
+def save_request_and_response_for_docs(name, response):
+    with open('{}/{}'.format(base_path, '%s.req' % name), 'w') as req:
+        req.write('{} {} HTTP/1.1\n'.format(
+            response.request.method,
+            response.request.path_url
+        ))
+        for key, value in response.request.headers.items():
+            if key.lower() in REQUEST_HEADER_KEYS:
+                req.write('{}: {}\n'.format(key, value))
+        if response.request.body:
+            if 'content-type' not in REQUEST_HEADER_KEYS:
+                content_type = response.request.headers['Content-Type']
+                req.write('Content-Type: %s\n' % content_type)
+
+            req.write('\n')
+            req.write(response.request.body)
+
+    with open('{}/{}'.format(base_path, '%s.resp' % name), 'w') as resp:
+        status = response.status_code
+        reason = response.reason
+        resp.write('HTTP/1.1 {} {}\n'.format(status, reason))
+        for key, value in response.headers.items():
+            if key.lower() in RESPONSE_HEADER_KEYS:
+                resp.write('{}: {}\n'.format(key, value))
+        resp.write('\n')
+        resp.write(response.content)
 
 
 class TestTraversal(unittest.TestCase):
@@ -110,7 +120,7 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_document(self):
         response = self.api_session.get(self.document.absolute_url())
-        save_response_for_documentation('document.json', response)
+        save_request_and_response_for_docs('document', response)
 
     def test_documentation_news_item(self):
         self.portal.invokeFactory('News Item', id='newsitem')
@@ -137,7 +147,7 @@ class TestTraversal(unittest.TestCase):
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.newsitem.absolute_url())
-        save_response_for_documentation('newsitem.json', response)
+        save_request_and_response_for_docs('newsitem', response)
 
     def test_documentation_event(self):
         self.portal.invokeFactory('Event', id='event')
@@ -152,7 +162,7 @@ class TestTraversal(unittest.TestCase):
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.event.absolute_url())
-        save_response_for_documentation('event.json', response)
+        save_request_and_response_for_docs('event', response)
 
     def test_documentation_link(self):
         self.portal.invokeFactory('Link', id='link')
@@ -166,7 +176,7 @@ class TestTraversal(unittest.TestCase):
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.link.absolute_url())
-        save_response_for_documentation('link.json', response)
+        save_request_and_response_for_docs('link', response)
 
     def test_documentation_file(self):
         self.portal.invokeFactory('File', id='file')
@@ -187,7 +197,7 @@ class TestTraversal(unittest.TestCase):
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.file.absolute_url())
-        save_response_for_documentation('file.json', response)
+        save_request_and_response_for_docs('file', response)
 
     def test_documentation_image(self):
         self.portal.invokeFactory('Image', id='image')
@@ -206,7 +216,7 @@ class TestTraversal(unittest.TestCase):
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.image.absolute_url())
-        save_response_for_documentation('image.json', response)
+        save_request_and_response_for_docs('image', response)
 
     def test_documentation_folder(self):
         self.portal.invokeFactory('Folder', id='folder')
@@ -231,7 +241,7 @@ class TestTraversal(unittest.TestCase):
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.folder.absolute_url())
-        save_response_for_documentation('folder.json', response)
+        save_request_and_response_for_docs('folder', response)
 
     def test_documentation_collection(self):
         self.portal.invokeFactory('Collection', id='collection')
@@ -262,50 +272,50 @@ class TestTraversal(unittest.TestCase):
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.collection.absolute_url())
-        save_response_for_documentation('collection.json', response)
+        save_request_and_response_for_docs('collection', response)
 
     def test_documentation_siteroot(self):
         response = self.api_session.get(self.portal.absolute_url())
-        save_response_for_documentation('siteroot.json', response)
+        save_request_and_response_for_docs('siteroot', response)
 
     def test_documentation_404_not_found(self):
         response = self.api_session.get('non-existing-resource')
-        save_response_for_documentation('404_not_found.json', response)
+        save_request_and_response_for_docs('404_not_found', response)
 
     def test_documentation_search(self):
         query = {'sort_on': 'path'}
         response = self.api_session.get('/@search', params=query)
-        save_response_for_documentation('search.json', response)
+        save_request_and_response_for_docs('search', response)
 
     def test_documentation_workflow(self):
         response = self.api_session.get(
             '{}/@workflow'.format(self.document.absolute_url()))
-        save_response_for_documentation('workflow_get.json', response)
+        save_request_and_response_for_docs('workflow_get', response)
 
     def test_documentation_workflow_transition(self):
         self.frozen_time.tick(timedelta(minutes=5))
         response = self.api_session.post(
             '{}/@workflow/publish'.format(self.document.absolute_url()))
-        save_response_for_documentation('workflow_post.json', response)
+        save_request_and_response_for_docs('workflow_post', response)
 
     def test_documentation_registry_get(self):
         response = self.api_session.get(
             '/@registry/plone.app.querystring.field.path.title')
-        save_response_for_documentation('registry_get.json', response)
+        save_request_and_response_for_docs('registry_get', response)
 
     def test_documentation_registry_update(self):
         response = self.api_session.patch(
             '/@registry/',
             json={'plone.app.querystring.field.path.title': 'Value'})
-        save_response_for_documentation('registry_update.json', response)
+        save_request_and_response_for_docs('registry_update', response)
 
     def test_documentation_types(self):
         response = self.api_session.get('/@types')
-        save_response_for_documentation('types.json', response)
+        save_request_and_response_for_docs('types', response)
 
     def test_documentation_types_document(self):
         response = self.api_session.get('@types/Document')
-        save_response_for_documentation('types_document.json', response)
+        save_request_and_response_for_docs('types_document', response)
 
     def test_documentation_login(self):
         self.portal.acl_users.jwt_auth._secret = 'secret'
@@ -317,7 +327,7 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '{}/@login'.format(self.portal.absolute_url()),
             json={'login': SITE_OWNER_NAME, 'password': SITE_OWNER_PASSWORD})
-        save_response_for_documentation('login.json', response)
+        save_request_and_response_for_docs('login', response)
 
     def test_documentation_login_renew(self):
         self.portal.acl_users.jwt_auth._secret = 'secret'
@@ -333,7 +343,7 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '{}/@login-renew'.format(self.portal.absolute_url()),
             headers={'Authorization': 'Bearer {}'.format(token)})
-        save_response_for_documentation('login_renew.json', response)
+        save_request_and_response_for_docs('login_renew', response)
 
     def test_documentation_logout(self):
         self.portal.acl_users.jwt_auth._secret = 'secret'
@@ -350,7 +360,7 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '{}/@logout'.format(self.portal.absolute_url()),
             headers={'Authorization': 'Bearer {}'.format(token)})
-        save_response_for_documentation('logout.json', response)
+        save_request_and_response_for_docs('logout', response)
 
     def test_documentation_batching(self):
         folder = self.portal[self.portal.invokeFactory(
@@ -369,7 +379,7 @@ class TestTraversal(unittest.TestCase):
         query = {'sort_on': 'path'}
         response = self.api_session.get(
             '/folder/@search?b_size=5', params=query)
-        save_response_for_documentation('batching.json', response)
+        save_request_and_response_for_docs('batching', response)
 
     def test_documentation_users(self):
         test_user = api.user.get(username=TEST_USER_ID)
@@ -394,7 +404,7 @@ class TestTraversal(unittest.TestCase):
         admin.setMemberProperties(mapping=properties)
         transaction.commit()
         response = self.api_session.get('/@users')
-        save_response_for_documentation('users.json', response)
+        save_request_and_response_for_docs('users', response)
 
     def test_documentation_users_get(self):
         properties = {
@@ -412,7 +422,7 @@ class TestTraversal(unittest.TestCase):
         )
         transaction.commit()
         response = self.api_session.get('@users/noam')
-        save_response_for_documentation('users_get.json', response)
+        save_request_and_response_for_docs('users_get', response)
 
     def test_documentation_users_filtered_get(self):
         properties = {
@@ -430,7 +440,7 @@ class TestTraversal(unittest.TestCase):
         )
         transaction.commit()
         response = self.api_session.get('@users', params={'query': 'noa'})
-        save_response_for_documentation('users_filtered_by_username.json', response)  # noqa
+        save_request_and_response_for_docs('users_filtered_by_username', response)  # noqa
 
     def test_documentation_users_created(self):
         response = self.api_session.post(
@@ -445,7 +455,7 @@ class TestTraversal(unittest.TestCase):
                 'location': 'Cambridge, MA'
             },
         )
-        save_response_for_documentation('users_created.json', response)
+        save_request_and_response_for_docs('users_created', response)
 
     def test_documentation_users_update(self):
         properties = {
@@ -469,7 +479,7 @@ class TestTraversal(unittest.TestCase):
                 'email': 'avram.chomsky@example.com',
             },
         )
-        save_response_for_documentation('users_update.json', response)
+        save_request_and_response_for_docs('users_update', response)
 
     def test_documentation_users_delete(self):
         properties = {
@@ -489,7 +499,7 @@ class TestTraversal(unittest.TestCase):
 
         response = self.api_session.delete(
             '/@users/noam')
-        save_response_for_documentation('users_delete.json', response)
+        save_request_and_response_for_docs('users_delete', response)
 
     def test_documentation_groups(self):
         gtool = api.portal.get_tool('portal_groups')
@@ -504,7 +514,7 @@ class TestTraversal(unittest.TestCase):
                        description=properties['description'])
         transaction.commit()
         response = self.api_session.get('/@groups')
-        save_response_for_documentation('groups.json', response)
+        save_request_and_response_for_docs('groups', response)
 
     def test_documentation_groups_get(self):
         gtool = api.portal.get_tool('portal_groups')
@@ -519,7 +529,7 @@ class TestTraversal(unittest.TestCase):
                        description=properties['description'])
         transaction.commit()
         response = self.api_session.get('@groups/ploneteam')
-        save_response_for_documentation('groups_get.json', response)
+        save_request_and_response_for_docs('groups_get', response)
 
     def test_documentation_groups_filtered_get(self):
         gtool = api.portal.get_tool('portal_groups')
@@ -534,7 +544,7 @@ class TestTraversal(unittest.TestCase):
                        description=properties['description'])
         transaction.commit()
         response = self.api_session.get('@groups', params={'query': 'plo'})
-        save_response_for_documentation('groups_filtered_by_groupname.json', response)  # noqa
+        save_request_and_response_for_docs('groups_filtered_by_groupname', response)  # noqa
 
     def test_documentation_groups_created(self):
         response = self.api_session.post(
@@ -548,7 +558,7 @@ class TestTraversal(unittest.TestCase):
                 'groups': ['Administrators']
             },
         )
-        save_response_for_documentation('groups_created.json', response)
+        save_request_and_response_for_docs('groups_created', response)
 
     def test_documentation_groups_update(self):
         gtool = api.portal.get_tool('portal_groups')
@@ -569,7 +579,7 @@ class TestTraversal(unittest.TestCase):
                 'email': 'ploneteam2@plone.org',
             },
         )
-        save_response_for_documentation('groups_update.json', response)
+        save_request_and_response_for_docs('groups_update', response)
 
     def test_documentation_groups_delete(self):
         gtool = api.portal.get_tool('portal_groups')
@@ -586,14 +596,64 @@ class TestTraversal(unittest.TestCase):
 
         response = self.api_session.delete(
             '/@groups/ploneteam')
-        save_response_for_documentation('groups_delete.json', response)
+        save_request_and_response_for_docs('groups_delete', response)
 
     def test_documentation_breadcrumbs(self):
         response = self.api_session.get(
             '{}/@components/breadcrumbs'.format(self.document.absolute_url()))
-        save_response_for_documentation('breadcrumbs.json', response)
+        save_request_and_response_for_docs('breadcrumbs', response)
 
     def test_documentation_navigation(self):
         response = self.api_session.get(
             '{}/@components/navigation'.format(self.document.absolute_url()))
-        save_response_for_documentation('navigation.json', response)
+        save_request_and_response_for_docs('navigation', response)
+
+    def test_documentation_principals(self):
+        gtool = api.portal.get_tool('portal_groups')
+        properties = {
+            'title': 'Plone Team',
+            'description': 'We are Plone',
+            'email': 'ploneteam@plone.org',
+        }
+        gtool.addGroup('ploneteam', (), (),
+                       properties=properties,
+                       title=properties['title'],
+                       description=properties['description'])
+        transaction.commit()
+        response = self.api_session.get(
+            '/@principals',
+            params={
+                "search": "ploneteam"
+            }
+        )
+        save_request_and_response_for_docs('principals', response)
+
+    def test_documentation_copy(self):
+        response = self.api_session.post(
+            '/@copy',
+            json={
+                'source': '{}'.format(self.document.absolute_url()),
+            },
+        )
+        save_request_and_response_for_docs('copy.json', response)
+
+    def test_documentation_move(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        transaction.commit()
+        response = self.api_session.post(
+            '/folder/@move',
+            json={
+                'source': '{}'.format(self.document.absolute_url()),
+            },
+        )
+        save_request_and_response_for_docs('move.json', response)
+
+    def test_documentation_vocabularies_all(self):
+        response = self.api_session.get('/@vocabularies')
+        save_request_and_response_for_docs('vocabularies.json', response)
+
+    def test_documentation_vocabularies_get(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes'
+        )
+        save_request_and_response_for_docs('vocabularies_get.json', response)
