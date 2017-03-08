@@ -24,6 +24,11 @@ New Features:
 - Add review_state to the folderish summary serializer.
   [sneridagh]
 
+- Add new @principals endpoint. It searches for principals and returns a list
+  of users and groups that matches the query. This is aimed to be used in the
+  sharing UI widget or other user/groups search widgets.
+  [sneridagh]
+
 Bugfixes:
 
 - Return correct @id for folderish objects created via POST.

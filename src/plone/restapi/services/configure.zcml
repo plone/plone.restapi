@@ -11,5 +11,6 @@
   <include package=".registry"/>
   <include package=".users"/>
   <include package=".groups"/>
+  <include package=".principals"/>
 
 </configure>

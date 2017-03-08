@@ -609,6 +609,26 @@ class TestTraversal(unittest.TestCase):
             '{}/@components/navigation'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('navigation', response)
 
+    def test_documentation_principals(self):
+        gtool = api.portal.get_tool('portal_groups')
+        properties = {
+            'title': 'Plone Team',
+            'description': 'We are Plone',
+            'email': 'ploneteam@plone.org',
+        }
+        gtool.addGroup('ploneteam', (), (),
+                       properties=properties,
+                       title=properties['title'],
+                       description=properties['description'])
+        transaction.commit()
+        response = self.api_session.get(
+            '/@principals',
+            params={
+                "search": "ploneteam"
+            }
+        )
+        save_request_and_response_for_docs('principals', response)
+
     def test_documentation_copy(self):
         response = self.api_session.post(
             '/@copy',
