@@ -1,0 +1,12 @@
+POST /plone/@copy
+Accept: application/json
+
+HTTP 200 OK
+content-type: application/json
+
+[
+  {
+    "new": "http://localhost:55001/plone/copy_of_front-page", 
+    "old": "http://localhost:55001/plone/front-page"
+  }
+]

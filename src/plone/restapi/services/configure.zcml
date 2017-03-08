@@ -4,10 +4,13 @@
   <include package=".auth" />
   <include package=".components"/>
   <include package=".content"/>
+  <include package=".copymove"/>
   <include package=".search"/>
   <include package=".types"/>
   <include package=".workflow"/>
   <include package=".registry"/>
   <include package=".users"/>
+  <include package=".groups"/>
+  <include package=".principals"/>
 
 </configure>

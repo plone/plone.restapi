@@ -7,14 +7,17 @@ from zope.component import getMultiAdapter
 from zope import schema
 from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from plone.app.textfield import RichText
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.autoform import directives as form
+from plone.dexterity.fti import DexterityFTI
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
 
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.types.interfaces import IJsonSchemaProvider
-from plone.restapi.types.utils import get_fields_from_schema
+from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
+from plone.restapi.types.utils import get_jsonschema_properties
 
 
 class IDummySchema(model.Schema):
@@ -30,6 +33,32 @@ class IDummySchema(model.Schema):
     )
 
 
+class ITaggedValuesSchema(model.Schema):
+
+    form.mode(field_mode_hidden='hidden')
+    field_mode_hidden = schema.TextLine(
+        title=u"ModeHidden",
+        description=u"",
+    )
+
+    form.mode(field_mode_display='display')
+    field_mode_display = schema.TextLine(
+        title=u"ModeDisplay",
+        description=u"",
+    )
+
+    form.mode(field_mode_input='input')
+    field_mode_input = schema.TextLine(
+        title=u"ModeInput",
+        description=u"",
+    )
+
+    field_mode_default = schema.TextLine(
+        title=u"ModeInput",
+        description=u"",
+    )
+
+
 class TestJsonSchemaUtils(TestCase):
 
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -38,8 +67,9 @@ class TestJsonSchemaUtils(TestCase):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
 
-    def test_get_fields_from_schema(self):
-        info = get_fields_from_schema(IDummySchema, self.portal, self.request)
+    def test_get_jsonschema_properties(self):
+        fieldsets = get_fieldsets(self.portal, self.request, IDummySchema)
+        info = get_jsonschema_properties(self.portal, self.request, fieldsets)
         expected = {
             'field1': {
                 'title': u'Foo',
@@ -97,6 +127,45 @@ class TestJsonSchemaUtils(TestCase):
         self.assertNotIn('title', jsonschema['properties'].keys())
 
 
+class TestTaggedValuesJsonSchemaUtils(TestCase):
+
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.portal = self.layer['portal']
+        self.request = self.layer['request']
+        fti = DexterityFTI('TaggedDocument')
+        self.portal.portal_types._setObject('TaggedDocument', fti)
+        fti.klass = 'plone.dexterity.content.Container'
+        fti.schema = 'plone.restapi.tests.test_types.ITaggedValuesSchema'
+
+    def test_get_jsonschema_with_hidden_field(self):
+        ttool = getToolByName(self.portal, 'portal_types')
+        jsonschema = get_jsonschema_for_fti(
+            ttool['TaggedDocument'],
+            self.portal,
+            self.request
+        )
+
+        self.assertEqual(
+            'hidden',
+            jsonschema['properties']['field_mode_hidden']['mode']
+        )
+        self.assertEqual(
+            'display',
+            jsonschema['properties']['field_mode_display']['mode']
+        )
+        self.assertEqual(
+            'input',
+            jsonschema['properties']['field_mode_input']['mode']
+        )
+        # XXX: To be decided if we always return a mode attribute
+        # self.assertEqual(
+        #     'input',
+        #     jsonschema['properties']['field_mode_default']['mode']
+        # )
+
+
 class TestJsonSchemaProviders(TestCase):
 
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -119,14 +188,16 @@ class TestJsonSchemaProviders(TestCase):
         )
         adapter = getMultiAdapter((field, self.portal, self.request),
                                   IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'string',
-            'title': u'My field',
-            'description': u'My great field',
-            'default': u'foobar',
-        }
-        self.assertEqual(jsonschema, expected)
+
+        self.assertEqual(
+            {
+                'type': 'string',
+                'title': u'My field',
+                'description': u'My great field',
+                'default': u'foobar',
+            },
+            adapter.get_schema()
+        )
 
     def test_text(self):
         field = schema.Text(
@@ -137,16 +208,18 @@ class TestJsonSchemaProviders(TestCase):
         )
         adapter = getMultiAdapter((field, self.portal, self.request),
                                   IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'string',
-            'title': u'My field',
-            'description': u'My great field',
-            'widget': 'textarea',
-            'default': u'Lorem ipsum dolor sit amet',
-            'minLength': 10,
-        }
-        self.assertEqual(jsonschema, expected)
+
+        self.assertEqual(
+            {
+                'type': 'string',
+                'title': u'My field',
+                'description': u'My great field',
+                'widget': 'textarea',
+                'default': u'Lorem ipsum dolor sit amet',
+                'minLength': 10,
+            },
+            adapter.get_schema()
+        )
 
     def test_bool(self):
         field = schema.Bool(
@@ -156,14 +229,16 @@ class TestJsonSchemaProviders(TestCase):
         )
         adapter = getMultiAdapter((field, self.portal, self.request),
                                   IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'boolean',
-            'title': u'My field',
-            'description': u'My great field',
-            'default': False,
-        }
-        self.assertEqual(jsonschema, expected)
+
+        self.assertEqual(
+            {
+                'type': 'boolean',
+                'title': u'My field',
+                'description': u'My great field',
+                'default': False,
+            },
+            adapter.get_schema()
+        )
 
     def test_float(self):
         field = schema.Float(
@@ -175,16 +250,18 @@ class TestJsonSchemaProviders(TestCase):
         )
         adapter = getMultiAdapter((field, self.portal, self.request),
                                   IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'minimum': 0.0,
-            'maximum': 1.0,
-            'type': 'number',
-            'title': u'My field',
-            'description': u'My great field',
-            'default': 0.5,
-        }
-        self.assertEqual(jsonschema, expected)
+
+        self.assertEqual(
+            {
+                'minimum': 0.0,
+                'maximum': 1.0,
+                'type': 'number',
+                'title': u'My field',
+                'description': u'My great field',
+                'default': 0.5,
+            },
+            adapter.get_schema()
+        )
 
     def test_decimal(self):
         field = schema.Decimal(
@@ -196,16 +273,18 @@ class TestJsonSchemaProviders(TestCase):
         )
         adapter = getMultiAdapter((field, self.portal, self.request),
                                   IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'minimum': 0.0,
-            'maximum': 1.0,
-            'type': 'number',
-            'title': u'My field',
-            'description': u'My great field',
-            'default': 0.5,
-        }
-        self.assertEqual(jsonschema, expected)
+
+        self.assertEqual(
+            {
+                'minimum': 0.0,
+                'maximum': 1.0,
+                'type': 'number',
+                'title': u'My field',
+                'description': u'My great field',
+                'default': 0.5,
+            },
+            adapter.get_schema()
+        )
 
     def test_int(self):
         field = schema.Int(
@@ -217,16 +296,18 @@ class TestJsonSchemaProviders(TestCase):
         )
         adapter = getMultiAdapter((field, self.portal, self.request),
                                   IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'minimum': 0,
-            'maximum': 100,
-            'type': 'integer',
-            'title': u'My field',
-            'description': u'My great field',
-            'default': 50,
-        }
-        self.assertEqual(jsonschema, expected)
+
+        self.assertEqual(
+            {
+                'minimum': 0,
+                'maximum': 100,
+                'type': 'integer',
+                'title': u'My field',
+                'description': u'My great field',
+                'default': 50,
+            },
+            adapter.get_schema()
+        )
 
     def test_choice(self):
         field = schema.Choice(
@@ -236,16 +317,18 @@ class TestJsonSchemaProviders(TestCase):
         )
         adapter = getMultiAdapter((field, self.portal, self.request),
                                   IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'string',
-            'title': u'My field',
-            'description': u'My great field',
-            'enum': ['foo', 'bar'],
-            'enumNames': ['Foo', 'Bar'],
-            'choices': [('foo', 'Foo'), ('bar', 'Bar')],
-        }
-        self.assertEqual(jsonschema, expected)
+
+        self.assertEqual(
+            {
+                'type': 'string',
+                'title': u'My field',
+                'description': u'My great field',
+                'enum': ['foo', 'bar'],
+                'enumNames': ['Foo', 'Bar'],
+                'choices': [('foo', 'Foo'), ('bar', 'Bar')],
+            },
+            adapter.get_schema()
+        )
 
     def test_collection(self):
         field = schema.List(
@@ -261,23 +344,25 @@ class TestJsonSchemaProviders(TestCase):
         )
         adapter = getMultiAdapter((field, self.portal, self.request),
                                   IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'array',
-            'title': u'My field',
-            'description': u'My great field',
-            'default': ['foobar'],
-            'minItems': 1,
-            'uniqueItems': False,
-            'additionalItems': True,
-            'items': {
-                'type': 'string',
-                'title': u'Text',
-                'description': u'Text field',
-                'default': u'Default text',
-            }
-        }
-        self.assertEqual(jsonschema, expected)
+
+        self.assertEqual(
+            {
+                'type': 'array',
+                'title': u'My field',
+                'description': u'My great field',
+                'default': ['foobar'],
+                'minItems': 1,
+                'uniqueItems': False,
+                'additionalItems': True,
+                'items': {
+                    'type': 'string',
+                    'title': u'Text',
+                    'description': u'Text field',
+                    'default': u'Default text',
+                }
+            },
+            adapter.get_schema()
+        )
 
         # Test Tuple
         field = schema.Tuple(
@@ -287,21 +372,23 @@ class TestJsonSchemaProviders(TestCase):
         )
         adapter = getMultiAdapter((field, self.portal, self.request),
                                   IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'array',
-            'title': u'My field',
-            'description': u'',
-            'uniqueItems': True,
-            'additionalItems': True,
-            'items': {
-                'title': u'',
+
+        self.assertEqual(
+            {
+                'type': 'array',
+                'title': u'My field',
                 'description': u'',
-                'type': 'integer',
+                'uniqueItems': True,
+                'additionalItems': True,
+                'items': {
+                    'title': u'',
+                    'description': u'',
+                    'type': 'integer',
+                },
+                'default': (1, 2),
             },
-            'default': (1, 2),
-        }
-        self.assertEqual(jsonschema, expected)
+            adapter.get_schema()
+        )
 
         # Test Set
         field = schema.Set(
@@ -310,20 +397,22 @@ class TestJsonSchemaProviders(TestCase):
         )
         adapter = getMultiAdapter((field, self.portal, self.request),
                                   IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'array',
-            'title': u'My field',
-            'description': u'',
-            'uniqueItems': True,
-            'additionalItems': True,
-            'items': {
-                'title': u'',
+
+        self.assertEqual(
+            {
+                'type': 'array',
+                'title': u'My field',
                 'description': u'',
-                'type': 'string',
-            }
-        }
-        self.assertEqual(jsonschema, expected)
+                'uniqueItems': True,
+                'additionalItems': True,
+                'items': {
+                    'title': u'',
+                    'description': u'',
+                    'type': 'string',
+                }
+            },
+            adapter.get_schema()
+        )
 
         # List of choices
         field = schema.List(
@@ -332,25 +421,29 @@ class TestJsonSchemaProviders(TestCase):
                 vocabulary=self.dummy_vocabulary,
             ),
         )
-        adapter = getMultiAdapter((field, self.portal, self.request),
-                                  IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'array',
-            'title': u'My field',
-            'description': u'',
-            'uniqueItems': True,
-            'additionalItems': True,
-            'items': {
-                'title': u'',
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request),
+            IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                'type': 'array',
+                'title': u'My field',
                 'description': u'',
-                'type': 'string',
-                'enum': ['foo', 'bar'],
-                'enumNames': ['Foo', 'Bar'],
-                'choices': [('foo', 'Foo'), ('bar', 'Bar')],
-            }
-        }
-        self.assertEqual(jsonschema, expected)
+                'uniqueItems': True,
+                'additionalItems': True,
+                'items': {
+                    'title': u'',
+                    'description': u'',
+                    'type': 'string',
+                    'enum': ['foo', 'bar'],
+                    'enumNames': ['Foo', 'Bar'],
+                    'choices': [('foo', 'Foo'), ('bar', 'Bar')],
+                }
+            },
+            adapter.get_schema()
+        )
 
     def test_object(self):
         field = schema.Object(
@@ -358,43 +451,51 @@ class TestJsonSchemaProviders(TestCase):
             description=u'My great field',
             schema=IDummySchema,
         )
-        adapter = getMultiAdapter((field, self.portal, self.request),
-                                  IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'object',
-            'title': u'My field',
-            'description': u'My great field',
-            'properties': {
-                'field1': {
-                    'title': u'Foo',
-                    'description': u'',
-                    'type': 'boolean'
-                },
-                'field2': {
-                    'title': u'Bar',
-                    'description': u'',
-                    'type': 'string'
-                },
-            }
-        }
-        self.assertEqual(jsonschema, expected)
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request),
+            IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                'type': 'object',
+                'title': u'My field',
+                'description': u'My great field',
+                'properties': {
+                    'field1': {
+                        'title': u'Foo',
+                        'description': u'',
+                        'type': 'boolean'
+                    },
+                    'field2': {
+                        'title': u'Bar',
+                        'description': u'',
+                        'type': 'string'
+                    },
+                }
+            },
+            adapter.get_schema()
+        )
 
     def test_richtext(self):
         field = RichText(
             title=u'My field',
             description=u'My great field',
         )
-        adapter = getMultiAdapter((field, self.portal, self.request),
-                                  IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'string',
-            'title': u'My field',
-            'description': u'My great field',
-            'widget': 'richtext',
-        }
-        self.assertEqual(jsonschema, expected)
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request),
+            IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                'type': 'string',
+                'title': u'My field',
+                'description': u'My great field',
+                'widget': 'richtext',
+            },
+            adapter.get_schema()
+        )
 
     def test_date(self):
         field = schema.Date(
@@ -402,28 +503,38 @@ class TestJsonSchemaProviders(TestCase):
             description=u'My great field',
             default=date(2016, 1, 1),
         )
-        adapter = getMultiAdapter((field, self.portal, self.request),
-                                  IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'string',
-            'title': u'My field',
-            'description': u'My great field',
-            'default': date(2016, 1, 1),
-        }
-        self.assertEqual(jsonschema, expected)
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request),
+            IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                'type': 'string',
+                'title': u'My field',
+                'description': u'My great field',
+                'default': date(2016, 1, 1),
+                'widget': u'date',
+            },
+            adapter.get_schema()
+        )
 
     def test_datetime(self):
         field = schema.Datetime(
             title=u'My field',
             description=u'My great field',
         )
-        adapter = getMultiAdapter((field, self.portal, self.request),
-                                  IJsonSchemaProvider)
-        jsonschema = adapter.get_schema()
-        expected = {
-            'type': 'string',
-            'title': u'My field',
-            'description': u'My great field',
-        }
-        self.assertEqual(jsonschema, expected)
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request),
+            IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                'type': 'string',
+                'title': u'My field',
+                'description': u'My great field',
+                'widget': u'datetime',
+            },
+            adapter.get_schema()
+        )

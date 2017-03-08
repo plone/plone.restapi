@@ -80,40 +80,64 @@ Implementation
 
 Plone Document:
 
-.. literalinclude:: _json/document.json
-   :language: jsonld
+..  http:example:: curl httpie python-requests
+    :request: ../_json/document.req
+
+.. literalinclude:: ../source/_json/document.resp
+   :language: http
 
 Plone Folder:
 
-.. literalinclude:: _json/folder.json
-   :language: jsonld
+..  http:example:: curl httpie python-requests
+    :request: ../_json/folder.req
+
+.. literalinclude:: ../source/_json/folder.resp
+   :language: http
 
 Plone Portal Root:
 
-.. literalinclude:: _json/siteroot.json
-   :language: json-ld
+..  http:example:: curl httpie python-requests
+    :request: ../_json/siteroot.req
+
+.. literalinclude:: ../source/_json/siteroot.resp
+   :language: http
 
 Collection:
 
-.. literalinclude:: _json/collection.json
-   :language: json-ld
+..  http:example:: curl httpie python-requests
+    :request: ../_json/collection.req
+
+.. literalinclude:: ../source/_json/collection.resp
+   :language: http
 
 Plone Image:
 
-.. literalinclude:: _json/image.json
-   :language: json-ld
+..  http:example:: curl httpie python-requests
+    :request: ../_json/image.req
+
+.. literalinclude:: ../source/_json/image.resp
+   :language: http
 
 File:
 
-.. literalinclude:: _json/file.json
-   :language: json-ld
+..  http:example:: curl httpie python-requests
+    :request: ../_json/file.req
+
+.. literalinclude:: ../source/_json/file.resp
+   :language: http
 
 Link:
 
-.. literalinclude:: _json/link.json
-   :language: json-ld
+..  http:example:: curl httpie python-requests
+    :request: ../_json/link.req
+
+.. literalinclude:: ../source/_json/link.resp
+   :language: http
 
 News Item:
 
-.. literalinclude:: _json/newsitem.json
-   :language: json-ld
+..  http:example:: curl httpie python-requests
+    :request: ../_json/newsitem.req
+
+.. literalinclude:: ../source/_json/newsitem.resp
+   :language: http

@@ -21,8 +21,9 @@ Contents
    :maxdepth: 2
 
    authentication
-   crud
+   content
    batching
+   copymove
    workflow
    sharing
    registry
@@ -32,6 +33,7 @@ Contents
    serialization
    searching
    customization
+   conventions
 
 .. include:: ../../README.rst
 
