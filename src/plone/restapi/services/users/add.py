@@ -40,6 +40,11 @@ class UsersPost(Service):
         return self
 
     def reply(self):
+        # Disable CSRF protection
+        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
+
         portal = getSite()
         data = json_body(self.request)
 
@@ -71,11 +76,6 @@ class UsersPost(Service):
 
         if not password:
             raise BadRequest("Property 'password' is required")
-
-        # Disable CSRF protection
-        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
 
         # set username based on the login settings (username or email)
         if use_email_as_login:
