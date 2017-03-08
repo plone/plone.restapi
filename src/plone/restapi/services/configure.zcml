@@ -12,5 +12,6 @@
   <include package=".users"/>
   <include package=".groups"/>
   <include package=".vocabularies"/>
+  <include package=".principals"/>
 
 </configure>
