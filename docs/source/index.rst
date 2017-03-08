@@ -31,6 +31,7 @@ Contents
    components
    serialization
    searching
+   vocabularies
    customization
    conventions
 

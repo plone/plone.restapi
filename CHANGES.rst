@@ -6,6 +6,10 @@ Changelog
 
 New Features:
 
+- Add @vocabularies endpoint.
+  https://github.com/plone/plone.restapi/issues/212
+  [timo,csenger,sneridagh]
+
 - Implement @copy and @move endpoints.
   [buchi]
 

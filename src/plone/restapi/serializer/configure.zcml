@@ -60,4 +60,7 @@
     <adapter factory=".user.SerializeUserToJson" />
     <adapter factory=".group.SerializeGroupToJson" />
 
+    <adapter factory=".vocabularies.SerializeVocabularyToJson" />
+    <adapter factory=".vocabularies.SerializeTermToJson" />
+
 </configure>

@@ -1,0 +1,209 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Skins", 
+    "title": "plone.app.vocabularies.Skins"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableContentLanguages", 
+    "title": "plone.app.vocabularies.AvailableContentLanguages"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.schemaeditor.VocabulariesVocabulary", 
+    "title": "plone.schemaeditor.VocabulariesVocabulary"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.event.Weekdays", 
+    "title": "plone.app.event.Weekdays"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.contentrules.events", 
+    "title": "plone.contentrules.events"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary", 
+    "title": "plone.app.discussion.vocabularies.CaptchaVocabulary"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Actions", 
+    "title": "plone.app.vocabularies.Actions"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.contenttypes.migration.changed_base_classes", 
+    "title": "plone.app.contenttypes.migration.changed_base_classes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/wicked.vocabularies.BaseConfigurationsOptions", 
+    "title": "wicked.vocabularies.BaseConfigurationsOptions"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.content.ValidAddableTypes", 
+    "title": "plone.app.content.ValidAddableTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.CommonTimezones", 
+    "title": "plone.app.vocabularies.CommonTimezones"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableEditors", 
+    "title": "plone.app.vocabularies.AvailableEditors"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/cmf.calendar.AvailableEventTypes", 
+    "title": "cmf.calendar.AvailableEventTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SupportedContentLanguages", 
+    "title": "plone.app.vocabularies.SupportedContentLanguages"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords", 
+    "title": "plone.app.vocabularies.Keywords"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Groups", 
+    "title": "plone.app.vocabularies.Groups"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableTimezones", 
+    "title": "plone.app.vocabularies.AvailableTimezones"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog", 
+    "title": "plone.app.vocabularies.Catalog"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.TextTransformVocabulary", 
+    "title": "plone.app.discussion.vocabularies.TextTransformVocabulary"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/wicked.vocabularies.CacheConfigurationsOptions", 
+    "title": "wicked.vocabularies.CacheConfigurationsOptions"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Month", 
+    "title": "plone.app.vocabularies.Month"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Weekdays", 
+    "title": "plone.app.vocabularies.Weekdays"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WorkflowTransitions", 
+    "title": "plone.app.vocabularies.WorkflowTransitions"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WeekdaysShort", 
+    "title": "plone.app.vocabularies.WeekdaysShort"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.contenttypes.metadatafields", 
+    "title": "plone.app.contenttypes.metadatafields"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/Behaviors", 
+    "title": "Behaviors"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/Interfaces", 
+    "title": "Interfaces"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.event.Timezones", 
+    "title": "plone.app.event.Timezones"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WorkflowStates", 
+    "title": "plone.app.vocabularies.WorkflowStates"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.event.EventTypes", 
+    "title": "plone.app.event.EventTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/Fields", 
+    "title": "Fields"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.contenttypes.migration.atctypes", 
+    "title": "plone.app.contenttypes.migration.atctypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicatableFeedItems", 
+    "title": "plone.app.vocabularies.SyndicatableFeedItems"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users", 
+    "title": "plone.app.vocabularies.Users"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.event.AvailableTimezones", 
+    "title": "plone.app.event.AvailableTimezones"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WeekdaysAbbr", 
+    "title": "plone.app.vocabularies.WeekdaysAbbr"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.UserFriendlyTypes", 
+    "title": "plone.app.vocabularies.UserFriendlyTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes", 
+    "title": "plone.app.vocabularies.PortalTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.controlpanel.WickedPortalTypes", 
+    "title": "plone.app.controlpanel.WickedPortalTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicationFeedTypes", 
+    "title": "plone.app.vocabularies.SyndicationFeedTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Timezones", 
+    "title": "plone.app.vocabularies.Timezones"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.formwidget.relations.cmfcontentsearch", 
+    "title": "plone.formwidget.relations.cmfcontentsearch"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes", 
+    "title": "plone.app.vocabularies.ReallyUserFriendlyTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AllowableContentTypes", 
+    "title": "plone.app.vocabularies.AllowableContentTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.contenttypes.migration.extendedtypes", 
+    "title": "plone.app.contenttypes.migration.extendedtypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.MonthAbbr", 
+    "title": "plone.app.vocabularies.MonthAbbr"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Workflows", 
+    "title": "plone.app.vocabularies.Workflows"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/Group Ids", 
+    "title": "Group Ids"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.event.SynchronizationStrategies", 
+    "title": "plone.app.event.SynchronizationStrategies"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AllowedContentTypes", 
+    "title": "plone.app.vocabularies.AllowedContentTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Roles", 
+    "title": "plone.app.vocabularies.Roles"
+  }
+]
