@@ -8,29 +8,23 @@ Breadcrumbs
 
 Getting the breadcrumbs for the current page:
 
-.. code::
+..  http:example:: curl httpie python-requests
+    :request: _json/breadcrumbs.req
 
-  GET /:portal/:path_to_content/@components/breadcrumbs HTTP/1.1
-  Host: localhost:8080
-  Accept: application/json
+Example response:
 
-Example:
-
-.. literalinclude:: _json/breadcrumbs.json
-   :language: js
+.. literalinclude:: _json/breadcrumbs.resp
+   :language: http
 
 Navigation
 -------------------------
 
 Getting the top navigation items:
 
-.. code::
+..  http:example:: curl httpie python-requests
+    :request: _json/navigation.req
 
-  GET /:portal/@components/navigation HTTP/1.1
-  Host: localhost:8080
-  Accept: application/json
+Example response:
 
-Example:
-
-.. literalinclude:: _json/navigation.json
-   :language: js
+.. literalinclude:: _json/navigation.resp
+   :language: http

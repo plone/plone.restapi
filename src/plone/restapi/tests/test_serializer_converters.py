@@ -195,7 +195,8 @@ class TestJsonCompatibleConverters(TestCase):
             {'@id': 'http://nohost/plone/doc1',
              '@type': 'DXTestDocument',
              'title': 'Document 1',
-             'description': 'Description'},
+             'description': 'Description',
+             'review_state': 'private'},
             json_compatible(RelationValue(intids.getId(doc1))))
 
     def test_i18n_message(self):

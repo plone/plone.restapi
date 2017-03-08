@@ -1,0 +1,6 @@
+POST /plone/@users HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{"username": "noamchomsky", "description": "Professor of Linguistics", "home_page": "web.mit.edu/chomsky", "fullname": "Noam Avram Chomsky", "password": "colorlessgreenideas", "email": "noam.chomsky@example.com", "location": "Cambridge, MA"}

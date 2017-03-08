@@ -89,7 +89,14 @@ class FolderPost(Service):
             (obj, self.request),
             ISerializeToJson
         )
-        return serializer()
+        serialized_obj = serializer()
+
+        # HypermediaBatch can't determine the correct canonical URL for
+        # objects that have just been created via POST - so we make sure
+        # to set it here
+        serialized_obj['@id'] = obj.absolute_url()
+
+        return serialized_obj
 
     def rename_object(self, obj):
         # Archetypes objects may get renamed during deserialization.
