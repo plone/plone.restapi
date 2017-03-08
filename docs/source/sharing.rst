@@ -40,31 +40,36 @@ The sharing information of a content object can also be directly accessed by app
   content-type: application/json
 
   {
-    "Administrators": {
-      "contributor": false,
-      "editor": false,
-      "reviewer": false,
-      "reader": false,
-    },
-    "AuthenticatedUsers": {
-      "contributor": true,
-      "editor": false,
-      "reviewer": true,
-      "reader": true,
-    },
-    "Reviewers": {
-      "contributor": false,
-      "editor": false,
-      "reviewer": false,
-      "reader": true,
-    },
-    "Site Administrators": {
-      "contributor": false,
-      "editor": false,
-      "reviewer": false,
-      "reader": true,
-    }
+     "inherit" : false,
+     "entries" : [
+        {
+           "disabled" : false,
+           "title" : "Logged-in users",
+           "id" : "AuthenticatedUsers",
+           "login" : null,
+           "type" : "group",
+           "roles" : {
+              "Reader" : false,
+              "Editor" : false,
+              "Contributor" : false,
+              "Reviewer" : false
+           }
+        },
+        {
+           "id" : "test_user_1_",
+           "title" : "test-user",
+           "disabled" : false,
+           "roles" : {
+              "Reviewer" : true,
+              "Contributor" : false,
+              "Editor" : false,
+              "Reader" : false
+           },
+           "type" : "user"
+        }
+     ]
   }
+  
 
 RFC: We can not return a full list of all users and groups in the portal here. This would not scale for portals with lots of users. We could always list the local roles that are available. It is fair to assume that the number of local roles is somehow limited.
 
@@ -82,12 +87,20 @@ You can update the 'sharing' information by sending a POST request to the object
   Content-Type: application/json
 
   {
-    "AuthenticatedUsers": {
-      "contributor": false,
-      "editor": false,
-      "reviewer": false,
-      "reader": true,
-    },
+     "inherit" : true,
+     "entries" : [
+        {
+           "id" : "test_user_1_",
+           "roles" : {
+              "Reviewer" : true,
+              "Editor" : false,
+              "Reader" : true,
+              "Contributor" : false
+           },
+           "type" : "user"
+        }
+     ]
   }
+  
 
 RFC: I'm wondering if a POST request is the correct HTTP verb. We are actually updating an object, which would make PATCH a more appropriate choice. Though, we are not embedding the sharing information in the standard view (something that could also be a possible option.)
