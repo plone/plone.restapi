@@ -286,7 +286,7 @@ class TestUsersEndpoint(unittest.TestCase):
                                       acquire=False)
         transaction.commit()
 
-        payload = {'old_password': 'password_old',
+        payload = {'old_password': 'password',
                    'new_password': 'new_password'}
         response = self.api_session.post('/@users/noam/reset-password',
                                          json=payload)
