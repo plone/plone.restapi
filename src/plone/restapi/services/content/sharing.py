@@ -60,4 +60,4 @@ class SharingPost(Service):
 
         # TODO: alternativley return the patched object with a 200
         self.request.response.setStatus(204)
-        return {'dundundnd': 'dudun'}
+        return
