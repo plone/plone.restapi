@@ -1,0 +1,72 @@
+.rst-content .menuselection {
+    background-color: #f9ebb3;
+    border: 1px solid #f0b37e;
+    border-radius: 3px;
+    padding: 1px 6px;
+}
+
+.rst-content .guilabel{
+    border: 1px solid #777;
+    background-color: #cee3fb;
+    border-radius: 3px;
+    padding: 1px 6px;
+}
+.rst-content .toggle {
+    background: none repeat scroll 0 0 #e7f2fa;
+    padding: 12px;
+    line-height: 24px;
+    margin-bottom: 24px;
+}
+
+.rst-content .toggle .admonition-title {
+    display: block;
+    clear: both;
+    cursor: pointer;
+}
+
+.rst-content .toggle .admonition-title:after {
+    content: " â–¼";
+}
+
+.rst-content .toggle .admonition-title.open:after {
+    content: " â–²";
+}
+
+.rst-content .toggle p:last-child {
+    margin-bottom: 0;
+}
+
+/* Support for "more Font-Awesome Icons" example    */
+/* ################################################ */
+
+.fa:before,
+.icon:before {
+    font-family: "FontAwesome";
+    display: inline-block;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+    text-decoration: inherit;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
+}
+
+/*  Hint for providing the Unicode Value of an fa-icon in CSS as ASCII 
+    replace the "&#x" part from the unicode HTML5 literal 
+    displayed on the font-awesome website cheatsheet e.g. 
+    http://fontawesome.io/cheatsheet/
+   
+        fa-wrench [&#xf0ad;]
+
+    by a backslash like:
+
+        .fa-wrench:before {
+            content: "\f0ad";
+        }
+
+*/
+
+.icon-wrench:before,
+.fa-wrench:before {
+    content: "\f0ad";
+}
