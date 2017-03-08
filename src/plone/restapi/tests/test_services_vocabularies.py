@@ -28,7 +28,7 @@ def test_context_vocabulary_factory(context):
     return SimpleVocabulary([
         SimpleTerm(context.id, token='id', title=context.id),
         SimpleTerm(context.title, token='title', title=context.title)
-        ])
+    ])
 
 
 class TestVocabularyEndpoint(unittest.TestCase):
@@ -46,12 +46,16 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        provideUtility(test_vocabulary_factory, provides=IVocabularyFactory,
-                       name='plone.restapi.tests.test_vocabulary')
+        provideUtility(
+            test_vocabulary_factory,
+            provides=IVocabularyFactory,
+            name='plone.restapi.tests.test_vocabulary'
+        )
 
     def test_get_vocabulary(self):
         response = self.api_session.get(
-            '/@vocabularies/plone.restapi.tests.test_vocabulary')
+            '/@vocabularies/plone.restapi.tests.test_vocabulary'
+        )
 
         self.assertEqual(200, response.status_code)
         response = response.json()
@@ -75,16 +79,31 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(response['error']['type'], u"Not Found")
 
     def test_get_all_vocabularies(self):
-        response = self.api_session.get(
-            '/@vocabularies')
+        response = self.api_session.get('/@vocabularies')
 
         self.assertEqual(200, response.status_code)
         response = response.json()
         self.assertTrue(len(response) > 0)
-        self.assertIn('plone.app.vocabularies.Roles', response)
+        self.assertTrue(
+            '@id' in response[0].keys()
+        )
+        self.assertTrue(
+            'title' in response[0].keys()
+        )
+        self.assertEqual(
+            [
+                {
+                    u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
+                    u'title': u'plone.restapi.tests.test_vocabulary'
+                }
+            ],
+            [
+                x for x in response
+                if x.get('title') == 'plone.restapi.tests.test_vocabulary'
+            ]
+        )
 
     def test_context_vocabulary(self):
-
         api.content.create(
             container=self.portal,
             id="testdoc",

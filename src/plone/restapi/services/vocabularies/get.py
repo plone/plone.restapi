@@ -25,12 +25,25 @@ class VocabulariesGet(Service):
 
     def _error(self, status, type, message):
         self.request.response.setStatus(status)
-        return {'error': {'type': type,
-                          'message': message}}
+        return {
+            'error': {
+                'type': type,
+                'message': message
+            }
+        }
 
     def reply(self):
         if len(self.params) == 0:
-            return [vocab[0] for vocab in getUtilitiesFor(IVocabularyFactory)]
+            return [
+                {
+                    '@id': '{}/@vocabularies/{}'.format(
+                        self.context.absolute_url(),
+                        vocab[0]
+                    ),
+                    'title': vocab[0]
+                }
+                for vocab in getUtilitiesFor(IVocabularyFactory)
+            ]
 
         name = self.params[0]
         try:
@@ -38,11 +51,18 @@ class VocabulariesGet(Service):
         except ComponentLookupError:
             return self._error(
                 404, "Not Found",
-                "The vocabulary '{}' does not exist".format(name))
+                "The vocabulary '{}' does not exist".format(name)
+            )
 
         vocabulary = factory(self.context)
         vocabulary_name = self.params[0]
-        serializer = getMultiAdapter((vocabulary, self.request),
-                                     interface=ISerializeToJson)
-        return serializer('{}/@vocabularies/{}'.format(
-            self.context.absolute_url(), vocabulary_name))
+        serializer = getMultiAdapter(
+            (vocabulary, self.request),
+            interface=ISerializeToJson
+        )
+        return serializer(
+            '{}/@vocabularies/{}'.format(
+                self.context.absolute_url(),
+                vocabulary_name
+            )
+        )
