@@ -55,7 +55,11 @@ Bugfixes:
 
 - Propose a fix for the issue #253 by not comparing IDatetime fields when
   patching and set the value always.
+
+- Add missing adapter for IBytes on JSONFieldSchema generator. This fixes the
+  broken /@types/Image and /@types/File endpoints.
   [sneridagh]
+
 
 1.0a9 (2017-03-03)
 ------------------
