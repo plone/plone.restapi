@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.utils import getToolByName
 from plone.keyring.interfaces import IKeyManager
+from plone.protect.interfaces import IDisableCSRFProtection
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getUtility
 
@@ -101,3 +102,42 @@ class TestJWTAuthenticationPlugin(unittest.TestCase):
         self.assertEqual(
             None,
             self.plugin.authenticateCredentials(creds))
+
+    def test_successfull_authenticate_disables_csrf_if_activated(self):
+        self.plugin.disable_csrf = True
+        creds = {}
+        creds['extractor'] = 'jwt_auth'
+        creds['token'] = self.plugin.create_token('admin')
+        creds['request'] = self.layer['request']
+
+        self.assertEqual(
+            ('admin', 'admin'),
+            self.plugin.authenticateCredentials(creds))
+
+        self.assertTrue(IDisableCSRFProtection.providedBy(creds['request']))
+
+    def test_failed_authenticate_not_disables_csrf(self):
+        self.plugin.disable_csrf = True
+        creds = {}
+        creds['extractor'] = 'jwt_auth'
+        creds['token'] = 'nonexisting'
+        creds['request'] = self.layer['request']
+
+        self.assertEqual(
+            None,
+            self.plugin.authenticateCredentials(creds))
+
+        self.assertFalse(IDisableCSRFProtection.providedBy(creds['request']))
+
+    def test_successfull_authenticate_not_disables_csrf_if_deactivated(self):
+        self.plugin.disable_csrf = False
+        creds = {}
+        creds['extractor'] = 'jwt_auth'
+        creds['token'] = self.plugin.create_token('admin')
+        creds['request'] = self.layer['request']
+
+        self.assertEqual(
+            ('admin', 'admin'),
+            self.plugin.authenticateCredentials(creds))
+
+        self.assertFalse(IDisableCSRFProtection.providedBy(creds['request']))

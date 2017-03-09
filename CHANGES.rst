@@ -6,6 +6,11 @@ Changelog
 
 New Features:
 
+- JWT plugin: Add option to disable CSRF protection if the request
+  is successfully authenticated through JWT
+  https://github.com/plone/plone.restapi/issues/243
+  [csenger]
+
 - Add @vocabularies endpoint.
   https://github.com/plone/plone.restapi/issues/212
   [timo,csenger,sneridagh]

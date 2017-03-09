@@ -15,8 +15,10 @@ from datetime import timedelta
 from plone.keyring.interfaces import IKeyManager
 from plone.keyring.keyring import GenerateSecret
 from zope.component import getUtility
+from zope.interface import alsoProvides
 from zope.interface import implements
 
+import plone.protect.interfaces
 import jwt
 import time
 
@@ -53,6 +55,7 @@ class JWTAuthenticationPlugin(BasePlugin):
     token_timeout = 60 * 60 * 12  # 12 hours
     use_keyring = True
     store_tokens = False
+    disable_csrf = True
     _secret = None
     _tokens = None
 
@@ -90,7 +93,7 @@ class JWTAuthenticationPlugin(BasePlugin):
     # IExtractionPlugin implementation
     # Extracts a JSON web token from the request.
     def extractCredentials(self, request):
-        creds = {}
+        creds = {'request': request}
         auth = request._auth
         if auth is None:
             return None
@@ -125,6 +128,11 @@ class JWTAuthenticationPlugin(BasePlugin):
             if credentials['token'] not in self._tokens[userid]:
                 return None
 
+        if self.disable_csrf and 'IDisableCSRFProtection' in dir(
+                plone.protect.interfaces):
+            alsoProvides(credentials['request'],
+                         plone.protect.interfaces.IDisableCSRFProtection)
+
         return (userid, userid)
 
     security.declareProtected(ManagePortal, 'manage_updateConfig')
@@ -139,6 +147,8 @@ class JWTAuthenticationPlugin(BasePlugin):
                                                   self.token_timeout))
         self.use_keyring = bool(REQUEST.form.get('use_keyring', False))
         self.store_tokens = bool(REQUEST.form.get('store_tokens', False))
+        self.disable_csrf = int(REQUEST.form.get('disable_csrf',
+                                                 self.disable_csrf))
         if self.store_tokens and self._tokens is None:
             self._tokens = OOBTree()
 
