@@ -62,6 +62,10 @@ Bugfixes:
 
 New Features:
 
+- Add reset-password action to the user endpoint.
+  https://github.com/plone/plone.restapi/issues/158
+  [timo,csenger]
+
 - Make date and datetime fields provide a 'widget' attribute.
   [timo]
 
