@@ -1,13 +1,21 @@
 # -*- coding: utf-8 -*-
-from plone import api
+
+from AccessControl import getSecurityManager
+
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.permissions import AddPortalMember
+from Products.CMFCore.permissions import SetOwnPassword
+from Products.PasswordResetTool.PasswordResetTool import ExpiredRequestError
+from Products.PasswordResetTool.PasswordResetTool import InvalidRequestError
 from zope.component import getAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
+from zope.interface import implements
+from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect.interfaces
 
@@ -20,6 +28,17 @@ except ImportError:
 class UsersPost(Service):
     """Creates a new user.
     """
+
+    implements(IPublishTraverse)
+
+    def __init__(self, context, request):
+        super(UsersPost, self).__init__(context, request)
+        self.params = []
+
+    def publishTraverse(self, request, name):
+        # Consume any path segments after /@users as parameters
+        self.params.append(name)
+        return self
 
     def validate_input_data(self, portal, original_data):
         '''Returns a tuple of (required_fields, allowed_fields)'''
@@ -80,12 +99,12 @@ class UsersPost(Service):
     def errors_to_string(self):
         return ' '.join([error['message'] for error in self.errors])
 
-    @property
-    def can_manage_users(self):
-        return api.user.has_permission(
-            'plone.app.controlpanel.UsersAndGroups')
-
     def reply(self):
+        # Disable CSRF protection
+        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
+
         portal = getSite()
 
         # validate important data
@@ -94,6 +113,28 @@ class UsersPost(Service):
         self.validate_input_data(portal, data)
         security = getAdapter(self.context, ISecuritySchema)
         registration = getToolByName(self.context, 'portal_registration')
+
+        general_usage_error = (
+            "Either post to @users to create a user or use "
+            "@users/<username>/reset-password to update the password.")
+        if len(self.params) not in [0, 2]:
+            raise Exception(general_usage_error)
+
+        if len(self.params) == 2:
+            if self.params[1] == 'reset-password':
+                return self.update_password(data)
+            raise Exception('Unknown Endpoint @users/%s/%s' % self.params)
+
+        # Add a portal member
+        if not self.can_add_member:
+            return self._error(403, 'Forbidden',
+                               'You need AddPortalMember permission.')
+
+        username = data.get('username', None)
+        email = data.get('email', None)
+        password = data.get('password', None)
+        roles = data.get('roles', [])
+        properties = data.get('properties', {})
 
         if self.errors:
             self.request.response.setStatus(400)
@@ -111,11 +152,6 @@ class UsersPost(Service):
 
         if not self.can_manage_users:
             properties = {}
-
-        # Disable CSRF protection
-        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
 
         # set username based on the login settings (username or email)
         if security.use_email_as_login:
@@ -156,3 +192,102 @@ class UsersPost(Service):
             ISerializeToJson
         )
         return serializer()
+
+    def _get_user(self, user_id):
+        portal = getSite()
+        portal_membership = getToolByName(portal, 'portal_membership')
+        return portal_membership.getMemberById(user_id)
+
+    def _error(self, status, type, message):
+        self.request.response.setStatus(status)
+        return {'error': {'type': type,
+                          'message': message}}
+
+    @property
+    def can_manage_users(self):
+        sm = getSecurityManager()
+        return sm.checkPermission('plone.app.controlpanel.UsersAndGroups',
+                                  self.context)
+
+    @property
+    def can_set_own_password(self):
+        sm = getSecurityManager()
+        return sm.checkPermission(SetOwnPassword, self.context)
+
+    @property
+    def can_add_member(self):
+        sm = getSecurityManager()
+        return sm.checkPermission(AddPortalMember, self.context)
+
+    def update_password(self, data):
+        username = self.params[0]
+        target_user = self._get_user(username)
+        reset_token = data.get('reset_token', None)
+        old_password = data.get('old_password', None)
+        new_password = data.get('new_password', None)
+
+        pas = getToolByName(self.context, 'acl_users')
+        mt = getToolByName(self.context, 'portal_membership')
+        pwt = getToolByName(self.context, 'portal_password_reset')
+
+        if target_user is None:
+            self.request.response.setStatus(404)
+            return
+
+        # Send password reset mail
+        if data.keys() == []:
+            registration_tool = getToolByName(self.context,
+                                              'portal_registration')
+            registration_tool.mailPassword(username, self.request)
+            return
+
+        if reset_token and old_password:
+            return self._error(
+                400, 'Invalid parameters',
+                "You can't use 'reset_token' and 'old_password' together.")
+        if reset_token and not new_password:
+            return self._error(
+                400, 'Invalid parameters',
+                "If you pass 'reset_token' you have to pass 'new_password'")
+        if old_password and not new_password:
+            return self._error(
+                400, 'Invalid parameters',
+                "If you pass 'old_password' you have to pass 'new_password'")
+
+        # Reset the password with a reset token
+        if reset_token:
+            try:
+                pwt.resetPassword(username, reset_token, new_password)
+            except InvalidRequestError:
+                return self._error(403, 'Unknown Token',
+                                   'The reset_token is unknown/not valid.') 
+            except ExpiredRequestError:
+                return self._error(403, 'Expired Token',
+                                   'The reset_token is expired.')
+            return
+
+        # set the new password by giving the old password
+        if old_password:
+            if not (self.can_manage_users or self.can_set_own_password):
+                return self._error(
+                    403, 'Not allowed', 'You can\'t set a password without '
+                    'a password reset token.')
+            authenticated_user_id = mt.getAuthenticatedMember().getId()
+            if username != authenticated_user_id:
+                return self._error(
+                    403, "Wrong user"
+                    ("You need to be logged in as the user '%s' to set "
+                     "the password.") % username)
+
+            check_password_auth = pas.authenticate(
+                username, old_password.encode('utf-8'), self.request)
+            if not check_password_auth:
+                return self._error(403, "Wrong password"
+                                   "The password passed as 'old_password' "
+                                   "is wrong.")
+            mt.setPassword(new_password)
+            return
+
+        return self._error(400, 'Invalid parameters',
+                           'See the user endpoint documentation for the '
+                           'valid parameters.')

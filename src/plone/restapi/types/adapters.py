@@ -11,6 +11,7 @@ from zope.interface import Interface
 from zope.schema.interfaces import IASCII
 from zope.schema.interfaces import IASCIILine
 from zope.schema.interfaces import IBool
+from zope.schema.interfaces import IBytes
 from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDate
@@ -80,6 +81,14 @@ class DefaultJsonSchemaProvider(object):
 
     def get_widget(self):
         return None
+
+
+@adapter(IBytes, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class BytesLineJsonSchemaProvider(DefaultJsonSchemaProvider):
+
+    def get_type(self):
+        return 'string'
 
 
 @adapter(ITextLine, Interface, Interface)

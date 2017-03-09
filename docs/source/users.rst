@@ -140,4 +140,3 @@ Return Values
 * `403` (Not allowed)
 * `403` (Wrong password)
 * :term:`500 Internal Server Error` (server fault, can not recover internally)
-

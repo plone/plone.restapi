@@ -24,7 +24,7 @@
     name="@users"
     for="Products.CMFCore.interfaces.ISiteRoot"
     factory=".add.UsersPost"
-    permission="cmf.AddPortalMember"
+    permission="zope2.View"
     />
 
   <plone:service

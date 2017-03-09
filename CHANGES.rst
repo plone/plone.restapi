@@ -6,6 +6,10 @@ Changelog
 
 New Features:
 
+- Add user registration to @users POST
+  https://github.com/plone/plone.restapi/pull/255
+  [csenger]
+
 - Add @vocabularies endpoint.
   https://github.com/plone/plone.restapi/issues/212
   [timo,csenger,sneridagh]
@@ -53,15 +57,18 @@ Bugfixes:
 - Add missing id to the Plone site serialization, related to issue #186
   [sneridagh]
 
+- Add missing adapter for IBytes on JSONFieldSchema generator. This fixes the
+  broken /@types/Image and /@types/File endpoints.
+  [sneridagh]
 
 1.0a9 (2017-03-03)
 ------------------
 
 New Features:
 
-- Add user registration to @users POST
-  https://github.com/plone/plone.restapi/pull/255
-  [csenger]
+- Add reset-password action to the user endpoint.
+  https://github.com/plone/plone.restapi/issues/158
+  [timo,csenger]
 
 - Make date and datetime fields provide a 'widget' attribute.
   [timo]
