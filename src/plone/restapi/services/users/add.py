@@ -260,7 +260,7 @@ class UsersPost(Service):
                 pwt.resetPassword(username, reset_token, new_password)
             except InvalidRequestError:
                 return self._error(403, 'Unknown Token',
-                                   'The reset_token is unknown/not valid.') 
+                                   'The reset_token is unknown/not valid.')
             except ExpiredRequestError:
                 return self._error(403, 'Expired Token',
                                    'The reset_token is expired.')
