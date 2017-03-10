@@ -25,6 +25,7 @@ Contents
    batching
    copymove
    workflow
+   sharing
    registry
    types
    users

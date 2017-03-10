@@ -6,9 +6,8 @@ Changelog
 
 New Features:
 
-- Add user registration to @users POST
-  https://github.com/plone/plone.restapi/pull/255
-  [csenger]
+- Add @sharing endpoint.
+  [timo,csenger]
 
 - Add @vocabularies endpoint.
   https://github.com/plone/plone.restapi/issues/212
@@ -61,14 +60,15 @@ Bugfixes:
   broken /@types/Image and /@types/File endpoints.
   [sneridagh]
 
+- Add reset-password action to the user endpoint.
+  https://github.com/plone/plone.restapi/issues/158
+  [timo,csenger]
+
+
 1.0a9 (2017-03-03)
 ------------------
 
 New Features:
-
-- Add reset-password action to the user endpoint.
-  https://github.com/plone/plone.restapi/issues/158
-  [timo,csenger]
 
 - Make date and datetime fields provide a 'widget' attribute.
   [timo]

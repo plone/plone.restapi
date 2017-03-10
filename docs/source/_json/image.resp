@@ -73,6 +73,10 @@ Content-Type: application/json
   "relatedItems": [], 
   "review_state": null, 
   "rights": "", 
+  "sharing": {
+    "@id": "http://localhost:55001/plone/image/@sharing", 
+    "title": "Sharing"
+  }, 
   "subjects": [], 
   "title": "My Image"
 }
