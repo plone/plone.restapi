@@ -70,6 +70,45 @@
     permission="zope2.View"
     />
 
+  <plone:service
+    method="OPTIONS"
+    name="@upload"
+    for="Products.CMFCore.interfaces.IFolderish"
+    factory=".upload.UploadOptions"
+    permission="cmf.AddPortalContent"
+    />
 
+  <plone:service
+    method="POST"
+    name="@upload"
+    for="Products.CMFCore.interfaces.IFolderish"
+    factory=".upload.UploadPost"
+    permission="cmf.AddPortalContent"
+    />
+
+  <plone:service
+    method="HEAD"
+    name="@upload"
+    for="Products.CMFCore.interfaces.IFolderish"
+    factory=".upload.UploadHead"
+    permission="cmf.AddPortalContent"
+    />
+
+  <plone:service
+    method="PATCH"
+    name="@upload"
+    for="Products.CMFCore.interfaces.IFolderish"
+    factory=".upload.UploadPatch"
+    permission="cmf.AddPortalContent"
+    />
+
+<!--   <plone:CORSPolicy
+    allow_origin="http://localhost"
+    allow_methods="DELETE,GET,OPTIONS,PATCH,POST,PUT"
+    allow_credentials="true"
+    allow_headers="Accept,Authorization,Origin,X-Requested-With,Content-Type,Upload-Length,Upload-Offset,Tus-Resumable,Upload-Metadata"
+    expose_headers="Upload-Offset,Location,Upload-Length,Tus-Version,Tus-Resumable,Tus-Max-Size,Tus-Extension,Upload-Metadata"
+    max_age="3600"
+    /> -->
 
 </configure>
