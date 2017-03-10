@@ -91,3 +91,17 @@ class TestServicesTypes(unittest.TestCase):
         ]
 
         self.assertEqual(sorted(allowed_ids), sorted(response_allowed_ids))
+
+    def test_image_type(self):
+        response = self.api_session.get('/@types/Image')
+        response = response.json()
+        self.assertIn('fieldsets', response)
+        self.assertIn(
+            'image.data', response['properties']['image']['properties'])
+
+    def test_file_type(self):
+        response = self.api_session.get('/@types/File')
+        response = response.json()
+        self.assertIn('fieldsets', response)
+        self.assertIn(
+            'file.data', response['properties']['file']['properties'])

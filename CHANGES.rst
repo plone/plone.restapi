@@ -56,6 +56,14 @@ Bugfixes:
 - Add missing id to the Plone site serialization, related to issue #186
   [sneridagh]
 
+- Add missing adapter for IBytes on JSONFieldSchema generator. This fixes the
+  broken /@types/Image and /@types/File endpoints.
+  [sneridagh]
+
+- Add reset-password action to the user endpoint.
+  https://github.com/plone/plone.restapi/issues/158
+  [timo,csenger]
+
 
 1.0a9 (2017-03-03)
 ------------------

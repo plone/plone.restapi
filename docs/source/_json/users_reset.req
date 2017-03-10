@@ -1,0 +1,6 @@
+POST /plone/@users/noam/rest-password HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{"reset_token": "ef3d2aabacdc2345df63d6acf2edbef4", "new_password": "verysecret"}
