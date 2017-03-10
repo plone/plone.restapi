@@ -36,7 +36,7 @@
         <tr>
           <td align="left" valign="top">
             <input type="checkbox" name="disable_csrf" id="disable-csrf"
-                   tal:attributes="checked python: context.disable_csrf and 'checked'"/>&nbsp;<label class="form-label" for="store-tokens">Disable CSRF</label>
+                   tal:attributes="checked python: context.disable_csrf and 'checked'"/>&nbsp;<label class="form-label" for="disable-csrf">Disable CSRF</label>
             <div class="form-help">
                 If activated CSRF protection for requests authenticated by 
                 JWT will be disabled
