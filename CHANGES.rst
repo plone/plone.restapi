@@ -6,8 +6,8 @@ Changelog
 
 New Features:
 
-- Add GET and POST @sharing endpoint for content.
-  [csenger]
+- Add @sharing endpoint.
+  [timo,csenger]
 
 - Add @vocabularies endpoint.
   https://github.com/plone/plone.restapi/issues/212
