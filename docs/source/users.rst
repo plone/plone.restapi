@@ -103,15 +103,8 @@ The server will respond with a :term:`200 OK` response and send an email to the 
 The token that is part of the reset url in the email can be used to
 authorize setting a new password::
 
-  POST /plone/@users/noam/reset-password HTTP/1.1
-  Host: localhost:8080
-  Accept: application/json
-  Content-Type: application/json
-
-  {
-    'reset_token': 'ef3d2aabacdc2345df63d6acf2edbef4',
-    'new_password': 'verysecret',
-  }
+..  http:example:: curl httpie python-requests
+    :request: _json/users_reset.req
 
 
 Reset Own Password
@@ -147,4 +140,3 @@ Return Values
 * `403` (Not allowed)
 * `403` (Wrong password)
 * :term:`500 Internal Server Error` (server fault, can not recover internally)
-

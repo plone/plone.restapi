@@ -7,6 +7,7 @@ from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
 from plone.app.i18n.locales.interfaces import IMetadataLanguages
 from plone.app.testing import applyProfile
+from plone.app.testing import quickInstallProduct
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import login
@@ -25,6 +26,7 @@ from zope.component import getUtility
 from zope.configuration import xmlconfig
 
 import requests
+import collective.MockMailHost
 
 
 def set_available_languages():
@@ -56,6 +58,7 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
             context=configurationContext
         )
 
+        self.loadZCML(package=collective.MockMailHost)
         z2.installProduct(app, 'plone.restapi')
 
     def setUpPloneSite(self, portal):
@@ -67,6 +70,8 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         applyProfile(portal, 'plone.restapi:testing')
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
         set_available_languages()
+        quickInstallProduct(portal, 'collective.MockMailHost')
+        applyProfile(portal, 'collective.MockMailHost:default')
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
 PLONE_RESTAPI_DX_INTEGRATION_TESTING = IntegrationTesting(

@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
+
 from AccessControl import getSecurityManager
 
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.permissions import AddPortalMember
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.PasswordResetTool.PasswordResetTool import ExpiredRequestError
 from Products.PasswordResetTool.PasswordResetTool import InvalidRequestError
 from zope.component import getAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
+from zope.interface import alsoProvides
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
-from zExceptions import BadRequest
-from zope.interface import alsoProvides
 
 import plone.protect.interfaces
 
@@ -39,6 +40,65 @@ class UsersPost(Service):
         self.params.append(name)
         return self
 
+    def validate_input_data(self, portal, original_data):
+        '''Returns a tuple of (required_fields, allowed_fields)'''
+        security = getAdapter(portal, ISecuritySchema)
+        security.use_email_as_login
+
+        # remove data we don't want to check for
+        data = {}
+        for key in ['username', 'email', 'password',
+                    'roles', 'sendPasswordReset']:
+            if key in original_data:
+                data[key] = original_data[key]
+
+        required = ['email']
+        allowed = ['email']
+
+        if not security.use_email_as_login:
+            required.append('username')
+            allowed.append('username')
+
+        if self.can_manage_users:
+            allowed.append('password')
+            allowed.append('sendPasswordReset')
+            allowed.append('roles')
+        else:
+            if security.enable_user_pwd_choice:
+                allowed.append('password')
+                required.append('password')
+
+        # check input data
+        for fieldname in required:
+            if not data.get(fieldname, None):
+                self.add_field_error(
+                    fieldname,
+                    'Property \'{}\' is required.'.format(fieldname))
+        for fieldname in data:
+            if fieldname not in allowed:
+                self.add_field_error(
+                    fieldname,
+                    'Property \'{}\' is not allowed.'.format(fieldname))
+
+        password = data.get('password')
+        send_password_reset = data.get('sendPasswordReset')
+        if self.can_manage_users:
+            if password is None and send_password_reset is None:
+                self.add_field_error(
+                    'sendPasswordReset',
+                    'You have to either send a password or sendPasswordReset.')
+            if password and send_password_reset:
+                self.add_field_error(
+                    'sendPasswordReset',
+                    'You can\'t send both password and sendPasswordReset.')
+
+    def add_field_error(self, field, message):
+        self.errors.append({'field': field,
+                            'message': message})
+
+    def errors_to_string(self):
+        return ' '.join([error['message'] for error in self.errors])
+
     def reply(self):
         # Disable CSRF protection
         if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
@@ -46,7 +106,13 @@ class UsersPost(Service):
                          plone.protect.interfaces.IDisableCSRFProtection)
 
         portal = getSite()
+
+        # validate important data
         data = json_body(self.request)
+        self.errors = []
+        self.validate_input_data(portal, data)
+        security = getAdapter(self.context, ISecuritySchema)
+        registration = getToolByName(self.context, 'portal_registration')
 
         general_usage_error = (
             "Either post to @users to create a user or use "
@@ -59,35 +125,47 @@ class UsersPost(Service):
                 return self.update_password(data)
             raise Exception('Unknown Endpoint @users/%s/%s' % self.params)
 
+        # Add a portal member
+        if not self.can_add_member:
+            return self._error(403, 'Forbidden',
+                               'You need AddPortalMember permission.')
+
         username = data.get('username', None)
         email = data.get('email', None)
         password = data.get('password', None)
         roles = data.get('roles', [])
         properties = data.get('properties', {})
 
-        security_settings = getAdapter(self.context, ISecuritySchema)
-        use_email_as_login = security_settings.use_email_as_login
+        if self.errors:
+            self.request.response.setStatus(400)
+            return dict(error=dict(
+                type='WrongParameterError',
+                message='Error in fields. {}'.format(self.errors_to_string()),
+                errors=self.errors))
 
-        if not username and not use_email_as_login:
-            raise BadRequest("Property 'username' is required")
+        username = data.pop('username', None)
+        email = data.pop('email', None)
+        password = data.pop('password', None)
+        roles = data.pop('roles', [])
+        send_password_reset = data.pop('sendPasswordReset', None)
+        properties = data
 
-        if not email and use_email_as_login:
-            raise BadRequest("Property 'email' is required")
-
-        if not password:
-            raise BadRequest("Property 'password' is required")
+        if not self.can_manage_users:
+            properties = {}
 
         # set username based on the login settings (username or email)
-        if use_email_as_login:
+        if security.use_email_as_login:
             username = email
             properties['username'] = email
         else:
             properties['username'] = username
 
-        # set email property
-        if email:
-            properties['email'] = email
+        properties['email'] = email
 
+        if not self.can_manage_users and not security.enable_user_pwd_choice:
+            send_password_reset = True
+        if send_password_reset:
+            password = registration.generatePassword()
         # Create user
         try:
             registration = getToolByName(portal, 'portal_registration')
@@ -103,9 +181,8 @@ class UsersPost(Service):
                 type='MissingParameterError',
                 message=str(e.message)))
 
-        if not username and use_email_as_login:
-            username = email
-
+        if send_password_reset:
+            registration.registeredNotify(username)
         self.request.response.setStatus(201)
         self.request.response.setHeader(
             'Location', portal.absolute_url() + '/@users/' + username
@@ -136,6 +213,11 @@ class UsersPost(Service):
     def can_set_own_password(self):
         sm = getSecurityManager()
         return sm.checkPermission(SetOwnPassword, self.context)
+
+    @property
+    def can_add_member(self):
+        sm = getSecurityManager()
+        return sm.checkPermission(AddPortalMember, self.context)
 
     def update_password(self, data):
         username = self.params[0]
