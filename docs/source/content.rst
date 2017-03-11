@@ -5,6 +5,9 @@ plone.restapi does not only expose content objects via a RESTful API. The API co
 
 Manipulating resources across the network by using HTTP as an application protocol is one of core principles of the REST architectural pattern. This allows us to interact with a specific resource in a standardized way:
 
+.. note::
+        Here folder implies to name of the `folder name` in which you want to create the new document.
+
 ======= ======================= ==============================================
 Verb    URL                     Action
 ======= ======================= ==============================================
