@@ -68,9 +68,9 @@ class BaseCopyMove(Service):
                 cb_copy_data=self.clipboard(parent, ids))
             for res in result:
                 results.append({
-                    'old': '{}/{}'.format(
+                    'source': '{}/{}'.format(
                         parent.absolute_url(), res['id']),
-                    'new': '{}/{}'.format(
+                    'target': '{}/{}'.format(
                         self.context.absolute_url(), res['new_id']),
                 })
         return results
