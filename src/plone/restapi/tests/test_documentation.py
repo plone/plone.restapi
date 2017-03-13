@@ -55,11 +55,11 @@ def save_request_and_response_for_docs(name, response):
         )
         for key, value in ordered_request_headers.items():
             if key.lower() in REQUEST_HEADER_KEYS:
-                req.write('{}: {}\n'.format(key.lower(), value))
+                req.write('{}: {}\n'.format(key.title(), value))
         if response.request.body:
             if 'content-type' not in REQUEST_HEADER_KEYS:
                 content_type = response.request.headers['Content-Type']
-                req.write('content-type: %s\n' % content_type)
+                req.write('Content-Type: %s\n' % content_type)
 
             req.write('\n')
             req.write(response.request.body)
@@ -70,7 +70,7 @@ def save_request_and_response_for_docs(name, response):
         resp.write('HTTP/1.1 {} {}\n'.format(status, reason))
         for key, value in response.headers.items():
             if key.lower() in RESPONSE_HEADER_KEYS:
-                resp.write('{}: {}\n'.format(key.lower(), value))
+                resp.write('{}: {}\n'.format(key.title(), value))
         resp.write('\n')
         resp.write(response.content)
 

@@ -1,5 +1,5 @@
 POST /plone/@login HTTP/1.1
-accept: application/json
-content-type: application/json
+Accept: application/json
+Content-Type: application/json
 
 {"login": "admin", "password": "secret"}

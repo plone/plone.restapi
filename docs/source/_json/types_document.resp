@@ -1,5 +1,5 @@
 HTTP/1.1 200 OK
-content-type: application/json+schema
+Content-Type: application/json+schema
 
 {
   "fieldsets": [
