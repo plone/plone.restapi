@@ -62,6 +62,10 @@ Content-Type: application/json
   "relatedItems": [], 
   "review_state": "private", 
   "rights": "", 
+  "sharing": {
+    "@id": "http://localhost:55001/plone/collection/@sharing", 
+    "title": "Sharing"
+  }, 
   "sort_on": null, 
   "sort_reversed": null, 
   "subjects": [], 

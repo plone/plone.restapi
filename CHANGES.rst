@@ -6,6 +6,13 @@ Changelog
 
 New Features:
 
+- Add @sharing endpoint.
+  [timo,csenger]
+
+- Add reset-password action to the user endpoint.
+  https://github.com/plone/plone.restapi/issues/158
+  [timo,csenger]
+
 - Add @vocabularies endpoint.
   https://github.com/plone/plone.restapi/issues/212
   [timo,csenger,sneridagh]

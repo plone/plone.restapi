@@ -87,3 +87,56 @@ A successful response will be indicated by a :term:`204 No Content` response:
 
 .. literalinclude:: _json/users_delete.resp
    :language: js
+
+
+Reset User Password
+-------------------
+
+Plone allows to reset a password for a user by sending a POST request to the user resource and appending `/reset-password` to the URL::
+
+  POST /plone/@users/noam/reset-password HTTP/1.1
+  Host: localhost:8080
+  Accept: application/json
+
+The server will respond with a :term:`200 OK` response and send an email to the user to reset her password.
+
+The token that is part of the reset url in the email can be used to
+authorize setting a new password::
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_reset.req
+
+
+Reset Own Password
+^^^^^^^^^^^^^^^^^^
+
+Plone also allows a user to reset her own password directly without sending an email. The endpoint and the request is the same as above, but now the user can send the old password and the new password as payload::
+
+  POST /plone/@users/noam/reset-password HTTP/1.1
+  Host: localhost:8080
+  Accept: application/json
+  Content-Type: application/json
+
+  {
+    'old_password': 'secret',
+    'new_password': 'verysecret',
+  }
+
+The server will respond with a :term:`200 OK` response without sending an email.
+
+To set the password with the old password you need either the ``Set own password`` or the ``plone.app.controlpanel.UsersAndGroups`` permission.
+
+If an API consumer tries to send a password in the payload that is not the same as the currently logged in user, the server will respond with a :term:`400 Bad Request` response.
+
+
+Return Values
+^^^^^^^^^^^^^
+
+* :term:`200 OK`
+* :term:`400 Bad Request`
+* `403` (Unknown Token)
+* `403` (Expired Token)
+* `403` (Wrong user)
+* `403` (Not allowed)
+* `403` (Wrong password)
+* :term:`500 Internal Server Error` (server fault, can not recover internally)

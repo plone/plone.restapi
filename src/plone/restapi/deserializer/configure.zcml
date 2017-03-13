@@ -13,6 +13,9 @@
   <adapter factory=".dxfields.NamedFieldDeserializer" />
   <adapter factory=".dxfields.RichTextFieldDeserializer" />
 
+  <adapter factory=".local_roles.DeserializeFromJson"
+           name="local_roles"/>
+
   <configure zcml:condition="installed z3c.relationfield">
     <adapter factory=".relationfield.RelationChoiceFieldDeserializer" />
   </configure>
