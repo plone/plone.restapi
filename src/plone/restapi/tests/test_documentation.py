@@ -16,6 +16,7 @@ from plone.restapi.testing import RelativeSession
 from plone.testing.z2 import Browser
 from plone.uuid.interfaces import IMutableUUID
 
+import collections
 import json
 import os
 import transaction
@@ -49,9 +50,12 @@ def save_request_and_response_for_docs(name, response):
             response.request.method,
             response.request.path_url
         ))
-        for key, value in response.request.headers.items():
+        ordered_request_headers = collections.OrderedDict(
+            sorted(response.request.headers.items())
+        )
+        for key, value in ordered_request_headers.items():
             if key.lower() in REQUEST_HEADER_KEYS:
-                req.write('{}: {}\n'.format(key, value))
+                req.write('{}: {}\n'.format(key.title(), value))
         if response.request.body:
             if 'content-type' not in REQUEST_HEADER_KEYS:
                 content_type = response.request.headers['Content-Type']
@@ -66,7 +70,7 @@ def save_request_and_response_for_docs(name, response):
         resp.write('HTTP/1.1 {} {}\n'.format(status, reason))
         for key, value in response.headers.items():
             if key.lower() in RESPONSE_HEADER_KEYS:
-                resp.write('{}: {}\n'.format(key, value))
+                resp.write('{}: {}\n'.format(key.title(), value))
         resp.write('\n')
         resp.write(response.content)
 
