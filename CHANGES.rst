@@ -6,6 +6,9 @@ Changelog
 
 New Features:
 
+- Add @translations endpoint.
+  [erral]
+
 - Docs: Convert remaining examples to use sphinxcontrib-httpexample, and
   ditch the previously used sphinxcontrib-osexample Sphinx extension.
   [lgraf]
