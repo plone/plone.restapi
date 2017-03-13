@@ -72,7 +72,7 @@ class BaseCopyMove(Service):
                         parent.absolute_url(), res['id']),
                     'new': '{}/{}'.format(
                         self.context.absolute_url(), res['new_id']),
-                    })
+                })
         return results
 
     def clipboard(self, parent, ids):
