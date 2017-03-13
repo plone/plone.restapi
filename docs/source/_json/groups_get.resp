@@ -1,5 +1,5 @@
 HTTP/1.1 200 OK
-Content-Type: application/json
+content-type: application/json
 
 {
   "@id": "http://localhost:55001/plone/@groups/ploneteam", 
