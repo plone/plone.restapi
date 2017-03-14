@@ -71,9 +71,7 @@ class TypesGet(Service):
                                  name='plone_portal_state').portal()
         portal_url = portal.absolute_url()
 
-        pm = getToolByName(self.context, 'portal_membership')
-        can_add = pm.checkPermission('cmf.AddPortalContent', self.context)
-        can_add = can_add and IFolderish.providedBy(self.context)
+        can_add = IFolderish.providedBy(self.context)
 
         return [
             {
