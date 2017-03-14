@@ -64,6 +64,9 @@ Bugfixes:
   https://github.com/plone/plone.restapi/issues/158
   [timo,csenger]
 
+- Fix addable types for member users and roles assigned locally on @types
+  endpoint.
+  [sneridagh]
 
 1.0a9 (2017-03-03)
 ------------------
