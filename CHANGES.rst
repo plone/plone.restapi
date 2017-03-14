@@ -7,7 +7,7 @@ Changelog
 New Features:
 
 - Add @sharing endpoint.
-  [timo,csenger]
+  [timo,csenger,sneridagh]
 
 - Add @vocabularies endpoint.
   [timo,csenger,sneridagh]
