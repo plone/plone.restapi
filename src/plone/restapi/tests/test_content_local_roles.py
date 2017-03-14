@@ -58,16 +58,17 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
-            {u'entries': [{
-                u'disabled': False,
-                u'id': u'AuthenticatedUsers',
-                u'login': None,
-                u'roles': {u'Contributor': False,
-                           u'Editor': False,
-                           u'Reader': False,
-                           u'Reviewer': False},
-                u'title': u'Logged-in users',
-                u'type': u'group'}],
+            {u'available_roles': [u'Contributor', u'Editor', u'Reviewer', u'Reader'],  # noqa
+             u'entries': [{
+                 u'disabled': False,
+                 u'id': u'AuthenticatedUsers',
+                 u'login': None,
+                 u'roles': {u'Contributor': False,
+                            u'Editor': False,
+                            u'Reader': False,
+                            u'Reviewer': False},
+                 u'title': u'Logged-in users',
+                 u'type': u'group'}],
              u'inherit': False}
         )
 
@@ -86,7 +87,8 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
-            {u'entries': [
+            {u'available_roles': [u'Contributor', u'Editor', u'Reviewer', u'Reader'],  # noqa
+             u'entries': [
                 {
                     u'disabled': False,
                     u'id': u'AuthenticatedUsers',
@@ -224,3 +226,20 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(self._get_ac_local_roles_block(self.portal.folder1),
                          False)
+
+    def test_get_available_roles(self):
+        api.user.grant_roles(username=TEST_USER_ID,
+                             obj=self.portal.folder1,
+                             roles=['Reviewer'])
+        transaction.commit()
+
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '/@sharing',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        response = response.json()
+        self.assertIn('available_roles', response)
+        self.assertIn('Reader', response['available_roles'])

@@ -36,6 +36,9 @@ New Features:
   sharing UI widget or other user/groups search widgets.
   [sneridagh]
 
+- Add ``available_roles`` attribute to the GET @sharing endpoint.
+  [sneridagh]
+
 Bugfixes:
 
 - Return correct @id for folderish objects created via POST.
