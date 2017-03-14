@@ -27,51 +27,13 @@ In plone.restapi, the representation of any content object will include a hyperm
     }
   }
 
-RFC: Do we care about those hypermedia links on the top level for better discoverability?
-
 The sharing information of a content object can also be directly accessed by appending '/@sharing' to the GET request to the URL of a content object. E.g. to access the sharing information for a top-level folder, do:
 
-.. code:: json
+..  http:example:: curl httpie python-requests
+    :request: _json/sharing_folder_get.req
 
-  GET /plone/folder/@sharing
-  Accept: application/json
-
-  HTTP 200 OK
-  content-type: application/json
-
-  {
-     "inherit" : false,
-     "entries" : [
-        {
-           "disabled" : false,
-           "title" : "Logged-in users",
-           "id" : "AuthenticatedUsers",
-           "login" : null,
-           "type" : "group",
-           "roles" : {
-              "Reader" : false,
-              "Editor" : false,
-              "Contributor" : false,
-              "Reviewer" : false
-           }
-        },
-        {
-           "id" : "test_user_1_",
-           "title" : "test-user",
-           "disabled" : false,
-           "roles" : {
-              "Reviewer" : true,
-              "Contributor" : false,
-              "Editor" : false,
-              "Reader" : false
-           },
-           "type" : "user"
-        }
-     ]
-  }
-  
-
-RFC: We can not return a full list of all users and groups in the portal here. This would not scale for portals with lots of users. We could always list the local roles that are available. It is fair to assume that the number of local roles is somehow limited.
+.. literalinclude:: _json/sharing_folder_get.resp
+   :language: http
 
 
 Update Local Roles
@@ -79,28 +41,8 @@ Update Local Roles
 
 You can update the 'sharing' information by sending a POST request to the object URL and appending '/@sharing', e.g. '/plone/folder/@sharing'. E.g. say you want to give the AuthenticatedUsers group the 'reader' local role for a folder:
 
-.. code:: json
+..  http:example:: curl httpie python-requests
+    :request: _json/sharing_folder_post.req
 
-  POST /plone/folder/@sharing
-  Host: localhost:8080
-  Accept: application/json
-  Content-Type: application/json
-
-  {
-     "inherit" : true,
-     "entries" : [
-        {
-           "id" : "test_user_1_",
-           "roles" : {
-              "Reviewer" : true,
-              "Editor" : false,
-              "Reader" : true,
-              "Contributor" : false
-           },
-           "type" : "user"
-        }
-     ]
-  }
-  
-
-RFC: I'm wondering if a POST request is the correct HTTP verb. We are actually updating an object, which would make PATCH a more appropriate choice. Though, we are not embedding the sharing information in the standard view (something that could also be a possible option.)
+.. literalinclude:: _json/sharing_folder_post.resp
+   :language: http
