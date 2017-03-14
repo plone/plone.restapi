@@ -121,10 +121,21 @@ class TestServicesTypes(unittest.TestCase):
             type='Folder',
             title=u'folder',)
 
+        folder_cant_add = api.content.create(
+            container=self.portal,
+            id="folder_cant_add",
+            type='Folder',
+            title=u'folder_cant_add',)
+
         api.user.grant_roles(
             user=user,
             obj=folder,
             roles=['Contributor', ])
+
+        api.user.grant_roles(
+            user=user,
+            obj=folder_cant_add,
+            roles=['Reader', ])
 
         transaction.commit()
 
@@ -137,7 +148,15 @@ class TestServicesTypes(unittest.TestCase):
         self.assertIn(
             'Document', [a['title'] for a in response if a['addable']])
 
-        # But in the root Plone site there's no addable types
+        # In the folder where the user only have Reader role, no types are
+        # addable
+        response = self.api_session.get('/folder_cant_add/@types')
+        response = response.json()
+
+        self.assertEquals(
+            len([a for a in response if a['addable']]), 0)
+
+        # and in the root Plone site there's no addable types
         response = self.api_session.get('/@types')
         response = response.json()
 
