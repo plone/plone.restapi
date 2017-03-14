@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from plone import api
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from plone.app.testing import setRoles
@@ -6,6 +7,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 
+import transaction
 import unittest
 
 
@@ -105,3 +107,58 @@ class TestServicesTypes(unittest.TestCase):
         self.assertIn('fieldsets', response)
         self.assertIn(
             'file.data', response['properties']['file']['properties'])
+
+    def test_addable_types_for_non_manager_user(self):
+        user = api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            password='1234'
+        )
+
+        folder = api.content.create(
+            container=self.portal,
+            id="folder",
+            type='Folder',
+            title=u'folder',)
+
+        folder_cant_add = api.content.create(
+            container=self.portal,
+            id="folder_cant_add",
+            type='Folder',
+            title=u'folder_cant_add',)
+
+        api.user.grant_roles(
+            user=user,
+            obj=folder,
+            roles=['Contributor', ])
+
+        api.user.grant_roles(
+            user=user,
+            obj=folder_cant_add,
+            roles=['Reader', ])
+
+        transaction.commit()
+
+        self.api_session.auth = ('noam', '1234')
+        # In the folder, the user should be able to add types since we granted
+        # Contributor role on it
+        response = self.api_session.get('/folder/@types')
+        response = response.json()
+
+        self.assertIn(
+            'Document', [a['title'] for a in response if a['addable']])
+
+        # In the folder where the user only have Reader role, no types are
+        # addable
+        response = self.api_session.get('/folder_cant_add/@types')
+        response = response.json()
+
+        self.assertEquals(
+            len([a for a in response if a['addable']]), 0)
+
+        # and in the root Plone site there's no addable types
+        response = self.api_session.get('/@types')
+        response = response.json()
+
+        self.assertEquals(
+            len([a for a in response if a['addable']]), 0)

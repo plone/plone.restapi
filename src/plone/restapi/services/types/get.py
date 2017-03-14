@@ -65,15 +65,15 @@ class TypesGet(Service):
             name="plone.app.vocabularies.ReallyUserFriendlyTypes"
         )
 
+        # allowedContentTypes already checks for permissions
         allowed_types = [x.getId() for x in self.context.allowedContentTypes()]
 
         portal = getMultiAdapter((self.context, self.request),
                                  name='plone_portal_state').portal()
         portal_url = portal.absolute_url()
 
-        pm = getToolByName(self.context, 'portal_membership')
-        can_add = pm.checkPermission('cmf.AddPortalContent', self.context)
-        can_add = can_add and IFolderish.providedBy(self.context)
+        # only addables if the content type is folderish
+        can_add = IFolderish.providedBy(self.context)
 
         return [
             {
