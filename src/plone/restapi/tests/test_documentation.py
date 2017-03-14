@@ -661,3 +661,35 @@ class TestTraversal(unittest.TestCase):
             '/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes'
         )
         save_request_and_response_for_docs('vocabularies_get', response)
+
+    def test_documentation_sharing_folder_get(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        transaction.commit()
+        response = self.api_session.get(
+            '/folder/@sharing'
+        )
+        save_request_and_response_for_docs('sharing_folder_get', response)
+
+    def test_documentation_sharing_folder_post(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        transaction.commit()
+        payload = {
+            "inherit": True,
+            "entries": [
+                {
+                    "id": "test_user_1_",
+                    "roles": {
+                        "Reviewer": True,
+                        "Editor": False,
+                        "Reader": True,
+                        "Contributor": False
+                    },
+                    "type": "user"
+                }
+            ]
+        }
+        response = self.api_session.post(
+            '/folder/@sharing',
+            json=payload
+        )
+        save_request_and_response_for_docs('sharing_folder_post', response)
