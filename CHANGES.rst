@@ -36,6 +36,10 @@ New Features:
   sharing UI widget or other user/groups search widgets.
   [sneridagh]
 
+- Add reset-password action to the user endpoint.
+  https://github.com/plone/plone.restapi/issues/158
+  [timo,csenger]
+
 Bugfixes:
 
 - Return correct @id for folderish objects created via POST.
@@ -60,13 +64,10 @@ Bugfixes:
   broken /@types/Image and /@types/File endpoints.
   [sneridagh]
 
-- Add reset-password action to the user endpoint.
-  https://github.com/plone/plone.restapi/issues/158
-  [timo,csenger]
-
 - Fix addable types for member users and roles assigned locally on @types
   endpoint.
   [sneridagh]
+
 
 1.0a9 (2017-03-03)
 ------------------
