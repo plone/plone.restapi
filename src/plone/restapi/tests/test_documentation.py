@@ -706,7 +706,7 @@ class TestTraversal(unittest.TestCase):
                 'source': '{}'.format(self.document.absolute_url()),
             },
         )
-        save_request_and_response_for_docs('copy.json', response)
+        save_request_and_response_for_docs('copy', response)
 
     def test_documentation_move(self):
         self.portal.invokeFactory('Folder', id='folder')
@@ -717,7 +717,7 @@ class TestTraversal(unittest.TestCase):
                 'source': '{}'.format(self.document.absolute_url()),
             },
         )
-        save_request_and_response_for_docs('move.json', response)
+        save_request_and_response_for_docs('move', response)
 
     def test_documentation_vocabularies_all(self):
         response = self.api_session.get('/@vocabularies')
