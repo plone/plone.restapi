@@ -26,6 +26,7 @@ Contents
    batching
    comments
    copymove
+   expansion
    workflow
    sharing
    registry

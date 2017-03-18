@@ -1104,3 +1104,9 @@ class TestCommenting(unittest.TestCase):
         url = '{}/@roles'.format(self.portal_url)
         response = self.api_session.get(url)
         save_request_and_response_for_docs('roles', response)
+
+    def test_documentation_expansion(self):
+        response = self.api_session.get(
+            '/front-page?expand=breadcrumbs,workflow'
+        )
+        save_request_and_response_for_docs('expansion', response)
