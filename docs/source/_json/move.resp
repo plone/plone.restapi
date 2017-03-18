@@ -1,0 +1,9 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  {
+    "source": "http://localhost:55001/plone/front-page", 
+    "target": "http://localhost:55001/plone/folder/front-page"
+  }
+]
