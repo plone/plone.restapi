@@ -357,7 +357,7 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.get('@types/Document')
         save_request_and_response_for_docs('types_document', response)
 
-    def test_documentation_login(self):
+    def test_documentation_jwt_login(self):
         self.portal.acl_users.jwt_auth._secret = 'secret'
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
@@ -367,9 +367,26 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '{}/@login'.format(self.portal.absolute_url()),
             json={'login': SITE_OWNER_NAME, 'password': SITE_OWNER_PASSWORD})
-        save_request_and_response_for_docs('login', response)
+        save_request_and_response_for_docs('jwt_login', response)
 
-    def test_documentation_login_renew(self):
+    def test_documentation_jwt_logged_in(self):
+        self.portal.acl_users.jwt_auth._secret = 'secret'
+        self.portal.acl_users.jwt_auth.use_keyring = False
+        self.portal.acl_users.jwt_auth.token_timeout = 0
+        self.portal.acl_users.jwt_auth.store_tokens = True
+        import transaction
+        transaction.commit()
+        self.api_session.auth = None
+        response = self.api_session.post(
+            '{}/@login'.format(self.portal.absolute_url()),
+            json={'login': SITE_OWNER_NAME, 'password': SITE_OWNER_PASSWORD})
+        token = json.loads(response.content)['token']
+        response = self.api_session.get(
+            '/',
+            headers={'Authorization': 'Bearer {}'.format(token)})
+        save_request_and_response_for_docs('jwt_logged_in', response)
+
+    def test_documentation_jwt_login_renew(self):
         self.portal.acl_users.jwt_auth._secret = 'secret'
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
@@ -383,9 +400,9 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '{}/@login-renew'.format(self.portal.absolute_url()),
             headers={'Authorization': 'Bearer {}'.format(token)})
-        save_request_and_response_for_docs('login_renew', response)
+        save_request_and_response_for_docs('jwt_login_renew', response)
 
-    def test_documentation_logout(self):
+    def test_documentation_jwt_logout(self):
         self.portal.acl_users.jwt_auth._secret = 'secret'
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
@@ -400,7 +417,7 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '{}/@logout'.format(self.portal.absolute_url()),
             headers={'Authorization': 'Bearer {}'.format(token)})
-        save_request_and_response_for_docs('logout', response)
+        save_request_and_response_for_docs('jwt_logout', response)
 
     def test_documentation_batching(self):
         folder = self.portal[self.portal.invokeFactory(
