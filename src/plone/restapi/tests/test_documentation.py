@@ -154,6 +154,36 @@ class TestTraversal(unittest.TestCase):
         self.time_freezer.stop()
         popGlobalRegistry(getSite())
 
+    def test_documentation_content_crud(self):
+        folder = self.create_folder()
+        transaction.commit()
+
+        response = self.api_session.post(
+            folder.absolute_url(),
+            json={
+                '@type': 'Document',
+                'title': 'My Document',
+            }
+        )
+        save_request_and_response_for_docs('content_post', response)
+
+        transaction.commit()
+        document = folder['my-document']
+        response = self.api_session.get(document.absolute_url())
+        save_request_and_response_for_docs('content_get', response)
+
+        response = self.api_session.patch(
+            document.absolute_url(),
+            json={
+                'title': 'My New Document Title',
+            }
+        )
+        save_request_and_response_for_docs('content_patch', response)
+
+        transaction.commit()
+        response = self.api_session.delete(document.absolute_url())
+        save_request_and_response_for_docs('content_delete', response)
+
     def test_documentation_document(self):
         response = self.api_session.get(self.document.absolute_url())
         save_request_and_response_for_docs('document', response)
