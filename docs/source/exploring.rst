@@ -78,5 +78,3 @@ The :term:`Response` of the server is now displayed below the :term:`Request`. Y
 .. |postman-request| image:: ./_static/img/postman_request.png
 .. |postman-basic-auth| image:: ./_static/img/postman_basic_auth.png
 .. |postman-headers| image:: ./_static/img/postman_headers.png
-
-.. disqus::
