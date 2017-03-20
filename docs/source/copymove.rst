@@ -40,23 +40,12 @@ Copying/moving multiple objects
 
 Multiple objects can be moved/copied by giving a list of sources.
 
-.. example-code::
+..  http:example:: curl httpie python-requests
+    :request: _json/copy_multiple.req
 
-  .. code-block:: http-request
+If the operation succeeds, the server will respond with status 200 (OK) and return
+the new and old urls for each copied/moved object.
 
-    POST /Plone/@copy HTTP/1.1
-    Host: localhost:8080
-    Accept: application/json
-    Content-Type: application/json
 
-    {
-        "source": [
-            "http://localhost:8080/Plone/front-page",
-            "http://localhost:8080/Plone/news"
-        ]
-    }
-
-  .. code-block:: curl
-
-    curl -i -H "Accept: application/json" -H "Content-Type: application/json" --data-raw '{"source": ["http://localhost:8080/plone/front-page", "http://localhost:8080/Plone/news"]}' --user admin:admin -X POST http://localhost:8080/Plone/@copy
-
+.. literalinclude:: _json/copy_multiple.resp
+   :language: http

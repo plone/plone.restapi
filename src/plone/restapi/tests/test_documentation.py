@@ -703,10 +703,27 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '/@copy',
             json={
-                'source': '{}'.format(self.document.absolute_url()),
+                'source': self.document.absolute_url(),
             },
         )
         save_request_and_response_for_docs('copy', response)
+
+    def test_documentation_copy_multiple(self):
+        newsitem = self.portal[self.portal.invokeFactory(
+            'News Item', id='newsitem')]
+        newsitem.title = 'My News Item'
+        transaction.commit()
+
+        response = self.api_session.post(
+            '/@copy',
+            json={
+                'source': [
+                    self.document.absolute_url(),
+                    newsitem.absolute_url(),
+                ],
+            },
+        )
+        save_request_and_response_for_docs('copy_multiple', response)
 
     def test_documentation_move(self):
         self.portal.invokeFactory('Folder', id='folder')
@@ -714,7 +731,7 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '/folder/@move',
             json={
-                'source': '{}'.format(self.document.absolute_url()),
+                'source': self.document.absolute_url(),
             },
         )
         save_request_and_response_for_docs('move', response)
