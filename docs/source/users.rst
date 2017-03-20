@@ -86,7 +86,7 @@ To delete a user send a ``DELETE`` request to the ``/@users`` endpoint and appen
 A successful response will be indicated by a :term:`204 No Content` response:
 
 .. literalinclude:: _json/users_delete.resp
-   :language: js
+   :language: http
 
 
 Reset User Password

@@ -39,12 +39,12 @@ Singluar vs Plural
 
 Rule: Use plural resources.
 
-Do:
+Do::
 
   /users
   /users/21
 
-Don't:
+Don't::
 
   /user
   /user/21

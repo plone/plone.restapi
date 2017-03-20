@@ -32,7 +32,7 @@ RichText fields will be serialized as follows:
 
 A ``RichTextValue`` like
 
-.. code:: python
+.. code-block:: python
 
     RichTextValue(u'<p>Hallöchen</p>',
                   mimeType='text/html',
@@ -40,7 +40,7 @@ A ``RichTextValue`` like
 
 will be serialized to
 
-.. code:: json
+.. code-block:: json
 
     {
       "data": "<p>Hall\u00f6chen</p>",
@@ -58,7 +58,7 @@ For download, a file field will be serialized to a mapping that contains the
 file's most basic metadata, and a hyperlink that the client can follow to
 download the file:
 
-.. code:: json
+.. code-block:: json
 
       {
         "...": "",
@@ -81,7 +81,7 @@ Image fields are serialized in the same way, except that their serialization
 contains their ``width`` and ``height``, and an additional property
 ``scales`` that contains a mapping with the available image scales:
 
-.. code:: json
+.. code-block:: json
 
     {
       "icon": {
@@ -109,7 +109,7 @@ containg the file data and some additional metadata:
 - ``content-type`` - the MIME type of the file
 - ``filename`` - the name of the file, including extension
 
-.. code:: json
+.. code-block:: json
 
       {
         "...": "",
@@ -131,13 +131,13 @@ Serialization
 
 A ``RelationValue`` will be serialized to a short summary representation of the referenced object:
 
-.. code:: json
+.. code-block:: json
 
     {
-      '@id': 'http://nohost/plone/doc1',
-      '@type': 'DXTestDocument',
-      'title': 'Document 1',
-      'description': 'Description'
+      "@id": "http://nohost/plone/doc1",
+      "@type": "DXTestDocument",
+      "title": "Document 1",
+      "description": "Description"
     }
 
 The ``RelationList`` containing that reference will be represended as a list in JSON.

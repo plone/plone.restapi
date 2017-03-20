@@ -7,7 +7,7 @@ That means that any authentication method supported by an installed PAS Plugin s
 
 For example, to authenticate using HTTP basic auth, you'd set an ``Authorization`` header:
 
-.. code::
+.. code-block:: http
 
   GET /Plone HTTP/1.1
   Authorization: Basic Zm9vYmFyOmZvb2Jhcgo=
@@ -17,7 +17,7 @@ HTTP client libraries usually contain helper functions to produce a proper ``Aut
 
 Using the ``requests`` library, you'd set up a session with basic auth like this:
 
-.. code:: python
+.. code-block:: python
 
     import requests
 
@@ -29,7 +29,7 @@ Using the ``requests`` library, you'd set up a session with basic auth like this
 
 Or the same example using ``curl``:
 
-.. code:: python
+.. code-block:: bash
 
     curl -u username:password -H 'Accept:application/json' $URL
 
