@@ -47,6 +47,10 @@ base_path = os.path.join(
 )
 
 
+def pretty_json(data):
+    return json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
+
+
 def save_request_and_response_for_docs(name, response):
     with open('{}/{}'.format(base_path, '%s.req' % name), 'w') as req:
         req.write('{} {} HTTP/1.1\n'.format(
@@ -60,11 +64,21 @@ def save_request_and_response_for_docs(name, response):
             if key.lower() in REQUEST_HEADER_KEYS:
                 req.write('{}: {}\n'.format(key.title(), value))
         if response.request.body:
+            # If request has a body, make sure to set Content-Type header
             if 'content-type' not in REQUEST_HEADER_KEYS:
                 content_type = response.request.headers['Content-Type']
                 req.write('Content-Type: %s\n' % content_type)
 
             req.write('\n')
+
+            # Pretty print JSON request body
+            if content_type == 'application/json':
+                json_body = json.loads(response.request.body)
+                body = pretty_json(json_body)
+                # Make sure Content-Length gets updated, just in case we
+                # ever decide to dump that header
+                response.request.prepare_body(data=body, files=None)
+
             req.write(response.request.body)
 
     with open('{}/{}'.format(base_path, '%s.resp' % name), 'w') as resp:
