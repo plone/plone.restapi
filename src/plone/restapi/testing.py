@@ -7,12 +7,12 @@ from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
 from plone.app.i18n.locales.interfaces import IMetadataLanguages
 from plone.app.testing import applyProfile
-from plone.app.testing import quickInstallProduct
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import login
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
+from plone.app.testing import quickInstallProduct
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -20,10 +20,14 @@ from plone.app.testing import TEST_USER_ID
 from plone.restapi.tests.dxtypes import INDEXES as DX_TYPES_INDEXES
 from plone.restapi.tests.helpers import add_catalog_indexes
 from plone.testing import z2
+from plone.uuid.interfaces import IUUIDGenerator
 from urlparse import urljoin
 from urlparse import urlparse
+from zope.component import getGlobalSiteManager
 from zope.component import getUtility
 from zope.configuration import xmlconfig
+from zope.interface import implements
+import re
 
 import requests
 import collective.MockMailHost
@@ -149,3 +153,27 @@ class RelativeSession(requests.Session):
             url = url.lstrip('/')
             url = urljoin(self.__base_url, url)
         return super(RelativeSession, self).request(method, url, **kwargs)
+
+
+class StaticUUIDGenerator(object):
+    """UUID generator that produces stable UUIDs for use in tests.
+
+    Based on code from ftw.testing
+    """
+
+    implements(IUUIDGenerator)
+
+    def __init__(self, prefix):
+        self.prefix = prefix[:26]
+        self.counter = 0
+
+    def __call__(self):
+        self.counter += 1
+        postfix = str(self.counter).rjust(32 - len(self.prefix), '0')
+        return self.prefix + postfix
+
+
+def register_static_uuid_utility(prefix):
+    prefix = re.sub(r'[^a-zA-Z0-9\-_]', '', prefix)
+    generator = StaticUUIDGenerator(prefix)
+    getGlobalSiteManager().registerUtility(component=generator)
