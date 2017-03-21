@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_parent
-from plone import api
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
@@ -49,7 +48,8 @@ class BaseCopyMove(Service):
     def reply(self):
         # return 401/403 Forbidden if the user has no permission
         if not checkPermission('cmf.AddPortalContent', self.context):
-            if api.user.is_anonymous():
+            pm = getToolByName(self.context, 'portal_membership')
+            if bool(pm.isAnonymousUser()):
                 self.request.response.setStatus(401)
             else:
                 self.request.response.setStatus(403)
