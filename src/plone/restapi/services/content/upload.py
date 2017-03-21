@@ -23,6 +23,21 @@ TUS_OPTIONS_RESPONSE_HEADERS = {
 }
 
 
+class ErrorMixin(object):
+
+    def _error(self, type, message, status=400):
+        '''
+        Set a status code (400 is the default error in the TUS
+        reference server implementation) and return a plone.restapi
+        conform error body.
+        '''
+        self.request.response.setStatus(status)
+        return {'error': {
+                'type': type,
+                'message': message,
+                }}
+
+
 class UploadOptions(Service):
     """TUS upload endpoint for handling OPTIONS requests without CORS."""
 
@@ -32,7 +47,7 @@ class UploadOptions(Service):
         return super(UploadOptions, self).reply()
 
 
-class UploadPost(Service):
+class UploadPost(Service, ErrorMixin):
     """TUS upload endpoint for creating a new upload resource."""
 
     def __call__(self):
@@ -57,11 +72,8 @@ class UploadPost(Service):
         try:
             length = int(length)
         except ValueError:
-            return {'error': {
-                'type': 'Bad Request',
-                'message': 'Missing or invalid Upload-Length header'
-            }}
-
+            return self._error('Bad Request',
+                               'Missing or invalid Upload-Length header')
         # Parse metadata
         metadata = {}
         for item in self.request.getHeader('Upload-Metadata', '').split(','):
@@ -78,7 +90,7 @@ class UploadPost(Service):
             self.context.absolute_url(), tus_upload.uid))
 
 
-class UploadFileBase(Service):
+class UploadFileBase(Service, ErrorMixin):
     implements(IPublishTraverse)
 
     def __init__(self, context, request):
@@ -128,10 +140,7 @@ class UploadPatch(UploadFileBase):
 
     def reply(self):
         if self.uid is None:
-            return {'error': {
-                'type': 'Bad Request',
-                'message': 'Missing UID'
-            }}
+            return self._error('Bad Request', 'Missing UID')
 
         if not self.check_tus_version():
             return {'error': {
