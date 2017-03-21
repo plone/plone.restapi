@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_parent
-from Products.CMFCore.utils import getToolByName
+from plone import api
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.component import queryUtility
 from zope.intid.interfaces import IIntIds
+from zope.security import checkPermission
 
 
 class BaseCopyMove(Service):
@@ -42,6 +44,14 @@ class BaseCopyMove(Service):
                     return brain[0].getObject()
 
     def reply(self):
+        # return 401/403 Forbidden if the user has no permission
+        if not checkPermission('cmf.AddPortalContent', self.context):
+            if api.user.is_anonymous():
+                self.request.response.setStatus(401)
+            else:
+                self.request.response.setStatus(403)
+            return
+
         data = json_body(self.request)
 
         source = data.get('source', None)
