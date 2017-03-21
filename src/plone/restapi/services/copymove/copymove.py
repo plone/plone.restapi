@@ -7,8 +7,11 @@ from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.component import queryUtility
+from zope.interface import alsoProvides
 from zope.intid.interfaces import IIntIds
 from zope.security import checkPermission
+
+import plone
 
 
 class BaseCopyMove(Service):
@@ -58,6 +61,11 @@ class BaseCopyMove(Service):
 
         if not source:
             raise BadRequest("Property 'source' is required")
+
+        # Disable CSRF protection
+        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
 
         if not isinstance(source, list):
             source = [source]
