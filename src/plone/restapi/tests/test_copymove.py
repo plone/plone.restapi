@@ -45,21 +45,25 @@ class TestCopyMove(unittest.TestCase):
         intids = queryUtility(IIntIds)
         service = self.traverse('/plone/@copy', method='POST')
         obj = service.get_object(intids.getId(self.doc1))
+
         self.assertEqual(self.doc1, obj)
 
     def test_get_object_by_url(self):
         service = self.traverse('/plone/@copy', method='POST')
         obj = service.get_object(self.doc1.absolute_url())
+
         self.assertEqual(self.doc1, obj)
 
     def test_get_object_by_path(self):
         service = self.traverse('/plone/@copy', method='POST')
         obj = service.get_object('/doc1')
+
         self.assertEqual(self.doc1, obj)
 
     def test_get_object_by_uid(self):
         service = self.traverse('/plone/@copy', method='POST')
         obj = service.get_object(self.doc1.UID())
+
         self.assertEqual(self.doc1, obj)
 
 
@@ -99,6 +103,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
             }
         )
         transaction.commit()
+
         self.assertEquals(response.status_code, 200)
         self.assertIn('copy_of_doc1', self.portal.objectIds())
 
@@ -110,6 +115,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
             }
         )
         transaction.commit()
+
         self.assertEquals(response.status_code, 200)
         self.assertIn('doc1', self.folder1.objectIds())
         self.assertNotIn('doc1', self.portal.objectIds())
@@ -123,6 +129,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
         )
         self.assertEquals(response.status_code, 200)
         transaction.commit()
+
         self.assertIn('doc1', self.folder1.objectIds())
         self.assertIn('doc2', self.folder1.objectIds())
         self.assertNotIn('doc1', self.portal.objectIds())
@@ -139,6 +146,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
                 "source": "does-not-exist"
             }
         )
+
         self.assertEquals(response.status_code, 200)
         self.assertEqual([], response.json())
 
@@ -150,6 +158,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
             }
         )
         transaction.commit()
+
         self.assertEquals(response.status_code, 200)
         self.assertIn('copy_of_doc1', self.portal.objectIds())
         self.assertIn('copy_of_doc2', self.portal.objectIds())
@@ -162,6 +171,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
                 "source": self.doc1.absolute_url()
             }
         )
+
         self.assertEquals(response.status_code, 403)
 
     def test_copy_single_object_no_auth_raises_401(self):
@@ -172,4 +182,5 @@ class TestCopyMoveFunctional(unittest.TestCase):
                 "source": self.doc1.absolute_url()
             }
         )
+
         self.assertEquals(response.status_code, 401)
