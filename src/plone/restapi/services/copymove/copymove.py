@@ -1,12 +1,16 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_parent
-from Products.CMFCore.utils import getToolByName
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.component import queryUtility
+from zope.interface import alsoProvides
 from zope.intid.interfaces import IIntIds
+from zope.security import checkPermission
+
+import plone
 
 
 class BaseCopyMove(Service):
@@ -42,12 +46,26 @@ class BaseCopyMove(Service):
                     return brain[0].getObject()
 
     def reply(self):
+        # return 401/403 Forbidden if the user has no permission
+        if not checkPermission('cmf.AddPortalContent', self.context):
+            pm = getToolByName(self.context, 'portal_membership')
+            if bool(pm.isAnonymousUser()):
+                self.request.response.setStatus(401)
+            else:
+                self.request.response.setStatus(403)
+            return
+
         data = json_body(self.request)
 
         source = data.get('source', None)
 
         if not source:
             raise BadRequest("Property 'source' is required")
+
+        # Disable CSRF protection
+        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
 
         if not isinstance(source, list):
             source = [source]

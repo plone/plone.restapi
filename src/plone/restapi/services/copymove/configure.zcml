@@ -8,7 +8,7 @@
     name="@copy"
     for="Products.CMFCore.interfaces.IFolderish"
     factory=".copymove.Copy"
-    permission="cmf.AddPortalContent"
+    permission="zope2.View"
     />
 
   <plone:service
@@ -16,7 +16,7 @@
     name="@move"
     for="Products.CMFCore.interfaces.IFolderish"
     factory=".copymove.Move"
-    permission="cmf.AddPortalContent"
+    permission="zope2.View"
     />
 
 </configure>

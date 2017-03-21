@@ -17,7 +17,7 @@ New Features:
   [timo,csenger,sneridagh]
 
 - Add @copy and @move endpoints.
-  [buchi]
+  [buchi,sneridagh]
 
 - Docs: Use sphinxcontrib-httpexample and convert existing examples.
   [lgraf]
