@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 from DateTime import DateTime
-from plone import api
 from datetime import timedelta
 from freezegun import freeze_time
+from plone import api
+from plone.app.testing import popGlobalRegistry
+from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -12,9 +14,10 @@ from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.testing.z2 import Browser
-from plone.uuid.interfaces import IMutableUUID
+from zope.site.hooks import getSite
 
 import collections
 import json
@@ -44,6 +47,10 @@ base_path = os.path.join(
 )
 
 
+def pretty_json(data):
+    return json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
+
+
 def save_request_and_response_for_docs(name, response):
     with open('{}/{}'.format(base_path, '%s.req' % name), 'w') as req:
         req.write('{} {} HTTP/1.1\n'.format(
@@ -57,11 +64,21 @@ def save_request_and_response_for_docs(name, response):
             if key.lower() in REQUEST_HEADER_KEYS:
                 req.write('{}: {}\n'.format(key.title(), value))
         if response.request.body:
+            # If request has a body, make sure to set Content-Type header
             if 'content-type' not in REQUEST_HEADER_KEYS:
                 content_type = response.request.headers['Content-Type']
                 req.write('Content-Type: %s\n' % content_type)
 
             req.write('\n')
+
+            # Pretty print JSON request body
+            if content_type == 'application/json':
+                json_body = json.loads(response.request.body)
+                body = pretty_json(json_body)
+                # Make sure Content-Length gets updated, just in case we
+                # ever decide to dump that header
+                response.request.prepare_body(data=body, files=None)
+
             req.write(response.request.body)
 
     with open('{}/{}'.format(base_path, '%s.resp' % name), 'w') as resp:
@@ -85,6 +102,10 @@ class TestTraversal(unittest.TestCase):
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
 
+        # Register custom UUID generator to produce stable UUIDs during tests
+        pushGlobalRegistry(getSite())
+        register_static_uuid_utility(prefix='SomeUUID')
+
         self.time_freezer = freeze_time("2016-10-21 19:00:00")
         self.frozen_time = self.time_freezer.start()
 
@@ -93,24 +114,8 @@ class TestTraversal(unittest.TestCase):
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
-        self.portal.invokeFactory('Document', id='front-page')
-        self.document = self.portal['front-page']
-        self.document.title = u"Welcome to Plone"
-        self.document.description = \
-            u"Congratulations! You have successfully installed Plone."
-        self.document.text = RichTextValue(
-            u"If you're seeing this instead of the web site you were " +
-            u"expecting, the owner of this web site has just installed " +
-            u"Plone. Do not contact the Plone Team or the Plone mailing " +
-            u"lists about this.",
-            'text/plain',
-            'text/html'
-        )
-        self.document.creation_date = DateTime('2016-01-21T01:14:48+00:00')
-        IMutableUUID(self.document).set('1f699ffa110e45afb1ba502f75f7ec33')
-        self.document.reindexObject()
-        self.document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
-        import transaction
+        self.document = self.create_document()
+
         transaction.commit()
         self.browser = Browser(self.app)
         self.browser.handleErrors = False
@@ -119,8 +124,79 @@ class TestTraversal(unittest.TestCase):
             'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
         )
 
+    def create_document(self):
+        self.portal.invokeFactory('Document', id='front-page')
+        document = self.portal['front-page']
+        document.title = u"Welcome to Plone"
+        document.description = \
+            u"Congratulations! You have successfully installed Plone."
+        document.text = RichTextValue(
+            u"If you're seeing this instead of the web site you were " +
+            u"expecting, the owner of this web site has just installed " +
+            u"Plone. Do not contact the Plone Team or the Plone mailing " +
+            u"lists about this.",
+            'text/plain',
+            'text/html'
+        )
+        document.creation_date = DateTime('2016-01-21T01:14:48+00:00')
+        document.reindexObject()
+        document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
+        return document
+
+    def create_folder(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        folder = self.portal['folder']
+        folder.title = 'My Folder'
+        folder.description = u'This is a folder with two documents'
+        folder.invokeFactory(
+            'Document',
+            id='doc1',
+            title='A document within a folder'
+        )
+        folder.invokeFactory(
+            'Document',
+            id='doc2',
+            title='A document within a folder'
+        )
+        folder.creation_date = DateTime(
+            '2016-01-21T07:14:48+00:00')
+        folder.modification_date = DateTime(
+            '2016-01-21T07:24:11+00:00')
+        return folder
+
     def tearDown(self):
         self.time_freezer.stop()
+        popGlobalRegistry(getSite())
+
+    def test_documentation_content_crud(self):
+        folder = self.create_folder()
+        transaction.commit()
+
+        response = self.api_session.post(
+            folder.absolute_url(),
+            json={
+                '@type': 'Document',
+                'title': 'My Document',
+            }
+        )
+        save_request_and_response_for_docs('content_post', response)
+
+        transaction.commit()
+        document = folder['my-document']
+        response = self.api_session.get(document.absolute_url())
+        save_request_and_response_for_docs('content_get', response)
+
+        response = self.api_session.patch(
+            document.absolute_url(),
+            json={
+                'title': 'My New Document Title',
+            }
+        )
+        save_request_and_response_for_docs('content_patch', response)
+
+        transaction.commit()
+        response = self.api_session.delete(document.absolute_url())
+        save_request_and_response_for_docs('content_delete', response)
 
     def test_documentation_document(self):
         response = self.api_session.get(self.document.absolute_url())
@@ -146,8 +222,6 @@ class TestTraversal(unittest.TestCase):
             '2016-01-21T02:14:48+00:00')
         self.portal.newsitem.modification_date = DateTime(
             '2016-01-21T02:24:11+00:00')
-        IMutableUUID(self.portal.newsitem).set(
-            '80c2a074cb4240d08c9a129e3a834c74')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.newsitem.absolute_url())
@@ -162,7 +236,6 @@ class TestTraversal(unittest.TestCase):
         self.portal.event.creation_date = DateTime('2016-01-21T03:14:48+00:00')
         self.portal.event.modification_date = DateTime(
             '2016-01-21T03:24:11+00:00')
-        IMutableUUID(self.portal.event).set('846d632bc0854c5aa6d3dcae171ed2db')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.event.absolute_url())
@@ -176,7 +249,6 @@ class TestTraversal(unittest.TestCase):
         self.portal.link.creation_date = DateTime('2016-01-21T04:14:48+00:00')
         self.portal.link.modification_date = DateTime(
             '2016-01-21T04:24:11+00:00')
-        IMutableUUID(self.portal.link).set('6ff48d27762143a0ae8d63cee73d9fc2')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.link.absolute_url())
@@ -197,7 +269,6 @@ class TestTraversal(unittest.TestCase):
         self.portal.file.creation_date = DateTime('2016-01-21T05:14:48+00:00')
         self.portal.file.modification_date = DateTime(
             '2016-01-21T05:24:11+00:00')
-        IMutableUUID(self.portal.file).set('9b6a4eadb9074dde97d86171bb332ae9')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.file.absolute_url())
@@ -216,35 +287,16 @@ class TestTraversal(unittest.TestCase):
         self.portal.image.creation_date = DateTime('2016-01-21T06:14:48+00:00')
         self.portal.image.modification_date = DateTime(
             '2016-01-21T06:24:11+00:00')
-        IMutableUUID(self.portal.image).set('2166e81a0c224fe3b62e197c7fdc9c3e')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.image.absolute_url())
         save_request_and_response_for_docs('image', response)
 
     def test_documentation_folder(self):
-        self.portal.invokeFactory('Folder', id='folder')
-        self.portal.folder.title = 'My Folder'
-        self.portal.folder.description = u'This is a folder with two documents'
-        self.portal.folder.invokeFactory(
-            'Document',
-            id='doc1',
-            title='A document within a folder'
-        )
-        self.portal.folder.invokeFactory(
-            'Document',
-            id='doc2',
-            title='A document within a folder'
-        )
-        self.portal.folder.creation_date = DateTime(
-            '2016-01-21T07:14:48+00:00')
-        self.portal.folder.modification_date = DateTime(
-            '2016-01-21T07:24:11+00:00')
-        IMutableUUID(self.portal.folder).set(
-            'fc7881c46d61452db4177bc059d9dcb5')
+        folder = self.create_folder()
         import transaction
         transaction.commit()
-        response = self.api_session.get(self.portal.folder.absolute_url())
+        response = self.api_session.get(folder.absolute_url())
         save_request_and_response_for_docs('folder', response)
 
     def test_documentation_collection(self):
@@ -271,8 +323,6 @@ class TestTraversal(unittest.TestCase):
             '2016-01-21T08:14:48+00:00')
         self.portal.collection.modification_date = DateTime(
             '2016-01-21T08:24:11+00:00')
-        IMutableUUID(self.portal.collection).set(
-            'd0c89bc77f874ce1aad5720921d875c0')
         import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.collection.absolute_url())
@@ -321,7 +371,7 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.get('@types/Document')
         save_request_and_response_for_docs('types_document', response)
 
-    def test_documentation_login(self):
+    def test_documentation_jwt_login(self):
         self.portal.acl_users.jwt_auth._secret = 'secret'
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
@@ -331,9 +381,26 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '{}/@login'.format(self.portal.absolute_url()),
             json={'login': SITE_OWNER_NAME, 'password': SITE_OWNER_PASSWORD})
-        save_request_and_response_for_docs('login', response)
+        save_request_and_response_for_docs('jwt_login', response)
 
-    def test_documentation_login_renew(self):
+    def test_documentation_jwt_logged_in(self):
+        self.portal.acl_users.jwt_auth._secret = 'secret'
+        self.portal.acl_users.jwt_auth.use_keyring = False
+        self.portal.acl_users.jwt_auth.token_timeout = 0
+        self.portal.acl_users.jwt_auth.store_tokens = True
+        import transaction
+        transaction.commit()
+        self.api_session.auth = None
+        response = self.api_session.post(
+            '{}/@login'.format(self.portal.absolute_url()),
+            json={'login': SITE_OWNER_NAME, 'password': SITE_OWNER_PASSWORD})
+        token = json.loads(response.content)['token']
+        response = self.api_session.get(
+            '/',
+            headers={'Authorization': 'Bearer {}'.format(token)})
+        save_request_and_response_for_docs('jwt_logged_in', response)
+
+    def test_documentation_jwt_login_renew(self):
         self.portal.acl_users.jwt_auth._secret = 'secret'
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
@@ -347,9 +414,9 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '{}/@login-renew'.format(self.portal.absolute_url()),
             headers={'Authorization': 'Bearer {}'.format(token)})
-        save_request_and_response_for_docs('login_renew', response)
+        save_request_and_response_for_docs('jwt_login_renew', response)
 
-    def test_documentation_logout(self):
+    def test_documentation_jwt_logout(self):
         self.portal.acl_users.jwt_auth._secret = 'secret'
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
@@ -364,7 +431,7 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '{}/@logout'.format(self.portal.absolute_url()),
             headers={'Authorization': 'Bearer {}'.format(token)})
-        save_request_and_response_for_docs('logout', response)
+        save_request_and_response_for_docs('jwt_logout', response)
 
     def test_documentation_batching(self):
         folder = self.portal[self.portal.invokeFactory(
@@ -636,10 +703,27 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '/@copy',
             json={
-                'source': '{}'.format(self.document.absolute_url()),
+                'source': self.document.absolute_url(),
             },
         )
-        save_request_and_response_for_docs('copy.json', response)
+        save_request_and_response_for_docs('copy', response)
+
+    def test_documentation_copy_multiple(self):
+        newsitem = self.portal[self.portal.invokeFactory(
+            'News Item', id='newsitem')]
+        newsitem.title = 'My News Item'
+        transaction.commit()
+
+        response = self.api_session.post(
+            '/@copy',
+            json={
+                'source': [
+                    self.document.absolute_url(),
+                    newsitem.absolute_url(),
+                ],
+            },
+        )
+        save_request_and_response_for_docs('copy_multiple', response)
 
     def test_documentation_move(self):
         self.portal.invokeFactory('Folder', id='folder')
@@ -647,10 +731,10 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.post(
             '/folder/@move',
             json={
-                'source': '{}'.format(self.document.absolute_url()),
+                'source': self.document.absolute_url(),
             },
         )
-        save_request_and_response_for_docs('move.json', response)
+        save_request_and_response_for_docs('move', response)
 
     def test_documentation_vocabularies_all(self):
         response = self.api_session.get('/@vocabularies')

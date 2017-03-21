@@ -3,4 +3,18 @@ Accept: application/json
 Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
-{"inherit": true, "entries": [{"type": "user", "id": "test_user_1_", "roles": {"Contributor": false, "Reviewer": true, "Editor": false, "Reader": true}}]}
+{
+    "entries": [
+        {
+            "id": "test_user_1_",
+            "roles": {
+                "Contributor": false,
+                "Editor": false,
+                "Reader": true,
+                "Reviewer": true
+            },
+            "type": "user"
+        }
+    ],
+    "inherit": true
+}

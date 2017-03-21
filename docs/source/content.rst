@@ -21,31 +21,8 @@ Creating a Resource with POST
 To create a new resource, we send a POST request to the resource container.
 If we want to create a new document within an existing folder, we send a POST request to that folder:
 
-.. example-code::
-
-  .. code-block:: http-request
-
-    POST /folder HTTP/1.1
-    Host: localhost:8080
-    Accept: application/json
-    Content-Type: application/json
-
-    {
-        '@type': 'Document',
-        'title': 'My Document',
-    }
-
-  .. code-block:: curl
-
-    curl -i -H "Accept: application/json" -H "Content-type: application/json" --data-raw '{"@type":"Document", "title": "My Document"}' --user admin:admin -X POST http://localhost:8080/Plone/folder
-
-  .. code-block:: httpie
-
-    http -a admin:admin POST http://localhost:8080/Plone/folder \\@type=Document title=My Document Accept:application/json
-
-  .. code-block:: python-requests
-
-    requests.post('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, json={'@type': 'Document', 'title': 'My Document'})
+..  http:example:: curl httpie python-requests
+    :request: _json/content_post.req
 
 By setting the 'Accept' header, we tell the server that we would like to receive the response in the 'application/json' representation format.
 
@@ -59,17 +36,12 @@ Successful Response (201 Created)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If a resource has been created, the server responds with the :term:`201 Created` status code.
-The 'Location' header contains the URL of the newly created resource and the resource representation in the payload::
+The 'Location' header contains the URL of the newly created resource and the resource representation in the payload:
 
-  HTTP/1.1 201 Created
-  Content-Type: application/json
-  Location: http://localhost:8080/folder/my-document
 
-  {
-      '@type': 'Document',
-      'id': 'my-document',
-      'title': 'My Document',
-  }
+.. literalinclude:: _json/content_post.resp
+   :language: http
+
 
 Unsuccessful Response (400 Bad Request)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -137,7 +109,7 @@ Reading a Resource with GET
 After a successful POST, we can access the resource by sending a GET request to the resource URL:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/document.req
+    :request: _json/content_get.req
 
 
 Successful Response (200 OK)
@@ -145,7 +117,7 @@ Successful Response (200 OK)
 
 If a resource has been retrieved successfully, the server responds with :term:`200 OK`:
 
-.. literalinclude:: _json/document.resp
+.. literalinclude:: _json/content_get.resp
    :language: http
 
 .. note::
@@ -203,39 +175,17 @@ Updating a Resource with PATCH
 To update an existing resource we send a PATCH request to the server.
 PATCH allows to provide just a subset of the resource (the values you actually want to change):
 
-.. example-code::
-
-  .. code-block:: http-request
-
-    PATCH /folder/my-document HTTP/1.1
-    Host: localhost:8080/Plone
-    Content-Type: application/json
-
-    {
-        'title': 'My New Document Title',
-    }
-
-  .. code-block:: curl
-
-    curl -i -H "Accept: application/json" -H "Content-type: application/json" --data-raw '{title": "My New Document Title"}' --user admin:admin -X PATCH http://localhost:8080/Plone/folder/my-document
-
-  .. code-block:: httpie
-
-    http -a admin:admin PATCH http://localhost:8080/Plone/folder/my-document title="My New Document Title" Accept:application/json
-
-  .. code-block:: python-requests
-
-    requests.patch('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, json={'title': 'My New Document Title'})
+..  http:example:: curl httpie python-requests
+    :request: _json/content_patch.req
 
 
 Successful Response (204 No Content)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A successful response to a PATCH request will be indicated by a :term:`204 No Content` response::
+A successful response to a PATCH request will be indicated by a :term:`204 No Content` response:
 
-  HTTP/1.1  204 No Content
-
-
+.. literalinclude:: _json/content_patch.resp
+   :language: http
 
 See for full specs the `RFC 5789: PATCH Method for HTTP <http://tools.ietf.org/html/rfc5789>`_
 
@@ -249,30 +199,7 @@ Replacing a Resource with PUT
 
 To replace an existing resource we send a PUT request to the server:
 
-.. example-code::
-
-  .. code-block:: http-request
-
-    PUT /folder/my-document HTTP/1.1
-    Host: localhost:8080
-    Content-Type: application/json
-
-    {
-        '@type': 'Document',
-        'title': 'My New Document Title',
-    }
-
-  .. code-block:: curl
-
-    curl -i -H "Accept: application/json" -X PUT http://localhost:8080/Plone/folder
-
-  .. code-block:: httpie
-
-    http -a admin:admin PUT http://localhost:8080/Plone/folder title="My New Document Title" Accept:application/json
-
-  .. code-block:: python-requests
-
-    requests.put('http://localhost:8080/Plone/folder/my-document', auth=('admin', 'admin'), headers={'Accept': 'application/json'}, json={'title': 'My New Document Title', ...})
+TODO: Add example.
 
 In accordance with the HTTP specification, a successful PUT will not create a new resource or produce a new URL.
 
@@ -285,10 +212,9 @@ When the PUT request is accepted and processed by the service, the consumer will
 Successful Update (204 No Content)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-When a resource has been updated successfully, the server sends a :term:`204 No Content` response::
+When a resource has been updated successfully, the server sends a :term:`204 No Content` response:
 
-  HTTP/1.1 204 No Content
-  Content-Type:: application/json
+TODO: Add example.
 
 
 Unsuccessful Update (409 Conflict)
@@ -352,28 +278,13 @@ Removing a Resource with DELETE
 
 We can delete an existing resource by sending a DELETE request:
 
-.. example-code::
+..  http:example:: curl httpie python-requests
+    :request: _json/content_delete.req
 
-  .. code-block:: http-request
+A successful response will be indicated by a :term:`204 No Content` response:
 
-    DELETE /folder/my-document HTTP/1.1
-    Host: localhost:8080
-
-  .. code-block:: curl
-
-      curl -i -H "Accept: application/json" -X DELETE --user admin:admin http://localhost:8080/Plone/folder/my-document
-
-  .. code-block:: httpie
-
-      http -a admin:admin DELETE http://localhost:8080/Plone/folder/my-document Accept:application/json
-
-  .. code-block:: python-requests
-
-    requests.delete('http://localhost:8080/Plone/folder', auth=('admin', 'admin'), headers={'Accept': 'application/json'})
-
-A successful response will be indicated by a :term:`204 No Content` response::
-
-  HTTP/1.1  204 No Content
+.. literalinclude:: _json/content_delete.resp
+   :language: http
 
 
 DELETE Implementation

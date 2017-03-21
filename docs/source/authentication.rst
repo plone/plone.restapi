@@ -7,7 +7,7 @@ That means that any authentication method supported by an installed PAS Plugin s
 
 For example, to authenticate using HTTP basic auth, you'd set an ``Authorization`` header:
 
-.. code::
+.. code-block:: http
 
   GET /Plone HTTP/1.1
   Authorization: Basic Zm9vYmFyOmZvb2Jhcgo=
@@ -17,7 +17,7 @@ HTTP client libraries usually contain helper functions to produce a proper ``Aut
 
 Using the ``requests`` library, you'd set up a session with basic auth like this:
 
-.. code:: python
+.. code-block:: python
 
     import requests
 
@@ -29,7 +29,7 @@ Using the ``requests`` library, you'd set up a session with basic auth like this
 
 Or the same example using ``curl``:
 
-.. code:: python
+.. code-block:: bash
 
     curl -u username:password -H 'Accept:application/json' $URL
 
@@ -40,46 +40,46 @@ JSON Web Tokens (JWT)
 ``plone.restapi`` includes a Plone PAS plugin for authentication with JWT. The
 plugin is installed automatically when installing the product.
 
-A JWT token can be acquired by posting a users credentials to the ``@login``
+Acquiring a token (@login)
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A JWT token can be acquired by posting a user's credentials to the ``@login``
 endpoint.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/login.req
+    :request: _json/jwt_login.req
 
 The server responds with a JSON object containing the token.
 
-
-.. literalinclude:: _json/login.resp
+.. literalinclude:: _json/jwt_login.resp
    :language: http
 
+Authenticating with a token
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The token can now be used in subsequent requests by including it in the
-``Authorization`` header:
+``Authorization`` header with the ``Bearer`` scheme:
 
-.. example-code::
+..  http:example:: curl httpie python-requests
+    :request: _json/jwt_logged_in.req
 
-  .. code-block:: http-request
 
-    GET /Plone HTTP/1.1
-    Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsbmFtZSI6IiIsInN1YiI6ImFkbWluIiwiZXhwIjoxNDY0MDQyMTAzfQ.aOyvMwdcIMV6pzC0GYQ3ZMdGaHR1_W7DxT0W0ok4FxI
-    Accept: application/json
-
-  .. code-block:: curl
-
-    curl -i -H "Accept: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkXVCJ9.eyJmdWxsbmFtZSI6bnVsbCwic3ViIjoiYWRtaW4iLCJleHAiOjE0Nzk4NjY4NDd9.vE8LAMluz7xFB5Px1X5sBbrPHeMWrx1Ff-P9qwMI614" -X GET http://localhost:8080/Plone
-
+Renewing a token (@login-renew)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 By default the token will expire after 12 hours and thus must be renewed before
 expiration. To renew the token simply post to the ``@login-renew`` endpoint.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/login_renew.req
+    :request: _json/jwt_login_renew.req
 
 The server returns a JSON object with a new token:
 
-.. literalinclude:: _json/login_renew.resp
+.. literalinclude:: _json/jwt_login_renew.resp
    :language: http
 
+Invalidating a token (@logout)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``@logout`` endpoint can be used to invalidate tokens. However by default
 tokens are not persisted on the server and thus can not be invalidated. To enable
@@ -90,11 +90,11 @@ keyring in the PAS plugin (option ``use_keyring``).
 The logout request must contain the existing token in the ``Authorization`` header.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/logout.req
+    :request: _json/jwt_logout.req
 
 If invalidation succeeds, the server responds with an empty 204 reponse:
 
-.. literalinclude:: _json/logout.resp
+.. literalinclude:: _json/jwt_logout.resp
    :language: http
 
 Permissions

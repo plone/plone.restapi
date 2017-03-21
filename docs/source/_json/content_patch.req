@@ -1,8 +1,8 @@
-PATCH /plone/@groups/ploneteam HTTP/1.1
+PATCH /plone/folder/my-document HTTP/1.1
 Accept: application/json
 Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    "email": "ploneteam2@plone.org"
+    "title": "My New Document Title"
 }

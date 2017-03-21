@@ -15,5 +15,5 @@ To retrieve a list of principals given a search string, call the ``/@principals`
 
 The server will respond with a list of the users and groups in the portal that match the query string:
 
-.. literalinclude:: _json/principals.json
+.. literalinclude:: _json/principals.resp
    :language: http
