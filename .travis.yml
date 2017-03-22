@@ -24,4 +24,3 @@ after_success:
   - bin/createcoverage
   - pip install coverage==3.7.1 coveralls
   - coveralls
-  - cat .coverage
