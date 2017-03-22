@@ -3,6 +3,7 @@
 # pylint: disable=E1002
 # E1002: Use of super on an old style class
 
+from Products.CMFCore.utils import getToolByName
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
 from plone.app.i18n.locales.interfaces import IMetadataLanguages
@@ -29,8 +30,21 @@ from zope.configuration import xmlconfig
 from zope.interface import implements
 import re
 
+import pkg_resources
 import requests
 import collective.MockMailHost
+
+try:
+    pkg_resources.get_distribution('Products.LinguaPlone')
+    LP_INSTALLED = True
+except pkg_resources.DistributionNotFound:
+    LP_INSTALLED = False
+
+try:
+    pkg_resources.get_distribution('plone.app.multilingual')
+    PAM_INSTALLED = True
+except pkg_resources.DistributionNotFound:
+    PAM_INSTALLED = False
 
 
 def set_available_languages():
@@ -87,6 +101,49 @@ PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
     name="PloneRestApiDXLayer:Functional"
 )
 
+if PAM_INSTALLED:
+
+    class PloneRestApiDXPAMLayer(PloneSandboxLayer):
+        defaultBases = (PLONE_APP_CONTENTTYPES_FIXTURE,)
+
+        def setUpZope(self, app, configurationContext):
+            import plone.restapi
+            xmlconfig.file(
+                'configure.zcml',
+                plone.restapi,
+                context=configurationContext
+            )
+            xmlconfig.file(
+                'testing.zcml',
+                plone.restapi,
+                context=configurationContext
+            )
+
+            z2.installProduct(app, 'plone.restapi')
+
+        def setUpPloneSite(self, portal):
+            portal.acl_users.userFolderAddUser(
+                SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ['Manager'], [])
+            login(portal, SITE_OWNER_NAME)
+            language_tool = getToolByName(portal, 'portal_languages')
+            language_tool.addSupportedLanguage('en')
+            language_tool.addSupportedLanguage('es')
+            applyProfile(portal, 'plone.app.multilingual:default')
+            applyProfile(portal, 'plone.restapi:default')
+            applyProfile(portal, 'plone.restapi:testing')
+            add_catalog_indexes(portal, DX_TYPES_INDEXES)
+            set_available_languages()
+
+    PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()
+    PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING = IntegrationTesting(
+        bases=(PLONE_RESTAPI_DX_PAM_FIXTURE,),
+        name="PloneRestApiDXPAMLayer:Integration"
+    )
+    PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
+        bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
+        name="PloneRestApiDXPAMLayer:Functional"
+    )
+
 
 class PloneRestApiATLayer(PloneSandboxLayer):
 
@@ -135,6 +192,63 @@ PLONE_RESTAPI_AT_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_AT_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApiATLayer:Functional"
 )
+
+if LP_INSTALLED:
+    class PloneRestApiATLPLayer(PloneSandboxLayer):
+
+        defaultBases = (PLONE_FIXTURE,)
+
+        def setUpZope(self, app, configurationContext):
+            import Products.ATContentTypes
+            self.loadZCML(package=Products.ATContentTypes)
+            import plone.app.dexterity
+            self.loadZCML(package=plone.app.dexterity)
+            import Products.LinguaPlone
+            self.loadZCML(package=Products.LinguaPlone)
+
+            import plone.restapi
+            xmlconfig.file(
+                'configure.zcml',
+                plone.restapi,
+                context=configurationContext
+            )
+
+            z2.installProduct(app, 'Products.Archetypes')
+            z2.installProduct(app, 'Products.ATContentTypes')
+            z2.installProduct(app, 'Products.LinguaPlone')
+            z2.installProduct(app, 'plone.app.collection')
+            z2.installProduct(app, 'plone.app.blob')
+            z2.installProduct(app, 'plone.restapi')
+
+        def setUpPloneSite(self, portal):
+            portal.acl_users.userFolderAddUser(
+                SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ['Manager'], [])
+
+            login(portal, SITE_OWNER_NAME)
+
+            if portal.portal_setup.profileExists(
+                    'Products.ATContentTypes:default'):
+                applyProfile(portal, 'Products.ATContentTypes:default')
+            if portal.portal_setup.profileExists(
+                    'plone.app.collection:default'):
+                applyProfile(portal, 'plone.app.collection:default')
+
+            applyProfile(portal, 'plone.app.dexterity:default')
+            applyProfile(portal, 'Products.LinguaPlone:LinguaPlone')
+            applyProfile(portal, 'plone.restapi:default')
+            applyProfile(portal, 'plone.restapi:testing')
+            portal.portal_languages.addSupportedLanguage("en")
+            portal.portal_languages.addSupportedLanguage("es")
+
+    PLONE_RESTAPI_AT_LP_FIXTURE = PloneRestApiATLPLayer()
+    PLONE_RESTAPI_AT_LP_INTEGRATION_TESTING = IntegrationTesting(
+        bases=(PLONE_RESTAPI_AT_LP_FIXTURE,),
+        name="PloneRestApiATLPLayer:Integration"
+    )
+    PLONE_RESTAPI_AT_LP_FUNCTIONAL_TESTING = FunctionalTesting(
+        bases=(PLONE_RESTAPI_AT_LP_FIXTURE, z2.ZSERVER_FIXTURE),
+        name="PloneRestApiATLPLayer:Functional"
+    )
 
 
 class RelativeSession(requests.Session):

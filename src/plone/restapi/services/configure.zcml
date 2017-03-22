@@ -13,5 +13,6 @@
   <include package=".users"/>
   <include package=".vocabularies"/>
   <include package=".workflow"/>
+  <include package=".multilingual"/>
 
 </configure>
