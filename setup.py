@@ -42,6 +42,9 @@ setup(name='plone.restapi',
           'setuptools',
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
           'PyJWT',
+          'five.intid',
+          'plone.api',
+          'z3c.relationfield', 
       ],
       extras_require={'test': [
           'Products.Archetypes',
