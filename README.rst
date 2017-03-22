@@ -4,9 +4,9 @@
 .. image:: https://coveralls.io/repos/github/plone/plone.restapi/badge.svg?branch=master
   :target: https://coveralls.io/github/plone/plone.restapi?branch=master
 
-.. image:: https://landscape.io/github/plone/plone.restapi/master/landscape.svg?style=plastic
-  :target: https://landscape.io/github/plone/plone.restapi/master
-  :alt: Code Health
+.. image:: https://landscape.io/github/plone/plone.restapi/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/plone/plone.restapi/master
+   :alt: Code Health
 
 .. image:: https://readthedocs.org/projects/pip/badge/
   :target: https://plonerestapi.readthedocs.org
