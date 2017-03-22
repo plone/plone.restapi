@@ -5,9 +5,7 @@ from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
-from zope.component import queryUtility
 from zope.interface import alsoProvides
-from zope.intid.interfaces import IIntIds
 from zope.security import checkPermission
 
 import plone
@@ -25,12 +23,8 @@ class BaseCopyMove(Service):
         self.catalog = getToolByName(self.context, 'portal_catalog')
 
     def get_object(self, key):
-        """Get an object by intid, url, path or UID."""
-        if isinstance(key, int):
-            # Resolve by intid
-            intids = queryUtility(IIntIds)
-            return intids.queryObject(key)
-        elif isinstance(key, basestring):
+        """Get an object by url, path or UID."""
+        if isinstance(key, basestring):
             if key.startswith(self.portal_url):
                 # Resolve by URL
                 return self.portal.restrictedTraverse(
