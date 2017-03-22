@@ -6,10 +6,6 @@ Changelog
 
 New Features:
 
-- Docs: Convert remaining examples to use sphinxcontrib-httpexample, and
-  ditch the previously used sphinxcontrib-osexample Sphinx extension.
-  [lgraf]
-
 - Add @sharing endpoint.
   [timo,csenger,sneridagh]
 
@@ -19,7 +15,7 @@ New Features:
 - Add @copy and @move endpoints.
   [buchi,sneridagh]
 
-- Docs: Use sphinxcontrib-httpexample and convert existing examples.
+- Docs: Convert all HTTP examples to use sphinxcontrib-httpexample.
   [lgraf]
 
 - Add 'addable' attribute to the @types endpoint. It specifies if the content
@@ -40,11 +36,14 @@ New Features:
   sharing UI widget or other user/groups search widgets.
   [sneridagh]
 
-- Add reset-password action to the user endpoint.
+- Add reset-password action to the @users endpoint.
   https://github.com/plone/plone.restapi/issues/158
   [timo,csenger]
 
 Bugfixes:
+
+- Fix coveralls reporting.
+  [timo]
 
 - Return correct @id for folderish objects created via POST.
   [lgraf]
