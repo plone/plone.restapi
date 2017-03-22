@@ -42,7 +42,7 @@ setup(name='plone.restapi',
           'setuptools',
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
           'PyJWT',
-          'five.intid',
+          'five.intid >= 1.1.2',
           'plone.api',
           'z3c.relationfield', 
       ],
