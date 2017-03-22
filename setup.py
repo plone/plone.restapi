@@ -44,7 +44,7 @@ setup(name='plone.restapi',
           'PyJWT',
           'five.intid',
           'plone.api',
-          'z3c.relationfield', 
+          'z3c.relationfield',
       ],
       extras_require={'test': [
           'Products.Archetypes',
