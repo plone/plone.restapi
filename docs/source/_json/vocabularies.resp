@@ -31,8 +31,8 @@ Content-Type: application/json
     "title": "plone.app.vocabularies.Actions"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.contenttypes.migration.changed_base_classes", 
-    "title": "plone.app.contenttypes.migration.changed_base_classes"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ImagesScales", 
+    "title": "plone.app.vocabularies.ImagesScales"
   }, 
   {
     "@id": "http://localhost:55001/plone/@vocabularies/wicked.vocabularies.BaseConfigurationsOptions", 
@@ -189,6 +189,10 @@ Content-Type: application/json
   {
     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Workflows", 
     "title": "plone.app.vocabularies.Workflows"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.contenttypes.migration.changed_base_classes", 
+    "title": "plone.app.contenttypes.migration.changed_base_classes"
   }, 
   {
     "@id": "http://localhost:55001/plone/@vocabularies/Group Ids", 
