@@ -13,7 +13,7 @@ before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
 install:
   - sed -ie "s#plone-x.x.x.cfg#plone-$PLONE_VERSION.cfg#" travis.cfg
-  - python bootstrap-buildout.py --buildout-version=2.8.0
+  - python bootstrap-buildout.py --buildout-version=2.8.0 -c travis.cfg
   - bin/buildout -N -t 3 -c travis.cfg
 script:
   - bin/code-analysis
