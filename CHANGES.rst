@@ -6,6 +6,10 @@ Changelog
 
 Bugfixes:
 
+- Add Products.PasswortResetTool to dependencies. This dependency is gone in
+  Plone 5.1.
+  [timo]
+
 - Make import of LocalrolesModifiedEvent conditional, so plone.restapi
   doesn't prevent Plone 4.3 deployments < 4.3.4 from booting.
   [lgraf]
