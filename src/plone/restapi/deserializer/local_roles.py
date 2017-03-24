@@ -1,15 +1,20 @@
 # -*- coding: utf-8 -*-
 from AccessControl.interfaces import IRoleManager
-from Products.CMFCore.interfaces import ICatalogAware
-
-from plone.app.workflow.events import LocalrolesModifiedEvent
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
+from Products.CMFCore.interfaces import ICatalogAware
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.event import notify
-from zope.interface import Interface
 from zope.interface import implementer
+from zope.interface import Interface
+
+try:
+    from plone.app.workflow.events import LocalrolesModifiedEvent
+    LOCALROLES_MODIFIED_EVENT_AVAILABLE = True
+except ImportError:
+    # Plone < 4.3.4
+    LOCALROLES_MODIFIED_EVENT_AVAILABLE = False
 
 
 marker = object()
@@ -53,4 +58,5 @@ class DeserializeFromJson(object):
 
         if ICatalogAware(self.context) and (inherit_reindex or roles_reindex):
             self.context.reindexObjectSecurity()
-            notify(LocalrolesModifiedEvent(self.context, self.request))
+            if LOCALROLES_MODIFIED_EVENT_AVAILABLE:
+                notify(LocalrolesModifiedEvent(self.context, self.request))

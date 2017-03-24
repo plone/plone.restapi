@@ -4,7 +4,11 @@ Changelog
 1.0a11 (unreleased)
 -------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Make import of LocalrolesModifiedEvent conditional, so plone.restapi
+  doesn't prevent Plone 4.3 deployments < 4.3.4 from booting.
+  [lgraf]
 
 
 1.0a10 (2017-03-22)
