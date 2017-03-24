@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from itertools import chain
-from plone import api
 from plone.app.workflow.browser.sharing import merge_search_results
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
@@ -42,7 +41,8 @@ class PrincipalsGet(Service):
                       for field in ['name', 'fullname', 'email']]), 'userid')
 
         def get_principal_by_id(user_id):
-            return api.user.get(user_id)
+            mtool = getToolByName(self.context, 'portal_membership')
+            return mtool.getMemberById(user_id)
 
         return self._principal_search_results(
             search_for_principal, get_principal_by_id, 'user', 'userid')

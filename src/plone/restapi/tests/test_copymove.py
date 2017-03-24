@@ -9,9 +9,7 @@ from plone.app.testing import setRoles
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from zope.component import queryUtility
 from zope.event import notify
-from zope.intid.interfaces import IIntIds
 
 import unittest
 import transaction
@@ -40,13 +38,6 @@ class TestCopyMove(unittest.TestCase):
             '%s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
         notify(PubStart(request))
         return request.traverse(path)
-
-    def test_get_object_by_intid(self):
-        intids = queryUtility(IIntIds)
-        service = self.traverse('/plone/@copy', method='POST')
-        obj = service.get_object(intids.getId(self.doc1))
-
-        self.assertEqual(self.doc1, obj)
 
     def test_get_object_by_url(self):
         service = self.traverse('/plone/@copy', method='POST')
