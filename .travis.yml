@@ -11,10 +11,9 @@ env:
   - PLONE_VERSION=5.1.x
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
-  - virtualenv .
-  - bin/pip install --upgrade pip setuptools zc.buildout
 install:
   - sed -ie "s#plone-x.x.x.cfg#plone-$PLONE_VERSION.cfg#" travis.cfg
+  - python bootstrap.py
   - bin/buildout -N -t 3 -c travis.cfg
 script:
   - bin/code-analysis
