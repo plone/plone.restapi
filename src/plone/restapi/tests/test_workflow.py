@@ -6,7 +6,7 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import login
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from unittest2 import TestCase
+from unittest import TestCase
 from zExceptions import NotFound
 from zope.component import getMultiAdapter
 from zope.event import notify

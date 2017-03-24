@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from datetime import date
 from decimal import Decimal
-from unittest2 import TestCase
+from unittest import TestCase
 
 from zope.component import getMultiAdapter
 from zope import schema

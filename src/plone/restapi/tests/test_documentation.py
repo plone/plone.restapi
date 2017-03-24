@@ -23,7 +23,7 @@ import collections
 import json
 import os
 import transaction
-import unittest2 as unittest
+import unittest
 
 
 REQUEST_HEADER_KEYS = [

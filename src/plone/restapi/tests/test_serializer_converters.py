@@ -8,7 +8,7 @@ from persistent.mapping import PersistentMapping
 from plone.app.textfield.value import RichTextValue
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from unittest2 import TestCase
+from unittest import TestCase
 from z3c.relationfield.relation import RelationValue
 from zope.component import getUtility
 from zope.i18nmessageid import MessageFactory
