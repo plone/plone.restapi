@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.imaging import get_actual_scale
-from unittest2 import TestCase
+from unittest import TestCase
 
 
 class TestGetActualScale(TestCase):

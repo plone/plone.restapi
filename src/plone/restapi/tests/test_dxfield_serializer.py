@@ -12,7 +12,7 @@ from plone.namedfile.file import NamedImage
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from unittest2 import TestCase
+from unittest import TestCase
 from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
