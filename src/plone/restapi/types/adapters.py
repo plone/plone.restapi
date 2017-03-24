@@ -31,15 +31,6 @@ from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_properties
 
-import pkg_resources
-
-try:
-    pkg_resources.get_distribution('z3c.relationfield')
-    Z3CRELATIONS_INSTALLED = True
-    from z3c.relationfield.interfaces import IRelationList
-except pkg_resources.DistributionNotFound:
-    Z3CRELATIONS_INSTALLED = False
-
 
 @adapter(IField, Interface, Interface)
 @implementer(IJsonSchemaProvider)
@@ -221,23 +212,6 @@ class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
             info['uniqueItems'] = False
 
         return info
-
-if Z3CRELATIONS_INSTALLED:
-
-    @adapter(IRelationList, Interface, Interface)
-    @implementer(IJsonSchemaProvider)
-    class ChoiceslessRelationListSchemaProvider(ListJsonSchemaProvider):
-
-        def get_items(self):
-            """Get items properties."""
-            value_type_adapter = getMultiAdapter(
-                (self.field.value_type, self.context, self.request),
-                IJsonSchemaProvider)
-
-            # Prevent rendering all choices.
-            value_type_adapter.should_render_choices = False
-
-            return value_type_adapter.get_schema()
 
 
 @adapter(ISet, Interface, Interface)
