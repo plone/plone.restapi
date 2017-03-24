@@ -41,6 +41,7 @@ setup(name='plone.restapi',
       install_requires=[
           'setuptools',
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
+          'Products.PasswordResetTool',  # gone in Plone 5.1
           'PyJWT',
       ],
       extras_require={'test': [
