@@ -1,10 +1,25 @@
 Changelog
 =========
 
-1.0a11 (unreleased)
+1.0a12 (unreleased)
+-------------------
+
+- Nothing changed yet.
+
+
+1.0a11 (2017-03-24)
 -------------------
 
 Bugfixes:
+
+- Remove zope.intid dependency from copy/move endpoint. Remove plone.api
+  dependency from principals endpoint. Make
+  ChoiceslessRelationListSchemaProvider available only if z3c.relationfield
+  is installed. This fixes https://github.com/plone/plone.restapi/issues/288
+  [erral]
+
+- Remove unittest2 imports from tests.
+  [timo]
 
 - Add Products.PasswortResetTool to dependencies. This dependency is gone in
   Plone 5.1.

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """JsonSchema providers."""
 from plone.app.textfield.interfaces import IRichText
-from z3c.relationfield.interfaces import IRelationList
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtility
@@ -213,22 +212,6 @@ class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
             info['uniqueItems'] = False
 
         return info
-
-
-@adapter(IRelationList, Interface, Interface)
-@implementer(IJsonSchemaProvider)
-class ChoiceslessRelationListSchemaProvider(ListJsonSchemaProvider):
-
-    def get_items(self):
-        """Get items properties."""
-        value_type_adapter = getMultiAdapter(
-            (self.field.value_type, self.context, self.request),
-            IJsonSchemaProvider)
-
-        # Prevent rendering all choices.
-        value_type_adapter.should_render_choices = False
-
-        return value_type_adapter.get_schema()
 
 
 @adapter(ISet, Interface, Interface)
