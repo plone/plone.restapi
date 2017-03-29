@@ -24,4 +24,4 @@ after_success:
   - bin/createcoverage
   - pip install coverage==3.7.1 coveralls
   - coveralls
-  - docker.io build --tag plone-dev:207.03.29 .
+  - docker.io build --tag latest:2017.03.29 .
