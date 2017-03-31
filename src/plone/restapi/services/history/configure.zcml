@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <plone:service
+    method="GET"
+    name="@history"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".get.HistoryGet"
+    permission="zope2.View"
+    />
+
+</configure>
