@@ -175,3 +175,40 @@ class TestCopyMoveFunctional(unittest.TestCase):
         )
 
         self.assertEquals(response.status_code, 401)
+
+    def test_move_single_object_no_permissions_raises_403(self):
+        self.api_session.auth = ('memberuser', 'secret')
+        response = self.api_session.post(
+            '/@move',
+            json={
+                "source": self.doc1.absolute_url()
+            }
+        )
+
+        self.assertEquals(response.status_code, 403)
+
+    def test_move_single_object_no_auth_raises_401(self):
+        self.api_session.auth = ('nonexistent', 'secret')
+        response = self.api_session.post(
+            '/@move',
+            json={
+                "source": self.doc1.absolute_url()
+            }
+        )
+
+        self.assertEquals(response.status_code, 401)
+
+    def test_move_single_object_no_permission_delete_source_raises_403(self):
+        api.user.grant_roles(
+            username='memberuser', obj=self.folder1, roles=['Manager', ])
+        transaction.commit()
+
+        self.api_session.auth = ('memberuser', 'secret')
+        response = self.api_session.post(
+            '/folder1/@move',
+            json={
+                "source": self.doc1.absolute_url()
+            }
+        )
+
+        self.assertEquals(response.status_code, 403)

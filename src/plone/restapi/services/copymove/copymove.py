@@ -7,6 +7,8 @@ from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
 from zope.security import checkPermission
+from zExceptions import Forbidden
+from zExceptions import Unauthorized
 
 import plone
 
@@ -44,10 +46,9 @@ class BaseCopyMove(Service):
         if not checkPermission('cmf.AddPortalContent', self.context):
             pm = getToolByName(self.context, 'portal_membership')
             if bool(pm.isAnonymousUser()):
-                self.request.response.setStatus(401)
+                raise Unauthorized('Anonymous cannot perform this operation.')
             else:
-                self.request.response.setStatus(403)
-            return
+                raise Forbidden('Cannot add content to the destination')
 
         data = json_body(self.request)
 
@@ -67,6 +68,9 @@ class BaseCopyMove(Service):
         parents_ids = {}
         for item in source:
             obj = self.get_object(item)
+            if self.is_moving:
+                if not checkPermission('zope2.DeleteObjects', obj):
+                    raise Forbidden('Cannot delete source')
             if obj is not None:
                 parent = aq_parent(obj)
                 if parent in parents_ids:
@@ -95,6 +99,7 @@ class BaseCopyMove(Service):
 class Copy(BaseCopyMove):
     """Copies existing content objects.
     """
+    is_moving = False
 
     def clipboard(self, parent, ids):
         return parent.manage_copyObjects(ids=ids)
@@ -103,6 +108,7 @@ class Copy(BaseCopyMove):
 class Move(BaseCopyMove):
     """Moves existing content objects.
     """
+    is_moving = True
 
     def clipboard(self, parent, ids):
         return parent.manage_cutObjects(ids=ids)
