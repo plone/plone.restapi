@@ -1,0 +1,52 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/event", 
+  "@type": "Event", 
+  "UID": "SomeUUID000000000000000000000002", 
+  "allow_discussion": null, 
+  "attendees": [], 
+  "changeNote": "", 
+  "contact_email": null, 
+  "contact_name": null, 
+  "contact_phone": null, 
+  "contributors": [], 
+  "created": "2016-01-21T03:14:48+00:00", 
+  "creators": [
+    "test_user_1_", 
+    "admin"
+  ], 
+  "description": "This is an event", 
+  "effective": null, 
+  "end": null, 
+  "event_url": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "id": "event", 
+  "language": "", 
+  "location": null, 
+  "modified": "2016-01-21T03:24:11+00:00", 
+  "open_end": null, 
+  "parent": {
+    "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
+    "description": "", 
+    "title": "Plone site"
+  }, 
+  "recurrence": null, 
+  "relatedItems": [], 
+  "review_state": "private", 
+  "rights": "", 
+  "sharing": {
+    "@id": "http://localhost:55001/plone/event/@sharing", 
+    "title": "Sharing"
+  }, 
+  "start": null, 
+  "subjects": [], 
+  "sync_uid": null, 
+  "text": null, 
+  "timezone": null, 
+  "title": "Event", 
+  "whole_day": null
+}

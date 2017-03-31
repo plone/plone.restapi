@@ -1,19 +1,18 @@
 .. image:: https://secure.travis-ci.org/plone/plone.restapi.png?branch=master
   :target: http://travis-ci.org/plone/plone.restapi
 
-.. image:: https://coveralls.io/repos/plone/plone.restapi/badge.png?branch=master
-  :target: https://coveralls.io/r/plone/plone.restapi
+.. image:: https://coveralls.io/repos/github/plone/plone.restapi/badge.svg?branch=master
+  :target: https://coveralls.io/github/plone/plone.restapi?branch=master
+
+.. image:: https://landscape.io/github/plone/plone.restapi/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/plone/plone.restapi/master
+   :alt: Code Health
 
 .. image:: https://readthedocs.org/projects/pip/badge/
   :target: https://plonerestapi.readthedocs.org
 
-.. image:: https://landscape.io/github/plone/plone.restapi/master/landscape.svg?style=plastic
-  :target: https://landscape.io/github/plone/plone.restapi/master
-  :alt: Code Health
-
-.. image:: https://badge.waffle.io/plone/plone.restapi.png?label=ready&title=Ready
- :target: https://waffle.io/plone/plone.restapi
- :alt: 'Stories in Ready'
+.. image:: https://img.shields.io/pypi/v/nine.svg
+  :target: https://pypi.python.org/pypi/plone.restapi
 
 
 Introduction

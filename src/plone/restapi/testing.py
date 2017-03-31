@@ -12,6 +12,7 @@ from plone.app.testing import IntegrationTesting
 from plone.app.testing import login
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
+from plone.app.testing import quickInstallProduct
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -19,12 +20,17 @@ from plone.app.testing import TEST_USER_ID
 from plone.restapi.tests.dxtypes import INDEXES as DX_TYPES_INDEXES
 from plone.restapi.tests.helpers import add_catalog_indexes
 from plone.testing import z2
+from plone.uuid.interfaces import IUUIDGenerator
 from urlparse import urljoin
 from urlparse import urlparse
+from zope.component import getGlobalSiteManager
 from zope.component import getUtility
 from zope.configuration import xmlconfig
+from zope.interface import implements
+import re
 
 import requests
+import collective.MockMailHost
 
 
 def set_available_languages():
@@ -56,6 +62,7 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
             context=configurationContext
         )
 
+        self.loadZCML(package=collective.MockMailHost)
         z2.installProduct(app, 'plone.restapi')
 
     def setUpPloneSite(self, portal):
@@ -67,6 +74,8 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         applyProfile(portal, 'plone.restapi:testing')
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
         set_available_languages()
+        quickInstallProduct(portal, 'collective.MockMailHost')
+        applyProfile(portal, 'collective.MockMailHost:default')
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
 PLONE_RESTAPI_DX_INTEGRATION_TESTING = IntegrationTesting(
@@ -114,6 +123,8 @@ class PloneRestApiATLayer(PloneSandboxLayer):
         applyProfile(portal, 'plone.restapi:default')
         applyProfile(portal, 'plone.restapi:testing')
         set_available_languages()
+        portal.portal_workflow.setDefaultChain("simple_publication_workflow")
+
 
 PLONE_RESTAPI_AT_FIXTURE = PloneRestApiATLayer()
 PLONE_RESTAPI_AT_INTEGRATION_TESTING = IntegrationTesting(
@@ -142,3 +153,27 @@ class RelativeSession(requests.Session):
             url = url.lstrip('/')
             url = urljoin(self.__base_url, url)
         return super(RelativeSession, self).request(method, url, **kwargs)
+
+
+class StaticUUIDGenerator(object):
+    """UUID generator that produces stable UUIDs for use in tests.
+
+    Based on code from ftw.testing
+    """
+
+    implements(IUUIDGenerator)
+
+    def __init__(self, prefix):
+        self.prefix = prefix[:26]
+        self.counter = 0
+
+    def __call__(self):
+        self.counter += 1
+        postfix = str(self.counter).rjust(32 - len(self.prefix), '0')
+        return self.prefix + postfix
+
+
+def register_static_uuid_utility(prefix):
+    prefix = re.sub(r'[^a-zA-Z0-9\-_]', '', prefix)
+    generator = StaticUUIDGenerator(prefix)
+    getGlobalSiteManager().registerUtility(component=generator)

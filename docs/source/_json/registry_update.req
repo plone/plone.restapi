@@ -1,0 +1,8 @@
+PATCH /plone/@registry/ HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "plone.app.querystring.field.path.title": "Value"
+}

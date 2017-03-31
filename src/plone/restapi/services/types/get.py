@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.services import Service
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
+from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
 from zope.component import getUtility
+from zope.component import getMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
@@ -62,12 +64,21 @@ class TypesGet(Service):
             IVocabularyFactory,
             name="plone.app.vocabularies.ReallyUserFriendlyTypes"
         )
+
+        # allowedContentTypes already checks for permissions
+        allowed_types = [x.getId() for x in self.context.allowedContentTypes()]
+
+        portal = getMultiAdapter((self.context, self.request),
+                                 name='plone_portal_state').portal()
+        portal_url = portal.absolute_url()
+
+        # only addables if the content type is folderish
+        can_add = IFolderish.providedBy(self.context)
+
         return [
             {
-                '@id': '{}/@types/{}'.format(
-                    self.context.absolute_url(),
-                    x.token
-                ),
-                'title': x.value
+                '@id': '{}/@types/{}'.format(portal_url, x.token),
+                'title': x.value,
+                'addable': x.token in allowed_types if can_add else False,
             } for x in vocab_factory(self.context)
         ]

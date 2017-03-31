@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.0a8.dev0'
+version = '1.0a12.dev0'
 
 long_description = (
     open('README.rst').read() + '\n' +
@@ -41,10 +41,12 @@ setup(name='plone.restapi',
       install_requires=[
           'setuptools',
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
+          'Products.PasswordResetTool',  # gone in Plone 5.1
           'PyJWT',
       ],
       extras_require={'test': [
           'Products.Archetypes',
+          'collective.MockMailHost',
           'plone.app.collection',
           'plone.app.contenttypes',
           'plone.app.robotframework',

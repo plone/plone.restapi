@@ -14,7 +14,7 @@ For extending or changing the serializing of certain dexterity fields you need t
 
 Example:
 
-.. code:: python
+.. code-block:: python
 
     from plone.customfield.interfaces import ICustomField
     from plone.dexterity.interfaces import IDexterityContent
@@ -41,7 +41,7 @@ Example:
 
 Register the adapter in ZCML:
 
-.. code:: xml
+.. code-block:: xml
 
     <configure xmlns="http://namespaces.zope.org/zope">
 

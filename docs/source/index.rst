@@ -21,16 +21,20 @@ Contents
    :maxdepth: 2
 
    authentication
-   crud
+   content
    batching
+   copymove
    workflow
+   sharing
    registry
    types
    users
    components
    serialization
    searching
+   vocabularies
    customization
+   conventions
 
 .. include:: ../../README.rst
 

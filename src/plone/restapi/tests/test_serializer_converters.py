@@ -8,7 +8,7 @@ from persistent.mapping import PersistentMapping
 from plone.app.textfield.value import RichTextValue
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from unittest2 import TestCase
+from unittest import TestCase
 from z3c.relationfield.relation import RelationValue
 from zope.component import getUtility
 from zope.i18nmessageid import MessageFactory
@@ -195,7 +195,8 @@ class TestJsonCompatibleConverters(TestCase):
             {'@id': 'http://nohost/plone/doc1',
              '@type': 'DXTestDocument',
              'title': 'Document 1',
-             'description': 'Description'},
+             'description': 'Description',
+             'review_state': 'private'},
             json_compatible(RelationValue(intids.getId(doc1))))
 
     def test_i18n_message(self):

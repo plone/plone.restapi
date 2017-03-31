@@ -1,0 +1,89 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/newsitem", 
+  "@type": "News Item", 
+  "UID": "SomeUUID000000000000000000000002", 
+  "allow_discussion": null, 
+  "changeNote": "", 
+  "contributors": [], 
+  "created": "2016-01-21T02:14:48+00:00", 
+  "creators": [
+    "test_user_1_", 
+    "admin"
+  ], 
+  "description": "This is a news item", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "id": "newsitem", 
+  "image": {
+    "content-type": "image/png", 
+    "download": "http://localhost:55001/plone/newsitem/@@images/image", 
+    "filename": "image.png", 
+    "height": 56, 
+    "scales": {
+      "icon": {
+        "download": "http://localhost:55001/plone/newsitem/@@images/image/icon", 
+        "height": 8, 
+        "width": 32
+      }, 
+      "large": {
+        "download": "http://localhost:55001/plone/newsitem/@@images/image/large", 
+        "height": 56, 
+        "width": 215
+      }, 
+      "listing": {
+        "download": "http://localhost:55001/plone/newsitem/@@images/image/listing", 
+        "height": 4, 
+        "width": 16
+      }, 
+      "mini": {
+        "download": "http://localhost:55001/plone/newsitem/@@images/image/mini", 
+        "height": 52, 
+        "width": 200
+      }, 
+      "preview": {
+        "download": "http://localhost:55001/plone/newsitem/@@images/image/preview", 
+        "height": 56, 
+        "width": 215
+      }, 
+      "thumb": {
+        "download": "http://localhost:55001/plone/newsitem/@@images/image/thumb", 
+        "height": 33, 
+        "width": 128
+      }, 
+      "tile": {
+        "download": "http://localhost:55001/plone/newsitem/@@images/image/tile", 
+        "height": 16, 
+        "width": 64
+      }
+    }, 
+    "size": 1185, 
+    "width": 215
+  }, 
+  "image_caption": "This is an image caption.", 
+  "language": "", 
+  "modified": "2016-01-21T02:24:11+00:00", 
+  "parent": {
+    "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
+    "description": "", 
+    "title": "Plone site"
+  }, 
+  "relatedItems": [], 
+  "review_state": "private", 
+  "rights": "", 
+  "sharing": {
+    "@id": "http://localhost:55001/plone/newsitem/@sharing", 
+    "title": "Sharing"
+  }, 
+  "subjects": [], 
+  "text": {
+    "content-type": "text/plain", 
+    "data": "Lorem ipsum", 
+    "encoding": "utf-8"
+  }, 
+  "title": "My News Item"
+}

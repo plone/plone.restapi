@@ -62,7 +62,8 @@ class TestCatalogSerializers(unittest.TestCase):
             {'@id': 'http://nohost/plone/my-folder/my-document',
              '@type': 'Document',
              'title': 'My Document',
-             'description': ''},
+             'description': '',
+             'review_state': 'private'},
             result)
 
     def test_brain_partial_metadata_representation(self):

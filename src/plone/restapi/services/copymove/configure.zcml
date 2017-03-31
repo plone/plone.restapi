@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <plone:service
+    method="POST"
+    name="@copy"
+    for="Products.CMFCore.interfaces.IFolderish"
+    factory=".copymove.Copy"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="POST"
+    name="@move"
+    for="Products.CMFCore.interfaces.IFolderish"
+    factory=".copymove.Move"
+    permission="zope2.View"
+    />
+
+</configure>

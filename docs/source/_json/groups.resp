@@ -1,0 +1,45 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  {
+    "@id": "http://localhost:55001/plone/@groups/Administrators", 
+    "description": "", 
+    "email": "", 
+    "groupname": "Administrators", 
+    "id": "Administrators", 
+    "title": "Administrators"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@groups/Reviewers", 
+    "description": "", 
+    "email": "", 
+    "groupname": "Reviewers", 
+    "id": "Reviewers", 
+    "title": "Reviewers"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@groups/Site Administrators", 
+    "description": "", 
+    "email": "", 
+    "groupname": "Site Administrators", 
+    "id": "Site Administrators", 
+    "title": "Site Administrators"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@groups/ploneteam", 
+    "description": "We are Plone", 
+    "email": "ploneteam@plone.org", 
+    "groupname": "ploneteam", 
+    "id": "ploneteam", 
+    "title": "Plone Team"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@groups/AuthenticatedUsers", 
+    "description": "Automatic Group Provider", 
+    "email": "", 
+    "groupname": "AuthenticatedUsers", 
+    "id": "AuthenticatedUsers", 
+    "title": "Authenticated Users (Virtual Group)"
+  }
+]

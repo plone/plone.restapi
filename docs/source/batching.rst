@@ -4,7 +4,7 @@ Batching
 Representations of collection-like resources are batched / paginated if the
 size of the resulset exceeds the batching size:
 
-.. code:: json
+.. code-block:: json
 
     {
       "@id": "http://.../folder/search",
@@ -76,7 +76,11 @@ Parameter        Description
 ================ ===========================================================
 
 
-Full example of a batched response:
+Full example of a batched request and response:
 
-.. literalinclude:: _json/batching.json
-   :language: js
+..  http:example:: curl httpie python-requests
+    :request: _json/types.req
+
+.. literalinclude:: _json/types.resp
+   :language: http
+

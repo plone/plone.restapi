@@ -1,0 +1,20 @@
+POST /plone/folder/@sharing HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "entries": [
+        {
+            "id": "test_user_1_",
+            "roles": {
+                "Contributor": false,
+                "Editor": false,
+                "Reader": true,
+                "Reviewer": true
+            },
+            "type": "user"
+        }
+    ],
+    "inherit": true
+}

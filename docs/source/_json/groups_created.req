@@ -1,0 +1,17 @@
+POST /plone/@groups HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "description": "The Plone Framework Team",
+    "email": "fwt@plone.org",
+    "groupname": "fwt",
+    "groups": [
+        "Administrators"
+    ],
+    "roles": [
+        "Manager"
+    ],
+    "title": "Framework Team"
+}

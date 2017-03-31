@@ -10,6 +10,7 @@ from zope.interface import Interface
 from zope.schema.interfaces import IASCII
 from zope.schema.interfaces import IASCIILine
 from zope.schema.interfaces import IBool
+from zope.schema.interfaces import IBytes
 from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDate
@@ -27,7 +28,8 @@ from zope.schema.interfaces import ITuple
 from zope.schema.interfaces import IVocabularyFactory
 
 from plone.restapi.types.interfaces import IJsonSchemaProvider
-from plone.restapi.types.utils import get_fields_from_schema
+from plone.restapi.types.utils import get_fieldsets
+from plone.restapi.types.utils import get_jsonschema_properties
 
 
 @adapter(IField, Interface, Interface)
@@ -78,6 +80,14 @@ class DefaultJsonSchemaProvider(object):
 
     def get_widget(self):
         return None
+
+
+@adapter(IBytes, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class BytesLineJsonSchemaProvider(DefaultJsonSchemaProvider):
+
+    def get_type(self):
+        return 'string'
 
 
 @adapter(ITextLine, Interface, Interface)
@@ -225,6 +235,10 @@ class TupleJsonSchemaProvider(SetJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
 
+    # optionally prevent rendering all choices in the vocab,
+    # ie relatedItems, which contains UUIDs for all content in the site.
+    should_render_choices = True
+
     def get_type(self):
         return 'string'
 
@@ -240,7 +254,7 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
         else:
             vocabulary = self.field.vocabulary
 
-        if hasattr(vocabulary, '__iter__'):
+        if hasattr(vocabulary, '__iter__') and self.should_render_choices:
             for term in vocabulary:
                 title = translate(term.title, context=self.request)
                 choices.append((term.token, title))
@@ -271,8 +285,10 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
         else:
             prefix = self.field.__name__
 
-        return get_fields_from_schema(
-            self.field.schema, self.context, self.request, prefix)
+        context = self.context
+        request = self.request
+        fieldsets = get_fieldsets(context, request, self.field.schema)
+        return get_jsonschema_properties(context, request, fieldsets, prefix)
 
     def additional(self):
         info = super(ObjectJsonSchemaProvider, self).additional()
@@ -310,9 +326,13 @@ class DateJsonSchemaProvider(DefaultJsonSchemaProvider):
 
         return info
 
+    def get_widget(self):
+        return 'date'
+
 
 @adapter(IDatetime, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
 
-    pass
+    def get_widget(self):
+        return 'datetime'

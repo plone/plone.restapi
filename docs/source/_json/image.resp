@@ -1,0 +1,82 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/image", 
+  "@type": "Image", 
+  "UID": "SomeUUID000000000000000000000002", 
+  "allow_discussion": null, 
+  "contributors": [], 
+  "created": "2016-01-21T06:14:48+00:00", 
+  "creators": [
+    "test_user_1_", 
+    "admin"
+  ], 
+  "description": "This is an image", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "id": "image", 
+  "image": {
+    "content-type": "image/png", 
+    "download": "http://localhost:55001/plone/image/@@images/image", 
+    "filename": "image.png", 
+    "height": 56, 
+    "scales": {
+      "icon": {
+        "download": "http://localhost:55001/plone/image/@@images/image/icon", 
+        "height": 8, 
+        "width": 32
+      }, 
+      "large": {
+        "download": "http://localhost:55001/plone/image/@@images/image/large", 
+        "height": 56, 
+        "width": 215
+      }, 
+      "listing": {
+        "download": "http://localhost:55001/plone/image/@@images/image/listing", 
+        "height": 4, 
+        "width": 16
+      }, 
+      "mini": {
+        "download": "http://localhost:55001/plone/image/@@images/image/mini", 
+        "height": 52, 
+        "width": 200
+      }, 
+      "preview": {
+        "download": "http://localhost:55001/plone/image/@@images/image/preview", 
+        "height": 56, 
+        "width": 215
+      }, 
+      "thumb": {
+        "download": "http://localhost:55001/plone/image/@@images/image/thumb", 
+        "height": 33, 
+        "width": 128
+      }, 
+      "tile": {
+        "download": "http://localhost:55001/plone/image/@@images/image/tile", 
+        "height": 16, 
+        "width": 64
+      }
+    }, 
+    "size": 1185, 
+    "width": 215
+  }, 
+  "language": "", 
+  "modified": "2016-01-21T06:24:11+00:00", 
+  "parent": {
+    "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
+    "description": "", 
+    "title": "Plone site"
+  }, 
+  "relatedItems": [], 
+  "review_state": null, 
+  "rights": "", 
+  "sharing": {
+    "@id": "http://localhost:55001/plone/image/@sharing", 
+    "title": "Sharing"
+  }, 
+  "subjects": [], 
+  "title": "My Image"
+}

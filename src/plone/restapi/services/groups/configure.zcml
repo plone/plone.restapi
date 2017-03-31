@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <plone:service
+    method="GET"
+    name="@groups"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".get.GroupsGet"
+    permission="cmf.ManagePortal"
+    />
+
+  <plone:service
+    method="PATCH"
+    name="@groups"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".update.GroupsPatch"
+    permission="cmf.ManagePortal"
+    />
+
+  <plone:service
+    method="POST"
+    name="@groups"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".add.GroupsPost"
+    permission="cmf.ManagePortal"
+    />
+
+  <plone:service
+    method="DELETE"
+    name="@groups"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".delete.GroupsDelete"
+    permission="cmf.ManagePortal"
+    />
+
+</configure>

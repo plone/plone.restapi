@@ -130,7 +130,43 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     u'@id': u'http://nohost/plone/folder1/doc1',
                     u'@type': u'Document',
                     u'description': u'This is a document',
-                    u'title': u'Document 1'
+                    u'title': u'Document 1',
+                    u'review_state': u'private'
+                }
+            ]
+        )
+
+    def test_serialize_folder_orders_items_by_get_object_position_in_parent(self):  # noqa
+        self.portal.invokeFactory('Folder', id='folder1', title='Folder 1')
+        self.portal.folder1.invokeFactory('Document', id='doc1')
+        self.portal.folder1.doc1.title = u'Document 1'
+        self.portal.folder1.doc1.description = u'This is a document'
+        self.portal.folder1.doc1.reindexObject()
+
+        self.portal.folder1.invokeFactory('Document', id='doc2')
+        self.portal.folder1.doc2.title = u'Document 2'
+        self.portal.folder1.doc2.description = u'Second doc'
+        self.portal.folder1.doc2.reindexObject()
+
+        # Change GOPIP (getObjectPositionInParent) based order
+        self.portal.folder1.moveObjectsUp('doc2')
+
+        self.assertEqual(
+            self.serialize(self.portal.folder1)['items'],
+            [
+                {
+                    u'@id': u'http://nohost/plone/folder1/doc2',
+                    u'@type': u'Document',
+                    u'description': u'Second doc',
+                    u'title': u'Document 2',
+                    u'review_state': u'private'
+                },
+                {
+                    u'@id': u'http://nohost/plone/folder1/doc1',
+                    u'@type': u'Document',
+                    u'description': u'This is a document',
+                    u'title': u'Document 1',
+                    u'review_state': u'private'
                 }
             ]
         )
@@ -175,6 +211,30 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.assertEqual(
             self.serialize(self.portal)['@type'],
             u'Plone Site'
+        )
+
+    def test_serialize_site_orders_items_by_get_object_position_in_parent(self):  # noqa
+        # Change GOPIP (getObjectPositionInParent) based order
+        self.portal.moveObjectsUp('dxdoc')
+
+        self.assertEqual(
+            self.serialize(self.portal)['items'],
+            [
+                {
+                    u'@id': u'http://nohost/plone/dxdoc',
+                    u'@type': u'DXTestDocument',
+                    u'description': u'',
+                    u'title': u'DX Test Document',
+                    u'review_state': u'private'
+                },
+                {
+                    u'@id': u'http://nohost/plone/doc1',
+                    u'@type': u'Document',
+                    u'description': u'',
+                    u'title': u'Document 1',
+                    u'review_state': u'private'
+                },
+            ]
         )
 
     def test_serialize_ignores_underscore_values(self):
@@ -294,13 +354,15 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     u'@id': self.portal.doc1.absolute_url(),
                     u'@type': u'Document',
                     u'description': u'',
-                    u'title': u'Document 1'
+                    u'title': u'Document 1',
+                    u'review_state': u'private'
                 },
                 {
                     u'@id': self.portal.doc2.absolute_url(),
                     u'@type': u'Document',
                     u'description': u'',
-                    u'title': u'Document 2'
+                    u'title': u'Document 2',
+                    u'review_state': u'private'
                 }
             ],
             self.serialize(self.portal.collection1).get('items')

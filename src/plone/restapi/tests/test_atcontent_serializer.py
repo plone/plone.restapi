@@ -102,11 +102,44 @@ class TestATContentSerializer(unittest.TestCase):
             '@id': 'http://nohost/plone/folder/subfolder',
             '@type': 'ATTestFolder',
             'description': '',
-            'title': u'Subfolder'},
+            'title': u'Subfolder',
+            'review_state': 'private'},
             obj['items'][0])
         self.assertDictEqual({
             '@id': 'http://nohost/plone/folder/doc',
             '@type': 'ATTestDocument',
             'description': '',
-            'title': u'A Document'},
+            'title': u'A Document',
+            'review_state': 'private'},
             obj['items'][1])
+
+    def test_serializer_orders_folder_items_by_get_object_position_in_parent(self):  # noqa
+        folder = self.portal[self.portal.invokeFactory(
+            'ATTestFolder', id='folder', title='Test Folder')]
+        folder.invokeFactory('ATTestDocument', id='doc1', title='A Document')
+        folder.invokeFactory('ATTestDocument', id='doc2', title='Second doc')
+
+        # Change GOPIP (getObjectPositionInParent) based order
+        folder.moveObjectsUp('doc2')
+
+        obj = self.serialize(folder)
+
+        self.assertIn('items', obj)
+        self.assertEqual(
+            obj['items'],
+            [
+                {
+                    '@id': 'http://nohost/plone/folder/doc2',
+                    '@type': 'ATTestDocument',
+                    'description': '',
+                    'title': u'Second doc',
+                    'review_state': 'private'
+                },
+                {
+                    '@id': 'http://nohost/plone/folder/doc1',
+                    '@type': 'ATTestDocument',
+                    'description': '',
+                    'title': u'A Document',
+                    'review_state': 'private'
+                },
+            ])

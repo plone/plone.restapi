@@ -4,6 +4,7 @@
     i18n_domain="plone.restapi">
 
     <adapter factory=".adapters.DefaultJsonSchemaProvider" />
+    <adapter factory=".adapters.BytesLineJsonSchemaProvider" />
     <adapter factory=".adapters.TextLineJsonSchemaProvider" />
     <adapter factory=".adapters.TextJsonSchemaProvider" />
     <adapter factory=".adapters.ASCIIJsonSchemaProvider" />
@@ -14,6 +15,10 @@
     <adapter factory=".adapters.BoolJsonSchemaProvider" />
     <adapter factory=".adapters.CollectionJsonSchemaProvider" />
     <adapter factory=".adapters.ListJsonSchemaProvider" />
+    <adapter
+        zcml:condition="installed z3c.relationfield"
+        factory=".z3crelationadapter.ChoiceslessRelationListSchemaProvider"
+        name="IRelatedItems.relatedItems" />
     <adapter factory=".adapters.SetJsonSchemaProvider" />
     <adapter factory=".adapters.TupleJsonSchemaProvider" />
     <adapter factory=".adapters.ChoiceJsonSchemaProvider" />

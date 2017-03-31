@@ -1,0 +1,8 @@
+POST /plone/folder/@move HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "source": "http://localhost:55001/plone/front-page"
+}

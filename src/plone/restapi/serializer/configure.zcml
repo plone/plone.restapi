@@ -61,5 +61,13 @@
     <adapter factory=".catalog.LazyCatalogResultSerializer" />
 
     <adapter factory=".user.SerializeUserToJson" />
+    <adapter factory=".group.SerializeGroupToJson" />
+
+    <adapter factory=".local_roles.SerializeLocalRolesToJson"
+             name="local_roles"
+             />
+
+    <adapter factory=".vocabularies.SerializeVocabularyToJson" />
+    <adapter factory=".vocabularies.SerializeTermToJson" />
 
 </configure>

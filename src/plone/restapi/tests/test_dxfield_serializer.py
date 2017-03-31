@@ -13,7 +13,7 @@ from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import TestSchema
-from unittest2 import TestCase
+from unittest import TestCase
 from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
@@ -303,6 +303,7 @@ class TestDexterityFieldSerializing(TestCase):
              '@type': 'DXTestDocument',
              'title': 'Referenceable Document',
              'description': 'Description 2',
+             'review_state': 'private'
              },
             value)
 
@@ -324,11 +325,14 @@ class TestDexterityFieldSerializing(TestCase):
              '@type': 'DXTestDocument',
              'title': 'Referenceable Document',
              'description': 'Description 2',
+             'review_state': 'private'
+
              },
             {'@id': 'http://nohost/plone/doc3',
              '@type': 'DXTestDocument',
              'title': 'Referenceable Document',
              'description': 'Description 3',
+             'review_state': 'private'
              }],
             value)
 

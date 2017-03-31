@@ -7,4 +7,9 @@
       title="plone.restapi: Use REST API"
       />
 
+  <permission
+      id="plone.restapi.vocabularies"
+      title="plone.restapi: Access Plone vocabularies"
+      />
+
 </configure>
