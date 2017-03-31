@@ -7,7 +7,8 @@ response. This helps the API consumers to avoid unneccesary request.
 
 Say you want to show a document in Plone together with the breadcrumbs and a
 workflow switcher. Instead of doing three individual requests, you can just 
-expand the breadcrumbs and the workflow "components".
+expand the breadcrumbs and the workflow "components" within the document GET 
+request.
 
 The list of expandable components is listed in the "@components" attribute 
 in the reponse of any content GET request::
