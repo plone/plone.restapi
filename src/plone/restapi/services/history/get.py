@@ -9,7 +9,8 @@ from zope.publisher.interfaces import IPublishTraverse
 from Products.CMFEditions import CMFEditionsMessageFactory as _
 from zope.i18n import translate
 
-# Most of this code has been copied from https://github.com/plone/Products.CMFEditions/blob/master/Products/CMFEditions/browser/diff.py
+# Most of this code has been copied from
+# https://github.com/plone/Products.CMFEditions/blob/master/Products/CMFEditions/browser/diff.py. # noqa
 
 
 class HistoryGet(Service):
@@ -36,8 +37,8 @@ class HistoryGet(Service):
 
     def versionName(self, version):
         """
-        Translate the version name. This is needed to allow translation when `version`
-        is the string 'current'.
+        Translate the version name. This is needed to allow translation when
+        `version` is the string 'current'.
         """
         return _(version)
 
@@ -49,10 +50,10 @@ class HistoryGet(Service):
               mapping=dict(version=version_name)),
             context=self.request
         )
-           
+
     def reply(self):
         if len(self.params) > 0:
-            
+
             version1 = self.params[0]
             version2 = self.params[1]
             if not version1:
@@ -64,7 +65,12 @@ class HistoryGet(Service):
             getId = history_metadata.getVersionId
             history = self.history = []
             # Count backwards from most recent to least recent
-            for i in xrange(history_metadata.getLength(countPurged=False)-1, -1, -1):
+            versions_backwards = xrange(
+                history_metadata.getLength(countPurged=False) - 1,
+                -1,
+                -1
+            )
+            for i in versions_backwards:
                 version = retrieve(i, countPurged=False)['metadata'].copy()
                 version['version_id'] = getId(i, countPurged=False)
                 history.append(version)
@@ -78,30 +84,30 @@ class HistoryGet(Service):
                             if not change.same]
             return json_compatible(
                 [{
-                    'field': change.field, 
+                    'field': change.field,
                     'getLineDiffs': change.getLineDiffs(),
                     'html_diff': change.html_diff(),
                     'id1': change.id1,
-                    'id2': change.id2, 
-                    'inline_diff': change.inline_diff(), 
-                    'inlinediff_fmt': change.inlinediff_fmt, 
+                    'id2': change.id2,
+                    'inline_diff': change.inline_diff(),
+                    'inlinediff_fmt': change.inlinediff_fmt,
                     'label': change.label,
                     'meta_type': change.meta_type,
                     'ndiff': change.ndiff(),
                     'newFilename': change.newFilename,
                     'newValue': change.newValue,
-                    'oldFilename': change.oldFilename, 
+                    'oldFilename': change.oldFilename,
                     'oldValue': change.oldValue,
-                    'same': change.same, 
+                    'same': change.same,
                     'same_fmt': change.same_fmt,
                     'schemata': change.schemata,
                     'unified_diff': change.unified_diff(),
                 } for change in self.changes]
             )
         content_history_viewlet = ContentHistoryViewlet(
-            self.context, 
-            self.request, 
-            None, 
+            self.context,
+            self.request,
+            None,
             None
         )
         site_url = getSite().absolute_url()
