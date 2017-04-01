@@ -7,7 +7,9 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import login
 from plone.app.testing import setRoles
+from plone.restapi.serializer.local_roles import SerializeLocalRolesToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from zope.component import getGlobalSiteManager
 
 import requests
 import transaction
@@ -117,7 +119,7 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(
             pas.getLocalRolesForDisplay(self.portal.folder1),
             (('admin', ('Owner',), 'user', 'admin'),)
-            )
+        )
 
         response = requests.post(
             self.portal.folder1.absolute_url() + '/@sharing',
@@ -142,7 +144,7 @@ class TestFolderCreate(unittest.TestCase):
             (('admin', ('Owner',), 'user', 'admin'),
              ('test-user', (u'Reviewer', u'Reader'),
               'user', u'test_user_1_'))
-            )
+        )
 
     def test_unset_local_roles_for_user(self):
         api.user.grant_roles(username=TEST_USER_ID,
@@ -155,7 +157,7 @@ class TestFolderCreate(unittest.TestCase):
             pas.getLocalRolesForDisplay(self.portal.folder1),
             (('admin', ('Owner',), 'user', 'admin'),
              ('test-user', ('Reviewer', 'Reader'), 'user', 'test_user_1_'))
-            )
+        )
 
         response = requests.post(
             self.portal.folder1.absolute_url() + '/@sharing',
@@ -180,7 +182,7 @@ class TestFolderCreate(unittest.TestCase):
             (('admin', ('Owner',), 'user', 'admin'),
              ('test-user', (u'Reviewer',),
               'user', u'test_user_1_'))
-            )
+        )
 
     def test_get_local_roles_inherit_roles(self):
         self.portal.folder1.__ac_local_roles_block__ = True
@@ -243,3 +245,24 @@ class TestFolderCreate(unittest.TestCase):
         response = response.json()
         self.assertIn('available_roles', response)
         self.assertIn('Reader', response['available_roles'])
+
+    def test_no_serializer_available_returns_501(self):
+        gsm = getGlobalSiteManager()
+        gsm.unregisterAdapter(SerializeLocalRolesToJson, name='local_roles')
+
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '/@sharing',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+
+        self.assertEqual(response.status_code, 501)
+        response = response.json()
+        self.assertIn('error', response)
+        self.assertEquals(
+            u'No serializer available.',
+            response['error']['message']
+        )
+
+        # we need to re-register the adapter here for following tests
+        gsm.registerAdapter(SerializeLocalRolesToJson, name='local_roles')
