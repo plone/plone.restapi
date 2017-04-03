@@ -4,7 +4,11 @@ Changelog
 1.0a12 (unreleased)
 -------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Handle special case when user @move content that cannot delete returning
+  proper 403
+  [sneridagh]
 
 
 1.0a11 (2017-03-24)
