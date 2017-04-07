@@ -8,7 +8,8 @@ Content-Type: application/json
       "actor": "test_user_1_", 
       "comments": "", 
       "review_state": "private", 
-      "time": "2016-10-21T19:00:00+00:00"
+      "time": "2016-10-21T19:00:00+00:00", 
+      "title": "Private"
     }
   ], 
   "transitions": [
