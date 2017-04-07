@@ -9,6 +9,10 @@ Bugfixes:
 - Don't fetch unnecessary PasswordResetTool in Plone 5.1
   [tomgross]
 
+- Add the title to the workflow history in the @workflow endpoint. This fixes
+  #279.
+  [sneridagh]
+
 
 1.0a12 (2017-04-03)
 -------------------
