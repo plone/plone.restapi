@@ -2,6 +2,8 @@
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import base_hasattr
 from base64 import b64decode
+from email.utils import formatdate
+from fnmatch import fnmatch
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.interfaces import INamedField
@@ -18,11 +20,12 @@ from zope.publisher.interfaces import NotFound
 
 import json
 import os
+import time
 
 TUS_OPTIONS_RESPONSE_HEADERS = {
     'Tus-Resumable': '1.0.0',
     'Tus-Version': '1.0.0',
-    'Tus-Extension': 'creation',
+    'Tus-Extension': 'creation,expiration',
 }
 
 
@@ -77,6 +80,7 @@ class UploadPost(Service, ErrorMixin):
         except ValueError:
             return self._error('Bad Request',
                                'Missing or invalid Upload-Length header')
+
         # Parse metadata
         metadata = {}
         for item in self.request.getHeader('Upload-Metadata', '').split(','):
@@ -85,12 +89,12 @@ class UploadPost(Service, ErrorMixin):
                 metadata[key_value[0].lower()] = b64decode(key_value[1])
         metadata['length'] = length
 
-        tus_upload = TUSUpload(uuid4().hex)
-        tus_upload.initalize(metadata)
+        tus_upload = TUSUpload(uuid4().hex, metadata=metadata)
 
         self.request.response.setStatus(201)
         self.request.response.setHeader('Location', '{}/@upload/{}'.format(
             self.context.absolute_url(), tus_upload.uid))
+        self.request.response.setHeader('Upload-Expires', tus_upload.expires())
 
 
 class UploadFileBase(Service, ErrorMixin):
@@ -223,6 +227,8 @@ class UploadPatch(UploadFileBase):
             tus_upload.cleanup()
         else:
             offset = tus_upload.offset()
+            self.request.response.setHeader(
+                'Upload-Expires', tus_upload.expires())
 
         self.request.response.setHeader('Tus-Resumable', '1.0.0')
         self.request.response.setHeader('Upload-Offset', '{}'.format(offset))
@@ -232,27 +238,35 @@ class UploadPatch(UploadFileBase):
 
 class TUSUpload(object):
 
+    file_prefix = 'tus_upload_'
+    expiration_period = 60 * 60
     finished = False
 
-    def __init__(self, uid):
+    def __init__(self, uid, metadata=None):
         self.uid = uid
 
-        tmp_dir = os.environ.get('TUS_TMP_FILE_DIR')
-        if tmp_dir is None:
+        self.tmp_dir = os.environ.get('TUS_TMP_FILE_DIR')
+        if self.tmp_dir is None:
             client_home = os.environ.get('CLIENT_HOME')
-            tmp_dir = os.path.join(client_home, 'tus-uploads')
-        if not os.path.isdir(tmp_dir):
-            os.makedirs(tmp_dir)
+            self.tmp_dir = os.path.join(client_home, 'tus-uploads')
+        if not os.path.isdir(self.tmp_dir):
+            os.makedirs(self.tmp_dir)
 
-        self.filepath = os.path.join(tmp_dir, self.uid)
+        self.filepath = os.path.join(self.tmp_dir, self.file_prefix + self.uid)
         self.metadata_path = self.filepath + '.json'
         self._metadata = None
 
+        if metadata is not None:
+            self.initalize(metadata)
+
     def initalize(self, metadata):
+        """Initialize a new TUS upload by writing its metadata to disk."""
+        self.cleanup_expired()
         with open(self.metadata_path, 'wb') as f:
             json.dump(metadata, f)
 
     def length(self):
+        """Returns the total upload length."""
         metadata = self.metadata()
         if 'length' in metadata:
             return metadata['length']
@@ -282,13 +296,40 @@ class TUSUpload(object):
             self.finished = True
 
     def metadata(self):
+        """Returns the metadata of the current upload."""
         if self._metadata is None:
             with open(self.metadata_path, 'rb') as f:
                 self._metadata = json.load(f)
         return self._metadata
 
     def cleanup(self):
+        """Remove temporary upload files."""
         if os.path.exists(self.filepath):
             os.remove(self.filepath)
         if os.path.exists(self.metadata_path):
             os.remove(self.metadata_path)
+
+    def cleanup_expired(self):
+        """Cleanup unfinished uploads that have expired."""
+        for filename in os.listdir(self.tmp_dir):
+            if fnmatch(filename, 'tus_upload_*.json'):
+                metadata_path = os.path.join(self.tmp_dir, filename)
+                filepath = metadata_path[:-5]
+                if os.path.exists(filepath):
+                    mtime = os.stat(filepath).st_mtime
+                else:
+                    mtime = os.stat(metadata_path).st_mtime
+
+                if (time.time() - mtime) > self.expiration_period:
+                    os.remove(metadata_path)
+                    if os.path.exists(filepath):
+                        os.remove(filepath)
+
+    def expires(self):
+        """Returns the expiration time of the current upload."""
+        if os.path.exists(self.filepath):
+            expiration = os.stat(
+                self.filepath).st_mtime + self.expiration_period
+        else:
+            expiration = time.time() + self.expiration_period
+        return formatdate(expiration, False, True)

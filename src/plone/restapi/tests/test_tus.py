@@ -59,7 +59,7 @@ class TestTUS(unittest.TestCase):
         headers = response.headers
         self.assertEqual(response.status_code, 204)
         self.assertEqual(headers['Tus-Version'], '1.0.0')
-        self.assertEqual(headers['Tus-Extension'], 'creation')
+        self.assertEqual(headers['Tus-Extension'], 'creation,expiration')
         self.assertEqual(headers['Tus-Resumable'], '1.0.0')
 
     def test_tus_post_initialization_requires_header_length(self):
