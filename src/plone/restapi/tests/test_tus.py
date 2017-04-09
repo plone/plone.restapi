@@ -132,11 +132,6 @@ class TestTUS(unittest.TestCase):
         self.assertEqual([UPLOAD_PDF_FILENAME], self.folder.contentIds())
 
     def test_tus_can_upload_text_file(self):
-        '''
-        This fails cause the content types registry Document as the
-        content type to create for text files. Functionally
-        we want File or Image, but we don't want to hard code it.
-        '''
         # initialize the upload with POST
         metadata = 'filename {},content-type {}'.format(
             b64encode(UPLOAD_FILENAME),

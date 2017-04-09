@@ -2,6 +2,9 @@
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import base_hasattr
 from base64 import b64decode
+from plone.app.textfield.interfaces import IRichText
+from plone.app.textfield.value import RichTextValue
+from plone.namedfile.interfaces import INamedField
 from plone.rest.interfaces import ICORSPolicy
 from plone.restapi.services import Service
 from plone.restapi.services.content.utils import create
@@ -173,23 +176,39 @@ class UploadPatch(UploadFileBase):
             filename = metadata.get('filename', '')
             content_type = metadata.get('content-type',
                                         'application/octet-stream')
-            ctr = getToolByName(self.context, 'content_type_registry')
-            type_ = ctr.findTypeName(
-                filename.lower(), content_type, '') or 'File'
+            type_ = metadata.get('@type')
+            if type_ is None:
+                ctr = getToolByName(self.context, 'content_type_registry')
+                type_ = ctr.findTypeName(
+                    filename.lower(), content_type, '') or 'File'
 
             obj = create(self.context, type_)
 
             # Get fieldname of file object
             fieldname = metadata.get('fieldname')
+
+            # Update field with file data
             with open(tus_upload.filepath, 'rb') as f:
+                # No field name given, update primary field
                 if not fieldname:
                     info = IPrimaryFieldInfo(obj, None)
                     if info is not None:
                         field = info.field
-                        field.set(obj,
-                                  field._type(data=f,
-                                              filename=filename,
-                                              contentType=content_type))
+                        if IRichText.providedBy(field):
+                            value = f.read()
+                            field.set(obj, RichTextValue(
+                                raw=value.decode('utf8'),
+                                mimeType=(content_type or
+                                          field.default_mime_type),
+                                outputMimeType=field.output_mime_type))
+                        elif INamedField.providedBy(field):
+                            field.set(obj,
+                                      field._type(data=f,
+                                                  filename=filename,
+                                                  contentType=content_type))
+                        else:
+                            # TODO: handle unsupported field type
+                            pass
                     elif base_hasattr(obj, 'getPrimaryField'):
                         field = obj.getPrimaryField()
                         mutator = field.getMutator(obj)
