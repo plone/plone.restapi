@@ -4,7 +4,11 @@ Changelog
 1.0a13 (unreleased)
 -------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Add the title to the workflow history in the @workflow endpoint. This fixes
+  #279.
+  [sneridagh]
 
 
 1.0a12 (2017-04-03)
