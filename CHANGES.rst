@@ -10,6 +10,8 @@ Bugfixes:
   #279.
   [sneridagh]
 
+- Don't fetch unnecessary PasswordResetTool in Plone 5.1
+  [tomgross]
 
 1.0a12 (2017-04-03)
 -------------------

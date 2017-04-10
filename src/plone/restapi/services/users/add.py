@@ -8,8 +8,6 @@ from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.permissions import AddPortalMember
 from Products.CMFCore.permissions import SetOwnPassword
-from Products.PasswordResetTool.PasswordResetTool import ExpiredRequestError
-from Products.PasswordResetTool.PasswordResetTool import InvalidRequestError
 from zope.component import getAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
@@ -19,10 +17,19 @@ from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect.interfaces
 
-try:
+try:  # pragma: no cover
     from Products.CMFPlone.interfaces import ISecuritySchema
-except ImportError:
+except ImportError:   # pragma: no cover
     from plone.app.controlpanel.security import ISecuritySchema
+
+try:  # pragma: no cover
+    # Plone 5.1+
+    from Products.CMFPlone.PasswordResetTool import ExpiredRequestError
+    from Products.CMFPlone.PasswordResetTool import InvalidRequestError
+except ImportError:   # pragma: no cover
+    # Plone 5.0 and earlier
+    from Products.PasswordResetTool.PasswordResetTool import ExpiredRequestError  # noqa
+    from Products.PasswordResetTool.PasswordResetTool import InvalidRequestError  # noqa
 
 
 class UsersPost(Service):
