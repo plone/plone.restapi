@@ -59,6 +59,10 @@ class DeserializeFromJson(object):
                     'error': 'ValidationError'} for f, e in errors.items()]
                 raise BadRequest(errors)
 
+            if 'layout' in data:
+                layout = data['layout']
+                self.context.setLayout(layout)
+
             if obj.checkCreationFlag():
                 obj.unmarkCreationFlag()
                 notify(ObjectInitializedEvent(obj))

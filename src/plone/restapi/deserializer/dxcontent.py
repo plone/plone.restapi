@@ -105,6 +105,10 @@ class DeserializeFromJson(object):
         if errors:
             raise BadRequest(errors)
 
+        if 'layout' in data:
+            layout = data['layout']
+            self.context.setLayout(layout)
+
         if modified:
             notify(ObjectModifiedEvent(self.context))
 
