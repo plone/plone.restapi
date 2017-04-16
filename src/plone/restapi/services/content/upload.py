@@ -225,6 +225,7 @@ class UploadPatch(UploadFileBase):
 
             rename(obj)
             tus_upload.cleanup()
+            self.request.response.setHeader('Location', obj.absolute_url())
         else:
             offset = tus_upload.offset()
             self.request.response.setHeader(
