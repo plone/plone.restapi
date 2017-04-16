@@ -299,9 +299,10 @@ class TUSUpload(object):
     def metadata(self):
         """Returns the metadata of the current upload."""
         if self._metadata is None:
-            with open(self.metadata_path, 'rb') as f:
-                self._metadata = json.load(f)
-        return self._metadata
+            if os.path.exists(self.metadata_path):
+                with open(self.metadata_path, 'rb') as f:
+                    self._metadata = json.load(f)
+        return self._metadata or {}
 
     def cleanup(self):
         """Remove temporary upload files."""

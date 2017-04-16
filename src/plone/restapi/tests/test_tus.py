@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
-
+from DateTime import DateTime
 from StringIO import StringIO
-
 from base64 import b64encode
 from plone import api
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import login
+from plone.restapi.services.content.upload import TUSUpload
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from plone.restapi.services.content.upload import TUSUpload
 
 import os
+import shutil
+import tempfile
 import transaction
 import unittest
 
@@ -152,3 +153,95 @@ class TestTUS(unittest.TestCase):
                      'Tus-Resumable': '1.0.0'},
             data=StringIO(UPLOAD_DATA))
         self.assertEqual(response.status_code, 204)
+
+
+class TestTUSUpload(unittest.TestCase):
+
+    def test_tmp_dir_gets_created_in_client_home(self):
+        tus = TUSUpload('myuid')
+        self.assertTrue(os.path.isdir(tus.tmp_dir))
+
+    def test_use_tus_tmp_dir_if_provided(self):
+        tus_upload_dir = tempfile.mkdtemp()
+        os.environ['TUS_TMP_FILE_DIR'] = tus_upload_dir
+        tus = TUSUpload('myuid')
+        self.assertEqual(tus_upload_dir, tus.tmp_dir)
+
+    def test_metadata_gets_stored_if_provided(self):
+        tus = TUSUpload('myuid', {'length': 1024, 'filename': 'test.pdf'})
+        self.assertIn('filename', tus.metadata())
+        self.assertEqual('test.pdf', tus.metadata()['filename'])
+
+    def test_length_returns_total_length_if_set(self):
+        tus = TUSUpload('myuid', {'length': 1024})
+        self.assertEqual(1024, tus.length())
+
+    def test_length_returns_zero_if_not_set(self):
+        tus = TUSUpload('myuid')
+        self.assertEqual(0, tus.length())
+
+    def test_offset_returns_zero_if_file_doesnt_exist(self):
+        tus = TUSUpload('myuid', {'length': 1024})
+        self.assertEqual(0, tus.offset())
+
+    def test_offset_returns_size_of_current_file(self):
+        tus = TUSUpload('myuid', {'length': 1024})
+        tus.write(StringIO('0123456789'))
+        self.assertEqual(10, tus.offset())
+
+    def test_write_creates_new_file(self):
+        tus = TUSUpload('myuid', {'length': 1024})
+        tus.write(StringIO('0123456789'))
+        self.assertTrue(os.path.isfile(tus.filepath))
+
+    def test_write_appends_to_file_at_given_offset(self):
+        tus = TUSUpload('myuid', {'length': 1024})
+        tus.write(StringIO('0123456789'))
+        tus.write(StringIO('abc'), 10)
+        self.assertEqual(13, tus.offset())
+        with open(tus.filepath, 'rb') as f:
+            data = f.read()
+        self.assertEqual('0123456789abc', data)
+
+    def test_write_sets_finished_flag(self):
+        tus = TUSUpload('myuid', {'length': 10})
+        tus.write(StringIO('0123456789'))
+        self.assertTrue(tus.finished)
+
+    def test_metadata_returns_empty_dict_if_no_metadata_has_been_set(self):
+        tus = TUSUpload('myuid')
+        self.assertEqual({}, tus.metadata())
+
+    def test_expires_returns_expiration_time_of_current_upload(self):
+        tus = TUSUpload('myuid', {'length': 1024})
+        tus.write(StringIO('0123456789'))
+        self.assertGreater(DateTime(tus.expires()), DateTime())
+
+    def test_cleanup_removes_upload_file(self):
+        tus = TUSUpload('myuid', {'length': 1024})
+        tus.write(StringIO('0123456789'))
+        tus.cleanup()
+        self.assertFalse(os.path.exists(tus.filepath))
+
+    def test_cleanup_removes_metadata_file(self):
+        tus = TUSUpload('myuid', {'length': 1024})
+        tus.cleanup()
+        self.assertFalse(os.path.exists(tus.metadata_path))
+
+    def test_cleanup_expired_files(self):
+        tus = TUSUpload('myuid')
+        filepath = os.path.join(tus.tmp_dir, 'tus_upload_12345')
+        metadata_path = os.path.join(tus.tmp_dir, 'tus_upload_12345.json')
+        open(filepath, 'wb').close()
+        os.utime(filepath, (946684800.0, 946684800.0))
+        open(metadata_path, 'wb').close()
+        os.utime(metadata_path, (946684800.0, 946684800.0))
+        tus.cleanup_expired()
+        self.assertFalse(os.path.exists(filepath))
+        self.assertFalse(os.path.exists(metadata_path))
+
+    def tearDown(self):
+        client_home = os.environ.get('CLIENT_HOME')
+        tmp_dir = os.path.join(client_home, 'tus-uploads')
+        if os.path.isdir(tmp_dir):
+            shutil.rmtree(tmp_dir)
