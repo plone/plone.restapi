@@ -29,21 +29,6 @@ TUS_OPTIONS_RESPONSE_HEADERS = {
 }
 
 
-class ErrorMixin(object):
-
-    def _error(self, type, message, status=400):
-        '''
-        Set a status code (400 is the default error in the TUS
-        reference server implementation) and return a plone.restapi
-        conform error body.
-        '''
-        self.request.response.setStatus(status)
-        return {'error': {
-                'type': type,
-                'message': message,
-                }}
-
-
 class UploadOptions(Service):
     """TUS upload endpoint for handling OPTIONS requests without CORS."""
 
@@ -53,8 +38,7 @@ class UploadOptions(Service):
         return super(UploadOptions, self).reply()
 
 
-class UploadPost(Service, ErrorMixin):
-    """TUS upload endpoint for creating a new upload resource."""
+class TUSBaseService(Service):
 
     def __call__(self):
         # We need to add additional TUS headers if this is a CORS preflight
@@ -67,11 +51,24 @@ class UploadPost(Service, ErrorMixin):
                 for name, value in TUS_OPTIONS_RESPONSE_HEADERS.items():
                     self.request.response.setHeader(name, value)
                 return
-            else:
-                policy.process_simple_request()
-                self.request.response.setHeader('Tus-Resumable', '1.0.0')
 
         return self.render()
+
+    def _error(self, type, message, status=400):
+        """
+        Set a status code (400 is the default error in the TUS
+        reference server implementation) and return a plone.restapi
+        conform error body.
+        """
+        self.request.response.setStatus(status)
+        return {'error': {
+                'type': type,
+                'message': message,
+                }}
+
+
+class UploadPost(TUSBaseService):
+    """TUS upload endpoint for creating a new upload resource."""
 
     def reply(self):
         length = self.request.getHeader('Upload-Length', '')
@@ -97,7 +94,7 @@ class UploadPost(Service, ErrorMixin):
         self.request.response.setHeader('Upload-Expires', tus_upload.expires())
 
 
-class UploadFileBase(Service, ErrorMixin):
+class UploadFileBase(TUSBaseService):
     implements(IPublishTraverse)
 
     def __init__(self, context, request):

@@ -6,9 +6,15 @@ from plone import api
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import login
+from plone.rest.cors import CORSPolicy
+from plone.rest.interfaces import ICORSPolicy
 from plone.restapi.services.content.upload import TUSUpload
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from zope.component import getGlobalSiteManager
+from zope.component import provideAdapter
+from zope.interface import Interface
+from zope.publisher.interfaces.browser import IBrowserRequest
 
 import os
 import shutil
@@ -153,6 +159,76 @@ class TestTUS(unittest.TestCase):
                      'Tus-Resumable': '1.0.0'},
             data=StringIO(UPLOAD_DATA))
         self.assertEqual(response.status_code, 204)
+
+
+class CORSTestPolicy(CORSPolicy):
+    allow_origin = ['*']
+    allow_methods = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
+    allow_credentials = True
+    allow_headers = [
+        'Accept', 'Authorization', 'Origin', 'X-Requested-With',
+        'Content-Type', 'Tus-Resumable', 'Upload-Length', 'Upload-Offset',
+    ]
+    expose_header = []
+    max_age = 3600
+
+
+class TestTUSUploadWithCORS(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        provideAdapter(
+            CORSTestPolicy,
+            adapts=(Interface, IBrowserRequest),
+            provides=ICORSPolicy,
+        )
+        self.portal = self.layer['portal']
+        self.api_session = RelativeSession(self.portal.absolute_url())
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        self.upload_url = '{}/@upload'.format(self.portal.absolute_url())
+
+    def test_cors_preflight_for_post_contains_tus_headers(self):
+        response = self.api_session.options(
+            self.upload_url, headers={
+                'Origin': 'http://myhost.net',
+                'Access-Control-Request-Method': 'POST',
+                'Access-Control-Request-Headers':
+                    'Tus-Resumable,Upload-Length',
+            })
+        self.assertIn('Tus-Resumable', response.headers)
+        self.assertIn('Tus-Version', response.headers)
+        self.assertIn('Tus-Extension', response.headers)
+
+    def test_cors_preflight_for_patch_contains_tus_headers(self):
+        response = self.api_session.options(
+            self.upload_url, headers={
+                'Origin': 'http://myhost.net',
+                'Access-Control-Request-Method': 'PATCH',
+                'Access-Control-Request-Headers':
+                    'Content-Type,Tus-Resumable,Upload-Offset',
+            })
+        self.assertIn('Tus-Resumable', response.headers)
+        self.assertIn('Tus-Version', response.headers)
+        self.assertIn('Tus-Extension', response.headers)
+
+    def test_cors_preflight_for_head_contains_tus_headers(self):
+        response = self.api_session.options(
+            self.upload_url, headers={
+                'Origin': 'http://myhost.net',
+                'Access-Control-Request-Method': 'HEAD',
+                'Access-Control-Request-Headers':
+                    'Tus-Resumable',
+            })
+        self.assertIn('Tus-Resumable', response.headers)
+        self.assertIn('Tus-Version', response.headers)
+        self.assertIn('Tus-Extension', response.headers)
+
+    def tearDown(self):
+        gsm = getGlobalSiteManager()
+        gsm.unregisterAdapter(
+            CORSTestPolicy, (Interface, IBrowserRequest), ICORSPolicy)
 
 
 class TestTUSUpload(unittest.TestCase):
