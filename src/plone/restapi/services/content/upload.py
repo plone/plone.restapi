@@ -54,7 +54,19 @@ class TUSBaseService(Service):
 
         return self.render()
 
-    def _error(self, type, message, status=400):
+    def check_tus_version(self):
+        version = self.request.getHeader('Tus-Resumable')
+        if version != '1.0.0':
+            return False
+        return True
+
+    def unsupported_version(self):
+        self.request.response.setHeader('Tus-Version', '1.0.0')
+        self.request.response.setStatus(412)
+        return {'error': {'type': 'Precondition Failed',
+                          'message': 'Unsupported version'}}
+
+    def error(self, type, message, status=400):
         """
         Set a status code (400 is the default error in the TUS
         reference server implementation) and return a plone.restapi
@@ -71,12 +83,15 @@ class UploadPost(TUSBaseService):
     """TUS upload endpoint for creating a new upload resource."""
 
     def reply(self):
+        if not self.check_tus_version():
+            return self.unsupported_version()
+
         length = self.request.getHeader('Upload-Length', '')
         try:
             length = int(length)
         except ValueError:
-            return self._error('Bad Request',
-                               'Missing or invalid Upload-Length header')
+            return self.error('Bad Request',
+                              'Missing or invalid Upload-Length header')
 
         # Parse metadata
         metadata = {}
@@ -108,13 +123,16 @@ class UploadFileBase(TUSBaseService):
             raise NotFound(self, name, request)
         return self
 
-    def check_tus_version(self):
-        version = self.request.getHeader('Tus-Resumable')
-        if version != '1.0.0':
-            self.request.response.setHeader('Tus-Version', '1.0.0')
-            self.request.response.setStatus(412)
-            return False
-        return True
+    def tus_upload(self):
+        if self.uid is None:
+            return None
+
+        tus_upload = TUSUpload(self.uid)
+        length = tus_upload.length()
+        if length == 0:
+            return None
+
+        return tus_upload
 
 
 class UploadHead(UploadFileBase):
@@ -122,13 +140,15 @@ class UploadHead(UploadFileBase):
 
     def reply(self):
 
+        tus_upload = self.tus_upload()
+        if tus_upload is None:
+            return self.error('Not Found', '', 404)
+
         if not self.check_tus_version():
-            return dict(error=dict(
-                type='Precondition Failed',
-                message='Unsupported version'))
+            return self.unsupported_version()
 
-        tus_upload = TUSUpload(self.uid)
-
+        self.request.response.setHeader('Upload-Length', '{}'.format(
+            tus_upload.length()))
         self.request.response.setHeader('Upload-Offset', '{}'.format(
             tus_upload.offset()))
         self.request.response.setHeader('Tus-Resumable', '1.0.0')
@@ -143,32 +163,26 @@ class UploadPatch(UploadFileBase):
     implements(IPublishTraverse)
 
     def reply(self):
-        if self.uid is None:
-            return self._error('Bad Request', 'Missing UID')
+
+        tus_upload = self.tus_upload()
+        if tus_upload is None:
+            return self.error('Not Found', '', 404)
 
         if not self.check_tus_version():
-            return {'error': {
-                'type': 'Precondition Failed',
-                'message': 'Unsupported version'
-            }}
+            return self.unsupported_version()
 
         content_type = self.request.getHeader('Content-Type')
         if content_type != 'application/offset+octet-stream':
-            return {'error': {
-                'type': 'Bad Request',
-                'message': 'Missing or invalid Content-Type header'
-            }}
+            return self.error(
+                'Bad Request', 'Missing or invalid Content-Type header')
 
         offset = self.request.getHeader('Upload-Offset', '')
         try:
             offset = int(offset)
         except ValueError:
-            return {'error': {
-                'type': 'Bad Request',
-                'message': 'Missing or invalid Upload-Offset header'
-            }}
+            return self.error(
+                'Bad Request', 'Missing or invalid Upload-Offset header')
 
-        tus_upload = TUSUpload(self.uid)
         tus_upload.write(self.request._file, offset)
 
         if tus_upload.finished:
@@ -209,7 +223,8 @@ class UploadPatch(UploadFileBase):
                                                   contentType=content_type))
                         else:
                             # TODO: handle unsupported field type
-                            pass
+                            self.request.response.setStatus(501, lock=1)
+                            raise NotImplementedError('Not Implemented')
                     elif base_hasattr(obj, 'getPrimaryField'):
                         field = obj.getPrimaryField()
                         mutator = field.getMutator(obj)
@@ -218,7 +233,8 @@ class UploadPatch(UploadFileBase):
                                 filename=filename)
                 else:
                     # TODO: handle non-primary fields
-                    pass
+                    self.request.response.setStatus(501, lock=1)
+                    raise NotImplementedError('Not Implemented')
 
             rename(obj)
             tus_upload.cleanup()

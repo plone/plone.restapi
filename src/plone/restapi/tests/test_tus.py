@@ -5,10 +5,15 @@ from base64 import b64encode
 from plone import api
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.testing import login
+from plone.app.testing import setRoles
 from plone.rest.cors import CORSPolicy
 from plone.rest.interfaces import ICORSPolicy
 from plone.restapi.services.content.upload import TUSUpload
+from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.component import getGlobalSiteManager
@@ -38,9 +43,7 @@ class TestTUS(unittest.TestCase):
     def setUp(self):
         self.app = self.layer['app']
         self.portal = self.layer['portal']
-        # setRoles(self.portal, TEST_USER_ID, ['Member'])
         login(self.portal, SITE_OWNER_NAME)
-        transaction.commit()
 
         self.folder = api.content.create(container=self.portal,
                                          type='Folder',
@@ -69,8 +72,18 @@ class TestTUS(unittest.TestCase):
         self.assertEqual(headers['Tus-Extension'], 'creation,expiration')
         self.assertEqual(headers['Tus-Resumable'], '1.0.0')
 
-    def test_tus_post_initialization_requires_header_length(self):
+    def test_tus_post_without_version_header_returns_412(self):
         response = self.api_session.post(self.upload_url)
+        self.assertEqual(412, response.status_code)
+
+    def test_tus_post_with_wrong_version_header_returns_412(self):
+        response = self.api_session.post(
+            self.upload_url, headers={'Tus-Resumable': '0.2.2'})
+        self.assertEqual(412, response.status_code)
+
+    def test_tus_post_initialization_requires_header_length(self):
+        response = self.api_session.post(
+            self.upload_url, headers={'Tus-Resumable': '1.0.0'})
         self.assertEqual(response.json()['error']['type'], 'Bad Request')
         self.assertEqual(response.json()['error']['message'],
                          'Missing or invalid Upload-Length header')
@@ -79,8 +92,10 @@ class TestTUS(unittest.TestCase):
     def test_tus_post_initialization(self):
         response = self.api_session.post(
             self.upload_url,
-            headers={'Upload-Length': str(UPLOAD_LENGHT)}
-            )
+            headers={
+                'Tus-Resumable': '1.0.0',
+                'Upload-Length': str(UPLOAD_LENGHT),
+            })
         self.assertEqual(response.status_code, 201)
         location = response.headers['Location']
         url_base, uid = location.rsplit('/', 1)
@@ -91,13 +106,14 @@ class TestTUS(unittest.TestCase):
         self.assertEqual(stored_metadata,
                          {u'length': 8})
 
-    def test_tus_patch_initialization_with_metadata(self):
+    def test_tus_post_initialization_with_metadata(self):
         metadata = 'filename {},content-type {}'.format(
             b64encode(UPLOAD_FILENAME),
             b64encode(UPLOAD_MIMETYPE))
         response = self.api_session.post(
             self.upload_url,
-            headers={'Upload-Length': str(UPLOAD_LENGHT),
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(UPLOAD_LENGHT),
                      'Upload-Metadata': metadata}
             )
         self.assertEqual(response.status_code, 201)
@@ -109,6 +125,94 @@ class TestTUS(unittest.TestCase):
                           u'filename': u'test.txt',
                           u'length': 8})
 
+    def test_tus_head_on_not_existing_resource_returns_404(self):
+        response = self.api_session.head(
+            self.upload_url + '/myuid/123', headers={'Tus-Resumable': '1.0.0'})
+        self.assertEqual(404, response.status_code)
+        response = self.api_session.head(
+            self.upload_url + '/myuid', headers={'Tus-Resumable': '1.0.0'})
+        self.assertEqual(404, response.status_code)
+        response = self.api_session.head(
+            self.upload_url, headers={'Tus-Resumable': '1.0.0'})
+        self.assertEqual(404, response.status_code)
+
+    def test_tus_head_with_unsupported_version_returns_412(self):
+        tus = TUSUpload('myuid', {'length': 2048})
+        response = self.api_session.head(
+            self.upload_url + '/myuid', headers={'Tus-Resumable': '0.2.2'})
+        self.assertEqual(412, response.status_code)
+        tus.cleanup()
+
+    def test_tus_head_response_includes_required_headers(self):
+        tus = TUSUpload('myuid', {'length': 2048})
+        response = self.api_session.head(
+            self.upload_url + '/myuid', headers={'Tus-Resumable': '1.0.0'})
+        self.assertIn('Upload-Length', response.headers)
+        self.assertEqual('2048', response.headers['Upload-Length'])
+        self.assertIn('Upload-Offset', response.headers)
+        self.assertIn('Tus-Resumable', response.headers)
+        self.assertIn('Cache-Control', response.headers)
+        tus.cleanup()
+
+    def test_tus_patch_on_not_existing_resource_returns_404(self):
+        response = self.api_session.patch(
+            self.upload_url + '/myuid/123', headers={'Tus-Resumable': '1.0.0'})
+        self.assertEqual(404, response.status_code)
+        response = self.api_session.patch(
+            self.upload_url + '/myuid', headers={'Tus-Resumable': '1.0.0'})
+        self.assertEqual(404, response.status_code)
+        response = self.api_session.patch(
+            self.upload_url, headers={'Tus-Resumable': '1.0.0'})
+        self.assertEqual(404, response.status_code)
+
+    def test_tus_patch_with_unsupported_version_returns_412(self):
+        tus = TUSUpload('myuid', {'length': 2048})
+        response = self.api_session.patch(
+            self.upload_url + '/myuid', headers={'Tus-Resumable': '0.2.2'})
+        self.assertEqual(412, response.status_code)
+        tus.cleanup()
+
+    def test_tus_patch_with_unsupported_content_type_returns_400(self):
+        tus = TUSUpload('myuid', {'length': 2048})
+        response = self.api_session.patch(
+            self.upload_url + '/myuid',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/json'})
+        self.assertEqual(400, response.status_code)
+        tus.cleanup()
+
+    def test_tus_patch_with_invalid_offset_returns_400(self):
+        tus = TUSUpload('myuid', {'length': 2048})
+        response = self.api_session.patch(
+            self.upload_url + '/myuid',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream'})
+        self.assertEqual(400, response.status_code)
+        tus.cleanup()
+
+    def test_tus_patch_unfinished_upload_returns_expires_header(self):
+        tus = TUSUpload('myuid', {'length': 2048})
+        response = self.api_session.patch(
+            self.upload_url + '/myuid',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': '0'},
+            data=StringIO('abcdefghijkl'))
+        self.assertEqual(204, response.status_code)
+        self.assertIn('Upload-Expires', response.headers)
+        tus.cleanup()
+
+    def test_tus_patch_non_primary_field_returns_501(self):
+        tus = TUSUpload('myuid', {'length': 12, 'fieldname': 'myfield'})
+        response = self.api_session.patch(
+            self.upload_url + '/myuid',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': '0'},
+            data=StringIO('abcdefghijkl'))
+        self.assertEqual(501, response.status_code)
+        tus.cleanup()
+
     def test_tus_can_upload_pdf_file(self):
         # initialize the upload with POST
         pdf_file_path = os.path.join(os.path.dirname(__file__),
@@ -119,7 +223,8 @@ class TestTUS(unittest.TestCase):
             b64encode(UPLOAD_PDF_MIMETYPE))
         response = self.api_session.post(
             self.upload_url,
-            headers={'Upload-Length': str(pdf_file_size),
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(pdf_file_size),
                      'Upload-Metadata': metadata}
             )
         self.assertEqual(response.status_code, 201)
@@ -145,7 +250,8 @@ class TestTUS(unittest.TestCase):
             b64encode(UPLOAD_MIMETYPE))
         response = self.api_session.post(
             self.upload_url,
-            headers={'Upload-Length': str(UPLOAD_LENGHT),
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(UPLOAD_LENGHT),
                      'Upload-Metadata': metadata}
             )
         self.assertEqual(response.status_code, 201)
@@ -159,6 +265,12 @@ class TestTUS(unittest.TestCase):
                      'Tus-Resumable': '1.0.0'},
             data=StringIO(UPLOAD_DATA))
         self.assertEqual(response.status_code, 204)
+
+    def tearDown(self):
+        client_home = os.environ.get('CLIENT_HOME')
+        tmp_dir = os.path.join(client_home, 'tus-uploads')
+        if os.path.isdir(tmp_dir):
+            shutil.rmtree(tmp_dir)
 
 
 class CORSTestPolicy(CORSPolicy):
@@ -308,16 +420,71 @@ class TestTUSUpload(unittest.TestCase):
         tus = TUSUpload('myuid')
         filepath = os.path.join(tus.tmp_dir, 'tus_upload_12345')
         metadata_path = os.path.join(tus.tmp_dir, 'tus_upload_12345.json')
+        metadata_only_path = os.path.join(tus.tmp_dir, 'tus_upload_67890.json')
         open(filepath, 'wb').close()
         os.utime(filepath, (946684800.0, 946684800.0))
         open(metadata_path, 'wb').close()
         os.utime(metadata_path, (946684800.0, 946684800.0))
+        open(metadata_only_path, 'wb').close()
+        os.utime(metadata_only_path, (946684800.0, 946684800.0))
         tus.cleanup_expired()
         self.assertFalse(os.path.exists(filepath))
         self.assertFalse(os.path.exists(metadata_path))
+        self.assertFalse(os.path.exists(metadata_only_path))
 
     def tearDown(self):
         client_home = os.environ.get('CLIENT_HOME')
         tmp_dir = os.path.join(client_home, 'tus-uploads')
         if os.path.isdir(tmp_dir):
             shutil.rmtree(tmp_dir)
+
+
+class TestTUSWithAT(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.portal = self.layer['portal']
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        login(self.portal, TEST_USER_NAME)
+
+        self.folder = api.content.create(container=self.portal,
+                                         type='Folder',
+                                         id='testfolder',
+                                         title='Testfolder')
+        self.upload_url = '{}/@upload'.format(self.folder.absolute_url())
+        transaction.commit()
+
+        self.api_session = RelativeSession(self.portal.absolute_url())
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
+
+    def test_tus_can_upload_pdf_file(self):
+        # initialize the upload with POST
+        pdf_file_path = os.path.join(os.path.dirname(__file__),
+                                     UPLOAD_PDF_FILENAME)
+        pdf_file_size = os.path.getsize(pdf_file_path)
+        metadata = 'filename {},content-type {}'.format(
+            b64encode(UPLOAD_PDF_FILENAME),
+            b64encode(UPLOAD_PDF_MIMETYPE))
+        response = self.api_session.post(
+            self.upload_url,
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(pdf_file_size),
+                     'Upload-Metadata': metadata}
+            )
+        self.assertEqual(response.status_code, 201)
+        location = response.headers['Location']
+
+        # upload the data with PATCH
+        pdf_file = open(pdf_file_path, 'rb')
+        response = self.api_session.patch(
+            location,
+            headers={'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': '0',
+                     'Tus-Resumable': '1.0.0'},
+            data=pdf_file)
+        self.assertEqual(response.status_code, 204)
+
+        transaction.commit()
+        self.assertEqual([UPLOAD_PDF_FILENAME], self.folder.contentIds())
