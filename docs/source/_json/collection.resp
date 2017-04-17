@@ -9,10 +9,14 @@ Content-Type: application/json
   "contributors": [], 
   "created": "2016-01-21T08:14:48+00:00", 
   "creators": [
-    "test_user_1_", 
-    "admin"
+    "test_user_1_"
   ], 
-  "customViewFields": [], 
+  "customViewFields": [
+    "Title", 
+    "Creator", 
+    "Type", 
+    "ModificationDate"
+  ], 
   "description": "This is a collection with two documents", 
   "effective": null, 
   "exclude_from_nav": false, 
@@ -44,6 +48,7 @@ Content-Type: application/json
   ], 
   "items_total": 3, 
   "language": "", 
+  "layout": "listing_view", 
   "limit": 1000, 
   "modified": "2016-01-21T08:24:11+00:00", 
   "parent": {

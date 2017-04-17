@@ -132,6 +132,12 @@ class TestATContentDeserializer(unittest.TestCase):
         self.assertEquals(
             'pre_validation_error', cm.exception.message[0]['message'])
 
+    def test_set_layout(self):
+        current_layout = self.doc1.getLayout()
+        self.assertNotEquals(current_layout, "my_new_layout")
+        self.deserialize(body='{"layout": "my_new_layout"}')
+        self.assertEquals('my_new_layout', self.doc1.getLayout())
+
 
 class TestValidationRequest(unittest.TestCase):
 

@@ -105,6 +105,8 @@ class DeserializeFromJson(object):
         if errors:
             raise BadRequest(errors)
 
+        # We'll set the layout after the validation and and even if there
+        # are no other changes.
         if 'layout' in data:
             layout = data['layout']
             self.context.setLayout(layout)

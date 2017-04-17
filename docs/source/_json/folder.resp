@@ -9,8 +9,7 @@ Content-Type: application/json
   "contributors": [], 
   "created": "2016-01-21T07:14:48+00:00", 
   "creators": [
-    "test_user_1_", 
-    "admin"
+    "test_user_1_"
   ], 
   "description": "This is a folder with two documents", 
   "effective": null, 
@@ -35,6 +34,7 @@ Content-Type: application/json
   ], 
   "items_total": 2, 
   "language": "", 
+  "layout": "listing_view", 
   "modified": "2016-01-21T07:24:11+00:00", 
   "nextPreviousEnabled": false, 
   "parent": {

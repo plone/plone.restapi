@@ -9,8 +9,7 @@ Content-Type: application/json
   "contributors": [], 
   "created": "2016-01-21T05:14:48+00:00", 
   "creators": [
-    "test_user_1_", 
-    "admin"
+    "test_user_1_"
   ], 
   "description": "This is a file", 
   "effective": null, 
@@ -24,6 +23,7 @@ Content-Type: application/json
   }, 
   "id": "file", 
   "language": "", 
+  "layout": "file_view", 
   "modified": "2016-01-21T05:24:11+00:00", 
   "parent": {
     "@id": "http://localhost:55001/plone", 

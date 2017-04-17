@@ -59,10 +59,6 @@ class DeserializeFromJson(object):
                     'error': 'ValidationError'} for f, e in errors.items()]
                 raise BadRequest(errors)
 
-            if 'layout' in data:
-                layout = data['layout']
-                self.context.setLayout(layout)
-
             if obj.checkCreationFlag():
                 obj.unmarkCreationFlag()
                 notify(ObjectInitializedEvent(obj))
@@ -70,6 +66,12 @@ class DeserializeFromJson(object):
             else:
                 notify(ObjectEditedEvent(obj))
                 obj.at_post_edit_script()
+
+        # We'll set the layout after the validation and and even if there
+        # are no other changes.
+        if 'layout' in data:
+            layout = data['layout']
+            self.context.setLayout(layout)
 
         return obj
 
