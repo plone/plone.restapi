@@ -30,6 +30,8 @@ Contents
    types
    users
    components
+   breadcrumbs
+   navigation
    serialization
    searching
    vocabularies
