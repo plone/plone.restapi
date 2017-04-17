@@ -35,6 +35,7 @@ class SerializeToJson(object):
             'parent': parent_summary,
             'review_state': self._get_workflow_state(),
             'UID': self.context.UID(),
+            'layout': self.context.getLayout(),
         }
 
         obj = self.context

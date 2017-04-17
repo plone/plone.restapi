@@ -10,11 +10,16 @@ New Features:
   and breadcrumbs as components.
   [timo]
 
+- Add support for setting/modifying 'layout' on DX and AT content endpoints.
+  [jaroel]
+
+- Add support for getting the defined layouts on the root types endpoint.
+  [jaroel]
 
 Bugfixes:
 
-- Add the title to the workflow history in the @workflow endpoint. This fixes
-  #279.
+- Add the title to the workflow history in the @workflow endpoint.
+  This fixes #279.
   [sneridagh]
 
 - Don't fetch unnecessary PasswordResetTool in Plone 5.1

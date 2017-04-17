@@ -65,6 +65,7 @@ Content-Type: application/json
   }, 
   "image_caption": "This is an image caption.", 
   "language": "", 
+  "layout": "newsitem_view", 
   "modified": "2016-01-21T02:24:11+00:00", 
   "parent": {
     "@id": "http://localhost:55001/plone", 

@@ -155,6 +155,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
         'properties': properties,
         'required': required,
         'fieldsets': get_fieldset_infos(fieldsets),
+        'layouts': getattr(fti, 'view_methods', []),
     }
 
 
