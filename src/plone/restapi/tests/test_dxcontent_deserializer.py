@@ -127,3 +127,9 @@ class TestDXContentDeserializer(unittest.TestCase):
                           self.portal.doc1.test_default_value_field)
         self.assertEquals(u'DefaultFactory',
                           self.portal.doc1.test_default_factory_field)
+
+    def test_set_layout(self):
+        current_layout = self.portal.doc1.getLayout()
+        self.assertNotEquals(current_layout, "my_new_layout")
+        self.deserialize(body='{"layout": "my_new_layout"}')
+        self.assertEquals('my_new_layout', self.portal.doc1.getLayout())

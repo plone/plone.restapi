@@ -98,6 +98,7 @@ class TestJsonSchemaUtils(TestCase):
         self.assertIn('title', jsonschema['required'])
         self.assertEquals('default', jsonschema['fieldsets'][0]['id'])
         self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
+        self.assertIn('layouts', jsonschema)
 
         jsonschema = get_jsonschema_for_fti(
             ttool['Document'],

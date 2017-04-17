@@ -13,6 +13,12 @@ Bugfixes:
 - Don't fetch unnecessary PasswordResetTool in Plone 5.1
   [tomgross]
 
+New Features:
+- Support setting/modifying 'layout' on DX and AT content endpoints
+  [jaroel]
+- Support getting the defined layouts on the root types endpoint
+  [jaroel]
+
 1.0a12 (2017-04-03)
 -------------------
 

@@ -47,6 +47,7 @@ class SerializeToJson(object):
             'modified': json_compatible(self.context.modified()),
             'review_state': self._get_workflow_state(),
             'UID': self.context.UID(),
+            'layout': self.context.getLayout(),
         }
 
         for schema in iterSchemata(self.context):

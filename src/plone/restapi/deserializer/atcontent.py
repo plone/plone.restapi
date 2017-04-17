@@ -67,6 +67,12 @@ class DeserializeFromJson(object):
                 notify(ObjectEditedEvent(obj))
                 obj.at_post_edit_script()
 
+        # We'll set the layout after the validation and and even if there
+        # are no other changes.
+        if 'layout' in data:
+            layout = data['layout']
+            self.context.setLayout(layout)
+
         return obj
 
     def validate(self):
