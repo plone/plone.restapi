@@ -2,10 +2,12 @@
     xmlns="http://namespaces.zope.org/zope">
 
   <include package=".auth" />
+  <include package=".breadcrumbs"/>
   <include package=".components"/>
   <include package=".content"/>
   <include package=".copymove"/>
   <include package=".groups"/>
+  <include package=".navigation"/>
   <include package=".principals"/>
   <include package=".registry"/>
   <include package=".search"/>
