@@ -18,6 +18,9 @@ New Features:
 - Add support for getting the defined layouts on the root types endpoint.
   [jaroel]
 
+- Remove @principals endpoints. Intended features moved to @@sharing?search_term=[...]
+  [jaroel]
+
 Bugfixes:
 
 - Add the title to the workflow history in the @workflow endpoint.

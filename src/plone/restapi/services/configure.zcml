@@ -6,7 +6,6 @@
   <include package=".content"/>
   <include package=".copymove"/>
   <include package=".groups"/>
-  <include package=".principals"/>
   <include package=".registry"/>
   <include package=".search"/>
   <include package=".types"/>
