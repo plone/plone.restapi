@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0a13 (unreleased)
+1.0a13 (2017-04-18)
 -------------------
 
 New Features:
