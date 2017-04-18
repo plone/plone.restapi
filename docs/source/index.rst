@@ -30,6 +30,7 @@ Contents
    types
    users
    groups
+   principals
    components
    serialization
    searching
