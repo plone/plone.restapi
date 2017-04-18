@@ -247,6 +247,9 @@ class TestFolderCreate(unittest.TestCase):
         self.assertIn('Reader', response['available_roles'])
 
     def test_no_serializer_available_returns_501(self):
+        # This test unregisters the local_roles adapter. The testrunner can not auto-revert
+        # this on test tearDown. Therefore if we ever run into test isolation issues. Start
+        # to look here first.
         gsm = getGlobalSiteManager()
         gsm.unregisterAdapter(SerializeLocalRolesToJson, name='local_roles')
 
