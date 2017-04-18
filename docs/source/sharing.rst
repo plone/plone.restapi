@@ -35,6 +35,9 @@ The sharing information of a content object can also be directly accessed by app
 .. literalinclude:: _json/sharing_folder_get.resp
    :language: http
 
+.. note::
+    Searching for users and/or groups who do not yet have a sharing entry can be done by appending the argument `search_term` to the query string. ie search_term=admin
+
 
 Update Local Roles
 ------------------
