@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from AccessControl import allow_module
 from AccessControl.Permissions import add_user_folders
-from Products.PluggableAuthService.PluggableAuthService import (
-    registerMultiPlugin)
+from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin  # noqa
 from plone.restapi.pas import plugin
 
 import pkg_resources
@@ -11,18 +10,15 @@ allow_module('json')
 
 try:
     pkg_resources.get_distribution('plone.app.testing')
-except pkg_resources.DistributionNotFound:
-    REGISTER_TEST_TYPES = False
-else:
     REGISTER_TEST_TYPES = True
-
+except pkg_resources.DistributionNotFound:  # pragma: no cover
+    REGISTER_TEST_TYPES = False
 
 try:
     pkg_resources.get_distribution('plone.app.contenttypes')
-except pkg_resources.DistributionNotFound:
-    HAS_PLONE_APP_CONTENTTYPES = False
-else:
     HAS_PLONE_APP_CONTENTTYPES = True
+except pkg_resources.DistributionNotFound:  # pragma: no cover
+    HAS_PLONE_APP_CONTENTTYPES = False
 
 
 def initialize(context):
@@ -30,8 +26,10 @@ def initialize(context):
     context.registerClass(
         plugin.JWTAuthenticationPlugin,
         permission=add_user_folders,
-        constructors=(plugin.manage_addJWTAuthenticationPlugin,
-                      plugin.addJWTAuthenticationPlugin),
+        constructors=(
+            plugin.manage_addJWTAuthenticationPlugin,
+            plugin.addJWTAuthenticationPlugin
+        ),
         visibility=None,
     )
 
@@ -42,7 +40,9 @@ def initialize(context):
         from plone.restapi.tests.attypes import PROJECTNAME
 
         content_types, constructors, ftis = process_types(
-            listTypes(PROJECTNAME), PROJECTNAME)
+            listTypes(PROJECTNAME),
+            PROJECTNAME
+        )
 
         utils.ContentInit(
             '%s Content' % PROJECTNAME,
