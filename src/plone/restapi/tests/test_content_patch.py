@@ -10,7 +10,6 @@ from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
-import json
 import requests
 import transaction
 import unittest
