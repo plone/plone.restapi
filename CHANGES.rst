@@ -12,6 +12,10 @@ Changelog
 
 New Features:
 
+- Add support for a 'search' parameter to @sharing. This returns additional
+  principals in 'entries', also flagging the acquired and/or inherited fields.
+  [jaroel]
+
 - Add support for setting/modifying 'layout' on DX and AT content endpoints.
   [jaroel]
 
