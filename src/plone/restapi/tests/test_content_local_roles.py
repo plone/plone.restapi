@@ -186,7 +186,7 @@ class TestFolderCreate(unittest.TestCase):
 
     def test_get_local_roles_inherit_roles(self):
         # __ac_local_roles_block__ specifies to block inheritance:
-        # https://docs.plone.org/develop/plone/security/local_roles.html#blocking-local-roles  noqa
+        # https://docs.plone.org/develop/plone/security/local_roles.html
         self.portal.folder1.__ac_local_roles_block__ = True
         transaction.commit()
 
