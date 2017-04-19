@@ -17,7 +17,8 @@ class SerializeLocalRolesToJson(object):
         self.context = context
         self.request = request
 
-    def __call__(self):
+    def __call__(self, search=None):
+        self.request.form['search_term'] = search
         sharing_view = getMultiAdapter((self.context, self.request),
                                        name='sharing')
         local_roles = sharing_view.role_settings()

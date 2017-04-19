@@ -40,6 +40,25 @@ class TestFolderCreate(unittest.TestCase):
                     '__ac_local_roles_block__',
                     False))
 
+    def test_sharing_search(self):
+        '''A request to @sharing should support the search parameter. '''
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '/@sharing',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        non_search_entries =response.json()['entries']
+
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '/@sharing?search=admin',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        search_entries = response.json()['entries']
+
+        # Did we find anything?
+        self.assertNotEqual(len(non_search_entries), len(search_entries))
+
     def test_sharing_requires_delegate_roles_permission(self):
         '''A response for an object without any roles assigned'''
         response = requests.get(
