@@ -4,8 +4,10 @@ Changelog
 1.0a14 (unreleased)
 -------------------
 
-- Nothing changed yet.
-
+Bugfixes:
+- Remove 'disabled' from @sharing entries, as it is a Plone template hint.
+  It doesn't actually mean that the entry is disabled.
+  [jaroel]
 
 1.0a13 (2017-04-18)
 -------------------
