@@ -36,7 +36,7 @@ The sharing information of a content object can also be directly accessed by app
    :language: http
 
 .. note::
-    Searching for users and/or groups who do not yet have a sharing entry can be done by appending the argument `search` to the query string. ie search=admin
+    Users and/or groups without a sharing entry can be found by appending the argument `search` to the query string. ie search=admin. It will also flag or global roles.
 
 
 Update Local Roles
