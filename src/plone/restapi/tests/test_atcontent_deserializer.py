@@ -152,11 +152,11 @@ class TestATContentDeserializer(unittest.TestCase):
         self.deserialize(body='{"layout": "my_new_layout"}')
         self.assertEquals('my_new_layout', self.doc1.getLayout())
 
-    def test_reorder(self):
+    def test_reorder(self):  # noqa: ignore=E501
         # We run all this in one test, because of dependend ordering.
         # initial situation
         self.assertEquals(
-            ['doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8', 'doc9', ],  # noqa
+            ['doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8', 'doc9', ],
             self.folder.objectIds()
         )
 
@@ -164,43 +164,67 @@ class TestATContentDeserializer(unittest.TestCase):
         # Move to top
         data = {'ordering': {'delta': 'top', 'obj_id': 'doc9'}}
         self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(['doc9', 'doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8', ], self.folder.objectIds())  # noqa
+        self.assertEquals(
+            ['doc9', 'doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8', ],
+            self.folder.objectIds()
+        )
 
         # Move to bottom
         data = {'ordering': {'delta': 'bottom', 'obj_id': 'doc9'}}
         self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(['doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8', 'doc9', ], self.folder.objectIds())  # noqa
+        self.assertEquals(
+            ['doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8', 'doc9', ],
+            self.folder.objectIds()
+        )
 
         # Delta up
         data = {'ordering': {'delta': -2, 'obj_id': 'doc5'}}
         self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(['doc1', 'doc2', 'doc5', 'doc3', 'doc4', 'doc6', 'doc7', 'doc8', 'doc9', ], self.folder.objectIds())  # noqa
+        self.assertEquals(
+            ['doc1', 'doc2', 'doc5', 'doc3', 'doc4', 'doc6', 'doc7', 'doc8', 'doc9', ],
+            self.folder.objectIds()
+        )
 
         # Delta down
         data = {'ordering': {'delta': 2, 'obj_id': 'doc6'}}
         self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(['doc1', 'doc2', 'doc5', 'doc3', 'doc4', 'doc7', 'doc8', 'doc6', 'doc9', ], self.folder.objectIds())  # noqa
+        self.assertEquals(
+            ['doc1', 'doc2', 'doc5', 'doc3', 'doc4', 'doc7', 'doc8', 'doc6', 'doc9', ],
+            self.folder.objectIds()
+        )
 
         # subset ids
         # Move to top
         data = {'ordering': {'delta': 'top', 'obj_id': 'doc8', 'subset_ids': ['doc2', 'doc3', 'doc8']}}  # noqa
         self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(['doc1', 'doc8', 'doc5', 'doc2', 'doc4', 'doc7', 'doc3', 'doc6', 'doc9'], self.folder.objectIds())  # noqa
+        self.assertEquals(
+            ['doc1', 'doc8', 'doc5', 'doc2', 'doc4', 'doc7', 'doc3', 'doc6', 'doc9'],
+            self.folder.objectIds()
+        )
 
         # Move to bottom
         data = {'ordering': {'delta': 'bottom', 'obj_id': 'doc8', 'subset_ids': ['doc8', 'doc2', 'doc3']}}  # noqa
         self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(['doc1', 'doc2', 'doc5', 'doc3', 'doc4', 'doc7', 'doc8', 'doc6', 'doc9'], self.folder.objectIds())  # noqa
+        self.assertEquals(
+            ['doc1', 'doc2', 'doc5', 'doc3', 'doc4', 'doc7', 'doc8', 'doc6', 'doc9'],
+            self.folder.objectIds()
+        )
 
         # Delta up
-        data = {'ordering': {'delta': -1, 'obj_id': 'doc8', 'subset_ids': ['doc2', 'doc3', 'doc8']}}
+        data = {'ordering': {'delta': -1, 'obj_id': 'doc8', 'subset_ids': ['doc2', 'doc3', 'doc8']}}  # noqa
         self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(['doc1', 'doc2', 'doc5', 'doc8', 'doc4', 'doc7', 'doc3', 'doc6', 'doc9'], self.folder.objectIds())  # noqa
+        self.assertEquals(
+            ['doc1', 'doc2', 'doc5', 'doc8', 'doc4', 'doc7', 'doc3', 'doc6', 'doc9'],
+            self.folder.objectIds()
+        )
 
         # Delta down
         data = {'ordering': {'delta': 1, 'obj_id': 'doc2', 'subset_ids': ['doc2', 'doc8', 'doc3']}}
         self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(['doc1', 'doc8', 'doc5', 'doc2', 'doc4', 'doc7', 'doc3', 'doc6', 'doc9'], self.folder.objectIds())  # noqa
+        self.assertEquals(
+            ['doc1', 'doc8', 'doc5', 'doc2', 'doc4', 'doc7', 'doc3', 'doc6', 'doc9'],
+            self.folder.objectIds()
+        )
 
 
 class TestValidationRequest(unittest.TestCase):
