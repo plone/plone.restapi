@@ -40,9 +40,9 @@ class TestATContentDeserializer(unittest.TestCase):
 
         for x in range(1, 10):
             self.folder.invokeFactory(
-              'ATTestDocument',
-              id='doc' + str(x),
-              title='Test doc ' + str(x)
+                'ATTestDocument',
+                id='doc' + str(x),
+                title='Test doc ' + str(x)
             )
 
     def deserialize(self, body='{}', validate_all=False, context=None):

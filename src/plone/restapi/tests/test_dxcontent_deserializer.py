@@ -36,9 +36,9 @@ class TestDXContentDeserializer(unittest.TestCase):
 
         for x in range(1, 10):
             self.folder.invokeFactory(
-              'DXTestDocument',
-              id='doc' + str(x),
-              title='Test doc ' + str(x)
+                'DXTestDocument',
+                id='doc' + str(x),
+                title='Test doc ' + str(x)
             )
 
     def deserialize(self, body='{}', validate_all=False, context=None):

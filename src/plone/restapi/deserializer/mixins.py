@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.folder.interfaces import IExplicitOrdering
 from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
 from zExceptions import BadRequest

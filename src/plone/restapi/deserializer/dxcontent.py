@@ -3,12 +3,10 @@ from AccessControl import getSecurityManager
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
-from plone.folder.interfaces import IExplicitOrdering
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.supermodel.utils import mergedTaggedValueDict
-from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
 from z3c.form.interfaces import IDataManager
 from z3c.form.interfaces import IManagerValidator
 from zExceptions import BadRequest
