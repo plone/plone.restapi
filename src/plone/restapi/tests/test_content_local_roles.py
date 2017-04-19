@@ -47,7 +47,7 @@ class TestFolderCreate(unittest.TestCase):
             headers={'Accept': 'application/json'},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
         )
-        non_search_entries =response.json()['entries']
+        non_search_entries = response.json()['entries']
 
         response = requests.get(
             self.portal.folder1.absolute_url() + '/@sharing?search=admin',
