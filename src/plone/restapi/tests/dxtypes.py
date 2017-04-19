@@ -7,6 +7,7 @@ from plone.app.vocabularies.catalog import CatalogSource
 from plone.autoform.directives import read_permission
 from plone.autoform.directives import write_permission
 from plone.autoform.interfaces import IFormFieldProvider
+from plone.dexterity.content import Container
 from plone.dexterity.content import Item
 from plone.namedfile import field as namedfile
 from plone.supermodel import model
@@ -129,3 +130,7 @@ class ITestBehavior(model.Schema):
 class ITestAnnotationsBehavior(model.Schema):
 
     test_annotations_behavior_field = schema.TextLine(required=False)
+
+
+class DXTestFolder(Container):
+    """A Dexterity based test folder"""

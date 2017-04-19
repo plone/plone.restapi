@@ -4,7 +4,9 @@ Changelog
 1.0a14 (unreleased)
 -------------------
 
-- Nothing changed yet.
+New Features:
+- Reorder children in a item using the content endpoint.
+  [jaroel]
 
 
 1.0a13 (2017-04-18)

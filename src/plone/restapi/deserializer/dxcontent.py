@@ -3,10 +3,12 @@ from AccessControl import getSecurityManager
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
+from plone.folder.interfaces import IExplicitOrdering
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.supermodel.utils import mergedTaggedValueDict
+from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
 from z3c.form.interfaces import IDataManager
 from z3c.form.interfaces import IManagerValidator
 from zExceptions import BadRequest
@@ -21,10 +23,12 @@ from zope.schema import getFields
 from zope.schema.interfaces import ValidationError
 from zope.security.interfaces import IPermission
 
+from .mixins import OrderingMixin
+
 
 @implementer(IDeserializeFromJson)
 @adapter(IDexterityContent, Interface)
-class DeserializeFromJson(object):
+class DeserializeFromJson(OrderingMixin, object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -110,6 +114,9 @@ class DeserializeFromJson(object):
         if 'layout' in data:
             layout = data['layout']
             self.context.setLayout(layout)
+
+        # OrderingMixin
+        self.handle_ordering(data)
 
         if modified:
             notify(ObjectModifiedEvent(self.context))

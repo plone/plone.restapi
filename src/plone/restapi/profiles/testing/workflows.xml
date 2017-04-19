@@ -4,6 +4,9 @@
    <type type_id="DXTestDocument">
      <bound-workflow workflow_id="simple_publication_workflow" />
    </type>
+   <type type_id="DXTestFolder">
+     <bound-workflow workflow_id="simple_publication_workflow" />
+   </type>
    <type type_id="ATTestFolder">
      <bound-workflow workflow_id="simple_publication_workflow" />
    </type>

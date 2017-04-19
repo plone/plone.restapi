@@ -320,3 +320,15 @@ Possible responses to a delete request are:
   * :term:`404 Not Found` (if the resource does not exist)
   * :term:`405 Method Not Allowed` (if deleting the resource is not allowed)
   * :term:`500 Internal Server Error`
+
+
+Reordering sub resources
+------------------------
+The resources contained within a resource can be reordered using the `ordering` key using a PATCH request on the container.
+
+Use the `obj_id` subkey to specify which resource to reorder.
+The subkey `delta` can be 'top', 'bottom', or a negative or positive integer for moving up or down.
+Reordering resources within a subset of resources can be done using the `subset_ids` subkey. The value has to be in the same order as the server has.
+
+..  http:example:: curl httpie python-requests
+    :request: _json/content_reorder.req
