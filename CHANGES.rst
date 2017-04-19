@@ -4,7 +4,10 @@ Changelog
 1.0a14 (unreleased)
 -------------------
 
-- Nothing changed yet.
+Bugfixes:
+- The inherit flag was the wrong way around.
+  Blocked inherit showed up as non-blocked.
+  [jaroel]
 
 
 1.0a13 (2017-04-18)
