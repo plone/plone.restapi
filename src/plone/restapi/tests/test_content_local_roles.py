@@ -32,6 +32,13 @@ class TestFolderCreate(unittest.TestCase):
         )
         wftool = getToolByName(self.portal, 'portal_workflow')
         wftool.doActionFor(self.portal.folder1, 'publish')
+
+        self.portal.folder1.invokeFactory(
+            'Document',
+            id='doc1',
+            title='My Document'
+        )
+
         transaction.commit()
 
     def _get_ac_local_roles_block(self, obj):
@@ -264,6 +271,46 @@ class TestFolderCreate(unittest.TestCase):
         response = response.json()
         self.assertIn('available_roles', response)
         self.assertIn('Reader', response['available_roles'])
+
+    def test_inherited_global(self):
+        api.user.grant_roles(username=TEST_USER_ID, roles=['Reviewer'])
+        api.user.grant_roles(
+            username=TEST_USER_ID, obj=self.portal.folder1, roles=['Editor']
+        )
+        transaction.commit()
+
+        response = requests.get(
+            self.portal.folder1.doc1.absolute_url() + '/@sharing',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+
+        response = response.json()
+        # find our entry
+        entry = [x for x in response['entries'] if x['id'] == TEST_USER_ID][0]
+
+        self.assertEqual('global', entry['roles']['Reviewer'])
+        self.assertEqual('acquired', entry['roles']['Editor'])
+
+    def test_inherited_global_via_search(self):
+        api.user.create(email='jos@henken.local', username='jos')
+        api.user.grant_roles(username='jos', roles=['Reviewer'])
+        api.user.grant_roles(
+            username='jos', roles=['Editor'], obj=self.portal.folder1
+        )
+        transaction.commit()
+
+        response = requests.get(
+            self.portal.folder1.doc1.absolute_url() + '/@sharing?search=jos',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        response = response.json()
+        # find our entry
+        entry = [x for x in response['entries'] if x['id'] == 'jos'][0]
+
+        self.assertEqual('global', entry['roles']['Reviewer'])
+        self.assertEqual('acquired', entry['roles']['Editor'])
 
     def test_no_serializer_available_returns_501(self):
         # This test unregisters the local_roles adapter. The testrunner can
