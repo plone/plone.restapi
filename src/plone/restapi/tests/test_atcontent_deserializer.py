@@ -226,6 +226,23 @@ class TestATContentDeserializer(unittest.TestCase):
             self.folder.objectIds()
         )
 
+    def test_reorder_subsetids(self):
+        # sanity check, initial situation
+        self.assertEquals(
+            ['doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8', 'doc9'],
+            self.folder.objectIds()
+        )
+
+        data = {'ordering': {'delta': 1, 'obj_id': 'doc8', 'subset_ids': ['doc2', 'doc8', 'doc6']}}  # noqa
+
+        with self.assertRaises(BadRequest) as cm:
+            self.deserialize(body=json.dumps(data), context=self.folder)
+
+        self.assertEquals(
+            u'Client/server ordering mismatch',
+            cm.exception.message
+        )
+
 
 class TestValidationRequest(unittest.TestCase):
 
