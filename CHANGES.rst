@@ -27,6 +27,10 @@ Bugfixes:
 - Don't fetch unnecessary PasswordResetTool in Plone 5.1
   [tomgross]
 
+- Fix the @move endpoint fails to return 403 when the user don't have proper
+  delete permissions over the parent folder
+  [sneridagh]
+
 
 1.0a12 (2017-04-03)
 -------------------
