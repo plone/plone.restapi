@@ -40,5 +40,6 @@ Content-Type: application/json
     "title": "Sharing"
   }, 
   "subjects": [], 
-  "title": "My File"
+  "title": "My File", 
+  "version_id": "current"
 }

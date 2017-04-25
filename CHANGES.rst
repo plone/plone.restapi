@@ -4,7 +4,10 @@ Changelog
 1.0a14 (unreleased)
 -------------------
 
-- Nothing changed yet.
+New Features:
+
+- Add geting old versions of resources to content GET using ?version_id.
+  [jaroel]
 
 
 1.0a13 (2017-04-18)
