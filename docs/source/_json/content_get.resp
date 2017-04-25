@@ -37,5 +37,6 @@ Content-Type: application/json
   "subjects": [], 
   "table_of_contents": null, 
   "text": null, 
-  "title": "My Document"
+  "title": "My Document", 
+  "version_id": "current"
 }

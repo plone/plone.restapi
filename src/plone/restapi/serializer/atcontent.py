@@ -23,22 +23,31 @@ class SerializeToJson(object):
         self.context = context
         self.request = request
 
-    def __call__(self):
-        parent = aq_parent(aq_inner(self.context))
+    def getVersion(self, version_id):
+        if version_id == 'current':
+            return self.context
+        else:
+            repo_tool = getToolByName(self.context, "portal_repository")
+            return repo_tool.retrieve(self.context, int(version_id)).object
+
+    def __call__(self, version_id=None):
+        version_id = 'current' if version_id is None else version_id
+
+        obj = self.getVersion(version_id)
+        parent = aq_parent(aq_inner(obj))
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary)()
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
-            '@id': self.context.absolute_url(),
-            'id': self.context.id,
-            '@type': self.context.portal_type,
+            '@id': obj.absolute_url(),
+            'id': obj.id,
+            '@type': obj.portal_type,
             'parent': parent_summary,
-            'review_state': self._get_workflow_state(),
-            'UID': self.context.UID(),
+            'review_state': self._get_workflow_state(obj),
+            'UID': obj.UID(),
             'layout': self.context.getLayout(),
         }
 
-        obj = self.context
         for field in obj.Schema().fields():
 
             if 'r' not in field.mode or not field.checkPermission('r', obj):
@@ -54,10 +63,10 @@ class SerializeToJson(object):
 
         return result
 
-    def _get_workflow_state(self):
+    def _get_workflow_state(self, obj):
         wftool = getToolByName(self.context, 'portal_workflow')
         review_state = wftool.getInfoFor(
-            ob=self.context, name='review_state', default=None)
+            ob=obj, name='review_state', default=None)
         return review_state
 
 
@@ -71,8 +80,10 @@ class SerializeFolderToJson(SerializeToJson):
                  'sort_on': 'getObjPositionInParent'}
         return query
 
-    def __call__(self):
-        folder_metadata = super(SerializeFolderToJson, self).__call__()
+    def __call__(self, version_id=None):
+        folder_metadata = super(SerializeFolderToJson, self).__call__(
+            version_id=version_id
+        )
         query = self._build_query()
 
         catalog = getToolByName(self.context, 'portal_catalog')

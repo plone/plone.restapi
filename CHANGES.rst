@@ -4,8 +4,15 @@ Changelog
 1.0a14 (unreleased)
 -------------------
 
+New Features:
+
 - Add Dockerfile.
   [timo]
+
+- Add geting old versions of resources to content GET using ?version_id.
+  [jaroel]
+
+Bugfixes:
 
 - Fix the @move endpoint fails to return 403 when the user don't have proper
   delete permissions over the parent folder.
