@@ -4,7 +4,9 @@ Changelog
 1.0a14 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Fix the @move endpoint fails to return 403 when the user don't have proper
+  delete permissions over the parent folder.
+  [sneridagh]
 
 
 1.0a13 (2017-04-18)
@@ -26,10 +28,6 @@ Bugfixes:
 
 - Don't fetch unnecessary PasswordResetTool in Plone 5.1
   [tomgross]
-
-- Fix the @move endpoint fails to return 403 when the user don't have proper
-  delete permissions over the parent folder
-  [sneridagh]
 
 
 1.0a12 (2017-04-03)
