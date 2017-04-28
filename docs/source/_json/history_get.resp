@@ -1,0 +1,36 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  {
+    "action": null, 
+    "actor": {
+      "@id": "http://localhost:55001/plone/@users/test_user_1_", 
+      "fullname": "", 
+      "id": "test_user_1_", 
+      "username": "test-user"
+    }, 
+    "comments": "", 
+    "review_state": "private", 
+    "state_title": "Private", 
+    "time": "2016-10-21T19:00:00+00:00", 
+    "transition_title": "Create", 
+    "type": "workflow"
+  }, 
+  {
+    "action": "Edited", 
+    "actor": {
+      "@id": "http://localhost:55001/plone/@users/test-user", 
+      "fullname": "test-user", 
+      "id": "test-user", 
+      "username": null
+    }, 
+    "comments": null, 
+    "content_url": "http://localhost:55001/plone/front-page/?version_id=0", 
+    "revert_url": "http://localhost:55001/plone/front-page/@history_revert?version_id=0", 
+    "time": 1477076400.0, 
+    "transition_title": "Edited", 
+    "type": "versioning", 
+    "version_id": 0
+  }
+]

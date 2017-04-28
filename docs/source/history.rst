@@ -15,5 +15,5 @@ Listing versions and history of a resource:
 ..  http:example:: curl httpie python-requests
     :request: _json/history_get.req
 
-.. literalinclude:: _json/content_get.resp
+.. literalinclude:: _json/history_get.resp
    :language: http
