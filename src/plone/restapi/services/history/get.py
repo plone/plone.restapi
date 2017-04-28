@@ -4,6 +4,8 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from zope.component.hooks import getSite
 
+from datetime import datetime as dt
+
 
 class HistoryGet(Service):
 
@@ -45,6 +47,11 @@ class HistoryGet(Service):
                 # If a revert_url is present, then CMFEditions has checked our
                 # permissions.
                 item['may_revert'] = bool(item.get('revert_url'))
+
+            # Versioning entries use a timestamp,
+            # workflow ISO formatted string
+            if not isinstance(item['time'], basestring):
+                item['time'] = dt.fromtimestamp(item['time']).isoformat()
 
             # clean up
             for key in unwanted_keys:

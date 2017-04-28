@@ -95,3 +95,10 @@ class TestHistoryEndpoint(unittest.TestCase):
             response.json(),
             {u'message': u'My Document has been reverted to revision 0.'}
         )
+
+    def test_time_field(self):
+        url = '{}/@history'.format(self.doc.absolute_url())
+        response = self.api_session.get(url)
+
+        for item in response.json():
+            self.assertTrue(isinstance(item['time'], basestring))
