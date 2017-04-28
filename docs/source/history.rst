@@ -18,6 +18,17 @@ Listing versions and history of a resource:
 .. literalinclude:: _json/history_get.resp
    :language: http
 
+This following fields are returned:
+  action: the workflow transition id, or 'Edited' for versioning.
+  actor: the user who performed the action. This contains a subobject with the details.
+  comments: a changenote
+  content_url: link to the content endpoint of this specific version.
+  may_revert: true if the user has permission to revert.
+  time: when this action occured in ISO format.
+  transition_title: the workflow transition's title, for 'Edited' for versioning.
+  type: 'workflow' for workflow changes, 'versioning' for editing, or null for content creation.
+  version_id: identifier for this specific version of the resource.
+
 
 PATCH revert historical versions
 --------------------------------
