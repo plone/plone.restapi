@@ -12,6 +12,13 @@
     factory=".get.HistoryGet"
     permission="CMFEditions.AccessPreviousVersions"
     />
+
+  <plone:service
+    method="PATCH"
+    name="@history"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".patch.HistoryPatch"
+    permission="CMFEditions.RevertToPreviousVersions"
     />
 
 </configure>

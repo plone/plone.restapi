@@ -84,3 +84,14 @@ class TestHistoryEndpoint(unittest.TestCase):
                 self.assertEqual(set(item.keys()), set(workflow_keys))
 
             self.assertEqual(set(item['actor'].keys()), set(actor_keys))
+
+    def test_revert(self):
+        url = '{}/@history'.format(self.doc.absolute_url())
+        response = self.api_session.patch(url, json={'version_id': 0})
+        self.assertEqual(response.status_code, 200)
+
+        # My Document is the old title
+        self.assertEqual(
+            response.json(),
+            {u'message': u'My Document has been reverted to revision 0.'}
+        )
