@@ -25,6 +25,7 @@ class HistoryGet(Service):
             'preview_url',
             'actor_home',
             'actorid',
+            'revert_url',
         ]
 
         for item in history:
@@ -41,10 +42,9 @@ class HistoryGet(Service):
                     item['version_id']
                 )
 
-                item['revert_url'] = '{}/@history_revert?version_id={}'.format(
-                    self.context.absolute_url(),
-                    item['version_id']
-                )
+                # If a revert_url is present, then CMFEditions has checked our
+                # permissions.
+                item['may_revert'] = bool(item.get('revert_url'))
 
             # clean up
             for key in unwanted_keys:

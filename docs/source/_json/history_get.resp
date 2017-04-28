@@ -27,7 +27,7 @@ Content-Type: application/json
     }, 
     "comments": null, 
     "content_url": "http://localhost:55001/plone/front-page/?version_id=0", 
-    "revert_url": "http://localhost:55001/plone/front-page/@history_revert?version_id=0", 
+    "may_revert": true, 
     "time": 1477076400.0, 
     "transition_title": "Edited", 
     "type": "versioning", 

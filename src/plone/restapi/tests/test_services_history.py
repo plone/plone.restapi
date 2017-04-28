@@ -65,7 +65,7 @@ class TestHistoryEndpoint(unittest.TestCase):
 
         history_keys = main_keys + [
             'content_url',
-            'revert_url',
+            'may_revert',
             'version_id'
         ]
 
