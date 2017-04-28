@@ -32,11 +32,10 @@ def revert(context, version_id):
             )
             pr.save(obj=context, comment=commit_msg)
         except FileTooLargeToVersionError:
-            raise BadRequest({
-                'message': u'The most current revision of the file could not '
-                            'be saved before reverting because the file is '
-                            'too large.'
-            })
+            error_msg = 'The most current revision of the file could not ' + \
+                        'be saved before reverting because the file is ' + \
+                        'too large.'
+            raise BadRequest({'errors': error_msg, })
 
     msg = u'{} has been reverted to revision {}.'.format(title, version_id)
     return {'message': msg}
