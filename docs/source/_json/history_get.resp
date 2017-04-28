@@ -13,7 +13,7 @@ Content-Type: application/json
     "comments": "", 
     "review_state": "private", 
     "state_title": "Private", 
-    "time": "2016-10-21T19:00:00+00:00", 
+    "time": "2016-10-21T19:00:00", 
     "transition_title": "Create", 
     "type": "workflow"
   }, 
@@ -28,7 +28,7 @@ Content-Type: application/json
     "comments": null, 
     "content_url": "http://localhost:55001/plone/front-page/?version_id=0", 
     "may_revert": true, 
-    "time": 1477076400.0, 
+    "time": "2016-10-21T19:00:00", 
     "transition_title": "Edited", 
     "type": "versioning", 
     "version_id": 0
