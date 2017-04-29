@@ -39,7 +39,7 @@ class HistoryGet(Service):
             }
 
             if item['type'] == 'versioning':
-                item['content_url'] = '{}/?version_id={}'.format(
+                item['@id'] = '{}/?version_id={}'.format(
                     self.context.absolute_url(),
                     item['version_id']
                 )
