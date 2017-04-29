@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.services import Service
+from zope.deprecation import deprecate
 from zope.component import getMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -66,6 +67,10 @@ class ComponentsGet(Service):
 
         return self._wrap_component_items(items, component_id)
 
+    @deprecate(
+        'The "@components" endpoint is deprecated. Please call the '
+        '"@breadcrumbs" and the "@navigation" endpoints on the site root.'
+    )
     def reply(self):
         components = []
         for component_id in self._component_ids:
