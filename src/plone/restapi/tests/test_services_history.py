@@ -102,3 +102,33 @@ class TestHistoryEndpoint(unittest.TestCase):
 
         for item in response.json():
             self.assertTrue(isinstance(item['time'], basestring))
+
+    def test_get_historical_link(self):
+        # The @id field should link to @history/version.
+        response = self.api_session.get(self.endpoint_url)
+        data = response.json()
+
+        for item in data:
+            if item['type'] == 'versioning':
+                self.assertTrue(
+                    item['@id'].endswith('@history/' + str(item['version']))
+                )
+            else:
+                self.assertNotIn('@id', item.keys())
+
+    def test_explicit_current(self):
+        # Does version=current get the current version
+        url = self.doc.absolute_url() + '/@history/current'
+        response = self.api_session.get(url)
+        self.assertEqual(response.json()['title'], 'Current version')
+
+    def test_previous_version(self):
+        # Does version=0 get the older version?
+        url = self.doc.absolute_url() + '/@history/0'
+        response = self.api_session.get(url)
+        self.assertEqual(response.json()['title'], 'My Document')
+
+    def test_no_sharing(self):
+        url = self.doc.absolute_url() + '/@history/0'
+        response = self.api_session.get(url)
+        self.assertNotIn('sharing', response.json())

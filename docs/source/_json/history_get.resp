@@ -18,7 +18,7 @@ Content-Type: application/json
     "type": "workflow"
   }, 
   {
-    "@id": "http://localhost:55001/plone/front-page/?version_id=0", 
+    "@id": "http://localhost:55001/plone/front-page/@history/0", 
     "action": "Edited", 
     "actor": {
       "@id": "http://localhost:55001/plone/@users/test-user", 

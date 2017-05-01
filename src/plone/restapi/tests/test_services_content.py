@@ -34,23 +34,6 @@ class TestHistoryVersioning(unittest.TestCase):
 
         transaction.commit()
 
-    def test_default_current(self):
-        # If we specify no version_id, do we get the current version?
-        response = self.api_session.get(self.doc.absolute_url())
-        self.assertEqual(response.json()['title'], 'Current version')
-
-    def test_explicit_current(self):
-        # Does version_id=current get the current version
-        url = self.doc.absolute_url() + '?version_id=current'
-        response = self.api_session.get(url)
-        self.assertEqual(response.json()['title'], 'Current version')
-
-    def test_previous_version(self):
-        # Does version_id=0 get the older version?
-        url = self.doc.absolute_url() + '?version_id=0'
-        response = self.api_session.get(url)
-        self.assertEqual(response.json()['title'], 'My Document')
-
     def test_response(self):
         response = self.api_session.get(self.doc.absolute_url())
         self.assertIn('version', response.json())

@@ -1,15 +1,37 @@
 # -*- coding: utf-8 -*-
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
+from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
+from zope.interface import implementer
+from zope.publisher.interfaces import IPublishTraverse
 
 from datetime import datetime as dt
 
 
+@implementer(IPublishTraverse)
 class HistoryGet(Service):
 
+    def __init__(self, context, request):
+        super(HistoryGet, self).__init__(context, request)
+        self.version = None
+
+    def publishTraverse(self, request, name):
+        self.version = name
+        return self
+
     def reply(self):
+        # Traverse to historical version
+        if self.version:
+            serializer = queryMultiAdapter(
+                (self.context, self.request), ISerializeToJson
+            )
+            data = serializer(version=self.version)
+            return data
+
+        # Listing historical data
         content_history_viewlet = ContentHistoryViewlet(
             self.context,
             self.request,
@@ -40,8 +62,8 @@ class HistoryGet(Service):
             }
 
             if item['type'] == 'versioning':
-                item['@id'] = '{}/?version_id={}'.format(
                 item['version'] = item['version_id']
+                item['@id'] = '{}/@history/{}'.format(
                     self.context.absolute_url(),
                     item['version']
                 )

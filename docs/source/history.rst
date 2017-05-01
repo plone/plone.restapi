@@ -31,6 +31,15 @@ This following fields are returned:
 - version: identifier for this specific version of the resource.
 
 
+GET historical versions
+-----------------------
+
+Older versions of resources can be retrieved by append the `version` to the @history endpoint url.
+
+..  http:example:: curl httpie python-requests
+    :request: _json/history_get_versioned.req
+
+
 PATCH revert historical versions
 --------------------------------
 
