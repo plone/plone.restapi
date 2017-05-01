@@ -143,3 +143,9 @@ class TestATContentSerializer(unittest.TestCase):
                     'review_state': 'private'
                 },
             ])
+
+    def test_get_layout(self):
+        current_layout = self.doc1.getLayout()
+        obj = self.serialize(self.doc1)
+        self.assertIn('layout', obj)
+        self.assertEquals(current_layout, obj['layout'])

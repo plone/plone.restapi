@@ -35,6 +35,7 @@ Content-Type: application/json
   ], 
   "items_total": 2, 
   "language": "", 
+  "layout": "listing_view", 
   "modified": "2016-01-21T07:24:11+00:00", 
   "nextPreviousEnabled": false, 
   "parent": {

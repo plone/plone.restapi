@@ -116,3 +116,9 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = self.serialize()
         self.assertIn(u'test_read_permission_field', obj)
         self.assertEqual(u'Secret Stuff', obj[u'test_read_permission_field'])
+
+    def test_get_layout(self):
+        current_layout = self.portal.doc1.getLayout()
+        obj = self.serialize()
+        self.assertIn('layout', obj)
+        self.assertEquals(current_layout, obj['layout'])

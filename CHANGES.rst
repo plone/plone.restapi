@@ -1,10 +1,43 @@
 Changelog
 =========
 
-1.0a12 (unreleased)
+1.0a14 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Fix the @move endpoint fails to return 403 when the user don't have proper
+  delete permissions over the parent folder.
+  [sneridagh]
+
+
+1.0a13 (2017-04-18)
+-------------------
+
+New Features:
+
+- Add support for setting/modifying 'layout' on DX and AT content endpoints.
+  [jaroel]
+
+- Add support for getting the defined layouts on the root types endpoint.
+  [jaroel]
+
+Bugfixes:
+
+- Add the title to the workflow history in the @workflow endpoint.
+  This fixes #279.
+  [sneridagh]
+
+- Don't fetch unnecessary PasswordResetTool in Plone 5.1
+  [tomgross]
+
+
+1.0a12 (2017-04-03)
+-------------------
+
+Bugfixes:
+
+- Handle special case when user @move content that cannot delete returning
+  proper 403
+  [sneridagh]
 
 
 1.0a11 (2017-03-24)

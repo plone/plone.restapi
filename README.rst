@@ -11,7 +11,7 @@
 .. image:: https://readthedocs.org/projects/pip/badge/
   :target: https://plonerestapi.readthedocs.org
 
-.. image:: https://img.shields.io/pypi/v/nine.svg
+.. image:: https://img.shields.io/pypi/v/plone.restapi.svg
   :target: https://pypi.python.org/pypi/plone.restapi
 
 

@@ -32,7 +32,7 @@ class DeserializeFromJson(object):
         self.sm = getSecurityManager()
         self.permission_cache = {}
 
-    def __call__(self, validate_all=False):
+    def __call__(self, validate_all=False):  # noqa: ignore=C901
         data = json_body(self.request)
 
         modified = False
@@ -104,6 +104,12 @@ class DeserializeFromJson(object):
 
         if errors:
             raise BadRequest(errors)
+
+        # We'll set the layout after the validation and and even if there
+        # are no other changes.
+        if 'layout' in data:
+            layout = data['layout']
+            self.context.setLayout(layout)
 
         if modified:
             notify(ObjectModifiedEvent(self.context))

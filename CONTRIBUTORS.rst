@@ -7,3 +7,8 @@ Note:  place names and roles of the people who contribute to this package
 - Víctor Fernández de Alba
 - Paul Roeland
 - Mikel Larreategi
+- Eric Brehault
+- Andreas Zeidler
+- Carsten Senger
+- Tom Gross
+- Roel Bruggink

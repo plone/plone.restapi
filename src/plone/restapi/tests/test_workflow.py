@@ -33,6 +33,7 @@ class TestWorkflowInfo(TestCase):
         history = info['history']
         self.assertEqual(3, len(history))
         self.assertEqual('published', history[-1][u'review_state'])
+        self.assertEqual('Published', history[-1][u'title'])
 
     def test_workflow_info_includes_transitions(self):
         wfinfo = getMultiAdapter((self.doc1, self.request),
