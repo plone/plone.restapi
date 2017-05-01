@@ -4,6 +4,9 @@ Changelog
 1.0a14 (unreleased)
 -------------------
 
+- Add Dockerfile.
+  [timo]
+
 - Fix the @move endpoint fails to return 403 when the user don't have proper
   delete permissions over the parent folder.
   [sneridagh]
