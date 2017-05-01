@@ -1,11 +1,22 @@
 Control Panels
 ==============
 
-List All Control Panels
------------------------
+Control panels in Plone allow you to configure the global site setup of a
+Plone site. The @controlpanels endpoint in plone.restapi allows you to list
+all existing control panels in a Plone site and to retrieve or edit the
+settings of a specific control panel.
+
+Most of the settings in the Plone control panels are based on plone.registry (since Plone 5.x). Therefore you can also use the @registry endpoint to
+retrieve or manipulate site settings. The @controlpanels endpoint just gives
+developers are more a convenience way of accessing the settings and makes it
+easier to render control panels on the front-end.
+
+
+Listing Control Panels
+----------------------
 
 A list of all existing control panels in the portal can be retrieved by
-sending a GET request on the 'controlpanels' endpoint::
+sending a GET request to the @controlpanels endpoint::
 
     GET /plone/@controlpanels HTTP/1.1
     Accept: application/json
@@ -27,6 +38,7 @@ Response::
         "title": "Content Rules",
         "group": "Content",
       },
+      ...
     ]
 
 This following fields are returned:
@@ -125,8 +137,9 @@ Response (schema expanded)::
 RFC: We can just always embed the JSON schema by default, or re-use the
 expansion mechanism.
 
-- PRO expansion: re-use existing pattern, can be used the same way for content.
+- PRO expansion: re-use existing pattern, can be used the same way for content
 - CON expansion: more complex than just embedding the schema
+- CON expansion: "@controlpanels/editing-controlpanel/@schema" might be hard to implement
 - PRO simple: simple
 - CON simple: introducing a new pattern
 
