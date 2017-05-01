@@ -85,6 +85,8 @@ class TestHistoryEndpoint(unittest.TestCase):
 
             self.assertEqual(set(item['actor'].keys()), set(actor_keys))
 
+            self.assertIsNotNone(item['action'])
+
     def test_revert(self):
         url = '{}/@history'.format(self.doc.absolute_url())
         response = self.api_session.patch(url, json={'version': 0})

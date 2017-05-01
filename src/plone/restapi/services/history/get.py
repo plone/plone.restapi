@@ -77,6 +77,11 @@ class HistoryGet(Service):
             if not isinstance(item['time'], basestring):
                 item['time'] = dt.fromtimestamp(item['time']).isoformat()
 
+            # The create event has an empty 'action', but we like it to say
+            # 'Create', alike the transition_title
+            if item['action'] is None:
+                item['action'] = 'Create'
+
             # clean up
             for key in unwanted_keys:
                 if key in item:

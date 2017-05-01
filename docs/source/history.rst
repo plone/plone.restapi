@@ -20,13 +20,13 @@ Listing versions and history of a resource:
 
 This following fields are returned:
 
-- action: the workflow transition id, or 'Edited' for versioning.
+- action: the workflow transition id, 'Edited' for versioning, or 'Create' for initial state.
 - actor: the user who performed the action. This contains a subobject with the details.
 - comments: a changenote
 - @id: link to the content endpoint of this specific version.
 - may_revert: true if the user has permission to revert.
 - time: when this action occured in ISO format.
-- transition_title: the workflow transition's title, for 'Edited' for versioning.
+- transition_title: the workflow transition's title, 'Edited' for versioning, or 'Create' for initial state.
 - type: 'workflow' for workflow changes, 'versioning' for editing, or null for content creation.
 - version: identifier for this specific version of the resource.
 
