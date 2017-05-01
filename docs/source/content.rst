@@ -111,8 +111,6 @@ After a successful POST, we can access the resource by sending a GET request to 
 ..  http:example:: curl httpie python-requests
     :request: _json/content_get.req
 
-.. _content_get_version:
-
 Reading an older version of a Resource with GET
 -----------------------------------------------
 
