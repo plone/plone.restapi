@@ -33,17 +33,17 @@ class SerializeToJson(object):
 
         self.permission_cache = {}
 
-    def getVersion(self, version_id):
-        if version_id == 'current':
+    def getVersion(self, version):
+        if version == 'current':
             return self.context
         else:
             repo_tool = getToolByName(self.context, "portal_repository")
-            return repo_tool.retrieve(self.context, int(version_id)).object
+            return repo_tool.retrieve(self.context, int(version)).object
 
-    def __call__(self, version_id=None):
-        version_id = 'current' if version_id is None else version_id
+    def __call__(self, version=None):
+        version = 'current' if version is None else version
 
-        obj = self.getVersion(version_id)
+        obj = self.getVersion(version)
         parent = aq_parent(aq_inner(obj))
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary)()
@@ -57,7 +57,7 @@ class SerializeToJson(object):
             'modified': json_compatible(obj.modified()),
             'review_state': self._get_workflow_state(obj),
             'UID': obj.UID(),
-            'version_id': version_id,
+            'version': version,
             'layout': self.context.getLayout(),
         }
 
@@ -111,9 +111,9 @@ class SerializeFolderToJson(SerializeToJson):
                  'sort_on': 'getObjPositionInParent'}
         return query
 
-    def __call__(self, version_id=None):
+    def __call__(self, version=None):
         folder_metadata = super(SerializeFolderToJson, self).__call__(
-            version_id=version_id
+            version=version
         )
 
         query = self._build_query()

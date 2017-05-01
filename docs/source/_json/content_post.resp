@@ -35,5 +35,5 @@ Location: http://localhost:55001/plone/folder/my-document
   "table_of_contents": null, 
   "text": null, 
   "title": "My Document", 
-  "version_id": "current"
+  "version": "current"
 }

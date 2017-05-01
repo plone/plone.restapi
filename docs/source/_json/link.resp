@@ -36,5 +36,5 @@ Content-Type: application/json
   }, 
   "subjects": [], 
   "title": "My Link", 
-  "version_id": "current"
+  "version": "current"
 }

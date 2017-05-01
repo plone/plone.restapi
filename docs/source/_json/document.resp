@@ -42,5 +42,5 @@ Content-Type: application/json
     "encoding": "utf-8"
   }, 
   "title": "Welcome to Plone", 
-  "version_id": "current"
+  "version": "current"
 }

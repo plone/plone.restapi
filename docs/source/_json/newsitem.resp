@@ -87,5 +87,5 @@ Content-Type: application/json
     "encoding": "utf-8"
   }, 
   "title": "My News Item", 
-  "version_id": "current"
+  "version": "current"
 }

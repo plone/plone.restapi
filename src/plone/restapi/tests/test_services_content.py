@@ -53,4 +53,4 @@ class TestHistoryVersioning(unittest.TestCase):
 
     def test_response(self):
         response = self.api_session.get(self.doc.absolute_url())
-        self.assertIn('version_id', response.json())
+        self.assertIn('version', response.json())

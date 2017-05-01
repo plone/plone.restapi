@@ -24,9 +24,9 @@ class SerializeSiteRootToJson(object):
                  'sort_on': 'getObjPositionInParent'}
         return query
 
-    def __call__(self, version_id=None):
-        version_id = 'current' if version_id is None else version_id
-        if version_id != 'current':
+    def __call__(self, version=None):
+        version = 'current' if version is None else version
+        if version != 'current':
             return {}
 
         query = self._build_query()

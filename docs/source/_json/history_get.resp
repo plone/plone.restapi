@@ -31,6 +31,6 @@ Content-Type: application/json
     "time": "2016-10-21T19:00:00", 
     "transition_title": "Edited", 
     "type": "versioning", 
-    "version_id": 0
+    "version": 0
   }
 ]

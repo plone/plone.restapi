@@ -72,5 +72,5 @@ Content-Type: application/json
   "subjects": [], 
   "text": null, 
   "title": "My Collection", 
-  "version_id": "current"
+  "version": "current"
 }

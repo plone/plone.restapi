@@ -41,5 +41,5 @@ Content-Type: application/json
   }, 
   "subjects": [], 
   "title": "My File", 
-  "version_id": "current"
+  "version": "current"
 }

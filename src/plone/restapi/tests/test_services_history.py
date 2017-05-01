@@ -66,7 +66,7 @@ class TestHistoryEndpoint(unittest.TestCase):
         history_keys = main_keys + [
             '@id',
             'may_revert',
-            'version_id'
+            'version'
         ]
 
         workflow_keys = main_keys + [
@@ -87,7 +87,7 @@ class TestHistoryEndpoint(unittest.TestCase):
 
     def test_revert(self):
         url = '{}/@history'.format(self.doc.absolute_url())
-        response = self.api_session.patch(url, json={'version_id': 0})
+        response = self.api_session.patch(url, json={'version': 0})
         self.assertEqual(response.status_code, 200)
 
         # My Document is the old title

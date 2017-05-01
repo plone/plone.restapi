@@ -28,6 +28,7 @@ class HistoryGet(Service):
             'actor_home',
             'actorid',
             'revert_url',
+            'version_id',
         ]
 
         for item in history:
@@ -40,8 +41,9 @@ class HistoryGet(Service):
 
             if item['type'] == 'versioning':
                 item['@id'] = '{}/?version_id={}'.format(
+                item['version'] = item['version_id']
                     self.context.absolute_url(),
-                    item['version_id']
+                    item['version']
                 )
 
                 # If a revert_url is present, then CMFEditions has checked our

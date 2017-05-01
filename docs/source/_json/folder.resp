@@ -53,5 +53,5 @@ Content-Type: application/json
   }, 
   "subjects": [], 
   "title": "My Folder", 
-  "version_id": "current"
+  "version": "current"
 }

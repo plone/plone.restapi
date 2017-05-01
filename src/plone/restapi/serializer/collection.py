@@ -14,9 +14,9 @@ from zope.interface import Interface
 @adapter(ICollection, Interface)
 class SerializeCollectionToJson(SerializeToJson):
 
-    def __call__(self, version_id=None):
+    def __call__(self, version=None):
         collection_metadata = super(SerializeCollectionToJson, self).__call__(
-            version_id=version_id,
+            version=version,
         )
         results = self.context.results(batch=False)
         batch = HypermediaBatch(self.request, results)

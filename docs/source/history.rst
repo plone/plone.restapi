@@ -28,13 +28,13 @@ This following fields are returned:
 - time: when this action occured in ISO format.
 - transition_title: the workflow transition's title, for 'Edited' for versioning.
 - type: 'workflow' for workflow changes, 'versioning' for editing, or null for content creation.
-- version_id: identifier for this specific version of the resource.
+- version: identifier for this specific version of the resource.
 
 
 PATCH revert historical versions
 --------------------------------
 
-Reverting to older versions of a resource can be done by issueing a PATCH request with a version_id.
+Reverting to older versions of a resource can be done by issueing a PATCH request with a version.
 
 ..  http:example:: curl httpie python-requests
     :request: _json/history_revert.req

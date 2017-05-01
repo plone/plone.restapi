@@ -12,13 +12,13 @@ class HistoryPatch(Service):
 
     def reply(self):
         body = json_body(self.request)
-        message = revert(self.context, body['version_id'])
+        message = revert(self.context, body['version'])
         return json_compatible(message)
 
 
-def revert(context, version_id):
+def revert(context, version):
     pr = getToolByName(context, 'portal_repository')
-    pr.revert(context, version_id)
+    pr.revert(context, version)
 
     title = context.title_or_id()
     if not isinstance(title, unicode):
@@ -28,7 +28,7 @@ def revert(context, version_id):
         try:
             commit_msg = context.translate(
                 _(u'Reverted to revision ${version}',
-                  mapping={'version': version_id})
+                  mapping={'version': version})
             )
             pr.save(obj=context, comment=commit_msg)
         except FileTooLargeToVersionError:
@@ -37,5 +37,5 @@ def revert(context, version_id):
                         'too large.'
             raise BadRequest({'errors': error_msg, })
 
-    msg = u'{} has been reverted to revision {}.'.format(title, version_id)
+    msg = u'{} has been reverted to revision {}.'.format(title, version)
     return {'message': msg}

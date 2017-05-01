@@ -80,5 +80,5 @@ Content-Type: application/json
   }, 
   "subjects": [], 
   "title": "My Image", 
-  "version_id": "current"
+  "version": "current"
 }
