@@ -4,7 +4,8 @@ Changelog
 1.0a15 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Render rich text fields as in Plone. Fixes #302
+  [erral]
 
 
 1.0a14 (2017-05-02)
