@@ -1,6 +1,8 @@
 language: python
 python: 2.7
-sudo: true
+sudo: required
+services:
+  - docker
 cache:
   pip: true
   directories:
@@ -11,7 +13,10 @@ env:
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
   - virtualenv .
-  - sudo apt-get install docker.io
+  - sudo apt install python2.7 python2.7-dev
+  - sudo apt install install python-setuptools build-essential libssl-dev libxml2-dev libxslt1-dev libbz2-dev libjpeg62-dev
+  - sudo apt install python-setuptools python-dev build-essential libssl-dev libxml2-dev libxslt1-dev libbz2-dev libjpeg62-dev
+  - sudo apt install git libreadline-dev wv poppler-utils
   - bin/pip install -r requirements.txt
 install:
   - sed -ie "s#plone-x.x.x.cfg#plone-$PLONE_VERSION.cfg#" travis.cfg
