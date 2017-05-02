@@ -4,8 +4,15 @@ Changelog
 1.0a14 (unreleased)
 -------------------
 
+New Features:
+
 - Add Dockerfile.
   [timo]
+
+- Add @history endpoint.
+  [jaroel]
+
+Bugfixes:
 
 - Fix the @move endpoint fails to return 403 when the user don't have proper
   delete permissions over the parent folder.

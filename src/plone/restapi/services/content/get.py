@@ -18,7 +18,7 @@ class ContentGet(Service):
             self.request.response.setStatus(501)
             return dict(error=dict(message='No serializer available.'))
 
-        data = serializer()
+        data = serializer(version=self.request.get('version'))
         if IRoleManager.providedBy(self.context):
             data['sharing'] = {
                 '@id': '{}/@sharing'.format(self.context.absolute_url()),

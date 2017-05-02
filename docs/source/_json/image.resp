@@ -79,5 +79,6 @@ Content-Type: application/json
     "title": "Sharing"
   }, 
   "subjects": [], 
-  "title": "My Image"
+  "title": "My Image", 
+  "version": "current"
 }
