@@ -20,22 +20,6 @@ in the reponse of any content GET request::
   {
     "@id": "http://localhost:55001/plone/front-page",
     "@type": "Document",
-    "@components": {
-      "breadcrumbs": "http://localhost:55001/plone/front-page/@breadcrumbs",
-      "navigation": "http://localhost:55001/plone/front-page/@navigation",
-      "schema": "http://localhost:55001/plone/front-page/@schema",
-      "workflow": "http://localhost:55001/plone/front-page/@workflow"
-    },
-    "UID": "1f699ffa110e45afb1ba502f75f7ec33",
-    "title": "Welcome to Plone",
-    ...
-  }
-
-Alternative::
-
-  {
-    "@id": "http://localhost:55001/plone/front-page",
-    "@type": "Document",
     "@components": [
         {"@id": "http://localhost:55001/plone/front-page/@breadcrumbs"},
         {"@id": "http://localhost:55001/plone/front-page/@navigation"},
@@ -46,8 +30,6 @@ Alternative::
     "title": "Welcome to Plone",
     ...
   }
-
-(pro: same structure as expanded, con: hard to differentiate from expanded version)
 
 In order to expand and embed one or more components, use the "expand" GET 
 parameter and provide either a single component or a comma-separated list
