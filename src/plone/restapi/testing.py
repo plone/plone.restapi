@@ -32,6 +32,14 @@ import re
 
 import requests
 import collective.MockMailHost
+import pkg_resources
+
+
+try:
+    pkg_resources.get_distribution('plone.app.multilingual')
+    PAM_INSTALLED = True
+except pkg_resources.DistributionNotFound:
+    PAM_INSTALLED = False
 
 
 def set_available_languages():
