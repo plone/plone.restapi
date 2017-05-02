@@ -9,11 +9,9 @@ New Features:
 - Add Dockerfile.
   [timo]
 
-- Add geting old versions of resources to content GET using @history/[version].
+- Add @history endpoint.
   [jaroel]
 
-- Revert to older versions of resources using PATCH @history.
-  [jaroel]
 
 Bugfixes:
 
