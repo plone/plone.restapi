@@ -1,14 +1,12 @@
 History
 =======
 
-The history and versioning information is exposed using the @history endpoint.
-It lists the historical versions of the content.
-
-See :ref:`content_get_version` for documentation on reading older versions of a resource.
+The @history endpoint exposes history and versioning information on previous
+versions of the content. Each change or workflow change on a content object or file is listed. It also allows to revert to a previous version of the file.
 
 
-GET Resource history
---------------------
+Listing the History of a Content Object
+---------------------------------------
 
 Listing versions and history of a resource:
 
@@ -31,19 +29,20 @@ This following fields are returned:
 - version: identifier for this specific version of the resource.
 
 
-GET historical versions
------------------------
+Get a Historical Version
+------------------------
 
-Older versions of resources can be retrieved by append the `version` to the @history endpoint url.
+Older versions of a resource can be retrieved by appending `version` to the @history endpoint url.
 
 ..  http:example:: curl httpie python-requests
     :request: _json/history_get_versioned.req
 
 
-PATCH revert historical versions
---------------------------------
+Revert to a Historical Version
+------------------------------
 
-Reverting to older versions of a resource can be done by issueing a PATCH request with a version.
+Reverting to an older versions of a resource can be done by sending a PATCH request to the @history endpoint and appending the version you want to revert
+to.
 
 ..  http:example:: curl httpie python-requests
     :request: _json/history_revert.req
