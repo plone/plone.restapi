@@ -138,6 +138,9 @@ Bugfixes:
 
 New Features:
 
+- Add @translations endpoint
+  [erral]
+
 - Reorder children in a item using the content endpoint.
   [jaroel]
 
