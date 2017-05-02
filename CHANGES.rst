@@ -6,9 +6,6 @@ Changelog
 
 New Features:
 
-- Add Dockerfile.
-  [timo]
-
 - Add @history endpoint.
   [jaroel]
 
