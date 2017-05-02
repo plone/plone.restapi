@@ -1,8 +1,6 @@
 language: python
 python: 2.7
-sudo: false
-services:
-  - docker
+sudo: true
 cache:
   pip: true
   directories:
@@ -13,6 +11,7 @@ env:
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
   - virtualenv .
+  - sudo apt-get install docker.io
   - bin/pip install -r requirements.txt
 install:
   - sed -ie "s#plone-x.x.x.cfg#plone-$PLONE_VERSION.cfg#" travis.cfg
