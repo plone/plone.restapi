@@ -17,9 +17,9 @@ install:
   - bin/buildout -N -t 3 -c travis.cfg
 script:
   - bin/code-analysis
-  - bin/sphinxbuilder
   - bin/test
   - bin/test-no-uncommitted-doc-changes
+  - bin/sphinxbuilder
 after_success:
   - bin/test-coverage
   - bin/createcoverage
