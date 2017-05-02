@@ -12,7 +12,6 @@ New Features:
 - Add @history endpoint.
   [jaroel]
 
-
 Bugfixes:
 
 - Fix the @move endpoint fails to return 403 when the user don't have proper
