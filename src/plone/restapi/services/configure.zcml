@@ -8,6 +8,7 @@
   <include package=".breadcrumbs"/>
   <include package=".components"/>
   <include package=".content"/>
+  <include package=".controlpanels" />
   <include package=".copymove"/>
   <include package=".discussion"/>
   <include package=".groups"/>

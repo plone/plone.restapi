@@ -1,0 +1,23 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <plone:service
+    method="GET"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".get.ControlpanelsGet"
+    name="@controlpanels"
+    permission="plone.app.controlpanel.Overview"
+    />
+
+  <adapter
+    factory="plone.restapi.controlpanels.EditingControlpanel"
+    name="editing"
+  />
+
+  <adapter
+    factory="plone.restapi.controlpanels.MailControlpanel"
+    name="mail"
+  />
+
+</configure>

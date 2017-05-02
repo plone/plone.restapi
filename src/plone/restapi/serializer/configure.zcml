@@ -74,4 +74,7 @@
     <adapter factory=".discussion.ConversationSerializer" />
     <adapter factory=".discussion.CommentSerializer" />
 
+    <adapter factory=".controlpanels.ControlpanelSerializeToJson" />
+    <adapter factory=".controlpanels.ControlpanelSummarySerializeToJson" />
+
 </configure>
