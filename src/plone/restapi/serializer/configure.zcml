@@ -77,4 +77,9 @@
     <adapter factory=".controlpanels.ControlpanelSerializeToJson" />
     <adapter factory=".controlpanels.ControlpanelSummarySerializeToJson" />
 
+    <configure zcml:condition="have plone-5">
+        <adapter factory=".controlpanels.ControlpanelSerializeToJson" />
+        <adapter factory=".controlpanels.ControlpanelSummarySerializeToJson" />
+    </configure>
+
 </configure>
