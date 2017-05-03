@@ -56,7 +56,6 @@ def get_jsonschema_for_controlpanel(controlpanel, context, request, excluded_fie
 
     return {
         'type': 'object',
-        'title': utils.translate(controlpanel.title, context=utils.getRequest()),
         'properties': properties,
         'required': required,
         'fieldsets': utils.get_fieldset_infos(fieldsets),
