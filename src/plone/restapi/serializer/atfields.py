@@ -33,8 +33,6 @@ class DefaultFieldSerializer(object):
         self.field = field
 
     def __call__(self):
-        # accessor = self.field.getEditAccessor(self.context)
-        # if accessor is None:
         accessor = self.field.getAccessor(self.context)
         return json_compatible(accessor())
 
