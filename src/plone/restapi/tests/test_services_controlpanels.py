@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
