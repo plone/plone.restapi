@@ -12,6 +12,9 @@ developers are more a convenience way of accessing the settings and makes it
 easier to render control panels on the front-end.
 
 
+.. note:: This is currently only implemented for Plone 5.
+
+
 Listing Control Panels
 ----------------------
 
