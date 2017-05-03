@@ -29,5 +29,7 @@
     <adapter factory=".atfields.FileFieldDeserializer" />
     <adapter factory=".atfields.ReferenceFieldDeserializer" />
   </configure>
+  
+  <adapter factory=".controlpanels.ControlpanelDeserializeFromJson" />
 
 </configure>

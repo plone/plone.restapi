@@ -10,6 +10,14 @@
     permission="plone.app.controlpanel.Overview"
     />
 
+  <plone:service
+    method="PATCH"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".patch.ControlpanelsPatch"
+    name="@controlpanels"
+    permission="plone.app.controlpanel.Overview"
+    />
+
   <adapter
     factory="plone.restapi.controlpanels.EditingControlpanel"
     name="editing"

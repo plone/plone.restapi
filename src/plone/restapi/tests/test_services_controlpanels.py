@@ -46,3 +46,33 @@ class TestControlpanelsEndpoint(unittest.TestCase):
         for item in response.json():
             response = self.api_session.get(item['@id'])
             self.assertEqual(200, response.status_code)
+
+    def test_update(self):
+        # get current settings, switch them and check if it changed
+        response = self.api_session.get('/@controlpanels/editing')
+        old_data = response.json()['data']
+
+        # switch values and set
+        new_values = {
+            'ext_editor': not old_data['ext_editor'],
+            'lock_on_ttw_edit': not old_data['lock_on_ttw_edit']
+        }
+        response = self.api_session.patch(
+            '/@controlpanels/editing', json=new_values
+        )
+
+        # check if the values changed
+        response = self.api_session.get('/@controlpanels/editing')
+        self.assertNotEqual(response.json(), old_data)
+
+    def test_update_all(self):
+        # make sure all define controlpanels deserialize
+        response = self.api_session.get('/@controlpanels')
+        for item in response.json():
+            response = self.api_session.get(item['@id'])
+            # store the outputted data
+            response = self.api_session.patch(
+               '/@controlpanels/editing',
+               json=response.json()['data']
+            )
+            self.assertEqual(200, response.status_code)
