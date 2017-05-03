@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.controlpanels import IControlpanel
-from plone.restapi.interfaces import IJsonCompatible
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.services import Service
-from Products.CMFCore.utils import getToolByName
 from zope.component import getAdapters
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
