@@ -827,6 +827,7 @@ class TestTraversal(unittest.TestCase):
         )
         save_request_and_response_for_docs('sharing_folder_post', response)
 
+<< << << < HEAD
     def test_documentation_sharing_search(self):
         self.portal.invokeFactory('Folder', id='folder')
         self.portal.folder.invokeFactory('Document', id='doc')
@@ -1204,3 +1205,15 @@ class TestCommenting(unittest.TestCase):
             '/front-page?expand=breadcrumbs,workflow'
         )
         save_request_and_response_for_docs('expansion', response)
+
+    def test_controlpanels_get_listing(self):
+        response = self.api_session.get(
+            '/@controlpanels'
+        )
+        save_request_and_response_for_docs('controlpanels_get', response)
+
+    def test_controlpanels_get_item(self):
+        response = self.api_session.get(
+            '/@controlpanels/editing'
+        )
+        save_request_and_response_for_docs('controlpanels_get_item', response)
