@@ -55,6 +55,13 @@ class TestControlpanelsEndpoint(unittest.TestCase):
             response = self.api_session.get(item['@id'])
             self.assertEqual(200, response.status_code)
 
+    def test_patch_needs_parameter(self):
+        response = self.api_session.patch('/@controlpanels')
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            'Missing parameter controlpanelname', response.json()['message']
+        )
+
     def test_update(self):
         # get current settings, switch them and check if it changed
         response = self.api_session.get('/@controlpanels/editing')
@@ -74,13 +81,41 @@ class TestControlpanelsEndpoint(unittest.TestCase):
         self.assertNotEqual(response.json(), old_data)
 
     def test_update_all(self):
+        # Mail is in faulty state by default
+        self.api_session.patch(
+            '/@controlpanels/mail',
+            json={
+                'email_from_address': 'admin@local.local',
+                'email_from_name': 'Jos Henken',
+            }
+        )
+
         # make sure all define controlpanels deserialize
         response = self.api_session.get('/@controlpanels')
         for item in response.json():
+            # get current data
             response = self.api_session.get(item['@id'])
+
             # store the outputted data
             response = self.api_session.patch(
-                '/@controlpanels/editing',
+                item['@id'],
                 json=response.json()['data']
             )
-            self.assertEqual(200, response.status_code)
+            self.assertEqual(
+                200, response.status_code, '{} failed'.format(item['@id'])
+            )
+
+    def test_update_required(self):
+        KEY = 'email_charset'
+        URL = '/@controlpanels/mail'
+        # sanity check
+        response = self.api_session.get(URL)
+        response = response.json()
+        self.assertIn(KEY, response['schema']['required'])
+
+        response = self.api_session.patch(URL, json={KEY: None})
+
+        self.assertEqual(response.status_code, 400)
+        response = response.json()
+        self.assertIn('message', response)
+        self.assertIn('Required input is missing.', response['message'])
