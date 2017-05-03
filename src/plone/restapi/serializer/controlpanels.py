@@ -31,7 +31,7 @@ class ControlpanelSummarySerializeToJson(object):
 
 
 def get_jsonschema_for_controlpanel(controlpanel, context, request):
-    """Build a complete JSON schema for the given FTI.
+    """Build a complete JSON schema for the given controlpanel.
     """
     schema = controlpanel.registry_schema
 

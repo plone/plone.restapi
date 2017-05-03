@@ -19,10 +19,13 @@ class ControlpanelsGet(Service):
         return self
 
     def get_controlpanel_adapters(self):
-        return getAdapters(
+        adapters = getAdapters(
             (self.context, self.request),
             provided=IControlpanel
         )
+        for name, panel in adapters:
+            panel.__name__ = name
+            yield name, panel
 
     def available_controlpanels(self):
         panels = dict(self.get_controlpanel_adapters())
@@ -36,15 +39,11 @@ class ControlpanelsGet(Service):
                 name = panels_by_configlet.get(action_data['id'])
                 panel = panels.get(name)
                 if panel:
-                    panel.__name__ = name
                     yield panel
 
     def panel_by_name(self, name):
         panels = dict(self.get_controlpanel_adapters())
-        panel = panels.get(name)
-        if panel:
-            panel.__name__ = name
-        return panel
+        return panels.get(name)
 
     def reply(self):
         if self.controlpanel_name:
