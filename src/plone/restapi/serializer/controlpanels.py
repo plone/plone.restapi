@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.restapi.controlpanels import IControlpanel
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -5,8 +6,8 @@ from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.types import utils
 from plone.registry.interfaces import IRegistry
-from zope.interface import implementer, Interface
-from zope.component import adapter, getMultiAdapter, queryMultiAdapter, getUtility
+from zope.interface import implementer
+from zope.component import adapter, queryMultiAdapter, getUtility
 
 import zope.schema
 
@@ -29,19 +30,17 @@ class ControlpanelSummarySerializeToJson(object):
         }
 
 
-def get_jsonschema_for_controlpanel(controlpanel, context, request, excluded_fields=None):
+def get_jsonschema_for_controlpanel(controlpanel, context, request):
     """Build a complete JSON schema for the given FTI.
     """
-    if excluded_fields is None:
-        excluded_fields = []
-
     schema = controlpanel.registry_schema
 
     fieldsets = utils.get_fieldsets(context, request, schema)
 
     # Build JSON schema properties
     properties = utils.get_jsonschema_properties(
-        context, request, fieldsets, excluded_fields=excluded_fields)
+        context, request, fieldsets
+    )
 
     # Determine required fields
     required = []

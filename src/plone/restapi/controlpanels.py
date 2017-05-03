@@ -1,18 +1,17 @@
+# -*- coding: utf-8 -*-
 from zope.interface import implementer, Interface, Attribute
-from zope.component import adapter, getUtility
-from Products.CMFCore.utils import _checkPermission, getToolByName
-from plone.registry.interfaces import IRegistry
-from plone.restapi.interfaces import ISerializeToJson
+from zope.component import adapter
+from Products.CMFCore.utils import getToolByName
 
 from Products.CMFPlone.interfaces import IEditingSchema
 from Products.CMFPlone.interfaces.controlpanel import IMailSchema
 
 
 class IControlpanel(Interface):
-    __name__ = Attribute('Name of the controlpanel in the URL')  # set in service GET
+    __name__ = Attribute('Name of the controlpanel in the URL')
     registry_schema = Attribute('Registry schema of this controlpanel')
     configlet_id = Attribute('Id the configlet, ie MailHost')
-    configlet_category_id = Attribute('Category of the configlet, ie plone-general')
+    configlet_category_id = Attribute('Category of the configlet, ie plone-general')  # noqa
 
 
 class RegistryConfigletPanel(object):
@@ -24,7 +23,9 @@ class RegistryConfigletPanel(object):
     schema_prefix = 'plone'
 
     def _get_configlet(self):
-        configlet_data = self.portal_cp.enumConfiglets(self.configlet_category_id)
+        configlet_data = self.portal_cp.enumConfiglets(
+            self.configlet_category_id
+        )
         for action in configlet_data:
             if action['id'] == self.configlet_id:
                 return action

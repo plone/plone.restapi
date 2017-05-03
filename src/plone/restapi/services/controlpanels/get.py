@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.services import Service
-from plone.restapi.interfaces import IJsonCompatible
-from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.controlpanels import IControlpanel
+from plone.restapi.interfaces import IJsonCompatible
+from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
-from zope.component import getAdapters, getMultiAdapter
+from zope.component import getAdapters
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
@@ -18,14 +18,14 @@ class ControlpanelsGet(Service):
         self.controlpanel_name = name
         return self
 
-    def get_controlpanels(self):
+    def get_controlpanel_adapters(self):
         return getAdapters(
             (self.context, self.request),
             provided=IControlpanel
         )
 
     def available_controlpanels(self):
-        panels = dict(self.get_controlpanels())
+        panels = dict(self.get_controlpanel_adapters())
         panels_by_configlet = dict(
             [(p.configlet_id, name) for name, p in panels.items()]
         )
@@ -40,7 +40,7 @@ class ControlpanelsGet(Service):
                     yield panel
 
     def panel_by_name(self, name):
-        panels = dict(self.get_controlpanels())
+        panels = dict(self.get_controlpanel_adapters())
         panel = panels.get(name)
         if panel:
             panel.__name__ = name
