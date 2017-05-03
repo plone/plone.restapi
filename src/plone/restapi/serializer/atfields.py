@@ -59,10 +59,11 @@ class FileFieldSerializer(DefaultFieldSerializer):
 class TextFieldSerializer(DefaultFieldSerializer):
 
     def __call__(self):
-        mt = getToolByName(self.context, 'mimetypes_registry')
+        mimetypes_registry = getToolByName(self.context, 'mimetypes_registry')
         data = super(TextFieldSerializer, self).__call__()
         return {
-            'content-type': json_compatible(mt(data)[2].normalized()),
+            'content-type': json_compatible(
+                mimetypes_registry(data)[2].normalized()),
             'data': data
         }
 
