@@ -21,7 +21,7 @@ class ControlpanelSummarySerializeToJson(object):
 
     def __call__(self):
         return {
-            '@id': '{}/@controlpanel/{}'.format(
+            '@id': '{}/@controlpanels/{}'.format(
                 self.controlpanel.context.absolute_url(),
                 self.controlpanel.__name__
             ),

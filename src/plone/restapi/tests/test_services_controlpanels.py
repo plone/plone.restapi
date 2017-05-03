@@ -39,3 +39,10 @@ class TestControlpanelsEndpoint(unittest.TestCase):
     def test_get_item(self):
         response = self.api_session.get('/@controlpanels/editing')
         self.assertEqual(200, response.status_code)
+
+    def test_all_controlpanels(self):
+        # make sure all define controlpanels serialize
+        response = self.api_session.get('/@controlpanels')
+        for item in response.json():
+            response = self.api_session.get(item['@id'])
+            self.assertEqual(200, response.status_code)
