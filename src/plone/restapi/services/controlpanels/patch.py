@@ -36,3 +36,5 @@ class ControlpanelsPatch(Service):
         panel = self.panel_by_name(self.controlpanel_name)
         deserializer = IDeserializeFromJson(panel)
         deserializer()  # The deserializer knows where to put it.
+
+        self.request.response.setStatus(204)
