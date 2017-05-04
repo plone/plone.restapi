@@ -6,7 +6,7 @@ Content-Type: application/json
   "batching": {
     "@id": "http://localhost:55001/plone/@registry", 
     "first": "http://localhost:55001/plone/@registry?b_start=0", 
-    "last": "http://localhost:55001/plone/@registry?b_start=1500", 
+    "last": "http://localhost:55001/plone/@registry?b_start=275", 
     "next": "http://localhost:55001/plone/@registry?b_start=25"
   }, 
   "items": [
@@ -83,46 +83,6 @@ Content-Type: application/json
       }
     }, 
     {
-      "name": "plone.alignment_styles", 
-      "value": [
-        "Left|alignleft|alignleft", 
-        "Center|aligncenter|aligncenter", 
-        "Right|alignright|alignright", 
-        "Justify|alignjustify|alignjustify"
-      ]
-    }, 
-    {
-      "name": "plone.allow_anon_views_about", 
-      "value": false
-    }, 
-    {
-      "name": "plone.allow_external_login_sites", 
-      "value": []
-    }, 
-    {
-      "name": "plone.allowed_sizes", 
-      "value": [
-        "large 768:768", 
-        "preview 400:400", 
-        "mini 200:200", 
-        "thumb 128:128", 
-        "tile 64:64", 
-        "icon 32:32", 
-        "listing 16:16"
-      ]
-    }, 
-    {
-      "name": "plone.allowed_types", 
-      "value": [
-        "text/html", 
-        "text/x-web-textile"
-      ]
-    }, 
-    {
-      "name": "plone.always_show_selector", 
-      "value": false
-    }, 
-    {
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.anonymous_comments", 
       "value": false
     }, 
@@ -135,9 +95,33 @@ Content-Type: application/json
       "value": "disabled"
     }, 
     {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.delete_own_comment_enabled", 
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.edit_comment_enabled", 
       "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.globally_enabled", 
+      "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderation_enabled", 
+      "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderator_email", 
+      "value": null
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderator_notification_enabled", 
+      "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.show_commenter_image", 
+      "value": true
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.text_transform", 
+      "value": "text/plain"
     }
   ], 
-  "items_total": 1524
+  "items_total": 284
 }
