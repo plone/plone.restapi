@@ -33,7 +33,7 @@ class ControlpanelSummarySerializeToJson(object):
 def get_jsonschema_for_controlpanel(controlpanel, context, request):
     """Build a complete JSON schema for the given controlpanel.
     """
-    schema = controlpanel.registry_schema
+    schema = controlpanel.schema
 
     fieldsets = utils.get_fieldsets(context, request, schema)
 
@@ -67,7 +67,7 @@ class ControlpanelSerializeToJson(object):
 
     def __init__(self, controlpanel):
         self.controlpanel = controlpanel
-        self.schema = self.controlpanel.registry_schema
+        self.schema = self.controlpanel.schema
         self.schema_prefix = self.controlpanel.schema_prefix
 
         self.registry = getUtility(IRegistry)

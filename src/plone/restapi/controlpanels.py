@@ -9,16 +9,20 @@ from Products.CMFPlone.interfaces.controlpanel import IMailSchema
 
 class IControlpanel(Interface):
     __name__ = Attribute('Name of the controlpanel in the URL')
-    registry_schema = Attribute('Registry schema of this controlpanel')
+    title = Attribute('Title of this controlpanel')
+    group = Attribute('Group name of this controlpanel')
+    schema = Attribute('Registry schema of this controlpanel')
+
     configlet_id = Attribute('Id the configlet, ie MailHost')
     configlet_category_id = Attribute('Category of the configlet, ie plone-general')  # noqa
 
 
+@implementer(IControlpanel)
 class RegistryConfigletPanel(object):
     configlet = None
     configlet_id = None
     configlet_category_id = None
-    registry_schema = None
+    schema = None
 
     schema_prefix = 'plone'
 

@@ -27,7 +27,7 @@ class ControlpanelDeserializeFromJson(object):
 
     def __init__(self, controlpanel):
         self.controlpanel = controlpanel
-        self.schema = self.controlpanel.registry_schema
+        self.schema = self.controlpanel.schema
         self.schema_prefix = self.controlpanel.schema_prefix
 
         self.registry = getUtility(IRegistry)
