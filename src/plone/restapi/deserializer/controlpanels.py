@@ -28,6 +28,7 @@ class ControlpanelDeserializeFromJson(object):
     def __init__(self, controlpanel):
         self.controlpanel = controlpanel
         self.schema = self.controlpanel.registry_schema
+        self.schema_prefix = self.controlpanel.schema_prefix
 
         self.registry = getUtility(IRegistry)
 
@@ -36,7 +37,10 @@ class ControlpanelDeserializeFromJson(object):
 
     def __call__(self):
         data = json_body(self.controlpanel.request)
-        proxy = self.registry.forInterface(self.schema, prefix='plone')
+
+        proxy = self.registry.forInterface(
+            self.schema, prefix=self.schema_prefix
+        )
 
         schema_data = {}
         errors = []
