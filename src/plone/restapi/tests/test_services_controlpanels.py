@@ -53,7 +53,11 @@ class TestControlpanelsEndpoint(unittest.TestCase):
         response = self.api_session.get('/@controlpanels')
         for item in response.json():
             response = self.api_session.get(item['@id'])
-            self.assertEqual(200, response.status_code)
+            self.assertEqual(
+                200,
+                response.status_code,
+                '{} failed: {}'.format(item['@id'], response.json())
+            )
 
     def test_patch_needs_parameter(self):
         response = self.api_session.patch('/@controlpanels')
@@ -102,7 +106,9 @@ class TestControlpanelsEndpoint(unittest.TestCase):
                 json=response.json()['data']
             )
             self.assertEqual(
-                200, response.status_code, '{} failed'.format(item['@id'])
+                204,
+                response.status_code,
+                '{} failed: {}'.format(item['@id'], response.content)
             )
 
     def test_update_required(self):
