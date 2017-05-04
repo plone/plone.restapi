@@ -18,14 +18,53 @@
     permission="plone.app.controlpanel.Overview"
     />
 
+
+<!-- General -->
   <adapter
-    factory="plone.restapi.controlpanels.EditingControlpanel"
-    name="editing"
-  />
+    factory="plone.restapi.controlpanels.DateTimeControlpanel"
+    name="date-and-time" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.LanguageControlpanel"
+    name="language" />
 
   <adapter
     factory="plone.restapi.controlpanels.MailControlpanel"
-    name="mail"
-  />
+    name="mail" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.NavigationControlpanel"
+    name="navigation" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.SiteControlpanel"
+    name="site" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.SearchControlpanel"
+    name="search" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.SocialMediaControlpanel"
+    name="socialmedia" />
+
+
+<!-- Content -->
+  <adapter
+    factory="plone.restapi.controlpanels.EditingControlpanel"
+    name="editing" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.ImagingControlpanel"
+    name="imaging" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.MarkupControlpanel"
+    name="markup" />
+
+<!-- Security -->
+  <adapter
+    factory="plone.restapi.controlpanels.SecurityControlpanel"
+    name="security" />
 
 </configure>
