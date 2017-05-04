@@ -18,6 +18,9 @@ New Features:
 - Add endpoints for locking/unlocking.
   [buchi]
 
+- Add @controlpanels endpoint.
+  [jaroel]
+
 Bugfixes:
 
 - Fix ZCML load order issue by explicitly loading permissions.zcml from CMFCore.
