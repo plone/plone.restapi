@@ -68,6 +68,7 @@ class ControlpanelSerializeToJson(object):
     def __init__(self, controlpanel):
         self.controlpanel = controlpanel
         self.schema = self.controlpanel.registry_schema
+        self.schema_prefix = self.controlpanel.schema_prefix
 
         self.registry = getUtility(IRegistry)
 
@@ -78,7 +79,9 @@ class ControlpanelSerializeToJson(object):
             self.controlpanel.request
         )
 
-        proxy = self.registry.forInterface(self.schema, prefix='plone')
+        proxy = self.registry.forInterface(
+            self.schema, prefix=self.schema_prefix
+        )
 
         json_data = {}
         for name, field in zope.schema.getFields(self.schema).items():
