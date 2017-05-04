@@ -1,0 +1,143 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@registry", 
+  "batching": {
+    "@id": "http://localhost:55001/plone/@registry", 
+    "first": "http://localhost:55001/plone/@registry?b_start=0", 
+    "last": "http://localhost:55001/plone/@registry?b_start=1500", 
+    "next": "http://localhost:55001/plone/@registry?b_start=25"
+  }, 
+  "items": [
+    {
+      "name": "Products.CMFPlone.i18nl10n.override_dateformat.Enabled", 
+      "value": false
+    }, 
+    {
+      "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_long", 
+      "value": "%Y-%m-%d %H:%M"
+    }, 
+    {
+      "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_short", 
+      "value": "%Y-%m-%d"
+    }, 
+    {
+      "name": "Products.CMFPlone.i18nl10n.override_dateformat.time_format", 
+      "value": "%H:%M"
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed", 
+      "value": true
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed_feed_types", 
+      "value": [
+        "RSS|RSS 1.0", 
+        "rss.xml|RSS 2.0", 
+        "atom.xml|Atom", 
+        "itunes.xml|iTunes"
+      ]
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.default_enabled", 
+      "value": false
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.max_items", 
+      "value": 15
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.render_body", 
+      "value": false
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.search_rss_enabled", 
+      "value": true
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_author_info", 
+      "value": true
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_button", 
+      "value": null
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_link", 
+      "value": null
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.site_rss_items", 
+      "value": [
+        "/news/aggregator"
+      ]
+    }, 
+    {
+      "name": "Products.ResourceRegistries.interfaces.settings.IResourceRegistriesSettings.resourceBundlesForThemes", 
+      "value": {
+        "(default)": [
+          "jquery", 
+          "default"
+        ]
+      }
+    }, 
+    {
+      "name": "plone.alignment_styles", 
+      "value": [
+        "Left|alignleft|alignleft", 
+        "Center|aligncenter|aligncenter", 
+        "Right|alignright|alignright", 
+        "Justify|alignjustify|alignjustify"
+      ]
+    }, 
+    {
+      "name": "plone.allow_anon_views_about", 
+      "value": false
+    }, 
+    {
+      "name": "plone.allow_external_login_sites", 
+      "value": []
+    }, 
+    {
+      "name": "plone.allowed_sizes", 
+      "value": [
+        "large 768:768", 
+        "preview 400:400", 
+        "mini 200:200", 
+        "thumb 128:128", 
+        "tile 64:64", 
+        "icon 32:32", 
+        "listing 16:16"
+      ]
+    }, 
+    {
+      "name": "plone.allowed_types", 
+      "value": [
+        "text/html", 
+        "text/x-web-textile"
+      ]
+    }, 
+    {
+      "name": "plone.always_show_selector", 
+      "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.anonymous_comments", 
+      "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.anonymous_email_enabled", 
+      "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.captcha", 
+      "value": "disabled"
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.delete_own_comment_enabled", 
+      "value": false
+    }
+  ], 
+  "items_total": 1524
+}
