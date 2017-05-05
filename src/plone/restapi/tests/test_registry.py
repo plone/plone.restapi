@@ -31,6 +31,11 @@ class TestRegistry(unittest.TestCase):
         registry = getUtility(IRegistry)
         record = Record(field.TextLine(title=u"Foo Bar"), u"Lorem Ipsum")
         registry.records['foo.bar'] = record
+
+        for counter in range(1, 100):
+            record = Record(field.TextLine(title=u"Foo Bar"), u"Lorem Ipsum")
+            registry.records['foo.bar' + str(counter)] = record
+
         transaction.commit()
 
     def test_get_registry_record(self):
@@ -67,3 +72,12 @@ class TestRegistry(unittest.TestCase):
         payload = {'foo.bar.baz': 'lorem ipsum'}
         response = self.api_session.patch('/@registry', json=payload)
         self.assertEqual(response.status_code, 500)
+
+    def test_get_listing(self):
+        response = self.api_session.get('/@registry')
+
+        self.assertEqual(response.status_code, 200)
+        response = response.json()
+        self.assertIn('items', response)
+        self.assertIn('batching', response)
+        self.assertIn('next', response['batching'])

@@ -66,5 +66,7 @@
 
     <adapter factory=".vocabularies.SerializeVocabularyToJson" />
     <adapter factory=".vocabularies.SerializeTermToJson" />
+    
+    <adapter factory=".registry.SerializeRegistryToJson" />
 
 </configure>

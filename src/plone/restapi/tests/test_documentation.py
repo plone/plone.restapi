@@ -363,6 +363,10 @@ class TestTraversal(unittest.TestCase):
             json={'plone.app.querystring.field.path.title': 'Value'})
         save_request_and_response_for_docs('registry_update', response)
 
+    def test_documentation_registry_get_list(self):
+        response = self.api_session.get('/@registry')
+        save_request_and_response_for_docs('registry_get_list', response)
+
     def test_documentation_types(self):
         response = self.api_session.get('/@types')
         save_request_and_response_for_docs('types', response)
