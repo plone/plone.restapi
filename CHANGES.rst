@@ -5,6 +5,8 @@ Changelog
 -------------------
 
 - Nothing changed yet.
+- Add docs for comment APIs
+  [pjoshi]
 
 
 1.0a14 (2017-05-02)
