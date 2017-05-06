@@ -1,0 +1,8 @@
+PATCH /plone/folder/my-document/conversations/<conversation_id>/comments/<comment_id> HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "comment": "My New Document comment"
+}
