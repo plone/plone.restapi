@@ -86,5 +86,6 @@ Content-Type: application/json
     "data": "Lorem ipsum", 
     "encoding": "utf-8"
   }, 
-  "title": "My News Item"
+  "title": "My News Item", 
+  "version": "current"
 }

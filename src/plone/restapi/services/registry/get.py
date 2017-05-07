@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from plone.registry.interfaces import IRegistry
 from plone.restapi.services import Service
-from zope.component import getUtility
+from zope.component import getUtility, getMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
+from plone.restapi.interfaces import ISerializeToJson
 
 
 class RegistryGet(Service):
@@ -30,5 +31,11 @@ class RegistryGet(Service):
 
     def reply(self):
         registry = getUtility(IRegistry)
-        value = registry[self._get_record_name]
-        return value
+        if self.params:
+            value = registry[self._get_record_name]
+            return value
+        else:  # batched listing
+            serializer = getMultiAdapter(
+                (registry, self.request), ISerializeToJson
+            )
+            return serializer()

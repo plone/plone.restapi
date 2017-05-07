@@ -22,6 +22,27 @@ Example Response:
 .. literalinclude:: _json/registry_get.resp
    :language: http
 
+
+Listing registry records
+------------------------
+
+The registry records listing uses a batched method to access all registry records.
+See :doc:`/batching` for more details on how to work with batched results.
+
+The output per record contains the following fields:
+name: The record's fully qualified dotted name.
+value: The record's value. This is the same as GETting `@registry/name`.
+
+
+..  http:example:: curl httpie python-requests
+    :request: _json/registry_get_list.req
+
+Example Response:
+
+.. literalinclude:: _json/registry_get_list.resp
+   :language: http
+
+
 Updating registry records
 -------------------------
 
