@@ -24,7 +24,11 @@ class SerializeSiteRootToJson(object):
                  'sort_on': 'getObjPositionInParent'}
         return query
 
-    def __call__(self):
+    def __call__(self, version=None):
+        version = 'current' if version is None else version
+        if version != 'current':
+            return {}
+
         query = self._build_query()
 
         catalog = getToolByName(self.context, 'portal_catalog')

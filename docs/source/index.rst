@@ -22,6 +22,7 @@ Contents
 
    authentication
    content
+   history
    batching
    copymove
    workflow
