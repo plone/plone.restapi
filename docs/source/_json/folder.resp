@@ -52,5 +52,6 @@ Content-Type: application/json
     "title": "Sharing"
   }, 
   "subjects": [], 
-  "title": "My Folder"
+  "title": "My Folder", 
+  "version": "current"
 }

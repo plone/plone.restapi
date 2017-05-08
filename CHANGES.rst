@@ -1,10 +1,28 @@
 Changelog
 =========
 
-1.0a14 (unreleased)
+1.0a15 (unreleased)
 -------------------
 
-- Nothing changed yet.
+New Features:
+
+- Add batched listing of registry entries to @registry endpoint.
+  [jaroel]
+
+
+1.0a14 (2017-05-02)
+-------------------
+
+New Features:
+
+- Add @history endpoint.
+  [jaroel]
+
+Bugfixes:
+
+- Fix the @move endpoint fails to return 403 when the user don't have proper
+  delete permissions over the parent folder.
+  [sneridagh]
 
 
 1.0a13 (2017-04-18)

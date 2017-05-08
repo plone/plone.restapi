@@ -363,6 +363,10 @@ class TestTraversal(unittest.TestCase):
             json={'plone.app.querystring.field.path.title': 'Value'})
         save_request_and_response_for_docs('registry_update', response)
 
+    def test_documentation_registry_get_list(self):
+        response = self.api_session.get('/@registry')
+        save_request_and_response_for_docs('registry_get_list', response)
+
     def test_documentation_types(self):
         response = self.api_session.get('/@types')
         save_request_and_response_for_docs('types', response)
@@ -790,3 +794,14 @@ class TestTraversal(unittest.TestCase):
             '/folder/doc/@sharing?search=admin'
         )
         save_request_and_response_for_docs('sharing_search', response)
+
+    def test_history_get(self):
+        self.document.setTitle('My new title')
+        url = '{}/@history'.format(self.document.absolute_url())
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs('history_get', response)
+
+    def test_history_revert(self):
+        url = '{}/@history'.format(self.document.absolute_url())
+        response = self.api_session.patch(url, json={'version': 0})
+        save_request_and_response_for_docs('history_revert', response)

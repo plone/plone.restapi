@@ -67,11 +67,15 @@ class BaseCopyMove(Service):
         parents_ids = {}
         for item in source:
             obj = self.get_object(item)
-            if self.is_moving:
-                if not checkPermission('zope2.DeleteObjects', obj):
-                    self.request.response.setStatus(403)
-                    return
             if obj is not None:
+                if self.is_moving:
+                    # To be able to safely move the object, the user requires
+                    # permissions on the parent
+                    if not checkPermission('zope2.DeleteObjects', obj) and \
+                       not checkPermission(
+                            'zope2.DeleteObjects', aq_parent(obj)):
+                        self.request.response.setStatus(403)
+                        return
                 parent = aq_parent(obj)
                 if parent in parents_ids:
                     parents_ids[parent].append(obj.getId())
