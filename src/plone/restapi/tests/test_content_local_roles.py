@@ -66,6 +66,54 @@ class TestFolderCreate(unittest.TestCase):
         # Did we find anything?
         self.assertNotEqual(len(non_search_entries), len(search_entries))
 
+    def test_sharing_search_roundtrip(self):
+        '''Search for a user and use save roles
+        '''
+        # Make sure we don't already have admin
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '/@sharing',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertNotIn(
+            'admin', [x['id'] for x in response.json()['entries']]
+        )
+
+        # Now find admin and set roles
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '/@sharing?search=admin',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        roles = [x for x in response.json()['entries'] if x['id'] == 'admin']
+        roles = roles[0]['roles']
+
+        new_roles = dict([(key, not val) for key, val in roles.items()])
+        payload = {'entries': [{'id': 'admin', 'roles': new_roles}]}
+
+        response = requests.post(
+            self.portal.folder1.absolute_url() + '/@sharing',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json=payload,
+        )
+        self.assertEqual(204, response.status_code)
+
+        # Now we should have admin in @sharing
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '/@sharing',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertIn(
+            'admin', [x['id'] for x in response.json()['entries']]
+        )
+
+        # with the same roles as set
+        roles = [x for x in response.json()['entries'] if x['id'] == 'admin']
+        roles = roles[0]['roles']
+        self.assertEqual(new_roles, roles)
+
     def test_sharing_requires_delegate_roles_permission(self):
         '''A response for an object without any roles assigned'''
         response = requests.get(
