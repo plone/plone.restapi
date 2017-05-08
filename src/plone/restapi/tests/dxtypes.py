@@ -130,7 +130,3 @@ class ITestBehavior(model.Schema):
 class ITestAnnotationsBehavior(model.Schema):
 
     test_annotations_behavior_field = schema.TextLine(required=False)
-
-
-class DXTestFolder(Container):
-    """A Dexterity based test folder"""

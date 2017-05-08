@@ -31,12 +31,12 @@ class TestDXContentDeserializer(unittest.TestCase):
 
         # ordering setup
         self.folder = self.portal[self.portal.invokeFactory(
-            'DXTestFolder', id='folder1', title='Test folder'
+            'Folder', id='folder1', title='Test folder'
         )]
 
         for x in range(1, 10):
             self.folder.invokeFactory(
-                'DXTestDocument',
+                'Document',
                 id='doc' + str(x),
                 title='Test doc ' + str(x)
             )
