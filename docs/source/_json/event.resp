@@ -49,5 +49,6 @@ Content-Type: application/json
   "text": null, 
   "timezone": null, 
   "title": "Event", 
+  "version": "current", 
   "whole_day": null
 }

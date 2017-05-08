@@ -71,5 +71,6 @@ Content-Type: application/json
   "sort_reversed": null, 
   "subjects": [], 
   "text": null, 
-  "title": "My Collection"
+  "title": "My Collection", 
+  "version": "current"
 }
