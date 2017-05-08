@@ -20,11 +20,6 @@ Content-Type: application/json
       "token": "DXTestDocument"
     }, 
     {
-      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/DXTestFolder", 
-      "title": "DX Test Document", 
-      "token": "DXTestFolder"
-    }, 
-    {
       "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/Event", 
       "title": "Event", 
       "token": "Event"
