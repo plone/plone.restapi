@@ -6,6 +6,9 @@ Changelog
 
 New Features:
 
+- Reorder children in a item using the content endpoint.
+  [jaroel]
+
 - Add batched listing of registry entries to @registry endpoint.
   [jaroel]
 

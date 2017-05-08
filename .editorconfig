@@ -1,0 +1,4 @@
+root = true
+
+[*.resp]
+trim_trailing_whitespace = false
