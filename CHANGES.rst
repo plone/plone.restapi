@@ -26,7 +26,6 @@ Bugfixes:
 - Fix the @move endpoint fails to return 403 when the user don't have proper
   delete permissions over the parent folder.
   [sneridagh]
->>>>>>> master
 
 
 1.0a13 (2017-04-18)
