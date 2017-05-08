@@ -7,7 +7,6 @@ from plone.app.vocabularies.catalog import CatalogSource
 from plone.autoform.directives import read_permission
 from plone.autoform.directives import write_permission
 from plone.autoform.interfaces import IFormFieldProvider
-from plone.dexterity.content import Container
 from plone.dexterity.content import Item
 from plone.namedfile import field as namedfile
 from plone.supermodel import model
