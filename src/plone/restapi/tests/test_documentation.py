@@ -777,3 +777,16 @@ class TestTraversal(unittest.TestCase):
             json=payload
         )
         save_request_and_response_for_docs('sharing_folder_post', response)
+
+    def test_documentation_sharing_search(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        self.portal.folder.invokeFactory('Document', id='doc')
+        api.user.grant_roles('admin', roles=['Contributor'])
+        api.user.grant_roles(
+            'admin', roles=['Editor'], obj=self.portal.folder
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            '/folder/doc/@sharing?search=admin'
+        )
+        save_request_and_response_for_docs('sharing_search', response)
