@@ -32,6 +32,7 @@ import re
 import os
 import transaction
 import unittest
+import re
 
 
 TUS_HEADERS = [
@@ -846,6 +847,22 @@ class TestTraversal(unittest.TestCase):
     def test_tusupload_post_head_patch(self):
         # We create both the POST and PATCH example here, because we need the
         # temporary id
+
+        def clean_upload_url(response, _id='032803b64ad746b3ab46d9223ea3d90f'):
+            pattern = r'@upload/(\w+)'
+            repl = '@upload/' + _id
+
+            # Replaces the dynamic part in the headers with a stable id
+            for target in [response, response.request]:
+                for key, val in target.headers.items():
+                    target.headers[key] = re.sub(pattern, repl, val)
+
+                target.url = re.sub(pattern, repl, target.url)
+
+        def clean_final_url(response, _id='document-2016-10-21'):
+            url = self.portal.folder.absolute_url() + '/' + _id
+            response.headers['Location'] = url
+
         self.portal.invokeFactory('Folder', id='folder')
         transaction.commit()
 
@@ -860,9 +877,11 @@ class TestTraversal(unittest.TestCase):
                      'Upload-Length': str(UPLOAD_LENGTH),
                      'Upload-Metadata': metadata}
         )
-        save_request_and_response_for_docs('tusupload_post', response)
 
         upload_url = response.headers['location']
+
+        clean_upload_url(response)
+        save_request_and_response_for_docs('tusupload_post', response)
 
         # PATCH upload a partial document
         response = self.api_session.patch(
@@ -872,6 +891,7 @@ class TestTraversal(unittest.TestCase):
                      'Upload-Offset': '0'},
             data=UPLOAD_DATA[:3]
         )
+        clean_upload_url(response)
         save_request_and_response_for_docs('tusupload_patch', response)
 
         # HEAD ask for much the server has
@@ -879,6 +899,7 @@ class TestTraversal(unittest.TestCase):
             upload_url,
             headers={'Tus-Resumable': '1.0.0'}
         )
+        clean_upload_url(response)
         save_request_and_response_for_docs('tusupload_head', response)
 
         # Finalize the upload
@@ -889,6 +910,8 @@ class TestTraversal(unittest.TestCase):
                      'Upload-Offset': response.headers['Upload-Offset']},
             data=UPLOAD_DATA[3:]
         )
+        clean_upload_url(response)
+        clean_final_url(response)
         save_request_and_response_for_docs(
             'tusupload_patch_finalized',
             response
