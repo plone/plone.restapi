@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from base64 import b64encode
 from datetime import datetime
 from DateTime import DateTime
 from datetime import timedelta
@@ -33,16 +34,27 @@ import transaction
 import unittest
 
 
+TUS_HEADERS = [
+    'upload-offset',
+    'upload-length',
+    'upload-metadata',
+    'tus-version',
+    'tus-resumable',
+    'tus-extension',
+    'tus-max-size',
+
+]
+
 REQUEST_HEADER_KEYS = [
     'accept',
     'authorization',
-]
+] + TUS_HEADERS
 
 RESPONSE_HEADER_KEYS = [
     'content-type',
     'allow',
     'location',
-]
+] + TUS_HEADERS
 
 base_path = os.path.join(
     os.path.dirname(__file__),
@@ -52,6 +64,14 @@ base_path = os.path.join(
     '..',
     'docs/source/_json'
 )
+
+UPLOAD_DATA = 'abcdefgh'
+UPLOAD_MIMETYPE = 'text/plain'
+UPLOAD_FILENAME = 'test.txt'
+UPLOAD_LENGTH = len(UPLOAD_DATA)
+
+UPLOAD_PDF_MIMETYPE = 'application/pdf'
+UPLOAD_PDF_FILENAME = 'file.pdf'
 
 
 def pretty_json(data):
@@ -816,6 +836,60 @@ class TestTraversal(unittest.TestCase):
         url = '{}/@history'.format(self.document.absolute_url())
         response = self.api_session.patch(url, json={'version': 0})
         save_request_and_response_for_docs('history_revert', response)
+
+    def test_tusupload_options(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        transaction.commit()
+        response = self.api_session.options('/folder/@upload')
+        save_request_and_response_for_docs('tusupload_options', response)
+
+    def test_tusupload_post_head_patch(self):
+        # We create both the POST and PATCH example here, because we need the
+        # temporary id
+        self.portal.invokeFactory('Folder', id='folder')
+        transaction.commit()
+
+        # POST create an upload
+        metadata = 'filename {},content-type {}'.format(
+            b64encode(UPLOAD_FILENAME),
+            b64encode(UPLOAD_MIMETYPE)
+        )
+        response = self.api_session.post(
+            '/folder/@upload',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(UPLOAD_LENGTH),
+                     'Upload-Metadata': metadata}
+        )
+        save_request_and_response_for_docs('tusupload_post', response)
+
+        upload_url = response.headers['location']
+
+        # PATCH upload a partial document
+        response = self.api_session.patch(
+            upload_url,
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': '0'},
+            data=UPLOAD_DATA[:3]
+        )
+        save_request_and_response_for_docs('tusupload_patch', response)
+
+        # HEAD ask for much the server has
+        response = self.api_session.head(
+            upload_url,
+            headers={'Tus-Resumable': '1.0.0'}
+        )
+        save_request_and_response_for_docs('tusupload_head', response)
+
+        # Finalize the upload
+        response = self.api_session.patch(
+            upload_url,
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': response.headers['Upload-Offset']},
+            data=UPLOAD_DATA[3:]
+        )
+        save_request_and_response_for_docs('tusupload_patch_finalized', response)
 
 
 class TestCommenting(unittest.TestCase):

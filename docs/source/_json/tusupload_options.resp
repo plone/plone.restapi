@@ -1,0 +1,5 @@
+HTTP/1.1 204 No Content
+Tus-Version: 1.0.0
+Tus-Extension: creation,expiration
+Tus-Resumable: 1.0.0
+
