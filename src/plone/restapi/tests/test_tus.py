@@ -30,7 +30,7 @@ import unittest
 UPLOAD_DATA = 'abcdefgh'
 UPLOAD_MIMETYPE = 'text/plain'
 UPLOAD_FILENAME = 'test.txt'
-UPLOAD_LENGHT = len(UPLOAD_DATA)
+UPLOAD_LENGTH = len(UPLOAD_DATA)
 
 UPLOAD_PDF_MIMETYPE = 'application/pdf'
 UPLOAD_PDF_FILENAME = 'file.pdf'
@@ -94,7 +94,7 @@ class TestTUS(unittest.TestCase):
             self.upload_url,
             headers={
                 'Tus-Resumable': '1.0.0',
-                'Upload-Length': str(UPLOAD_LENGHT),
+                'Upload-Length': str(UPLOAD_LENGTH),
             })
         self.assertEqual(response.status_code, 201)
         location = response.headers['Location']
@@ -113,7 +113,7 @@ class TestTUS(unittest.TestCase):
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
-                     'Upload-Length': str(UPLOAD_LENGHT),
+                     'Upload-Length': str(UPLOAD_LENGTH),
                      'Upload-Metadata': metadata}
             )
         self.assertEqual(response.status_code, 201)
@@ -251,7 +251,7 @@ class TestTUS(unittest.TestCase):
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
-                     'Upload-Length': str(UPLOAD_LENGHT),
+                     'Upload-Length': str(UPLOAD_LENGTH),
                      'Upload-Metadata': metadata}
             )
         self.assertEqual(response.status_code, 201)
