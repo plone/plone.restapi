@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.services import Service
+from plone.app.discussion.interfaces import IConversation
 from plone.rest.traverse import RESTWrapper
+from plone.restapi.services import Service
+from zope.component import getAdapters
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
@@ -10,12 +12,22 @@ class ConversationListGet(Service):
 
     def reply(self):
         url = self.request.URL
-        return [
-            {
-                '@id': url + '/default',
-                'comments': url + '/default/@comments/',
-            },
-        ]
+
+        def transform(adapters):
+            for name, adapter in adapters:
+                if not adapter.enabled():
+                    continue
+
+                name = name or 'default'
+                data = {
+                    '@id': '{}/{}'.format(url, name),
+                    'comments': '{}/{}/@comments'.format(url, name),
+                }
+
+                yield data
+
+        adapters = getAdapters((self.context, ), IConversation)
+        return list(transform(adapters))
 
     def publishTraverse(self, request, name):
         # Try to get a conversation, or defer for further traversal
