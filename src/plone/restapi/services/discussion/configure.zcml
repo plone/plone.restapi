@@ -1,0 +1,29 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <plone:service
+    method="GET"
+    name="@conversations"
+    for="*"
+    factory=".conversation.ConversationListGet"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="GET"
+    for="plone.app.discussion.interfaces.IConversation"
+    factory=".conversation.ConversationGet"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="GET"
+    name="@comments"
+    for="plone.app.discussion.interfaces.IConversation"
+    factory=".comments.CommentsGet"
+    permission="zope2.View"
+    />
+
+</configure>

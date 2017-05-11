@@ -5,6 +5,7 @@
   <include package=".components"/>
   <include package=".content"/>
   <include package=".copymove"/>
+  <include package=".discussion"/>
   <include package=".groups"/>
   <include package=".history"/>
   <include package=".principals"/>
