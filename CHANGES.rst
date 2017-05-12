@@ -13,7 +13,7 @@ New Features:
   [jaroel]
 
 - Add docs for comment APIs
-  [pjoshi]
+  [pjoshi, jaroel]
   
 - Add commenting API
   [jaroel]

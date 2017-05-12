@@ -14,8 +14,8 @@ class ConversationListGet(Service):
         url = self.request.URL
 
         def transform(adapters):
-            for name, adapter in adapters:
-                if not adapter.enabled():
+            for name, conversation in adapters:
+                if not conversation.enabled():
                     continue
 
                 name = name or 'default'
@@ -32,7 +32,8 @@ class ConversationListGet(Service):
     def publishTraverse(self, request, name):
         # Try to get a conversation, or defer for further traversal
         path = '++conversation++' + name
-        conversation = self.context.restrictedTraverse(path)
+        # Do security checks later on.
+        conversation = self.context.unrestrictedTraverse(path)
         if conversation is not None:
             return RESTWrapper(ConversationWrapper(conversation), request)
 

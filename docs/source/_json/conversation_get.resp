@@ -1,44 +1,9 @@
 HTTP/1.1 200 OK
 Content-Type: application/json
 
-{
-  "@id": "http://localhost:55001/plone/folder/my-document",
-  "@type": "Document",
-  "UID": "SomeUUID000000000000000000000005",
-  "conversation": [
-    {
-      "@id": 123,
-      "comments": [
-        {
-          "@id": 1,
-          "date": 01-01-01,
-          "owner": "Paul",
-          "comment": "This is my 1st comment"
-        },
-        {
-          "@id": 2,
-          "date": 01-02-01,
-          "owner": "Jaun",
-          "comment": "This is my 2nd comment"
-        }
-      ]
-    },
-    {
-      "@id": 321,
-      "comments": [
-        {
-          "@id": 1,
-          "date": 02-01-01,
-          "owner": "Alex",
-          "comment": "This is my 1st comment"
-        },
-        {
-          "@id": 2,
-          "date": 02-02-01,
-          "owner": "Tim",
-          "comment": "This is my 2nd comment"
-        }
-      ]
-    }
-  ]
-}
+[
+  {
+    "@id": "http://localhost:55001/plone/front-page/@conversations/default", 
+    "comments": "http://localhost:55001/plone/front-page/@conversations/default/@comments"
+  }
+]
