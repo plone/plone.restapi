@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.0a15 (unreleased)
+1.0a15 (2017-05-15)
 -------------------
 
 New Features:
