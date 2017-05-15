@@ -3,17 +3,46 @@ Content-Type: application/json
 
 {
   "@components": {
-    "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/front-page/@components/breadcrumbs"
-    }, 
-    "navigation": {
-      "@id": "http://localhost:55001/plone/front-page/@components/navigation"
-    }
+    "breadcrumbs": [
+      {
+        "title": "Welcome to Plone", 
+        "url": "http://localhost:55001/plone/front-page"
+      }
+    ], 
+    "navigation": [
+      {
+        "title": "Home", 
+        "url": "http://localhost:55001/plone"
+      }, 
+      {
+        "title": "Welcome to Plone", 
+        "url": "http://localhost:55001/plone/front-page"
+      }
+    ]
   }, 
   "@id": "http://localhost:55001/plone/front-page", 
   "@type": "Document", 
   "@workflow": {
-    "@id": "http://localhost:55001/plone/front-page/@workflow"
+    "history": [
+      {
+        "action": null, 
+        "actor": "test_user_1_", 
+        "comments": "", 
+        "review_state": "private", 
+        "time": "2016-10-21T19:00:00+00:00", 
+        "title": "Private"
+      }
+    ], 
+    "transitions": [
+      {
+        "@id": "http://localhost:55001/plone/front-page/@workflow/publish", 
+        "title": "Publish"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/front-page/@workflow/submit", 
+        "title": "Submit for publication"
+      }
+    ]
   }, 
   "UID": "SomeUUID000000000000000000000001", 
   "allow_discussion": null, 

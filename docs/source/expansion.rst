@@ -1,16 +1,16 @@
 Expansion
 =========
 
-Expansion is a mechanism in plone.restapi to embed additional "components", 
-such as navigation, breadcrumbs, schema, or workflow within the main content 
+Expansion is a mechanism in plone.restapi to embed additional "components",
+such as navigation, breadcrumbs, schema, or workflow within the main content
 response. This helps the API consumers to avoid unneccesary request.
 
 Say you want to show a document in Plone together with the breadcrumbs and a
-workflow switcher. Instead of doing three individual requests, you can just 
-expand the breadcrumbs and the workflow "components" within the document GET 
+workflow switcher. Instead of doing three individual requests, you can just
+expand the breadcrumbs and the workflow "components" within the document GET
 request.
 
-The list of expandable components is listed in the "@components" attribute 
+The list of expandable components is listed in the "@components" attribute
 in the reponse of any content GET request::
 
   GET /plone/front-page HTTP/1.1
@@ -31,12 +31,22 @@ in the reponse of any content GET request::
     ...
   }
 
-In order to expand and embed one or more components, use the "expand" GET 
+Request Unexpanded:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/expansion.req
+
+Response Unexpanded:
+
+.. literalinclude:: _json/expansion.resp
+   :language: http
+
+In order to expand and embed one or more components, use the "expand" GET
 parameter and provide either a single component or a comma-separated list
 of the components you want to embed. Say you want to expand the "breadcrumbs"
-and the "workflow" components::
+component::
 
-  GET /plone/front-page?expand=breadcrumbs,workflow HTTP/1.1
+  GET /plone/front-page?expand=breadcrumbs HTTP/1.1
   Accept: application/json
   Authorization: Basic YWRtaW46c2VjcmV0
 
@@ -45,10 +55,10 @@ and the "workflow" components::
     "@type": "Document",
     "@components": {
       "breadcrumbs": {
-        "@id": "http://localhost:55001/plone/front-page/@components/breadcrumbs", 
+        "@id": "http://localhost:55001/plone/front-page/@components/breadcrumbs",
         "items": [
           {
-            "title": "Welcome to Plone", 
+            "title": "Welcome to Plone",
             "url": "http://localhost:55001/plone/front-page"
           }
         ]
@@ -58,20 +68,20 @@ and the "workflow" components::
       "workflow": {
         "history": [
           {
-            "action": null, 
-            "actor": "test_user_1_", 
-            "comments": "", 
-            "review_state": "private", 
+            "action": null,
+            "actor": "test_user_1_",
+            "comments": "",
+            "review_state": "private",
             "time": "2016-10-21T19:00:00+00:00"
           }
-        ], 
+        ],
         "transitions": [
           {
-            "@id": "http://localhost:55001/plone/front-page/@workflow/publish", 
+            "@id": "http://localhost:55001/plone/front-page/@workflow/publish",
             "title": "Publish"
-          }, 
+          },
           {
-            "@id": "http://localhost:55001/plone/front-page/@workflow/submit", 
+            "@id": "http://localhost:55001/plone/front-page/@workflow/submit",
             "title": "Submit for publication"
           }
         ]
@@ -81,16 +91,22 @@ and the "workflow" components::
     "title": "Welcome to Plone"
   }
 
-
-Current implementation
-----------------------
-
-Request:
+Request Expanded:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/expansion.req
+    :request: _json/expansion_expanded.req
 
-Response:
+Response Expanded:
 
-.. literalinclude:: _json/expansion.resp
+.. literalinclude:: _json/expansion_expanded.resp
+   :language: http
+
+Here is an exaxmple of a request that expands all possible expansions:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/expansion_expanded_full.req
+
+And the response:
+
+.. literalinclude:: _json/expansion_expanded_full.resp
    :language: http
