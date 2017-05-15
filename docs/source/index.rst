@@ -30,6 +30,8 @@ Contents
    registry
    types
    users
+   groups
+   principals
    components
    serialization
    searching
