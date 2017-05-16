@@ -43,6 +43,10 @@ class TestCommentsSerializers(TestCase):
         comment.text = 'Comment'
         self.comment = self.replies[self.replies.addComment(comment)]
 
+        comment = createObject('plone.Comment')
+        comment.text = 'Comment 2'
+        self.replies.addComment(comment)
+
     def test_conversation(self):
         serializer = getMultiAdapter(
             (self.conversation, self.request),
