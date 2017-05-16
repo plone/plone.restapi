@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
+from AccessControl import getSecurityManager
+from Acquisition import aq_inner
 from plone.app.discussion.browser.comment import EditCommentForm
 from plone.app.discussion.browser.comments import CommentForm
-from plone.app.discussion.browser.comments import CommentsViewlet
 from plone.app.discussion.interfaces import IConversation
+from plone.app.discussion.interfaces import IDiscussionSettings
+from plone.registry.interfaces import IRegistry
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from zExceptions import BadRequest
 from zExceptions import Unauthorized
 from zope.component import getMultiAdapter
+from zope.component import queryUtility
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
@@ -90,8 +94,7 @@ class CommentsUpdate(Service):
         comment = conversation[self.comment_id]
 
         # Permission checks
-        viewlet = CommentsViewlet(self.context, self.request, view=None)
-        if not (viewlet.edit_comment_allowed() and viewlet.can_edit(comment)):
+        if not (self.edit_comment_allowed() and self.can_edit(comment)):
             raise Unauthorized()
 
         # Fake request data
@@ -115,6 +118,20 @@ class CommentsUpdate(Service):
         if 'location' in self.request.response.headers:
             del self.request.response.headers['location']
 
+    def edit_comment_allowed(self):
+        # Check if editing comments is allowed in the registry
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        return settings.edit_comment_enabled
+
+    def can_edit(self, reply):
+        """Returns true if current user has the 'Edit comments'
+        permission.
+        """
+        return getSecurityManager().checkPermission(
+            'Edit comments', aq_inner(reply)
+        )
+
 
 @implementer(IPublishTraverse)
 class CommentsDelete(Service):
@@ -136,12 +153,36 @@ class CommentsDelete(Service):
         comment = conversation[self.comment_id]
 
         # Permission checks
-        viewlet = CommentsViewlet(self.context, self.request, view=None)
-        can_delete = viewlet.can_delete(comment)
-        doc_allowed = viewlet.delete_own_comment_allowed()
-        delete_own = doc_allowed and viewlet.could_delete_own(comment)
+        can_delete = self.can_delete(comment)
+        doc_allowed = self.delete_own_comment_allowed()
+        delete_own = doc_allowed and self.could_delete_own(comment)
         if not (can_delete or delete_own):
             raise Unauthorized()
 
         del conversation[self.comment_id]
         self.request.response.setStatus(204)
+
+    # Helper functions copied from p.a.discussion's viewlet to support Plone 4
+    def can_delete(self, reply):
+        """Returns true if current user has the 'Delete comments'
+        permission.
+        """
+        return getSecurityManager().checkPermission(
+            'Delete comments', aq_inner(reply)
+        )
+
+    def delete_own_comment_allowed(self):
+        # Check if delete own comments is allowed in the registry
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        return settings.delete_own_comment_enabled
+
+    def could_delete_own(self, comment):
+        """Returns true if the current user could delete the comment if it had
+        no replies. This is used to prepare hidden form buttons for JS.
+        """
+        try:
+            return comment.restrictedTraverse(
+                '@@delete-own-comment').could_delete()
+        except Unauthorized:
+            return False
