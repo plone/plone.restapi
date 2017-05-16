@@ -2,10 +2,13 @@
 from plone import api
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 
 from plone.app.discussion.interfaces import IDiscussionSettings
+
+from zope.component import getUtility
 
 import transaction
 import unittest
@@ -22,23 +25,11 @@ class TestCommentsEndpoint(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
 
         # Allow discussion
-        api.portal.set_registry_record(
-            'globally_enabled',
-            True,
-            interface=IDiscussionSettings
-        )
-
-        api.portal.set_registry_record(
-            'edit_comment_enabled',
-            True,
-            interface=IDiscussionSettings
-        )
-
-        api.portal.set_registry_record(
-            'delete_own_comment_enabled',
-            True,
-            interface=IDiscussionSettings
-        )
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        settings.edit_comment_enabled = True
+        settings.delete_own_comment_enabled = True
 
         # doc with comments
         self.doc = api.content.create(

@@ -7,8 +7,10 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IReplies
+from plone.registry.interfaces import IRegistry
 
 from zope.component import createObject
+from zope.component import getUtility
 
 from plone import api
 
@@ -23,11 +25,11 @@ class TestCommentsSerializers(TestCase):
         self.portal_url = self.portal.absolute_url()
 
         # Allow discussion
-        api.portal.set_registry_record(
-            'globally_enabled',
-            True,
-            interface=IDiscussionSettings
-        )
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        settings.edit_comment_enabled = True
+        settings.delete_own_comment_enabled = True
 
         # doc with comments
         self.doc = api.content.create(

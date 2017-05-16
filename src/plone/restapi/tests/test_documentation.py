@@ -16,11 +16,13 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
+from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.testing.z2 import Browser
 from zope.component import createObject
+from zope.component import getUtility
 from zope.site.hooks import getSite
 
 import collections
@@ -812,23 +814,11 @@ class TestCommenting(unittest.TestCase):
         self.time_freezer = freeze_time("2016-10-21 19:00:00")
         self.frozen_time = self.time_freezer.start()
 
-        api.portal.set_registry_record(
-            'globally_enabled',
-            True,
-            interface=IDiscussionSettings
-        )
-
-        api.portal.set_registry_record(
-            'edit_comment_enabled',
-            True,
-            interface=IDiscussionSettings
-        )
-
-        api.portal.set_registry_record(
-            'delete_own_comment_enabled',
-            True,
-            interface=IDiscussionSettings
-        )
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        settings.edit_comment_enabled = True
+        settings.delete_own_comment_enabled = True
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})
