@@ -818,6 +818,18 @@ class TestCommenting(unittest.TestCase):
             interface=IDiscussionSettings
         )
 
+        api.portal.set_registry_record(
+            'edit_comment_enabled',
+            True,
+            interface=IDiscussionSettings
+        )
+
+        api.portal.set_registry_record(
+            'delete_own_comment_enabled',
+            True,
+            interface=IDiscussionSettings
+        )
+
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
@@ -892,82 +904,54 @@ class TestCommenting(unittest.TestCase):
         if response.content:
             response._content = re.sub(pattern, repl, response._content)
 
-    def test_conversation_get(self):
-        url = '{}/@conversations'.format(self.document.absolute_url())
-        response = self.api_session.get(url)
-        save_request_and_response_for_docs('conversation_get', response)
+    def test_comments_get(self):
+        url = '{}/@comments'.format(self.document.absolute_url())
+        response = self.api_session.get(url, params={'b_size': 1})
+        save_request_and_response_for_docs('comments_get', response)
 
-    def test_conversation_single_get(self):
-        url = '{}/@conversations/default'.format(self.document.absolute_url())
-        response = self.api_session.get(url)
-        save_request_and_response_for_docs('conversation_get_single', response)
-
-    def test_conversation_delete(self):
-        url = '{}/@conversations/default'.format(
+    def test_comments_add_root(self):
+        url = '{}/@comments/'.format(
             self.document.absolute_url()
         )
-        response = self.api_session.delete(url)
-        save_request_and_response_for_docs('conversation_delete', response)
-
-    def test_conversation_comment_add_root(self):
-        url = '{}/@conversations/default/@comments/'.format(
-            self.document.absolute_url()
-        )
-        payload = {'comment': 'My comment'}
+        payload = {'text': 'My comment'}
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
-            'conversation_comment_add_root', response
+            'comments_add_root', response
         )
 
-    def test_conversation_comment_add_sub(self):
-        url = '{}/@conversations/default/@comments/'.format(
-            self.document.absolute_url()
-        )
-        payload = {'comment': 'My comment'}
-        response = self.api_session.post(url, json=payload)
-
+    def test_comments_add_sub(self):
         # Add a reply
-        url = '{}/@conversations/default/@comments/{}'.format(
-            self.document.absolute_url(),
-            '1234'
-        )
-        payload = {'comment': 'My reply'}
-        response = self.api_session.post(url, json=payload)
-
-        save_request_and_response_for_docs(
-            'conversation_comment_add_sub', response
-        )
-
-    def test_conversation_comment_get(self):
-        url = '{}/@conversations/default/@comments/{}'.format(
+        url = '{}/@comments/{}'.format(
             self.document.absolute_url(),
             self.comment_id
         )
-        response = self.api_session.get(url)
+        payload = {'text': 'My reply'}
+        response = self.api_session.post(url, json=payload)
+
         self.clean_comment_id(response)
         save_request_and_response_for_docs(
-            'conversation_comment_get', response
+            'comments_add_sub', response
         )
 
-    def test_conversation_comment_update(self):
-        url = '{}/@conversations/default/@comments/{}'.format(
+    def test_comments_update(self):
+        url = '{}/@comments/{}'.format(
             self.document.absolute_url(),
             self.comment_id
         )
-        payload = {'comment': 'My NEW comment'}
+        payload = {'text': 'My NEW comment'}
         response = self.api_session.patch(url, json=payload)
         self.clean_comment_id(response)
         save_request_and_response_for_docs(
-            'conversation_comment_update', response
+            'comments_update', response
         )
 
-    def test_conversation_comment_delete(self):
-        url = '{}/@conversations/default/@comments/{}'.format(
+    def test_comments_delete(self):
+        url = '{}/@comments/{}'.format(
             self.document.absolute_url(),
             self.comment_id
         )
         response = self.api_session.delete(url)
         self.clean_comment_id(response)
         save_request_and_response_for_docs(
-            'conversation_comment_delete', response
+            'comments_delete', response
         )

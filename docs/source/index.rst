@@ -24,6 +24,7 @@ Contents
    content
    history
    batching
+   comments
    copymove
    workflow
    sharing

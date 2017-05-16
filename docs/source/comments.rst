@@ -5,139 +5,81 @@ The @comments endpoint exposes comments for each object. These comments are main
 These comments are on an object so each content can have multiple conversations.
 
 
-Listing conversations for a content object
-------------------------------------------
+Listing comments
+----------------
 
-Listing conversations of a resource
+Listing comments of a resource
 
 ..  http:example::curl httpie python-requests
-	:request: _json/conversation_get.req
+	:request: _json/comments_get.req
 
-.. literalinclude:: _json/conversaton_get.resp
+.. literalinclude:: _json/comments_get.resp
    :language: http
 
 These following fields are returned:
 
-- @id: link to the content endpoint of this specific version.
-- conversation: Array of all the conversation for this resource. Each item in array will include conversation_id, then the array of all the comments inside that conversations. Each comment will contain comment_id, comment_date, commented_by, comment_content.
+- @id: link to the conversation
+- comments: This subobject contains:
+  - @id: link to the comments endpoint
+  - items_total: total amount of items
+  - batching: An optional subobject containing batching links if applicable.
 
 
-Listing single conversation for a content object
-------------------------------------------------
+Adding a comment
+----------------
 
-Listing single conversation of a resource
+Adding a single comment to a content object
 
-..  http:example::curl httpie python-requests
-	:request: _json/conversation_single_get.req
-
-.. literalinclude:: _json/conversation_single_get.resp
-   :language: http
-
-These following fields are returned:
-
-- @id: Coversation Id.
-- @comments: Array of all the comments for this conversation. Each element of the Array will contain comment_id, comment_date, commented_by, comment_content.
-
-
-Deleting the conversation for a content Object
-----------------------------------------------
-
-Deleting the conversation will remove all the comments inside that conversation. This deletion can only be done by the owner of the resource.
+These following fields are used:
+- text: The content of the comment
 
 ..  http:example::curl httpie python-requests
-	:request: _json/conversation_delete.req
+  :request: _json/comments_add_root.req
 
-A successful response will be indicated by a :term:`204 No Content` response:
-
-.. literalinclude:: _json/conversation_delete.resp
+.. literalinclude:: _json/comments_add_root.resp
    :language: http
 
 
+Adding a reply to a comment
+---------------------------
 
-Adding a single comment to a conversation for a content object
---------------------------------------------------------------
-
-Adding a single comment to a conversation for a content object
+Adding a single reply to a comment to a content object
 
 These following fields are used:
 
-- @id: Comment id.
-- date: Date at which it is commented.
-- owner: Commenter of that comment.
-- comment: The actual content of that comment.
-- lastUpdated: Date at which it is last updated.
-
-..  http:example::curl httpie python-requests
-  :request: _json/conversation_comment_add_root.req
-
-.. literalinclude:: _json/conversation_comment_add_root.resp
-   :language: http
-
-
-Adding a single comment to a comment
-------------------------------------
-
-Adding a single comment to commont on a conversation for a content object
-
-These following fields are used:
-
-- @id: Comment id.
-- date: Date at which it is commented.
-- owner: Commenter of that comment.
-- comment: The actual content of that comment.
-- lastUpdated: Date at which it is last updated.
+- text: The content of the reply.
 - in_reply_to: The id of the comment to which the comment is placed.
 
 ..  http:example::curl httpie python-requests
-  :request: _json/conversation_comment_add_sub.req
+  :request: _json/comments_add_sub.req
 
-.. literalinclude:: _json/conversation_comment_add_sub.resp
+.. literalinclude:: _json/comments_add_sub.resp
    :language: http
 
 
-Listing a comment from a conversation for a content object
-----------------------------------------------------------
+Updating a comment
+------------------
 
-Listing single comment from a conversation for a resource
-
-..  http:example::curl httpie python-requests
-  :request: _json/conversation_comment_get.req
-
-.. literalinclude:: _json/conversation_comment_get.resp
-   :language: http
-
-These following fields are returned:
-
-- @id: Comment id.
-- date: Date at which it is commented.
-- owner: Commenter of that comment.
-- comment: The actual content of that comment.
-- lastUpdated: Date at which it is last updated.
-
-
-Updating a comment from a conversation for a content Object
------------------------------------------------------------
-
-Updating a comment will update the specific comment for a conversation. It can only be done by the owners of that comment.
+Updating a comment will update the specific comment. It can only be done by the owners of that comment.
 
 ..  http:example::curl httpie python-requests
-  :request: _json/conversation_comment_udpate.req
+  :request: _json/comments_update.req
 
 A successful response to a PATCH request will be indicated by a :term:`204 No Content` response:
 
-.. literalinclude:: _json/conversation_comment_udpate.resp
+.. literalinclude:: _json/comments_update.resp
    :language: http
 
 
-Deleting a comment from a conversation for a content Object
------------------------------------------------------------
+Deleting a comment
+------------------
 
-Deleting a comment will remove the specific comment from a conversations. The Ids of the comments below this will not be effected.
+Deleting a comment will remove the specific comment. The replies to this comment will also be deleted.
 
 ..  http:example::curl httpie python-requests
-	:request: _json/conversation_comment_delete.req
+	:request: _json/comments_delete.req
 
 A successful response will be indicated by a :term:`204 No Content` response:
 
-.. literalinclude:: _json/conversation_comment_delete.resp
+.. literalinclude:: _json/comments_delete.resp
    :language: http

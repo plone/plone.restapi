@@ -1,7 +1,0 @@
-HTTP/1.1 404 Not Found
-Content-Type: application/json
-
-{
-  "message": "Resource not found: http://localhost:55001/plone/front-page/@conversations/default/@comments/123456", 
-  "type": "NotFound"
-}
