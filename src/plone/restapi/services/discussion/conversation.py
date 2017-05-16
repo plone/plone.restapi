@@ -9,6 +9,7 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from pkg_resources import get_distribution
 from zExceptions import BadRequest
 from zExceptions import Unauthorized
 from zope.component import getMultiAdapter
@@ -19,6 +20,8 @@ from zope.publisher.interfaces import IPublishTraverse
 
 from datetime import datetime
 import plone.protect.interfaces
+
+PLONE4 = get_distribution('Products.CMFPlone').version < '5'
 
 
 class CommentsGet(Service):
@@ -163,15 +166,25 @@ class CommentsDelete(Service):
         self.request.response.setStatus(204)
 
     # Helper functions copied from p.a.discussion's viewlet to support Plone 4
+    def can_review(self):
+        """Returns true if current user has the 'Review comments' permission.
+        """
+        return getSecurityManager().checkPermission('Review comments',
+                                                    aq_inner(self.context))
+
     def can_delete(self, reply):
         """Returns true if current user has the 'Delete comments'
         permission.
         """
+        if PLONE4:
+            return self.can_review()
         return getSecurityManager().checkPermission(
             'Delete comments', aq_inner(reply)
         )
 
     def delete_own_comment_allowed(self):
+        if PLONE4:
+            return False
         # Check if delete own comments is allowed in the registry
         registry = queryUtility(IRegistry)
         settings = registry.forInterface(IDiscussionSettings, check=False)
@@ -181,6 +194,8 @@ class CommentsDelete(Service):
         """Returns true if the current user could delete the comment if it had
         no replies. This is used to prepare hidden form buttons for JS.
         """
+        if PLONE4:
+            return False
         try:
             return comment.restrictedTraverse(
                 '@@delete-own-comment').could_delete()
