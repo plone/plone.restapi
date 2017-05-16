@@ -845,6 +845,9 @@ class TestCommenting(unittest.TestCase):
             'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
         )
 
+    def tearDown(self):
+        self.time_freezer.stop()
+
     def create_document_with_comments(self):
         self.portal.invokeFactory('Document', id='front-page')
         document = self.portal['front-page']
