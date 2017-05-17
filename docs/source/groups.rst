@@ -69,7 +69,7 @@ To update the settings of a group, send a ``PATCH`` request with the group detai
     :request: _json/groups_update.req
 
 .. note::
-        The 'users' object is a mapping of a user_id and a boolean indirect adding or removing from the group.
+        The 'users' object is a mapping of a user_id and a boolean indicating adding or removing from the group.
 
 A successful response to a PATCH request will be indicated by a :term:`204 No Content` response:
 
