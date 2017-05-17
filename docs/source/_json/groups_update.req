@@ -4,5 +4,10 @@ Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    "email": "ploneteam2@plone.org"
+    "email": "ploneteam2@plone.org",
+    "users": [
+        {
+            "test_user_1_": false
+        }
+    ]
 }

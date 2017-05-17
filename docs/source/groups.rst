@@ -68,6 +68,9 @@ To update the settings of a group, send a ``PATCH`` request with the group detai
 ..  http:example:: curl httpie python-requests
     :request: _json/groups_update.req
 
+.. note::
+        The 'users' object is a mapping of a user_id and a boolean indirect adding or removing from the group.
+
 A successful response to a PATCH request will be indicated by a :term:`204 No Content` response:
 
 .. literalinclude:: _json/groups_update.resp

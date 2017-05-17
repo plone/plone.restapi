@@ -13,5 +13,9 @@ Content-Type: application/json
     "roles": [
         "Manager"
     ],
+    "users": [
+        "admin",
+        "test_user_1_"
+    ],
     "title": "Framework Team"
 }

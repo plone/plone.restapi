@@ -8,5 +8,9 @@ Location: http://localhost:55001/plone/@groups/fwt
   "email": "fwt@plone.org", 
   "groupname": "fwt", 
   "id": "fwt", 
-  "title": "Framework Team"
+  "title": "Framework Team",
+  "users": [
+    "admin",
+    "test_user_1_"
+  ]
 }
