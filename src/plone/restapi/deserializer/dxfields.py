@@ -26,6 +26,8 @@ class DefaultFieldDeserializer(object):
 
     def __init__(self, field, context, request):
         self.field = field
+        if IField.providedBy(self.field):
+            self.field = self.field.bind(context)
         self.context = context
         self.request = request
 

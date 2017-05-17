@@ -4,7 +4,8 @@ Changelog
 1.0a16 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Bind schema field to context to handle context vocabularies. #389
+  [csenger]
 
 
 1.0a15 (2017-05-15)
