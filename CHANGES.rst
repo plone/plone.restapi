@@ -4,7 +4,10 @@ Changelog
 1.0a16 (unreleased)
 -------------------
 
-- Nothing changed yet.
+New Features:
+
+- Expose a user's global roles though the @users endpoint.
+  [jaroel]
 
 
 1.0a15 (2017-05-15)
