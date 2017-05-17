@@ -9,8 +9,17 @@ Location: http://localhost:55001/plone/@groups/fwt
   "groupname": "fwt", 
   "id": "fwt", 
   "title": "Framework Team",
-  "users": [
-    "admin",
-    "test_user_1_"
-  ]
+  "users": {
+    "batching": {
+      "@id": "http://localhost:55001/plone/@groups/ploneteam?b_size=1", 
+      "first": "http://localhost:55001/plone/@groups/ploneteam?b_size=1&b_start=0", 
+      "last": "http://localhost:55001/plone/@groups/ploneteam?b_size=1&b_start=19", 
+      "next": "http://localhost:55001/plone/@groups/ploneteam?b_size=1&b_start=1"
+    }, 
+    "items": [
+      "admin", 
+      "test_user_1_"
+    ], 
+    "items_total": 20
+  }
 }
