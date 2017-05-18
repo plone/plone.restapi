@@ -861,13 +861,13 @@ class TestCommenting(unittest.TestCase):
         # batching
         self.conversation = conversation = IConversation(document)
         self.replies = replies = IReplies(conversation)
-        for x in range(1, 5):
+        for x in range(1, 2):
             comment = createObject('plone.Comment')
             comment.text = 'Comment %d' % x
             comment = replies[replies.addComment(comment)]
 
             comment_replies = IReplies(comment)
-            for y in range(1, 5):
+            for y in range(1, 2):
                 comment = createObject('plone.Comment')
                 comment.text = 'Comment %d.%d' % (x, y)
                 comment_replies.addComment(comment)
@@ -899,7 +899,7 @@ class TestCommenting(unittest.TestCase):
 
     def test_comments_get(self):
         url = '{}/@comments'.format(self.document.absolute_url())
-        response = self.api_session.get(url, params={'b_size': 1})
+        response = self.api_session.get(url)
         save_request_and_response_for_docs('comments_get', response)
 
     def test_comments_add_root(self):
