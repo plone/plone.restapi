@@ -4,7 +4,10 @@ Changelog
 1.0a16 (unreleased)
 -------------------
 
-- Nothing changed yet.
+New Features:
+
+- Manipulate group membership in the @groups endpoint.
+  [jaroel]
 
 
 1.0a15 (2017-05-15)
