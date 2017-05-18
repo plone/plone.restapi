@@ -6,6 +6,9 @@ Changelog
 
 New Features:
 
+- Add schema to @registry listing.
+  [jaroel]
+
 - Expose a user's global roles though the @users endpoint.
   [jaroel]
 
