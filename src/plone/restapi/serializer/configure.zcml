@@ -59,6 +59,7 @@
 
     <adapter factory=".user.SerializeUserToJson" />
     <adapter factory=".group.SerializeGroupToJson" />
+    <adapter factory=".group.SerializeGroupToJsonSummary" />
 
     <adapter factory=".local_roles.SerializeLocalRolesToJson"
              name="local_roles"

@@ -59,6 +59,7 @@ The server will respond with a ``200 OK`` status code and the JSON representatio
 .. literalinclude:: _json/groups_get.resp
    :language: http
 
+Batching is supported for the 'users' object.
 
 Update Group
 ------------

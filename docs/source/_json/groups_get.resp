@@ -7,18 +7,10 @@ Content-Type: application/json
   "email": "ploneteam@plone.org", 
   "groupname": "ploneteam", 
   "id": "ploneteam", 
-  "title": "Plone Team",
+  "title": "Plone Team", 
   "users": {
-    "batching": {
-      "@id": "http://localhost:55001/plone/@groups/ploneteam?b_size=1", 
-      "first": "http://localhost:55001/plone/@groups/ploneteam?b_size=1&b_start=0", 
-      "last": "http://localhost:55001/plone/@groups/ploneteam?b_size=1&b_start=19", 
-      "next": "http://localhost:55001/plone/@groups/ploneteam?b_size=1&b_start=1"
-    }, 
-    "items": [
-      "admin",
-      "test_user_1_"
-    ], 
-    "items_total": 20
+    "@id": "http://localhost:55001/plone/@groups/ploneteam", 
+    "items": [], 
+    "items_total": 0
   }
 }
