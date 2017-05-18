@@ -59,6 +59,13 @@ class TestGroupsEndpoint(unittest.TestCase):
         self.assertEqual('Plone Team', ptgroup.get('title'))
         self.assertEqual('We are Plone', ptgroup.get('description'))
 
+        # We don't want the group members listed in the overview as there
+        # might be loads.
+        self.assertTrue(
+            not any(['users' in group for group in response.json()]),
+            "Users key found in groups listing"
+        )
+
     def test_add_group(self):
         response = self.api_session.post(
             '/@groups',
@@ -68,7 +75,8 @@ class TestGroupsEndpoint(unittest.TestCase):
                 'title': 'Framework Team',
                 'description': 'The Plone Framework Team',
                 'roles': ['Manager'],
-                'groups': ['Administrators']
+                'groups': ['Administrators'],
+                'users': [SITE_OWNER_NAME, TEST_USER_ID]
             },
         )
         transaction.commit()
@@ -77,6 +85,12 @@ class TestGroupsEndpoint(unittest.TestCase):
         fwt = self.gtool.getGroupById('fwt')
         self.assertEqual(
             "fwt@plone.org", fwt.getProperty('email')
+        )
+        self.assertTrue(
+            set([SITE_OWNER_NAME, TEST_USER_ID]).issubset(
+                set(fwt.getGroupMemberIds())
+            ),
+            "Userids not found in group"
         )
 
     def test_add_group_groupname_is_required(self):
@@ -107,6 +121,7 @@ class TestGroupsEndpoint(unittest.TestCase):
         self.assertEqual('ploneteam@plone.org', response.json().get('email'))
         self.assertEqual('Plone Team', response.json().get('title'))
         self.assertEqual('We are Plone', response.json().get('description'))
+        self.assertIn('users', response.json())
 
     def test_get_search_group_with_filter(self):
         response = self.api_session.get('/@groups', params={'query': 'plo'})
@@ -134,15 +149,24 @@ class TestGroupsEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_update_group(self):
+        ploneteam = self.gtool.getGroupById('ploneteam')
+        ploneteam.addMember(SITE_OWNER_NAME)
+        transaction.commit()
+        self.assertNotIn(TEST_USER_ID, ploneteam.getGroupMemberIds())
+        self.assertIn(SITE_OWNER_NAME, ploneteam.getGroupMemberIds())
+
         payload = {
             'groupname': 'ploneteam',
-            'email': 'ploneteam2@plone.org'
+            'email': 'ploneteam2@plone.org',
+            'users': {
+                TEST_USER_ID: True,
+                SITE_OWNER_NAME: False,
+            }
         }
         response = self.api_session.patch('/@groups/ploneteam', json=payload)
         transaction.commit()
 
         self.assertEqual(response.status_code, 204)
-
         ploneteam = self.gtool.getGroupById('ploneteam')
         self.assertEqual('ploneteam', ploneteam.id)
         self.assertEqual('Plone Team', ploneteam.getProperty('title'))
@@ -150,6 +174,8 @@ class TestGroupsEndpoint(unittest.TestCase):
             'ploneteam2@plone.org',
             ploneteam.getProperty('email')
         )
+        self.assertIn(TEST_USER_ID, ploneteam.getGroupMemberIds())
+        self.assertNotIn(SITE_OWNER_NAME, ploneteam.getGroupMemberIds())
 
     def test_delete_group(self):
         response = self.api_session.delete('/@groups/ploneteam')

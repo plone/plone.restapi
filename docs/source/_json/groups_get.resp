@@ -7,5 +7,10 @@ Content-Type: application/json
   "email": "ploneteam@plone.org", 
   "groupname": "ploneteam", 
   "id": "ploneteam", 
-  "title": "Plone Team"
+  "title": "Plone Team", 
+  "users": {
+    "@id": "http://localhost:55001/plone/@groups/ploneteam", 
+    "items": [], 
+    "items_total": 0
+  }
 }
