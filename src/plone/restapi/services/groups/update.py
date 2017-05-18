@@ -48,6 +48,7 @@ class GroupsPatch(Service):
         description = data.get('description', None)
         roles = data.get('roles', None)
         groups = data.get('groups', None)
+        users = data.get('users', {})
 
         # Disable CSRF protection
         if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
@@ -65,6 +66,16 @@ class GroupsPatch(Service):
                 properties[id] = data[id]
 
         group.setGroupProperties(properties)
+
+        # Add/remove members
+        memberids = group.getGroupMemberIds()
+        for userid, allow in users.items():
+            if allow:
+                if userid not in memberids:
+                    group.addMember(userid)
+            else:
+                if userid in memberids:
+                    group.removeMember(userid)
 
         self.request.response.setStatus(204)
         return None

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
@@ -59,7 +60,7 @@ class GroupsGet(Service):
                 for group in groups:
                     serializer = queryMultiAdapter(
                         (group, self.request),
-                        ISerializeToJson
+                        ISerializeToJsonSummary
                     )
                     result.append(serializer())
                 return result
@@ -71,7 +72,7 @@ class GroupsGet(Service):
             for group in self._get_groups():
                 serializer = queryMultiAdapter(
                     (group, self.request),
-                    ISerializeToJson
+                    ISerializeToJsonSummary
                 )
                 result.append(serializer())
             return result

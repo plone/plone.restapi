@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from itertools import chain
 from plone.app.workflow.browser.sharing import merge_search_results
-from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
-from zope.component import queryMultiAdapter
 
 
 class PrincipalsGet(Service):
@@ -27,9 +26,9 @@ class PrincipalsGet(Service):
     def serialize_principals(self, principals):
         result = []
         for principal in principals:
-            serializer = queryMultiAdapter(
+            serializer = getMultiAdapter(
                 (principal, self.request),
-                ISerializeToJson
+                ISerializeToJsonSummary
             )
             result.append(serializer())
         return result
