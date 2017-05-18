@@ -1,17 +1,21 @@
 Comments
 ========
 
-The @comments endpoint exposes comments for each object. These comments are mainly identified as conversations. Each conversation can have multiple comments inside it. Parent comment of each conversation starts with id 1.
-These comments are on an object so each content can have multiple conversations.
+Plone offers users to post comments on any content object with plone.app.discussion.
 
+Commenting can be enabled globally, for specific content types and for single content objects.
 
-Listing comments
+When commenting is enabled on your content object, you can retrieve a list of all existing comments, add new comments, reply to existing comments or delete a comment.
+
+Listing Comments
 ----------------
 
-Listing comments of a resource
+You can list the existing comment on a content object by sending a GET request to the URL of the content object and appending '/@comments':
 
 ..  http:example:: curl httpie python-requests
     :request: _json/comments_get.req
+
+The server will respond with a `Status 200` and a batched list of all comments:
 
 .. literalinclude:: _json/comments_get.resp
    :language: http
@@ -20,77 +24,78 @@ These following fields are returned:
 
 - @id: Link to the current endpoint
 - items: a list of comments for the current resource
-- items_total: total number of comments for the resource
-- batching: (optional) batching information
+- items_total: the total number of comments for the resource
+- batching: batching information
 
-A comment consists of the following fields:
-- @id: comment ID used for deleting and updating
+The items attribute returns a list of comments, each comment provides the following fields:
+
+- @id: hyperlink to the comment
 - @parent: (optional) the parent comment
-- author_name: the authors full name
-- author_username: the authors username
-- comment_id: the numerical id of the comment
-- in_reply_to: the numerical id of the parent comment
+- author_name: the full name of the author of this comment
+- author_username: the username of the author of this comment
+- comment_id: the comment ID uniquely identifies the comment
+- in_reply_to: the comment ID of the parent comment
 - creation_date: when the comment was placed
 - modification_date: when the comment was last updated
-- text: the comment's text and the mime-type of the text. This is normally text/plain.
-- user_notification: if the author requested notifications on replies
+- text: contains a 'mime-type' and 'text' attribute with the text of the comment. Default mime-type is 'text/plain'.
+- user_notification: boolean value to indicate if the author of the comment requested notifications on replies
 
 
-Adding a comment
+Adding a Comment
 ----------------
 
-Adding a single comment to a content object
-
-These following fields are used:
-- text: The content of the comment
+To add a new comment to a content object, send a POST request to the URL of the content object and append '/@comments' to the URL. The body of the request needs to contain a JSON structure with a 'text' attribute that contains the comment text:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/comments_add_root.req
+
+If the creation of the comment has been successful, the server will respond with a :term:`204 No Content` status and the URL of the newly created comment in the location header:
 
 .. literalinclude:: _json/comments_add_root.resp
    :language: http
 
 
-Adding a reply to a comment
----------------------------
+Replying to a Comment
+---------------------
 
-Adding a single reply to a comment to a content object
-
-These following fields are used:
-
-- text: The content of the reply.
-- in_reply_to: The id of the comment to which the comment is placed.
+To add a direct reply to an existing comment, send a POST request to the URL of the comment you want to reply to. The body of the request needs to contain a JSON structure with a 'text' attribute that contains the comment text:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/comments_add_sub.req
+
+If the creation of the comment has been successful, the server will respond with a :term:`204 No Content` status and the URL of the newly created comment in the location header:
 
 .. literalinclude:: _json/comments_add_sub.resp
    :language: http
 
 
-Updating a comment
+Updating a Comment
 ------------------
 
-Updating a comment will update the specific comment. It can only be done by the owners of that comment.
+..note: The permission to update a comment is, by default, only granted to the creater (owner role) of the comment.
+
+An existing comment can be updated by sending a PATCH request to the URL of the comment. The request body needs to contain a JSON structure with at least a 'text' attribute:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/comments_update.req
 
-A successful response to a PATCH request will be indicated by a :term:`204 No Content` response:
+The server will respond with a :term:`204 No Content` response and a location header with the comment URL when the comment has been updated successfully:
 
 .. literalinclude:: _json/comments_update.resp
    :language: http
 
 
-Deleting a comment
+Deleting a Comment
 ------------------
 
-Deleting a comment will remove the specific comment. The replies to this comment will also be deleted.
+An existing comment can be deleted by sending a DELETE request to the URL of the comment.
+
+..note: Deleting a comment will, by default, also delete all existing replies to that comment.
 
 ..  http:example:: curl httpie python-requests
 	 :request: _json/comments_delete.req
 
-A successful response will be indicated by a :term:`204 No Content` response:
+When the comment has been deleted successfully, the server will respond with a :term:`204 No Content` response:
 
 .. literalinclude:: _json/comments_delete.resp
    :language: http
