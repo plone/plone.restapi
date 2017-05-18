@@ -9,7 +9,7 @@ New Features:
 - Manipulate group membership in the @groups endpoint.
   [jaroel]
 
-- Expose a user's global roles though the @users endpoint.
+- Expose and manipulate a user's global roles though the @users endpoint.
   [jaroel]
 
 
