@@ -6,6 +6,6 @@ Content-Type: application/json
 {
     "email": "avram.chomsky@example.com",
     "roles": {
-        "Member": false
+        "Contributor": false
     }
 }

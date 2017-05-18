@@ -11,7 +11,7 @@ Location: http://localhost:55001/plone/@users/noamchomsky
   "id": "noamchomsky", 
   "location": "Cambridge, MA", 
   "roles": [
-    "Member"
+    "Contributor"
   ], 
   "username": "noamchomsky"
 }
