@@ -55,5 +55,21 @@ class UsersPatch(Service):
             else:
                 user.setMemberProperties(mapping={key: value})
 
+        roles = user_settings_to_update.get('roles', {})
+        if roles:
+            to_add = [key for key, enabled in roles.items() if enabled]
+            to_remove = [key for key, enabled in roles.items() if not enabled]
+
+            target_roles = set(user.getRoles()) - set(to_remove)
+            target_roles = target_roles | set(to_add)
+
+            acl_users = getToolByName(self.context, 'acl_users')
+            acl_users.userFolderEditUser(
+                principal_id=user.id,
+                password=None,
+                roles=target_roles,
+                domains=user.getDomains(),
+            )
+
         self.request.response.setStatus(204)
         return None
