@@ -58,6 +58,7 @@
     <adapter factory=".catalog.LazyCatalogResultSerializer" />
 
     <adapter factory=".user.SerializeUserToJson" />
+    <adapter factory=".user.SerializeUserToJsonSummary" />
     <adapter factory=".group.SerializeGroupToJson" />
     <adapter factory=".group.SerializeGroupToJsonSummary" />
 
