@@ -12,11 +12,9 @@ New Features:
 - Add batched listing of registry entries to @registry endpoint.
   [jaroel]
 
-- Add docs for comment APIs
-  [pjoshi, jaroel]
-  
-- Add commenting API
-  [jaroel]
+- Add @comments endpoint.
+  [jaroel,timo]
+
 
 1.0a14 (2017-05-02)
 -------------------
