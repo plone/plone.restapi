@@ -43,3 +43,9 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
         self.assertEqual('web.mit.edu/chomsky', user.get('home_page'))  # noqa
         self.assertEqual('Professor of Linguistics', user.get('description'))  # noqa
         self.assertEqual('Cambridge, MA', user.get('location'))
+
+    def test_serialize_roles(self):
+        user = self.serialize(self.user)
+        self.assertIn('roles', user)
+        self.assertNotIn('Authenticated', user['roles'])
+        self.assertNotIn('Anonymous', user['roles'])

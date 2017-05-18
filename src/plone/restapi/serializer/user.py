@@ -18,6 +18,13 @@ class SerializeUserToJson(object):
     def __call__(self):
         user = self.context
         portal = getSite()
+
+        # Global roles
+        roles = user.getRoles()
+        # Anonymous and Authenticated are pseudo roles assign automatically
+        # to logged-in or logged-out users. They should not be exposed here
+        roles = list(set(roles) - set(['Anonymous', 'Authenticated', ]))
+
         return {
             '@id': '{}/@users/{}'.format(
                 portal.absolute_url(),
@@ -29,5 +36,6 @@ class SerializeUserToJson(object):
             'fullname': user.getProperty('fullname'),
             'home_page': user.getProperty('home_page'),
             'description': user.getProperty('description'),
-            'location': user.getProperty('location')
+            'location': user.getProperty('location'),
+            'roles': roles,
         }

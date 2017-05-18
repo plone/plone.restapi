@@ -60,6 +60,8 @@ The server will respond with a 200 OK status code and the JSON representation of
 .. literalinclude:: _json/users_get.resp
    :language: http
 
+The key 'roles' lists the globally defined roles for the user.
+
 
 Update User
 -----------
