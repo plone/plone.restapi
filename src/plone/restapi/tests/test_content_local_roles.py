@@ -40,6 +40,18 @@ class TestFolderCreate(unittest.TestCase):
                     '__ac_local_roles_block__',
                     False))
 
+    def test_sharing_no_disabled(self):
+        '''A sharing response should not contain a disabled flag.
+        '''
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '/@sharing?search=' + SITE_OWNER_NAME,  # noqa
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertGreater(len(response.json()['entries']), 0)
+        for entry in response.json()['entries']:
+            self.assertNotIn('disabled', entry)
+
     def test_sharing_requires_delegate_roles_permission(self):
         '''A response for an object without any roles assigned'''
         response = requests.get(
@@ -62,7 +74,6 @@ class TestFolderCreate(unittest.TestCase):
             response.json(),
             {u'available_roles': [u'Contributor', u'Editor', u'Reviewer', u'Reader'],  # noqa
              u'entries': [{
-                 u'disabled': False,
                  u'id': u'AuthenticatedUsers',
                  u'login': None,
                  u'roles': {u'Contributor': False,
@@ -92,7 +103,6 @@ class TestFolderCreate(unittest.TestCase):
             {u'available_roles': [u'Contributor', u'Editor', u'Reviewer', u'Reader'],  # noqa
              u'entries': [
                 {
-                    u'disabled': False,
                     u'id': u'AuthenticatedUsers',
                     u'login': None,
                     u'roles': {u'Contributor': False,
@@ -102,7 +112,6 @@ class TestFolderCreate(unittest.TestCase):
                     u'title': u'Logged-in users',
                     u'type': u'group'},
                 {
-                    u'disabled': False,
                     u'id': u'test_user_1_',
                     u'roles': {u'Contributor': False,
                                u'Editor': False,

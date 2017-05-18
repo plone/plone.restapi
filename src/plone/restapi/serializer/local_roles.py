@@ -21,9 +21,19 @@ class SerializeLocalRolesToJson(object):
         sharing_view = getMultiAdapter((self.context, self.request),
                                        name='sharing')
         local_roles = sharing_view.existing_role_settings()
+
+        # We remove the disabled flag. The entry isn't disabled, but just used
+        # as a flag for the Plone template to prevent removing a users own
+        # entry.
+        entries = []
+        for role in local_roles:
+            if 'disabled' in role:
+                del role['disabled']
+            entries.append(role)
+
         available_roles = [r['id'] for r in sharing_view.roles()]
         return {'inherit': getattr(aq_base(self.context),
                                    '__ac_local_roles_block__',
                                    False),
-                'entries': local_roles,
+                'entries': entries,
                 'available_roles': available_roles}

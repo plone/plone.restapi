@@ -24,6 +24,10 @@ New Features:
 - Add batched listing of registry entries to @registry endpoint.
   [jaroel]
 
+Bugfixes:
+- Remove 'disabled' from @sharing entries, as it is a Plone template hint.
+  It doesn't actually mean that the entry is disabled.
+  [jaroel]
 
 1.0a14 (2017-05-02)
 -------------------
@@ -38,7 +42,6 @@ Bugfixes:
 - Fix the @move endpoint fails to return 403 when the user don't have proper
   delete permissions over the parent folder.
   [sneridagh]
-
 
 1.0a13 (2017-04-18)
 -------------------
