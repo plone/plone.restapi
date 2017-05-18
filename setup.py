@@ -43,6 +43,9 @@ setup(name='plone.restapi',
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
           'Products.PasswordResetTool',  # gone in Plone 5.1
           'PyJWT',
+          'five.intid',
+          'plone.api',
+          'z3c.relationfield',
       ],
       extras_require={'test': [
           'Products.Archetypes',
