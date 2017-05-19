@@ -12,6 +12,9 @@ Bugfixes:
 
 New Features:
 
+- Add schema to @registry listing.
+  [jaroel]
+
 - Manipulate group membership in the @groups endpoint.
   [jaroel]
 
