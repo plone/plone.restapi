@@ -71,7 +71,7 @@ class TestFolderCreate(unittest.TestCase):
                             u'Reviewer': False},
                  u'title': u'Logged-in users',
                  u'type': u'group'}],
-             u'inherit': False}
+             u'inherit': True}
         )
 
     def test_get_local_roles_with_user(self):
@@ -110,7 +110,7 @@ class TestFolderCreate(unittest.TestCase):
                                u'Reviewer': True},
                     u'title': u'test-user',
                     u'type': u'user'}],
-             u'inherit': False}
+             u'inherit': True}
         )
 
     def test_set_local_roles_for_user(self):
@@ -185,6 +185,8 @@ class TestFolderCreate(unittest.TestCase):
         )
 
     def test_get_local_roles_inherit_roles(self):
+        # __ac_local_roles_block__ specifies to block inheritance:
+        # https://docs.plone.org/develop/plone/security/local_roles.html
         self.portal.folder1.__ac_local_roles_block__ = True
         transaction.commit()
 
@@ -195,7 +197,7 @@ class TestFolderCreate(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['inherit'], True)
+        self.assertEqual(response.json()['inherit'], False)
 
     def test_set_local_roles_inherit(self):
         self.assertEqual(self._get_ac_local_roles_block(self.portal.folder1),

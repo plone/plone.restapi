@@ -4,6 +4,12 @@ Changelog
 1.0a16 (unreleased)
 -------------------
 
+Bugfixes:
+
+- The inherit flag was the wrong way around.
+  Blocked inherit showed up as non-blocked.
+  [jaroel]
+
 New Features:
 
 - Manipulate group membership in the @groups endpoint.

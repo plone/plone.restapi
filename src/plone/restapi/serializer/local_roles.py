@@ -22,8 +22,13 @@ class SerializeLocalRolesToJson(object):
                                        name='sharing')
         local_roles = sharing_view.existing_role_settings()
         available_roles = [r['id'] for r in sharing_view.roles()]
-        return {'inherit': getattr(aq_base(self.context),
-                                   '__ac_local_roles_block__',
-                                   False),
+
+        blocked_roles = getattr(
+            aq_base(self.context),
+            '__ac_local_roles_block__',
+            False,
+        )
+
+        return {'inherit': not blocked_roles,
                 'entries': local_roles,
                 'available_roles': available_roles}
