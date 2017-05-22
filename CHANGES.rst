@@ -12,6 +12,8 @@ Bugfixes:
 
 New Features:
 
+- Add @roles endpoint to list defined global roles.
+
 - Add schema to @registry listing.
   [jaroel]
 
