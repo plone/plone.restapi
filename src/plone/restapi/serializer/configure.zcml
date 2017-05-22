@@ -58,7 +58,9 @@
     <adapter factory=".catalog.LazyCatalogResultSerializer" />
 
     <adapter factory=".user.SerializeUserToJson" />
+    <adapter factory=".user.SerializeUserToJsonSummary" />
     <adapter factory=".group.SerializeGroupToJson" />
+    <adapter factory=".group.SerializeGroupToJsonSummary" />
 
     <adapter factory=".local_roles.SerializeLocalRolesToJson"
              name="local_roles"

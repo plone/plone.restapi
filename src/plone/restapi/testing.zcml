@@ -5,6 +5,11 @@
   xmlns:zcml="http://namespaces.zope.org/zcml"
   i18n_domain="plone.app.contenttypes">
 
+  <utility
+      provides="zope.schema.interfaces.IVocabularyFactory"
+      component=".tests.dxtypes.vocabularyRequireingContextFactory"
+      name="plone.restapi.testing.context_vocabulary" />
+
   <include package="plone.behavior" file="meta.zcml"/>
 
 	<plone:behavior
