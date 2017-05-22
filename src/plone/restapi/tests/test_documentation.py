@@ -794,3 +794,8 @@ class TestTraversal(unittest.TestCase):
         url = '{}/@history'.format(self.document.absolute_url())
         response = self.api_session.patch(url, json={'version': 0})
         save_request_and_response_for_docs('history_revert', response)
+
+    def test_roles_get(self):
+        url = '{}/@roles'.format(self.portal_url)
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs('roles', response)
