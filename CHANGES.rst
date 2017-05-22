@@ -4,8 +4,27 @@ Changelog
 1.0a16 (unreleased)
 -------------------
 
+Bugfixes:
+
 - Bind schema field to context to handle context vocabularies. #389
   [csenger]
+
+- The inherit flag was the wrong way around.
+  Blocked inherit showed up as non-blocked.
+  [jaroel]
+
+New Features:
+
+- Add @roles endpoint to list defined global roles.
+
+- Add schema to @registry listing.
+  [jaroel]
+
+- Manipulate group membership in the @groups endpoint.
+  [jaroel]
+
+- Expose a user's global roles though the @users endpoint.
+  [jaroel]
 
 
 1.0a15 (2017-05-15)

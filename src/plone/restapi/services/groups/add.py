@@ -29,6 +29,7 @@ class GroupsPost(Service):
         description = data.get('description', None)
         roles = data.get('roles', None)
         groups = data.get('groups', None)
+        users = data.get('users', [])
 
         properties = {
             'title': title,
@@ -59,7 +60,10 @@ class GroupsPost(Service):
             raise BadRequest(
                 "Error occurred, could not add group {}.".format(groupname))
 
+        # Add members
         group = gtool.getGroupById(groupname)
+        for userid in users:
+            group.addMember(userid)
 
         self.request.response.setStatus(201)
         self.request.response.setHeader(

@@ -10,5 +10,6 @@ Location: http://localhost:55001/plone/@users/noamchomsky
   "home_page": "web.mit.edu/chomsky", 
   "id": "noamchomsky", 
   "location": "Cambridge, MA", 
+  "roles": [], 
   "username": "noamchomsky"
 }

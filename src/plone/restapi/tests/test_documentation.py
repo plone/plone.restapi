@@ -630,7 +630,8 @@ class TestTraversal(unittest.TestCase):
                 'title': 'Framework Team',
                 'description': 'The Plone Framework Team',
                 'roles': ['Manager'],
-                'groups': ['Administrators']
+                'groups': ['Administrators'],
+                'users': [SITE_OWNER_NAME, TEST_USER_ID]
             },
         )
         save_request_and_response_for_docs('groups_created', response)
@@ -652,6 +653,7 @@ class TestTraversal(unittest.TestCase):
             '/@groups/ploneteam',
             json={
                 'email': 'ploneteam2@plone.org',
+                'users': {TEST_USER_ID: False}
             },
         )
         save_request_and_response_for_docs('groups_update', response)
@@ -792,3 +794,8 @@ class TestTraversal(unittest.TestCase):
         url = '{}/@history'.format(self.document.absolute_url())
         response = self.api_session.patch(url, json={'version': 0})
         save_request_and_response_for_docs('history_revert', response)
+
+    def test_roles_get(self):
+        url = '{}/@roles'.format(self.portal_url)
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs('roles', response)
