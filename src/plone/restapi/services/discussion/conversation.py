@@ -9,7 +9,6 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
-from pkg_resources import get_distribution
 from zExceptions import BadRequest
 from zExceptions import Unauthorized
 from zope.component import getMultiAdapter
@@ -17,11 +16,17 @@ from zope.component import queryUtility
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
+from zope.security.interfaces import IPermission
 
 from datetime import datetime
 import plone.protect.interfaces
 
-PLONE4 = get_distribution('Products.CMFPlone').version < '5'
+
+def permission_exists(permission_id):
+    permission = queryUtility(IPermission, permission_id)
+    return permission is not None
+
+
 def fix_location_header(context, request):
     # This replaces the location header as sent by p.a.discussion's forms with
     # a RESTapi compatible location.
@@ -178,7 +183,7 @@ class CommentsDelete(Service):
         # Permission checks
         can_delete = self.can_delete(comment)
         doc_allowed = self.delete_own_comment_allowed()
-        delete_own = doc_allowed and self.could_delete_own(comment)
+        delete_own = doc_allowed and self.can_delete_own(comment)
         if not (can_delete or delete_own):
             raise Unauthorized()
 
@@ -186,6 +191,13 @@ class CommentsDelete(Service):
         self.request.response.setStatus(204)
 
     # Helper functions copied from p.a.discussion's viewlet to support Plone 4
+
+    def _has_permission(self, permission_id):
+        # Older p.a.discussion versions don't support Delete comments, in
+        # which case we need to check
+        permission = queryUtility(IPermission, permission_id)
+        return permission is not None
+
     def can_review(self):
         """Returns true if current user has the 'Review comments' permission.
         """
@@ -196,25 +208,29 @@ class CommentsDelete(Service):
         """Returns true if current user has the 'Delete comments'
         permission.
         """
-        if PLONE4:
+        if not permission_exists('plone.app.discussion.DeleteComments'):
+            # Older versions of p.a.discussion do not support this yet.
             return self.can_review()
+
         return getSecurityManager().checkPermission(
             'Delete comments', aq_inner(reply)
         )
 
     def delete_own_comment_allowed(self):
-        if PLONE4:
+        if not permission_exists('plone.app.discussion.DeleteOwnComments'):
+            # Older versions of p.a.discussion do not support this yet.
             return False
         # Check if delete own comments is allowed in the registry
         registry = queryUtility(IRegistry)
         settings = registry.forInterface(IDiscussionSettings, check=False)
         return settings.delete_own_comment_enabled
 
-    def could_delete_own(self, comment):
+    def can_delete_own(self, comment):
         """Returns true if the current user could delete the comment if it had
         no replies. This is used to prepare hidden form buttons for JS.
         """
-        if PLONE4:
+        if not permission_exists('plone.app.discussion.DeleteOwnComments'):
+            # Older versions of p.a.discussion do not support this yet.
             return False
         try:
             return comment.restrictedTraverse(
