@@ -12,7 +12,7 @@ Content-Type: application/json
   "items": [
     {
       "name": "Products.CMFPlone.i18nl10n.override_dateformat.Enabled", 
-      "schema": {
+      "properties": {
         "description": "Override the translation machinery", 
         "title": "Enabled", 
         "type": "boolean"
@@ -21,7 +21,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_long", 
-      "schema": {
+      "properties": {
         "description": "Default value: %Y-%m-%d %H:%M (2038-01-19 03:14)", 
         "title": "old ZMI property: localLongTimeFormat", 
         "type": "string"
@@ -30,7 +30,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_short", 
-      "schema": {
+      "properties": {
         "description": "Default value: %Y-%m-%d (2038-01-19)", 
         "title": "old ZMI property: localTimeFormat", 
         "type": "string"
@@ -39,7 +39,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.i18nl10n.override_dateformat.time_format", 
-      "schema": {
+      "properties": {
         "description": "Default value: %H:%M (03:14)", 
         "title": "old ZMI property: localTimeOnlyFormat", 
         "type": "string"
@@ -48,7 +48,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed", 
-      "schema": {
+      "properties": {
         "default": true, 
         "description": "Allow syndication for collections and folders on site.", 
         "title": "Allowed", 
@@ -58,7 +58,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed_feed_types", 
-      "schema": {
+      "properties": {
         "additionalItems": true, 
         "default": [
           "RSS|RSS 1.0", 
@@ -85,7 +85,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.default_enabled", 
-      "schema": {
+      "properties": {
         "default": false, 
         "description": "If syndication should be enabled by default for all folders and collections.", 
         "title": "Enabled by default", 
@@ -95,7 +95,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.max_items", 
-      "schema": {
+      "properties": {
         "default": 15, 
         "description": "Maximum number of items that will be syndicated.", 
         "title": "Maximum Items", 
@@ -105,7 +105,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.render_body", 
-      "schema": {
+      "properties": {
         "default": false, 
         "description": "If body text available for item, render it, otherwise use description.", 
         "title": "Render Body", 
@@ -115,7 +115,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.search_rss_enabled", 
-      "schema": {
+      "properties": {
         "default": true, 
         "description": "Allows users to subscribe to feeds of search results", 
         "title": "Search RSS enabled", 
@@ -125,7 +125,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_author_info", 
-      "schema": {
+      "properties": {
         "default": true, 
         "description": "Should feeds include author information", 
         "title": "Show author info", 
@@ -135,7 +135,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_button", 
-      "schema": {
+      "properties": {
         "description": "Makes it possible to customize syndication settings for particular folders and collections ", 
         "title": "Show Settings Button", 
         "type": "boolean"
@@ -144,7 +144,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_link", 
-      "schema": {
+      "properties": {
         "description": "Enable RSS link document action on the syndication content item.", 
         "title": "Show Feed Link", 
         "type": "boolean"
@@ -153,7 +153,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.site_rss_items", 
-      "schema": {
+      "properties": {
         "additionalItems": true, 
         "default": [
           "/news/aggregator"
@@ -177,7 +177,7 @@ Content-Type: application/json
     }, 
     {
       "name": "Products.ResourceRegistries.interfaces.settings.IResourceRegistriesSettings.resourceBundlesForThemes", 
-      "schema": {
+      "properties": {
         "description": "Maps skin names to lists of resource bundle names", 
         "key_type": {
           "additional": {}, 
@@ -207,7 +207,7 @@ Content-Type: application/json
     }, 
     {
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.anonymous_comments", 
-      "schema": {
+      "properties": {
         "default": false, 
         "description": "If selected, anonymous users are able to post comments without loggin in. It is highly recommended to use a captcha solution to prevent spam if this setting is enabled.", 
         "title": "Enable anonymous comments", 
@@ -217,7 +217,7 @@ Content-Type: application/json
     }, 
     {
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.anonymous_email_enabled", 
-      "schema": {
+      "properties": {
         "default": false, 
         "description": "If selected, anonymous user will have to give their email.", 
         "title": "Enable anonymous email field", 
@@ -227,7 +227,7 @@ Content-Type: application/json
     }, 
     {
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.captcha", 
-      "schema": {
+      "properties": {
         "choices": [
           [
             "disabled", 
@@ -249,7 +249,7 @@ Content-Type: application/json
     }, 
     {
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.edit_comment_enabled", 
-      "schema": {
+      "properties": {
         "default": false, 
         "description": "If selected, supports editing and deletion of comments for users with the 'Edit comments' permission.", 
         "title": "Enable editing of comments", 
@@ -259,7 +259,7 @@ Content-Type: application/json
     }, 
     {
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.globally_enabled", 
-      "schema": {
+      "properties": {
         "default": false, 
         "description": "If selected, users are able to post comments on the site. Though, you have to enable comments for specific content types, folders or content objects before users will be able to post comments.", 
         "title": "Globally enable comments", 
@@ -269,7 +269,7 @@ Content-Type: application/json
     }, 
     {
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderation_enabled", 
-      "schema": {
+      "properties": {
         "default": false, 
         "description": "If selected, comments will enter a 'Pending' state in which they are invisible to the public. A user with the 'Review comments' permission ('Reviewer' or 'Manager') can approve comments to make them visible to the public. If you want to enable a custom comment workflow, you have to go to the types control panel.", 
         "title": "Enable comment moderation", 
@@ -279,7 +279,7 @@ Content-Type: application/json
     }, 
     {
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderator_email", 
-      "schema": {
+      "properties": {
         "description": "Address to which moderator notifications will be sent.", 
         "title": "Moderator Email Address", 
         "type": "string"
@@ -288,7 +288,7 @@ Content-Type: application/json
     }, 
     {
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderator_notification_enabled", 
-      "schema": {
+      "properties": {
         "default": false, 
         "description": "If selected, the moderator is notified if a comment needs attention. The moderator email address can be found in the 'Mail settings' control panel (Site 'From' address)", 
         "title": "Enable moderator email notification", 
@@ -298,7 +298,7 @@ Content-Type: application/json
     }, 
     {
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.show_commenter_image", 
-      "schema": {
+      "properties": {
         "default": true, 
         "description": "If selected, an image of the user is shown next to the comment.", 
         "title": "Show commenter image", 
@@ -308,7 +308,7 @@ Content-Type: application/json
     }, 
     {
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.text_transform", 
-      "schema": {
+      "properties": {
         "choices": [
           [
             "text/plain", 
