@@ -6,6 +6,9 @@ Changelog
 
 Bugfixes:
 
+- Bind schema field to context to handle context vocabularies. #389
+  [csenger]
+
 - The inherit flag was the wrong way around.
   Blocked inherit showed up as non-blocked.
   [jaroel]
