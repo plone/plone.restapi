@@ -85,6 +85,7 @@ class TestCommentsEndpoint(unittest.TestCase):
 
         response = self.api_session.post(url, json={'text': 'comment 1'})
         self.assertEqual(204, response.status_code)
+        self.assertIn('location', response.headers)
 
         response = self.api_session.get(url)
         data = response.json()
@@ -130,6 +131,7 @@ class TestCommentsEndpoint(unittest.TestCase):
         payload = {'text': NEW_TEXT}
         response = self.api_session.patch(comment['@id'], json=payload)
         self.assertEqual(204, response.status_code)
+        self.assertIn('location', response.headers)
 
         response = self.api_session.get(url)
         data = response.json()

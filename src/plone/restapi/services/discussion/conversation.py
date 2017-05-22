@@ -22,16 +22,38 @@ from datetime import datetime
 import plone.protect.interfaces
 
 PLONE4 = get_distribution('Products.CMFPlone').version < '5'
+def fix_location_header(context, request):
+    # This replaces the location header as sent by p.a.discussion's forms with
+    # a RESTapi compatible location.
+    location = request.response.headers.get('location')
+    if location and '#' in location:
+        comment_id = location.split('#')[-1]
+        url = '{}/@comments/{}'.format(context.absolute_url(), comment_id)
+        request.response.headers['location'] = url
 
 
+@implementer(IPublishTraverse)
 class CommentsGet(Service):
+    comment_id = None
+
+    def publishTraverse(self, request, name):
+        if name:
+            self.comment_id = long(name)
+        return self
 
     def reply(self):
         conversation = IConversation(self.context)
-        serializer = getMultiAdapter(
-            (conversation, self.request),
-            ISerializeToJson
-        )
+        if not self.comment_id:
+            serializer = getMultiAdapter(
+                (conversation, self.request),
+                ISerializeToJson
+            )
+        else:
+            comment = conversation[self.comment_id]
+            serializer = getMultiAdapter(
+                (comment, self.request),
+                ISerializeToJson
+            )
         return serializer()
 
 
@@ -72,8 +94,7 @@ class CommentsAdd(Service):
         form.handleComment(form=form, action=action)
 
         self.request.response.setStatus(204)
-        if 'location' in self.request.response.headers:
-            del self.request.response.headers['location']
+        fix_location_header(self.context, self.request)
 
 
 @implementer(IPublishTraverse)
@@ -118,8 +139,7 @@ class CommentsUpdate(Service):
         form.handleComment(form=form, action=action)
 
         self.request.response.setStatus(204)
-        if 'location' in self.request.response.headers:
-            del self.request.response.headers['location']
+        fix_location_header(self.context, self.request)
 
     def edit_comment_allowed(self):
         # Check if editing comments is allowed in the registry

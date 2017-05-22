@@ -910,6 +910,7 @@ class TestCommenting(unittest.TestCase):
         )
         payload = {'text': 'My comment'}
         response = self.api_session.post(url, json=payload)
+        self.clean_comment_id(response)
         save_request_and_response_for_docs(
             'comments_add_root', response
         )
@@ -955,4 +956,3 @@ class TestCommenting(unittest.TestCase):
         url = '{}/@roles'.format(self.portal_url)
         response = self.api_session.get(url)
         save_request_and_response_for_docs('roles', response)
-
