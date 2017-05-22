@@ -31,6 +31,7 @@ Contents
    types
    users
    groups
+   roles
    components
    serialization
    searching
