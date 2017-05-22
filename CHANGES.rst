@@ -19,7 +19,7 @@ New Features:
   [buchi]
 
 - Add @controlpanels endpoint.
-  [jaroel]
+  [jaroel, timo]
 
 Bugfixes:
 
