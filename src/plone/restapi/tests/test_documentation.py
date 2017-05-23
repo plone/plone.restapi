@@ -527,7 +527,8 @@ class TestTraversal(unittest.TestCase):
                 'fullname': 'Noam Avram Chomsky',
                 'home_page': 'web.mit.edu/chomsky',
                 'description': 'Professor of Linguistics',
-                'location': 'Cambridge, MA'
+                'location': 'Cambridge, MA',
+                'roles': ['Contributor', ],
             },
         )
         save_request_and_response_for_docs('users_created', response)
@@ -552,6 +553,7 @@ class TestTraversal(unittest.TestCase):
             '/@users/noam',
             json={
                 'email': 'avram.chomsky@example.com',
+                'roles': {'Contributor': False, },
             },
         )
         save_request_and_response_for_docs('users_update', response)

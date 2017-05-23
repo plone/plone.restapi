@@ -83,7 +83,8 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "howard",
                 "email": "howard.zinn@example.com",
-                "password": "peopleshistory"
+                "password": "peopleshistory",
+                "roles": ["Contributor", ],
             },
         )
         transaction.commit()
@@ -93,6 +94,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(
             "howard.zinn@example.com", howard.getProperty('email')
         )
+        self.assertIn('Contributor', api.user.get_roles(username="howard"))
 
     def test_add_user_username_is_required(self):
         response = self.api_session.post(
@@ -314,6 +316,23 @@ class TestUsersEndpoint(unittest.TestCase):
             'avram.chomsky@example.com',
             noam.getProperty('email')
         )
+
+    def test_update_roles(self):
+        self.assertNotIn('Contributor', api.user.get_roles(username='noam'))
+
+        self.api_session.patch(
+            '/@users/noam',
+            json={'roles': {'Contributor': True}}
+        )
+        transaction.commit()
+        self.assertIn('Contributor', api.user.get_roles(username='noam'))
+
+        self.api_session.patch(
+            '/@users/noam',
+            json={'roles': {'Contributor': False}}
+        )
+        transaction.commit()
+        self.assertNotIn('Contributor', api.user.get_roles(username='noam'))
 
     def test_update_user_password(self):
         old_password_hashes = dict(

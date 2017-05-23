@@ -15,7 +15,7 @@ New Features:
 - Allow to manipulate the group membership in the @groups endpoint.
   [jaroel]
 
-- Include global roles assigned to a user in the @users endpoint.
+- List and mutate global roles assigned to a user in the @users endpoint.
   [jaroel]
 
 Bugfixes:

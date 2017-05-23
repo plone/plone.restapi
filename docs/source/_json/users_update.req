@@ -4,5 +4,8 @@ Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    "email": "avram.chomsky@example.com"
+    "email": "avram.chomsky@example.com",
+    "roles": {
+        "Contributor": false
+    }
 }
