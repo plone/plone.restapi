@@ -6,6 +6,9 @@ Changelog
 
 New Features:
 
+- Add @comments endpoint.
+  [jaroel,timo,pjoshi]
+
 - Add @roles endpoint to list defined global roles.
   [jaroel]
 
