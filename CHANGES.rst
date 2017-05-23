@@ -7,14 +7,15 @@ Changelog
 New Features:
 
 - Add @roles endpoint to list defined global roles.
-
-- Add schema to @registry listing.
   [jaroel]
 
-- Manipulate group membership in the @groups endpoint.
+- Add JSON schema to @registry listing.
   [jaroel]
 
-- Expose a user's global roles though the @users endpoint.
+- Allow to manipulate the group membership in the @groups endpoint.
+  [jaroel]
+
+- Include global roles assigned to a user in the @users endpoint.
   [jaroel]
 
 Bugfixes:
