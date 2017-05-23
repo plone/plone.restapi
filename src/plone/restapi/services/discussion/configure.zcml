@@ -1,0 +1,40 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <include package="plone.app.discussion" file="permissions.zcml" />
+
+  <plone:service
+    method="GET"
+    name="@comments"
+    for="*"
+    factory=".conversation.CommentsGet"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="POST"
+    name="@comments"
+    for="*"
+    factory=".conversation.CommentsAdd"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="PATCH"
+    name="@comments"
+    for="*"
+    factory=".conversation.CommentsUpdate"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="DELETE"
+    name="@comments"
+    for="*"
+    factory=".conversation.CommentsDelete"
+    permission="zope2.View"
+    />
+
+</configure>

@@ -70,5 +70,8 @@
     <adapter factory=".vocabularies.SerializeTermToJson" />
     
     <adapter factory=".registry.SerializeRegistryToJson" />
+    
+    <adapter factory=".discussion.ConversationSerializer" />
+    <adapter factory=".discussion.CommentSerializer" />
 
 </configure>
