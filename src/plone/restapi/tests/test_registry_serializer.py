@@ -50,5 +50,6 @@ class TestRegistrySerializer(unittest.TestCase):
         obj = self.serialize(registry)
         item = obj['items'][0]
         self.assertEqual(set(item.keys()), set(['name', 'value', 'schema']))
+        self.assertEqual(set(item['schema'].keys()), set(['properties']))
         self.assertEqual(item['name'], 'foo.bar')
         self.assertEqual(item['value'], u"Lorem Ipsum")
