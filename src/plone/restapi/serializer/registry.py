@@ -38,7 +38,9 @@ class SerializeRegistryToJson(object):
                 'value': self.registry[key]
             }
             __traceback_info__ = (record, record.field, schema)
-            data['properties'] = schema.get_schema()
+            data['schema'] = {
+                'properties': schema.get_schema(),
+            }
             return data
 
         results['items'] = [make_item(key) for key in batch]
