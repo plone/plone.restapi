@@ -6,10 +6,25 @@ Changelog
 
 New Features:
 
-- Manipulate group membership in the @groups endpoint.
+- Add @roles endpoint to list defined global roles.
   [jaroel]
 
-- Expose and manipulate a user's global roles though the @users endpoint.
+- Add JSON schema to @registry listing.
+  [jaroel]
+
+- Allow to manipulate the group membership in the @groups endpoint.
+  [jaroel]
+
+- Include global roles assigned to a user in the @users endpoint.
+  [jaroel]
+
+Bugfixes:
+
+- Bind schema field to context to handle context vocabularies. #389
+  [csenger]
+
+- The inherit flag was the wrong way around.
+  Blocked inherit showed up as non-blocked.
   [jaroel]
 
 
@@ -44,6 +59,10 @@ Bugfixes:
 -------------------
 
 New Features:
+
+- Add support for a 'search' parameter to @sharing. This returns additional
+  principals in 'entries', also flagging the acquired and inherited fields.
+  [jaroel]
 
 - Add support for setting/modifying 'layout' on DX and AT content endpoints.
   [jaroel]

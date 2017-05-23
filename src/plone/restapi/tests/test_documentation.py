@@ -786,6 +786,19 @@ class TestTraversal(unittest.TestCase):
         )
         save_request_and_response_for_docs('sharing_folder_post', response)
 
+    def test_documentation_sharing_search(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        self.portal.folder.invokeFactory('Document', id='doc')
+        api.user.grant_roles('admin', roles=['Contributor'])
+        api.user.grant_roles(
+            'admin', roles=['Editor'], obj=self.portal.folder
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            '/folder/doc/@sharing?search=admin'
+        )
+        save_request_and_response_for_docs('sharing_search', response)
+
     def test_history_get(self):
         self.document.setTitle('My new title')
         url = '{}/@history'.format(self.document.absolute_url())
@@ -796,3 +809,8 @@ class TestTraversal(unittest.TestCase):
         url = '{}/@history'.format(self.document.absolute_url())
         response = self.api_session.patch(url, json={'version': 0})
         save_request_and_response_for_docs('history_revert', response)
+
+    def test_roles_get(self):
+        url = '{}/@roles'.format(self.portal_url)
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs('roles', response)

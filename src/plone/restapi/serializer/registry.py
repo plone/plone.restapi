@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.registry.interfaces import IRegistry
-from zope.component import adapter
+from zope.component import adapter, getMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
 
@@ -26,6 +27,19 @@ class SerializeRegistryToJson(object):
         if batch.links:
             results['batching'] = batch.links
 
-        items = [{'name': key, 'value': self.registry[key]} for key in batch]
-        results['items'] = items
+        def make_item(key):
+            record = records[key]
+            schema = getMultiAdapter(
+                (record.field, record, self.request),
+                IJsonSchemaProvider
+            )
+            data = {
+                'name': key,
+                'value': self.registry[key]
+            }
+            __traceback_info__ = (record, record.field, schema)
+            data['schema'] = schema.get_schema()
+            return data
+
+        results['items'] = [make_item(key) for key in batch]
         return results

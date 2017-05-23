@@ -9,6 +9,7 @@
   <include package=".history"/>
   <include package=".principals"/>
   <include package=".registry"/>
+  <include package=".roles"/>
   <include package=".search"/>
   <include package=".types"/>
   <include package=".users"/>
