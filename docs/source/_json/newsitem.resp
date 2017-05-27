@@ -83,7 +83,7 @@ Content-Type: application/json
   "subjects": [], 
   "text": {
     "content-type": "text/plain", 
-    "data": "Lorem ipsum", 
+    "data": "<p>Lorem ipsum</p>", 
     "encoding": "utf-8"
   }, 
   "title": "My News Item", 
