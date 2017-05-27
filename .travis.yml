@@ -30,5 +30,5 @@ after_success:
   - bin/test-coverage
   - pip install coverage==3.7.1 coveralls
   - coveralls
-  - docker.io build --tag plone.restapi:$(git rev-parse HEAD) .
-  - docker.io push plone/plone.restapi
+  - docker build --tag plone.restapi:$(git rev-parse HEAD) .
+  - docker push plone/plone.restapi
