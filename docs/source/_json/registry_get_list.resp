@@ -1,0 +1,401 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@registry", 
+  "batching": {
+    "@id": "http://localhost:55001/plone/@registry", 
+    "first": "http://localhost:55001/plone/@registry?b_start=0", 
+    "last": "http://localhost:55001/plone/@registry?b_start=275", 
+    "next": "http://localhost:55001/plone/@registry?b_start=25"
+  }, 
+  "items": [
+    {
+      "name": "Products.CMFPlone.i18nl10n.override_dateformat.Enabled", 
+      "schema": {
+        "properties": {
+          "description": "Override the translation machinery", 
+          "title": "Enabled", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
+    }, 
+    {
+      "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_long", 
+      "schema": {
+        "properties": {
+          "description": "Default value: %Y-%m-%d %H:%M (2038-01-19 03:14)", 
+          "title": "old ZMI property: localLongTimeFormat", 
+          "type": "string"
+        }
+      }, 
+      "value": "%Y-%m-%d %H:%M"
+    }, 
+    {
+      "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_short", 
+      "schema": {
+        "properties": {
+          "description": "Default value: %Y-%m-%d (2038-01-19)", 
+          "title": "old ZMI property: localTimeFormat", 
+          "type": "string"
+        }
+      }, 
+      "value": "%Y-%m-%d"
+    }, 
+    {
+      "name": "Products.CMFPlone.i18nl10n.override_dateformat.time_format", 
+      "schema": {
+        "properties": {
+          "description": "Default value: %H:%M (03:14)", 
+          "title": "old ZMI property: localTimeOnlyFormat", 
+          "type": "string"
+        }
+      }, 
+      "value": "%H:%M"
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed", 
+      "schema": {
+        "properties": {
+          "default": true, 
+          "description": "Allow syndication for collections and folders on site.", 
+          "title": "Allowed", 
+          "type": "boolean"
+        }
+      }, 
+      "value": true
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed_feed_types", 
+      "schema": {
+        "properties": {
+          "additionalItems": true, 
+          "default": [
+            "RSS|RSS 1.0", 
+            "rss.xml|RSS 2.0", 
+            "atom.xml|Atom", 
+            "itunes.xml|iTunes"
+          ], 
+          "description": "Separate view name and title by '|'", 
+          "items": {
+            "description": "", 
+            "title": "", 
+            "type": "string"
+          }, 
+          "title": "Allowed Feed Types", 
+          "type": "array", 
+          "uniqueItems": true
+        }
+      }, 
+      "value": [
+        "RSS|RSS 1.0", 
+        "rss.xml|RSS 2.0", 
+        "atom.xml|Atom", 
+        "itunes.xml|iTunes"
+      ]
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.default_enabled", 
+      "schema": {
+        "properties": {
+          "default": false, 
+          "description": "If syndication should be enabled by default for all folders and collections.", 
+          "title": "Enabled by default", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.max_items", 
+      "schema": {
+        "properties": {
+          "default": 15, 
+          "description": "Maximum number of items that will be syndicated.", 
+          "title": "Maximum Items", 
+          "type": "integer"
+        }
+      }, 
+      "value": 15
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.render_body", 
+      "schema": {
+        "properties": {
+          "default": false, 
+          "description": "If body text available for item, render it, otherwise use description.", 
+          "title": "Render Body", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.search_rss_enabled", 
+      "schema": {
+        "properties": {
+          "default": true, 
+          "description": "Allows users to subscribe to feeds of search results", 
+          "title": "Search RSS enabled", 
+          "type": "boolean"
+        }
+      }, 
+      "value": true
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_author_info", 
+      "schema": {
+        "properties": {
+          "default": true, 
+          "description": "Should feeds include author information", 
+          "title": "Show author info", 
+          "type": "boolean"
+        }
+      }, 
+      "value": true
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_button", 
+      "schema": {
+        "properties": {
+          "description": "Makes it possible to customize syndication settings for particular folders and collections ", 
+          "title": "Show Settings Button", 
+          "type": "boolean"
+        }
+      }, 
+      "value": null
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_link", 
+      "schema": {
+        "properties": {
+          "description": "Enable RSS link document action on the syndication content item.", 
+          "title": "Show Feed Link", 
+          "type": "boolean"
+        }
+      }, 
+      "value": null
+    }, 
+    {
+      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.site_rss_items", 
+      "schema": {
+        "properties": {
+          "additionalItems": true, 
+          "default": [
+            "/news/aggregator"
+          ], 
+          "description": "Paths to folders and collections to link to at the portal root.", 
+          "items": {
+            "choices": [], 
+            "description": "", 
+            "enum": [], 
+            "enumNames": [], 
+            "title": "", 
+            "type": "string"
+          }, 
+          "title": "Site RSS", 
+          "type": "array", 
+          "uniqueItems": true
+        }
+      }, 
+      "value": [
+        "/news/aggregator"
+      ]
+    }, 
+    {
+      "name": "Products.ResourceRegistries.interfaces.settings.IResourceRegistriesSettings.resourceBundlesForThemes", 
+      "schema": {
+        "properties": {
+          "description": "Maps skin names to lists of resource bundle names", 
+          "key_type": {
+            "additional": {}, 
+            "schema": {
+              "description": "", 
+              "title": "", 
+              "type": "string"
+            }
+          }, 
+          "title": "Resource bundles for themes", 
+          "type": "dict", 
+          "value_type": {
+            "additional": {}, 
+            "schema": {
+              "description": "", 
+              "title": "", 
+              "type": "string"
+            }
+          }
+        }
+      }, 
+      "value": {
+        "(default)": [
+          "jquery", 
+          "default"
+        ]
+      }
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.anonymous_comments", 
+      "schema": {
+        "properties": {
+          "default": false, 
+          "description": "If selected, anonymous users are able to post comments without loggin in. It is highly recommended to use a captcha solution to prevent spam if this setting is enabled.", 
+          "title": "Enable anonymous comments", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.anonymous_email_enabled", 
+      "schema": {
+        "properties": {
+          "default": false, 
+          "description": "If selected, anonymous user will have to give their email.", 
+          "title": "Enable anonymous email field", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.captcha", 
+      "schema": {
+        "properties": {
+          "choices": [
+            [
+              "disabled", 
+              "Disabled"
+            ]
+          ], 
+          "default": "disabled", 
+          "description": "Use this setting to enable or disable Captcha validation for comments. Install plone.formwidget.captcha, plone.formwidget.recaptcha, collective.akismet, or collective.z3cform.norobots if there are no options available.", 
+          "enum": [
+            "disabled"
+          ], 
+          "enumNames": [
+            "Disabled"
+          ], 
+          "title": "Captcha", 
+          "type": "string"
+        }
+      }, 
+      "value": "disabled"
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.edit_comment_enabled", 
+      "schema": {
+        "properties": {
+          "default": false, 
+          "description": "If selected, supports editing and deletion of comments for users with the 'Edit comments' permission.", 
+          "title": "Enable editing of comments", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.globally_enabled", 
+      "schema": {
+        "properties": {
+          "default": false, 
+          "description": "If selected, users are able to post comments on the site. Though, you have to enable comments for specific content types, folders or content objects before users will be able to post comments.", 
+          "title": "Globally enable comments", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderation_enabled", 
+      "schema": {
+        "properties": {
+          "default": false, 
+          "description": "If selected, comments will enter a 'Pending' state in which they are invisible to the public. A user with the 'Review comments' permission ('Reviewer' or 'Manager') can approve comments to make them visible to the public. If you want to enable a custom comment workflow, you have to go to the types control panel.", 
+          "title": "Enable comment moderation", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderator_email", 
+      "schema": {
+        "properties": {
+          "description": "Address to which moderator notifications will be sent.", 
+          "title": "Moderator Email Address", 
+          "type": "string"
+        }
+      }, 
+      "value": null
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderator_notification_enabled", 
+      "schema": {
+        "properties": {
+          "default": false, 
+          "description": "If selected, the moderator is notified if a comment needs attention. The moderator email address can be found in the 'Mail settings' control panel (Site 'From' address)", 
+          "title": "Enable moderator email notification", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.show_commenter_image", 
+      "schema": {
+        "properties": {
+          "default": true, 
+          "description": "If selected, an image of the user is shown next to the comment.", 
+          "title": "Show commenter image", 
+          "type": "boolean"
+        }
+      }, 
+      "value": true
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.text_transform", 
+      "schema": {
+        "properties": {
+          "choices": [
+            [
+              "text/plain", 
+              "Plain text"
+            ], 
+            [
+              "text/html", 
+              "HTML"
+            ], 
+            [
+              "text/x-web-markdown", 
+              "Markdown"
+            ], 
+            [
+              "text/x-web-intelligent", 
+              "Intelligent text"
+            ]
+          ], 
+          "default": "text/plain", 
+          "description": "Use this setting to choose if the comment text should be transformed in any way. You can choose between 'Plain text' and 'Intelligent text'. 'Intelligent text' converts plain text into HTML where line breaks and indentation is preserved, and web and email addresses are made into clickable links.", 
+          "enum": [
+            "text/plain", 
+            "text/html", 
+            "text/x-web-markdown", 
+            "text/x-web-intelligent"
+          ], 
+          "enumNames": [
+            "Plain text", 
+            "HTML", 
+            "Markdown", 
+            "Intelligent text"
+          ], 
+          "title": "Comment text transform", 
+          "type": "string"
+        }
+      }, 
+      "value": "text/plain"
+    }
+  ], 
+  "items_total": 284
+}

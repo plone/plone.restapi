@@ -4,6 +4,9 @@ from DateTime import DateTime
 from datetime import timedelta
 from freezegun import freeze_time
 from plone import api
+from plone.app.discussion.interfaces import IConversation
+from plone.app.discussion.interfaces import IDiscussionSettings
+from plone.app.discussion.interfaces import IReplies
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import setRoles
@@ -13,14 +16,18 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
+from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.testing.z2 import Browser
+from zope.component import createObject
+from zope.component import getUtility
 from zope.site.hooks import getSite
 
 import collections
 import json
+import re
 import os
 import transaction
 import unittest
@@ -363,6 +370,10 @@ class TestTraversal(unittest.TestCase):
             json={'plone.app.querystring.field.path.title': 'Value'})
         save_request_and_response_for_docs('registry_update', response)
 
+    def test_documentation_registry_get_list(self):
+        response = self.api_session.get('/@registry')
+        save_request_and_response_for_docs('registry_get_list', response)
+
     def test_documentation_types(self):
         response = self.api_session.get('/@types')
         save_request_and_response_for_docs('types', response)
@@ -523,7 +534,8 @@ class TestTraversal(unittest.TestCase):
                 'fullname': 'Noam Avram Chomsky',
                 'home_page': 'web.mit.edu/chomsky',
                 'description': 'Professor of Linguistics',
-                'location': 'Cambridge, MA'
+                'location': 'Cambridge, MA',
+                'roles': ['Contributor', ],
             },
         )
         save_request_and_response_for_docs('users_created', response)
@@ -548,6 +560,7 @@ class TestTraversal(unittest.TestCase):
             '/@users/noam',
             json={
                 'email': 'avram.chomsky@example.com',
+                'roles': {'Contributor': False, },
             },
         )
         save_request_and_response_for_docs('users_update', response)
@@ -626,7 +639,8 @@ class TestTraversal(unittest.TestCase):
                 'title': 'Framework Team',
                 'description': 'The Plone Framework Team',
                 'roles': ['Manager'],
-                'groups': ['Administrators']
+                'groups': ['Administrators'],
+                'users': [SITE_OWNER_NAME, TEST_USER_ID]
             },
         )
         save_request_and_response_for_docs('groups_created', response)
@@ -648,6 +662,7 @@ class TestTraversal(unittest.TestCase):
             '/@groups/ploneteam',
             json={
                 'email': 'ploneteam2@plone.org',
+                'users': {TEST_USER_ID: False}
             },
         )
         save_request_and_response_for_docs('groups_update', response)
@@ -777,3 +792,182 @@ class TestTraversal(unittest.TestCase):
             json=payload
         )
         save_request_and_response_for_docs('sharing_folder_post', response)
+
+    def test_documentation_sharing_search(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        self.portal.folder.invokeFactory('Document', id='doc')
+        api.user.grant_roles('admin', roles=['Contributor'])
+        api.user.grant_roles(
+            'admin', roles=['Editor'], obj=self.portal.folder
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            '/folder/doc/@sharing?search=admin'
+        )
+        save_request_and_response_for_docs('sharing_search', response)
+
+    def test_history_get(self):
+        self.document.setTitle('My new title')
+        url = '{}/@history'.format(self.document.absolute_url())
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs('history_get', response)
+
+    def test_history_revert(self):
+        url = '{}/@history'.format(self.document.absolute_url())
+        response = self.api_session.patch(url, json={'version': 0})
+        save_request_and_response_for_docs('history_revert', response)
+
+
+class TestCommenting(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer['app']
+        self.request = self.layer['request']
+        self.portal = self.layer['portal']
+        self.portal_url = self.portal.absolute_url()
+
+        self.time_freezer = freeze_time("2016-10-21 19:00:00")
+        self.frozen_time = self.time_freezer.start()
+
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        settings.edit_comment_enabled = True
+        settings.delete_own_comment_enabled = True
+
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        self.document = self.create_document_with_comments()
+
+        transaction.commit()
+        self.browser = Browser(self.app)
+        self.browser.handleErrors = False
+        self.browser.addHeader(
+            'Authorization',
+            'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
+        )
+
+    def tearDown(self):
+        self.time_freezer.stop()
+
+    def create_document_with_comments(self):
+        self.portal.invokeFactory('Document', id='front-page')
+        document = self.portal['front-page']
+        document.allow_discussion = True
+        document.title = u"Welcome to Plone"
+        document.description = \
+            u"Congratulations! You have successfully installed Plone."
+        document.text = RichTextValue(
+            u"If you're seeing this instead of the web site you were " +
+            u"expecting, the owner of this web site has just installed " +
+            u"Plone. Do not contact the Plone Team or the Plone mailing " +
+            u"lists about this.",
+            'text/plain',
+            'text/html'
+        )
+        document.creation_date = DateTime('2016-01-21T01:14:48+00:00')
+        document.reindexObject()
+        document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
+
+        # Add a bunch of comments to the default conversation so we can do
+        # batching
+        self.conversation = conversation = IConversation(document)
+        self.replies = replies = IReplies(conversation)
+        for x in range(1, 2):
+            comment = createObject('plone.Comment')
+            comment.text = 'Comment %d' % x
+            comment = replies[replies.addComment(comment)]
+
+            comment_replies = IReplies(comment)
+            for y in range(1, 2):
+                comment = createObject('plone.Comment')
+                comment.text = 'Comment %d.%d' % (x, y)
+                comment_replies.addComment(comment)
+        self.comment_id, self.comment = replies.items()[0]
+
+        return document
+
+    @staticmethod
+    def clean_comment_id(response, _id='123456'):
+        pattern = r'@comments/(\w+)'
+        repl = '@comments/' + _id
+
+        # Replaces the dynamic part in the headers with a stable id
+        for target in [response, response.request]:
+            for key, val in target.headers.items():
+                target.headers[key] = re.sub(pattern, repl, val)
+
+            target.url = re.sub(pattern, repl, target.url)
+
+        # and the body
+        if response.request.body:
+            response.request.body = re.sub(
+                pattern, repl, response.request.body
+            )
+
+        # and the response
+        if response.content:
+            response._content = re.sub(pattern, repl, response._content)
+
+    def test_comments_get(self):
+        url = '{}/@comments'.format(self.document.absolute_url())
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs('comments_get', response)
+
+    def test_comments_add_root(self):
+        url = '{}/@comments/'.format(
+            self.document.absolute_url()
+        )
+        payload = {'text': 'My comment'}
+        response = self.api_session.post(url, json=payload)
+        self.clean_comment_id(response)
+        save_request_and_response_for_docs(
+            'comments_add_root', response
+        )
+
+    def test_comments_add_sub(self):
+        # Add a reply
+        url = '{}/@comments/{}'.format(
+            self.document.absolute_url(),
+            self.comment_id
+        )
+        payload = {'text': 'My reply'}
+        response = self.api_session.post(url, json=payload)
+
+        self.clean_comment_id(response)
+        save_request_and_response_for_docs(
+            'comments_add_sub', response
+        )
+
+    def test_comments_update(self):
+        url = '{}/@comments/{}'.format(
+            self.document.absolute_url(),
+            self.comment_id
+        )
+        payload = {'text': 'My NEW comment'}
+        response = self.api_session.patch(url, json=payload)
+        self.clean_comment_id(response)
+        save_request_and_response_for_docs(
+            'comments_update', response
+        )
+
+    def test_comments_delete(self):
+        url = '{}/@comments/{}'.format(
+            self.document.absolute_url(),
+            self.comment_id
+        )
+        response = self.api_session.delete(url)
+        self.clean_comment_id(response)
+        save_request_and_response_for_docs(
+            'comments_delete', response
+        )
+
+    def test_roles_get(self):
+        url = '{}/@roles'.format(self.portal_url)
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs('roles', response)

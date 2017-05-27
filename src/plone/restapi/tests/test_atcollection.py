@@ -55,24 +55,26 @@ class TestATContentSerializer(unittest.TestCase):
         folder.invokeFactory('ATTestDocument', id='doc', title='A Document')
         obj = self.serialize(self.doc1)
         self.assertIn('items', obj)
+        items = obj['items']
+        items = sorted(items, key=lambda item: item[u'@id'])
         self.assertDictEqual({
             u'@id': u'http://nohost/plone/folder',
             u'@type': u'ATTestFolder',
             u'description': u'',
             u'title': u'Test Folder',
             'review_state': 'private'},
-            obj['items'][0])
+            items[0])
         self.assertDictEqual({
             u'@id': u'http://nohost/plone/folder/subfolder-1',
             u'@type': u'ATTestFolder',
             u'description': u'',
             u'title': u'Subfolder 1',
             'review_state': 'private'},
-            obj['items'][1])
+            items[1])
         self.assertDictEqual({
             u'@id': u'http://nohost/plone/folder/subfolder-2',
             u'@type': u'ATTestFolder',
             u'description': u'',
             u'title': u'Subfolder 2',
             'review_state': 'private'},
-            obj['items'][2])
+            items[2])

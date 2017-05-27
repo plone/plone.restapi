@@ -1,0 +1,63 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "available_roles": [
+    "Contributor", 
+    "Editor", 
+    "Reviewer", 
+    "Reader"
+  ], 
+  "entries": [
+    {
+      "id": "Administrators", 
+      "login": null, 
+      "roles": {
+        "Contributor": false, 
+        "Editor": false, 
+        "Reader": false, 
+        "Reviewer": false
+      }, 
+      "title": "Administrators", 
+      "type": "group"
+    }, 
+    {
+      "disabled": false, 
+      "id": "AuthenticatedUsers", 
+      "login": null, 
+      "roles": {
+        "Contributor": false, 
+        "Editor": false, 
+        "Reader": false, 
+        "Reviewer": false
+      }, 
+      "title": "Logged-in users", 
+      "type": "group"
+    }, 
+    {
+      "id": "Site Administrators", 
+      "login": null, 
+      "roles": {
+        "Contributor": false, 
+        "Editor": false, 
+        "Reader": false, 
+        "Reviewer": false
+      }, 
+      "title": "Site Administrators", 
+      "type": "group"
+    }, 
+    {
+      "disabled": true, 
+      "id": "admin", 
+      "roles": {
+        "Contributor": "global", 
+        "Editor": "acquired", 
+        "Reader": false, 
+        "Reviewer": false
+      }, 
+      "title": "admin", 
+      "type": "user"
+    }
+  ], 
+  "inherit": true
+}

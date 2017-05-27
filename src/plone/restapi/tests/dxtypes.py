@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from Products.CMFCore.utils import getToolByName
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
@@ -17,6 +18,8 @@ from zope.interface import Invalid
 from zope.interface import invariant
 from zope.interface import provider
 from zope.schema.interfaces import IContextAwareDefaultFactory
+from zope.schema.vocabulary import SimpleTerm
+from zope.schema.vocabulary import SimpleVocabulary
 
 
 INDEXES = (
@@ -24,6 +27,13 @@ INDEXES = (
     ("test_list_field", "KeywordIndex"),
     ("test_bool_field", "BooleanIndex"),
 )
+
+
+def vocabularyRequireingContextFactory(context):
+    catalog = getToolByName(context, 'portal_catalog')
+    return SimpleVocabulary([SimpleTerm(catalog.id,
+                                        catalog.id,
+                                        catalog.id)])
 
 
 class IDXTestDocumentSchema(model.Schema):
@@ -53,6 +63,11 @@ class IDXTestDocumentSchema(model.Schema):
         required=False, value_type=schema.Tuple())
     test_nested_dict_field = schema.Dict(
         required=False, key_type=schema.ASCIILine(), value_type=schema.Tuple())
+    test_list_choice_with_context_vocabulary_field = schema.List(
+        title=u'Field',
+        value_type=schema.Choice(
+            vocabulary='plone.restapi.testing.context_vocabulary'),
+        required=False)
 
     # plone.app.textfield
     test_richtext_field = RichText(

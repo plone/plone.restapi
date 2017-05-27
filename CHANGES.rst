@@ -1,11 +1,67 @@
 Changelog
 =========
 
-1.0a14 (unreleased)
+1.0a17 (unreleased)
 -------------------
 
-- Add Dockerfile.
-  [timo]
+- Render rich text fields as in Plone. Fixes #302
+  [erral]
+
+
+1.0a16 (2017-05-23)
+-------------------
+
+New Features:
+
+- Add @comments endpoint.
+  [jaroel,timo,pjoshi]
+
+- Add @roles endpoint to list defined global roles.
+  [jaroel]
+
+- Add JSON schema to @registry listing.
+  [jaroel]
+
+- Allow to manipulate the group membership in the @groups endpoint.
+  [jaroel]
+
+- List and mutate global roles assigned to a user in the @users endpoint.
+  [jaroel]
+
+Bugfixes:
+
+- Bind schema field to context to handle context vocabularies. #389
+  [csenger]
+
+- The inherit flag was the wrong way around.
+  Blocked inherit showed up as non-blocked.
+  [jaroel]
+
+
+1.0a15 (2017-05-15)
+-------------------
+
+New Features:
+
+- Reorder children in a item using the content endpoint.
+  [jaroel]
+
+- Add batched listing of registry entries to @registry endpoint.
+  [jaroel]
+
+- Add @comments endpoint.
+  [jaroel,timo]
+
+
+1.0a14 (2017-05-02)
+-------------------
+
+New Features:
+
+- Add @history endpoint.
+  [jaroel]
+
+Bugfixes:
 
 - Fix the @move endpoint fails to return 403 when the user don't have proper
   delete permissions over the parent folder.
@@ -16,6 +72,10 @@ Changelog
 -------------------
 
 New Features:
+
+- Add support for a 'search' parameter to @sharing. This returns additional
+  principals in 'entries', also flagging the acquired and inherited fields.
+  [jaroel]
 
 - Add support for setting/modifying 'layout' on DX and AT content endpoints.
   [jaroel]

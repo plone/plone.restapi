@@ -17,13 +17,19 @@ class SerializeLocalRolesToJson(object):
         self.context = context
         self.request = request
 
-    def __call__(self):
+    def __call__(self, search=None):
+        self.request.form['search_term'] = search
         sharing_view = getMultiAdapter((self.context, self.request),
                                        name='sharing')
-        local_roles = sharing_view.existing_role_settings()
+        local_roles = sharing_view.role_settings()
         available_roles = [r['id'] for r in sharing_view.roles()]
-        return {'inherit': getattr(aq_base(self.context),
-                                   '__ac_local_roles_block__',
-                                   False),
+
+        blocked_roles = getattr(
+            aq_base(self.context),
+            '__ac_local_roles_block__',
+            False,
+        )
+
+        return {'inherit': not blocked_roles,
                 'entries': local_roles,
                 'available_roles': available_roles}

@@ -5,9 +5,12 @@
   <include package=".components"/>
   <include package=".content"/>
   <include package=".copymove"/>
+  <include package=".discussion"/>
   <include package=".groups"/>
+  <include package=".history"/>
   <include package=".principals"/>
   <include package=".registry"/>
+  <include package=".roles"/>
   <include package=".search"/>
   <include package=".types"/>
   <include package=".users"/>

@@ -34,5 +34,6 @@ Location: http://localhost:55001/plone/folder/my-document
   "subjects": [], 
   "table_of_contents": null, 
   "text": null, 
-  "title": "My Document"
+  "title": "My Document", 
+  "version": "current"
 }

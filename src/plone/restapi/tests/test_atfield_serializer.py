@@ -85,12 +85,11 @@ class TestATFieldSerializer(unittest.TestCase):
             value)
 
     def test_text_field_serialization_returns_dict(self):
-        value = self.serialize('testTextField', '<p>spam and eggs</p>',
-                               mimetype='text/html')
+        value = self.serialize('testTextField', '<p>spam and eggs</p>')
         self.assertTrue(isinstance(value, dict), 'Not a <dict>')
         self.assertDictEqual({
-            'content-type': u'text/html',
-            'data': u'<p>spam and eggs</p>'}, value)
+            'content-type': u'text/plain',
+            'data': u' spam and eggs '}, value)
 
     def test_image_field_serialization_returns_dict(self):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
