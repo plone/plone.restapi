@@ -28,7 +28,7 @@ script:
   - bin/test-no-uncommitted-doc-changes
 after_success:
   - bin/test-coverage
-#  - bin/createcoverage
+  - bin/createcoverage
 #  - pip install coverage==3.7.1 coveralls
 #  - coveralls
   - docker.io build --tag plone.restapi:$(git rev-parse HEAD) .
