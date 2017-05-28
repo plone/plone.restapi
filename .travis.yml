@@ -30,5 +30,6 @@ after_success:
   - bin/test-coverage
   - pip install coverage==3.7.1 coveralls
   - coveralls
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - docker build --tag plone.restapi:$(git rev-parse HEAD) .
   - docker push plone/plone.restapi
