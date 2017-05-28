@@ -4,11 +4,15 @@ Changelog
 1.0a17 (unreleased)
 -------------------
 
-- Automatically publish docker images on hub.docker.com.
-  [timo]
+Breaking Changes:
 
 - Render rich text fields as in Plone. Fixes #302
   [erral]
+
+New Features:
+
+- Automatically publish docker images on hub.docker.com.
+  [timo]
 
 
 1.0a16 (2017-05-23)
