@@ -55,6 +55,12 @@ The actual content item will be created after the upload is finalized, and the f
    :language: http
    
 
+Replacing an existing file
+--------------------------
+
+An existing file can be replaced by creating an upload (POST request) with the
+'\@upload-replace' endpoint instead of the '\@upload' endpoint.
+
 
 Current offset
 --------------

@@ -104,7 +104,7 @@ class TestTUS(unittest.TestCase):
         upload = TUSUpload(uid)
         stored_metadata = upload.metadata()
         self.assertEqual(stored_metadata,
-                         {u'length': 8})
+                         {u'length': 8, u'mode': u'create'})
 
     def test_tus_post_initialization_with_metadata(self):
         metadata = 'filename {},content-type {}'.format(
@@ -123,7 +123,28 @@ class TestTUS(unittest.TestCase):
         self.assertEqual(stored_metadata,
                          {u'content-type': u'text/plain',
                           u'filename': u'test.txt',
-                          u'length': 8})
+                          u'length': 8,
+                          u'mode': u'create'})
+
+    def test_tus_post_replace(self):
+        self.file = api.content.create(container=self.portal,
+                                       type='File',
+                                       id='testfile',
+                                       title='Testfile')
+        transaction.commit()
+        response = self.api_session.post(
+            '{}/@upload-replace'.format(self.file.absolute_url()),
+            headers={
+                'Tus-Resumable': '1.0.0',
+                'Upload-Length': str(UPLOAD_LENGTH),
+            })
+        self.assertEqual(response.status_code, 201)
+        location = response.headers['Location']
+        url_base, uid = location.rsplit('/', 1)
+        upload = TUSUpload(uid)
+        stored_metadata = upload.metadata()
+        self.assertEqual(stored_metadata,
+                         {u'length': 8, u'mode': u'replace'})
 
     def test_tus_head_on_not_existing_resource_returns_404(self):
         response = self.api_session.head(
@@ -202,15 +223,24 @@ class TestTUS(unittest.TestCase):
         self.assertIn('Upload-Expires', response.headers)
         tus.cleanup()
 
-    def test_tus_patch_non_primary_field_returns_501(self):
-        tus = TUSUpload('myuid', {'length': 12, 'fieldname': 'myfield'})
+    def test_tus_patch_non_primary_field(self):
+        tus = TUSUpload('myuid', {
+            '@type': 'DXTestDocument',
+            'length': 12,
+            'fieldname': 'test_namedblobfile_field'})
         response = self.api_session.patch(
             self.upload_url + '/myuid',
             headers={'Tus-Resumable': '1.0.0',
                      'Content-Type': 'application/offset+octet-stream',
                      'Upload-Offset': '0'},
             data=StringIO('abcdefghijkl'))
-        self.assertEqual(501, response.status_code)
+
+        self.assertEqual(204, response.status_code)
+        transaction.commit()
+        self.assertEqual(1, len(self.folder.objectIds()))
+        id_ = self.folder.objectIds()[0]
+        self.assertEqual(
+            'abcdefghijkl', self.folder[id_].test_namedblobfile_field.data)
         tus.cleanup()
 
     def test_tus_can_upload_pdf_file(self):
@@ -265,6 +295,43 @@ class TestTUS(unittest.TestCase):
                      'Tus-Resumable': '1.0.0'},
             data=StringIO(UPLOAD_DATA))
         self.assertEqual(response.status_code, 204)
+
+    def test_tus_can_replace_pdf_file(self):
+        # Create a test file
+        self.file = api.content.create(container=self.portal,
+                                       type='File',
+                                       id='testfile',
+                                       title='Testfile')
+        transaction.commit()
+        # initialize the upload with POST
+        pdf_file_path = os.path.join(os.path.dirname(__file__),
+                                     UPLOAD_PDF_FILENAME)
+        pdf_file_size = os.path.getsize(pdf_file_path)
+        metadata = 'filename {},content-type {}'.format(
+            b64encode(UPLOAD_PDF_FILENAME),
+            b64encode(UPLOAD_PDF_MIMETYPE))
+        response = self.api_session.post(
+            '{}/@upload-replace'.format(self.file.absolute_url()),
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(pdf_file_size),
+                     'Upload-Metadata': metadata}
+            )
+        self.assertEqual(response.status_code, 201)
+        location = response.headers['Location']
+
+        # upload the data with PATCH
+        pdf_file = open(pdf_file_path, 'rb')
+        response = self.api_session.patch(
+            location,
+            headers={'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': '0',
+                     'Tus-Resumable': '1.0.0'},
+            data=pdf_file)
+        self.assertEqual(response.status_code, 204)
+
+        transaction.commit()
+        self.assertEqual(UPLOAD_PDF_FILENAME, self.file.file.filename)
+        self.assertEqual(pdf_file_size, self.file.file.size)
 
     def tearDown(self):
         client_home = os.environ.get('CLIENT_HOME')

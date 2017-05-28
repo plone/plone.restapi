@@ -32,7 +32,6 @@ import re
 import os
 import transaction
 import unittest
-import re
 
 
 TUS_HEADERS = [

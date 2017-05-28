@@ -34,8 +34,9 @@ class DeserializeFromJson(OrderingMixin, object):
         self.sm = getSecurityManager()
         self.permission_cache = {}
 
-    def __call__(self, validate_all=False):  # noqa: ignore=C901
-        data = json_body(self.request)
+    def __call__(self, validate_all=False, data=None):  # noqa: ignore=C901
+        if data is None:
+            data = json_body(self.request)
 
         modified = False
         schema_data = {}

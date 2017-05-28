@@ -4,10 +4,9 @@ from Products.CMFPlone.utils import base_hasattr
 from base64 import b64decode
 from email.utils import formatdate
 from fnmatch import fnmatch
-from plone.app.textfield.interfaces import IRichText
-from plone.app.textfield.value import RichTextValue
-from plone.namedfile.interfaces import INamedField
 from plone.rest.interfaces import ICORSPolicy
+from plone.restapi.exceptions import DeserializationError
+from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.services import Service
 from plone.restapi.services.content.utils import create
 from plone.restapi.services.content.utils import rename
@@ -50,6 +49,11 @@ class TUSBaseService(Service):
                 # Add TUS options headers in addition to CORS headers
                 for name, value in TUS_OPTIONS_RESPONSE_HEADERS.items():
                     self.request.response.setHeader(name, value)
+                return
+            else:
+                policy.process_simple_request()
+        else:
+            if self.request._rest_cors_preflight:
                 return
 
         return self.render()
@@ -100,6 +104,10 @@ class UploadPost(TUSBaseService):
             if len(key_value) == 2:
                 metadata[key_value[0].lower()] = b64decode(key_value[1])
         metadata['length'] = length
+        if self.__name__.endswith('@upload-replace'):
+            metadata['mode'] = 'replace'
+        else:
+            metadata['mode'] = 'create'
 
         tus_upload = TUSUpload(uuid4().hex, metadata=metadata)
 
@@ -107,6 +115,8 @@ class UploadPost(TUSBaseService):
         self.request.response.setHeader('Location', '{}/@upload/{}'.format(
             self.context.absolute_url(), tus_upload.uid))
         self.request.response.setHeader('Upload-Expires', tus_upload.expires())
+        self.request.response.setHeader('Tus-Resumable', '1.0.0')
+        return super(UploadPost, self).reply()
 
 
 class UploadFileBase(TUSBaseService):
@@ -191,52 +201,50 @@ class UploadPatch(UploadFileBase):
             filename = metadata.get('filename', '')
             content_type = metadata.get('content-type',
                                         'application/octet-stream')
-            type_ = metadata.get('@type')
-            if type_ is None:
-                ctr = getToolByName(self.context, 'content_type_registry')
-                type_ = ctr.findTypeName(
-                    filename.lower(), content_type, '') or 'File'
-
-            obj = create(self.context, type_)
-
-            # Get fieldname of file object
+            mode = metadata.get('mode', 'create')
             fieldname = metadata.get('fieldname')
 
-            # Update field with file data
-            with open(tus_upload.filepath, 'rb') as f:
-                # No field name given, update primary field
-                if not fieldname:
-                    info = IPrimaryFieldInfo(obj, None)
-                    if info is not None:
-                        field = info.field
-                        if IRichText.providedBy(field):
-                            value = f.read()
-                            field.set(obj, RichTextValue(
-                                raw=value.decode('utf8'),
-                                mimeType=(content_type or
-                                          field.default_mime_type),
-                                outputMimeType=field.output_mime_type))
-                        elif INamedField.providedBy(field):
-                            field.set(obj,
-                                      field._type(data=f,
-                                                  filename=filename,
-                                                  contentType=content_type))
-                        else:
-                            # TODO: handle unsupported field type
-                            self.request.response.setStatus(501, lock=1)
-                            raise NotImplementedError('Not Implemented')
-                    elif base_hasattr(obj, 'getPrimaryField'):
-                        field = obj.getPrimaryField()
-                        mutator = field.getMutator(obj)
-                        mutator(f,
-                                content_type=content_type,
-                                filename=filename)
-                else:
-                    # TODO: handle non-primary fields
-                    self.request.response.setStatus(501, lock=1)
-                    raise NotImplementedError('Not Implemented')
+            if mode == 'create':
+                type_ = metadata.get('@type')
+                if type_ is None:
+                    ctr = getToolByName(self.context, 'content_type_registry')
+                    type_ = ctr.findTypeName(
+                        filename.lower(), content_type, '') or 'File'
 
-            rename(obj)
+                obj = create(self.context, type_)
+            else:
+                obj = self.context
+
+            if not fieldname:
+                info = IPrimaryFieldInfo(obj, None)
+                if info is not None:
+                    fieldname = info.fieldname
+                elif base_hasattr(obj, 'getPrimaryField'):
+                    field = obj.getPrimaryField()
+                    fieldname = field.getName()
+
+            if not fieldname:
+                return self.error('Bad Request', 'Fieldname required', 400)
+
+            # Update field with file data
+            deserializer = queryMultiAdapter(
+                (obj, self.request), IDeserializeFromJson)
+            if deserializer is None:
+                return self.error(
+                    'Not Implemented',
+                    'Cannot deserialize type {}'.format(
+                        obj.portal_type),
+                    501)
+            try:
+                deserializer(data={fieldname: tus_upload})
+            except DeserializationError as e:
+                return self.error(
+                    'Deserialization Error', str(e), 400)
+
+            if mode == 'create':
+                rename(obj)
+
+            tus_upload.close()
             tus_upload.cleanup()
             self.request.response.setHeader('Location', obj.absolute_url())
         else:
@@ -273,6 +281,8 @@ class TUSUpload(object):
         if metadata is not None:
             self.initalize(metadata)
 
+        self._file = None
+
     def initalize(self, metadata):
         """Initialize a new TUS upload by writing its metadata to disk."""
         self.cleanup_expired()
@@ -308,6 +318,17 @@ class TUSUpload(object):
         length = self.length()
         if length and offset >= length:
             self.finished = True
+
+    def open(self):
+        """Open the uploaded file for reading and return it."""
+        if self._file is None or self._file.closed:
+            self._file = open(self.filepath, 'rb')
+        return self._file
+
+    def close(self):
+        """Close the uploaded file."""
+        if self._file is not None and not self._file.closed:
+            self._file.close()
 
     def metadata(self):
         """Returns the metadata of the current upload."""
