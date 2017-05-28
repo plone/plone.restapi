@@ -36,6 +36,6 @@ after_success:
   - coveralls
 #  - if [ "$TRAVIS_BRANCH" == "master" ]; then
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker build --tag plone.restapi:$(git rev-parse HEAD) .
+  - docker build --tag plone/plone.restapi:$(git rev-parse HEAD) .
   - docker push plone/plone.restapi
 #    fi
