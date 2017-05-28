@@ -33,10 +33,8 @@ after_success:
   - bin/test-coverage
   - pip install coverage==3.7.1 coveralls
   - coveralls
+#  - if [ "$TRAVIS_BRANCH" == "master" ]; then
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - export REPO=plone/plone.restapi
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH ; fi`
-  - docker build -f Dockerfile -t $REPO:$COMMIT .
-  - docker tag $REPO:$COMMIT $REPO:$TAG
-  - docker tag $REPO:$COMMIT $REPO:travis-$TRAVIS_BUILD_NUMBER
-  - docker push $REPO
+  - docker build --tag plone/plone.restapi:$(git rev-parse HEAD) .
+  - docker push plone/plone.restapi
+#    fi
