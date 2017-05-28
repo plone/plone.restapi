@@ -8,6 +8,9 @@ cache:
   directories:
     - $HOME/buildout-cache
 env:
+  global:
+    - secure: "tj9kO7Uyn7AY2Z6zhdOggLSYheaD8e+qKA7ZXvdWTrL2HtPAtnNJK8keQGj1JLQyy6bRfoOCt51aL8+Lc0fzcACaLFpAPjleSLtUChphPOh/dqTu1QX5oL0SxZ94B4ZC5+qfaSAQHMwbiiWUW0us9QtJpxQQmiJUekqiTdQDNEo="
+    - secure: "j06un+j2gHjlGfg+xMcvKG2osf1HSzBq/cPPNIonnjGQY3GJfT/YRzYnHe5LJPPt7IJDD7hAEPentRJ4C0zP66U6gcQ2HjWPsMIcvzlgnXoT2QaaCVkMA9YS4WOsN0C5iY/R64GjFwR7J+/bgeG64XvfhpuQ/UBP2+U68PqSBtM="
   - PLONE_VERSION=4.3.x
   - PLONE_VERSION=5.0.x
 before_install:
@@ -30,6 +33,8 @@ after_success:
   - bin/test-coverage
   - pip install coverage==3.7.1 coveralls
   - coveralls
+#  - if [ "$TRAVIS_BRANCH" == "master" ]; then
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - docker build --tag plone.restapi:$(git rev-parse HEAD) .
   - docker push plone/plone.restapi
+#    fi
