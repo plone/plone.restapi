@@ -14,6 +14,11 @@ New Features:
 - Automatically publish docker images on hub.docker.com.
   [timo]
 
+Bugfixes:
+
+- Docs: Fix batching example request/response.
+  [lgraf]
+
 
 1.0a16 (2017-05-23)
 -------------------
