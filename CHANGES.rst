@@ -6,7 +6,8 @@ Changelog
 
 Breaking Changes:
 
-- Render rich text fields as in Plone. Fixes #302
+- Change RichText field value to use 'output' instead of 'raw' to fix inline
+  paths. This fixes #302.
   [erral]
 
 New Features:
