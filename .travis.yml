@@ -37,6 +37,6 @@ after_success:
   - docker build --tag plone/plone.restapi:plone-$PLONE_VERSION-$(git rev-parse HEAD) .
   - echo $TRAVIS_TAG
   - if [ "$TRAVIS_TAG" ]; then
-      docker tag plone/plone.restapi:plone-$PLONE_VERSION-$TRAVIS_TAG
+      docker tag plone-$PLONE_VERSION-$(git rev-parse HEAD) plone/plone.restapi:plone-$PLONE_VERSION-$TRAVIS_TAG
     fi
   - docker push plone/plone.restapi
