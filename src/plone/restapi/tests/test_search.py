@@ -41,7 +41,7 @@ class TestSearchFunctional(unittest.TestCase):
             self.folder, u'DXTestDocument',
             id='doc',
             title=u'Lorem Ipsum',
-            created=DateTime(1950, 1, 1, 0, 0),
+            start=DateTime(1950, 1, 1, 0, 0),
             effective=DateTime(1995, 1, 1, 0, 0),
             expires=DateTime(1999, 1, 1, 0, 0),
             test_int_field=42,
@@ -62,7 +62,7 @@ class TestSearchFunctional(unittest.TestCase):
             id='other-document',
             title=u'Other Document',
             description=u'\xdcbersicht',
-            created=DateTime(1975, 1, 1, 0, 0),
+            start=DateTime(1975, 1, 1, 0, 0),
             effective=DateTime(2015, 1, 1, 0, 0),
             expires=DateTime(2020, 1, 1, 0, 0),
             test_list_field=['Keyword2', 'Keyword3'],
@@ -157,7 +157,7 @@ class TestSearchFunctional(unittest.TestCase):
              u'meta_type': u'Dexterity Item',
              u'portal_type': u'DXTestDocument',
              u'review_state': u'private',
-             u'start': None,
+             u'start': u'1950-01-01T00:00:00+00:00',
              u'sync_uid': None,
              u'title': u'Lorem Ipsum',
              u'total_comments': 0},
@@ -328,7 +328,7 @@ class TestSearchFunctional(unittest.TestCase):
     # DateIndex
 
     def test_date_index_query(self):
-        query = {'created': date(1950, 1, 1).isoformat()}
+        query = {'start': date(1950, 1, 1).isoformat()}
         response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
@@ -338,9 +338,11 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_date_index_ranged_query(self):
         query = {
-            'created.query': [date(1949, 1, 1).isoformat(),
-                              date(1951, 1, 1).isoformat()],
-            'created.range': 'min:max',
+            'start.query': [
+                date(1949, 1, 1).isoformat(),
+                date(1951, 1, 1).isoformat(),
+            ],
+            'start.range': 'min:max',
         }
         response = self.api_session.get('/@search', params=query)
 
