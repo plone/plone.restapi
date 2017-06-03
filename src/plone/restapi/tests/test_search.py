@@ -3,6 +3,7 @@ from datetime import date
 from DateTime import DateTime
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -46,6 +47,11 @@ class TestSearchFunctional(unittest.TestCase):
             test_int_field=42,
             test_list_field=['Keyword1', 'Keyword2', 'Keyword3'],
             test_bool_field=True,
+            test_richtext_field=RichTextValue(
+                raw=u'<p>Some Text</p>',
+                mimeType='text/html',
+                outputMimeType='text/html'
+            ),
         )
         IMutableUUID(self.doc).set('77779ffa110e45afb1ba502f75f77777')
         self.doc.reindexObject()
@@ -156,6 +162,16 @@ class TestSearchFunctional(unittest.TestCase):
              u'title': u'Lorem Ipsum',
              u'total_comments': 0},
             response.json()['items'][0])
+
+    def test_full_objects_retrieval(self):
+        query = {'SearchableText': 'lorem',
+                 'metadata_fields': ['portal_type', 'review_state'],
+                 'fullobjects': True}
+        response = self.api_session.get('/@search', params=query)
+
+        self.assertEqual(
+            u'<p>Some Text</p>',
+            response.json()['items'][0]['test_richtext_field']['data'])
 
     # ZCTextIndex
 
