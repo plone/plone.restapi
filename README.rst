@@ -46,7 +46,17 @@ https://github.com/plone/plone.restapi/milestones
 Live Demo
 =========
 
-Heroku live demo:: http://stormy-headland-44390.herokuapp.com/Plone/
+A live demo of Plone 5 with the latest plone.restapi release is available at:
+
+  plonerestapi.kitconcept.com
+
+Example GET request on the portal root::
+
+  $ curl -i http://plonedemo.kitconcept.com -H "Accept: application/json"
+
+Example POST request to create a new document::
+
+  $ curl -i -X POST http://plonedemo.kitconcept.com -H "Accept: application/json" -H "ontent-Type: application/json" --data-raw '{"@type": "Document", "title": "My Document"}' --user admin:admin
 
 .. note:: You will need some kind of API browser application to explore the API. We recommend to use `Postman <http://www.getpostman.com/>`_.
 
@@ -66,12 +76,14 @@ Software Quality
 
 * 100% Test Coverage
 * 100% PEP8 compliant
+* Documentation-first approach for enhancements
 
 
 Further Reading
 ===============
 
 * `REST in Practice: Hypermedia and Systems Architecture (Webber, Parastatidis, Robinson) <http://www.amazon.com/gp/product/0596805829>`_
+
 
 Standards
 =========
@@ -82,6 +94,7 @@ Standards
 - `Hydra <http://www.w3.org/ns/hydra/spec/latest/core/>`_
 - `Collection+JSON <http://amundsen.com/media-types/collection/>`_
 - `Siren <https://github.com/kevinswiber/siren>`_
+
 
 License
 =======
