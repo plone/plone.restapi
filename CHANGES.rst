@@ -4,7 +4,8 @@ Changelog
 1.0a18 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- tweaks to README.rst
+  [tkimnguyen]
 
 
 1.0a17 (2017-05-31)
