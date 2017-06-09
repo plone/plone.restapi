@@ -65,6 +65,8 @@ class TypesGet(Service):
             name="plone.app.vocabularies.ReallyUserFriendlyTypes"
         )
 
+        portal_types = getToolByName(self.context, 'portal_types')
+
         # allowedContentTypes already checks for permissions
         allowed_types = [x.getId() for x in self.context.allowedContentTypes()]
 
@@ -75,10 +77,15 @@ class TypesGet(Service):
         # only addables if the content type is folderish
         can_add = IFolderish.providedBy(self.context)
 
+        # Filter out any type that doesn't have lookupSchema. We are depended
+        # on that in lower level code.
+        ftis = [portal_types[x.value] for x in vocab_factory(self.context)]
+        ftis = [fti for fti in ftis if getattr(fti, 'lookupSchema', None)]
+
         return [
             {
-                '@id': '{}/@types/{}'.format(portal_url, x.token),
-                'title': x.value,
-                'addable': x.token in allowed_types if can_add else False,
-            } for x in vocab_factory(self.context)
+                '@id': '{}/@types/{}'.format(portal_url, fti.getId()),
+                'title': fti.Title(),
+                'addable': fti.getId() in allowed_types if can_add else False,
+            } for fti in ftis
         ]

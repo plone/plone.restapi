@@ -7,6 +7,11 @@ Changelog
 - tweaks to README.rst
   [tkimnguyen]
 
+Bugfixes:
+
+- Don't list non-DX types. Refs https://github.com/plone/plone.restapi/issues/150
+  [jaroel]
+
 
 1.0a17 (2017-05-31)
 -------------------
