@@ -4,7 +4,14 @@ Changelog
 1.0a18 (unreleased)
 -------------------
 
-- tweaks to README.rst
+New Features:
+
+- Add "&fullobject" parameter in @search to retrieve full objects
+  [ebrehault]
+
+Bugfixes:
+
+- Tweaks to README.rst
   [tkimnguyen]
 
 
@@ -21,9 +28,6 @@ New Features:
 
 - Automatically publish docker images on hub.docker.com.
   [timo]
-
-- Add "&fullobject" parameter in @search to retrieve full objects
-  [ebrehault]
 
 Bugfixes:
 
