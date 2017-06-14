@@ -22,6 +22,9 @@ New Features:
 - Automatically publish docker images on hub.docker.com.
   [timo]
 
+- Add "&fullobject" parameter in @search to retrieve full objects
+  [ebrehault]
+
 Bugfixes:
 
 - Docs: Fix batching example request/response.
