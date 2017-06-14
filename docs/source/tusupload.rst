@@ -1,88 +1,99 @@
 TUS resumable upload
 ====================
 
-Plone REST API supports the TUS Open Protocol for Resumable File Uploads.
-See http://tus.io/ for more information on TUS.
+plone.restapi supports the `TUS Open Protocol <http://tus.io>`_ for resumable file uploads.
+The two TUS endpoints to upload '@tus-upload' a file and to replace an existing file '@tus-replace' are available on all 'folderish resources' in Plone (content types that implement the IFolderish interface, e.g. a 'Folder').
 
 
-The TUS '\@tus-upload' endpoint is available on IFolderish resources, ie Folders.
+Creating an Upload URL
+----------------------
 
-
-
-Configuration and options
--------------------------
-
-The TUS configuration and supported options can be retrieved using HTTP OPTIONS.
-
-
-..  http:example:: curl httpie python-requests
-    :request: _json/tusupload_options.req
-
-.. literalinclude:: _json/tusupload_options.resp
-   :language: http
-
-
-Creating an upload
-------------------
-
-A POST request is used to create a new upload. The response contains a temporary upload URL to which the file must be upload.
+To create a new upload send a POST request to the '@tus-upload' endpoint.
 
 ..  http:example:: curl httpie python-requests
     :request: _json/tusupload_post.req
+
+The server will return a temporary upload URL in the location header of the response. The file can then be uploaded to that URL. The HTTP body contains the actual file content:
 
 .. literalinclude:: _json/tusupload_post.resp
    :language: http
 
 
-Upload a (partial) file
------------------------
+Uploading a File
+----------------
 
-A PATCH request is usued to the upload URL retrieved while creating an upload.
-
-.. literalinclude:: _json/tusupload_patch.req
-   :language: http
-
-.. literalinclude:: _json/tusupload_patch.resp
-   :language: http
-   
-
-The actual content item will be created after the upload is finalized, and the final URL will be returned.
+Once a temporary upload URL has been created a client can send a PATCH request to upload a file:
 
 .. literalinclude:: _json/tusupload_patch_finalized.req
    :language: http
 
+When the upload request contains of just one single file, the server will respond with a `204: No Content` response and the final file URL in the HTTP location header:
+
 .. literalinclude:: _json/tusupload_patch_finalized.resp
    :language: http
-   
 
-Replacing an existing file
---------------------------
-
-An existing file can be replaced by creating an upload (POST request) with the
-'\@tus-replace' endpoint instead of the '\@tus-upload' endpoint.
+The actual content item is creade afert the file upload has been finalized..
 
 
-Current offset
+Partial Upload
 --------------
 
-A HEAD request is issued to the upload URL to get the current known offset from the server.
+TUS allows partial upload of files.
+A partial file is also uploaded by sending a PATCH request to the temporary URL:
+
+.. literalinclude:: _json/tusupload_patch.req
+   :language: http
+
+The server will also respond with a `204: No content` response.
+Though, instead of providing the final file URL in the 'location' header, the server provides an updated 'Upload-Offset' value, to tell the client the new offset:
+
+.. literalinclude:: _json/tusupload_patch.resp
+   :language: http
+
+When the last partial file has been uploaded, the server will contain the final file URL in the 'location' header.
+
+
+Replacing Existing Files
+------------------------
+
+TUS can also be used to replace an existing file by sending a POST request  to the '@tus-replace' endpoint instead.
+
+TODO: Provide examples for the request/response.
+
+
+Asking for the Current File Offset
+----------------------------------
+
+To ask the server for the current file offset, the client can send a HEAD request to the upload URL:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/tusupload_head.req
+
+The server will respond with a `200: Ok` status and the current file offset in the 'Upload-Offset' header:
 
 .. literalinclude:: _json/tusupload_head.resp
    :language: http
 
 
-CORS
-----
+Configuration and Options
+-------------------------
 
-If you have enabled CORS on your REST backend, you need to add a few headers to your CORS policy.
+The current TUS configuration and a list of supported options can be retrieved sending an OPTIONS request to the '@tus-upload' endpoint:
 
-See http://tus.io/protocols/resumable-upload.html#headers for a definative list and discription of the headers.
+..  http:example:: curl httpie python-requests
+    :request: _json/tusupload_options.req
 
-This example should work as is:
-    
+The server will respond with a `204: No content` status and HTTP headers containing information about the available extentions and the TUS version:
+
+.. literalinclude:: _json/tusupload_options.resp
+   :language: http
+
+
+CORS Configuration
+------------------
+
+If you use CORS and want to make it work with TUS, you have to make sure the TUS specific HTTP headers are allowed by your CORS policy.
+
 .. code-block:: xml
 
   <plone:CORSPolicy
@@ -94,4 +105,6 @@ This example should work as is:
     max_age="3600"
     />
 
-See the plone.rest documentation for more information on CORS policies.
+See the plone.rest documentation for more information on how to configure CORS policies.
+
+See http://tus.io/protocols/resumable-upload.html#headers for a list and description of the individual headers.
