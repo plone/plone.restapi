@@ -48,7 +48,7 @@ Live Demo
 
 A live demo of Plone 5 with the latest plone.restapi release is available at:
 
-http://plonerestapi.kitconcept.com
+http://plonedemo.kitconcept.com
 
 Example GET request on the portal root::
 
