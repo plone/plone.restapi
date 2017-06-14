@@ -72,49 +72,49 @@
 
   <plone:service
     method="OPTIONS"
-    name="@upload"
+    name="@tus-upload"
     for="Products.CMFCore.interfaces.IFolderish"
-    factory=".upload.UploadOptions"
+    factory=".tus.UploadOptions"
     permission="cmf.AddPortalContent"
     />
 
   <plone:service
     method="POST"
-    name="@upload"
+    name="@tus-upload"
     for="Products.CMFCore.interfaces.IFolderish"
-    factory=".upload.UploadPost"
+    factory=".tus.UploadPost"
     permission="cmf.AddPortalContent"
     />
 
   <plone:service
     method="POST"
-    name="@upload-replace"
+    name="@tus-replace"
     for="Products.CMFCore.interfaces.IContentish"
-    factory=".upload.UploadPost"
+    factory=".tus.UploadPost"
     permission="cmf.ModifyPortalContent"
     />
 
   <plone:service
     method="HEAD"
-    name="@upload"
+    name="@tus-upload"
     for="Products.CMFCore.interfaces.IFolderish"
-    factory=".upload.UploadHead"
+    factory=".tus.UploadHead"
     permission="cmf.AddPortalContent"
     />
 
   <plone:service
     method="PATCH"
-    name="@upload"
+    name="@tus-upload"
     for="Products.CMFCore.interfaces.IContentish"
-    factory=".upload.UploadPatch"
+    factory=".tus.UploadPatch"
     permission="cmf.AddPortalContent"
     />
 
   <plone:service
     method="PATCH"
-    name="@upload"
+    name="@tus-upload"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".upload.UploadPatch"
+    factory=".tus.UploadPatch"
     permission="cmf.AddPortalContent"
     />
 

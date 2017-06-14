@@ -840,7 +840,7 @@ class TestTraversal(unittest.TestCase):
     def test_tusupload_options(self):
         self.portal.invokeFactory('Folder', id='folder')
         transaction.commit()
-        response = self.api_session.options('/folder/@upload')
+        response = self.api_session.options('/folder/@tus-upload')
         save_request_and_response_for_docs('tusupload_options', response)
 
     def test_tusupload_post_head_patch(self):
@@ -848,8 +848,8 @@ class TestTraversal(unittest.TestCase):
         # temporary id
 
         def clean_upload_url(response, _id='032803b64ad746b3ab46d9223ea3d90f'):
-            pattern = r'@upload/(\w+)'
-            repl = '@upload/' + _id
+            pattern = r'@tus-upload/(\w+)'
+            repl = '@tus-upload/' + _id
 
             # Replaces the dynamic part in the headers with a stable id
             for target in [response, response.request]:
@@ -871,7 +871,7 @@ class TestTraversal(unittest.TestCase):
             b64encode(UPLOAD_MIMETYPE)
         )
         response = self.api_session.post(
-            '/folder/@upload',
+            '/folder/@tus-upload',
             headers={'Tus-Resumable': '1.0.0',
                      'Upload-Length': str(UPLOAD_LENGTH),
                      'Upload-Metadata': metadata}

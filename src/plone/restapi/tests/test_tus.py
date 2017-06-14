@@ -12,7 +12,7 @@ from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.rest.cors import CORSPolicy
 from plone.rest.interfaces import ICORSPolicy
-from plone.restapi.services.content.upload import TUSUpload
+from plone.restapi.services.content.tus import TUSUpload
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -49,7 +49,7 @@ class TestTUS(unittest.TestCase):
                                          type='Folder',
                                          id='testfolder',
                                          title='Testfolder')
-        self.upload_url = '{}/@upload'.format(self.folder.absolute_url())
+        self.upload_url = '{}/@tus-upload'.format(self.folder.absolute_url())
         transaction.commit()
 
         self.api_session = RelativeSession(self.portal.absolute_url())
@@ -133,7 +133,7 @@ class TestTUS(unittest.TestCase):
                                        title='Testfile')
         transaction.commit()
         response = self.api_session.post(
-            '{}/@upload-replace'.format(self.file.absolute_url()),
+            '{}/@tus-replace'.format(self.file.absolute_url()),
             headers={
                 'Tus-Resumable': '1.0.0',
                 'Upload-Length': str(UPLOAD_LENGTH),
@@ -311,7 +311,7 @@ class TestTUS(unittest.TestCase):
             b64encode(UPLOAD_PDF_FILENAME),
             b64encode(UPLOAD_PDF_MIMETYPE))
         response = self.api_session.post(
-            '{}/@upload-replace'.format(self.file.absolute_url()),
+            '{}/@tus-replace'.format(self.file.absolute_url()),
             headers={'Tus-Resumable': '1.0.0',
                      'Upload-Length': str(pdf_file_size),
                      'Upload-Metadata': metadata}
@@ -366,7 +366,7 @@ class TestTUSUploadWithCORS(unittest.TestCase):
         self.api_session = RelativeSession(self.portal.absolute_url())
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        self.upload_url = '{}/@upload'.format(self.portal.absolute_url())
+        self.upload_url = '{}/@tus-upload'.format(self.portal.absolute_url())
 
     def test_cors_preflight_for_post_contains_tus_headers(self):
         response = self.api_session.options(
@@ -519,7 +519,7 @@ class TestTUSWithAT(unittest.TestCase):
                                          type='Folder',
                                          id='testfolder',
                                          title='Testfolder')
-        self.upload_url = '{}/@upload'.format(self.folder.absolute_url())
+        self.upload_url = '{}/@tus-upload'.format(self.folder.absolute_url())
         transaction.commit()
 
         self.api_session = RelativeSession(self.portal.absolute_url())

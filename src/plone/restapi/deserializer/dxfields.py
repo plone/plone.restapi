@@ -7,7 +7,7 @@ from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedField
 from plone.restapi.interfaces import IFieldDeserializer
-from plone.restapi.services.content.upload import TUSUpload
+from plone.restapi.services.content.tus import TUSUpload
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer

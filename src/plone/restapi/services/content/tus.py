@@ -104,7 +104,7 @@ class UploadPost(TUSBaseService):
             if len(key_value) == 2:
                 metadata[key_value[0].lower()] = b64decode(key_value[1])
         metadata['length'] = length
-        if self.__name__.endswith('@upload-replace'):
+        if self.__name__.endswith('@tus-replace'):
             metadata['mode'] = 'replace'
         else:
             metadata['mode'] = 'create'
@@ -112,7 +112,7 @@ class UploadPost(TUSBaseService):
         tus_upload = TUSUpload(uuid4().hex, metadata=metadata)
 
         self.request.response.setStatus(201)
-        self.request.response.setHeader('Location', '{}/@upload/{}'.format(
+        self.request.response.setHeader('Location', '{}/@tus-upload/{}'.format(
             self.context.absolute_url(), tus_upload.uid))
         self.request.response.setHeader('Upload-Expires', tus_upload.expires())
         self.request.response.setHeader('Tus-Resumable', '1.0.0')

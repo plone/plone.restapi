@@ -5,7 +5,7 @@ Plone REST API supports the TUS Open Protocol for Resumable File Uploads.
 See http://tus.io/ for more information on TUS.
 
 
-The TUS '\@upload' endpoint is available on IFolderish resources, ie Folders.
+The TUS '\@tus-upload' endpoint is available on IFolderish resources, ie Folders.
 
 
 
@@ -59,7 +59,7 @@ Replacing an existing file
 --------------------------
 
 An existing file can be replaced by creating an upload (POST request) with the
-'\@upload-replace' endpoint instead of the '\@upload' endpoint.
+'\@tus-replace' endpoint instead of the '\@tus-upload' endpoint.
 
 
 Current offset

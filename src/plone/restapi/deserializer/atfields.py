@@ -5,7 +5,7 @@ from Products.Archetypes.interfaces.field import IFileField
 from Products.Archetypes.interfaces.field import IReferenceField
 from plone.app.blob.interfaces import IBlobField
 from plone.restapi.interfaces import IFieldDeserializer
-from plone.restapi.services.content.upload import TUSUpload
+from plone.restapi.services.content.tus import TUSUpload
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
