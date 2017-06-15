@@ -32,7 +32,7 @@ When the upload request contains of just one single file, the server will respon
 .. literalinclude:: _json/tusupload_patch_finalized.resp
    :language: http
 
-The actual content item is creade afert the file upload has been finalized..
+The actual content item is created after the file upload has been finalized.
 
 
 Partial Upload
