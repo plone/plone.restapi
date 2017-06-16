@@ -175,6 +175,26 @@ class TestTUS(unittest.TestCase):
         self.assertIn('Cache-Control', response.headers)
         tus.cleanup()
 
+    def test_head_in_create_mode_without_add_permission_raises_401(self):
+        self.folder.manage_permission('Add portal content', [], 0)
+        transaction.commit()
+        TUSUpload('myuid', {'mode': 'create', 'length': 12})
+        response = self.api_session.head(
+            self.upload_url + '/myuid',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Offset': '0'})
+        self.assertEqual(401, response.status_code)
+
+    def test_head_in_replace_mode_without_modify_permission_raises_401(self):
+        self.folder.manage_permission('Modify portal content', [], 0)
+        transaction.commit()
+        TUSUpload('myuid', {'mode': 'replace', 'length': 12})
+        response = self.api_session.head(
+            self.upload_url + '/myuid',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Offset': '0'})
+        self.assertEqual(401, response.status_code)
+
     def test_tus_patch_on_not_existing_resource_returns_404(self):
         response = self.api_session.patch(
             self.upload_url + '/myuid/123', headers={'Tus-Resumable': '1.0.0'})
@@ -242,6 +262,30 @@ class TestTUS(unittest.TestCase):
         self.assertEqual(
             'abcdefghijkl', self.folder[id_].test_namedblobfile_field.data)
         tus.cleanup()
+
+    def test_patch_in_create_mode_without_add_permission_raises_401(self):
+        self.folder.manage_permission('Add portal content', [], 0)
+        transaction.commit()
+        TUSUpload('myuid', {'mode': 'create', 'length': 12})
+        response = self.api_session.patch(
+            self.upload_url + '/myuid',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': '0'},
+            data=StringIO('abcdefghijkl'))
+        self.assertEqual(401, response.status_code)
+
+    def test_patch_in_replace_mode_without_modify_permission_raises_401(self):
+        self.folder.manage_permission('Modify portal content', [], 0)
+        transaction.commit()
+        TUSUpload('myuid', {'mode': 'replace', 'length': 12})
+        response = self.api_session.patch(
+            self.upload_url + '/myuid',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': '0'},
+            data=StringIO('abcdefghijkl'))
+        self.assertEqual(401, response.status_code)
 
     def test_tus_can_upload_pdf_file(self):
         # initialize the upload with POST

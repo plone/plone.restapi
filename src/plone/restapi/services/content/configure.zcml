@@ -97,7 +97,15 @@
   <plone:service
     method="HEAD"
     name="@tus-upload"
-    for="Products.CMFCore.interfaces.IFolderish"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".tus.UploadHead"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="HEAD"
+    name="@tus-upload"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".tus.UploadHead"
     permission="cmf.AddPortalContent"
     />
@@ -107,7 +115,7 @@
     name="@tus-upload"
     for="Products.CMFCore.interfaces.IContentish"
     factory=".tus.UploadPatch"
-    permission="cmf.AddPortalContent"
+    permission="zope2.View"
     />
 
   <plone:service

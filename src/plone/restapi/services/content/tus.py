@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from AccessControl.SecurityManagement import getSecurityManager
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import base_hasattr
 from base64 import b64decode
@@ -12,6 +13,7 @@ from plone.restapi.services.content.utils import create
 from plone.restapi.services.content.utils import rename
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from uuid import uuid4
+from zExceptions import Unauthorized
 from zope.component import queryMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -144,6 +146,15 @@ class UploadFileBase(TUSBaseService):
 
         return tus_upload
 
+    def check_add_modify_permission(self, mode):
+        sm = getSecurityManager()
+        if mode == 'create':
+            if not sm.checkPermission('Add portal content', self.context):
+                raise Unauthorized
+        else:
+            if not sm.checkPermission('Modify portal content', self.context):
+                raise Unauthorized
+
 
 class UploadHead(UploadFileBase):
     """TUS upload endpoint for handling HEAD requests"""
@@ -153,6 +164,9 @@ class UploadHead(UploadFileBase):
         tus_upload = self.tus_upload()
         if tus_upload is None:
             return self.error('Not Found', '', 404)
+
+        metadata = tus_upload.metadata()
+        self.check_add_modify_permission(metadata.get('mode', 'create'))
 
         if not self.check_tus_version():
             return self.unsupported_version()
@@ -178,6 +192,9 @@ class UploadPatch(UploadFileBase):
         if tus_upload is None:
             return self.error('Not Found', '', 404)
 
+        metadata = tus_upload.metadata()
+        self.check_add_modify_permission(metadata.get('mode', 'create'))
+
         if not self.check_tus_version():
             return self.unsupported_version()
 
@@ -197,7 +214,6 @@ class UploadPatch(UploadFileBase):
 
         if tus_upload.finished:
             offset = tus_upload.offset()
-            metadata = tus_upload.metadata()
             filename = metadata.get('filename', '')
             content_type = metadata.get('content-type',
                                         'application/octet-stream')
