@@ -125,3 +125,14 @@ If you use CORS and want to make it work with TUS, you have to make sure the TUS
 See the plone.rest documentation for more information on how to configure CORS policies.
 
 See http://tus.io/protocols/resumable-upload.html#headers for a list and description of the individual headers.
+
+
+Temporary Upload Directory
+--------------------------
+
+During upload files are stored in a temporary directory that by default is located in the `CLIENT_HOME` directory.
+If you are using a multi ZEO client setup without session stickiness you *must* configure this to a directory shared
+by all ZEO clients by setting the `TUS_TMP_FILE_DIR` environment variable. E.g. ``TUS_TMP_FILE_DIR=/tmp/tus-uploads``
+
+
+
