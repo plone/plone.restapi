@@ -56,9 +56,26 @@ When the last partial file has been uploaded, the server will contain the final 
 Replacing Existing Files
 ------------------------
 
-TUS can also be used to replace an existing file by sending a POST request  to the `@tus-replace` endpoint instead.
+TUS can also be used to replace an existing file by sending a POST request to the `@tus-replace` endpoint instead.
 
-TODO: Provide examples for the request/response.
+.. literalinclude:: _json/tusreplace_post.req
+   :language: http
+
+The server will respond with a `201: Created` status and return the URL of the temprorary created upload resource
+in the location header of the response:
+
+.. literalinclude:: _json/tusupload_post.resp
+   :language: http
+
+The file can then be uploaded to that URL using the PATCH method in the same way as creating a new file:
+
+.. literalinclude:: _json/tusreplace_patch.req
+   :language: http
+
+The server will respond with a `204: No Content` response and the final file URL in the HTTP location header:
+
+.. literalinclude:: _json/tusreplace_patch.resp
+   :language: http
 
 
 Asking for the Current File Offset
