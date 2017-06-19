@@ -5,6 +5,7 @@ from Products.Archetypes.interfaces.field import IFileField
 from Products.Archetypes.interfaces.field import IReferenceField
 from plone.app.blob.interfaces import IBlobField
 from plone.restapi.interfaces import IFieldDeserializer
+from plone.restapi.services.content.tus import TUSUpload
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
@@ -39,6 +40,14 @@ class FileFieldDeserializer(DefaultFieldDeserializer):
                 value = value.get('data', '').decode(value[u'encoding'])
             else:
                 value = value.get('data', '')
+        elif isinstance(value, TUSUpload):
+            metadata = value.metadata()
+            if 'content-type' in metadata:
+                kwargs[u'mimetype'] = metadata['content-type']
+            if 'filename' in metadata:
+                kwargs[u'filename'] = metadata['filename']
+            value = value.open()
+
         return value, kwargs
 
 

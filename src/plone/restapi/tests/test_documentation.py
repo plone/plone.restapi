@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from base64 import b64encode
 from datetime import datetime
 from DateTime import DateTime
 from datetime import timedelta
@@ -7,19 +8,19 @@ from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
-from plone.app.testing import popGlobalRegistry
-from plone.app.testing import pushGlobalRegistry
-from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import popGlobalRegistry
+from plone.app.testing import pushGlobalRegistry
+from plone.app.testing import setRoles
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
+from plone.restapi.testing import register_static_uuid_utility
 from plone.testing.z2 import Browser
 from zope.component import createObject
 from zope.component import getUtility
@@ -33,16 +34,27 @@ import transaction
 import unittest
 
 
+TUS_HEADERS = [
+    'upload-offset',
+    'upload-length',
+    'upload-metadata',
+    'tus-version',
+    'tus-resumable',
+    'tus-extension',
+    'tus-max-size',
+
+]
+
 REQUEST_HEADER_KEYS = [
     'accept',
     'authorization',
-]
+] + TUS_HEADERS
 
 RESPONSE_HEADER_KEYS = [
     'content-type',
     'allow',
     'location',
-]
+] + TUS_HEADERS
 
 base_path = os.path.join(
     os.path.dirname(__file__),
@@ -52,6 +64,14 @@ base_path = os.path.join(
     '..',
     'docs/source/_json'
 )
+
+UPLOAD_DATA = 'abcdefgh'
+UPLOAD_MIMETYPE = 'text/plain'
+UPLOAD_FILENAME = 'test.txt'
+UPLOAD_LENGTH = len(UPLOAD_DATA)
+
+UPLOAD_PDF_MIMETYPE = 'application/pdf'
+UPLOAD_PDF_FILENAME = 'file.pdf'
 
 
 def pretty_json(data):
@@ -816,6 +836,119 @@ class TestTraversal(unittest.TestCase):
         url = '{}/@history'.format(self.document.absolute_url())
         response = self.api_session.patch(url, json={'version': 0})
         save_request_and_response_for_docs('history_revert', response)
+
+    def test_tusupload_options(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        transaction.commit()
+        response = self.api_session.options('/folder/@tus-upload')
+        save_request_and_response_for_docs('tusupload_options', response)
+
+    def test_tusupload_post_head_patch(self):
+        # We create both the POST and PATCH example here, because we need the
+        # temporary id
+
+        def clean_upload_url(response, _id='032803b64ad746b3ab46d9223ea3d90f'):
+            pattern = r'@tus-upload/(\w+)'
+            repl = '@tus-upload/' + _id
+
+            # Replaces the dynamic part in the headers with a stable id
+            for target in [response, response.request]:
+                for key, val in target.headers.items():
+                    target.headers[key] = re.sub(pattern, repl, val)
+
+                target.url = re.sub(pattern, repl, target.url)
+
+        def clean_final_url(response, _id='document-2016-10-21'):
+            url = self.portal.folder.absolute_url() + '/' + _id
+            response.headers['Location'] = url
+
+        self.portal.invokeFactory('Folder', id='folder')
+        transaction.commit()
+
+        # POST create an upload
+        metadata = 'filename {},content-type {}'.format(
+            b64encode(UPLOAD_FILENAME),
+            b64encode(UPLOAD_MIMETYPE)
+        )
+        response = self.api_session.post(
+            '/folder/@tus-upload',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(UPLOAD_LENGTH),
+                     'Upload-Metadata': metadata}
+        )
+
+        upload_url = response.headers['location']
+
+        clean_upload_url(response)
+        save_request_and_response_for_docs('tusupload_post', response)
+
+        # PATCH upload a partial document
+        response = self.api_session.patch(
+            upload_url,
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': '0'},
+            data=UPLOAD_DATA[:3]
+        )
+        clean_upload_url(response)
+        save_request_and_response_for_docs('tusupload_patch', response)
+
+        # HEAD ask for much the server has
+        response = self.api_session.head(
+            upload_url,
+            headers={'Tus-Resumable': '1.0.0'}
+        )
+        clean_upload_url(response)
+        save_request_and_response_for_docs('tusupload_head', response)
+
+        # Finalize the upload
+        response = self.api_session.patch(
+            upload_url,
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': response.headers['Upload-Offset']},
+            data=UPLOAD_DATA[3:]
+        )
+        clean_upload_url(response)
+        clean_final_url(response)
+        save_request_and_response_for_docs(
+            'tusupload_patch_finalized',
+            response
+        )
+
+    def test_tusreplace_post_patch(self):
+        self.portal.invokeFactory('File', id='myfile')
+        transaction.commit()
+
+        # POST create an upload
+        metadata = 'filename {},content-type {}'.format(
+            b64encode(UPLOAD_FILENAME),
+            b64encode(UPLOAD_MIMETYPE)
+        )
+        response = self.api_session.post(
+            '/myfile/@tus-replace',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(UPLOAD_LENGTH),
+                     'Upload-Metadata': metadata}
+        )
+        upload_url = response.headers['location']
+        # Replace dynamic uuid with a static one
+        response.headers['location'] = '/'.join(
+            upload_url.split('/')[:-1] + ['4e465958b24a46ec8657e6f3be720991'])
+        save_request_and_response_for_docs('tusreplace_post', response)
+
+        # PATCH upload file data
+        response = self.api_session.patch(
+            upload_url,
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': '0'},
+            data=UPLOAD_DATA,
+        )
+        # Replace dynamic uuid with a static one
+        response.request.url = '/'.join(
+            upload_url.split('/')[:-1] + ['4e465958b24a46ec8657e6f3be720991'])
+        save_request_and_response_for_docs('tusreplace_patch', response)
 
 
 class TestCommenting(unittest.TestCase):

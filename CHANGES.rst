@@ -32,6 +32,9 @@ Breaking Changes:
 
 New Features:
 
+- Implement tus.io upload endpoint.
+  [buchi]
+
 - Automatically publish docker images on hub.docker.com.
   [timo]
 

@@ -7,6 +7,7 @@ from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedField
 from plone.restapi.interfaces import IFieldDeserializer
+from plone.restapi.services.content.tus import TUSUpload
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
@@ -147,6 +148,11 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
                 data = value.get('data', '').decode(value[u'encoding'])
             else:
                 data = value.get('data', '')
+        elif isinstance(value, TUSUpload):
+            content_type = value.metadata().get(
+                'content-type', content_type).encode('utf8')
+            filename = value.metadata().get('filename', filename)
+            data = value.open()
         else:
             data = value
 
@@ -167,6 +173,10 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
             content_type = value.get(u'content-type', content_type)
             encoding = value.get(u'encoding', encoding)
             data = value.get(u'data', u'')
+        elif isinstance(value, TUSUpload):
+            content_type = value.metadata().get('content-type', content_type)
+            with open(value.filepath, 'rb') as f:
+                data = f.read().decode('utf8')
         else:
             data = value
 
