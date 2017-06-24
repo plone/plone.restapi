@@ -2,13 +2,15 @@ TUS resumable upload
 ====================
 
 plone.restapi supports the `TUS Open Protocol <http://tus.io>`_ for resumable file uploads.
-The two TUS endpoints to upload `@tus-upload` a file and to replace an existing file `@tus-replace` are available on all 'folderish resources' in Plone (content types that implement the IFolderish interface, e.g. a 'Folder').
+There is a `@tus-upload` endpoint to upload a file and a `@tus-replace` endpoint to replace an existing file.
 
 
 Creating an Upload URL
 ----------------------
 
-To create a new upload send a POST request to the `@tus-upload` endpoint.
+.. note:: POST requests to the `@tus-upload` endpoint are allowed on all IFolderish content types (e.g. Folder).
+
+To create a new upload, send a POST request to the `@tus-upload` endpoint.
 
 ..  http:example:: curl httpie python-requests
     :request: _json/tusupload_post.req
@@ -21,6 +23,8 @@ The server will return a temporary upload URL in the location header of the resp
 
 Uploading a File
 ----------------
+
+.. note:: PATCH requests to the `@tus-upload` endpoint are allowed on all IContentish content types.
 
 Once a temporary upload URL has been created a client can send a PATCH request to upload a file:
 
