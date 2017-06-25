@@ -4,7 +4,8 @@ Changelog
 1.0a19 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Implement tus.io upload endpoint.
+  [buchi]
 
 
 1.0a18 (2017-06-14)
@@ -31,9 +32,6 @@ Breaking Changes:
   [erral]
 
 New Features:
-
-- Implement tus.io upload endpoint.
-  [buchi]
 
 - Automatically publish docker images on hub.docker.com.
   [timo]
