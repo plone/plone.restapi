@@ -15,10 +15,12 @@ To create a new upload, send a POST request to the `@tus-upload` endpoint.
 ..  http:example:: curl httpie python-requests
     :request: _json/tusupload_post.req
 
-The server will return a temporary upload URL in the location header of the response. The file can then be uploaded to that URL. The HTTP body contains the actual file content:
+The server will return a temporary upload URL in the location header of the response:
 
 .. literalinclude:: _json/tusupload_post.resp
    :language: http
+
+The file can then be uploaded in the next step to that temporary URL.
 
 
 Uploading a File
@@ -26,17 +28,16 @@ Uploading a File
 
 .. note:: PATCH requests to the `@tus-upload` endpoint are allowed on all IContentish content types.
 
-Once a temporary upload URL has been created a client can send a PATCH request to upload a file:
+Once a temporary upload URL has been created, a client can send a PATCH request to upload a file. The file content should be send in the body of the request:
 
 .. literalinclude:: _json/tusupload_patch_finalized.req
    :language: http
 
-When the upload request contains of just one single file, the server will respond with a `204: No Content` response and the final file URL in the HTTP location header:
+When just a single file is uploaded at once, the server will respond with a `204: No Content` response after a successful upload.
+The HTTP location header contains he URL of the newly created content object:
 
 .. literalinclude:: _json/tusupload_patch_finalized.resp
    :language: http
-
-The actual content item is created after the file upload has been finalized.
 
 
 Partial Upload
