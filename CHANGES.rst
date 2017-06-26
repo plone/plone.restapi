@@ -1,7 +1,13 @@
 Changelog
 =========
 
-1.0a19 (unreleased)
+1.0.a20 (unreleased)
+--------------------
+
+- Nothing changed yet.
+
+
+1.0a19 (2017-06-25)
 -------------------
 
 - Implement tus.io upload endpoint.
