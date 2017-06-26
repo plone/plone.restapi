@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.0.a20 (unreleased)
---------------------
+1.0a20 (unreleased)
+-------------------
 
 - Nothing changed yet.
 
