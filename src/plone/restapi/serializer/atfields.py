@@ -5,6 +5,7 @@ from Products.Archetypes.interfaces.field import IFileField
 from Products.Archetypes.interfaces.field import IImageField
 from Products.Archetypes.interfaces.field import IReferenceField
 from Products.Archetypes.interfaces.field import ITextField
+from Products.CMFCore.utils import getToolByName
 from plone.app.blob.interfaces import IBlobField
 from plone.app.blob.interfaces import IBlobImageField
 from plone.restapi.imaging import get_scales
@@ -32,9 +33,7 @@ class DefaultFieldSerializer(object):
         self.field = field
 
     def __call__(self):
-        accessor = self.field.getEditAccessor(self.context)
-        if accessor is None:
-            accessor = self.field.getAccessor(self.context)
+        accessor = self.field.getAccessor(self.context)
         return json_compatible(accessor())
 
 
@@ -60,10 +59,12 @@ class FileFieldSerializer(DefaultFieldSerializer):
 class TextFieldSerializer(DefaultFieldSerializer):
 
     def __call__(self):
+        mimetypes_registry = getToolByName(self.context, 'mimetypes_registry')
+        data = super(TextFieldSerializer, self).__call__()
         return {
             'content-type': json_compatible(
-                self.field.getContentType(self.context)),
-            'data': super(TextFieldSerializer, self).__call__()
+                mimetypes_registry(data)[2].normalized()),
+            'data': data
         }
 
 

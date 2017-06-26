@@ -25,6 +25,7 @@ Content-Type: application/json
   "expires": null, 
   "id": "event", 
   "language": "", 
+  "layout": "event_view", 
   "location": null, 
   "modified": "2016-01-21T03:24:11+00:00", 
   "open_end": null, 
@@ -48,5 +49,6 @@ Content-Type: application/json
   "text": null, 
   "timezone": null, 
   "title": "Event", 
+  "version": "current", 
   "whole_day": null
 }

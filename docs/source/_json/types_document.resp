@@ -49,6 +49,9 @@ Content-Type: application/json+schema
       "title": "Ownership"
     }
   ], 
+  "layouts": [
+    "document_view"
+  ], 
   "properties": {
     "allow_discussion": {
       "choices": [

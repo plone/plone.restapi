@@ -44,6 +44,7 @@ Content-Type: application/json
   ], 
   "items_total": 3, 
   "language": "", 
+  "layout": "listing_view", 
   "limit": 1000, 
   "modified": "2016-01-21T08:24:11+00:00", 
   "parent": {
@@ -70,5 +71,6 @@ Content-Type: application/json
   "sort_reversed": null, 
   "subjects": [], 
   "text": null, 
-  "title": "My Collection"
+  "title": "My Collection", 
+  "version": "current"
 }

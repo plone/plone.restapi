@@ -23,6 +23,7 @@
     <adapter factory=".adapters.TupleJsonSchemaProvider" />
     <adapter factory=".adapters.ChoiceJsonSchemaProvider" />
     <adapter factory=".adapters.ObjectJsonSchemaProvider" />
+    <adapter factory=".adapters.DictJsonSchemaProvider" />
     <adapter factory=".adapters.RichTextJsonSchemaProvider" />
     <adapter factory=".adapters.DateJsonSchemaProvider" />
     <adapter factory=".adapters.DatetimeJsonSchemaProvider" />

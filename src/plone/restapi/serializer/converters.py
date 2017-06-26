@@ -136,7 +136,7 @@ def timedelta_converter(value):
 @implementer(IJsonCompatible)
 def richtext_converter(value):
     return {
-        u'data': json_compatible(value.raw),
+        u'data': json_compatible(value.output),
         u'content-type': json_compatible(value.mimeType),
         u'encoding': json_compatible(value.encoding),
     }

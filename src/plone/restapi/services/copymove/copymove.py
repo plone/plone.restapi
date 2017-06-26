@@ -68,6 +68,14 @@ class BaseCopyMove(Service):
         for item in source:
             obj = self.get_object(item)
             if obj is not None:
+                if self.is_moving:
+                    # To be able to safely move the object, the user requires
+                    # permissions on the parent
+                    if not checkPermission('zope2.DeleteObjects', obj) and \
+                       not checkPermission(
+                            'zope2.DeleteObjects', aq_parent(obj)):
+                        self.request.response.setStatus(403)
+                        return
                 parent = aq_parent(obj)
                 if parent in parents_ids:
                     parents_ids[parent].append(obj.getId())
@@ -95,6 +103,7 @@ class BaseCopyMove(Service):
 class Copy(BaseCopyMove):
     """Copies existing content objects.
     """
+    is_moving = False
 
     def clipboard(self, parent, ids):
         return parent.manage_copyObjects(ids=ids)
@@ -103,6 +112,7 @@ class Copy(BaseCopyMove):
 class Move(BaseCopyMove):
     """Moves existing content objects.
     """
+    is_moving = True
 
     def clipboard(self, parent, ids):
         return parent.manage_cutObjects(ids=ids)

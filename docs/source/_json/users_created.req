@@ -10,5 +10,8 @@ Content-Type: application/json
     "home_page": "web.mit.edu/chomsky",
     "location": "Cambridge, MA",
     "password": "colorlessgreenideas",
+    "roles": [
+        "Contributor"
+    ],
     "username": "noamchomsky"
 }

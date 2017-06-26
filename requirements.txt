@@ -1,9 +1,10 @@
-appdirs == 1.4.2
-packaging == 16.8
-pyparsing == 2.1.10
-setuptools == 34.3.0
-six == 1.10.0
-zc.buildout == 2.8.0
+# copy from https://github.com/plone/buildout.coredev/blob/5.1/requirements.txt
+appdirs==1.4.2
+packaging==16.8
+pyparsing==2.1.10
+setuptools==34.3.0
+six==1.10.0
+zc.buildout==2.8.0
 # for readthedocs.org
 sphinxcontrib-httpdomain
 sphinxcontrib-httpexample

@@ -19,6 +19,7 @@ Content-Type: application/json
   "expires": null, 
   "id": "link", 
   "language": "", 
+  "layout": "link_redirect_view", 
   "modified": "2016-01-21T04:24:11+00:00", 
   "parent": {
     "@id": "http://localhost:55001/plone", 
@@ -34,5 +35,6 @@ Content-Type: application/json
     "title": "Sharing"
   }, 
   "subjects": [], 
-  "title": "My Link"
+  "title": "My Link", 
+  "version": "current"
 }

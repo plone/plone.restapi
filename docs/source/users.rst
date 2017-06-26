@@ -60,6 +60,8 @@ The server will respond with a 200 OK status code and the JSON representation of
 .. literalinclude:: _json/users_get.resp
    :language: http
 
+The key 'roles' lists the globally defined roles for the user.
+
 
 Update User
 -----------
@@ -73,6 +75,9 @@ A successful response to a PATCH request will be indicated by a :term:`204 No Co
 
 .. literalinclude:: _json/users_update.resp
    :language: http
+
+.. note::
+  The 'roles' object is a mapping of a role and a boolean indicating adding or removing.
 
 
 Delete User

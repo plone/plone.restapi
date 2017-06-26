@@ -1,0 +1,6 @@
+POST /plone/folder/@tus-upload HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Tus-Resumable: 1.0.0
+Upload-Length: 8
+Upload-Metadata: filename dGVzdC50eHQ=,content-type dGV4dC9wbGFpbg==

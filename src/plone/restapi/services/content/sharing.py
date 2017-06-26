@@ -26,7 +26,7 @@ class SharingGet(Service):
             self.request.response.setStatus(501)
             return dict(error=dict(message='No serializer available.'))
 
-        return serializer()
+        return serializer(search=self.request.form.get('search'))
 
 
 class SharingPost(Service):

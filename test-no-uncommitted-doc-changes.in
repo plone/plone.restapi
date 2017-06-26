@@ -20,7 +20,7 @@ if [ "$PLONE_VERSION" = "5.0.x" ]; then
     exit 0
 fi
 
-changes=$(git diff --exit-code $DUMPS_DIR)
+changes=$(git diff --ignore-space-at-eol --exit-code $DUMPS_DIR)
 if [ $? -ne 0 ]; then
     red "ERROR: There are modified files in $DUMPS_DIR after running test_documentation.py!"
     red

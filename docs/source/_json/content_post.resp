@@ -19,6 +19,7 @@ Location: http://localhost:55001/plone/folder/my-document
   "expires": null, 
   "id": "my-document", 
   "language": "", 
+  "layout": "document_view", 
   "modified": "2016-10-21T19:00:00+00:00", 
   "parent": {
     "@id": "http://localhost:55001/plone/folder", 
@@ -33,5 +34,6 @@ Location: http://localhost:55001/plone/folder/my-document
   "subjects": [], 
   "table_of_contents": null, 
   "text": null, 
-  "title": "My Document"
+  "title": "My Document", 
+  "version": "current"
 }
