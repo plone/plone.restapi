@@ -1,0 +1,41 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/front-page/@comments", 
+  "items": [
+    {
+      "@id": "http://localhost:55001/plone/front-page/@comments/1477076400000000", 
+      "@parent": null, 
+      "@type": "Discussion Item", 
+      "author_name": null, 
+      "author_username": null, 
+      "comment_id": "1477076400000000", 
+      "creation_date": "2016-10-21T19:00:00", 
+      "in_reply_to": null, 
+      "modification_date": "2016-10-21T19:00:00", 
+      "text": {
+        "data": "Comment 1", 
+        "mime-type": "text/plain"
+      }, 
+      "user_notification": null
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/front-page/@comments/1477076400000001", 
+      "@parent": "http://localhost:55001/plone/front-page/@comments/1477076400000000", 
+      "@type": "Discussion Item", 
+      "author_name": null, 
+      "author_username": null, 
+      "comment_id": "1477076400000001", 
+      "creation_date": "2016-10-21T19:00:00", 
+      "in_reply_to": "1477076400000000", 
+      "modification_date": "2016-10-21T19:00:00", 
+      "text": {
+        "data": "Comment 1.1", 
+        "mime-type": "text/plain"
+      }, 
+      "user_notification": null
+    }
+  ], 
+  "items_total": 2
+}

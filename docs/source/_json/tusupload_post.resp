@@ -1,0 +1,4 @@
+HTTP/1.1 201 Created
+Tus-Resumable: 1.0.0
+Location: http://localhost:55001/plone/folder/@tus-upload/032803b64ad746b3ab46d9223ea3d90f
+

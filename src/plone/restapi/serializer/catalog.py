@@ -71,7 +71,7 @@ class LazyCatalogResultSerializer(object):
         self.lazy_resultset = lazy_resultset
         self.request = request
 
-    def __call__(self, metadata_fields=()):
+    def __call__(self, metadata_fields=(), fullobjects=False):
         batch = HypermediaBatch(self.request, self.lazy_resultset)
 
         results = {}
@@ -82,15 +82,19 @@ class LazyCatalogResultSerializer(object):
 
         results['items'] = []
         for brain in batch:
-            result = getMultiAdapter(
-                (brain, self.request), ISerializeToJsonSummary)()
+            if fullobjects:
+                result = getMultiAdapter(
+                    (brain.getObject(), self.request), ISerializeToJson)()
+            else:
+                result = getMultiAdapter(
+                    (brain, self.request), ISerializeToJsonSummary)()
 
-            if metadata_fields:
                 # Merge additional metadata into the summary we already have
-                metadata = getMultiAdapter(
-                    (brain, self.request),
-                    ISerializeToJson)(metadata_fields=metadata_fields)
-                result.update(metadata)
+                if metadata_fields:
+                    metadata = getMultiAdapter(
+                        (brain, self.request),
+                        ISerializeToJson)(metadata_fields=metadata_fields)
+                    result.update(metadata)
 
             results['items'].append(result)
 

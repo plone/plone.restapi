@@ -22,18 +22,23 @@ Contents
 
    authentication
    content
+   history
    batching
+   comments
    copymove
    workflow
    sharing
    registry
    types
    users
+   groups
+   roles
    components
    breadcrumbs
    navigation
    serialization
    searching
+   tusupload
    vocabularies
    customization
    conventions

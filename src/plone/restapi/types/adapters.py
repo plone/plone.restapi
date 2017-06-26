@@ -16,6 +16,7 @@ from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDate
 from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IDecimal
+from zope.schema.interfaces import IDict
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFloat
 from zope.schema.interfaces import IInt
@@ -293,6 +294,35 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
     def additional(self):
         info = super(ObjectJsonSchemaProvider, self).additional()
         info['properties'] = self.get_properties()
+        return info
+
+
+@adapter(IDict, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
+
+    def get_type(self):
+        return 'dict'
+
+    def additional(self):
+        info = {}
+        key_type = getMultiAdapter(
+            (self.field.key_type, self.context, self.request),
+            IJsonSchemaProvider
+        )
+        info['key_type'] = {
+            'schema': key_type.get_schema(),
+            'additional': key_type.additional(),
+        }
+
+        value_type = getMultiAdapter(
+            (self.field.key_type, self.context, self.request),
+            IJsonSchemaProvider
+        )
+        info['value_type'] = {
+            'schema': value_type.get_schema(),
+            'additional': value_type.additional(),
+        }
         return info
 
 

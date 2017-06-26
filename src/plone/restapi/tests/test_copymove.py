@@ -201,6 +201,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
     def test_move_single_object_no_permission_delete_source_raises_403(self):
         api.user.grant_roles(
             username='memberuser', obj=self.folder1, roles=['Manager', ])
+        api.content.transition(obj=self.doc1, transition='publish')
         transaction.commit()
 
         self.api_session.auth = ('memberuser', 'secret')

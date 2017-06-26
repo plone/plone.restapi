@@ -15,10 +15,12 @@ from zope.event import notify
 from zope.interface import Interface
 from zope.interface import implementer
 
+from .mixins import OrderingMixin
+
 
 @implementer(IDeserializeFromJson)
 @adapter(IBaseObject, Interface)
-class DeserializeFromJson(object):
+class DeserializeFromJson(OrderingMixin, object):
     """JSON deserializer for Archetypes content types
     """
 
@@ -26,8 +28,9 @@ class DeserializeFromJson(object):
         self.context = context
         self.request = request
 
-    def __call__(self, validate_all=False):
-        data = json_body(self.request)
+    def __call__(self, validate_all=False, data=None):
+        if data is None:
+            data = json_body(self.request)
 
         obj = self.context
         modified = False
@@ -72,6 +75,9 @@ class DeserializeFromJson(object):
         if 'layout' in data:
             layout = data['layout']
             self.context.setLayout(layout)
+
+        # OrderingMixin
+        self.handle_ordering(data)
 
         return obj
 

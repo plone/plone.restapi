@@ -23,5 +23,5 @@ Content-Type: application/json
       "type": "group"
     }
   ], 
-  "inherit": false
+  "inherit": true
 }

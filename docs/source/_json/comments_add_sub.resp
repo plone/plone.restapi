@@ -1,0 +1,3 @@
+HTTP/1.1 204 No Content
+Location: http://localhost:55001/plone/front-page/@comments/123456
+
