@@ -10,6 +10,8 @@ Changelog
 1.0a19 (2017-06-25)
 -------------------
 
+New Features:
+
 - Implement tus.io upload endpoint.
   [buchi]
 
