@@ -4,6 +4,9 @@ Changelog
 1.0a20 (unreleased)
 -------------------
 
+- Make @login only use acl_users inside the Plone site.
+  [jaroel]
+
 - Add navigation and breadcrumbs as top-level services. Deprecate navigation
   and breadcrumbs as components.
   [timo]
