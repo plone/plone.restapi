@@ -68,18 +68,18 @@ class Login(Service):
         """Try to find a user folder that contains a user with the given
            userid.
         """
-        uf_parent = aq_inner(self.context)
+        context = aq_inner(self.context)
         info = None
 
         while not info:
-            uf = getToolByName(uf_parent, 'acl_users')
+            uf = getToolByName(context, 'acl_users')
             if uf:
                 info = uf._verifyUser(uf.plugins, login=userid)
-            if IPloneSiteRoot.providedBy(uf_parent):
+            if IPloneSiteRoot.providedBy(context):
                 break
-            if uf_parent is self.context.getPhysicalRoot():
+            if context is self.context.getPhysicalRoot():
                 break
-            uf_parent = aq_parent(uf_parent)
+            context = aq_parent(context)
 
         if info:
             return uf
