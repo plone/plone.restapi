@@ -8,6 +8,12 @@ Changelog
   and breadcrumbs as components.
   [timo]
 
+- Support content reordering on the site root.
+  [jaroel]
+
+- Support setting Layout on the site root.
+  [jaroel]
+
 
 1.0a19 (2017-06-25)
 -------------------

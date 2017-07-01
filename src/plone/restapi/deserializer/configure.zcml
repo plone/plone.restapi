@@ -3,6 +3,8 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="plone.restapi">
 
+  <adapter factory=".site.DeserializeSiteRootFromJson" />
+
   <adapter factory=".dxcontent.DeserializeFromJson" />
   <adapter factory=".dxfields.DefaultFieldDeserializer" />
   <adapter factory=".dxfields.DatetimeFieldDeserializer" />
