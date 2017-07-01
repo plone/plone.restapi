@@ -1,18 +1,9 @@
 # -*- coding: utf-8 -*-
-from plone.app.testing import TEST_USER_ID
-from plone.app.testing import setRoles
-from plone.dexterity.interfaces import IDexterityItem
-from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from plone.restapi.tests.dxtypes import ITestAnnotationsBehavior
 from plone.restapi.tests.mixin_ordering import OrderingMixin
-from zExceptions import BadRequest
 from zope.component import getMultiAdapter
-from zope.component import provideHandler
-from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
-import json
 import unittest
 
 

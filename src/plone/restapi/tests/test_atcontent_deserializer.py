@@ -18,7 +18,6 @@ from Products.Archetypes.interfaces import IObjectPostValidation
 from Products.Archetypes.interfaces import IObjectPreValidation
 
 
-import json
 import unittest
 
 
@@ -152,8 +151,6 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
         self.assertNotEquals(current_layout, "my_new_layout")
         self.deserialize(body='{"layout": "my_new_layout"}')
         self.assertEquals('my_new_layout', self.doc1.getLayout())
-
-
 
 
 class TestValidationRequest(unittest.TestCase):
