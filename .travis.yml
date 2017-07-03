@@ -36,5 +36,5 @@ after_success:
   - coveralls
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - if [ ! $TRAVIS_TAG ]; then docker build --tag plone/plone.restapi:plone-$PLONE_VERSION-$(git rev-parse HEAD) . ; fi
-  - if [ $TRAVIS_TAG ]; then docker build --tag plone/plone.restapi:plone-$PLONE_VERSION-$(git rev-parse HEAD) . --tag plone/plone.restapi:plone-$PLONE_VERSION-$TRAVIS_TAG; fi
+  - if [ $TRAVIS_TAG ]; then docker build --tag plone/plone.restapi:plone-$PLONE_VERSION-$(git rev-parse HEAD) . --tag plone/plone.restapi:plone-$PLONE_VERSION-$TRAVIS_TAG --tag plone/plone.restapi:latest ; fi
   - docker push plone/plone.restapi
