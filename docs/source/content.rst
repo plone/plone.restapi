@@ -157,7 +157,7 @@ A pseudo-code example of the GET implementation on the server::
         # Internal Server Error
         response.setStatus(500)
 
-You can find implementation details in the `/services/content/add.py Module <https://github.com/plone/plone.restapi/blob/dde57b88e0f1b5f5e9f04e6a21865bc0dde55b1c/src/plone/restapi/services/content/add.py#L35-L61>`_
+You can find implementation details in the `plone.restapi.services.content.add.FolderPost class <https://github.com/plone/plone.restapi/blob/dde57b88e0f1b5f5e9f04e6a21865bc0dde55b1c/src/plone/restapi/services/content/add.py#L35-L61>`_
 
 
 GET Responses
