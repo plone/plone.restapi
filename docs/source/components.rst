@@ -14,11 +14,11 @@ Breadcrumbs
 Getting the breadcrumbs for the current page:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/components_breadcrumbs.req
+    :request: _json/component_breadcrumbs.req
 
 Example response:
 
-.. literalinclude:: _json/components_breadcrumbs.resp
+.. literalinclude:: _json/component_breadcrumbs.resp
    :language: http
 
 Navigation
@@ -27,9 +27,9 @@ Navigation
 Getting the top navigation items:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/components_navigation.req
+    :request: _json/component_navigation.req
 
 Example response:
 
-.. literalinclude:: _json/components_navigation.resp
+.. literalinclude:: _json/component_navigation.resp
    :language: http
