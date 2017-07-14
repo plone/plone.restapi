@@ -41,11 +41,16 @@ class TestServicesBreadcrumbs(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
-            [{
-                u'url': u'http://localhost:55001/plone/folder',
-                u'title': u'Some Folder'
-            }, {
-                u'url': u'http://localhost:55001/plone/folder/doc1',
-                u'title': u'A document'
-            }]
+            {
+                '@id': 'http://localhost:55001/plone/folder/doc1/@breadcrumbs',
+                'items': [
+                    {
+                        u'url': u'http://localhost:55001/plone/folder',
+                        u'title': u'Some Folder'
+                    }, {
+                        u'url': u'http://localhost:55001/plone/folder/doc1',
+                        u'title': u'A document'
+                    }
+                ]
+            }
         )
