@@ -1,3 +1,3 @@
-GET /plone/front-page/@components/navigation HTTP/1.1
+GET /plone/front-page/@navigation HTTP/1.1
 Accept: application/json
 Authorization: Basic YWRtaW46c2VjcmV0
