@@ -12,11 +12,20 @@ class OrderingMixin(object):
             delta = data['ordering']['delta']
             subset_ids = data['ordering'].get('subset_ids')
 
+            # The REST api returns only content items and a Zope resource
+            # may contain non-content items. We need to set the subset_ids
+            # so we'll move items relative to each other.
+            if not subset_ids:
+                subset_ids = self.context.contentIds()
+
             self.reorderItems(obj_id, delta, subset_ids)
 
-    def reorderItems(self, obj_id, delta, subset_ids=None):
+    def reorderItems(self, obj_id, delta, subset_ids):
         # Based on wildcard.foldercontents.viewsItemOrder
         ordering = self.getOrdering()
+        if ordering is None:
+            msg = 'Content ordering is not supported by this resource'
+            raise BadRequest(msg)
 
         # Make sure we're seeing the same order as the client is.
         if subset_ids:
@@ -38,7 +47,7 @@ class OrderingMixin(object):
     def getOrdering(self):
         if IPloneSiteRoot.providedBy(self.context):
             return self.context
-        else:
+        elif getattr(self.context, 'getOrdering', None):
             ordering = self.context.getOrdering()
             if not IExplicitOrdering.providedBy(ordering):
                 return None

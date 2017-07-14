@@ -19,6 +19,13 @@
 
   <plone:service
     method="PATCH"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".update.ContentPatch"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <plone:service
+    method="PATCH"
     for="Products.CMFCore.interfaces.IContentish"
     factory=".update.ContentPatch"
     permission="cmf.ModifyPortalContent"
