@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from Acquisition import aq_parent
 from ZPublisher.pubevents import PubStart
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -78,6 +79,17 @@ class TestLogin(TestCase):
         service = self.traverse()
         res = service.render()
         self.assertIn('token', res)
+
+    def test_unsuccessful_login_using_zope_user(self):
+        zacl_users = aq_parent(self.portal).acl_users
+        zacl_users.userFolderAddUser('zope_user', 'secret', [''], [])
+        self.request['BODY'] = '{"login": "%s", "password": "%s"}' % (
+            'zope_user',
+            'secret'
+        )
+        service = self.traverse()
+        service.reply()
+        self.assertEqual(401, self.request.response.getStatus())
 
 
 class TestLogout(TestCase):
