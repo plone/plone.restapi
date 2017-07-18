@@ -33,6 +33,13 @@ Or the same example using ``curl``:
 
     curl -u username:password -H 'Accept:application/json' $URL
 
+.. warning::
+  The authentication endpoints will only authenticate site users. This means
+  that only users in the site's `acl_users` will be able to authenticate and
+  will be granted a token if they request one. Zope (root's `acl_users`) won't
+  be able to authenticate by Plone RESTAPI means. This is by design to avoid
+  confusion and differences of role assignment while using the RESTAPI.
+
 
 JSON Web Tokens (JWT)
 ---------------------
