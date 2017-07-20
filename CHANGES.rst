@@ -14,6 +14,9 @@ Changelog
 - Support setting Layout on the site root.
   [jaroel]
 
+- Add clarification when using SearchableText parameter in plone.restapi to avoid confusions
+  [sneridagh]
+
 
 1.0a19 (2017-06-25)
 -------------------
