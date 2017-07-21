@@ -35,6 +35,7 @@ class TestServicesNavigation(unittest.TestCase):
             title=u'A document')
         transaction.commit()
 
+    @unittest.skip('Planned for future release')
     def test_navigation(self):
         response = self.api_session.get('/folder/@navigation')
 

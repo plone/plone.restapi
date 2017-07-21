@@ -4,10 +4,6 @@ Changelog
 1.0a20 (unreleased)
 -------------------
 
-- Add navigation and breadcrumbs as top-level services. Deprecate navigation
-  and breadcrumbs as components.
-  [timo]
-
 - Support content reordering on the site root.
   [jaroel]
 
