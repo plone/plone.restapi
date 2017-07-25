@@ -4,18 +4,20 @@ Location: http://localhost:55001/plone/folder/my-document
 
 {
   "@components": {
-    "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@components/breadcrumbs"
+    "@components": {
+      "breadcrumbs": {
+        "@id": "http://localhost:55001/plone/folder/my-document/@components/breadcrumbs"
+      }, 
+      "navigation": {
+        "@id": "http://localhost:55001/plone/folder/my-document/@components/navigation"
+      }
     }, 
-    "navigation": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@components/navigation"
+    "@workflow": {
+      "@id": "http://localhost:55001/plone/folder/my-document/@workflow"
     }
   }, 
   "@id": "http://localhost:55001/plone/folder/my-document", 
   "@type": "Document", 
-  "@workflow": {
-    "@id": "http://localhost:55001/plone/folder/my-document/@workflow"
-  }, 
   "UID": "SomeUUID000000000000000000000005", 
   "allow_discussion": null, 
   "changeNote": "", 

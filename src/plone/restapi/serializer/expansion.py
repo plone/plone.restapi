@@ -14,7 +14,7 @@ def expandable_elements(context, request):
             update_dict_recursively(res, element[1](expand=True))
         else:
             update_dict_recursively(res, element[1](expand=False))
-    return res
+    return {"@components": res}
 
 
 def update_dict_recursively(d, u):

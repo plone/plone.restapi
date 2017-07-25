@@ -3,18 +3,20 @@ Content-Type: application/json
 
 {
   "@components": {
-    "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/collection/@components/breadcrumbs"
+    "@components": {
+      "breadcrumbs": {
+        "@id": "http://localhost:55001/plone/collection/@components/breadcrumbs"
+      }, 
+      "navigation": {
+        "@id": "http://localhost:55001/plone/collection/@components/navigation"
+      }
     }, 
-    "navigation": {
-      "@id": "http://localhost:55001/plone/collection/@components/navigation"
+    "@workflow": {
+      "@id": "http://localhost:55001/plone/collection/@workflow"
     }
   }, 
   "@id": "http://localhost:55001/plone/collection", 
   "@type": "Collection", 
-  "@workflow": {
-    "@id": "http://localhost:55001/plone/collection/@workflow"
-  }, 
   "UID": "SomeUUID000000000000000000000002", 
   "allow_discussion": null, 
   "contributors": [], 

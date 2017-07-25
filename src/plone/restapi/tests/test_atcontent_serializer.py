@@ -163,5 +163,5 @@ class TestATContentSerializer(unittest.TestCase):
             name='foo'
         )
         obj = self.serialize(self.doc1)
-        self.assertIn('foo', obj)
-        self.assertEqual('collapsed', obj['foo'])
+        self.assertIn('foo', obj['@components'])
+        self.assertEqual('collapsed', obj['@components']['foo'])

@@ -53,15 +53,18 @@ class TestExpansion(unittest.TestCase):
 
     def test_expansion_returns_collapsed_elements(self):
         request = TestRequest()
-        self.assertEqual({'foo': 'collapsed', 'bar': 'collapsed'},
-                         expandable_elements(None, request))
+        self.assertEqual(
+            {'@components': {'bar': 'collapsed', 'foo': 'collapsed'}},
+            expandable_elements(None, request))
 
     def test_expansion_returns_expanded_element(self):
         request = TestRequest(form={'expand': 'foo'})
-        self.assertEqual({'foo': 'expanded', 'bar': 'collapsed'},
-                         expandable_elements(None, request))
+        self.assertEqual(
+            {'@components': {'bar': 'collapsed', 'foo': 'expanded'}},
+            expandable_elements(None, request))
 
     def test_expansion_returns_multiple_expanded_elements(self):
         request = TestRequest(form={'expand': 'foo,bar'})
-        self.assertEqual({'foo': 'expanded', 'bar': 'expanded'},
-                         expandable_elements(None, request))
+        self.assertEqual(
+            {'@components': {'bar': 'expanded', 'foo': 'expanded'}},
+            expandable_elements(None, request))

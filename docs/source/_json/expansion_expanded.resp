@@ -3,21 +3,23 @@ Content-Type: application/json
 
 {
   "@components": {
-    "breadcrumbs": [
-      {
-        "title": "Welcome to Plone", 
-        "url": "http://localhost:55001/plone/front-page"
+    "@components": {
+      "breadcrumbs": [
+        {
+          "title": "Welcome to Plone", 
+          "url": "http://localhost:55001/plone/front-page"
+        }
+      ], 
+      "navigation": {
+        "@id": "http://localhost:55001/plone/front-page/@components/navigation"
       }
-    ], 
-    "navigation": {
-      "@id": "http://localhost:55001/plone/front-page/@components/navigation"
+    }, 
+    "@workflow": {
+      "@id": "http://localhost:55001/plone/front-page/@workflow"
     }
   }, 
   "@id": "http://localhost:55001/plone/front-page", 
   "@type": "Document", 
-  "@workflow": {
-    "@id": "http://localhost:55001/plone/front-page/@workflow"
-  }, 
   "UID": "SomeUUID000000000000000000000001", 
   "allow_discussion": null, 
   "changeNote": "", 
