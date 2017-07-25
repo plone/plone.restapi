@@ -3,14 +3,14 @@ Content-Type: application/json
 
 {
   "@components": {
-    "@workflow": {
-      "@id": "http://localhost:55001/plone/front-page/@workflow"
-    }, 
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/front-page/@breadcrumbs"
     }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/front-page/@navigation"
+    }, 
+    "workflow": {
+      "@id": "http://localhost:55001/plone/front-page/@workflow"
     }
   }, 
   "@id": "http://localhost:55001/plone/front-page", 

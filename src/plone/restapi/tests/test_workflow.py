@@ -48,17 +48,17 @@ class TestWorkflowInfo(TestCase):
         serializer = getMultiAdapter((self.doc1, self.request),
                                      ISerializeToJson)
         obj = serializer()
-        self.assertIn('@workflow', obj['@components'])
-        self.assertIn('@id', obj['@components']['@workflow'])
+        self.assertIn('workflow', obj['@components'])
+        self.assertIn('@id', obj['@components']['workflow'])
 
     def test_expanded_workflow_info_in_content_serialization(self):
         self.request.form.update({'expand': 'workflow'})
         serializer = getMultiAdapter((self.doc1, self.request),
                                      ISerializeToJson)
         obj = serializer()
-        self.assertIn('@workflow', obj['@components'])
-        self.assertIn('transitions', obj['@components']['@workflow'])
-        self.assertIn('history', obj['@components']['@workflow'])
+        self.assertIn('workflow', obj['@components'])
+        self.assertIn('transitions', obj['@components']['workflow'])
+        self.assertIn('history', obj['@components']['workflow'])
 
 
 class TestWorkflowTransition(TestCase):

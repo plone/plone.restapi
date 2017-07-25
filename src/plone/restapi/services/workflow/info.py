@@ -18,10 +18,13 @@ class WorkflowInfo(object):
         self.request = request
 
     def __call__(self, expand=False):
-        if not expand:
-            return {'@workflow': {
+        result = {
+            'workflow': {
                 "@id": '{}/@workflow'.format(self.context.absolute_url()),
-            }}
+            },
+        }
+        if not expand:
+            return result
 
         wftool = getToolByName(self.context, 'portal_workflow')
         history = wftool.getInfoFor(self.context, "review_history")
@@ -43,10 +46,11 @@ class WorkflowInfo(object):
                 action['review_state'],
                 self.context.portal_type)
 
-        return {'@workflow': {
+        result['workflow'].update({
             'history': json_compatible(history),
             'transitions': transitions,
-        }}
+            })
+        return result
 
 
 class WorkflowInfoService(Service):
@@ -54,4 +58,4 @@ class WorkflowInfoService(Service):
     """
     def reply(self):
         info = WorkflowInfo(self.context, self.request)
-        return info(expand=True)['@workflow']
+        return info(expand=True)['workflow']
