@@ -3,16 +3,14 @@ Content-Type: application/json
 
 {
   "@components": {
-    "@components": {
-      "breadcrumbs": {
-        "@id": "http://localhost:55001/plone/event/@components/breadcrumbs"
-      }, 
-      "navigation": {
-        "@id": "http://localhost:55001/plone/event/@components/navigation"
-      }
-    }, 
     "@workflow": {
       "@id": "http://localhost:55001/plone/event/@workflow"
+    }, 
+    "breadcrumbs": {
+      "@id": "http://localhost:55001/plone/event/@breadcrumbs"
+    }, 
+    "navigation": {
+      "@id": "http://localhost:55001/plone/event/@navigation"
     }
   }, 
   "@id": "http://localhost:55001/plone/event", 
