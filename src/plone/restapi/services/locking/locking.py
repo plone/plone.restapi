@@ -1,16 +1,26 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.services import Service
 from plone.locking.interfaces import ILockable
+from plone.locking.interfaces import INonStealableLock
 from plone.locking.interfaces import IRefreshableLockable
+from plone.restapi.deserializer import json_body
+from plone.restapi.services import Service
+from zope.interface import alsoProvides
+from zope.interface import noLongerProvides
 
 
 class Lock(Service):
     """Lock an object"""
 
     def reply(self):
+        data = json_body(self.request)
+
+        if 'stealable' in data and not data['stealable']:
+            alsoProvides(self.context, INonStealableLock)
+
         lockable = IRefreshableLockable(self.context, None)
         if lockable is not None:
             lockable.lock()
+
         return lock_info(self.context)
 
 
@@ -21,6 +31,10 @@ class Unlock(Service):
         lockable = ILockable(self.context)
         if lockable.can_safely_unlock():
             lockable.unlock()
+
+            if INonStealableLock.providedBy(self.context):
+                noLongerProvides(self.context, INonStealableLock)
+
         return lock_info(self.context)
 
 
@@ -31,11 +45,12 @@ class RefreshLock(Service):
         lockable = IRefreshableLockable(self.context, None)
         if lockable is not None:
             lockable.refresh_lock()
+
         return lock_info(self.context)
 
 
 class LockInfo(Service):
-    """Lock inforation of an object"""
+    """Lock information about the current lock"""
 
     def reply(self):
         return lock_info(self.context)
@@ -54,5 +69,9 @@ def lock_info(obj):
             info['creator'] = lock_info[0]['creator']
             info['time'] = lock_info[0]['time']
             info['token'] = lock_info[0]['token']
-            info['timeout'] = lock_info[0]['type'].timeout
+            lock_type = lock_info[0]['type']
+            if lock_type:
+                info['name'] = lock_info[0]['type'].__name__
+                info['timeout'] = lock_info[0]['type'].timeout
+
         return info
