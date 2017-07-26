@@ -21,6 +21,10 @@ class Lock(Service):
         if lockable is not None:
             lockable.lock()
 
+            if 'timeout' in data:
+                lock_item = webdav_lock(self.context)
+                lock_item.setTimeout("Second-%s" % data['timeout'])
+
         return lock_info(self.context)
 
 
@@ -72,6 +76,19 @@ def lock_info(obj):
             lock_type = lock_info[0]['type']
             if lock_type:
                 info['name'] = lock_info[0]['type'].__name__
-                info['timeout'] = lock_info[0]['type'].timeout
-
+            lock_item = webdav_lock(obj)
+            if lock_item:
+                info['timeout'] = lock_item.getTimeout()
         return info
+
+
+def webdav_lock(obj):
+    """Returns the WebDAV LockItem"""
+    lockable = ILockable(obj)
+    if lockable is None:
+        return
+
+    lock_info = lockable.lock_info()
+    if len(lock_info) > 0:
+        token = lock_info[0]['token']
+        return obj.wl_getLock(token)
