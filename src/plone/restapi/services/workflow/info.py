@@ -23,8 +23,6 @@ class WorkflowInfo(Service):
                 'title': self.context.translate(action['title']),
             })
 
-        from pprint import pprint
-        pprint(history)
         for item, action in enumerate(history):
             history[item]['title'] = self.context.translate(
                 wftool.getTitleForStateOnType(
