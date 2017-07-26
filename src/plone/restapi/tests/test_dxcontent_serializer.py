@@ -6,10 +6,15 @@ from datetime import time
 from datetime import timedelta
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import setRoles
+from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi.tests.test_expansion import ExpandableElementFoo
 from plone.uuid.interfaces import IMutableUUID
 from zope.component import getMultiAdapter
+from zope.component import provideAdapter
+from zope.interface import Interface
+from zope.publisher.interfaces.browser import IBrowserRequest
 
 import json
 import unittest
@@ -122,3 +127,14 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = self.serialize()
         self.assertIn('layout', obj)
         self.assertEquals(current_layout, obj['layout'])
+
+    def test_serializer_includes_expansion(self):
+        provideAdapter(
+            ExpandableElementFoo,
+            adapts=(Interface, IBrowserRequest),
+            provides=IExpandableElement,
+            name='foo'
+        )
+        obj = self.serialize()
+        self.assertIn('foo', obj['@components'])
+        self.assertEqual('collapsed', obj['@components']['foo'])

@@ -1,7 +1,15 @@
 Changelog
 =========
 
-- Translate titles in @workflow
+1.0a21 (unreleased)
+-------------------
+
+New Features:
+
+- Add support for expandable elements.
+  [buchi]
+
+- Translate titles in @workflow.
   [csenger]
 
 

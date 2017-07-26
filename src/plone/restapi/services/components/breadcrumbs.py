@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.interfaces import IExpandableElement
-from plone.restapi.services import Service
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import Interface
@@ -16,29 +15,18 @@ class Breadcrumbs(object):
         self.request = request
 
     def __call__(self, expand=False):
-        result = {
-            'breadcrumbs': {
-                '@id': '{}/@breadcrumbs'.format(self.context.absolute_url()),
-            },
-        }
         if not expand:
-            return result
+            return {'@components': {'breadcrumbs': {
+                '@id': '{}/@components/breadcrumbs'.format(
+                    self.context.absolute_url()),
+            }}}
 
         breadcrumbs_view = getMultiAdapter((self.context, self.request),
                                            name="breadcrumbs_view")
-        items = []
+        result = []
         for crumb in breadcrumbs_view.breadcrumbs():
-            items.append({
+            result.append({
                 'title': crumb['Title'],
                 'url': crumb['absolute_url']
             })
-
-        result['breadcrumbs']['items'] = items
-        return result
-
-
-class BreadcrumbsGet(Service):
-
-    def reply(self):
-        breadcrumbs = Breadcrumbs(self.context, self.request)
-        return breadcrumbs(expand=True)['breadcrumbs']
+        return {'@components': {'breadcrumbs': result}}
