@@ -121,3 +121,14 @@ You do so by specifying the ``fullobjects`` parameter:
 .. warning::
 
     Be aware that this might induce performance issues when retrieving a lot of resources. Normally the search just serializes catalog brains, but with full objects we wake up all the returned objects.
+
+
+Expired content
+---------------
+
+This endpoint will not return any expired content unless you use and set the ``show_inactive`` query to true.
+
+.. code-block:: http
+
+    GET /plone/@search?show_inactive=1 HTTP/1.1
+    Accept: application/json

@@ -337,3 +337,9 @@ A response 400 BadRequest with a message 'Content ordering is not supported by t
 
 ..  http:example:: curl httpie python-requests
     :request: _json/content_reorder.req
+
+
+Expired content
+---------------
+
+When retrieving the content items they will include all the content in the folder/site, including the expired content that might contain.

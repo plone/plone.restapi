@@ -6,6 +6,8 @@ from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from DateTime import DateTime
+from Products.CMFCore.utils import getToolByName
 
 import transaction
 import unittest
@@ -55,3 +57,18 @@ class TestServicesNavigation(unittest.TestCase):
                 ]
             }
         )
+
+    def test_navigation_expired_items(self):
+        self.folder.setExpirationDate(DateTime('2017/01/01'))
+        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool.doActionFor(self.folder, 'submit')
+        wftool.doActionFor(self.folder, 'publish')
+        self.folder.reindexObject()
+        transaction.commit()
+
+        self.api_session.auth = ('', '')
+        response = self.api_session.get('/@navigation')
+        response = response.json()
+
+        self.assertEquals(len(response['items']), 1)
+        self.assertEquals(response['items'][0]['title'], 'Home')

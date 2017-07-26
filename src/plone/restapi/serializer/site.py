@@ -22,7 +22,8 @@ class SerializeSiteRootToJson(object):
     def _build_query(self):
         path = '/'.join(self.context.getPhysicalPath())
         query = {'path': {'depth': 1, 'query': path},
-                 'sort_on': 'getObjPositionInParent'}
+                 'sort_on': 'getObjPositionInParent',
+                 'show_inactive': True}
         return query
 
     def __call__(self, version=None):

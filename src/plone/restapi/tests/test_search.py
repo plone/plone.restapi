@@ -432,3 +432,31 @@ class TestSearchFunctional(unittest.TestCase):
             [u'/plone/folder/doc'],
             result_paths(response.json())
         )
+
+    def test_search_expired_doc_not_showing(self):
+        self.portal['doc-outside-folder'].setExpirationDate(
+            DateTime('2017/01/01'))
+        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool.doActionFor(self.portal['doc-outside-folder'], 'submit')
+        wftool.doActionFor(self.portal['doc-outside-folder'], 'publish')
+        self.portal['doc-outside-folder'].reindexObject()
+        transaction.commit()
+
+        self.api_session.auth = ('', '')
+        response = self.api_session.get('/@search')
+        response = response.json()
+        self.assertEquals(len(response['items']), 0)
+
+    def test_search_expired_doc_showing_using_show_inactive(self):
+        self.portal['doc-outside-folder'].setExpirationDate(
+            DateTime('2017/01/01'))
+        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool.doActionFor(self.portal['doc-outside-folder'], 'submit')
+        wftool.doActionFor(self.portal['doc-outside-folder'], 'publish')
+        self.portal['doc-outside-folder'].reindexObject()
+        transaction.commit()
+
+        self.api_session.auth = ('', '')
+        response = self.api_session.get('/@search?show_inactive=1')
+        response = response.json()
+        self.assertEquals(len(response['items']), 1)

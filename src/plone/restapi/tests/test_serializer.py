@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from DateTime import DateTime
+from plone.app.testing import logout
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
@@ -366,4 +367,18 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 }
             ],
             self.serialize(self.portal.collection1).get('items')
+        )
+
+    def test_serialize_folder_returns_expired_items(self):
+        self.portal.doc1.setExpirationDate(DateTime('2017/01/01'))
+        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool.doActionFor(self.portal.doc1, 'submit')
+        wftool.doActionFor(self.portal.doc1, 'publish')
+        self.portal.doc1.reindexObject()
+        # We test it with published content for not to fiddle with permissions
+        # and users
+        logout()
+        self.assertEqual(
+            len(self.serialize(self.portal)['items']),
+            1
         )

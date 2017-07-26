@@ -74,6 +74,7 @@ class ZCatalogCompatibleQueryAdapter(object):
         'sort_limit': int,
         'b_start': int,
         'b_size': int,
+        'show_inactive': bool
     }
 
     def __init__(self, context, request):

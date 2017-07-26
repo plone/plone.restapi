@@ -12,6 +12,10 @@ New Features:
 - Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
   [sneridagh]
 
+- Show expired content when GET on a folderish object, include a way to display
+  it on @search via the show_inactive parameter
+  [sneridagh]
+
 
 1.0a20 (2017-07-24)
 -------------------
