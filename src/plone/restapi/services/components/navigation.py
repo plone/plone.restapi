@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.interfaces import IExpandableElement
-from plone.restapi.services import Service
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import Interface
@@ -16,28 +15,18 @@ class Navigation(object):
         self.request = request
 
     def __call__(self, expand=False):
-        result = {
-            'navigation': {
-                '@id': '{}/@navigation'.format(self.context.absolute_url()),
-            },
-        }
         if not expand:
-            return result
+            return {'@components': {'navigation': {
+                '@id': '{}/@components/navigation'.format(
+                    self.context.absolute_url()),
+            }}}
 
         tabs = getMultiAdapter((self.context, self.request),
                                name="portal_tabs_view")
-        items = []
+        result = []
         for tab in tabs.topLevelTabs():
-            items.append({
+            result.append({
                 'title': tab.get('title', tab.get('name')),
                 'url': tab['url'] + ''
             })
-        result['navigation']['items'] = items
-        return result
-
-
-class NavigationGet(Service):
-
-    def reply(self):
-        navigation = Navigation(self.context, self.request)
-        return navigation(expand=True)['navigation']
+        return {'@components': {'navigation': result}}

@@ -2,6 +2,8 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:plone="http://namespaces.plone.org/plone">
 
+  <adapter factory=".get.Breadcrumbs" name="breadcrumbs"/>
+
   <plone:service
     method="GET"
     for="zope.interface.Interface"
@@ -9,5 +11,5 @@
     name="@breadcrumbs"
     permission="zope2.View"
     />
-
+    
 </configure>

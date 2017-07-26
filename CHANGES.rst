@@ -1,6 +1,15 @@
 Changelog
 =========
 
+1.0a21 (unreleased)
+-------------------
+
+New Features:
+
+- Add support for expandable elements.
+  [buchi]
+
+
 1.0a20 (2017-07-24)
 -------------------
 

@@ -54,6 +54,19 @@ class TestComponents(unittest.TestCase):
             }]
         )
 
+    def test_collapsed_breadcrumbs_in_content_serialization(self):
+        obj = self.api_session.get('/folder').json()
+        self.assertIn('@components', obj)
+        self.assertIn('breadcrumbs', obj['@components'])
+        self.assertIn('@id', obj['@components']['breadcrumbs'])
+        self.assertNotIn('items', obj['@components']['breadcrumbs'])
+
+    def test_expanded_breadcrumbs_in_content_serialization(self):
+        obj = self.api_session.get('/folder/doc1?expand=breadcrumbs').json()
+        self.assertIn('@components', obj)
+        self.assertIn('breadcrumbs', obj['@components'])
+        self.assertIn('items', obj['@components']['breadcrumbs'])
+
     def test_navigation(self):
         response = self.api_session.get('/folder/@components/navigation')
 
@@ -72,3 +85,16 @@ class TestComponents(unittest.TestCase):
                 }],
             }]
         )
+
+    def test_collapsed_navigation_in_content_serialization(self):
+        obj = self.api_session.get('/folder').json()
+        self.assertIn('@components', obj)
+        self.assertIn('navigation', obj['@components'])
+        self.assertIn('@id', obj['@components']['navigation'])
+        self.assertNotIn('items', obj['@components']['navigation'])
+
+    def test_expanded_navigation_in_content_serialization(self):
+        obj = self.api_session.get('/folder?expand=navigation').json()
+        self.assertIn('@components', obj)
+        self.assertIn('navigation', obj['@components'])
+        self.assertIn('items', obj['@components']['navigation'])
