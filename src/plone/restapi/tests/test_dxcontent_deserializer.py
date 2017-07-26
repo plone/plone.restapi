@@ -6,16 +6,16 @@ from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import ITestAnnotationsBehavior
+from plone.restapi.tests.mixin_ordering import OrderingMixin
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.component import provideHandler
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
-import json
 import unittest
 
 
-class TestDXContentDeserializer(unittest.TestCase):
+class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
 
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
@@ -147,93 +147,3 @@ class TestDXContentDeserializer(unittest.TestCase):
         self.assertNotEquals(current_layout, "my_new_layout")
         self.deserialize(body='{"layout": "my_new_layout"}')
         self.assertEquals('my_new_layout', self.portal.doc1.getLayout())
-
-    def test_reorder(self):  # noqa: ignore=E501
-        # We run all this in one test, because of dependend ordering.
-        # initial situation
-        self.assertEquals(
-            ['doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8', 'doc9', ],  # noqa
-            self.folder.objectIds()
-        )
-
-        # Normal
-        # Move to top
-        data = {'ordering': {'delta': 'top', 'obj_id': 'doc9'}}
-        self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(
-            ['doc9', 'doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8', ],  # noqa
-            self.folder.objectIds())
-
-        # Move to bottom
-        data = {'ordering': {'delta': 'bottom', 'obj_id': 'doc9'}}
-        self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(
-            ['doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8', 'doc9', ],  # noqa
-            self.folder.objectIds()
-        )
-
-        # Delta up
-        data = {'ordering': {'delta': -2, 'obj_id': 'doc5'}}
-        self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(
-            ['doc1', 'doc2', 'doc5', 'doc3', 'doc4', 'doc6', 'doc7', 'doc8', 'doc9', ],  # noqa
-            self.folder.objectIds()
-        )
-
-        # Delta down
-        data = {'ordering': {'delta': 2, 'obj_id': 'doc6'}}
-        self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(
-            ['doc1', 'doc2', 'doc5', 'doc3', 'doc4', 'doc7', 'doc8', 'doc6', 'doc9', ],  # noqa
-            self.folder.objectIds()
-        )
-
-        # subset ids
-        # Move to top
-        data = {'ordering': {'delta': 'top', 'obj_id': 'doc8', 'subset_ids': ['doc2', 'doc3', 'doc8']}}  # noqa
-        self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(
-            ['doc1', 'doc8', 'doc5', 'doc2', 'doc4', 'doc7', 'doc3', 'doc6', 'doc9'],  # noqa
-            self.folder.objectIds()
-        )
-
-        # Move to bottom
-        data = {'ordering': {'delta': 'bottom', 'obj_id': 'doc8', 'subset_ids': ['doc8', 'doc2', 'doc3']}}  # noqa
-        self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(
-            ['doc1', 'doc2', 'doc5', 'doc3', 'doc4', 'doc7', 'doc8', 'doc6', 'doc9'],  # noqa
-            self.folder.objectIds()
-        )
-
-        # Delta up
-        data = {'ordering': {'delta': -1, 'obj_id': 'doc8', 'subset_ids': ['doc2', 'doc3', 'doc8']}}  # noqa
-        self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(
-            ['doc1', 'doc2', 'doc5', 'doc8', 'doc4', 'doc7', 'doc3', 'doc6', 'doc9'],  # noqa
-            self.folder.objectIds()
-        )
-
-        # Delta down
-        data = {'ordering': {'delta': 1, 'obj_id': 'doc2', 'subset_ids': ['doc2', 'doc8', 'doc3']}}  # noqa
-        self.deserialize(body=json.dumps(data), context=self.folder)
-        self.assertEquals(
-            ['doc1', 'doc8', 'doc5', 'doc2', 'doc4', 'doc7', 'doc3', 'doc6', 'doc9'],  # noqa
-            self.folder.objectIds()
-        )
-
-    def test_reorder_subsetids(self):
-        # sanity check, initial situation
-        self.assertEquals(
-            ['doc1', 'doc2', 'doc3', 'doc4', 'doc5', 'doc6', 'doc7', 'doc8', 'doc9'],  # noqa
-            self.folder.objectIds()
-        )
-
-        data = {'ordering': {'delta': 1, 'obj_id': 'doc8', 'subset_ids': ['doc2', 'doc8', 'doc6']}}  # noqa
-
-        with self.assertRaises(BadRequest) as cm:
-            self.deserialize(body=json.dumps(data), context=self.folder)
-
-        self.assertEquals(
-            u'Client/server ordering mismatch',
-            cm.exception.message
-        )

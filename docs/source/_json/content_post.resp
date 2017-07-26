@@ -3,6 +3,17 @@ Content-Type: application/json
 Location: http://localhost:55001/plone/folder/my-document
 
 {
+  "@components": {
+    "breadcrumbs": {
+      "@id": "http://localhost:55001/plone/folder/my-document/@breadcrumbs"
+    }, 
+    "navigation": {
+      "@id": "http://localhost:55001/plone/folder/my-document/@navigation"
+    }, 
+    "workflow": {
+      "@id": "http://localhost:55001/plone/folder/my-document/@workflow"
+    }
+  }, 
   "@id": "http://localhost:55001/plone/folder/my-document", 
   "@type": "Document", 
   "UID": "SomeUUID000000000000000000000005", 

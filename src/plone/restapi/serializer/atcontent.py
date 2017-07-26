@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from Products.Archetypes.interfaces import IBaseFolder
+from Products.Archetypes.interfaces import IBaseObject
+from Products.CMFCore.utils import getToolByName
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from Products.Archetypes.interfaces import IBaseFolder
-from Products.Archetypes.interfaces import IBaseObject
-from Products.CMFCore.utils import getToolByName
+from plone.restapi.serializer.expansion import expandable_elements
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
-from zope.interface import implementer
 from zope.interface import Interface
+from zope.interface import implementer
 
 
 @implementer(ISerializeToJson)
@@ -47,6 +48,9 @@ class SerializeToJson(object):
             'UID': obj.UID(),
             'layout': self.context.getLayout(),
         }
+
+        # Insert expandable elements
+        result.update(expandable_elements(self.context, self.request))
 
         for field in obj.Schema().fields():
 

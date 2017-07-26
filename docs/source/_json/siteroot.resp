@@ -2,6 +2,14 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
+  "@components": {
+    "breadcrumbs": {
+      "@id": "http://localhost:55001/plone/@breadcrumbs"
+    }, 
+    "navigation": {
+      "@id": "http://localhost:55001/plone/@navigation"
+    }
+  }, 
   "@id": "http://localhost:55001/plone", 
   "@type": "Plone Site", 
   "id": "plone", 

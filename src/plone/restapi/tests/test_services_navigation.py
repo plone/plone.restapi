@@ -35,20 +35,24 @@ class TestServicesNavigation(unittest.TestCase):
             title=u'A document')
         transaction.commit()
 
+    @unittest.skip('Planned for future release')
     def test_navigation(self):
         response = self.api_session.get('/folder/@navigation')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
-            [
-                {
-                    u'title': u'Home',
-                    u'url': u'http://localhost:55001/plone'
-                },
-                {
-                    u'title': u'Some Folder',
-                    u'url': u'http://localhost:55001/plone/folder'
-                }
-            ]
+            {
+                '@id': 'http://localhost:55001/plone/folder/@navigation',
+                'items': [
+                    {
+                        u'title': u'Home',
+                        u'url': u'http://localhost:55001/plone'
+                    },
+                    {
+                        u'title': u'Some Folder',
+                        u'url': u'http://localhost:55001/plone/folder'
+                    }
+                ]
+            }
         )

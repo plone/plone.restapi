@@ -706,13 +706,23 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_breadcrumbs(self):
         response = self.api_session.get(
-            '{}/@components/breadcrumbs'.format(self.document.absolute_url()))
+            '{}/@breadcrumbs'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('breadcrumbs', response)
 
     def test_documentation_navigation(self):
         response = self.api_session.get(
-            '{}/@components/navigation'.format(self.document.absolute_url()))
+            '{}/@navigation'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('navigation', response)
+
+    def test_documentation_componente_breadcrumbs(self):
+        response = self.api_session.get(
+            '{}/@components/breadcrumbs'.format(self.document.absolute_url()))
+        save_request_and_response_for_docs('component_breadcrumbs', response)
+
+    def test_documentation_components_navigation(self):
+        response = self.api_session.get(
+            '{}/@components/navigation'.format(self.document.absolute_url()))
+        save_request_and_response_for_docs('component_navigation', response)
 
     def test_documentation_principals(self):
         gtool = api.portal.get_tool('portal_groups')
@@ -825,6 +835,24 @@ class TestTraversal(unittest.TestCase):
             '/folder/doc/@sharing?search=admin'
         )
         save_request_and_response_for_docs('sharing_search', response)
+
+    def test_documentation_expansion(self):
+        response = self.api_session.get(
+            '/front-page'
+        )
+        save_request_and_response_for_docs('expansion', response)
+
+    def test_documentation_expansion_expanded(self):
+        response = self.api_session.get(
+            '/front-page?expand=breadcrumbs'
+        )
+        save_request_and_response_for_docs('expansion_expanded', response)
+
+    def test_documentation_expansion_expanded_full(self):
+        response = self.api_session.get(
+            '/front-page?expand=breadcrumbs,navigation,schema,workflow'
+        )
+        save_request_and_response_for_docs('expansion_expanded_full', response)
 
     def test_history_get(self):
         self.document.setTitle('My new title')
@@ -1104,3 +1132,9 @@ class TestCommenting(unittest.TestCase):
         url = '{}/@roles'.format(self.portal_url)
         response = self.api_session.get(url)
         save_request_and_response_for_docs('roles', response)
+
+    def test_documentation_expansion(self):
+        response = self.api_session.get(
+            '/front-page?expand=breadcrumbs,workflow'
+        )
+        save_request_and_response_for_docs('expansion', response)

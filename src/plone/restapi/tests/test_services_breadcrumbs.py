@@ -35,17 +35,23 @@ class TestServicesBreadcrumbs(unittest.TestCase):
             title=u'A document')
         transaction.commit()
 
+    @unittest.skip('Planned for future release')
     def test_breadcrumbs(self):
         response = self.api_session.get('/folder/doc1/@breadcrumbs')
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
-            [{
-                u'url': u'http://localhost:55001/plone/folder',
-                u'title': u'Some Folder'
-            }, {
-                u'url': u'http://localhost:55001/plone/folder/doc1',
-                u'title': u'A document'
-            }]
+            {
+                '@id': 'http://localhost:55001/plone/folder/doc1/@breadcrumbs',
+                'items': [
+                    {
+                        u'url': u'http://localhost:55001/plone/folder',
+                        u'title': u'Some Folder'
+                    }, {
+                        u'url': u'http://localhost:55001/plone/folder/doc1',
+                        u'title': u'A document'
+                    }
+                ]
+            }
         )

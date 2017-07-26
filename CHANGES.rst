@@ -1,8 +1,13 @@
 Changelog
 =========
 
-1.0a20 (unreleased)
+1.0a21 (unreleased)
 -------------------
+
+New Features:
+
+- Add support for expandable elements.
+  [buchi]
 
 - Make @login only use acl_users inside the Plone site.
   [jaroel]
@@ -10,6 +15,21 @@ Changelog
 - Add navigation and breadcrumbs as top-level services. Deprecate navigation
   and breadcrumbs as components.
   [timo]
+
+
+1.0a20 (2017-07-24)
+-------------------
+
+Bugfixes:
+
+- Support content reordering on the site root.
+  [jaroel]
+
+- Support setting Layout on the site root.
+  [jaroel]
+
+- Add clarification when using SearchableText parameter in plone.restapi to avoid confusions
+  [sneridagh]
 
 
 1.0a19 (2017-06-25)
@@ -33,8 +53,6 @@ Bugfixes:
 
 - Tweaks to README.rst
   [tkimnguyen]
-
-Bugfixes:
 
 - Don't list non-DX types in @types endpoint.
   Refs https://github.com/plone/plone.restapi/issues/150

@@ -328,8 +328,12 @@ The resources contained within a resource can be reordered using the `ordering` 
 
 Use the `obj_id` subkey to specify which resource to reorder.
 The subkey `delta` can be 'top', 'bottom', or a negative or positive integer for moving up or down.
+
 Reordering resources within a subset of resources can be done using the `subset_ids` subkey.
+
 A response 400 BadRequest with a message 'Client/server ordering mismatch' will be returned if the value is not in the same order as serverside.
+
+A response 400 BadRequest with a message 'Content ordering is not supported by this resource' will be returned if the container does not support ordering.
 
 ..  http:example:: curl httpie python-requests
     :request: _json/content_reorder.req
