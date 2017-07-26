@@ -20,13 +20,16 @@ class WorkflowInfo(Service):
             transitions.append({
                 '@id': '{}/@workflow/{}'.format(
                     self.context.absolute_url(), action['id']),
-                'title': action['title'],
+                'title': self.context.translate(action['title']),
             })
 
+        from pprint import pprint
+        pprint(history)
         for item, action in enumerate(history):
-            history[item]['title'] = wftool.getTitleForStateOnType(
-                action['review_state'],
-                self.context.portal_type)
+            history[item]['title'] = self.context.translate(
+                wftool.getTitleForStateOnType(
+                    action['review_state'],
+                    self.context.portal_type))
 
         return {
             'history': json_compatible(history),

@@ -1,6 +1,10 @@
 Changelog
 =========
 
+- Translate titles in @workflow
+  [csenger]
+
+
 1.0a20 (2017-07-24)
 -------------------
 
