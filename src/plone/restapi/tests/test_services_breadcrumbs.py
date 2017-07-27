@@ -35,7 +35,6 @@ class TestServicesBreadcrumbs(unittest.TestCase):
             title=u'A document')
         transaction.commit()
 
-    @unittest.skip('Planned for future release')
     def test_breadcrumbs(self):
         response = self.api_session.get('/folder/doc1/@breadcrumbs')
 
