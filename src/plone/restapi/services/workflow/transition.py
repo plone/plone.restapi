@@ -59,4 +59,10 @@ class WorkflowTransition(Service):
                 message=translate(e.message, context=self.request)))
 
         history = wftool.getInfoFor(self.context, "review_history")
-        return json_compatible(history[-1])
+        action = history[-1]
+        action['title'] = self.context.translate(
+            wftool.getTitleForStateOnType(
+                action['review_state'],
+                self.context.portal_type))
+
+        return json_compatible(action)

@@ -9,6 +9,9 @@ New Features:
 - Add support for expandable elements.
   [buchi]
 
+- Translate titles in @workflow.
+  [csenger]
+  
 - Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
   [sneridagh]
 
