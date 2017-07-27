@@ -11,6 +11,9 @@ New Features:
 
 - Translate titles in @workflow.
   [csenger]
+  
+- Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
+  [sneridagh]
 
 
 1.0a20 (2017-07-24)
