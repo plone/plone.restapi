@@ -7,6 +7,8 @@ from plone.restapi.services import Service
 from zope.interface import alsoProvides
 from zope.interface import noLongerProvides
 
+import plone.protect.interfaces
+
 
 class Lock(Service):
     """Lock an object"""
@@ -14,16 +16,21 @@ class Lock(Service):
     def reply(self):
         data = json_body(self.request)
 
-        if 'stealable' in data and not data['stealable']:
-            alsoProvides(self.context, INonStealableLock)
-
         lockable = IRefreshableLockable(self.context, None)
         if lockable is not None:
             lockable.lock()
 
+            if 'stealable' in data and not data['stealable']:
+                alsoProvides(self.context, INonStealableLock)
+
             if 'timeout' in data:
                 lock_item = webdav_lock(self.context)
                 lock_item.setTimeout("Second-%s" % data['timeout'])
+
+            # Disable CSRF protection
+            if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+                alsoProvides(self.request,
+                             plone.protect.interfaces.IDisableCSRFProtection)
 
         return lock_info(self.context)
 
@@ -39,6 +46,11 @@ class Unlock(Service):
             if INonStealableLock.providedBy(self.context):
                 noLongerProvides(self.context, INonStealableLock)
 
+            # Disable CSRF protection
+            if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+                alsoProvides(self.request,
+                             plone.protect.interfaces.IDisableCSRFProtection)
+
         return lock_info(self.context)
 
 
@@ -49,6 +61,11 @@ class RefreshLock(Service):
         lockable = IRefreshableLockable(self.context, None)
         if lockable is not None:
             lockable.refresh_lock()
+
+            # Disable CSRF protection
+            if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+                alsoProvides(self.request,
+                             plone.protect.interfaces.IDisableCSRFProtection)
 
         return lock_info(self.context)
 
