@@ -79,7 +79,7 @@ class LockInfo(Service):
 
 def lock_info(obj):
     """Returns lock information about the given object."""
-    lockable = ILockable(obj)
+    lockable = ILockable(obj, None)
     if lockable is not None:
         info = {
             'locked': lockable.locked(),
@@ -101,7 +101,7 @@ def lock_info(obj):
 
 def webdav_lock(obj):
     """Returns the WebDAV LockItem"""
-    lockable = ILockable(obj)
+    lockable = ILockable(obj, None)
     if lockable is None:
         return
 
@@ -109,3 +109,19 @@ def webdav_lock(obj):
     if len(lock_info) > 0:
         token = lock_info[0]['token']
         return obj.wl_getLock(token)
+
+
+def is_locked(obj, request):
+    """Returns true if the object is locked and the request doesn't contain
+       the lock token.
+    """
+    lockable = ILockable(obj, None)
+    if lockable is None:
+        return False
+    if lockable.locked():
+        token = request.getHeader('Lock-Token', '')
+        lock_info = lockable.lock_info()
+        if len(lock_info) > 0 and lock_info[0]['token'] == token:
+            return False
+        return True
+    return False

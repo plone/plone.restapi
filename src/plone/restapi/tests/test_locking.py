@@ -89,3 +89,24 @@ class TestLocking(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertFalse(response.json()['locked'])
+
+    def test_update_locked_object_without_token_fails(self):
+        lockable = ILockable(self.doc)
+        lockable.lock()
+        transaction.commit()
+        response = self.api_session.patch('/', json={'title': 'New Title'})
+        transaction.commit()
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(self.doc.Title(), 'My Document')
+
+    def test_update_locked_object_with_token_succeeds(self):
+        lockable = ILockable(self.doc)
+        lockable.lock()
+        transaction.commit()
+        response = self.api_session.patch(
+            '/',
+            headers={'Lock-Token': lockable.lock_info()[0]['token']},
+            json={'title': 'New Title'})
+        transaction.commit()
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(self.doc.Title(), 'New Title')
