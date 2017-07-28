@@ -46,7 +46,7 @@ To unlock an object send a POST request to the ``/@unlock`` endpoint.
 ..  http:example:: curl httpie python-requests
     :request: _json/unlock.req
 
-The server responds with status 200 (OK) and returns the lock information.
+The server responds with status :term:`200 OK` and returns the lock information.
 
 .. literalinclude:: _json/unlock.resp
    :language: http
@@ -60,7 +60,7 @@ An existing lock can be refreshed by sending a POST request to the ``@refresh-lo
 ..  http:example:: curl httpie python-requests
     :request: _json/refresh_lock.req
 
-The server responds with status 200 (OK) and returns the lock information containing the updated creation time.
+The server responds with status :term:`200 OK` and returns the lock information containing the updated creation time.
 
 .. literalinclude:: _json/refresh_lock.resp
    :language: http
@@ -75,7 +75,7 @@ you can send a GET request to the ``@lock`` endpoint.
 ..  http:example:: curl httpie python-requests
     :request: _json/lock_get.req
 
-The server responds with status 200 (OK) and returns the information about the lock.
+The server responds with status :term:`200 OK` and returns the information about the lock.
 
 .. literalinclude:: _json/lock_get.resp
    :language: http
