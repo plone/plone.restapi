@@ -15,6 +15,9 @@ New Features:
 - Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
   [sneridagh]
 
+- Add endpoints for locking/unlocking.
+  [buchi]
+
 
 1.0a20 (2017-07-24)
 -------------------

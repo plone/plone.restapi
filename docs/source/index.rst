@@ -28,6 +28,7 @@ Contents
    copymove
    expansion
    workflow
+   locking
    sharing
    registry
    types
