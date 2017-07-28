@@ -16,6 +16,9 @@ New Features:
   and breadcrumbs as components.
   [timo]
 
+- Translate titles in @workflow.
+  [csenger]
+
 - Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
   [sneridagh]
 
