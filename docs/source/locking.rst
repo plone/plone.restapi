@@ -15,7 +15,8 @@ To lock an object send a POST request to the ``/@lock`` endpoint that is availab
 ..  http:example:: curl httpie python-requests
     :request: _json/lock.req
 
-If the lock operation succeeds, the server will respond with status 200 (OK) and return various information about the lock.
+If the lock operation succeeds, the server will respond with status :term:`200 OK` and return various information
+about the lock including the lock token. The token is needed in later requests to update the locked object.
 
 .. literalinclude:: _json/lock.resp
    :language: http
@@ -32,7 +33,7 @@ The following example creates a non-stealable lock with a timeout of 1h.
     :request: _json/lock_nonstealable_timeout.req
 
 
-The server responds with status 200 (OK) and returns the lock information.
+The server responds with status :term:`200 OK` and returns the lock information.
 
 .. literalinclude:: _json/lock_nonstealable_timeout.resp
    :language: http
@@ -79,3 +80,13 @@ The server responds with status :term:`200 OK` and returns the information about
 
 .. literalinclude:: _json/lock_get.resp
    :language: http
+
+
+Updating a locked object
+------------------------
+
+To update a locked object with a PATCH request, you have to provide the lock
+token with the ``Lock-Token`` header.
+
+..  http:example:: curl httpie python-requests
+    :request: _json/lock_update.req

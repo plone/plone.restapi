@@ -1,0 +1,9 @@
+PATCH /plone/front-page HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Lock-Token: 0.684672730996-0.25195226375-00105A989226:1477076400.000
+Content-Type: application/json
+
+{
+    "title": "New Title"
+}
