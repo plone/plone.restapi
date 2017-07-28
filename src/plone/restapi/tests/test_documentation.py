@@ -50,6 +50,7 @@ TUS_HEADERS = [
 REQUEST_HEADER_KEYS = [
     'accept',
     'authorization',
+    'lock-token',
 ] + TUS_HEADERS
 
 RESPONSE_HEADER_KEYS = [
@@ -1031,6 +1032,17 @@ class TestTraversal(unittest.TestCase):
         url = '{}/@lock'.format(self.document.absolute_url())
         response = self.api_session.get(url)
         save_request_and_response_for_docs('lock_get', response)
+
+    def test_update_with_lock(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        token = response.json()['token']
+        response = self.api_session.patch(
+            self.document.absolute_url(),
+            headers={'Lock-Token': token},
+            json={'title': 'New Title'})
+        response.request.headers['Lock-Token'] = u"0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
+        save_request_and_response_for_docs('lock_update', response)
 
 
 class TestCommenting(unittest.TestCase):
