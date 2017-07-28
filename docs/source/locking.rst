@@ -1,27 +1,30 @@
 Locking
 =======
 
+Locking is a mechanism to prevent users from accidentially overriding each others changes.
+
+When a user edits a content object in Plone, the object is locked until the user hits the save or cancel button.
+If a second user tries to edit the object at the same time, she will see a message that this object is locked.
+
+
 Locking an object
 -----------------
 
-To lock an object send a POST request to the ``/@lock`` endpoint.
+To lock an object send a POST request to the ``/@lock`` endpoint that is available on any content object in Plone:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/lock.req
 
-If the lock operation succeeds, the server will respond with status 200 (OK) and return
-various information about the lock.
+If the lock operation succeeds, the server will respond with status 200 (OK) and return various information about the lock.
 
 .. literalinclude:: _json/lock.resp
    :language: http
 
 
 By default, locks are stealable. That means that another user can unlock the object.
-If you want to create a non-stealable lock, pass ``"stealable": false`` in the request
-body.
+If you want to create a non-stealable lock, pass ``"stealable": false`` in the request body.
 
-To create a lock with a non-default timeout, you can pass the the timeout value in
-seconds in the request body.
+To create a lock with a non-default timeout, you can pass the the timeout value in seconds in the request body.
 
 The following example creates a non-stealable lock with a timeout of 1h.
 
@@ -52,14 +55,12 @@ The server responds with status 200 (OK) and returns the lock information.
 Refreshing a lock
 -----------------
 
-An existing lock can be refreshed by sending a POST request to the ``@refresh-lock``
-endpoint.
+An existing lock can be refreshed by sending a POST request to the ``@refresh-lock`` endpoint.
 
 ..  http:example:: curl httpie python-requests
     :request: _json/refresh_lock.req
 
-The server responds with status 200 (OK) and returns the lock information containing
-the updated creation time.
+The server responds with status 200 (OK) and returns the lock information containing the updated creation time.
 
 .. literalinclude:: _json/refresh_lock.resp
    :language: http
