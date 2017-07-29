@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "creator": "admin", 
+  "locked": true, 
+  "name": "plone.locking.stealable", 
+  "stealable": true, 
+  "time": 1477076400.0, 
+  "timeout": 600, 
+  "token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"
+}

@@ -15,6 +15,7 @@ from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import setRoles
 from plone.app.textfield.value import RichTextValue
+from plone.locking.interfaces import ITTWLockable
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
@@ -24,6 +25,7 @@ from plone.restapi.testing import register_static_uuid_utility
 from plone.testing.z2 import Browser
 from zope.component import createObject
 from zope.component import getUtility
+from zope.interface import alsoProvides
 from zope.site.hooks import getSite
 
 import collections
@@ -48,6 +50,7 @@ TUS_HEADERS = [
 REQUEST_HEADER_KEYS = [
     'accept',
     'authorization',
+    'lock-token',
 ] + TUS_HEADERS
 
 RESPONSE_HEADER_KEYS = [
@@ -142,6 +145,7 @@ class TestTraversal(unittest.TestCase):
 
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         self.document = self.create_document()
+        alsoProvides(self.document, ITTWLockable)
 
         transaction.commit()
         self.browser = Browser(self.app)
@@ -977,6 +981,68 @@ class TestTraversal(unittest.TestCase):
         response.request.url = '/'.join(
             upload_url.split('/')[:-1] + ['4e465958b24a46ec8657e6f3be720991'])
         save_request_and_response_for_docs('tusreplace_patch', response)
+
+    def test_locking_lock(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        # Replace dynamic lock token with a static one
+        response._content = re.sub(
+            r'"token": "[^"]+"',
+            '"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            response.content)
+        save_request_and_response_for_docs('lock', response)
+
+    def test_locking_lock_nonstealable_and_timeout(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.post(
+            url,
+            json={
+                'stealable': False,
+                'timeout': 3600,
+            },
+        )
+        # Replace dynamic lock token with a static one
+        response._content = re.sub(
+            r'"token": "[^"]+"',
+            '"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            response.content)
+        save_request_and_response_for_docs(
+            'lock_nonstealable_timeout', response)
+
+    def test_locking_unlock(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        url = '{}/@unlock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        save_request_and_response_for_docs('unlock', response)
+
+    def test_locking_refresh_lock(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        url = '{}/@refresh-lock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        # Replace dynamic lock token with a static one
+        response._content = re.sub(
+            r'"token": "[^"]+"',
+            '"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            response.content)
+        save_request_and_response_for_docs('refresh_lock', response)
+
+    def test_locking_lockinfo(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs('lock_get', response)
+
+    def test_update_with_lock(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        token = response.json()['token']
+        response = self.api_session.patch(
+            self.document.absolute_url(),
+            headers={'Lock-Token': token},
+            json={'title': 'New Title'})
+        response.request.headers['Lock-Token'] = u"0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
+        save_request_and_response_for_docs('lock_update', response)
 
 
 class TestCommenting(unittest.TestCase):
