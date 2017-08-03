@@ -1,6 +1,16 @@
 Changelog
 =========
 
+1.0a21 (2017-08-04)
+-------------------
+
+-Bugfixes:
+
+- Defined local timezone
+  https://github.com/plone/plone.restapi/issues/377
+  [shriyanshagro]
+
+
 1.0a20 (unreleased)
 -------------------
 
