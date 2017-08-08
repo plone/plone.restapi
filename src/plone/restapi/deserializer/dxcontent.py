@@ -78,9 +78,15 @@ class DeserializeFromJson(OrderingMixin, object):
                             'message': e.doc(), 'field': name, 'error': e})
                     else:
                         field_data[name] = value
-                        if value != dm.get():
-                            dm.set(value)
-                            modified = True
+                        try:
+                            if value != dm.get():
+                                dm.set(value)
+                                modified = True
+                        except TypeError as e:
+                            errors.append({
+                                'message': e.message, 'field': name,
+                                'error': e})
+
 
                 elif validate_all:
                     # Never validate the changeNote of p.a.versioningbehavior

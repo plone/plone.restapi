@@ -19,7 +19,7 @@ from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
-
+from tzlocal import get_localzone
 
 @implementer(IFieldDeserializer)
 @adapter(IField, IDexterityContent, IBrowserRequest)
@@ -46,8 +46,25 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
         try:
             # Parse ISO 8601 string with Zope's DateTime module
             # and convert to a timezone naive datetime in local time
-            value = DateTime(value).toZone(DateTime().localZone()).asdatetime(
-            ).replace(tzinfo=None)
+            '''
+             Zope DateTime handles all timezone information as offsets from GMT
+             So while converting to python datetime object, it losses some info
+             like timezone information
+            '''
+            # python datetime object
+            pyValue = value
+            pyValue = DateTime(pyValue).asdatetime()
+
+            if pyValue.tzinfo:
+                # tzone not set to pyValue.tzinfo because it is in GMT offsets
+                tzone = get_localzone()
+                value = DateTime(value).toZone(DateTime().localZone()
+                ).asdatetime().replace(tzinfo=tzone)
+
+            else:
+                value = DateTime(value).toZone(DateTime().localZone()
+                ).asdatetime().replace(tzinfo=None)
+
         except (SyntaxError, DateTimeError) as e:
             raise ValueError(e.message)
 
