@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import IPloneSiteRoot
+from plone.restapi.serializer.expansion import expandable_elements
 from zope.component import adapter
 from zope.component import getMultiAdapter
-from zope.interface import implementer
 from zope.interface import Interface
+from zope.interface import implementer
 
 
 @implementer(ISerializeToJson)
@@ -43,6 +44,9 @@ class SerializeSiteRootToJson(object):
             '@type': 'Plone Site',
             'parent': {},
         }
+
+        # Insert expandable elements
+        result.update(expandable_elements(self.context, self.request))
 
         result['items_total'] = batch.items_total
         if batch.links:

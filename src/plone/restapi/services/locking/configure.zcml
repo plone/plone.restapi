@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <plone:service
+    method="POST"
+    name="@lock"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".locking.Lock"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <plone:service
+    method="POST"
+    name="@unlock"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".locking.Unlock"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <plone:service
+    method="POST"
+    name="@refresh-lock"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".locking.RefreshLock"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <plone:service
+    method="GET"
+    name="@lock"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".locking.LockInfo"
+    permission="zope2.View"
+    />
+
+</configure>

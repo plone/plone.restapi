@@ -26,7 +26,9 @@ Contents
    batching
    comments
    copymove
+   expansion
    workflow
+   locking
    sharing
    registry
    types

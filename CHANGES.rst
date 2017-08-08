@@ -1,28 +1,47 @@
 Changelog
 =========
 
-1.0a21 (2017-08-04)
+1.0a22 (2017-08-04)
 -------------------
 
--Bugfixes:
+Bugfixes:
 
 - Defined local timezone
   https://github.com/plone/plone.restapi/issues/377
   [shriyanshagro]
 
 
-1.0a20 (unreleased)
+1.0a21 (unreleased)
 -------------------
 
-- Add navigation and breadcrumbs as top-level services. Deprecate navigation
-  and breadcrumbs as components.
-  [timo]
+New Features:
+
+- Add support for expandable elements.
+  [buchi]
+
+- Translate titles in @workflow.
+  [csenger]
+  
+- Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
+  [sneridagh]
+
+- Add endpoints for locking/unlocking.
+  [buchi]
+
+
+1.0a20 (2017-07-24)
+-------------------
+
+Bugfixes:
 
 - Support content reordering on the site root.
   [jaroel]
 
 - Support setting Layout on the site root.
   [jaroel]
+
+- Add clarification when using SearchableText parameter in plone.restapi to avoid confusions
+  [sneridagh]
 
 
 1.0a19 (2017-06-25)
@@ -46,8 +65,6 @@ Bugfixes:
 
 - Tweaks to README.rst
   [tkimnguyen]
-
-Bugfixes:
 
 - Don't list non-DX types in @types endpoint.
   Refs https://github.com/plone/plone.restapi/issues/150
