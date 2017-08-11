@@ -21,6 +21,7 @@ from zope.schema.interfaces import IContextAwareDefaultFactory
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
+import pytz
 
 INDEXES = (
     ("test_int_field", "FieldIndex"),
@@ -92,8 +93,8 @@ class IDXTestDocumentSchema(model.Schema):
     test_maxlength_field = schema.TextLine(required=False, max_length=10)
     test_constraint_field = schema.TextLine(required=False,
                                             constraint=lambda x: u'00' in x)
-    test_datetime_min_field = schema.Datetime(required=False,
-                                              min=datetime(2000, 1, 1))
+    test_datetime_min_field = schema.Datetime(
+        required=False, min=datetime(2000, 1, 1, 0, 0, 0, 0, pytz.UTC))
     test_time_min_field = schema.Time(required=False, min=time(1))
     test_timedelta_min_field = schema.Timedelta(required=False,
                                                 min=timedelta(100))

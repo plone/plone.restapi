@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from Products.CMFCore.utils import getToolByName
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -196,3 +197,57 @@ class TestFolderCreateAT(unittest.TestCase):
         self.assertEqual(201, response.status_code)
         transaction.begin()
         self.assertIn('test.txt', self.portal.folder1)
+
+
+class TestEventCT(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer['app']
+        self.portal = self.layer['portal']
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        login(self.portal, SITE_OWNER_NAME)
+        self.portal.invokeFactory(
+            'Folder',
+            id='folder1',
+            title='My Folder'
+        )
+        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool.doActionFor(self.portal.folder1, 'publish')
+        transaction.commit()
+
+    def test_post_to_folder_creates_event_with_TZ(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Event",
+                "id": "myevent",
+                "title": "My Event",
+                "start": datetime(2013, 1, 1, 10, 0).isoformat(),
+                "end": datetime(2013, 1, 1, 12, 0).isoformat(),
+                "timezone": 'Europe/Madrid'
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(
+            response.json()['start'], u'2013-01-01T10:00:00+01:00')
+
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Event",
+                "id": "myevent2",
+                "title": "My Event",
+                "start": datetime(2018, 1, 1, 10, 0).isoformat(),
+                "end": datetime(2018, 1, 1, 12, 0).isoformat(),
+                "timezone": 'Asia/Saigon'
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(
+            response.json()['start'], u'2018-01-01T10:00:00+07:00')

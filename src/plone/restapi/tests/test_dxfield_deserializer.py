@@ -12,6 +12,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
 from zope.schema.interfaces import ValidationError
 
+import pytz
 import unittest
 
 
@@ -79,12 +80,14 @@ class TestDXFieldDeserializer(unittest.TestCase):
         value = self.deserialize('test_datetime_field',
                                  u'2015-12-20T10:39:54.361Z')
         self.assertTrue(isinstance(value, datetime), 'Not a <datetime>')
-        self.assertEqual(datetime(2015, 12, 20, 10, 39, 54, 361000), value)
+        self.assertEqual(
+            datetime(2015, 12, 20, 10, 39, 54, 361000, pytz.UTC), value)
 
     def test_datetime_deserialization_handles_timezone(self):
         value = self.deserialize('test_datetime_field',
                                  u'2015-12-20T10:39:54.361+01')
-        self.assertEqual(datetime(2015, 12, 20, 9, 39, 54, 361000), value)
+        self.assertEqual(
+            datetime(2015, 12, 20, 9, 39, 54, 361000, pytz.UTC), value)
 
     def test_decimal_deserialization_returns_decimal(self):
         value = self.deserialize('test_decimal_field', u'1.1')

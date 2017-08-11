@@ -11,12 +11,15 @@ New Features:
 
 - Translate titles in @workflow.
   [csenger]
-  
+
 - Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
   [sneridagh]
 
 - Add endpoints for locking/unlocking.
   [buchi]
+
+- The datetime objects are now stored as offset-aware UTC-based objects
+  [sneridagh]
 
 
 1.0a20 (2017-07-24)

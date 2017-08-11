@@ -24,6 +24,10 @@ Python                                  JSON
 ``DateTime('2015/11/23 19:45:55')``     ``'2015-11-23T19:45:55'``
 ======================================= ======================================
 
+.. warning::
+  All datetimes objects will be serialized adding the proper time zone information, storing an offset-aware object on it.
+  In case of using zope.schema date validators you should also use a datetime object that also contains offset-aware object as the validator value.
+
 
 RichText fields
 ---------------
