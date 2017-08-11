@@ -26,6 +26,7 @@ Python                                  JSON
 
 .. warning::
   All datetimes objects will be deserialized adding the proper time zone information, storing an offset-aware object on it.
+  For Plone 5 (Dexterity plone.app.event powered) Event content type, you should send always naive (preferred and default if serializing using .toJSON Javascript API) or UTC-based offset datetime ISO8601 strings.
   In case of using zope.schema date validators you should also use a datetime object that also contains offset-aware object as the validator value.
 
 

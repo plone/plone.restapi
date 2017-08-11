@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
+from DateTime import DateTime
 from Products.CMFCore.utils import getToolByName
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -11,6 +12,7 @@ from plone.app.testing import setRoles
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 
+import pytz
 import requests
 import transaction
 import unittest
@@ -217,24 +219,7 @@ class TestEventCT(unittest.TestCase):
         wftool.doActionFor(self.portal.folder1, 'publish')
         transaction.commit()
 
-    def test_post_to_folder_creates_event_with_TZ(self):
-        response = requests.post(
-            self.portal.folder1.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-            json={
-                "@type": "Event",
-                "id": "myevent",
-                "title": "My Event",
-                "start": datetime(2013, 1, 1, 10, 0).isoformat(),
-                "end": datetime(2013, 1, 1, 12, 0).isoformat(),
-                "timezone": 'Europe/Madrid'
-            },
-        )
-        self.assertEqual(201, response.status_code)
-        self.assertEqual(
-            response.json()['start'], u'2013-01-01T10:00:00+01:00')
-
+    def test_post_to_folder_creates_event_with_correct_TZ(self):
         response = requests.post(
             self.portal.folder1.absolute_url(),
             headers={'Accept': 'application/json'},
@@ -243,11 +228,49 @@ class TestEventCT(unittest.TestCase):
                 "@type": "Event",
                 "id": "myevent2",
                 "title": "My Event",
-                "start": datetime(2018, 1, 1, 10, 0).isoformat(),
-                "end": datetime(2018, 1, 1, 12, 0).isoformat(),
+                "start": DateTime(datetime(2018, 1, 1, 10, 0)).ISO8601(),
+                "end": DateTime(datetime(2018, 1, 1, 12, 0)).ISO8601(),
                 "timezone": 'Asia/Saigon'
             },
         )
         self.assertEqual(201, response.status_code)
         self.assertEqual(
             response.json()['start'], u'2018-01-01T10:00:00+07:00')
+
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Event",
+                "id": "myevent",
+                "title": "My Event",
+                "start": DateTime(datetime(2013, 1, 1, 10, 0)).ISO8601(),
+                "end": DateTime(datetime(2013, 1, 1, 12, 0)).ISO8601(),
+                "timezone": 'Europe/Madrid'
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(
+            response.json()['start'], u'2013-01-01T10:00:00+01:00')
+
+    def test_post_creates_event_with_correct_TZ_using_UTC_offset(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Event",
+                "id": "myevent",
+                "title": "My Event",
+                "start": datetime(
+                    2013, 1, 1, 10, 0, 0, 0, pytz.UTC).isoformat(),
+                "end": datetime(
+                    2013, 1, 1, 12, 0, 0, 0, pytz.UTC).isoformat(),
+                "timezone": 'Europe/Madrid'
+            },
+        )
+
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(
+            response.json()['start'], u'2013-01-01T10:00:00+01:00')
