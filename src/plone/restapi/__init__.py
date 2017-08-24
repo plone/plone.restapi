@@ -17,6 +17,14 @@ except pkg_resources.DistributionNotFound:  # pragma: no cover
 try:
     pkg_resources.get_distribution('plone.app.contenttypes')
     HAS_PLONE_APP_CONTENTTYPES = True
+
+    event_version = pkg_resources.get_distribution('plone.app.event').version
+    if pkg_resources.parse_version(event_version) > \
+       pkg_resources.parse_version('1.99'):
+        HAS_PLONE_APP_EVENT_20 = True
+    else:
+        HAS_PLONE_APP_EVENT_20 = False
+
 except pkg_resources.DistributionNotFound:  # pragma: no cover
     HAS_PLONE_APP_CONTENTTYPES = False
 
