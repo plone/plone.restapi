@@ -78,7 +78,14 @@ class DeserializeFromJson(OrderingMixin, object):
                             'message': e.doc(), 'field': name, 'error': e})
                     else:
                         field_data[name] = value
-                        if value != dm.get():
+                        try:
+                            if value != dm.get():
+                                dm.set(value)
+                                modified = True
+                        except TypeError:
+                            # Most probably due to offset-naive and offset
+                            # aware objects, set the value as they most likely
+                            # are not the same
                             dm.set(value)
                             modified = True
 

@@ -11,11 +11,13 @@ from plone.app.testing import setRoles
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from DateTime import DateTime
+from datetime import datetime
+from datetime import timedelta
 
-import datetime
 import requests
 import transaction
 import unittest
+import pytz
 
 
 class TestContentPatch(unittest.TestCase):
@@ -89,10 +91,10 @@ class TestContentPatch(unittest.TestCase):
         self.assertEqual(401, response.status_code)
 
     def test_patch_feed_event_with_get_contents(self):
-        start_date = DateTime(datetime.datetime.today() +
-                              datetime.timedelta(days=1)).ISO8601()
-        end_date = DateTime(datetime.datetime.today() +
-                            datetime.timedelta(days=1, hours=1)).ISO8601()
+        start_date = DateTime(datetime.today() +
+                              timedelta(days=1)).ISO8601()
+        end_date = DateTime(datetime.today() +
+                            timedelta(days=1, hours=1)).ISO8601()
         response = self.api_session.post(
             '/',
             json={
@@ -108,8 +110,8 @@ class TestContentPatch(unittest.TestCase):
 
         response = response.json()
         event_id = response['id']
-        two_days_ahead = DateTime(datetime.datetime.today() +
-                                  datetime.timedelta(days=2))
+        two_days_ahead = DateTime(datetime.today() +
+                                  timedelta(days=2))
         response = self.api_session.patch(
             '/{}'.format(event_id),
             json={
@@ -131,3 +133,40 @@ class TestContentPatch(unittest.TestCase):
             DateTime(response['end']).hour(),
             two_days_ahead.hour()
         )
+
+    def test_patch_document_with_expires(self):
+        response = requests.patch(
+            self.portal.doc1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "expires": datetime(
+                    2013, 1, 1, 10, 0).isoformat()
+            }
+        )
+
+        self.assertEqual(204, response.status_code)
+
+        response = requests.patch(
+            self.portal.doc1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "expires": datetime(
+                    2013, 1, 1, 10, 0).isoformat()
+            }
+        )
+
+        self.assertEqual(204, response.status_code)
+
+        response = requests.patch(
+            self.portal.doc1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "expires": pytz.timezone('Europe/Berlin').localize(datetime(
+                    2013, 1, 1, 10, 0)).isoformat()
+            }
+        )
+
+        self.assertEqual(204, response.status_code)
