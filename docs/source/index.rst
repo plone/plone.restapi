@@ -39,6 +39,7 @@ Contents
    breadcrumbs
    navigation
    serialization
+   deserialization
    searching
    tusupload
    vocabularies
@@ -57,4 +58,3 @@ Appendix, Indices and tables
    glossary
 
 * :ref:`genindex`
-
