@@ -23,5 +23,5 @@ class ContentGet(Service):
             data['sharing'] = {
                 '@id': '{}/@sharing'.format(self.context.absolute_url()),
                 'title': 'Sharing',
-                }
+            }
         return data
