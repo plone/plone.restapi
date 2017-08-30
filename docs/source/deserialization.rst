@@ -49,7 +49,7 @@ The final stored datetime takes this field into account and adds the correct off
 
 and builds the `start` and `end` fields with the proper timezone, depending on the `timezone` field. It also returns the datetime object with the proper timezone offset.
 
-If using Plone 4 and p.a.event 1.x you should construct the Event type using this approach, otherwise the Event object will be created with a wrong timezones.
+If using Plone 4 and p.a.event 1.x you should construct the Event type using this approach, otherwise the Event object will be created with a wrong timezone.
 
 This approach was counterintuitive, and thus, it was changed it Plone 5 version of p.a.event.
 
