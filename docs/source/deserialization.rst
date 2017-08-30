@@ -6,13 +6,13 @@ It's worth to note an special case when deserializing Datetimes objects, and how
 Although not supported by Plone itself yet, plone.restapi will store all the Datetimes that will be handling along with its timezone converted to UTC.
 This will provide a common ground for all the datetimes operations.
 
-There is an special case when using datetimes objects in p.a.event, and its behavior is different due to implementation differences for versions 1.x (Plone 4) and 2.x and above (Plone 5).
+There is a special case when using datetimes objects in p.a.event, and its behavior is different due to implementation differences for versions 1.x (Plone 4) and 2.x and above (Plone 5).
 
 .. warning::
   In case of using zope.schema date validators you should also use a datetime object that also contains offset-aware object as the validator value.
 
 .. note::
-  This does not applies in case that you are using Plone 4 with no Dexterity support at all or not p.a.event installed.
+  This does not apply in case that you are using Plone 4 with no Dexterity support at all or not p.a.event installed.
 
 p.a.event 1.x in Plone 4
 ------------------------
