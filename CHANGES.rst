@@ -21,6 +21,11 @@ New Features:
 - The datetime objects are now stored as offset-aware UTC-based objects
   [sneridagh]
 
+Bugfixes:
+
+- Fix ZCML load order issue by explicitly loading permissions.zcml from CMFCore.
+  [lgraf]
+
 
 1.0a20 (2017-07-24)
 -------------------
