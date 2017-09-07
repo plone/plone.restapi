@@ -23,6 +23,9 @@ Bugfixes:
 - Fix ZCML load order issue by explicitly loading permissions.zcml from CMFCore.
   [lgraf]
 
+- Fix @id values returned by @search with 'fullobjects' option
+  [ebrehault]
+
 
 1.0a20 (2017-07-24)
 -------------------
