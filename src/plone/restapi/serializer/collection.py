@@ -22,7 +22,8 @@ class SerializeCollectionToJson(SerializeToJson):
         batch = HypermediaBatch(self.request, results)
 
         results = collection_metadata
-        results['@id'] = batch.canonical_url
+        if not self.request.form.get('fullobjects'):
+            results['@id'] = batch.canonical_url
         results['items_total'] = batch.items_total
         if batch.links:
             results['batching'] = batch.links
