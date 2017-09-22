@@ -19,16 +19,15 @@ Listing Control Panels
 ----------------------
 
 A list of all existing control panels in the portal can be retrieved by
-sending a GET request to the @controlpanels endpoint::
+sending a GET request to the @controlpanels endpoint:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/controlpanels_get.req
 
-Response::
+Response:
 
 .. literalinclude:: _json/controlpanels_get.resp
-   :language: http    
-
+   :language: http
 
 The following fields are returned:
 
@@ -41,12 +40,12 @@ Retrieve a single Control Panel
 -------------------------------
 
 To retrieve a single control panel, send a GET request to the URL of the
-control panel::
+control panel:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/controlpanels_get_item.req
 
-Response::
+Response:
 
 .. literalinclude:: _json/controlpanels_get_item.resp
    :language: http
@@ -65,12 +64,12 @@ Updating a Control Panel with PATCH
 -----------------------------------
 
 To update the settings on a control panel send a PATCH request to control panel
-resource::
+resource:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/controlpanels_patch.req
 
-A successful response to a PATCH request will be indicated by a :term:`204 No Content` response::
+A successful response to a PATCH request will be indicated by a :term:`204 No Content` response:
 
   HTTP/1.1 204 No Content
 
