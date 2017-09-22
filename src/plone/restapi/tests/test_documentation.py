@@ -68,7 +68,6 @@ base_path = os.path.join(
     'docs/source/_json'
 )
 
-<< << << < HEAD
 UPLOAD_DATA = 'abcdefgh'
 UPLOAD_MIMETYPE = 'text/plain'
 UPLOAD_FILENAME = 'test.txt'
@@ -76,14 +75,13 @@ UPLOAD_LENGTH = len(UPLOAD_DATA)
 
 UPLOAD_PDF_MIMETYPE = 'application/pdf'
 UPLOAD_PDF_FILENAME = 'file.pdf'
-== == == =
+
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
 except ImportError:
     PLONE5 = False
 else:
     PLONE5 = True
->>>>>> > No docs for Plone 4
 
 
 def pretty_json(data):
@@ -836,8 +834,6 @@ class TestTraversal(unittest.TestCase):
         )
         save_request_and_response_for_docs('sharing_folder_post', response)
 
-<< << << < HEAD
-<< << << < HEAD
     def test_documentation_sharing_search(self):
         self.portal.invokeFactory('Folder', id='folder')
         self.portal.folder.invokeFactory('Document', id='doc')
