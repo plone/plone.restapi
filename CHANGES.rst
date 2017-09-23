@@ -9,9 +9,16 @@ New Features:
 - Add support for expandable elements.
   [buchi]
 
+- Make @login only use acl_users inside the Plone site.
+  [jaroel]
+
+- Add navigation and breadcrumbs as top-level services. Deprecate navigation
+  and breadcrumbs as components.
+  [timo]
+
 - Translate titles in @workflow.
   [csenger]
-  
+
 - Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
   [sneridagh]
 

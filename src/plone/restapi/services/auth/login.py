@@ -4,6 +4,7 @@ from Acquisition import aq_parent
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin  # noqa
 from zope.interface import alsoProvides
 
@@ -43,6 +44,7 @@ class Login(Service):
 
         userid = data['login'].encode('utf8')
         password = data['password'].encode('utf8')
+
         uf = self._find_userfolder(userid)
         if uf is not None:
             user = uf.authenticate(
@@ -66,16 +68,18 @@ class Login(Service):
         """Try to find a user folder that contains a user with the given
            userid.
         """
-        uf_parent = aq_inner(self.context)
+        context = aq_inner(self.context)
         info = None
 
         while not info:
-            uf = getToolByName(uf_parent, 'acl_users')
+            uf = getToolByName(context, 'acl_users')
             if uf:
                 info = uf._verifyUser(uf.plugins, login=userid)
-            if uf_parent is self.context.getPhysicalRoot():
+            if IPloneSiteRoot.providedBy(context):
                 break
-            uf_parent = aq_parent(uf_parent)
+            if context is self.context.getPhysicalRoot():
+                break
+            context = aq_parent(context)
 
         if info:
             return uf
