@@ -12,10 +12,6 @@ New Features:
 - Translate titles in @workflow.
   [csenger]
 
-- Re-add skipped tests from @breadcrumbs and @navigation now that expansion
-  is in place.
-  [sneridagh]
-
 - Add endpoints for locking/unlocking. See http://plonerestapi.readthedocs.io/en/latest/locking.html for details.
   [buchi]
 
@@ -26,6 +22,10 @@ Bugfixes:
 
 - Fix @id values returned by @search with 'fullobjects' option
   [ebrehault]
+
+- Re-add skipped tests from @breadcrumbs and @navigation now that expansion
+  is in place.
+  [sneridagh]
 
 
 1.0a20 (2017-07-24)
