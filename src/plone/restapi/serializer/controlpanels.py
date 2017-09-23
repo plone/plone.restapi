@@ -11,6 +11,7 @@ from zope.component import adapter, queryMultiAdapter, getUtility
 
 import zope.schema
 
+SERVICE_ID = '@controlpanels'
 
 @implementer(ISerializeToJsonSummary)
 @adapter(IControlpanel)
@@ -21,8 +22,9 @@ class ControlpanelSummarySerializeToJson(object):
 
     def __call__(self):
         return {
-            '@id': '{}/@controlpanels/{}'.format(
+            '@id': '{}/{}/{}'.format(
                 self.controlpanel.context.absolute_url(),
+                SERVICE_ID,
                 self.controlpanel.__name__
             ),
             'title': self.controlpanel.title,
@@ -97,8 +99,9 @@ class ControlpanelSerializeToJson(object):
 
         # JSON schema
         return {
-            '@id': '{}/@controlpanel/{}'.format(
+            '@id': '{}/{}/{}'.format(
                 self.controlpanel.context.absolute_url(),
+                SERVICE_ID,
                 self.controlpanel.__name__
             ),
             'title': self.controlpanel.title,
