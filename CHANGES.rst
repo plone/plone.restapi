@@ -6,6 +6,12 @@ Changelog
 
 New Features:
 
+- Strip spaces from TextLine values to match z3c.form implementation.
+  [jaroel]
+
+- Disallow None and u'' when TextLine is required. Refs #351.
+  [jaroel]
+
 - Add support for expandable elements.
   [buchi]
 
