@@ -6,16 +6,17 @@ Changelog
 
 New Features:
 
-- Add support for expandable elements.
+- Add support for expandable elements. See http://plonerestapi.readthedocs.io/en/latest/expansion.html for details.
   [buchi]
 
 - Translate titles in @workflow.
   [csenger]
-  
-- Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
+
+- Re-add skipped tests from @breadcrumbs and @navigation now that expansion
+  is in place.
   [sneridagh]
 
-- Add endpoints for locking/unlocking.
+- Add endpoints for locking/unlocking. See http://plonerestapi.readthedocs.io/en/latest/locking.html for details.
   [buchi]
 
 Bugfixes:
