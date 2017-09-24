@@ -1,10 +1,8 @@
 Changelog
 =========
 
-1.0a21 (unreleased)
+1.0a22 (unreleased)
 -------------------
-
-New Features:
 
 - Strip spaces from TextLine values to match z3c.form implementation.
   [jaroel]
@@ -12,16 +10,19 @@ New Features:
 - Disallow None and u'' when TextLine is required. Refs #351.
   [jaroel]
 
-- Add support for expandable elements.
+
+1.0a21 (2017-09-23)
+-------------------
+
+New Features:
+
+- Add support for expandable elements. See http://plonerestapi.readthedocs.io/en/latest/expansion.html for details.
   [buchi]
 
 - Translate titles in @workflow.
   [csenger]
-  
-- Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
-  [sneridagh]
 
-- Add endpoints for locking/unlocking.
+- Add endpoints for locking/unlocking. See http://plonerestapi.readthedocs.io/en/latest/locking.html for details.
   [buchi]
 
 Bugfixes:
@@ -31,6 +32,10 @@ Bugfixes:
 
 - Fix @id values returned by @search with 'fullobjects' option
   [ebrehault]
+
+- Re-add skipped tests from @breadcrumbs and @navigation now that expansion
+  is in place.
+  [sneridagh]
 
 
 1.0a20 (2017-07-24)
