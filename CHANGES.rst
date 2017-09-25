@@ -4,7 +4,11 @@ Changelog
 1.0a22 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Strip spaces from TextLine values to match z3c.form implementation.
+  [jaroel]
+
+- Disallow None and u'' when TextLine is required. Refs #351.
+  [jaroel]
 
 
 1.0a21 (2017-09-23)

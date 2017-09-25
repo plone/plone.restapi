@@ -360,3 +360,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             'test_list_choice_with_context_vocabulary_field',
             [u'portal_catalog'])
         self.assertEqual([u'portal_catalog'], value)
+
+    def test_textline_deserializer_strips_value(self):
+        value = self.deserialize('test_textline_field', u'  aa  ')
+        self.assertEquals(value, 'aa')

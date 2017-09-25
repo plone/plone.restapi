@@ -109,8 +109,16 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
             .test_annotations_behavior_field)
 
     def test_deserializer_raises_if_required_value_is_missing(self):
+        # Value missing from request
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"test_textline_field": "My Value"}',
+                             validate_all=True)
+        self.assertEquals(u'Required input is missing.',
+                          cm.exception.message[0]['message'])
+
+        # An empty string should be considered a missing value
+        with self.assertRaises(BadRequest) as cm:
+            self.deserialize(body='{"test_textline_field": ""}',
                              validate_all=True)
         self.assertEquals(u'Required input is missing.',
                           cm.exception.message[0]['message'])
