@@ -1,5 +1,6 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
 
   <!-- Service registrations below need permissions from CMFCore -->
   <include package="Products.CMFCore" file="permissions.zcml" />
@@ -8,6 +9,9 @@
   <include package=".breadcrumbs"/>
   <include package=".components"/>
   <include package=".content"/>
+  <configure zcml:condition="have plone-5">
+    <include package=".controlpanels" />
+  </configure>
   <include package=".copymove"/>
   <include package=".discussion"/>
   <include package=".groups"/>

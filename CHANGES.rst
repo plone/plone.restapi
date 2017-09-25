@@ -21,6 +21,9 @@ New Features:
 - Add endpoints for locking/unlocking. See http://plonerestapi.readthedocs.io/en/latest/locking.html for details.
   [buchi]
 
+- Add @controlpanels endpoint.
+  [jaroel, timo]
+
 Bugfixes:
 
 - Fix ZCML load order issue by explicitly loading permissions.zcml from CMFCore.
