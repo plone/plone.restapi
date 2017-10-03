@@ -43,6 +43,7 @@ Contents
    searching
    tusupload
    vocabularies
+   controlpanels
    customization
    conventions
 

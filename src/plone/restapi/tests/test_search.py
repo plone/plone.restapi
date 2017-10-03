@@ -172,6 +172,9 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(
             u'<p>Some Text</p>',
             response.json()['items'][0]['test_richtext_field']['data'])
+        self.assertEqual(
+            'http://localhost:55001/plone/folder/doc',
+            response.json()['items'][0]['@id'])
 
     # ZCTextIndex
 

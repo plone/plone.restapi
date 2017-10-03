@@ -1,0 +1,9 @@
+PATCH /plone/@controlpanels/editing HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+  "default_editor": "CKeditor",
+  "ext_editor": true
+}

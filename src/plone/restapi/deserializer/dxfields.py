@@ -19,6 +19,7 @@ from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
+from zope.schema.interfaces import ITextLine
 
 
 @implementer(IFieldDeserializer)
@@ -36,6 +37,24 @@ class DefaultFieldDeserializer(object):
         if not isinstance(value, unicode):
             return value
         return IFromUnicode(self.field).fromUnicode(value)
+
+
+@implementer(IFieldDeserializer)
+@adapter(ITextLine, IDexterityContent, IBrowserRequest)
+class TextLineFieldDeserializer(DefaultFieldDeserializer):
+
+    def __call__(self, value):
+        if isinstance(value, unicode):
+            value = IFromUnicode(self.field).fromUnicode(value)
+
+        # Mimic what z3c.form does in it's BaseDataConverter.
+        if isinstance(value, unicode):
+            value = value.strip()
+            if value == u'':
+                value = self.field.missing_value
+
+        self.field.validate(value)
+        return value
 
 
 @implementer(IFieldDeserializer)

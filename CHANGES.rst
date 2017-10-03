@@ -1,30 +1,50 @@
 Changelog
 =========
 
-1.0a21 (unreleased)
+1.0a22 (unreleased)
+-------------------
+
+- Strip spaces from TextLine values to match z3c.form implementation.
+  [jaroel]
+
+- Disallow None and u'' when TextLine is required. Refs #351.
+  [jaroel]
+  
+- The datetime objects are now stored as offset-aware UTC-based objects
+  [sneridagh]
+
+- Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
+  [sneridagh]
+
+
+1.0a21 (2017-09-23)
 -------------------
 
 New Features:
 
-- Add support for expandable elements.
+- Add support for expandable elements. See http://plonerestapi.readthedocs.io/en/latest/expansion.html for details.
   [buchi]
 
 - Translate titles in @workflow.
   [csenger]
 
-- Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
-  [sneridagh]
-
-- Add endpoints for locking/unlocking.
+- Add endpoints for locking/unlocking. See http://plonerestapi.readthedocs.io/en/latest/locking.html for details.
   [buchi]
 
-- The datetime objects are now stored as offset-aware UTC-based objects
-  [sneridagh]
+- Add @controlpanels endpoint.
+  [jaroel, timo]
 
 Bugfixes:
 
 - Fix ZCML load order issue by explicitly loading permissions.zcml from CMFCore.
   [lgraf]
+
+- Fix @id values returned by @search with 'fullobjects' option
+  [ebrehault]
+
+- Re-add skipped tests from @breadcrumbs and @navigation now that expansion
+  is in place.
+  [sneridagh]
 
 
 1.0a20 (2017-07-24)
