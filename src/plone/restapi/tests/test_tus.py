@@ -115,7 +115,7 @@ class TestTUS(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Upload-Length': str(UPLOAD_LENGTH),
                      'Upload-Metadata': metadata}
-            )
+        )
         self.assertEqual(response.status_code, 201)
         uid = self.get_tus_uid_from_url(response.headers['Location'])
         upload = TUSUpload(uid)
@@ -300,7 +300,7 @@ class TestTUS(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Upload-Length': str(pdf_file_size),
                      'Upload-Metadata': metadata}
-            )
+        )
         self.assertEqual(response.status_code, 201)
         location = response.headers['Location']
 
@@ -327,7 +327,7 @@ class TestTUS(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Upload-Length': str(UPLOAD_LENGTH),
                      'Upload-Metadata': metadata}
-            )
+        )
         self.assertEqual(response.status_code, 201)
         location = response.headers['Location']
 
@@ -359,7 +359,7 @@ class TestTUS(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Upload-Length': str(pdf_file_size),
                      'Upload-Metadata': metadata}
-            )
+        )
         self.assertEqual(response.status_code, 201)
         location = response.headers['Location']
 
@@ -583,7 +583,7 @@ class TestTUSWithAT(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Upload-Length': str(pdf_file_size),
                      'Upload-Metadata': metadata}
-            )
+        )
         self.assertEqual(response.status_code, 201)
         location = response.headers['Location']
 

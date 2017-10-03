@@ -76,6 +76,13 @@ UPLOAD_LENGTH = len(UPLOAD_DATA)
 UPLOAD_PDF_MIMETYPE = 'application/pdf'
 UPLOAD_PDF_FILENAME = 'file.pdf'
 
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    PLONE5 = False
+else:
+    PLONE5 = True
+
 
 def pretty_json(data):
     return json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
@@ -1204,3 +1211,17 @@ class TestCommenting(unittest.TestCase):
             '/front-page?expand=breadcrumbs,workflow'
         )
         save_request_and_response_for_docs('expansion', response)
+
+    @unittest.skipIf(not PLONE5, 'Just Plone 5 currently.')
+    def test_controlpanels_get_listing(self):
+        response = self.api_session.get(
+            '/@controlpanels'
+        )
+        save_request_and_response_for_docs('controlpanels_get', response)
+
+    @unittest.skipIf(not PLONE5, 'Just Plone 5 currently.')
+    def test_controlpanels_get_item(self):
+        response = self.api_session.get(
+            '/@controlpanels/editing'
+        )
+        save_request_and_response_for_docs('controlpanels_get_item', response)

@@ -74,4 +74,9 @@
     <adapter factory=".discussion.ConversationSerializer" />
     <adapter factory=".discussion.CommentSerializer" />
 
+    <configure zcml:condition="have plone-5">
+        <adapter factory=".controlpanels.ControlpanelSerializeToJson" />
+        <adapter factory=".controlpanels.ControlpanelSummarySerializeToJson" />
+    </configure>
+
 </configure>

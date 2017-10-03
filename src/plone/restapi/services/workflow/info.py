@@ -50,7 +50,7 @@ class WorkflowInfo(object):
         result['workflow'].update({
             'history': json_compatible(history),
             'transitions': transitions,
-            })
+        })
         return result
 
 
