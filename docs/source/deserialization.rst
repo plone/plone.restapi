@@ -1,9 +1,9 @@
 Deserialization
 ===============
 
-It's worth to note an special case when deserializing Datetimes objects, and how plone.restapi will handle them.
+It's worth to note a special case when deserializing datetime objects, and how plone.restapi will handle them.
 
-Although not supported by Plone itself yet, plone.restapi will store all the Datetimes that will be handling along with its timezone converted to UTC.
+Although not supported by Plone itself yet, plone.restapi will store datetime objects that will be handling along with its timezone converted to UTC.
 This will provide a common ground for all the datetimes operations.
 
 There is a special case when using datetimes objects in p.a.event, and its behavior is different due to implementation differences for versions 1.x (Plone 4) and 2.x and above (Plone 5).
@@ -51,12 +51,12 @@ and builds the `start` and `end` fields with the proper timezone, depending on t
 
 If using Plone 4 and p.a.event 1.x you should construct the Event type using this approach, otherwise the Event object will be created with a wrong timezone.
 
-This approach was counterintuitive, and thus, it was changed it Plone 5 version of p.a.event.
+This approach was counterintuitive, and thus, it was changed for Plone 5 by p.a.event version 2.
 
 p.a.event 2.x in Plone 5
 ------------------------
 
-The implementation of p.a.event in 2.x no longer requires to provide a `timezone` schema property, because the timezone is computed taking the timezone already existent in dates supplied::
+The implementation of p.a.event 2.x no longer requires to provide a `timezone` schema property, because the timezone is computed taking the timezone already existent in dates supplied::
 
 .. code-block:: json
 
