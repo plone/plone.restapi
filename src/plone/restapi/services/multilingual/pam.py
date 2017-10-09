@@ -24,7 +24,7 @@ class TranslationInfo(Service):
                 info['translations'].append({
                     '@id': translation.absolute_url(),
                     'language': language,
-                    })
+                })
 
         return info
 
