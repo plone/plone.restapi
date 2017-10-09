@@ -1,6 +1,10 @@
 Translations
 ============
 
+.. note::
+    This is only available on Plone 5.
+
+
 Since Plone 5 the product `plone.app.multilingual`_ is included in the base
 Plone installation although it is not enabled by default. plone.restapi
 provides a `@translations` endpoint to handle the translation information
@@ -50,10 +54,6 @@ endpoint of the content item and provide the language code you want to unlink.:
 
 .. literalinclude:: _json/translations_delete.resp
    :language: http
-
-.. note::
-    The `@translations` endpoint works also when using `Products.LinguaPlone`_
-    in Plone 4.3.x
 
 
 .. _`plone.app.multilingual`: https://pypi.python.org/pypi/plone.app.multilingual
