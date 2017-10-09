@@ -123,7 +123,9 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         language_tool = getToolByName(portal, 'portal_languages')
         language_tool.addSupportedLanguage('en')
         language_tool.addSupportedLanguage('es')
-        applyProfile(portal, 'plone.app.multilingual:default')
+        if portal.portal_setup.profileExists(
+                'plone.app.multilingual:default'):            
+            applyProfile(portal, 'plone.app.multilingual:default')
         applyProfile(portal, 'plone.restapi:default')
         applyProfile(portal, 'plone.restapi:testing')
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
