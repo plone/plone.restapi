@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <adapter factory=".get.Sitemap" name="sitemap"/>
+
+  <plone:service
+    method="GET"
+    for="plone.app.layout.navigation.interfaces.INavigationRoot"
+    factory=".get.SitemapGet"
+    name="@sitemap"
+    permission="zope2.View"
+    />
+
+</configure>
