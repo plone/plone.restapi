@@ -10,6 +10,9 @@ Changelog
 - Disallow None and u'' when TextLine is required. Refs #351.
   [jaroel]
 
+- Make getting '/@types/{type_id}' work for non-DX types, ie "Plone Site".
+  [jaroel]
+
 
 1.0a21 (2017-09-23)
 -------------------
