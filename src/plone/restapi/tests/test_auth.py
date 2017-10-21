@@ -92,6 +92,15 @@ class TestLogin(TestCase):
                          res['error']['message'])
         self.assertNotIn('token', res)
 
+    def test_login_with_zope_user(self):
+        self.layer['app'].acl_users.plugins.users.addUser(
+            'zopeuser', 'zopeuser', 'secret')
+        self.request['BODY'] = '{"login": "zopeuser", "password": "secret"}'
+        service = self.traverse()
+        res = service.reply()
+        self.assertEqual(200, self.request.response.getStatus())
+        self.assertIn('token', res)
+
 
 class TestLogout(TestCase):
 
