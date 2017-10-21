@@ -153,7 +153,7 @@ class JWTAuthenticationPlugin(BasePlugin):
                 if secret is None:
                     continue
                 try:
-                    payload = jwt.decode(token, secret)
+                    payload = jwt.decode(token, secret + self._path())
                 except jwt.DecodeError:
                     pass
                 except jwt.ExpiredSignatureError:
@@ -162,7 +162,7 @@ class JWTAuthenticationPlugin(BasePlugin):
                     break
         else:
             try:
-                payload = jwt.decode(token, self._secret, verify=verify)
+                payload = jwt.decode(token, self._secret + self._path(), verify=verify)
             except jwt.DecodeError:
                 pass
         return payload
@@ -170,10 +170,13 @@ class JWTAuthenticationPlugin(BasePlugin):
     def _signing_secret(self):
         if self.use_keyring:
             manager = getUtility(IKeyManager)
-            return manager.secret()
+            return manager.secret() + self._path()
         if not self._secret:
             self._secret = GenerateSecret()
-        return self._secret
+        return self._secret + self._path()
+
+    def _path(self):
+        return '/'.join(self.getPhysicalPath())
 
     def delete_token(self, token):
         payload = self._decode_token(token, verify=False)
