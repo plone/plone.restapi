@@ -14,21 +14,6 @@ class Login(Service):
     """Handles login and returns a JSON web token (JWT).
     """
     def reply(self):
-        plugin = None
-        acl_users = getToolByName(self, "acl_users")
-        plugins = acl_users._getOb('plugins')
-        authenticators = plugins.listPlugins(IAuthenticationPlugin)
-        for id_, authenticator in authenticators:
-            if authenticator.meta_type == "JWT Authentication Plugin":
-                plugin = authenticator
-                break
-
-        if plugin is None:
-            self.request.response.setStatus(501)
-            return dict(error=dict(
-                type='Login failed',
-                message='JWT authentication plugin not installed.'))
-
         data = json_body(self.request)
         if 'login' not in data or 'password' not in data:
             self.request.response.setStatus(400)
@@ -44,7 +29,22 @@ class Login(Service):
         userid = data['login'].encode('utf8')
         password = data['password'].encode('utf8')
         uf = self._find_userfolder(userid)
+
         if uf is not None:
+            plugins = uf._getOb('plugins')
+            authenticators = plugins.listPlugins(IAuthenticationPlugin)
+            plugin = None
+            for id_, authenticator in authenticators:
+                if authenticator.meta_type == "JWT Authentication Plugin":
+                    plugin = authenticator
+                    break
+
+            if plugin is None:
+                self.request.response.setStatus(501)
+                return dict(error=dict(
+                    type='Login failed',
+                    message='JWT authentication plugin not installed.'))
+
             user = uf.authenticate(
                 userid, password, self.request)
         else:

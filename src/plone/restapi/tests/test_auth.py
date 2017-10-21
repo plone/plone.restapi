@@ -79,6 +79,19 @@ class TestLogin(TestCase):
         res = service.render()
         self.assertIn('token', res)
 
+    def test_login_with_zope_user_fails_without_pas_plugin(self):
+        uf = self.layer['app'].acl_users
+        uf.plugins.users.addUser('zopeuser', 'zopeuser', 'secret')
+        if 'jwt_auth' in uf:
+            uf['jwt_auth'].manage_activateInterfaces([])
+        self.request['BODY'] = '{"login": "zopeuser", "password": "secret"}'
+        service = self.traverse()
+        res = service.reply()
+        self.assertIn('error', res)
+        self.assertEqual('JWT authentication plugin not installed.',
+                         res['error']['message'])
+        self.assertNotIn('token', res)
+
 
 class TestLogout(TestCase):
 
