@@ -1,0 +1,45 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:8080/Plone/front-page/@interfaces",
+    "items": [
+        "Products.ATContentTypes.interfaces.document.IATDocument",
+        "Products.GenericSetup.interfaces.IDAVAware",
+        "Products.ATContentTypes.interfaces.interfaces.IATContentType",
+        "plone.portlets.interfaces.ILocalPortletAssignable",
+        "Products.CMFDynamicViewFTI.interfaces.ISelectableBrowserDefault",
+        "Products.Archetypes.interfaces.base.IBaseContent",
+        "Products.Archetypes.interfaces.referenceable.IReferenceable",
+        "Products.Archetypes.interfaces.metadata.IExtensibleMetadata",
+        "archetypes.schemaextender.interfaces.IExtensible",
+        "Products.CMFCore.interfaces._content.ICatalogAware",
+        "Products.CMFCore.interfaces._content.IWorkflowAware",
+        "Products.CMFCore.interfaces._content.IOpaqueItemManager",
+        "Products.Archetypes.interfaces.base.IBaseObject",
+        "plone.locking.interfaces.ITTWLockable",
+        "plone.uuid.interfaces.IUUIDAware",
+        "plone.app.imaging.interfaces.IBaseObject",
+        "z3c.relationfield.interfaces.IHasIncomingRelations",
+        "plone.app.iterate.interfaces.IIterateAware",
+        "OFS.interfaces.ICopySource",
+        "Products.CMFCore.interfaces._content.IContentish",
+        "Products.CMFCore.interfaces._content.IDynamicType",
+        "OFS.interfaces.ISimpleItem",
+        "OFS.interfaces.IItem",
+        "webdav.interfaces.IDAVResource",
+        "webdav.interfaces.IWriteLock",
+        "webdav.EtagSupport.EtagBaseInterface",
+        "OFS.interfaces.ITraversable",
+        "AccessControl.interfaces.IOwned",
+        "App.interfaces.IUndoSupport",
+        "App.interfaces.IPersistentExtra",
+        "persistent.interfaces.IPersistent",
+        "Acquisition.interfaces.IAcquirer",
+        "AccessControl.interfaces.IRoleManager",
+        "AccessControl.interfaces.IPermissionMappingSupport",
+        "OFS.interfaces.IPropertyManager",
+        "Products.ATContentTypes.interfaces.interfaces.IHistoryAware",
+        "Products.Archetypes.interfaces.athistoryaware.IATHistoryAware"
+    ]
+}

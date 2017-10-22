@@ -40,6 +40,7 @@ Contents
    components
    breadcrumbs
    navigation
+   interfaces
    serialization
    searching
    tusupload
