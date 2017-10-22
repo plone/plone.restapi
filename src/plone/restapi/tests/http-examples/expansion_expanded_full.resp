@@ -110,6 +110,9 @@ Content-Type: application/json
         }
       ]
     }, 
+    "interfaces": {
+      "@id": "http://localhost:55001/plone/front-page/@interfaces"
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/front-page/@navigation", 
       "items": [

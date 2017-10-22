@@ -9,6 +9,9 @@ Content-Type: application/json
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/folder/@breadcrumbs"
     }, 
+    "interfaces": {
+      "@id": "http://localhost:55001/plone/folder/@interfaces"
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/folder/@navigation"
     }, 
