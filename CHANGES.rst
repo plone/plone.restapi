@@ -4,7 +4,8 @@ Changelog
 3.4.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add an @interfaces endpoint to return the interfaces provided by the context object
+  [erral]
 
 
 3.4.5 (2018-09-14)
