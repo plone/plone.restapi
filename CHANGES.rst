@@ -4,7 +4,11 @@ Changelog
 1.0a23 (unreleased)
 -------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Fix JWT authentication for users defined in the Zope root user folder.
+  This fixes https://github.com/plone/plone.restapi/issues/168 and
+  https://github.com/plone/plone.restapi/issues/127.
 
 
 1.0a22 (2017-11-04)
@@ -20,6 +24,7 @@ New Features:
 
 - Include is_folderish property on GET request responses. Fixes #327.
   [sneridagh]
+
 
 Bugfixes:
 
