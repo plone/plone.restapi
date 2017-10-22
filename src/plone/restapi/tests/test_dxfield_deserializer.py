@@ -9,6 +9,7 @@ from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from pytz import timezone
 from zope.component import getMultiAdapter
 from zope.schema.interfaces import ValidationError
 
@@ -85,6 +86,30 @@ class TestDXFieldDeserializer(unittest.TestCase):
         value = self.deserialize('test_datetime_field',
                                  u'2015-12-20T10:39:54.361+01')
         self.assertEqual(datetime(2015, 12, 20, 9, 39, 54, 361000), value)
+
+    def test_datetime_with_tz_deserialization_keeps_timezone(self):
+        value = self.deserialize('test_datetime_tz_field',
+                                 u'2015-12-20T10:39:54.361+01')
+        self.assertEqual(timezone("Europe/Zurich").localize(
+            datetime(2015, 12, 20, 10, 39, 54, 361000)), value)
+
+    def test_datetime_with_tz_deserialization_converts_timezone(self):
+        value = self.deserialize('test_datetime_tz_field',
+                                 u'2015-12-20T10:39:54.361-04')
+        self.assertEqual(timezone("Europe/Zurich").localize(
+            datetime(2015, 12, 20, 15, 39, 54, 361000)), value)
+
+    def test_datetime_with_tz_deserialization_adds_timezone(self):
+        value = self.deserialize('test_datetime_tz_field',
+                                 u'2015-12-20T10:39:54.361')
+        self.assertEqual(timezone("Europe/Zurich").localize(
+            datetime(2015, 12, 20, 11, 39, 54, 361000)), value)
+
+    def test_datetime_with_tz_deserialization_handles_dst(self):
+        value = self.deserialize('test_datetime_tz_field',
+                                 u'2015-05-20T10:39:54.361+02')
+        self.assertEqual(timezone("Europe/Zurich").localize(
+            datetime(2015, 05, 20, 10, 39, 54, 361000)), value)
 
     def test_decimal_deserialization_returns_decimal(self):
         value = self.deserialize('test_decimal_field', u'1.1')

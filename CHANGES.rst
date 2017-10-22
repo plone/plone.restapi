@@ -4,7 +4,11 @@ Changelog
 1.0a23 (unreleased)
 -------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Fix datetime deserialization for timezone aware fields.
+  This fixes https://github.com/plone/plone.restapi/issues/253
+  [buchi]
 
 
 1.0a22 (2017-11-04)
