@@ -108,6 +108,20 @@ class TestJsonSchemaUtils(TestCase):
         )
         self.assertNotIn('title', jsonschema['properties'].keys())
 
+    def test_get_jsonschema_for_fti_non_dx(self):
+        """Make sure FTIs without lookupSchema are supported.
+        """
+
+        # We use this fake FTI because we need an instance with Title.
+        class FakeFTI(object):
+            def Title(self):
+                return 'Fake Type'
+
+        fti = FakeFTI()
+
+        # This shouldn't raise an error.
+        get_jsonschema_for_fti(fti, self.portal, self.request)
+
     def test_get_jsonschema_for_portal_type(self):
         portal = self.portal
         request = self.request
