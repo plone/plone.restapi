@@ -13,6 +13,10 @@ Changelog
 - Make getting '/@types/{type_id}' work for non-DX types, ie "Plone Site".
   [jaroel]
 
+- Remove Products.PasswortResetTool from setup.py since it is
+  a soft dependency. It is included in Plone >= 5.1.
+  [tomgross]
+
 
 1.0a21 (2017-09-23)
 -------------------
