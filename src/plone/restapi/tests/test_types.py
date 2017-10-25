@@ -111,13 +111,8 @@ class TestJsonSchemaUtils(TestCase):
     def test_get_jsonschema_for_fti_non_dx(self):
         """Make sure FTIs without lookupSchema are supported.
         """
-
-        # We use this fake FTI because we need an instance with Title.
-        class FakeFTI(object):
-            def Title(self):
-                return 'Fake Type'
-
-        fti = FakeFTI()
+        fti = self.portal.portal_types['Plone Site']
+        self.assertFalse(hasattr(fti, 'lookupSchema'))
 
         # This shouldn't raise an error.
         get_jsonschema_for_fti(fti, self.portal, self.request)
