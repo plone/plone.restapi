@@ -10,6 +10,9 @@ Changelog
 - Disallow None and u'' when TextLine is required. Refs #351.
   [jaroel]
 
+- Remove Products.PasswortResetTool from setup.py since it is
+  a soft dependency. It is included in Plone >= 5.1.
+  [tomgross]
 
 1.0a21 (2017-09-23)
 -------------------
