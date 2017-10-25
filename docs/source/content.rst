@@ -101,6 +101,7 @@ A pseudo-code example of the POST implementation on the server::
         response.setStatus(500)
 
 TODO: Link to the real implementation...
+[
 
 
 Reading a Resource with GET
@@ -156,7 +157,7 @@ A pseudo-code example of the GET implementation on the server::
         # Internal Server Error
         response.setStatus(500)
 
-TODO: Link to the real implementation...
+You can find implementation details in the `plone.restapi.services.content.add.FolderPost class <https://github.com/plone/plone.restapi/blob/dde57b88e0f1b5f5e9f04e6a21865bc0dde55b1c/src/plone/restapi/services/content/add.py#L35-L61>`_
 
 
 GET Responses
@@ -320,3 +321,20 @@ Possible responses to a delete request are:
   * :term:`404 Not Found` (if the resource does not exist)
   * :term:`405 Method Not Allowed` (if deleting the resource is not allowed)
   * :term:`500 Internal Server Error`
+
+
+Reordering sub resources
+------------------------
+The resources contained within a resource can be reordered using the `ordering` key using a PATCH request on the container.
+
+Use the `obj_id` subkey to specify which resource to reorder.
+The subkey `delta` can be 'top', 'bottom', or a negative or positive integer for moving up or down.
+
+Reordering resources within a subset of resources can be done using the `subset_ids` subkey.
+
+A response 400 BadRequest with a message 'Client/server ordering mismatch' will be returned if the value is not in the same order as serverside.
+
+A response 400 BadRequest with a message 'Content ordering is not supported by this resource' will be returned if the container does not support ordering.
+
+..  http:example:: curl httpie python-requests
+    :request: _json/content_reorder.req

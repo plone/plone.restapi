@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.services import Service
-from zope.component import getMultiAdapter
+from plone.restapi.services.components.breadcrumbs import Breadcrumbs
+from plone.restapi.services.components.navigation import Navigation
+from zope.deprecation import deprecate
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 
@@ -32,33 +34,13 @@ class ComponentsGet(Service):
         }
         return component
 
-    def get_navigation(self):
-        tabs = getMultiAdapter((self.context, self.request),
-                               name="portal_tabs_view")
-        result = []
-        for tab in tabs.topLevelTabs():
-            result.append({
-                'title': tab.get('title', tab.get('name')),
-                'url': tab['url'] + ''
-            })
-        return result
-
-    def get_breadcrumbs(self):
-        breadcrumbs_view = getMultiAdapter((self.context, self.request),
-                                           name="breadcrumbs_view")
-        result = []
-        for crumb in breadcrumbs_view.breadcrumbs():
-            result.append({
-                'title': crumb['Title'],
-                'url': crumb['absolute_url']
-            })
-        return result
-
     def _render_component(self, component_id):
         if component_id == 'navigation':
-            items = self.get_navigation()
+            items = Navigation(self.context, self.request)(expand=True)[
+                '@components']['navigation']
         elif component_id == 'breadcrumbs':
-            items = self.get_breadcrumbs()
+            items = Breadcrumbs(self.context, self.request)(expand=True)[
+                '@components']['breadcrumbs']
         else:
             raise NotImplementedError(
                 'This endpoint does not currently support the '
@@ -66,6 +48,10 @@ class ComponentsGet(Service):
 
         return self._wrap_component_items(items, component_id)
 
+    @deprecate(
+        'The "@components" endpoint is deprecated. Please call the '
+        '"@breadcrumbs" and the "@navigation" endpoints on the site root.'
+    )
     def reply(self):
         components = []
         for component_id in self._component_ids:

@@ -19,6 +19,13 @@
 
   <plone:service
     method="PATCH"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".update.ContentPatch"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <plone:service
+    method="PATCH"
     for="Products.CMFCore.interfaces.IContentish"
     factory=".update.ContentPatch"
     permission="cmf.ModifyPortalContent"
@@ -70,6 +77,60 @@
     permission="zope2.View"
     />
 
+  <plone:service
+    method="OPTIONS"
+    name="@tus-upload"
+    for="Products.CMFCore.interfaces.IFolderish"
+    factory=".tus.UploadOptions"
+    permission="cmf.AddPortalContent"
+    />
 
+  <plone:service
+    method="POST"
+    name="@tus-upload"
+    for="Products.CMFCore.interfaces.IFolderish"
+    factory=".tus.UploadPost"
+    permission="cmf.AddPortalContent"
+    />
+
+  <plone:service
+    method="POST"
+    name="@tus-replace"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".tus.UploadPost"
+    permission="cmf.ModifyPortalContent"
+    />
+
+  <plone:service
+    method="HEAD"
+    name="@tus-upload"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".tus.UploadHead"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="HEAD"
+    name="@tus-upload"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".tus.UploadHead"
+    permission="cmf.AddPortalContent"
+    />
+
+  <plone:service
+    method="PATCH"
+    name="@tus-upload"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".tus.UploadPatch"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="PATCH"
+    name="@tus-upload"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".tus.UploadPatch"
+    permission="cmf.AddPortalContent"
+    />
 
 </configure>

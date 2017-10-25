@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from Products.Archetypes.interfaces import IBaseFolder
+from Products.Archetypes.interfaces import IBaseObject
+from Products.CMFCore.utils import getToolByName
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from Products.Archetypes.interfaces import IBaseFolder
-from Products.Archetypes.interfaces import IBaseObject
-from Products.CMFCore.utils import getToolByName
+from plone.restapi.serializer.expansion import expandable_elements
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
-from zope.interface import implementer
 from zope.interface import Interface
+from zope.interface import implementer
 
 
 @implementer(ISerializeToJson)
@@ -23,21 +24,34 @@ class SerializeToJson(object):
         self.context = context
         self.request = request
 
-    def __call__(self):
-        parent = aq_parent(aq_inner(self.context))
+    def getVersion(self, version):
+        if version == 'current':
+            return self.context
+        else:
+            repo_tool = getToolByName(self.context, "portal_repository")
+            return repo_tool.retrieve(self.context, int(version)).object
+
+    def __call__(self, version=None):
+        version = 'current' if version is None else version
+
+        obj = self.getVersion(version)
+        parent = aq_parent(aq_inner(obj))
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary)()
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
-            '@id': self.context.absolute_url(),
-            'id': self.context.id,
-            '@type': self.context.portal_type,
+            '@id': obj.absolute_url(),
+            'id': obj.id,
+            '@type': obj.portal_type,
             'parent': parent_summary,
-            'review_state': self._get_workflow_state(),
-            'UID': self.context.UID(),
+            'review_state': self._get_workflow_state(obj),
+            'UID': obj.UID(),
+            'layout': self.context.getLayout(),
         }
 
-        obj = self.context
+        # Insert expandable elements
+        result.update(expandable_elements(self.context, self.request))
+
         for field in obj.Schema().fields():
 
             if 'r' not in field.mode or not field.checkPermission('r', obj):
@@ -53,10 +67,10 @@ class SerializeToJson(object):
 
         return result
 
-    def _get_workflow_state(self):
+    def _get_workflow_state(self, obj):
         wftool = getToolByName(self.context, 'portal_workflow')
         review_state = wftool.getInfoFor(
-            ob=self.context, name='review_state', default=None)
+            ob=obj, name='review_state', default=None)
         return review_state
 
 
@@ -70,8 +84,10 @@ class SerializeFolderToJson(SerializeToJson):
                  'sort_on': 'getObjPositionInParent'}
         return query
 
-    def __call__(self):
-        folder_metadata = super(SerializeFolderToJson, self).__call__()
+    def __call__(self, version=None):
+        folder_metadata = super(SerializeFolderToJson, self).__call__(
+            version=version
+        )
         query = self._build_query()
 
         catalog = getToolByName(self.context, 'portal_catalog')
@@ -80,7 +96,8 @@ class SerializeFolderToJson(SerializeToJson):
         batch = HypermediaBatch(self.request, brains)
 
         result = folder_metadata
-        result['@id'] = batch.canonical_url
+        if not self.request.form.get('fullobjects'):
+            result['@id'] = batch.canonical_url
         result['items_total'] = batch.items_total
         if batch.links:
             result['batching'] = batch.links

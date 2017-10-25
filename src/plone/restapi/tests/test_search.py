@@ -3,6 +3,7 @@ from datetime import date
 from DateTime import DateTime
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -40,12 +41,17 @@ class TestSearchFunctional(unittest.TestCase):
             self.folder, u'DXTestDocument',
             id='doc',
             title=u'Lorem Ipsum',
-            created=DateTime(1950, 1, 1, 0, 0),
+            start=DateTime(1950, 1, 1, 0, 0),
             effective=DateTime(1995, 1, 1, 0, 0),
             expires=DateTime(1999, 1, 1, 0, 0),
             test_int_field=42,
             test_list_field=['Keyword1', 'Keyword2', 'Keyword3'],
             test_bool_field=True,
+            test_richtext_field=RichTextValue(
+                raw=u'<p>Some Text</p>',
+                mimeType='text/html',
+                outputMimeType='text/html'
+            ),
         )
         IMutableUUID(self.doc).set('77779ffa110e45afb1ba502f75f77777')
         self.doc.reindexObject()
@@ -56,7 +62,7 @@ class TestSearchFunctional(unittest.TestCase):
             id='other-document',
             title=u'Other Document',
             description=u'\xdcbersicht',
-            created=DateTime(1975, 1, 1, 0, 0),
+            start=DateTime(1975, 1, 1, 0, 0),
             effective=DateTime(2015, 1, 1, 0, 0),
             expires=DateTime(2020, 1, 1, 0, 0),
             test_list_field=['Keyword2', 'Keyword3'],
@@ -151,11 +157,24 @@ class TestSearchFunctional(unittest.TestCase):
              u'meta_type': u'Dexterity Item',
              u'portal_type': u'DXTestDocument',
              u'review_state': u'private',
-             u'start': None,
+             u'start': u'1950-01-01T00:00:00+00:00',
              u'sync_uid': None,
              u'title': u'Lorem Ipsum',
              u'total_comments': 0},
             response.json()['items'][0])
+
+    def test_full_objects_retrieval(self):
+        query = {'SearchableText': 'lorem',
+                 'metadata_fields': ['portal_type', 'review_state'],
+                 'fullobjects': True}
+        response = self.api_session.get('/@search', params=query)
+
+        self.assertEqual(
+            u'<p>Some Text</p>',
+            response.json()['items'][0]['test_richtext_field']['data'])
+        self.assertEqual(
+            'http://localhost:55001/plone/folder/doc',
+            response.json()['items'][0]['@id'])
 
     # ZCTextIndex
 
@@ -312,7 +331,7 @@ class TestSearchFunctional(unittest.TestCase):
     # DateIndex
 
     def test_date_index_query(self):
-        query = {'created': date(1950, 1, 1).isoformat()}
+        query = {'start': date(1950, 1, 1).isoformat()}
         response = self.api_session.get('/@search', params=query)
 
         self.assertEqual(
@@ -322,9 +341,11 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_date_index_ranged_query(self):
         query = {
-            'created.query': [date(1949, 1, 1).isoformat(),
-                              date(1951, 1, 1).isoformat()],
-            'created.range': 'min:max',
+            'start.query': [
+                date(1949, 1, 1).isoformat(),
+                date(1951, 1, 1).isoformat(),
+            ],
+            'start.range': 'min:max',
         }
         response = self.api_session.get('/@search', params=query)
 

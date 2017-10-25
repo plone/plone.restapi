@@ -354,3 +354,13 @@ class TestDXFieldDeserializer(unittest.TestCase):
         with self.assertRaises(ValidationError) as cm:
             self.deserialize('test_relationchoice_field', u'/doc3')
         self.assertEqual(u'Constraint not satisfied', cm.exception.doc())
+
+    def test_deserialize_with_context_bound_vocabulary(self):
+        value = self.deserialize(
+            'test_list_choice_with_context_vocabulary_field',
+            [u'portal_catalog'])
+        self.assertEqual([u'portal_catalog'], value)
+
+    def test_textline_deserializer_strips_value(self):
+        value = self.deserialize('test_textline_field', u'  aa  ')
+        self.assertEquals(value, 'aa')

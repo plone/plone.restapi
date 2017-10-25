@@ -7,6 +7,7 @@ from plone.app.testing import setRoles
 from plone.restapi.deserializer.atcontent import ValidationRequest
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
+from plone.restapi.tests.mixin_ordering import OrderingMixin
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.component import provideHandler
@@ -20,7 +21,7 @@ from Products.Archetypes.interfaces import IObjectPreValidation
 import unittest
 
 
-class TestATContentDeserializer(unittest.TestCase):
+class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
 
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
@@ -32,9 +33,22 @@ class TestATContentDeserializer(unittest.TestCase):
         self.doc1 = self.portal[self.portal.invokeFactory(
             'ATTestDocument', id='doc1', title='Test Document')]
 
-    def deserialize(self, body='{}', validate_all=False):
+        # ordering setup
+        self.folder = self.portal[self.portal.invokeFactory(
+            'ATTestFolder', id='folder1', title='Test folder'
+        )]
+
+        for x in range(1, 10):
+            self.folder.invokeFactory(
+                'ATTestDocument',
+                id='doc' + str(x),
+                title='Test doc ' + str(x)
+            )
+
+    def deserialize(self, body='{}', validate_all=False, context=None):
+        context = context or self.doc1
         self.request['BODY'] = body
-        deserializer = getMultiAdapter((self.doc1, self.request),
+        deserializer = getMultiAdapter((context, self.request),
                                        IDeserializeFromJson)
         return deserializer(validate_all=validate_all)
 
@@ -131,6 +145,12 @@ class TestATContentDeserializer(unittest.TestCase):
 
         self.assertEquals(
             'pre_validation_error', cm.exception.message[0]['message'])
+
+    def test_set_layout(self):
+        current_layout = self.doc1.getLayout()
+        self.assertNotEquals(current_layout, "my_new_layout")
+        self.deserialize(body='{"layout": "my_new_layout"}')
+        self.assertEquals('my_new_layout', self.doc1.getLayout())
 
 
 class TestValidationRequest(unittest.TestCase):

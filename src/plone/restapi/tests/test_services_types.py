@@ -92,7 +92,10 @@ class TestServicesTypes(unittest.TestCase):
             if x['addable']
         ]
 
-        self.assertEqual(sorted(allowed_ids), sorted(response_allowed_ids))
+        # We check subset here, because only DX types are returned by the
+        # endpoint.
+        self.assertNotEqual([], allowed_ids)
+        self.assertTrue(set(response_allowed_ids).issubset(set(allowed_ids)))
 
     def test_image_type(self):
         response = self.api_session.get('/@types/Image')
@@ -145,8 +148,8 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.get('/folder/@types')
         response = response.json()
 
-        self.assertIn(
-            'Document', [a['title'] for a in response if a['addable']])
+        # Any addable type will do.
+        self.assertTrue(any(a['addable'] for a in response))
 
         # In the folder where the user only have Reader role, no types are
         # addable

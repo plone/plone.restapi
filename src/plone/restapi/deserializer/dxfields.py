@@ -7,6 +7,7 @@ from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedField
 from plone.restapi.interfaces import IFieldDeserializer
+from plone.restapi.services.content.tus import TUSUpload
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
@@ -18,6 +19,7 @@ from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
+from zope.schema.interfaces import ITextLine
 
 
 @implementer(IFieldDeserializer)
@@ -26,6 +28,8 @@ class DefaultFieldDeserializer(object):
 
     def __init__(self, field, context, request):
         self.field = field
+        if IField.providedBy(self.field):
+            self.field = self.field.bind(context)
         self.context = context
         self.request = request
 
@@ -33,6 +37,24 @@ class DefaultFieldDeserializer(object):
         if not isinstance(value, unicode):
             return value
         return IFromUnicode(self.field).fromUnicode(value)
+
+
+@implementer(IFieldDeserializer)
+@adapter(ITextLine, IDexterityContent, IBrowserRequest)
+class TextLineFieldDeserializer(DefaultFieldDeserializer):
+
+    def __call__(self, value):
+        if isinstance(value, unicode):
+            value = IFromUnicode(self.field).fromUnicode(value)
+
+        # Mimic what z3c.form does in it's BaseDataConverter.
+        if isinstance(value, unicode):
+            value = value.strip()
+            if value == u'':
+                value = self.field.missing_value
+
+        self.field.validate(value)
+        return value
 
 
 @implementer(IFieldDeserializer)
@@ -145,6 +167,11 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
                 data = value.get('data', '').decode(value[u'encoding'])
             else:
                 data = value.get('data', '')
+        elif isinstance(value, TUSUpload):
+            content_type = value.metadata().get(
+                'content-type', content_type).encode('utf8')
+            filename = value.metadata().get('filename', filename)
+            data = value.open()
         else:
             data = value
 
@@ -165,6 +192,10 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
             content_type = value.get(u'content-type', content_type)
             encoding = value.get(u'encoding', encoding)
             data = value.get(u'data', u'')
+        elif isinstance(value, TUSUpload):
+            content_type = value.metadata().get('content-type', content_type)
+            with open(value.filepath, 'rb') as f:
+                data = f.read().decode('utf8')
         else:
             data = value
 

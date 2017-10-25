@@ -1,0 +1,8 @@
+PATCH /plone/folder/@tus-upload/032803b64ad746b3ab46d9223ea3d90f HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Tus-Resumable: 1.0.0
+Upload-Offset: 3
+Content-Type: application/offset+octet-stream
+
+defgh

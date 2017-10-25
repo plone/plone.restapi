@@ -41,6 +41,8 @@ To create a new user, send a ``POST`` request to the global ``/@users`` endpoint
 .. note::
     By default, "username", and "password" are required fields. If email login is enabled, "email" and "password" are required fields. All other fields in the example are optional.
 
+    The field "username" is **not allowed** when email login is *enabled*.
+
 If the user has been created successfully, the server will respond with a status 201 (Created). The ``Location`` header contains the URL of the newly created user and the resource representation in the payload:
 
 .. literalinclude:: _json/users_created.resp
@@ -60,6 +62,8 @@ The server will respond with a 200 OK status code and the JSON representation of
 .. literalinclude:: _json/users_get.resp
    :language: http
 
+The key 'roles' lists the globally defined roles for the user.
+
 
 Update User
 -----------
@@ -73,6 +77,9 @@ A successful response to a PATCH request will be indicated by a :term:`204 No Co
 
 .. literalinclude:: _json/users_update.resp
    :language: http
+
+.. note::
+  The 'roles' object is a mapping of a role and a boolean indicating adding or removing.
 
 
 Delete User

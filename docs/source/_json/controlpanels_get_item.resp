@@ -1,0 +1,98 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@controlpanel/editing", 
+  "data": {
+    "available_editors": [
+      "TinyMCE", 
+      "None"
+    ], 
+    "default_editor": "TinyMCE", 
+    "enable_link_integrity_checks": true, 
+    "ext_editor": false, 
+    "lock_on_ttw_edit": true
+  }, 
+  "group": "Content", 
+  "schema": {
+    "fieldsets": [
+      {
+        "fields": [
+          "available_editors", 
+          "default_editor", 
+          "ext_editor", 
+          "enable_link_integrity_checks", 
+          "lock_on_ttw_edit"
+        ], 
+        "id": "default", 
+        "title": "Default"
+      }
+    ], 
+    "properties": {
+      "available_editors": {
+        "additionalItems": true, 
+        "default": [
+          "TinyMCE", 
+          "None"
+        ], 
+        "description": "Available editors in the portal.", 
+        "items": {
+          "description": "", 
+          "title": "", 
+          "type": "string"
+        }, 
+        "title": "Available editors", 
+        "type": "array", 
+        "uniqueItems": false
+      }, 
+      "default_editor": {
+        "choices": [
+          [
+            "TinyMCE", 
+            "TinyMCE"
+          ], 
+          [
+            "None", 
+            "None"
+          ]
+        ], 
+        "default": "TinyMCE", 
+        "description": "Select the default wysiwyg editor. Users will be able to choose their own or select to use the site default.", 
+        "enum": [
+          "TinyMCE", 
+          "None"
+        ], 
+        "enumNames": [
+          "TinyMCE", 
+          "None"
+        ], 
+        "title": "Default editor", 
+        "type": "string"
+      }, 
+      "enable_link_integrity_checks": {
+        "default": true, 
+        "description": "Determines if the users should get warnings when they delete or move content that is linked from inside the site.", 
+        "title": "Enable link integrity checks", 
+        "type": "boolean"
+      }, 
+      "ext_editor": {
+        "default": false, 
+        "description": "Determines if the external editor feature is enabled. This feature requires a special client-side application installed. The users also have to enable this in their preferences.", 
+        "title": "Enable External Editor feature", 
+        "type": "boolean"
+      }, 
+      "lock_on_ttw_edit": {
+        "default": true, 
+        "description": "Disabling locking here will only affect users editing content through the Plone web UI.  Content edited via WebDAV clients will still be subject to locking.", 
+        "title": "Enable locking for through-the-web edits", 
+        "type": "boolean"
+      }
+    }, 
+    "required": [
+      "available_editors", 
+      "default_editor"
+    ], 
+    "type": "object"
+  }, 
+  "title": "Editing"
+}

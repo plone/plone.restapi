@@ -22,17 +22,27 @@ Contents
 
    authentication
    content
+   history
    batching
+   comments
    copymove
+   expansion
    workflow
+   locking
    sharing
    registry
    types
    users
+   groups
+   roles
    components
+   breadcrumbs
+   navigation
    serialization
    searching
+   tusupload
    vocabularies
+   controlpanels
    customization
    conventions
 

@@ -17,6 +17,7 @@
 /.Python
 /include
 /lib
+/local
 /.mr.developer.cfg
 *.mo
 docs/Makefile

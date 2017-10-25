@@ -30,6 +30,11 @@ In order to return specific metadata columns, see the documentation of the ``met
         resultset exceeds the batch size. See :doc:`/batching` for more
         details on how to work with batched results.
 
+.. warning::
+        The @@search view or in Plone LiveSearch widget are coded in a way that the SearchableText parameter is expanded by including a * wildcard at the end.
+        This is done in order to match also the partial results of the beginning of a search term(s).
+        plone.restapi @search endpoint will not do that for you. You'll have to add it if you want to keep this feature.
+
 
 Query format
 ------------
@@ -99,3 +104,20 @@ The metadata from those columns then will be included in the results.
 In order to specify multiple columns, simply repeat the query string parameter once for every column name (the ``requests`` module will do this automatically for you if you pass it a list of values for a query string parameter).
 
 In order to retrieve all metadata columns that the catalog knows about, use ``metadata_fields=_all``.
+
+
+Retrieving full objects
+-----------------------
+
+If the data provided as metadata is not enough, you can retrieve search results as full serialized objects equivalent to what the resource GET request would produce.
+
+You do so by specifying the ``fullobjects`` parameter:
+
+.. code-block:: http
+
+    GET /plone/@search?fullobjects&SearchableText=lorem HTTP/1.1
+    Accept: application/json
+
+.. warning::
+
+    Be aware that this might induce performance issues when retrieving a lot of resources. Normally the search just serializes catalog brains, but with full objects we wake up all the returned objects.

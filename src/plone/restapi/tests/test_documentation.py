@@ -1,41 +1,63 @@
 # -*- coding: utf-8 -*-
+from base64 import b64encode
 from datetime import datetime
 from DateTime import DateTime
 from datetime import timedelta
 from freezegun import freeze_time
 from plone import api
-from plone.app.testing import popGlobalRegistry
-from plone.app.testing import pushGlobalRegistry
-from plone.app.testing import setRoles
+from plone.app.discussion.interfaces import IConversation
+from plone.app.discussion.interfaces import IDiscussionSettings
+from plone.app.discussion.interfaces import IReplies
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import popGlobalRegistry
+from plone.app.testing import pushGlobalRegistry
+from plone.app.testing import setRoles
 from plone.app.textfield.value import RichTextValue
+from plone.locking.interfaces import ITTWLockable
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
+from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
+from plone.restapi.testing import register_static_uuid_utility
 from plone.testing.z2 import Browser
+from zope.component import createObject
+from zope.component import getUtility
+from zope.interface import alsoProvides
 from zope.site.hooks import getSite
 
 import collections
 import json
+import re
 import os
 import transaction
 import unittest
 
 
+TUS_HEADERS = [
+    'upload-offset',
+    'upload-length',
+    'upload-metadata',
+    'tus-version',
+    'tus-resumable',
+    'tus-extension',
+    'tus-max-size',
+
+]
+
 REQUEST_HEADER_KEYS = [
     'accept',
     'authorization',
-]
+    'lock-token',
+] + TUS_HEADERS
 
 RESPONSE_HEADER_KEYS = [
     'content-type',
     'allow',
     'location',
-]
+] + TUS_HEADERS
 
 base_path = os.path.join(
     os.path.dirname(__file__),
@@ -45,6 +67,21 @@ base_path = os.path.join(
     '..',
     'docs/source/_json'
 )
+
+UPLOAD_DATA = 'abcdefgh'
+UPLOAD_MIMETYPE = 'text/plain'
+UPLOAD_FILENAME = 'test.txt'
+UPLOAD_LENGTH = len(UPLOAD_DATA)
+
+UPLOAD_PDF_MIMETYPE = 'application/pdf'
+UPLOAD_PDF_FILENAME = 'file.pdf'
+
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    PLONE5 = False
+else:
+    PLONE5 = True
 
 
 def pretty_json(data):
@@ -115,6 +152,7 @@ class TestTraversal(unittest.TestCase):
 
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         self.document = self.create_document()
+        alsoProvides(self.document, ITTWLockable)
 
         transaction.commit()
         self.browser = Browser(self.app)
@@ -363,6 +401,10 @@ class TestTraversal(unittest.TestCase):
             json={'plone.app.querystring.field.path.title': 'Value'})
         save_request_and_response_for_docs('registry_update', response)
 
+    def test_documentation_registry_get_list(self):
+        response = self.api_session.get('/@registry')
+        save_request_and_response_for_docs('registry_get_list', response)
+
     def test_documentation_types(self):
         response = self.api_session.get('/@types')
         save_request_and_response_for_docs('types', response)
@@ -523,7 +565,8 @@ class TestTraversal(unittest.TestCase):
                 'fullname': 'Noam Avram Chomsky',
                 'home_page': 'web.mit.edu/chomsky',
                 'description': 'Professor of Linguistics',
-                'location': 'Cambridge, MA'
+                'location': 'Cambridge, MA',
+                'roles': ['Contributor', ],
             },
         )
         save_request_and_response_for_docs('users_created', response)
@@ -548,6 +591,7 @@ class TestTraversal(unittest.TestCase):
             '/@users/noam',
             json={
                 'email': 'avram.chomsky@example.com',
+                'roles': {'Contributor': False, },
             },
         )
         save_request_and_response_for_docs('users_update', response)
@@ -626,7 +670,8 @@ class TestTraversal(unittest.TestCase):
                 'title': 'Framework Team',
                 'description': 'The Plone Framework Team',
                 'roles': ['Manager'],
-                'groups': ['Administrators']
+                'groups': ['Administrators'],
+                'users': [SITE_OWNER_NAME, TEST_USER_ID]
             },
         )
         save_request_and_response_for_docs('groups_created', response)
@@ -648,6 +693,7 @@ class TestTraversal(unittest.TestCase):
             '/@groups/ploneteam',
             json={
                 'email': 'ploneteam2@plone.org',
+                'users': {TEST_USER_ID: False}
             },
         )
         save_request_and_response_for_docs('groups_update', response)
@@ -671,13 +717,23 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_breadcrumbs(self):
         response = self.api_session.get(
-            '{}/@components/breadcrumbs'.format(self.document.absolute_url()))
+            '{}/@breadcrumbs'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('breadcrumbs', response)
 
     def test_documentation_navigation(self):
         response = self.api_session.get(
-            '{}/@components/navigation'.format(self.document.absolute_url()))
+            '{}/@navigation'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('navigation', response)
+
+    def test_documentation_componente_breadcrumbs(self):
+        response = self.api_session.get(
+            '{}/@components/breadcrumbs'.format(self.document.absolute_url()))
+        save_request_and_response_for_docs('component_breadcrumbs', response)
+
+    def test_documentation_components_navigation(self):
+        response = self.api_session.get(
+            '{}/@components/navigation'.format(self.document.absolute_url()))
+        save_request_and_response_for_docs('component_navigation', response)
 
     def test_documentation_principals(self):
         gtool = api.portal.get_tool('portal_groups')
@@ -777,3 +833,395 @@ class TestTraversal(unittest.TestCase):
             json=payload
         )
         save_request_and_response_for_docs('sharing_folder_post', response)
+
+    def test_documentation_sharing_search(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        self.portal.folder.invokeFactory('Document', id='doc')
+        api.user.grant_roles('admin', roles=['Contributor'])
+        api.user.grant_roles(
+            'admin', roles=['Editor'], obj=self.portal.folder
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            '/folder/doc/@sharing?search=admin'
+        )
+        save_request_and_response_for_docs('sharing_search', response)
+
+    def test_documentation_expansion(self):
+        response = self.api_session.get(
+            '/front-page'
+        )
+        save_request_and_response_for_docs('expansion', response)
+
+    def test_documentation_expansion_expanded(self):
+        response = self.api_session.get(
+            '/front-page?expand=breadcrumbs'
+        )
+        save_request_and_response_for_docs('expansion_expanded', response)
+
+    def test_documentation_expansion_expanded_full(self):
+        response = self.api_session.get(
+            '/front-page?expand=breadcrumbs,navigation,schema,workflow'
+        )
+        save_request_and_response_for_docs('expansion_expanded_full', response)
+
+    def test_history_get(self):
+        self.document.setTitle('My new title')
+        url = '{}/@history'.format(self.document.absolute_url())
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs('history_get', response)
+
+    def test_history_revert(self):
+        url = '{}/@history'.format(self.document.absolute_url())
+        response = self.api_session.patch(url, json={'version': 0})
+        save_request_and_response_for_docs('history_revert', response)
+
+    def test_tusupload_options(self):
+        self.portal.invokeFactory('Folder', id='folder')
+        transaction.commit()
+        response = self.api_session.options('/folder/@tus-upload')
+        save_request_and_response_for_docs('tusupload_options', response)
+
+    def test_tusupload_post_head_patch(self):
+        # We create both the POST and PATCH example here, because we need the
+        # temporary id
+
+        def clean_upload_url(response, _id='032803b64ad746b3ab46d9223ea3d90f'):
+            pattern = r'@tus-upload/(\w+)'
+            repl = '@tus-upload/' + _id
+
+            # Replaces the dynamic part in the headers with a stable id
+            for target in [response, response.request]:
+                for key, val in target.headers.items():
+                    target.headers[key] = re.sub(pattern, repl, val)
+
+                target.url = re.sub(pattern, repl, target.url)
+
+        def clean_final_url(response, _id='document-2016-10-21'):
+            url = self.portal.folder.absolute_url() + '/' + _id
+            response.headers['Location'] = url
+
+        self.portal.invokeFactory('Folder', id='folder')
+        transaction.commit()
+
+        # POST create an upload
+        metadata = 'filename {},content-type {}'.format(
+            b64encode(UPLOAD_FILENAME),
+            b64encode(UPLOAD_MIMETYPE)
+        )
+        response = self.api_session.post(
+            '/folder/@tus-upload',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(UPLOAD_LENGTH),
+                     'Upload-Metadata': metadata}
+        )
+
+        upload_url = response.headers['location']
+
+        clean_upload_url(response)
+        save_request_and_response_for_docs('tusupload_post', response)
+
+        # PATCH upload a partial document
+        response = self.api_session.patch(
+            upload_url,
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': '0'},
+            data=UPLOAD_DATA[:3]
+        )
+        clean_upload_url(response)
+        save_request_and_response_for_docs('tusupload_patch', response)
+
+        # HEAD ask for much the server has
+        response = self.api_session.head(
+            upload_url,
+            headers={'Tus-Resumable': '1.0.0'}
+        )
+        clean_upload_url(response)
+        save_request_and_response_for_docs('tusupload_head', response)
+
+        # Finalize the upload
+        response = self.api_session.patch(
+            upload_url,
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': response.headers['Upload-Offset']},
+            data=UPLOAD_DATA[3:]
+        )
+        clean_upload_url(response)
+        clean_final_url(response)
+        save_request_and_response_for_docs(
+            'tusupload_patch_finalized',
+            response
+        )
+
+    def test_tusreplace_post_patch(self):
+        self.portal.invokeFactory('File', id='myfile')
+        transaction.commit()
+
+        # POST create an upload
+        metadata = 'filename {},content-type {}'.format(
+            b64encode(UPLOAD_FILENAME),
+            b64encode(UPLOAD_MIMETYPE)
+        )
+        response = self.api_session.post(
+            '/myfile/@tus-replace',
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(UPLOAD_LENGTH),
+                     'Upload-Metadata': metadata}
+        )
+        upload_url = response.headers['location']
+        # Replace dynamic uuid with a static one
+        response.headers['location'] = '/'.join(
+            upload_url.split('/')[:-1] + ['4e465958b24a46ec8657e6f3be720991'])
+        save_request_and_response_for_docs('tusreplace_post', response)
+
+        # PATCH upload file data
+        response = self.api_session.patch(
+            upload_url,
+            headers={'Tus-Resumable': '1.0.0',
+                     'Content-Type': 'application/offset+octet-stream',
+                     'Upload-Offset': '0'},
+            data=UPLOAD_DATA,
+        )
+        # Replace dynamic uuid with a static one
+        response.request.url = '/'.join(
+            upload_url.split('/')[:-1] + ['4e465958b24a46ec8657e6f3be720991'])
+        save_request_and_response_for_docs('tusreplace_patch', response)
+
+    def test_locking_lock(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        # Replace dynamic lock token with a static one
+        response._content = re.sub(
+            r'"token": "[^"]+"',
+            '"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            response.content)
+        save_request_and_response_for_docs('lock', response)
+
+    def test_locking_lock_nonstealable_and_timeout(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.post(
+            url,
+            json={
+                'stealable': False,
+                'timeout': 3600,
+            },
+        )
+        # Replace dynamic lock token with a static one
+        response._content = re.sub(
+            r'"token": "[^"]+"',
+            '"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            response.content)
+        save_request_and_response_for_docs(
+            'lock_nonstealable_timeout', response)
+
+    def test_locking_unlock(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        url = '{}/@unlock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        save_request_and_response_for_docs('unlock', response)
+
+    def test_locking_refresh_lock(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        url = '{}/@refresh-lock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        # Replace dynamic lock token with a static one
+        response._content = re.sub(
+            r'"token": "[^"]+"',
+            '"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            response.content)
+        save_request_and_response_for_docs('refresh_lock', response)
+
+    def test_locking_lockinfo(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs('lock_get', response)
+
+    def test_update_with_lock(self):
+        url = '{}/@lock'.format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        token = response.json()['token']
+        response = self.api_session.patch(
+            self.document.absolute_url(),
+            headers={'Lock-Token': token},
+            json={'title': 'New Title'})
+        response.request.headers['Lock-Token'] = u"0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
+        save_request_and_response_for_docs('lock_update', response)
+
+
+class TestCommenting(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer['app']
+        self.request = self.layer['request']
+        self.portal = self.layer['portal']
+        self.portal_url = self.portal.absolute_url()
+
+        self.time_freezer = freeze_time("2016-10-21 19:00:00")
+        self.frozen_time = self.time_freezer.start()
+
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        settings.edit_comment_enabled = True
+        settings.delete_own_comment_enabled = True
+
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        self.document = self.create_document_with_comments()
+
+        transaction.commit()
+        self.browser = Browser(self.app)
+        self.browser.handleErrors = False
+        self.browser.addHeader(
+            'Authorization',
+            'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
+        )
+
+    def tearDown(self):
+        self.time_freezer.stop()
+
+    def create_document_with_comments(self):
+        self.portal.invokeFactory('Document', id='front-page')
+        document = self.portal['front-page']
+        document.allow_discussion = True
+        document.title = u"Welcome to Plone"
+        document.description = \
+            u"Congratulations! You have successfully installed Plone."
+        document.text = RichTextValue(
+            u"If you're seeing this instead of the web site you were " +
+            u"expecting, the owner of this web site has just installed " +
+            u"Plone. Do not contact the Plone Team or the Plone mailing " +
+            u"lists about this.",
+            'text/plain',
+            'text/html'
+        )
+        document.creation_date = DateTime('2016-01-21T01:14:48+00:00')
+        document.reindexObject()
+        document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
+
+        # Add a bunch of comments to the default conversation so we can do
+        # batching
+        self.conversation = conversation = IConversation(document)
+        self.replies = replies = IReplies(conversation)
+        for x in range(1, 2):
+            comment = createObject('plone.Comment')
+            comment.text = 'Comment %d' % x
+            comment = replies[replies.addComment(comment)]
+
+            comment_replies = IReplies(comment)
+            for y in range(1, 2):
+                comment = createObject('plone.Comment')
+                comment.text = 'Comment %d.%d' % (x, y)
+                comment_replies.addComment(comment)
+        self.comment_id, self.comment = replies.items()[0]
+
+        return document
+
+    @staticmethod
+    def clean_comment_id(response, _id='123456'):
+        pattern = r'@comments/(\w+)'
+        repl = '@comments/' + _id
+
+        # Replaces the dynamic part in the headers with a stable id
+        for target in [response, response.request]:
+            for key, val in target.headers.items():
+                target.headers[key] = re.sub(pattern, repl, val)
+
+            target.url = re.sub(pattern, repl, target.url)
+
+        # and the body
+        if response.request.body:
+            response.request.body = re.sub(
+                pattern, repl, response.request.body
+            )
+
+        # and the response
+        if response.content:
+            response._content = re.sub(pattern, repl, response._content)
+
+    def test_comments_get(self):
+        url = '{}/@comments'.format(self.document.absolute_url())
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs('comments_get', response)
+
+    def test_comments_add_root(self):
+        url = '{}/@comments/'.format(
+            self.document.absolute_url()
+        )
+        payload = {'text': 'My comment'}
+        response = self.api_session.post(url, json=payload)
+        self.clean_comment_id(response)
+        save_request_and_response_for_docs(
+            'comments_add_root', response
+        )
+
+    def test_comments_add_sub(self):
+        # Add a reply
+        url = '{}/@comments/{}'.format(
+            self.document.absolute_url(),
+            self.comment_id
+        )
+        payload = {'text': 'My reply'}
+        response = self.api_session.post(url, json=payload)
+
+        self.clean_comment_id(response)
+        save_request_and_response_for_docs(
+            'comments_add_sub', response
+        )
+
+    def test_comments_update(self):
+        url = '{}/@comments/{}'.format(
+            self.document.absolute_url(),
+            self.comment_id
+        )
+        payload = {'text': 'My NEW comment'}
+        response = self.api_session.patch(url, json=payload)
+        self.clean_comment_id(response)
+        save_request_and_response_for_docs(
+            'comments_update', response
+        )
+
+    def test_comments_delete(self):
+        url = '{}/@comments/{}'.format(
+            self.document.absolute_url(),
+            self.comment_id
+        )
+        response = self.api_session.delete(url)
+        self.clean_comment_id(response)
+        save_request_and_response_for_docs(
+            'comments_delete', response
+        )
+
+    def test_roles_get(self):
+        url = '{}/@roles'.format(self.portal_url)
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs('roles', response)
+
+    def test_documentation_expansion(self):
+        response = self.api_session.get(
+            '/front-page?expand=breadcrumbs,workflow'
+        )
+        save_request_and_response_for_docs('expansion', response)
+
+    @unittest.skipIf(not PLONE5, 'Just Plone 5 currently.')
+    def test_controlpanels_get_listing(self):
+        response = self.api_session.get(
+            '/@controlpanels'
+        )
+        save_request_and_response_for_docs('controlpanels_get', response)
+
+    @unittest.skipIf(not PLONE5, 'Just Plone 5 currently.')
+    def test_controlpanels_get_item(self):
+        response = self.api_session.get(
+            '/@controlpanels/editing'
+        )
+        save_request_and_response_for_docs('controlpanels_get_item', response)

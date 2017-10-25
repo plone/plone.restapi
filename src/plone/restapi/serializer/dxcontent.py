@@ -2,6 +2,7 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from Products.CMFCore.utils import getToolByName
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
@@ -11,14 +12,14 @@ from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.serializer.expansion import expandable_elements
 from plone.supermodel.utils import mergedTaggedValueDict
-from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
-from zope.interface import implementer
 from zope.interface import Interface
+from zope.interface import implementer
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
 
@@ -33,22 +34,38 @@ class SerializeToJson(object):
 
         self.permission_cache = {}
 
-    def __call__(self):
-        parent = aq_parent(aq_inner(self.context))
+    def getVersion(self, version):
+        if version == 'current':
+            return self.context
+        else:
+            repo_tool = getToolByName(self.context, "portal_repository")
+            return repo_tool.retrieve(self.context, int(version)).object
+
+    def __call__(self, version=None):
+        version = 'current' if version is None else version
+
+        obj = self.getVersion(version)
+        parent = aq_parent(aq_inner(obj))
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary)()
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
-            '@id': self.context.absolute_url(),
-            'id': self.context.id,
-            '@type': self.context.portal_type,
+            '@id': obj.absolute_url(),
+            'id': obj.id,
+            '@type': obj.portal_type,
             'parent': parent_summary,
-            'created': json_compatible(self.context.created()),
-            'modified': json_compatible(self.context.modified()),
-            'review_state': self._get_workflow_state(),
-            'UID': self.context.UID(),
+            'created': json_compatible(obj.created()),
+            'modified': json_compatible(obj.modified()),
+            'review_state': self._get_workflow_state(obj),
+            'UID': obj.UID(),
+            'version': version,
+            'layout': self.context.getLayout(),
         }
 
+        # Insert expandable elements
+        result.update(expandable_elements(self.context, self.request))
+
+        # Insert field values
         for schema in iterSchemata(self.context):
 
             read_permissions = mergedTaggedValueDict(
@@ -56,24 +73,24 @@ class SerializeToJson(object):
 
             for name, field in getFields(schema).items():
 
-                if not self.check_permission(read_permissions.get(name)):
+                if not self.check_permission(read_permissions.get(name), obj):
                     continue
 
                 serializer = queryMultiAdapter(
-                    (field, self.context, self.request),
+                    (field, obj, self.request),
                     IFieldSerializer)
                 value = serializer()
                 result[json_compatible(name)] = value
 
         return result
 
-    def _get_workflow_state(self):
+    def _get_workflow_state(self, obj):
         wftool = getToolByName(self.context, 'portal_workflow')
         review_state = wftool.getInfoFor(
-            ob=self.context, name='review_state', default=None)
+            ob=obj, name='review_state', default=None)
         return review_state
 
-    def check_permission(self, permission_name):
+    def check_permission(self, permission_name, obj):
         if permission_name is None:
             return True
 
@@ -85,7 +102,7 @@ class SerializeToJson(object):
             else:
                 sm = getSecurityManager()
                 self.permission_cache[permission_name] = bool(
-                    sm.checkPermission(permission.title, self.context))
+                    sm.checkPermission(permission.title, obj))
         return self.permission_cache[permission_name]
 
 
@@ -99,8 +116,10 @@ class SerializeFolderToJson(SerializeToJson):
                  'sort_on': 'getObjPositionInParent'}
         return query
 
-    def __call__(self):
-        folder_metadata = super(SerializeFolderToJson, self).__call__()
+    def __call__(self, version=None):
+        folder_metadata = super(SerializeFolderToJson, self).__call__(
+            version=version
+        )
 
         query = self._build_query()
 
@@ -110,7 +129,8 @@ class SerializeFolderToJson(SerializeToJson):
         batch = HypermediaBatch(self.request, brains)
 
         result = folder_metadata
-        result['@id'] = batch.canonical_url
+        if not self.request.form.get('fullobjects'):
+            result['@id'] = batch.canonical_url
         result['items_total'] = batch.items_total
         if batch.links:
             result['batching'] = batch.links

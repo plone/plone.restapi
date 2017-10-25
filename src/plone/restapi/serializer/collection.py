@@ -14,13 +14,16 @@ from zope.interface import Interface
 @adapter(ICollection, Interface)
 class SerializeCollectionToJson(SerializeToJson):
 
-    def __call__(self):
-        collection_metadata = super(SerializeCollectionToJson, self).__call__()
+    def __call__(self, version=None):
+        collection_metadata = super(SerializeCollectionToJson, self).__call__(
+            version=version,
+        )
         results = self.context.results(batch=False)
         batch = HypermediaBatch(self.request, results)
 
         results = collection_metadata
-        results['@id'] = batch.canonical_url
+        if not self.request.form.get('fullobjects'):
+            results['@id'] = batch.canonical_url
         results['items_total'] = batch.items_total
         if batch.links:
             results['batching'] = batch.links

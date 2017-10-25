@@ -36,6 +36,16 @@ The sharing information of a content object can also be directly accessed by app
    :language: http
 
 
+Users and/or groups without a sharing entry can be found by appending the argument `search` to the query string. ie search=admin.
+Global roles are marked with the string "global". Inherited roles are marked with the string "acquired".
+
+..  http:example:: curl httpie python-requests
+    :request: _json/sharing_search.req
+
+.. literalinclude:: _json/sharing_search.resp
+   :language: http
+
+
 Update Local Roles
 ------------------
 

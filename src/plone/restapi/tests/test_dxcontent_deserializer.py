@@ -6,6 +6,7 @@ from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import ITestAnnotationsBehavior
+from plone.restapi.tests.mixin_ordering import OrderingMixin
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.component import provideHandler
@@ -14,7 +15,7 @@ from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 import unittest
 
 
-class TestDXContentDeserializer(unittest.TestCase):
+class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
 
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
@@ -28,9 +29,22 @@ class TestDXContentDeserializer(unittest.TestCase):
             test_textline_field=u'Test Document',
             test_readonly_field=u'readonly')
 
-    def deserialize(self, body='{}', validate_all=False):
+        # ordering setup
+        self.folder = self.portal[self.portal.invokeFactory(
+            'Folder', id='folder1', title='Test folder'
+        )]
+
+        for x in range(1, 10):
+            self.folder.invokeFactory(
+                'Document',
+                id='doc' + str(x),
+                title='Test doc ' + str(x)
+            )
+
+    def deserialize(self, body='{}', validate_all=False, context=None):
+        context = context or self.portal.doc1
         self.request['BODY'] = body
-        deserializer = getMultiAdapter((self.portal.doc1, self.request),
+        deserializer = getMultiAdapter((context, self.request),
                                        IDeserializeFromJson)
         return deserializer(validate_all=validate_all)
 
@@ -95,8 +109,16 @@ class TestDXContentDeserializer(unittest.TestCase):
             .test_annotations_behavior_field)
 
     def test_deserializer_raises_if_required_value_is_missing(self):
+        # Value missing from request
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"test_textline_field": "My Value"}',
+                             validate_all=True)
+        self.assertEquals(u'Required input is missing.',
+                          cm.exception.message[0]['message'])
+
+        # An empty string should be considered a missing value
+        with self.assertRaises(BadRequest) as cm:
+            self.deserialize(body='{"test_textline_field": ""}',
                              validate_all=True)
         self.assertEquals(u'Required input is missing.',
                           cm.exception.message[0]['message'])
@@ -127,3 +149,9 @@ class TestDXContentDeserializer(unittest.TestCase):
                           self.portal.doc1.test_default_value_field)
         self.assertEquals(u'DefaultFactory',
                           self.portal.doc1.test_default_factory_field)
+
+    def test_set_layout(self):
+        current_layout = self.portal.doc1.getLayout()
+        self.assertNotEquals(current_layout, "my_new_layout")
+        self.deserialize(body='{"layout": "my_new_layout"}')
+        self.assertEquals('my_new_layout', self.portal.doc1.getLayout())

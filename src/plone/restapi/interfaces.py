@@ -65,6 +65,16 @@ class IFieldDeserializer(Interface):
         """
 
 
+class IExpandableElement(Interface):
+    """A named adapter that deserializes an element in expanded or collapsed
+       form.
+    """
+
+    def __call__(expand=False):
+        """
+        """
+
+
 class IZCatalogCompatibleQuery(Interface):
     """A multi adapter responsible for converting a catalog query provided as
     a Python dictionary, but with possibly incorrect value types, to a

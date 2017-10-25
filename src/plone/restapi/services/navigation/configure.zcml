@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <adapter factory=".get.Navigation" name="navigation"/>
+
+  <plone:service
+    method="GET"
+    for="zope.interface.Interface"
+    factory=".get.NavigationGet"
+    name="@navigation"
+    permission="zope2.View"
+    />
+
+</configure>
