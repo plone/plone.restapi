@@ -4,11 +4,20 @@ Translations
 .. note::
     This is only available on Plone 5.
 
-
 Since Plone 5 the product `plone.app.multilingual`_ is included in the base
-Plone installation although it is not enabled by default. plone.restapi
-provides a `@translations` endpoint to handle the translation information
-of the content objects.
+Plone installation although it is not enabled by default. 
+
+Multilingualism in Plone not only allows the managers of the site to configure
+the site interface texts to be in one language or another (such as the 
+configuration menus, error messages, information messages or other static
+text) but also to configure Plone to handle multilingual content. To achieve 
+that it provides the user interface for managing content translations. 
+
+You can get additional information about the multilingual capabilities of Plone
+in the `documentation`_.
+
+In connection with that capabilities, plone.restapi provides a `@translations` 
+endpoint to handle the translation information of the content objects.
 
 Once we have installed `plone.app.multilingual`_ and enabled more than one
 language we can link two content-items of different languages to be the
@@ -58,3 +67,4 @@ endpoint of the content item and provide the language code you want to unlink.:
 
 .. _`plone.app.multilingual`: https://pypi.python.org/pypi/plone.app.multilingual
 .. _`Products.LinguaPlone`: https://pypi.python.org/pypi/Products.LinguaPlone.
+.. _`documentation`: https://docs.plone.org/develop/plone/i18n/translating_content.html
