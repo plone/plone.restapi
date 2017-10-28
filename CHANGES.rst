@@ -14,6 +14,10 @@ Changelog
   a soft dependency. It is included in Plone >= 5.1.
   [tomgross]
 
+- Include title in site serialization.
+  [buchi]
+
+
 1.0a21 (2017-09-23)
 -------------------
 

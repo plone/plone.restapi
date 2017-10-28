@@ -42,6 +42,7 @@ class SerializeSiteRootToJson(object):
             '@id': batch.canonical_url,
             'id': self.context.id,
             '@type': 'Plone Site',
+            'title': self.context.Title(),
             'parent': {},
         }
 
