@@ -29,6 +29,7 @@ Content-Type: application/json
   "exclude_from_nav": false, 
   "expires": null, 
   "id": "collection", 
+  "is_folderish": false,
   "item_count": 30, 
   "items": [
     {
