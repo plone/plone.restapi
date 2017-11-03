@@ -10,6 +10,9 @@ Changelog
 - Disallow None and u'' when TextLine is required. Refs #351.
   [jaroel]
 
+- Make getting '/@types/{type_id}' work for non-DX types, ie "Plone Site".
+  [jaroel]
+
 - Remove Products.PasswortResetTool from setup.py since it is
   a soft dependency. It is included in Plone >= 5.1.
   [tomgross]

@@ -108,6 +108,15 @@ class TestJsonSchemaUtils(TestCase):
         )
         self.assertNotIn('title', jsonschema['properties'].keys())
 
+    def test_get_jsonschema_for_fti_non_dx(self):
+        """Make sure FTIs without lookupSchema are supported.
+        """
+        fti = self.portal.portal_types['Plone Site']
+        self.assertFalse(hasattr(fti, 'lookupSchema'))
+
+        # This shouldn't raise an error.
+        get_jsonschema_for_fti(fti, self.portal, self.request)
+
     def test_get_jsonschema_for_portal_type(self):
         portal = self.portal
         request = self.request
