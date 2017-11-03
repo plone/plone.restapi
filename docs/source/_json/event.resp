@@ -35,6 +35,7 @@ Content-Type: application/json
   "exclude_from_nav": false, 
   "expires": null, 
   "id": "event", 
+  "is_folderish": false,
   "language": "", 
   "layout": "event_view", 
   "location": null, 

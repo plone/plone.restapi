@@ -35,6 +35,7 @@ Content-Type: application/json
   "exclude_from_nav": false, 
   "expires": null, 
   "id": "front-page", 
+  "is_folderish": false,
   "language": "", 
   "layout": "document_view", 
   "modified": "2016-01-21T01:24:11+00:00", 
