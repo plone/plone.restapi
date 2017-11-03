@@ -29,6 +29,7 @@ Location: http://localhost:55001/plone/folder/my-document
   "exclude_from_nav": false, 
   "expires": null, 
   "id": "my-document", 
+  "is_folderish": false,
   "language": "", 
   "layout": "document_view", 
   "modified": "2016-10-21T19:00:00+00:00", 
