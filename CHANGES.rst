@@ -14,6 +14,9 @@ Changelog
   a soft dependency. It is included in Plone >= 5.1.
   [tomgross]
 
+- Include title in site serialization.
+  [buchi]
+
 - Update pytz to fix travis builds
   [sneridagh]
 
