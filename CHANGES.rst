@@ -4,6 +4,19 @@ Changelog
 1.0a22 (unreleased)
 -------------------
 
+New Features:
+
+- Add @translations endpoint
+  [erral]
+
+- Include title in site serialization.
+  [buchi]
+
+- Include is_folderish property on GET request responses. Fixes #327.
+  [sneridagh]
+
+Bugfixes:
+
 - Strip spaces from TextLine values to match z3c.form implementation.
   [jaroel]
 
@@ -17,17 +30,8 @@ Changelog
   a soft dependency. It is included in Plone >= 5.1.
   [tomgross]
 
-- Include title in site serialization.
-  [buchi]
-
 - Update pytz to fix travis builds
   [sneridagh]
-
-- Reading a Resource with GET should include is_folderish (#327)
-  [sneridagh]
-
-- Add @translations endpoint
-  [erral]
 
 
 1.0a21 (2017-09-23)
