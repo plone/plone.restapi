@@ -26,6 +26,9 @@ Changelog
 - Reading a Resource with GET should include is_folderish (#327)
   [sneridagh]
 
+- Add @translations endpoint
+  [erral]
+
 
 1.0a21 (2017-09-23)
 -------------------
