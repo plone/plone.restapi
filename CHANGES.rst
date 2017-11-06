@@ -10,6 +10,10 @@ Bugfixes:
   This fixes https://github.com/plone/plone.restapi/issues/168 and
   https://github.com/plone/plone.restapi/issues/127.
 
+- Fix datetime deserialization for timezone aware fields.
+  This fixes https://github.com/plone/plone.restapi/issues/253
+  [buchi]
+
 
 1.0a22 (2017-11-04)
 -------------------
