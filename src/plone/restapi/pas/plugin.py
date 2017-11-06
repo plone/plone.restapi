@@ -146,34 +146,36 @@ class JWTAuthenticationPlugin(BasePlugin):
                           (self.absolute_url(), 'Configuration+updated.'))
 
     def _decode_token(self, token, verify=True):
-        payload = None
         if self.use_keyring:
             manager = getUtility(IKeyManager)
             for secret in manager[u"_system"]:
                 if secret is None:
                     continue
-                try:
-                    payload = jwt.decode(token, secret)
-                except jwt.DecodeError:
-                    pass
-                except jwt.ExpiredSignatureError:
-                    pass
-                else:
-                    break
+                payload = self._jwt_decode(
+                    token, secret + self._path(), verify=verify)
+                if payload is not None:
+                    return payload
         else:
-            try:
-                payload = jwt.decode(token, self._secret, verify=verify)
-            except jwt.DecodeError:
-                pass
-        return payload
+            return self._jwt_decode(
+                token, self._secret + self._path(), verify=verify)
+
+    def _jwt_decode(self, token, secret, verify=True):
+        try:
+            return jwt.decode(
+                token, secret, verify=verify, algorithms=['HS256'])
+        except jwt.InvalidTokenError:
+            return None
 
     def _signing_secret(self):
         if self.use_keyring:
             manager = getUtility(IKeyManager)
-            return manager.secret()
+            return manager.secret() + self._path()
         if not self._secret:
             self._secret = GenerateSecret()
-        return self._secret
+        return self._secret + self._path()
+
+    def _path(self):
+        return '/'.join(self.getPhysicalPath())
 
     def delete_token(self, token):
         payload = self._decode_token(token, verify=False)
