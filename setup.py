@@ -43,6 +43,7 @@ setup(name='plone.restapi',
           'setuptools',
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
           'PyJWT',
+          'pytz',
       ],
       extras_require={'test': [
           'Products.Archetypes',
