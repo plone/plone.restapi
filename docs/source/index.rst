@@ -39,6 +39,7 @@ Contents
    breadcrumbs
    navigation
    serialization
+   deserialization
    searching
    tusupload
    vocabularies

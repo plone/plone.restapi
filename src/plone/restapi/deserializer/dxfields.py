@@ -64,9 +64,8 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
         try:
             # Parse ISO 8601 string with Zope's DateTime module
-            # and convert to a timezone naive datetime in local time
-            value = DateTime(value).toZone(DateTime().localZone()).asdatetime(
-            ).replace(tzinfo=None)
+            # and convert to a UTC based timezone as datetime
+            value = DateTime(value).toZone('UTC').asdatetime()
         except (SyntaxError, DateTimeError) as e:
             raise ValueError(e.message)
 

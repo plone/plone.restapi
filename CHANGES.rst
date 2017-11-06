@@ -28,6 +28,12 @@ Bugfixes:
 
 - Disallow None and u'' when TextLine is required. Refs #351.
   [jaroel]
+  
+- The datetime objects are now stored as offset-aware UTC-based objects
+  [sneridagh]
+
+- Add skipped tests from @breadcrumbs and @navigation now that the expansion is in place
+  [sneridagh]
 
 - Make getting '/@types/{type_id}' work for non-DX types, ie "Plone Site".
   [jaroel]

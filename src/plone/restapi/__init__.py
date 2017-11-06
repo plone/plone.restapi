@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
+
 from AccessControl import allow_module
 from AccessControl.Permissions import add_user_folders
-from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin  # noqa
+from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin  # NOQA: E501
 from plone.restapi.pas import plugin
 
 import pkg_resources
@@ -11,14 +12,23 @@ allow_module('json')
 try:
     pkg_resources.get_distribution('plone.app.testing')
     REGISTER_TEST_TYPES = True
-except pkg_resources.DistributionNotFound:  # pragma: no cover
+except pkg_resources.DistributionNotFound:
     REGISTER_TEST_TYPES = False
 
 try:
     pkg_resources.get_distribution('plone.app.contenttypes')
     HAS_PLONE_APP_CONTENTTYPES = True
-except pkg_resources.DistributionNotFound:  # pragma: no cover
+
+    event_version = pkg_resources.get_distribution('plone.app.event').version
+    if pkg_resources.parse_version(event_version) > \
+       pkg_resources.parse_version('1.99'):
+        HAS_PLONE_APP_EVENT_20 = True
+    else:
+        HAS_PLONE_APP_EVENT_20 = False
+
+except pkg_resources.DistributionNotFound:
     HAS_PLONE_APP_CONTENTTYPES = False
+    HAS_PLONE_APP_EVENT_20 = False
 
 
 def initialize(context):

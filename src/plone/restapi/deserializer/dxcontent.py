@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
+from datetime import datetime
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
@@ -22,6 +23,8 @@ from zope.schema.interfaces import ValidationError
 from zope.security.interfaces import IPermission
 
 from .mixins import OrderingMixin
+
+import pytz
 
 
 @implementer(IDeserializeFromJson)
@@ -78,7 +81,20 @@ class DeserializeFromJson(OrderingMixin, object):
                             'message': e.doc(), 'field': name, 'error': e})
                     else:
                         field_data[name] = value
-                        if value != dm.get():
+                        dm_value = dm.get()
+
+                        # This is required in case that we can compare
+                        # offset-naive and offset aware objects. We convert all
+                        # offset-naive datetimes to UTC timezone first and then
+                        # compare them
+                        if isinstance(value, datetime) and \
+                           isinstance(dm_value, datetime):
+                            if value.tzinfo is None:
+                                value = value.replace(tzinfo=pytz.UTC)
+                            if dm_value.tzinfo is None:
+                                dm_value = dm_value.replace(tzinfo=pytz.UTC)
+
+                        if value != dm_value:
                             dm.set(value)
                             modified = True
 
