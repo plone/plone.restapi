@@ -4,7 +4,11 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Breaking Changes:
+
+- Remove @components navigation and breadcrumbs. Use top level @navigation and
+  @breadcrumb endpoints instead.
+  [timo]
 
 
 1.0a23 (2017-11-07)

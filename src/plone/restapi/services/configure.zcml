@@ -7,7 +7,6 @@
 
   <include package=".auth" />
   <include package=".breadcrumbs"/>
-  <include package=".components"/>
   <include package=".content"/>
   <configure zcml:condition="have plone-5">
     <include package=".controlpanels" />
