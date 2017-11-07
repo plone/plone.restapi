@@ -165,3 +165,11 @@ class TestATContentSerializer(unittest.TestCase):
         obj = self.serialize(self.doc1)
         self.assertIn('foo', obj['@components'])
         self.assertEqual('collapsed', obj['@components']['foo'])
+
+    def test_get_is_folderish_in_folder(self):
+        self.portal.invokeFactory('Folder', id=u'folder')
+        serializer = getMultiAdapter((self.portal.folder, self.request),
+                                     ISerializeToJson)
+        obj = serializer()
+        self.assertIn('is_folderish', obj)
+        self.assertEquals(True, obj['is_folderish'])

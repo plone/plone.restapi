@@ -4,7 +4,8 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Improve is_folderish property to include Plone site and AT content types
+  [sneridagh]
 
 
 1.0a23 (2017-11-07)
