@@ -9,6 +9,7 @@ Bugfixes:
 - Fix JWT authentication for users defined in the Zope root user folder.
   This fixes https://github.com/plone/plone.restapi/issues/168 and
   https://github.com/plone/plone.restapi/issues/127.
+  [buchi]
 
 - Fix datetime deserialization for timezone aware fields.
   This fixes https://github.com/plone/plone.restapi/issues/253
