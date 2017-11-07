@@ -75,7 +75,7 @@ Content-Type: application/json
     "width": 215
   }, 
   "image_caption": "This is an image caption.", 
-  "is_folderish": false,
+  "is_folderish": false, 
   "language": "", 
   "layout": "newsitem_view", 
   "modified": "2016-01-21T02:24:11+00:00", 
