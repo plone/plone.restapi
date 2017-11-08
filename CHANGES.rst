@@ -4,7 +4,9 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- convert richtext using .output_relative_to.
+  Finds the context by walking the frame stack.
+  [jaroel]
 
 
 1.0a23 (2017-11-07)

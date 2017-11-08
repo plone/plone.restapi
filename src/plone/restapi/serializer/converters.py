@@ -20,6 +20,23 @@ from zope.interface import Interface
 
 import Missing
 
+_marker = []
+
+
+def find_context():
+    import inspect
+    frame = None
+    try:
+        for f in inspect.stack()[1:]:
+            frame = f[0]
+            code = frame.f_code
+            if 'self' in code.co_varnames:
+                obj = getattr(frame.f_locals['self'], 'context', _marker)
+                if obj is not _marker:
+                    return obj
+    finally:
+        del frame
+
 
 def json_compatible(value):
     """The json_compatible function converts any value to JSON compatible
@@ -135,8 +152,9 @@ def timedelta_converter(value):
 @adapter(IRichTextValue)
 @implementer(IJsonCompatible)
 def richtext_converter(value):
+    context = find_context()
     return {
-        u'data': json_compatible(value.output),
+        u'data': json_compatible(value.output_relative_to(context)),
         u'content-type': json_compatible(value.mimeType),
         u'encoding': json_compatible(value.encoding),
     }
