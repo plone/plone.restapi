@@ -4,8 +4,8 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
-- convert richtext using .output_relative_to.
-  Finds the context by walking the frame stack.
+- Convert richtext using .output_relative_to. Direct conversion from RichText
+  if no longer supported as we *always* need a context for the ITransformer.
   [jaroel]
 
 
