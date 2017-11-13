@@ -148,10 +148,14 @@ class TestCommentsEndpoint(unittest.TestCase):
         response = self.api_session.get(url)
         comment_url = response.json()['items'][0]['@id']
         self.assertFalse(comment_url.endswith('@comments'))
+        self.assertTrue(response.json()['items'][0]['is_deletable'])
 
         # Other user may not delete this
         response = self.user_session.delete(comment_url)
         self.assertEqual(401, response.status_code)
+
+        response = self.user_session.get(url)
+        self.assertFalse(response.json()['items'][0]['is_deletable'])
 
         # The owner may
         response = self.api_session.delete(comment_url)
@@ -166,10 +170,14 @@ class TestCommentsEndpoint(unittest.TestCase):
         response = self.api_session.get(url)
         comment_url = response.json()['items'][0]['@id']
         self.assertFalse(comment_url.endswith('@comments'))
+        self.assertTrue(response.json()['items'][0]['is_editable'])
 
         # Other user may not update this
         response = self.user_session.patch(comment_url, json={'text': 'new'})
         self.assertEqual(401, response.status_code)
+
+        response = self.user_session.get(url)
+        self.assertFalse(response.json()['items'][0]['is_editable'])
 
         # The owner may
         response = self.api_session.patch(comment_url, json={'text': 'new'})
