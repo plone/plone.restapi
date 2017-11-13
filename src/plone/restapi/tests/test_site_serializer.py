@@ -30,3 +30,8 @@ class TestSiteSerializer(unittest.TestCase):
         obj = self.serialize()
         self.assertIn(u'title', obj)
         self.assertEqual(u'Plone site', obj[u'title'])
+
+    def test_get_is_folderish(self):
+        obj = self.serialize()
+        self.assertIn('is_folderish', obj)
+        self.assertEquals(True, obj['is_folderish'])
