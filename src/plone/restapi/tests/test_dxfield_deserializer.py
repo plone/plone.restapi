@@ -273,6 +273,14 @@ class TestDXFieldDeserializer(unittest.TestCase):
                         'Not a <NamedBlobImage>')
         self.assertTrue(value.data.startswith('GIF89a'))
 
+    def test_namedblobimage_deserialization_fed_with_null_removes_image(self):
+        value = self.deserialize('test_namedblobimage_field', False)
+        self.assertFalse(value)
+
+    def test_namedblobfile_deserialization_fed_with_null_removes_file(self):
+        value = self.deserialize('test_namedblobfile_field', False)
+        self.assertFalse(value)
+
     def test_relationchoice_deserialization_from_uid_returns_document(self):
         doc2 = self.portal[self.portal.invokeFactory(
             'DXTestDocument', id='doc2', title='Referenceable Document')]
