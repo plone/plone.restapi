@@ -7,6 +7,10 @@ Changelog
 - Improve is_folderish property to include Plone site and AT content types
   [sneridagh]
 
+- Add 'is_editable' and 'is_deletable' to the serialization of comments objects.
+  Also refactored the comments endpoint to DRY.
+  [sneridagh]
+
 
 1.0a23 (2017-11-07)
 -------------------

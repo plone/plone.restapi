@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-from AccessControl import getSecurityManager
-from Acquisition import aq_inner
 from plone.app.discussion.browser.comment import EditCommentForm
 from plone.app.discussion.browser.comments import CommentForm
 from plone.app.discussion.interfaces import IConversation
-from plone.app.discussion.interfaces import IDiscussionSettings
-from plone.registry.interfaces import IRegistry
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from plone.restapi.services.discussion.utils import can_delete
+from plone.restapi.services.discussion.utils import can_delete_own
+from plone.restapi.services.discussion.utils import can_edit
+from plone.restapi.services.discussion.utils import delete_own_comment_allowed
+from plone.restapi.services.discussion.utils import edit_comment_allowed
 from zExceptions import BadRequest
 from zExceptions import Unauthorized
 from zope.component import getMultiAdapter
@@ -20,11 +21,6 @@ from zope.security.interfaces import IPermission
 
 from datetime import datetime
 import plone.protect.interfaces
-
-
-def permission_exists(permission_id):
-    permission = queryUtility(IPermission, permission_id)
-    return permission is not None
 
 
 def fix_location_header(context, request):
@@ -123,7 +119,7 @@ class CommentsUpdate(Service):
         comment = conversation[self.comment_id]
 
         # Permission checks
-        if not (self.edit_comment_allowed() and self.can_edit(comment)):
+        if not (edit_comment_allowed() and can_edit(comment)):
             raise Unauthorized()
 
         # Fake request data
@@ -146,20 +142,6 @@ class CommentsUpdate(Service):
         self.request.response.setStatus(204)
         fix_location_header(self.context, self.request)
 
-    def edit_comment_allowed(self):
-        # Check if editing comments is allowed in the registry
-        registry = queryUtility(IRegistry)
-        settings = registry.forInterface(IDiscussionSettings, check=False)
-        return settings.edit_comment_enabled
-
-    def can_edit(self, reply):
-        """Returns true if current user has the 'Edit comments'
-        permission.
-        """
-        return getSecurityManager().checkPermission(
-            'Edit comments', aq_inner(reply)
-        )
-
 
 @implementer(IPublishTraverse)
 class CommentsDelete(Service):
@@ -181,10 +163,9 @@ class CommentsDelete(Service):
         comment = conversation[self.comment_id]
 
         # Permission checks
-        can_delete = self.can_delete(comment)
-        doc_allowed = self.delete_own_comment_allowed()
-        delete_own = doc_allowed and self.can_delete_own(comment)
-        if not (can_delete or delete_own):
+        doc_allowed = delete_own_comment_allowed()
+        delete_own = doc_allowed and can_delete_own(comment)
+        if not (can_delete(comment) or delete_own):
             raise Unauthorized()
 
         del conversation[self.comment_id]
@@ -197,43 +178,3 @@ class CommentsDelete(Service):
         # which case we need to check
         permission = queryUtility(IPermission, permission_id)
         return permission is not None
-
-    def can_review(self):
-        """Returns true if current user has the 'Review comments' permission.
-        """
-        return getSecurityManager().checkPermission('Review comments',
-                                                    aq_inner(self.context))
-
-    def can_delete(self, reply):
-        """Returns true if current user has the 'Delete comments'
-        permission.
-        """
-        if not permission_exists('plone.app.discussion.DeleteComments'):
-            # Older versions of p.a.discussion do not support this yet.
-            return self.can_review()
-
-        return getSecurityManager().checkPermission(
-            'Delete comments', aq_inner(reply)
-        )
-
-    def delete_own_comment_allowed(self):
-        if not permission_exists('plone.app.discussion.DeleteOwnComments'):
-            # Older versions of p.a.discussion do not support this yet.
-            return False
-        # Check if delete own comments is allowed in the registry
-        registry = queryUtility(IRegistry)
-        settings = registry.forInterface(IDiscussionSettings, check=False)
-        return settings.delete_own_comment_enabled
-
-    def can_delete_own(self, comment):
-        """Returns true if the current user could delete the comment if it had
-        no replies. This is used to prepare hidden form buttons for JS.
-        """
-        if not permission_exists('plone.app.discussion.DeleteOwnComments'):
-            # Older versions of p.a.discussion do not support this yet.
-            return False
-        try:
-            return comment.restrictedTraverse(
-                '@@delete-own-comment').could_delete()
-        except Unauthorized:
-            return False
