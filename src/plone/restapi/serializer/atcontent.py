@@ -47,6 +47,7 @@ class SerializeToJson(object):
             'review_state': self._get_workflow_state(obj),
             'UID': obj.UID(),
             'layout': self.context.getLayout(),
+            'is_folderish': False
         }
 
         # Insert expandable elements
@@ -88,6 +89,9 @@ class SerializeFolderToJson(SerializeToJson):
         folder_metadata = super(SerializeFolderToJson, self).__call__(
             version=version
         )
+
+        folder_metadata.update({'is_folderish': True})
+
         query = self._build_query()
 
         catalog = getToolByName(self.context, 'portal_catalog')

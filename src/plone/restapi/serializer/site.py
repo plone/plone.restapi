@@ -44,6 +44,7 @@ class SerializeSiteRootToJson(object):
             '@type': 'Plone Site',
             'title': self.context.Title(),
             'parent': {},
+            'is_folderish': True
         }
 
         # Insert expandable elements
