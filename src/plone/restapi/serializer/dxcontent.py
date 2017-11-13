@@ -60,6 +60,7 @@ class SerializeToJson(object):
             'UID': obj.UID(),
             'version': version,
             'layout': self.context.getLayout(),
+            'is_folderish': False
         }
 
         # Insert expandable elements
@@ -121,6 +122,8 @@ class SerializeFolderToJson(SerializeToJson):
         folder_metadata = super(SerializeFolderToJson, self).__call__(
             version=version
         )
+
+        folder_metadata.update({'is_folderish': True})
 
         query = self._build_query()
 

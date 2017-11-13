@@ -73,6 +73,7 @@ Content-Type: application/json
     "size": 1185, 
     "width": 215
   }, 
+  "is_folderish": false, 
   "language": "", 
   "layout": "image_view", 
   "modified": "2016-01-21T06:24:11+00:00", 

@@ -1,18 +1,82 @@
 Changelog
 =========
 
-1.0a22 (unreleased)
+1.0a25 (unreleased)
 -------------------
 
 - Show expired content when GET on a folderish object, include a way to display
   it on @search via the show_inactive parameter
   [sneridagh]
 
+
+1.0a24 (2017-11-13)
+-------------------
+
+New Features:
+
+- Add 'is_editable' and 'is_deletable' to the serialization of comments
+  objects. Also refactored the comments endpoint to DRY.
+  [sneridagh]
+
+- Improve is_folderish property to include Plone site and AT content types
+  [sneridagh]
+
+Bugfixes:
+
+- Cover complete use cases of file handling in a content type. This includes
+  removal of a image/file and being able to feed the PATCH endpoint with the
+  response of a GET operation the image/file fields without deleting the
+  existing value.
+  [sneridagh]
+
+
+1.0a23 (2017-11-07)
+-------------------
+
+Bugfixes:
+
+- Fix JWT authentication for users defined in the Zope root user folder.
+  This fixes https://github.com/plone/plone.restapi/issues/168 and
+  https://github.com/plone/plone.restapi/issues/127.
+  [buchi]
+
+- Fix datetime deserialization for timezone aware fields.
+  This fixes https://github.com/plone/plone.restapi/issues/253
+  [buchi]
+
+
+1.0a22 (2017-11-04)
+-------------------
+
+New Features:
+
+- Add @translations endpoint
+  [erral]
+
+- Include title in site serialization.
+  [buchi]
+
+- Include is_folderish property on GET request responses. Fixes #327.
+  [sneridagh]
+
+
+Bugfixes:
+
 - Strip spaces from TextLine values to match z3c.form implementation.
   [jaroel]
 
 - Disallow None and u'' when TextLine is required. Refs #351.
   [jaroel]
+
+- Make getting '/@types/{type_id}' work for non-DX types, ie "Plone Site".
+  [jaroel]
+
+- Remove Products.PasswortResetTool from setup.py since it is
+  a soft dependency. It is included in Plone >= 5.1.
+  [tomgross]
+
+- Update pytz to fix travis builds
+  [sneridagh]
 
 
 1.0a21 (2017-09-23)
@@ -141,6 +205,9 @@ Bugfixes:
 -------------------
 
 New Features:
+
+- Add @translations endpoint
+  [erral]
 
 - Reorder children in a item using the content endpoint.
   [jaroel]

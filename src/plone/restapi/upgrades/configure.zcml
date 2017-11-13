@@ -22,4 +22,15 @@
         provides="Products.GenericSetup.interfaces.EXTENSION"
         />
 
+    <!-- 0002 -> 0003 -->
+    <genericsetup:upgradeStep
+        title="Install PAS plugin in Zope root"
+        description=""
+        source="0002"
+        destination="0003"
+        handler="plone.restapi.upgrades.to0003.install_pas_plugin_in_zope_root"
+        profile="plone.restapi:default"
+        />
+
+
 </configure>

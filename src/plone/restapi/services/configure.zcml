@@ -26,5 +26,7 @@
   <include package=".users"/>
   <include package=".vocabularies"/>
   <include package=".workflow"/>
+  <include package=".multilingual"
+      zcml:condition="have plone-5"/>
 
 </configure>

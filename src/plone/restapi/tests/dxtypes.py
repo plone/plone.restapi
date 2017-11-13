@@ -11,6 +11,7 @@ from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.content import Item
 from plone.namedfile import field as namedfile
 from plone.supermodel import model
+from pytz import timezone
 from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList
 from zope import schema
@@ -47,6 +48,10 @@ class IDXTestDocumentSchema(model.Schema):
     test_choice_field = schema.Choice(values=[u'foo', u'bar'], required=False)
     test_date_field = schema.Date(required=False)
     test_datetime_field = schema.Datetime(required=False)
+    test_datetime_tz_field = schema.Datetime(
+        required=False,
+        defaultFactory=lambda: timezone("Europe/Zurich").localize(
+            datetime(2017, 10, 31, 10, 0)))
     test_decimal_field = schema.Decimal(required=False)
     test_dict_field = schema.Dict(required=False)
     test_float_field = schema.Float(required=False)

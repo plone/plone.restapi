@@ -8,8 +8,12 @@ from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedField
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.services.content.tus import TUSUpload
+from pytz import timezone
+from pytz import utc
+from z3c.form.interfaces import IDataManager
 from zope.component import adapter
 from zope.component import getMultiAdapter
+from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import ICollection
@@ -17,9 +21,9 @@ from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IDict
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
+from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
-from zope.schema.interfaces import ITextLine
 
 
 @implementer(IFieldDeserializer)
@@ -62,13 +66,39 @@ class TextLineFieldDeserializer(DefaultFieldDeserializer):
 class DatetimeFieldDeserializer(DefaultFieldDeserializer):
 
     def __call__(self, value):
+        # Datetime fields may contain timezone naive or timezone aware
+        # objects. Unfortunately the zope.schema.Datetime field does not
+        # contain any information if the field value should be timezone naive
+        # or timezone aware. While some fields (start, end) store timezone
+        # aware objects others (effective, expires) store timezone naive
+        # objects.
+        # We try to guess the correct deserialization from the current field
+        # value.
+        dm = queryMultiAdapter((self.context, self.field), IDataManager)
+        current = dm.get()
+        if current is not None:
+            tzinfo = current.tzinfo
+        else:
+            tzinfo = None
+
+        # Parse ISO 8601 string with Zope's DateTime module
         try:
-            # Parse ISO 8601 string with Zope's DateTime module
-            # and convert to a timezone naive datetime in local time
-            value = DateTime(value).toZone(DateTime().localZone()).asdatetime(
-            ).replace(tzinfo=None)
+            dt = DateTime(value).asdatetime()
         except (SyntaxError, DateTimeError) as e:
             raise ValueError(e.message)
+
+        # Convert to TZ aware in UTC
+        if dt.tzinfo is not None:
+            dt = dt.astimezone(utc)
+        else:
+            dt = utc.localize(dt)
+
+        # Convert to local TZ aware or naive UTC
+        if tzinfo is not None:
+            tz = timezone(tzinfo.zone)
+            value = tz.normalize(dt.astimezone(tz))
+        else:
+            value = utc.normalize(dt.astimezone(utc)).replace(tzinfo=None)
 
         self.field.validate(value)
         return value
@@ -160,6 +190,12 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
         content_type = 'application/octet-stream'
         filename = None
         if isinstance(value, dict):
+            if 'data' not in value:
+                # We are probably pushing the contents of a previous GET
+                # That contain the read representation of the file
+                # with the 'download' key so we return the same stored file
+                return self.context.image
+
             content_type = value.get(u'content-type', content_type).encode(
                 'utf8')
             filename = value.get(u'filename', filename)
@@ -172,6 +208,8 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
                 'content-type', content_type).encode('utf8')
             filename = value.metadata().get('filename', filename)
             data = value.open()
+        elif value is False:
+            return value
         else:
             data = value
 

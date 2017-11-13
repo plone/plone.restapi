@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.0a22.dev0'
+version = '1.0a25.dev0'
 
 long_description = (
     open('README.rst').read() + '\n' +
@@ -22,6 +22,7 @@ setup(name='plone.restapi',
           "Framework :: Plone",
           "Framework :: Plone :: 4.3",
           "Framework :: Plone :: 5.0",
+          "Framework :: Plone :: 5.1",
           "Intended Audience :: Developers",
           "Operating System :: OS Independent",
           "Programming Language :: Python",
@@ -41,8 +42,8 @@ setup(name='plone.restapi',
       install_requires=[
           'setuptools',
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
-          'Products.PasswordResetTool',  # gone in Plone 5.1
           'PyJWT',
+          'pytz',
       ],
       extras_require={'test': [
           'Products.Archetypes',

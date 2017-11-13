@@ -29,6 +29,7 @@ Content-Type: application/json
   "exclude_from_nav": false, 
   "expires": null, 
   "id": "link", 
+  "is_folderish": false, 
   "language": "", 
   "layout": "link_redirect_view", 
   "modified": "2016-01-21T04:24:11+00:00", 

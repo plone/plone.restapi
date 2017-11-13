@@ -129,10 +129,18 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     if excluded_fields is None:
         excluded_fields = []
 
-    schema = fti.lookupSchema()
-    additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-
-    fieldsets = get_fieldsets(context, request, schema, additional_schemata)
+    # We try..except lookupSchema here, so we still get FTI information
+    # through /@types/{typeid} for non-DX type, notably the "Plone Site" type.
+    try:
+        schema = fti.lookupSchema()
+    except AttributeError:
+        schema = None
+        fieldsets = ()
+    else:
+        additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
+        fieldsets = get_fieldsets(
+            context, request, schema, additional_schemata
+        )
 
     # Build JSON schema properties
     properties = get_jsonschema_properties(
