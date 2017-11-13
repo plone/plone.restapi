@@ -4,7 +4,11 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Cover complete use cases of file handling in a content type. This includes
+  removal of a image/file and being able to feed the PATCH endpoint with the
+  response of a GET operation the image/file fields without deleting the
+  existing value.
+  [sneridagh]
 
 
 1.0a23 (2017-11-07)

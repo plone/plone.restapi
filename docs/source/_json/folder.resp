@@ -28,7 +28,7 @@ Content-Type: application/json
   "exclude_from_nav": false, 
   "expires": null, 
   "id": "folder", 
-  "is_folderish": true,
+  "is_folderish": true, 
   "items": [
     {
       "@id": "http://localhost:55001/plone/folder/doc1", 

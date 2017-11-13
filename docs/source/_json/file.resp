@@ -34,7 +34,7 @@ Content-Type: application/json
     "size": 74429
   }, 
   "id": "file", 
-  "is_folderish": false,
+  "is_folderish": false, 
   "language": "", 
   "layout": "file_view", 
   "modified": "2016-01-21T05:24:11+00:00", 

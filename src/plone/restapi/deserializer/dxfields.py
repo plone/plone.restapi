@@ -190,6 +190,12 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
         content_type = 'application/octet-stream'
         filename = None
         if isinstance(value, dict):
+            if 'data' not in value:
+                # We are probably pushing the contents of a previous GET
+                # That contain the read representation of the file
+                # with the 'download' key so we return the same stored file
+                return self.context.image
+
             content_type = value.get(u'content-type', content_type).encode(
                 'utf8')
             filename = value.get(u'filename', filename)
@@ -202,6 +208,8 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
                 'content-type', content_type).encode('utf8')
             filename = value.metadata().get('filename', filename)
             data = value.open()
+        elif value is False:
+            return value
         else:
             data = value
 
