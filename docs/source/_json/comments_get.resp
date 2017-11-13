@@ -13,6 +13,8 @@ Content-Type: application/json
       "comment_id": "1477076400000000", 
       "creation_date": "2016-10-21T19:00:00", 
       "in_reply_to": null, 
+      "is_deletable": true, 
+      "is_editable": true, 
       "modification_date": "2016-10-21T19:00:00", 
       "text": {
         "data": "Comment 1", 
@@ -29,6 +31,8 @@ Content-Type: application/json
       "comment_id": "1477076400000001", 
       "creation_date": "2016-10-21T19:00:00", 
       "in_reply_to": "1477076400000000", 
+      "is_deletable": true, 
+      "is_editable": true, 
       "modification_date": "2016-10-21T19:00:00", 
       "text": {
         "data": "Comment 1.1", 
