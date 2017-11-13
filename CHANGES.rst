@@ -4,17 +4,21 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
+New Features:
+
+- Add 'is_editable' and 'is_deletable' to the serialization of comments
+  objects. Also refactored the comments endpoint to DRY.
+  [sneridagh]
+
 - Improve is_folderish property to include Plone site and AT content types
   [sneridagh]
+
+Bugfixes:
 
 - Cover complete use cases of file handling in a content type. This includes
   removal of a image/file and being able to feed the PATCH endpoint with the
   response of a GET operation the image/file fields without deleting the
   existing value.
-  [sneridagh]
-
-- Add 'is_editable' and 'is_deletable' to the serialization of comments objects.
-  Also refactored the comments endpoint to DRY.
   [sneridagh]
 
 
