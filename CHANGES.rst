@@ -4,7 +4,10 @@ Changelog
 1.0a25 (unreleased)
 -------------------
 
-- Nothing changed yet.
+New Features:
+
+- Include descriptions of modified fields in object-modified event.
+  [buchi]
 
 
 1.0a24 (2017-11-13)
