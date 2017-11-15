@@ -4,7 +4,7 @@ Changelog
 1.0a25 (unreleased)
 -------------------
 
-- Nothing changed yet.
+- Add uninstall profile [davilima6]
 
 
 1.0a24 (2017-11-13)
