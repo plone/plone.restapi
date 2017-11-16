@@ -6,6 +6,10 @@ from plone.restapi.pas import plugin
 
 import pkg_resources
 
+
+PROJECT_NAME = 'plone.restapi'
+
+
 allow_module('json')
 
 try:
