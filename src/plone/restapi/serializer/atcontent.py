@@ -91,23 +91,25 @@ class SerializeFolderToJson(SerializeToJson):
         )
 
         folder_metadata.update({'is_folderish': True})
-
-        query = self._build_query()
-
-        catalog = getToolByName(self.context, 'portal_catalog')
-        brains = catalog(query)
-
-        batch = HypermediaBatch(self.request, brains)
-
         result = folder_metadata
-        if not self.request.form.get('fullobjects'):
-            result['@id'] = batch.canonical_url
-        result['items_total'] = batch.items_total
-        if batch.links:
-            result['batching'] = batch.links
 
-        result['items'] = [
-            getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
-            for brain in batch
-        ]
+        include_items = self.request.form.get('include_items', True)
+        if include_items:
+            query = self._build_query()
+
+            catalog = getToolByName(self.context, 'portal_catalog')
+            brains = catalog(query)
+
+            batch = HypermediaBatch(self.request, brains)
+
+            if not self.request.form.get('fullobjects'):
+                result['@id'] = batch.canonical_url
+            result['items_total'] = batch.items_total
+            if batch.links:
+                result['batching'] = batch.links
+
+            result['items'] = [
+                getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
+                for brain in batch
+            ]
         return result

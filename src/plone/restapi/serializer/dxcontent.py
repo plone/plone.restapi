@@ -125,6 +125,7 @@ class SerializeFolderToJson(SerializeToJson):
         folder_metadata.update({'is_folderish': True})
         result = folder_metadata
 
+        include_items = self.request.form.get('include_items', include_items)
         if include_items:
             query = self._build_query()
 
@@ -152,5 +153,4 @@ class SerializeFolderToJson(SerializeToJson):
                     )()
                     for brain in batch
                 ]
-
         return result
