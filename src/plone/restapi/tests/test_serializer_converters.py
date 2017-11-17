@@ -171,15 +171,6 @@ class TestJsonCompatibleConverters(TestCase):
     def test_timedelta(self):
         self.assertEquals(9.58, json_compatible(timedelta(seconds=9.58)))
 
-    def test_richtext(self):
-        value = RichTextValue(u'<p>Hallöchen</p>',
-                              mimeType='text/html',
-                              outputMimeType='text/html')
-        self.assertEquals({
-            u'content-type': u'text/html',
-            u'data': u'<p>Hallöchen</p>',
-            u'encoding': u'utf-8'}, json_compatible(value))
-
     def test_broken_relation_value(self):
         self.assertEquals(None, json_compatible(RelationValue(12345)))
 

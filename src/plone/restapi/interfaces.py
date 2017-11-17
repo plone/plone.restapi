@@ -34,6 +34,15 @@ class IJsonCompatible(Interface):
     """
 
 
+class IContextawareJsonCompatible(IJsonCompatible):
+    """Convert a value to a JSON compatible data structure, using a context.
+    """
+
+    def __init__(value, context,):
+        """Adapts value and a context
+        """
+
+
 class IFieldSerializer(Interface):
     """The field serializer multi adapter serializes the field value into
     JSON compatible python data.

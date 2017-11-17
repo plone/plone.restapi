@@ -1,14 +1,45 @@
 Changelog
 =========
 
-1.0b1 (unreleased)
-------------------
-
-Breaking Changes:
+1.0a25 (unreleased)
+-------------------
 
 - Remove @components navigation and breadcrumbs. Use top level @navigation and
   @breadcrumb endpoints instead.
   [timo]
+
+- Add fullobjects parameter to content GET request.
+  [timo]
+
+- Remove "sharing" attributes from GET response.
+  [timo,jaroel]
+
+- Add uninstall profile [davilima6]
+
+
+1.0a24 (2017-11-13)
+-------------------
+
+New Features:
+
+- Add 'is_editable' and 'is_deletable' to the serialization of comments
+  objects. Also refactored the comments endpoint to DRY.
+  [sneridagh]
+
+- Convert richtext using .output_relative_to. Direct conversion from RichText
+  if no longer supported as we *always* need a context for the ITransformer.
+  [jaroel]
+
+- Improve is_folderish property to include Plone site and AT content types
+  [sneridagh]
+
+Bugfixes:
+
+- Cover complete use cases of file handling in a content type. This includes
+  removal of a image/file and being able to feed the PATCH endpoint with the
+  response of a GET operation the image/file fields without deleting the
+  existing value.
+  [sneridagh]
 
 
 1.0a23 (2017-11-07)

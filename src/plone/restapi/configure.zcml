@@ -44,6 +44,14 @@
     handler="plone.restapi.setuphandlers.import_various"
     />
 
+  <genericsetup:registerProfile
+      name="uninstall"
+      title="plone.restapi"
+      directory="profiles/uninstall"
+      description="RESTful hypermedia API for Plone - Uninstall"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
   <include package="plone.rest" file="configure.zcml" />
   <include package=".services" />
   <include package=".serializer" />

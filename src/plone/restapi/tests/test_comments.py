@@ -91,6 +91,8 @@ class TestCommentsSerializers(TestCase):
             'author_name',
             'creation_date',
             'modification_date',
+            'is_editable',
+            'is_deletable'
         ]
         self.assertEqual(
             set(output.keys()),
