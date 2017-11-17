@@ -4,6 +4,9 @@ Changelog
 1.0a25 (unreleased)
 -------------------
 
+- Add fullobjects parameter to content GET request.
+  [timo]
+
 - Add uninstall profile [davilima6]
 
 
