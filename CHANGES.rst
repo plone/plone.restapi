@@ -22,6 +22,10 @@ New Features:
   objects. Also refactored the comments endpoint to DRY.
   [sneridagh]
 
+- Convert richtext using .output_relative_to. Direct conversion from RichText
+  if no longer supported as we *always* need a context for the ITransformer.
+  [jaroel]
+
 - Improve is_folderish property to include Plone site and AT content types
   [sneridagh]
 

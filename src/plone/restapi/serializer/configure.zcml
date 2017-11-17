@@ -17,6 +17,7 @@
     <adapter factory=".dxfields.DefaultFieldSerializer" />
     <adapter factory=".dxfields.FileFieldSerializer" />
     <adapter factory=".dxfields.ImageFieldSerializer" />
+    <adapter factory=".dxfields.RichttextFieldSerializer" />
 
     <configure zcml:condition="installed Products.Archetypes">
         <adapter factory=".atcontent.SerializeToJson" />
@@ -42,7 +43,7 @@
     <adapter factory=".converters.persistent_list_converter" />
     <adapter factory=".converters.persistent_mapping_converter" />
     <adapter factory=".converters.python_datetime_converter" />
-    <adapter factory=".converters.richtext_converter" />
+    <adapter factory=".converters.RichtextDXContextConverter" />
     <adapter factory=".converters.set_converter" />
     <adapter factory=".converters.string_converter" />
     <adapter factory=".converters.time_converter" />
