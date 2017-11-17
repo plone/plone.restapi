@@ -69,3 +69,14 @@ class TestContentGet(unittest.TestCase):
             },
             response.json()['items'][0].get('text')
         )
+
+        # make sure the single document response is the same as the items
+        response_doc = requests.get(
+            self.portal.folder1.doc1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertEqual(
+            response.json()['items'][0],
+            response_doc.json()
+        )

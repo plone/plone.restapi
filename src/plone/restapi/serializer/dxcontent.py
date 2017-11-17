@@ -11,7 +11,6 @@ from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.search.handler import SearchHandler
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.supermodel.utils import mergedTaggedValueDict
@@ -140,15 +139,10 @@ class SerializeFolderToJson(SerializeToJson):
             result['batching'] = batch.links
 
         if 'fullobjects' in self.request.form.keys():
-            handler = SearchHandler(self.context, self.request)
-            result['items'] = handler.search(
-                query={
-                    'fullobjects': 'true',
-                    'path': {
-                        'query': '/'.join(self.context.getPhysicalPath()),
-                        'depth': 1
-                    }
-                }).get('items')
+            result['items'] = getMultiAdapter(
+                (brains, self.request),
+                ISerializeToJson
+            )(fullobjects=True)['items']
         else:
             result['items'] = [
                 getMultiAdapter(

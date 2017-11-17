@@ -7,6 +7,9 @@ Changelog
 - Add fullobjects parameter to content GET request.
   [timo]
 
+- Remove "sharing" attributes from GET response.
+  [timo,jaroel]
+
 - Add uninstall profile [davilima6]
 
 
