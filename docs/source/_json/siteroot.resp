@@ -25,9 +25,5 @@ Content-Type: application/json
   ], 
   "items_total": 1, 
   "parent": {}, 
-  "sharing": {
-    "@id": "http://localhost:55001/plone/@sharing", 
-    "title": "Sharing"
-  }, 
   "title": "Plone site"
 }
