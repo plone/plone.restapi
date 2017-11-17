@@ -732,16 +732,6 @@ class TestTraversal(unittest.TestCase):
             '{}/@navigation'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('navigation', response)
 
-    def test_documentation_componente_breadcrumbs(self):
-        response = self.api_session.get(
-            '{}/@components/breadcrumbs'.format(self.document.absolute_url()))
-        save_request_and_response_for_docs('component_breadcrumbs', response)
-
-    def test_documentation_components_navigation(self):
-        response = self.api_session.get(
-            '{}/@components/navigation'.format(self.document.absolute_url()))
-        save_request_and_response_for_docs('component_navigation', response)
-
     def test_documentation_principals(self):
         gtool = api.portal.get_tool('portal_groups')
         properties = {

@@ -1,14 +1,7 @@
-HTTP/1.1 200 OK
+HTTP/1.1 404 Not Found
 Content-Type: application/json
 
-[
-  {
-    "@id": "http://localhost:55001/plone/front-page/@components/breadcrumbs", 
-    "items": [
-      {
-        "title": "Welcome to Plone", 
-        "url": "http://localhost:55001/plone/front-page"
-      }
-    ]
-  }
-]
+{
+  "message": "Resource not found: http://localhost:55001/plone/front-page/@components", 
+  "type": "NotFound"
+}

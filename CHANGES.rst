@@ -4,6 +4,10 @@ Changelog
 1.0a25 (unreleased)
 -------------------
 
+- Remove @components navigation and breadcrumbs. Use top level @navigation and
+  @breadcrumb endpoints instead.
+  [timo]
+
 - Add fullobjects parameter to content GET request.
   [timo]
 
