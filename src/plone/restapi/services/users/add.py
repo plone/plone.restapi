@@ -282,14 +282,14 @@ class UsersPost(Service):
             authenticated_user_id = mt.getAuthenticatedMember().getId()
             if username != authenticated_user_id:
                 return self._error(
-                    403, "Wrong user"
+                    403, "Wrong user",
                     ("You need to be logged in as the user '%s' to set "
                      "the password.") % username)
 
             check_password_auth = pas.authenticate(
                 username, old_password.encode('utf-8'), self.request)
             if not check_password_auth:
-                return self._error(403, "Wrong password"
+                return self._error(403, "Wrong password",
                                    "The password passed as 'old_password' "
                                    "is wrong.")
             mt.setPassword(new_password)

@@ -4,6 +4,9 @@ Changelog
 1.0a25 (unreleased)
 -------------------
 
+- Fix error messages for password reset (wrong user and wrong password).
+  [csenger]
+
 - Add fullobjects parameter to content GET request.
   [timo]
 
