@@ -4,10 +4,18 @@ Changelog
 1.0a25 (unreleased)
 -------------------
 
-New Features:
+- Add fullobjects parameter to content GET request.
+  [timo]
+
+- Remove "sharing" attributes from GET response.
+  [timo,jaroel]
 
 - Include descriptions of modified fields in object-modified event.
   [buchi]
+
+- Convert richtext using .output_relative_to. Direct conversion from RichText
+  if no longer supported as we *always* need a context for the ITransformer.
+  [jaroel]
 
 - Add uninstall profile [davilima6]
 
