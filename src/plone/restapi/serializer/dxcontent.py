@@ -138,8 +138,18 @@ class SerializeFolderToJson(SerializeToJson):
         if batch.links:
             result['batching'] = batch.links
 
-        result['items'] = [
-            getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
-            for brain in batch
-        ]
+        if 'fullobjects' in self.request.form.keys():
+            result['items'] = getMultiAdapter(
+                (brains, self.request),
+                ISerializeToJson
+            )(fullobjects=True)['items']
+        else:
+            result['items'] = [
+                getMultiAdapter(
+                    (brain, self.request),
+                    ISerializeToJsonSummary
+                )()
+                for brain in batch
+            ]
+
         return result

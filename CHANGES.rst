@@ -9,6 +9,8 @@ New Features:
 - Include descriptions of modified fields in object-modified event.
   [buchi]
 
+- Add uninstall profile [davilima6]
+
 
 1.0a24 (2017-11-13)
 -------------------
