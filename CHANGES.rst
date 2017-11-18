@@ -4,27 +4,34 @@ Changelog
 1.0a25 (unreleased)
 -------------------
 
-- Fix error messages for password reset (wrong user and wrong password).
-  [csenger]
+Breaking Changes:
 
 - Remove @components navigation and breadcrumbs. Use top level @navigation and
   @breadcrumb endpoints instead.
   [timo]
 
-- Add fullobjects parameter to content GET request.
-  [timo]
-
 - Remove "sharing" attributes from GET response.
   [timo,jaroel]
-
-- Include descriptions of modified fields in object-modified event.
-  [buchi]
 
 - Convert richtext using .output_relative_to. Direct conversion from RichText
   if no longer supported as we *always* need a context for the ITransformer.
   [jaroel]
 
-- Add uninstall profile [davilima6]
+New Features:
+
+- Add fullobjects parameter to content GET request.
+  [timo]
+
+- Include descriptions of modified fields in object-modified event.
+  [buchi]
+
+- Add uninstall profile
+  [davilima6]
+
+Bug Fixes:
+
+- Fix error messages for password reset (wrong user and wrong password).
+  [csenger]
 
 
 1.0a24 (2017-11-13)
