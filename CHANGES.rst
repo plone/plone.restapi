@@ -28,15 +28,7 @@ New Features:
 - Add uninstall profile
   [davilima6]
 
-- Add 'is_editable' and 'is_deletable' to the serialization of comments objects.
-  Also refactored the comments endpoint to DRY.
-  [sneridagh]
-
 Bug Fixes:
-
-- Prevent GET operation from deleting image/file fields when the field is
-  omitted in the request.
-  [sneridagh]
 
 - Fix error messages for password reset (wrong user and wrong password).
   [csenger]
