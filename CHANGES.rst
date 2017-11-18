@@ -4,6 +4,9 @@ Changelog
 1.0a25 (unreleased)
 -------------------
 
+- Fix error messages for password reset (wrong user and wrong password).
+  [csenger]
+
 - Remove @components navigation and breadcrumbs. Use top level @navigation and
   @breadcrumb endpoints instead.
   [timo]

@@ -54,13 +54,24 @@ class TestUsersEndpoint(unittest.TestCase):
             properties=properties,
             password=u'password'
         )
+        properties = {
+            'email': 'otheruser@example.com',
+            'username': 'otheruser',
+            'fullname': 'Other user',
+        }
+        api.user.create(
+            email='otheruser@example.com',
+            username='otheruser',
+            properties=properties,
+            password=u'otherpassword'
+        )
         transaction.commit()
 
     def test_list_users(self):
         response = self.api_session.get('/@users')
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(3, len(response.json()))
+        self.assertEqual(4, len(response.json()))
         user_ids = [user['id'] for user in response.json()]
         self.assertIn('admin', user_ids)
         self.assertIn('test_user_1_', user_ids)
@@ -376,6 +387,22 @@ class TestUsersEndpoint(unittest.TestCase):
                                                     {})
         self.assertTrue(authed)
 
+    def test_normal_authenticated_user_cannot_set_other_users_password(self):
+        self.api_session.auth = ('noam', 'password')
+        self.portal.manage_permission(
+            SetOwnPassword, roles=['Authenticated', 'Manager'], acquire=False)
+        transaction.commit()
+
+        payload = {'old_password': 'password',
+                   'new_password': 'new_password'}
+        response = self.api_session.post('/@users/otheruser/reset-password',
+                                         json=payload)
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()['error']['type'],
+                         'Wrong user')
+
     def test_user_set_own_password_requires_set_own_password_permission(self):
         self.api_session.auth = ('noam', 'password')
         self.portal.manage_permission(SetOwnPassword, roles=['Manager'],
@@ -406,6 +433,17 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error']['type'],
                          'Invalid parameters')
+
+    def test_user_set_own_password_checks_old_password(self):
+        self.api_session.auth = ('noam', 'password')
+        payload = {'new_password': 'new_password',
+                   'old_password': 'wrong_password'}
+        response = self.api_session.post('/@users/noam/reset-password',
+                                         json=payload)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()['error']['type'],
+                         'Wrong password')
 
     def test_user_set_reset_token_requires_new_password(self):
         self.api_session.auth = ('noam', 'password')
