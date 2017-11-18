@@ -14,6 +14,13 @@ Changelog
 - Remove "sharing" attributes from GET response.
   [timo,jaroel]
 
+- Include descriptions of modified fields in object-modified event.
+  [buchi]
+
+- Convert richtext using .output_relative_to. Direct conversion from RichText
+  if no longer supported as we *always* need a context for the ITransformer.
+  [jaroel]
+
 - Add uninstall profile [davilima6]
 
 
@@ -25,10 +32,6 @@ New Features:
 - Add 'is_editable' and 'is_deletable' to the serialization of comments
   objects. Also refactored the comments endpoint to DRY.
   [sneridagh]
-
-- Convert richtext using .output_relative_to. Direct conversion from RichText
-  if no longer supported as we *always* need a context for the ITransformer.
-  [jaroel]
 
 - Improve is_folderish property to include Plone site and AT content types
   [sneridagh]

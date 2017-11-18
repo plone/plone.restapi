@@ -16,6 +16,7 @@ from zope.component import queryUtility
 from zope.event import notify
 from zope.interface import Interface
 from zope.interface import implementer
+from zope.lifecycleevent import Attributes
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFields
 from zope.schema.interfaces import ValidationError
@@ -38,7 +39,7 @@ class DeserializeFromJson(OrderingMixin, object):
         if data is None:
             data = json_body(self.request)
 
-        modified = False
+        modified = {}
         schema_data = {}
         errors = []
 
@@ -80,7 +81,11 @@ class DeserializeFromJson(OrderingMixin, object):
                         field_data[name] = value
                         if value != dm.get():
                             dm.set(value)
-                            modified = True
+                            # Collect the names of the modified fields
+                            # Use prefixed name because z3c.form does so
+                            prefixed_name = schema.__name__ + '.' + name
+                            modified.setdefault(schema, []).append(
+                                prefixed_name)
 
                 elif validate_all:
                     # Never validate the changeNote of p.a.versioningbehavior
@@ -118,7 +123,10 @@ class DeserializeFromJson(OrderingMixin, object):
         self.handle_ordering(data)
 
         if modified:
-            notify(ObjectModifiedEvent(self.context))
+            descriptions = []
+            for interface, names in modified.items():
+                descriptions.append(Attributes(interface, *names))
+            notify(ObjectModifiedEvent(self.context, *descriptions))
 
         return self.context
 
