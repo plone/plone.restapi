@@ -30,6 +30,10 @@ New Features:
 
 Bug Fixes:
 
+- Prevent GET operation from deleting image/file fields when the field is
+  omitted in the request.
+  [sneridagh]
+
 - Fix error messages for password reset (wrong user and wrong password).
   [csenger]
 
