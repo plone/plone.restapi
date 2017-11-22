@@ -84,7 +84,8 @@ class LazyCatalogResultSerializer(object):
         for brain in batch:
             if fullobjects:
                 result = getMultiAdapter(
-                    (brain.getObject(), self.request), ISerializeToJson)()
+                    (brain.getObject(), self.request), ISerializeToJson)(
+                        include_items=False)
             else:
                 result = getMultiAdapter(
                     (brain, self.request), ISerializeToJsonSummary)()
