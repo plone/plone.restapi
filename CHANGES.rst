@@ -33,6 +33,14 @@ Bug Fixes:
 - Fix error messages for password reset (wrong user and wrong password).
   [csenger]
 
+- Fix #440, URL and @id wrong in second level get contents call for folderish
+  items.
+  [sneridagh]
+
+- Fix #441, GET in a folderish content with 'fullobjects' is
+  including all items recursively.
+  [sneridagh]
+
 
 1.0a24 (2017-11-13)
 -------------------

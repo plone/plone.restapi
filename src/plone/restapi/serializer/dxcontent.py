@@ -41,7 +41,7 @@ class SerializeToJson(object):
             repo_tool = getToolByName(self.context, "portal_repository")
             return repo_tool.retrieve(self.context, int(version)).object
 
-    def __call__(self, version=None):
+    def __call__(self, version=None, include_items=True):
         version = 'current' if version is None else version
 
         obj = self.getVersion(version)
@@ -117,39 +117,40 @@ class SerializeFolderToJson(SerializeToJson):
                  'sort_on': 'getObjPositionInParent'}
         return query
 
-    def __call__(self, version=None):
+    def __call__(self, version=None, include_items=True):
         folder_metadata = super(SerializeFolderToJson, self).__call__(
             version=version
         )
 
         folder_metadata.update({'is_folderish': True})
-
-        query = self._build_query()
-
-        catalog = getToolByName(self.context, 'portal_catalog')
-        brains = catalog(query)
-
-        batch = HypermediaBatch(self.request, brains)
-
         result = folder_metadata
-        if 'fullobjects' not in self.request.form:
-            result['@id'] = batch.canonical_url
-        result['items_total'] = batch.items_total
-        if batch.links:
-            result['batching'] = batch.links
 
-        if 'fullobjects' in self.request.form.keys():
-            result['items'] = getMultiAdapter(
-                (brains, self.request),
-                ISerializeToJson
-            )(fullobjects=True)['items']
-        else:
-            result['items'] = [
-                getMultiAdapter(
-                    (brain, self.request),
-                    ISerializeToJsonSummary
-                )()
-                for brain in batch
-            ]
+        if include_items:
+            query = self._build_query()
+
+            catalog = getToolByName(self.context, 'portal_catalog')
+            brains = catalog(query)
+
+            batch = HypermediaBatch(self.request, brains)
+
+            if 'fullobjects' not in self.request.form:
+                result['@id'] = batch.canonical_url
+            result['items_total'] = batch.items_total
+            if batch.links:
+                result['batching'] = batch.links
+
+            if 'fullobjects' in self.request.form.keys():
+                result['items'] = getMultiAdapter(
+                    (brains, self.request),
+                    ISerializeToJson
+                )(fullobjects=True)['items']
+            else:
+                result['items'] = [
+                    getMultiAdapter(
+                        (brain, self.request),
+                        ISerializeToJsonSummary
+                    )()
+                    for brain in batch
+                ]
 
         return result

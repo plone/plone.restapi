@@ -103,3 +103,14 @@ class TestContentGet(unittest.TestCase):
         self.assertEqual(2, len(response.json()['items']))
         self.assertEqual(response.json()['items'][1]['@id'],
                          'http://localhost:55001/plone/folder1/folder2')
+
+    def test_get_content_returns_fullobjects_non_recursive(self):
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '?fullobjects',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(2, len(response.json()['items']))
+        self.assertTrue('items' not in response.json()['items'][1])
