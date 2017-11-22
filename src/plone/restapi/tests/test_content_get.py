@@ -37,10 +37,21 @@ class TestContentGet(unittest.TestCase):
             'text/plain',
             'text/html'
         )
-
+        self.portal.folder1.invokeFactory(
+            'Folder',
+            id='folder2',
+            title='My Folder 2'
+        )
+        self.portal.folder1.folder2.invokeFactory(
+            'Document',
+            id='doc2',
+            title='My Document 2'
+        )
         wftool = getToolByName(self.portal, 'portal_workflow')
         wftool.doActionFor(self.portal.folder1, 'publish')
         wftool.doActionFor(self.portal.folder1.doc1, 'publish')
+        wftool.doActionFor(self.portal.folder1.folder2, 'publish')
+        wftool.doActionFor(self.portal.folder1.folder2.doc2, 'publish')
         transaction.commit()
 
     def test_get_content_returns_fullobjects(self):
@@ -51,7 +62,7 @@ class TestContentGet(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(1, len(response.json()['items']))
+        self.assertEqual(2, len(response.json()['items']))
         self.assertTrue(
             'title' in response.json()['items'][0].keys()
         )
@@ -80,3 +91,15 @@ class TestContentGet(unittest.TestCase):
             response.json()['items'][0],
             response_doc.json()
         )
+
+    def test_get_content_returns_fullobjects_correct_id(self):
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '?fullobjects',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(2, len(response.json()['items']))
+        self.assertEqual(response.json()['items'][1]['@id'],
+                         'http://localhost:55001/plone/folder1/folder2')
