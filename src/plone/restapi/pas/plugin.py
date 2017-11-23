@@ -117,10 +117,7 @@ class JWTAuthenticationPlugin(BasePlugin):
         if 'sub' not in payload:
             return None
 
-        userid = payload['sub']
-
-        if isinstance(userid, unicode):
-            userid = userid.encode('utf8')
+        userid = payload['sub'].encode('utf8')
 
         if self.store_tokens:
             if userid not in self._tokens:
