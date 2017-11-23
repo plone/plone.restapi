@@ -62,6 +62,9 @@ Bug Fixes:
   including all items recursively.
   [sneridagh]
 
+- Fix #443, Ensure the userid returned by `authenticateCredentials` is a byte string and not unicode.
+  [Gagaro]
+
 
 1.0a24 (2017-11-13)
 -------------------
