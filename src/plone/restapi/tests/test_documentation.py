@@ -42,7 +42,6 @@ if PAM_INSTALLED:
     from plone.app.multilingual.interfaces import ITranslationManager
 
 
-
 TUS_HEADERS = [
     'upload-offset',
     'upload-length',
@@ -1224,7 +1223,7 @@ class TestCommenting(unittest.TestCase):
         save_request_and_response_for_docs('controlpanels_get_item', response)
 
 
-@unittest.skipUnless(PAM_INSTALLED, 'plone.app.multilingual is installed by default only in Plone 5')
+@unittest.skipUnless(PAM_INSTALLED, 'plone.app.multilingual is installed by default only in Plone 5')  # NOQA
 class TestPAMDocumentation(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING

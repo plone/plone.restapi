@@ -131,16 +131,21 @@ class CollectionFieldDeserializer(DefaultFieldDeserializer):
 class DictFieldDeserializer(DefaultFieldDeserializer):
 
     def __call__(self, value):
-        kdeserializer = lambda k: k
-        vdeserializer = lambda v: v
         if IField.providedBy(self.field.key_type):
             kdeserializer = getMultiAdapter(
                 (self.field.key_type, self.context, self.request),
                 IFieldDeserializer)
+        else:
+            def kdeserializer(k):
+                return k
+
         if IField.providedBy(self.field.value_type):
             vdeserializer = getMultiAdapter(
                 (self.field.value_type, self.context, self.request),
                 IFieldDeserializer)
+        else:
+            def vdeserializer(v):
+                return v
 
         new_value = {}
         for k, v in value.items():

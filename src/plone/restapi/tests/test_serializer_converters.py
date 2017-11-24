@@ -5,7 +5,6 @@ from datetime import time
 from datetime import timedelta
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
-from plone.app.textfield.value import RichTextValue
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest import TestCase

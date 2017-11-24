@@ -13,6 +13,7 @@ import zope.schema
 
 SERVICE_ID = '@controlpanels'
 
+
 @implementer(ISerializeToJsonSummary)
 @adapter(IControlpanel)
 class ControlpanelSummarySerializeToJson(object):
