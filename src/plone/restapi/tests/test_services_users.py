@@ -237,7 +237,7 @@ class TestUsersEndpoint(unittest.TestCase):
         member = api.user.get(username='howard')
         self.assertEqual(member.getProperty('fullname'), 'Howard Zinn')
 
-    def test_add_anon_user_sends_properties_are_not_saved(self):
+    def test_add_anon_user_sends_properties_are_saved(self):
         security_settings = getAdapter(self.portal, ISecuritySchema)
         security_settings.enable_self_reg = True
         transaction.commit()
@@ -254,7 +254,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(201, response.status_code)
         member = api.user.get(username='howard')
-        self.assertEqual(member.getProperty('fullname'), '')
+        self.assertEqual(member.getProperty('fullname'), 'Howard Zinn')
 
     def test_get_user(self):
         response = self.api_session.get('/@users/noam')

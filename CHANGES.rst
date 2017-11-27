@@ -4,7 +4,9 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Allow properties when adding a user.
+  This allows setting the fullname by anonymous users.
+  [jaroel]
 
 
 1.0a25 (2017-11-23)
