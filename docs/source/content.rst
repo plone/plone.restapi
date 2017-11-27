@@ -112,7 +112,7 @@ After a successful POST, we can access the resource by sending a GET request to 
 ..  http:example:: curl httpie python-requests
     :request: _json/content_get.req
 
-You can also set the `include_items` GET parameter to an empty string if you don't want to include children.
+You can also set the `include_items` GET parameter to false if you don't want to include children.
 
 
 Successful Response (200 OK)

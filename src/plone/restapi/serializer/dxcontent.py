@@ -8,6 +8,7 @@ from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
+from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -125,7 +126,7 @@ class SerializeFolderToJson(SerializeToJson):
         folder_metadata.update({'is_folderish': True})
         result = folder_metadata
 
-        include_items = self.request.form.get('include_items', include_items)
+        include_items = boolean_value(self.request.form.get('include_items', include_items))
         if include_items:
             query = self._build_query()
 
