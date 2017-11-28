@@ -180,10 +180,10 @@ PATCH allows to provide just a subset of the resource (the values you actually w
     :request: _json/content_patch.req
 
 
-Successful Response (204 No Content)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Successful Response (200 OK)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A successful response to a PATCH request will be indicated by a :term:`204 No Content` response:
+A successful response to a PATCH request will be indicated by a :term:`200 OK` response:
 
 .. literalinclude:: _json/content_patch.resp
    :language: http

@@ -40,7 +40,8 @@ class TestContentPatch(unittest.TestCase):
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
             data='{"title": "Patched Document"}',
         )
-        self.assertEqual(204, response.status_code)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.json()['title'], "Patched Document")
         transaction.begin()
         self.assertEqual("Patched Document", self.portal.doc1.Title())
 
