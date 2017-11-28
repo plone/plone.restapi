@@ -237,7 +237,7 @@ class TestUsersEndpoint(unittest.TestCase):
         member = api.user.get(username='howard')
         self.assertEqual(member.getProperty('fullname'), 'Howard Zinn')
 
-    def test_add_anon_user_sends_properties_are_not_saved(self):
+    def test_add_anon_user_sends_properties_are_saved(self):
         security_settings = getAdapter(self.portal, ISecuritySchema)
         security_settings.enable_self_reg = True
         transaction.commit()
@@ -254,7 +254,30 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(201, response.status_code)
         member = api.user.get(username='howard')
-        self.assertEqual(member.getProperty('fullname'), '')
+        self.assertEqual(member.getProperty('fullname'), 'Howard Zinn')
+
+    def test_add_anon_no_roles(self):
+        """Make sure anonymous users cannot set their own roles.
+           Allowing so would make them Manager.
+        """
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.enable_self_reg = True
+        transaction.commit()
+
+        response = self.anon_api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "roles": ['Manager'],
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(400, response.status_code)
+        errors = response.json()['error']['errors']
+        fields = [x['field'] for x in errors]
+        self.assertEqual(['roles'], fields)
 
     def test_get_user(self):
         response = self.api_session.get('/@users/noam')

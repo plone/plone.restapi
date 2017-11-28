@@ -50,7 +50,6 @@ class UsersPost(Service):
     def validate_input_data(self, portal, original_data):
         '''Returns a tuple of (required_fields, allowed_fields)'''
         security = getAdapter(portal, ISecuritySchema)
-        security.use_email_as_login
 
         # remove data we don't want to check for
         data = {}
@@ -137,12 +136,6 @@ class UsersPost(Service):
             return self._error(403, 'Forbidden',
                                'You need AddPortalMember permission.')
 
-        username = data.get('username', None)
-        email = data.get('email', None)
-        password = data.get('password', None)
-        roles = data.get('roles', [])
-        properties = data.get('properties', {})
-
         if self.errors:
             self.request.response.setStatus(400)
             return dict(error=dict(
@@ -156,9 +149,6 @@ class UsersPost(Service):
         roles = data.pop('roles', [])
         send_password_reset = data.pop('sendPasswordReset', None)
         properties = data
-
-        if not self.can_manage_users:
-            properties = {}
 
         # set username based on the login settings (username or email)
         if security.use_email_as_login:
