@@ -8,6 +8,10 @@ Changelog
   This allows setting the fullname by anonymous users.
   [jaroel]
 
+- Add support for IContextSourceBinder vocabularies on JSON schema Choice
+  fields adapters.
+  [sneridagh]
+
 
 1.0a25 (2017-11-23)
 -------------------
