@@ -92,10 +92,10 @@ class TestBatchingSearch(TestBatchingDXBase):
 
         self.assertDictEqual(
             {u'@id': self.portal_url + '/folder/@search?b_start=2&b_size=2',
-             u'first': self.portal_url + '/folder/@search?b_size=2&b_start=0',
-             u'next': self.portal_url + '/folder/@search?b_size=2&b_start=4',
-             u'prev': self.portal_url + '/folder/@search?b_size=2&b_start=0',
-             u'last': self.portal_url + '/folder/@search?b_size=2&b_start=4',
+             u'first': self.portal_url + '/folder/@search?b_start=0&b_size=2',
+             u'next': self.portal_url + '/folder/@search?b_start=4&b_size=2',
+             u'prev': self.portal_url + '/folder/@search?b_start=0&b_size=2',
+             u'last': self.portal_url + '/folder/@search?b_start=4&b_size=2',
              },
             batch_info)
 
@@ -159,10 +159,10 @@ class TestBatchingCollections(TestBatchingDXBase):
 
         self.assertDictEqual(
             {u'@id': self.portal_url + '/collection?b_start=2&b_size=2',
-             u'first': self.portal_url + '/collection?b_size=2&b_start=0',
-             u'next': self.portal_url + '/collection?b_size=2&b_start=4',
-             u'prev': self.portal_url + '/collection?b_size=2&b_start=0',
-             u'last': self.portal_url + '/collection?b_size=2&b_start=4',
+             u'first': self.portal_url + '/collection?b_start=0&b_size=2',
+             u'next': self.portal_url + '/collection?b_start=4&b_size=2',
+             u'prev': self.portal_url + '/collection?b_start=0&b_size=2',
+             u'last': self.portal_url + '/collection?b_start=4&b_size=2',
              },
             batch_info)
 
@@ -221,10 +221,10 @@ class TestBatchingDXFolders(TestBatchingDXBase):
 
         self.assertDictEqual(
             {u'@id': self.portal_url + '/folder?b_start=2&b_size=2',
-             u'first': self.portal_url + '/folder?b_size=2&b_start=0',
-             u'next': self.portal_url + '/folder?b_size=2&b_start=4',
-             u'prev': self.portal_url + '/folder?b_size=2&b_start=0',
-             u'last': self.portal_url + '/folder?b_size=2&b_start=4',
+             u'first': self.portal_url + '/folder?b_start=0&b_size=2',
+             u'next': self.portal_url + '/folder?b_start=4&b_size=2',
+             u'prev': self.portal_url + '/folder?b_start=0&b_size=2',
+             u'last': self.portal_url + '/folder?b_start=4&b_size=2',
              },
             batch_info)
 
@@ -279,10 +279,10 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
 
         self.assertDictEqual(
             {u'@id': self.portal_url + '/?b_start=2&b_size=2',
-             u'first': self.portal_url + '/?b_size=2&b_start=0',
-             u'next': self.portal_url + '/?b_size=2&b_start=4',
-             u'prev': self.portal_url + '/?b_size=2&b_start=0',
-             u'last': self.portal_url + '/?b_size=2&b_start=4',
+             u'first': self.portal_url + '/?b_start=0&b_size=2',
+             u'next': self.portal_url + '/?b_start=4&b_size=2',
+             u'prev': self.portal_url + '/?b_start=0&b_size=2',
+             u'last': self.portal_url + '/?b_start=4&b_size=2',
              },
             batch_info)
 
@@ -359,10 +359,10 @@ class TestBatchingArchetypes(unittest.TestCase):
 
         self.assertDictEqual(
             {u'@id': self.portal_url + '/folder?b_start=2&b_size=2',
-             u'first': self.portal_url + '/folder?b_size=2&b_start=0',
-             u'next': self.portal_url + '/folder?b_size=2&b_start=4',
-             u'prev': self.portal_url + '/folder?b_size=2&b_start=0',
-             u'last': self.portal_url + '/folder?b_size=2&b_start=4',
+             u'first': self.portal_url + '/folder?b_start=0&b_size=2',
+             u'next': self.portal_url + '/folder?b_start=4&b_size=2',
+             u'prev': self.portal_url + '/folder?b_start=0&b_size=2',
+             u'last': self.portal_url + '/folder?b_start=4&b_size=2',
              },
             batch_info)
 

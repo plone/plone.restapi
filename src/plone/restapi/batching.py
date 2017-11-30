@@ -35,12 +35,14 @@ class HypermediaBatch(object):
         params from it.
         """
         url = self.request['ACTUAL_URL']
-        qs_params = dict(parse_qsl(self.request['QUERY_STRING']))
+        qs_params = parse_qsl(self.request['QUERY_STRING'])
 
-        # Remove any batching / sorting related parameters
-        for key in ('b_size', 'b_start',
-                    'sort_on', 'sort_order', 'sort_limit'):
-            qs_params.pop(key, None)
+        # Remove any batching / sorting related parameters.
+        # Also take care to preserve list-like query string params.
+        for key, value in qs_params[:]:
+            if key in ('b_size', 'b_start',
+                       'sort_on', 'sort_order', 'sort_limit'):
+                qs_params.remove((key, value))
 
         qs = urlencode(qs_params)
 
@@ -107,9 +109,16 @@ class HypermediaBatch(object):
         and add or update some query string parameters in it.
         """
         url = self.request['ACTUAL_URL']
-        qs_params = dict(parse_qsl(self.request['QUERY_STRING']))
-        for key, value in params.items():
-            qs_params[key] = value
+        qs_params = parse_qsl(self.request['QUERY_STRING'])
+
+        # Take care to preserve list-like query string arguments (same QS
+        # param repeated multiple times). In other words, don't turn the
+        # result of parse_qsl into a dict!
+
+        # Drop params to be updated, then prepend new params in order
+        qs_params = filter(lambda x: x[0] not in params.keys(), qs_params)
+        qs_params = sorted(params.items()) + qs_params
+
         qs = urlencode(qs_params)
 
         if qs_params:
