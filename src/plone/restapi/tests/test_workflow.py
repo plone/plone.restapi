@@ -24,7 +24,7 @@ class TestWorkflowInfo(TestCase):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         self.doc1 = self.portal[self.portal.invokeFactory(
-            'Document', id='doc1', title='Test Document')]
+            'DXTestDocument', id='doc1', title='Test Document')]
         wftool = getToolByName(self.portal, 'portal_workflow')
         wftool.doActionFor(self.portal.doc1, 'submit')
         wftool.doActionFor(self.portal.doc1, 'publish')
@@ -37,7 +37,7 @@ class TestWorkflowInfo(TestCase):
         history = info['history']
         self.assertEqual(3, len(history))
         self.assertEqual('published', history[-1][u'review_state'])
-        self.assertEqual('Published', history[-1][u'title'])
+        self.assertEqual(u'Published with accent é', history[-1][u'title'])
 
     def test_workflow_info_unauthorized_history(self):
         login(self.portal, SITE_OWNER_NAME)
