@@ -12,6 +12,12 @@ Changelog
   fields adapters.
   [sneridagh]
 
+- Fixed NamedFieldDeserializer to take a null to remove files/images.
+  [jaroel]
+
+- Fixed NamedFieldDeserializer to validate required fields.
+  [jaroel]
+
 
 1.0a25 (2017-11-23)
 -------------------

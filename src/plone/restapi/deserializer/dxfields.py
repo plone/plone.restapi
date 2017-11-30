@@ -213,13 +213,17 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
                 'content-type', content_type).encode('utf8')
             filename = value.metadata().get('filename', filename)
             data = value.open()
-        elif value is False:
-            return value
         else:
             data = value
 
-        value = self.field._type(
-            data=data, contentType=content_type, filename=filename)
+        # Convert if we have data
+        if data:
+            value = self.field._type(
+                data=data, contentType=content_type, filename=filename)
+        else:
+            value = None
+
+        # Always validate to check for required fields
         self.field.validate(value)
         return value
 
