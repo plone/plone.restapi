@@ -10,10 +10,27 @@ from plone.dexterity.utils import iterSchemata
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from pytz import timezone
+
+from plone.restapi.tests.dxtypes import IDXTestDocumentSchema
 from zope.component import getMultiAdapter
+from zope.schema._bootstrapinterfaces import RequiredMissing
 from zope.schema.interfaces import ValidationError
 
 import unittest
+
+
+class RequiredField(object):
+    """Context manager that will make a field required and back to old state.
+    """
+    def __init__(self, field):
+        self.field = field
+        self.old_state = field.required
+
+    def __enter__(self):
+        self.field.required = True
+
+    def __exit__(self, *args, **kwargs):
+        self.field.required = self.old_state
 
 
 class TestDXFieldDeserializer(unittest.TestCase):
@@ -274,12 +291,28 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertTrue(value.data.startswith('GIF89a'))
 
     def test_namedblobimage_deserialization_fed_with_null_removes_image(self):
-        value = self.deserialize('test_namedblobimage_field', False)
+        # null in json translates to None in python.
+        value = self.deserialize('test_namedblobimage_field', None)
         self.assertFalse(value)
 
     def test_namedblobfile_deserialization_fed_with_null_removes_file(self):
-        value = self.deserialize('test_namedblobfile_field', False)
+        # null in json translates to None in python.
+        value = self.deserialize('test_namedblobfile_field', None)
         self.assertFalse(value)
+
+    def test_namedblobfile_deserialize_required(self):
+        field_name = 'test_namedblobfile_field'
+        field = IDXTestDocumentSchema.get(field_name)
+        with RequiredField(field):
+            with self.assertRaises(RequiredMissing):
+                self.deserialize(field_name, None)
+
+    def test_namedblobimage_deserialize_required(self):
+        field_name = 'test_namedblobimage_field'
+        field = IDXTestDocumentSchema.get(field_name)
+        with RequiredField(field):
+            with self.assertRaises(RequiredMissing):
+                self.deserialize(field_name, None)
 
     def test_relationchoice_deserialization_from_uid_returns_document(self):
         doc2 = self.portal[self.portal.invokeFactory(
