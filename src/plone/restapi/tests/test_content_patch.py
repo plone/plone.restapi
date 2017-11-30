@@ -79,39 +79,6 @@ class TestContentPatch(unittest.TestCase):
         )
         self.assertEqual(401, response.status_code)
 
-    def test_patch_image_with_null_image_dont_fail_and_unsets_image(self):
-        response = requests.post(
-            self.portal.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-            json={
-                '@type': 'Image',
-                'image': {
-                    'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',  # noqa
-                    'encoding': u'base64',
-                    'content-type': u'image/gif',
-                }
-            },
-        )
-        transaction.commit()
-
-        response = response.json()
-        image_url = self.portal[response['id']].absolute_url()
-        response = requests.patch(
-            image_url,
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-            json={
-                'image': False
-            }
-        )
-        transaction.commit()
-        response = requests.get(
-            image_url,
-            headers={'Accept': 'application/json'})
-
-        self.assertIsNone(response.json()['image'])
-
     def test_patch_image_with_the_contents_of_the_get_preserves_image(self):
         response = requests.post(
             self.portal.absolute_url(),
