@@ -4,6 +4,9 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
+- Batching: Preserve list-like query string params when canonicalizing URLs.
+  [lgraf]
+
 - Allow properties when adding a user.
   This allows setting the fullname by anonymous users.
   [jaroel]
