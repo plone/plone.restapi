@@ -57,6 +57,7 @@ REQUEST_HEADER_KEYS = [
     'accept',
     'authorization',
     'lock-token',
+    'prefer',
 ] + TUS_HEADERS
 
 RESPONSE_HEADER_KEYS = [
