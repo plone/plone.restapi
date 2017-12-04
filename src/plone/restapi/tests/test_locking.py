@@ -108,5 +108,5 @@ class TestLocking(unittest.TestCase):
             headers={'Lock-Token': lockable.lock_info()[0]['token']},
             json={'title': 'New Title'})
         transaction.commit()
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 204)
         self.assertEqual(self.doc.Title(), 'New Title')

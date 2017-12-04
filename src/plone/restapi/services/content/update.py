@@ -33,12 +33,17 @@ class ContentPatch(Service):
                 type='DeserializationError',
                 message=str(e)))
 
-        self.request.response.setStatus(200)
+        prefer = self.request.getHeader('Prefer')
+        if prefer == 'return=representation':
+            self.request.response.setStatus(200)
 
-        serializer = queryMultiAdapter(
-            (self.context, self.request),
-            ISerializeToJson
-        )
+            serializer = queryMultiAdapter(
+                (self.context, self.request),
+                ISerializeToJson
+            )
 
-        serialized_obj = serializer()
-        return serialized_obj
+            serialized_obj = serializer()
+            return serialized_obj
+
+        self.request.response.setStatus(204)
+        return None

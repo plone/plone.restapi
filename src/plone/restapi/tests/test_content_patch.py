@@ -40,6 +40,17 @@ class TestContentPatch(unittest.TestCase):
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
             data='{"title": "Patched Document"}',
         )
+        self.assertEqual(204, response.status_code)
+        transaction.begin()
+        self.assertEqual("Patched Document", self.portal.doc1.Title())
+
+    def test_patch_document_with_representation(self):
+        response = requests.patch(
+            self.portal.doc1.absolute_url(),
+            headers={'Accept': 'application/json', 'Prefer': 'return=representation'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            data='{"title": "Patched Document"}',
+        )
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.json()['title'], "Patched Document")
         transaction.begin()

@@ -21,7 +21,7 @@ Changelog
 - Fixed NamedFieldDeserializer to validate required fields.
   [jaroel]
 
-- Return the patched object in a patch response.
+- Can return the patched object in a patch response.
   [Gagaro]
 
 

@@ -180,12 +180,25 @@ PATCH allows to provide just a subset of the resource (the values you actually w
     :request: _json/content_patch.req
 
 
+Successful Response (204 No Content)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+A successful response to a PATCH request will be indicated by a :term:`204 No Content` response by default:
+
+.. literalinclude:: _json/content_patch.resp
+   :language: http
+
+
 Successful Response (200 OK)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A successful response to a PATCH request will be indicated by a :term:`200 OK` response:
+You can get the object representation by adding a `Prefer` header with a value of `return=representation` to the PATCH request.
+In this case, the response will be a :term:`200 OK`:
 
-.. literalinclude:: _json/content_patch.resp
+..  http:example:: curl httpie python-requests
+    :request: _json/content_patch_representation.req
+
+.. literalinclude:: _json/content_patch_representation.resp
    :language: http
 
 See for full specs the `RFC 5789: PATCH Method for HTTP <http://tools.ietf.org/html/rfc5789>`_
