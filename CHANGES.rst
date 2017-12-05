@@ -7,6 +7,13 @@ Changelog
 - Nothing changed yet.
 
 
+Bug Fixes
+
+- Prevent a fatal error when we get @workflow
+  without permission to get review_history worfklow variable.
+  [thomasdesvenain]
+
+
 1.0a25 (2017-11-23)
 -------------------
 
