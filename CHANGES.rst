@@ -4,6 +4,10 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
+- Fix issue where POST or PATCH a named file with a download link would
+  always return self.context.image, not the actual file.
+  [jaroel]
+
 - Batching: Preserve list-like query string params when canonicalizing URLs.
   [lgraf]
 

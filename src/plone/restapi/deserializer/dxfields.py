@@ -199,7 +199,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
                 # We are probably pushing the contents of a previous GET
                 # That contain the read representation of the file
                 # with the 'download' key so we return the same stored file
-                return self.context.image
+                return getattr(self.field.context, self.field.__name__)
 
             content_type = value.get(u'content-type', content_type).encode(
                 'utf8')

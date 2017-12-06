@@ -406,6 +406,15 @@ class TestDXFieldDeserializer(unittest.TestCase):
             })
         self.assertEqual(u'Invalid image file', cm.exception.doc())
 
+    def test_namedfield_deserializer_download(self):
+        # Handle when we post back the GET results.
+        # This then has a 'download' key, and not a 'data' key.
+
+        self.deserialize('test_namedfile_field', {
+            u'download': u'some download link',
+            u'content-type': u'text/plain',
+        })
+
     def test_richtextfield_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
             self.deserialize('test_richtext_field', {
