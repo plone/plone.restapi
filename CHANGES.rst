@@ -8,6 +8,12 @@ Changelog
   always return self.context.image, not the actual file.
   [jaroel]
 
+- Fix DateTimeDeserializer when posting None for a non-required field.
+  [jaroel]
+
+- Fixed 'required' for DateTime fields.
+  [jaroel]
+
 - Batching: Preserve list-like query string params when canonicalizing URLs.
   [lgraf]
 

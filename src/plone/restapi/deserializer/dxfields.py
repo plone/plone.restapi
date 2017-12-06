@@ -81,6 +81,11 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
         else:
             tzinfo = None
 
+        # This happens when a 'null' is posted for a non-required field.
+        if value is None:
+            self.field.validate(value)
+            return
+
         # Parse ISO 8601 string with Zope's DateTime module
         try:
             dt = DateTime(value).asdatetime()
