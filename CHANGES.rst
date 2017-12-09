@@ -31,7 +31,8 @@ Changelog
 - Fixed NamedFieldDeserializer to validate required fields.
   [jaroel]
 
-- Can return the patched object in a patch response.
+- Allow client to ask for the full representation of an object after creation
+  by setting the 'Prefer' header on a PATCH request.
   [Gagaro]
 
 
