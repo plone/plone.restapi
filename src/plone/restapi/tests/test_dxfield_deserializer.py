@@ -128,6 +128,18 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertEqual(timezone("Europe/Zurich").localize(
             datetime(2015, 05, 20, 10, 39, 54, 361000)), value)
 
+    def test_datetime_deserialization_none(self):
+        # Make sure we don't construct a datetime out of nothing
+        value = self.deserialize('test_datetime_field', None)
+        self.assertEqual(value, None)
+
+    def test_datetime_deserialization_required(self):
+        field_name = 'test_datetime_field'
+        field = IDXTestDocumentSchema.get(field_name)
+        with RequiredField(field):
+            with self.assertRaises(RequiredMissing):
+                self.deserialize(field_name, None)
+
     def test_decimal_deserialization_returns_decimal(self):
         value = self.deserialize('test_decimal_field', u'1.1')
         self.assertTrue(isinstance(value, Decimal), 'Not a <Decimal>')
@@ -405,6 +417,15 @@ class TestDXFieldDeserializer(unittest.TestCase):
                 u'content-type': u'text/plain',
             })
         self.assertEqual(u'Invalid image file', cm.exception.doc())
+
+    def test_namedfield_deserializer_download(self):
+        # Handle when we post back the GET results.
+        # This then has a 'download' key, and not a 'data' key.
+
+        self.deserialize('test_namedfile_field', {
+            u'download': u'some download link',
+            u'content-type': u'text/plain',
+        })
 
     def test_richtextfield_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:

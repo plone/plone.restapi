@@ -4,6 +4,16 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
+- Fix issue where POST or PATCH a named file with a download link would
+  always return self.context.image, not the actual file.
+  [jaroel]
+
+- Fix DateTimeDeserializer when posting None for a non-required field.
+  [jaroel]
+
+- Fixed 'required' for DateTime fields.
+  [jaroel]
+
 - Batching: Preserve list-like query string params when canonicalizing URLs.
   [lgraf]
 
@@ -64,6 +74,9 @@ Bug Fixes:
 - Fix #441, GET in a folderish content with 'fullobjects' is
   including all items recursively.
   [sneridagh]
+
+- Fix #443, Ensure the userid returned by `authenticateCredentials` is a byte string and not unicode.
+  [Gagaro]
 
 
 1.0a24 (2017-11-13)
