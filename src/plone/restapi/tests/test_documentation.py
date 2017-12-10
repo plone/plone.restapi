@@ -57,6 +57,7 @@ REQUEST_HEADER_KEYS = [
     'accept',
     'authorization',
     'lock-token',
+    'prefer',
 ] + TUS_HEADERS
 
 RESPONSE_HEADER_KEYS = [
@@ -237,6 +238,15 @@ class TestTraversal(unittest.TestCase):
             }
         )
         save_request_and_response_for_docs('content_patch', response)
+
+        response = self.api_session.patch(
+            document.absolute_url(),
+            headers={'Prefer': 'return=representation'},
+            json={
+                'title': 'My New Document Title',
+            }
+        )
+        save_request_and_response_for_docs('content_patch_representation', response)
 
         transaction.commit()
         response = self.api_session.delete(document.absolute_url())
