@@ -246,7 +246,10 @@ class TestTraversal(unittest.TestCase):
                 'title': 'My New Document Title',
             }
         )
-        save_request_and_response_for_docs('content_patch_representation', response)
+        save_request_and_response_for_docs(
+            'content_patch_representation',
+            response
+        )
 
         transaction.commit()
         response = self.api_session.delete(document.absolute_url())
