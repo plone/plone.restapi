@@ -4,7 +4,10 @@ from ZPublisher.pubevents import PubStart
 from base64 import b64encode
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import login
+from plone.app.testing import setRoles
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest import TestCase
@@ -35,6 +38,22 @@ class TestWorkflowInfo(TestCase):
         self.assertEqual(3, len(history))
         self.assertEqual('published', history[-1][u'review_state'])
         self.assertEqual('Published', history[-1][u'title'])
+
+    def test_workflow_info_unauthorized_history(self):
+        login(self.portal, SITE_OWNER_NAME)
+        doc2 = self.portal[self.portal.invokeFactory(
+            'DXTestDocument', id='doc2', title='Test Document')]
+        wftool = getToolByName(self.portal, 'portal_workflow')
+        wftool.doActionFor(doc2, 'submit')
+        wftool.doActionFor(doc2, 'publish')
+        setRoles(self.portal, TEST_USER_ID, ['Member'])
+        login(self.portal, TEST_USER_NAME)
+        wfinfo = getMultiAdapter((doc2, self.request),
+                                 name=u'GET_application_json_@workflow')
+        info = wfinfo.reply()
+        self.assertIn('history', info)
+        history = info['history']
+        self.assertEqual(0, len(history))
 
     def test_workflow_info_includes_transitions(self):
         wfinfo = getMultiAdapter((self.doc1, self.request),

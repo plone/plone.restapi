@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from Products.CMFCore.WorkflowCore import WorkflowException
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.interfaces._content import IWorkflowAware
 from plone.restapi.interfaces import IExpandableElement
@@ -27,7 +28,10 @@ class WorkflowInfo(object):
             return result
 
         wftool = getToolByName(self.context, 'portal_workflow')
-        history = wftool.getInfoFor(self.context, "review_history")
+        try:
+            history = wftool.getInfoFor(self.context, "review_history")
+        except WorkflowException:
+            history = []
 
         actions = wftool.listActionInfos(object=self.context)
         transitions = []
