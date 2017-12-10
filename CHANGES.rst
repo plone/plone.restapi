@@ -35,6 +35,9 @@ Changelog
   by setting the 'Prefer' header on a PATCH request.
   [Gagaro]
 
+- Rename 'url' attribute on navigation / breadcrumb to '@id'.
+  [timo]
+
 
 Bug Fixes
 
