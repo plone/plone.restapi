@@ -35,6 +35,10 @@ Changelog
   by setting the 'Prefer' header on a PATCH request.
   [Gagaro]
 
+- Support deserialization of a relationChoice field using the contents of the
+  serialization (enhanced by the serializer) output.
+  [sneridagh]
+
 
 Bug Fixes
 
