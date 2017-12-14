@@ -4,6 +4,7 @@ from plone.app.testing import setRoles
 from plone.dexterity.interfaces import IDexterityItem
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import ITestAnnotationsBehavior
 from plone.restapi.tests.mixin_ordering import OrderingMixin
@@ -12,6 +13,7 @@ from zope.component import getMultiAdapter
 from zope.component import provideHandler
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
+import json
 import unittest
 
 
@@ -165,3 +167,52 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         self.assertNotEquals(current_layout, "my_new_layout")
         self.deserialize(body='{"layout": "my_new_layout"}')
         self.assertEquals('my_new_layout', self.portal.doc1.getLayout())
+
+
+class TestDXContentSerializerDeserializer(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.portal = self.layer['portal']
+        self.request = self.layer['request']
+
+        self.portal.invokeFactory(
+            'DXTestDocument',
+            id=u'doc1',
+            test_textline_field=u'Test Document',
+            test_readonly_field=u'readonly')
+
+        self.portal.invokeFactory(
+            'DXTestDocument',
+            id=u'doc2',
+            test_textline_field=u'Test Document 2',
+            test_readonly_field=u'readonly')
+
+    def deserialize(self, field, value, validate_all=False, context=None):
+        context = context or self.portal.doc1
+        body = {}
+        body[field] = value
+        body = json.dumps(body)
+        self.request['BODY'] = body
+        deserializer = getMultiAdapter((context, self.request),
+                                       IDeserializeFromJson)
+        return deserializer(validate_all=validate_all)
+
+    def serialize(self, field):
+        serializer = getMultiAdapter((self.portal.doc1, self.request),
+                                     ISerializeToJson)
+        return serializer()[field]
+
+    def test_serialize2deserialize_relation(self):
+        value = unicode(self.portal.doc2.UID())
+        self.deserialize('test_relationchoice_field', value)
+
+        serialization_value = self.serialize('test_relationchoice_field')
+
+        self.deserialize('test_relationchoice_field', serialization_value)
+
+        self.assertEquals(
+            serialization_value['@id'],
+            self.portal.doc1.test_relationchoice_field.to_object.absolute_url()
+        )
