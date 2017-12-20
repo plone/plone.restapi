@@ -86,7 +86,7 @@ class SerializeFolderToJson(SerializeToJson):
                  'sort_on': 'getObjPositionInParent'}
         return query
 
-    def __call__(self, version=None):
+    def __call__(self, version=None, include_items=True):
         folder_metadata = super(SerializeFolderToJson, self).__call__(
             version=version
         )
@@ -94,7 +94,7 @@ class SerializeFolderToJson(SerializeToJson):
         folder_metadata.update({'is_folderish': True})
         result = folder_metadata
 
-        include_items = boolean_value(self.request.form.get('include_items', True))
+        include_items = boolean_value(self.request.form.get('include_items', include_items))
         if include_items:
             query = self._build_query()
 
