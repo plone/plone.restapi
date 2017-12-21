@@ -43,3 +43,4 @@ To send an email notification to another user of the portal, send a POST request
       'message': 'Just want to say hi.'
     }
 
+.. note:: When using "email as login", we strongly recommend to also enable the "Use UUID user ids" setting in the security control panel, to obfuscate the email in the user endpoint URL. Otherwise the '@users' endpoint will expose the email addresses of all your users.
