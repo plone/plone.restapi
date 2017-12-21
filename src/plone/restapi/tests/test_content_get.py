@@ -92,6 +92,16 @@ class TestContentGet(unittest.TestCase):
             response_doc.json()
         )
 
+    def test_get_content_include_items(self):
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '?include_items=false',
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertNotIn('items', response.json())
+
     def test_get_content_returns_fullobjects_correct_id(self):
         response = requests.get(
             self.portal.folder1.absolute_url() + '?fullobjects',

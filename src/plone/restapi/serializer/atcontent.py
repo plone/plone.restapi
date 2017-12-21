@@ -5,6 +5,7 @@ from Products.Archetypes.interfaces import IBaseFolder
 from Products.Archetypes.interfaces import IBaseObject
 from Products.CMFCore.utils import getToolByName
 from plone.restapi.batching import HypermediaBatch
+from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -85,29 +86,34 @@ class SerializeFolderToJson(SerializeToJson):
                  'sort_on': 'getObjPositionInParent'}
         return query
 
-    def __call__(self, version=None):
+    def __call__(self, version=None, include_items=True):
         folder_metadata = super(SerializeFolderToJson, self).__call__(
             version=version
         )
 
         folder_metadata.update({'is_folderish': True})
-
-        query = self._build_query()
-
-        catalog = getToolByName(self.context, 'portal_catalog')
-        brains = catalog(query)
-
-        batch = HypermediaBatch(self.request, brains)
-
         result = folder_metadata
-        if not self.request.form.get('fullobjects'):
-            result['@id'] = batch.canonical_url
-        result['items_total'] = batch.items_total
-        if batch.links:
-            result['batching'] = batch.links
 
-        result['items'] = [
-            getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
-            for brain in batch
-        ]
+        include_items = self.request.form.get('include_items', include_items)
+        include_items = boolean_value(include_items)
+        if include_items:
+            query = self._build_query()
+
+            catalog = getToolByName(self.context, 'portal_catalog')
+            brains = catalog(query)
+
+            batch = HypermediaBatch(self.request, brains)
+
+            if not self.request.form.get('fullobjects'):
+                result['@id'] = batch.canonical_url
+            result['items_total'] = batch.items_total
+            if batch.links:
+                result['batching'] = batch.links
+
+            result['items'] = [
+                getMultiAdapter(
+                    (brain, self.request), ISerializeToJsonSummary
+                )()
+                for brain in batch
+            ]
         return result

@@ -74,6 +74,9 @@ New Features:
 - Add uninstall profile
   [davilima6]
 
+- Add `include_items` option to `SerializeFolderToJson`.
+  [Gagaro]
+
 Bug Fixes:
 
 - Fix error messages for password reset (wrong user and wrong password).
