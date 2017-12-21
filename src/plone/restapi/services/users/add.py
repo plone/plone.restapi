@@ -163,6 +163,9 @@ class UsersPost(Service):
             send_password_reset = True
         if send_password_reset:
             password = registration.generatePassword()
+        # This is standard Plone register form behavior
+        if not self.can_manage_users:
+            roles.append('Member')
         # Create user
         try:
             registration = getToolByName(portal, 'portal_registration')

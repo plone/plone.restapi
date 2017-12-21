@@ -46,6 +46,10 @@ Bug Fixes
   without permission to get review_history worfklow variable.
   [thomasdesvenain]
 
+- Make user registration work as default Plone behavior by adding the Member
+  role to the user.
+  [sneridagh]
+
 
 1.0a25 (2017-11-23)
 -------------------
