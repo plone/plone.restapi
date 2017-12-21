@@ -96,6 +96,13 @@ A successful response will be indicated by a :term:`204 No Content` response:
    :language: http
 
 
+User registration
+-----------------
+
+Plone allows you to enable the auto registration of users. If it is enabled, then an anonymous user can register a new user using the user creation endpoint.
+This new user will have the role ``Member`` by default as the Plone registration process also does.
+
+
 Reset User Password
 -------------------
 
