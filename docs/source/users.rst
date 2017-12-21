@@ -48,6 +48,8 @@ If the user has been created successfully, the server will respond with a status
 .. literalinclude:: _json/users_created.resp
    :language: http
 
+If no roles has been specified, then a default ``Member`` role is added as a sensible default.
+
 
 Read User
 ---------

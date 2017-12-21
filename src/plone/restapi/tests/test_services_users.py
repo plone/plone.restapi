@@ -626,3 +626,21 @@ class TestUsersEndpoint(unittest.TestCase):
         response = response.json()
         self.assertIn('Member', response['roles'])
         self.assertEquals(1, len(response['roles']))
+
+    def test_add_user_no_roles_sets_member_as_sensible_default(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "password": "peopleshistory"
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+
+        response = response.json()
+
+        self.assertIn('Member', response['roles'])
+        self.assertEquals(1, len(response['roles']))

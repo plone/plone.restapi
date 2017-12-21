@@ -146,7 +146,7 @@ class UsersPost(Service):
         username = data.pop('username', None)
         email = data.pop('email', None)
         password = data.pop('password', None)
-        roles = data.pop('roles', [])
+        roles = data.pop('roles', ['Member', ])
         send_password_reset = data.pop('sendPasswordReset', None)
         properties = data
 
@@ -163,9 +163,6 @@ class UsersPost(Service):
             send_password_reset = True
         if send_password_reset:
             password = registration.generatePassword()
-        # This is standard Plone register form behavior
-        if not self.can_manage_users:
-            roles.append('Member')
         # Create user
         try:
             registration = getToolByName(portal, 'portal_registration')
