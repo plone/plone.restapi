@@ -2,8 +2,8 @@
 from base64 import b64encode
 from datetime import datetime
 from DateTime import DateTime
-from datetime import timedelta
-from freezegun import freeze_time
+# from datetime import timedelta
+# from freezegun import freeze_time
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
