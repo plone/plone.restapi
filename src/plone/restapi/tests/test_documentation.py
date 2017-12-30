@@ -150,8 +150,8 @@ class TestTraversal(unittest.TestCase):
         pushGlobalRegistry(getSite())
         register_static_uuid_utility(prefix='SomeUUID')
 
-        self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        self.frozen_time = self.time_freezer.start()
+        # self.time_freezer = freeze_time("2016-10-21 19:00:00")
+        # self.frozen_time = self.time_freezer.start()
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})
@@ -210,7 +210,7 @@ class TestTraversal(unittest.TestCase):
         return folder
 
     def tearDown(self):
-        self.time_freezer.stop()
+        # self.time_freezer.stop()
         popGlobalRegistry(getSite())
 
     def test_documentation_content_crud(self):
@@ -404,7 +404,7 @@ class TestTraversal(unittest.TestCase):
         save_request_and_response_for_docs('workflow_get', response)
 
     def test_documentation_workflow_transition(self):
-        self.frozen_time.tick(timedelta(minutes=5))
+        # self.frozen_time.tick(timedelta(minutes=5))
         response = self.api_session.post(
             '{}/@workflow/publish'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('workflow_post', response)
@@ -1071,8 +1071,8 @@ class TestCommenting(unittest.TestCase):
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
 
-        self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        self.frozen_time = self.time_freezer.start()
+        # self.time_freezer = freeze_time("2016-10-21 19:00:00")
+        # self.frozen_time = self.time_freezer.start()
 
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IDiscussionSettings, check=False)
@@ -1095,8 +1095,8 @@ class TestCommenting(unittest.TestCase):
             'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
         )
 
-    def tearDown(self):
-        self.time_freezer.stop()
+    # def tearDown(self):
+        # self.time_freezer.stop()
 
     def create_document_with_comments(self):
         self.portal.invokeFactory('Document', id='front-page')
@@ -1247,8 +1247,8 @@ class TestPAMDocumentation(unittest.TestCase):
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
 
-        self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        self.frozen_time = self.time_freezer.start()
+        # self.time_freezer = freeze_time("2016-10-21 19:00:00")
+        # self.frozen_time = self.time_freezer.start()
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})
@@ -1282,8 +1282,8 @@ class TestPAMDocumentation(unittest.TestCase):
             'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
         )
 
-    def tearDown(self):
-        self.time_freezer.stop()
+    # def tearDown(self):
+        # self.time_freezer.stop()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(
