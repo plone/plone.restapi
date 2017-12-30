@@ -24,9 +24,9 @@ before_install:
   - bin/pip install -r requirements.txt
 install:
   - sed -ie "s#plone-x.x.x.cfg#plone-$PLONE_VERSION.cfg#" travis.cfg
+  - bin/python --version
   - bin/buildout -t 10 -c travis.cfg
 script:
-  - bin/python --version
   - bin/code-analysis
   - bin/sphinxbuilder
   - bin/test
