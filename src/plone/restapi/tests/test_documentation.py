@@ -3,7 +3,8 @@ from base64 import b64encode
 from datetime import datetime
 from DateTime import DateTime
 # from datetime import timedelta
-# from freezegun import freeze_time
+from freezegun import freeze_time
+from pkg_resources import parse_version
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
@@ -83,6 +84,8 @@ UPLOAD_LENGTH = len(UPLOAD_DATA)
 UPLOAD_PDF_MIMETYPE = 'application/pdf'
 UPLOAD_PDF_FILENAME = 'file.pdf'
 
+PLONE_VERSION = parse_version(api.env.plone_version())
+
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
 except ImportError:
@@ -136,11 +139,13 @@ def save_request_and_response_for_docs(name, response):
         resp.write(response.content)
 
 
-class TestTraversal(unittest.TestCase):
+class TestDocumentation(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if PLONE_VERSION.base_version >= '5.1':
+            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
@@ -150,8 +155,8 @@ class TestTraversal(unittest.TestCase):
         pushGlobalRegistry(getSite())
         register_static_uuid_utility(prefix='SomeUUID')
 
-        # self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        # self.frozen_time = self.time_freezer.start()
+        self.time_freezer = freeze_time("2016-10-21 19:00:00")
+        self.frozen_time = self.time_freezer.start()
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})
@@ -210,7 +215,7 @@ class TestTraversal(unittest.TestCase):
         return folder
 
     def tearDown(self):
-        # self.time_freezer.stop()
+        self.time_freezer.stop()
         popGlobalRegistry(getSite())
 
     def test_documentation_content_crud(self):
@@ -1066,13 +1071,15 @@ class TestCommenting(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if PLONE_VERSION.base_version >= '5.1':
+            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
 
-        # self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        # self.frozen_time = self.time_freezer.start()
+        self.time_freezer = freeze_time("2016-10-21 19:00:00")
+        self.frozen_time = self.time_freezer.start()
 
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IDiscussionSettings, check=False)
@@ -1095,8 +1102,8 @@ class TestCommenting(unittest.TestCase):
             'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
         )
 
-    # def tearDown(self):
-        # self.time_freezer.stop()
+    def tearDown(self):
+        self.time_freezer.stop()
 
     def create_document_with_comments(self):
         self.portal.invokeFactory('Document', id='front-page')
@@ -1242,13 +1249,15 @@ class TestPAMDocumentation(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if PLONE_VERSION.base_version >= '5.1':
+            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
 
-        # self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        # self.frozen_time = self.time_freezer.start()
+        self.time_freezer = freeze_time("2016-10-21 19:00:00")
+        self.frozen_time = self.time_freezer.start()
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})
@@ -1282,8 +1291,8 @@ class TestPAMDocumentation(unittest.TestCase):
             'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
         )
 
-    # def tearDown(self):
-        # self.time_freezer.stop()
+    def tearDown(self):
+        self.time_freezer.stop()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(
