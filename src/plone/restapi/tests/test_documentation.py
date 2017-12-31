@@ -2,7 +2,7 @@
 from base64 import b64encode
 from datetime import datetime
 from DateTime import DateTime
-# from datetime import timedelta
+from datetime import timedelta
 from freezegun import freeze_time
 from pkg_resources import parse_version
 from plone import api
@@ -409,7 +409,7 @@ class TestDocumentation(unittest.TestCase):
         save_request_and_response_for_docs('workflow_get', response)
 
     def test_documentation_workflow_transition(self):
-        # self.frozen_time.tick(timedelta(minutes=5))
+        self.frozen_time.tick(timedelta(minutes=5))
         response = self.api_session.post(
             '{}/@workflow/publish'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('workflow_post', response)
