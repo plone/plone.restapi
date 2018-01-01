@@ -2,9 +2,9 @@
 appdirs==1.4.2
 packaging==16.8
 pyparsing==2.1.10
-setuptools==38.2.3
 six==1.10.0
-zc.buildout==2.10.0
+setuptools==33.1.1
+zc.buildout==2.9.5
 # for readthedocs.org
 sphinxcontrib-httpdomain==1.5.0
 sphinxcontrib-httpexample==0.7.0
