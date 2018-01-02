@@ -38,12 +38,21 @@ Changelog
 - Rename 'url' attribute on navigation / breadcrumb to '@id'.
   [timo]
 
+- Support deserialization of a relationChoice field using the contents of the
+  serialization (enhanced by the serializer) output.
+  [sneridagh]
+
+
 
 Bug Fixes
 
 - Prevent a fatal error when we get @workflow
   without permission to get review_history worfklow variable.
   [thomasdesvenain]
+
+- Make user registration work as default Plone behavior by adding the Member
+  role to the user.
+  [sneridagh]
 
 
 1.0a25 (2017-11-23)
@@ -72,6 +81,9 @@ New Features:
 
 - Add uninstall profile
   [davilima6]
+
+- Add `include_items` option to `SerializeFolderToJson`.
+  [Gagaro]
 
 Bug Fixes:
 

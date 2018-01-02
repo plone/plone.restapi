@@ -607,3 +607,40 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(self.mailhost.messages, [])
         self.assertEqual(201, response.status_code)
+
+    def test_anonymous_with_enable_user_sets_only_member_role(self):
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.enable_self_reg = True
+        security_settings.enable_user_pwd_choice = True
+        transaction.commit()
+
+        response = self.anon_api_session.post(
+            '/@users',
+            json={
+                "username": "new_user",
+                'email': 'avram.chomsky@example.com',
+                'password': 'secret'
+            },
+        )
+
+        response = response.json()
+        self.assertIn('Member', response['roles'])
+        self.assertEquals(1, len(response['roles']))
+
+    def test_add_user_no_roles_sets_member_as_sensible_default(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "password": "peopleshistory"
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+
+        response = response.json()
+
+        self.assertIn('Member', response['roles'])
+        self.assertEquals(1, len(response['roles']))

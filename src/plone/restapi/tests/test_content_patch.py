@@ -47,7 +47,10 @@ class TestContentPatch(unittest.TestCase):
     def test_patch_document_with_representation(self):
         response = requests.patch(
             self.portal.doc1.absolute_url(),
-            headers={'Accept': 'application/json', 'Prefer': 'return=representation'},
+            headers={
+                'Accept': 'application/json',
+                'Prefer': 'return=representation'
+            },
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
             data='{"title": "Patched Document"}',
         )
