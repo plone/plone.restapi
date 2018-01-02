@@ -4,6 +4,31 @@ Changelog
 1.0b1 (unreleased)
 ------------------
 
+Breaking Changes:
+
+- Rename 'url' attribute on navigation / breadcrumb to '@id'.
+  [timo]
+
+New Features:
+
+- Allow client to ask for the full representation of an object after creation
+  by setting the 'Prefer' header on a PATCH request.
+  [Gagaro]
+
+- Support deserialization of a relationChoice field using the contents of the
+  serialization (enhanced by the serializer) output.
+  [sneridagh]
+
+- Allow properties when adding a user.
+  This allows setting the fullname by anonymous users.
+  [jaroel]
+
+- Add support for IContextSourceBinder vocabularies on JSON schema Choice
+  fields adapters.
+  [sneridagh]
+
+Bug Fixes:
+
 - Fix issue where POST or PATCH a named file with a download link would
   always return self.context.image, not the actual file.
   [jaroel]
@@ -17,37 +42,14 @@ Changelog
 - Batching: Preserve list-like query string params when canonicalizing URLs.
   [lgraf]
 
-- Allow properties when adding a user.
-  This allows setting the fullname by anonymous users.
-  [jaroel]
-
-- Add support for IContextSourceBinder vocabularies on JSON schema Choice
-  fields adapters.
-  [sneridagh]
-
 - Fixed NamedFieldDeserializer to take a null to remove files/images.
   [jaroel]
 
 - Fixed NamedFieldDeserializer to validate required fields.
   [jaroel]
 
-- Allow client to ask for the full representation of an object after creation
-  by setting the 'Prefer' header on a PATCH request.
-  [Gagaro]
-
-- Rename 'url' attribute on navigation / breadcrumb to '@id'.
-  [timo]
-
-- Support deserialization of a relationChoice field using the contents of the
-  serialization (enhanced by the serializer) output.
-  [sneridagh]
-
-
-
-Bug Fixes
-
-- Prevent a fatal error when we get @workflow
-  without permission to get review_history worfklow variable.
+- Prevent a fatal error when we get @workflow without permission to get
+  review_history worfklow variable.
   [thomasdesvenain]
 
 - Make user registration work as default Plone behavior by adding the Member
