@@ -30,7 +30,7 @@ class Navigation(object):
         for tab in tabs.topLevelTabs():
             items.append({
                 'title': tab.get('title', tab.get('name')),
-                'url': tab['url'] + ''
+                '@id': tab['url'] + ''
             })
         result['navigation']['items'] = items
         return result

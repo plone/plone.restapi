@@ -30,7 +30,7 @@ class Breadcrumbs(object):
         for crumb in breadcrumbs_view.breadcrumbs():
             items.append({
                 'title': crumb['Title'],
-                'url': crumb['absolute_url']
+                '@id': crumb['absolute_url']
             })
 
         result['breadcrumbs']['items'] = items

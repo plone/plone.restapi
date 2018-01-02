@@ -45,10 +45,10 @@ class TestServicesBreadcrumbs(unittest.TestCase):
                 '@id': 'http://localhost:55001/plone/folder/doc1/@breadcrumbs',
                 'items': [
                     {
-                        u'url': u'http://localhost:55001/plone/folder',
+                        u'@id': u'http://localhost:55001/plone/folder',
                         u'title': u'Some Folder'
                     }, {
-                        u'url': u'http://localhost:55001/plone/folder/doc1',
+                        u'@id': u'http://localhost:55001/plone/folder/doc1',
                         u'title': u'A document'
                     }
                 ]
