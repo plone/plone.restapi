@@ -7,11 +7,10 @@ This upgrade guide lists all breaking changes in plone.restapi and explains the 
 Upgrading to plone.restapi 1.0b1
 --------------------------------
 
-In plone.restapi 1.0b1 the 'url' attribute on the @navigation and @breadcrumb
-endpoint was renamed to '@id' to be consistent with other links/URLs used in
+In plone.restapi 1.0b1 the 'url' attribute on the :ref:`navigation` and :ref:`breadcrumbs` endpoint was renamed to '@id' to be consistent with other links/URLs used in
 plone.restapi.
 
-The JSON response to a GET request to the @breadcrumbs endpoint changed from using the 'url' attribute for 'items'::
+The JSON response to a GET request to the :ref:`breadcrumbs` endpoint changed from using the 'url' attribute for 'items'::
 
     HTTP/1.1 200 OK
     Content-Type: application/json
@@ -41,7 +40,7 @@ to using the '@id' for the URL of 'items'::
       ]
     }
 
-The JSON response to a GET request to the @navigation endpoint changed from using the 'url' attribute for 'items'::
+The JSON response to a GET request to the :ref:`navigation` endpoint changed from using the 'url' attribute for 'items'::
 
     HTTP/1.1 200 OK
     Content-Type: application/json
@@ -79,7 +78,7 @@ to using the '@id' for the URL of 'items'::
       ]
     }
 
-The expansion mechanism is also affected by this change when @navigation or @breadcrumbs endpoints are expanded.
+The expansion mechanism is also affected by this change when :ref:`navigation` or :ref:`breadcrumbs` endpoints are expanded.
 
 From using 'url' in the breadcrumb 'items'::
 
@@ -165,7 +164,7 @@ Remove @components endpoint
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 plone.restapi 1.0a25 removed the @components endpoint which used to provide a
-'navigation' and a 'breadcrumbs' endpoint.
+:ref:`navigation` and a :ref:`breadcrumbs` endpoint.
 
 Instead of using "@components/navigation"::
 
