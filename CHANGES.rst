@@ -36,7 +36,7 @@ New Features:
 - Add upgrade guide.
   [timo]
 
-Bug Fixes:
+Bugfixes:
 
 - Fix issue where POST or PATCH a named file with a download link would
   always return self.context.image, not the actual file.
@@ -96,7 +96,7 @@ New Features:
 - Add `include_items` option to `SerializeFolderToJson`.
   [Gagaro]
 
-Bug Fixes:
+Bugfixes:
 
 - Fix error messages for password reset (wrong user and wrong password).
   [csenger]
