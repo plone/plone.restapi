@@ -1,19 +1,17 @@
 Upgrade Guide
 =============
 
-This upgrade guide lists all breaking changes in plone.restapi.
+This upgrade guide lists all breaking changes in plone.restapi and explains the necessary steps that are needed to upgrade to the lastest version.
 
 
-1.0b1 (unreleased)
-------------------
+Upgrading to plone.restapi 1.0b1
+--------------------------------
 
 In plone.restapi 1.0b1 the 'url' attribute on the @navigation and @breadcrumb
 endpoint was renamed to '@id' to be consistent with other links/URLs used in
 plone.restapi.
 
-Therefore the response to a GET request to the @breadcrumbs endpoint the response changed.
-
-Old::
+The JSON response to a GET request to the @breadcrumbs endpoint changed from using the 'url' attribute for 'items'::
 
     HTTP/1.1 200 OK
     Content-Type: application/json
@@ -28,7 +26,7 @@ Old::
       ]
     }
 
-New::
+to using the '@id' for the URL of 'items'::
 
     HTTP/1.1 200 OK
     Content-Type: application/json
@@ -43,9 +41,7 @@ New::
       ]
     }
 
-The response to a GET request to the @navigation endpoint changed as well.
-
-Old::
+The JSON response to a GET request to the @navigation endpoint changed from using the 'url' attribute for 'items'::
 
     HTTP/1.1 200 OK
     Content-Type: application/json
@@ -64,9 +60,28 @@ Old::
       ]
     }
 
+to using the '@id' for the URL of 'items'::
+
+    HTTP/1.1 200 OK
+    Content-Type: application/json
+
+    {
+      "@id": "http://localhost:55001/plone/front-page/@navigation",
+      "items": [
+        {
+          "@id": "http://localhost:55001/plone",
+          "title": "Home"
+        },
+        {
+          "@id": "http://localhost:55001/plone/front-page",
+          "title": "Welcome to Plone"
+        }
+      ]
+    }
+
 The expansion mechanism is also affected by this change when @navigation or @breadcrumbs endpoints are expanded.
 
-Old::
+From using 'url' in the breadcrumb 'items'::
 
     {
       "@components": {
@@ -95,7 +110,7 @@ Old::
         ...
     }
 
-New::
+to using '@id' in the breadcrumb 'items'::
 
     {
       "@components": {
@@ -124,50 +139,118 @@ New::
         ...
     }
 
-Changelog:
+Changelog::
 
-- Rename 'url' attribute on navigation / breadcrumb to '@id'.
-  [timo]
+- Rename 'url' attribute on navigation / breadcrumb to '@id'. [timo]
 
 Pull Request:
 
 - https://github.com/plone/plone.restapi/pull/459
 
 
-1.0a25 (2017-11-23)
--------------------
+Upgrading to plone.restapi 1.0a25
+---------------------------------
 
-plone.restapi 1.0a25 removed the @components endpoint which used to provide a
-'navigation' and a 'breadcrumbs' endpoint::
-
-  http://localhost:55001/plone/front-page/@components/navigation
-  http://localhost:55001/plone/front-page/@components/breadcrumbs
-
-Changelog:
+plone.restapi 1.0a25 introduced three breaking changes:
 
 - Remove @components navigation and breadcrumbs. Use top level @navigation and
-  @breadcrumb endpoints instead.
-  [timo]
+  @breadcrumb endpoints instead. [timo]
+
+- Remove "sharing" attributes from GET response. [timo,jaroel]
+
+- Convert richtext using .output_relative_to. Direct conversion from RichText
+  if no longer supported as we *always* need a context for the ITransformer. [jaroel]
+
+Remove @components endpoint
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+plone.restapi 1.0a25 removed the @components endpoint which used to provide a
+'navigation' and a 'breadcrumbs' endpoint.
+
+Instead of using "@components/navigation"::
+
+  http://localhost:8080/Plone/@components/navigation
+
+Use just "@navigation"::
+
+  http://localhost:8080/Plone/@navigation
+
+Instead of using "@components/breadcrumbs"::
+
+  http://localhost:8080/Plone/@components/breadcrumbs
+
+Use just "@breadcrumbs"::
+
+  http://localhost:8080/Plone/@breadcrumbs
+
+Changelog::
+
+- Remove @components navigation and breadcrumbs. Use top level @navigation and @breadcrumb endpoints instead. [timo]
 
 Pull Request:
 
 - https://github.com/plone/plone.restapi/pull/425
 
 
+Remove "sharing" attributes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-- Remove "sharing" attributes from GET response.
-  [timo,jaroel]
+The "sharing" attribute was removed from all content GET responses::
 
-- Convert richtext using .output_relative_to. Direct conversion from RichText
-  if no longer supported as we *always* need a context for the ITransformer.
-  [jaroel]
+  "sharing": {
+    "@id": "http://localhost:55001/plone/collection/@sharing",
+    "title": "Sharing"
+  },
+
+Use the :ref:`sharing` endpoint that can be expanded instead.
+
+Changelog::
+
+- Remove "sharing" attributes from GET response. [timo,jaroel]
+
+Pull Request:
+
+- https://github.com/plone/plone.restapi/commit/1b5e9e3a74df22e53b674849e27fa4b39b792b8c
 
 
-1.0a17 (2017-05-31)
--------------------
+Convert richtext using .output_relative_to
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Breaking Changes:
+Using ".output_relative_to" in the
 
-- Change RichText field value to use 'output' instead of 'raw' to fix inline
-  paths. This fixes #302.
-  [erral]
+Changelog::
+
+- Convert richtext using .output_relative_to. Direct conversion from RichText if no longer supported as we *always* need a context for the ITransformer. [jaroel]
+
+Pull Request:
+
+https://github.com/plone/plone.restapi/pull/428
+
+
+Upgrading to plone.restapi 1.0a17
+---------------------------------
+
+plone.restapi 1.0a17 changed the serialization of the rich-text "text" field for content objects from using 'raw' (a unicode string with the original input markup)::
+
+  "text": {
+    "content-type": "text/plain",
+    "data": "Lorem ipsum",
+    "encoding": "utf-8"
+  },
+
+to using 'output' (a unicode object representing the transformed output)::
+
+  "text": {
+    "content-type": "text/plain",
+    "data": "<p>Lorem ipsum</p>",
+    "encoding": "utf-8"
+  },
+
+Changelog::
+
+- Change RichText field value to use 'output' instead of 'raw' to fix inline paths. This fixes #302. [erral]
+
+Pull Request:
+
+https://github.com/plone/plone.restapi/pull/346
+
