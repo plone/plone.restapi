@@ -27,6 +27,9 @@ New Features:
   fields adapters.
   [sneridagh]
 
+- Add upgrade guide.
+  [timo]
+
 Bug Fixes:
 
 - Fix issue where POST or PATCH a named file with a download link would
