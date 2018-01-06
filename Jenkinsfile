@@ -25,6 +25,7 @@ pipeline {
         sh "bin/instance start"
         sh "sleep 10"
         sh "jmeter -n -t performance.jmx -l jmeter.jtl"
+        sh "cat jmeter.jtl"
         sh "bin/instance stop"
       }
       post {
