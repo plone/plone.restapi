@@ -30,7 +30,7 @@ pipeline {
       }
       post {
         always {
-         performanceReport sourceDataFiles: "jmeter.jtl"
+         performanceReport sourceDataFiles: '**/*.jtl'
         }
       }
     }
