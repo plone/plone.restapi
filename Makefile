@@ -15,6 +15,9 @@ bin/buildout: bin/pip
 bin/python bin/pip:
 	virtualenv --clear --python=python$(version) .
 
+test-performance:
+	jmeter -n -t performance.jmx -l jmeter.jtl
+
 clean:
 	git clean -Xdf
 
