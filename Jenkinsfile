@@ -29,7 +29,7 @@ pipeline {
       }
       post {
         always {
-         performanceReport parsers: [[$class: 'JMeterParser', glob: "jmeter.jtl"]], sourceDataFiles: "jmeter.jtl", errorFailedThreshold: 1, errorUnstableThreshold: 1, ignoreFailedBuild: false, ignoreUnstableBuild: false, relativeFailedThresholdNegative: 0, relativeFailedThresholdPositive: 0, relativeUnstableThresholdNegative: 0, relativeUnstableThresholdPositive: 0
+         performanceReport sourceDataFiles: "jmeter.jtl"
         }
       }
     }
