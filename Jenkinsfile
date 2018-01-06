@@ -27,10 +27,10 @@ pipeline {
         sh "jmeter -n -t performance.jmx -l jmeter.jtl"
         sh "bin/instance stop"
       }
-    }
-    post {
-      always {
-        performanceReport parsers: [[$class: 'JMeterParser', glob: 'jmeter.jtl']], relativeFailedThresholdNegative: 1.2, relativeFailedThresholdPositive: 1.89, relativeUnstableThresholdNegative: 1.8, relativeUnstableThresholdPositive: 1.5
+      post {
+        always {
+          performanceReport parsers: [[$class: 'JMeterParser', glob: 'jmeter.jtl']], relativeFailedThresholdNegative: 1.2, relativeFailedThresholdPositive: 1.89, relativeUnstableThresholdNegative: 1.8, relativeUnstableThresholdPositive: 1.5
+        }
       }
     }
   }
