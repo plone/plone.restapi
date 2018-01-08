@@ -4,7 +4,8 @@ Changelog
 1.0b2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Build documentation on Plone 5.0.x (before: Plone 4.3.x).
+  [timo]
 
 
 1.0b1 (2018-01-05)
