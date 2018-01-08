@@ -3,13 +3,58 @@ Content-Type: application/json
 
 [
   {
+    "@id": "http://localhost:55001/plone/@controlpanels/date-and-time", 
+    "group": "General", 
+    "title": "Date and Time"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@controlpanels/language", 
+    "group": "General", 
+    "title": "Language"
+  }, 
+  {
     "@id": "http://localhost:55001/plone/@controlpanels/mail", 
     "group": "General", 
     "title": "Mail"
   }, 
   {
+    "@id": "http://localhost:55001/plone/@controlpanels/navigation", 
+    "group": "General", 
+    "title": "Navigation"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@controlpanels/site", 
+    "group": "General", 
+    "title": "Site"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@controlpanels/search", 
+    "group": "General", 
+    "title": "Search"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@controlpanels/socialmedia", 
+    "group": "General", 
+    "title": "Social Media"
+  }, 
+  {
     "@id": "http://localhost:55001/plone/@controlpanels/editing", 
     "group": "Content", 
     "title": "Editing"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@controlpanels/imaging", 
+    "group": "Content", 
+    "title": "Image Handling"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@controlpanels/markup", 
+    "group": "Content", 
+    "title": "Markup"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@controlpanels/security", 
+    "group": "Security", 
+    "title": "Security"
   }
 ]

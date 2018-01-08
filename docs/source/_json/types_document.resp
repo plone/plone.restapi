@@ -17,6 +17,7 @@ Content-Type: application/json+schema
       "fields": [
         "allow_discussion", 
         "exclude_from_nav", 
+        "id", 
         "table_of_contents"
       ], 
       "id": "settings", 
@@ -125,10 +126,15 @@ Content-Type: application/json+schema
       "type": "boolean"
     }, 
     "expires": {
-      "description": "When this date is reached, the content will nolonger be visible in listings and searches.", 
+      "description": "When this date is reached, the content will no longer be visible in listings and searches.", 
       "title": "Expiration Date", 
       "type": "string", 
       "widget": "datetime"
+    }, 
+    "id": {
+      "description": "This name will be displayed in the URL.", 
+      "title": "Short name", 
+      "type": "string"
     }, 
     "language": {
       "choices": [

@@ -6,7 +6,7 @@ Content-Type: application/json
   "batching": {
     "@id": "http://localhost:55001/plone/@registry", 
     "first": "http://localhost:55001/plone/@registry?b_start=0", 
-    "last": "http://localhost:55001/plone/@registry?b_start=275", 
+    "last": "http://localhost:55001/plone/@registry?b_start=1500", 
     "next": "http://localhost:55001/plone/@registry?b_start=25"
   }, 
   "items": [
@@ -113,7 +113,8 @@ Content-Type: application/json
         "properties": {
           "default": 15, 
           "description": "Maximum number of items that will be syndicated.", 
-          "title": "Maximum Items", 
+          "minimum": 1, 
+          "title": "Maximum items", 
           "type": "integer"
         }
       }, 
@@ -160,7 +161,7 @@ Content-Type: application/json
       "schema": {
         "properties": {
           "description": "Makes it possible to customize syndication settings for particular folders and collections ", 
-          "title": "Show Settings Button", 
+          "title": "Show settings button", 
           "type": "boolean"
         }
       }, 
@@ -171,7 +172,7 @@ Content-Type: application/json
       "schema": {
         "properties": {
           "description": "Enable RSS link document action on the syndication content item.", 
-          "title": "Show Feed Link", 
+          "title": "Show feed link", 
           "type": "boolean"
         }
       }, 
@@ -236,11 +237,209 @@ Content-Type: application/json
       }
     }, 
     {
+      "name": "plone.alignment_styles", 
+      "schema": {
+        "properties": {
+          "additionalItems": true, 
+          "default": [
+            "Left|alignleft|alignleft", 
+            "Center|aligncenter|aligncenter", 
+            "Right|alignright|alignright", 
+            "Justify|alignjustify|alignjustify"
+          ], 
+          "description": "Name|format|icon", 
+          "items": {
+            "description": "", 
+            "title": "", 
+            "type": "string"
+          }, 
+          "title": "Alignment styles", 
+          "type": "array", 
+          "uniqueItems": false
+        }
+      }, 
+      "value": [
+        "Left|alignleft|alignleft", 
+        "Center|aligncenter|aligncenter", 
+        "Right|alignright|alignright", 
+        "Justify|alignjustify|alignjustify"
+      ]
+    }, 
+    {
+      "name": "plone.allow_anon_views_about", 
+      "schema": {
+        "properties": {
+          "default": false, 
+          "description": "If not selected only logged-in users will be able to view information about who created an item and when it was modified.", 
+          "title": "Allow anyone to view 'about' information", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
+    }, 
+    {
+      "name": "plone.allow_external_login_sites", 
+      "schema": {
+        "properties": {
+          "additionalItems": true, 
+          "default": [], 
+          "description": "", 
+          "items": {
+            "description": "", 
+            "title": "", 
+            "type": "string"
+          }, 
+          "title": "Allow external login sites", 
+          "type": "array", 
+          "uniqueItems": true
+        }
+      }, 
+      "value": []
+    }, 
+    {
+      "name": "plone.allowed_sizes", 
+      "schema": {
+        "properties": {
+          "additionalItems": true, 
+          "default": [
+            "large 768:768", 
+            "preview 400:400", 
+            "mini 200:200", 
+            "thumb 128:128", 
+            "tile 64:64", 
+            "icon 32:32", 
+            "listing 16:16"
+          ], 
+          "description": "Specify all allowed maximum image dimensions, one per line. The required format is &lt;name&gt; &lt;width&gt;:&lt;height&gt;.", 
+          "items": {
+            "description": "", 
+            "title": "", 
+            "type": "string"
+          }, 
+          "title": "Allowed image sizes", 
+          "type": "array", 
+          "uniqueItems": false
+        }
+      }, 
+      "value": [
+        "large 768:768", 
+        "preview 400:400", 
+        "mini 200:200", 
+        "thumb 128:128", 
+        "tile 64:64", 
+        "icon 32:32", 
+        "listing 16:16"
+      ]
+    }, 
+    {
+      "name": "plone.allowed_types", 
+      "schema": {
+        "properties": {
+          "additionalItems": true, 
+          "default": [
+            "text/html", 
+            "text/x-web-textile"
+          ], 
+          "description": "Select which formats are available for users as alternative to the default format. Note that if new formats are installed, they will be enabled for text fields by default unless explicitly turned off here or by the relevant installer.", 
+          "items": {
+            "choices": [
+              [
+                "text/html", 
+                "text/html"
+              ], 
+              [
+                "text/plain", 
+                "text/plain"
+              ], 
+              [
+                "text/plain-pre", 
+                "text/plain-pre"
+              ], 
+              [
+                "text/restructured", 
+                "text/restructured"
+              ], 
+              [
+                "text/structured", 
+                "text/structured"
+              ], 
+              [
+                "text/x-python", 
+                "text/x-python"
+              ], 
+              [
+                "text/x-rst", 
+                "text/x-rst"
+              ], 
+              [
+                "text/x-web-intelligent", 
+                "text/x-web-intelligent"
+              ], 
+              [
+                "text/x-web-markdown", 
+                "text/x-web-markdown"
+              ], 
+              [
+                "text/x-web-textile", 
+                "text/x-web-textile"
+              ]
+            ], 
+            "description": "", 
+            "enum": [
+              "text/html", 
+              "text/plain", 
+              "text/plain-pre", 
+              "text/restructured", 
+              "text/structured", 
+              "text/x-python", 
+              "text/x-rst", 
+              "text/x-web-intelligent", 
+              "text/x-web-markdown", 
+              "text/x-web-textile"
+            ], 
+            "enumNames": [
+              "text/html", 
+              "text/plain", 
+              "text/plain-pre", 
+              "text/restructured", 
+              "text/structured", 
+              "text/x-python", 
+              "text/x-rst", 
+              "text/x-web-intelligent", 
+              "text/x-web-markdown", 
+              "text/x-web-textile"
+            ], 
+            "title": "", 
+            "type": "string"
+          }, 
+          "title": "Alternative formats", 
+          "type": "array", 
+          "uniqueItems": true
+        }
+      }, 
+      "value": [
+        "text/html", 
+        "text/x-web-textile"
+      ]
+    }, 
+    {
+      "name": "plone.always_show_selector", 
+      "schema": {
+        "properties": {
+          "default": false, 
+          "description": "", 
+          "title": "Always show language selector", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
+    }, 
+    {
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.anonymous_comments", 
       "schema": {
         "properties": {
           "default": false, 
-          "description": "If selected, anonymous users are able to post comments without loggin in. It is highly recommended to use a captcha solution to prevent spam if this setting is enabled.", 
+          "description": "If selected, anonymous users are able to post comments without logging in. It is highly recommended to use a captcha solution to prevent spam if this setting is enabled.", 
           "title": "Enable anonymous comments", 
           "type": "boolean"
         }
@@ -284,118 +483,17 @@ Content-Type: application/json
       "value": "disabled"
     }, 
     {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.edit_comment_enabled", 
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.delete_own_comment_enabled", 
       "schema": {
         "properties": {
           "default": false, 
-          "description": "If selected, supports editing and deletion of comments for users with the 'Edit comments' permission.", 
-          "title": "Enable editing of comments", 
+          "description": "If selected, supports deleting of own comments for users with the \"Delete own comments\" permission.", 
+          "title": "Enable deleting own comments", 
           "type": "boolean"
         }
       }, 
       "value": false
-    }, 
-    {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.globally_enabled", 
-      "schema": {
-        "properties": {
-          "default": false, 
-          "description": "If selected, users are able to post comments on the site. Though, you have to enable comments for specific content types, folders or content objects before users will be able to post comments.", 
-          "title": "Globally enable comments", 
-          "type": "boolean"
-        }
-      }, 
-      "value": false
-    }, 
-    {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderation_enabled", 
-      "schema": {
-        "properties": {
-          "default": false, 
-          "description": "If selected, comments will enter a 'Pending' state in which they are invisible to the public. A user with the 'Review comments' permission ('Reviewer' or 'Manager') can approve comments to make them visible to the public. If you want to enable a custom comment workflow, you have to go to the types control panel.", 
-          "title": "Enable comment moderation", 
-          "type": "boolean"
-        }
-      }, 
-      "value": false
-    }, 
-    {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderator_email", 
-      "schema": {
-        "properties": {
-          "description": "Address to which moderator notifications will be sent.", 
-          "title": "Moderator Email Address", 
-          "type": "string"
-        }
-      }, 
-      "value": null
-    }, 
-    {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderator_notification_enabled", 
-      "schema": {
-        "properties": {
-          "default": false, 
-          "description": "If selected, the moderator is notified if a comment needs attention. The moderator email address can be found in the 'Mail settings' control panel (Site 'From' address)", 
-          "title": "Enable moderator email notification", 
-          "type": "boolean"
-        }
-      }, 
-      "value": false
-    }, 
-    {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.show_commenter_image", 
-      "schema": {
-        "properties": {
-          "default": true, 
-          "description": "If selected, an image of the user is shown next to the comment.", 
-          "title": "Show commenter image", 
-          "type": "boolean"
-        }
-      }, 
-      "value": true
-    }, 
-    {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.text_transform", 
-      "schema": {
-        "properties": {
-          "choices": [
-            [
-              "text/plain", 
-              "Plain text"
-            ], 
-            [
-              "text/html", 
-              "HTML"
-            ], 
-            [
-              "text/x-web-markdown", 
-              "Markdown"
-            ], 
-            [
-              "text/x-web-intelligent", 
-              "Intelligent text"
-            ]
-          ], 
-          "default": "text/plain", 
-          "description": "Use this setting to choose if the comment text should be transformed in any way. You can choose between 'Plain text' and 'Intelligent text'. 'Intelligent text' converts plain text into HTML where line breaks and indentation is preserved, and web and email addresses are made into clickable links.", 
-          "enum": [
-            "text/plain", 
-            "text/html", 
-            "text/x-web-markdown", 
-            "text/x-web-intelligent"
-          ], 
-          "enumNames": [
-            "Plain text", 
-            "HTML", 
-            "Markdown", 
-            "Intelligent text"
-          ], 
-          "title": "Comment text transform", 
-          "type": "string"
-        }
-      }, 
-      "value": "text/plain"
     }
   ], 
-  "items_total": 284
+  "items_total": 1524
 }
