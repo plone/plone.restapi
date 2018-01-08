@@ -24,13 +24,13 @@ pipeline {
         sh "bin/buildout -c plone-5.1.x-performance.cfg"
         sh "bin/instance start"
         sh "sleep 10"
-        sh "/opt/jmeter/bin/jmeter -n -t performance.jmx -l jmeter.csv"
-        sh "cat jmeter.csv"
+        sh "/opt/jmeter/bin/jmeter -n -t performance.jmx -l jmeter.jtl"
+        sh "cat jmeter.jtl"
         sh "bin/instance stop"
       }
       post {
         always {
-         perfReport '**/*.csv'
+         perfReport '**/*.jtl'
         }
       }
     }
