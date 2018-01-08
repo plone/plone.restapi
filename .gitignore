@@ -31,3 +31,5 @@ npm-debug.log
 jmeter.log
 pip-selfcheck.json
 /.idea
+/.vscode
+
