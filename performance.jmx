@@ -116,7 +116,13 @@
                 <boolProp name="HTTPArgument.always_encode">false</boolProp>
                 <stringProp name="Argument.value">{&#xd;
 	&quot;@type&quot;: &quot;News Item&quot;, &#xd;
-	&quot;title&quot;: &quot;My News Item&quot;&#xd;
+	&quot;title&quot;: &quot;My News Item&quot;,&#xd;
+	&quot;image&quot;: {&#xd;
+		&quot;data&quot;: &quot;TG9yZW0gSXBzdW0uCg==&quot;,&#xd;
+		&quot;encoding&quot;: &quot;base64&quot;,&#xd;
+		&quot;filename&quot;: &quot;lorem.png&quot;,&#xd;
+		&quot;content-type&quot;: &quot;image/png&quot;&#xd;
+ 	}&#xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>
