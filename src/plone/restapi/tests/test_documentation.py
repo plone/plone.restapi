@@ -144,8 +144,6 @@ class TestDocumentation(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        if PLONE_VERSION.base_version >= '5.1':
-            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
@@ -1071,8 +1069,6 @@ class TestCommenting(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        if PLONE_VERSION.base_version >= '5.1':
-            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
@@ -1249,8 +1245,6 @@ class TestPAMDocumentation(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
-        if PLONE_VERSION.base_version >= '5.1':
-            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']

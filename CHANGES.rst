@@ -4,6 +4,9 @@ Changelog
 1.0b2 (unreleased)
 ------------------
 
+- Re-enable documentation-generating tests on Plone 5.
+  [lgraf]
+
 - Build documentation on Plone 5.0.x (before: Plone 4.3.x).
   [timo]
 
