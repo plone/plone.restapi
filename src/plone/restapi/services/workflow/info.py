@@ -42,7 +42,8 @@ class WorkflowInfo(object):
             transitions.append({
                 '@id': '{}/@workflow/{}'.format(
                     self.context.absolute_url(), action['id']),
-                'title': self.context.translate(action['title'].decode('utf8')),
+                'title': self.context.translate(
+                    action['title'].decode('utf8')),
             })
 
         for item, action in enumerate(history):
