@@ -89,7 +89,7 @@ class TestWorkflowTransition(TestCase):
         self.request = self.layer['request']
         self.wftool = getToolByName(self.portal, 'portal_workflow')
         login(self.portal, SITE_OWNER_NAME)
-        self.portal.invokeFactory('Document', id='doc1')
+        self.portal.invokeFactory('DXTestDocument', id='doc1')
 
     def traverse(self, path='/plone', accept='application/json',
                  method='POST'):
