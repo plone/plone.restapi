@@ -8,7 +8,7 @@
     name="@users"
     for="Products.CMFCore.interfaces.ISiteRoot"
     factory=".get.UsersGet"
-    permission="cmf.ManagePortal"
+    permission="zope2.View"
     />
 
   <plone:service

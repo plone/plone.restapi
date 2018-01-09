@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from AccessControl import getSecurityManager
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
@@ -51,13 +52,33 @@ class UsersGet(Service):
                 for user in results]
 
     def reply(self):
+        sm = getSecurityManager()
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get('query', '')
             limit = self.query.get('limit', DEFAULT_SEARCH_RESULTS_LIMIT)
             if query:
-                users = self._get_filtered_users(query, limit)
+                # Someone is search for users, check if he is authorized
+                if sm.checkPermission('Manage portal', self.context):
+                    users = self._get_filtered_users(query, limit)
+                    result = []
+                    for user in users:
+                        serializer = queryMultiAdapter(
+                            (user, self.request),
+                            ISerializeToJson
+                        )
+                        result.append(serializer())
+                    return result
+                else:
+                    self.request.response.setStatus(401)
+                    return
+            else:
+                raise BadRequest("Query string supplied is not valid")
+
+        if len(self.params) == 0:
+            # Someone is asking for all users, check if he is authorized
+            if sm.checkPermission('Manage portal', self.context):
                 result = []
-                for user in users:
+                for user in self._get_users():
                     serializer = queryMultiAdapter(
                         (user, self.request),
                         ISerializeToJson
@@ -65,24 +86,27 @@ class UsersGet(Service):
                     result.append(serializer())
                 return result
             else:
-                raise BadRequest("Query string supplied is not valid")
+                self.request.response.setStatus(401)
+                return
 
-        if len(self.params) == 0:
-            result = []
-            for user in self._get_users():
-                serializer = queryMultiAdapter(
-                    (user, self.request),
-                    ISerializeToJson
-                )
-                result.append(serializer())
-            return result
-        # we retrieve the user on the user id not the username
-        user = self._get_user(self._get_user_id)
-        if not user:
-            self.request.response.setStatus(404)
+        # Some is asking one user, check if the logged in user is asking
+        # his own information or he is a Manager
+        mt = getToolByName(self.context, 'portal_membership')
+        current_user_id = mt.getAuthenticatedMember().getId()
+
+        if sm.checkPermission('Manage portal', self.context) or \
+                (current_user_id and current_user_id == self._get_user_id):
+
+            # we retrieve the user on the user id not the username
+            user = self._get_user(self._get_user_id)
+            if not user:
+                self.request.response.setStatus(404)
+                return
+            serializer = queryMultiAdapter(
+                (user, self.request),
+                ISerializeToJson
+            )
+            return serializer()
+        else:
+            self.request.response.setStatus(401)
             return
-        serializer = queryMultiAdapter(
-            (user, self.request),
-            ISerializeToJson
-        )
-        return serializer()
