@@ -88,6 +88,19 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual('Professor of Linguistics', noam.get('description'))  # noqa
         self.assertEqual('Cambridge, MA', noam.get('location'))
 
+    def test_list_users_without_being_manager(self):
+        noam_api_session = RelativeSession(self.portal_url)
+        noam_api_session.headers.update({'Accept': 'application/json'})
+        noam_api_session.auth = ('noam', 'password')
+
+        response = noam_api_session.get('/@users')
+        self.assertEqual(response.status_code, 401)
+
+    def test_list_users_as_anonymous(self):
+
+        response = self.anon_api_session.get('/@users')
+        self.assertEqual(response.status_code, 401)
+
     def test_add_user(self):
         response = self.api_session.post(
             '/@users',
@@ -296,6 +309,18 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual('web.mit.edu/chomsky', response.json().get('home_page'))  # noqa
         self.assertEqual('Professor of Linguistics', response.json().get('description'))  # noqa
         self.assertEqual('Cambridge, MA', response.json().get('location'))
+
+    def test_get_user_as_anonymous(self):
+        response = self.anon_api_session.get('/@users/noam')
+        self.assertEqual(response.status_code, 401)
+
+    def test_get_other_user_info_when_logged_in(self):
+        noam_api_session = RelativeSession(self.portal_url)
+        noam_api_session.headers.update({'Accept': 'application/json'})
+        noam_api_session.auth = ('noam', 'password')
+
+        response = noam_api_session.get('/@users/otheruser')
+        self.assertEqual(response.status_code, 401)
 
     def test_get_search_user_with_filter(self):
         response = self.api_session.post(

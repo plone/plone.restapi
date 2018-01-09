@@ -543,6 +543,39 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.get('/@users')
         save_request_and_response_for_docs('users', response)
 
+    def test_documentation_users_as_anonymous(self):
+        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session.headers.update({'Accept': 'application/json'})
+
+        response = logged_out_api_session.get('@users')
+        save_request_and_response_for_docs('users_anonymous', response)
+        self.assertEqual(response.status_code, 401)
+
+    def test_documentations_users_as_unauthorized_user(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            password='password',
+            properties=properties
+        )
+        transaction.commit()
+
+        standard_api_session = RelativeSession(self.portal_url)
+        standard_api_session.headers.update({'Accept': 'application/json'})
+        standard_api_session.auth = ('noam', 'password')
+
+        response = standard_api_session.get('@users')
+        save_request_and_response_for_docs('users_unauthorized', response)
+        self.assertEqual(response.status_code, 401)
+
     def test_documentation_users_get(self):
         properties = {
             'email': 'noam.chomsky@example.com',
@@ -560,6 +593,83 @@ class TestDocumentation(unittest.TestCase):
         transaction.commit()
         response = self.api_session.get('@users/noam')
         save_request_and_response_for_docs('users_get', response)
+
+    def test_documentation_users_anonymous_get(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            properties=properties
+        )
+        transaction.commit()
+
+        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session.headers.update({'Accept': 'application/json'})
+
+        response = logged_out_api_session.get('@users/noam')
+        save_request_and_response_for_docs('users_anonymous_get', response)
+
+    def test_documentation_users_unauthorized_get(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            password='secret',
+            properties=properties
+        )
+
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam-fake',
+            password='secret',
+            properties=properties
+        )
+
+        transaction.commit()
+
+        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session.headers.update({'Accept': 'application/json'})
+        logged_out_api_session.auth = ('noam-fake', 'secret')
+
+        response = logged_out_api_session.get('@users/noam')
+        save_request_and_response_for_docs('users_unauthorized_get', response)
+
+    def test_documentation_users_authorized_get(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            password='secret',
+            properties=properties
+        )
+        transaction.commit()
+
+        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session.headers.update({'Accept': 'application/json'})
+        logged_out_api_session.auth = ('noam', 'secret')
+        response = logged_out_api_session.get('@users/noam')
+        save_request_and_response_for_docs('users_authorized_get', response)
 
     def test_documentation_users_filtered_get(self):
         properties = {
