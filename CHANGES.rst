@@ -10,6 +10,9 @@ Changelog
 - Fix workflow translations with unicode characters.
   [Gagaro]
 
+- Fix workflow encoding in transition endpoint
+  [Gagaro]
+
 
 1.0b1 (2018-01-05)
 ------------------
