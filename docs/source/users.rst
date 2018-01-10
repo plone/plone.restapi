@@ -28,7 +28,7 @@ The server will return a 401 Unauthorized status code
    :language: http
 
 
-And this one as an user withou the proper rights:
+And this one as an user without the proper rights:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/users_unauthorized.req
