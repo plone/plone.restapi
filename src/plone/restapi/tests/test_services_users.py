@@ -352,6 +352,39 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(len(response.json()), 1)
         self.assertEqual('howard', response.json()[0].get('id'))
 
+    def test_get_search_user_with_filter_as_anonymous(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "password": "peopleshistory"
+            },
+        )
+        transaction.commit()
+        response = self.anon_api_session.get(
+            '/@users',
+            params={'query': 'howa'}
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_get_search_user_with_filter_as_unauthorized_user(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "password": "peopleshistory"
+            },
+        )
+        transaction.commit()
+        noam_api_session = RelativeSession(self.portal_url)
+        noam_api_session.headers.update({'Accept': 'application/json'})
+        noam_api_session.auth = ('noam', 'password')
+
+        response = noam_api_session.get('/@users', params={'query': 'howa'})
+        self.assertEqual(response.status_code, 401)
+
     def test_get_non_existing_user(self):
         response = self.api_session.get('/@users/non-existing-user')
 
