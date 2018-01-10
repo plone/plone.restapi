@@ -57,7 +57,7 @@ class UsersGet(Service):
             query = self.query.get('query', '')
             limit = self.query.get('limit', DEFAULT_SEARCH_RESULTS_LIMIT)
             if query:
-                # Someone is search for users, check if he is authorized
+                # Someone is searching users, check if he is authorized
                 if sm.checkPermission('Manage portal', self.context):
                     users = self._get_filtered_users(query, limit)
                     result = []
