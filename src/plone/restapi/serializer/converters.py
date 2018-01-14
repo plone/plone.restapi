@@ -10,10 +10,8 @@ from plone.app.textfield.interfaces import IRichTextValue
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IJsonCompatible
 from plone.restapi.interfaces import IContextawareJsonCompatible
-from Products.CMFPlone.utils import getSiteEncoding
 from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter, queryMultiAdapter
-from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.i18nmessageid.message import Message
@@ -61,7 +59,7 @@ def default_converter(value):
 @adapter(str)
 @implementer(IJsonCompatible)
 def string_converter(value):
-    return safe_unicode(value, getSiteEncoding(getSite()))
+    return safe_unicode(value, 'utf-8')
 
 
 @adapter(list)

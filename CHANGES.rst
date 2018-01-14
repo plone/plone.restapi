@@ -4,6 +4,9 @@ Changelog
 1.0b2 (unreleased)
 ------------------
 
+- Remove deprecated getSiteEncoding import.
+  [timo]
+
 - Build documentation on Plone 5.0.x (before: Plone 4.3.x).
   [timo]
 
