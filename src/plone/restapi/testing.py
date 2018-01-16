@@ -86,6 +86,7 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         quickInstallProduct(portal, 'collective.MockMailHost')
         applyProfile(portal, 'collective.MockMailHost:default')
 
+
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
 PLONE_RESTAPI_DX_INTEGRATION_TESTING = IntegrationTesting(
     bases=(PLONE_RESTAPI_DX_FIXTURE,),

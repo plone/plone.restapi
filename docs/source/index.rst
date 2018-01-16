@@ -46,6 +46,7 @@ Contents
    customization
    conventions
    translations
+   upgrade-guide
 
 .. include:: ../../README.rst
 

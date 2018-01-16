@@ -1,10 +1,29 @@
-# copy from https://github.com/plone/buildout.coredev/blob/5.1/requirements.txt
+# https://github.com/plone/buildout.coredev/blob/5.1/requirements.txt
+setuptools==33.1.1
+zc.buildout==2.9.5
+# Sphinx / ReadTheDocs
+alabaster==0.7.10
 appdirs==1.4.2
+astunparse==1.5.0
+Babel==2.5.1
+certifi==2017.11.5
+chardet==3.0.4
+docutils==0.14
+idna==2.6
+imagesize==0.7.1
+Jinja2==2.10
+MarkupSafe==1.0
 packaging==16.8
+Pygments==2.2.0
 pyparsing==2.1.10
-setuptools==34.3.0
+pytz==2017.3
+requests==2.18.4
 six==1.10.0
-zc.buildout==2.8.0
-# for readthedocs.org
-sphinxcontrib-httpdomain
-sphinxcontrib-httpexample
+snowballstemmer==1.2.1
+Sphinx==1.6.5
+sphinx-rtd-theme==0.2.4
+sphinxcontrib-httpdomain==1.5.0
+sphinxcontrib-httpexample==0.7.0
+sphinxcontrib-websupport==1.0.1
+typing==3.6.2
+urllib3==1.22

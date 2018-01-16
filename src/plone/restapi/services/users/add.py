@@ -146,7 +146,7 @@ class UsersPost(Service):
         username = data.pop('username', None)
         email = data.pop('email', None)
         password = data.pop('password', None)
-        roles = data.pop('roles', [])
+        roles = data.pop('roles', ['Member', ])
         send_password_reset = data.pop('sendPasswordReset', None)
         properties = data
 

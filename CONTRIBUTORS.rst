@@ -12,3 +12,4 @@ Note:  place names and roles of the people who contribute to this package
 - Carsten Senger
 - Tom Gross
 - Roel Bruggink
+- Yann Fouillat, alias Gagaro

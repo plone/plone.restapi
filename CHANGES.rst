@@ -1,8 +1,46 @@
 Changelog
 =========
 
-1.0b1 (unreleased)
+1.0b2 (unreleased)
 ------------------
+
+- Remove deprecated getSiteEncoding import.
+  [timo]
+
+- Build documentation on Plone 5.0.x (before: Plone 4.3.x).
+  [timo]
+
+
+1.0b1 (2018-01-05)
+------------------
+
+Breaking Changes:
+
+- Rename 'url' attribute on navigation / breadcrumb to '@id'.
+  [timo]
+
+New Features:
+
+- Allow client to ask for the full representation of an object after creation
+  by setting the 'Prefer' header on a PATCH request.
+  [Gagaro]
+
+- Support deserialization of a relationChoice field using the contents of the
+  serialization (enhanced by the serializer) output.
+  [sneridagh]
+
+- Allow properties when adding a user.
+  This allows setting the fullname by anonymous users.
+  [jaroel]
+
+- Add support for IContextSourceBinder vocabularies on JSON schema Choice
+  fields adapters.
+  [sneridagh]
+
+- Add upgrade guide.
+  [timo]
+
+Bugfixes:
 
 - Fix issue where POST or PATCH a named file with a download link would
   always return self.context.image, not the actual file.
@@ -17,30 +55,19 @@ Changelog
 - Batching: Preserve list-like query string params when canonicalizing URLs.
   [lgraf]
 
-- Allow properties when adding a user.
-  This allows setting the fullname by anonymous users.
-  [jaroel]
-
-- Add support for IContextSourceBinder vocabularies on JSON schema Choice
-  fields adapters.
-  [sneridagh]
-
 - Fixed NamedFieldDeserializer to take a null to remove files/images.
   [jaroel]
 
 - Fixed NamedFieldDeserializer to validate required fields.
   [jaroel]
 
-- Allow client to ask for the full representation of an object after creation
-  by setting the 'Prefer' header on a PATCH request.
-  [Gagaro]
-
-
-Bug Fixes
-
-- Prevent a fatal error when we get @workflow
-  without permission to get review_history worfklow variable.
+- Prevent a fatal error when we get @workflow without permission to get
+  review_history worfklow variable.
   [thomasdesvenain]
+
+- Make user registration work as default Plone behavior by adding the Member
+  role to the user.
+  [sneridagh]
 
 
 1.0a25 (2017-11-23)
@@ -70,7 +97,10 @@ New Features:
 - Add uninstall profile
   [davilima6]
 
-Bug Fixes:
+- Add `include_items` option to `SerializeFolderToJson`.
+  [Gagaro]
+
+Bugfixes:
 
 - Fix error messages for password reset (wrong user and wrong password).
   [csenger]

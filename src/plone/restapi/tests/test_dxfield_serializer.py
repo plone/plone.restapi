@@ -27,17 +27,25 @@ class TestDexterityFieldSerializing(TestCase):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         self.doc1 = self.portal[self.portal.invokeFactory(
-            'DXTestDocument', id='doc1', title='Test Document')]
+            'DXTestDocument',
+            id='doc1',
+            title='Test Document'
+        )]
 
     def serialize(self, fieldname, value):
         for schema in iterSchemata(self.doc1):
             if fieldname in schema:
                 field = schema.get(fieldname)
                 break
-        dm = getMultiAdapter((self.doc1, field), IDataManager)
+        dm = getMultiAdapter(
+            (self.doc1, field),
+            IDataManager
+        )
         dm.set(value)
-        serializer = getMultiAdapter((field, self.doc1, self.request),
-                                     IFieldSerializer)
+        serializer = getMultiAdapter(
+            (field, self.doc1, self.request),
+            IFieldSerializer
+        )
         return serializer()
 
     def test_ascii_field_serialization_returns_unicode(self):

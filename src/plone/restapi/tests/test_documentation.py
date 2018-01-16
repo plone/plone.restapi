@@ -4,6 +4,7 @@ from datetime import datetime
 from DateTime import DateTime
 from datetime import timedelta
 from freezegun import freeze_time
+from pkg_resources import parse_version
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
@@ -83,6 +84,8 @@ UPLOAD_LENGTH = len(UPLOAD_DATA)
 UPLOAD_PDF_MIMETYPE = 'application/pdf'
 UPLOAD_PDF_FILENAME = 'file.pdf'
 
+PLONE_VERSION = parse_version(api.env.plone_version())
+
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
 except ImportError:
@@ -136,11 +139,13 @@ def save_request_and_response_for_docs(name, response):
         resp.write(response.content)
 
 
-class TestTraversal(unittest.TestCase):
+class TestDocumentation(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if PLONE_VERSION.base_version >= '5.1':
+            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
@@ -1066,6 +1071,8 @@ class TestCommenting(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if PLONE_VERSION.base_version >= '5.1':
+            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
@@ -1242,6 +1249,8 @@ class TestPAMDocumentation(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if PLONE_VERSION.base_version >= '5.1':
+            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']

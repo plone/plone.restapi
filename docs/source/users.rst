@@ -48,6 +48,8 @@ If the user has been created successfully, the server will respond with a status
 .. literalinclude:: _json/users_created.resp
    :language: http
 
+If no roles has been specified, then a default ``Member`` role is added as a sensible default.
+
 
 Read User
 ---------
@@ -94,6 +96,13 @@ A successful response will be indicated by a :term:`204 No Content` response:
 
 .. literalinclude:: _json/users_delete.resp
    :language: http
+
+
+User registration
+-----------------
+
+Plone allows you to enable the auto registration of users. If it is enabled, then an anonymous user can register a new user using the user creation endpoint.
+This new user will have the role ``Member`` by default as the Plone registration process also does.
 
 
 Reset User Password
