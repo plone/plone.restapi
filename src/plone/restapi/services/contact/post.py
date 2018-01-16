@@ -2,6 +2,9 @@
 from plone.restapi.services import Service
 from zope.component import getMultiAdapter
 from plone.restapi.deserializer import json_body
+from zope.interface import alsoProvides
+
+import plone
 
 
 class ContactPost(Service):
@@ -27,6 +30,11 @@ class ContactPost(Service):
             return dict(error=dict(
                 type='BadRequest',
                 message='MailHost is not configured.'))
+
+        # Disable CSRF protection
+        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
 
         contact_info_view = getMultiAdapter((self.context, self.request),
                                             name='contact-info')

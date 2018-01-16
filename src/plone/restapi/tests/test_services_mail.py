@@ -56,6 +56,14 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEquals(response.status_code, 204)
+        self.assertTrue('Subject: [No Subject]' in
+                        self.mailhost.messages[0])
+        self.assertTrue('To: info@plone.org' in
+                        self.mailhost.messages[0])
+        self.assertTrue('Reply-To: john@doe.com' in
+                        self.mailhost.messages[0])
+        self.assertTrue('Just want to say hi.' in
+                        self.mailhost.messages[0])
 
     def test_email_notification_all_parameters(self):
         response = self.api_session.post(
@@ -69,3 +77,13 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEquals(response.status_code, 204)
+        self.assertTrue('=?utf-8?q?This_is_the_subject' in
+                        self.mailhost.messages[0])
+        self.assertTrue('To: info@plone.org' in
+                        self.mailhost.messages[0])
+        self.assertTrue('John Doe' in
+                        self.mailhost.messages[0])
+        self.assertTrue('Reply-To: john@doe.com' in
+                        self.mailhost.messages[0])
+        self.assertTrue('Just want to say hi.' in
+                        self.mailhost.messages[0])
