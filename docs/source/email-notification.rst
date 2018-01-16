@@ -30,6 +30,8 @@ The server will respond with status :term:`204 No Content` when the email has be
 Contact Portal Users
 --------------------
 
+.. note:: This endpoint is NOT implemented yet.
+
 To send an email notification to another user of the portal, send a POST request to the ``/@email-notification`` endpoint on a particular user (e.g. the admin user)::
 
     POST http://localhost:8080/Plone/@users/admin/@email-notification
