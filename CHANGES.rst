@@ -16,6 +16,10 @@ Changelog
 - Build documentation on Plone 5.0.x (before: Plone 4.3.x).
   [timo]
 
+- New endpoint for contacting site owners via mail: /@email-notification
+  (Plone 5 only)
+  [sneridagh]
+
 
 1.0b1 (2018-01-05)
 ------------------

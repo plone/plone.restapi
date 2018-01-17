@@ -27,5 +27,6 @@
   <include package=".workflow"/>
   <include package=".multilingual"
       zcml:condition="have plone-5"/>
-
+  <include package=".email_notification"
+      zcml:condition="have plone-5"/>
 </configure>
