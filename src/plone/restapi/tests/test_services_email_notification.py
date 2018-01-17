@@ -21,8 +21,8 @@ else:
     PLONE5 = True
 
 
-@unittest.skipIf(not PLONE5, 'Just Plone 5 currently.')
-class TestUsersEndpoint(unittest.TestCase):
+@unittest.skipIf(not PLONE5, 'email notification not implemented for Plone < 5.') # noqa
+class EmailNotificationEndpoint(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 

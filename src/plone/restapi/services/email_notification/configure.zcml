@@ -7,7 +7,7 @@
       method="POST"
       name="@email-notification"
       for="Products.CMFCore.interfaces.ISiteRoot"
-      factory=".post.ContactPost"
+      factory=".post.EmailNotificationPost"
       permission="zope2.View"
     />
 

@@ -7,7 +7,7 @@ from zope.interface import alsoProvides
 import plone
 
 
-class ContactPost(Service):
+class EmailNotificationPost(Service):
 
     def reply(self):
         data = json_body(self.request)
@@ -23,9 +23,9 @@ class ContactPost(Service):
                 type='BadRequest',
                 message='Missing from or message parameters'))
 
-        ctrlOverview = getMultiAdapter((self.context, self.request),
-                                       name='overview-controlpanel')
-        if ctrlOverview.mailhost_warning():
+        overview_controlpanel = getMultiAdapter((self.context, self.request),
+                                                name='overview-controlpanel')
+        if overview_controlpanel.mailhost_warning():
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='BadRequest',
