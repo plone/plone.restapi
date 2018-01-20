@@ -1,24 +1,26 @@
 Changelog
 =========
 
-1.0.1 (unreleased)
+1.1.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+New Features:
+
+- New endpoint for contacting site owners via mail: /@email-notification
+  (Plone 5 only)
+  [sneridagh]
 
 
 1.0.0 (2018-01-17)
 ------------------
+
+Bugfixes:
 
 - Remove deprecated getSiteEncoding import.
   [timo]
 
 - Build documentation on Plone 5.0.x (before: Plone 4.3.x).
   [timo]
-
-- New endpoint for contacting site owners via mail: /@email-notification
-  (Plone 5 only)
-  [sneridagh]
 
 
 1.0b1 (2018-01-05)
