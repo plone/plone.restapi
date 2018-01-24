@@ -4,7 +4,10 @@ Changelog
 1.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+New Features:
+
+- Allow users to get their own user information.
+  [erral]
 
 
 1.1.0 (2018-01-24)
@@ -32,11 +35,6 @@ Bugfixes:
 
 - Build documentation on Plone 5.0.x (before: Plone 4.3.x).
   [timo]
-
-New Features:
-
-- Allow users to get their own user information.
-  [erral]
 
 
 1.0b1 (2018-01-05)
