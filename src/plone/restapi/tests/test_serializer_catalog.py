@@ -31,7 +31,7 @@ class TestCatalogSerializers(unittest.TestCase):
         # /plone/my-folder/my-document
         self.doc = createContentInContainer(
             self.folder, u'Document',
-            created=DateTime(2015, 12, 31, 23, 45),
+            creation_date=DateTime(2015, 12, 31, 23, 45),
             title=u'My Document')
 
         IMutableUUID(self.doc).set('77779ffa110e45afb1ba502f75f77777')
