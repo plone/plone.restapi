@@ -6,7 +6,7 @@ Changelog
 
 New Features:
 
-- New endpoint for contacting site owners via mail: /@email-notification
+- Add '@email-notification' endpoint to contact the site owner via email.
   (Plone 5 only)
   [sneridagh]
 
@@ -14,6 +14,7 @@ Bugfixes:
 
 - Remove warning about alpha version from docs.
   [timo]
+
 
 1.0.0 (2018-01-17)
 ------------------
