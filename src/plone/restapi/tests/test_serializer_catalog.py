@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from DateTime import DateTime
+from plone import api
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
@@ -52,6 +54,18 @@ class TestCatalogSerializers(unittest.TestCase):
         self.assertDictContainsSubset({'@id': 'http://nohost'}, results)
         self.assertDictContainsSubset({'items_total': 2}, results)
         self.assertEqual(2, len(results['items']))
+
+    def test_lazy_map_serialization_with_fullobjects(self):
+        # Test serialization of a Products.ZCatalog.Lazy.LazyMap
+        lazy_map = self.catalog()
+        results = getMultiAdapter(
+            (lazy_map, self.request), ISerializeToJson)(fullobjects=True)
+
+        self.assertDictContainsSubset({'@id': 'http://nohost'}, results)
+        self.assertDictContainsSubset({'items_total': 2}, results)
+        self.assertEqual(2, len(results['items']))
+        result_item = results['items'][0]
+        self.assertDictContainsSubset({'layout': 'listing_view'}, result_item)
 
     def test_brain_summary_representation(self):
         lazy_map = self.catalog(path='/plone/my-folder/my-document')
@@ -127,3 +141,39 @@ class TestCatalogSerializers(unittest.TestCase):
              'title': 'My Document',
              'total_comments': 0},
             result)
+
+
+class TestCatalogATSerializers(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.app = self.layer['app']
+        self.portal = self.layer['portal']
+        self.request = self.portal.REQUEST
+        self.catalog = getToolByName(self.portal, 'portal_catalog')
+
+        with api.env.adopt_roles(['Manager']):
+            # /plone/my-folder
+            self.folder = api.content.create(
+                container=self.portal,
+                type=u'ATTestFolder',
+                title=u'My Folder')
+
+            # /plone/my-folder/my-document
+            self.doc = api.content.create(
+                container=self.folder,
+                type=u'ATTestDocument',
+                title=u'My Document')
+
+    def test_lazy_map_serialization_with_fullobjects(self):
+        # Test serialization of a Products.ZCatalog.Lazy.LazyMap
+        lazy_map = self.catalog()
+        results = getMultiAdapter(
+            (lazy_map, self.request), ISerializeToJson)(fullobjects=True)
+
+        self.assertDictContainsSubset({'@id': 'http://nohost'}, results)
+        self.assertDictContainsSubset({'items_total': 2}, results)
+        self.assertEqual(2, len(results['items']))
+        result_item = results['items'][0]
+        self.assertDictContainsSubset({'layout': 'base_view'}, result_item)
