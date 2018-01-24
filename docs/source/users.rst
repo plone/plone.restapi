@@ -16,6 +16,29 @@ The server will respond with a list of all users in the portal:
 .. literalinclude:: _json/users.resp
    :language: http
 
+
+This only works for Manager users, anonymous users or logged-in users without Manager rights are now allowed to list users. This is the example as an anonymous user:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_anonymous.req
+
+The server will return a 401 Unauthorized status code
+
+.. literalinclude:: _json/users_anonymous.resp
+   :language: http
+
+
+And this one as an user without the proper rights:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_unauthorized.req
+
+The server will return a 401 Unauthorized status code
+
+.. literalinclude:: _json/users_unauthorized.resp
+   :language: http
+
+
 The endpoint supports some basic filtering:
 
 ..  http:example:: curl httpie python-requests
@@ -66,6 +89,35 @@ The server will respond with a 200 OK status code and the JSON representation of
 
 The key 'roles' lists the globally defined roles for the user.
 
+Only users with Manager rights are allowed to get other users' information:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_unauthorized_get.req
+
+If the user lacks this rights, the server will respond with a 401 Unauthorized status code:
+
+.. literalinclude:: _json/users_unauthorized_get.resp
+   :language: http
+
+Also anonymous users are not allowed to get users' information:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_anonymous_get.req
+
+If the user is an anonymous one, the server will respond with a 401 Unauthorized status code:
+
+.. literalinclude:: _json/users_anonymous_get.resp
+   :language: http
+
+But each user is allowed to get its own information.
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_authorized_get.req
+
+In this case, the server will respond with a 200 OK status code and the JSON respresentation of the user in the body:
+
+.. literalinclude:: _json/users_authorized_get.resp
+   :language: http
 
 Update User
 -----------

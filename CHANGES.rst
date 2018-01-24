@@ -33,6 +33,11 @@ Bugfixes:
 - Build documentation on Plone 5.0.x (before: Plone 4.3.x).
   [timo]
 
+New Features:
+
+- Allow users to get their own user information.
+  [erral]
+
 
 1.0b1 (2018-01-05)
 ------------------
