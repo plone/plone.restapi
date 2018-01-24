@@ -9,6 +9,11 @@ New Features:
 - Allow users to get their own user information.
   [erral]
 
+Bugfixes:
+
+- Fix the use of fullobjects in Archetypes based sites @search
+  [erral]
+
 
 1.1.0 (2018-01-24)
 ------------------
