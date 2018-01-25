@@ -7,8 +7,8 @@ That means that any authentication method supported by an installed PAS Plugin s
 
 For example, to authenticate using HTTP basic auth, you'd set an ``Authorization`` header:
 
-.. literalinclude:: _json/siteroot.req
-   :language: http
+..  http:example:: curl httpie python-requests
+    :request: _json/siteroot.req
 
 HTTP client libraries usually contain helper functions to produce a proper ``Authorization`` header for you based on given credentials.
 
