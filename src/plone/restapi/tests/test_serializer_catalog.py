@@ -57,15 +57,44 @@ class TestCatalogSerializers(unittest.TestCase):
 
     def test_lazy_map_serialization_with_fullobjects(self):
         # Test serialization of a Products.ZCatalog.Lazy.LazyMap
-        lazy_map = self.catalog()
+        lazy_map = self.catalog(path='/plone/my-folder/my-document')
         results = getMultiAdapter(
             (lazy_map, self.request), ISerializeToJson)(fullobjects=True)
 
         self.assertDictContainsSubset({'@id': 'http://nohost'}, results)
-        self.assertDictContainsSubset({'items_total': 2}, results)
-        self.assertEqual(2, len(results['items']))
+        self.assertDictContainsSubset({'items_total': 1}, results)
+        self.assertEqual(1, len(results['items']))
         result_item = results['items'][0]
-        self.assertDictContainsSubset({'layout': 'listing_view'}, result_item)
+
+        self.assertDictContainsSubset({
+            '@id': 'http://nohost/plone/my-folder/my-document',
+            '@type': 'Document',
+            u'changeNote': u'',
+            u'contributors': [],
+            u'creators': [u'test_user_1_'],
+            u'description': u'',
+            u'effective': None,
+            u'exclude_from_nav': False,
+            u'expires': None,
+            'id': u'my-document',
+            'is_folderish': False,
+            u'language': u'',
+            'layout': 'document_view',
+            'parent': {
+                u'@id': u'http://nohost/plone/my-folder',
+                u'@type': u'Folder',
+                u'description': u'',
+                u'review_state': u'private',
+                u'title': u'My Folder'},
+            u'relatedItems': [],
+            'review_state': 'private',
+            u'rights': u'',
+            u'subjects': [],
+            u'table_of_contents': None,
+            u'text': None,
+            u'title': u'My Document',
+            'version': 'current'},
+            result_item)
 
     def test_brain_summary_representation(self):
         lazy_map = self.catalog(path='/plone/my-folder/my-document')
@@ -164,16 +193,65 @@ class TestCatalogATSerializers(unittest.TestCase):
             self.doc = api.content.create(
                 container=self.folder,
                 type=u'ATTestDocument',
+                testTextField='My content',
+                testIntegerField=42,
                 title=u'My Document')
 
     def test_lazy_map_serialization_with_fullobjects(self):
         # Test serialization of a Products.ZCatalog.Lazy.LazyMap
-        lazy_map = self.catalog()
+        lazy_map = self.catalog(path='/plone/my-folder/my-document')
         results = getMultiAdapter(
             (lazy_map, self.request), ISerializeToJson)(fullobjects=True)
 
         self.assertDictContainsSubset({'@id': 'http://nohost'}, results)
-        self.assertDictContainsSubset({'items_total': 2}, results)
-        self.assertEqual(2, len(results['items']))
+        self.assertDictContainsSubset({'items_total': 1}, results)
+        self.assertEqual(1, len(results['items']))
         result_item = results['items'][0]
-        self.assertDictContainsSubset({'layout': 'base_view'}, result_item)
+
+        self.assertDictContainsSubset({
+            '@id': 'http://nohost/plone/my-folder/my-document',
+            '@type': 'ATTestDocument',
+            'contributors': [],
+            'creators': [u'test_user_1_'],
+            'description': {'content-type': u'text/plain', 'data': u''},
+            'effectiveDate': None,
+            'excludeFromNav': False,
+            'expirationDate': None,
+            'id': u'my-document',
+            'is_folderish': False,
+            'language': u'en',
+            'layout': 'base_view',
+            'location': u'',
+            'parent': {
+                u'@id': u'http://nohost/plone/my-folder',
+                u'@type': u'ATTestFolder',
+                u'description': u'',
+                u'review_state': u'private',
+                u'title': u'My Folder'},
+            'relatedItems': [],
+            'review_state': 'private',
+            'rights': {'content-type': u'text/plain', 'data': u''},
+            'subject': [],
+            'tableContents': False,
+            'testBlobImageField': None,
+            'testBooleanField': False,
+            'testDateTimeField': None,
+            'testFixedPointField': None,
+            'testFloatField': None,
+            'testImageField': None,
+            'testIntegerField': 42,
+            'testLinesField': [],
+            'testMVReferenceField': [],
+            'testQueryField': [],
+            'testReadonlyField': u'',
+            'testReferenceField': None,
+            'testRequiredField': u'',
+            'testStringField': u'',
+            'testTextField': {
+                'content-type': u'text/plain',
+                'data': u'My content'},
+            'testURLField': u'',
+            'testWritePermissionField': u'',
+            'text': {'content-type': u'text/plain', 'data': u''},
+            'title': u'My Document'},
+            result_item)
