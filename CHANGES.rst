@@ -9,6 +9,14 @@ New Features:
 - Allow users to get their own user information.
   [erral]
 
+Bugfixes:
+
+- Fix workflow translations with unicode characters.
+  [Gagaro]
+
+- Fix workflow encoding in transition endpoint
+  [Gagaro]
+
 
 1.1.0 (2018-01-24)
 ------------------
@@ -35,12 +43,6 @@ Bugfixes:
 
 - Build documentation on Plone 5.0.x (before: Plone 4.3.x).
   [timo]
-
-- Fix workflow translations with unicode characters.
-  [Gagaro]
-
-- Fix workflow encoding in transition endpoint
-  [Gagaro]
 
 
 1.0b1 (2018-01-05)
