@@ -36,6 +36,12 @@ Bugfixes:
 - Build documentation on Plone 5.0.x (before: Plone 4.3.x).
   [timo]
 
+- Fix workflow translations with unicode characters.
+  [Gagaro]
+
+- Fix workflow encoding in transition endpoint
+  [Gagaro]
+
 
 1.0b1 (2018-01-05)
 ------------------
