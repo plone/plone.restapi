@@ -4,16 +4,16 @@ Content-Type: application/json
 {
   "@components": {
     "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/newsitem/@breadcrumbs"
+      "@id": "http://localhost:8080/Plone/newsitem/@breadcrumbs"
     }, 
     "navigation": {
-      "@id": "http://localhost:55001/plone/newsitem/@navigation"
+      "@id": "http://localhost:8080/Plone/newsitem/@navigation"
     }, 
     "workflow": {
-      "@id": "http://localhost:55001/plone/newsitem/@workflow"
+      "@id": "http://localhost:8080/Plone/newsitem/@workflow"
     }
   }, 
-  "@id": "http://localhost:55001/plone/newsitem", 
+  "@id": "http://localhost:8080/Plone/newsitem", 
   "@type": "News Item", 
   "UID": "SomeUUID000000000000000000000002", 
   "allow_discussion": null, 
@@ -30,42 +30,42 @@ Content-Type: application/json
   "id": "newsitem", 
   "image": {
     "content-type": "image/png", 
-    "download": "http://localhost:55001/plone/newsitem/@@images/image", 
+    "download": "http://localhost:8080/Plone/newsitem/@@images/image", 
     "filename": "image.png", 
     "height": 56, 
     "scales": {
       "icon": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/icon", 
+        "download": "http://localhost:8080/Plone/newsitem/@@images/image/icon", 
         "height": 8, 
         "width": 32
       }, 
       "large": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/large", 
+        "download": "http://localhost:8080/Plone/newsitem/@@images/image/large", 
         "height": 56, 
         "width": 215
       }, 
       "listing": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/listing", 
+        "download": "http://localhost:8080/Plone/newsitem/@@images/image/listing", 
         "height": 4, 
         "width": 16
       }, 
       "mini": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/mini", 
+        "download": "http://localhost:8080/Plone/newsitem/@@images/image/mini", 
         "height": 52, 
         "width": 200
       }, 
       "preview": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/preview", 
+        "download": "http://localhost:8080/Plone/newsitem/@@images/image/preview", 
         "height": 56, 
         "width": 215
       }, 
       "thumb": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/thumb", 
+        "download": "http://localhost:8080/Plone/newsitem/@@images/image/thumb", 
         "height": 33, 
         "width": 128
       }, 
       "tile": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/tile", 
+        "download": "http://localhost:8080/Plone/newsitem/@@images/image/tile", 
         "height": 16, 
         "width": 64
       }
@@ -79,7 +79,7 @@ Content-Type: application/json
   "layout": "newsitem_view", 
   "modified": "2016-01-21T02:24:11+00:00", 
   "parent": {
-    "@id": "http://localhost:55001/plone", 
+    "@id": "http://localhost:8080/Plone", 
     "@type": "Plone Site", 
     "description": "", 
     "title": "Plone site"

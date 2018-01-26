@@ -4,16 +4,16 @@ Content-Type: application/json
 {
   "@components": {
     "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/link/@breadcrumbs"
+      "@id": "http://localhost:8080/Plone/link/@breadcrumbs"
     }, 
     "navigation": {
-      "@id": "http://localhost:55001/plone/link/@navigation"
+      "@id": "http://localhost:8080/Plone/link/@navigation"
     }, 
     "workflow": {
-      "@id": "http://localhost:55001/plone/link/@workflow"
+      "@id": "http://localhost:8080/Plone/link/@workflow"
     }
   }, 
-  "@id": "http://localhost:55001/plone/link", 
+  "@id": "http://localhost:8080/Plone/link", 
   "@type": "Link", 
   "UID": "SomeUUID000000000000000000000002", 
   "allow_discussion": null, 
@@ -33,7 +33,7 @@ Content-Type: application/json
   "layout": "link_redirect_view", 
   "modified": "2016-01-21T04:24:11+00:00", 
   "parent": {
-    "@id": "http://localhost:55001/plone", 
+    "@id": "http://localhost:8080/Plone", 
     "@type": "Plone Site", 
     "description": "", 
     "title": "Plone site"

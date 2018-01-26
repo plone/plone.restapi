@@ -1,4 +1,4 @@
-PATCH /plone/folder/my-document HTTP/1.1
+PATCH /Plone/folder/my-document HTTP/1.1
 Accept: application/json
 Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json

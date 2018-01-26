@@ -2,12 +2,12 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "@id": "http://localhost:55001/plone/@registry", 
+  "@id": "http://localhost:8080/Plone/@registry", 
   "batching": {
-    "@id": "http://localhost:55001/plone/@registry", 
-    "first": "http://localhost:55001/plone/@registry?b_start=0", 
-    "last": "http://localhost:55001/plone/@registry?b_start=1500", 
-    "next": "http://localhost:55001/plone/@registry?b_start=25"
+    "@id": "http://localhost:8080/Plone/@registry", 
+    "first": "http://localhost:8080/Plone/@registry?b_start=0", 
+    "last": "http://localhost:8080/Plone/@registry?b_start=1500", 
+    "next": "http://localhost:8080/Plone/@registry?b_start=25"
   }, 
   "items": [
     {

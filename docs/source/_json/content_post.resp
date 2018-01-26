@@ -1,26 +1,26 @@
 HTTP/1.1 201 Created
 Content-Type: application/json
-Location: http://localhost:55001/plone/folder/my-document
+Location: http://localhost:8080/Plone/folder/my-document
 
 {
   "@components": {
     "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@breadcrumbs"
+      "@id": "http://localhost:8080/Plone/folder/my-document/@breadcrumbs"
     }, 
     "navigation": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@navigation"
+      "@id": "http://localhost:8080/Plone/folder/my-document/@navigation"
     }, 
     "workflow": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@workflow"
+      "@id": "http://localhost:8080/Plone/folder/my-document/@workflow"
     }
   }, 
-  "@id": "http://localhost:55001/plone/folder/my-document", 
+  "@id": "http://localhost:8080/Plone/folder/my-document", 
   "@type": "Document", 
   "UID": "SomeUUID000000000000000000000005", 
   "allow_discussion": null, 
   "changeNote": "", 
   "contributors": [], 
-  "created": "2016-10-21T19:00:00+00:00", 
+  "created": "2016-10-21T21:00:00+02:00", 
   "creators": [
     "admin"
   ], 
@@ -32,9 +32,9 @@ Location: http://localhost:55001/plone/folder/my-document
   "is_folderish": false, 
   "language": "", 
   "layout": "document_view", 
-  "modified": "2016-10-21T19:00:00+00:00", 
+  "modified": "2016-10-21T21:00:00+02:00", 
   "parent": {
-    "@id": "http://localhost:55001/plone/folder", 
+    "@id": "http://localhost:8080/Plone/folder", 
     "@type": "Folder", 
     "description": "This is a folder with two documents", 
     "review_state": "private", 

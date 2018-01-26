@@ -1,4 +1,4 @@
-POST /plone/@groups HTTP/1.1
+POST /Plone/@groups HTTP/1.1
 Accept: application/json
 Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json

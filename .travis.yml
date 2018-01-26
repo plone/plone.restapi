@@ -24,7 +24,7 @@ install:
 script:
   - bin/code-analysis
   - bin/sphinxbuilder
-  - bin/test
+  - export ZSERVER_PORT=8080 && bin/test
   - bin/test-no-uncommitted-doc-changes
 after_success:
   - bin/test-coverage
