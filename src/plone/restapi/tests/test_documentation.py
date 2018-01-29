@@ -121,6 +121,23 @@ def save_request_and_response_for_docs(name, response):
             # Pretty print JSON request body
             if content_type == 'application/json':
                 json_body = json.loads(response.request.body)
+                # Removing inconsistency in document. See #285
+                if 'source' in json_body:
+                    reqs = json_body['source']
+                    if isinstance(reqs, unicode) or isinstance(reqs, str):
+                        reqs = reqs.replace('55001', '8080')
+                        reqs = reqs.replace('plone', 'Plone')
+                    elif isinstance(reqs, list):
+                        for i in range(len(reqs)):
+                            reqs[i] = reqs[i].replace('55001', '8080')
+                            reqs[i] = reqs[i].replace('plone', 'Plone')
+                    json_body['source'] = reqs
+                elif 'id' in json_body:
+                    reqs = json_body['source']
+                    if isinstance(reqs, str) or isinstance(reqs, unicode):
+                        reqs = reqs.replace('55001', '8080')
+                        reqs = reqs.replace('plone', 'Plone')
+                    json_body['source'] = reqs
                 body = pretty_json(json_body)
                 # Make sure Content-Length gets updated, just in case we
                 # ever decide to dump that header
