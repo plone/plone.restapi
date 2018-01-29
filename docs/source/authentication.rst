@@ -12,24 +12,6 @@ For example, to authenticate using HTTP basic auth, you'd set an ``Authorization
 
 HTTP client libraries usually contain helper functions to produce a proper ``Authorization`` header for you based on given credentials.
 
-Using the ``requests`` library, you'd set up a session with basic auth like this:
-
-.. code-block:: python
-
-    import requests
-
-    session = requests.Session()
-    session.auth = ('username', 'password')
-    session.headers.update({'Accept': 'application/json'})
-
-    response = session.get(url)
-
-Or the same example using ``curl``:
-
-.. code-block:: bash
-
-    curl -u username:password -H 'Accept:application/json' $URL
-
 
 JSON Web Tokens (JWT)
 ---------------------

@@ -133,7 +133,7 @@ def save_request_and_response_for_docs(name, response):
                             reqs[i] = reqs[i].replace('plone', 'Plone')
                     json_body['source'] = reqs
                 elif 'id' in json_body:
-                    reqs = json_body['source']
+                    reqs = json_body['id']
                     if isinstance(reqs, str) or isinstance(reqs, unicode):
                         reqs = reqs.replace('55001', '8080')
                         reqs = reqs.replace('plone', 'Plone')
