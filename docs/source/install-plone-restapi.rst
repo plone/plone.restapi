@@ -1,13 +1,14 @@
 Getting started with plone.restapi
 ==================================
-If you haven't installed Plone locally, proceed to the next section, that is, installing Plone with plone.restapi. Make sure you have Python 2.7 and https://virtualenv.pypa.io installed.
+If you haven't installed Plone locally, proceed to the next section, that is, installing Plone with plone.restapi. Make sure you have Python 2.7 and `virtualenv
+<https://virtualenv.pypa.io>`_ installed.
 If you have already set-up Plone locally, you can skip the next section and add plone.restapi as an add-on.
 
 Install Plone locally with plone.restapi
 ----------------------------------------
 .. code-block::
 
-    git clone git@github.com:plone/plone.restapi
+    git clone git@github.com:plone/plone.restapi && cd plone.restapi
     virtualenv-2.7 . || virtualenv .
     python bootstrap.py
     bin/buildout -Nv -c plone-5.0.x.cfg
