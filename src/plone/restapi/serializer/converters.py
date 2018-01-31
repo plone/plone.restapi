@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from datetime import date
 from DateTime import DateTime
+from datetime import date
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
@@ -8,10 +8,11 @@ from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
 from plone.app.textfield.interfaces import IRichTextValue
 from plone.dexterity.interfaces import IDexterityContent
-from plone.restapi.interfaces import IJsonCompatible
 from plone.restapi.interfaces import IContextawareJsonCompatible
+from plone.restapi.interfaces import IJsonCompatible
 from Products.CMFPlone.utils import safe_unicode
-from zope.component import adapter, queryMultiAdapter
+from zope.component import adapter
+from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.i18nmessageid.message import Message
@@ -19,6 +20,30 @@ from zope.interface import implementer
 from zope.interface import Interface
 
 import Missing
+import pytz
+# import re
+
+
+def datetimelike_to_iso(value):
+    if isinstance(value, DateTime):
+        value = value.asdatetime()
+
+    if getattr(value, 'tzinfo', None):
+        # timezone aware date/time objects are converted to UTC first.
+        utc = pytz.timezone('UTC')
+        value = value.astimezone(utc)
+    value.replace(microsecond=0)  # Remove microsecond part, we don't need it.
+    iso = value.isoformat()
+    # if value.tzinfo:
+    #     # Use "Z" instead of a timezone offset of "+00:00" to indicate UTC.
+    #     regex = None
+    #     if isinstance(value, datetime):
+    #         regex = re.compile(r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}')
+    #     if isinstance(value, time):
+    #         regex = re.compile(r'\d{2}:\d{2}:\d{2}')
+    #     match = regex.match(iso)
+    #     iso = match.group(0) + 'Z'
+    return iso
 
 
 def json_compatible(value, context=None):
@@ -113,25 +138,25 @@ def persistent_mapping_converter(value):
 @adapter(datetime)
 @implementer(IJsonCompatible)
 def python_datetime_converter(value):
-    return json_compatible(DateTime(value))
+    return json_compatible(datetimelike_to_iso(value))
 
 
 @adapter(DateTime)
 @implementer(IJsonCompatible)
 def zope_DateTime_converter(value):
-    return json_compatible(value.ISO8601())
+    return json_compatible(datetimelike_to_iso(value))
 
 
 @adapter(date)
 @implementer(IJsonCompatible)
 def date_converter(value):
-    return json_compatible(value.isoformat())
+    return json_compatible(datetimelike_to_iso(value))
 
 
 @adapter(time)
 @implementer(IJsonCompatible)
 def time_converter(value):
-    return json_compatible(value.isoformat())
+    return json_compatible(datetimelike_to_iso(value))
 
 
 @adapter(timedelta)
