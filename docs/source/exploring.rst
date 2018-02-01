@@ -3,11 +3,11 @@
 Explore the API using Postman
 =============================
 
-To discover the API interactively, the Postman_ is recommended.
+To discover the API interactively, using Postman_ is recommended.
 
 .. admonition:: Note
 
-    The Chrome-Extension version of Postman is deprecated and it is recommended to use the native apps available instead.
+    The Chrome-Extension version of Postman is deprecated and it is recommended to use the native app available instead.
 
 Configuration
 -------------
