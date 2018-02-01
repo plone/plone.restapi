@@ -18,6 +18,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.restapi.tests.dxtypes import INDEXES as DX_TYPES_INDEXES
 from plone.restapi.tests.helpers import add_catalog_indexes
 from plone.testing import z2
+from plone.testing.layer import Layer
 from plone.uuid.interfaces import IUUIDGenerator
 from Products.CMFCore.utils import getToolByName
 from urlparse import urljoin
@@ -28,11 +29,9 @@ from zope.configuration import xmlconfig
 from zope.interface import implements
 
 import collective.MockMailHost
-import os
 import pkg_resources
 import re
 import requests
-import time
 
 
 try:
@@ -54,21 +53,31 @@ def set_available_languages():
     getUtility(IMetadataLanguages).setAvailableLanguages(enabled_languages)
 
 
-def set_timezone(tz='UTC'):
-    # Set the OS timezone for predictable test results
-    os.environ['TZ'] = tz
-    time.tzset()
+class DateTimeFixture(Layer):
+
+    def setUp(self):
+        tz = 'UTC'
+        # Patch DateTime's timezone for deterministic behavior.
+        from DateTime import DateTime
+        self.DT_orig_localZone = DateTime.localZone
+        DateTime.localZone = lambda cls=None, ltm=None: tz
+        from plone.dexterity import content
+        content.FLOOR_DATE = DateTime(1970, 0)
+        content.CEILING_DATE = DateTime(2500, 0)
+
+    def tearDown(self):
+        from DateTime import DateTime
+        DateTime.localZone = self.DT_orig_localZone
+
+
+DATE_TIME_FIXTURE = DateTimeFixture()
 
 
 class PloneRestApiDXLayer(PloneSandboxLayer):
 
-    defaultBases = (PLONE_APP_CONTENTTYPES_FIXTURE,)
+    defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
-        # Set the OS timezone for predictable test results
-        self.ostz = os.environ.get('TZ', None)
-        set_timezone()
-
         import plone.restapi
         xmlconfig.file(
             'configure.zcml',
@@ -98,10 +107,6 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         states = portal.portal_workflow['simple_publication_workflow'].states
         states['published'].title = u'Published with accent é'.encode('utf8')
 
-    def tearDownZope(self, app):
-        if self.ostz:
-            os.environ['TZ'] = self.ostz
-
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
 PLONE_RESTAPI_DX_INTEGRATION_TESTING = IntegrationTesting(
@@ -115,13 +120,10 @@ PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
 
 
 class PloneRestApiDXPAMLayer(PloneSandboxLayer):
-    defaultBases = (PLONE_APP_CONTENTTYPES_FIXTURE,)
+
+    defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
-        # Set the OS timezone for predictable test results
-        self.ostz = os.environ.get('TZ', None)
-        set_timezone()
-
         import plone.restapi
         xmlconfig.file(
             'configure.zcml',
@@ -153,10 +155,6 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         states = portal.portal_workflow['simple_publication_workflow'].states
         states['published'].title = u'Published with accent é'.encode('utf8')
 
-    def tearDownZope(self, app):
-        if self.ostz:
-            os.environ['TZ'] = self.ostz
-
 
 PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()
 PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING = IntegrationTesting(
@@ -171,13 +169,9 @@ PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
 
 class PloneRestApiATLayer(PloneSandboxLayer):
 
-    defaultBases = (PLONE_FIXTURE,)
+    defaultBases = (DATE_TIME_FIXTURE, PLONE_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
-        # Set the OS timezone for predictable test results
-        self.ostz = os.environ.get('TZ', None)
-        set_timezone()
-
         import Products.ATContentTypes
         self.loadZCML(package=Products.ATContentTypes)
         import plone.app.dexterity
@@ -211,10 +205,6 @@ class PloneRestApiATLayer(PloneSandboxLayer):
         portal.portal_workflow.setDefaultChain("simple_publication_workflow")
         states = portal.portal_workflow['simple_publication_workflow'].states
         states['published'].title = u'Published with accent é'.encode('utf8')
-
-    def tearDownZope(self, app):
-        if self.ostz:
-            os.environ['TZ'] = self.ostz
 
 
 PLONE_RESTAPI_AT_FIXTURE = PloneRestApiATLayer()
