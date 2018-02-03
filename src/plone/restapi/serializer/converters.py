@@ -32,9 +32,9 @@ def datetimelike_to_iso(value):
         # timezone aware date/time objects are converted to UTC first.
         utc = pytz.timezone('UTC')
         value = value.astimezone(utc)
-    # if getattr(value, 'microsecond', False):
-    #     # Microseconds are normally not used in Plone
-    #     value.replace(microsecond=0)
+    if getattr(value, 'microsecond', False):
+        # Microseconds are normally not used in Plone
+        value = value.replace(microsecond=0)
     iso = value.isoformat()
     # if value.tzinfo:
     #     # Use "Z" instead of a timezone offset of "+00:00" to indicate UTC.
