@@ -16,12 +16,11 @@ class TranslationInfo(Service):
     def reply(self):
         manager = ITranslationManager(self.context)
         info = {
-            '@id': self.context.absolute_url(),
-            'language': ILanguage(self.context).get_language(),
-            'translations': []}
+            '@id': '{}/@translations'.format(self.context.absolute_url()),
+            'items': []}
         for language, translation in manager.get_translations().items():
             if language != ILanguage(self.context).get_language():
-                info['translations'].append({
+                info['items'].append({
                     '@id': translation.absolute_url(),
                     'language': language,
                 })
