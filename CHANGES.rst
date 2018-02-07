@@ -4,6 +4,20 @@ Changelog
 1.1.1 (unreleased)
 ------------------
 
+Breaking Changes:
+
+- Make `@translations` endpoint expandable
+  [erral]
+
+- Rename the results attribute in `@translations` endpoint to be 'items'
+  [erral]
+
+- Remove 'language' attribute in `@translations` endpoint from the 
+  top-level response entry
+  [erral]
+
+
+
 New Features:
 
 - Allow users to get their own user information.
