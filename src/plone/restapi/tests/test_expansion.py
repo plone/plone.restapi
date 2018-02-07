@@ -1,20 +1,28 @@
 # -*- coding: utf-8 -*-
+from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.expansion import expandable_elements
+from plone.restapi.testing import PAM_INSTALLED
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+from plone.restapi.testing import RelativeSession
 from zope.component import provideAdapter
+from zope.interface import alsoProvides
 from zope.interface import Interface
 from zope.publisher.browser import TestRequest
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import transaction
 import unittest
+
+if PAM_INSTALLED:
+    from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled  # noqa
+    from plone.app.multilingual.interfaces import ITranslationManager
 
 
 class ExpandableElementFoo(object):
@@ -198,4 +206,58 @@ class TestExpansionFunctional(unittest.TestCase):
                 }
             ],
             response.json()['@components']['workflow']['transitions']
+        )
+
+
+@unittest.skipUnless(PAM_INSTALLED, 'plone.app.multilingual is installed by default only in Plone 5')  # NOQA
+class TestTranslationExpansionFunctional(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer['app']
+        self.portal = self.layer['portal']
+        self.portal_url = self.portal.absolute_url()
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+        alsoProvides(self.layer['request'], IPloneAppMultilingualInstalled)
+        login(self.portal, SITE_OWNER_NAME)
+        self.en_content = createContentInContainer(
+            self.portal['en'], 'Document', title='Test document')
+        self.es_content = createContentInContainer(
+            self.portal['es'], 'Document', title='Test document')
+        ITranslationManager(self.en_content).register_translation(
+            'es', self.es_content)
+
+        transaction.commit()
+
+    def test_translations_is_expandable(self):
+        response = self.api_session.get('/en/test-document')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            'translations',
+            response.json().get('@components').keys()
+        )
+
+    def test_translations_expanded(self):
+        response = self.api_session.get(
+            '/en/test-document',
+            params={
+                "expand": "translations"
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+        translation_dict = {
+            '@id': self.es_content.absolute_url(),
+            'language': 'es'
+        }
+        self.assertIn(
+            translation_dict,
+            response.json()['@components']['translations']['items']
         )
