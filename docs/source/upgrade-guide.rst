@@ -4,6 +4,20 @@ Upgrade Guide
 This upgrade guide lists all breaking changes in plone.restapi and explains the necessary steps that are needed to upgrade to the lastest version.
 
 
+Upgrading from plone.restapi 1.x
+--------------------------------
+
+The JSON response to a GET request to the :ref:`translations` endpoint does not include
+anymore the language of the actual content item.
+
+The JSON response to a GET request to the :ref:`translations` endpoint includes the actual
+translations in an attribute called `items` instead of `translations`.
+
+These changes were done to behave like the other existing endpoints that are also expandable, which as
+top level information only include the name of the endpoint on the `id` attribute and the actual
+information in an attribute called `items`.
+
+
 Upgrading to plone.restapi 1.0b1
 --------------------------------
 
