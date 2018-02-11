@@ -11,7 +11,7 @@ Install Plone locally with plone.restapi
     git clone git@github.com:plone/plone.restapi && cd plone.restapi
     virtualenv-2.7 . || virtualenv .
     python bootstrap.py
-    bin/buildout -Nv -c plone-5.0.x.cfg
+    bin/buildout -Nv -c plone-5.1.x.cfg
     
 ::
 
@@ -23,12 +23,26 @@ Run an instance of Plone
  
 ::
 
+
 Add plone.restapi as an add-on
 ------------------------------
 
 **Using Control Panel**
 
+On your system, use the following command to run an instance of Plone
+
+.. code-block::
+    
+        ./bin/instance fg 
+
+::
+
+You can find Plone here :  http://localhost:8080/ 
+
+The Add-ons section on control panel defines which add-ons are currently installed for the Plone site, you can add plone.restapi as an addon : 
+
 Plone site setup(admin) -->  Add ons control panel -->  Install plone.restapi
+
 
 **Installing plone.restapi add-on using buildout**
 
