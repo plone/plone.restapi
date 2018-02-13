@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import json
+
 from AccessControl import getSecurityManager
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContent
@@ -6,6 +8,7 @@ from plone.dexterity.utils import iterSchemata
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import IFieldDeserializer
+from plone.restapi.serializer.converters import json_compatible
 from plone.supermodel.utils import mergedTaggedValueDict
 from z3c.form.interfaces import IDataManager
 from z3c.form.interfaces import IManagerValidator
@@ -21,7 +24,6 @@ from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFields
 from zope.schema.interfaces import ValidationError
 from zope.security.interfaces import IPermission
-
 from .mixins import OrderingMixin
 
 
@@ -111,7 +113,7 @@ class DeserializeFromJson(OrderingMixin, object):
                 errors.append({'error': error.__class__.__name__, 'message': error.message})
 
         if errors:
-            raise BadRequest(errors)
+            raise BadRequest(json.dumps(json_compatible(errors)))
 
         # We'll set the layout after the validation and and even if there
         # are no other changes.

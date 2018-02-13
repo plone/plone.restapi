@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import json
+import unittest
+
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import setRoles
 from plone.dexterity.interfaces import IDexterityItem
@@ -12,9 +15,6 @@ from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.component import provideHandler
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
-
-import json
-import unittest
 
 
 class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
@@ -104,14 +104,17 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
     def test_deserializer_raises_with_invalid_type(self):
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"test_textline_field": 12}')
-        self.assertEquals([{'field': 'test_textline_field', 'message': 'Object is of wrong type.', 'error': 'WrongType'}], cm.exception.message)
+        self.assertEquals([{'field': 'test_textline_field',
+                            'message': 'Object is of wrong type.',
+                            'error': 'WrongType'}],
+                          json.loads(cm.exception.message))
 
     def test_deserializer_validates_invariant(self):
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"test_invariant_field1": "Foo",'
                                   ' "test_invariant_field2": "Bar"}')
         self.assertEquals(u'Must have same values',
-                          cm.exception.message[0]['message'])
+                          json.loads(cm.exception.message)[0]['message'])
 
     def test_deserializer_updates_behavior_field_value(self):
         self.deserialize(body='{"test_behavior_field": "My Value"}')
@@ -131,14 +134,14 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
             self.deserialize(body='{"test_textline_field": "My Value"}',
                              validate_all=True)
         self.assertEquals(u'Required input is missing.',
-                          cm.exception.message[0]['message'])
+                          json.loads(cm.exception.message)[0]['message'])
 
         # An empty string should be considered a missing value
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"test_textline_field": ""}',
                              validate_all=True)
         self.assertEquals(u'Required input is missing.',
-                          cm.exception.message[0]['message'])
+                          json.loads(cm.exception.message)[0]['message'])
 
     def test_deserializer_succeeds_if_required_value_is_provided(self):
         self.deserialize(body='{"test_required_field": "My Value"}',

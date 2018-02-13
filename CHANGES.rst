@@ -6,9 +6,6 @@ Changelog
 
 New Features:
 
-- Fix json serialization of dexterity validation errors.
-  [thomasdesvenain]
-
 - Allow users to get their own user information.
   [erral]
 
