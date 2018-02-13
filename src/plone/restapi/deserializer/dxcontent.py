@@ -73,10 +73,10 @@ class DeserializeFromJson(OrderingMixin, object):
                         value = deserializer(data[name])
                     except ValueError as e:
                         errors.append({
-                            'message': e.message, 'field': name, 'error': e})
+                            'message': e.message, 'field': name, 'error': e.__class__.__name__})
                     except ValidationError as e:
                         errors.append({
-                            'message': e.doc(), 'field': name, 'error': e})
+                            'message': e.doc(), 'field': name, 'error': e.__class__.__name__})
                     else:
                         field_data[name] = value
                         if value != dm.get():
@@ -100,7 +100,7 @@ class DeserializeFromJson(OrderingMixin, object):
                         bound.validate(dm.get())
                     except ValidationError as e:
                         errors.append({
-                            'message': e.doc(), 'field': name, 'error': e})
+                            'message': e.doc(), 'field': name, 'error': e.__class__.__name__})
 
         # Validate schemata
         for schema, field_data in schema_data.items():
@@ -108,7 +108,7 @@ class DeserializeFromJson(OrderingMixin, object):
                 (self.context, self.request, None, schema, None),
                 IManagerValidator)
             for error in validator.validate(field_data):
-                errors.append({'error': error, 'message': error.message})
+                errors.append({'error': error.__class__.__name__, 'message': error.message})
 
         if errors:
             raise BadRequest(errors)

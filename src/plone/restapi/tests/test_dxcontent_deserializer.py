@@ -101,6 +101,11 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         self.assertEquals(u'Foo',
                           self.portal.doc1.test_write_permission_field)
 
+    def test_deserializer_raises_with_invalid_type(self):
+        with self.assertRaises(BadRequest) as cm:
+            self.deserialize(body='{"test_textline_field": 12}')
+        self.assertEquals([{'field': 'test_textline_field', 'message': 'Object is of wrong type.', 'error': 'WrongType'}], cm.exception.message)
+
     def test_deserializer_validates_invariant(self):
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"test_invariant_field1": "Foo",'
