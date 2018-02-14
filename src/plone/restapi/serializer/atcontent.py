@@ -32,7 +32,7 @@ class SerializeToJson(object):
             repo_tool = getToolByName(self.context, "portal_repository")
             return repo_tool.retrieve(self.context, int(version)).object
 
-    def __call__(self, version=None):
+    def __call__(self, version=None, include_items=False):
         version = 'current' if version is None else version
 
         obj = self.getVersion(version)
