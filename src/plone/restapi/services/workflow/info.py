@@ -42,14 +42,17 @@ class WorkflowInfo(object):
             transitions.append({
                 '@id': '{}/@workflow/{}'.format(
                     self.context.absolute_url(), action['id']),
-                'title': self.context.translate(action['title']),
+                'title': self.context.translate(
+                    action['title'].decode('utf8')),
             })
 
         for item, action in enumerate(history):
             history[item]['title'] = self.context.translate(
                 wftool.getTitleForStateOnType(
                     action['review_state'],
-                    self.context.portal_type))
+                    self.context.portal_type
+                ).decode('utf8')
+            )
 
         result['workflow'].update({
             'history': json_compatible(history),

@@ -14,6 +14,12 @@ Bugfixes:
 - Fix the use of fullobjects in Archetypes based sites @search
   [erral]
 
+- Fix workflow translations with unicode characters.
+  [Gagaro]
+
+- Fix workflow encoding in transition endpoint
+  [Gagaro]
+
 
 1.1.0 (2018-01-24)
 ------------------
