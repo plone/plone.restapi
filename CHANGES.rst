@@ -9,6 +9,10 @@ New Features:
 - Allow users to get their own user information.
   [erral]
 
+- Observe the allow_discussion allowance (global, fti, object) on object
+  serialization.
+  [sneridagh]
+
 Bugfixes:
 
 - Fix the use of fullobjects in Archetypes based sites @search

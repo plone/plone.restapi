@@ -2,11 +2,12 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Products.CMFCore.utils import getToolByName
+from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
+from plone.registry.interfaces import IRegistry
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
@@ -15,12 +16,13 @@ from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.supermodel.utils import mergedTaggedValueDict
+from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
-from zope.interface import Interface
 from zope.interface import implementer
+from zope.interface import Interface
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
 
@@ -83,6 +85,24 @@ class SerializeToJson(object):
                     IFieldSerializer)
                 value = serializer()
                 result[json_compatible(name)] = value
+
+        # Fetch discussion registry
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+
+        # Check if discussion is allowed globally, overwritting whatever that
+        # is set in the object
+        if not settings.globally_enabled:
+            result['allow_discussion'] = False
+        else:
+            if 'allow_discussion' not in result or \
+               result.get('allow_discussion', False) is None:
+                # The object allow_discussion attribute is not set, then
+                # lookup for the default value on the fti
+                portal_types = getToolByName(self.context, 'portal_types')
+                document_fti = getattr(portal_types, self.context.portal_type)
+                result['allow_discussion'] = document_fti.getProperty(
+                    'allow_discussion')
 
         return result
 
