@@ -61,4 +61,10 @@
 
   <include package=".upgrades" />
 
+  <utility
+      factory=".setuphandlers.HiddenProfiles"
+      name="plone.restapi"
+      provides="Products.CMFPlone.interfaces.INonInstallable"
+      />
+
 </configure>

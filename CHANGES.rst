@@ -11,6 +11,9 @@ New Features:
 
 Bugfixes:
 
+- Mark uninstall profile as non-installable.
+  [hvelarde]
+
 - Fix the use of fullobjects in Archetypes based sites @search
   [erral]
 

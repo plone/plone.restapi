@@ -1,8 +1,20 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Products.CMFCore.utils import getToolByName
 from plone.restapi.pas.plugin import JWTAuthenticationPlugin
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import INonInstallable
+from zope.interface import implementer
+
+
+@implementer(INonInstallable)
+class HiddenProfiles(object):
+
+    def getNonInstallableProfiles(self):  # pragma: no cover
+        """Do not show on Plone's list of installable profiles."""
+        return [
+            u'plone.restapi:uninstall',
+        ]
 
 
 def install_pas_plugin(context):
