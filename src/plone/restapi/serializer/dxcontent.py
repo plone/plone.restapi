@@ -96,7 +96,7 @@ class SerializeToJson(object):
             result['allow_discussion'] = False
         else:
             if 'allow_discussion' not in result or \
-               result.get('allow_discussion', False) is None:
+               result['allow_discussion'] is None:
                 # The object allow_discussion attribute is not set, then
                 # lookup for the default value on the fti
                 portal_types = getToolByName(self.context, 'portal_types')

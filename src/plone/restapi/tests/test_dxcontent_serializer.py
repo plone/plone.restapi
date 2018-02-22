@@ -340,3 +340,12 @@ class TestDXContentSerializer(unittest.TestCase):
 
         self.assertIn('allow_discussion', obj)
         self.assertEquals(True, obj['allow_discussion'])
+
+    def test_allow_discussion_global_enabled_but_instance_has_no_discussion_behavior(self): # noqa
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+
+        obj = self.serialize()
+        self.assertIn('allow_discussion', obj)
+        self.assertEquals(False, obj['allow_discussion'])
