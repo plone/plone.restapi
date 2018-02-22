@@ -86,7 +86,9 @@ class SerializeToJson(object):
                 value = serializer()
                 result[json_compatible(name)] = value
 
-        # Fetch discussion registry
+        # Check if discussion is allowed on the object
+        # The original code and condition worflow is in
+        # https://github.com/plone/plone.app.discussion/blob/master/plone/app/discussion/browser/conversation.py#L111
         registry = queryUtility(IRegistry)
         settings = registry.forInterface(IDiscussionSettings, check=False)
 
