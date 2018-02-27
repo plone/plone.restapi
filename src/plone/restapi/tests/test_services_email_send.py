@@ -89,3 +89,16 @@ class EmailSendEndpoint(unittest.TestCase):
                         self.mailhost.messages[0])
         self.assertTrue('Just want to say hi.' in
                         self.mailhost.messages[0])
+
+    def test_email_send_anonymous(self):
+        response = self.anon_api_session.post(
+            '/@email-send',
+            json={
+                'to': 'jane@doe.com',
+                'from': 'john@doe.com',
+                'message': 'Just want to say hi.',
+                'name': 'John Doe',
+                'subject': 'This is the subject.'
+            })
+
+        self.assertEquals(response.status_code, 401)
