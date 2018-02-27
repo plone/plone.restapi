@@ -9,6 +9,10 @@ New Features:
 - Allow users to get their own user information.
   [erral]
 
+- New @email-send endpoint (Plone 5 only). Allows authorized users to send
+  emails to arbitrary addresses.
+  [sneridagh]
+
 Bugfixes:
 
 - Mark uninstall profile as non-installable.
