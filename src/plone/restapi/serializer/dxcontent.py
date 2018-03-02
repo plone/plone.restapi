@@ -90,7 +90,7 @@ class SerializeToJson(object):
         # The original code and condition worflow is in
         # https://github.com/plone/plone.app.discussion/blob/master/plone/app/discussion/browser/conversation.py#L111
         registry = queryUtility(IRegistry)
-        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings = registry.forInterface(IDiscussionSettings)
 
         # Check if discussion is allowed globally, overwritting whatever that
         # is set in the object
