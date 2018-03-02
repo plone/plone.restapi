@@ -5,6 +5,8 @@
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="plone.restapi">
 
+  <i18n:registerTranslations directory="locales" />
+
   <includeDependencies package="." />
 
   <five:registerPackage package="." initialize=".initialize" />
