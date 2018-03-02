@@ -100,7 +100,7 @@ class SerializeToJson(object):
             # The object allow_discussion attribute is not set, then
             # lookup for the default value on the fti
             portal_types = getToolByName(self.context, 'portal_types')
-            fti = getattr(portal_types, self.context.portal_type)
+            fti = portal_types[self.context.portal_type]
             result['allow_discussion'] = fti.getProperty('allow_discussion')
 
         return result
