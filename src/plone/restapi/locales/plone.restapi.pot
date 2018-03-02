@@ -1,0 +1,8 @@
+msgid "A portal user via ${portal_title}"
+msgstr ""
+
+msgid "${sender_name} via ${portal_title}"
+msgstr ""
+
+msgid "You are receiving this mail because ${sender_fullname} sent this message via the site ${portal_title}:"
+msgstr ""

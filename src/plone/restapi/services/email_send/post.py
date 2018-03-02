@@ -3,15 +3,16 @@ from AccessControl import getSecurityManager
 from AccessControl.Permissions import use_mailhost_services
 from email.MIMEText import MIMEText
 from plone.registry.interfaces import IRegistry
+from plone.restapi import _
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone import PloneMessageFactory as _
 from Products.CMFPlone.interfaces.controlpanel import IMailSchema
 from smtplib import SMTPException
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import alsoProvides
+from Products.CMFPlone.interfaces import ISiteSchema
 
 import plone
 
@@ -24,7 +25,7 @@ class EmailSendPost(Service):
         send_to_address = data.get('to', None)
         sender_from_address = data.get('from', None)
         message = data.get('message', None)
-        # sender_fullname = data.get('name', '')
+        sender_fullname = data.get('name', '')
         subject = data.get('subject', '')
 
         if not send_to_address or not sender_from_address or not message:
@@ -64,7 +65,35 @@ class EmailSendPost(Service):
         from_address = mail_settings.email_from_address
         encoding = registry.get('plone.email_charset', 'utf-8')
         host = getToolByName(self.context, 'MailHost')
-        # How about i18n?
+        registry = getUtility(IRegistry)
+        site_settings = registry.forInterface(
+            ISiteSchema, prefix="plone", check=False)
+        portal_title = site_settings.site_title
+
+        if not subject:
+            if not sender_fullname:
+                subject = self.context.translate(
+                    _(u'A portal user via ${portal_title}',
+                      mapping={'portal_title': portal_title})
+                )
+            else:
+                subject = self.context.translate(
+                    _(u'${sender_fullname} via ${portal_title}',
+                        mapping={
+                            'sender_fullname': sender_fullname,
+                            'portal_title': portal_title})
+                )
+
+        message_intro = self.context.translate(
+            _(u'You are receiving this mail because ${sender_fullname} sent this message via the site ${portal_title}:', # noqa
+              mapping={
+                'sender_fullname': sender_fullname or 'a portal user',
+                'portal_title': portal_title
+              })
+        )
+
+        message = u'{} \n {}'.format(message_intro, message)
+
         message = MIMEText(message, 'plain', encoding)
         message['Reply-To'] = sender_from_address
         try:
@@ -79,8 +108,8 @@ class EmailSendPost(Service):
         except (SMTPException, RuntimeError):
             plone_utils = getToolByName(self.context, 'plone_utils')
             exception = plone_utils.exceptionString()
-            message = _(u'Unable to send mail: ${exception}',
-                        mapping={u'exception': exception})
+            message = 'Unable to send mail: {}'.format(exception)
+
             self.request.response.setStatus(500)
             return dict(error=dict(
                 type='InternalServerError',

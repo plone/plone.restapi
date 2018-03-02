@@ -57,7 +57,7 @@ class EmailSendEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEquals(response.status_code, 204)
-        self.assertTrue('Subject: [No Subject]' in
+        self.assertTrue('Subject: =?utf-8?q?A_portal_user_via_Plone_site?=' in
                         self.mailhost.messages[0])
         self.assertTrue('From: info@plone.org' in
                         self.mailhost.messages[0])
@@ -83,8 +83,8 @@ class EmailSendEndpoint(unittest.TestCase):
                         self.mailhost.messages[0])
         self.assertTrue('From: info@plone.org' in
                         self.mailhost.messages[0])
-        # self.assertTrue('John Doe' in
-        #                 self.mailhost.messages[0])
+        self.assertTrue('John Doe' in
+                        self.mailhost.messages[0])
         self.assertTrue('Reply-To: john@doe.com' in
                         self.mailhost.messages[0])
         self.assertTrue('Just want to say hi.' in
