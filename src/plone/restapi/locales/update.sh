@@ -3,8 +3,8 @@
 # ``export PATH=$PATH:$BUILDOUT_DIR/bin`` when i18ndude is located in your buildout's bin directory)
 #
 # For every language you want to translate into you need a
-# locales/[language]/LC_MESSAGES/ehrenamtsportal.core.po
-# (e.g. locales/de/LC_MESSAGES/ehrenamtsportal.core.po)
+# locales/[language]/LC_MESSAGES/plone.restapi.po
+# (e.g. locales/de/LC_MESSAGES/plone.restapi.po)
 
 domain=plone.restapi
 
