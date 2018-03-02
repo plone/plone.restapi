@@ -46,6 +46,7 @@ Contents
    customization
    conventions
    translations
+   email-send
    upgrade-guide
 
 .. include:: ../../README.rst

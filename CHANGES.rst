@@ -1,7 +1,18 @@
 Changelog
 =========
 
-1.1.1 (unreleased)
+1.2.1 (unreleased)
+------------------
+
+- Observe the allow_discussion allowance (global, fti, object) on object
+  serialization.
+  [sneridagh]
+
+- New @email-send endpoint (Plone 5 only). Allows authorized users to send
+  emails to arbitrary addresses.
+
+
+1.2.0 (2018-02-28)
 ------------------
 
 New Features:
@@ -9,11 +20,10 @@ New Features:
 - Allow users to get their own user information.
   [erral]
 
-- Observe the allow_discussion allowance (global, fti, object) on object
-  serialization.
-  [sneridagh]
-
 Bugfixes:
+
+- Mark uninstall profile as non-installable.
+  [hvelarde]
 
 - Fix the use of fullobjects in Archetypes based sites @search
   [erral]
