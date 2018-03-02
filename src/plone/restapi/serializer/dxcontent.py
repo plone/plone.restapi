@@ -2,12 +2,10 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
-from plone.registry.interfaces import IRegistry
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
@@ -86,22 +84,8 @@ class SerializeToJson(object):
                 value = serializer()
                 result[json_compatible(name)] = value
 
-        # Check if discussion is allowed on the object
-        # The original code and condition worflow is in
-        # https://github.com/plone/plone.app.discussion/blob/master/plone/app/discussion/browser/conversation.py#L111
-        registry = queryUtility(IRegistry)
-        settings = registry.forInterface(IDiscussionSettings)
-
-        # Check if discussion is allowed globally, overwritting whatever that
-        # is set in the object
-        if not settings.globally_enabled:
-            result['allow_discussion'] = False
-        elif result.get('allow_discussion', None) is None:
-            # The object allow_discussion attribute is not set, then
-            # lookup for the default value on the fti
-            portal_types = getToolByName(self.context, 'portal_types')
-            fti = portal_types[self.context.portal_type]
-            result['allow_discussion'] = fti.getProperty('allow_discussion')
+        result['allow_discussion'] = getMultiAdapter(
+            (self.context, self.request), name='conversation_view').enabled()
 
         return result
 
