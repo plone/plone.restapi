@@ -4,12 +4,15 @@ Changelog
 1.2.1 (unreleased)
 ------------------
 
+New Features:
+
 - Observe the allow_discussion allowance (global, fti, object) on object
   serialization.
   [sneridagh]
 
-- New @email-send endpoint (Plone 5 only). Allows authorized users to send
-  emails to arbitrary addresses.
+- Add '@email-send' endpoint to allow authorized users to send emails to
+  arbitrary addresses (Plone 5 only).
+  [sneridagh]
 
 
 1.2.0 (2018-02-28)
