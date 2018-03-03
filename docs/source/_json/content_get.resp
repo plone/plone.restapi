@@ -16,7 +16,7 @@ Content-Type: application/json
   "@id": "http://localhost:55001/plone/folder/my-document", 
   "@type": "Document", 
   "UID": "SomeUUID000000000000000000000005", 
-  "allow_discussion": null, 
+  "allow_discussion": false, 
   "changeNote": "", 
   "contributors": [], 
   "created": "2016-10-21T19:00:00+00:00", 
