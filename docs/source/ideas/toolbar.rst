@@ -11,7 +11,33 @@ Request::
 
 Reponse if user does not have the ShowToolbar permission::
 
-  {}
+  401 Unauthorized
+
+Permissions only response::
+
+  {
+    '@id': 'localhost:8080/Plone/@toolbar',
+    items: [
+      'contents': true,
+      'edit': true,
+      'view': true,
+      'translate': true,
+      'add-new': true,
+      'state': true,
+      'actions': true,
+      'display': true,
+      'manage-portlets': true,
+      'history': {},
+      'sharing': {},
+      'user': {},
+    ]
+  }
+
+Questions:
+
+- Just a list? items = ['contents', 'edit', ...]
+- Nested? 'actions': {'copy': true, 'cut': true, 'paste': true}
+- Wouldn't is be enough if the client would just ask for specific permissions?
 
 Response (for admin)::
 
