@@ -1,33 +1,8 @@
 Getting started with plone.restapi
 ==================================
-If you haven't installed Plone locally, proceed to the next section, that is, installing Plone with plone.restapi. Make sure you have Python 2.7 and `virtualenv
-<https://virtualenv.pypa.io>`_ installed.
-If you have already set-up Plone locally, you can skip the next section and add plone.restapi as an add-on.
 
-Install Plone locally with plone.restapi
-----------------------------------------
-.. code-block::
-
-    git clone git@github.com:plone/plone.restapi && cd plone.restapi
-    virtualenv-2.7 . || virtualenv .
-    python bootstrap.py
-    bin/buildout -Nv -c plone-5.1.x.cfg
-    
-::
-
-Run an instance of Plone
-
-.. code-block::
-
-    ./bin/instance fg 
- 
-::
-
-
-Add plone.restapi as an add-on
-------------------------------
-
-**Using Control Panel**
+Install Plone on your system , follow the steps `here <https://docs.plone.org/manage/installing/installation.html>`_. 
+You can also use the `simple plone buildout. <https://github.com/plone/simple-plone-buildout/blob/5.0.6/README.rst>`_.
 
 On your system, use the following command to run an instance of Plone
 
@@ -37,12 +12,25 @@ On your system, use the following command to run an instance of Plone
 
 ::
 
-You can find Plone here :  http://localhost:8080/ 
+Add plone.restapi as an add-on
+------------------------------
+
+**Using Control Panel**
 
 The Add-ons section on control panel defines which add-ons are currently installed for the Plone site, you can add plone.restapi as an addon : 
 
-Plone site setup(admin) -->  Add ons control panel -->  Install plone.restapi
+You can find Plone here :  http://localhost:8080/ 
 
+.. image :: https://user-images.githubusercontent.com/25117249/37034887-c750067a-2170-11e8-9bdf-318cace2fdb7.png
+Go to Plone site setup
+
+.. image :: https://user-images.githubusercontent.com/25117249/37034888-c788f85e-2170-11e8-927b-12a9dac11ffa.png
+Navigate to Add ons in control panel 
+
+.. image :: https://user-images.githubusercontent.com/25117249/37034889-c7befc4c-2170-11e8-8860-9b7ce7f8a095.png
+Install plone.restapi
+
+.. image :: https://user-images.githubusercontent.com/25117249/37034890-c7f95266-2170-11e8-9a48-61447346364e.png
 
 **Installing plone.restapi add-on using buildout**
 
