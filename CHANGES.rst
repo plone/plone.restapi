@@ -4,7 +4,10 @@ Changelog
 1.3.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Add VHM support to @search
+  [csenger]
 
 
 1.3.0 (2018-03-05)

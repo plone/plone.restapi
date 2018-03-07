@@ -104,6 +104,32 @@ class TestSearchFunctional(unittest.TestCase):
              u'/plone/folder/other-document'},
             set(result_paths(response.json())))
 
+    def test_search_in_vhm(self):
+        # Install a Virtual Host Monster
+        if 'virtual_hosting' not in self.app.objectIds():
+            # If ZopeLite was imported, we have no default virtual
+            # host monster
+            from Products.SiteAccess.VirtualHostMonster \
+                import manage_addVirtualHostMonster
+            manage_addVirtualHostMonster(self.app, 'virtual_hosting')
+        transaction.commit()
+
+        # we don't get a result if we do not provide the full physical path
+        response = self.api_session.get('/@search?path=/folder',)
+        self.assertSetEqual(set(), set(result_paths(response.json())))
+
+        # If we go through the VHM will will get results if we only use
+        # the part of the path inside the VHM
+        vhm_url = (
+            '%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s' %
+            (self.app.absolute_url(), '@search?path=/folder'))
+        response = self.api_session.get(vhm_url)
+        self.assertSetEqual(
+            {u'/folder',
+             u'/folder/doc',
+             u'/folder/other-document'},
+            set(result_paths(response.json())))
+
     def test_path_gets_prefilled_if_missing_from_path_query_dict(self):
         response = self.api_session.get('/@search?path.depth=1')
         self.assertSetEqual(
