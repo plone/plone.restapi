@@ -27,9 +27,9 @@ Permissions only response::
       'actions': true,
       'display': true,
       'manage-portlets': true,
-      'history': {},
-      'sharing': {},
-      'user': {},
+      'history': true,
+      'sharing': true,
+      'user': true,
     ]
   }
 
@@ -38,6 +38,7 @@ Questions:
 - Just a list? items = ['contents', 'edit', ...]
 - Nested? 'actions': {'copy': true, 'cut': true, 'paste': true}
 - Wouldn't is be enough if the client would just ask for specific permissions?
+- Alternative: a permissions endpoint that can be queried as expandable?
 
 Response (for admin)::
 
