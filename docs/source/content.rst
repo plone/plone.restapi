@@ -176,7 +176,13 @@ Updating a Resource with PATCH
 ------------------------------
 
 To update an existing resource we send a PATCH request to the server.
-PATCH allows to provide just a subset of the resource (the values you actually want to change):
+PATCH allows to provide just a subset of the resource
+(the values you actually want to change).
+
+If you send the value `null` for a field, the field's content will be
+deleted. It will instead set the `missing_value` defined for the field
+in the schema. Note that this is not possible if the field is `required`,
+and it only works for dexterity types, not archetypes:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/content_patch.req

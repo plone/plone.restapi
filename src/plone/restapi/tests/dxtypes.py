@@ -118,6 +118,13 @@ class IDXTestDocumentSchema(model.Schema):
     test_invariant_field1 = schema.TextLine(required=False)
     test_invariant_field2 = schema.TextLine(required=False)
 
+    test_missing_value_field = schema.TextLine(required=False,
+                                               missing_value=u'missing',
+                                               default=u'default')
+
+    test_missing_value_required_field = schema.TextLine(
+        required=True, missing_value=u'missing', default=u'some value')
+
     @invariant
     def validate_same_value(data):
         if data.test_invariant_field1 != data.test_invariant_field2:

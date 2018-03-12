@@ -62,6 +62,18 @@ class DeserializeFromJson(OrderingMixin, object):
                     if not self.check_permission(write_permissions.get(name)):
                         continue
 
+                    # set the field to missing_value if we receive None/null
+                    if data[name] is None:
+                        if not field.required:
+                            dm.set(field.missing_value)
+                        else:
+                            errors.append({
+                                'field': field.__name__,
+                                'message': ('field is required. null is not '
+                                            'allowed'),
+                                'error': None})
+                        continue
+
                     # Deserialize to field value
                     deserializer = queryMultiAdapter(
                         (field, self.context, self.request),
