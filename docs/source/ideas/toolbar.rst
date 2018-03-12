@@ -115,79 +115,75 @@ FLAT::
 
 NESTED::
 
-    {
-      'object': [
-        {
-          id: 'folderContents'
-          title: 'Contents',
-        },
-        {
-          id: 'history',
-          title: 'History',
-        },
-        {
-          id: 'local_roles',
-          title: 'Sharing',
-        },
-        {
-          id: 'contentrules',
-          title: 'Rules',
-        },
-      ]
-    },
-    {
-      'object_buttons': [
-        {
-          id: 'cut',
-          title: 'Cut',
-        },
-        {
-          id: 'copy',
-          title: 'Copy',
-        },
-        {
-          id: 'paste',
-          title: 'Paste',
-        },
-        {
-          id: 'delete',
-          title: 'Delete',
-        },
-        {
-          id: 'rename',
-          title: 'Rename',
-        },
-      ],
-    },
-    {
-      'object': [
-        {
-          id: 'preferences',
-          title: 'Preferences',
-        },
-        {
-          id: 'login',
-          title: 'Log in',
-        },
-        {
-          id: 'join',
-          title: 'Register',
-        },
-        {
-          id: 'plone_setup',
-          title: 'Site Setup',
-        },
-        {
-          id: 'review-comments',
-          title: 'Moderate comments',
-        },
-        {
-          id: 'logout',
-          title: 'Log out',
-        },
-      }
+  {
+    'object': [
+      {
+        id: 'folderContents'
+        title: 'Contents',
+      },
+      {
+        id: 'history',
+        title: 'History',
+      },
+      {
+        id: 'local_roles',
+        title: 'Sharing',
+      },
+      {
+        id: 'contentrules',
+        title: 'Rules',
+      },
     ],
-  ]
+    'object_buttons': [
+      {
+        id: 'cut',
+        title: 'Cut',
+      },
+      {
+        id: 'copy',
+        title: 'Copy',
+      },
+      {
+        id: 'paste',
+        title: 'Paste',
+      },
+      {
+        id: 'delete',
+        title: 'Delete',
+      },
+      {
+        id: 'rename',
+        title: 'Rename',
+      },
+    ],
+    'object': [
+      {
+        id: 'preferences',
+        title: 'Preferences',
+      },
+      {
+        id: 'login',
+        title: 'Log in',
+      },
+      {
+        id: 'join',
+        title: 'Register',
+      },
+      {
+        id: 'plone_setup',
+        title: 'Site Setup',
+      },
+      {
+        id: 'review-comments',
+        title: 'Moderate comments',
+      },
+      {
+        id: 'logout',
+        title: 'Log out',
+      },
+    }
+  }
+
 
 Toolbar Draft
 -------------
