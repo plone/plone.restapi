@@ -115,10 +115,8 @@ FLAT::
 
 NESTED::
 
-  [
     {
-      id: 'object',
-      items: [
+      'object': [
         {
           id: 'folderContents'
           title: 'Contents',
@@ -138,8 +136,7 @@ NESTED::
       ]
     },
     {
-      id: 'object_buttons',
-      items: [
+      'object_buttons': [
         {
           id: 'cut',
           title: 'Cut',
@@ -163,8 +160,7 @@ NESTED::
       ],
     },
     {
-      id: 'object',
-      items: [
+      'object': [
         {
           id: 'preferences',
           title: 'Preferences',
