@@ -1,3 +1,198 @@
+Portal Actions Endpoint
+-----------------------
+
+@actions or @portal-actions endpoint.
+
+Existing Portal Actions in Plone:
+
+document_actions -> deprecated
+site_actions -> deprecated
+object:
+- folderContents
+- history
+- local_roles
+- contentrules
+- syndication
+- ical_import_settings
+object_buttons:
+- cut
+- copy
+- paste
+- delete
+- rename
+- ical_import_enable
+- ical_import_disable
+- export
+- import
+portal_tabs -> deprecated
+user:
+- preferences
+- login
+- join
+- plone_setup
+- review-comments
+- logout
+
+FLAT:
+
+  {
+    {
+      id: 'folderContents'
+      title: 'Contents',
+      type: 'object',
+    },
+    {
+      id: 'history',
+      title: 'History',
+      type: 'object',
+    },
+    {
+      id: 'local_roles',
+      title: 'Sharing',
+      type: 'object',
+    },
+    {
+      id: 'contentrules',
+      title: 'Rules',
+      type: 'object',
+    },
+    {
+      id: 'cut',
+      title: 'Cut',
+      type: 'object_buttons',
+    },
+    {
+      id: 'copy',
+      title: 'Copy',
+      type: 'object_buttons',
+    },
+    {
+      id: 'paste',
+      title: 'Paste',
+      type: 'object_buttons',
+    },
+    {
+      id: 'delete',
+      title: 'Delete',
+      type: 'object_buttons',
+    },
+    {
+      id: 'rename',
+      title: 'Rename',
+      type: 'object_buttons',
+    },
+    {
+      id: 'preferences',
+      title: 'Preferences',
+      type: 'user',
+    },
+    {
+      id: 'login',
+      title: 'Log in',
+      type: 'user',
+    },
+    {
+      id: 'join',
+      title: 'Register',
+      type: 'user',
+    },
+    {
+      id: 'plone_setup',
+      title: 'Site Setup',
+      type: 'user',
+    },
+    {
+      id: 'review-comments',
+      title: 'Moderate comments',
+      type: 'user',
+    },
+    {
+      id: 'logout',
+      title: 'Log out',
+      type: 'user',
+    },
+  }
+
+NESTED:
+
+  {
+    {
+      id: 'object',
+      items: [
+        {
+          id: 'folderContents'
+          title: 'Contents',
+        },
+        {
+          id: 'history',
+          title: 'History',
+        },
+        {
+          id: 'local_roles',
+          title: 'Sharing',
+        },
+        {
+          id: 'contentrules',
+          title: 'Rules',
+        },
+      ]
+    },
+    {
+      id: 'object_buttons',
+      items: [
+        {
+          id: 'cut',
+          title: 'Cut',
+        },
+        {
+          id: 'copy',
+          title: 'Copy',
+        },
+        {
+          id: 'paste',
+          title: 'Paste',
+        },
+        {
+          id: 'delete',
+          title: 'Delete',
+        },
+        {
+          id: 'rename',
+          title: 'Rename',
+        },
+      ],
+    },
+    {
+      id: 'object',
+      items: [
+        {
+          id: 'preferences',
+          title: 'Preferences',
+        },
+        {
+          id: 'login',
+          title: 'Log in',
+        },
+        {
+          id: 'join',
+          title: 'Register',
+        },
+        {
+          id: 'plone_setup',
+          title: 'Site Setup',
+        },
+        {
+          id: 'review-comments',
+          title: 'Moderate comments',
+        },
+        {
+          id: 'logout',
+          title: 'Log out',
+        },
+      }
+    ],
+  }
+
 Toolbar Draft
 -------------
 
