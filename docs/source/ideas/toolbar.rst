@@ -33,7 +33,7 @@ user:
 - review-comments
 - logout
 
-FLAT:
+FLAT::
 
   [
     {
@@ -113,7 +113,7 @@ FLAT:
     },
   ]
 
-NESTED:
+NESTED::
 
   [
     {
