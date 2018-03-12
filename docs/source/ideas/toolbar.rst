@@ -35,7 +35,7 @@ user:
 
 FLAT:
 
-  {
+  [
     {
       id: 'folderContents'
       title: 'Contents',
@@ -111,11 +111,11 @@ FLAT:
       title: 'Log out',
       type: 'user',
     },
-  }
+  ]
 
 NESTED:
 
-  {
+  [
     {
       id: 'object',
       items: [
@@ -191,7 +191,7 @@ NESTED:
         },
       }
     ],
-  }
+  ]
 
 Toolbar Draft
 -------------
