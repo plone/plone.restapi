@@ -18,16 +18,14 @@ from copy import copy
 from plone.autoform.form import AutoExtensibleForm
 from plone.autoform.interfaces import WIDGETS_KEY
 from plone.dexterity.utils import getAdditionalSchemata
-from plone.restapi.interfaces import ISerializeToJson, ISerializeToJsonSummary
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from Products.CMFCore.utils import getToolByName
 from plone.supermodel.utils import mergedTaggedValueDict
 from z3c.form import form as z3c_form
-from zope.component import getMultiAdapter, getUtility, queryUtility
+from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
 from zope.i18n import translate
-from zope.schema.interfaces import IVocabularyFactory, IVocabularyRegistry
 
 
 def create_form(context, request, base_schema, additional_schemata=None):
