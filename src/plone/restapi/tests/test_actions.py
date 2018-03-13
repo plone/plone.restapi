@@ -34,7 +34,17 @@ class TestRegistry(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         response = response.json()
-        self.assertEqual(['object', 'object_buttons', 'user'],
+        self.assertEqual(['document_actions', 'object', 'object_buttons',
+                          'portal_tabs', 'site_actions', 'user'],
+                         sorted(response.keys()))
+
+    def test_actions_keys_with_categories_parameter(self):
+        response = self.api_session.get(
+            '/@actions?categories:list=object&categories:list=user')
+
+        self.assertEqual(response.status_code, 200)
+        response = response.json()
+        self.assertEqual(['object', 'user'],
                          sorted(response.keys()))
 
     def test_actions_siteroot(self):

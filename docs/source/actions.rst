@@ -1,10 +1,20 @@
 Portal Actions
 ================
 
+Plone has a concept of configurable action (portal_actions). They are
+sorted into categories and beside an id, title and they also define
+required permission and a condition that woll be check if a action is
+available for a user.
+
+Actions are used to create variable actions in the ui. I.e. the tabs
+above an object (view, edit, folder contents, sharing) or the user
+actions (login, logout, preferences). Action providers in Plone used
+in this endpoint are ``portal_actions`` and ``portal_types``.
+
 You can get the available actions for a user on a context with the
-@actions endpoint. A part of the actions are global. The
-content object related actions depend on the type, content and the users
-permissions on the object.
+@actions endpoint. This also works for not authenticated users.  If
+you want to limit the categories, you can pass one or more parameters
+``categories:list``, i.e. ``@action?categories:list=object&categories:list=user``.
 
 
 Reading the actions
