@@ -27,6 +27,7 @@ Contents
    comments
    copymove
    expansion
+   actions
    workflow
    locking
    sharing

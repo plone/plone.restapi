@@ -1,0 +1,71 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "object": [
+    {
+      "icon": "", 
+      "id": "view", 
+      "title": "View"
+    }, 
+    {
+      "icon": "", 
+      "id": "edit", 
+      "title": "Edit"
+    }, 
+    {
+      "icon": "", 
+      "id": "folderContents", 
+      "title": "Contents"
+    }, 
+    {
+      "icon": "", 
+      "id": "history", 
+      "title": "History"
+    }, 
+    {
+      "icon": "", 
+      "id": "local_roles", 
+      "title": "Sharing"
+    }
+  ], 
+  "object_buttons": [
+    {
+      "icon": "", 
+      "id": "cut", 
+      "title": "Cut"
+    }, 
+    {
+      "icon": "", 
+      "id": "copy", 
+      "title": "Copy"
+    }, 
+    {
+      "icon": "", 
+      "id": "delete", 
+      "title": "Delete"
+    }, 
+    {
+      "icon": "", 
+      "id": "rename", 
+      "title": "Rename"
+    }
+  ], 
+  "user": [
+    {
+      "icon": "", 
+      "id": "preferences", 
+      "title": "Preferences"
+    }, 
+    {
+      "icon": "", 
+      "id": "plone_setup", 
+      "title": "Site Setup"
+    }, 
+    {
+      "icon": "", 
+      "id": "logout", 
+      "title": "Log out"
+    }
+  ]
+}

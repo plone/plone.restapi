@@ -1,0 +1,21 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <plone:service
+    method="GET"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".get.ActionsGet"
+    name="@actions"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="GET"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".get.ActionsGet"
+    name="@actions"
+    permission="zope2.View"
+    />
+
+</configure>
