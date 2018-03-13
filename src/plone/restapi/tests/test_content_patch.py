@@ -71,8 +71,14 @@ class TestContentPatch(unittest.TestCase):
         # null will set field.missing_value which is u'' for the field
         self.assertEqual(400, response.status_code)
         self.assertTrue("\'field\': \'title\'" in response.text)
-        self.assertTrue('field is required. null is not allowed' in
-                        response.text)
+        self.assertTrue(
+            'title is a required field.'
+            in response.text
+        )
+        self.assertTrue(
+             'Setting it to null is not allowed.'
+             in response.text
+        )
 
     def test_patch_document_with_representation(self):
         response = requests.patch(
