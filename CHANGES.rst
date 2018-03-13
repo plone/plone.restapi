@@ -4,7 +4,8 @@ Changelog
 1.3.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Expose the tagged values for widgets in the @types endpoint.
+  [jaroel]
 
 
 1.3.0 (2018-03-05)
