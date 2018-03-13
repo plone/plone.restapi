@@ -18,7 +18,7 @@ List all available tiles type by sending a GET request to the @tiles endpoint on
   Accept: application/json
   Authorization: Basic YWRtaW46c2VjcmV0
 
-The server responds with a `Status 200` and list all available tilsa:
+The server responds with a `Status 200` and list all available tiles::
 
   HTTP/1.1 200 OK
   Content-Type: application/json
@@ -189,24 +189,25 @@ The ‘Location’ header contains the URL of the newly created resource and the
 Updating a tile with PATCH
 --------------------------
 
-To update an existing tile, we send a PATCH request to the URL of the tile.
+To update an existing tile, we send a PATCH request to the URL of the tile::
+
+  PATCH /plone/my-document/@tiles/title HTTP/1.1
+  Accept: application/json
+  Authorization: Basic YWRtaW46c2VjcmV0
+  Content-Type: application/json
+  {
+      "title": "New tile titlee"
+  }
+
 PATCH allows to provide just a subset of the resource (the values you actually want to change).
 
-PATCH /plone/my-document/@tiles/title HTTP/1.1
-Accept: application/json
-Authorization: Basic YWRtaW46c2VjcmV0
-Content-Type: application/json
-{
-    "title": "New tile titlee"
-}
-
-A successful response to a PATCH request will be indicated by a `204 No Content` response by default:
+A successful response to a PATCH request will be indicated by a `204 No Content` response by default::
 
   HTTP/1.1 204 No Content
   Successful Response (200 OK)
 
 You can get the object representation by adding a Prefer header with a value of return=representation to the PATCH request.
-In this case, the response will be a 200 OK:
+In this case, the response will be a 200 OK::
 
   PATCH /plone/my-document/@tiles/title HTTP/1.1
   Accept: application/json
@@ -221,12 +222,12 @@ In this case, the response will be a 200 OK:
 Removing a tile with DELETE
 ---------------------------
 
-We can delete an existing tile by sending a DELETE request:
+We can delete an existing tile by sending a DELETE request::
 
   DELETE /plone/my-document/@tiles/title HTTP/1.1
   Accept: application/json
   Authorization: Basic YWRtaW46c2VjcmV0
 
-A successful response will be indicated by a `204 No Content` response:
+A successful response will be indicated by a `204 No Content` response::
 
   HTTP/1.1 204 No Content

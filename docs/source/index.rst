@@ -47,6 +47,7 @@ Contents
    conventions
    translations
    email-send
+   tiles
    upgrade-guide
 
 .. include:: ../../README.rst
