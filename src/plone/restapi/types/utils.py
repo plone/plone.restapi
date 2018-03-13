@@ -16,14 +16,18 @@ processed the same way they would for a server-rendered form.
 from collections import OrderedDict
 from copy import copy
 from plone.autoform.form import AutoExtensibleForm
+from plone.autoform.interfaces import WIDGETS_KEY
 from plone.dexterity.utils import getAdditionalSchemata
+from plone.restapi.interfaces import ISerializeToJson, ISerializeToJsonSummary
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from Products.CMFCore.utils import getToolByName
+from plone.supermodel.utils import mergedTaggedValueDict
 from z3c.form import form as z3c_form
-from zope.component import getMultiAdapter
+from zope.component import getMultiAdapter, getUtility, queryUtility
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
 from zope.i18n import translate
+from zope.schema.interfaces import IVocabularyFactory, IVocabularyRegistry
 
 
 def create_form(context, request, base_schema, additional_schemata=None):
@@ -91,7 +95,7 @@ def get_fieldset_infos(fieldsets):
 
 
 def get_jsonschema_properties(context, request, fieldsets, prefix='',
-                              excluded_fields=None):
+                              excluded_fields=None, tagged_values={}):
     """Build a JSON schema 'properties' list, based on a list of fieldset
     dicts as returned by `get_fieldsets()`.
     """
@@ -120,7 +124,25 @@ def get_jsonschema_properties(context, request, fieldsets, prefix='',
 
             properties[fieldname] = adapter.get_schema()
 
+            for key, value in tagged_values.get(fieldname, {}).items():
+                if key in properties[fieldname]:
+                    continue
+                properties[fieldname][key] = value
+
     return properties
+
+
+def get_tagged_values(schemas, key):
+    params = {}
+    for schema in schemas:
+        if not schema:
+            continue
+        tagged_values = mergedTaggedValueDict(schema, key)
+        for field_name in schema:
+            widget = tagged_values.get(field_name)
+            if widget and widget.params:
+                params[field_name] = widget.params
+    return params
 
 
 def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
@@ -136,15 +158,24 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     except AttributeError:
         schema = None
         fieldsets = ()
+        additional_schemata = ()
     else:
         additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
         fieldsets = get_fieldsets(
             context, request, schema, additional_schemata
         )
 
+    # Mangle the properties a bit to add widgets hints
+    schemas = (schema,) + additional_schemata
+
     # Build JSON schema properties
     properties = get_jsonschema_properties(
-        context, request, fieldsets, excluded_fields=excluded_fields)
+        context,
+        request,
+        fieldsets,
+        excluded_fields=excluded_fields,
+        tagged_values=get_tagged_values(schemas, WIDGETS_KEY)
+    )
 
     # Determine required fields
     required = []
