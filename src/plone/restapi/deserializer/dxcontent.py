@@ -74,8 +74,7 @@ class DeserializeFromJson(OrderingMixin, object):
                                         field.__name__
                                     ),
                                     'Setting it to null is not allowed.'
-                                ),
-                                'error': None})
+                                )})
                         continue
 
                     # Deserialize to field value
