@@ -182,7 +182,7 @@ PATCH allows to provide just a subset of the resource
 If you send the value `null` for a field, the field's content will be
 deleted. It will instead set the `missing_value` defined for the field
 in the schema. Note that this is not possible if the field is `required`,
-and it only works for dexterity types, not archetypes:
+and it only works for Dexterity types, not Archetypes:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/content_patch.req
