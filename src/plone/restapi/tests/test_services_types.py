@@ -165,11 +165,3 @@ class TestServicesTypes(unittest.TestCase):
 
         self.assertEquals(
             len([a for a in response if a['addable']]), 0)
-
-    def test_tagged_values(self):
-        response = self.api_session.get('/@types/Document')
-        response = response.json()
-        self.assertEqual(
-            response['properties']['creators']['vocabulary'],
-            'plone.app.vocabularies.Users'
-        )
