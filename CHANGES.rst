@@ -7,6 +7,10 @@ Changelog
 - Add @actions endpoint to get portal_actions
   [csenger]
 
+- Support null in content PATCH requests to delete a field value
+  (dexterity only). Fixes #187.
+  [csenger]
+
 
 1.3.0 (2018-03-05)
 ------------------
