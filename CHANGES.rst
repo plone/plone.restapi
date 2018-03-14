@@ -4,8 +4,10 @@ Changelog
 1.3.1 (unreleased)
 ------------------
 
+Bugfixes:
+
 - Support null in content PATCH requests to delete a field value
-  (dexterity only). Fixes #187.
+  (Dexterity only). This fixes #187.
   [csenger]
 
 
