@@ -7,6 +7,9 @@ Changelog
 - Expose the tagged values for widgets in the @types endpoint.
   [jaroel]
 
+- Render subject vocabulary as items for subjects field.
+  [jaroel]
+
 - Support null in content PATCH requests to delete a field value
   (dexterity only). Fixes #187.
   [csenger]
