@@ -32,6 +32,6 @@ class ActionsGet(Service):
                     'title': translate(action['title'], context=self.request),
                     'id': action['id'],
                     'icon': action['icon'],
-                    })
+                })
             data[category] = category_action_data
         return data
