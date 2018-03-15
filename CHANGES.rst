@@ -1,14 +1,20 @@
 Changelog
 =========
 
-1.3.1 (unreleased)
+1.3.2 (unreleased)
 ------------------
 
 - Add @actions endpoint to get portal_actions
   [csenger]
 
+
+1.3.1 (2018-03-14)
+------------------
+
+Bugfixes:
+
 - Support null in content PATCH requests to delete a field value
-  (dexterity only). Fixes #187.
+  (Dexterity only). This fixes #187.
   [csenger]
 
 
