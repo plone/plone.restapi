@@ -2,27 +2,40 @@
 from Products.CMFCore.interfaces import IActionCategory
 from Products.CMFCore.utils import getToolByName
 from plone import api
+from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
+from zope.component import adapter
 from zope.i18n import translate
+from zope.interface import Interface
+from zope.interface import implementer
 
 
-class ActionsGet(Service):
+@implementer(IExpandableElement)
+@adapter(Interface, Interface)
+class Actions(object):
 
-    @property
-    def all_categories(self):
-        portal_actions = getToolByName(self.context, 'portal_actions')
-        categories = []
-        for id, obj in portal_actions.objectItems():
-            if IActionCategory.providedBy(obj):
-                categories.append(id)
-        return categories
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
 
-    def reply(self):
-        context_state = api.content.get_view(name='plone_context_state',
-                                             context=self.context,
-                                             request=self.request)
-        categories = self.request.form.get('categories',
-                                           self.all_categories)
+    def __call__(self, expand=False):
+        result = {
+            'actions': {
+                '@id': '{}/@actions'.format(self.context.absolute_url()),
+            },
+        }
+        if not expand:
+            return result
+
+        context_state = api.content.get_view(
+            name='plone_context_state',
+            context=self.context,
+            request=self.request
+        )
+        categories = self.request.form.get(
+            'categories',
+            self.all_categories
+        )
         data = {}
         for category in categories:
             category_action_data = []
@@ -34,4 +47,20 @@ class ActionsGet(Service):
                     'icon': action['icon'],
                 })
             data[category] = category_action_data
-        return data
+        return {'actions': data}
+
+    @property
+    def all_categories(self):
+        portal_actions = getToolByName(self.context, 'portal_actions')
+        categories = []
+        for id, obj in portal_actions.objectItems():
+            if IActionCategory.providedBy(obj):
+                categories.append(id)
+        return categories
+
+
+class ActionsGet(Service):
+
+    def reply(self):
+        actions = Actions(self.context, self.request)
+        return actions(expand=True)['actions']

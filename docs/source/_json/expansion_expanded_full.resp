@@ -3,6 +3,9 @@ Content-Type: application/json
 
 {
   "@components": {
+    "actions": {
+      "@id": "http://localhost:55001/plone/front-page/@actions"
+    }, 
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/front-page/@breadcrumbs", 
       "items": [
