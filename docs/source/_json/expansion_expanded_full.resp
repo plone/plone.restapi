@@ -4,7 +4,97 @@ Content-Type: application/json
 {
   "@components": {
     "actions": {
-      "@id": "http://localhost:55001/plone/front-page/@actions"
+      "document_actions": [], 
+      "object": [
+        {
+          "icon": "", 
+          "id": "view", 
+          "title": "View"
+        }, 
+        {
+          "icon": "", 
+          "id": "edit", 
+          "title": "Edit"
+        }, 
+        {
+          "icon": "", 
+          "id": "folderContents", 
+          "title": "Contents"
+        }, 
+        {
+          "icon": "", 
+          "id": "history", 
+          "title": "History"
+        }, 
+        {
+          "icon": "", 
+          "id": "local_roles", 
+          "title": "Sharing"
+        }
+      ], 
+      "object_buttons": [
+        {
+          "icon": "", 
+          "id": "cut", 
+          "title": "Cut"
+        }, 
+        {
+          "icon": "", 
+          "id": "copy", 
+          "title": "Copy"
+        }, 
+        {
+          "icon": "", 
+          "id": "delete", 
+          "title": "Delete"
+        }, 
+        {
+          "icon": "", 
+          "id": "rename", 
+          "title": "Rename"
+        }
+      ], 
+      "portal_tabs": [
+        {
+          "icon": "", 
+          "id": "index_html", 
+          "title": "Home"
+        }
+      ], 
+      "site_actions": [
+        {
+          "icon": "", 
+          "id": "sitemap", 
+          "title": "Site Map"
+        }, 
+        {
+          "icon": "", 
+          "id": "accessibility", 
+          "title": "Accessibility"
+        }, 
+        {
+          "icon": "", 
+          "id": "contact", 
+          "title": "Contact"
+        }
+      ], 
+      "user": [
+        {
+          "icon": "", 
+          "id": "preferences", 
+          "title": "Preferences"
+        }, 
+        {
+          "icon": "", 
+          "id": "plone_setup", 
+          "title": "Site Setup"
+        }, 
+        {
+          "icon": "", 
+          "id": "logout", 
+          "title": "Log out"
+        }
+      ]
     }, 
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/front-page/@breadcrumbs", 
