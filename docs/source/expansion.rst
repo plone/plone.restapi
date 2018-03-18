@@ -56,6 +56,9 @@ component::
     "@id": "http://localhost:55001/plone/front-page",
     "@type": "Document",
     "@components": {
+      "actions": {
+        "@id": "http://localhost:55001/plone/front-page/@actions"
+      },
       "breadcrumbs": {
         "@id": "http://localhost:55001/plone/front-page/@components/breadcrumbs",
         "items": [
@@ -65,28 +68,14 @@ component::
           }
         ]
       },
-      "navigation": "http://localhost:55001/plone/front-page/@navigation",
-      "schema": "http://localhost:55001/plone/front-page/@schema",
+      "navigation": {
+        "@id": "http://localhost:55001/plone/front-page/@navigation"
+      },
+      "schema": {
+        "@id": "http://localhost:55001/plone/front-page/@schema"
+      },
       "workflow": {
-        "history": [
-          {
-            "action": null,
-            "actor": "test_user_1_",
-            "comments": "",
-            "review_state": "private",
-            "time": "2016-10-21T19:00:00+00:00"
-          }
-        ],
-        "transitions": [
-          {
-            "@id": "http://localhost:55001/plone/front-page/@workflow/publish",
-            "title": "Publish"
-          },
-          {
-            "@id": "http://localhost:55001/plone/front-page/@workflow/submit",
-            "title": "Submit for publication"
-          }
-        ]
+        "@id": http://localhost:55001/plone/front-page/@workflow"
       },
     },
     "UID": "1f699ffa110e45afb1ba502f75f7ec33",
