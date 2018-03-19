@@ -4,7 +4,10 @@ Changelog
 1.3.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+New Features:
+
+- Add expandable @actions endpoint to retrieve portal_actions.
+  [csenger,timo]
 
 
 1.3.1 (2018-03-14)
