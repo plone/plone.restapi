@@ -11,7 +11,7 @@ Actions can be used to build UI elements that adapt to the available actions.
 An example is the Plone toolbar where the "object_tabs" (view, edit, folder contents, sharing)
 and the "user_actions" (login, logout, preferences) are used to display the user only the actions that are allowed for the currently logged in user.
 
-The available actions for the currently logge in user can be retrieved
+The available actions for the currently logged in user can be retrieved
 by calling the @actions endpoint on a specific context.
 This also works for not authenticated users.
 
