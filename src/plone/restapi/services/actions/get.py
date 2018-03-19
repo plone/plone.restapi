@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.interfaces import IActionCategory
 from Products.CMFCore.utils import getToolByName
-from plone import api
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
 from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.i18n import translate
 from zope.interface import Interface
 from zope.interface import implementer
@@ -27,11 +27,9 @@ class Actions(object):
         if not expand:
             return result
 
-        context_state = api.content.get_view(
-            name='plone_context_state',
-            context=self.context,
-            request=self.request
-        )
+        context_state = getMultiAdapter(
+            (self.context, self.request), name='plone_context_state')
+
         categories = self.request.form.get(
             'categories',
             self.all_categories
