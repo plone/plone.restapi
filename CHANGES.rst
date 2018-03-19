@@ -7,7 +7,7 @@ Changelog
 New Features:
 
 - Add expandable @actions endpoint to retrieve portal_actions.
-  [csenger,timo]
+  [csenger,timo,snerdiagh]
 
 
 1.3.1 (2018-03-14)
