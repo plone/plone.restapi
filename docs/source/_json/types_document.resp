@@ -196,16 +196,12 @@ Content-Type: application/json+schema
       "widget": "textarea"
     }, 
     "subjects": {
-      "additionalItems": true, 
+      "choices": [], 
       "description": "Tags are commonly used for ad-hoc organization of content.", 
-      "items": {
-        "description": "", 
-        "title": "", 
-        "type": "string"
-      }, 
+      "enum": [], 
+      "enumNames": [], 
       "title": "Tags", 
-      "type": "array", 
-      "uniqueItems": true, 
+      "type": "string", 
       "vocabulary": "plone.app.vocabularies.Keywords"
     }, 
     "table_of_contents": {
