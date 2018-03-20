@@ -251,6 +251,8 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
         choices = []
         enum = []
         enum_names = []
+        vocabulary = None
+
         if getattr(self.field, 'vocabularyName', None):
             vocabulary = getUtility(
                 IVocabularyFactory,
@@ -259,9 +261,11 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
             vocabulary = self.field.vocabulary
         else:
             tagged = get_tagged_values([self.field.interface], WIDGETS_KEY)
-            vocab_name = tagged[self.field.getName()].get('vocabulary', None)
-            vocab_fac = getUtility(IVocabularyFactory, name=vocab_name)
-            vocabulary = vocab_fac(self.context)
+            tagged_field_values = tagged.get(self.field.getName(), {})
+            vocab_name = tagged_field_values.get('vocabulary', None)
+            if vocab_name:
+                vocab_fac = getUtility(IVocabularyFactory, name=vocab_name)
+                vocabulary = vocab_fac(self.context)
 
         if IContextSourceBinder.providedBy(vocabulary):
             vocabulary = vocabulary(self.context)
