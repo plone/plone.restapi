@@ -3,7 +3,11 @@
 Explore the API using Postman
 =============================
 
-To discover the API interactively, the Chrome-Extension Postman_ is a suitable solution.
+To discover the API interactively, using Postman_ is recommended.
+
+.. admonition:: Note
+
+    The Chrome-Extension version of Postman is deprecated and it is recommended to use the native app available instead.
 
 Configuration
 -------------
@@ -45,7 +49,7 @@ You have to select
 * in the drop-down menu :menuselection:`Basic Auth ->` the term :term:`Basic Auth` as the authentication method
 * A valid existing user with appropriate permissions 
 
-After providing these parameters you can create the resulting :term:`Authorization Header` and insert it into the prepared request by clicking on :guilabel:`Update Request`.
+After providing these parameters you can create the resulting :term:`Authorization Header` and insert it into the prepared request by clicking on :guilabel:`Preview Request`.
 
 |postman-basic-auth|
 
@@ -59,6 +63,9 @@ Under the  :guilabel:`Headers` tab you now need to insert in the :term:`Accept H
 The request is now ready and can be send by clicking on :guilabel:`Send` button.
 
 The :term:`Response` of the server is now displayed below the :term:`Request`. You can easily follow the links on the ``@id`` attributes by clicking on them. For every link Postman_ has prepared another request sharing the same headers that can be send again by licking on the  :guilabel:`Send` button.
+
+|postman-response|
+
 
 .. admonition:: Conclusion
 
@@ -78,3 +85,4 @@ The :term:`Response` of the server is now displayed below the :term:`Request`. Y
 .. |postman-request| image:: ./_static/img/postman_request.png
 .. |postman-basic-auth| image:: ./_static/img/postman_basic_auth.png
 .. |postman-headers| image:: ./_static/img/postman_headers.png
+.. |postman-response| image:: ./_static/img/postman_response.png
