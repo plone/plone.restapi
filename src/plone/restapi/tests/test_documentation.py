@@ -705,6 +705,22 @@ class TestDocumentation(unittest.TestCase):
         )
         save_request_and_response_for_docs('users_created', response)
 
+    def test_documentation_users_add(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                'email': 'noam.chomsky@example.com',
+                'username': 'noamchomsky',
+                'fullname': 'Noam Avram Chomsky',
+                'home_page': 'web.mit.edu/chomsky',
+                'description': 'Professor of Linguistics',
+                'location': 'Cambridge, MA',
+                'sendPasswordReset': True
+            },
+        )
+        save_request_and_response_for_docs('users_add', response)
+
+
     def test_documentation_users_update(self):
         properties = {
             'email': 'noam.chomsky@example.com',

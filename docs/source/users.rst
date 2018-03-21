@@ -153,8 +153,22 @@ A successful response will be indicated by a :term:`204 No Content` response:
 User registration
 -----------------
 
-Plone allows you to enable the auto registration of users. If it is enabled, then an anonymous user can register a new user using the user creation endpoint.
+Plone allows you to enable the auto registration of users.
+If it is enabled, then an anonymous user can register a new user using the user creation endpoint.
 This new user will have the role ``Member`` by default as the Plone registration process also does.
+
+To create a new user send a POST request to the '@users' endpoint:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_add.req
+
+If the user should receive an email to set her password, you should pass 'sendPasswordReset": true' in the JSON body of the request.
+Keep in mind that Plone will send a URL that points to the URL of the Plone site, which might just be your API endpoint.
+
+If the user has been created, the server will respond with a :term:`201 Created` response:
+
+..  literalinclude:: _json/users_add.resp
+    :language: http
 
 
 Reset User Password
@@ -169,7 +183,7 @@ Plone allows to reset a password for a user by sending a POST request to the use
 The server will respond with a :term:`200 OK` response and send an email to the user to reset her password.
 
 The token that is part of the reset url in the email can be used to
-authorize setting a new password::
+authorize setting a new password:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/users_reset.req
