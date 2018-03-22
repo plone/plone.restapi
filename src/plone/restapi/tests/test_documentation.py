@@ -720,7 +720,6 @@ class TestDocumentation(unittest.TestCase):
         )
         save_request_and_response_for_docs('users_add', response)
 
-
     def test_documentation_users_update(self):
         properties = {
             'email': 'noam.chomsky@example.com',
