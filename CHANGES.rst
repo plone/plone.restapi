@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.4.1 (unreleased)
+1.4.1 (2018-03-22)
 ------------------
 
 - Fix serialization of `Discussion Item` and `Collection` content types when
