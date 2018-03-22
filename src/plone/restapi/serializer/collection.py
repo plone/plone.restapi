@@ -14,7 +14,7 @@ from zope.interface import Interface
 @adapter(ICollection, Interface)
 class SerializeCollectionToJson(SerializeToJson):
 
-    def __call__(self, version=None):
+    def __call__(self, version=None, include_items=True):
         collection_metadata = super(SerializeCollectionToJson, self).__call__(
             version=version,
         )

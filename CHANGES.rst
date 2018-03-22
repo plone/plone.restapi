@@ -4,7 +4,9 @@ Changelog
 1.4.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix serialization of `Discussion Item` and `Collection` content types when
+  called with `fullobjects` parameter.
+  [sneridagh]
 
 
 1.4.0 (2018-03-19)
@@ -13,7 +15,7 @@ Changelog
 New Features:
 
 - Add expandable @actions endpoint to retrieve portal_actions.
-  [csenger,timo,snerdiagh]
+  [csenger,timo,sneridagh]
 
 
 1.3.1 (2018-03-14)
