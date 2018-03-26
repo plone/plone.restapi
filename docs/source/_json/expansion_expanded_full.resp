@@ -3,12 +3,105 @@ Content-Type: application/json
 
 {
   "@components": {
+    "actions": {
+      "document_actions": [], 
+      "object": [
+        {
+          "icon": "", 
+          "id": "view", 
+          "title": "View"
+        }, 
+        {
+          "icon": "", 
+          "id": "edit", 
+          "title": "Edit"
+        }, 
+        {
+          "icon": "", 
+          "id": "folderContents", 
+          "title": "Contents"
+        }, 
+        {
+          "icon": "", 
+          "id": "history", 
+          "title": "History"
+        }, 
+        {
+          "icon": "", 
+          "id": "local_roles", 
+          "title": "Sharing"
+        }
+      ], 
+      "object_buttons": [
+        {
+          "icon": "", 
+          "id": "cut", 
+          "title": "Cut"
+        }, 
+        {
+          "icon": "", 
+          "id": "copy", 
+          "title": "Copy"
+        }, 
+        {
+          "icon": "", 
+          "id": "delete", 
+          "title": "Delete"
+        }, 
+        {
+          "icon": "", 
+          "id": "rename", 
+          "title": "Rename"
+        }
+      ], 
+      "portal_tabs": [
+        {
+          "icon": "", 
+          "id": "index_html", 
+          "title": "Home"
+        }
+      ], 
+      "site_actions": [
+        {
+          "icon": "", 
+          "id": "sitemap", 
+          "title": "Site Map"
+        }, 
+        {
+          "icon": "", 
+          "id": "accessibility", 
+          "title": "Accessibility"
+        }, 
+        {
+          "icon": "", 
+          "id": "contact", 
+          "title": "Contact"
+        }
+      ], 
+      "user": [
+        {
+          "icon": "", 
+          "id": "preferences", 
+          "title": "Preferences"
+        }, 
+        {
+          "icon": "", 
+          "id": "plone_setup", 
+          "title": "Site Setup"
+        }, 
+        {
+          "icon": "", 
+          "id": "logout", 
+          "title": "Log out"
+        }
+      ]
+    }, 
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/front-page/@breadcrumbs", 
       "items": [
         {
-          "title": "Welcome to Plone", 
-          "url": "http://localhost:55001/plone/front-page"
+          "@id": "http://localhost:55001/plone/front-page", 
+          "title": "Welcome to Plone"
         }
       ]
     }, 
@@ -16,12 +109,12 @@ Content-Type: application/json
       "@id": "http://localhost:55001/plone/front-page/@navigation", 
       "items": [
         {
-          "title": "Home", 
-          "url": "http://localhost:55001/plone"
+          "@id": "http://localhost:55001/plone", 
+          "title": "Home"
         }, 
         {
-          "title": "Welcome to Plone", 
-          "url": "http://localhost:55001/plone/front-page"
+          "@id": "http://localhost:55001/plone/front-page", 
+          "title": "Welcome to Plone"
         }
       ]
     }, 
@@ -52,13 +145,12 @@ Content-Type: application/json
   "@id": "http://localhost:55001/plone/front-page", 
   "@type": "Document", 
   "UID": "SomeUUID000000000000000000000001", 
-  "allow_discussion": null, 
+  "allow_discussion": false, 
   "changeNote": "", 
   "contributors": [], 
   "created": "2016-01-21T01:14:48+00:00", 
   "creators": [
-    "test_user_1_", 
-    "admin"
+    "test_user_1_"
   ], 
   "description": "Congratulations! You have successfully installed Plone.", 
   "effective": null, 
@@ -78,10 +170,6 @@ Content-Type: application/json
   "relatedItems": [], 
   "review_state": "private", 
   "rights": "", 
-  "sharing": {
-    "@id": "http://localhost:55001/plone/front-page/@sharing", 
-    "title": "Sharing"
-  }, 
   "subjects": [], 
   "table_of_contents": null, 
   "text": {

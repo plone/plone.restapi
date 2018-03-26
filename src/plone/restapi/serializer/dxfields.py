@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedFileField
 from plone.namedfile.interfaces import INamedImageField
@@ -73,3 +74,10 @@ class FileFieldSerializer(DefaultFieldSerializer):
             'download': url
         }
         return json_compatible(result)
+
+
+@adapter(IRichText, IDexterityContent, Interface)
+class RichttextFieldSerializer(DefaultFieldSerializer):
+    def __call__(self):
+        value = self.get_value()
+        return json_compatible(value, self.context)

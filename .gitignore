@@ -6,6 +6,7 @@
 /downloads
 /var
 /build
+/share
 /dist
 /local.cfg
 /extras
@@ -30,3 +31,6 @@ npm-debug.log
 .DS_Store
 jmeter.log
 pip-selfcheck.json
+/.idea
+/.vscode
+

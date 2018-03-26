@@ -68,6 +68,21 @@ class TestBatchingSearch(TestBatchingDXBase):
             response.json()['@id'],
             self.portal_url + '/folder/@search')
 
+    def test_canonical_url_preserves_multiple_metadata_fields(self):
+        qs = 'b_start=2&b_size=2&metadata_fields=one&metadata_fields=two'
+        response = self.api_session.get('/folder/@search?%s' % qs)
+
+        # Response should contain canonical URL without batching params.
+        # Argument lists like metadata_fields (same query string parameter
+        # repeated multiple times) should be preserved.
+
+        original_qs = parse_qsl(qs)
+        canonicalized_qs = parse_qsl(urlparse(response.json()['@id']).query)
+
+        self.assertEqual(
+            set(original_qs) - set([('b_size', '2'), ('b_start', '2')]),
+            set(canonicalized_qs))
+
     def test_contains_batching_links(self):
         # Fetch the second page of the batch
         response = self.api_session.get('/folder/@search?b_start=2&b_size=2')
@@ -77,10 +92,10 @@ class TestBatchingSearch(TestBatchingDXBase):
 
         self.assertDictEqual(
             {u'@id': self.portal_url + '/folder/@search?b_start=2&b_size=2',
-             u'first': self.portal_url + '/folder/@search?b_size=2&b_start=0',
-             u'next': self.portal_url + '/folder/@search?b_size=2&b_start=4',
-             u'prev': self.portal_url + '/folder/@search?b_size=2&b_start=0',
-             u'last': self.portal_url + '/folder/@search?b_size=2&b_start=4',
+             u'first': self.portal_url + '/folder/@search?b_start=0&b_size=2',
+             u'next': self.portal_url + '/folder/@search?b_start=4&b_size=2',
+             u'prev': self.portal_url + '/folder/@search?b_start=0&b_size=2',
+             u'last': self.portal_url + '/folder/@search?b_start=4&b_size=2',
              },
             batch_info)
 
@@ -144,10 +159,10 @@ class TestBatchingCollections(TestBatchingDXBase):
 
         self.assertDictEqual(
             {u'@id': self.portal_url + '/collection?b_start=2&b_size=2',
-             u'first': self.portal_url + '/collection?b_size=2&b_start=0',
-             u'next': self.portal_url + '/collection?b_size=2&b_start=4',
-             u'prev': self.portal_url + '/collection?b_size=2&b_start=0',
-             u'last': self.portal_url + '/collection?b_size=2&b_start=4',
+             u'first': self.portal_url + '/collection?b_start=0&b_size=2',
+             u'next': self.portal_url + '/collection?b_start=4&b_size=2',
+             u'prev': self.portal_url + '/collection?b_start=0&b_size=2',
+             u'last': self.portal_url + '/collection?b_start=4&b_size=2',
              },
             batch_info)
 
@@ -206,10 +221,10 @@ class TestBatchingDXFolders(TestBatchingDXBase):
 
         self.assertDictEqual(
             {u'@id': self.portal_url + '/folder?b_start=2&b_size=2',
-             u'first': self.portal_url + '/folder?b_size=2&b_start=0',
-             u'next': self.portal_url + '/folder?b_size=2&b_start=4',
-             u'prev': self.portal_url + '/folder?b_size=2&b_start=0',
-             u'last': self.portal_url + '/folder?b_size=2&b_start=4',
+             u'first': self.portal_url + '/folder?b_start=0&b_size=2',
+             u'next': self.portal_url + '/folder?b_start=4&b_size=2',
+             u'prev': self.portal_url + '/folder?b_start=0&b_size=2',
+             u'last': self.portal_url + '/folder?b_start=4&b_size=2',
              },
             batch_info)
 
@@ -264,10 +279,10 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
 
         self.assertDictEqual(
             {u'@id': self.portal_url + '/?b_start=2&b_size=2',
-             u'first': self.portal_url + '/?b_size=2&b_start=0',
-             u'next': self.portal_url + '/?b_size=2&b_start=4',
-             u'prev': self.portal_url + '/?b_size=2&b_start=0',
-             u'last': self.portal_url + '/?b_size=2&b_start=4',
+             u'first': self.portal_url + '/?b_start=0&b_size=2',
+             u'next': self.portal_url + '/?b_start=4&b_size=2',
+             u'prev': self.portal_url + '/?b_start=0&b_size=2',
+             u'last': self.portal_url + '/?b_start=4&b_size=2',
              },
             batch_info)
 
@@ -344,10 +359,10 @@ class TestBatchingArchetypes(unittest.TestCase):
 
         self.assertDictEqual(
             {u'@id': self.portal_url + '/folder?b_start=2&b_size=2',
-             u'first': self.portal_url + '/folder?b_size=2&b_start=0',
-             u'next': self.portal_url + '/folder?b_size=2&b_start=4',
-             u'prev': self.portal_url + '/folder?b_size=2&b_start=0',
-             u'last': self.portal_url + '/folder?b_size=2&b_start=4',
+             u'first': self.portal_url + '/folder?b_start=0&b_size=2',
+             u'next': self.portal_url + '/folder?b_start=4&b_size=2',
+             u'prev': self.portal_url + '/folder?b_start=0&b_size=2',
+             u'last': self.portal_url + '/folder?b_start=4&b_size=2',
              },
             batch_info)
 
@@ -448,6 +463,21 @@ class TestHypermediaBatch(unittest.TestCase):
         self.assertEquals('nohost', parsed_url.netloc)
         self.assertEquals('', parsed_url.path)
 
+    def test_canonical_url_preserves_list_like_query_string_params(self):
+        items = range(1, 26)
+
+        self.request.form['b_size'] = 10
+        self.request['QUERY_STRING'] = 'foolist=1&foolist=2'
+        batch = HypermediaBatch(self.request, items)
+
+        # Argument lists (same query string parameter repeated multiple
+        # times) should be preserved.
+
+        self.assertEquals(
+            set([('foolist', '1'), ('foolist', '2')]),
+            set(parse_qsl(urlparse(batch.canonical_url).query))
+        )
+
     def test_canonical_url_strips_batching_params(self):
         items = range(1, 26)
 
@@ -499,6 +529,22 @@ class TestHypermediaBatch(unittest.TestCase):
         batch = HypermediaBatch(self.request, items)
         self.assertDictContainsSubset(
             {'first': 'http://nohost?b_start=0'}, batch.links)
+
+    def test_first_link_preserves_list_like_querystring_params(self):
+        items = range(1, 26)
+
+        self.request.form['b_size'] = 10
+        self.request['QUERY_STRING'] = 'foolist=1&foolist=2'
+        batch = HypermediaBatch(self.request, items)
+
+        # Argument lists (same query string parameter repeated multiple
+        # times) should be preserved.
+
+        batch_params = set([('b_start', '0'), ('b_size', '10')])
+        self.assertEquals(
+            set([('foolist', '1'), ('foolist', '2')]),
+            set(parse_qsl(urlparse(batch.links['first']).query)) - batch_params
+        )
 
     def test_last_link_contained(self):
         items = range(1, 26)

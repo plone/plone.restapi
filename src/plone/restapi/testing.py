@@ -85,6 +85,9 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         set_available_languages()
         quickInstallProduct(portal, 'collective.MockMailHost')
         applyProfile(portal, 'collective.MockMailHost:default')
+        states = portal.portal_workflow['simple_publication_workflow'].states
+        states['published'].title = u'Published with accent é'.encode('utf8')
+
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
 PLONE_RESTAPI_DX_INTEGRATION_TESTING = IntegrationTesting(
@@ -123,13 +126,14 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         language_tool = getToolByName(portal, 'portal_languages')
         language_tool.addSupportedLanguage('en')
         language_tool.addSupportedLanguage('es')
-        if portal.portal_setup.profileExists(
-                'plone.app.multilingual:default'):            
+        if portal.portal_setup.profileExists('plone.app.multilingual:default'):
             applyProfile(portal, 'plone.app.multilingual:default')
         applyProfile(portal, 'plone.restapi:default')
         applyProfile(portal, 'plone.restapi:testing')
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
         set_available_languages()
+        states = portal.portal_workflow['simple_publication_workflow'].states
+        states['published'].title = u'Published with accent é'.encode('utf8')
 
 
 PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()
@@ -179,6 +183,8 @@ class PloneRestApiATLayer(PloneSandboxLayer):
         applyProfile(portal, 'plone.restapi:testing')
         set_available_languages()
         portal.portal_workflow.setDefaultChain("simple_publication_workflow")
+        states = portal.portal_workflow['simple_publication_workflow'].states
+        states['published'].title = u'Published with accent é'.encode('utf8')
 
 
 PLONE_RESTAPI_AT_FIXTURE = PloneRestApiATLayer()

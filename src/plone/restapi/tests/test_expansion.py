@@ -98,6 +98,40 @@ class TestExpansionFunctional(unittest.TestCase):
             title=u'Some Folder')
         transaction.commit()
 
+    def test_actions_is_expandable(self):
+        response = self.api_session.get('/folder')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            'actions',
+            response.json().get('@components').keys()
+        )
+
+    def test_actions_expanded(self):
+        response = self.api_session.get(
+            '/folder',
+            params={
+                "expand": "actions"
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            'object' in response.json()['@components']['actions']
+        )
+        self.assertTrue(
+            'object_buttons' in response.json()['@components']['actions']
+        )
+        self.assertTrue(
+            'portal_tabs' in response.json()['@components']['actions']
+        )
+        self.assertTrue(
+            'site_actions' in response.json()['@components']['actions']
+        )
+        self.assertTrue(
+            'user' in response.json()['@components']['actions']
+        )
+
     def test_navigation_is_expandable(self):
         response = self.api_session.get('/folder')
 
@@ -119,11 +153,11 @@ class TestExpansionFunctional(unittest.TestCase):
             [
                 {
                     u'title': u'Home',
-                    u'url': u'http://localhost:55001/plone'
+                    u'@id': u'http://localhost:55001/plone'
                 },
                 {
                     u'title': u'Some Folder',
-                    u'url': u'http://localhost:55001/plone/folder'
+                    u'@id': u'http://localhost:55001/plone/folder'
                 }
             ],
             response.json()['@components']['navigation']['items']
@@ -150,7 +184,7 @@ class TestExpansionFunctional(unittest.TestCase):
             [
                 {
                     u'title': u'Some Folder',
-                    u'url': u'http://localhost:55001/plone/folder'
+                    u'@id': u'http://localhost:55001/plone/folder'
                 }
             ],
             response.json()['@components']['breadcrumbs']['items']

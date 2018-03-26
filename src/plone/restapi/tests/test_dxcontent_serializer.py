@@ -4,20 +4,43 @@ from datetime import date
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
-from plone.app.testing import TEST_USER_ID
+from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
+from plone.app.textfield.interfaces import ITransformer
+from plone.app.textfield.value import RichTextValue
+from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.test_expansion import ExpandableElementFoo
 from plone.uuid.interfaces import IMutableUUID
+from Products.CMFCore.utils import getToolByName
+from zope.component import getGlobalSiteManager
 from zope.component import getMultiAdapter
 from zope.component import provideAdapter
+from zope.component import queryUtility
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import json
 import unittest
+
+
+class AdapterCM(object):
+    """Context manager that will temporarily register an adapter
+    """
+    def __init__(self, adapter, from_, provides):
+        self.adapter = adapter
+        self.from_ = from_
+        self.provides = provides
+        self.gsm = getGlobalSiteManager()
+
+    def __enter__(self):
+        self.gsm.registerAdapter(self.adapter, self.from_, self.provides)
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.gsm.unregisterAdapter(self.adapter, self.from_, self.provides)
 
 
 class TestDXContentSerializer(unittest.TestCase):
@@ -27,6 +50,12 @@ class TestDXContentSerializer(unittest.TestCase):
     def setUp(self):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
+
+        richtext_value = RichTextValue(
+            u'Käfer',
+            'text/plain',
+            'text/html'
+        )
 
         self.portal.invokeFactory(
             'DXTestDocument',
@@ -47,6 +76,7 @@ class TestDXContentSerializer(unittest.TestCase):
             test_list_field=[1, 'two', 3],
             test_set_field=set(['a', 'b', 'c']),
             test_text_field=u'Käfer',
+            test_richtext_field=richtext_value,
             test_textline_field=u'Käfer',
             test_time_field=time(14, 15, 33),
             test_timedelta_field=timedelta(44),
@@ -151,3 +181,171 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
         self.assertIn('is_folderish', obj)
         self.assertEquals(True, obj['is_folderish'])
+
+    def test_richtext_serializer_context(self):
+        """This checks if the context is passed in correctly.
+
+           We define a ITransformer, which returns the contexts portal_type.
+           This is then verfied.
+        """
+
+        class RichtextTransform(object):
+            """RichttextValue to show that the context is correctly passed
+               in throughout the stack.
+            """
+            def __init__(self, context):
+                self.context = context
+
+            def __call__(self, value, mime_type):
+                return self.context.portal_type
+
+        with AdapterCM(RichtextTransform, (Interface, ), ITransformer):
+            obj = self.serialize()
+
+        self.assertEquals(
+            obj['test_richtext_field']['data'],
+            self.portal.doc1.portal_type
+        )
+
+    def test_allow_discussion_by_default(self):
+        """ Not globally addable, not fti enabled, not obj instance enabled """
+        self.portal.invokeFactory('Document', id=u'doc2')
+        serializer = getMultiAdapter((self.portal.doc2, self.request),
+                                     ISerializeToJson)
+        obj = serializer()
+
+        self.assertIn('allow_discussion', obj)
+        self.assertEquals(False, obj['allow_discussion'])
+
+    def test_allow_discussion_obj_instance_allows_but_not_global_enabled(self):
+        self.portal.invokeFactory('Document', id=u'doc2')
+        self.portal.doc2.allow_discussion = True
+        serializer = getMultiAdapter((self.portal.doc2, self.request),
+                                     ISerializeToJson)
+        obj = serializer()
+
+        self.assertIn('allow_discussion', obj)
+        self.assertEquals(False, obj['allow_discussion'])
+
+    def test_allow_discussion_fti_allows_not_global_enabled(self):
+        self.portal.invokeFactory('Document', id=u'doc2')
+        portal_types = getToolByName(self.portal, 'portal_types')
+        document_fti = getattr(portal_types, self.portal.doc2.portal_type)
+        document_fti.allow_discussion = True
+        serializer = getMultiAdapter((self.portal.doc2, self.request),
+                                     ISerializeToJson)
+        obj = serializer()
+
+        self.assertIn('allow_discussion', obj)
+        self.assertEquals(False, obj['allow_discussion'])
+
+    def test_allow_discussion_allows_global_enabled_but_nothing_else(self):
+        self.portal.invokeFactory('Document', id=u'doc2')
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        serializer = getMultiAdapter((self.portal.doc2, self.request),
+                                     ISerializeToJson)
+        obj = serializer()
+
+        self.assertIn('allow_discussion', obj)
+        self.assertEquals(False, obj['allow_discussion'])
+
+    def test_allow_discussion_obj_instance_allows_global_enabled(self):
+        self.portal.invokeFactory('Document', id=u'doc2')
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        self.portal.doc2.allow_discussion = True
+        serializer = getMultiAdapter((self.portal.doc2, self.request),
+                                     ISerializeToJson)
+        obj = serializer()
+
+        self.assertIn('allow_discussion', obj)
+        self.assertEquals(True, obj['allow_discussion'])
+
+    def test_allow_discussion_obj_instance_not_set_global_enabled(self):
+        self.portal.invokeFactory('Document', id=u'doc2')
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        serializer = getMultiAdapter((self.portal.doc2, self.request),
+                                     ISerializeToJson)
+        obj = serializer()
+
+        self.assertIn('allow_discussion', obj)
+        self.assertEquals(False, obj['allow_discussion'])
+
+    def test_allow_discussion_fti_allows_allows_global_enabled(self):
+        self.portal.invokeFactory('Document', id=u'doc2')
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        portal_types = getToolByName(self.portal, 'portal_types')
+        document_fti = getattr(portal_types, self.portal.doc2.portal_type)
+        document_fti.allow_discussion = True
+        serializer = getMultiAdapter((self.portal.doc2, self.request),
+                                     ISerializeToJson)
+        obj = serializer()
+
+        self.assertIn('allow_discussion', obj)
+        self.assertEquals(True, obj['allow_discussion'])
+
+    def test_allow_discussion_fti_allows_allows_global_enabled_but_no_instance_allowed(self): # noqa
+        self.portal.invokeFactory('Document', id=u'doc2')
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        portal_types = getToolByName(self.portal, 'portal_types')
+        document_fti = getattr(portal_types, self.portal.doc2.portal_type)
+        document_fti.allow_discussion = True
+        self.portal.doc2.allow_discussion = False
+
+        serializer = getMultiAdapter((self.portal.doc2, self.request),
+                                     ISerializeToJson)
+        obj = serializer()
+
+        self.assertIn('allow_discussion', obj)
+        self.assertEquals(False, obj['allow_discussion'])
+
+    def test_allow_discussion_fti_allows_allows_global_enabled_but_no_instance_set(self): # noqa
+        self.portal.invokeFactory('Document', id=u'doc2')
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        portal_types = getToolByName(self.portal, 'portal_types')
+        document_fti = getattr(portal_types, self.portal.doc2.portal_type)
+        document_fti.allow_discussion = True
+
+        serializer = getMultiAdapter((self.portal.doc2, self.request),
+                                     ISerializeToJson)
+        obj = serializer()
+
+        self.assertIn('allow_discussion', obj)
+        self.assertEquals(True, obj['allow_discussion'])
+
+    def test_allow_discussion_fti_disallows_allows_global_enabled_but_instance_allowed(self): # noqa
+        self.portal.invokeFactory('Document', id=u'doc2')
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        portal_types = getToolByName(self.portal, 'portal_types')
+        document_fti = getattr(portal_types, self.portal.doc2.portal_type)
+        document_fti.allow_discussion = False
+        self.portal.doc2.allow_discussion = True
+
+        serializer = getMultiAdapter((self.portal.doc2, self.request),
+                                     ISerializeToJson)
+        obj = serializer()
+
+        self.assertIn('allow_discussion', obj)
+        self.assertEquals(True, obj['allow_discussion'])
+
+    def test_allow_discussion_global_enabled_but_instance_has_no_discussion_behavior(self): # noqa
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+
+        obj = self.serialize()
+        self.assertIn('allow_discussion', obj)
+        self.assertEquals(False, obj['allow_discussion'])

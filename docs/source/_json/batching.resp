@@ -5,9 +5,9 @@ Content-Type: application/json
   "@id": "http://localhost:55001/plone/folder/@search", 
   "batching": {
     "@id": "http://localhost:55001/plone/folder/@search?b_size=5&sort_on=path", 
-    "first": "http://localhost:55001/plone/folder/@search?b_size=5&sort_on=path&b_start=0", 
-    "last": "http://localhost:55001/plone/folder/@search?b_size=5&sort_on=path&b_start=5", 
-    "next": "http://localhost:55001/plone/folder/@search?b_size=5&sort_on=path&b_start=5"
+    "first": "http://localhost:55001/plone/folder/@search?b_start=0&b_size=5&sort_on=path", 
+    "last": "http://localhost:55001/plone/folder/@search?b_start=5&b_size=5&sort_on=path", 
+    "next": "http://localhost:55001/plone/folder/@search?b_start=5&b_size=5&sort_on=path"
   }, 
   "items": [
     {

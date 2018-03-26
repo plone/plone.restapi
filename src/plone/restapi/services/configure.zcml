@@ -6,8 +6,8 @@
   <include package="Products.CMFCore" file="permissions.zcml" />
 
   <include package=".auth" />
+  <include package=".actions" />
   <include package=".breadcrumbs"/>
-  <include package=".components"/>
   <include package=".content"/>
   <configure zcml:condition="have plone-5">
     <include package=".controlpanels" />
@@ -28,5 +28,8 @@
   <include package=".workflow"/>
   <include package=".multilingual"
       zcml:condition="have plone-5"/>
-
+  <include package=".email_notification"
+      zcml:condition="have plone-5"/>
+  <include package=".email_send"
+      zcml:condition="have plone-5"/>
 </configure>

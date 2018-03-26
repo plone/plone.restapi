@@ -1,0 +1,9 @@
+PATCH /plone/folder/my-document HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Prefer: return=representation
+Content-Type: application/json
+
+{
+    "title": "My New Document Title"
+}

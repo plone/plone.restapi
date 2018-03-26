@@ -81,6 +81,11 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
         else:
             tzinfo = None
 
+        # This happens when a 'null' is posted for a non-required field.
+        if value is None:
+            self.field.validate(value)
+            return
+
         # Parse ISO 8601 string with Zope's DateTime module
         try:
             dt = DateTime(value).asdatetime()
@@ -131,16 +136,21 @@ class CollectionFieldDeserializer(DefaultFieldDeserializer):
 class DictFieldDeserializer(DefaultFieldDeserializer):
 
     def __call__(self, value):
-        kdeserializer = lambda k: k
-        vdeserializer = lambda v: v
         if IField.providedBy(self.field.key_type):
             kdeserializer = getMultiAdapter(
                 (self.field.key_type, self.context, self.request),
                 IFieldDeserializer)
+        else:
+            def kdeserializer(k):
+                return k
+
         if IField.providedBy(self.field.value_type):
             vdeserializer = getMultiAdapter(
                 (self.field.value_type, self.context, self.request),
                 IFieldDeserializer)
+        else:
+            def vdeserializer(v):
+                return v
 
         new_value = {}
         for k, v in value.items():
@@ -194,7 +204,7 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
                 # We are probably pushing the contents of a previous GET
                 # That contain the read representation of the file
                 # with the 'download' key so we return the same stored file
-                return self.context.image
+                return getattr(self.field.context, self.field.__name__)
 
             content_type = value.get(u'content-type', content_type).encode(
                 'utf8')
@@ -208,13 +218,17 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
                 'content-type', content_type).encode('utf8')
             filename = value.metadata().get('filename', filename)
             data = value.open()
-        elif value is False:
-            return value
         else:
             data = value
 
-        value = self.field._type(
-            data=data, contentType=content_type, filename=filename)
+        # Convert if we have data
+        if data:
+            value = self.field._type(
+                data=data, contentType=content_type, filename=filename)
+        else:
+            value = None
+
+        # Always validate to check for required fields
         self.field.validate(value)
         return value
 

@@ -54,13 +54,24 @@ class TestUsersEndpoint(unittest.TestCase):
             properties=properties,
             password=u'password'
         )
+        properties = {
+            'email': 'otheruser@example.com',
+            'username': 'otheruser',
+            'fullname': 'Other user',
+        }
+        api.user.create(
+            email='otheruser@example.com',
+            username='otheruser',
+            properties=properties,
+            password=u'otherpassword'
+        )
         transaction.commit()
 
     def test_list_users(self):
         response = self.api_session.get('/@users')
 
         self.assertEqual(200, response.status_code)
-        self.assertEqual(3, len(response.json()))
+        self.assertEqual(4, len(response.json()))
         user_ids = [user['id'] for user in response.json()]
         self.assertIn('admin', user_ids)
         self.assertIn('test_user_1_', user_ids)
@@ -76,6 +87,19 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual('web.mit.edu/chomsky', noam.get('home_page'))  # noqa
         self.assertEqual('Professor of Linguistics', noam.get('description'))  # noqa
         self.assertEqual('Cambridge, MA', noam.get('location'))
+
+    def test_list_users_without_being_manager(self):
+        noam_api_session = RelativeSession(self.portal_url)
+        noam_api_session.headers.update({'Accept': 'application/json'})
+        noam_api_session.auth = ('noam', 'password')
+
+        response = noam_api_session.get('/@users')
+        self.assertEqual(response.status_code, 401)
+
+    def test_list_users_as_anonymous(self):
+
+        response = self.anon_api_session.get('/@users')
+        self.assertEqual(response.status_code, 401)
 
     def test_add_user(self):
         response = self.api_session.post(
@@ -226,7 +250,7 @@ class TestUsersEndpoint(unittest.TestCase):
         member = api.user.get(username='howard')
         self.assertEqual(member.getProperty('fullname'), 'Howard Zinn')
 
-    def test_add_anon_user_sends_properties_are_not_saved(self):
+    def test_add_anon_user_sends_properties_are_saved(self):
         security_settings = getAdapter(self.portal, ISecuritySchema)
         security_settings.enable_self_reg = True
         transaction.commit()
@@ -243,7 +267,30 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(201, response.status_code)
         member = api.user.get(username='howard')
-        self.assertEqual(member.getProperty('fullname'), '')
+        self.assertEqual(member.getProperty('fullname'), 'Howard Zinn')
+
+    def test_add_anon_no_roles(self):
+        """Make sure anonymous users cannot set their own roles.
+           Allowing so would make them Manager.
+        """
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.enable_self_reg = True
+        transaction.commit()
+
+        response = self.anon_api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "roles": ['Manager'],
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(400, response.status_code)
+        errors = response.json()['error']['errors']
+        fields = [x['field'] for x in errors]
+        self.assertEqual(['roles'], fields)
 
     def test_get_user(self):
         response = self.api_session.get('/@users/noam')
@@ -262,6 +309,18 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual('web.mit.edu/chomsky', response.json().get('home_page'))  # noqa
         self.assertEqual('Professor of Linguistics', response.json().get('description'))  # noqa
         self.assertEqual('Cambridge, MA', response.json().get('location'))
+
+    def test_get_user_as_anonymous(self):
+        response = self.anon_api_session.get('/@users/noam')
+        self.assertEqual(response.status_code, 401)
+
+    def test_get_other_user_info_when_logged_in(self):
+        noam_api_session = RelativeSession(self.portal_url)
+        noam_api_session.headers.update({'Accept': 'application/json'})
+        noam_api_session.auth = ('noam', 'password')
+
+        response = noam_api_session.get('/@users/otheruser')
+        self.assertEqual(response.status_code, 401)
 
     def test_get_search_user_with_filter(self):
         response = self.api_session.post(
@@ -292,6 +351,39 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 1)
         self.assertEqual('howard', response.json()[0].get('id'))
+
+    def test_get_search_user_with_filter_as_anonymous(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "password": "peopleshistory"
+            },
+        )
+        transaction.commit()
+        response = self.anon_api_session.get(
+            '/@users',
+            params={'query': 'howa'}
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_get_search_user_with_filter_as_unauthorized_user(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "password": "peopleshistory"
+            },
+        )
+        transaction.commit()
+        noam_api_session = RelativeSession(self.portal_url)
+        noam_api_session.headers.update({'Accept': 'application/json'})
+        noam_api_session.auth = ('noam', 'password')
+
+        response = noam_api_session.get('/@users', params={'query': 'howa'})
+        self.assertEqual(response.status_code, 401)
 
     def test_get_non_existing_user(self):
         response = self.api_session.get('/@users/non-existing-user')
@@ -376,6 +468,22 @@ class TestUsersEndpoint(unittest.TestCase):
                                                     {})
         self.assertTrue(authed)
 
+    def test_normal_authenticated_user_cannot_set_other_users_password(self):
+        self.api_session.auth = ('noam', 'password')
+        self.portal.manage_permission(
+            SetOwnPassword, roles=['Authenticated', 'Manager'], acquire=False)
+        transaction.commit()
+
+        payload = {'old_password': 'password',
+                   'new_password': 'new_password'}
+        response = self.api_session.post('/@users/otheruser/reset-password',
+                                         json=payload)
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()['error']['type'],
+                         'Wrong user')
+
     def test_user_set_own_password_requires_set_own_password_permission(self):
         self.api_session.auth = ('noam', 'password')
         self.portal.manage_permission(SetOwnPassword, roles=['Manager'],
@@ -406,6 +514,17 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error']['type'],
                          'Invalid parameters')
+
+    def test_user_set_own_password_checks_old_password(self):
+        self.api_session.auth = ('noam', 'password')
+        payload = {'new_password': 'new_password',
+                   'old_password': 'wrong_password'}
+        response = self.api_session.post('/@users/noam/reset-password',
+                                         json=payload)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.json()['error']['type'],
+                         'Wrong password')
 
     def test_user_set_reset_token_requires_new_password(self):
         self.api_session.auth = ('noam', 'password')
@@ -546,3 +665,40 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(self.mailhost.messages, [])
         self.assertEqual(201, response.status_code)
+
+    def test_anonymous_with_enable_user_sets_only_member_role(self):
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.enable_self_reg = True
+        security_settings.enable_user_pwd_choice = True
+        transaction.commit()
+
+        response = self.anon_api_session.post(
+            '/@users',
+            json={
+                "username": "new_user",
+                'email': 'avram.chomsky@example.com',
+                'password': 'secret'
+            },
+        )
+
+        response = response.json()
+        self.assertIn('Member', response['roles'])
+        self.assertEquals(1, len(response['roles']))
+
+    def test_add_user_no_roles_sets_member_as_sensible_default(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "password": "peopleshistory"
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+
+        response = response.json()
+
+        self.assertIn('Member', response['roles'])
+        self.assertEquals(1, len(response['roles']))

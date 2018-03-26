@@ -112,6 +112,8 @@ After a successful POST, we can access the resource by sending a GET request to 
 ..  http:example:: curl httpie python-requests
     :request: _json/content_get.req
 
+You can also set the `include_items` GET parameter to false if you don't want to include children.
+
 
 Successful Response (200 OK)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -174,7 +176,13 @@ Updating a Resource with PATCH
 ------------------------------
 
 To update an existing resource we send a PATCH request to the server.
-PATCH allows to provide just a subset of the resource (the values you actually want to change):
+PATCH allows to provide just a subset of the resource
+(the values you actually want to change).
+
+If you send the value ``null`` for a field, the field's content will be
+deleted and the ``missing_value`` defined for the field in the schema
+will be set. Note that this is not possible if the field is ``required``,
+and it only works for Dexterity types, not Archetypes:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/content_patch.req
@@ -183,9 +191,22 @@ PATCH allows to provide just a subset of the resource (the values you actually w
 Successful Response (204 No Content)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-A successful response to a PATCH request will be indicated by a :term:`204 No Content` response:
+A successful response to a PATCH request will be indicated by a :term:`204 No Content` response by default:
 
 .. literalinclude:: _json/content_patch.resp
+   :language: http
+
+
+Successful Response (200 OK)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+You can get the object representation by adding a `Prefer` header with a value of `return=representation` to the PATCH request.
+In this case, the response will be a :term:`200 OK`:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/content_patch_representation.req
+
+.. literalinclude:: _json/content_patch_representation.resp
    :language: http
 
 See for full specs the `RFC 5789: PATCH Method for HTTP <http://tools.ietf.org/html/rfc5789>`_

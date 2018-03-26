@@ -190,6 +190,18 @@ class TestJsonSchemaProviders(TestCase):
             ]
         )
 
+    from zope.interface import provider
+    from zope.schema.interfaces import IContextSourceBinder
+
+    @provider(IContextSourceBinder)
+    def dummy_source_vocab(self, context):
+        return SimpleVocabulary(
+            [
+                SimpleTerm(value=u'foo', title=u'Foo'),
+                SimpleTerm(value=u'bar', title=u'Bar')
+            ]
+        )
+
     def test_textline(self):
         field = schema.TextLine(
             title=u'My field',
@@ -324,6 +336,27 @@ class TestJsonSchemaProviders(TestCase):
             title=u'My field',
             description=u'My great field',
             vocabulary=self.dummy_vocabulary,
+        )
+        adapter = getMultiAdapter((field, self.portal, self.request),
+                                  IJsonSchemaProvider)
+
+        self.assertEqual(
+            {
+                'type': 'string',
+                'title': u'My field',
+                'description': u'My great field',
+                'enum': ['foo', 'bar'],
+                'enumNames': ['Foo', 'Bar'],
+                'choices': [('foo', 'Foo'), ('bar', 'Bar')],
+            },
+            adapter.get_schema()
+        )
+
+    def test_choice_source_vocab(self):
+        field = schema.Choice(
+            title=u'My field',
+            description=u'My great field',
+            source=self.dummy_source_vocab,
         )
         adapter = getMultiAdapter((field, self.portal, self.request),
                                   IJsonSchemaProvider)

@@ -3,6 +3,9 @@ Content-Type: application/json
 
 {
   "@components": {
+    "actions": {
+      "@id": "http://localhost:55001/plone/collection/@actions"
+    }, 
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/collection/@breadcrumbs"
     }, 
@@ -16,14 +19,18 @@ Content-Type: application/json
   "@id": "http://localhost:55001/plone/collection", 
   "@type": "Collection", 
   "UID": "SomeUUID000000000000000000000002", 
-  "allow_discussion": null, 
+  "allow_discussion": false, 
   "contributors": [], 
   "created": "2016-01-21T08:14:48+00:00", 
   "creators": [
-    "test_user_1_", 
-    "admin"
+    "test_user_1_"
   ], 
-  "customViewFields": [], 
+  "customViewFields": [
+    "Title", 
+    "Creator", 
+    "Type", 
+    "ModificationDate"
+  ], 
   "description": "This is a collection with two documents", 
   "effective": null, 
   "exclude_from_nav": false, 
@@ -75,10 +82,6 @@ Content-Type: application/json
   "relatedItems": [], 
   "review_state": "private", 
   "rights": "", 
-  "sharing": {
-    "@id": "http://localhost:55001/plone/collection/@sharing", 
-    "title": "Sharing"
-  }, 
   "sort_on": null, 
   "sort_reversed": null, 
   "subjects": [], 

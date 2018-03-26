@@ -1,12 +1,209 @@
 Changelog
 =========
 
-1.0a25 (unreleased)
--------------------
+1.4.2 (unreleased)
+------------------
 
 - Show expired content when GET on a folderish object, include a way to display
   it on @search via the show_inactive parameter
   [sneridagh]
+
+
+1.4.1 (2018-03-22)
+------------------
+
+- Fix serialization of `Discussion Item` and `Collection` content types when
+  called with `fullobjects` parameter.
+  [sneridagh]
+
+
+1.4.0 (2018-03-19)
+------------------
+
+New Features:
+
+- Add expandable @actions endpoint to retrieve portal_actions.
+  [csenger,timo,sneridagh]
+
+
+1.3.1 (2018-03-14)
+------------------
+
+Bugfixes:
+
+- Support null in content PATCH requests to delete a field value
+  (Dexterity only). This fixes #187.
+  [csenger]
+
+
+1.3.0 (2018-03-05)
+------------------
+
+New Features:
+
+- Observe the allow_discussion allowance (global, fti, object) on object
+  serialization.
+  [sneridagh]
+
+- Add '@email-send' endpoint to allow authorized users to send emails to
+  arbitrary addresses (Plone 5 only).
+  [sneridagh]
+
+
+1.2.0 (2018-02-28)
+------------------
+
+New Features:
+
+- Allow users to get their own user information.
+  [erral]
+
+Bugfixes:
+
+- Mark uninstall profile as non-installable.
+  [hvelarde]
+
+- Fix the use of fullobjects in Archetypes based sites @search
+  [erral]
+
+- Fix workflow translations with unicode characters.
+  [Gagaro]
+
+- Fix workflow encoding in transition endpoint
+  [Gagaro]
+
+
+1.1.0 (2018-01-24)
+------------------
+
+New Features:
+
+- Add '@email-notification' endpoint to contact the site owner via email.
+  (Plone 5 only)
+  [sneridagh]
+
+Bugfixes:
+
+- Remove warning about alpha version from docs.
+  [timo]
+
+
+1.0.0 (2018-01-17)
+------------------
+
+Bugfixes:
+
+- Remove deprecated getSiteEncoding import.
+  [timo]
+
+- Build documentation on Plone 5.0.x (before: Plone 4.3.x).
+  [timo]
+
+
+1.0b1 (2018-01-05)
+------------------
+
+Breaking Changes:
+
+- Rename 'url' attribute on navigation / breadcrumb to '@id'.
+  [timo]
+
+New Features:
+
+- Allow client to ask for the full representation of an object after creation
+  by setting the 'Prefer' header on a PATCH request.
+  [Gagaro]
+
+- Support deserialization of a relationChoice field using the contents of the
+  serialization (enhanced by the serializer) output.
+  [sneridagh]
+
+- Allow properties when adding a user.
+  This allows setting the fullname by anonymous users.
+  [jaroel]
+
+- Add support for IContextSourceBinder vocabularies on JSON schema Choice
+  fields adapters.
+  [sneridagh]
+
+- Add upgrade guide.
+  [timo]
+
+Bugfixes:
+
+- Fix issue where POST or PATCH a named file with a download link would
+  always return self.context.image, not the actual file.
+  [jaroel]
+
+- Fix DateTimeDeserializer when posting None for a non-required field.
+  [jaroel]
+
+- Fixed 'required' for DateTime fields.
+  [jaroel]
+
+- Batching: Preserve list-like query string params when canonicalizing URLs.
+  [lgraf]
+
+- Fixed NamedFieldDeserializer to take a null to remove files/images.
+  [jaroel]
+
+- Fixed NamedFieldDeserializer to validate required fields.
+  [jaroel]
+
+- Prevent a fatal error when we get @workflow without permission to get
+  review_history worfklow variable.
+  [thomasdesvenain]
+
+- Make user registration work as default Plone behavior by adding the Member
+  role to the user.
+  [sneridagh]
+
+
+1.0a25 (2017-11-23)
+-------------------
+
+Breaking Changes:
+
+- Remove @components navigation and breadcrumbs. Use top level @navigation and
+  @breadcrumb endpoints instead.
+  [timo]
+
+- Remove "sharing" attributes from GET response.
+  [timo,jaroel]
+
+- Convert richtext using .output_relative_to. Direct conversion from RichText
+  if no longer supported as we *always* need a context for the ITransformer.
+  [jaroel]
+
+New Features:
+
+- Add fullobjects parameter to content GET request.
+  [timo]
+
+- Include descriptions of modified fields in object-modified event.
+  [buchi]
+
+- Add uninstall profile
+  [davilima6]
+
+- Add `include_items` option to `SerializeFolderToJson`.
+  [Gagaro]
+
+Bugfixes:
+
+- Fix error messages for password reset (wrong user and wrong password).
+  [csenger]
+
+- Fix #440, URL and @id wrong in second level get contents call for folderish
+  items.
+  [sneridagh]
+
+- Fix #441, GET in a folderish content with 'fullobjects' is
+  including all items recursively.
+  [sneridagh]
+
+- Fix #443, Ensure the userid returned by `authenticateCredentials` is a byte string and not unicode.
+  [Gagaro]
 
 
 1.0a24 (2017-11-13)

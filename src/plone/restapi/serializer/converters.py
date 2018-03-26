@@ -7,11 +7,11 @@ from datetime import timedelta
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
 from plone.app.textfield.interfaces import IRichTextValue
+from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IJsonCompatible
-from Products.CMFPlone.utils import getSiteEncoding
+from plone.restapi.interfaces import IContextawareJsonCompatible
 from Products.CMFPlone.utils import safe_unicode
-from zope.component import adapter
-from zope.component.hooks import getSite
+from zope.component import adapter, queryMultiAdapter
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.i18nmessageid.message import Message
@@ -21,7 +21,7 @@ from zope.interface import Interface
 import Missing
 
 
-def json_compatible(value):
+def json_compatible(value, context=None):
     """The json_compatible function converts any value to JSON compatible
     data when possible, raising a TypeError for unsupported values.
     This is done by using the IJsonCompatible converters.
@@ -31,7 +31,15 @@ def json_compatible(value):
     Because of that the `json_compatible` helper method should always be
     used for converting values that may be None.
     """
-    return IJsonCompatible(value, None)
+    if context is not None:
+        adapter = queryMultiAdapter(
+            (value, context),
+            IContextawareJsonCompatible
+        )
+        if adapter:
+            return adapter()
+    else:
+        return IJsonCompatible(value, None)
 
 
 @adapter(Interface)
@@ -51,7 +59,7 @@ def default_converter(value):
 @adapter(str)
 @implementer(IJsonCompatible)
 def string_converter(value):
-    return safe_unicode(value, getSiteEncoding(getSite()))
+    return safe_unicode(value, 'utf-8')
 
 
 @adapter(list)
@@ -132,14 +140,21 @@ def timedelta_converter(value):
     return json_compatible(value.total_seconds())
 
 
-@adapter(IRichTextValue)
-@implementer(IJsonCompatible)
-def richtext_converter(value):
-    return {
-        u'data': json_compatible(value.output),
-        u'content-type': json_compatible(value.mimeType),
-        u'encoding': json_compatible(value.encoding),
-    }
+@adapter(IRichTextValue, IDexterityContent)
+@implementer(IContextawareJsonCompatible)
+class RichtextDXContextConverter(object):
+    def __init__(self, value, context):
+        self.value = value
+        self.context = context
+
+    def __call__(self):
+        value = self.value
+        output = value.output_relative_to(self.context)
+        return {
+            u'data': json_compatible(output),
+            u'content-type': json_compatible(value.mimeType),
+            u'encoding': json_compatible(value.encoding),
+        }
 
 
 @adapter(Message)

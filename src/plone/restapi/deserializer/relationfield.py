@@ -19,6 +19,11 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
         obj = None
 
+        if isinstance(value, dict):
+            # We are trying to deserialize the output of a serialization
+            # which is enhanced, extract it and put it on the loop again
+            value = value['@id']
+
         if isinstance(value, int):
             # Resolve by intid
             intids = queryUtility(IIntIds)

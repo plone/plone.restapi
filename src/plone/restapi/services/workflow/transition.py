@@ -63,6 +63,6 @@ class WorkflowTransition(Service):
         action['title'] = self.context.translate(
             wftool.getTitleForStateOnType(
                 action['review_state'],
-                self.context.portal_type))
+                self.context.portal_type).decode('utf8'))
 
         return json_compatible(action)

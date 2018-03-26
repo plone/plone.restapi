@@ -27,7 +27,8 @@ class TestContentPatch(unittest.TestCase):
         self.portal.invokeFactory(
             'Document',
             id='doc1',
-            title='My Document'
+            title='My Document',
+            description='Some Description'
         )
         wftool = getToolByName(self.portal, 'portal_workflow')
         wftool.doActionFor(self.portal.doc1, 'publish')
@@ -41,6 +42,56 @@ class TestContentPatch(unittest.TestCase):
             data='{"title": "Patched Document"}',
         )
         self.assertEqual(204, response.status_code)
+        transaction.begin()
+        self.assertEqual("Patched Document", self.portal.doc1.Title())
+
+    def test_patch_document_will_delete_value_with_null(self):
+        self.assertEqual(self.portal.doc1.description, 'Some Description')
+        response = requests.patch(
+            self.portal.doc1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            data='{"description": null}',
+        )
+        transaction.commit()
+
+        # null will set field.missing_value which is u'' for the field
+        self.assertEqual(204, response.status_code)
+        self.assertEqual(u'', self.portal.doc1.description)
+
+    def test_patch_document_will_not_delete_value_with_null_if_required(self):
+        response = requests.patch(
+            self.portal.doc1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            data='{"title": null}',
+        )
+        transaction.commit()
+
+        # null will set field.missing_value which is u'' for the field
+        self.assertEqual(400, response.status_code)
+        self.assertTrue("\'field\': \'title\'" in response.text)
+        self.assertTrue(
+            'title is a required field.'
+            in response.text
+        )
+        self.assertTrue(
+             'Setting it to null is not allowed.'
+             in response.text
+        )
+
+    def test_patch_document_with_representation(self):
+        response = requests.patch(
+            self.portal.doc1.absolute_url(),
+            headers={
+                'Accept': 'application/json',
+                'Prefer': 'return=representation'
+            },
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            data='{"title": "Patched Document"}',
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.json()['title'], "Patched Document")
         transaction.begin()
         self.assertEqual("Patched Document", self.portal.doc1.Title())
 
@@ -78,39 +129,6 @@ class TestContentPatch(unittest.TestCase):
             data='{"title": "Patched Document"}',
         )
         self.assertEqual(401, response.status_code)
-
-    def test_patch_image_with_null_image_dont_fail_and_unsets_image(self):
-        response = requests.post(
-            self.portal.absolute_url(),
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-            json={
-                '@type': 'Image',
-                'image': {
-                    'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',  # noqa
-                    'encoding': u'base64',
-                    'content-type': u'image/gif',
-                }
-            },
-        )
-        transaction.commit()
-
-        response = response.json()
-        image_url = self.portal[response['id']].absolute_url()
-        response = requests.patch(
-            image_url,
-            headers={'Accept': 'application/json'},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-            json={
-                'image': False
-            }
-        )
-        transaction.commit()
-        response = requests.get(
-            image_url,
-            headers={'Accept': 'application/json'})
-
-        self.assertIsNone(response.json()['image'])
 
     def test_patch_image_with_the_contents_of_the_get_preserves_image(self):
         response = requests.post(

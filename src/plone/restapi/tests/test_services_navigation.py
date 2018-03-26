@@ -48,11 +48,11 @@ class TestServicesNavigation(unittest.TestCase):
                 'items': [
                     {
                         u'title': u'Home',
-                        u'url': u'http://localhost:55001/plone'
+                        u'@id': u'http://localhost:55001/plone'
                     },
                     {
                         u'title': u'Some Folder',
-                        u'url': u'http://localhost:55001/plone/folder'
+                        u'@id': u'http://localhost:55001/plone/folder'
                     }
                 ]
             }

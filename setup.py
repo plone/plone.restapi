@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.0a25.dev0'
+version = '1.4.2-dev.0'
 
 long_description = (
     open('README.rst').read() + '\n' +
@@ -17,7 +17,7 @@ setup(name='plone.restapi',
       # Get more strings from
       # http://pypi.python.org/pypi?%3Aaction=list_classifiers
       classifiers=[
-          "Development Status :: 3 - Alpha",
+          "Development Status :: 5 - Production/Stable",
           "Environment :: Web Environment",
           "Framework :: Plone",
           "Framework :: Plone :: 4.3",
@@ -30,7 +30,7 @@ setup(name='plone.restapi',
           "Topic :: Software Development :: Libraries :: Python Modules",
       ],
       keywords='plone rest restful hypermedia api json',
-      author='Timo Stollenwerk',
+      author='Timo Stollenwerk (kitconcept GmbH)',
       author_email='tisto@plone.org',
       url='https://github.com/plone/plone.restapi/',
       license='gpl',

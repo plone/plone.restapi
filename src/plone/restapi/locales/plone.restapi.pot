@@ -1,0 +1,66 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2018-03-02 15:33+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"Language-Code: en\n"
+"Language-Name: English\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: plone.restapi\n"
+
+#: plone/restapi/services/email_send/post.py:81
+msgid "${sender_fullname} via ${portal_title}"
+msgstr ""
+
+#: plone/restapi/services/email_send/post.py:76
+msgid "A portal user via ${portal_title}"
+msgstr ""
+
+#: plone/restapi/configure.zcml:39
+msgid "Adds sample content for performance testing"
+msgstr ""
+
+#: plone/restapi/configure.zcml:31
+msgid "Adds sample content types for testing"
+msgstr ""
+
+#: plone/restapi/configure.zcml:55
+msgid "RESTful hypermedia API for Plone - Uninstall"
+msgstr ""
+
+#: plone/restapi/configure.zcml:22
+msgid "RESTful hypermedia API for Plone."
+msgstr ""
+
+#: plone/restapi/services/history/patch.py:30
+msgid "Reverted to revision ${version}"
+msgstr ""
+
+#: plone/restapi/services/email_send/post.py:88
+msgid "You are receiving this mail because ${sender_fullname} sent this message via the site ${portal_title}:"
+msgstr ""
+
+#: plone/restapi/configure.zcml:22
+msgid "plone.restapi"
+msgstr ""
+
+#: plone/restapi/configure.zcml:39
+msgid "plone.restapi performance testing"
+msgstr ""
+
+#: plone/restapi/configure.zcml:31
+msgid "plone.restapi testing"
+msgstr ""
+
+#: plone/restapi/upgrades/configure.zcml:23
+msgid "plone.restapi.upgrades.0002"
+msgstr ""

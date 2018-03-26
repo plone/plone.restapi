@@ -16,6 +16,29 @@ The server will respond with a list of all users in the portal:
 .. literalinclude:: _json/users.resp
    :language: http
 
+
+This only works for Manager users, anonymous users or logged-in users without Manager rights are now allowed to list users. This is the example as an anonymous user:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_anonymous.req
+
+The server will return a 401 Unauthorized status code
+
+.. literalinclude:: _json/users_anonymous.resp
+   :language: http
+
+
+And this one as an user without the proper rights:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_unauthorized.req
+
+The server will return a 401 Unauthorized status code
+
+.. literalinclude:: _json/users_unauthorized.resp
+   :language: http
+
+
 The endpoint supports some basic filtering:
 
 ..  http:example:: curl httpie python-requests
@@ -48,6 +71,8 @@ If the user has been created successfully, the server will respond with a status
 .. literalinclude:: _json/users_created.resp
    :language: http
 
+If no roles has been specified, then a default ``Member`` role is added as a sensible default.
+
 
 Read User
 ---------
@@ -64,6 +89,35 @@ The server will respond with a 200 OK status code and the JSON representation of
 
 The key 'roles' lists the globally defined roles for the user.
 
+Only users with Manager rights are allowed to get other users' information:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_unauthorized_get.req
+
+If the user lacks this rights, the server will respond with a 401 Unauthorized status code:
+
+.. literalinclude:: _json/users_unauthorized_get.resp
+   :language: http
+
+Also anonymous users are not allowed to get users' information:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_anonymous_get.req
+
+If the user is an anonymous one, the server will respond with a 401 Unauthorized status code:
+
+.. literalinclude:: _json/users_anonymous_get.resp
+   :language: http
+
+But each user is allowed to get its own information.
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_authorized_get.req
+
+In this case, the server will respond with a 200 OK status code and the JSON respresentation of the user in the body:
+
+.. literalinclude:: _json/users_authorized_get.resp
+   :language: http
 
 Update User
 -----------
@@ -96,6 +150,27 @@ A successful response will be indicated by a :term:`204 No Content` response:
    :language: http
 
 
+User registration
+-----------------
+
+Plone allows you to enable the auto registration of users.
+If it is enabled, then an anonymous user can register a new user using the user creation endpoint.
+This new user will have the role ``Member`` by default as the Plone registration process also does.
+
+To create a new user send a POST request to the '@users' endpoint:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/users_add.req
+
+If the user should receive an email to set her password, you should pass 'sendPasswordReset": true' in the JSON body of the request.
+Keep in mind that Plone will send a URL that points to the URL of the Plone site, which might just be your API endpoint.
+
+If the user has been created, the server will respond with a :term:`201 Created` response:
+
+..  literalinclude:: _json/users_add.resp
+    :language: http
+
+
 Reset User Password
 -------------------
 
@@ -108,7 +183,7 @@ Plone allows to reset a password for a user by sending a POST request to the use
 The server will respond with a :term:`200 OK` response and send an email to the user to reset her password.
 
 The token that is part of the reset url in the email can be used to
-authorize setting a new password::
+authorize setting a new password:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/users_reset.req

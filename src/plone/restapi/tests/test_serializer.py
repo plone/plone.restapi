@@ -37,13 +37,6 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                                      ISerializeToJson)
         return serializer()
 
-    @unittest.skip('We do not include the context at this point')
-    def test_serialize_returns_context(self):
-        self.assertEqual(
-            self.serialize(self.portal.doc1)['@context'],
-            u'http://www.w3.org/ns/hydra/context.jsonld'
-        )
-
     def test_serialize_returns_id(self):
         self.assertEqual(
             self.serialize(self.portal.doc1)['@id'],

@@ -13,6 +13,7 @@ from zope.schema.interfaces import IBool
 from zope.schema.interfaces import IBytes
 from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
+from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.interfaces import IDate
 from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IDecimal
@@ -254,6 +255,9 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
                 name=self.field.vocabularyName)(self.context)
         else:
             vocabulary = self.field.vocabulary
+
+        if IContextSourceBinder.providedBy(vocabulary):
+            vocabulary = vocabulary(self.context)
 
         if hasattr(vocabulary, '__iter__') and self.should_render_choices:
             for term in vocabulary:

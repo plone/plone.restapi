@@ -4,6 +4,7 @@ from datetime import datetime
 from DateTime import DateTime
 from datetime import timedelta
 from freezegun import freeze_time
+from pkg_resources import parse_version
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
@@ -42,7 +43,6 @@ if PAM_INSTALLED:
     from plone.app.multilingual.interfaces import ITranslationManager
 
 
-
 TUS_HEADERS = [
     'upload-offset',
     'upload-length',
@@ -58,6 +58,7 @@ REQUEST_HEADER_KEYS = [
     'accept',
     'authorization',
     'lock-token',
+    'prefer',
 ] + TUS_HEADERS
 
 RESPONSE_HEADER_KEYS = [
@@ -82,6 +83,8 @@ UPLOAD_LENGTH = len(UPLOAD_DATA)
 
 UPLOAD_PDF_MIMETYPE = 'application/pdf'
 UPLOAD_PDF_FILENAME = 'file.pdf'
+
+PLONE_VERSION = parse_version(api.env.plone_version())
 
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
@@ -136,11 +139,13 @@ def save_request_and_response_for_docs(name, response):
         resp.write(response.content)
 
 
-class TestTraversal(unittest.TestCase):
+class TestDocumentation(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if PLONE_VERSION.base_version >= '5.1':
+            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
@@ -238,6 +243,18 @@ class TestTraversal(unittest.TestCase):
             }
         )
         save_request_and_response_for_docs('content_patch', response)
+
+        response = self.api_session.patch(
+            document.absolute_url(),
+            headers={'Prefer': 'return=representation'},
+            json={
+                'title': 'My New Document Title',
+            }
+        )
+        save_request_and_response_for_docs(
+            'content_patch_representation',
+            response
+        )
 
         transaction.commit()
         response = self.api_session.delete(document.absolute_url())
@@ -526,6 +543,39 @@ class TestTraversal(unittest.TestCase):
         response = self.api_session.get('/@users')
         save_request_and_response_for_docs('users', response)
 
+    def test_documentation_users_as_anonymous(self):
+        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session.headers.update({'Accept': 'application/json'})
+
+        response = logged_out_api_session.get('@users')
+        save_request_and_response_for_docs('users_anonymous', response)
+        self.assertEqual(response.status_code, 401)
+
+    def test_documentations_users_as_unauthorized_user(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            password='password',
+            properties=properties
+        )
+        transaction.commit()
+
+        standard_api_session = RelativeSession(self.portal_url)
+        standard_api_session.headers.update({'Accept': 'application/json'})
+        standard_api_session.auth = ('noam', 'password')
+
+        response = standard_api_session.get('@users')
+        save_request_and_response_for_docs('users_unauthorized', response)
+        self.assertEqual(response.status_code, 401)
+
     def test_documentation_users_get(self):
         properties = {
             'email': 'noam.chomsky@example.com',
@@ -543,6 +593,83 @@ class TestTraversal(unittest.TestCase):
         transaction.commit()
         response = self.api_session.get('@users/noam')
         save_request_and_response_for_docs('users_get', response)
+
+    def test_documentation_users_anonymous_get(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            properties=properties
+        )
+        transaction.commit()
+
+        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session.headers.update({'Accept': 'application/json'})
+
+        response = logged_out_api_session.get('@users/noam')
+        save_request_and_response_for_docs('users_anonymous_get', response)
+
+    def test_documentation_users_unauthorized_get(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            password='secret',
+            properties=properties
+        )
+
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam-fake',
+            password='secret',
+            properties=properties
+        )
+
+        transaction.commit()
+
+        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session.headers.update({'Accept': 'application/json'})
+        logged_out_api_session.auth = ('noam-fake', 'secret')
+
+        response = logged_out_api_session.get('@users/noam')
+        save_request_and_response_for_docs('users_unauthorized_get', response)
+
+    def test_documentation_users_authorized_get(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            password='secret',
+            properties=properties
+        )
+        transaction.commit()
+
+        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session.headers.update({'Accept': 'application/json'})
+        logged_out_api_session.auth = ('noam', 'secret')
+        response = logged_out_api_session.get('@users/noam')
+        save_request_and_response_for_docs('users_authorized_get', response)
 
     def test_documentation_users_filtered_get(self):
         properties = {
@@ -577,6 +704,21 @@ class TestTraversal(unittest.TestCase):
             },
         )
         save_request_and_response_for_docs('users_created', response)
+
+    def test_documentation_users_add(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                'email': 'noam.chomsky@example.com',
+                'username': 'noamchomsky',
+                'fullname': 'Noam Avram Chomsky',
+                'home_page': 'web.mit.edu/chomsky',
+                'description': 'Professor of Linguistics',
+                'location': 'Cambridge, MA',
+                'sendPasswordReset': True
+            },
+        )
+        save_request_and_response_for_docs('users_add', response)
 
     def test_documentation_users_update(self):
         properties = {
@@ -732,16 +874,6 @@ class TestTraversal(unittest.TestCase):
             '{}/@navigation'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('navigation', response)
 
-    def test_documentation_componente_breadcrumbs(self):
-        response = self.api_session.get(
-            '{}/@components/breadcrumbs'.format(self.document.absolute_url()))
-        save_request_and_response_for_docs('component_breadcrumbs', response)
-
-    def test_documentation_components_navigation(self):
-        response = self.api_session.get(
-            '{}/@components/navigation'.format(self.document.absolute_url()))
-        save_request_and_response_for_docs('component_navigation', response)
-
     def test_documentation_principals(self):
         gtool = api.portal.get_tool('portal_groups')
         properties = {
@@ -868,7 +1000,7 @@ class TestTraversal(unittest.TestCase):
 
     def test_documentation_expansion_expanded_full(self):
         response = self.api_session.get(
-            '/front-page?expand=breadcrumbs,navigation,schema,workflow'
+            '/front-page?expand=actions,breadcrumbs,navigation,schema,workflow'
         )
         save_request_and_response_for_docs('expansion_expanded_full', response)
 
@@ -1064,6 +1196,8 @@ class TestCommenting(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if PLONE_VERSION.base_version >= '5.1':
+            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
@@ -1234,12 +1368,14 @@ class TestCommenting(unittest.TestCase):
         save_request_and_response_for_docs('controlpanels_get_item', response)
 
 
-@unittest.skipUnless(PAM_INSTALLED, 'plone.app.multilingual is installed by default only in Plone 5')
+@unittest.skipUnless(PAM_INSTALLED, 'plone.app.multilingual is installed by default only in Plone 5')  # NOQA
 class TestPAMDocumentation(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if PLONE_VERSION.base_version >= '5.1':
+            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']

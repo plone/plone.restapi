@@ -4,6 +4,7 @@ from plone.app.testing import setRoles
 from plone.dexterity.interfaces import IDexterityItem
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import ITestAnnotationsBehavior
 from plone.restapi.tests.mixin_ordering import OrderingMixin
@@ -12,6 +13,7 @@ from zope.component import getMultiAdapter
 from zope.component import provideHandler
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
+import json
 import unittest
 
 
@@ -73,6 +75,16 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         self.deserialize(body='{"test_textline_field": "My Item"}')
         self.assertTrue(getattr(self.portal.doc1, '_handler_called', False),
                         'IObjectEditedEvent not notified')
+
+    def test_deserializer_modified_event_contains_descriptions(self):
+        def handler(obj, event):
+            self.event = event
+        provideHandler(handler, (IDexterityItem, IObjectModifiedEvent,))
+        self.deserialize(body='{"test_textline_field": "My Item"}')
+        self.assertEquals(1, len(self.event.descriptions))
+        self.assertEquals(
+            ('IDXTestDocumentSchema.test_textline_field',),
+            self.event.descriptions[0].attributes)
 
     def test_deserializer_does_not_update_field_without_write_permission(self):
         self.portal.doc1.test_write_permission_field = u'Test Write Permission'
@@ -150,8 +162,81 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         self.assertEquals(u'DefaultFactory',
                           self.portal.doc1.test_default_factory_field)
 
+    def test_deserializer_sets_missing_value_when_receiving_null(self):
+        self.deserialize(body='{"test_missing_value_field": null}')
+        self.assertEquals(u'missing',
+                          self.portal.doc1.test_missing_value_field)
+
+    def test_deserializer_sets_missing_value_on_required_field(self):
+        '''We don't set missing_value if the field is required'''
+        self.deserialize(
+            body='{"test_missing_value_required_field": "valid value"}')
+        with self.assertRaises(BadRequest) as cm:
+            self.deserialize(
+                body='{"test_missing_value_required_field": null}')
+        self.assertEquals(u'valid value',
+                          self.portal.doc1.test_missing_value_required_field)
+        self.assertEquals(
+            (
+                'test_missing_value_required_field is a required field.',
+                'Setting it to null is not allowed.'
+            ),
+            cm.exception.message[0]['message']
+        )
+        self.assertEquals(u'test_missing_value_required_field',
+                          cm.exception.message[0]['field'])
+
     def test_set_layout(self):
         current_layout = self.portal.doc1.getLayout()
         self.assertNotEquals(current_layout, "my_new_layout")
         self.deserialize(body='{"layout": "my_new_layout"}')
         self.assertEquals('my_new_layout', self.portal.doc1.getLayout())
+
+
+class TestDXContentSerializerDeserializer(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.portal = self.layer['portal']
+        self.request = self.layer['request']
+
+        self.portal.invokeFactory(
+            'DXTestDocument',
+            id=u'doc1',
+            test_textline_field=u'Test Document',
+            test_readonly_field=u'readonly')
+
+        self.portal.invokeFactory(
+            'DXTestDocument',
+            id=u'doc2',
+            test_textline_field=u'Test Document 2',
+            test_readonly_field=u'readonly')
+
+    def deserialize(self, field, value, validate_all=False, context=None):
+        context = context or self.portal.doc1
+        body = {}
+        body[field] = value
+        body = json.dumps(body)
+        self.request['BODY'] = body
+        deserializer = getMultiAdapter((context, self.request),
+                                       IDeserializeFromJson)
+        return deserializer(validate_all=validate_all)
+
+    def serialize(self, field):
+        serializer = getMultiAdapter((self.portal.doc1, self.request),
+                                     ISerializeToJson)
+        return serializer()[field]
+
+    def test_serialize2deserialize_relation(self):
+        value = unicode(self.portal.doc2.UID())
+        self.deserialize('test_relationchoice_field', value)
+
+        serialization_value = self.serialize('test_relationchoice_field')
+
+        self.deserialize('test_relationchoice_field', serialization_value)
+
+        self.assertEquals(
+            serialization_value['@id'],
+            self.portal.doc1.test_relationchoice_field.to_object.absolute_url()
+        )

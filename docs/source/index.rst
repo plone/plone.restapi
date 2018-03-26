@@ -7,8 +7,6 @@
 plone.restapi: A RESTful hypermedia API for Plone.
 ==================================================
 
-.. include:: /alert-noindex.rst
-
 Contents
 --------
 
@@ -27,6 +25,7 @@ Contents
    comments
    copymove
    expansion
+   actions
    workflow
    locking
    sharing
@@ -46,6 +45,8 @@ Contents
    customization
    conventions
    translations
+   email-send
+   upgrade-guide
 
 .. include:: ../../README.rst
 

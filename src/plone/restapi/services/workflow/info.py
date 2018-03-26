@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from Products.CMFCore.WorkflowCore import WorkflowException
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.interfaces._content import IWorkflowAware
 from plone.restapi.interfaces import IExpandableElement
@@ -27,7 +28,10 @@ class WorkflowInfo(object):
             return result
 
         wftool = getToolByName(self.context, 'portal_workflow')
-        history = wftool.getInfoFor(self.context, "review_history")
+        try:
+            history = wftool.getInfoFor(self.context, "review_history")
+        except WorkflowException:
+            history = []
 
         actions = wftool.listActionInfos(object=self.context)
         transitions = []
@@ -38,14 +42,17 @@ class WorkflowInfo(object):
             transitions.append({
                 '@id': '{}/@workflow/{}'.format(
                     self.context.absolute_url(), action['id']),
-                'title': self.context.translate(action['title']),
+                'title': self.context.translate(
+                    action['title'].decode('utf8')),
             })
 
         for item, action in enumerate(history):
             history[item]['title'] = self.context.translate(
                 wftool.getTitleForStateOnType(
                     action['review_state'],
-                    self.context.portal_type))
+                    self.context.portal_type
+                ).decode('utf8')
+            )
 
         result['workflow'].update({
             'history': json_compatible(history),
