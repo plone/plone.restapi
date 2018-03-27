@@ -409,6 +409,26 @@ class TestUsersEndpoint(unittest.TestCase):
             noam.getProperty('email')
         )
 
+    def test_update_user_by_himself(self):
+        payload = {
+            'fullname': 'Noam A. Chomsky',
+            'username': 'noam',
+            'email': 'avram.chomsky@plone.org'
+        }
+        self.api_session.auth = ('noam', 'password')
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        noam = api.user.get(userid='noam')
+        self.assertEqual('noam', noam.getUserId())  # user id never changes
+        self.assertEqual('Noam A. Chomsky', noam.getProperty('fullname'))
+        self.assertEqual(
+            'avram.chomsky@plone.org',
+            noam.getProperty('email')
+        )
+
     def test_update_roles(self):
         self.assertNotIn('Contributor', api.user.get_roles(username='noam'))
 
@@ -440,6 +460,28 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertNotEqual(
             old_password_hashes['noam'], new_password_hashes['noam']
         )
+
+    def test_update_user_anon(self):
+        payload = {
+            'fullname': 'Noam A. Chomsky',
+            'username': 'noam',
+            'email': 'avram.chomsky@plone.org'
+        }
+        self.api_session.auth = ('noam', 'password')
+        response = self.anon_api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_update_user_not_self(self):
+        payload = {
+            'fullname': 'Noam A. Chomsky',
+            'username': 'noam',
+            'email': 'avram.chomsky@plone.org'
+        }
+        self.api_session.auth = ('otheruser', 'otherpassword')
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 403)
 
     def test_user_requests_password_reset_mail(self):
         self.api_session.auth = ('noam', 'password')
