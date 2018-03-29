@@ -409,7 +409,7 @@ class TestUsersEndpoint(unittest.TestCase):
             noam.getProperty('email')
         )
 
-    def test_update_user_by_himself(self):
+    def test_user_can_update_himself(self):
         payload = {
             'fullname': 'Noam A. Chomsky',
             'username': 'noam',
@@ -461,7 +461,7 @@ class TestUsersEndpoint(unittest.TestCase):
             old_password_hashes['noam'], new_password_hashes['noam']
         )
 
-    def test_update_user_anon(self):
+    def test_anonymous_user_can_not_update_existing_user(self):
         payload = {
             'fullname': 'Noam A. Chomsky',
             'username': 'noam',
@@ -472,7 +472,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(response.status_code, 401)
 
-    def test_update_user_not_self(self):
+    def test_user_can_not_update_another_user(self):
         payload = {
             'fullname': 'Noam A. Chomsky',
             'username': 'noam',
@@ -483,7 +483,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_user_requests_password_reset_mail(self):
+    def test_user_requests_password_sends_password_via_mail(self):
         self.api_session.auth = ('noam', 'password')
         payload = {}
         response = self.api_session.post('/@users/noam/reset-password',
@@ -493,7 +493,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         # FIXME: Test that mail is sent
 
-    def test_user_set_own_password(self):
+    def test_user_can_set_her_own_password(self):
         self.api_session.auth = ('noam', 'password')
         self.portal.manage_permission(
             SetOwnPassword, roles=['Authenticated', 'Manager'], acquire=False)
