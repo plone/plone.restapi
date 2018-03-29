@@ -135,6 +135,7 @@ A successful response to a PATCH request will be indicated by a :term:`204 No Co
 .. note::
   The 'roles' object is a mapping of a role and a boolean indicating adding or removing.
 
+Any user is able to update their own properties and password (if allowed) by using the same request.
 
 Delete User
 -----------

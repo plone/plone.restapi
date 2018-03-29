@@ -4,7 +4,8 @@ Changelog
 1.4.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Allow users to update their own properties and password.
+  [sneridagh]
 
 
 1.4.1 (2018-03-22)
