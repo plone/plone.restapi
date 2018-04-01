@@ -4,12 +4,16 @@ Changelog
 1.4.2 (unreleased)
 ------------------
 
+New Features:
+
 - Allow users to update their own properties and password.
   [sneridagh]
 
 
 1.4.1 (2018-03-22)
 ------------------
+
+Bugfixes:
 
 - Fix serialization of `Discussion Item` and `Collection` content types when
   called with `fullobjects` parameter.
