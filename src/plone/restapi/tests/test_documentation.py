@@ -876,32 +876,32 @@ class TestDocumentation(unittest.TestCase):
         save_request_and_response_for_docs('navigation', response)
 
     def test_documentation_navigation_tree(self):
-        self.folder = createContentInContainer(
+        folder = createContentInContainer(
             self.portal, u'Folder',
             id=u'folder',
             title=u'Some Folder')
-        self.folder2 = createContentInContainer(
+        createContentInContainer(
             self.portal, u'Folder',
             id=u'folder2',
             title=u'Some Folder 2')
-        self.subfolder1 = createContentInContainer(
-            self.folder, u'Folder',
+        subfolder1 = createContentInContainer(
+            folder, u'Folder',
             id=u'subfolder1',
             title=u'SubFolder 1')
-        self.subfolder2 = createContentInContainer(
-            self.folder, u'Folder',
+        createContentInContainer(
+            folder, u'Folder',
             id=u'subfolder2',
             title=u'SubFolder 2')
-        self.thirdlevelfolder = createContentInContainer(
-            self.subfolder1, u'Folder',
+        thirdlevelfolder = createContentInContainer(
+            subfolder1, u'Folder',
             id=u'thirdlevelfolder',
             title=u'Third Level Folder')
-        self.fourthlevelfolder = createContentInContainer(
-            self.thirdlevelfolder, u'Folder',
+        createContentInContainer(
+            thirdlevelfolder, u'Folder',
             id=u'fourthlevelfolder',
             title=u'Fourth Level Folder')
         createContentInContainer(
-            self.folder, u'Document',
+            folder, u'Document',
             id=u'doc1',
             title=u'A document')
         transaction.commit()
@@ -909,7 +909,7 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.get(
             '{}/@navigation'.format(self.document.absolute_url()),
             params={
-                "navigation.depth": 4
+                "expand.navigation.depth": 4
             })
         save_request_and_response_for_docs('navigation_tree', response)
 

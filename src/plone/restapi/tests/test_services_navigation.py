@@ -87,7 +87,7 @@ class TestServicesNavigation(unittest.TestCase):
         response = self.api_session.get(
             '/folder/@navigation',
             params={
-                "navigation.depth": 2
+                "expand.navigation.depth": 2
             })
 
         self.assertEqual(response.status_code, 200)
@@ -100,7 +100,7 @@ class TestServicesNavigation(unittest.TestCase):
         response = self.api_session.get(
             '/folder/@navigation',
             params={
-                "navigation.depth": 3
+                "expand.navigation.depth": 3
             })
 
         self.assertEqual(
@@ -114,7 +114,7 @@ class TestServicesNavigation(unittest.TestCase):
         response = self.api_session.get(
             '/folder/@navigation',
             params={
-                "navigation.depth": 4
+                "expand.navigation.depth": 4
             })
 
         self.assertEqual(

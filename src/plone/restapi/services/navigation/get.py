@@ -70,8 +70,12 @@ class Navigation(object):
         self.request = request
         self.portal = getSite()
 
-    def __call__(self, expand=False, depth=1):
-        self.depth = depth
+    def __call__(self, expand=False):
+        if self.request.form.get('expand.navigation.depth', False):
+            self.depth = int(self.request.form['expand.navigation.depth'])
+        else:
+            self.depth = 1
+
         result = {
             'navigation': {
                 '@id': '{}/@navigation'.format(self.context.absolute_url()),
@@ -153,9 +157,5 @@ class Navigation(object):
 class NavigationGet(Service):
 
     def reply(self):
-        if self.request.form.get('navigation.depth', False):
-            depth = int(self.request.form['navigation.depth'])
-        else:
-            depth = 1
         navigation = Navigation(self.context, self.request)
-        return navigation(expand=True, depth=depth)['navigation']
+        return navigation(expand=True)['navigation']

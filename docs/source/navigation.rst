@@ -13,7 +13,7 @@ Example response:
 .. literalinclude:: _json/navigation.resp
    :language: http
 
-Getting the navigation item tree providing a `navigation.depth` parameter:
+Getting the navigation item tree providing a `expand.navigation.depth` parameter:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/navigation_tree.req
