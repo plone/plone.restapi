@@ -5,8 +5,9 @@ Changelog
 ------------------
 
 - Improve the navigation endpoint by being able to return the items navigation
-  tree providing a `navigation.depth` parameter
-  [sneridagh]
+  tree providing a `navigation.depth` parameter. Borrowed and adapted code from
+  collective.restapi.navigationtree authored by @fulv.
+  [fulv, sneridagh]
 
 
 1.5.0 (2018-04-03)
