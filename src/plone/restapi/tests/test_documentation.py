@@ -17,6 +17,7 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
+from plone.dexterity.utils import createContentInContainer
 from plone.locking.interfaces import ITTWLockable
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
@@ -873,6 +874,44 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.get(
             '{}/@navigation'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('navigation', response)
+
+    def test_documentation_navigation_tree(self):
+        self.folder = createContentInContainer(
+            self.portal, u'Folder',
+            id=u'folder',
+            title=u'Some Folder')
+        self.folder2 = createContentInContainer(
+            self.portal, u'Folder',
+            id=u'folder2',
+            title=u'Some Folder 2')
+        self.subfolder1 = createContentInContainer(
+            self.folder, u'Folder',
+            id=u'subfolder1',
+            title=u'SubFolder 1')
+        self.subfolder2 = createContentInContainer(
+            self.folder, u'Folder',
+            id=u'subfolder2',
+            title=u'SubFolder 2')
+        self.thirdlevelfolder = createContentInContainer(
+            self.subfolder1, u'Folder',
+            id=u'thirdlevelfolder',
+            title=u'Third Level Folder')
+        self.fourthlevelfolder = createContentInContainer(
+            self.thirdlevelfolder, u'Folder',
+            id=u'fourthlevelfolder',
+            title=u'Fourth Level Folder')
+        createContentInContainer(
+            self.folder, u'Document',
+            id=u'doc1',
+            title=u'A document')
+        transaction.commit()
+
+        response = self.api_session.get(
+            '{}/@navigation'.format(self.document.absolute_url()),
+            params={
+                "navigation.depth": 4
+            })
+        save_request_and_response_for_docs('navigation_tree', response)
 
     def test_documentation_principals(self):
         gtool = api.portal.get_tool('portal_groups')

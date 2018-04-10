@@ -153,11 +153,13 @@ class TestExpansionFunctional(unittest.TestCase):
             [
                 {
                     u'title': u'Home',
-                    u'@id': u'http://localhost:55001/plone'
+                    u'@id': u'http://localhost:55001/plone',
+                    u'description': u'',
                 },
                 {
                     u'title': u'Some Folder',
-                    u'@id': u'http://localhost:55001/plone/folder'
+                    u'@id': u'http://localhost:55001/plone/folder',
+                    u'description': u'',
                 }
             ],
             response.json()['@components']['navigation']['items']

@@ -4,7 +4,9 @@ Changelog
 1.5.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Improve the navigation endpoint by being able to return the items navigation
+  tree providing a `navigation.depth` parameter
+  [sneridagh]
 
 
 1.5.0 (2018-04-03)

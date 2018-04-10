@@ -1,0 +1,62 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/front-page/@navigation", 
+  "items": [
+    {
+      "@id": "http://localhost:55001/plone", 
+      "description": "", 
+      "items": "", 
+      "title": "Home"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/front-page", 
+      "description": "Congratulations! You have successfully installed Plone.", 
+      "items": [], 
+      "title": "Welcome to Plone"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/folder", 
+      "description": "", 
+      "items": [
+        {
+          "@id": "http://localhost:55001/plone/folder/subfolder1", 
+          "description": "", 
+          "items": [
+            {
+              "@id": "http://localhost:55001/plone/folder/subfolder1/thirdlevelfolder", 
+              "description": "", 
+              "items": [
+                {
+                  "@id": "http://localhost:55001/plone/folder/subfolder1/thirdlevelfolder/fourthlevelfolder", 
+                  "description": "", 
+                  "title": "Fourth Level Folder"
+                }
+              ], 
+              "title": "Third Level Folder"
+            }
+          ], 
+          "title": "SubFolder 1"
+        }, 
+        {
+          "@id": "http://localhost:55001/plone/folder/subfolder2", 
+          "description": "", 
+          "title": "SubFolder 2"
+        }, 
+        {
+          "@id": "http://localhost:55001/plone/folder/doc1", 
+          "description": "", 
+          "title": "A document"
+        }
+      ], 
+      "title": "Some Folder"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/folder2", 
+      "description": "", 
+      "items": [], 
+      "title": "Some Folder 2"
+    }
+  ]
+}
