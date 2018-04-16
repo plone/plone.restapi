@@ -153,14 +153,62 @@ class TestExpansionFunctional(unittest.TestCase):
             [
                 {
                     u'title': u'Home',
-                    u'@id': u'http://localhost:55001/plone'
+                    u'@id': u'http://localhost:55001/plone',
+                    u'description': u'',
                 },
                 {
                     u'title': u'Some Folder',
-                    u'@id': u'http://localhost:55001/plone/folder'
+                    u'@id': u'http://localhost:55001/plone/folder',
+                    u'description': u'',
                 }
             ],
             response.json()['@components']['navigation']['items']
+        )
+
+    def test_navigation_expanded_with_depth(self):
+        createContentInContainer(
+            self.portal, u'Folder',
+            id=u'folder2',
+            title=u'Some Folder 2')
+        subfolder1 = createContentInContainer(
+            self.folder, u'Folder',
+            id=u'subfolder1',
+            title=u'SubFolder 1')
+        createContentInContainer(
+            self.folder, u'Folder',
+            id=u'subfolder2',
+            title=u'SubFolder 2')
+        thirdlevelfolder = createContentInContainer(
+            subfolder1, u'Folder',
+            id=u'thirdlevelfolder',
+            title=u'Third Level Folder')
+        createContentInContainer(
+            thirdlevelfolder, u'Folder',
+            id=u'fourthlevelfolder',
+            title=u'Fourth Level Folder')
+        createContentInContainer(
+            self.folder, u'Document',
+            id=u'doc1',
+            title=u'A document')
+        transaction.commit()
+
+        response = self.api_session.get(
+            '/folder',
+            params={
+                "expand": "navigation",
+                "expand.navigation.depth": 3
+            }
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            len(response.json()['@components']['navigation']['items']), 3
+        )
+        self.assertEqual(
+            len(response.json()['@components']['navigation']['items'][1]['items']), 3 # noqa
+        )
+        self.assertEqual(
+            len(response.json()['@components']['navigation']['items'][1]['items'][0]['items']), 1 # noqa
         )
 
     def test_breadcrumbs_is_expandable(self):
