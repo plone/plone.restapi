@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
-from DateTime.interfaces import DateTimeError
 from datetime import timedelta
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
@@ -24,6 +22,8 @@ from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
+
+import dateutil
 
 
 @implementer(IFieldDeserializer)
@@ -86,11 +86,11 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
             self.field.validate(value)
             return
 
-        # Parse ISO 8601 string with Zope's DateTime module
+        # Parse ISO 8601 string with dateutil
         try:
-            dt = DateTime(value).asdatetime()
-        except (SyntaxError, DateTimeError) as e:
-            raise ValueError(e.message)
+            dt = dateutil.parser.parse(value)
+        except ValueError:
+            raise ValueError(u'Invalid date: {}'.format(value))
 
         # Convert to TZ aware in UTC
         if dt.tzinfo is not None:
@@ -169,9 +169,10 @@ class TimeFieldDeserializer(DefaultFieldDeserializer):
             # Create an ISO 8601 datetime string and parse it with Zope's
             # DateTime module and then convert it to a timezone naive time
             # in local time
-            value = DateTime(u'2000-01-01T' + value).toZone(DateTime(
-            ).localZone()).asdatetime().replace(tzinfo=None).time()
-        except (SyntaxError, DateTimeError):
+            # TODO: should really a timezone naive time be returned?
+            # using ``timetz()`` would be timezone aware.
+            value = dateutil.parser.parse(value).time()
+        except ValueError:
             raise ValueError(u'Invalid time: {}'.format(value))
 
         self.field.validate(value)
