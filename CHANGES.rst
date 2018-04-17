@@ -16,6 +16,14 @@ Breaking Changes:
   top-level response entry
   [erral]
 
+New Features:
+
+- Expose the tagged values for widgets in the @types endpoint.
+  [jaroel]
+
+- Render subject vocabulary as items for subjects field.
+  [jaroel]
+
 Bugfixes:
 
 - Add VHM support to @search

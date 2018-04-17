@@ -58,6 +58,9 @@ class ITaggedValuesSchema(model.Schema):
         description=u"",
     )
 
+    another_field = schema.TextLine(title=u"Tagged Values widget params")
+    form.widget('another_field', a_param='some_value')
+
 
 class TestJsonSchemaUtils(TestCase):
 
@@ -169,11 +172,18 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
             'input',
             jsonschema['properties']['field_mode_input']['mode']
         )
-        # XXX: To be decided if we always return a mode attribute
-        # self.assertEqual(
-        #     'input',
-        #     jsonschema['properties']['field_mode_default']['mode']
-        # )
+
+    def test_get_jsonschema_with_widget_params(self):
+        ttool = getToolByName(self.portal, 'portal_types')
+        jsonschema = get_jsonschema_for_fti(
+            ttool['TaggedDocument'],
+            self.portal,
+            self.request
+        )
+        self.assertEqual(
+            'some_value',
+            jsonschema['properties']['another_field']['a_param']
+        )
 
 
 class TestJsonSchemaProviders(TestCase):
