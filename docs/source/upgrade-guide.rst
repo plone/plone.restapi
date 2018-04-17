@@ -4,8 +4,10 @@ Upgrade Guide
 This upgrade guide lists all breaking changes in plone.restapi and explains the necessary steps that are needed to upgrade to the lastest version.
 
 
-Upgrading from plone.restapi 1.x
---------------------------------
+Upgrading to plone.restapi 2.x
+------------------------------
+
+plone.restapi 2.0.0 introduced multiple breaking changes.
 
 When using the `@translations` endpoint in plone.restapi 1.x, the endpoint returned a `language` key
 with the content object's language and a `translations` key with all its translations.
