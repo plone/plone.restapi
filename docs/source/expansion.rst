@@ -1,3 +1,5 @@
+.. _`expansion name`: 
+
 Expansion
 =========
 

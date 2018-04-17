@@ -1,3 +1,5 @@
+.. _`translations`: 
+
 Translations
 ============
 
@@ -63,6 +65,17 @@ endpoint of the content item and provide the language code you want to unlink.:
 
 .. literalinclude:: _json/translations_delete.resp
    :language: http
+
+
+Expansion
+---------
+
+This endpoint can be used with the :ref:`expansion name` mechanism which allows to get additional
+information about a content item in one query, avoiding unnecesary requests.
+
+If a simple ``GET`` request is done on the content item, a new entry will be shown on the `@components`
+entry with the URL of the `@translations` endpoint:
+
 
 
 .. _`plone.app.multilingual`: https://pypi.python.org/pypi/plone.app.multilingual
