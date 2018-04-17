@@ -4,7 +4,10 @@ Changelog
 1.6.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Add VHM support to @search
+  [csenger]
 
 
 1.6.0 (2018-04-17)
