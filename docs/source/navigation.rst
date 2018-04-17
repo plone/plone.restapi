@@ -3,6 +3,9 @@
 Navigation
 ==========
 
+Top-Level Navigation
+--------------------
+
 Getting the top navigation items:
 
 ..  http:example:: curl httpie python-requests
@@ -12,6 +15,10 @@ Example response:
 
 .. literalinclude:: _json/navigation.resp
    :language: http
+
+
+Navigation Tree
+---------------
 
 Getting the navigation item tree providing a `expand.navigation.depth` parameter:
 
