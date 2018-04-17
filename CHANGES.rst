@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.3.2 (unreleased)
+1.6.1 (unreleased)
 ------------------
 
 - Expose the tagged values for widgets in the @types endpoint.
@@ -9,6 +9,48 @@ Changelog
 
 - Render subject vocabulary as items for subjects field.
   [jaroel]
+
+Bugfixes:
+
+- Add VHM support to @search
+  [csenger]
+
+
+1.6.0 (2018-04-17)
+------------------
+
+New Features:
+
+- Add `expand.navigation.depth` parameter to the `@navigation` endpoint.
+  [fulv, sneridagh]
+
+
+1.5.0 (2018-04-03)
+------------------
+
+New Features:
+
+- Allow users to update their own properties and password.
+  [sneridagh]
+
+
+1.4.1 (2018-03-22)
+------------------
+
+Bugfixes:
+
+- Fix serialization of `Discussion Item` and `Collection` content types when
+  called with `fullobjects` parameter.
+  [sneridagh]
+
+
+1.4.0 (2018-03-19)
+------------------
+
+New Features:
+
+- Add expandable @actions endpoint to retrieve portal_actions.
+  [csenger,timo,sneridagh]
 
 
 1.3.1 (2018-03-14)
@@ -37,6 +79,20 @@ New Features:
 
 1.2.0 (2018-02-28)
 ------------------
+
+Breaking Changes:
+
+- Make `@translations` endpoint expandable
+  [erral]
+
+- Rename the results attribute in `@translations` endpoint to be 'items'
+  [erral]
+
+- Remove 'language' attribute in `@translations` endpoint from the 
+  top-level response entry
+  [erral]
+
+
 
 New Features:
 
