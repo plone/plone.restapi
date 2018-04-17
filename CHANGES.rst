@@ -4,6 +4,20 @@ Changelog
 1.6.1 (unreleased)
 ------------------
 
+Breaking Changes:
+
+- Make `@translations` endpoint expandable
+  [erral]
+
+- Rename the results attribute in `@translations` endpoint to be 'items'
+  [erral]
+
+- Remove 'language' attribute in `@translations` endpoint from the
+  top-level response entry
+  [erral]
+
+New Features:
+
 - Expose the tagged values for widgets in the @types endpoint.
   [jaroel]
 
@@ -79,20 +93,6 @@ New Features:
 
 1.2.0 (2018-02-28)
 ------------------
-
-Breaking Changes:
-
-- Make `@translations` endpoint expandable
-  [erral]
-
-- Rename the results attribute in `@translations` endpoint to be 'items'
-  [erral]
-
-- Remove 'language' attribute in `@translations` endpoint from the 
-  top-level response entry
-  [erral]
-
-
 
 New Features:
 
