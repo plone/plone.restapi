@@ -55,6 +55,7 @@ setup(name='plone.restapi',
           'plone.api',
           'requests',
           'freezegun',
+          'plone.tiles'
       ]},
       entry_points="""
       # -*- Entry points: -*-
