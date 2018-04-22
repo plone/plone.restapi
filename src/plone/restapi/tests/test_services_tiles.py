@@ -14,6 +14,14 @@ from plone.tiles import Tile
 
 import transaction
 import unittest
+import zope.schema
+
+
+class ISampleTile(Interface):
+    title = zope.schema.TextLine(
+        title=u'Title',
+        required=False
+    )
 
 
 class SampleTile(Tile):
@@ -50,7 +58,7 @@ class TestServicesTiles(unittest.TestCase):
             'cmf.ModifyPortalContent',
             'zope.Public',
             description=u'A tile used for testing',
-            schema=None,
+            schema=ISampleTile,
             icon='testicon')
         provideUtility(sampleTileType, name=u'sample.tile')
         provideAdapter(SampleTile, (Interface, Interface),
@@ -69,3 +77,14 @@ class TestServicesTiles(unittest.TestCase):
         self.assertEquals(
             response[0]['description'], u'A tile used for testing')
         self.assertEquals(response[0]['icon'], 'testicon')
+
+    def test_get_tile(self):
+        response = self.api_session.get('/@tiles/sample.tile')
+
+        self.assertEqual(response.status_code, 200)
+        response = response.json()
+        self.assertEquals(response['title'], u'Sample tile')
+        self.assertEquals(
+            response['properties']['title']['title'], u'Title')
+        self.assertEquals(
+            response['properties']['title']['type'], u'string')

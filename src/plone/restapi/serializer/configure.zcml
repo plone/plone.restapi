@@ -77,6 +77,7 @@
 
     <configure zcml:condition="installed plone.tiles">
         <adapter factory=".tile.TileSummarySerializeToJson" />
+        <adapter factory=".tile.TileSerializeToJson" />
     </configure>
 
     <configure zcml:condition="have plone-5">
