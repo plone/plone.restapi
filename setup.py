@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '1.3.1.dev0'
+version = '1.6.1.dev0'
 
 long_description = (
     open('README.rst').read() + '\n' +
@@ -41,6 +41,7 @@ setup(name='plone.restapi',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'python-dateutil',
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
           'PyJWT',
           'pytz',

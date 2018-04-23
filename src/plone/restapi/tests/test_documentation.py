@@ -17,6 +17,7 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
+from plone.dexterity.utils import createContentInContainer
 from plone.locking.interfaces import ITTWLockable
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
@@ -705,6 +706,21 @@ class TestDocumentation(unittest.TestCase):
         )
         save_request_and_response_for_docs('users_created', response)
 
+    def test_documentation_users_add(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                'email': 'noam.chomsky@example.com',
+                'username': 'noamchomsky',
+                'fullname': 'Noam Avram Chomsky',
+                'home_page': 'web.mit.edu/chomsky',
+                'description': 'Professor of Linguistics',
+                'location': 'Cambridge, MA',
+                'sendPasswordReset': True
+            },
+        )
+        save_request_and_response_for_docs('users_add', response)
+
     def test_documentation_users_update(self):
         properties = {
             'email': 'noam.chomsky@example.com',
@@ -859,6 +875,44 @@ class TestDocumentation(unittest.TestCase):
             '{}/@navigation'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('navigation', response)
 
+    def test_documentation_navigation_tree(self):
+        folder = createContentInContainer(
+            self.portal, u'Folder',
+            id=u'folder',
+            title=u'Some Folder')
+        createContentInContainer(
+            self.portal, u'Folder',
+            id=u'folder2',
+            title=u'Some Folder 2')
+        subfolder1 = createContentInContainer(
+            folder, u'Folder',
+            id=u'subfolder1',
+            title=u'SubFolder 1')
+        createContentInContainer(
+            folder, u'Folder',
+            id=u'subfolder2',
+            title=u'SubFolder 2')
+        thirdlevelfolder = createContentInContainer(
+            subfolder1, u'Folder',
+            id=u'thirdlevelfolder',
+            title=u'Third Level Folder')
+        createContentInContainer(
+            thirdlevelfolder, u'Folder',
+            id=u'fourthlevelfolder',
+            title=u'Fourth Level Folder')
+        createContentInContainer(
+            folder, u'Document',
+            id=u'doc1',
+            title=u'A document')
+        transaction.commit()
+
+        response = self.api_session.get(
+            '{}/@navigation'.format(self.document.absolute_url()),
+            params={
+                "expand.navigation.depth": 4
+            })
+        save_request_and_response_for_docs('navigation_tree', response)
+
     def test_documentation_principals(self):
         gtool = api.portal.get_tool('portal_groups')
         properties = {
@@ -985,7 +1039,7 @@ class TestDocumentation(unittest.TestCase):
 
     def test_documentation_expansion_expanded_full(self):
         response = self.api_session.get(
-            '/front-page?expand=breadcrumbs,navigation,schema,workflow'
+            '/front-page?expand=actions,breadcrumbs,navigation,schema,workflow'
         )
         save_request_and_response_for_docs('expansion_expanded_full', response)
 

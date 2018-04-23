@@ -6,6 +6,7 @@
   <include package="Products.CMFCore" file="permissions.zcml" />
 
   <include package=".auth" />
+  <include package=".actions" />
   <include package=".breadcrumbs"/>
   <include package=".content"/>
   <configure zcml:condition="have plone-5">

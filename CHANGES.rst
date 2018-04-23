@@ -1,11 +1,85 @@
 Changelog
 =========
 
-1.3.1 (unreleased)
+1.6.1 (unreleased)
 ------------------
 
+Breaking Changes:
+
+- Convert all datetime, DateTime and time instances to UTC before serializing.
+  [thet]
+
+- Use python-dateutil instead of DateTime to parse date strings when de-serializing.
+  [thet]
+
+- Make `@translations` endpoint expandable
+  [erral]
+
+- Rename the results attribute in `@translations` endpoint to be 'items'
+  [erral]
+
+- Remove 'language' attribute in `@translations` endpoint from the
+  top-level response entry
+  [erral]
+
+New Features:
+
+- Expose the tagged values for widgets in the @types endpoint.
+  [jaroel]
+
+- Render subject vocabulary as items for subjects field.
+  [jaroel]
+
+Bugfixes:
+
+- Add VHM support to @search
+  [csenger]
+
+
+1.6.0 (2018-04-17)
+------------------
+
+New Features:
+
+- Add `expand.navigation.depth` parameter to the `@navigation` endpoint.
+  [fulv, sneridagh]
+
+
+1.5.0 (2018-04-03)
+------------------
+
+New Features:
+
+- Allow users to update their own properties and password.
+  [sneridagh]
+
+
+1.4.1 (2018-03-22)
+------------------
+
+Bugfixes:
+
+- Fix serialization of `Discussion Item` and `Collection` content types when
+  called with `fullobjects` parameter.
+  [sneridagh]
+
+
+1.4.0 (2018-03-19)
+------------------
+
+New Features:
+
+- Add expandable @actions endpoint to retrieve portal_actions.
+  [csenger,timo,sneridagh]
+
+
+1.3.1 (2018-03-14)
+------------------
+
+Bugfixes:
+
 - Support null in content PATCH requests to delete a field value
-  (dexterity only). Fixes #187.
+  (Dexterity only). This fixes #187.
   [csenger]
 
 
@@ -42,7 +116,7 @@ Bugfixes:
 - Fix workflow translations with unicode characters.
   [Gagaro]
 
-- Fix workflow encoding in transition endpoint
+- Fix workflow encoding in transition endpoint.
   [Gagaro]
 
 

@@ -2,16 +2,19 @@
 from datetime import date
 from DateTime import DateTime
 from plone import api
+from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
+from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import result_paths
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
+from zope.component import getUtility
 
 import transaction
 import unittest
@@ -104,6 +107,32 @@ class TestSearchFunctional(unittest.TestCase):
              u'/plone/folder/other-document'},
             set(result_paths(response.json())))
 
+    def test_search_in_vhm(self):
+        # Install a Virtual Host Monster
+        if 'virtual_hosting' not in self.app.objectIds():
+            # If ZopeLite was imported, we have no default virtual
+            # host monster
+            from Products.SiteAccess.VirtualHostMonster \
+                import manage_addVirtualHostMonster
+            manage_addVirtualHostMonster(self.app, 'virtual_hosting')
+        transaction.commit()
+
+        # we don't get a result if we do not provide the full physical path
+        response = self.api_session.get('/@search?path=/folder',)
+        self.assertSetEqual(set(), set(result_paths(response.json())))
+
+        # If we go through the VHM will will get results if we only use
+        # the part of the path inside the VHM
+        vhm_url = (
+            '%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s' %
+            (self.app.absolute_url(), '@search?path=/folder'))
+        response = self.api_session.get(vhm_url)
+        self.assertSetEqual(
+            {u'/folder',
+             u'/folder/doc',
+             u'/folder/other-document'},
+            set(result_paths(response.json())))
+
     def test_path_gets_prefilled_if_missing_from_path_query_dict(self):
         response = self.api_session.get('/@search?path.depth=1')
         self.assertSetEqual(
@@ -177,6 +206,40 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(
             'http://localhost:55001/plone/folder/doc',
             response.json()['items'][0]['@id'])
+
+    def test_full_objects_retrieval_discussion(self):
+        # Allow discussion
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+        self.doc.allow_discussion = True
+
+        transaction.commit()
+
+        url = '{}/@comments'.format(self.doc.absolute_url())
+        self.api_session.post(url, json={'text': 'comment 1'})
+        transaction.commit()
+
+        query = {'portal_type': 'Discussion Item',
+                 'fullobjects': True}
+        response = self.api_session.get('/@search', params=query)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(response.json()['items']), 1)
+
+    def test_full_objects_retrieval_collections(self):
+        self.collection = createContentInContainer(
+            self.folder, u'Collection',
+            id='collection',
+        )
+        transaction.commit()
+
+        query = {'portal_type': 'Collection',
+                 'fullobjects': True}
+        response = self.api_session.get('/@search', params=query)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertEquals(len(response.json()['items']), 1)
 
     # ZCTextIndex
 
