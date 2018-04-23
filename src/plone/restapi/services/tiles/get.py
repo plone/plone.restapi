@@ -9,6 +9,7 @@ from plone.restapi.interfaces import ISerializeToJson
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.component import getUtility
+from zope.component import ComponentLookupError
 
 
 class TilesGet(Service):
@@ -31,7 +32,7 @@ class TilesGet(Service):
                 tile = getUtility(ITileType, name=self.params[0])
                 return getMultiAdapter(
                     (tile, self.request), ISerializeToJson)()
-            except KeyError:
+            except ComponentLookupError:
                 self.content_type = "application/json"
                 self.request.response.setStatus(404)
                 return {

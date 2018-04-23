@@ -88,3 +88,19 @@ class TestServicesTiles(unittest.TestCase):
             response['properties']['title']['title'], u'Title')
         self.assertEquals(
             response['properties']['title']['type'], u'string')
+
+    def test_post_tile(self):
+        response = self.api_session.post(
+            '/doc/@tiles',
+            json={
+                "@type": "sample.tile",
+                "title": "This is the title of the new tile on doc"
+            })
+
+        self.assertEqual(response.status_code, 200)
+        response = response.json()
+        self.assertEquals(response['title'], u'Sample tile')
+        self.assertEquals(
+            response['properties']['title']['title'], u'Title')
+        self.assertEquals(
+            response['properties']['title']['type'], u'string')

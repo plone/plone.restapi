@@ -4,10 +4,21 @@
 
   <plone:service
     method="GET"
+    accept="application/json,application/schema+json"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".get.TilesGet"
     name="@tiles"
     permission="zope2.View"
     />
+
+  <plone:service
+    method="POST"
+    for="zope.interface.Interface"
+    factory=".add.TilesPost"
+    name="@tiles"
+    permission="cmf.ModifyPortalContent"
+    />
+
+    <adapter factory="plone.restapi.tiles.TilesStorage" />
 
 </configure>
