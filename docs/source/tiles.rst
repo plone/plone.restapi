@@ -231,3 +231,48 @@ We can delete an existing tile by sending a DELETE request::
 A successful response will be indicated by a `204 No Content` response::
 
   HTTP/1.1 204 No Content
+
+
+Saving tiles data
+-----------------
+
+The tiles get serialized in the `tiles` attribute of the content object.
+
+They are serialized using this structure:
+
+```json
+[
+  [
+    id: UUID,
+    columns: [
+      {
+        id: UUID, // column UUID
+        size: int // the size of the column
+        rows: [
+          {
+            id: UUID, // inner row UUID
+            cells: [
+              {
+                id: UUID, // cell UUID
+                component: string
+                content: {
+                  // tile fields serialization
+                },
+                size: int
+              },
+            ]
+          }
+        ]
+      },
+    ]
+  ], // row 1
+  [], // row 2
+]
+```
+
+It tries to match the usual way of CSS frameworks to map grid systems. So we have:
+
+row (orderables up/down) -> column (resizables on width) -> row -> cell (actual tile content)
+
+Rows are orderable vertically, columns resizables horizontally and cells can be
+moved around to an specific inner row.
