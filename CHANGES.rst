@@ -30,6 +30,11 @@ New Features:
 - Render subject vocabulary as items for subjects field.
   [jaroel]
 
+- New permission for accessing user information in the GET @user endpoint
+  `plone.restapi: Access Plone user information` mapped by default to Manager
+  role (as it was before).
+  [sneridagh]
+
 Bugfixes:
 
 - Add VHM support to @search
