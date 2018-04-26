@@ -25,3 +25,16 @@ class TestUpgrades(TestCase):
         portal_setup = getToolByName(self.portal, 'portal_setup')
         assign_use_api_permission(portal_setup)
         self.assertTrue(True)
+
+    def test_migration_profile_to_0004_can_be_loaded(self):
+        loadMigrationProfile(
+            self.portal,
+            'profile-plone.restapi.upgrades:0004'
+        )
+        self.assertTrue(True)
+
+    def test_run_migration_profile_to_0004(self):
+        from plone.restapi.upgrades.to0004 import assign_get_users_permission
+        portal_setup = getToolByName(self.portal, 'portal_setup')
+        assign_get_users_permission(portal_setup)
+        self.assertTrue(True)
