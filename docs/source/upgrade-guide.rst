@@ -7,7 +7,11 @@ This upgrade guide lists all breaking changes in plone.restapi and explains the 
 Upgrading to plone.restapi 2.x
 ------------------------------
 
-plone.restapi 2.0.0 introduced multiple breaking changes.
+plone.restapi 2.0.0 converts all datetime, DateTime and time to UTC before serializing.
+The translations endpoint becomes "expandable", which introduces the following breaking changes.
+
+Translations
+^^^^^^^^^^^^
 
 When using the `@translations` endpoint in plone.restapi 1.x, the endpoint returned a `language` key
 with the content object's language and a `translations` key with all its translations.
