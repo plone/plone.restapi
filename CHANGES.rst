@@ -4,7 +4,9 @@ Changelog
 2.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Hide upgrades from the add-ons control panel.
+  Fixes `issue 532 <https://github.com/plone/plone.restapi/issues/532>`_.
+  [maurits]
 
 
 2.0.0 (2018-04-27)

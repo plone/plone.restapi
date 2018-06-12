@@ -16,6 +16,15 @@ class HiddenProfiles(object):
             u'plone.restapi:uninstall',
         ]
 
+    def getNonInstallableProducts(self):  # pragma: no cover
+        """Do not show on Plone's list of installable products.
+
+        This method is only used in Plone 5.1+.
+        """
+        return [
+            u'plone.restapi.upgrades',
+        ]
+
 
 def install_pas_plugin(context):
     uf_parent = aq_inner(context)
