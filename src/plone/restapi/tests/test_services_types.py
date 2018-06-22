@@ -1,14 +1,18 @@
 # -*- coding: utf-8 -*-
+from pkg_resources import parse_version
 from plone import api
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
 from plone.app.testing import setRoles
-from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_ID
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import RelativeSession
+
 
 import transaction
 import unittest
+
+PLONE_VERSION = parse_version(api.env.plone_version())
 
 
 class TestServicesTypes(unittest.TestCase):
@@ -165,3 +169,39 @@ class TestServicesTypes(unittest.TestCase):
 
         self.assertEquals(
             len([a for a in response if a['addable']]), 0)
+
+
+class TestServicesTypesTranslatedTitles(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer['app']
+        self.portal = self.layer['portal']
+        self.portal_url = self.portal.absolute_url()
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.headers.update({'Accept-Language': 'es'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+        transaction.commit()
+
+    def test_get_types_translated(self):
+        response = self.api_session.get(
+            '{}/@types'.format(self.portal.absolute_url())
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertItemsEqual([
+            u'Archivo',
+            u'Carpeta',
+            u'Colección',
+            u'DX Test Document',
+            u'Enlace',
+            u'Evento',
+            u'Imagen',
+            u'Noticia',
+            u'Página'],
+            [item['title'] for item in response.json()])
