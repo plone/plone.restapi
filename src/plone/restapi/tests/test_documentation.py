@@ -1417,6 +1417,53 @@ class TestCommenting(unittest.TestCase):
         save_request_and_response_for_docs('controlpanels_get_item', response)
 
 
+
+# class TestPortlets(unittest.TestCase):
+
+#     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
+
+#     def setUp(self):
+#         # if PLONE_VERSION.base_version >= '5.1':
+#         #     self.skipTest('Do not run documentation tests for Plone 5')
+#         self.app = self.layer['app']
+#         self.request = self.layer['request']
+#         self.portal = self.layer['portal']
+#         self.portal_url = self.portal.absolute_url()
+
+#         # self.time_freezer = freeze_time("2016-10-21 19:00:00")
+#         # self.frozen_time = self.time_freezer.start()
+
+#         self.api_session = RelativeSession(self.portal_url)
+#         self.api_session.headers.update({'Accept': 'application/json'})
+#         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+#         setRoles(self.portal, TEST_USER_ID, ['Manager'])
+
+#         transaction.commit()
+#         self.browser = Browser(self.app)
+#         self.browser.handleErrors = False
+#         self.browser.addHeader(
+#             'Authorization',
+#             'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
+#         )
+
+#     def tearDown(self):
+#         # self.time_freezer.stop()
+#         pass
+
+#     def test_portlets_get_listing(self):
+#         response = self.api_session.get(
+#             '/@portlets'
+#         )
+#         save_request_and_response_for_docs('portlets_get', response)
+
+#     def test_portlets_get_item(self):
+#         response = self.api_session.get(
+#             '/@portlets/plone.leftcolumn'
+#         )
+#         save_request_and_response_for_docs('portlets_get_manager', response)
+
+
 @unittest.skipUnless(PAM_INSTALLED, 'plone.app.multilingual is installed by default only in Plone 5')  # NOQA
 class TestPAMDocumentation(unittest.TestCase):
 

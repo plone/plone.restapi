@@ -69,11 +69,17 @@
 
     <adapter factory=".vocabularies.SerializeVocabularyToJson" />
     <adapter factory=".vocabularies.SerializeTermToJson" />
-    
+
     <adapter factory=".registry.SerializeRegistryToJson" />
-    
+
     <adapter factory=".discussion.ConversationSerializer" />
     <adapter factory=".discussion.CommentSerializer" />
+
+    <adapter factory=".portlet.PortletManagerSummarySerializer" />
+    <adapter factory=".portlet.PortletManagerSerializer" />
+    <adapter factory=".portlet.PortletSerializer" />
+    <adapter factory=".portlet.DefaultPortletFieldSerializer" />
+    <adapter factory=".portlet.RichttextPortletFieldSerializer" />
 
     <configure zcml:condition="have plone-5">
         <adapter factory=".controlpanels.ControlpanelSerializeToJson" />
