@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=E1002
 # E1002: Use of super on an old style class
+from plone import api
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
 from plone.app.i18n.locales.interfaces import IMetadataLanguages
@@ -32,6 +33,9 @@ import collective.MockMailHost
 import pkg_resources
 import re
 import requests
+
+
+PLONE_VERSION = pkg_resources.parse_version(api.env.plone_version())
 
 
 try:
@@ -71,6 +75,38 @@ class DateTimeFixture(Layer):
 
 
 DATE_TIME_FIXTURE = DateTimeFixture()
+
+
+import time  # noqa
+from persistent.TimeStamp import TimeStamp  # noqa
+
+def patchedNewTid(old):  # noqa
+    if getattr(time.time, 'previous_time_function', False):
+        t = time.time.previous_time_function()
+        ts = TimeStamp(*time.gmtime.previous_gmtime_function(t)[:5]+(t % 60,))
+    else:
+        t = time.time()
+        ts = TimeStamp(*time.gmtime(t)[:5]+(t % 60,))
+    if old is not None:
+        ts = ts.laterThan(TimeStamp(old))
+    return ts.raw()
+
+
+class FreezeTimeFixture(Layer):
+
+    def setUp(self):
+        if PLONE_VERSION.base_version >= '5.1':
+            from ZODB import utils
+            self.ZODB_orig_newTid = utils.newTid
+            utils.newTid = patchedNewTid
+
+    def tearDown(self):
+        if PLONE_VERSION.base_version >= '5.1':
+            from ZODB import utils
+            utils.newTid = self.ZODB_orig_newTid
+
+
+FREEZE_TIME_FIXTURE = FreezeTimeFixture()
 
 
 class PloneRestApiDXLayer(PloneSandboxLayer):
@@ -116,6 +152,12 @@ PLONE_RESTAPI_DX_INTEGRATION_TESTING = IntegrationTesting(
 PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApiDXLayer:Functional"
+)
+PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
+    bases=(FREEZE_TIME_FIXTURE,
+           PLONE_RESTAPI_DX_FIXTURE,
+           z2.ZSERVER_FIXTURE),
+    name="PloneRestApiDXLayerFreeze:Functional"
 )
 
 
@@ -164,6 +206,12 @@ PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING = IntegrationTesting(
 PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApiDXPAMLayer:Functional"
+)
+PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
+    bases=(FREEZE_TIME_FIXTURE,
+           PLONE_RESTAPI_DX_PAM_FIXTURE,
+           z2.ZSERVER_FIXTURE),
+    name="PloneRestApiDXPAMLayerFreeze:Functional"
 )
 
 
