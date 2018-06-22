@@ -1,7 +1,7 @@
 Changelog
 =========
 
-2.0.1 (unreleased)
+2.0.1 (2018-06-22)
 ------------------
 
 - Hide upgrades from the add-ons control panel.
