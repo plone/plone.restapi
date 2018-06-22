@@ -41,6 +41,9 @@ except pkg_resources.DistributionNotFound:
     PAM_INSTALLED = False
 
 
+ENABLED_LANGUAGES = ['de', 'en', 'es', 'fr']
+
+
 def set_available_languages():
     """Limit available languages to a small set.
 
@@ -48,9 +51,16 @@ def set_available_languages():
     for docs. Depends on our own ModifiableLanguages components
     (see plone.restapi:testing profile).
     """
-    enabled_languages = ['de', 'en', 'es', 'fr']
-    getUtility(IContentLanguages).setAvailableLanguages(enabled_languages)
-    getUtility(IMetadataLanguages).setAvailableLanguages(enabled_languages)
+    getUtility(IContentLanguages).setAvailableLanguages(ENABLED_LANGUAGES)
+    getUtility(IMetadataLanguages).setAvailableLanguages(ENABLED_LANGUAGES)
+
+
+def set_supported_languages(portal):
+    """Set supported languages to the same predictable set for all test layers.
+    """
+    language_tool = getToolByName(portal, 'portal_languages')
+    for lang in ENABLED_LANGUAGES:
+        language_tool.addSupportedLanguage(lang)
 
 
 class DateTimeFixture(Layer):
@@ -98,6 +108,9 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
             SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ['Manager'], [])
         login(portal, SITE_OWNER_NAME)
         setRoles(portal, TEST_USER_ID, ['Manager'])
+
+        set_supported_languages(portal)
+
         applyProfile(portal, 'plone.restapi:default')
         applyProfile(portal, 'plone.restapi:testing')
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
@@ -143,9 +156,8 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
             SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ['Manager'], [])
         login(portal, SITE_OWNER_NAME)
         setRoles(portal, TEST_USER_ID, ['Manager'])
-        language_tool = getToolByName(portal, 'portal_languages')
-        language_tool.addSupportedLanguage('en')
-        language_tool.addSupportedLanguage('es')
+
+        set_supported_languages(portal)
         if portal.portal_setup.profileExists('plone.app.multilingual:default'):
             applyProfile(portal, 'plone.app.multilingual:default')
         applyProfile(portal, 'plone.restapi:default')
@@ -191,6 +203,8 @@ class PloneRestApiATLayer(PloneSandboxLayer):
         z2.installProduct(app, 'plone.restapi')
 
     def setUpPloneSite(self, portal):
+        set_supported_languages(portal)
+
         if portal.portal_setup.profileExists(
                 'Products.ATContentTypes:default'):
             applyProfile(portal, 'Products.ATContentTypes:default')
