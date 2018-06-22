@@ -8,6 +8,12 @@ Changelog
   Fixes `issue 532 <https://github.com/plone/plone.restapi/issues/532>`_.
   [maurits]
 
+- Add tiles endpoint for getting all available content tiles and its JSONSchema.
+  [sneridagh]
+
+- Add a tiles behavior to support the new tiles implementation for plone.restapi.
+  [sneridagh]
+
 
 2.0.0 (2018-04-27)
 ------------------
