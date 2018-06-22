@@ -15,6 +15,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.registry.interfaces import IRegistry
 from plone.restapi.tests.dxtypes import INDEXES as DX_TYPES_INDEXES
 from plone.restapi.tests.helpers import add_catalog_indexes
 from plone.testing import z2
@@ -40,6 +41,13 @@ try:
 except pkg_resources.DistributionNotFound:
     PAM_INSTALLED = False
 
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    PLONE_5 = False  # pragma: no cover
+else:
+    PLONE_5 = True  # pragma: no cover
+
 
 ENABLED_LANGUAGES = ['de', 'en', 'es', 'fr']
 
@@ -61,6 +69,22 @@ def set_supported_languages(portal):
     language_tool = getToolByName(portal, 'portal_languages')
     for lang in ENABLED_LANGUAGES:
         language_tool.addSupportedLanguage(lang)
+
+
+def enable_request_language_negotiation(portal):
+    """Enable request language negotiation during tests.
+
+    This is so we can use the Accept-Language header to request translated
+    pieces of content in different languages.
+    """
+    if PLONE_5:
+        from Products.CMFPlone.interfaces import ILanguageSchema
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(ILanguageSchema, prefix='plone')
+        settings.use_request_negotiation = True
+    else:
+        lang_tool = getToolByName(portal, 'portal_languages')
+        lang_tool.use_request_negotiation = True
 
 
 class DateTimeFixture(Layer):
@@ -115,6 +139,7 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         applyProfile(portal, 'plone.restapi:testing')
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
         set_available_languages()
+        enable_request_language_negotiation(portal)
         quickInstallProduct(portal, 'collective.MockMailHost')
         applyProfile(portal, 'collective.MockMailHost:default')
         states = portal.portal_workflow['simple_publication_workflow'].states
@@ -164,6 +189,7 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         applyProfile(portal, 'plone.restapi:testing')
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
         set_available_languages()
+        enable_request_language_negotiation(portal)
         states = portal.portal_workflow['simple_publication_workflow'].states
         states['published'].title = u'Published with accent é'.encode('utf8')
 
@@ -216,6 +242,7 @@ class PloneRestApiATLayer(PloneSandboxLayer):
         applyProfile(portal, 'plone.restapi:default')
         applyProfile(portal, 'plone.restapi:testing')
         set_available_languages()
+        enable_request_language_negotiation(portal)
         portal.portal_workflow.setDefaultChain("simple_publication_workflow")
         states = portal.portal_workflow['simple_publication_workflow'].states
         states['published'].title = u'Published with accent é'.encode('utf8')
