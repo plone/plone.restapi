@@ -10,6 +10,7 @@ from zope.component import queryUtility
 from zope.interface import implementer
 from zope.intid.interfaces import IIntIds
 from zope.publisher.interfaces.browser import IBrowserRequest
+import six
 
 
 @implementer(IFieldDeserializer)
@@ -28,7 +29,7 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
             # Resolve by intid
             intids = queryUtility(IIntIds)
             obj = intids.queryObject(value)
-        elif isinstance(value, basestring):
+        elif isinstance(value, six.string_types):
             portal = getMultiAdapter((self.context, self.request),
                                      name='plone_portal_state').portal()
             portal_url = portal.absolute_url()

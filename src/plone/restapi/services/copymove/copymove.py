@@ -9,6 +9,7 @@ from zope.interface import alsoProvides
 from zope.security import checkPermission
 
 import plone
+import six
 
 
 class BaseCopyMove(Service):
@@ -24,7 +25,7 @@ class BaseCopyMove(Service):
 
     def get_object(self, key):
         """Get an object by url, path or UID."""
-        if isinstance(key, basestring):
+        if isinstance(key, six.string_types):
             if key.startswith(self.portal_url):
                 # Resolve by URL
                 return self.portal.restrictedTraverse(

@@ -24,6 +24,7 @@ from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
 
 import dateutil
+import six
 
 
 @implementer(IFieldDeserializer)
@@ -38,7 +39,7 @@ class DefaultFieldDeserializer(object):
         self.request = request
 
     def __call__(self, value):
-        if not isinstance(value, unicode):
+        if not isinstance(value, six.text_type):
             self.field.validate(value)
             return value
 
@@ -52,11 +53,11 @@ class DefaultFieldDeserializer(object):
 class TextLineFieldDeserializer(DefaultFieldDeserializer):
 
     def __call__(self, value):
-        if isinstance(value, unicode):
+        if isinstance(value, six.text_type):
             value = IFromUnicode(self.field).fromUnicode(value)
 
         # Mimic what z3c.form does in it's BaseDataConverter.
-        if isinstance(value, unicode):
+        if isinstance(value, six.text_type):
             value = value.strip()
             if value == u'':
                 value = self.field.missing_value

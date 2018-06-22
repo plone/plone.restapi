@@ -15,7 +15,7 @@ from datetime import timedelta
 from plone.keyring.interfaces import IKeyManager
 from plone.keyring.keyring import GenerateSecret
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 
 import jwt
 import time
@@ -39,14 +39,14 @@ def addJWTAuthenticationPlugin(self, id_, title=None, REQUEST=None):
         )
 
 
+@implementer(
+    IAuthenticationPlugin,
+    IChallengePlugin,
+    IExtractionPlugin,
+)
 class JWTAuthenticationPlugin(BasePlugin):
     """Plone PAS plugin for authentication with JSON web tokens (JWT).
     """
-    implements(
-        IAuthenticationPlugin,
-        IChallengePlugin,
-        IExtractionPlugin,
-    )
     meta_type = "JWT Authentication Plugin"
     security = ClassSecurityInfo()
 

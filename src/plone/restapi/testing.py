@@ -23,12 +23,12 @@ from plone.testing import z2
 from plone.testing.layer import Layer
 from plone.uuid.interfaces import IUUIDGenerator
 from Products.CMFCore.utils import getToolByName
-from urlparse import urljoin
-from urlparse import urlparse
+from six.moves.urllib.parse import urljoin
+from six.moves.urllib.parse import urlparse
 from zope.component import getGlobalSiteManager
 from zope.component import getUtility
 from zope.configuration import xmlconfig
-from zope.interface import implements
+from zope.interface import implementer
 
 import collective.MockMailHost
 import pkg_resources
@@ -325,13 +325,12 @@ class RelativeSession(requests.Session):
         return super(RelativeSession, self).request(method, url, **kwargs)
 
 
+@implementer(IUUIDGenerator)
 class StaticUUIDGenerator(object):
     """UUID generator that produces stable UUIDs for use in tests.
 
     Based on code from ftw.testing
     """
-
-    implements(IUUIDGenerator)
 
     def __init__(self, prefix):
         self.prefix = prefix[:26]

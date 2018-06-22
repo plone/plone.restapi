@@ -12,7 +12,7 @@ from zope.component import getAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect.interfaces
@@ -32,11 +32,10 @@ except ImportError:   # pragma: no cover
     from Products.PasswordResetTool.PasswordResetTool import InvalidRequestError  # noqa
 
 
+@implementer(IPublishTraverse)
 class UsersPost(Service):
     """Creates a new user.
     """
-
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(UsersPost, self).__init__(context, request)

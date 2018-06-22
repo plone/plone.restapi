@@ -2,15 +2,14 @@
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from zope.component.hooks import getSite
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 
+@implementer(IPublishTraverse)
 class UsersDelete(Service):
     """Deletes a user.
     """
-
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(UsersDelete, self).__init__(context, request)

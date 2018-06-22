@@ -39,7 +39,7 @@ class CommentsGet(Service):
 
     def publishTraverse(self, request, name):
         if name:
-            self.comment_id = long(name)
+            self.comment_id = int(name)
         return self
 
     def reply(self):
@@ -64,7 +64,7 @@ class CommentsAdd(Service):
 
     def publishTraverse(self, request, name):
         if name:
-            self.comment_id = long(name)
+            self.comment_id = int(name)
             request['form.widgets.in_reply_to'] = name
         return self
 
@@ -104,7 +104,7 @@ class CommentsUpdate(Service):
 
     def publishTraverse(self, request, name):
         if name:
-            self.comment_id = long(name)
+            self.comment_id = int(name)
             request['form.widgets.comment_id'] = name
         return self
 
@@ -148,7 +148,7 @@ class CommentsDelete(Service):
     comment_id = None
 
     def publishTraverse(self, request, name):
-        self.comment_id = long(name)
+        self.comment_id = int(name)
         return self
 
     def reply(self):

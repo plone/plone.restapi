@@ -21,6 +21,7 @@ from zope.interface import Interface
 
 import Missing
 import pytz
+import six
 # import re
 
 
@@ -75,7 +76,7 @@ def default_converter(value):
     if value is None:
         return value
 
-    if type(value) in (unicode, bool, int, float, long):
+    if type(value) in (six.text_type, bool, int, float, int):
         return value
 
     raise TypeError(

@@ -12,8 +12,8 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import result_paths
-from urlparse import parse_qsl
-from urlparse import urlparse
+from six.moves.urllib.parse import parse_qsl
+from six.moves.urllib.parse import urlparse
 
 import transaction
 import unittest
