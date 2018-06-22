@@ -193,7 +193,8 @@ Content-Type: application/json+schema
       "title": "Contenido relacionado", 
       "type": "array", 
       "uniqueItems": true, 
-      "vocabulary": "plone.app.vocabularies.Catalog"
+      "vocabulary": "plone.app.vocabularies.Catalog", 
+      "widget": "relation"
     }, 
     "rights": {
       "description": "Declaraci\u00f3n de copyright o informaci\u00f3n de otros derechos sobre este elemento.", 

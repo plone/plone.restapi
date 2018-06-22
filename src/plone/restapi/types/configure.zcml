@@ -17,8 +17,7 @@
     <adapter factory=".adapters.ListJsonSchemaProvider" />
     <adapter
         zcml:condition="installed z3c.relationfield"
-        factory=".z3crelationadapter.ChoiceslessRelationListSchemaProvider"
-        name="IRelatedItems.relatedItems" />
+        factory=".z3crelationadapter.ChoiceslessRelationListSchemaProvider" />
     <adapter factory=".adapters.SubjectsFieldJsonSchemaProvider" name="IDublinCore.subjects" />
     <adapter factory=".adapters.SetJsonSchemaProvider" />
     <adapter factory=".adapters.TupleJsonSchemaProvider" />

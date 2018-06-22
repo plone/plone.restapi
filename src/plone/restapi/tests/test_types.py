@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import date
 from decimal import Decimal
-from unittest import TestCase
 
 from zope.component import getMultiAdapter
 from zope import schema
@@ -18,6 +17,15 @@ from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from plone.restapi.types.utils import get_jsonschema_properties
+
+import unittest
+
+try:
+    from z3c.relationfield.schema import RelationChoice
+    from z3c.relationfield.schema import RelationList
+    HAS_RELATION = True
+except ImportError:
+    HAS_RELATION = False
 
 
 class IDummySchema(model.Schema):
@@ -62,7 +70,7 @@ class ITaggedValuesSchema(model.Schema):
     form.widget('another_field', a_param='some_value')
 
 
-class TestJsonSchemaUtils(TestCase):
+class TestJsonSchemaUtils(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
@@ -140,7 +148,7 @@ class TestJsonSchemaUtils(TestCase):
         self.assertNotIn('title', jsonschema['properties'].keys())
 
 
-class TestTaggedValuesJsonSchemaUtils(TestCase):
+class TestTaggedValuesJsonSchemaUtils(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
@@ -186,7 +194,7 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
         )
 
 
-class TestJsonSchemaProviders(TestCase):
+class TestJsonSchemaProviders(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
@@ -588,6 +596,62 @@ class TestJsonSchemaProviders(TestCase):
                 'title': u'My field',
                 'description': u'My great field',
                 'widget': u'datetime',
+            },
+            adapter.get_schema()
+        )
+
+    @unittest.skipUnless(HAS_RELATION, "z3c.relationfield not installed.")
+    def test_relationchoice(self):
+        field = RelationChoice(
+            title=u'My field',
+            description=u'My great field',
+            vocabulary='plone.app.vocabularies.Catalog',
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request),
+            IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                'type': 'string',
+                'title': u'My field',
+                'description': u'My great field',
+                'enum': [],
+                'enumNames': [],
+                'choices': [],
+            },
+            adapter.get_schema()
+        )
+
+    @unittest.skipUnless(HAS_RELATION, "z3c.relationfield not installed.")
+    def test_relationlist(self):
+        field = RelationList(
+            title=u'My field',
+            description=u'My great field',
+            value_type=RelationChoice(
+                title=u'My field value type',
+                vocabulary='plone.app.vocabularies.Catalog',
+            )
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request),
+            IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                'type': 'array',
+                'title': u'My field',
+                'description': u'My great field',
+                'uniqueItems': True,
+                'additionalItems': True,
+                'items': {
+                    'type': 'string',
+                    'title': u'My field value type',
+                    'description': u'',
+                },
+                'widget': 'relation',
             },
             adapter.get_schema()
         )

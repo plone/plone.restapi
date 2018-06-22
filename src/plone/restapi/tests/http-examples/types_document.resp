@@ -190,7 +190,8 @@ Content-Type: application/json+schema
       "title": "Related Items", 
       "type": "array", 
       "uniqueItems": true, 
-      "vocabulary": "plone.app.vocabularies.Catalog"
+      "vocabulary": "plone.app.vocabularies.Catalog", 
+      "widget": "relation"
     }, 
     "rights": {
       "description": "Copyright statement or other rights information on this item.", 
