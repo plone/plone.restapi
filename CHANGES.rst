@@ -6,9 +6,11 @@ Changelog
 
 New Features:
 
+- Translate action name, workflow state and transition names in @history endpoint.
+  [erral]
+
 - Include translated role title in `@roles` GET.
   [lgraf]
-
 
 2.0.1 (2018-06-22)
 ------------------
