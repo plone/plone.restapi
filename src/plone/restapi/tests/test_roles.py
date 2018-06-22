@@ -25,23 +25,44 @@ class TestRolesGet(unittest.TestCase):
         self.assertEqual([
             {u'@id': u'http://localhost:55001/plone/@roles/Contributor',
              u'@type': u'role',
-             u'id': u'Contributor'},
+             u'id': u'Contributor',
+             u'title': u'Contributor'},
             {u'@id': u'http://localhost:55001/plone/@roles/Editor',
              u'@type': u'role',
-             u'id': u'Editor'},
+             u'id': u'Editor',
+             u'title': u'Editor'},
             {u'@id': u'http://localhost:55001/plone/@roles/Member',
              u'@type': u'role',
-             u'id': u'Member'},
+             u'id': u'Member',
+             u'title': u'Member'},
             {u'@id': u'http://localhost:55001/plone/@roles/Reader',
              u'@type': u'role',
-             u'id': u'Reader'},
+             u'id': u'Reader',
+             u'title': u'Reader'},
             {u'@id': u'http://localhost:55001/plone/@roles/Reviewer',
              u'@type': u'role',
-             u'id': u'Reviewer'},
+             u'id': u'Reviewer',
+             u'title': u'Reviewer'},
             {u'@id': u'http://localhost:55001/plone/@roles/Site Administrator',
              u'@type': u'role',
-             u'id': u'Site Administrator'},
+             u'id': u'Site Administrator',
+             u'title': u'Site Administrator'},
             {u'@id': u'http://localhost:55001/plone/@roles/Manager',
              u'@type': u'role',
-             u'id': u'Manager'}],
+             u'id': u'Manager',
+             u'title': u'Manager'}],
             response.json())
+
+    def test_roles_endpoint_translates_role_titles(self):
+        self.api_session.headers.update({'Accept-Language': 'de'})
+        response = self.api_session.get('/@roles')
+
+        self.assertItemsEqual([
+            u'Hinzuf\xfcgen',
+            u'Bearbeiten',
+            u'Benutzer',
+            u'Ansehen',
+            u'Ver\xf6ffentlichen',
+            u'Website-Administrator',
+            u'Verwalten'],
+            [item['title'] for item in response.json()])
