@@ -1,7 +1,15 @@
 Changelog
 =========
 
-1.6.1 (unreleased)
+2.0.1 (unreleased)
+------------------
+
+- Hide upgrades from the add-ons control panel.
+  Fixes `issue 532 <https://github.com/plone/plone.restapi/issues/532>`_.
+  [maurits]
+
+
+2.0.0 (2018-04-27)
 ------------------
 
 Breaking Changes:
@@ -29,6 +37,11 @@ New Features:
 
 - Render subject vocabulary as items for subjects field.
   [jaroel]
+
+- New permission for accessing user information in the GET @user endpoint
+  `plone.restapi: Access Plone user information` mapped by default to Manager
+  role (as it was before).
+  [sneridagh]
 
 Bugfixes:
 

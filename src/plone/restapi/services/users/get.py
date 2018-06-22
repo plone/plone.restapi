@@ -94,8 +94,9 @@ class UsersGet(Service):
         mt = getToolByName(self.context, 'portal_membership')
         current_user_id = mt.getAuthenticatedMember().getId()
 
-        if sm.checkPermission('Manage portal', self.context) or \
-                (current_user_id and current_user_id == self._get_user_id):
+        if sm.checkPermission(
+            'plone.restapi: Access Plone user information', self.context) or \
+           (current_user_id and current_user_id == self._get_user_id):
 
             # we retrieve the user on the user id not the username
             user = self._get_user(self._get_user_id)

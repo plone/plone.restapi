@@ -32,5 +32,13 @@
         profile="plone.restapi:default"
         />
 
+    <genericsetup:registerProfile
+        name="0004"
+        title="plone.restapi.upgrades.0004"
+        description=""
+        directory="profiles/0004"
+        for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+        provides="Products.GenericSetup.interfaces.EXTENSION"
+        />
 
 </configure>
