@@ -3,14 +3,17 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from plone.tiles.type import TileType
-from zope.component import provideAdapter, provideUtility
-from zope.interface import Interface
-from plone.tiles.interfaces import IBasicTile
 from plone.tiles import Tile
+from plone.tiles.interfaces import IBasicTile
+from plone.tiles.type import TileType
+from zope.component import provideAdapter
+from zope.component import provideUtility
+from zope.component import queryUtility
+from zope.interface import Interface
 
 import transaction
 import unittest
@@ -45,6 +48,14 @@ class TestServicesTiles(unittest.TestCase):
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+        fti = queryUtility(
+            IDexterityFTI,
+            name='Document')
+        behavior_list = [a for a in fti.behaviors]
+        behavior_list.append('plone.tiles')
+        behavior_list.append('plone.leadimage')
+        fti.behaviors = tuple(behavior_list)
 
         self.doc = createContentInContainer(
             self.portal, u'Document',
@@ -89,18 +100,60 @@ class TestServicesTiles(unittest.TestCase):
         self.assertEquals(
             response['properties']['title']['type'], u'string')
 
-    def test_post_tile(self):
-        response = self.api_session.post(
-            '/doc/@tiles',
+    def test_patch_tiles_list(self):
+        response = self.api_session.patch(
+            '/doc',
             json={
-                "@type": "sample.tile",
-                "title": "This is the title of the new tile on doc"
+                "tiles": {
+                    'uuid1': {'@type': 'title'},
+                    'uuid2': {'@type': 'description'}
+                },
             })
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get('/doc')
         response = response.json()
-        self.assertEquals(response['title'], u'Sample tile')
+
         self.assertEquals(
-            response['properties']['title']['title'], u'Title')
+            response['tiles'],
+            {
+                'uuid1': {'@type': 'title'},
+                'uuid2': {'@type': 'description'}
+            }
+        )
+
+    def test_patch_tiles_layout(self):
+        response = self.api_session.patch(
+            '/doc',
+            json={
+                "arrangement": ['#uuid1', '#uuid2']
+            })
+
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get('/doc')
+        response = response.json()
+
         self.assertEquals(
-            response['properties']['title']['type'], u'string')
+            response['arrangement'],
+            ['#uuid1', '#uuid2']
+        )
+
+    # These are not failing because the patch operations doesn't validate
+    # fields right now
+    # def test_patch_tiles_list_wrong_type(self):
+    #     response = self.api_session.patch(
+    #         '/doc',
+    #         json={
+    #             "tiles": [{'uuid1': {'@type': 'title'}}]
+    #         })
+    #     self.assertEqual(response.status_code, 500)
+
+    # def test_patch_tiles_layout_wrong_type(self):
+    #     response = self.api_session.patch(
+    #         '/doc',
+    #         json={
+    #             "arrangement": {'uuid1': {'@type': 'title'}}
+    #         })
+    #     self.assertEqual(response.status_code, 500)

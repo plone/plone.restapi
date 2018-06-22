@@ -11,14 +11,4 @@
     permission="zope2.View"
     />
 
-  <plone:service
-    method="POST"
-    for="zope.interface.Interface"
-    factory=".add.TilesPost"
-    name="@tiles"
-    permission="cmf.ModifyPortalContent"
-    />
-
-    <adapter factory="plone.restapi.tiles.TilesStorage" />
-
 </configure>
