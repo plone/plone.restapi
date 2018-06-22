@@ -15,6 +15,9 @@ New Features:
 2.0.1 (2018-06-22)
 ------------------
 
+- Translate FTI titles on `@types` endpoint. Fixes #337.
+  [erral]
+
 - Hide upgrades from the add-ons control panel.
   Fixes `issue 532 <https://github.com/plone/plone.restapi/issues/532>`_.
   [maurits]
