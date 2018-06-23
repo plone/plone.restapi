@@ -13,6 +13,8 @@ from pytz import timezone
 
 from plone.restapi.tests.dxtypes import IDXTestDocumentSchema
 from zope.component import getMultiAdapter
+from zope.schema.interfaces import ConstraintNotSatisfied
+from zope.schema import Field
 from zope.schema._bootstrapinterfaces import RequiredMissing
 from zope.schema.interfaces import ValidationError
 
@@ -451,3 +453,21 @@ class TestDXFieldDeserializer(unittest.TestCase):
     def test_textline_deserializer_strips_value(self):
         value = self.deserialize('test_textline_field', u'  aa  ')
         self.assertEquals(value, 'aa')
+
+    def test_default_field_deserializer_validates_value(self):
+
+        class CustomIntField(Field):
+
+            def constraint(self, value):
+                if not isinstance(value, int):
+                    raise ConstraintNotSatisfied
+                return True
+
+        field = CustomIntField()
+        deserializer = getMultiAdapter((field, self.portal.doc1, self.request),
+                                       IFieldDeserializer)
+
+        with self.assertRaises(ConstraintNotSatisfied):
+            deserializer("not an int")
+
+        self.assertEqual(42, deserializer(42))
