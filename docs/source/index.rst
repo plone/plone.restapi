@@ -19,6 +19,7 @@ Contents
    :maxdepth: 2
 
    authentication
+   exploring
    content
    history
    batching
@@ -31,8 +32,10 @@ Contents
    sharing
    registry
    types
+   types-schema
    users
    groups
+   principals
    roles
    components
    breadcrumbs
@@ -46,6 +49,7 @@ Contents
    conventions
    translations
    email-send
+   email-notification
    upgrade-guide
 
 .. include:: ../../README.rst
