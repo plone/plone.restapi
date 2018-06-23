@@ -1,12 +1,18 @@
 Changelog
 =========
 
-2.0.2 (unreleased)
+2.1.1 (unreleased)
+------------------
+
+- Translate action name, workflow state and transition names in @history endpoint.
+  [erral]
+
+2.1.0 (2018-06-23)
 ------------------
 
 New Features:
 
-- Translate action name, workflow state and transition names in @history endpoint.
+- Translate FTI titles on `@types` endpoint. Fixes #337.
   [erral]
 
 - Include translated role title in `@roles` GET.
@@ -14,6 +20,8 @@ New Features:
 
 2.0.1 (2018-06-22)
 ------------------
+
+Bugfixes:
 
 - Hide upgrades from the add-ons control panel.
   Fixes `issue 532 <https://github.com/plone/plone.restapi/issues/532>`_.
