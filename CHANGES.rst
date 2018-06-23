@@ -12,6 +12,9 @@ Changelog
 
 New Features:
 
+- Translate FTI titles on `@types` endpoint. Fixes #337.
+  [erral]
+
 - Include translated role title in `@roles` GET.
   [lgraf]
 
