@@ -2,6 +2,7 @@
 from Acquisition import aq_inner
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from zope.i18n import translate
 
 
 class RolesGet(Service):
@@ -14,6 +15,7 @@ class RolesGet(Service):
                 '@type': 'role',
                 '@id': '{}/@roles/{}'.format(self.context.absolute_url(), r),
                 'id': r,
+                'title': translate(r, context=self.request, domain='plone'),
             }
             for r in roles
         ]

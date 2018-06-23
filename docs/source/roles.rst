@@ -15,3 +15,6 @@ The server will respond with a list of all groups in the portal:
 
 .. literalinclude:: _json/roles.resp
    :language: http
+
+The role ``title`` is the translated role title as displayed in Plone's
+"Users and Groups" control panel.
