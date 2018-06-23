@@ -53,6 +53,11 @@ Bugfixes:
 - Plone 5.2 compatible tests.
   [sunew]
 
+- Fix object creation events. Before this fix, creation events were fired on
+  on empty not yet deserialized objects. Also a modified event was fired after
+  deserializing e newly created object.
+  [buchi]
+
 
 2.1.0 (2018-06-23)
 ------------------
