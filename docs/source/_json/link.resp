@@ -41,10 +41,11 @@ Content-Type: application/json
     "description": "", 
     "title": "Plone site"
   }, 
-  "remoteUrl": "http://", 
+  "remoteUrl": null, 
   "review_state": "private", 
   "rights": "", 
   "subjects": [], 
   "title": "My Link", 
-  "version": "current"
+  "version": "current", 
+  "versioning_enabled": true
 }

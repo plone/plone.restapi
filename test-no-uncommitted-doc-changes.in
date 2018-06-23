@@ -13,10 +13,10 @@ function red {
     echo "$RED $1 $RESET"
 }
 
-if [ "$PLONE_VERSION" = "4.3.x" ] || [ "$PLONE_VERSION" = "5.1.x" ]; then
+if [ "$PLONE_VERSION" = "4.3.x" ] || [ "$PLONE_VERSION" = "5.0.x" ]; then
     # request/response dumps have known differences for Plone 5
     # => skip, we can't have the Plone 5 build fail because of those
-    echo "Skipping checks for undocumented changes for Plone 5.0.x"
+    echo "Skipping checks for undocumented changes for Plone 4 and 5.0.x"
     exit 0
 fi
 
