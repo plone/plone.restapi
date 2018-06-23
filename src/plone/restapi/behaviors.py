@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from plone.autoform.directives import omitted
 from plone.autoform.interfaces import IFormFieldProvider
+from plone.restapi import _
 from plone.schema import JSONField
 from plone.supermodel import model
 from zope.interface import provider
@@ -23,7 +23,10 @@ ARRANGEMENT_SCHEMA = json.dumps({
 
 @provider(IFormFieldProvider)
 class ITiles(model.Schema):
-    omitted('tiles')
+
+    model.fieldset('layout', label=_(u'Layout'),
+                   fields=['tiles', 'arrangement'])
+
     tiles = JSONField(
         title=u'tiles field',
         schema=TILES_SCHEMA,
@@ -31,7 +34,6 @@ class ITiles(model.Schema):
         required=False,
     )
 
-    omitted('arrangement')
     arrangement = JSONField(
         title=u'arrangement (layout) field',
         schema=ARRANGEMENT_SCHEMA,
