@@ -49,5 +49,6 @@ Content-Type: application/json
   "table_of_contents": null, 
   "text": null, 
   "title": "My Document", 
-  "version": "current"
+  "version": "current", 
+  "versioning_enabled": true
 }
