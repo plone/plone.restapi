@@ -4,11 +4,16 @@ from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
 from plone.restapi.services.content.utils import rename
+from Products.Archetypes.interfaces import IBaseObject
 from zExceptions import BadRequest
+from zExceptions import Unauthorized
 from zope.component import queryMultiAdapter
+from zope.event import notify
 from zope.interface import alsoProvides
+from zope.lifecycleevent import ObjectCreatedEvent
 
 import plone.protect.interfaces
 
@@ -32,10 +37,18 @@ class FolderPost(Service):
             alsoProvides(self.request,
                          plone.protect.interfaces.IDisableCSRFProtection)
 
-        obj = create(self.context, type_, id_=id_, title=title)
-        if isinstance(obj, dict) and 'error' in obj:
+        try:
+            obj = create(self.context, type_, id_=id_, title=title)
+        except Unauthorized as exc:
+            self.request.response.setStatus(403)
+            return dict(error=dict(
+                type='Forbidden',
+                message=exc.message))
+        except BadRequest as exc:
             self.request.response.setStatus(400)
-            return obj
+            return dict(error=dict(
+                type='Bad Request',
+                message=exc.message))
 
         # Update fields
         deserializer = queryMultiAdapter((obj, self.request),
@@ -46,12 +59,17 @@ class FolderPost(Service):
                 message='Cannot deserialize type {}'.format(obj.portal_type)))
 
         try:
-            deserializer(validate_all=True)
+            deserializer(validate_all=True, create=True)
         except DeserializationError as e:
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='DeserializationError',
                 message=str(e)))
+
+        if not IBaseObject.providedBy(obj):
+            notify(ObjectCreatedEvent(obj))
+
+        obj = add(self.context, obj)
 
         # Rename if generated id
         if not id_:
