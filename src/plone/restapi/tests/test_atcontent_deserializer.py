@@ -45,12 +45,13 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
                 title='Test doc ' + str(x)
             )
 
-    def deserialize(self, body='{}', validate_all=False, context=None):
+    def deserialize(self, body='{}', validate_all=False, create=False,
+                    context=None):
         context = context or self.doc1
         self.request['BODY'] = body
         deserializer = getMultiAdapter((context, self.request),
                                        IDeserializeFromJson)
-        return deserializer(validate_all=validate_all)
+        return deserializer(validate_all=validate_all, create=create)
 
     def test_deserializer_ignores_readonly_fields(self):
         self.doc1.getField('testReadonlyField').set(self.doc1, 'Readonly')
@@ -70,7 +71,7 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
 
     def test_deserializer_clears_creation_flag(self):
         self.doc1.markCreationFlag()
-        self.deserialize(body='{"testStringField": "Updated"}')
+        self.deserialize(body='{"testStringField": "Updated"}', create=True)
         self.assertFalse(self.doc1.checkCreationFlag(),
                          'Creation flag not cleared')
 
