@@ -38,8 +38,8 @@ class SerializeVocabularyToJson(object):
 
         result = {
             '@id': batch.canonical_url,
-            'terms': serialized_terms,
-            'terms_total': batch.items_total,
+            'items': serialized_terms,
+            'items_total': batch.items_total,
         }
         links = batch.links
         if links:

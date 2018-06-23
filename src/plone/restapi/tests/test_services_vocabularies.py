@@ -63,11 +63,11 @@ class TestVocabularyEndpoint(unittest.TestCase):
             response,
             {
                 u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
-                u'terms': [
+                u'items': [
                     {u'title': u'Title 1', u'token': u'token1'},
                     {u'title': u'Title 2', u'token': u'token2'},
                 ],
-                u'terms_total': 2,
+                u'items_total': 2,
             }
         )
 
@@ -88,10 +88,10 @@ class TestVocabularyEndpoint(unittest.TestCase):
                     u'last': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1',  # noqa
                     u'next': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1',  # noqa
                 },
-                u'terms': [
+                u'items': [
                     {u'title': u'Title 1', u'token': u'token1'},
                 ],
-                u'terms_total': 2,
+                u'items_total': 2,
             }
         )
 
@@ -106,13 +106,13 @@ class TestVocabularyEndpoint(unittest.TestCase):
             response,
             {
                 u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?q=2',  # noqa
-                u'terms': [
+                u'items': [
                     {
                         u'title': u'Title 2',
                         u'token': u'token2',
                     }
                 ],
-                u'terms_total': 1,
+                u'items_total': 1,
             }
         )
 
@@ -171,9 +171,9 @@ class TestVocabularyEndpoint(unittest.TestCase):
             response.json(),
             {
                 u'@id': u'http://localhost:55001/plone/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary',  # noqa
-                u'terms': [
+                u'items': [
                     {u'title': u'testdoc', u'token': u'id'},
                     {u'title': u'Document 1', u'token': u'title'},
                 ],
-                u'terms_total': 2,
+                u'items_total': 2,
             })

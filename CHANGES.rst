@@ -8,15 +8,17 @@ Breaking Changes:
 
 - `@vocabularies` service:
   
-  - No longer returns an `@id` for terms.
-  - Results are batched. Batch size is 25 by default
-    but can be overridden using the `b_size` parameter.
+  - No longer returns an ``@id`` for terms.
+  - Results are batched, and terms are now listed as ``items``
+    instead of ``terms`` to match other batched responses.
+    Batch size is 25 by default but can be overridden
+    using the ``b_size`` parameter.
 
   [davisagli]
 
 New Features:
 
-- `@vocabularies` service: Use `q` parameter to filter terms by title
+- ``@vocabularies`` service: Use ``q`` parameter to filter terms by title
   (case-insensitive).
   [davisagli]
 

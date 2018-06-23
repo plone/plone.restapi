@@ -46,7 +46,7 @@ The token is what should be sent to the server to retrieve the value of the term
 .. literalinclude:: _json/vocabularies_get.resp
    :language: http
 
-Vocabulary terms can be filtered using a `q` parameter
+Vocabulary terms can be filtered using a ``q`` parameter
 to return only terms with a title that contains the specified text
 (case insensitive).
 
