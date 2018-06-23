@@ -17,7 +17,6 @@ def get_scales(context, field, width, height):
     with the actual dimensions (aspect ratio of the original image).
     """
     scales = {}
-    #absolute_url = context.absolute_url()
     request = getRequest()
     images_view = getMultiAdapter((context, request), name='images')
 
@@ -40,6 +39,7 @@ def get_scales(context, field, width, height):
             u'height': actual_height}
 
     return scales
+
 
 def get_original_image_url(context, fieldname, width, height):
     request = getRequest()

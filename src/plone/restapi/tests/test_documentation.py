@@ -4,6 +4,7 @@ from datetime import datetime
 from DateTime import DateTime
 from datetime import timedelta
 from freezegun import freeze_time
+from mock import patch
 from pkg_resources import parse_version
 from plone import api
 from plone.app.discussion.interfaces import IConversation
@@ -23,10 +24,11 @@ from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PAM_INSTALLED
-from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME  # noqa
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME  # noqa
+from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME  # noqa
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
+from plone.scale import storage
 from plone.testing.z2 import Browser
 from zope.component import createObject
 from zope.component import getUtility
@@ -285,8 +287,12 @@ class TestDocumentation(unittest.TestCase):
             '2016-01-21T02:24:11+00:00')
         import transaction
         transaction.commit()
-        response = self.api_session.get(self.portal.newsitem.absolute_url())
-        save_request_and_response_for_docs('newsitem', response)
+
+        with patch.object(storage, 'uuid4', return_value='uuid1'):
+            response = self.api_session.get(
+                self.portal.newsitem.absolute_url()
+            )
+            save_request_and_response_for_docs('newsitem', response)
 
     def test_documentation_event(self):
         self.portal.invokeFactory('Event', id='event')
@@ -350,8 +356,9 @@ class TestDocumentation(unittest.TestCase):
             '2016-01-21T06:24:11+00:00')
         import transaction
         transaction.commit()
-        response = self.api_session.get(self.portal.image.absolute_url())
-        save_request_and_response_for_docs('image', response)
+        with patch.object(storage, 'uuid4', return_value='uuid1'):
+            response = self.api_session.get(self.portal.image.absolute_url())
+            save_request_and_response_for_docs('image', response)
 
     def test_documentation_folder(self):
         folder = self.create_folder()
