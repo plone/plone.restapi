@@ -39,6 +39,10 @@ The sharing information of a content object can also be directly accessed by app
 .. literalinclude:: _json/sharing_folder_get.resp
    :language: http
 
+The ``available_roles`` property contains the list of roles that can be
+managed via the sharing page. It contains dictionaries with the role ID and
+its translated ``title`` (as it appears on the sharing page).
+
 
 Users and/or groups without a sharing entry can be found by appending the argument `search` to the query string. ie search=admin.
 Global roles are marked with the string "global". Inherited roles are marked with the string "acquired".
