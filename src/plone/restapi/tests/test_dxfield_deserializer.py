@@ -378,12 +378,22 @@ class TestDXFieldDeserializer(unittest.TestCase):
     def test_collection_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
             self.deserialize('test_list_value_type_field', [1, '2', 3])
-        self.assertEqual(u'Wrong contained type', cm.exception.doc())
+
+        # This validation error is actually produced by the
+        # DefaultFieldDeserializer that the CollectionFieldDeserializer will
+        # delegate to for deserializing collection items.
+        self.assertEqual(u'Object is of wrong type.', cm.exception.doc())
+        self.assertEqual(('2', (int, long), ''), cm.exception.args)
 
     def test_dict_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
             self.deserialize('test_dict_key_type_field', {'k': 'v'})
-        self.assertEqual(u'Wrong contained type', cm.exception.doc())
+
+        # This validation error is actually produced by the
+        # DefaultFieldDeserializer that the DictFieldSerializer will delegate
+        # to for deserializing keys and values.
+        self.assertEqual(u'Object is of wrong type.', cm.exception.doc())
+        self.assertEqual(('k', (int, long), ''), cm.exception.args)
 
     def test_time_deserializer_handles_invalid_value(self):
         with self.assertRaises(ValueError) as cm:
