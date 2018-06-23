@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
+from plone import api
 from plone.app.testing import setRoles
-from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
-from plone import api
+from plone.app.testing import TEST_USER_ID
+from plone.restapi.testing import enable_request_language_negotiation
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import RelativeSession
+from plone.restapi.testing import set_available_languages
+from plone.restapi.testing import set_supported_languages
 
 import unittest
 import transaction
@@ -134,3 +137,63 @@ class TestHistoryEndpoint(unittest.TestCase):
         url = self.doc.absolute_url() + '/@history/0'
         response = self.api_session.get(url)
         self.assertNotIn('sharing', response.json())
+
+
+class TestHistoryEndpointTranslatedMessages(unittest.TestCase):
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer['app']
+        self.portal = self.layer['portal']
+        self.portal_url = self.portal.absolute_url()
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+
+        set_available_languages()
+        set_supported_languages(self.portal)
+        enable_request_language_negotiation(self.portal)
+
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.headers.update({'Accept-Language': 'es'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+        self.portal.invokeFactory(
+            'Document',
+            id='doc_with_history',
+            title='My Document'
+        )
+        self.doc = self.portal.doc_with_history
+        self.doc.setTitle('Current version')
+
+        api.content.transition(self.doc, 'publish')
+
+        self.endpoint_url = '{}/@history'.format(self.doc.absolute_url())
+
+        transaction.commit()
+
+    def test_actions_are_translated(self):
+        url = self.doc.absolute_url() + '/@history'
+        response = self.api_session.get(url)
+        first_action = response.json()[-1]
+        self.assertEqual(
+            u'Crear',
+            first_action['action'],
+        )
+
+    def test_state_titles_are_translated(self):
+        url = self.doc.absolute_url() + '/@history'
+        response = self.api_session.get(url)
+        first_action = response.json()[-1]
+        self.assertEqual(
+            u'Privado',
+            first_action['state_title'],
+        )
+
+    def test_transition_titles_are_translated(self):
+        url = self.doc.absolute_url() + '/@history'
+        response = self.api_session.get(url)
+        first_action = response.json()[-1]
+        self.assertEqual(
+            u'Crear',
+            first_action['transition_title'],
+        )
