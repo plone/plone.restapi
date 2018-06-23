@@ -1,0 +1,50 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  {
+    "@id": "http://localhost:55001/plone/@types/File", 
+    "addable": true, 
+    "title": "Archivo"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Folder", 
+    "addable": true, 
+    "title": "Carpeta"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Collection", 
+    "addable": true, 
+    "title": "Colecci\u00f3n"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/DXTestDocument", 
+    "addable": true, 
+    "title": "DX Test Document"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Link", 
+    "addable": true, 
+    "title": "Enlace"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Event", 
+    "addable": true, 
+    "title": "Evento"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Image", 
+    "addable": true, 
+    "title": "Imagen"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/News Item", 
+    "addable": true, 
+    "title": "Noticia"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@types/Document", 
+    "addable": true, 
+    "title": "P\u00e1gina"
+  }
+]
