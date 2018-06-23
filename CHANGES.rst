@@ -9,9 +9,11 @@ Changelog
 
 Bugfixes:
 
+- Image URLs are now created using the cache optimized way. Fixes #494.
+  [erral]
+
 - Make sure DX DefaultFieldDeserializer validates field values.
   [lgraf]
-
 
 2.1.0 (2018-06-23)
 ------------------
