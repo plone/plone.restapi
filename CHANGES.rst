@@ -1,10 +1,29 @@
 Changelog
 =========
 
-2.1.1 (unreleased)
+3.0.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Breaking Changes:
+
+- `@vocabularies` service:
+  
+  - No longer returns an `@id` for terms.
+  - Results are batched. Batch size is 25 by default
+    but can be overridden using the `b_size` parameter.
+
+  [davisagli]
+
+New Features:
+
+- `@vocabularies` service: Use `q` parameter to filter terms by title
+  (case-insensitive).
+  [davisagli]
+
+Bugfixes:
+
+- Avoid calculating batch links for catalog results twice.
+  [davisagli]
 
 
 2.1.0 (2018-06-23)

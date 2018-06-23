@@ -27,16 +27,31 @@ vocabularies in Plone.
 Get a vocabulary
 ----------------
 
-To get a particular vocabulary, ``/@vocabularies`` endpoint
+To get a particular vocabulary, use the ``/@vocabularies`` endpoint
 with the name of the vocabulary, e.g.
 ``/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes``. The
-endpoint can be used with the site root and content objects. The right way is
-depending on the implementation of the vocabulary.
+endpoint can be used with the site root and content objects.
 
 ..  http:example:: curl httpie python-requests
     :request: _json/vocabularies_get.req
 
-The server will respond with a list of terms. The title is pureley for display purposes. The token is what should be send to the server to retrive the value of the term.
+The server will respond with a list of terms. The title is purely for display purposes.
+The token is what should be sent to the server to retrieve the value of the term.
+
+.. note::
+    Vocabulary terms will be **batched** if the size of the
+    resultset exceeds the batch size. See :doc:`/batching` for more
+    details on how to work with batched results.
 
 .. literalinclude:: _json/vocabularies_get.resp
+   :language: http
+
+Vocabulary terms can be filtered using a `q` parameter
+to return only terms with a title that contains the specified text
+(case insensitive).
+
+.. http:example:: curl httpie python-requests
+    :request: _json/vocabularies_get_filtered.req
+
+.. literalinclude:: _json/vocabularies_get_filtered.resp
    :language: http

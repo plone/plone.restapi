@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -19,16 +20,31 @@ class SerializeVocabularyToJson(object):
 
     def __call__(self, vocabulary_id):
         vocabulary = self.context
-        serialized_terms = []
+        query = self.request.form.get('q', '')
+
+        terms = []
         for term in vocabulary:
+            if query.lower() not in term.title.lower():
+                continue
+            terms.append(term)
+
+        batch = HypermediaBatch(self.request, terms)
+
+        serialized_terms = []
+        for term in batch:
             serializer = getMultiAdapter((term, self.request),
                                          interface=ISerializeToJson)
-            serialized_terms.append(serializer(vocabulary_id))
+            serialized_terms.append(serializer())
 
-        return {
-            '@id': vocabulary_id,
-            'terms': serialized_terms
+        result = {
+            '@id': batch.canonical_url,
+            'terms': serialized_terms,
+            'terms_total': batch.items_total,
         }
+        links = batch.links
+        if links:
+            result['batching'] = links
+        return result
 
 
 @implementer(ISerializeToJson)
@@ -39,12 +55,11 @@ class SerializeTermToJson(object):
         self.context = context
         self.request = request
 
-    def __call__(self, vocabulary_id):
+    def __call__(self):
         term = self.context
         token = term.token
         title = term.title if ITitledTokenizedTerm.providedBy(term) else token
         return {
-            '@id': '{}/{}'.format(vocabulary_id, token),
             'token': token,
             'title': title
         }

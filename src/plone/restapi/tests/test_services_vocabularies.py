@@ -61,14 +61,60 @@ class TestVocabularyEndpoint(unittest.TestCase):
         response = response.json()
         self.assertEqual(
             response,
-            {u'@id': u'http://localhost:55001/plone/@vocabularies/''plone.restapi.tests.test_vocabulary',  # noqa
-             u'terms': [
-                 {u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary/token1',  # noqa
-                  u'title': u'Title 1',
-                  u'token': u'token1'},
-                 {u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary/token2',  # noqa
-                  u'title': u'Title 2',
-                  u'token': u'token2'}]})
+            {
+                u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
+                u'terms': [
+                    {u'title': u'Title 1', u'token': u'token1'},
+                    {u'title': u'Title 2', u'token': u'token2'},
+                ],
+                u'terms_total': 2,
+            }
+        )
+
+    def test_get_vocabulary_batched(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.restapi.tests.test_vocabulary?b_size=1'
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
+                u'batching': {
+                    u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?b_size=1',  # noqa
+                    u'first': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=0&b_size=1',  # noqa
+                    u'last': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1',  # noqa
+                    u'next': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1',  # noqa
+                },
+                u'terms': [
+                    {u'title': u'Title 1', u'token': u'token1'},
+                ],
+                u'terms_total': 2,
+            }
+        )
+
+    def test_get_vocabulary_filtered(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.restapi.tests.test_vocabulary?q=2'
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?q=2',  # noqa
+                u'terms': [
+                    {
+                        u'title': u'Title 2',
+                        u'token': u'token2',
+                    }
+                ],
+                u'terms_total': 1,
+            }
+        )
 
     def test_get_unknown_vocabulary(self):
         response = self.api_session.get(
@@ -126,10 +172,8 @@ class TestVocabularyEndpoint(unittest.TestCase):
             {
                 u'@id': u'http://localhost:55001/plone/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary',  # noqa
                 u'terms': [
-                    {u'@id': u'http://localhost:55001/plone/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/id',  # noqa
-                     u'title': u'testdoc',
-                     u'token': u'id'},
-                    {u'@id': u'http://localhost:55001/plone/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/title',  # noqa
-                     u'title': u'Document 1',
-                     u'token': u'title'}]
+                    {u'title': u'testdoc', u'token': u'id'},
+                    {u'title': u'Document 1', u'token': u'title'},
+                ],
+                u'terms_total': 2,
             })

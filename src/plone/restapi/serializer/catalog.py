@@ -77,8 +77,9 @@ class LazyCatalogResultSerializer(object):
         results = {}
         results['@id'] = batch.canonical_url
         results['items_total'] = batch.items_total
-        if batch.links:
-            results['batching'] = batch.links
+        links = batch.links
+        if links:
+            results['batching'] = links
 
         results['items'] = []
         for brain in batch:
