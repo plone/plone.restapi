@@ -12,6 +12,10 @@ Bugfixes:
 - Make sure DX DefaultFieldDeserializer validates field values.
   [lgraf]
 
+- Reindex AT content on PATCH.
+Fixes `issue 531 <https://github.com/plone/plone.restapi/issues/531>`_.
+[buchi]
+
 
 2.1.0 (2018-06-23)
 ------------------
@@ -23,6 +27,8 @@ New Features:
 
 - Include translated role title in `@roles` GET.
   [lgraf]
+
+
 
 2.0.1 (2018-06-22)
 ------------------
