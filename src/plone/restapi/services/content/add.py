@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from Acquisition import aq_base
+from Acquisition.interfaces import IAcquirer
 from plone.restapi.deserializer import json_body
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -8,6 +10,7 @@ from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
 from plone.restapi.services.content.utils import rename
 from Products.Archetypes.interfaces import IBaseObject
+from Products.CMFPlone.utils import safe_hasattr
 from zExceptions import BadRequest
 from zExceptions import Unauthorized
 from zope.component import queryMultiAdapter
@@ -50,6 +53,13 @@ class FolderPost(Service):
                 type='Bad Request',
                 message=exc.message))
 
+        # Acquisition wrap temporarily to satisfy things like vocabularies
+        # depending on tools
+        temporarily_wrapped = False
+        if IAcquirer.providedBy(obj) and not safe_hasattr(obj, 'aq_base'):
+            obj = obj.__of__(self.context)
+            temporarily_wrapped = True
+
         # Update fields
         deserializer = queryMultiAdapter((obj, self.request),
                                          IDeserializeFromJson)
@@ -65,6 +75,9 @@ class FolderPost(Service):
             return dict(error=dict(
                 type='DeserializationError',
                 message=str(e)))
+
+        if temporarily_wrapped:
+            obj = aq_base(obj)
 
         if not IBaseObject.providedBy(obj):
             notify(ObjectCreatedEvent(obj))
