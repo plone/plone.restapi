@@ -11,6 +11,7 @@ from plone.restapi.testing import PAM_INSTALLED
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from zope.component import getGlobalSiteManager
 from zope.component import provideAdapter
 from zope.interface import alsoProvides
 from zope.interface import Interface
@@ -84,6 +85,19 @@ class TestExpansion(unittest.TestCase):
         self.assertEqual(
             {'@components': {'bar': 'expanded', 'foo': 'expanded'}},
             expandable_elements(None, request))
+
+    def tearDown(self):
+        gsm = getGlobalSiteManager()
+        gsm.unregisterAdapter(
+            ExpandableElementFoo,
+            (Interface, IBrowserRequest),
+            IExpandableElement,
+            'foo')
+        gsm.unregisterAdapter(
+            ExpandableElementBar,
+            (Interface, IBrowserRequest),
+            IExpandableElement,
+            'bar')
 
 
 class TestExpansionFunctional(unittest.TestCase):

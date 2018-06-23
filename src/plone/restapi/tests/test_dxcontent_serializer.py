@@ -168,6 +168,12 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = self.serialize()
         self.assertIn('foo', obj['@components'])
         self.assertEqual('collapsed', obj['@components']['foo'])
+        gsm = getGlobalSiteManager()
+        gsm.unregisterAdapter(
+            ExpandableElementFoo,
+            (Interface, IBrowserRequest),
+            IExpandableElement,
+            'foo')
 
     def test_get_is_folderish(self):
         obj = self.serialize()

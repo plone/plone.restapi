@@ -6,6 +6,7 @@ from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.tests.test_expansion import ExpandableElementFoo
+from zope.component import getGlobalSiteManager
 from zope.component import getMultiAdapter
 from zope.component import provideAdapter
 from zope.interface import Interface
@@ -165,6 +166,12 @@ class TestATContentSerializer(unittest.TestCase):
         obj = self.serialize(self.doc1)
         self.assertIn('foo', obj['@components'])
         self.assertEqual('collapsed', obj['@components']['foo'])
+        gsm = getGlobalSiteManager()
+        gsm.unregisterAdapter(
+            ExpandableElementFoo,
+            (Interface, IBrowserRequest),
+            IExpandableElement,
+            'foo')
 
     def test_get_is_folderish_in_folder(self):
         self.portal.invokeFactory('Folder', id=u'folder')
