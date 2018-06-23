@@ -16,6 +16,16 @@ Breaking Changes:
 
   [davisagli]
 
+- Choice fields using named vocabularies are now serialized
+  with a ``vocabulary`` property giving the URL of the ``@vocabularies``
+  endpoint for the vocabulary instead of including ``choices``,
+  ``enum`` and ``enumNames`` inline.
+  [davisagli]
+
+- The ``subjects`` field is now serialized as an ``array``
+  of ``string`` items using the ``plone.app.vocabularies.Keywords`` vocabulary.
+  [davisagli]
+
 New Features:
 
 - ``@vocabularies`` service: Use ``q`` parameter to filter terms by title

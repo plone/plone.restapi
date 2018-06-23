@@ -362,6 +362,25 @@ class TestJsonSchemaProviders(TestCase):
             adapter.get_schema()
         )
 
+    def test_choice_named_vocab(self):
+        field = schema.Choice(
+            title=u'My field',
+            description=u'My great field',
+            vocabulary='plone.app.vocabularies.ReallyUserFriendlyTypes',
+        )
+        adapter = getMultiAdapter((field, self.portal, self.request),
+                                  IJsonSchemaProvider)
+
+        self.assertEqual(
+            {
+                'type': 'string',
+                'title': u'My field',
+                'description': u'My great field',
+                'vocabulary': u'http://nohost/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes'  # noqa
+            },
+            adapter.get_schema()
+        )
+
     def test_choice_source_vocab(self):
         field = schema.Choice(
             title=u'My field',

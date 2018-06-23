@@ -139,40 +139,11 @@ Content-Type: application/json+schema
       "type": "string"
     }, 
     "language": {
-      "choices": [
-        [
-          "de", 
-          "Deutsch"
-        ], 
-        [
-          "en", 
-          "English"
-        ], 
-        [
-          "es", 
-          "Espa\u00f1ol"
-        ], 
-        [
-          "fr", 
-          "Fran\u00e7ais"
-        ]
-      ], 
       "default": "en", 
       "description": "", 
-      "enum": [
-        "de", 
-        "en", 
-        "es", 
-        "fr"
-      ], 
-      "enumNames": [
-        "Deutsch", 
-        "English", 
-        "Espa\u00f1ol", 
-        "Fran\u00e7ais"
-      ], 
       "title": "Language", 
-      "type": "string"
+      "type": "string", 
+      "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableContentLanguages"
     }, 
     "relatedItems": {
       "additionalItems": true, 
@@ -181,7 +152,8 @@ Content-Type: application/json+schema
       "items": {
         "description": "", 
         "title": "Related", 
-        "type": "string"
+        "type": "string", 
+        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
       }, 
       "title": "Related Items", 
       "type": "array", 
@@ -196,12 +168,16 @@ Content-Type: application/json+schema
       "widget": "textarea"
     }, 
     "subjects": {
-      "choices": [], 
+      "additionalItems": true, 
       "description": "Tags are commonly used for ad-hoc organization of content.", 
-      "enum": [], 
-      "enumNames": [], 
+      "items": {
+        "description": "", 
+        "title": "", 
+        "type": "string", 
+        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
+      }, 
       "title": "Tags", 
-      "type": "string", 
+      "type": "array", 
       "vocabulary": "plone.app.vocabularies.Keywords"
     }, 
     "table_of_contents": {

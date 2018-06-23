@@ -5,7 +5,6 @@ from plone.autoform.interfaces import WIDGETS_KEY
 from plone.app.textfield.interfaces import IRichText
 from zope.component import adapter
 from zope.component import getMultiAdapter
-from zope.component import getUtility
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
@@ -29,7 +28,6 @@ from zope.schema.interfaces import ISet
 from zope.schema.interfaces import IText
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITuple
-from zope.schema.interfaces import IVocabularyFactory
 
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets, get_tagged_values
@@ -231,7 +229,6 @@ class SetJsonSchemaProvider(CollectionJsonSchemaProvider):
 @adapter(ITuple, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class TupleJsonSchemaProvider(SetJsonSchemaProvider):
-
     pass
 
 
@@ -247,30 +244,39 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
         return 'string'
 
     def additional(self):
-        # choices and enumNames are v5 proposals, for now we implement both
-        choices = []
-        enum = []
-        enum_names = []
-        vocabulary = None
-
-        if getattr(self.field, 'vocabularyName', None):
-            vocabulary = getUtility(
-                IVocabularyFactory,
-                name=self.field.vocabularyName)(self.context)
-        elif getattr(self.field, 'vocabulary', None):
-            vocabulary = self.field.vocabulary
-        else:
+        vocab_name = getattr(self.field, 'vocabularyName', None)
+        if not vocab_name:
             tagged = get_tagged_values([self.field.interface], WIDGETS_KEY)
             tagged_field_values = tagged.get(self.field.getName(), {})
             vocab_name = tagged_field_values.get('vocabulary', None)
-            if vocab_name:
-                vocab_fac = getUtility(IVocabularyFactory, name=vocab_name)
-                vocabulary = vocab_fac(self.context)
+        if vocab_name:
+            try:
+                context_url = self.context.absolute_url()
+            except AttributeError:
+                portal = getMultiAdapter(
+                    (self.context, self.request),
+                    name='plone_portal_state').portal()
+                context_url = portal.absolute_url()
+            vocab_url = '{}/@vocabularies/{}'.format(
+                context_url,
+                vocab_name,
+            )
+            return {
+                'vocabulary': vocab_url,
+            }
 
+        # Maybe we have an unnamed vocabulary or source.
+
+        vocabulary = getattr(self.field, 'vocabulary', None)
         if IContextSourceBinder.providedBy(vocabulary):
             vocabulary = vocabulary(self.context)
 
         if hasattr(vocabulary, '__iter__') and self.should_render_choices:
+            # choices and enumNames are v5 proposals, for now we implement both
+            choices = []
+            enum = []
+            enum_names = []
+
             for term in vocabulary:
                 title = translate(term.title, context=self.request)
                 choices.append((term.token, title))
@@ -385,5 +391,13 @@ class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
 
 @adapter(ITuple, Interface, Interface)
 @implementer(IJsonSchemaProvider)
-class SubjectsFieldJsonSchemaProvider(ChoiceJsonSchemaProvider):
-    pass
+class SubjectsFieldJsonSchemaProvider(CollectionJsonSchemaProvider):
+
+    def get_items(self):
+        result = super(SubjectsFieldJsonSchemaProvider, self).get_items()
+        vocab_name = 'plone.app.vocabularies.Keywords'
+        result['vocabulary'] = '{}/@vocabularies/{}'.format(
+            self.context.absolute_url(),
+            vocab_name,
+        )
+        return result
