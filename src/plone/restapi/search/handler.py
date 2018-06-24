@@ -33,6 +33,20 @@ class SearchHandler(object):
         if 'path' not in query:
             query['path'] = {}
 
+        if isinstance(query['path'], str):
+            query['path'] = {'query': query['path']}
+
+        # If this is accessed through a VHM the client does not know
+        # the complete physical path of an object. But the path index
+        # indexes the complete physical path. Complete the path.
+        vhm_physical_path = self.request.get('VirtualRootPhysicalPath')
+        if vhm_physical_path:
+            path = query['path'].get('query')
+            if path:
+                path = path.lstrip('/')
+                full_path = '/'.join(vhm_physical_path + (path,))
+                query['path']['query'] = full_path
+
         if isinstance(query['path'], dict) and 'query' not in query['path']:
             # We either had no 'path' parameter at all, or an incomplete
             # 'path' query dict (with just ExtendedPathIndex options (like

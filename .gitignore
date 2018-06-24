@@ -33,4 +33,4 @@ jmeter.log
 pip-selfcheck.json
 /.idea
 /.vscode
-
+/.ipython

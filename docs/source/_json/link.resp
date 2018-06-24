@@ -3,6 +3,9 @@ Content-Type: application/json
 
 {
   "@components": {
+    "actions": {
+      "@id": "http://localhost:55001/plone/link/@actions"
+    }, 
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/link/@breadcrumbs"
     }, 
@@ -16,7 +19,7 @@ Content-Type: application/json
   "@id": "http://localhost:55001/plone/link", 
   "@type": "Link", 
   "UID": "SomeUUID000000000000000000000002", 
-  "allow_discussion": null, 
+  "allow_discussion": false, 
   "changeNote": "", 
   "contributors": [], 
   "created": "2016-01-21T04:14:48+00:00", 
@@ -38,10 +41,11 @@ Content-Type: application/json
     "description": "", 
     "title": "Plone site"
   }, 
-  "remoteUrl": "http://", 
+  "remoteUrl": null, 
   "review_state": "private", 
   "rights": "", 
   "subjects": [], 
   "title": "My Link", 
-  "version": "current"
+  "version": "current", 
+  "versioning_enabled": true
 }

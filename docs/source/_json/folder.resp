@@ -3,6 +3,9 @@ Content-Type: application/json
 
 {
   "@components": {
+    "actions": {
+      "@id": "http://localhost:55001/plone/folder/@actions"
+    }, 
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/folder/@breadcrumbs"
     }, 
@@ -16,7 +19,7 @@ Content-Type: application/json
   "@id": "http://localhost:55001/plone/folder", 
   "@type": "Folder", 
   "UID": "SomeUUID000000000000000000000002", 
-  "allow_discussion": null, 
+  "allow_discussion": false, 
   "contributors": [], 
   "created": "2016-01-21T07:14:48+00:00", 
   "creators": [

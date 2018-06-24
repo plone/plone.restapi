@@ -170,6 +170,30 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         self.assertEquals(u'DefaultFactory',
                           self.portal.doc1.test_default_factory_field)
 
+    def test_deserializer_sets_missing_value_when_receiving_null(self):
+        self.deserialize(body='{"test_missing_value_field": null}')
+        self.assertEquals(u'missing',
+                          self.portal.doc1.test_missing_value_field)
+
+    def test_deserializer_sets_missing_value_on_required_field(self):
+        '''We don't set missing_value if the field is required'''
+        self.deserialize(
+            body='{"test_missing_value_required_field": "valid value"}')
+        with self.assertRaises(BadRequest) as cm:
+            self.deserialize(
+                body='{"test_missing_value_required_field": null}')
+        self.assertEquals(u'valid value',
+                          self.portal.doc1.test_missing_value_required_field)
+        self.assertEquals(
+            (
+                'test_missing_value_required_field is a required field.',
+                'Setting it to null is not allowed.'
+            ),
+            cm.exception.message[0]['message']
+        )
+        self.assertEquals(u'test_missing_value_required_field',
+                          cm.exception.message[0]['field'])
+
     def test_set_layout(self):
         current_layout = self.portal.doc1.getLayout()
         self.assertNotEquals(current_layout, "my_new_layout")

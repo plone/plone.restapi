@@ -409,6 +409,26 @@ class TestUsersEndpoint(unittest.TestCase):
             noam.getProperty('email')
         )
 
+    def test_user_can_update_himself(self):
+        payload = {
+            'fullname': 'Noam A. Chomsky',
+            'username': 'noam',
+            'email': 'avram.chomsky@plone.org'
+        }
+        self.api_session.auth = ('noam', 'password')
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        noam = api.user.get(userid='noam')
+        self.assertEqual('noam', noam.getUserId())  # user id never changes
+        self.assertEqual('Noam A. Chomsky', noam.getProperty('fullname'))
+        self.assertEqual(
+            'avram.chomsky@plone.org',
+            noam.getProperty('email')
+        )
+
     def test_update_roles(self):
         self.assertNotIn('Contributor', api.user.get_roles(username='noam'))
 
@@ -431,8 +451,10 @@ class TestUsersEndpoint(unittest.TestCase):
             self.portal.acl_users.source_users._user_passwords
         )
         payload = {'password': 'secret'}
-        self.api_session.patch('/@users/noam', json=payload)
+        response = self.api_session.patch('/@users/noam', json=payload)
         transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
 
         new_password_hashes = dict(
             self.portal.acl_users.source_users._user_passwords
@@ -441,7 +463,29 @@ class TestUsersEndpoint(unittest.TestCase):
             old_password_hashes['noam'], new_password_hashes['noam']
         )
 
-    def test_user_requests_password_reset_mail(self):
+    def test_anonymous_user_can_not_update_existing_user(self):
+        payload = {
+            'fullname': 'Noam A. Chomsky',
+            'username': 'noam',
+            'email': 'avram.chomsky@plone.org'
+        }
+        self.api_session.auth = ('noam', 'password')
+        response = self.anon_api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_user_can_not_update_another_user(self):
+        payload = {
+            'fullname': 'Noam A. Chomsky',
+            'username': 'noam',
+            'email': 'avram.chomsky@plone.org'
+        }
+        self.api_session.auth = ('otheruser', 'otherpassword')
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 403)
+
+    def test_user_requests_password_sends_password_via_mail(self):
         self.api_session.auth = ('noam', 'password')
         payload = {}
         response = self.api_session.post('/@users/noam/reset-password',
@@ -451,7 +495,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         # FIXME: Test that mail is sent
 
-    def test_user_set_own_password(self):
+    def test_user_can_set_her_own_password(self):
         self.api_session.auth = ('noam', 'password')
         self.portal.manage_permission(
             SetOwnPassword, roles=['Authenticated', 'Manager'], acquire=False)

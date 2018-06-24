@@ -1,6 +1,6 @@
 # https://github.com/plone/buildout.coredev/blob/5.1/requirements.txt
-setuptools==33.1.1
-zc.buildout==2.9.5
+setuptools==39.1.0
+zc.buildout==2.11.5
 # Sphinx / ReadTheDocs
 alabaster==0.7.10
 appdirs==1.4.2

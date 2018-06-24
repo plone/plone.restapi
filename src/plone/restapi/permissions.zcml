@@ -12,4 +12,9 @@
       title="plone.restapi: Access Plone vocabularies"
       />
 
+  <permission
+      id="plone.restapi.getusers"
+      title="plone.restapi: Access Plone user information"
+      />
+
 </configure>

@@ -3,6 +3,9 @@ Content-Type: application/json
 
 {
   "@components": {
+    "actions": {
+      "@id": "http://localhost:55001/plone/image/@actions"
+    }, 
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/image/@breadcrumbs"
     }, 
@@ -16,7 +19,7 @@ Content-Type: application/json
   "@id": "http://localhost:55001/plone/image", 
   "@type": "Image", 
   "UID": "SomeUUID000000000000000000000002", 
-  "allow_discussion": null, 
+  "allow_discussion": false, 
   "contributors": [], 
   "created": "2016-01-21T06:14:48+00:00", 
   "creators": [

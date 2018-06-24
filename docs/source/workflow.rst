@@ -21,3 +21,12 @@ Now, if we want to change the state of the front page to publish, we would proce
 
 .. literalinclude:: _json/workflow_post.resp
    :language: http
+
+
+We can also also change the state recursively for all contained items, provide a comment and set effective and expiration dates:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/workflow_post_with_body.req
+
+.. literalinclude:: _json/workflow_post_with_body.resp
+   :language: http

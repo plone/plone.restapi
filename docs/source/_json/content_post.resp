@@ -4,6 +4,9 @@ Location: http://localhost:55001/plone/folder/my-document
 
 {
   "@components": {
+    "actions": {
+      "@id": "http://localhost:55001/plone/folder/my-document/@actions"
+    }, 
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/folder/my-document/@breadcrumbs"
     }, 
@@ -17,7 +20,7 @@ Location: http://localhost:55001/plone/folder/my-document
   "@id": "http://localhost:55001/plone/folder/my-document", 
   "@type": "Document", 
   "UID": "SomeUUID000000000000000000000005", 
-  "allow_discussion": null, 
+  "allow_discussion": false, 
   "changeNote": "", 
   "contributors": [], 
   "created": "2016-10-21T19:00:00+00:00", 
@@ -47,5 +50,6 @@ Location: http://localhost:55001/plone/folder/my-document
   "table_of_contents": null, 
   "text": null, 
   "title": "My Document", 
-  "version": "current"
+  "version": "current", 
+  "versioning_enabled": true
 }

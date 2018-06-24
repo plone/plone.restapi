@@ -67,6 +67,7 @@ class DeserializeFromJson(OrderingMixin, object):
                 notify(ObjectInitializedEvent(obj))
                 obj.at_post_create_script()
             else:
+                obj.reindexObject()
                 notify(ObjectEditedEvent(obj))
                 obj.at_post_edit_script()
 

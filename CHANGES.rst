@@ -1,11 +1,154 @@
 Changelog
 =========
 
-1.2.1 (unreleased)
+2.1.1 (unreleased)
 ------------------
+
+New Features:
+
+- Translate action name, workflow state and transition names in @history endpoint.
+  [erral]
+
+- Enhance `@workflow` endpoint to support applying transitions to all contained
+  items and to set effective and expiration dates.
+  [buchi]
+
+Bugfixes:
+
+- Make sure DX DefaultFieldDeserializer validates field values.
+  [lgraf]
+
+- Reindex AT content on PATCH. This fixes `issue 531 <https://github.com/plone/plone.restapi/issues/531>`_.
+  [buchi]
+
+- Plone 5.2 compatible tests.
+  [sunew]
 
 - Fix json serialization of dexterity validation errors.
   [thomasdesvenain]
+
+
+2.1.0 (2018-06-23)
+------------------
+
+New Features:
+
+- Translate FTI titles on `@types` endpoint. Fixes #337.
+  [erral]
+
+- Include translated role title in `@roles` GET.
+  [lgraf]
+
+
+2.0.1 (2018-06-22)
+------------------
+
+Bugfixes:
+
+- Hide upgrades from the add-ons control panel.
+  Fixes `issue 532 <https://github.com/plone/plone.restapi/issues/532>`_.
+  [maurits]
+
+
+2.0.0 (2018-04-27)
+------------------
+
+Breaking Changes:
+
+- Convert all datetime, DateTime and time instances to UTC before serializing.
+  [thet]
+
+- Use python-dateutil instead of DateTime to parse date strings when de-serializing.
+  [thet]
+
+- Make `@translations` endpoint expandable
+  [erral]
+
+- Rename the results attribute in `@translations` endpoint to be 'items'
+  [erral]
+
+- Remove 'language' attribute in `@translations` endpoint from the
+  top-level response entry
+  [erral]
+
+New Features:
+
+- Expose the tagged values for widgets in the @types endpoint.
+  [jaroel]
+
+- Render subject vocabulary as items for subjects field.
+  [jaroel]
+
+- New permission for accessing user information in the GET @user endpoint
+  `plone.restapi: Access Plone user information` mapped by default to Manager
+  role (as it was before).
+  [sneridagh]
+
+Bugfixes:
+
+- Add VHM support to @search
+  [csenger]
+
+
+1.6.0 (2018-04-17)
+------------------
+
+New Features:
+
+- Add `expand.navigation.depth` parameter to the `@navigation` endpoint.
+  [fulv, sneridagh]
+
+
+1.5.0 (2018-04-03)
+------------------
+
+New Features:
+
+- Allow users to update their own properties and password.
+  [sneridagh]
+
+
+1.4.1 (2018-03-22)
+------------------
+
+Bugfixes:
+
+- Fix serialization of `Discussion Item` and `Collection` content types when
+  called with `fullobjects` parameter.
+  [sneridagh]
+
+
+1.4.0 (2018-03-19)
+------------------
+
+New Features:
+
+- Add expandable @actions endpoint to retrieve portal_actions.
+  [csenger,timo,sneridagh]
+
+
+1.3.1 (2018-03-14)
+------------------
+
+Bugfixes:
+
+- Support null in content PATCH requests to delete a field value
+  (Dexterity only). This fixes #187.
+  [csenger]
+
+
+1.3.0 (2018-03-05)
+------------------
+
+New Features:
+
+- Observe the allow_discussion allowance (global, fti, object) on object
+  serialization.
+  [sneridagh]
+
+- Add '@email-send' endpoint to allow authorized users to send emails to
+  arbitrary addresses (Plone 5 only).
+  [sneridagh]
 
 
 1.2.0 (2018-02-28)
@@ -15,10 +158,6 @@ New Features:
 
 - Allow users to get their own user information.
   [erral]
-
-- New @email-send endpoint (Plone 5 only). Allows authorized users to send
-  emails to arbitrary addresses.
-  [sneridagh]
 
 Bugfixes:
 
@@ -31,7 +170,7 @@ Bugfixes:
 - Fix workflow translations with unicode characters.
   [Gagaro]
 
-- Fix workflow encoding in transition endpoint
+- Fix workflow encoding in transition endpoint.
   [Gagaro]
 
 

@@ -3,6 +3,9 @@ Content-Type: application/json
 
 {
   "@components": {
+    "actions": {
+      "@id": "http://localhost:55001/plone/event/@actions"
+    }, 
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/event/@breadcrumbs"
     }, 
@@ -16,7 +19,7 @@ Content-Type: application/json
   "@id": "http://localhost:55001/plone/event", 
   "@type": "Event", 
   "UID": "SomeUUID000000000000000000000002", 
-  "allow_discussion": null, 
+  "allow_discussion": false, 
   "attendees": [], 
   "changeNote": "", 
   "contact_email": null, 
@@ -56,5 +59,6 @@ Content-Type: application/json
   "text": null, 
   "title": "Event", 
   "version": "current", 
+  "versioning_enabled": true, 
   "whole_day": false
 }

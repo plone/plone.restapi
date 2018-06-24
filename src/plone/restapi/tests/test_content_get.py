@@ -50,6 +50,11 @@ class TestContentGet(unittest.TestCase):
             id='doc2',
             title='My Document 2'
         )
+        self.portal.folder1.invokeFactory(
+            'Collection',
+            id='collection',
+            title='My collection'
+        )
         wftool = getToolByName(self.portal, 'portal_workflow')
         wftool.doActionFor(self.portal.folder1, 'publish')
         wftool.doActionFor(self.portal.folder1.doc1, 'publish')
@@ -65,7 +70,7 @@ class TestContentGet(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(2, len(response.json()['items']))
+        self.assertEqual(3, len(response.json()['items']))
         self.assertTrue(
             'title' in response.json()['items'][0].keys()
         )
@@ -113,7 +118,7 @@ class TestContentGet(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(2, len(response.json()['items']))
+        self.assertEqual(3, len(response.json()['items']))
         self.assertEqual(response.json()['items'][1]['@id'],
                          'http://localhost:55001/plone/folder1/folder2')
 
@@ -125,7 +130,7 @@ class TestContentGet(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(2, len(response.json()['items']))
+        self.assertEqual(3, len(response.json()['items']))
         self.assertTrue('items' not in response.json()['items'][1])
 
     def test_get_content_includes_related_items(self):
