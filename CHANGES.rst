@@ -6,6 +6,9 @@ Changelog
 
 New Features:
 
+- Document the use of the `Accept-Language` HTTP header.
+  [erral]
+
 - Translate action name, workflow state and transition names in @history endpoint.
   [erral]
 

@@ -57,6 +57,7 @@ TUS_HEADERS = [
 
 REQUEST_HEADER_KEYS = [
     'accept',
+    'accept-language',
     'authorization',
     'lock-token',
     'prefer',
@@ -1240,6 +1241,86 @@ class TestDocumentation(unittest.TestCase):
             json={'title': 'New Title'})
         response.request.headers['Lock-Token'] = u"0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
         save_request_and_response_for_docs('lock_update', response)
+
+
+class TestDocumentationMessageTranslations(unittest.TestCase):
+
+    layer = layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
+
+    def setUp(self):
+        self.app = self.layer['app']
+        self.request = self.layer['request']
+        self.portal = self.layer['portal']
+        self.portal_url = self.portal.absolute_url()
+
+        # Register custom UUID generator to produce stable UUIDs during tests
+        pushGlobalRegistry(getSite())
+        register_static_uuid_utility(prefix='SomeUUID')
+
+        self.time_freezer = freeze_time("2016-10-21 19:00:00")
+        self.frozen_time = self.time_freezer.start()
+
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.headers.update({'Accept-Language': 'es'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        self.document = self.create_document()
+        alsoProvides(self.document, ITTWLockable)
+
+        transaction.commit()
+        self.browser = Browser(self.app)
+        self.browser.handleErrors = False
+        self.browser.addHeader(
+            'Authorization',
+            'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
+        )
+
+    def create_document(self):
+        self.portal.invokeFactory('Document', id='front-page')
+        document = self.portal['front-page']
+        document.title = u"Welcome to Plone"
+        document.description = \
+            u"Congratulations! You have successfully installed Plone."
+        document.text = RichTextValue(
+            u"If you're seeing this instead of the web site you were " +
+            u"expecting, the owner of this web site has just installed " +
+            u"Plone. Do not contact the Plone Team or the Plone mailing " +
+            u"lists about this.",
+            'text/plain',
+            'text/html'
+        )
+        document.creation_date = DateTime('2016-01-21T01:14:48+00:00')
+        document.reindexObject()
+        document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
+        return document
+
+    def tearDown(self):
+        self.time_freezer.stop()
+        popGlobalRegistry(getSite())
+
+    def test_translate_messages_types(self):
+        response = self.api_session.get('/@types')
+        save_request_and_response_for_docs(
+            'translated_messages_types', response)
+
+    def test_translate_messages_types_folder(self):
+        response = self.api_session.get('/@types/Folder')
+        save_request_and_response_for_docs(
+            'translated_messages_types_folder', response)
+
+    def test_translate_messages_object_workflow(self):
+        response = self.api_session.get(
+            '{}/@workflow'.format(self.document.id))
+        save_request_and_response_for_docs(
+            'translated_messages_object_workflow', response)
+
+    def test_translate_messages_object_history(self):
+        response = self.api_session.get(
+            '{}/@history'.format(self.document.id))
+        save_request_and_response_for_docs(
+            'translated_messages_object_history', response)
 
 
 class TestCommenting(unittest.TestCase):
