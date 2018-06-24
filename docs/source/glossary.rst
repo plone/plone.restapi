@@ -46,11 +46,3 @@ Glossary
 
     Basic Auth
         A simple :term:`Authentication Method` referenced in the :term:`Authorization Header` that needs to be provided by the server.
-
-    Client
-
-    Server
-
-    Network
-
-    Socket
