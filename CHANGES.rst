@@ -24,6 +24,9 @@ Bugfixes:
 - Fix change password on Plone 5.2
   [sunew]
 
+- Plone 5.2 compatible tests.
+  [sunew]
+
 
 2.1.0 (2018-06-23)
 ------------------

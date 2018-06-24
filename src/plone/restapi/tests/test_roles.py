@@ -22,7 +22,7 @@ class TestRolesGet(unittest.TestCase):
     def test_roles_endpoint_lists_roles(self):
         response = self.api_session.get('/@roles')
 
-        self.assertEqual([
+        self.assertItemsEqual([
             {u'@id': u'http://localhost:55001/plone/@roles/Contributor',
              u'@type': u'role',
              u'id': u'Contributor',
