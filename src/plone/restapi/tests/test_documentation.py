@@ -413,6 +413,20 @@ class TestDocumentation(unittest.TestCase):
             '{}/@workflow/publish'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('workflow_post', response)
 
+    def test_documentation_workflow_transition_with_body(self):
+        self.frozen_time.tick(timedelta(minutes=5))
+        folder = self.portal[self.portal.invokeFactory('Folder', id='folder')]
+        transaction.commit()
+        response = self.api_session.post(
+            '{}/@workflow/publish'.format(folder.absolute_url()),
+            json={
+                'comment': 'Publishing my folder...',
+                'include_children': True,
+                'effective': '2018-01-21T08:00:00',
+                'expires': '2019-01-21T08:00:00',
+            })
+        save_request_and_response_for_docs('workflow_post_with_body', response)
+
     def test_documentation_registry_get(self):
         response = self.api_session.get(
             '/@registry/plone.app.querystring.field.path.title')

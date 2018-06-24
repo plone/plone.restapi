@@ -4,8 +4,14 @@ Changelog
 2.1.1 (unreleased)
 ------------------
 
+New Features:
+
 - Translate action name, workflow state and transition names in @history endpoint.
   [erral]
+
+- Enhance `@workflow` endpoint to support applying transitions to all contained
+  items and to set effective and expiration dates.
+  [buchi]
 
 Bugfixes:
 
