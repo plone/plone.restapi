@@ -25,7 +25,7 @@ Example Response:
 Listing add-ons records
 -----------------------
 
-The registry records listing uses a batched method to access all addons.
+The addons listing uses a batched method to access all addons.
 See :doc:`/batching` for more details on how to work with batched results.
 
 
@@ -35,4 +35,40 @@ See :doc:`/batching` for more details on how to work with batched results.
 Example Response:
 
 .. literalinclude:: _json/addons_get_list.resp
+   :language: http
+
+
+Installing an addon
+-------------------
+
+An individual addon can be installed by issuing a ``POST`` to the given URL:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/addons_install.req
+
+.. literalinclude:: _json/addons_install.resp
+   :language: http
+
+
+Uninstalling an addon
+-------------------
+
+An individual addon can be uninstalled by issuing a ``POST`` to the given URL:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/addons_uninstall.req
+
+.. literalinclude:: _json/addons_uninstall.resp
+   :language: http
+
+
+Upgrading an addon
+-------------------
+
+An individual addon can be upgraded by issuing a ``POST`` to the given URL:
+
+..  http:example:: curl httpie python-requests
+    :request: _json/addons_upgrade.req
+
+.. literalinclude:: _json/addons_upgrade.resp
    :language: http
