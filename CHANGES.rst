@@ -21,6 +21,9 @@ Bugfixes:
 - Reindex AT content on PATCH. This fixes `issue 531 <https://github.com/plone/plone.restapi/issues/531>`_.
   [buchi]
 
+- Fix change password on Plone 5.2
+  [sunew]
+
 
 2.1.0 (2018-06-23)
 ------------------
