@@ -182,7 +182,7 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
         )
         self.assertEqual(
             'some_value',
-            jsonschema['properties']['another_field']['a_param']
+            jsonschema['properties']['another_field']['widget']['a_param']
         )
 
 
@@ -246,7 +246,9 @@ class TestJsonSchemaProviders(TestCase):
                 'type': 'string',
                 'title': u'My field',
                 'description': u'My great field',
-                'widget': 'textarea',
+                'widget': {
+                    'type': 'textarea',
+                },
                 'default': u'Lorem ipsum dolor sit amet',
                 'minLength': 10,
             },
@@ -564,7 +566,9 @@ class TestJsonSchemaProviders(TestCase):
                 'type': 'string',
                 'title': u'My field',
                 'description': u'My great field',
-                'widget': 'richtext',
+                'widget': {
+                    'type': 'richtext',
+                },
             },
             adapter.get_schema()
         )
@@ -586,7 +590,9 @@ class TestJsonSchemaProviders(TestCase):
                 'title': u'My field',
                 'description': u'My great field',
                 'default': date(2016, 1, 1),
-                'widget': u'date',
+                'widget': {
+                    'type': u'date'
+                },
             },
             adapter.get_schema()
         )
@@ -606,7 +612,9 @@ class TestJsonSchemaProviders(TestCase):
                 'type': 'string',
                 'title': u'My field',
                 'description': u'My great field',
-                'widget': u'datetime',
+                'widget': {
+                    'type': u'datetime'
+                },
             },
             adapter.get_schema()
         )

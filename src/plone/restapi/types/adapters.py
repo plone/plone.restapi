@@ -32,6 +32,7 @@ from zope.schema.interfaces import ITuple
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets, get_tagged_values
 from plone.restapi.types.utils import get_jsonschema_properties
+from plone.restapi.types.utils import get_vocabulary_url
 
 
 @adapter(IField, Interface, Interface)
@@ -67,7 +68,10 @@ class DefaultJsonSchemaProvider(object):
             'description': self.get_description(),
         }
 
-        widget = self.get_widget()
+        widget = self.get_widget_params()
+        widget_type = self.get_widget()
+        if widget_type:
+            widget['type'] = widget_type
         if widget:
             schema['widget'] = widget
 
@@ -82,6 +86,15 @@ class DefaultJsonSchemaProvider(object):
 
     def get_widget(self):
         return None
+
+    def get_widget_params(self):
+        all_params = get_tagged_values([self.field.interface], WIDGETS_KEY)
+        params = all_params.get(self.field.getName(), {})
+        if 'vocabulary' in params:
+            vocab_name = params['vocabulary']
+            params['vocabulary'] = get_vocabulary_url(
+                vocab_name, self.context, self.request)
+        return params
 
 
 @adapter(IBytes, Interface, Interface)
@@ -245,24 +258,10 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
 
     def additional(self):
         vocab_name = getattr(self.field, 'vocabularyName', None)
-        if not vocab_name:
-            tagged = get_tagged_values([self.field.interface], WIDGETS_KEY)
-            tagged_field_values = tagged.get(self.field.getName(), {})
-            vocab_name = tagged_field_values.get('vocabulary', None)
         if vocab_name:
-            try:
-                context_url = self.context.absolute_url()
-            except AttributeError:
-                portal = getMultiAdapter(
-                    (self.context, self.request),
-                    name='plone_portal_state').portal()
-                context_url = portal.absolute_url()
-            vocab_url = '{}/@vocabularies/{}'.format(
-                context_url,
-                vocab_name,
-            )
             return {
-                'vocabulary': vocab_url,
+                'vocabulary': get_vocabulary_url(
+                    vocab_name, self.context, self.request)
             }
 
         # Maybe we have an unnamed vocabulary or source.
@@ -387,17 +386,3 @@ class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
 
     def get_widget(self):
         return 'datetime'
-
-
-@adapter(ITuple, Interface, Interface)
-@implementer(IJsonSchemaProvider)
-class SubjectsFieldJsonSchemaProvider(CollectionJsonSchemaProvider):
-
-    def get_items(self):
-        result = super(SubjectsFieldJsonSchemaProvider, self).get_items()
-        vocab_name = 'plone.app.vocabularies.Keywords'
-        result['vocabulary'] = '{}/@vocabularies/{}'.format(
-            self.context.absolute_url(),
-            vocab_name,
-        )
-        return result

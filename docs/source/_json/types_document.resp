@@ -93,7 +93,9 @@ Content-Type: application/json+schema
       "title": "Contributors", 
       "type": "array", 
       "uniqueItems": true, 
-      "vocabulary": "plone.app.vocabularies.Users"
+      "widget": {
+        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+      }
     }, 
     "creators": {
       "additionalItems": true, 
@@ -106,20 +108,26 @@ Content-Type: application/json+schema
       "title": "Creators", 
       "type": "array", 
       "uniqueItems": true, 
-      "vocabulary": "plone.app.vocabularies.Users"
+      "widget": {
+        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+      }
     }, 
     "description": {
       "description": "Used in item listings and search results.", 
       "minLength": 0, 
       "title": "Summary", 
       "type": "string", 
-      "widget": "textarea"
+      "widget": {
+        "type": "textarea"
+      }
     }, 
     "effective": {
       "description": "If this date is in the future, the content will not show up in listings and searches until this date.", 
       "title": "Publishing Date", 
       "type": "string", 
-      "widget": "datetime"
+      "widget": {
+        "type": "datetime"
+      }
     }, 
     "exclude_from_nav": {
       "default": false, 
@@ -131,7 +139,9 @@ Content-Type: application/json+schema
       "description": "When this date is reached, the content will no longer be visible in listings and searches.", 
       "title": "Expiration Date", 
       "type": "string", 
-      "widget": "datetime"
+      "widget": {
+        "type": "datetime"
+      }
     }, 
     "id": {
       "description": "This name will be displayed in the URL.", 
@@ -158,14 +168,18 @@ Content-Type: application/json+schema
       "title": "Related Items", 
       "type": "array", 
       "uniqueItems": true, 
-      "vocabulary": "plone.app.vocabularies.Catalog"
+      "widget": {
+        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
+      }
     }, 
     "rights": {
       "description": "Copyright statement or other rights information on this item.", 
       "minLength": 0, 
       "title": "Rights", 
       "type": "string", 
-      "widget": "textarea"
+      "widget": {
+        "type": "textarea"
+      }
     }, 
     "subjects": {
       "additionalItems": true, 
@@ -173,12 +187,14 @@ Content-Type: application/json+schema
       "items": {
         "description": "", 
         "title": "", 
-        "type": "string", 
-        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
+        "type": "string"
       }, 
       "title": "Tags", 
       "type": "array", 
-      "vocabulary": "plone.app.vocabularies.Keywords"
+      "uniqueItems": true, 
+      "widget": {
+        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
+      }
     }, 
     "table_of_contents": {
       "description": "If selected, this will show a table of contents at the top of the page.", 
@@ -189,7 +205,9 @@ Content-Type: application/json+schema
       "description": "", 
       "title": "Text", 
       "type": "string", 
-      "widget": "richtext"
+      "widget": {
+        "type": "richtext"
+      }
     }, 
     "title": {
       "description": "", 

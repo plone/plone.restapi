@@ -16,14 +16,18 @@ Breaking Changes:
 
   [davisagli]
 
-- Choice fields using named vocabularies are now serialized
-  with a ``vocabulary`` property giving the URL of the ``@vocabularies``
-  endpoint for the vocabulary instead of including ``choices``,
-  ``enum`` and ``enumNames`` inline.
-  [davisagli]
+- `@types` service:
 
-- The ``subjects`` field is now serialized as an ``array``
-  of ``string`` items using the ``plone.app.vocabularies.Keywords`` vocabulary.
+  - Choice fields using named vocabularies are now serialized
+    with a ``vocabulary`` property giving the URL of the ``@vocabularies``
+    endpoint for the vocabulary instead of including ``choices``,
+    ``enum`` and ``enumNames`` inline.
+  - The ``subjects`` field is now serialized as an ``array``
+    of ``string`` items using the ``plone.app.vocabularies.Keywords`` vocabulary.
+    [davisagli]
+  - Serialize widget parameters into a ``widget`` object
+    instead of adding them to the top level the schema property.
+
   [davisagli]
 
 New Features:
