@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """JsonSchema providers."""
-from plone.autoform.interfaces import WIDGETS_KEY
-
 from plone.app.textfield.interfaces import IRichText
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -30,7 +28,7 @@ from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITuple
 
 from plone.restapi.types.interfaces import IJsonSchemaProvider
-from plone.restapi.types.utils import get_fieldsets, get_tagged_values
+from plone.restapi.types.utils import get_fieldsets, get_widget_params
 from plone.restapi.types.utils import get_jsonschema_properties
 from plone.restapi.types.utils import get_vocabulary_url
 
@@ -89,7 +87,7 @@ class DefaultJsonSchemaProvider(object):
         return None
 
     def get_widget_params(self):
-        all_params = get_tagged_values([self.field.interface], WIDGETS_KEY)
+        all_params = get_widget_params([self.field.interface])
         params = all_params.get(self.field.getName(), {})
         if 'vocabulary' in params:
             vocab_name = params['vocabulary']
