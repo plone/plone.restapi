@@ -23,8 +23,8 @@ from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PAM_INSTALLED
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME  # noqa
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME  # noqa
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.testing.z2 import Browser
@@ -143,11 +143,9 @@ def save_request_and_response_for_docs(name, response):
 
 class TestDocumentation(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
 
     def setUp(self):
-        if PLONE_VERSION.base_version >= '5.1':
-            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
@@ -1315,11 +1313,9 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
 
 class TestCommenting(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
 
     def setUp(self):
-        if PLONE_VERSION.base_version >= '5.1':
-            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
@@ -1493,11 +1489,9 @@ class TestCommenting(unittest.TestCase):
 @unittest.skipUnless(PAM_INSTALLED, 'plone.app.multilingual is installed by default only in Plone 5')  # NOQA
 class TestPAMDocumentation(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME
 
     def setUp(self):
-        if PLONE_VERSION.base_version >= '5.1':
-            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
