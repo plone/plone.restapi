@@ -1,8 +1,15 @@
 Changelog
 =========
 
-2.1.1 (unreleased)
+3.0.0 (unreleased)
 ------------------
+
+Breaking Changes:
+
+- Include translated role titles in `@sharing` GET.
+  [lgraf]
+
+New Features:
 
 - Translate action name, workflow state and transition names in @history endpoint.
   [erral]
