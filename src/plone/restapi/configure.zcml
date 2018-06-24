@@ -68,7 +68,7 @@
 
   <plone:behavior
       name="plone.tiles"
-      title="Object tiles"
+      title="Tiles"
       description="Existing tiles on the object and their arrangement"
       provides=".behaviors.ITiles"
       for="plone.dexterity.interfaces.IDexterityContent"

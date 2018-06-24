@@ -28,14 +28,16 @@ class ITiles(model.Schema):
                    fields=['tiles', 'arrangement'])
 
     tiles = JSONField(
-        title=u'tiles field',
+        title=u'Tiles',
+        description=u'The JSON representation of the object tiles information. Must be a JSON object.',  # noqa
         schema=TILES_SCHEMA,
         default={},
         required=False,
     )
 
     arrangement = JSONField(
-        title=u'arrangement (layout) field',
+        title=u'Arrangement (layout)',
+        description=u'The JSON representation of the object tiles arrangement. Must be a JSON array.',  # noqa
         schema=ARRANGEMENT_SCHEMA,
         default=[],
         required=False,

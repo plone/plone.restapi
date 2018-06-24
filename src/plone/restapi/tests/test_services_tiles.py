@@ -140,6 +140,12 @@ class TestServicesTiles(unittest.TestCase):
             ['#uuid1', '#uuid2']
         )
 
+    def test_get_tiles_layout_schema(self):
+        response = self.api_session.get('/@types/Document')
+
+        self.assertEqual(response.status_code, 200)
+        response = response.json()
+
     # These are not failing because the patch operations doesn't validate
     # fields right now
     # def test_patch_tiles_list_wrong_type(self):
