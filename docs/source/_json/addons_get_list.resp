@@ -25,7 +25,6 @@ Content-Type: application/json
         "title": "Session refresh support",
         "pre_handler": "NULL",
         "version": "1001",
-        "path": "/applicationPath/api/eggs/plone.session-3.7.0-py2.7.egg/plone/session/profiles/default",
         "type": 2,
         "id": "plone.session:default",
         "post_handler": "NULL"
@@ -37,7 +36,6 @@ Content-Type: application/json
         "for": "NULL",
         "title": "Session refresh support [uninstall]",
         "pre_handler": "NULL",
-        "path": "/applicationPath/api/eggs/plone.session-3.7.0-py2.7.egg/plone/session/profiles/uninstall",
         "type": 2,
         "id": "plone.session:uninstall",
         "post_handler": "NULL"
