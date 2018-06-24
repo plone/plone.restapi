@@ -7,6 +7,12 @@ Changelog
 - Translate action name, workflow state and transition names in @history endpoint.
   [erral]
 
+Bugfixes:
+
+- Make sure DX DefaultFieldDeserializer validates field values.
+  [lgraf]
+
+
 2.1.0 (2018-06-23)
 ------------------
 

@@ -39,8 +39,12 @@ class DefaultFieldDeserializer(object):
 
     def __call__(self, value):
         if not isinstance(value, unicode):
+            self.field.validate(value)
             return value
-        return IFromUnicode(self.field).fromUnicode(value)
+
+        value = IFromUnicode(self.field).fromUnicode(value)
+        # IFromUnicode.fromUnicode() will validate, no need to do it twice
+        return value
 
 
 @implementer(IFieldDeserializer)
