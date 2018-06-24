@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from pkg_resources import parse_version
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -10,6 +11,8 @@ from plone.restapi.testing import RelativeSession
 
 import transaction
 import unittest
+
+PLONE_VERSION = parse_version(api.env.plone_version())
 
 
 class TestServicesTypes(unittest.TestCase):

@@ -7,6 +7,9 @@ Changelog
 - Translate action name, workflow state and transition names in @history endpoint.
   [erral]
 
+- Translate FTI titles on `@types` endpoint. Fixes #337.
+  [erral]
+
 Bugfixes:
 
 - Make sure DX DefaultFieldDeserializer validates field values.
@@ -18,11 +21,9 @@ Bugfixes:
 
 New Features:
 
-- Translate FTI titles on `@types` endpoint. Fixes #337.
-  [erral]
-
 - Include translated role title in `@roles` GET.
   [lgraf]
+
 
 2.0.1 (2018-06-22)
 ------------------
