@@ -8,29 +8,29 @@ Content-Type: application/json
   "upgrade_profiles": {},
   "uninstall_profile_id": "plone.session:uninstall",
   "other_profiles": [],
-  "is_installed": "FALSE",
+  "is_installed": false,
   "id": "plone.session",
   "install_profile": {
     "product": "plone.session",
     "description": "Optional plone.session refresh support.",
-    "for": "NULL",
+    "for": null,
     "title": "Session refresh support",
-    "pre_handler": "NULL",
+    "pre_handler": null,
     "version": "1001",
     "type": 2,
     "id": "plone.session:default",
-    "post_handler": "NULL"
+    "post_handler": null
   },
   "title": "Session refresh support",
   "uninstall_profile": {
     "product": "plone.session",
     "description": "Optional plone.session refresh support. [uninstall]",
-    "for": "NULL",
+    "for": null,
     "title": "Session refresh support [uninstall]",
-    "pre_handler": "NULL",
+    "pre_handler": null,
     "type": 2,
     "id": "plone.session:uninstall",
-    "post_handler": "NULL"
+    "post_handler": null
   },
   "install_profile_id": "plone.session:default",
   "version": "3.7.0",
