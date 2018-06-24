@@ -18,6 +18,7 @@ Content-Type: application/json+schema
         "allow_discussion", 
         "exclude_from_nav", 
         "id", 
+        "versioning_enabled", 
         "table_of_contents"
       ], 
       "id": "settings", 
@@ -183,6 +184,9 @@ Content-Type: application/json+schema
         "title": "Related", 
         "type": "string"
       }, 
+      "pattern_options": {
+        "recentlyUsed": true
+      }, 
       "title": "Related Items", 
       "type": "array", 
       "uniqueItems": true, 
@@ -219,11 +223,16 @@ Content-Type: application/json+schema
       "description": "", 
       "title": "Title", 
       "type": "string"
+    }, 
+    "versioning_enabled": {
+      "default": true, 
+      "description": "Enable/disable versioning for this document.", 
+      "title": "Versioning enabled", 
+      "type": "boolean"
     }
   }, 
   "required": [
-    "title", 
-    "exclude_from_nav"
+    "title"
   ], 
   "title": "Page", 
   "type": "object"

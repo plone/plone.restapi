@@ -11,10 +11,12 @@ Retrieve Local Roles
 
 In plone.restapi, the representation of any content object will include a hypermedia link to the local role / sharing information in the 'sharing' attribute:
 
-.. code:: json
+.. code-block:: http
 
-  GET /plone/folder
+  GET /plone/folder HTTP/1.1
   Accept: application/json
+
+.. code::
 
   HTTP 200 OK
   content-type: application/json

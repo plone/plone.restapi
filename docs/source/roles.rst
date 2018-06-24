@@ -9,9 +9,9 @@ List Roles
 To retrieve a list of all roles in the portal, call the ``/@roles`` endpoint with a ``GET`` request:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/groups.req
+    :request: _json/roles.req
 
-The server will respond with a list of all groups in the portal:
+The server will respond with a list of all roles in the portal:
 
 .. literalinclude:: _json/roles.resp
    :language: http
