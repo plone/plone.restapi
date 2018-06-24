@@ -4,6 +4,9 @@ Changelog
 2.1.1 (unreleased)
 ------------------
 
+- Translate action name, workflow state and transition names in @history endpoint.
+  [erral]
+
 Bugfixes:
 
 - Make sure DX DefaultFieldDeserializer validates field values.
@@ -20,7 +23,6 @@ New Features:
 
 - Include translated role title in `@roles` GET.
   [lgraf]
-
 
 2.0.1 (2018-06-22)
 ------------------
