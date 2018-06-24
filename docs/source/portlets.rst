@@ -71,6 +71,14 @@ The server responds with:
    :language: http
 
 
+Retrieving individual portlets
+------------------------------
+
+TODO:
+
+DISCUSSION: The portlet id is often (depending on portlet implementation) generated from the portlet title.
+
+
 
 Adding portlets
 ---------------
