@@ -4,7 +4,10 @@ Changelog
 2.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Make sure DX DefaultFieldDeserializer validates field values.
+  [lgraf]
 
 
 2.1.0 (2018-06-23)
