@@ -13,6 +13,7 @@ from plone.namedfile.file import NamedImage
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_VERSION
 from plone.scale import storage
 from unittest import TestCase
 from z3c.form.interfaces import IDataManager
@@ -20,6 +21,11 @@ from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
 
 import os
+
+if PLONE_VERSION.base_version >= '5.1':
+    GIF_SCALE_FORMAT = 'png'
+else:
+    GIF_SCALE_FORMAT = 'jpeg'
 
 
 class TestDexterityFieldSerializing(TestCase):
@@ -198,8 +204,8 @@ class TestDexterityFieldSerializing(TestCase):
 
             scale_url_uuid = 'uuid_1'
             obj_url = self.doc1.absolute_url()
-            download_url = u'{}/@@images/{}.jpeg'.format(
-                obj_url, scale_url_uuid
+            download_url = u'{}/@@images/{}.{}'.format(
+                obj_url, scale_url_uuid, GIF_SCALE_FORMAT
             )
             scales = {
                 u'listing': {
@@ -275,8 +281,8 @@ class TestDexterityFieldSerializing(TestCase):
 
             scale_url_uuid = 'uuid_1'
             obj_url = self.doc1.absolute_url()
-            download_url = u'{}/@@images/{}.jpeg'.format(
-                obj_url, scale_url_uuid
+            download_url = u'{}/@@images/{}.{}'.format(
+                obj_url, scale_url_uuid, GIF_SCALE_FORMAT
             )
             scales = {
                 u'listing': {

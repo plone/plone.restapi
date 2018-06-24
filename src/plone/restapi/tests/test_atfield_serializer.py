@@ -5,11 +5,17 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_VERSION
 from plone.scale import storage
 from zope.component import getMultiAdapter
 
 import os
 import unittest
+
+if PLONE_VERSION.base_version >= '5.1':
+    GIF_SCALE_FORMAT = 'png'
+else:
+    GIF_SCALE_FORMAT = 'jpeg'
 
 
 class TestATFieldSerializer(unittest.TestCase):
@@ -105,8 +111,8 @@ class TestATFieldSerializer(unittest.TestCase):
             self.maxDiff = 99999
             obj_url = self.doc1.absolute_url()
             scale_url_uuid = 'uuid_1'
-            download_url = u'{}/@@images/{}.jpeg'.format(
-                obj_url, scale_url_uuid)
+            download_url = u'{}/@@images/{}.{}'.format(
+                obj_url, scale_url_uuid, GIF_SCALE_FORMAT)
             scales = {
                 u'listing': {
                     u'download': download_url,
@@ -182,8 +188,8 @@ class TestATFieldSerializer(unittest.TestCase):
             self.assertTrue(isinstance(value, dict), 'Not a <dict>')
             scale_url_uuid = 'uuid_1'
             obj_url = self.doc1.absolute_url()
-            download_url = u'{}/@@images/{}.jpeg'.format(
-                obj_url, scale_url_uuid)
+            download_url = u'{}/@@images/{}.{}'.format(
+                obj_url, scale_url_uuid, GIF_SCALE_FORMAT)
             scales = {
                 u'listing': {
                     u'download': download_url,
