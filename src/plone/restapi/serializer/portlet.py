@@ -102,7 +102,8 @@ class PortletManagerSerializer(object):
         # The retriever only returns portlets that are visible.
         # Still need to check available.
 
-        # Based on plone.portlets.manager.PortletManagerRenderer._lazyLoadPortlets
+        # Based on
+        # plone.portlets.manager.PortletManagerRenderer._lazyLoadPortlets
         for portlet in self.filter(retriever.getPortlets()):
             assignment = portlet['assignment']
 
@@ -146,7 +147,9 @@ class PortletSerializer(object):
 
     # todo: cache
     def getPortletSchemata(self):  # noqa
-        return dict([(iface, name) for name, iface in getUtilitiesFor(IPortletTypeInterface)])
+        return dict([(iface, name)
+                    for name, iface
+                    in getUtilitiesFor(IPortletTypeInterface)])
 
     def __call__(self):
 
@@ -169,7 +172,8 @@ class PortletSerializer(object):
             'portlet_hash': portlet_metadata['hash'],
         }
 
-        # Adapted from plone.app.portlets.exportimport.portlets._extractPortlets
+        # Adapted from
+        # plone.app.portlets.exportimport.portlets._extractPortlets
         portlet_schemata = self.getPortletSchemata()
         type_ = None
         schema = None
@@ -222,8 +226,10 @@ class PortletSerializer(object):
         return result
 
 
-# See serializer/dxfields.py: The portlet fields needs both the portletdataprovider
-# as well as the context. So we extend the default dexterity field serializers.
+# See serializer/dxfields.py: The portlet fields
+# needs both the portletdataprovider
+# as well as the context. So we extend the
+# default dexterity field serializers.
 
 
 @adapter(IField, IPortletDataProvider, Interface, Interface)

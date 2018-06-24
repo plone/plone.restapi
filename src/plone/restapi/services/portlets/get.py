@@ -34,8 +34,9 @@ class PortletsGet(Service):
 
         def serialize(portletmanagers):
             for name, manager in portletmanagers:
-                serializer = queryMultiAdapter((manager, self.context, self.request),
-                                               ISerializeToJsonSummary)
+                serializer = queryMultiAdapter(
+                   (manager, self.context, self.request),
+                   ISerializeToJsonSummary)
                 yield serializer()
 
         portletmanagers = self.get_portletmanagers()

@@ -1477,19 +1477,22 @@ class TestPortlets(unittest.TestCase):
         response = self.api_session.get(
             '/@portlets/plone.leftcolumn'
         )
-        save_request_and_response_for_docs('portlets_get_left_column', response)
+        save_request_and_response_for_docs(
+            'portlets_get_left_column', response)
 
     def test_portlets_get_right_column(self):
         response = self.api_session.get(
             '/@portlets/plone.rightcolumn'
         )
-        save_request_and_response_for_docs('portlets_get_right_column', response)
+        save_request_and_response_for_docs(
+            'portlets_get_right_column', response)
 
     def test_portlets_get_left_column_doc(self):
         response = self.api_session.get(
             '/front-page/@portlets/plone.leftcolumn'
         )
-        save_request_and_response_for_docs('portlets_get_left_column_doc', response)
+        save_request_and_response_for_docs(
+            'portlets_get_left_column_doc', response)
 
 @unittest.skipUnless(PAM_INSTALLED, 'plone.app.multilingual is installed by default only in Plone 5')  # NOQA
 class TestPAMDocumentation(unittest.TestCase):
