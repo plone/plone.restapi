@@ -68,12 +68,13 @@ class DefaultJsonSchemaProvider(object):
             'description': self.get_description(),
         }
 
-        widget = self.get_widget_params()
-        widget_type = self.get_widget()
-        if widget_type:
-            widget['type'] = widget_type
+        widget = self.get_widget()
         if widget:
             schema['widget'] = widget
+
+        widget_options = self.get_widget_params()
+        if widget_options:
+            schema['widgetOptions'] = widget_options
 
         if self.field.default is not None:
             schema['default'] = self.field.default

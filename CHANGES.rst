@@ -25,8 +25,8 @@ Breaking Changes:
   - The ``subjects`` field is now serialized as an ``array``
     of ``string`` items using the ``plone.app.vocabularies.Keywords`` vocabulary.
     [davisagli]
-  - Serialize widget parameters into a ``widget`` object
-    instead of adding them to the top level the schema property.
+  - Serialize widget parameters into a ``widgetOptions`` object
+    instead of adding them to the top level of the schema property.
 
   [davisagli]
 

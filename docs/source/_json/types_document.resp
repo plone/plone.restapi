@@ -93,7 +93,7 @@ Content-Type: application/json+schema
       "title": "Contributors", 
       "type": "array", 
       "uniqueItems": true, 
-      "widget": {
+      "widgetOptions": {
         "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
       }
     }, 
@@ -108,7 +108,7 @@ Content-Type: application/json+schema
       "title": "Creators", 
       "type": "array", 
       "uniqueItems": true, 
-      "widget": {
+      "widgetOptions": {
         "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
       }
     }, 
@@ -117,17 +117,13 @@ Content-Type: application/json+schema
       "minLength": 0, 
       "title": "Summary", 
       "type": "string", 
-      "widget": {
-        "type": "textarea"
-      }
+      "widget": "textarea"
     }, 
     "effective": {
       "description": "If this date is in the future, the content will not show up in listings and searches until this date.", 
       "title": "Publishing Date", 
       "type": "string", 
-      "widget": {
-        "type": "datetime"
-      }
+      "widget": "datetime"
     }, 
     "exclude_from_nav": {
       "default": false, 
@@ -139,9 +135,7 @@ Content-Type: application/json+schema
       "description": "When this date is reached, the content will no longer be visible in listings and searches.", 
       "title": "Expiration Date", 
       "type": "string", 
-      "widget": {
-        "type": "datetime"
-      }
+      "widget": "datetime"
     }, 
     "id": {
       "description": "This name will be displayed in the URL.", 
@@ -168,7 +162,7 @@ Content-Type: application/json+schema
       "title": "Related Items", 
       "type": "array", 
       "uniqueItems": true, 
-      "widget": {
+      "widgetOptions": {
         "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
       }
     }, 
@@ -177,9 +171,7 @@ Content-Type: application/json+schema
       "minLength": 0, 
       "title": "Rights", 
       "type": "string", 
-      "widget": {
-        "type": "textarea"
-      }
+      "widget": "textarea"
     }, 
     "subjects": {
       "additionalItems": true, 
@@ -192,7 +184,7 @@ Content-Type: application/json+schema
       "title": "Tags", 
       "type": "array", 
       "uniqueItems": true, 
-      "widget": {
+      "widgetOptions": {
         "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
       }
     }, 
@@ -205,9 +197,7 @@ Content-Type: application/json+schema
       "description": "", 
       "title": "Text", 
       "type": "string", 
-      "widget": {
-        "type": "richtext"
-      }
+      "widget": "richtext"
     }, 
     "title": {
       "description": "", 
