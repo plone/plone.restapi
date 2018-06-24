@@ -52,5 +52,3 @@ class PortletsGet(Service):
             self.request.response.setStatus(501)
             return dict(error=dict(message='No serializer available.'))
         return serializer()
-        # TODO: IJsonCompatible?
-        # return IJsonCompatible(ISerializeToJson(manager)())

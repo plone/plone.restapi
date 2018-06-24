@@ -1417,52 +1417,79 @@ class TestCommenting(unittest.TestCase):
         save_request_and_response_for_docs('controlpanels_get_item', response)
 
 
+class TestPortlets(unittest.TestCase):
 
-# class TestPortlets(unittest.TestCase):
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
 
-#     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
+    def setUp(self):
+        self.app = self.layer['app']
+        self.request = self.layer['request']
+        self.portal = self.layer['portal']
+        self.portal_url = self.portal.absolute_url()
 
-#     def setUp(self):
-#         # if PLONE_VERSION.base_version >= '5.1':
-#         #     self.skipTest('Do not run documentation tests for Plone 5')
-#         self.app = self.layer['app']
-#         self.request = self.layer['request']
-#         self.portal = self.layer['portal']
-#         self.portal_url = self.portal.absolute_url()
+        self.time_freezer = freeze_time("2016-10-21 19:00:00")
+        self.frozen_time = self.time_freezer.start()
 
-#         # self.time_freezer = freeze_time("2016-10-21 19:00:00")
-#         # self.frozen_time = self.time_freezer.start()
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-#         self.api_session = RelativeSession(self.portal_url)
-#         self.api_session.headers.update({'Accept': 'application/json'})
-#         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        self.document = self.create_document_with_portlets()
 
-#         setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        transaction.commit()
+        self.browser = Browser(self.app)
+        self.browser.handleErrors = False
+        self.browser.addHeader(
+            'Authorization',
+            'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
+        )
 
-#         transaction.commit()
-#         self.browser = Browser(self.app)
-#         self.browser.handleErrors = False
-#         self.browser.addHeader(
-#             'Authorization',
-#             'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
-#         )
+    def create_document_with_portlets(self):
+        self.portal.invokeFactory('Document', id='front-page')
+        document = self.portal['front-page']
+        document.title = u"Welcome to Plone"
+        document.description = \
+            u"Congratulations! You have successfully installed Plone."
+        document.text = RichTextValue(
+            u"If you're seeing this instead of the web site you were " +
+            u"expecting, the owner of this web site has just installed " +
+            u"Plone. Do not contact the Plone Team or the Plone mailing " +
+            u"lists about this.",
+            'text/plain',
+            'text/html'
+        )
+        document.creation_date = DateTime('2016-01-21T01:14:48+00:00')
+        document.reindexObject()
+        document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
+        return document
 
-#     def tearDown(self):
-#         # self.time_freezer.stop()
-#         pass
+    def tearDown(self):
+        self.time_freezer.stop()
 
-#     def test_portlets_get_listing(self):
-#         response = self.api_session.get(
-#             '/@portlets'
-#         )
-#         save_request_and_response_for_docs('portlets_get', response)
+    def test_portlets_get_managers(self):
+        response = self.api_session.get(
+            '/@portlets'
+        )
+        save_request_and_response_for_docs('portlets_get', response)
 
-#     def test_portlets_get_item(self):
-#         response = self.api_session.get(
-#             '/@portlets/plone.leftcolumn'
-#         )
-#         save_request_and_response_for_docs('portlets_get_manager', response)
+    def test_portlets_get_left_column(self):
+        response = self.api_session.get(
+            '/@portlets/plone.leftcolumn'
+        )
+        save_request_and_response_for_docs('portlets_get_left_column', response)
 
+    def test_portlets_get_right_column(self):
+        response = self.api_session.get(
+            '/@portlets/plone.rightcolumn'
+        )
+        save_request_and_response_for_docs('portlets_get_right_column', response)
+
+    def test_portlets_get_left_column_doc(self):
+        response = self.api_session.get(
+            '/front-page/@portlets/plone.leftcolumn'
+        )
+        save_request_and_response_for_docs('portlets_get_left_column_doc', response)
 
 @unittest.skipUnless(PAM_INSTALLED, 'plone.app.multilingual is installed by default only in Plone 5')  # NOQA
 class TestPAMDocumentation(unittest.TestCase):
