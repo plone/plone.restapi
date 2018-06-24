@@ -79,18 +79,20 @@ and will get a response containing the file.
 
 Image fields are serialized in the same way, except that their serialization
 contains their ``width`` and ``height``, and an additional property
-``scales`` that contains a mapping with the available image scales:
+``scales`` that contains a mapping with the available image scales.
+Image URLs are created using the UID-based URL that changes each time the image
+is modified, so these URLs can be properly cached:
 
 .. code-block:: json
 
     {
       "icon": {
-        "download": "http://localhost:55001/plone/image/@@images/image/icon",
+        "download": "http://localhost:55001/plone/image/@@images/8eed3f80-5e1f-4115-85b8-650a10a6ca84.png",
         "height": 32,
         "width": 24
       },
       "large": {
-        "download": "http://localhost:55001/plone/image/@@images/image/large",
+        "download": "http://localhost:55001/plone/image/@@images/0d1824d1-2672-4b62-9277-aeb220d3bf15.png",
         "height": 768,
         "width": 576
       },
