@@ -6,7 +6,7 @@ Available users in a Plone site can be created, queried, updated and deleted by 
 List Users
 ----------
 
-To retrieve a list of all current users in the portal, call the ``/@users`` endpoint with a ``GET`` request:
+To retrieve a list of all current users in the portal, call the ``/@users`` endpoint with a ``GET`` request. If you want to include the list groups a user is in, you can pass the URL parameter ``include_groups``:
 
 ..  http:example:: curl httpie python-requests
     :request: _json/users.req
@@ -133,7 +133,7 @@ A successful response to a PATCH request will be indicated by a :term:`204 No Co
    :language: http
 
 .. note::
-  The 'roles' object is a mapping of a role and a boolean indicating adding or removing.
+  The 'roles' and 'groups' object is a mapping of a role/group and a boolean indicating adding or removing.
 
 Any user is able to update their own properties and password (if allowed) by using the same request.
 

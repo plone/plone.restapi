@@ -53,7 +53,7 @@ class UsersPost(Service):
 
         # remove data we don't want to check for
         data = {}
-        for key in ['username', 'email', 'password',
+        for key in ['username', 'email', 'groups', 'password',
                     'roles', 'sendPasswordReset']:
             if key in original_data:
                 data[key] = original_data[key]
@@ -69,6 +69,7 @@ class UsersPost(Service):
             allowed.append('password')
             allowed.append('sendPasswordReset')
             allowed.append('roles')
+            allowed.append('groups')
         else:
             if security.enable_user_pwd_choice:
                 allowed.append('password')
@@ -147,6 +148,7 @@ class UsersPost(Service):
         email = data.pop('email', None)
         password = data.pop('password', None)
         roles = data.pop('roles', ['Member', ])
+        groups = data.pop('groups', [])
         send_password_reset = data.pop('sendPasswordReset', None)
         properties = data
 
@@ -170,8 +172,12 @@ class UsersPost(Service):
                 username,
                 password,
                 roles,
-                properties=properties
+                properties=properties,
             )
+            portal_groups = getToolByName(portal, 'portal_groups')
+            for group_id in groups:
+                portal_groups.addPrincipalToGroup(username, group_id)
+
         except ValueError as e:
             self.request.response.setStatus(400)
             return dict(error=dict(
@@ -188,7 +194,7 @@ class UsersPost(Service):
             (user, self.request),
             ISerializeToJson
         )
-        return serializer()
+        return serializer(include_groups=True)
 
     def _get_user(self, user_id):
         portal = getSite()

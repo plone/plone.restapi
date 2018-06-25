@@ -5,7 +5,10 @@ Content-Type: application/json
 
 {
     "email": "avram.chomsky@example.com",
+    "groups": {
+        "philosopher": true
+    },
     "roles": {
-        "Contributor": false
+        "Contributor": true
     }
 }

@@ -65,6 +65,7 @@ class TestUsersEndpoint(unittest.TestCase):
             properties=properties,
             password=u'otherpassword'
         )
+        api.group.create(groupname='ploneteam')
         transaction.commit()
 
     def test_list_users(self):
@@ -292,6 +293,30 @@ class TestUsersEndpoint(unittest.TestCase):
         fields = [x['field'] for x in errors]
         self.assertEqual(['roles'], fields)
 
+    def test_add_anon_no_groups(self):
+        """Make sure anonymous users cannot set their own groups.
+           Allowing so would make them Manager.
+        """
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.enable_self_reg = True
+        api.group.create(groupname='philosopher')
+        transaction.commit()
+
+        response = self.anon_api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "groups": ['philosopher'],
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(400, response.status_code)
+        errors = response.json()['error']['errors']
+        fields = [x['field'] for x in errors]
+        self.assertEqual(['groups'], fields)
+
     def test_get_user(self):
         response = self.api_session.get('/@users/noam')
 
@@ -429,6 +454,86 @@ class TestUsersEndpoint(unittest.TestCase):
             noam.getProperty('email')
         )
 
+    def test_user_cannot_upate_own_roles_unless_has_usersandgroups_permission(
+            self):
+        """Make sure anonymous users cannot set their own roles.
+           Allowing so would make them Manager.
+        """
+        self.api_session.auth = ('noam', 'password')
+        response = self.api_session.patch(
+            '/@users/noam',
+            json={
+                "email": "howard.zinn@example.com",
+                "roles": {'Contributor': True,
+                          'Editor': True,
+                          },
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(403, response.status_code)
+        response = response.json()
+        self.assertEqual(response['error']['type'], 'Forbidden')
+        self.assertEqual(sorted(api.user.get_roles(username='noam')),
+                         ['Authenticated', 'Member'])
+
+        api.user.grant_roles(username='noam', roles=['Manager'])
+        transaction.commit()
+        response = self.api_session.patch(
+            '/@users/noam',
+            json={
+                "email": "howard.zinn@example.com",
+                "roles": {'Contributor': True,
+                          'Editor': True,
+                          },
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(204, response.status_code)
+        self.assertEqual(sorted(api.user.get_roles(username='noam')),
+                         ['Authenticated', u'Contributor', u'Editor', 'Manager', 'Member'])
+
+    def test_user_cannot_upate_own_groups_unless_has_usersandgroups_permission(
+            self):
+        """Make sure anonymous users cannot set their own groups.
+           Allowing so would make them Manager.
+        """
+        api.group.create(groupname='philosopher')
+        transaction.commit()
+
+        self.api_session.auth = ('noam', 'password')
+        response = self.api_session.patch(
+            '/@users/noam',
+            json={
+                "email": "howard.zinn@example.com",
+                "groups": {'philosopher': True},
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(403, response.status_code)
+        response = response.json()
+        self.assertEqual(response['error']['type'], 'Forbidden')
+        self.assertEqual([g.id for g in api.group.get_groups(username='noam')],
+                         ['AuthenticatedUsers'])
+
+        api.user.grant_roles(username='noam', roles=['Manager'])
+        transaction.commit()
+        response = self.api_session.patch(
+            '/@users/noam',
+            json={
+                "email": "howard.zinn@example.com",
+                "groups": {'philosopher': True},
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(204, response.status_code)
+        self.assertEqual(sorted([g.id for g in
+                                 api.group.get_groups(username='noam')]),
+                         ['AuthenticatedUsers', 'philosopher'])
+
     def test_update_roles(self):
         self.assertNotIn('Contributor', api.user.get_roles(username='noam'))
 
@@ -445,6 +550,27 @@ class TestUsersEndpoint(unittest.TestCase):
         )
         transaction.commit()
         self.assertNotIn('Contributor', api.user.get_roles(username='noam'))
+
+    def test_update_groups(self):
+        def get_groups():
+            groups = api.group.get_groups(username='noam')
+            return [group.id for group in groups]
+
+        self.assertNotIn('ploneteam', get_groups())
+
+        self.api_session.patch(
+            '/@users/noam',
+            json={'groups': {'ploneteam': True}}
+        )
+        transaction.commit()
+        self.assertIn('ploneteam', get_groups())
+
+        self.api_session.patch(
+            '/@users/noam',
+            json={'groups': {'ploneteam': False}}
+        )
+        transaction.commit()
+        self.assertNotIn('ploneteam', get_groups())
 
     def test_update_user_password(self):
         old_password_hashes = dict(
@@ -739,8 +865,23 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(201, response.status_code)
-
         response = response.json()
-
         self.assertIn('Member', response['roles'])
         self.assertEquals(1, len(response['roles']))
+
+    def test_add_user_with_groups(self):
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "username": "howard",
+                "email": "howard.zinn@example.com",
+                "password": "peopleshistory",
+                "groups": ["ploneteam"],
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+        response = response.json()
+        self.assertEqual(1, len(response['groups']))
+        self.assertEqual('ploneteam', response['groups'][0]['id'])

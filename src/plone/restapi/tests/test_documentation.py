@@ -553,7 +553,7 @@ class TestDocumentation(unittest.TestCase):
         }
         admin.setMemberProperties(mapping=properties)
         transaction.commit()
-        response = self.api_session.get('/@users')
+        response = self.api_session.get('/@users?include_groups=1')
         save_request_and_response_for_docs('users', response)
 
     def test_documentation_users_as_anonymous(self):
@@ -604,7 +604,7 @@ class TestDocumentation(unittest.TestCase):
             properties=properties
         )
         transaction.commit()
-        response = self.api_session.get('@users/noam')
+        response = self.api_session.get('@users/noam?include_groups=1')
         save_request_and_response_for_docs('users_get', response)
 
     def test_documentation_users_anonymous_get(self):
@@ -703,6 +703,8 @@ class TestDocumentation(unittest.TestCase):
         save_request_and_response_for_docs('users_filtered_by_username', response)  # noqa
 
     def test_documentation_users_created(self):
+        api.group.create(groupname='philosopher')
+        transaction.commit()
         response = self.api_session.post(
             '/@users',
             json={
@@ -714,6 +716,7 @@ class TestDocumentation(unittest.TestCase):
                 'description': 'Professor of Linguistics',
                 'location': 'Cambridge, MA',
                 'roles': ['Contributor', ],
+                'groups': ['philosopher']
             },
         )
         save_request_and_response_for_docs('users_created', response)
@@ -747,13 +750,15 @@ class TestDocumentation(unittest.TestCase):
             username='noam',
             properties=properties
         )
+        api.group.create(groupname='philosopher')
         transaction.commit()
 
         response = self.api_session.patch(
             '/@users/noam',
             json={
                 'email': 'avram.chomsky@example.com',
-                'roles': {'Contributor': False, },
+                'roles': {'Contributor': True},
+                'groups': {'philosopher': True},
             },
         )
         save_request_and_response_for_docs('users_update', response)

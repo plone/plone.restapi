@@ -53,6 +53,7 @@ class UsersGet(Service):
 
     def reply(self):
         sm = getSecurityManager()
+        include_groups = self.query.pop('include_groups', False)
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get('query', '')
             limit = self.query.get('limit', DEFAULT_SEARCH_RESULTS_LIMIT)
@@ -66,7 +67,7 @@ class UsersGet(Service):
                             (user, self.request),
                             ISerializeToJson
                         )
-                        result.append(serializer())
+                        result.append(serializer(include_groups=include_groups))
                     return result
                 else:
                     self.request.response.setStatus(401)
@@ -83,7 +84,7 @@ class UsersGet(Service):
                         (user, self.request),
                         ISerializeToJson
                     )
-                    result.append(serializer())
+                    result.append(serializer(include_groups=include_groups))
                 return result
             else:
                 self.request.response.setStatus(401)
@@ -107,7 +108,7 @@ class UsersGet(Service):
                 (user, self.request),
                 ISerializeToJson
             )
-            return serializer()
+            return serializer(include_groups=include_groups)
         else:
             self.request.response.setStatus(401)
             return

@@ -82,7 +82,32 @@ class UsersPatch(Service):
                     roles=target_roles,
                     domains=user.getDomains(),
                 )
+
+            groups = user_settings_to_update.get('groups', {})
+            if groups:
+                to_add = [key for key, enabled in groups.items() if enabled]
+                to_remove = [key for key, enabled in groups.items()
+                             if not enabled]
+                groups_tool = getToolByName(self.context, 'portal_groups')
+                current = groups_tool.getGroupsForPrincipal(user)
+                for group in to_add:
+                    if group not in current:
+                        groups_tool.addPrincipalToGroup(user.id, group)
+                for group in to_remove:
+                    if group in current:
+                        groups_tool.removePrincipalFromGroup(user.id, group)
+
         elif self._get_current_user == self._get_user_id:
+            if not self.can_manage_users:
+                if 'roles' in user_settings_to_update:
+                    return self._error(
+                        403, 'Forbidden',
+                        'You can\'t update your roles')
+                if 'groups' in user_settings_to_update:
+                    return self._error(
+                        403, 'Forbidden',
+                        'You can\'t update your groups')
+
             for key, value in user_settings_to_update.items():
                 if key == 'password' and \
                    security.enable_user_pwd_choice and \

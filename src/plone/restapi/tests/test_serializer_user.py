@@ -28,11 +28,13 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
             username='noam',
             properties=properties
         )
+        api.group.create(groupname='philosophers')
+        api.group.add_user(groupname='philosophers', user=self.user)
 
-    def serialize(self, user):
+    def serialize(self, user, **kwargs):
         serializer = getMultiAdapter((user, self.request),
                                      ISerializeToJson)
-        return serializer()
+        return serializer(**kwargs)
 
     def test_serialize_returns_id(self):
         user = self.serialize(self.user)
@@ -49,3 +51,12 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
         self.assertIn('roles', user)
         self.assertNotIn('Authenticated', user['roles'])
         self.assertNotIn('Anonymous', user['roles'])
+
+    def test_serialize_groups(self):
+        user = self.serialize(self.user)
+        self.assertNotIn('groups', user)
+
+        user = self.serialize(self.user, include_groups=True)
+        self.assertIn('groups', user)
+        self.assertNotIn('AuthenticatedUsers', user['groups'])
+        self.assertEqual(user['groups'][0]['id'], 'philosophers')

@@ -6,6 +6,10 @@ Changelog
 
 New Features:
 
+- Enhance ``@workflow`` endpoint to save and return groups. In GET groups
+  are not included unless ``include_groups`` is passed.
+  [csenger]
+
 - Translate action name, workflow state and transition names in @history endpoint.
   [erral]
 

@@ -7,6 +7,9 @@ Content-Type: application/json
     "description": "Professor of Linguistics",
     "email": "noam.chomsky@example.com",
     "fullname": "Noam Avram Chomsky",
+    "groups": [
+        "philosopher"
+    ],
     "home_page": "web.mit.edu/chomsky",
     "location": "Cambridge, MA",
     "password": "colorlessgreenideas",
