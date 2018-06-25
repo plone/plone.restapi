@@ -4,7 +4,8 @@ Changelog
 3.0.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix ReST on PyPi.
+  [timo]
 
 
 2.2.0 (2018-06-25)
