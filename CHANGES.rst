@@ -11,13 +11,40 @@ Breaking Changes:
 
 New Features:
 
+- Nothing changed yet.
+
+
+2.2.0 (2018-06-25)
+------------------
+
+New Features:
+
+- Document the use of the `Accept-Language` HTTP header.
+  [erral]
+
+- Translate FTI titles on `@types` endpoint. Fixes #337.
+  [erral]
+
 - Translate action name, workflow state and transition names in @history endpoint.
   [erral]
+
+- Enhance `@workflow` endpoint to support applying transitions to all contained
+  items and to set effective and expiration dates.
+  [buchi]
 
 Bugfixes:
 
 - Make sure DX DefaultFieldDeserializer validates field values.
   [lgraf]
+
+- Reindex AT content on PATCH. This fixes `issue 531 <https://github.com/plone/plone.restapi/issues/531>`_.
+  [buchi]
+
+- Fix change password on Plone 5.2
+  [sunew]
+
+- Plone 5.2 compatible tests.
+  [sunew]
 
 
 2.1.0 (2018-06-23)
@@ -25,11 +52,9 @@ Bugfixes:
 
 New Features:
 
-- Translate FTI titles on `@types` endpoint. Fixes #337.
-  [erral]
-
 - Include translated role title in `@roles` GET.
   [lgraf]
+
 
 2.0.1 (2018-06-22)
 ------------------
