@@ -9,6 +9,9 @@ New Features:
 - Document the use of the `Accept-Language` HTTP header.
   [erral]
 
+- Translate FTI titles on `@types` endpoint. Fixes #337.
+  [erral]
+
 - Translate action name, workflow state and transition names in @history endpoint.
   [erral]
 
@@ -36,12 +39,8 @@ Bugfixes:
 
 New Features:
 
-- Translate FTI titles on `@types` endpoint. Fixes #337.
-  [erral]
-
 - Include translated role title in `@roles` GET.
   [lgraf]
-
 
 
 2.0.1 (2018-06-22)
