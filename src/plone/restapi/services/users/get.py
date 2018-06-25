@@ -67,7 +67,8 @@ class UsersGet(Service):
                             (user, self.request),
                             ISerializeToJson
                         )
-                        result.append(serializer(include_groups=include_groups))
+                        result.append(
+                            serializer(include_groups=include_groups))
                     return result
                 else:
                     self.request.response.setStatus(401)

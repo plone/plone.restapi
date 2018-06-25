@@ -492,7 +492,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(204, response.status_code)
         self.assertEqual(sorted(api.user.get_roles(username='noam')),
-                         ['Authenticated', u'Contributor', u'Editor', 'Manager', 'Member'])
+                         ['Authenticated', u'Contributor', u'Editor',
+                          'Manager', 'Member'])
 
     def test_user_cannot_upate_own_groups_unless_has_usersandgroups_permission(
             self):

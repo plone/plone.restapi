@@ -6,7 +6,7 @@ Changelog
 
 New Features:
 
-- Enhance ``@workflow`` endpoint to save and return groups. In GET groups
+- Enhance ``@user`` endpoint to save and return groups. In GET groups
   are not included unless ``include_groups`` is passed.
   [csenger]
 
