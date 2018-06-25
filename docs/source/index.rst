@@ -49,6 +49,7 @@ Contents
    conventions
    translations
    email-send
+   i18n
    email-notification
    upgrade-guide
 

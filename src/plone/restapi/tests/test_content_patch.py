@@ -8,6 +8,7 @@ from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.testing import login
 from plone.app.testing import setRoles
+from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
 import requests
@@ -162,3 +163,36 @@ class TestContentPatch(unittest.TestCase):
         self.assertTrue(response.json()['image'])
         self.assertIn('content-type', response.json()['image'])
         self.assertIn('download', response.json()['image'])
+
+
+class TestATContentPatch(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer['app']
+        self.portal = self.layer['portal']
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        login(self.portal, TEST_USER_NAME)
+        self.portal.portal_repository._versionable_content_types = []
+        self.portal.invokeFactory(
+            'Document',
+            id='doc1',
+            title='My Document',
+            description='Some Description'
+        )
+        self.portal.doc1.unmarkCreationFlag()
+        transaction.commit()
+
+    def test_patch_reindexes_document(self):
+        requests.patch(
+            self.portal.doc1.absolute_url(),
+            headers={'Accept': 'application/json'},
+            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
+            json={
+                "description": "Foo Bar",
+            },
+        )
+        transaction.begin()
+        brain = self.portal.portal_catalog(UID=self.portal.doc1.UID())[0]
+        self.assertEqual(brain.Description, 'Foo Bar')

@@ -1,0 +1,226 @@
+HTTP/1.1 200 OK
+Content-Type: application/json+schema
+
+{
+  "fieldsets": [
+    {
+      "fields": [
+        "title", 
+        "description"
+      ], 
+      "id": "default", 
+      "title": "Default"
+    }, 
+    {
+      "fields": [
+        "subjects", 
+        "language", 
+        "relatedItems"
+      ], 
+      "id": "categorization", 
+      "title": "Categorizaci\u00f3n"
+    }, 
+    {
+      "fields": [
+        "effective", 
+        "expires"
+      ], 
+      "id": "dates", 
+      "title": "Fechas"
+    }, 
+    {
+      "fields": [
+        "creators", 
+        "contributors", 
+        "rights"
+      ], 
+      "id": "ownership", 
+      "title": "Propiedad"
+    }, 
+    {
+      "fields": [
+        "allow_discussion", 
+        "exclude_from_nav", 
+        "id", 
+        "nextPreviousEnabled"
+      ], 
+      "id": "settings", 
+      "title": "Configuraci\u00f3n"
+    }
+  ], 
+  "layouts": [
+    "album_view", 
+    "event_listing", 
+    "full_view", 
+    "listing_view", 
+    "summary_view", 
+    "tabular_view"
+  ], 
+  "properties": {
+    "allow_discussion": {
+      "choices": [
+        [
+          "True", 
+          "S\u00ed"
+        ], 
+        [
+          "False", 
+          "No"
+        ]
+      ], 
+      "description": "Permitir comentarios para este tipo de contenido", 
+      "enum": [
+        "True", 
+        "False"
+      ], 
+      "enumNames": [
+        "S\u00ed", 
+        "No"
+      ], 
+      "title": "Permitir comentarios", 
+      "type": "string"
+    }, 
+    "contributors": {
+      "additionalItems": true, 
+      "description": "Los nombres de las personas que han contribuido a este elemento. Cada colaborador deber\u00eda estar en una l\u00ednea independiente.", 
+      "items": {
+        "description": "", 
+        "title": "", 
+        "type": "string"
+      }, 
+      "title": "Colaboradores", 
+      "type": "array", 
+      "uniqueItems": true, 
+      "vocabulary": "plone.app.vocabularies.Users"
+    }, 
+    "creators": {
+      "additionalItems": true, 
+      "description": "Personas responsables de la creaci\u00f3n del contenido de este elemento. Por favor, introduzca una lista de nombres de usuario, uno por l\u00ednea. El autor principal deber\u00eda ser el primero.", 
+      "items": {
+        "description": "", 
+        "title": "", 
+        "type": "string"
+      }, 
+      "title": "Creadores", 
+      "type": "array", 
+      "uniqueItems": true, 
+      "vocabulary": "plone.app.vocabularies.Users"
+    }, 
+    "description": {
+      "description": "Usado en listados de elementos y resultados de b\u00fasquedas.", 
+      "minLength": 0, 
+      "title": "Descripci\u00f3n", 
+      "type": "string", 
+      "widget": "textarea"
+    }, 
+    "effective": {
+      "description": "La fecha en la que el documento ser\u00e1 publicado. Si no selecciona ninguna fecha, el documento ser\u00e1 publicado inmediatamente.", 
+      "title": "Fecha de Publicaci\u00f3n", 
+      "type": "string", 
+      "widget": "datetime"
+    }, 
+    "exclude_from_nav": {
+      "default": false, 
+      "description": "Si est\u00e1 marcado, este elemento no aparecer\u00e1 en el \u00e1rbol de navegaci\u00f3n", 
+      "title": "Excluir de la navegaci\u00f3n", 
+      "type": "boolean"
+    }, 
+    "expires": {
+      "description": "La fecha en la que expira el documento. Esto har\u00e1 autom\u00e1ticamente el documento invisible a otros a una fecha dada. Si no elije ninguna fecha, nunca expirar\u00e1.", 
+      "title": "Fecha de Terminaci\u00f3n", 
+      "type": "string", 
+      "widget": "datetime"
+    }, 
+    "id": {
+      "description": "Este nombre se mostrar\u00e1 en la URL.", 
+      "title": "Nombre corto", 
+      "type": "string"
+    }, 
+    "language": {
+      "choices": [
+        [
+          "de", 
+          "Deutsch"
+        ], 
+        [
+          "en", 
+          "English"
+        ], 
+        [
+          "es", 
+          "Espa\u00f1ol"
+        ], 
+        [
+          "fr", 
+          "Fran\u00e7ais"
+        ]
+      ], 
+      "default": "en", 
+      "description": "", 
+      "enum": [
+        "de", 
+        "en", 
+        "es", 
+        "fr"
+      ], 
+      "enumNames": [
+        "Deutsch", 
+        "English", 
+        "Espa\u00f1ol", 
+        "Fran\u00e7ais"
+      ], 
+      "title": "Idioma", 
+      "type": "string"
+    }, 
+    "nextPreviousEnabled": {
+      "default": false, 
+      "description": "Esto habilita el widget siguiente/pr\u00f3ximo en los elementos contenidos en esta carpeta.", 
+      "title": "Habilitar la navegaci\u00f3n siguiente/anterior", 
+      "type": "boolean"
+    }, 
+    "relatedItems": {
+      "additionalItems": true, 
+      "default": [], 
+      "description": "", 
+      "items": {
+        "description": "", 
+        "title": "Related", 
+        "type": "string"
+      }, 
+      "pattern_options": {
+        "recentlyUsed": true
+      }, 
+      "title": "Contenido relacionado", 
+      "type": "array", 
+      "uniqueItems": true, 
+      "vocabulary": "plone.app.vocabularies.Catalog"
+    }, 
+    "rights": {
+      "description": "Declaraci\u00f3n de copyright o informaci\u00f3n de otros derechos sobre este elemento.", 
+      "minLength": 0, 
+      "title": "Derechos de Autor", 
+      "type": "string", 
+      "widget": "textarea"
+    }, 
+    "subjects": {
+      "choices": [], 
+      "description": "Las etiquetas suelen utilizarse para la organizaci\u00f3n a medida del contenido.", 
+      "enum": [], 
+      "enumNames": [], 
+      "title": "Etiquetas", 
+      "type": "string", 
+      "vocabulary": "plone.app.vocabularies.Keywords"
+    }, 
+    "title": {
+      "description": "", 
+      "title": "T\u00edtulo", 
+      "type": "string"
+    }
+  }, 
+  "required": [
+    "title", 
+    "nextPreviousEnabled"
+  ], 
+  "title": "Carpeta", 
+  "type": "object"
+}
