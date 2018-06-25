@@ -10,4 +10,12 @@
     permission="cmf.ManagePortal"
     />
 
+  <plone:service
+    method="POST"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".post.AddonsPost"
+    name="@addons"
+    permission="cmf.ManagePortal"
+    />
+
 </configure>
