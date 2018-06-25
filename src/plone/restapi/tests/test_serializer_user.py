@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone import api
-from plone.app.users.browser.schemaeditor import applySchema
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.serializer.user import HAS_TTW_SCHEMAS
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
 
@@ -51,7 +51,9 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
         self.assertNotIn('Authenticated', user['roles'])
         self.assertNotIn('Anonymous', user['roles'])
 
+    @unittest.skipUnless(HAS_TTW_SCHEMAS, 'Requires TTW user schemas')
     def test_serialize_custom_member_schema(self):
+        from plone.app.users.browser.schemaeditor import applySchema
         member_schema = """
             <model xmlns="http://namespaces.plone.org/supermodel/schema"
                 xmlns:form="http://namespaces.plone.org/supermodel/form"
