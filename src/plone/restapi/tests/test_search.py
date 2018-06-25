@@ -276,7 +276,7 @@ class TestSearchFunctional(unittest.TestCase):
         query = {'test_list_field': ['Keyword2', 'Keyword3']}
         response = self.api_session.get('/@search', params=query)
 
-        self.assertEqual(
+        self.assertItemsEqual(
             [u'/plone/folder/doc',
              u'/plone/folder/other-document'],
             result_paths(response.json())

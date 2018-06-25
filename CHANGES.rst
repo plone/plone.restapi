@@ -10,6 +10,9 @@ New Features:
   are not included unless ``include_groups`` is passed.
   [csenger]
 
+- Document the use of the `Accept-Language` HTTP header.
+  [erral]
+
 - Translate action name, workflow state and transition names in @history endpoint.
   [erral]
 
@@ -24,6 +27,12 @@ Bugfixes:
 
 - Reindex AT content on PATCH. This fixes `issue 531 <https://github.com/plone/plone.restapi/issues/531>`_.
   [buchi]
+
+- Fix change password on Plone 5.2
+  [sunew]
+
+- Plone 5.2 compatible tests.
+  [sunew]
 
 
 2.1.0 (2018-06-23)

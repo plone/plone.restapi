@@ -577,8 +577,10 @@ class TestUsersEndpoint(unittest.TestCase):
             self.portal.acl_users.source_users._user_passwords
         )
         payload = {'password': 'secret'}
-        self.api_session.patch('/@users/noam', json=payload)
+        response = self.api_session.patch('/@users/noam', json=payload)
         transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
 
         new_password_hashes = dict(
             self.portal.acl_users.source_users._user_passwords

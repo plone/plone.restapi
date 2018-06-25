@@ -46,6 +46,10 @@ class UsersPatch(Service):
         portal_membership = getToolByName(portal, 'portal_membership')
         return portal_membership.getMemberById(user_id)
 
+    def _change_user_password(self, user, value):
+        acl_users = getToolByName(self.context, 'acl_users')
+        acl_users.userSetPassword(user.getUserId(), value)
+
     def reply(self):
         user_settings_to_update = json.loads(self.request.get('BODY', '{}'))
         user = self._get_user(self._get_user_id)
@@ -60,7 +64,7 @@ class UsersPatch(Service):
         if self.can_manage_users:
             for key, value in user_settings_to_update.items():
                 if key == 'password':
-                    user.userSetPassword(user.getUserId(), value)
+                    self._change_user_password(user, value)
                 elif key == 'username':
                     set_own_login_name(user, value)
                 else:
@@ -112,7 +116,7 @@ class UsersPatch(Service):
                 if key == 'password' and \
                    security.enable_user_pwd_choice and \
                    self.can_set_own_password:
-                    user.userSetPassword(user.getUserId(), value)
+                    self._change_user_password(user, value)
                 else:
                     user.setMemberProperties(mapping={key: value})
 
