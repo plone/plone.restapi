@@ -1,0 +1,4 @@
+GET /plone/@types/Folder HTTP/1.1
+Accept: application/json
+Accept-Language: es
+Authorization: Basic YWRtaW46c2VjcmV0

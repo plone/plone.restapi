@@ -6,6 +6,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from zope.component import getGlobalSiteManager
 from zope.component import provideUtility
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary
@@ -120,6 +121,9 @@ class TestVocabularyEndpoint(unittest.TestCase):
         response = self.api_session.get(
             'testdoc/@vocabularies/{}'.format(context_vocab_name))
 
+        gsm = getGlobalSiteManager()
+        gsm.unregisterUtility(provided=IVocabularyFactory,
+                              name=context_vocab_name)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
@@ -133,3 +137,8 @@ class TestVocabularyEndpoint(unittest.TestCase):
                      u'title': u'Document 1',
                      u'token': u'title'}]
             })
+
+    def tearDown(self):
+        gsm = getGlobalSiteManager()
+        gsm.unregisterUtility(provided=IVocabularyFactory,
+                              name='plone.restapi.tests.test_vocabulary')

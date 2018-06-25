@@ -6,23 +6,10 @@ Content-Type: application/json+schema
     {
       "fields": [
         "title", 
-        "description", 
-        "text", 
-        "changeNote"
+        "description"
       ], 
       "id": "default", 
       "title": "Default"
-    }, 
-    {
-      "fields": [
-        "allow_discussion", 
-        "exclude_from_nav", 
-        "id", 
-        "versioning_enabled", 
-        "table_of_contents"
-      ], 
-      "id": "settings", 
-      "title": "Settings"
     }, 
     {
       "fields": [
@@ -31,7 +18,7 @@ Content-Type: application/json+schema
         "relatedItems"
       ], 
       "id": "categorization", 
-      "title": "Categorization"
+      "title": "Categorizaci\u00f3n"
     }, 
     {
       "fields": [
@@ -39,7 +26,7 @@ Content-Type: application/json+schema
         "expires"
       ], 
       "id": "dates", 
-      "title": "Dates"
+      "title": "Fechas"
     }, 
     {
       "fields": [
@@ -48,95 +35,105 @@ Content-Type: application/json+schema
         "rights"
       ], 
       "id": "ownership", 
-      "title": "Ownership"
+      "title": "Propiedad"
+    }, 
+    {
+      "fields": [
+        "allow_discussion", 
+        "exclude_from_nav", 
+        "id", 
+        "nextPreviousEnabled"
+      ], 
+      "id": "settings", 
+      "title": "Configuraci\u00f3n"
     }
   ], 
   "layouts": [
-    "document_view"
+    "album_view", 
+    "event_listing", 
+    "full_view", 
+    "listing_view", 
+    "summary_view", 
+    "tabular_view"
   ], 
   "properties": {
     "allow_discussion": {
       "choices": [
         [
           "True", 
-          "Yes"
+          "S\u00ed"
         ], 
         [
           "False", 
           "No"
         ]
       ], 
-      "description": "Allow discussion for this content object.", 
+      "description": "Permitir comentarios para este tipo de contenido", 
       "enum": [
         "True", 
         "False"
       ], 
       "enumNames": [
-        "Yes", 
+        "S\u00ed", 
         "No"
       ], 
-      "title": "Allow discussion", 
-      "type": "string"
-    }, 
-    "changeNote": {
-      "description": "Enter a comment that describes the changes you made.", 
-      "title": "Change Note", 
+      "title": "Permitir comentarios", 
       "type": "string"
     }, 
     "contributors": {
       "additionalItems": true, 
-      "description": "The names of people that have contributed to this item. Each contributor should be on a separate line.", 
+      "description": "Los nombres de las personas que han contribuido a este elemento. Cada colaborador deber\u00eda estar en una l\u00ednea independiente.", 
       "items": {
         "description": "", 
         "title": "", 
         "type": "string"
       }, 
-      "title": "Contributors", 
+      "title": "Colaboradores", 
       "type": "array", 
       "uniqueItems": true, 
       "vocabulary": "plone.app.vocabularies.Users"
     }, 
     "creators": {
       "additionalItems": true, 
-      "description": "Persons responsible for creating the content of this item. Please enter a list of user names, one per line. The principal creator should come first.", 
+      "description": "Personas responsables de la creaci\u00f3n del contenido de este elemento. Por favor, introduzca una lista de nombres de usuario, uno por l\u00ednea. El autor principal deber\u00eda ser el primero.", 
       "items": {
         "description": "", 
         "title": "", 
         "type": "string"
       }, 
-      "title": "Creators", 
+      "title": "Creadores", 
       "type": "array", 
       "uniqueItems": true, 
       "vocabulary": "plone.app.vocabularies.Users"
     }, 
     "description": {
-      "description": "Used in item listings and search results.", 
+      "description": "Usado en listados de elementos y resultados de b\u00fasquedas.", 
       "minLength": 0, 
-      "title": "Summary", 
+      "title": "Descripci\u00f3n", 
       "type": "string", 
       "widget": "textarea"
     }, 
     "effective": {
-      "description": "If this date is in the future, the content will not show up in listings and searches until this date.", 
-      "title": "Publishing Date", 
+      "description": "La fecha en la que el documento ser\u00e1 publicado. Si no selecciona ninguna fecha, el documento ser\u00e1 publicado inmediatamente.", 
+      "title": "Fecha de Publicaci\u00f3n", 
       "type": "string", 
       "widget": "datetime"
     }, 
     "exclude_from_nav": {
       "default": false, 
-      "description": "If selected, this item will not appear in the navigation tree", 
-      "title": "Exclude from navigation", 
+      "description": "Si est\u00e1 marcado, este elemento no aparecer\u00e1 en el \u00e1rbol de navegaci\u00f3n", 
+      "title": "Excluir de la navegaci\u00f3n", 
       "type": "boolean"
     }, 
     "expires": {
-      "description": "When this date is reached, the content will no longer be visible in listings and searches.", 
-      "title": "Expiration Date", 
+      "description": "La fecha en la que expira el documento. Esto har\u00e1 autom\u00e1ticamente el documento invisible a otros a una fecha dada. Si no elije ninguna fecha, nunca expirar\u00e1.", 
+      "title": "Fecha de Terminaci\u00f3n", 
       "type": "string", 
       "widget": "datetime"
     }, 
     "id": {
-      "description": "This name will be displayed in the URL.", 
-      "title": "Short name", 
+      "description": "Este nombre se mostrar\u00e1 en la URL.", 
+      "title": "Nombre corto", 
       "type": "string"
     }, 
     "language": {
@@ -172,8 +169,14 @@ Content-Type: application/json+schema
         "Espa\u00f1ol", 
         "Fran\u00e7ais"
       ], 
-      "title": "Language", 
+      "title": "Idioma", 
       "type": "string"
+    }, 
+    "nextPreviousEnabled": {
+      "default": false, 
+      "description": "Esto habilita el widget siguiente/pr\u00f3ximo en los elementos contenidos en esta carpeta.", 
+      "title": "Habilitar la navegaci\u00f3n siguiente/anterior", 
+      "type": "boolean"
     }, 
     "relatedItems": {
       "additionalItems": true, 
@@ -187,53 +190,37 @@ Content-Type: application/json+schema
       "pattern_options": {
         "recentlyUsed": true
       }, 
-      "title": "Related Items", 
+      "title": "Contenido relacionado", 
       "type": "array", 
       "uniqueItems": true, 
       "vocabulary": "plone.app.vocabularies.Catalog"
     }, 
     "rights": {
-      "description": "Copyright statement or other rights information on this item.", 
+      "description": "Declaraci\u00f3n de copyright o informaci\u00f3n de otros derechos sobre este elemento.", 
       "minLength": 0, 
-      "title": "Rights", 
+      "title": "Derechos de Autor", 
       "type": "string", 
       "widget": "textarea"
     }, 
     "subjects": {
       "choices": [], 
-      "description": "Tags are commonly used for ad-hoc organization of content.", 
+      "description": "Las etiquetas suelen utilizarse para la organizaci\u00f3n a medida del contenido.", 
       "enum": [], 
       "enumNames": [], 
-      "title": "Tags", 
+      "title": "Etiquetas", 
       "type": "string", 
       "vocabulary": "plone.app.vocabularies.Keywords"
     }, 
-    "table_of_contents": {
-      "description": "If selected, this will show a table of contents at the top of the page.", 
-      "title": "Table of contents", 
-      "type": "boolean"
-    }, 
-    "text": {
-      "description": "", 
-      "title": "Text", 
-      "type": "string", 
-      "widget": "richtext"
-    }, 
     "title": {
       "description": "", 
-      "title": "Title", 
+      "title": "T\u00edtulo", 
       "type": "string"
-    }, 
-    "versioning_enabled": {
-      "default": true, 
-      "description": "Enable/disable versioning for this document.", 
-      "title": "Versioning enabled", 
-      "type": "boolean"
     }
   }, 
   "required": [
-    "title"
+    "title", 
+    "nextPreviousEnabled"
   ], 
-  "title": "Page", 
+  "title": "Carpeta", 
   "type": "object"
 }

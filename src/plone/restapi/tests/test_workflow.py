@@ -89,7 +89,7 @@ class TestWorkflowTransition(TestCase):
         self.request = self.layer['request']
         self.wftool = getToolByName(self.portal, 'portal_workflow')
         login(self.portal, SITE_OWNER_NAME)
-        self.portal.invokeFactory('DXTestDocument', id='doc1')
+        self.portal.invokeFactory('Document', id='doc1')
 
     def traverse(self, path='/plone', accept='application/json',
                  method='POST'):
@@ -128,15 +128,46 @@ class TestWorkflowTransition(TestCase):
         res = service.reply()
         self.assertEqual(u'A comment', res[u'comments'])
 
-    def test_transition_with_invalid_body(self):
-        self.request['BODY'] = '{"comment": "A comment", "test": "123"}'
+    def test_transition_including_children(self):
+        folder = self.portal[self.portal.invokeFactory('Folder', id='folder')]
+        subfolder = folder[folder.invokeFactory('Folder', id='subfolder')]
+        self.request['BODY'] = (
+            '{"comment": "A comment", "include_children": true}')
+        service = self.traverse('/plone/folder/@workflow/publish')
+        service.reply()
+        self.assertEqual(200, self.request.response.getStatus())
+        self.assertEqual(
+            u'published',
+            self.wftool.getInfoFor(folder, u'review_state'))
+        self.assertEqual(
+            u'published',
+            self.wftool.getInfoFor(subfolder, u'review_state'))
+
+    def test_transition_with_effective_date(self):
+        self.request['BODY'] = '{"effective": "2018-06-24T09:17:02"}'
         service = self.traverse('/plone/doc1/@workflow/publish')
-        res = service.reply()
-        self.assertEqual(400, self.request.response.getStatus())
-        self.assertEqual('Invalid body', res['error']['message'])
+        service.reply()
+        self.assertEqual(
+            '2018-06-24T09:17:00+00:00',
+            self.portal.doc1.effective().ISO8601())
+
+    def test_transition_with_expiration_date(self):
+        self.request['BODY'] = '{"expires": "2019-06-20T18:00:00"}'
+        service = self.traverse('/plone/doc1/@workflow/publish')
+        service.reply()
+        self.assertEqual(
+            '2019-06-20T18:00:00+00:00',
+            self.portal.doc1.expires().ISO8601())
 
     def test_invalid_transition_results_in_400(self):
         service = self.traverse('/plone/doc1/@workflow/foo')
         res = service.reply()
         self.assertEqual(400, self.request.response.getStatus())
         self.assertEqual('WorkflowException', res['error']['type'])
+
+    def test_invalid_effective_date_results_in_400(self):
+        self.request['BODY'] = '{"effective": "now"}'
+        service = self.traverse('/plone/doc1/@workflow/publish')
+        res = service.reply()
+        self.assertEqual(400, self.request.response.getStatus())
+        self.assertEqual('Bad Request', res['error']['type'])
