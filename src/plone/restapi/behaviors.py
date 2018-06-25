@@ -14,10 +14,15 @@ TILES_SCHEMA = json.dumps({
 })
 
 ARRANGEMENT_SCHEMA = json.dumps({
-    'type': 'array',
-    'items': {
-        'type': 'string'
-    },
+    'type': 'object',
+    'properties': {
+        'items': {
+            'type': 'array',
+            'items': {
+                'type': 'string'
+            }
+        }
+    }
 })
 
 
@@ -39,6 +44,6 @@ class ITiles(model.Schema):
         title=u'Arrangement (layout)',
         description=u'The JSON representation of the object tiles arrangement. Must be a JSON array.',  # noqa
         schema=ARRANGEMENT_SCHEMA,
-        default=[],
+        default={'items': []},
         required=False,
     )
