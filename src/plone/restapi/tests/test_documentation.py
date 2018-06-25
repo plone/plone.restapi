@@ -1008,7 +1008,7 @@ class TestDocumentation(unittest.TestCase):
             "inherit": True,
             "entries": [
                 {
-                    "id": "test_user_1_",
+                    "id": "AuthenticatedUsers",
                     "roles": {
                         "Reviewer": True,
                         "Editor": False,

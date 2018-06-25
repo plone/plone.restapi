@@ -4,6 +4,13 @@ Changelog
 3.0.0 (unreleased)
 ------------------
 
+Breaking Changes:
+
+- Include translated role titles in `@sharing` GET.
+  [lgraf]
+
+New Features:
+
 - Nothing changed yet.
 
 

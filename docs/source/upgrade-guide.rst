@@ -4,6 +4,66 @@ Upgrade Guide
 This upgrade guide lists all breaking changes in plone.restapi and explains the necessary steps that are needed to upgrade to the lastest version.
 
 
+Upgrading to plone.restapi 3.x
+------------------------------
+
+@sharing endpoint
+^^^^^^^^^^^^^^^^^
+
+The ``available_roles`` property in the response to a GET request to the
+``@sharing`` endpoint has changed: Instead of a flat list of strings, it now
+contains a list of dicts, with the role ID and their translated title:
+
+Old Response::
+
+  HTTP/1.1 200 OK
+  Content-Type: application/json
+  
+  {
+    "available_roles": [
+      "Contributor",
+      "Editor",
+      "Reviewer",
+      "Reader"
+    ],
+    "entries": [
+        "..."
+    ],
+    "inherit": true
+  }
+
+
+New Response::
+
+  HTTP/1.1 200 OK
+  Content-Type: application/json
+  
+  {
+    "available_roles": [
+      {
+        "id": "Contributor",
+        "title": "Can add"
+      },
+      {
+        "id": "Editor",
+        "title": "Can edit"
+      },
+      {
+        "id": "Reader",
+        "title": "Can view"
+      },
+      {
+        "id": "Reviewer",
+        "title": "Can review"
+      }
+    ],
+    "entries": [
+        "..."
+    ],
+    "inherit": true
+  }
+
+
 Upgrading to plone.restapi 2.x
 ------------------------------
 
