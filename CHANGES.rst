@@ -20,10 +20,6 @@ Breaking Changes:
 - Image URLs are now created using the cache optimized way. Fixes #494.
   [erral]
 
-Bugfixes:
-
-
-
 
 2.2.1 (2018-06-25)
 ------------------
