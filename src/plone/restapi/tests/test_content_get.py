@@ -23,6 +23,7 @@ class TestContentGet(unittest.TestCase):
     def setUp(self):
         self.app = self.layer['app']
         self.portal = self.layer['portal']
+        self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ['Member'])
         login(self.portal, SITE_OWNER_NAME)
         self.portal.invokeFactory(
@@ -120,7 +121,7 @@ class TestContentGet(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(3, len(response.json()['items']))
         self.assertEqual(response.json()['items'][1]['@id'],
-                         'http://localhost:55001/plone/folder1/folder2')
+                         self.portal_url + u'/folder1/folder2')
 
     def test_get_content_returns_fullobjects_non_recursive(self):
         response = requests.get(
@@ -154,7 +155,7 @@ class TestContentGet(unittest.TestCase):
         self.assertEqual(1, len(response.json()['relatedItems']))
         self.assertEqual(
             [{
-                u'@id': u'http://localhost:55001/plone/folder1/folder2/doc2',
+                u'@id': self.portal_url + u'/folder1/folder2/doc2',
                 u'@type': u'Document',
                 u'description': u'',
                 u'review_state': u'published',

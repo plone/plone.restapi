@@ -132,7 +132,7 @@ class TestTraversal(unittest.TestCase):
                 response.json()['image_caption']
             )
             self.assertDictContainsSubset(
-                {'download': u'http://localhost:55001/plone/news1/@@images/uuid1.png'},  # noqa
+                {'download': self.portal_url + u'/news1/@@images/uuid1.png'},  # noqa
                 response.json()['image']
             )
 
