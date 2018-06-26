@@ -1,12 +1,50 @@
 Changelog
 =========
 
-2.1.1 (unreleased)
+3.0.0 (unreleased)
+------------------
+
+Breaking Changes:
+
+- Fix object creation events. Before this fix, creation events were fired on
+  empty not yet deserialized objects. Also a modified event was fired after
+  deserializing e newly created object.
+  Custom content deserializers now must handle the `create` keyword argument,
+  which determines if deserialization is performed during object creation or
+  while updating an object.
+  [buchi]
+
+- Include translated role titles in `@sharing` GET.
+  [lgraf]
+
+- Reindex AT content on PATCH. This fixes `issue 531 <https://github.com/plone/plone.restapi/issues/531>`_.
+  [buchi]
+
+New Features:
+
+- Fix change password on Plone 5.2
+  [sunew]
+
+- Plone 5.2 compatible tests.
+  [sunew]
+
+
+2.2.1 (2018-06-25)
+------------------
+
+- Fix ReST on PyPi.
+  [timo]
+
+
+2.2.0 (2018-06-25)
 ------------------
 
 New Features:
 
 - Document the use of the `Accept-Language` HTTP header.
+  [erral]
+
+- Translate FTI titles on `@types` endpoint. Fixes #337.
   [erral]
 
 - Translate action name, workflow state and transition names in @history endpoint.
@@ -18,30 +56,19 @@ New Features:
 
 Bugfixes:
 
+- Image URLs are now created using the cache optimized way. Fixes #494.
+  [erral]
+
 - Make sure DX DefaultFieldDeserializer validates field values.
   [lgraf]
-
-- Reindex AT content on PATCH. This fixes `issue 531 <https://github.com/plone/plone.restapi/issues/531>`_.
-  [buchi]
-
-- Fix change password on Plone 5.2
-  [sunew]
-
-- Plone 5.2 compatible tests.
-  [sunew]
-
 
 2.1.0 (2018-06-23)
 ------------------
 
 New Features:
 
-- Translate FTI titles on `@types` endpoint. Fixes #337.
-  [erral]
-
 - Include translated role title in `@roles` GET.
   [lgraf]
-
 
 
 2.0.1 (2018-06-22)
