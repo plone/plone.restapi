@@ -9,6 +9,7 @@ from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.component import getAdapter
+from Products.PlonePAS.utils import cleanId
 
 import json
 import plone
@@ -91,9 +92,13 @@ class UsersPatch(Service):
                    security.enable_user_pwd_choice and \
                    self.can_set_own_password:
                     self._change_user_password(user, value)
+                elif key == 'portrait':
+                    portrait = self.deserialize_portrait(value)
+                    membertool = getToolByName(self, 'portal_memberdata')
+                    membertool._setPortrait(
+                        portrait, cleanId(self._get_current_user))
                 else:
                     user.setMemberProperties(mapping={key: value})
-
         else:
             if self._is_anonymous:
                 return self._error(401, 'Unauthorized',
