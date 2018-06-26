@@ -9,6 +9,10 @@ from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFPlone.interfaces import ISelectableConstrainTypes
 from zExceptions import Unauthorized
+from zope.component import getGlobalSiteManager
+from zope.event import notify
+from zope.lifecycleevent import ObjectCreatedEvent
+from zope.lifecycleevent.interfaces import IObjectAddedEvent
 
 import unittest
 
@@ -110,10 +114,25 @@ class TestAddContent(unittest.TestCase):
             'Folder', id='folder', title='My Folder'
         )]
         self.obj = create(self.folder, 'Document', 'my-document')
+        notify(ObjectCreatedEvent(self.obj))
 
     def test_add_content_to_container(self):
         obj = add(self.folder, self.obj)
         self.assertEqual(aq_parent(obj), self.folder)
+
+    def test_add_content_to_container_and_move_on_added_event(self):
+        sm = getGlobalSiteManager()
+
+        def move_object(event):
+            self.portal.manage_pasteObjects(
+                cb_copy_data=self.folder.manage_cutObjects(
+                    ids=['my-document']))
+        sm.registerHandler(move_object, (IObjectAddedEvent,))
+
+        obj = add(self.folder, self.obj)
+        self.assertEqual(aq_parent(obj), self.portal)
+
+        sm.unregisterHandler(move_object, (IObjectAddedEvent,))
 
 
 class TestATAddContent(unittest.TestCase):

@@ -3,6 +3,8 @@ from Acquisition import aq_base
 from Acquisition import aq_parent
 from DateTime import DateTime
 from plone.app.content.interfaces import INameFromTitle
+from plone.app.uuid.utils import uuidToObject
+from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import base_hasattr
 from random import randint
@@ -76,9 +78,15 @@ def add(container, obj):
         notifyContainerModified(container)
         return obj
     else:
-        rval = container._setObject(id_, obj)
-        new_id = isinstance(rval, basestring) and rval or id_
-        return container._getOb(new_id)
+        new_id = container._setObject(id_, obj)
+        # _setObject triggers ObjectAddedEvent which can end up triggering a
+        # content rule to move the item to a different container. In this case
+        # look up the object by UUID.
+        try:
+            return container._getOb(new_id)
+        except AttributeError:
+            uuid = IUUID(obj)
+            return uuidToObject(uuid)
 
 
 def rename(obj):
