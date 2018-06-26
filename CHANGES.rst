@@ -6,6 +6,14 @@ Changelog
 
 Breaking Changes:
 
+- Fix object creation events. Before this fix, creation events were fired on
+  empty not yet deserialized objects. Also a modified event was fired after
+  deserializing e newly created object.
+  Custom content deserializers now must handle the `create` keyword argument,
+  which determines if deserialization is performed during object creation or
+  while updating an object.
+  [buchi]
+
 - Include translated role titles in `@sharing` GET.
   [lgraf]
 

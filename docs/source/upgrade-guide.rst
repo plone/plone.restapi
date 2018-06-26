@@ -102,6 +102,19 @@ New Response::
   }
 
 
+Custom Content Deserializers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you have implemented custom content deserializers, you have to handle the
+new ``create`` keyword in the ``__call__`` method, which determines if deserialization
+is performed during object creation or while updating an object.
+
+Deserializers should only fire an ``IObjectModifiedEvent`` event if an object
+has been updated. They should not fire it, when a new object has been created.
+
+See `Dexterity content deserializer <https://github.com/plone/plone.restapi/blob/master/src/plone/restapi/deserializer/dxcontent.py>`_ for an example.
+
+
 Upgrading to plone.restapi 2.x
 ------------------------------
 
