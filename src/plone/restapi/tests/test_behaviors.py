@@ -41,7 +41,7 @@ class TestTilesBehavior(unittest.TestCase):
             'uuid2': {'@type': 'description'}
         }
 
-        self.portal['tiledfolder'].arrangement = {
+        self.portal['tiledfolder'].tiles_layout = {
             'uuid1': {'@type': 'title'},
             'uuid2': {'@type': 'description'}
         }

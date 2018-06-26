@@ -13,7 +13,7 @@ TILES_SCHEMA = json.dumps({
     'properties': {},
 })
 
-ARRANGEMENT_SCHEMA = json.dumps({
+LAYOUT_SCHEMA = json.dumps({
     'type': 'object',
     'properties': {
         'items': {
@@ -30,7 +30,7 @@ ARRANGEMENT_SCHEMA = json.dumps({
 class ITiles(model.Schema):
 
     model.fieldset('layout', label=_(u'Layout'),
-                   fields=['tiles', 'arrangement'])
+                   fields=['tiles', 'tiles_layout'])
 
     tiles = JSONField(
         title=u'Tiles',
@@ -40,10 +40,10 @@ class ITiles(model.Schema):
         required=False,
     )
 
-    arrangement = JSONField(
-        title=u'Arrangement (layout)',
-        description=u'The JSON representation of the object tiles arrangement. Must be a JSON array.',  # noqa
-        schema=ARRANGEMENT_SCHEMA,
+    tiles_layout = JSONField(
+        title=u'Tiles Layout)',
+        description=u'The JSON representation of the object tiles layout. Must be a JSON array.',  # noqa
+        schema=LAYOUT_SCHEMA,
         default={'items': []},
         required=False,
     )

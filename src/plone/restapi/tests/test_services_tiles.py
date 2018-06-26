@@ -127,7 +127,7 @@ class TestServicesTiles(unittest.TestCase):
         response = self.api_session.patch(
             '/doc',
             json={
-                "arrangement": {
+                "tiles_layout": {
                     "items": ["#uuid1", "#uuid2"]
                 }
             })
@@ -138,7 +138,7 @@ class TestServicesTiles(unittest.TestCase):
         response = response.json()
 
         self.assertEquals(
-            response['arrangement'],
+            response['tiles_layout'],
             {
                 "items": ["#uuid1", "#uuid2"]
             }
@@ -164,6 +164,6 @@ class TestServicesTiles(unittest.TestCase):
     #     response = self.api_session.patch(
     #         '/doc',
     #         json={
-    #             "arrangement": {'uuid1': {'@type': 'title'}}
+    #             "tiles_layout": {'uuid1': {'@type': 'title'}}
     #         })
     #     self.assertEqual(response.status_code, 500)
