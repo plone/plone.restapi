@@ -56,6 +56,7 @@ setup(name='plone.restapi',
           'plone.api',
           'requests',
           'freezegun',
+          'mock',
       ]},
       entry_points="""
       # -*- Entry points: -*-

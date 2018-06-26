@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from DateTime import DateTime
+from mock import patch
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
@@ -7,6 +8,7 @@ from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.scale import storage
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 
@@ -269,47 +271,53 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             filename=u'image.png'
         )
 
-        obj_url = self.portal.image1.absolute_url()
-        download_url = u'{}/@@images/image'.format(obj_url)
-        scales = {
-            u'listing': {
-                u'download': u'{}/@@images/image/listing'.format(obj_url),
-                u'width': 16,
-                u'height': 4},
-            u'icon': {
-                u'download': u'{}/@@images/image/icon'.format(obj_url),
-                u'width': 32,
-                u'height': 8},
-            u'tile': {
-                u'download': u'{}/@@images/image/tile'.format(obj_url),
-                u'width': 64,
-                u'height': 16},
-            u'thumb': {
-                u'download': u'{}/@@images/image/thumb'.format(obj_url),
-                u'width': 128,
-                u'height': 33},
-            u'mini': {
-                u'download': u'{}/@@images/image/mini'.format(obj_url),
-                u'width': 200,
-                u'height': 52},
-            u'preview': {
-                u'download': u'{}/@@images/image/preview'.format(obj_url),
+        self.maxDiff = 99999
+
+        with patch.object(storage, 'uuid4', return_value='uuid_1'):
+            obj_url = self.portal.image1.absolute_url()
+            scale_url_uuid = 'uuid_1'
+            download_url = u'{}/@@images/{}.png'.format(
+                obj_url, scale_url_uuid
+            )
+            scales = {
+                u'listing': {
+                    u'download': download_url,
+                    u'width': 16,
+                    u'height': 4},
+                u'icon': {
+                    u'download': download_url,
+                    u'width': 32,
+                    u'height': 8},
+                u'tile': {
+                    u'download': download_url,
+                    u'width': 64,
+                    u'height': 16},
+                u'thumb': {
+                    u'download': download_url,
+                    u'width': 128,
+                    u'height': 33},
+                u'mini': {
+                    u'download': download_url,
+                    u'width': 200,
+                    u'height': 52},
+                u'preview': {
+                    u'download': download_url,
+                    u'width': 215,
+                    u'height': 56},
+                u'large': {
+                    u'download': download_url,
+                    u'width': 215,
+                    u'height': 56},
+            }
+            self.assertEqual({
+                u'filename': u'image.png',
+                u'content-type': u'image/png',
+                u'size': 1185,
+                u'download': download_url,
                 u'width': 215,
-                u'height': 56},
-            u'large': {
-                u'download': u'{}/@@images/image/large'.format(obj_url),
-                u'width': 215,
-                u'height': 56},
-        }
-        self.assertEqual(
-            {u'filename': u'image.png',
-             u'content-type': u'image/png',
-             u'size': 1185,
-             u'download': download_url,
-             u'width': 215,
-             u'height': 56,
-             u'scales': scales},
-            self.serialize(self.portal.image1)['image'])
+                u'height': 56,
+                u'scales': scales},
+                self.serialize(self.portal.image1)['image'])
 
     def test_serialize_empty_image_returns_none(self):
         self.portal.invokeFactory('Image', id='image1', title='Image 1')

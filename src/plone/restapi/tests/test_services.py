@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
+from mock import patch
 from plone.app.testing import setRoles
-from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
-
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import RelativeSession
+from plone.scale import storage
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
@@ -101,38 +102,39 @@ class TestTraversal(unittest.TestCase):
         self.portal.news1.image_caption = u'This is an image caption.'
         transaction.commit()
 
-        response = self.api_session.get(self.portal.news1.absolute_url())
+        with patch.object(storage, 'uuid4', return_value='uuid1'):
+            response = self.api_session.get(self.portal.news1.absolute_url())
 
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.headers.get('Content-Type'),
-            'application/json',
-            'When sending a GET request with Content-Type: application/json ' +
-            'the server should respond with sending back application/json.'
-        )
-        self.assertEqual(
-            'News Item',
-            response.json().get('@type'),
-            "Response should be @type 'News Item', not '{}'".format(
-                response.json().get('@type')
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(
+                response.headers.get('Content-Type'),
+                'application/json',
+                'When sending a GET request with Content-Type: application/json ' + # noqa
+                'the server should respond with sending back application/json.'
             )
-        )
-        self.assertEqual(
-            response.json().get('@id'),
-            self.portal.news1.absolute_url()
-        )
-        self.assertEqual(
-            'News Item 1',
-            response.json().get('title')
-        )
-        self.assertEqual(
-            u'This is an image caption.',
-            response.json()['image_caption']
-        )
-        self.assertDictContainsSubset(
-            {'download': u'http://localhost:55001/plone/news1/@@images/image'},
-            response.json()['image']
-        )
+            self.assertEqual(
+                'News Item',
+                response.json().get('@type'),
+                "Response should be @type 'News Item', not '{}'".format(
+                    response.json().get('@type')
+                )
+            )
+            self.assertEqual(
+                response.json().get('@id'),
+                self.portal.news1.absolute_url()
+            )
+            self.assertEqual(
+                'News Item 1',
+                response.json().get('title')
+            )
+            self.assertEqual(
+                u'This is an image caption.',
+                response.json()['image_caption']
+            )
+            self.assertDictContainsSubset(
+                {'download': u'http://localhost:55001/plone/news1/@@images/uuid1.png'},  # noqa
+                response.json()['image']
+            )
 
     def test_get_folder(self):
         self.portal.invokeFactory(

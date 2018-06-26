@@ -9,9 +9,16 @@ Breaking Changes:
 - Include translated role titles in `@sharing` GET.
   [lgraf]
 
+- Reindex AT content on PATCH. This fixes `issue 531 <https://github.com/plone/plone.restapi/issues/531>`_.
+  [buchi]
+
 New Features:
 
-- Nothing changed yet.
+- Fix change password on Plone 5.2
+  [sunew]
+
+- Plone 5.2 compatible tests.
+  [sunew]
 
 
 2.2.1 (2018-06-25)
@@ -41,18 +48,11 @@ New Features:
 
 Bugfixes:
 
+- Image URLs are now created using the cache optimized way. Fixes #494.
+  [erral]
+
 - Make sure DX DefaultFieldDeserializer validates field values.
   [lgraf]
-
-- Reindex AT content on PATCH. This fixes `issue 531 <https://github.com/plone/plone.restapi/issues/531>`_.
-  [buchi]
-
-- Fix change password on Plone 5.2
-  [sunew]
-
-- Plone 5.2 compatible tests.
-  [sunew]
-
 
 2.1.0 (2018-06-23)
 ------------------
