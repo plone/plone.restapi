@@ -17,10 +17,13 @@ Breaking Changes:
 - Include translated role titles in `@sharing` GET.
   [lgraf]
 
+- Image URLs are now created using the cache optimized way. Fixes #494.
+  [erral]
+
+Bugfixes:
+
 - Reindex AT content on PATCH. This fixes `issue 531 <https://github.com/plone/plone.restapi/issues/531>`_.
   [buchi]
-
-New Features:
 
 - Fix change password on Plone 5.2
   [sunew]
@@ -55,9 +58,6 @@ New Features:
   [buchi]
 
 Bugfixes:
-
-- Image URLs are now created using the cache optimized way. Fixes #494.
-  [erral]
 
 - Make sure DX DefaultFieldDeserializer validates field values.
   [lgraf]
