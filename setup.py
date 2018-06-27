@@ -57,7 +57,7 @@ setup(name='plone.restapi',
           'requests',
           'freezegun',
           'plone.tiles',
-          'plone.schema'
+          'plone.schema',
           'mock',
       ]},
       entry_points="""
