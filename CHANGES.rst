@@ -4,7 +4,8 @@ Changelog
 3.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Plone 5.2 compatibility.
+  [sunew, davisagli, timo]
 
 
 3.0.0 (2018-06-26)
