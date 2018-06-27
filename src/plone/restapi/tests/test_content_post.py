@@ -27,6 +27,7 @@ class TestFolderCreate(unittest.TestCase):
     def setUp(self):
         self.app = self.layer['app']
         self.portal = self.layer['portal']
+        self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ['Member'])
         login(self.portal, SITE_OWNER_NAME)
         self.portal.invokeFactory(
@@ -56,7 +57,7 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual("mydocument", response.json().get('id'))
         self.assertEqual("My Document", response.json().get('title'))
 
-        expected_url = "http://localhost:55001/plone/folder1/mydocument"
+        expected_url = self.portal_url + u"/folder1/mydocument"
         self.assertEqual(expected_url, response.json().get('@id'))
 
     def test_post_to_folder_creates_folder(self):
@@ -77,7 +78,7 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual("myfolder", response.json().get('id'))
         self.assertEqual("My Folder", response.json().get('title'))
 
-        expected_url = "http://localhost:55001/plone/folder1/myfolder"
+        expected_url = self.portal_url + u"/folder1/myfolder"
         self.assertEqual(expected_url, response.json().get('@id'))
 
     def test_post_without_type_returns_400(self):
