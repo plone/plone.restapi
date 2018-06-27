@@ -151,7 +151,9 @@ class TestTUS(unittest.TestCase):
             self.upload_url + '/myuid/123', headers={'Tus-Resumable': '1.0.0'})
         self.assertEqual(404, response.status_code)
         response = self.api_session.head(
-            self.upload_url + '/non-existing-uid', headers={'Tus-Resumable': '1.0.0'})
+            self.upload_url + '/non-existing-uid',
+            headers={'Tus-Resumable': '1.0.0'}
+        )
         self.assertEqual(404, response.status_code)
         response = self.api_session.head(
             self.upload_url, headers={'Tus-Resumable': '1.0.0'})
