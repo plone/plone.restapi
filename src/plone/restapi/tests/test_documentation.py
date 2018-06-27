@@ -6,6 +6,7 @@ from datetime import timedelta
 from freezegun import freeze_time
 from mock import patch
 from pkg_resources import parse_version
+from pkg_resources import resource_filename
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
@@ -71,14 +72,8 @@ RESPONSE_HEADER_KEYS = [
     'location',
 ] + TUS_HEADERS
 
-base_path = os.path.join(
-    os.path.dirname(__file__),
-    '..',
-    '..',
-    '..',
-    '..',
-    'docs/source/_json'
-)
+
+base_path = resource_filename('plone.restapi', '../../../docs/source/_json')
 
 UPLOAD_DATA = 'abcdefgh'
 UPLOAD_MIMETYPE = 'text/plain'
