@@ -4,7 +4,9 @@ Changelog
 3.1.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Make sure to include HTTP examples in installed egg, so test_documentation
+  tests also work against a installed release of plone.restapi.
+  [lgraf]
 
 
 3.1.0 (2018-06-27)
