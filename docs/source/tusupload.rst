@@ -13,11 +13,11 @@ Creating an Upload URL
 To create a new upload, send a POST request to the `@tus-upload` endpoint.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/tusupload_post.req
+    :request: ../../src/plone/restapi/tests/http-examples/tusupload_post.req
 
 The server will return a temporary upload URL in the location header of the response:
 
-.. literalinclude:: _json/tusupload_post.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/tusupload_post.resp
    :language: http
 
 The file can then be uploaded in the next step to that temporary URL.
@@ -30,13 +30,13 @@ Uploading a File
 
 Once a temporary upload URL has been created, a client can send a PATCH request to upload a file. The file content should be send in the body of the request:
 
-.. literalinclude:: _json/tusupload_patch_finalized.req
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/tusupload_patch_finalized.req
    :language: http
 
 When just a single file is uploaded at once, the server will respond with a `204: No Content` response after a successful upload.
 The HTTP location header contains he URL of the newly created content object:
 
-.. literalinclude:: _json/tusupload_patch_finalized.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/tusupload_patch_finalized.resp
    :language: http
 
 
@@ -46,13 +46,13 @@ Partial Upload
 TUS allows partial upload of files.
 A partial file is also uploaded by sending a PATCH request to the temporary URL:
 
-.. literalinclude:: _json/tusupload_patch.req
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/tusupload_patch.req
    :language: http
 
 The server will also respond with a `204: No content` response.
 Though, instead of providing the final file URL in the 'location' header, the server provides an updated 'Upload-Offset' value, to tell the client the new offset:
 
-.. literalinclude:: _json/tusupload_patch.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/tusupload_patch.resp
    :language: http
 
 When the last partial file has been uploaded, the server will contain the final file URL in the 'location' header.
@@ -63,23 +63,23 @@ Replacing Existing Files
 
 TUS can also be used to replace an existing file by sending a POST request to the `@tus-replace` endpoint instead.
 
-.. literalinclude:: _json/tusreplace_post.req
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/tusreplace_post.req
    :language: http
 
 The server will respond with a `201: Created` status and return the URL of the temprorary created upload resource
 in the location header of the response:
 
-.. literalinclude:: _json/tusupload_post.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/tusupload_post.resp
    :language: http
 
 The file can then be uploaded to that URL using the PATCH method in the same way as creating a new file:
 
-.. literalinclude:: _json/tusreplace_patch.req
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/tusreplace_patch.req
    :language: http
 
 The server will respond with a `204: No Content` response and the final file URL in the HTTP location header:
 
-.. literalinclude:: _json/tusreplace_patch.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/tusreplace_patch.resp
    :language: http
 
 
@@ -89,11 +89,11 @@ Asking for the Current File Offset
 To ask the server for the current file offset, the client can send a HEAD request to the upload URL:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/tusupload_head.req
+    :request: ../../src/plone/restapi/tests/http-examples/tusupload_head.req
 
 The server will respond with a `200: Ok` status and the current file offset in the 'Upload-Offset' header:
 
-.. literalinclude:: _json/tusupload_head.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/tusupload_head.resp
    :language: http
 
 
@@ -103,11 +103,11 @@ Configuration and Options
 The current TUS configuration and a list of supported options can be retrieved sending an OPTIONS request to the `@tus-upload` endpoint:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/tusupload_options.req
+    :request: ../../src/plone/restapi/tests/http-examples/tusupload_options.req
 
 The server will respond with a `204: No content` status and HTTP headers containing information about the available extentions and the TUS version:
 
-.. literalinclude:: _json/tusupload_options.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/tusupload_options.resp
    :language: http
 
 

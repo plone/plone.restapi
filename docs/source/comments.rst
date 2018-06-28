@@ -13,11 +13,11 @@ Listing Comments
 You can list the existing comment on a content object by sending a GET request to the URL of the content object and appending '/@comments':
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/comments_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/comments_get.req
 
 The server will respond with a `Status 200` and a batched list of all comments:
 
-.. literalinclude:: _json/comments_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/comments_get.resp
    :language: http
 
 These following fields are returned:
@@ -47,11 +47,11 @@ Adding a Comment
 To add a new comment to a content object, send a POST request to the URL of the content object and append '/@comments' to the URL. The body of the request needs to contain a JSON structure with a 'text' attribute that contains the comment text:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/comments_add_root.req
+    :request: ../../src/plone/restapi/tests/http-examples/comments_add_root.req
 
 If the creation of the comment has been successful, the server will respond with a :term:`204 No Content` status and the URL of the newly created comment in the location header:
 
-.. literalinclude:: _json/comments_add_root.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/comments_add_root.resp
    :language: http
 
 
@@ -61,11 +61,11 @@ Replying to a Comment
 To add a direct reply to an existing comment, send a POST request to the URL of the comment you want to reply to. The body of the request needs to contain a JSON structure with a 'text' attribute that contains the comment text:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/comments_add_sub.req
+    :request: ../../src/plone/restapi/tests/http-examples/comments_add_sub.req
 
 If the creation of the comment has been successful, the server will respond with a :term:`204 No Content` status and the URL of the newly created comment in the location header:
 
-.. literalinclude:: _json/comments_add_sub.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/comments_add_sub.resp
    :language: http
 
 
@@ -77,11 +77,11 @@ Updating a Comment
 An existing comment can be updated by sending a PATCH request to the URL of the comment. The request body needs to contain a JSON structure with at least a 'text' attribute:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/comments_update.req
+    :request: ../../src/plone/restapi/tests/http-examples/comments_update.req
 
 The server will respond with a :term:`204 No Content` response and a location header with the comment URL when the comment has been updated successfully:
 
-.. literalinclude:: _json/comments_update.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/comments_update.resp
    :language: http
 
 
@@ -93,9 +93,9 @@ An existing comment can be deleted by sending a DELETE request to the URL of the
 ..note: Deleting a comment will, by default, also delete all existing replies to that comment.
 
 ..  http:example:: curl httpie python-requests
-	 :request: _json/comments_delete.req
+	 :request: ../../src/plone/restapi/tests/http-examples/comments_delete.req
 
 When the comment has been deleted successfully, the server will respond with a :term:`204 No Content` response:
 
-.. literalinclude:: _json/comments_delete.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/comments_delete.resp
    :language: http

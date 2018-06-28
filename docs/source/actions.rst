@@ -21,13 +21,13 @@ Listing available actions
 To list the available actions, send a GET request to the '@actions' endpoint on a specific content object:
 
 .. http:example:: curl httpie python-requests
-   :request: _json/actions_get.req
+   :request: ../../src/plone/restapi/tests/http-examples/actions_get.req
 
 The server will respond with a `200 OK` status code.
 The JSON response contains the available actions categories (object, object_buttons, user) on the top level.
 Each category contains a list of the available actions in that category:
 
-.. literalinclude:: _json/actions_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/actions_get.resp
    :language: http
 
 If you want to limit the categories that are retured, pass one or more parameters

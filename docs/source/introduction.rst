@@ -16,7 +16,7 @@ The entry point to the Plone RESTful API is the portal root.
 The client can ask for a :term:`REST` API response by setting the ``'Accept'`` HTTP header to ``'application/json'``:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/siteroot.req
+    :request: ../../src/plone/restapi/tests/http-examples/siteroot.req
 
 
 This uses so-called 'content negotiation'
@@ -28,7 +28,7 @@ This uses so-called 'content negotiation'
 
 The server will then respond with the portal root in the JSON format:
 
-.. literalinclude:: _json/siteroot.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/siteroot.resp
    :language: http
 
 ``@id`` is a unique identifier for resources (IRIs).
@@ -45,9 +45,9 @@ Another example, this time showing a request and response for a document.
 Click on the buttons below to show the different syntaxes for the request.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/document.req
+    :request: ../../src/plone/restapi/tests/http-examples/document.req
 
-.. literalinclude:: _json/document.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/document.resp
    :language: http
 
 And so on, see

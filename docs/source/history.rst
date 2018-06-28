@@ -11,9 +11,9 @@ Listing the History of a Content Object
 Listing versions and history of a resource:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/history_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/history_get.req
 
-.. literalinclude:: _json/history_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/history_get.resp
    :language: http
 
 This following fields are returned:
@@ -35,7 +35,7 @@ Get a Historical Version
 Older versions of a resource can be retrieved by appending `version` to the @history endpoint url.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/history_get_versioned.req
+    :request: ../../src/plone/restapi/tests/http-examples/history_get_versioned.req
 
 
 Revert to a Historical Version
@@ -45,7 +45,7 @@ Reverting to an older versions of a resource can be done by sending a PATCH requ
 to.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/history_revert.req
+    :request: ../../src/plone/restapi/tests/http-examples/history_revert.req
 
-.. literalinclude:: _json/history_revert.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/history_revert.resp
    :language: http

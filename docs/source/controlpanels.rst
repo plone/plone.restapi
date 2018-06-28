@@ -22,11 +22,11 @@ A list of all existing control panels in the portal can be retrieved by
 sending a GET request to the @controlpanels endpoint:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/controlpanels_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_get.req
 
 Response:
 
-.. literalinclude:: _json/controlpanels_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/controlpanels_get.resp
    :language: http
 
 The following fields are returned:
@@ -43,11 +43,11 @@ To retrieve a single control panel, send a GET request to the URL of the
 control panel:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/controlpanels_get_item.req
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_get_item.req
 
 Response:
 
-.. literalinclude:: _json/controlpanels_get_item.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/controlpanels_get_item.resp
    :language: http
 
 
@@ -67,11 +67,11 @@ To update the settings on a control panel send a PATCH request to control panel
 resource:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/controlpanels_patch.req
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_patch.req
 
 A successful response to a PATCH request will be indicated by a :term:`204 No Content` response:
 
   HTTP/1.1 204 No Content
 
-.. literalinclude:: _json/controlpanels_patch.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/controlpanels_patch.resp
    :language: http
