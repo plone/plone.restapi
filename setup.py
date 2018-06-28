@@ -72,6 +72,7 @@ setup(name='plone.restapi',
           'setuptools',
           'python-dateutil',
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
+          'plone.schema >= 1.2.0',  # new json field          
           'PyJWT',
           'pytz',
       ],
@@ -86,7 +87,6 @@ setup(name='plone.restapi',
           'requests',
           'freezegun',
           'plone.tiles',
-          'plone.schema>=1.2.0',  # new json field
           'mock',
       ]},
       entry_points="""
