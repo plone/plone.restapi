@@ -83,7 +83,7 @@ class TestServicesTiles(unittest.TestCase):
         self.assertEquals(len(response), 1)
         self.assertEquals(
             response[0]['@id'],
-            u'http://localhost:55001/plone/@tiles/sample.tile')
+            self.portal_url + u'/@tiles/sample.tile')
         self.assertEquals(response[0]['title'], u'Sample tile')
         self.assertEquals(
             response[0]['description'], u'A tile used for testing')
