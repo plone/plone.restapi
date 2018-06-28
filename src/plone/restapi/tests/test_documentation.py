@@ -73,7 +73,7 @@ RESPONSE_HEADER_KEYS = [
 ] + TUS_HEADERS
 
 
-base_path = resource_filename('plone.restapi', '../../../docs/source/_json')
+base_path = resource_filename('plone.restapi.tests', 'http-examples')
 
 UPLOAD_DATA = 'abcdefgh'
 UPLOAD_MIMETYPE = 'text/plain'
