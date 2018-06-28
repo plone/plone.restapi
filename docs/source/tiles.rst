@@ -1,7 +1,7 @@
 Tiles
 =====
 
-..note::
+..note:
 
   The tiles endpoint currently match only partially (the GET endpoints) the default Plone implementation.
   The serialization of tiles didn't match the Mosaic (and plone.app.blocks) implementation and it's done to
@@ -188,7 +188,7 @@ If the tile has been added, the server responds with a `204` status code.
 Saving tiles data (proposal)
 -----------------------------
 
-..note::
+..note:
 
   This is not implemented (yet) in the arrangement field, but it's a proposal on
   how could look like in the future.
