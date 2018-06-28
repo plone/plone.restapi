@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.restapi import HAS_AT
+from six.moves import map
 
 if HAS_AT:
     from Products.Archetypes.interfaces import IBaseObject
@@ -130,4 +131,4 @@ if HAS_AT:
     class QueryFieldSerializer(DefaultFieldSerializer):
         def __call__(self):
             raw_value = self.field.getRaw(self.context)
-            return json_compatible(map(dict, raw_value))
+            return json_compatible(list(map(dict, raw_value)))

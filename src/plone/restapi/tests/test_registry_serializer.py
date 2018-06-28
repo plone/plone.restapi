@@ -8,6 +8,7 @@ from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
 
 import unittest
+from six.moves import range
 
 
 class TestRegistrySerializer(unittest.TestCase):
@@ -30,7 +31,7 @@ class TestRegistrySerializer(unittest.TestCase):
         obj = self.serialize(registry)
         expected = ['@id', 'items_total', 'items']
         self.assertEqual(set(obj.keys()), set(expected))
-        self.assertNotIn('batching', obj.keys())
+        self.assertNotIn('batching', list(obj.keys()))
 
     def test_batched(self):
         registry = Registry()
@@ -42,7 +43,7 @@ class TestRegistrySerializer(unittest.TestCase):
         obj = self.serialize(registry)
         expected = ['@id', 'items_total', 'items', 'batching']
         self.assertEqual(set(expected), set(obj.keys()))
-        self.assertEqual(obj['items_total'], len(range(1, 100)))
+        self.assertEqual(obj['items_total'], len(list(range(1, 100))))
 
     def test_structure(self):
         registry = Registry()

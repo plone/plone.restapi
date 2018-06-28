@@ -19,6 +19,7 @@ from zope.schema._bootstrapinterfaces import RequiredMissing
 from zope.schema.interfaces import ValidationError
 
 import unittest
+import six
 
 
 class RequiredField(object):
@@ -87,7 +88,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
 
     def test_choice_deserialization_returns_vocabulary_item(self):
         value = self.deserialize('test_choice_field', u'bar')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'bar', value)
 
     def test_date_deserialization_returns_date(self):
@@ -179,12 +180,12 @@ class TestDXFieldDeserializer(unittest.TestCase):
 
     def test_text_deserialization_returns_unicode(self):
         value = self.deserialize('test_text_field', u'Foo')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'Foo', value)
 
     def test_textline_deserialization_returns_unicode(self):
         value = self.deserialize('test_textline_field', u'Foo')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'Foo', value)
 
     def test_time_deserialization_returns_time(self):
@@ -332,14 +333,14 @@ class TestDXFieldDeserializer(unittest.TestCase):
         doc2 = self.portal[self.portal.invokeFactory(
             'DXTestDocument', id='doc2', title='Referenceable Document')]
         value = self.deserialize('test_relationchoice_field',
-                                 unicode(doc2.UID()))
+                                 six.text_type(doc2.UID()))
         self.assertEqual(doc2, value)
 
     def test_relationchoice_deserialization_from_url_returns_document(self):
         doc2 = self.portal[self.portal.invokeFactory(
             'DXTestDocument', id='doc2', title='Referenceable Document')]
         value = self.deserialize('test_relationchoice_field',
-                                 unicode(doc2.absolute_url()))
+                                 six.text_type(doc2.absolute_url()))
         self.assertEqual(doc2, value)
 
     def test_relationchoice_deserialization_from_path_returns_document(self):
@@ -354,7 +355,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         doc3 = self.portal[self.portal.invokeFactory(
             'DXTestDocument', id='doc3', title='Referenceable Document')]
         value = self.deserialize('test_relationlist_field',
-                                 [unicode(doc2.UID()), unicode(doc3.UID())])
+                                 [six.text_type(doc2.UID()), six.text_type(doc3.UID())])
         self.assertTrue(isinstance(value, list), 'Not a <list>')
         self.assertEqual(doc2, value[0])
         self.assertEqual(doc3, value[1])
@@ -383,7 +384,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         # DefaultFieldDeserializer that the CollectionFieldDeserializer will
         # delegate to for deserializing collection items.
         self.assertEqual(u'Object is of wrong type.', cm.exception.doc())
-        self.assertEqual(('2', (int, long), ''), cm.exception.args)
+        self.assertEqual(('2', six.integer_types, ''), cm.exception.args)
 
     def test_dict_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
@@ -393,7 +394,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         # DefaultFieldDeserializer that the DictFieldSerializer will delegate
         # to for deserializing keys and values.
         self.assertEqual(u'Object is of wrong type.', cm.exception.doc())
-        self.assertEqual(('k', (int, long), ''), cm.exception.args)
+        self.assertEqual(('k', six.integer_types, ''), cm.exception.args)
 
     def test_time_deserializer_handles_invalid_value(self):
         with self.assertRaises(ValueError) as cm:

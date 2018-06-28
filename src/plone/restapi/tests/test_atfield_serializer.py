@@ -12,6 +12,7 @@ from zope.component import getMultiAdapter
 
 import os
 import unittest
+import six
 
 if PLONE_VERSION.base_version >= '5.1':
     GIF_SCALE_FORMAT = 'png'
@@ -43,7 +44,7 @@ class TestATFieldSerializer(unittest.TestCase):
 
     def test_string_field_serialization_returns_unicode(self):
         value = self.serialize('testStringField', u'Käfer')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'Käfer', value)
 
     def test_boolean_field_serialization_returns_true(self):
@@ -68,13 +69,13 @@ class TestATFieldSerializer(unittest.TestCase):
 
     def test_fixedpoint_field_serialization_returns_unicode(self):
         value = self.serialize('testFixedPointField', u'1.11')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'1.11', value)
 
     def test_datetime_field_serialization_returns_unicode(self):
         value = self.serialize('testDateTimeField',
                                DateTime('2016-01-21T01:14:48+00:00'))
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'2016-01-21T01:14:48+00:00', value)
 
     def test_lines_field_serialization_returns_list(self):
@@ -254,7 +255,7 @@ class TestATFieldSerializer(unittest.TestCase):
         doc2 = self.portal[self.portal.invokeFactory(
             'ATTestDocument', id='doc2', title='Referenceable Document')]
         value = self.serialize('testReferenceField', doc2.UID())
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'http://nohost/plone/doc2', value)
 
     def test_reference_field_serialization_returns_list(self):

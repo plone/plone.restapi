@@ -126,7 +126,7 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             'actions',
-            response.json().get('@components').keys()
+            list(response.json().get('@components').keys())
         )
 
     def test_actions_expanded(self):
@@ -160,7 +160,7 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             'navigation',
-            response.json().get('@components').keys()
+            list(response.json().get('@components').keys())
         )
 
     def test_navigation_expanded(self):
@@ -239,7 +239,7 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             'breadcrumbs',
-            response.json().get('@components').keys()
+            list(response.json().get('@components').keys())
         )
 
     def test_breadcrumbs_expanded(self):
@@ -266,7 +266,7 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             'workflow',
-            response.json().get('@components').keys()
+            list(response.json().get('@components').keys())
         )
 
     def test_workflow_expanded(self):
@@ -337,7 +337,7 @@ class TestTranslationExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             'translations',
-            response.json().get('@components').keys()
+            list(response.json().get('@components').keys())
         )
 
     def test_translations_expanded(self):

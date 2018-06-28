@@ -110,8 +110,8 @@ class TestTUS(unittest.TestCase):
 
     def test_tus_post_initialization_with_metadata(self):
         metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_FILENAME),
-            b64encode(UPLOAD_MIMETYPE))
+            b64encode(UPLOAD_FILENAME.encode('utf8')).decode('utf8'),
+            b64encode(UPLOAD_MIMETYPE.encode('utf8')).decode('utf8'))
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
@@ -303,8 +303,8 @@ class TestTUS(unittest.TestCase):
                                      UPLOAD_PDF_FILENAME)
         pdf_file_size = os.path.getsize(pdf_file_path)
         metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_PDF_FILENAME),
-            b64encode(UPLOAD_PDF_MIMETYPE))
+            b64encode(UPLOAD_PDF_FILENAME.encode('utf8')),
+            b64encode(UPLOAD_PDF_MIMETYPE.encode('utf8')))
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
@@ -330,8 +330,8 @@ class TestTUS(unittest.TestCase):
     def test_tus_can_upload_text_file(self):
         # initialize the upload with POST
         metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_FILENAME),
-            b64encode(UPLOAD_MIMETYPE))
+            b64encode(UPLOAD_FILENAME.encode('utf8')),
+            b64encode(UPLOAD_MIMETYPE.encode('utf8')))
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
@@ -362,8 +362,8 @@ class TestTUS(unittest.TestCase):
                                      UPLOAD_PDF_FILENAME)
         pdf_file_size = os.path.getsize(pdf_file_path)
         metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_PDF_FILENAME),
-            b64encode(UPLOAD_PDF_MIMETYPE))
+            b64encode(UPLOAD_PDF_FILENAME.encode('utf8')),
+            b64encode(UPLOAD_PDF_MIMETYPE.encode('utf8')))
         response = self.api_session.post(
             '{}/@tus-replace'.format(self.file.absolute_url()),
             headers={'Tus-Resumable': '1.0.0',
@@ -518,7 +518,7 @@ class TestTUSUpload(unittest.TestCase):
         self.assertEqual(13, tus.offset())
         with open(tus.filepath, 'rb') as f:
             data = f.read()
-        self.assertEqual('0123456789abc', data)
+        self.assertEqual(b'0123456789abc', data)
         tus.cleanup()
 
     def test_write_sets_finished_flag(self):
@@ -601,8 +601,8 @@ class TestTUSWithAT(unittest.TestCase):
                                      UPLOAD_PDF_FILENAME)
         pdf_file_size = os.path.getsize(pdf_file_path)
         metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_PDF_FILENAME),
-            b64encode(UPLOAD_PDF_MIMETYPE))
+            b64encode(UPLOAD_PDF_FILENAME.encode('utf8')),
+            b64encode(UPLOAD_PDF_MIMETYPE.encode('utf8')))
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',

@@ -45,7 +45,7 @@ class TestJsonCompatibleConverters(TestCase):
 
     def test_unicode(self):
         self.assertEquals(u'foo', json_compatible(u'foo'))
-        self.assertIsInstance(json_compatible(u'foo'), unicode)
+        self.assertIsInstance(json_compatible(u'foo'), six.text_type)
         self.assertEquals('"foo"', json.dumps(json_compatible('foo')))
 
     def test_unicode_with_umlaut(self):
@@ -56,7 +56,7 @@ class TestJsonCompatibleConverters(TestCase):
     def test_string_is_converted_to_unicode(self):
         # Standard library JSON works with unicode.
         self.assertEquals(u'foo', json_compatible('foo'))
-        self.assertIsInstance(json_compatible('foo'), unicode)
+        self.assertIsInstance(json_compatible('foo'), six.text_type)
         self.assertEquals('"foo"', json.dumps(json_compatible('foo')))
 
     def test_string_with_umlaut(self):
@@ -73,11 +73,11 @@ class TestJsonCompatibleConverters(TestCase):
     def test_long(self):
         def _long(val):
             if six.PY2:
-                return long(val)
+                return int(val)
             else:
                 return int(val)
         self.assertEquals(_long(10), json_compatible(_long(10)))
-        self.assertIsInstance(json_compatible(_long(10)), long)
+        self.assertIsInstance(json_compatible(_long(10)), int)
         self.assertEquals('10', json.dumps(json_compatible(_long(10))))
 
     def test_float(self):
@@ -89,7 +89,7 @@ class TestJsonCompatibleConverters(TestCase):
         self.assertEquals(['foo'], json_compatible(['foo']))
         self.assertEquals('["foo"]', json.dumps(json_compatible(['foo'])))
         self.assertIsInstance(json_compatible(['foo'])[0],
-                              unicode,
+                              six.text_type,
                               'List values should be converted recursively.')
 
     def test_persistent_list(self):
@@ -97,7 +97,7 @@ class TestJsonCompatibleConverters(TestCase):
         self.assertEquals(['foo'], json_compatible(value))
         self.assertEquals('["foo"]', json.dumps(json_compatible(value)))
         self.assertIsInstance(json_compatible(value)[0],
-                              unicode,
+                              six.text_type,
                               'PersistentList values should be converted'
                               ' recursively.')
 
@@ -107,7 +107,7 @@ class TestJsonCompatibleConverters(TestCase):
         self.assertEquals(['foo', None], json_compatible(('foo', None)))
         self.assertEquals('["foo"]', json.dumps(json_compatible(('foo', ))))
         self.assertIsInstance(json_compatible(('foo',))[0],
-                              unicode,
+                              six.text_type,
                               'Tuple values should be converted recursively.')
 
     def test_frozenset(self):
@@ -127,11 +127,11 @@ class TestJsonCompatibleConverters(TestCase):
                                            'baz': 3}))
         self.assertEquals('{"foo": "bar"}',
                           json.dumps(json_compatible({'foo': 'bar'})))
-        self.assertIsInstance(json_compatible({'foo': 'bar'}.keys()[0]),
-                              unicode,
+        self.assertIsInstance(json_compatible(list({'foo': 'bar'}.keys())[0]),
+                              six.text_type,
                               'Dict keys should be converted recursively.')
-        self.assertIsInstance(json_compatible({'foo': 'bar'}.values()[0]),
-                              unicode,
+        self.assertIsInstance(json_compatible(list({'foo': 'bar'}.values())[0]),
+                              six.text_type,
                               'Dict values should be converted recursively.')
 
     def test_dict_empty(self):
@@ -142,11 +142,11 @@ class TestJsonCompatibleConverters(TestCase):
         value = PersistentMapping({'foo': 'bar'})
         self.assertEquals({u'foo': u'bar'}, json_compatible(value))
         self.assertEquals('{"foo": "bar"}', json.dumps(json_compatible(value)))
-        self.assertIsInstance(json_compatible(value.keys()[0]),
-                              unicode,
+        self.assertIsInstance(json_compatible(list(value.keys())[0]),
+                              six.text_type,
                               'Dict keys should be converted recursively.')
-        self.assertIsInstance(json_compatible(value.values()[0]),
-                              unicode,
+        self.assertIsInstance(json_compatible(list(value.values())[0]),
+                              six.text_type,
                               'Dict values should be converted recursively.')
 
     def test_python_datetime(self):

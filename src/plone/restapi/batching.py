@@ -116,7 +116,7 @@ class HypermediaBatch(object):
         # result of parse_qsl into a dict!
 
         # Drop params to be updated, then prepend new params in order
-        qs_params = filter(lambda x: x[0] not in params.keys(), qs_params)
+        qs_params = [x for x in qs_params if x[0] not in list(params.keys())]
         qs_params = sorted(params.items()) + qs_params
 
         qs = urlencode(qs_params)

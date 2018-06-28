@@ -15,6 +15,9 @@ from zope.container.contained import ObjectAddedEvent
 from zope.container.interfaces import INameChooser
 from zope.event import notify
 
+import transaction
+import six
+
 
 def create(container, type_, id_=None, title=None):
     """Create a new content item."""
@@ -28,7 +31,7 @@ def create(container, type_, id_=None, title=None):
             str(now.millis())[7:],
             randint(0, 9999))
     else:
-        if isinstance(id_, unicode):
+        if six.PY2 and isinstance(id_, six.text_type):
             new_id = id_.encode('utf8')
         else:
             new_id = id_

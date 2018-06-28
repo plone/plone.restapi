@@ -5,6 +5,7 @@ from plone.restapi.tests.mixin_ordering import OrderingMixin
 from zope.component import getMultiAdapter
 
 import unittest
+from six.moves import range
 
 
 class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):

@@ -22,6 +22,8 @@ from zope.interface import Interface
 import Missing
 import pytz
 import six
+from six.moves import map
+from six.moves import zip
 # import re
 
 
@@ -93,7 +95,7 @@ def string_converter(value):
 @adapter(list)
 @implementer(IJsonCompatible)
 def list_converter(value):
-    return map(json_compatible, value)
+    return list(map(json_compatible, value))
 
 
 @adapter(PersistentList)
@@ -105,19 +107,19 @@ def persistent_list_converter(value):
 @adapter(tuple)
 @implementer(IJsonCompatible)
 def tuple_converter(value):
-    return map(json_compatible, value)
+    return list(map(json_compatible, value))
 
 
 @adapter(frozenset)
 @implementer(IJsonCompatible)
 def frozenset_converter(value):
-    return map(json_compatible, value)
+    return list(map(json_compatible, value))
 
 
 @adapter(set)
 @implementer(IJsonCompatible)
 def set_converter(value):
-    return map(json_compatible, value)
+    return list(map(json_compatible, value))
 
 
 @adapter(dict)
@@ -126,10 +128,10 @@ def dict_converter(value):
     if value == {}:
         return {}
 
-    keys, values = zip(*value.items())
-    keys = map(json_compatible, keys)
-    values = map(json_compatible, values)
-    return dict(zip(keys, values))
+    keys, values = list(zip(*list(value.items())))
+    keys = list(map(json_compatible, keys))
+    values = list(map(json_compatible, values))
+    return dict(list(zip(keys, values)))
 
 
 @adapter(PersistentMapping)

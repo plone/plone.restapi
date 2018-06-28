@@ -73,13 +73,13 @@ class TestContentGet(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(3, len(response.json()['items']))
         self.assertTrue(
-            'title' in response.json()['items'][0].keys()
+            'title' in list(response.json()['items'][0].keys())
         )
         self.assertTrue(
-            'description' in response.json()['items'][0].keys()
+            'description' in list(response.json()['items'][0].keys())
         )
         self.assertTrue(
-            'text' in response.json()['items'][0].keys()
+            'text' in list(response.json()['items'][0].keys())
         )
         self.assertEqual(
             {

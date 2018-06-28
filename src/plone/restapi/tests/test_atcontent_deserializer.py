@@ -13,6 +13,7 @@ from zope.component import adapter
 from zope.interface import implementer
 
 import unittest
+from six.moves import range
 
 if HAS_AT:
     from plone.restapi.deserializer.atcontent import ValidationRequest

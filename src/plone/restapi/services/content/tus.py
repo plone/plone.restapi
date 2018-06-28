@@ -23,6 +23,7 @@ from zope.event import notify
 
 import json
 import os
+import six
 import time
 
 TUS_OPTIONS_RESPONSE_HEADERS = {
@@ -305,7 +306,7 @@ class TUSUpload(object):
     def initalize(self, metadata):
         """Initialize a new TUS upload by writing its metadata to disk."""
         self.cleanup_expired()
-        with open(self.metadata_path, 'wb') as f:
+        with open(self.metadata_path, 'w') as f:
             json.dump(metadata, f)
 
     def length(self):

@@ -42,6 +42,7 @@ import re
 import os
 import transaction
 import unittest
+from six.moves import range
 
 if PAM_INSTALLED:
     from plone.app.multilingual.interfaces import ITranslationManager
@@ -127,7 +128,7 @@ def save_request_and_response_for_docs(name, response):
 
             req.write(response.request.body)
 
-    with open('{}/{}'.format(base_path, '%s.resp' % name), 'w') as resp:
+    with open('{}/{}'.format(base_path, '%s.resp' % name), 'wb') as resp:
         status = response.status_code
         reason = response.reason
         resp.write('HTTP/1.1 {} {}\n'.format(status, reason))
@@ -1099,8 +1100,8 @@ class TestDocumentation(unittest.TestCase):
 
         # POST create an upload
         metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_FILENAME),
-            b64encode(UPLOAD_MIMETYPE)
+            b64encode(UPLOAD_FILENAME.encode('utf8')).decode('utf8'),
+            b64encode(UPLOAD_MIMETYPE.encode('utf8')).decode('utf8')
         )
         response = self.api_session.post(
             '/folder/@tus-upload',
@@ -1395,7 +1396,7 @@ class TestCommenting(unittest.TestCase):
                 comment = createObject('plone.Comment')
                 comment.text = 'Comment %d.%d' % (x, y)
                 comment_replies.addComment(comment)
-        self.comment_id, self.comment = replies.items()[0]
+        self.comment_id, self.comment = list(replies.items())[0]
 
         return document
 

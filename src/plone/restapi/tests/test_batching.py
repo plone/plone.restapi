@@ -18,6 +18,7 @@ from six.moves.urllib.parse import urlparse
 
 import transaction
 import unittest
+from six.moves import range
 
 
 class TestBatchingDXBase(unittest.TestCase):
@@ -186,7 +187,7 @@ class TestBatchingCollections(TestBatchingDXBase):
 
     def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
         response = self.api_session.get('/collection?b_size=100')
-        self.assertNotIn('batching', response.json().keys())
+        self.assertNotIn('batching', list(response.json().keys()))
 
 
 class TestBatchingDXFolders(TestBatchingDXBase):
@@ -248,7 +249,7 @@ class TestBatchingDXFolders(TestBatchingDXBase):
 
     def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
         response = self.api_session.get('/folder?b_size=100')
-        self.assertNotIn('batching', response.json().keys())
+        self.assertNotIn('batching', list(response.json().keys()))
 
 
 class TestBatchingSiteRoot(TestBatchingDXBase):
@@ -306,7 +307,7 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
 
     def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
         response = self.api_session.get('/folder?b_size=100')
-        self.assertNotIn('batching', response.json().keys())
+        self.assertNotIn('batching', list(response.json().keys()))
 
 
 class TestBatchingArchetypes(unittest.TestCase):
@@ -388,7 +389,7 @@ class TestBatchingArchetypes(unittest.TestCase):
 
     def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
         response = self.api_session.get('/folder?b_size=100')
-        self.assertNotIn('batching', response.json().keys())
+        self.assertNotIn('batching', list(response.json().keys()))
 
 
 class TestHypermediaBatch(unittest.TestCase):
@@ -400,7 +401,7 @@ class TestHypermediaBatch(unittest.TestCase):
         self.request = self.portal.REQUEST
 
     def test_items_total(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
         self.request.form['b_size'] = 10
         batch = HypermediaBatch(self.request, items)
         # items_total should be total number of items in the sequence
@@ -408,12 +409,12 @@ class TestHypermediaBatch(unittest.TestCase):
             25, batch.items_total)
 
     def test_default_batch_size(self):
-        items = range(1, 27)
+        items = list(range(1, 27))
         batch = HypermediaBatch(self.request, items)
         self.assertEqual(DEFAULT_BATCH_SIZE, len(list(batch)))
 
     def test_custom_batch_size(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
         self.request.form['b_size'] = 5
         batch = HypermediaBatch(self.request, items)
         # Batch size should be customizable via request
@@ -421,39 +422,39 @@ class TestHypermediaBatch(unittest.TestCase):
             5, len(list(batch)))
 
     def test_default_batch_start(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
         self.request.form['b_size'] = 10
         batch = HypermediaBatch(self.request, items)
         # Batch should start on first item by default
         self.assertEqual(
-            range(1, 11), list(batch))
+            list(range(1, 11)), list(batch))
 
     def test_custom_batch_start(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
         self.request.form['b_size'] = 10
         self.request.form['b_start'] = 5
         batch = HypermediaBatch(self.request, items)
         # Batch start should be customizable via request
         self.assertEqual(
-            range(6, 16), list(batch))
+            list(range(6, 16)), list(batch))
 
     def test_custom_start_and_size_can_be_combined(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
         self.request.form['b_size'] = 5
         self.request.form['b_start'] = 5
         batch = HypermediaBatch(self.request, items)
         # Should be able to combine custom batch start and size
         self.assertListEqual(
-            range(6, 11), list(batch))
+            list(range(6, 11)), list(batch))
 
     def test_canonical_url(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
         self.request.form['b_size'] = 10
         batch = HypermediaBatch(self.request, items)
         self.assertEqual('http://nohost', batch.canonical_url)
 
     def test_canonical_url_preserves_query_string_params(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         self.request.form['b_size'] = 10
         self.request['QUERY_STRING'] = 'one=1&two=2'
@@ -467,7 +468,7 @@ class TestHypermediaBatch(unittest.TestCase):
         self.assertEquals('', parsed_url.path)
 
     def test_canonical_url_preserves_list_like_query_string_params(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         self.request.form['b_size'] = 10
         self.request['QUERY_STRING'] = 'foolist=1&foolist=2'
@@ -482,7 +483,7 @@ class TestHypermediaBatch(unittest.TestCase):
         )
 
     def test_canonical_url_strips_batching_params(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         self.request.form['b_size'] = 10
         self.request['QUERY_STRING'] = 'one=1&b_size=10&b_start=20&two=2'
@@ -496,7 +497,7 @@ class TestHypermediaBatch(unittest.TestCase):
         self.assertEquals('', parsed_url.path)
 
     def test_canonical_url_strips_sorting_params(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         self.request['QUERY_STRING'] = 'one=1&sort_on=path&two=2'
         batch = HypermediaBatch(self.request, items)
@@ -509,7 +510,7 @@ class TestHypermediaBatch(unittest.TestCase):
         self.assertEquals('', parsed_url.path)
 
     def test_current_batch_url(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         self.request.form['b_size'] = 10
         self.request['ACTUAL_URL'] = 'http://nohost'
@@ -519,14 +520,14 @@ class TestHypermediaBatch(unittest.TestCase):
             'http://nohost?b_size=10&b_start=20', batch.current_batch_url)
 
     def test_batching_links_omitted_if_resultset_fits_in_single_batch(self):
-        items = range(1, 5)
+        items = list(range(1, 5))
 
         self.request.form['b_size'] = 10
         batch = HypermediaBatch(self.request, items)
         self.assertEqual(None, batch.links)
 
     def test_first_link_contained(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         self.request.form['b_size'] = 10
         batch = HypermediaBatch(self.request, items)
@@ -534,7 +535,7 @@ class TestHypermediaBatch(unittest.TestCase):
             {'first': 'http://nohost?b_start=0'}, batch.links)
 
     def test_first_link_preserves_list_like_querystring_params(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         self.request.form['b_size'] = 10
         self.request['QUERY_STRING'] = 'foolist=1&foolist=2'
@@ -550,7 +551,7 @@ class TestHypermediaBatch(unittest.TestCase):
         )
 
     def test_last_link_contained(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         self.request.form['b_size'] = 10
         batch = HypermediaBatch(self.request, items)
@@ -558,7 +559,7 @@ class TestHypermediaBatch(unittest.TestCase):
             {'last': 'http://nohost?b_start=20'}, batch.links)
 
     def test_next_link_contained_if_necessary(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         self.request.form['b_size'] = 10
         batch = HypermediaBatch(self.request, items)
@@ -566,7 +567,7 @@ class TestHypermediaBatch(unittest.TestCase):
             {'next': 'http://nohost?b_start=10'}, batch.links)
 
     def test_next_link_omitted_on_last_page(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         # Start on last page
         self.request.form['b_size'] = 10
@@ -577,7 +578,7 @@ class TestHypermediaBatch(unittest.TestCase):
             set(batch.links.keys()))
 
     def test_prev_link_contained_if_necessary(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         # Start on third page
         self.request.form['b_size'] = 10
@@ -587,7 +588,7 @@ class TestHypermediaBatch(unittest.TestCase):
             {'prev': 'http://nohost?b_start=10'}, batch.links)
 
     def test_prev_link_omitted_on_first_page(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         self.request.form['b_size'] = 10
         batch = HypermediaBatch(self.request, items)
@@ -596,7 +597,7 @@ class TestHypermediaBatch(unittest.TestCase):
             set(batch.links.keys()))
 
     def test_no_gaps_or_duplicates_between_pages(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
         items_from_all_batches = []
 
         size = 10
@@ -610,7 +611,7 @@ class TestHypermediaBatch(unittest.TestCase):
         self.assertEqual(items, items_from_all_batches)
 
     def test_batch_start_never_drops_below_zero(self):
-        items = range(1, 26)
+        items = list(range(1, 26))
 
         # Start in the middle of what would otherwise be the first batch
         self.request.form['b_size'] = 10

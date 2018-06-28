@@ -75,7 +75,7 @@ class CommentsAdd(Service):
                          plone.protect.interfaces.IDisableCSRFProtection)
 
         conversation = IConversation(self.context)
-        if self.comment_id and self.comment_id not in conversation.keys():
+        if self.comment_id and self.comment_id not in list(conversation.keys()):
             self.request.response.setStatus(404)
             return
 
@@ -113,7 +113,7 @@ class CommentsUpdate(Service):
             raise BadRequest("Comment id is a required part of the url")
 
         conversation = IConversation(self.context)
-        if self.comment_id not in conversation.keys():
+        if self.comment_id not in list(conversation.keys()):
             self.request.response.setStatus(404)
             return
         comment = conversation[self.comment_id]

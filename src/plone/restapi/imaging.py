@@ -3,6 +3,7 @@ from Products.CMFCore.interfaces import IPropertiesTool
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.globalrequest import getRequest
+from six.moves import map
 
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
@@ -62,8 +63,8 @@ def get_actual_scale(dimensions, bbox):
     This is supposed to emulate / predict the behavior of Plone's
     ImageScaling implementations.
     """
-    width, height = map(float, dimensions)
-    max_width, max_height = map(float, bbox)
+    width, height = list(map(float, dimensions))
+    max_width, max_height = list(map(float, bbox))
     resize_ratio = min(max_width / width, max_height / height)
 
     # Plone doesn't upscale images for the default named scales - limit
@@ -98,7 +99,7 @@ def get_scale_infos():
 
     def split_scale_info(allowed_size):
         name, dims = allowed_size.split(' ')
-        width, height = map(int, dims.split(':'))
+        width, height = list(map(int, dims.split(':')))
         return name, width, height
 
     return [split_scale_info(size) for size in allowed_sizes]

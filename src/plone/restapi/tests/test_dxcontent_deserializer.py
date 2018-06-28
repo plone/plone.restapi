@@ -15,6 +15,8 @@ from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 import json
 import unittest
+import six
+from six.moves import range
 
 
 class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
@@ -229,7 +231,7 @@ class TestDXContentSerializerDeserializer(unittest.TestCase):
         return serializer()[field]
 
     def test_serialize2deserialize_relation(self):
-        value = unicode(self.portal.doc2.UID())
+        value = six.text_type(self.portal.doc2.UID())
         self.deserialize('test_relationchoice_field', value)
 
         serialization_value = self.serialize('test_relationchoice_field')

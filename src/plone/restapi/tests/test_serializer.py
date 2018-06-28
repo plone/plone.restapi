@@ -66,7 +66,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         setRoles(self.portal, TEST_USER_ID, ['Member', 'Manager'])
         self.assertIn(
             'Test Read Permission',
-            self.serialize(self.portal.dxdoc).values()
+            list(self.serialize(self.portal.dxdoc).values())
         )
 
     def test_serialize_cannot_read_as_member(self):
@@ -75,7 +75,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         setRoles(self.portal, TEST_USER_ID, ['Member'])
         self.assertNotIn(
             'Test Read Permission',
-            self.serialize(self.portal.dxdoc).values()
+            list(self.serialize(self.portal.dxdoc).values())
         )
 
     def test_serialize_returns_desciption(self):

@@ -9,6 +9,7 @@ from plone.restapi.testing import RelativeSession
 
 import unittest
 import transaction
+import six
 
 
 class TestHistoryEndpoint(unittest.TestCase):
@@ -103,7 +104,7 @@ class TestHistoryEndpoint(unittest.TestCase):
         response = self.api_session.get(url)
 
         for item in response.json():
-            self.assertTrue(isinstance(item['time'], basestring))
+            self.assertTrue(isinstance(item['time'], six.string_types))
 
     def test_get_historical_link(self):
         # The @id field should link to @history/version.
@@ -116,7 +117,7 @@ class TestHistoryEndpoint(unittest.TestCase):
                     item['@id'].endswith('@history/' + str(item['version']))
                 )
             else:
-                self.assertNotIn('@id', item.keys())
+                self.assertNotIn('@id', list(item.keys()))
 
     def test_explicit_current(self):
         # Does version=current get the current version
