@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from DateTime import DateTime
-from StringIO import StringIO
+from six import BytesIO
 from base64 import b64encode
 from plone import api
 from plone.app.testing import SITE_OWNER_NAME
@@ -246,7 +246,7 @@ class TestTUS(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Content-Type': 'application/offset+octet-stream',
                      'Upload-Offset': '0'},
-            data=StringIO('abcdefghijkl'))
+            data=BytesIO(b'abcdefghijkl'))
         self.assertEqual(204, response.status_code)
         self.assertIn('Upload-Expires', response.headers)
         tus.cleanup()
@@ -261,7 +261,7 @@ class TestTUS(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Content-Type': 'application/offset+octet-stream',
                      'Upload-Offset': '0'},
-            data=StringIO('abcdefghijkl'))
+            data=BytesIO(b'abcdefghijkl'))
 
         self.assertEqual(204, response.status_code)
         transaction.commit()
@@ -280,7 +280,7 @@ class TestTUS(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Content-Type': 'application/offset+octet-stream',
                      'Upload-Offset': '0'},
-            data=StringIO('abcdefghijkl'))
+            data=BytesIO(b'abcdefghijkl'))
         self.assertEqual(401, response.status_code)
         tus.cleanup()
 
@@ -293,7 +293,7 @@ class TestTUS(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Content-Type': 'application/offset+octet-stream',
                      'Upload-Offset': '0'},
-            data=StringIO('abcdefghijkl'))
+            data=BytesIO(b'abcdefghijkl'))
         self.assertEqual(401, response.status_code)
         tus.cleanup()
 
@@ -347,7 +347,7 @@ class TestTUS(unittest.TestCase):
             headers={'Content-Type': 'application/offset+octet-stream',
                      'Upload-Offset': '0',
                      'Tus-Resumable': '1.0.0'},
-            data=StringIO(UPLOAD_DATA))
+            data=BytesIO(bUPLOAD_DATA))
         self.assertEqual(response.status_code, 204)
 
     def test_tus_can_replace_pdf_file(self):
@@ -501,20 +501,20 @@ class TestTUSUpload(unittest.TestCase):
 
     def test_offset_returns_size_of_current_file(self):
         tus = TUSUpload('myuid', {'length': 1024})
-        tus.write(StringIO('0123456789'))
+        tus.write(BytesIO(b'0123456789'))
         self.assertEqual(10, tus.offset())
         tus.cleanup()
 
     def test_write_creates_new_file(self):
         tus = TUSUpload('myuid', {'length': 1024})
-        tus.write(StringIO('0123456789'))
+        tus.write(BytesIO(b'0123456789'))
         self.assertTrue(os.path.isfile(tus.filepath))
         tus.cleanup()
 
     def test_write_appends_to_file_at_given_offset(self):
         tus = TUSUpload('myuid', {'length': 1024})
-        tus.write(StringIO('0123456789'))
-        tus.write(StringIO('abc'), 10)
+        tus.write(BytesIO(b'0123456789'))
+        tus.write(BytesIO(b'abc'), 10)
         self.assertEqual(13, tus.offset())
         with open(tus.filepath, 'rb') as f:
             data = f.read()
@@ -523,7 +523,7 @@ class TestTUSUpload(unittest.TestCase):
 
     def test_write_sets_finished_flag(self):
         tus = TUSUpload('myuid', {'length': 10})
-        tus.write(StringIO('0123456789'))
+        tus.write(BytesIO(b'0123456789'))
         self.assertTrue(tus.finished)
         tus.cleanup()
 
@@ -534,13 +534,13 @@ class TestTUSUpload(unittest.TestCase):
 
     def test_expires_returns_expiration_time_of_current_upload(self):
         tus = TUSUpload('myuid', {'length': 1024})
-        tus.write(StringIO('0123456789'))
+        tus.write(BytesIO(b'0123456789'))
         self.assertGreater(DateTime(tus.expires()), DateTime())
         tus.cleanup()
 
     def test_cleanup_removes_upload_file(self):
         tus = TUSUpload('myuid', {'length': 1024})
-        tus.write(StringIO('0123456789'))
+        tus.write(BytesIO(b'0123456789'))
         tus.cleanup()
         self.assertFalse(os.path.exists(tus.filepath))
 

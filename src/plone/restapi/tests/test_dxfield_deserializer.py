@@ -128,7 +128,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         value = self.deserialize('test_datetime_tz_field',
                                  u'2015-05-20T10:39:54.361+02')
         self.assertEqual(timezone("Europe/Zurich").localize(
-            datetime(2015, 05, 20, 10, 39, 54, 361000)), value)
+            datetime(2015, 5, 20, 10, 39, 54, 361000)), value)
 
     def test_datetime_deserialization_none(self):
         # Make sure we don't construct a datetime out of nothing

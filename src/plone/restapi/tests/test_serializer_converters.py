@@ -15,6 +15,7 @@ from zope.intid.interfaces import IIntIds
 
 import json
 import Missing
+import six
 
 
 class TestJsonCompatibleConverters(TestCase):
@@ -70,9 +71,14 @@ class TestJsonCompatibleConverters(TestCase):
         self.assertEquals('42', json.dumps(json_compatible(42)))
 
     def test_long(self):
-        self.assertEquals(10L, json_compatible(10L))
-        self.assertIsInstance(json_compatible(10L), long)
-        self.assertEquals('10', json.dumps(json_compatible(10L)))
+        def _long(val):
+            if six.PY2:
+                return long(val)
+            else:
+                return int(val)
+        self.assertEquals(_long(10), json_compatible(_long(10)))
+        self.assertIsInstance(json_compatible(_long(10)), long)
+        self.assertEquals('10', json.dumps(json_compatible(_long(10))))
 
     def test_float(self):
         self.assertEquals(1.4, json_compatible(1.4))
