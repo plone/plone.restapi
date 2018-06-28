@@ -81,63 +81,63 @@ Implementation
 Plone Document:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../_json/document.req
+    :request: ../../../src/plone/restapi/tests/http-examples/document.req
 
-.. literalinclude:: ../source/_json/document.resp
+.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/document.resp
    :language: http
 
 Plone Folder:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../_json/folder.req
+    :request: ../../../src/plone/restapi/tests/http-examples/folder.req
 
-.. literalinclude:: ../source/_json/folder.resp
+.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/folder.resp
    :language: http
 
 Plone Portal Root:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../_json/siteroot.req
+    :request: ../../../src/plone/restapi/tests/http-examples/siteroot.req
 
-.. literalinclude:: ../source/_json/siteroot.resp
+.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/siteroot.resp
    :language: http
 
 Collection:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../_json/collection.req
+    :request: ../../../src/plone/restapi/tests/http-examples/collection.req
 
-.. literalinclude:: ../source/_json/collection.resp
+.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/collection.resp
    :language: http
 
 Plone Image:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../_json/image.req
+    :request: ../../../src/plone/restapi/tests/http-examples/image.req
 
-.. literalinclude:: ../source/_json/image.resp
+.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/image.resp
    :language: http
 
 File:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../_json/file.req
+    :request: ../../../src/plone/restapi/tests/http-examples/file.req
 
-.. literalinclude:: ../source/_json/file.resp
+.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/file.resp
    :language: http
 
 Link:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../_json/link.req
+    :request: ../../../src/plone/restapi/tests/http-examples/link.req
 
-.. literalinclude:: ../source/_json/link.resp
+.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/link.resp
    :language: http
 
 News Item:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../_json/newsitem.req
+    :request: ../../../src/plone/restapi/tests/http-examples/newsitem.req
 
-.. literalinclude:: ../source/_json/newsitem.resp
+.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/newsitem.resp
    :language: http

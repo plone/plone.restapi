@@ -9,44 +9,44 @@ List Users
 To retrieve a list of all current users in the portal, call the ``/@users`` endpoint with a ``GET`` request:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users.req
+    :request: ../../src/plone/restapi/tests/http-examples/users.req
 
 The server will respond with a list of all users in the portal:
 
-.. literalinclude:: _json/users.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users.resp
    :language: http
 
 
 This only works for Manager users, anonymous users or logged-in users without Manager rights are now allowed to list users. This is the example as an anonymous user:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users_anonymous.req
+    :request: ../../src/plone/restapi/tests/http-examples/users_anonymous.req
 
 The server will return a 401 Unauthorized status code
 
-.. literalinclude:: _json/users_anonymous.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_anonymous.resp
    :language: http
 
 
 And this one as an user without the proper rights:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users_unauthorized.req
+    :request: ../../src/plone/restapi/tests/http-examples/users_unauthorized.req
 
 The server will return a 401 Unauthorized status code
 
-.. literalinclude:: _json/users_unauthorized.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_unauthorized.resp
    :language: http
 
 
 The endpoint supports some basic filtering:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users_filtered_by_username.req
+    :request: ../../src/plone/restapi/tests/http-examples/users_filtered_by_username.req
 
 The server will respond with a list the filtered users in the portal with username starts with the query.
 
-.. literalinclude:: _json/users_filtered_by_username.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_filtered_by_username.resp
    :language: http
 
 The endpoint also takes a ``limit`` parameter that defaults to a maximum of 25 users at a time for performance reasons.
@@ -58,7 +58,7 @@ Create User
 To create a new user, send a ``POST`` request to the global ``/@users`` endpoint with a JSON representation of the user you want to create in the body:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users_created.req
+    :request: ../../src/plone/restapi/tests/http-examples/users_created.req
 
 
 .. note::
@@ -68,7 +68,7 @@ To create a new user, send a ``POST`` request to the global ``/@users`` endpoint
 
 If the user has been created successfully, the server will respond with a status 201 (Created). The ``Location`` header contains the URL of the newly created user and the resource representation in the payload:
 
-.. literalinclude:: _json/users_created.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_created.resp
    :language: http
 
 If no roles has been specified, then a default ``Member`` role is added as a sensible default.
@@ -80,11 +80,11 @@ Read User
 To retrieve all details for a particular user, send a ``GET`` request to the ``/@users`` endpoint and append the user id to the URL:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/users_get.req
 
 The server will respond with a 200 OK status code and the JSON representation of the user in the body:
 
-.. literalinclude:: _json/users_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_get.resp
    :language: http
 
 The key 'roles' lists the globally defined roles for the user.
@@ -92,31 +92,31 @@ The key 'roles' lists the globally defined roles for the user.
 Only users with Manager rights are allowed to get other users' information:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users_unauthorized_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/users_unauthorized_get.req
 
 If the user lacks this rights, the server will respond with a 401 Unauthorized status code:
 
-.. literalinclude:: _json/users_unauthorized_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_unauthorized_get.resp
    :language: http
 
 Also anonymous users are not allowed to get users' information:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users_anonymous_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/users_anonymous_get.req
 
 If the user is an anonymous one, the server will respond with a 401 Unauthorized status code:
 
-.. literalinclude:: _json/users_anonymous_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_anonymous_get.resp
    :language: http
 
 But each user is allowed to get its own information.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users_authorized_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/users_authorized_get.req
 
 In this case, the server will respond with a 200 OK status code and the JSON respresentation of the user in the body:
 
-.. literalinclude:: _json/users_authorized_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_authorized_get.resp
    :language: http
 
 Update User
@@ -125,11 +125,11 @@ Update User
 To update the settings of a user, send a ``PATCH`` request with the user details you want to amend to the URL of that particular user, e.g. if you want to update the email address of the admin user to:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users_update.req
+    :request: ../../src/plone/restapi/tests/http-examples/users_update.req
 
 A successful response to a PATCH request will be indicated by a :term:`204 No Content` response:
 
-.. literalinclude:: _json/users_update.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_update.resp
    :language: http
 
 .. note::
@@ -143,11 +143,11 @@ Delete User
 To delete a user send a ``DELETE`` request to the ``/@users`` endpoint and append the user id of the user you want to delete, e.g. to delete the user with the id johndoe:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users_delete.req
+    :request: ../../src/plone/restapi/tests/http-examples/users_delete.req
 
 A successful response will be indicated by a :term:`204 No Content` response:
 
-.. literalinclude:: _json/users_delete.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_delete.resp
    :language: http
 
 
@@ -161,14 +161,14 @@ This new user will have the role ``Member`` by default as the Plone registration
 To create a new user send a POST request to the '@users' endpoint:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users_add.req
+    :request: ../../src/plone/restapi/tests/http-examples/users_add.req
 
 If the user should receive an email to set her password, you should pass 'sendPasswordReset": true' in the JSON body of the request.
 Keep in mind that Plone will send a URL that points to the URL of the Plone site, which might just be your API endpoint.
 
 If the user has been created, the server will respond with a :term:`201 Created` response:
 
-..  literalinclude:: _json/users_add.resp
+..  literalinclude:: ../../src/plone/restapi/tests/http-examples/users_add.resp
     :language: http
 
 
@@ -187,7 +187,7 @@ The token that is part of the reset url in the email can be used to
 authorize setting a new password:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/users_reset.req
+    :request: ../../src/plone/restapi/tests/http-examples/users_reset.req
 
 
 Reset Own Password

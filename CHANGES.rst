@@ -4,7 +4,9 @@ Changelog
 3.2.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Do not include HTTP examples using data_files anymore, but move them below
+  src/plone/restapi instead and use package_data to include them.
+  [lgraf]
 
 
 3.2.1 (2018-06-28)

@@ -34,9 +34,9 @@ In plone.restapi, the representation of any content object will include a hyperm
 The sharing information of a content object can also be directly accessed by appending ``/@sharing`` to the GET request to the URL of a content object. E.g. to access the sharing information for a top-level folder, do:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/sharing_folder_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/sharing_folder_get.req
 
-.. literalinclude:: _json/sharing_folder_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/sharing_folder_get.resp
    :language: http
 
 The ``available_roles`` property contains the list of roles that can be
@@ -51,9 +51,9 @@ Users and/or groups without a sharing entry can be found by appending the argume
 Global roles are marked with the string ``"global"``. Inherited roles are marked with the string ``"acquired"``.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/sharing_search.req
+    :request: ../../src/plone/restapi/tests/http-examples/sharing_search.req
 
-.. literalinclude:: _json/sharing_search.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/sharing_search.resp
    :language: http
 
 
@@ -63,7 +63,7 @@ Updating Local Roles
 You can update the 'sharing' information by sending a POST request to the object URL and appending ``/@sharing``, e.g. ``/plone/folder/@sharing``. E.g. say you want to give the ``AuthenticatedUsers`` group the ``Reader`` local role for a folder:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/sharing_folder_post.req
+    :request: ../../src/plone/restapi/tests/http-examples/sharing_folder_post.req
 
-.. literalinclude:: _json/sharing_folder_post.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/sharing_folder_post.resp
    :language: http
