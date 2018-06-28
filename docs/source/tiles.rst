@@ -1,8 +1,7 @@
 Tiles
 =====
 
-..note:
-
+.. note::
   The tiles endpoint currently match only partially (the GET endpoints) the default Plone implementation.
   The serialization of tiles didn't match the Mosaic (and plone.app.blocks) implementation and it's done to
   not rely on those technologies. The serialization of the tile information on objects are subject to change in
@@ -119,7 +118,7 @@ The server responds with a `Status 200` and list all stored tiles on that conten
 
 Fetching tiles on an object
 ---------------------------
-Tiles data are stored in the objects via a Dexterity behavior `plone.tiles`. It has two attributes that stores existing tiles in the object (`tiles`) and the current layout (`arrangement`).
+Tiles data are stored in the objects via a Dexterity behavior `plone.tiles`. It has two attributes that stores existing tiles in the object (`tiles`) and the current layout (`tiles_layout`).
 As it's a dexterity behavior, both attributes will be returned in a simple GET::
 
   GET /plone/my-document HTTP/1.1
@@ -130,7 +129,7 @@ As it's a dexterity behavior, both attributes will be returned in a simple GET::
   {
     "@id": "http://localhost:55001/plone/my-document",
     ...
-    "arrangement": [
+    "tiles_layout": [
       "#title-1",
       "#description-1",
       "#image-1"
@@ -155,7 +154,7 @@ Tiles objects will contain the tile metadata and the information to render it.
 Adding tiles to an object
 -------------------------
 
-Storing tiles is done also via a default PATCH content operation.
+Storing tiles is done also via a default PATCH content operation::
 
   PATCH /plone/my-document HTTP/1.1
   Accept: application/json
@@ -163,7 +162,7 @@ Storing tiles is done also via a default PATCH content operation.
   Content-Type: application/json
 
   {
-    "arrangement": [
+    "tiles_layout": [
       "#title-1",
       "#description-1",
       "#image-1"
@@ -185,45 +184,43 @@ Storing tiles is done also via a default PATCH content operation.
 If the tile has been added, the server responds with a `204` status code.
 
 
-Saving tiles data (proposal)
------------------------------
+Proposal on saving tiles layout
+--------------------------------
 
-..note:
+.. note::
+  This is not implemented (yet) in the tiles_layout field, but it's a proposal on
+  how could look like in the future. For now, we stick with the implementation shown in
+  previous sections.
 
-  This is not implemented (yet) in the arrangement field, but it's a proposal on
-  how could look like in the future.
+They might be serialized using this structure::
 
-They might be serialized using this structure:
-
-```json
-[
   [
-    id: UUID,
-    columns: [
-      {
-        id: UUID, // column UUID
-        size: int // the size of the column
-        rows: [
-          {
-            id: UUID, // inner row UUID
-            cells: [
-              {
-                id: UUID, // cell UUID
-                component: string
-                content: {
-                  // tile fields serialization
+    [
+      id: UUID,
+      columns: [
+        {
+          id: UUID, // column UUID
+          size: int // the size of the column
+          rows: [
+            {
+              id: UUID, // inner row UUID
+              cells: [
+                {
+                  id: UUID, // cell UUID
+                  component: string
+                  content: {
+                    // tile fields serialization (or tile id referal)
+                  },
+                  size: int
                 },
-                size: int
-              },
-            ]
-          }
-        ]
-      },
-    ]
-  ], // row 1
-  [], // row 2
-]
-```
+              ]
+            }
+          ]
+        },
+      ]
+    ], // row 1
+    [], // row 2
+  ]
 
 It tries to match the usual way of CSS frameworks to map grid systems. So we have:
 
