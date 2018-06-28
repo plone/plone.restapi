@@ -52,6 +52,12 @@ except ImportError:
 else:
     PLONE_5 = True  # pragma: no cover
 
+try:
+    pkg_resources.get_distribution('Products.Archetypes')
+except pkg_resources.DistributionNotFound:
+    HAS_AT = False
+else:
+    HAS_AT = True
 
 ENABLED_LANGUAGES = ['de', 'en', 'es', 'fr']
 
@@ -253,58 +259,59 @@ PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
 )
 
 
-class PloneRestApiATLayer(PloneSandboxLayer):
+if HAS_AT:
+    class PloneRestApiATLayer(PloneSandboxLayer):
 
-    defaultBases = (DATE_TIME_FIXTURE, PLONE_FIXTURE,)
+        defaultBases = (DATE_TIME_FIXTURE, PLONE_FIXTURE,)
 
-    def setUpZope(self, app, configurationContext):
-        import Products.ATContentTypes
-        self.loadZCML(package=Products.ATContentTypes)
-        import plone.app.dexterity
-        self.loadZCML(package=plone.app.dexterity)
+        def setUpZope(self, app, configurationContext):
+            import Products.ATContentTypes
+            self.loadZCML(package=Products.ATContentTypes)
+            import plone.app.dexterity
+            self.loadZCML(package=plone.app.dexterity)
 
-        import plone.restapi
-        xmlconfig.file(
-            'configure.zcml',
-            plone.restapi,
-            context=configurationContext
-        )
+            import plone.restapi
+            xmlconfig.file(
+                'configure.zcml',
+                plone.restapi,
+                context=configurationContext
+            )
 
-        z2.installProduct(app, 'Products.Archetypes')
-        z2.installProduct(app, 'Products.ATContentTypes')
-        z2.installProduct(app, 'plone.app.collection')
-        z2.installProduct(app, 'plone.app.blob')
-        z2.installProduct(app, 'plone.restapi')
+            z2.installProduct(app, 'Products.Archetypes')
+            z2.installProduct(app, 'Products.ATContentTypes')
+            z2.installProduct(app, 'plone.app.collection')
+            z2.installProduct(app, 'plone.app.blob')
+            z2.installProduct(app, 'plone.restapi')
 
-    def setUpPloneSite(self, portal):
-        set_supported_languages(portal)
+        def setUpPloneSite(self, portal):
+            set_supported_languages(portal)
 
-        if portal.portal_setup.profileExists(
-                'Products.ATContentTypes:default'):
-            applyProfile(portal, 'Products.ATContentTypes:default')
-        if portal.portal_setup.profileExists(
-                'plone.app.collection:default'):
-            applyProfile(portal, 'plone.app.collection:default')
+            if portal.portal_setup.profileExists(
+                    'Products.ATContentTypes:default'):
+                applyProfile(portal, 'Products.ATContentTypes:default')
+            if portal.portal_setup.profileExists(
+                    'plone.app.collection:default'):
+                applyProfile(portal, 'plone.app.collection:default')
 
-        applyProfile(portal, 'plone.app.dexterity:default')
-        applyProfile(portal, 'plone.restapi:default')
-        applyProfile(portal, 'plone.restapi:testing')
-        set_available_languages()
-        enable_request_language_negotiation(portal)
-        portal.portal_workflow.setDefaultChain("simple_publication_workflow")
-        states = portal.portal_workflow['simple_publication_workflow'].states
-        states['published'].title = u'Published with accent é'.encode('utf8')
+            applyProfile(portal, 'plone.app.dexterity:default')
+            applyProfile(portal, 'plone.restapi:default')
+            applyProfile(portal, 'plone.restapi:testing')
+            set_available_languages()
+            enable_request_language_negotiation(portal)
+            portal.portal_workflow.setDefaultChain("simple_publication_workflow")
+            states = portal.portal_workflow['simple_publication_workflow'].states
+            states['published'].title = u'Published with accent é'.encode('utf8')
 
 
-PLONE_RESTAPI_AT_FIXTURE = PloneRestApiATLayer()
-PLONE_RESTAPI_AT_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_AT_FIXTURE,),
-    name="PloneRestApiATLayer:Integration"
-)
-PLONE_RESTAPI_AT_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_RESTAPI_AT_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="PloneRestApiATLayer:Functional"
-)
+    PLONE_RESTAPI_AT_FIXTURE = PloneRestApiATLayer()
+    PLONE_RESTAPI_AT_INTEGRATION_TESTING = IntegrationTesting(
+        bases=(PLONE_RESTAPI_AT_FIXTURE,),
+        name="PloneRestApiATLayer:Integration"
+    )
+    PLONE_RESTAPI_AT_FUNCTIONAL_TESTING = FunctionalTesting(
+        bases=(PLONE_RESTAPI_AT_FIXTURE, z2.ZSERVER_FIXTURE),
+        name="PloneRestApiATLayer:Functional"
+    )
 
 
 class RelativeSession(requests.Session):

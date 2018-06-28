@@ -11,6 +11,48 @@ long_description = (
 )
 
 
+HTTP_EXAMPLES_PATH = 'docs/source/_json/'
+
+TEST_REQUIRES = [
+    'collective.MockMailHost',
+    'plone.app.contenttypes',
+    'plone.app.robotframework',
+    'plone.app.testing [robot] >= 4.2.2',  # ROBOT_TEST_LEVEL added
+    'plone.api',
+    'requests',
+    'freezegun',
+    'mock',
+]
+
+PY2_ONLY = [
+    'Products.Archetypes',
+    'plone.app.collection',
+]
+
+if sys.version_info[0] == 2:
+    TEST_REQUIRES += PY2_ONLY
+
+
+def collect_http_examples():
+    """Gather relative paths to every HTTP example file.
+
+    We need to do this dynamically because the data_files argument to
+    setup() doesn't support globs (wildcards).
+
+    If the HTTP examples directory is ever moved, the HTTP_EXAMPLES_PATH
+    above needs to be updated before a new release is cut.
+
+    The examples need to be included via data_files because they are outside
+    a Python package. So we can't include them using package_data, which only
+    works relative to Python packages. (The MANIFEST only controls what gets
+    included in the source distribution. Listing these files in data_files
+    ensures they actually get copied to the installed .egg).
+    """
+    examples_path = HTTP_EXAMPLES_PATH
+    example_filenames = os.listdir(examples_path)
+    return [os.path.join(examples_path, fn) for fn in example_filenames]
+
+
 setup(name='plone.restapi',
       version=version,
       description="plone.restapi is a RESTful hypermedia API for Plone.",
@@ -49,19 +91,7 @@ setup(name='plone.restapi',
           'PyJWT',
           'pytz',
       ],
-      extras_require={'test': [
-          'Products.Archetypes',
-          'collective.MockMailHost',
-          'plone.app.collection',
-          'plone.app.contenttypes',
-          'plone.app.robotframework',
-          'plone.app.testing [robot] >= 4.2.2',  # ROBOT_TEST_LEVEL added
-          'plone.api',
-          'requests',
-          'freezegun',
-          'plone.tiles',
-          'mock',
-      ]},
+      extras_require={'test': TEST_REQUIRES},
       entry_points="""
       # -*- Entry points: -*-
       [z3c.autoinclude.plugin]
