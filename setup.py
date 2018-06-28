@@ -86,7 +86,7 @@ setup(name='plone.restapi',
           'requests',
           'freezegun',
           'plone.tiles',
-          'plone.schema',
+          'plone.schema>=1.2.0',  # new json field
           'mock',
       ]},
       entry_points="""

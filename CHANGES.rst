@@ -4,8 +4,8 @@ Changelog
 3.2.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Require plone.schema >= 1.2.0 in setup.py for new tiles endpoint.
+  [timo]
 
 3.2.0 (2018-06-28)
 ------------------
