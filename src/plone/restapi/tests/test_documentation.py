@@ -215,19 +215,6 @@ class TestDocumentation(unittest.TestCase):
         self.time_freezer.stop()
         popGlobalRegistry(getSite())
 
-    def test_http_example_path_exists(self):
-        """Tripwire test to ensure changes in the HTTP examples base path
-
-        are caught *before* release time, since setup.py relies on it.
-        """
-        path = resource_filename('plone.restapi', '../../../docs/source/_json')
-        self.assertTrue(
-            os.path.isdir(path),
-            'It looks like the directory for the HTTP examples has changed. '
-            'Please make sure to update HTTP_EXAMPLES_PATH in setup.py '
-            'accordingly, as well as base_path at the top of this file and '
-            'the one in this test.')
-
     def test_documentation_content_crud(self):
         folder = self.create_folder()
         transaction.commit()
