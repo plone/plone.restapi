@@ -4,6 +4,8 @@ Changelog
 3.2.1 (unreleased)
 ------------------
 
+Bugfixes:
+
 - Require plone.schema >= 1.2.0 in setup.py for new tiles endpoint.
   [timo]
 
