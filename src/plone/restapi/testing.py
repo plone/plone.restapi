@@ -312,6 +312,9 @@ if HAS_AT:
         bases=(PLONE_RESTAPI_AT_FIXTURE, z2.ZSERVER_FIXTURE),
         name="PloneRestApiATLayer:Functional"
     )
+else:
+    PLONE_RESTAPI_AT_INTEGRATION_TESTING = PLONE_FIXTURE
+    PLONE_RESTAPI_AT_FUNCTIONAL_TESTING = PLONE_FIXTURE
 
 
 class RelativeSession(requests.Session):

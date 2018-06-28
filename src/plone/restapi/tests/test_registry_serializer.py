@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-import unittest
-
 from plone.registry import Registry
 from plone.registry import field
 from plone.registry.record import Record
+from plone.restapi import HAS_AT
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
+
+import unittest
 
 
 class TestRegistrySerializer(unittest.TestCase):
@@ -14,6 +15,8 @@ class TestRegistrySerializer(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Testing Archetypes support requires it')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
 

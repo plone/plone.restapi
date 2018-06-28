@@ -13,6 +13,7 @@ from plone.app.testing import setRoles
 from plone.rest.cors import CORSPolicy
 from plone.rest.interfaces import ICORSPolicy
 from plone.restapi.services.content.tus import TUSUpload
+from plone.restapi import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -577,6 +578,8 @@ class TestTUSWithAT(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Testing Archetypes support requires it')
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)

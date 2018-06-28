@@ -5,6 +5,7 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
+from plone.restapi import HAS_AT
 from plone.restapi.batching import DEFAULT_BATCH_SIZE
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
@@ -313,6 +314,8 @@ class TestBatchingArchetypes(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Testing Archetypes support requires it')
         self.app = self.layer['app']
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()

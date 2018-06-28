@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
-from Products.Archetypes.interfaces import IBaseObject
-from Products.Archetypes.interfaces import IObjectEditedEvent
-from Products.Archetypes.interfaces import IObjectInitializedEvent
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import setRoles
-from plone.restapi.deserializer.atcontent import ValidationRequest
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
@@ -15,11 +11,16 @@ from zope.component import provideHandler
 from zope.component import provideSubscriptionAdapter
 from zope.component import adapter
 from zope.interface import implementer
-from Products.Archetypes.interfaces import IObjectPostValidation
-from Products.Archetypes.interfaces import IObjectPreValidation
-
 
 import unittest
+
+if HAS_AT:
+    from plone.restapi.deserializer.atcontent import ValidationRequest
+    from Products.Archetypes.interfaces import IBaseObject
+    from Products.Archetypes.interfaces import IObjectEditedEvent
+    from Products.Archetypes.interfaces import IObjectInitializedEvent
+    from Products.Archetypes.interfaces import IObjectPostValidation
+    from Products.Archetypes.interfaces import IObjectPreValidation
 
 
 class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
@@ -162,6 +163,8 @@ class TestValidationRequest(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Testing Archetypes support requires it')
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])
         self.doc1 = self.portal[self.portal.invokeFactory(
