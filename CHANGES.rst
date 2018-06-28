@@ -4,6 +4,14 @@ Changelog
 3.1.1 (unreleased)
 ------------------
 
+New Features:
+
+- Add tiles endpoint for getting all available content tiles and its JSONSchema.
+  [sneridagh]
+
+- Add a tiles behavior to support the new tiles implementation for plone.restapi.
+  [sneridagh]
+
 - Make sure to include HTTP examples in installed egg, so test_documentation
   tests also work against a installed release of plone.restapi.
   [lgraf]
@@ -11,6 +19,8 @@ Changelog
 
 3.1.0 (2018-06-27)
 ------------------
+
+New Features:
 
 - Plone 5.2 compatibility.
   [sunew, davisagli, timo]
@@ -38,6 +48,8 @@ Breaking Changes:
 
 2.2.1 (2018-06-25)
 ------------------
+
+Bugfixes:
 
 - Fix ReST on PyPi.
   [timo]
@@ -93,12 +105,6 @@ Bugfixes:
 - Hide upgrades from the add-ons control panel.
   Fixes `issue 532 <https://github.com/plone/plone.restapi/issues/532>`_.
   [maurits]
-
-- Add tiles endpoint for getting all available content tiles and its JSONSchema.
-  [sneridagh]
-
-- Add a tiles behavior to support the new tiles implementation for plone.restapi.
-  [sneridagh]
 
 
 2.0.0 (2018-04-27)
