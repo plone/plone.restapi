@@ -105,6 +105,7 @@ class TestTUS(unittest.TestCase):
         stored_metadata = upload.metadata()
         self.assertEqual(stored_metadata,
                          {u'length': 8, u'mode': u'create'})
+        upload.cleanup()
 
     def test_tus_post_initialization_with_metadata(self):
         metadata = 'filename {},content-type {}'.format(
@@ -125,6 +126,7 @@ class TestTUS(unittest.TestCase):
                           u'filename': u'test.txt',
                           u'length': 8,
                           u'mode': u'create'})
+        upload.cleanup()
 
     def test_tus_post_replace(self):
         self.file = api.content.create(container=self.portal,
@@ -145,13 +147,16 @@ class TestTUS(unittest.TestCase):
         stored_metadata = upload.metadata()
         self.assertEqual(stored_metadata,
                          {u'length': 8, u'mode': u'replace'})
+        upload.cleanup()
 
     def test_tus_head_on_not_existing_resource_returns_404(self):
         response = self.api_session.head(
             self.upload_url + '/myuid/123', headers={'Tus-Resumable': '1.0.0'})
         self.assertEqual(404, response.status_code)
         response = self.api_session.head(
-            self.upload_url + '/myuid', headers={'Tus-Resumable': '1.0.0'})
+            self.upload_url + '/non-existing-uid',
+            headers={'Tus-Resumable': '1.0.0'}
+        )
         self.assertEqual(404, response.status_code)
         response = self.api_session.head(
             self.upload_url, headers={'Tus-Resumable': '1.0.0'})
@@ -178,22 +183,24 @@ class TestTUS(unittest.TestCase):
     def test_head_in_create_mode_without_add_permission_raises_401(self):
         self.folder.manage_permission('Add portal content', [], 0)
         transaction.commit()
-        TUSUpload('myuid', {'mode': 'create', 'length': 12})
+        tus = TUSUpload('myuid', {'mode': 'create', 'length': 12})
         response = self.api_session.head(
             self.upload_url + '/myuid',
             headers={'Tus-Resumable': '1.0.0',
                      'Upload-Offset': '0'})
         self.assertEqual(401, response.status_code)
+        tus.cleanup()
 
     def test_head_in_replace_mode_without_modify_permission_raises_401(self):
         self.folder.manage_permission('Modify portal content', [], 0)
         transaction.commit()
-        TUSUpload('myuid', {'mode': 'replace', 'length': 12})
+        tus = TUSUpload('myuid', {'mode': 'replace', 'length': 12})
         response = self.api_session.head(
             self.upload_url + '/myuid',
             headers={'Tus-Resumable': '1.0.0',
                      'Upload-Offset': '0'})
         self.assertEqual(401, response.status_code)
+        tus.cleanup()
 
     def test_tus_patch_on_not_existing_resource_returns_404(self):
         response = self.api_session.patch(
@@ -266,7 +273,7 @@ class TestTUS(unittest.TestCase):
     def test_patch_in_create_mode_without_add_permission_raises_401(self):
         self.folder.manage_permission('Add portal content', [], 0)
         transaction.commit()
-        TUSUpload('myuid', {'mode': 'create', 'length': 12})
+        tus = TUSUpload('myuid', {'mode': 'create', 'length': 12})
         response = self.api_session.patch(
             self.upload_url + '/myuid',
             headers={'Tus-Resumable': '1.0.0',
@@ -274,11 +281,12 @@ class TestTUS(unittest.TestCase):
                      'Upload-Offset': '0'},
             data=StringIO('abcdefghijkl'))
         self.assertEqual(401, response.status_code)
+        tus.cleanup()
 
     def test_patch_in_replace_mode_without_modify_permission_raises_401(self):
         self.folder.manage_permission('Modify portal content', [], 0)
         transaction.commit()
-        TUSUpload('myuid', {'mode': 'replace', 'length': 12})
+        tus = TUSUpload('myuid', {'mode': 'replace', 'length': 12})
         response = self.api_session.patch(
             self.upload_url + '/myuid',
             headers={'Tus-Resumable': '1.0.0',
@@ -286,6 +294,7 @@ class TestTUS(unittest.TestCase):
                      'Upload-Offset': '0'},
             data=StringIO('abcdefghijkl'))
         self.assertEqual(401, response.status_code)
+        tus.cleanup()
 
     def test_tus_can_upload_pdf_file(self):
         # initialize the upload with POST
@@ -459,39 +468,47 @@ class TestTUSUpload(unittest.TestCase):
     def test_tmp_dir_gets_created_in_client_home(self):
         tus = TUSUpload('myuid')
         self.assertTrue(os.path.isdir(tus.tmp_dir))
+        tus.cleanup()
 
     def test_use_tus_tmp_dir_if_provided(self):
         tus_upload_dir = tempfile.mkdtemp()
         os.environ['TUS_TMP_FILE_DIR'] = tus_upload_dir
         tus = TUSUpload('myuid')
         self.assertEqual(tus_upload_dir, tus.tmp_dir)
+        tus.cleanup()
 
     def test_metadata_gets_stored_if_provided(self):
         tus = TUSUpload('myuid', {'length': 1024, 'filename': 'test.pdf'})
         self.assertIn('filename', tus.metadata())
         self.assertEqual('test.pdf', tus.metadata()['filename'])
+        tus.cleanup()
 
     def test_length_returns_total_length_if_set(self):
         tus = TUSUpload('myuid', {'length': 1024})
         self.assertEqual(1024, tus.length())
+        tus.cleanup()
 
     def test_length_returns_zero_if_not_set(self):
         tus = TUSUpload('myuid')
         self.assertEqual(0, tus.length())
+        tus.cleanup()
 
     def test_offset_returns_zero_if_file_doesnt_exist(self):
         tus = TUSUpload('myuid', {'length': 1024})
         self.assertEqual(0, tus.offset())
+        tus.cleanup()
 
     def test_offset_returns_size_of_current_file(self):
         tus = TUSUpload('myuid', {'length': 1024})
         tus.write(StringIO('0123456789'))
         self.assertEqual(10, tus.offset())
+        tus.cleanup()
 
     def test_write_creates_new_file(self):
         tus = TUSUpload('myuid', {'length': 1024})
         tus.write(StringIO('0123456789'))
         self.assertTrue(os.path.isfile(tus.filepath))
+        tus.cleanup()
 
     def test_write_appends_to_file_at_given_offset(self):
         tus = TUSUpload('myuid', {'length': 1024})
@@ -501,20 +518,24 @@ class TestTUSUpload(unittest.TestCase):
         with open(tus.filepath, 'rb') as f:
             data = f.read()
         self.assertEqual('0123456789abc', data)
+        tus.cleanup()
 
     def test_write_sets_finished_flag(self):
         tus = TUSUpload('myuid', {'length': 10})
         tus.write(StringIO('0123456789'))
         self.assertTrue(tus.finished)
+        tus.cleanup()
 
     def test_metadata_returns_empty_dict_if_no_metadata_has_been_set(self):
         tus = TUSUpload('myuid')
         self.assertEqual({}, tus.metadata())
+        tus.cleanup()
 
     def test_expires_returns_expiration_time_of_current_upload(self):
         tus = TUSUpload('myuid', {'length': 1024})
         tus.write(StringIO('0123456789'))
         self.assertGreater(DateTime(tus.expires()), DateTime())
+        tus.cleanup()
 
     def test_cleanup_removes_upload_file(self):
         tus = TUSUpload('myuid', {'length': 1024})
@@ -542,6 +563,7 @@ class TestTUSUpload(unittest.TestCase):
         self.assertFalse(os.path.exists(filepath))
         self.assertFalse(os.path.exists(metadata_path))
         self.assertFalse(os.path.exists(metadata_only_path))
+        tus.cleanup()
 
     def tearDown(self):
         client_home = os.environ.get('CLIENT_HOME')

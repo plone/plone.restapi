@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.interfaces import IPropertiesTool
+from zope.component import getMultiAdapter
 from zope.component import getUtility
-
+from zope.globalrequest import getRequest
 
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
@@ -16,12 +17,21 @@ def get_scales(context, field, width, height):
     with the actual dimensions (aspect ratio of the original image).
     """
     scales = {}
-    absolute_url = context.absolute_url()
+    request = getRequest()
+    images_view = getMultiAdapter((context, request), name='images')
 
-    for name, scale_width, scale_height in get_scale_infos():
-        bbox = scale_width, scale_height
-        actual_width, actual_height = get_actual_scale((width, height), bbox)
-        url = u'{}/@@images/{}/{}'.format(absolute_url, field.__name__, name)
+    for name, actual_width, actual_height in get_scale_infos():
+        # Try first with scale name
+        scale = images_view.scale(field.__name__, scale=name)
+        if scale is None:
+            # Sometimes it fails, but we can create it
+            # using scale sizes
+            scale = images_view.scale(
+                field.__name__, width=actual_width, height=actual_height)
+
+        url = scale.url
+        actual_width = scale.width
+        actual_height = scale.height
 
         scales[name] = {
             u'download': url,
@@ -29,6 +39,19 @@ def get_scales(context, field, width, height):
             u'height': actual_height}
 
     return scales
+
+
+def get_original_image_url(context, fieldname, width, height):
+    request = getRequest()
+    images_view = getMultiAdapter((context, request), name='images')
+    scale = images_view.scale(
+        fieldname,
+        width=width,
+        height=height,
+        direction='thumbnail'
+    )
+
+    return scale.url
 
 
 def get_actual_scale(dimensions, bbox):

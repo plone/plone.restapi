@@ -46,10 +46,12 @@ Contents
    tusupload
    vocabularies
    controlpanels
+   tiles
    customization
    conventions
    translations
    email-send
+   i18n
    email-notification
    upgrade-guide
 

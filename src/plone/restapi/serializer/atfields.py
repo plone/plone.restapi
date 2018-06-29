@@ -9,6 +9,7 @@ from Products.CMFCore.utils import getToolByName
 from plone.app.blob.interfaces import IBlobField
 from plone.app.blob.interfaces import IBlobImageField
 from plone.restapi.imaging import get_scales
+from plone.restapi.imaging import get_original_image_url
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
 from zope.component import adapter
@@ -77,11 +78,10 @@ class ImageFieldSerializer(DefaultFieldSerializer):
         if not image:
             return None
 
-        url = '/'.join((self.context.absolute_url(),
-                        '@@images',
-                        self.field.__name__))
-
         width, height = image.width, image.height
+        url = get_original_image_url(
+            self.context, self.field.__name__, width, height)
+
         scales = get_scales(self.context, self.field, width, height)
         result = {
             'filename': self.field.getFilename(self.context),

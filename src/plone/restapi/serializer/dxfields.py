@@ -3,6 +3,7 @@ from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedFileField
 from plone.namedfile.interfaces import INamedImageField
+from plone.restapi.imaging import get_original_image_url
 from plone.restapi.imaging import get_scales
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
@@ -38,11 +39,15 @@ class ImageFieldSerializer(DefaultFieldSerializer):
         if not image:
             return None
 
-        url = '/'.join((self.context.absolute_url(),
-                        '@@images',
-                        self.field.__name__))
-
         width, height = image.getImageSize()
+
+        url = get_original_image_url(
+            self.context,
+            self.field.__name__,
+            width,
+            height,
+        )
+
         scales = get_scales(self.context, self.field, width, height)
         result = {
             'filename': image.filename,

@@ -6,7 +6,7 @@ Content-Type: application/json
 {
     "entries": [
         {
-            "id": "test_user_1_",
+            "id": "AuthenticatedUsers",
             "roles": {
                 "Contributor": false,
                 "Editor": false,

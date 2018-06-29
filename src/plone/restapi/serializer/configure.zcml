@@ -81,6 +81,11 @@
     <adapter factory=".portlet.DefaultPortletFieldSerializer" />
     <adapter factory=".portlet.RichttextPortletFieldSerializer" />
 
+    <configure zcml:condition="installed plone.tiles">
+        <adapter factory=".tile.TileSummarySerializeToJson" />
+        <adapter factory=".tile.TileSerializeToJson" />
+    </configure>
+
     <configure zcml:condition="have plone-5">
         <adapter factory=".controlpanels.ControlpanelSerializeToJson" />
         <adapter factory=".controlpanels.ControlpanelSummarySerializeToJson" />
