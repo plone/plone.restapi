@@ -4,7 +4,6 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
-from plone.restapi.services.content.utils import rename
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFPlone.interfaces import ISelectableConstrainTypes
@@ -113,12 +112,21 @@ class TestAddContent(unittest.TestCase):
         self.folder = self.portal[self.portal.invokeFactory(
             'Folder', id='folder', title='My Folder'
         )]
-        self.obj = create(self.folder, 'Document', 'my-document')
-        notify(ObjectCreatedEvent(self.obj))
 
     def test_add_content_to_container(self):
-        obj = add(self.folder, self.obj)
+        obj = create(self.folder, 'Document', 'my-document')
+        obj = add(self.folder, obj)
         self.assertEqual(aq_parent(obj), self.folder)
+
+    def test_add_content_to_container_renames_id(self):
+        obj = create(self.folder, 'Document', title='My Document')
+        obj = add(self.folder, obj)
+        self.assertEqual(obj.getId(), 'my-document')
+
+    def test_add_content_to_container_keeps_id(self):
+        obj = create(self.folder, 'Document', 'doc-1', 'My Document')
+        obj = add(self.folder, obj, rename=False)
+        self.assertEqual(obj.getId(), 'doc-1')
 
     def test_add_content_to_container_and_move_on_added_event(self):
         sm = getGlobalSiteManager()
@@ -129,7 +137,9 @@ class TestAddContent(unittest.TestCase):
                     ids=['my-document']))
         sm.registerHandler(move_object, (IObjectAddedEvent,))
 
-        obj = add(self.folder, self.obj)
+        obj = create(self.folder, 'Document', 'my-document')
+        notify(ObjectCreatedEvent(obj))
+        obj = add(self.folder, obj)
         self.assertEqual(aq_parent(obj), self.portal)
 
         sm.unregisterHandler(move_object, (IObjectAddedEvent,))
@@ -147,47 +157,18 @@ class TestATAddContent(unittest.TestCase):
         self.folder = self.portal[self.portal.invokeFactory(
             'Folder', id='folder', title='My Folder'
         )]
-        self.obj = create(self.folder, 'Document', 'my-document')
 
     def test_add_content_to_container(self):
-        obj = add(self.folder, self.obj)
+        obj = create(self.folder, 'Document', 'my-document')
+        obj = add(self.folder, obj)
         self.assertEqual(aq_parent(obj), self.folder)
 
+    def test_add_content_to_container_renames_id(self):
+        obj = create(self.folder, 'Document', title='My Document')
+        obj = add(self.folder, obj)
+        self.assertEqual(obj.getId(), 'my-document')
 
-class TestRenameContent(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
-
-    def setUp(self):
-        self.portal = self.layer['portal']
-        self.request = self.layer['request']
-
-        self.folder = self.portal[self.portal.invokeFactory(
-            'Folder', id='folder', title='My Folder'
-        )]
-        self.obj = add(
-            self.folder, create(self.folder, 'Document', title='My Document'))
-
-    def test_rename_content(self):
-        rename(self.obj)
-        self.assertEqual(self.obj.getId(), 'my-document')
-
-
-class TestATRenameContent(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
-
-    def setUp(self):
-        self.portal = self.layer['portal']
-        self.request = self.layer['request']
-        setRoles(self.portal, TEST_USER_ID, ['Contributor'])
-
-        self.folder = self.portal[self.portal.invokeFactory(
-            'Folder', id='folder', title='My Folder'
-        )]
-        self.obj = add(
-            self.folder, create(self.folder, 'Document', title='My Document'))
-
-    def test_rename_content(self):
-        rename(self.obj)
-        self.assertEqual(self.obj.getId(), 'my-document')
+    def test_add_content_to_container_keeps_id(self):
+        obj = create(self.folder, 'Document', 'doc-1', 'My Document')
+        obj = add(self.folder, obj, rename=False)
+        self.assertEqual(obj.getId(), 'doc-1')

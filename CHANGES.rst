@@ -8,6 +8,10 @@ Changelog
   src/plone/restapi instead and use package_data to include them.
   [lgraf]
 
+Bugfixes:
+
+- Rename Dexterity content before adding it to a container.
+  [buchi]
 
 3.2.1 (2018-06-28)
 ------------------

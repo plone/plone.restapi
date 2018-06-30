@@ -8,7 +8,6 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
-from plone.restapi.services.content.utils import rename
 from Products.Archetypes.interfaces import IBaseObject
 from Products.CMFPlone.utils import safe_hasattr
 from zExceptions import BadRequest
@@ -82,11 +81,7 @@ class FolderPost(Service):
         if not IBaseObject.providedBy(obj):
             notify(ObjectCreatedEvent(obj))
 
-        obj = add(self.context, obj)
-
-        # Rename if generated id
-        if not id_:
-            rename(obj)
+        obj = add(self.context, obj, rename=not bool(id_))
 
         self.request.response.setStatus(201)
         self.request.response.setHeader('Location', obj.absolute_url())
