@@ -8,7 +8,6 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
-from Products.Archetypes.interfaces import IBaseObject
 from Products.CMFPlone.utils import safe_hasattr
 from zExceptions import BadRequest
 from zExceptions import Unauthorized
@@ -78,7 +77,7 @@ class FolderPost(Service):
         if temporarily_wrapped:
             obj = aq_base(obj)
 
-        if not IBaseObject.providedBy(obj):
+        if not getattr(deserializer, 'notifies_create', False):
             notify(ObjectCreatedEvent(obj))
 
         obj = add(self.context, obj, rename=not bool(id_))
