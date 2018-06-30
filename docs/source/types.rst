@@ -8,9 +8,9 @@ Available content types in a Plone site can be listed and queried by accessing t
 
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/types.req
+    :request: ../../src/plone/restapi/tests/http-examples/types.req
 
-.. literalinclude:: _json/types.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types.resp
    :language: http
 
 
@@ -18,9 +18,9 @@ Available content types in a Plone site can be listed and queried by accessing t
 To get the schema of a content type, access the ``/@types`` endpoint  with the name of the content type, e.g. '/plone/@types/Document':
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/types_document.req
+    :request: ../../src/plone/restapi/tests/http-examples/types_document.req
 
-.. literalinclude:: _json/types_document.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document.resp
    :language: http
 
 The content type schema uses the `JSON Schema <http://json-schema.org/>`_ format.

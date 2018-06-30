@@ -11,6 +11,7 @@ from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.services import Service
 from plone.restapi.services.content.utils import create
 from plone.restapi.services.content.utils import rename
+from plone.restapi.services.content.utils import add
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from uuid import uuid4
 from zExceptions import Unauthorized
@@ -18,6 +19,8 @@ from zope.component import queryMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
+from zope.lifecycleevent import ObjectCreatedEvent
+from zope.event import notify
 
 import json
 import os
@@ -228,6 +231,8 @@ class UploadPatch(UploadFileBase):
                         filename.lower(), content_type, '') or 'File'
 
                 obj = create(self.context, type_)
+                notify(ObjectCreatedEvent(obj))
+                obj = add(self.context, obj)
             else:
                 obj = self.context
 

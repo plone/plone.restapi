@@ -5,7 +5,7 @@
 #
 # (To be executed after running tests in test_documentation.py)
 
-DUMPS_DIR="docs/source/_json/"
+DUMPS_DIR="src/plone/restapi/tests/http-examples/"
 
 function red {
     RED=$(tput setaf 1)

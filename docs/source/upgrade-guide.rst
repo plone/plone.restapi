@@ -7,6 +7,44 @@ This upgrade guide lists all breaking changes in plone.restapi and explains the 
 Upgrading to plone.restapi 3.x
 ------------------------------
 
+Image scales
+^^^^^^^^^^^^
+
+Image download URLs and image scale URLs are created using the UID based url formats. This allows Plone to create different URLs when the image changes and thus ensuring caches are updated.
+
+Old Response:: 
+
+     {
+       "icon": {
+         "download": "http://localhost:55001/plone/image/@@images/image/icon",
+         "height": 32,
+         "width": 24
+       },
+       "large": {
+         "download": "http://localhost:55001/plone/image/@@images/image/large",
+         "height": 768,
+         "width": 576
+       },
+       ...
+      }
+
+New Response::
+
+     {
+       "icon": {
+         "download": "http://localhost:55001/plone/image/@@images/8eed3f80-5e1f-4115-85b8-650a10a6ca84.png",
+         "height": 32,
+         "width": 24
+       },
+       "large": {
+         "download": "http://localhost:55001/plone/image/@@images/0d1824d1-2672-4b62-9277-aeb220d3bf15.png",
+         "height": 768,
+         "width": 576
+       },
+      ...
+      }
+     
+
 @sharing endpoint
 ^^^^^^^^^^^^^^^^^
 
@@ -62,6 +100,19 @@ New Response::
     ],
     "inherit": true
   }
+
+
+Custom Content Deserializers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you have implemented custom content deserializers, you have to handle the
+new ``create`` keyword in the ``__call__`` method, which determines if deserialization
+is performed during object creation or while updating an object.
+
+Deserializers should only fire an ``IObjectModifiedEvent`` event if an object
+has been updated. They should not fire it, when a new object has been created.
+
+See `Dexterity content deserializer <https://github.com/plone/plone.restapi/blob/master/src/plone/restapi/deserializer/dxcontent.py>`_ for an example.
 
 
 Upgrading to plone.restapi 2.x

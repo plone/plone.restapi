@@ -32,11 +32,11 @@ negotiation" option.
 Using this option we can get the content-type titles translated:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/translated_messages_types.req
+    :request: ../../src/plone/restapi/tests/http-examples/translated_messages_types.req
 
 And the response:
 
-.. literalinclude:: _json/translated_messages_types.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translated_messages_types.resp
    :language: http
 
 
@@ -44,22 +44,22 @@ All the field titles and descriptions, will also be translated. For instance for
 content type:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/translated_messages_types_folder.req
+    :request: ../../src/plone/restapi/tests/http-examples/translated_messages_types_folder.req
 
 And the response:
 
-.. literalinclude:: _json/translated_messages_types_folder.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translated_messages_types_folder.resp
    :language: http
 
 
 In a given object, the workflow state and actions will be translated too:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/translated_messages_object_workflow.req
+    :request: ../../src/plone/restapi/tests/http-examples/translated_messages_object_workflow.req
 
 And the response:
 
-.. literalinclude:: _json/translated_messages_object_workflow.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translated_messages_object_workflow.resp
    :language: http
 
 
@@ -67,11 +67,11 @@ The same happens in the `@history` endpoint, all the relevant messages, will
 be shown translated:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/translated_messages_object_history.req
+    :request: ../../src/plone/restapi/tests/http-examples/translated_messages_object_history.req
 
 And the response:
 
-.. literalinclude:: _json/translated_messages_object_history.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translated_messages_object_history.resp
    :language: http
 
 

@@ -16,12 +16,12 @@ Get all vocabularies
 To get a list of all the available content types, you can query using a GET to the @vocabulary endpoint:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/vocabularies.req
+    :request: ../../src/plone/restapi/tests/http-examples/vocabularies.req
 
 The response will include a list with all the dotted names of the available
 vocabularies in Plone.
 
-.. literalinclude:: _json/vocabularies.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/vocabularies.resp
    :language: http
 
 Get a vocabulary
@@ -34,9 +34,9 @@ endpoint can be used with the site root and content objects. The right way is
 depending on the implementation of the vocabulary.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/vocabularies_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/vocabularies_get.req
 
 The server will respond with a list of terms. The title is pureley for display purposes. The token is what should be send to the server to retrive the value of the term.
 
-.. literalinclude:: _json/vocabularies_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/vocabularies_get.resp
    :language: http

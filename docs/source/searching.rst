@@ -17,9 +17,9 @@ In terms of the resulting catalog query this means that, by default, a search wi
 Search results are represented similar to collections:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/search.req
+    :request: ../../src/plone/restapi/tests/http-examples/search.req
 
-.. literalinclude:: _json/search.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/search.resp
    :language: http
 
 The default representation for search results is a summary that contains only the most basic information.

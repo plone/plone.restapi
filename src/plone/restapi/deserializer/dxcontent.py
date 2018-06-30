@@ -35,7 +35,7 @@ class DeserializeFromJson(OrderingMixin, object):
         self.sm = getSecurityManager()
         self.permission_cache = {}
 
-    def __call__(self, validate_all=False, data=None):  # noqa: ignore=C901
+    def __call__(self, validate_all=False, data=None, create=False):  # noqa: ignore=C901
         if data is None:
             data = json_body(self.request)
 
@@ -137,7 +137,7 @@ class DeserializeFromJson(OrderingMixin, object):
         # OrderingMixin
         self.handle_ordering(data)
 
-        if modified:
+        if modified and not create:
             descriptions = []
             for interface, names in modified.items():
                 descriptions.append(Attributes(interface, *names))

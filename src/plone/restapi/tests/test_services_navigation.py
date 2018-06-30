@@ -62,20 +62,20 @@ class TestServicesNavigation(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                '@id': 'http://localhost:55001/plone/folder/@navigation',
+                '@id': self.portal_url + u'/folder/@navigation',
                 'items': [
                     {
                         u'title': u'Home',
-                        u'@id': u'http://localhost:55001/plone',
+                        u'@id': self.portal_url,
                         u'description': u'',
                     },
                     {
                         u'title': u'Some Folder',
-                        u'@id': u'http://localhost:55001/plone/folder',
+                        u'@id': self.portal_url + u'/folder',
                         u'description': u'',
                     },
                     {
-                        u'@id': u'http://localhost:55001/plone/folder2',
+                        u'@id': self.portal_url + u'/folder2',
                         u'description': u'',
                         u'title': u'Some Folder 2'
                     }

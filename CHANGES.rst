@@ -1,21 +1,71 @@
 Changelog
 =========
 
-3.0.0 (unreleased)
+3.2.2 (unreleased)
+------------------
+
+- Do not include HTTP examples using data_files anymore, but move them below
+  src/plone/restapi instead and use package_data to include them.
+  [lgraf]
+
+
+3.2.1 (2018-06-28)
+------------------
+
+Bugfixes:
+
+- Require plone.schema >= 1.2.0 in setup.py for new tiles endpoint.
+  [timo]
+
+3.2.0 (2018-06-28)
+------------------
+
+New Features:
+
+- Add tiles endpoint for getting all available content tiles and its JSONSchema.
+  [sneridagh]
+
+- Add a tiles behavior to support the new tiles implementation for plone.restapi.
+  [sneridagh]
+
+- Make sure to include HTTP examples in installed egg, so test_documentation
+  tests also work against a installed release of plone.restapi.
+  [lgraf]
+
+
+3.1.0 (2018-06-27)
+------------------
+
+New Features:
+
+- Plone 5.2 compatibility.
+  [sunew, davisagli, timo]
+
+
+3.0.0 (2018-06-26)
 ------------------
 
 Breaking Changes:
 
+- Fix object creation events. Before this fix, creation events were fired on
+  empty not yet deserialized objects. Also a modified event was fired after
+  deserializing e newly created object.
+  Custom content deserializers now must handle the `create` keyword argument,
+  which determines if deserialization is performed during object creation or
+  while updating an object.
+  [buchi]
+
 - Include translated role titles in `@sharing` GET.
   [lgraf]
 
-New Features:
-
-- Nothing changed yet.
+- Image URLs are now created using the cache optimized way. Fixes #494.
+  [erral]
 
 
 2.2.1 (2018-06-25)
 ------------------
+
+Bugfixes:
 
 - Fix ReST on PyPi.
   [timo]

@@ -3,6 +3,7 @@ from datetime import date
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
+from mock import patch
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import iterSchemata
 from plone.namedfile.file import NamedBlobFile
@@ -12,6 +13,8 @@ from plone.namedfile.file import NamedImage
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_VERSION
+from plone.scale import storage
 from unittest import TestCase
 from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
@@ -19,13 +22,20 @@ from zope.interface.verify import verifyClass
 
 import os
 
+if PLONE_VERSION.base_version >= '5.1':
+    GIF_SCALE_FORMAT = 'png'
+else:
+    GIF_SCALE_FORMAT = 'jpeg'
+
 
 class TestDexterityFieldSerializing(TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+    maxDiff = None
 
     def setUp(self):
         self.portal = self.layer['portal']
         self.request = self.layer['request']
+
         self.doc1 = self.portal[self.portal.invokeFactory(
             'DXTestDocument',
             id='doc1',
@@ -181,53 +191,61 @@ class TestDexterityFieldSerializing(TestCase):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
         image_data = open(image_file, 'rb').read()
         fn = 'test_namedimage_field'
-        value = self.serialize(
-            fn,
-            NamedImage(data=image_data, contentType=u'image/gif',
-                       filename=u'1024x768.gif'))
-        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+        with patch.object(storage, 'uuid4', return_value='uuid_1'):
+            value = self.serialize(
+                fn,
+                NamedImage(
+                    data=image_data,
+                    contentType=u'image/gif',
+                    filename=u'1024x768.gif'
+                )
+            )
+            self.assertTrue(isinstance(value, dict), 'Not a <dict>')
 
-        obj_url = self.doc1.absolute_url()
-        download_url = u'{}/@@images/{}'.format(obj_url, fn)
-        scales = {
-            u'listing': {
-                u'download': u'{}/@@images/{}/listing'.format(obj_url, fn),
-                u'width': 16,
-                u'height': 12},
-            u'icon': {
-                u'download': u'{}/@@images/{}/icon'.format(obj_url, fn),
-                u'width': 32,
-                u'height': 24},
-            u'tile': {
-                u'download': u'{}/@@images/{}/tile'.format(obj_url, fn),
-                u'width': 64,
-                u'height': 48},
-            u'thumb': {
-                u'download': u'{}/@@images/{}/thumb'.format(obj_url, fn),
-                u'width': 128,
-                u'height': 96},
-            u'mini': {
-                u'download': u'{}/@@images/{}/mini'.format(obj_url, fn),
-                u'width': 200,
-                u'height': 150},
-            u'preview': {
-                u'download': u'{}/@@images/{}/preview'.format(obj_url, fn),
-                u'width': 400,
-                u'height': 300},
-            u'large': {
-                u'download': u'{}/@@images/{}/large'.format(obj_url, fn),
-                u'width': 768,
-                u'height': 576},
-        }
-        self.assertEqual(
-            {u'filename': u'1024x768.gif',
-             u'content-type': u'image/gif',
-             u'size': 1514,
-             u'download': download_url,
-             u'width': 1024,
-             u'height': 768,
-             u'scales': scales},
-            value)
+            scale_url_uuid = 'uuid_1'
+            obj_url = self.doc1.absolute_url()
+            download_url = u'{}/@@images/{}.{}'.format(
+                obj_url, scale_url_uuid, GIF_SCALE_FORMAT
+            )
+            scales = {
+                u'listing': {
+                    u'download': download_url,
+                    u'width': 16,
+                    u'height': 12},
+                u'icon': {
+                    u'download': download_url,
+                    u'width': 32,
+                    u'height': 24},
+                u'tile': {
+                    u'download': download_url,
+                    u'width': 64,
+                    u'height': 48},
+                u'thumb': {
+                    u'download': download_url,
+                    u'width': 128,
+                    u'height': 96},
+                u'mini': {
+                    u'download': download_url,
+                    u'width': 200,
+                    u'height': 150},
+                u'preview': {
+                    u'download': download_url,
+                    u'width': 400,
+                    u'height': 300},
+                u'large': {
+                    u'download': download_url,
+                    u'width': 768,
+                    u'height': 576},
+            }
+            self.assertEqual({
+                u'filename': u'1024x768.gif',
+                u'content-type': u'image/gif',
+                u'size': 1514,
+                u'download': download_url,
+                u'width': 1024,
+                u'height': 768,
+                u'scales': scales},
+                value)
 
     def test_namedblobfile_field_serialization_returns_dict(self):
         value = self.serialize(
@@ -250,53 +268,61 @@ class TestDexterityFieldSerializing(TestCase):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
         image_data = open(image_file, 'rb').read()
         fn = 'test_namedblobimage_field'
-        value = self.serialize(
-            fn,
-            NamedBlobImage(data=image_data, contentType=u'image/gif',
-                           filename=u'1024x768.gif'))
-        self.assertTrue(isinstance(value, dict), 'Not a <dict>')
+        with patch.object(storage, 'uuid4', return_value='uuid_1'):
+            value = self.serialize(
+                fn,
+                NamedBlobImage(
+                    data=image_data,
+                    contentType=u'image/gif',
+                    filename=u'1024x768.gif'
+                )
+            )
+            self.assertTrue(isinstance(value, dict), 'Not a <dict>')
 
-        obj_url = self.doc1.absolute_url()
-        download_url = u'{}/@@images/{}'.format(obj_url, fn)
-        scales = {
-            u'listing': {
-                u'download': u'{}/@@images/{}/listing'.format(obj_url, fn),
-                u'width': 16,
-                u'height': 12},
-            u'icon': {
-                u'download': u'{}/@@images/{}/icon'.format(obj_url, fn),
-                u'width': 32,
-                u'height': 24},
-            u'tile': {
-                u'download': u'{}/@@images/{}/tile'.format(obj_url, fn),
-                u'width': 64,
-                u'height': 48},
-            u'thumb': {
-                u'download': u'{}/@@images/{}/thumb'.format(obj_url, fn),
-                u'width': 128,
-                u'height': 96},
-            u'mini': {
-                u'download': u'{}/@@images/{}/mini'.format(obj_url, fn),
-                u'width': 200,
-                u'height': 150},
-            u'preview': {
-                u'download': u'{}/@@images/{}/preview'.format(obj_url, fn),
-                u'width': 400,
-                u'height': 300},
-            u'large': {
-                u'download': u'{}/@@images/{}/large'.format(obj_url, fn),
-                u'width': 768,
-                u'height': 576},
-        }
-        self.assertEqual(
-            {u'filename': u'1024x768.gif',
-             u'content-type': u'image/gif',
-             u'size': 1514,
-             u'download': download_url,
-             u'width': 1024,
-             u'height': 768,
-             u'scales': scales},
-            value)
+            scale_url_uuid = 'uuid_1'
+            obj_url = self.doc1.absolute_url()
+            download_url = u'{}/@@images/{}.{}'.format(
+                obj_url, scale_url_uuid, GIF_SCALE_FORMAT
+            )
+            scales = {
+                u'listing': {
+                    u'download': download_url,
+                    u'width': 16,
+                    u'height': 12},
+                u'icon': {
+                    u'download': download_url,
+                    u'width': 32,
+                    u'height': 24},
+                u'tile': {
+                    u'download': download_url,
+                    u'width': 64,
+                    u'height': 48},
+                u'thumb': {
+                    u'download': download_url,
+                    u'width': 128,
+                    u'height': 96},
+                u'mini': {
+                    u'download': download_url,
+                    u'width': 200,
+                    u'height': 150},
+                u'preview': {
+                    u'download': download_url,
+                    u'width': 400,
+                    u'height': 300},
+                u'large': {
+                    u'download': download_url,
+                    u'width': 768,
+                    u'height': 576},
+            }
+            self.assertEqual({
+                u'filename': u'1024x768.gif',
+                u'content-type': u'image/gif',
+                u'size': 1514,
+                u'download': download_url,
+                u'width': 1024,
+                u'height': 768,
+                u'scales': scales},
+                value)
 
     def test_relationchoice_field_serialization_returns_summary_dict(self):
         doc2 = self.portal[self.portal.invokeFactory(
