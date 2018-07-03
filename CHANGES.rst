@@ -8,6 +8,14 @@ Changelog
   src/plone/restapi instead and use package_data to include them.
   [lgraf]
 
+Bugfixes:
+
+- Rename Dexterity content before adding it to a container.
+  [buchi]
+
+- Avoid hard dependency on Archetypes introduced in 3.0.0.
+  This fixes `issue 570 <https://github.com/plone/plone.restapi/issues/570>`_. 
+  [buchi]
 
 3.2.1 (2018-06-28)
 ------------------
