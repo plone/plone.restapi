@@ -4,11 +4,11 @@ Changelog
 3.2.2 (unreleased)
 ------------------
 
+Bugfixes:
+
 - Do not include HTTP examples using data_files anymore, but move them below
   src/plone/restapi instead and use package_data to include them.
   [lgraf]
-
-Bugfixes:
 
 - Rename Dexterity content before adding it to a container.
   [buchi]
