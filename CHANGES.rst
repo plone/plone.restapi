@@ -14,8 +14,12 @@ Bugfixes:
   [buchi]
 
 - Avoid hard dependency on Archetypes introduced in 3.0.0.
-  This fixes `issue 570 <https://github.com/plone/plone.restapi/issues/570>`_. 
+  This fixes `issue 570 <https://github.com/plone/plone.restapi/issues/570>`_.
   [buchi]
+
+- Make setup.py require plone.behavior >= 1.1. This fixes #575.
+  [timo]
+
 
 3.2.1 (2018-06-28)
 ------------------
