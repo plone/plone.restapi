@@ -387,7 +387,6 @@ class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
         return 'datetime'
 
 
-
 @adapter(ITuple, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class SubjectsFieldJsonSchemaProvider(ChoiceJsonSchemaProvider):

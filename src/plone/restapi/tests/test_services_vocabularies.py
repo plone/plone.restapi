@@ -62,7 +62,6 @@ class TestVocabularyEndpoint(unittest.TestCase):
         response = response.json()
         self.assertEqual(
             response,
-<<<<<<< HEAD
             {
                 u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
                 u'items': [
@@ -117,16 +116,6 @@ class TestVocabularyEndpoint(unittest.TestCase):
                 u'items_total': 1,
             }
         )
-=======
-            {u'@id': self.portal_url + u'/@vocabularies/''plone.restapi.tests.test_vocabulary',  # noqa
-             u'terms': [
-                 {u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary/token1',  # noqa
-                  u'title': u'Title 1',
-                  u'token': u'token1'},
-                 {u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary/token2',  # noqa
-                  u'title': u'Title 2',
-                  u'token': u'token2'}]})
->>>>>>> master
 
     def test_get_unknown_vocabulary(self):
         response = self.api_session.get(
@@ -185,23 +174,13 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-<<<<<<< HEAD
                 u'@id': u'http://localhost:55001/plone/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary',  # noqa
                 u'items': [
                     {u'title': u'testdoc', u'token': u'id'},
                     {u'title': u'Document 1', u'token': u'title'},
                 ],
                 u'items_total': 2,
-=======
-                u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary',  # noqa
-                u'terms': [
-                    {u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/id',  # noqa
-                     u'title': u'testdoc',
-                     u'token': u'id'},
-                    {u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/title',  # noqa
-                     u'title': u'Document 1',
-                     u'token': u'title'}]
->>>>>>> master
+
             })
 
     def tearDown(self):
