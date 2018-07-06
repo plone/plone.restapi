@@ -22,7 +22,7 @@ To create a new resource, we send a POST request to the resource container.
 If we want to create a new document within an existing folder, we send a POST request to that folder:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/content_post.req
+    :request: ../../src/plone/restapi/tests/http-examples/content_post.req
 
 By setting the 'Accept' header, we tell the server that we would like to receive the response in the 'application/json' representation format.
 
@@ -39,7 +39,7 @@ If a resource has been created, the server responds with the :term:`201 Created`
 The 'Location' header contains the URL of the newly created resource and the resource representation in the payload:
 
 
-.. literalinclude:: _json/content_post.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/content_post.resp
    :language: http
 
 
@@ -110,7 +110,7 @@ Reading a Resource with GET
 After a successful POST, we can access the resource by sending a GET request to the resource URL:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/content_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/content_get.req
 
 You can also set the `include_items` GET parameter to false if you don't want to include children.
 
@@ -120,7 +120,7 @@ Successful Response (200 OK)
 
 If a resource has been retrieved successfully, the server responds with :term:`200 OK`:
 
-.. literalinclude:: _json/content_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/content_get.resp
    :language: http
 
 .. note::
@@ -185,7 +185,7 @@ will be set. Note that this is not possible if the field is ``required``,
 and it only works for Dexterity types, not Archetypes:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/content_patch.req
+    :request: ../../src/plone/restapi/tests/http-examples/content_patch.req
 
 
 Successful Response (204 No Content)
@@ -193,7 +193,7 @@ Successful Response (204 No Content)
 
 A successful response to a PATCH request will be indicated by a :term:`204 No Content` response by default:
 
-.. literalinclude:: _json/content_patch.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/content_patch.resp
    :language: http
 
 
@@ -204,9 +204,9 @@ You can get the object representation by adding a `Prefer` header with a value o
 In this case, the response will be a :term:`200 OK`:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/content_patch_representation.req
+    :request: ../../src/plone/restapi/tests/http-examples/content_patch_representation.req
 
-.. literalinclude:: _json/content_patch_representation.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/content_patch_representation.resp
    :language: http
 
 See for full specs the `RFC 5789: PATCH Method for HTTP <http://tools.ietf.org/html/rfc5789>`_
@@ -301,11 +301,11 @@ Removing a Resource with DELETE
 We can delete an existing resource by sending a DELETE request:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/content_delete.req
+    :request: ../../src/plone/restapi/tests/http-examples/content_delete.req
 
 A successful response will be indicated by a :term:`204 No Content` response:
 
-.. literalinclude:: _json/content_delete.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/content_delete.resp
    :language: http
 
 
@@ -358,4 +358,4 @@ A response 400 BadRequest with a message 'Client/server ordering mismatch' will 
 A response 400 BadRequest with a message 'Content ordering is not supported by this resource' will be returned if the container does not support ordering.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/content_reorder.req
+    :request: ../../src/plone/restapi/tests/http-examples/content_reorder.req

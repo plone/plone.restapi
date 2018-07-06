@@ -7,7 +7,7 @@ from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-
+from Products.CMFPlone.utils import safe_unicode
 from datetime import datetime as dt
 
 
@@ -81,6 +81,25 @@ class HistoryGet(Service):
             # 'Create', alike the transition_title
             if item['action'] is None:
                 item['action'] = 'Create'
+
+            # We want action, state and transition names translated
+            if 'state_title' in item:
+                item['state_title'] = self.context.translate(
+                    safe_unicode(item['state_title']),
+                    context=self.request
+                )
+
+            if 'transition_title' in item:
+                item['transition_title'] = self.context.translate(
+                    safe_unicode(item['transition_title']),
+                    context=self.request
+                )
+
+            if 'action' in item:
+                item['action'] = self.context.translate(
+                    safe_unicode(item['action']),
+                    context=self.request
+                )
 
             # clean up
             for key in unwanted_keys:

@@ -27,5 +27,6 @@
     <adapter factory=".adapters.RichTextJsonSchemaProvider" />
     <adapter factory=".adapters.DateJsonSchemaProvider" />
     <adapter factory=".adapters.DatetimeJsonSchemaProvider" />
+    <adapter factory=".adapters.JSONFieldSchemaProvider" />
 
 </configure>

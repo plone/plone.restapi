@@ -79,8 +79,8 @@ Parameter        Description
 Full example of a batched request and response:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/batching.req
+    :request: ../../src/plone/restapi/tests/http-examples/batching.req
 
-.. literalinclude:: _json/batching.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/batching.resp
    :language: http
 

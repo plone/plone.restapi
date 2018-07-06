@@ -19,6 +19,7 @@ Contents
    :maxdepth: 2
 
    authentication
+   exploring
    content
    history
    batching
@@ -31,8 +32,10 @@ Contents
    sharing
    registry
    types
+   types-schema
    users
    groups
+   principals
    roles
    components
    breadcrumbs
@@ -42,10 +45,13 @@ Contents
    tusupload
    vocabularies
    controlpanels
+   tiles
    customization
    conventions
    translations
    email-send
+   i18n
+   email-notification
    upgrade-guide
 
 .. include:: ../../README.rst

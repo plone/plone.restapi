@@ -13,12 +13,12 @@ Locking an object
 To lock an object send a POST request to the ``/@lock`` endpoint that is available on any content object in Plone:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/lock.req
+    :request: ../../src/plone/restapi/tests/http-examples/lock.req
 
 If the lock operation succeeds, the server will respond with status :term:`200 OK` and return various information
 about the lock including the lock token. The token is needed in later requests to update the locked object.
 
-.. literalinclude:: _json/lock.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/lock.resp
    :language: http
 
 
@@ -30,12 +30,12 @@ To create a lock with a non-default timeout, you can pass the the timeout value 
 The following example creates a non-stealable lock with a timeout of 1h.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/lock_nonstealable_timeout.req
+    :request: ../../src/plone/restapi/tests/http-examples/lock_nonstealable_timeout.req
 
 
 The server responds with status :term:`200 OK` and returns the lock information.
 
-.. literalinclude:: _json/lock_nonstealable_timeout.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/lock_nonstealable_timeout.resp
    :language: http
 
 
@@ -45,11 +45,11 @@ Unlocking an object
 To unlock an object send a POST request to the ``/@unlock`` endpoint.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/unlock.req
+    :request: ../../src/plone/restapi/tests/http-examples/unlock.req
 
 The server responds with status :term:`200 OK` and returns the lock information.
 
-.. literalinclude:: _json/unlock.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/unlock.resp
    :language: http
 
 
@@ -59,11 +59,11 @@ Refreshing a lock
 An existing lock can be refreshed by sending a POST request to the ``@refresh-lock`` endpoint.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/refresh_lock.req
+    :request: ../../src/plone/restapi/tests/http-examples/refresh_lock.req
 
 The server responds with status :term:`200 OK` and returns the lock information containing the updated creation time.
 
-.. literalinclude:: _json/refresh_lock.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/refresh_lock.resp
    :language: http
 
 
@@ -74,11 +74,11 @@ To find out if an object is locked or to get information about the current lock
 you can send a GET request to the ``@lock`` endpoint.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/lock_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/lock_get.req
 
 The server responds with status :term:`200 OK` and returns the information about the lock.
 
-.. literalinclude:: _json/lock_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/lock_get.resp
    :language: http
 
 
@@ -89,4 +89,4 @@ To update a locked object with a PATCH request, you have to provide the lock
 token with the ``Lock-Token`` header.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/lock_update.req
+    :request: ../../src/plone/restapi/tests/http-examples/lock_update.req

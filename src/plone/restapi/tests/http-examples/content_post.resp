@@ -1,5 +1,6 @@
-HTTP/1.1 200 OK
+HTTP/1.1 201 Created
 Content-Type: application/json
+Location: http://localhost:55001/plone/folder/my-document
 
 {
   "@components": {
@@ -49,5 +50,6 @@ Content-Type: application/json
   "table_of_contents": null, 
   "text": null, 
   "title": "My Document", 
-  "version": "current"
+  "version": "current", 
+  "versioning_enabled": true
 }

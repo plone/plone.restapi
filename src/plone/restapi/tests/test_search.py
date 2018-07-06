@@ -146,7 +146,7 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get('/@search', params=query)
 
         self.assertDictContainsSubset(
-            {u'@id': u'http://localhost:55001/plone/folder/doc',
+            {u'@id': self.portal_url + u'/folder/doc',
              u'title': u'Lorem Ipsum',
              u'portal_type': u'DXTestDocument',
              u'review_state': u'private'},
@@ -157,7 +157,7 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get('/@search', params=query)
 
         self.assertDictContainsSubset(
-            {u'@id': u'http://localhost:55001/plone/folder/doc',
+            {u'@id': self.portal_url + u'/folder/doc',
              u'Creator': u'test_user_1_',
              u'Description': u'',
              u'EffectiveDate': u'None',
@@ -178,7 +178,7 @@ class TestSearchFunctional(unittest.TestCase):
              u'getObjSize': u'0 KB',
              u'getPath': u'/plone/folder/doc',
              u'getRemoteUrl': None,
-             u'getURL': u'http://localhost:55001/plone/folder/doc',
+             u'getURL': self.portal_url + u'/folder/doc',
              u'id': u'doc',
              u'in_response_to': None,
              u'is_folderish': False,
@@ -204,7 +204,7 @@ class TestSearchFunctional(unittest.TestCase):
             u'<p>Some Text</p>',
             response.json()['items'][0]['test_richtext_field']['data'])
         self.assertEqual(
-            'http://localhost:55001/plone/folder/doc',
+            self.portal_url + u'/folder/doc',
             response.json()['items'][0]['@id'])
 
     def test_full_objects_retrieval_discussion(self):
@@ -276,7 +276,7 @@ class TestSearchFunctional(unittest.TestCase):
         query = {'test_list_field': ['Keyword2', 'Keyword3']}
         response = self.api_session.get('/@search', params=query)
 
-        self.assertEqual(
+        self.assertItemsEqual(
             [u'/plone/folder/doc',
              u'/plone/folder/other-document'],
             result_paths(response.json())
@@ -574,5 +574,5 @@ class TestSearchATFunctional(unittest.TestCase):
             {u'data': u' Some Text ', u'content-type': u'text/plain'},
             response.json()['items'][0]['testTextField'])
         self.assertEqual(
-            'http://localhost:55001/plone/folder/doc',
+            self.portal_url + u'/folder/doc',
             response.json()['items'][0]['@id'])

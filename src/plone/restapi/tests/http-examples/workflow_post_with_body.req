@@ -1,0 +1,11 @@
+POST /plone/folder/@workflow/publish HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "comment": "Publishing my folder...",
+    "effective": "2018-01-21T08:00:00",
+    "expires": "2019-01-21T08:00:00",
+    "include_children": true
+}

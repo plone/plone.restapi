@@ -1,0 +1,80 @@
+i18n: internationalization of screen messages
+=============================================
+
+Plone already provides user-interface translations using the `plone.app.locales`_
+packages.
+
+In plone.restapi we also use those translations where the end user needs to have
+those translated strings, this way the front-end work is easier, because you
+directly get from the server everything you need, instead of needing to query
+yet another endpoint to get the translations.
+
+To do so, plone.restapi relies on Plone's language-negotiation configuration and lets
+Plone to do the work of deciding the language in which the messages should be shown.
+
+For the content of a multilingual site built using `plone.app.multilingual`_ this is
+an easy task: Plone is configured to show in the language of the content-object, so
+there is no need to ask anything to the REST API.
+
+Nevertheless, when you want to query the Plone Site object of a multilingual site, or
+any other endpoint in a plain Plone site with multiple languages configured, you need
+to query the REST API which language do you want to have the messages on, otherwise
+you will get the messages on the default language configured in Plone.
+
+To achieve that, the REST API requires to use the ``Accept-Language`` HTTP header passing
+as the value the code of the required language.
+
+You will also need to configure Plone to use the browser request language negotiation.
+To do so, you need to go the Plone Control Panel, go to the Language Control Panel,
+open the Negotiation configuration tab and select "Use browser language request
+negotiation" option.
+
+Using this option we can get the content-type titles translated:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/translated_messages_types.req
+
+And the response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translated_messages_types.resp
+   :language: http
+
+
+All the field titles and descriptions, will also be translated. For instance for the Folder
+content type:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/translated_messages_types_folder.req
+
+And the response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translated_messages_types_folder.resp
+   :language: http
+
+
+In a given object, the workflow state and actions will be translated too:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/translated_messages_object_workflow.req
+
+And the response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translated_messages_object_workflow.resp
+   :language: http
+
+
+The same happens in the `@history` endpoint, all the relevant messages, will
+be shown translated:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/translated_messages_object_history.req
+
+And the response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translated_messages_object_history.resp
+   :language: http
+
+
+
+.. _`plone.app.locales`: https://pypi.org/project/plone.app.locales
+.. _`plone.app.multilingual`: https://pypi.org/project/plone.app.multilingual

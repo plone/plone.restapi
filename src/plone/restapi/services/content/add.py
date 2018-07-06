@@ -1,14 +1,20 @@
 # -*- coding: utf-8 -*-
+from Acquisition import aq_base
+from Acquisition.interfaces import IAcquirer
 from plone.restapi.deserializer import json_body
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
-from plone.restapi.services.content.utils import rename
+from Products.CMFPlone.utils import safe_hasattr
 from zExceptions import BadRequest
+from zExceptions import Unauthorized
 from zope.component import queryMultiAdapter
+from zope.event import notify
 from zope.interface import alsoProvides
+from zope.lifecycleevent import ObjectCreatedEvent
 
 import plone.protect.interfaces
 
@@ -32,10 +38,25 @@ class FolderPost(Service):
             alsoProvides(self.request,
                          plone.protect.interfaces.IDisableCSRFProtection)
 
-        obj = create(self.context, type_, id_=id_, title=title)
-        if isinstance(obj, dict) and 'error' in obj:
+        try:
+            obj = create(self.context, type_, id_=id_, title=title)
+        except Unauthorized as exc:
+            self.request.response.setStatus(403)
+            return dict(error=dict(
+                type='Forbidden',
+                message=exc.message))
+        except BadRequest as exc:
             self.request.response.setStatus(400)
-            return obj
+            return dict(error=dict(
+                type='Bad Request',
+                message=exc.message))
+
+        # Acquisition wrap temporarily to satisfy things like vocabularies
+        # depending on tools
+        temporarily_wrapped = False
+        if IAcquirer.providedBy(obj) and not safe_hasattr(obj, 'aq_base'):
+            obj = obj.__of__(self.context)
+            temporarily_wrapped = True
 
         # Update fields
         deserializer = queryMultiAdapter((obj, self.request),
@@ -46,16 +67,20 @@ class FolderPost(Service):
                 message='Cannot deserialize type {}'.format(obj.portal_type)))
 
         try:
-            deserializer(validate_all=True)
+            deserializer(validate_all=True, create=True)
         except DeserializationError as e:
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='DeserializationError',
                 message=str(e)))
 
-        # Rename if generated id
-        if not id_:
-            rename(obj)
+        if temporarily_wrapped:
+            obj = aq_base(obj)
+
+        if not getattr(deserializer, 'notifies_create', False):
+            notify(ObjectCreatedEvent(obj))
+
+        obj = add(self.context, obj, rename=not bool(id_))
 
         self.request.response.setStatus(201)
         self.request.response.setHeader('Location', obj.absolute_url())

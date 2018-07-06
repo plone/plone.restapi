@@ -69,11 +69,16 @@
 
     <adapter factory=".vocabularies.SerializeVocabularyToJson" />
     <adapter factory=".vocabularies.SerializeTermToJson" />
-    
+
     <adapter factory=".registry.SerializeRegistryToJson" />
-    
+
     <adapter factory=".discussion.ConversationSerializer" />
     <adapter factory=".discussion.CommentSerializer" />
+
+    <configure zcml:condition="installed plone.tiles">
+        <adapter factory=".tile.TileSummarySerializeToJson" />
+        <adapter factory=".tile.TileSerializeToJson" />
+    </configure>
 
     <configure zcml:condition="have plone-5">
         <adapter factory=".controlpanels.ControlpanelSerializeToJson" />

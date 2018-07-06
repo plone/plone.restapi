@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 
-version = '3.0.0.dev0'
+
+version = '3.2.2.dev0'
 
 long_description = (
     open('README.rst').read() + '\n' +
@@ -9,6 +10,7 @@ long_description = (
     open('CONTRIBUTORS.rst').read() + '\n' +
     open('CHANGES.rst').read() + '\n'
 )
+
 
 setup(name='plone.restapi',
       version=version,
@@ -42,7 +44,9 @@ setup(name='plone.restapi',
       install_requires=[
           'setuptools',
           'python-dateutil',
+          'plone.behavior>=1.1',  # adds name to behavior directive 
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
+          'plone.schema >= 1.2.0',  # new json field          
           'PyJWT',
           'pytz',
       ],
@@ -56,6 +60,8 @@ setup(name='plone.restapi',
           'plone.api',
           'requests',
           'freezegun',
+          'plone.tiles',
+          'mock',
       ]},
       entry_points="""
       # -*- Entry points: -*-

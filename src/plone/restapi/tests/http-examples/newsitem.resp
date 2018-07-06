@@ -33,42 +33,42 @@ Content-Type: application/json
   "id": "newsitem", 
   "image": {
     "content-type": "image/png", 
-    "download": "http://localhost:55001/plone/newsitem/@@images/image", 
+    "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png", 
     "filename": "image.png", 
     "height": 56, 
     "scales": {
       "icon": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/icon", 
+        "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png", 
         "height": 8, 
         "width": 32
       }, 
       "large": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/large", 
+        "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png", 
         "height": 56, 
         "width": 215
       }, 
       "listing": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/listing", 
+        "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png", 
         "height": 4, 
         "width": 16
       }, 
       "mini": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/mini", 
+        "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png", 
         "height": 52, 
         "width": 200
       }, 
       "preview": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/preview", 
+        "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png", 
         "height": 56, 
         "width": 215
       }, 
       "thumb": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/thumb", 
+        "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png", 
         "height": 33, 
         "width": 128
       }, 
       "tile": {
-        "download": "http://localhost:55001/plone/newsitem/@@images/image/tile", 
+        "download": "http://localhost:55001/plone/newsitem/@@images/uuid1.png", 
         "height": 16, 
         "width": 64
       }
@@ -97,5 +97,6 @@ Content-Type: application/json
     "encoding": "utf-8"
   }, 
   "title": "My News Item", 
-  "version": "current"
+  "version": "current", 
+  "versioning_enabled": true
 }

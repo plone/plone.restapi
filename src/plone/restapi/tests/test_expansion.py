@@ -11,6 +11,7 @@ from plone.restapi.testing import PAM_INSTALLED
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from zope.component import getGlobalSiteManager
 from zope.component import provideAdapter
 from zope.interface import alsoProvides
 from zope.interface import Interface
@@ -84,6 +85,19 @@ class TestExpansion(unittest.TestCase):
         self.assertEqual(
             {'@components': {'bar': 'expanded', 'foo': 'expanded'}},
             expandable_elements(None, request))
+
+    def tearDown(self):
+        gsm = getGlobalSiteManager()
+        gsm.unregisterAdapter(
+            ExpandableElementFoo,
+            (Interface, IBrowserRequest),
+            IExpandableElement,
+            'foo')
+        gsm.unregisterAdapter(
+            ExpandableElementBar,
+            (Interface, IBrowserRequest),
+            IExpandableElement,
+            'bar')
 
 
 class TestExpansionFunctional(unittest.TestCase):
@@ -161,12 +175,12 @@ class TestExpansionFunctional(unittest.TestCase):
             [
                 {
                     u'title': u'Home',
-                    u'@id': u'http://localhost:55001/plone',
+                    u'@id': self.portal_url + u'',
                     u'description': u'',
                 },
                 {
                     u'title': u'Some Folder',
-                    u'@id': u'http://localhost:55001/plone/folder',
+                    u'@id': self.portal_url + u'/folder',
                     u'description': u'',
                 }
             ],
@@ -240,7 +254,7 @@ class TestExpansionFunctional(unittest.TestCase):
             [
                 {
                     u'title': u'Some Folder',
-                    u'@id': u'http://localhost:55001/plone/folder'
+                    u'@id': self.portal_url + u'/folder'
                 }
             ],
             response.json()['@components']['breadcrumbs']['items']
@@ -265,7 +279,7 @@ class TestExpansionFunctional(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            u'http://localhost:55001/plone/folder/@workflow',
+            self.portal_url + u'/folder/@workflow',
             response.json().get('@components').get('workflow').get('@id')
         )
         self.assertEqual(
@@ -279,11 +293,11 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(
             [
                 {
-                    u'@id': u'http://localhost:55001/plone/folder/@workflow/publish',  # noqa
+                    u'@id': self.portal_url + u'/folder/@workflow/publish',  # noqa
                     u'title': u'Publish'
                 },
                 {
-                    u'@id': u'http://localhost:55001/plone/folder/@workflow/submit',  # noqa
+                    u'@id': self.portal_url + u'/folder/@workflow/submit',  # noqa
                     u'title': u'Submit for publication'
                 }
             ],

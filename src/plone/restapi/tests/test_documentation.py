@@ -4,7 +4,9 @@ from datetime import datetime
 from DateTime import DateTime
 from datetime import timedelta
 from freezegun import freeze_time
+from mock import patch
 from pkg_resources import parse_version
+from pkg_resources import resource_filename
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
@@ -23,10 +25,11 @@ from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PAM_INSTALLED
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME  # noqa
+from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME  # noqa
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
+from plone.scale import storage
 from plone.testing.z2 import Browser
 from zope.component import createObject
 from zope.component import getUtility
@@ -57,6 +60,7 @@ TUS_HEADERS = [
 
 REQUEST_HEADER_KEYS = [
     'accept',
+    'accept-language',
     'authorization',
     'lock-token',
     'prefer',
@@ -68,14 +72,8 @@ RESPONSE_HEADER_KEYS = [
     'location',
 ] + TUS_HEADERS
 
-base_path = os.path.join(
-    os.path.dirname(__file__),
-    '..',
-    '..',
-    '..',
-    '..',
-    'docs/source/_json'
-)
+
+base_path = resource_filename('plone.restapi.tests', 'http-examples')
 
 UPLOAD_DATA = 'abcdefgh'
 UPLOAD_MIMETYPE = 'text/plain'
@@ -142,11 +140,9 @@ def save_request_and_response_for_docs(name, response):
 
 class TestDocumentation(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
 
     def setUp(self):
-        if PLONE_VERSION.base_version >= '5.1':
-            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
@@ -287,8 +283,12 @@ class TestDocumentation(unittest.TestCase):
             '2016-01-21T02:24:11+00:00')
         import transaction
         transaction.commit()
-        response = self.api_session.get(self.portal.newsitem.absolute_url())
-        save_request_and_response_for_docs('newsitem', response)
+
+        with patch.object(storage, 'uuid4', return_value='uuid1'):
+            response = self.api_session.get(
+                self.portal.newsitem.absolute_url()
+            )
+            save_request_and_response_for_docs('newsitem', response)
 
     def test_documentation_event(self):
         self.portal.invokeFactory('Event', id='event')
@@ -352,8 +352,9 @@ class TestDocumentation(unittest.TestCase):
             '2016-01-21T06:24:11+00:00')
         import transaction
         transaction.commit()
-        response = self.api_session.get(self.portal.image.absolute_url())
-        save_request_and_response_for_docs('image', response)
+        with patch.object(storage, 'uuid4', return_value='uuid1'):
+            response = self.api_session.get(self.portal.image.absolute_url())
+            save_request_and_response_for_docs('image', response)
 
     def test_documentation_folder(self):
         folder = self.create_folder()
@@ -414,6 +415,20 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.post(
             '{}/@workflow/publish'.format(self.document.absolute_url()))
         save_request_and_response_for_docs('workflow_post', response)
+
+    def test_documentation_workflow_transition_with_body(self):
+        self.frozen_time.tick(timedelta(minutes=5))
+        folder = self.portal[self.portal.invokeFactory('Folder', id='folder')]
+        transaction.commit()
+        response = self.api_session.post(
+            '{}/@workflow/publish'.format(folder.absolute_url()),
+            json={
+                'comment': 'Publishing my folder...',
+                'include_children': True,
+                'effective': '2018-01-21T08:00:00',
+                'expires': '2019-01-21T08:00:00',
+            })
+        save_request_and_response_for_docs('workflow_post_with_body', response)
 
     def test_documentation_registry_get(self):
         response = self.api_session.get(
@@ -1003,7 +1018,7 @@ class TestDocumentation(unittest.TestCase):
             "inherit": True,
             "entries": [
                 {
-                    "id": "test_user_1_",
+                    "id": "AuthenticatedUsers",
                     "roles": {
                         "Reviewer": True,
                         "Editor": False,
@@ -1238,13 +1253,91 @@ class TestDocumentation(unittest.TestCase):
         save_request_and_response_for_docs('lock_update', response)
 
 
-class TestCommenting(unittest.TestCase):
+class TestDocumentationMessageTranslations(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+    layer = layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
 
     def setUp(self):
-        if PLONE_VERSION.base_version >= '5.1':
-            self.skipTest('Do not run documentation tests for Plone 5')
+        self.app = self.layer['app']
+        self.request = self.layer['request']
+        self.portal = self.layer['portal']
+        self.portal_url = self.portal.absolute_url()
+
+        # Register custom UUID generator to produce stable UUIDs during tests
+        pushGlobalRegistry(getSite())
+        register_static_uuid_utility(prefix='SomeUUID')
+
+        self.time_freezer = freeze_time("2016-10-21 19:00:00")
+        self.frozen_time = self.time_freezer.start()
+
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.headers.update({'Accept-Language': 'es'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        self.document = self.create_document()
+        alsoProvides(self.document, ITTWLockable)
+
+        transaction.commit()
+        self.browser = Browser(self.app)
+        self.browser.handleErrors = False
+        self.browser.addHeader(
+            'Authorization',
+            'Basic %s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD,)
+        )
+
+    def create_document(self):
+        self.portal.invokeFactory('Document', id='front-page')
+        document = self.portal['front-page']
+        document.title = u"Welcome to Plone"
+        document.description = \
+            u"Congratulations! You have successfully installed Plone."
+        document.text = RichTextValue(
+            u"If you're seeing this instead of the web site you were " +
+            u"expecting, the owner of this web site has just installed " +
+            u"Plone. Do not contact the Plone Team or the Plone mailing " +
+            u"lists about this.",
+            'text/plain',
+            'text/html'
+        )
+        document.creation_date = DateTime('2016-01-21T01:14:48+00:00')
+        document.reindexObject()
+        document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
+        return document
+
+    def tearDown(self):
+        self.time_freezer.stop()
+        popGlobalRegistry(getSite())
+
+    def test_translate_messages_types(self):
+        response = self.api_session.get('/@types')
+        save_request_and_response_for_docs(
+            'translated_messages_types', response)
+
+    def test_translate_messages_types_folder(self):
+        response = self.api_session.get('/@types/Folder')
+        save_request_and_response_for_docs(
+            'translated_messages_types_folder', response)
+
+    def test_translate_messages_object_workflow(self):
+        response = self.api_session.get(
+            '{}/@workflow'.format(self.document.id))
+        save_request_and_response_for_docs(
+            'translated_messages_object_workflow', response)
+
+    def test_translate_messages_object_history(self):
+        response = self.api_session.get(
+            '{}/@history'.format(self.document.id))
+        save_request_and_response_for_docs(
+            'translated_messages_object_history', response)
+
+
+class TestCommenting(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
+
+    def setUp(self):
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
@@ -1418,11 +1511,9 @@ class TestCommenting(unittest.TestCase):
 @unittest.skipUnless(PAM_INSTALLED, 'plone.app.multilingual is installed by default only in Plone 5')  # NOQA
 class TestPAMDocumentation(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME
 
     def setUp(self):
-        if PLONE_VERSION.base_version >= '5.1':
-            self.skipTest('Do not run documentation tests for Plone 5')
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']

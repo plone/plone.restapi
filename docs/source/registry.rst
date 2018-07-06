@@ -15,11 +15,11 @@ Reading registry records
 Reading a single record:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/registry_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/registry_get.req
 
 Example Response:
 
-.. literalinclude:: _json/registry_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/registry_get.resp
    :language: http
 
 
@@ -35,11 +35,11 @@ value: The record's value. This is the same as GETting `@registry/name`.
 
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/registry_get_list.req
+    :request: ../../src/plone/restapi/tests/http-examples/registry_get_list.req
 
 Example Response:
 
-.. literalinclude:: _json/registry_get_list.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/registry_get_list.resp
    :language: http
 
 
@@ -49,9 +49,9 @@ Updating registry records
 Updating an existing record:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/registry_update.req
+    :request: ../../src/plone/restapi/tests/http-examples/registry_update.req
 
 Example Response:
 
-.. literalinclude:: _json/registry_update.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/registry_update.resp
    :language: http

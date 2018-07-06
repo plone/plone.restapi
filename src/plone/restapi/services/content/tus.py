@@ -10,7 +10,7 @@ from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.services import Service
 from plone.restapi.services.content.utils import create
-from plone.restapi.services.content.utils import rename
+from plone.restapi.services.content.utils import add
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from uuid import uuid4
 from zExceptions import Unauthorized
@@ -18,6 +18,8 @@ from zope.component import queryMultiAdapter
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
+from zope.lifecycleevent import ObjectCreatedEvent
+from zope.event import notify
 
 import json
 import os
@@ -258,7 +260,9 @@ class UploadPatch(UploadFileBase):
                     'Deserialization Error', str(e), 400)
 
             if mode == 'create':
-                rename(obj)
+                if not getattr(deserializer, 'notifies_create', False):
+                    notify(ObjectCreatedEvent(obj))
+                obj = add(self.context, obj)
 
             tus_upload.close()
             tus_upload.cleanup()

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """JsonSchema providers."""
 from plone.app.textfield.interfaces import IRichText
+from plone.schema import IJSONField
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.i18n import translate
@@ -333,7 +334,6 @@ class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
             'schema': key_type.get_schema(),
             'additional': key_type.additional(),
         }
-
         value_type = getMultiAdapter(
             (self.field.key_type, self.context, self.request),
             IJsonSchemaProvider
@@ -385,3 +385,21 @@ class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
 
     def get_widget(self):
         return 'datetime'
+
+
+
+@adapter(ITuple, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class SubjectsFieldJsonSchemaProvider(ChoiceJsonSchemaProvider):
+    pass
+
+
+@adapter(IJSONField, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class JSONFieldSchemaProvider(DefaultJsonSchemaProvider):
+
+    def get_type(self):
+        return 'dict'
+
+    def get_widget(self):
+        return 'json'

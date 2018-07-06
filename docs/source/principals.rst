@@ -11,9 +11,9 @@ Search Principals
 To retrieve a list of principals given a search string, call the ``/@principals`` endpoint with a GET request and a ``search`` query parameter:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/principals.req
+    :request: ../../src/plone/restapi/tests/http-examples/principals.req
 
 The server will respond with a list of the users and groups in the portal that match the query string:
 
-.. literalinclude:: _json/principals.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/principals.resp
    :language: http
