@@ -88,7 +88,7 @@ class DeserializeFromJson(OrderingMixin, object):
                         value = deserializer(data[name])
                     except ValueError as e:
                         errors.append({
-                            'message': e.message, 'field': name, 'error': e})
+                            'message': str(e), 'field': name, 'error': e})
                     except ValidationError as e:
                         errors.append({
                             'message': e.doc(), 'field': name, 'error': e})

@@ -175,7 +175,7 @@ class UsersPost(Service):
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='MissingParameterError',
-                message=str(e.message)))
+                message=str(e)))
 
         if send_password_reset:
             registration.registeredNotify(username)

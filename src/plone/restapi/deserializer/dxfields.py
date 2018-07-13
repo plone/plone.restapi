@@ -192,7 +192,7 @@ class TimedeltaFieldDeserializer(DefaultFieldDeserializer):
         try:
             value = timedelta(seconds=value)
         except TypeError as e:
-            raise ValueError(e.message)
+            raise ValueError(str(e))
 
         self.field.validate(value)
         return value
