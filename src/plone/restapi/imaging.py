@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import division
 from Products.CMFCore.interfaces import IPropertiesTool
 from zope.component import getMultiAdapter
 from zope.component import getUtility
@@ -63,9 +64,9 @@ def get_actual_scale(dimensions, bbox):
     This is supposed to emulate / predict the behavior of Plone's
     ImageScaling implementations.
     """
-    width, height = list(map(float, dimensions))
-    max_width, max_height = list(map(float, bbox))
-    resize_ratio = min(max_width // width, max_height // height)
+    width, height = dimensions
+    max_width, max_height = bbox
+    resize_ratio = min(max_width / width, max_height / height)
 
     # Plone doesn't upscale images for the default named scales - limit
     # to actual image dimensions
