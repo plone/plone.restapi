@@ -65,7 +65,7 @@ def get_actual_scale(dimensions, bbox):
     """
     width, height = list(map(float, dimensions))
     max_width, max_height = list(map(float, bbox))
-    resize_ratio = min(max_width / width, max_height / height)
+    resize_ratio = min(max_width // width, max_height // height)
 
     # Plone doesn't upscale images for the default named scales - limit
     # to actual image dimensions
