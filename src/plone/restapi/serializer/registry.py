@@ -19,7 +19,7 @@ class SerializeRegistryToJson(object):
     def __call__(self):
         records = self.registry.records
         # Batch keys, because that is a simple BTree
-        batch = HypermediaBatch(self.request, list(records.keys()))
+        batch = HypermediaBatch(self.request, list(records))
 
         results = {}
         results['@id'] = batch.canonical_url

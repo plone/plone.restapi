@@ -63,7 +63,7 @@ class TestCommentsEndpoint(unittest.TestCase):
         data = response.json()
         self.assertEqual(
             set(['items_total', 'items', '@id']),
-            set(data.keys())
+            set(data)
         )
 
     def test_list_batching(self):

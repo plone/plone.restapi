@@ -127,7 +127,7 @@ class TestJsonCompatibleConverters(TestCase):
                                            'baz': 3}))
         self.assertEquals('{"foo": "bar"}',
                           json.dumps(json_compatible({'foo': 'bar'})))
-        self.assertIsInstance(json_compatible(list({'foo': 'bar'}.keys())[0]),
+        self.assertIsInstance(json_compatible(list({'foo': 'bar'})[0]),
                               six.text_type,
                               'Dict keys should be converted recursively.')
         self.assertIsInstance(
@@ -143,7 +143,7 @@ class TestJsonCompatibleConverters(TestCase):
         value = PersistentMapping({'foo': 'bar'})
         self.assertEquals({u'foo': u'bar'}, json_compatible(value))
         self.assertEquals('{"foo": "bar"}', json.dumps(json_compatible(value)))
-        self.assertIsInstance(json_compatible(list(value.keys())[0]),
+        self.assertIsInstance(json_compatible(list(value)[0]),
                               six.text_type,
                               'Dict keys should be converted recursively.')
         self.assertIsInstance(json_compatible(list(value.values())[0]),

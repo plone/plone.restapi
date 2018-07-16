@@ -231,7 +231,7 @@ class UsersPost(Service):
             return
 
         # Send password reset mail
-        if list(data.keys()) == []:
+        if list(data) == []:
             registration_tool = getToolByName(self.context,
                                               'portal_registration')
             registration_tool.mailPassword(username, self.request)

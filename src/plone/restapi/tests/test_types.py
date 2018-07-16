@@ -97,7 +97,7 @@ class TestJsonSchemaUtils(TestCase):
         )
         self.assertEqual(jsonschema['title'], 'Page')
         self.assertEqual(jsonschema['type'], 'object')
-        self.assertIn('title', list(jsonschema['properties'].keys()))
+        self.assertIn('title', list(jsonschema['properties']))
         self.assertIn('title', jsonschema['required'])
         self.assertEquals('default', jsonschema['fieldsets'][0]['id'])
         self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
@@ -109,7 +109,7 @@ class TestJsonSchemaUtils(TestCase):
             request,
             excluded_fields=['title']
         )
-        self.assertNotIn('title', list(jsonschema['properties'].keys()))
+        self.assertNotIn('title', list(jsonschema['properties']))
 
     def test_get_jsonschema_for_fti_non_dx(self):
         """Make sure FTIs without lookupSchema are supported.
@@ -130,14 +130,14 @@ class TestJsonSchemaUtils(TestCase):
         )
         self.assertEqual(jsonschema['title'], 'Page')
         self.assertEqual(jsonschema['type'], 'object')
-        self.assertIn('title', list(jsonschema['properties'].keys()))
+        self.assertIn('title', list(jsonschema['properties']))
         self.assertIn('title', jsonschema['required'])
         self.assertEquals('default', jsonschema['fieldsets'][0]['id'])
         self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
 
         jsonschema = get_jsonschema_for_portal_type(
             'Document', portal, request, excluded_fields=['title'])
-        self.assertNotIn('title', list(jsonschema['properties'].keys()))
+        self.assertNotIn('title', list(jsonschema['properties']))
 
 
 class TestTaggedValuesJsonSchemaUtils(TestCase):

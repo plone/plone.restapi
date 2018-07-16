@@ -187,7 +187,7 @@ class TestBatchingCollections(TestBatchingDXBase):
 
     def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
         response = self.api_session.get('/collection?b_size=100')
-        self.assertNotIn('batching', list(response.json().keys()))
+        self.assertNotIn('batching', list(response.json()))
 
 
 class TestBatchingDXFolders(TestBatchingDXBase):
@@ -249,7 +249,7 @@ class TestBatchingDXFolders(TestBatchingDXBase):
 
     def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
         response = self.api_session.get('/folder?b_size=100')
-        self.assertNotIn('batching', list(response.json().keys()))
+        self.assertNotIn('batching', list(response.json()))
 
 
 class TestBatchingSiteRoot(TestBatchingDXBase):
@@ -307,7 +307,7 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
 
     def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
         response = self.api_session.get('/folder?b_size=100')
-        self.assertNotIn('batching', list(response.json().keys()))
+        self.assertNotIn('batching', list(response.json()))
 
 
 class TestBatchingArchetypes(unittest.TestCase):
@@ -389,7 +389,7 @@ class TestBatchingArchetypes(unittest.TestCase):
 
     def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
         response = self.api_session.get('/folder?b_size=100')
-        self.assertNotIn('batching', list(response.json().keys()))
+        self.assertNotIn('batching', list(response.json()))
 
 
 class TestHypermediaBatch(unittest.TestCase):
@@ -575,7 +575,7 @@ class TestHypermediaBatch(unittest.TestCase):
         batch = HypermediaBatch(self.request, items)
         self.assertSetEqual(
             set(['@id', 'first', 'prev', 'last']),
-            set(batch.links.keys()))
+            set(batch.links))
 
     def test_prev_link_contained_if_necessary(self):
         items = list(range(1, 26))
@@ -594,7 +594,7 @@ class TestHypermediaBatch(unittest.TestCase):
         batch = HypermediaBatch(self.request, items)
         self.assertSetEqual(
             set(['@id', 'first', 'next', 'last']),
-            set(batch.links.keys()))
+            set(batch.links))
 
     def test_no_gaps_or_duplicates_between_pages(self):
         items = list(range(1, 26))

@@ -80,11 +80,11 @@ class TestHistoryEndpoint(unittest.TestCase):
             self.assertIn(item['type'], ['versioning', 'workflow'])
 
             if item['type'] == 'versioning':
-                self.assertEqual(set(item.keys()), set(history_keys))
+                self.assertEqual(set(item), set(history_keys))
             else:
-                self.assertEqual(set(item.keys()), set(workflow_keys))
+                self.assertEqual(set(item), set(workflow_keys))
 
-            self.assertEqual(set(item['actor'].keys()), set(actor_keys))
+            self.assertEqual(set(item['actor']), set(actor_keys))
 
             self.assertIsNotNone(item['action'])
 
@@ -117,7 +117,7 @@ class TestHistoryEndpoint(unittest.TestCase):
                     item['@id'].endswith('@history/' + str(item['version']))
                 )
             else:
-                self.assertNotIn('@id', list(item.keys()))
+                self.assertNotIn('@id', list(item))
 
     def test_explicit_current(self):
         # Does version=current get the current version

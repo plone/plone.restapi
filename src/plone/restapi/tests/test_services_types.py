@@ -41,7 +41,7 @@ class TestServicesTypes(unittest.TestCase):
         )
         for item in response.json():
             self.assertEqual(
-                sorted(item.keys()),
+                sorted(item),
                 sorted(['@id', 'title', 'addable'])
             )
 

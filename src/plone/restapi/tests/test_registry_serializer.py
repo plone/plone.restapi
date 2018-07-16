@@ -30,8 +30,8 @@ class TestRegistrySerializer(unittest.TestCase):
         registry = Registry()
         obj = self.serialize(registry)
         expected = ['@id', 'items_total', 'items']
-        self.assertEqual(set(obj.keys()), set(expected))
-        self.assertNotIn('batching', list(obj.keys()))
+        self.assertEqual(set(obj), set(expected))
+        self.assertNotIn('batching', list(obj))
 
     def test_batched(self):
         registry = Registry()
@@ -42,7 +42,7 @@ class TestRegistrySerializer(unittest.TestCase):
 
         obj = self.serialize(registry)
         expected = ['@id', 'items_total', 'items', 'batching']
-        self.assertEqual(set(expected), set(obj.keys()))
+        self.assertEqual(set(expected), set(obj))
         self.assertEqual(obj['items_total'], len(list(range(1, 100))))
 
     def test_structure(self):
@@ -53,7 +53,7 @@ class TestRegistrySerializer(unittest.TestCase):
 
         obj = self.serialize(registry)
         item = obj['items'][0]
-        self.assertEqual(set(item.keys()), set(['name', 'value', 'schema']))
-        self.assertEqual(set(item['schema'].keys()), set(['properties']))
+        self.assertEqual(set(item), set(['name', 'value', 'schema']))
+        self.assertEqual(set(item['schema']), set(['properties']))
         self.assertEqual(item['name'], 'foo.bar')
         self.assertEqual(item['value'], u"Lorem Ipsum")

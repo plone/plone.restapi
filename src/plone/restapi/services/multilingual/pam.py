@@ -125,7 +125,7 @@ class UnlinkTranslations(Service):
                 type='BadRequest',
                 message='You need to provide the language to unlink'))
 
-        if language not in list(manager.get_translations().keys()):
+        if language not in list(manager.get_translations()):
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='BadRequest',

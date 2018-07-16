@@ -159,7 +159,7 @@ class TestUnLinkContentTranslations(unittest.TestCase):
         manager = ITranslationManager(self.en_content)
         self.assertNotIn(
             ILanguage(self.es_content).get_language(),
-            list(manager.get_translations().keys()))
+            list(manager.get_translations()))
 
     def test_calling_endpoint_without_language_gives_400(self):
         response = requests.delete(
