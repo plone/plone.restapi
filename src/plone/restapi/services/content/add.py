@@ -9,7 +9,6 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
-from plone.restapi.services.content.utils import rename
 from Products.CMFPlone.utils import safe_hasattr
 from zExceptions import BadRequest
 from zExceptions import Unauthorized

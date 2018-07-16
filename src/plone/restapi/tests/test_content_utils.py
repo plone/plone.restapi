@@ -5,7 +5,6 @@ from plone.app.testing import TEST_USER_ID
 from plone.restapi import HAS_AT
 from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
-from plone.restapi.services.content.utils import rename
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFPlone.interfaces import ISelectableConstrainTypes

@@ -8,6 +8,7 @@ from plone.app.testing import setRoles
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
 import requests
+import six
 import transaction
 import unittest
 

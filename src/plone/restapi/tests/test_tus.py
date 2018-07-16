@@ -347,7 +347,7 @@ class TestTUS(unittest.TestCase):
             headers={'Content-Type': 'application/offset+octet-stream',
                      'Upload-Offset': '0',
                      'Tus-Resumable': '1.0.0'},
-            data=BytesIO(bUPLOAD_DATA))
+            data=BytesIO(UPLOAD_DATA))
         self.assertEqual(response.status_code, 204)
 
     def test_tus_can_replace_pdf_file(self):
