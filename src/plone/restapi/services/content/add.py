@@ -23,6 +23,7 @@ if HAS_AT:
     from Products.Archetypes.interfaces import IBaseObject
 else:
     from zope.interface import Interface
+
     class IBaseObject(Interface):
         pass
 

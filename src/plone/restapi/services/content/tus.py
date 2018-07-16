@@ -23,7 +23,6 @@ from zope.event import notify
 
 import json
 import os
-import six
 import time
 
 TUS_OPTIONS_RESPONSE_HEADERS = {

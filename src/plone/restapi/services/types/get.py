@@ -15,7 +15,6 @@ from zope.schema.interfaces import IVocabularyFactory
 @implementer(IPublishTraverse)
 class TypesGet(Service):
 
-
     def __init__(self, context, request):
         super(TypesGet, self).__init__(context, request)
         self.params = []

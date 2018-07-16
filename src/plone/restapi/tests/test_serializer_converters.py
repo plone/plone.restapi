@@ -130,9 +130,10 @@ class TestJsonCompatibleConverters(TestCase):
         self.assertIsInstance(json_compatible(list({'foo': 'bar'}.keys())[0]),
                               six.text_type,
                               'Dict keys should be converted recursively.')
-        self.assertIsInstance(json_compatible(list({'foo': 'bar'}.values())[0]),
-                              six.text_type,
-                              'Dict values should be converted recursively.')
+        self.assertIsInstance(
+            json_compatible(list({'foo': 'bar'}.values())[0]),
+            six.text_type,
+            'Dict values should be converted recursively.')
 
     def test_dict_empty(self):
         self.assertEquals({}, json_compatible({}))

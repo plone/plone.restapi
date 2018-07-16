@@ -15,7 +15,6 @@ from zope.container.contained import ObjectAddedEvent
 from zope.container.interfaces import INameChooser
 from zope.event import notify
 
-import transaction
 import six
 
 

@@ -12,15 +12,13 @@ if HAS_AT:
     from zope.interface import implementer
     from zope.interface import Interface
 
-
     @implementer(ISerializeToJson)
     @adapter(ICollection, Interface)
     class SerializeCollectionToJson(SerializeToJson):
 
         def __call__(self, version=None):
-            collection_metadata = super(SerializeCollectionToJson, self).__call__(
-                version=version,
-            )
+            collection_metadata = super(
+                SerializeCollectionToJson, self).__call__(version=version)
             results = self.context.results(batch=False)
             batch = HypermediaBatch(self.request, results)
 
@@ -32,7 +30,8 @@ if HAS_AT:
                 results['batching'] = batch.links
 
             results['items'] = [
-                getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
+                getMultiAdapter(
+                    (brain, self.request), ISerializeToJsonSummary)()
                 for brain in batch
             ]
             return results

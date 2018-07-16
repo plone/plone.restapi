@@ -19,7 +19,6 @@ if HAS_AT:
     from zope.interface import Interface
     from zope.interface import implementer
 
-
     @implementer(ISerializeToJson)
     @adapter(IBaseObject, Interface)
     class SerializeToJson(object):
@@ -59,7 +58,7 @@ if HAS_AT:
 
             for field in obj.Schema().fields():
 
-                if 'r' not in field.mode or not field.checkPermission('r', obj):
+                if 'r' not in field.mode or not field.checkPermission('r', obj):  # noqa: E501
                     continue
 
                 name = field.getName()
@@ -77,7 +76,6 @@ if HAS_AT:
             review_state = wftool.getInfoFor(
                 ob=obj, name='review_state', default=None)
             return review_state
-
 
     @implementer(ISerializeToJson)
     @adapter(IBaseFolder, Interface)
@@ -97,7 +95,8 @@ if HAS_AT:
             folder_metadata.update({'is_folderish': True})
             result = folder_metadata
 
-            include_items = self.request.form.get('include_items', include_items)
+            include_items = self.request.form.get(
+                'include_items', include_items)
             include_items = boolean_value(include_items)
             if include_items:
                 query = self._build_query()

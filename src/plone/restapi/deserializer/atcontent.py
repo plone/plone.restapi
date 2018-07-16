@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.restapi import HAS_AT
 
-if HAS_AT:
+if HAS_AT:  # noqa: C901
     from Products.Archetypes.event import ObjectEditedEvent
     from Products.Archetypes.event import ObjectInitializedEvent
     from Products.Archetypes.interfaces import IBaseObject
@@ -19,7 +19,6 @@ if HAS_AT:
     from zope.interface import implementer
 
     from .mixins import OrderingMixin
-
 
     @implementer(IDeserializeFromJson)
     @adapter(IBaseObject, Interface)
@@ -45,8 +44,8 @@ if HAS_AT:
                 name = field.getName()
 
                 if name in data:
-                    deserializer = queryMultiAdapter((field, obj, self.request),
-                                                     IFieldDeserializer)
+                    deserializer = queryMultiAdapter(
+                        (field, obj, self.request), IFieldDeserializer)
                     if deserializer is None:
                         continue
                     value, kwargs = deserializer(data[name])
@@ -89,10 +88,10 @@ if HAS_AT:
         def validate(self):
             # Instead of calling P.Archetypes.BaseObject.validate() we have to
             # provide a custom validation implementation here because some
-            # validators extract the field value from the request. However a JSON
-            # API request does not contain any form values in the request.
-            # Thus we fake a request that extracts form values from the object on
-            # demand.
+            # validators extract the field value from the request. However a
+            # JSON API request does not contain any form values in the request.
+            # Thus we fake a request that extracts form values from the object
+            # on demand.
 
             obj = self.context
             request = ValidationRequest(self.request, obj)
@@ -125,7 +124,6 @@ if HAS_AT:
 
             return errors
 
-
     class ValidationRequest(dict):
         """A fake request for validation purposes.
         """
@@ -148,7 +146,6 @@ if HAS_AT:
                 return self[key]
             except KeyError:
                 return default
-
 
     class ValidationRequestForm(dict):
         """A request form dict that returns values from the content object.

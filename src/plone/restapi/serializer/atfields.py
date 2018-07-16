@@ -27,7 +27,6 @@ if HAS_AT:
     else:
         from plone.app.collection.field import IQueryField
 
-
     @adapter(IField, IBaseObject, Interface)
     @implementer(IFieldSerializer)
     class DefaultFieldSerializer(object):
@@ -40,7 +39,6 @@ if HAS_AT:
         def __call__(self):
             accessor = self.field.getAccessor(self.context)
             return json_compatible(accessor())
-
 
     @adapter(IFileField, IBaseObject, Interface)
     @implementer(IFieldSerializer)
@@ -58,20 +56,19 @@ if HAS_AT:
             }
             return json_compatible(result)
 
-
     @adapter(ITextField, IBaseObject, Interface)
     @implementer(IFieldSerializer)
     class TextFieldSerializer(DefaultFieldSerializer):
 
         def __call__(self):
-            mimetypes_registry = getToolByName(self.context, 'mimetypes_registry')
+            mimetypes_registry = getToolByName(
+                self.context, 'mimetypes_registry')
             data = super(TextFieldSerializer, self).__call__()
             return {
                 'content-type': json_compatible(
                     mimetypes_registry(data)[2].normalized()),
                 'data': data
             }
-
 
     @adapter(IImageField, IBaseObject, Interface)
     @implementer(IFieldSerializer)
@@ -98,18 +95,15 @@ if HAS_AT:
             }
             return json_compatible(result)
 
-
     @adapter(IBlobField, IBaseObject, Interface)
     @implementer(IFieldSerializer)
     class BlobFieldSerializer(FileFieldSerializer):
         pass
 
-
     @adapter(IBlobImageField, IBaseObject, Interface)
     @implementer(IFieldSerializer)
     class BlobImageFieldSerializer(ImageFieldSerializer):
         pass
-
 
     @adapter(IReferenceField, IBaseObject, Interface)
     @implementer(IFieldSerializer)
@@ -124,7 +118,6 @@ if HAS_AT:
                 if refs is None:
                     return None
                 return json_compatible(refs.absolute_url())
-
 
     @adapter(IQueryField, IBaseObject, Interface)
     @implementer(IFieldSerializer)

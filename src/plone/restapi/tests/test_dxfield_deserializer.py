@@ -354,8 +354,9 @@ class TestDXFieldDeserializer(unittest.TestCase):
             'DXTestDocument', id='doc2', title='Referenceable Document')]
         doc3 = self.portal[self.portal.invokeFactory(
             'DXTestDocument', id='doc3', title='Referenceable Document')]
-        value = self.deserialize('test_relationlist_field',
-                                 [six.text_type(doc2.UID()), six.text_type(doc3.UID())])
+        value = self.deserialize(
+            'test_relationlist_field',
+            [six.text_type(doc2.UID()), six.text_type(doc3.UID())])
         self.assertTrue(isinstance(value, list), 'Not a <list>')
         self.assertEqual(doc2, value[0])
         self.assertEqual(doc3, value[1])

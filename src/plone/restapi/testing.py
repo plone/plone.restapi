@@ -298,10 +298,9 @@ if HAS_AT:
             applyProfile(portal, 'plone.restapi:testing')
             set_available_languages()
             enable_request_language_negotiation(portal)
-            portal.portal_workflow.setDefaultChain("simple_publication_workflow")
-            states = portal.portal_workflow['simple_publication_workflow'].states
-            states['published'].title = u'Published with accent é'.encode('utf8')
-
+            portal.portal_workflow.setDefaultChain('simple_publication_workflow')  # noqa: E501
+            states = portal.portal_workflow['simple_publication_workflow'].states  # noqa: E501
+            states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
 
     PLONE_RESTAPI_AT_FIXTURE = PloneRestApiATLayer()
     PLONE_RESTAPI_AT_INTEGRATION_TESTING = IntegrationTesting(

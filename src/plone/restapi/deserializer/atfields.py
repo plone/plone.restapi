@@ -14,7 +14,6 @@ if HAS_AT:
     from zope.interface import implementer
     from zope.publisher.interfaces.browser import IBrowserRequest
 
-
     @implementer(IFieldDeserializer)
     @adapter(IField, IBaseObject, IBrowserRequest)
     class DefaultFieldDeserializer(object):
@@ -26,7 +25,6 @@ if HAS_AT:
 
         def __call__(self, value):
             return value, {}
-
 
     @implementer(IFieldDeserializer)
     @adapter(IFileField, IBaseObject, IBrowserRequest)
@@ -53,12 +51,10 @@ if HAS_AT:
 
             return value, kwargs
 
-
     @implementer(IFieldDeserializer)
     @adapter(IBlobField, IBaseObject, IBrowserRequest)
     class BlobFieldDeserializer(FileFieldDeserializer):
         pass
-
 
     @implementer(IFieldDeserializer)
     @adapter(IReferenceField, IBaseObject, IBrowserRequest)
