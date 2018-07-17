@@ -20,6 +20,12 @@ Bugfixes:
 - Make setup.py require plone.behavior >= 1.1. This fixes #575.
   [timo]
 
+- Fixes ``test_search`` to work with bug fixed ``plone.indexer``.
+  Now ``DXTestDocument`` explicit got an attribute ``exclude_from_nav``.
+  This fixes `issue 579 <https://github.com/plone/plone.restapi/issues/579>`_.
+  Refers to `Products.CMFPlone Issue 2469 <https://github.com/plone/Products.CMFPlone/issues/2469>`_
+  [jensens]
+
 
 3.2.1 (2018-06-28)
 ------------------
