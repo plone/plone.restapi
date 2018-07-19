@@ -4,7 +4,11 @@ Changelog
 3.2.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+New Features:
+
+- Return member fields based on user schema in `@users` endpoint instead of a
+  fixed list of member properties.
+  [buchi]
 
 
 3.2.2 (2018-07-19)
@@ -111,10 +115,6 @@ New Features:
 
 - Enhance `@workflow` endpoint to support applying transitions to all contained
   items and to set effective and expiration dates.
-  [buchi]
-
-- Return member fields based on user schema in `@users` endpoint instead of a
-  fixed list of member properties.
   [buchi]
 
 Bugfixes:
