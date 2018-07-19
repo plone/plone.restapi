@@ -8,6 +8,7 @@ exclude *.in
 exclude *.jmx
 exclude *.yaml
 exclude .coveragerc
+exclude .editorconfig
 exclude Dockerfile
 exclude Makefile
 exclude bootstrap-buildout.py
