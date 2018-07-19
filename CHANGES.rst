@@ -107,6 +107,10 @@ New Features:
   items and to set effective and expiration dates.
   [buchi]
 
+- Return member fields based on user schema in `@users` endpoint instead of a
+  fixed list of member properties.
+  [buchi]
+
 Bugfixes:
 
 - Make sure DX DefaultFieldDeserializer validates field values.

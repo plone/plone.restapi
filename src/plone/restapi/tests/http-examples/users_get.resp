@@ -9,6 +9,7 @@ Content-Type: application/json
   "home_page": "web.mit.edu/chomsky", 
   "id": "noam", 
   "location": "Cambridge, MA", 
+  "portrait": null, 
   "roles": [
     "Member"
   ], 
