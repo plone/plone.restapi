@@ -1,7 +1,14 @@
 graft src/plone/restapi
 graft docs
 include *.rst
+include *.txt
 exclude *.cfg
 exclude *.yml
+exclude *.in
+exclude *.jmx
+exclude *.yaml
+exclude .coveragerc
+exclude Dockerfile
+exclude Makefile
 exclude bootstrap-buildout.py
 global-exclude *.pyc
