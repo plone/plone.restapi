@@ -25,6 +25,8 @@ setup(name='plone.restapi',
           "Framework :: Plone :: 5.0",
           "Framework :: Plone :: 5.1",
           "Intended Audience :: Developers",
+          "License:: OSI Approved:: GNU General Public License(GPL)",
+          "License:: OSI Approved:: GNU General Public License v2(GPLv2)",
           "Operating System :: OS Independent",
           "Programming Language :: Python",
           "Programming Language :: Python :: 2.7",
@@ -43,9 +45,9 @@ setup(name='plone.restapi',
       install_requires=[
           'setuptools',
           'python-dateutil',
-          'plone.behavior>=1.1',  # adds name to behavior directive 
+          'plone.behavior>=1.1',  # adds name to behavior directive
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
-          'plone.schema >= 1.2.0',  # new json field          
+          'plone.schema >= 1.2.0',  # new json field
           'PyJWT',
           'pytz',
       ],

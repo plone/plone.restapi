@@ -6,6 +6,9 @@ Changelog
 
 Bugfixes:
 
+- Add license classifiers to setup.py.
+  [timo]
+
 - Do not include HTTP examples using data_files anymore, but move them below
   src/plone/restapi instead and use package_data to include them.
   [lgraf]
