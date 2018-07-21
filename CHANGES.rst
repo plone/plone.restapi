@@ -4,7 +4,8 @@ Changelog
 3.3.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add tiles profile.
+  [timo]
 
 
 3.3.0 (2018-07-20)
