@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<import-steps>
+ <import-step id="plone.restapi" version="20180721-01"
+              handler="plone.restapi.tests.tiles.step_setup_content"
+              title="plone.restapi with Tiles">
+    Tiles installation step.
+ </import-step>
+</import-steps>
