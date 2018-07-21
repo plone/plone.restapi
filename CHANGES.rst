@@ -4,11 +4,16 @@ Changelog
 3.4.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Make sure the default profile is installed on tiles profile installation.
+  [timo]
 
 
 3.4.0 (2018-07-21)
 ------------------
+
+New Features:
 
 - Add tiles profile.
   [timo]

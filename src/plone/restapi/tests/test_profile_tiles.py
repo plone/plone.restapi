@@ -5,6 +5,7 @@ from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.restapi.testing import PLONE_RESTAPI_TILES_INTEGRATION_TESTING
 from plone.restapi.behaviors import ITiles
+from Products.CMFCore.utils import getToolByName
 
 import unittest
 
@@ -27,3 +28,7 @@ class TestProfileTiles(unittest.TestCase):
             title='Document with Tiles'
         )
         ITiles.providedBy(self.portal['tileddoc'])
+
+    def test_plone_restapi_base_profile_applied(self):
+        uf = getToolByName(self.portal, 'acl_users')
+        self.assertTrue('jwt_auth' in uf)
