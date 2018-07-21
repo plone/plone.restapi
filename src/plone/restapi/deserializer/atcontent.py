@@ -24,11 +24,13 @@ class DeserializeFromJson(OrderingMixin, object):
     """JSON deserializer for Archetypes content types
     """
 
+    notifies_create = True
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
-    def __call__(self, validate_all=False, data=None):
+    def __call__(self, validate_all=False, data=None, create=False):
         if data is None:
             data = json_body(self.request)
 
@@ -62,8 +64,9 @@ class DeserializeFromJson(OrderingMixin, object):
                     'error': 'ValidationError'} for f, e in errors.items()]
                 raise BadRequest(errors)
 
-            if obj.checkCreationFlag():
-                obj.unmarkCreationFlag()
+            if create:
+                if obj.checkCreationFlag():
+                    obj.unmarkCreationFlag()
                 notify(ObjectInitializedEvent(obj))
                 obj.at_post_create_script()
             else:

@@ -47,11 +47,11 @@ A JWT token can be acquired by posting a user's credentials to the ``@login``
 endpoint.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/jwt_login.req
+    :request: ../../src/plone/restapi/tests/http-examples/jwt_login.req
 
 The server responds with a JSON object containing the token.
 
-.. literalinclude:: _json/jwt_login.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/jwt_login.resp
    :language: http
 
 Authenticating with a token
@@ -61,7 +61,7 @@ The token can now be used in subsequent requests by including it in the
 ``Authorization`` header with the ``Bearer`` scheme:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/jwt_logged_in.req
+    :request: ../../src/plone/restapi/tests/http-examples/jwt_logged_in.req
 
 
 Renewing a token (@login-renew)
@@ -71,11 +71,11 @@ By default the token will expire after 12 hours and thus must be renewed before
 expiration. To renew the token simply post to the ``@login-renew`` endpoint.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/jwt_login_renew.req
+    :request: ../../src/plone/restapi/tests/http-examples/jwt_login_renew.req
 
 The server returns a JSON object with a new token:
 
-.. literalinclude:: _json/jwt_login_renew.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/jwt_login_renew.resp
    :language: http
 
 Invalidating a token (@logout)
@@ -90,11 +90,11 @@ keyring in the PAS plugin (option ``use_keyring``).
 The logout request must contain the existing token in the ``Authorization`` header.
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/jwt_logout.req
+    :request: ../../src/plone/restapi/tests/http-examples/jwt_logout.req
 
 If invalidation succeeds, the server responds with an empty 204 reponse:
 
-.. literalinclude:: _json/jwt_logout.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/jwt_logout.resp
    :language: http
 
 Permissions

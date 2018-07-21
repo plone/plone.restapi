@@ -268,7 +268,7 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
         # Response should contain canonical URL without batching params
         self.assertEqual(
             response.json()['@id'],
-            u'http://localhost:55001/plone/')
+            self.portal_url + u'/')
 
     def test_contains_batching_links(self):
         # Fetch the second page of the batch

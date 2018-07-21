@@ -45,6 +45,7 @@ Contents
    tusupload
    vocabularies
    controlpanels
+   tiles
    customization
    conventions
    translations

@@ -1,7 +1,111 @@
 Changelog
 =========
 
-2.1.1 (unreleased)
+3.3.1 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
+3.3.0 (2018-07-20)
+------------------
+
+New Features:
+
+- Return member fields based on user schema in `@users` endpoint instead of a
+  fixed list of member properties.
+  [buchi]
+
+
+3.2.2 (2018-07-19)
+------------------
+
+Bugfixes:
+
+- Do not include HTTP examples using data_files anymore, but move them below
+  src/plone/restapi instead and use package_data to include them.
+  [lgraf]
+
+- Rename Dexterity content before adding it to a container.
+  [buchi]
+
+- Avoid hard dependency on Archetypes introduced in 3.0.0.
+  This fixes `issue 570 <https://github.com/plone/plone.restapi/issues/570>`_.
+  [buchi]
+
+- Make setup.py require plone.behavior >= 1.1. This fixes #575.
+  [timo]
+
+- Fixes ``test_search`` to work with bug fixed ``plone.indexer``.
+  Now ``DXTestDocument`` explicit got an attribute ``exclude_from_nav``.
+  This fixes `issue 579 <https://github.com/plone/plone.restapi/issues/579>`_.
+  Refers to `Products.CMFPlone Issue 2469 <https://github.com/plone/Products.CMFPlone/issues/2469>`_
+  [jensens]
+
+
+3.2.1 (2018-06-28)
+------------------
+
+Bugfixes:
+
+- Require plone.schema >= 1.2.0 in setup.py for new tiles endpoint.
+  [timo]
+
+3.2.0 (2018-06-28)
+------------------
+
+New Features:
+
+- Add tiles endpoint for getting all available content tiles and its JSONSchema.
+  [sneridagh]
+
+- Add a tiles behavior to support the new tiles implementation for plone.restapi.
+  [sneridagh]
+
+- Make sure to include HTTP examples in installed egg, so test_documentation
+  tests also work against a installed release of plone.restapi.
+  [lgraf]
+
+
+3.1.0 (2018-06-27)
+------------------
+
+New Features:
+
+- Plone 5.2 compatibility.
+  [sunew, davisagli, timo]
+
+
+3.0.0 (2018-06-26)
+------------------
+
+Breaking Changes:
+
+- Fix object creation events. Before this fix, creation events were fired on
+  empty not yet deserialized objects. Also a modified event was fired after
+  deserializing e newly created object.
+  Custom content deserializers now must handle the `create` keyword argument,
+  which determines if deserialization is performed during object creation or
+  while updating an object.
+  [buchi]
+
+- Include translated role titles in `@sharing` GET.
+  [lgraf]
+
+- Image URLs are now created using the cache optimized way. Fixes #494.
+  [erral]
+
+
+2.2.1 (2018-06-25)
+------------------
+
+Bugfixes:
+
+- Fix ReST on PyPi.
+  [timo]
+
+
+2.2.0 (2018-06-25)
 ------------------
 
 New Features:
@@ -11,6 +115,9 @@ New Features:
   [csenger]
 
 - Document the use of the `Accept-Language` HTTP header.
+  [erral]
+
+- Translate FTI titles on `@types` endpoint. Fixes #337.
   [erral]
 
 - Translate action name, workflow state and transition names in @history endpoint.
@@ -40,12 +147,8 @@ Bugfixes:
 
 New Features:
 
-- Translate FTI titles on `@types` endpoint. Fixes #337.
-  [erral]
-
 - Include translated role title in `@roles` GET.
   [lgraf]
-
 
 
 2.0.1 (2018-06-22)

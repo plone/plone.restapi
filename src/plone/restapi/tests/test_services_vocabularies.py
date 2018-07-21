@@ -62,12 +62,12 @@ class TestVocabularyEndpoint(unittest.TestCase):
         response = response.json()
         self.assertEqual(
             response,
-            {u'@id': u'http://localhost:55001/plone/@vocabularies/''plone.restapi.tests.test_vocabulary',  # noqa
+            {u'@id': self.portal_url + u'/@vocabularies/''plone.restapi.tests.test_vocabulary',  # noqa
              u'terms': [
-                 {u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary/token1',  # noqa
+                 {u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary/token1',  # noqa
                   u'title': u'Title 1',
                   u'token': u'token1'},
-                 {u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary/token2',  # noqa
+                 {u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary/token2',  # noqa
                   u'title': u'Title 2',
                   u'token': u'token2'}]})
 
@@ -94,7 +94,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             [
                 {
-                    u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
+                    u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
                     u'title': u'plone.restapi.tests.test_vocabulary'
                 }
             ],
@@ -128,12 +128,12 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                u'@id': u'http://localhost:55001/plone/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary',  # noqa
+                u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary',  # noqa
                 u'terms': [
-                    {u'@id': u'http://localhost:55001/plone/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/id',  # noqa
+                    {u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/id',  # noqa
                      u'title': u'testdoc',
                      u'token': u'id'},
-                    {u'@id': u'http://localhost:55001/plone/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/title',  # noqa
+                    {u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/title',  # noqa
                      u'title': u'Document 1',
                      u'token': u'title'}]
             })

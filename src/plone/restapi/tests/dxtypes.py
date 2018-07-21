@@ -145,6 +145,10 @@ class IDXTestDocumentSchema(model.Schema):
 class DXTestDocument(Item):
     """A Dexterity based test type containing a set of standard fields."""
 
+    # Plone standard types (both, dx and at) do provide exclude_from_nav
+    # and at least one test expect it to be here, so make it explicit
+    exclude_from_nav = False
+
 
 @provider(IFormFieldProvider)
 class ITestBehavior(model.Schema):

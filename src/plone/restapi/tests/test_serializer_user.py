@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone import api
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.serializer.user import HAS_TTW_SCHEMAS
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
 
@@ -60,3 +61,33 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
         self.assertIn('groups', user)
         self.assertNotIn('AuthenticatedUsers', user['groups'])
         self.assertEqual(user['groups'][0]['id'], 'philosophers')
+
+    @unittest.skipUnless(HAS_TTW_SCHEMAS, 'Requires TTW user schemas')
+    def test_serialize_custom_member_schema(self):
+        from plone.app.users.browser.schemaeditor import applySchema
+        member_schema = """
+            <model xmlns="http://namespaces.plone.org/supermodel/schema"
+                xmlns:form="http://namespaces.plone.org/supermodel/form"
+                xmlns:users="http://namespaces.plone.org/supermodel/users"
+                xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+                i18n:domain="plone">
+              <schema name="member-fields">
+                <field name="twitter" type="zope.schema.TextLine"
+                         users:forms="In User Profile">
+                  <description i18n:translate="help_twitter">
+                    Twitter account
+                  </description>
+                  <required>False</required>
+                  <title i18n:translate="label_twitter">Twitter Account</title>
+                </field>
+              </schema>
+            </model>
+        """
+        applySchema(member_schema)
+        user = api.user.create(
+            email='donald.duck@example.com',
+            username='donald',
+            properties={'twitter': 'TheRealDuck'})
+        res = self.serialize(user)
+        self.assertIn('twitter', res)
+        self.assertEqual(res['twitter'], 'TheRealDuck')

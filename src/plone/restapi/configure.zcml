@@ -2,7 +2,9 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
     xmlns:i18n="http://namespaces.zope.org/i18n"
+    xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="plone.restapi">
 
   <i18n:registerTranslations directory="locales" />
@@ -62,6 +64,20 @@
   <include package=".search" />
 
   <include package=".upgrades" />
+
+  <configure zcml:condition="installed plone.app.dexterity">
+
+    <include package="plone.behavior" file="meta.zcml"/>
+
+    <plone:behavior
+        name="plone.tiles"
+        title="Tiles"
+        description="Existing tiles on the object and their layout"
+        provides=".behaviors.ITiles"
+        for="plone.dexterity.interfaces.IDexterityContent"
+      />
+
+  </configure>
 
   <utility
       factory=".setuphandlers.HiddenProfiles"

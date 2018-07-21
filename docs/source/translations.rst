@@ -29,7 +29,7 @@ endpoint including the `id` of the content which should be linked to. The
 
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/translations_post.req
+    :request: ../../src/plone/restapi/tests/http-examples/translations_post.req
 
 
 .. note::
@@ -38,7 +38,7 @@ endpoint including the `id` of the content which should be linked to. The
 The API will return a `201 Created` response if the linking was successful.
 
 
-.. literalinclude:: _json/translations_post.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translations_post.resp
    :language: http
 
 
@@ -47,9 +47,9 @@ content item by issuing a ``GET`` request on the `@translations` endpoint of
 that content item.:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/translations_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/translations_get.req
 
-.. literalinclude:: _json/translations_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translations_get.resp
    :language: http
 
 
@@ -58,12 +58,12 @@ endpoint of the content item and provide the language code you want to unlink.:
 
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/translations_delete.req
+    :request: ../../src/plone/restapi/tests/http-examples/translations_delete.req
 
 .. note::
     "language" is a required field.
 
-.. literalinclude:: _json/translations_delete.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translations_delete.resp
    :language: http
 
 

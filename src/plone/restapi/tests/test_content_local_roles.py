@@ -114,6 +114,21 @@ class TestFolderCreate(unittest.TestCase):
         roles = roles[0]['roles']
         self.assertEqual(new_roles, roles)
 
+    def test_sharing_titles_are_translated(self):
+        response = requests.get(
+            self.portal.folder1.absolute_url() + '/@sharing',
+            headers={'Accept': 'application/json',
+                     'Accept-Language': 'de'},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        available_roles = response.json()['available_roles']
+        self.assertEqual([
+            {u'id': u'Contributor', u'title': u'Kann hinzuf\xfcgen'},
+            {u'id': u'Editor', u'title': u'Kann bearbeiten'},
+            {u'id': u'Reader', u'title': u'Kann ansehen'},
+            {u'id': u'Reviewer', u'title': u'Kann ver\xf6ffentlichen'}],
+            available_roles)
+
     def test_sharing_requires_delegate_roles_permission(self):
         '''A response for an object without any roles assigned'''
         response = requests.get(
@@ -134,7 +149,11 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
-            {u'available_roles': [u'Contributor', u'Editor', u'Reviewer', u'Reader'],  # noqa
+            {u'available_roles': [
+                {u'id': u'Contributor', u'title': u'Can add'},
+                {u'id': u'Editor', u'title': u'Can edit'},
+                {u'id': u'Reader', u'title': u'Can view'},
+                {u'id': u'Reviewer', u'title': u'Can review'}],
              u'entries': [{
                  u'disabled': False,
                  u'id': u'AuthenticatedUsers',
@@ -163,7 +182,11 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
-            {u'available_roles': [u'Contributor', u'Editor', u'Reviewer', u'Reader'],  # noqa
+            {u'available_roles': [
+                {u'id': u'Contributor', u'title': u'Can add'},
+                {u'id': u'Editor', u'title': u'Can edit'},
+                {u'id': u'Reader', u'title': u'Can view'},
+                {u'id': u'Reviewer', u'title': u'Can review'}],
              u'entries': [
                 {
                     u'disabled': False,
@@ -320,7 +343,8 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         response = response.json()
         self.assertIn('available_roles', response)
-        self.assertIn('Reader', response['available_roles'])
+        self.assertIn({'id': 'Reader', 'title': 'Can view'},
+                      response['available_roles'])
 
     def test_inherited_global(self):
         api.user.grant_roles(username=TEST_USER_ID, roles=['Reviewer'])

@@ -38,11 +38,11 @@ in the reponse of any content GET request::
 Request Unexpanded:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/expansion.req
+    :request: ../../src/plone/restapi/tests/http-examples/expansion.req
 
 Response Unexpanded:
 
-.. literalinclude:: _json/expansion.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/expansion.resp
    :language: http
 
 In order to expand and embed one or more components, use the "expand" GET
@@ -87,19 +87,19 @@ component::
 Request Expanded:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/expansion_expanded.req
+    :request: ../../src/plone/restapi/tests/http-examples/expansion_expanded.req
 
 Response Expanded:
 
-.. literalinclude:: _json/expansion_expanded.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/expansion_expanded.resp
    :language: http
 
 Here is an exaxmple of a request that expands all possible expansions:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/expansion_expanded_full.req
+    :request: ../../src/plone/restapi/tests/http-examples/expansion_expanded_full.req
 
 And the response:
 
-.. literalinclude:: _json/expansion_expanded_full.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/expansion_expanded_full.resp
    :language: http
