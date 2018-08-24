@@ -5,6 +5,7 @@ from AccessControl import getSecurityManager
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from Products.CMFPlone.utils import getFSVersionTuple
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.permissions import AddPortalMember
 from Products.CMFCore.permissions import SetOwnPassword
@@ -31,6 +32,8 @@ except ImportError:   # pragma: no cover
     # Plone 5.0 and earlier
     from Products.PasswordResetTool.PasswordResetTool import ExpiredRequestError  # noqa
     from Products.PasswordResetTool.PasswordResetTool import InvalidRequestError  # noqa
+
+PLONE5 = getFSVersionTuple()[0] >= 5
 
 
 class UsersPost(Service):
@@ -151,22 +154,36 @@ class UsersPost(Service):
         send_password_reset = data.pop('sendPasswordReset', None)
         properties = data
 
-        user_id_login_name_data = {
-            'username': username,
-            'email': email,
-            'fullname': data.get('fullname', '')
-        }
+        if PLONE5:
+            # We are improving the way the userid/login_name is generated using
+            # Plone's plone.app.users utilities directly. Plone 4 lacks of the
+            # login_name one, so we leave it as it is, improving the Plone 5
+            # story
+            user_id_login_name_data = {
+                'username': username,
+                'email': email,
+                'fullname': data.get('fullname', '')
+            }
 
-        register_view = getMultiAdapter(
-            (self.context, self.request), name='register')
+            register_view = getMultiAdapter(
+                (self.context, self.request), name='register')
 
-        register_view.generate_user_id(user_id_login_name_data)
-        register_view.generate_login_name(user_id_login_name_data)
+            register_view.generate_user_id(user_id_login_name_data)
+            register_view.generate_login_name(user_id_login_name_data)
 
-        user_id = user_id_login_name_data.get('user_id', data.get('username'))
-        login_name = user_id_login_name_data.get('login_name', data.get('username'))  # noqa
+            user_id = user_id_login_name_data.get('user_id', data.get('username')) # noqa
+            login_name = user_id_login_name_data.get('login_name', data.get('username'))  # noqa
 
-        properties['username'] = user_id
+            username = user_id
+            properties['username'] = user_id
+        else:
+            # set username based on the login settings (username or email)
+            if security.use_email_as_login:
+                username = email
+                properties['username'] = email
+            else:
+                properties['username'] = username
+
         properties['email'] = email
 
         if not self.can_manage_users and not security.enable_user_pwd_choice:
@@ -177,7 +194,7 @@ class UsersPost(Service):
         try:
             registration = getToolByName(portal, 'portal_registration')
             user = registration.addMember(
-                user_id,
+                username,
                 password,
                 roles,
                 properties=properties
@@ -188,17 +205,21 @@ class UsersPost(Service):
                 type='MissingParameterError',
                 message=str(e.message)))
 
-        if user_id != login_name:
-            # The user id differs from the login name.  Set the login
-            # name correctly.
-            pas = getToolByName(self.context, 'acl_users')
-            pas.updateLoginName(user_id, login_name)
+        if PLONE5:
+            # After user creation, we have to fix the login_name if it differs.
+            # That happens when the email login is enabled and we are using
+            # UUID as user ID security settings.
+            if user_id != login_name:
+                # The user id differs from the login name.  Set the login
+                # name correctly.
+                pas = getToolByName(self.context, 'acl_users')
+                pas.updateLoginName(user_id, login_name)
 
         if send_password_reset:
-            registration.registeredNotify(user_id)
+            registration.registeredNotify(username)
         self.request.response.setStatus(201)
         self.request.response.setHeader(
-            'Location', portal.absolute_url() + '/@users/' + user_id
+            'Location', portal.absolute_url() + '/@users/' + username
         )
         serializer = queryMultiAdapter(
             (user, self.request),
