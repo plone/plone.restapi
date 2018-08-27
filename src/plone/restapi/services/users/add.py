@@ -166,13 +166,21 @@ class UsersPost(Service):
             }
 
             register_view = getMultiAdapter(
-                (self.context, self.request), name='register')
+                (self.context, self.request),
+                name='register'
+            )
 
             register_view.generate_user_id(user_id_login_name_data)
             register_view.generate_login_name(user_id_login_name_data)
 
-            user_id = user_id_login_name_data.get('user_id', data.get('username')) # noqa
-            login_name = user_id_login_name_data.get('login_name', data.get('username'))  # noqa
+            user_id = user_id_login_name_data.get(
+                'user_id',
+                data.get('username')
+            )
+            login_name = user_id_login_name_data.get(
+                'login_name',
+                data.get('username')
+            )
 
             username = user_id
             properties['username'] = user_id
