@@ -4,7 +4,12 @@ Changelog
 3.4.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Add missing "Use UUID as user ID" support to POST @users endpoint on user creation.
+  Also improve the userid/username chooser by using the same process as Plone does.
+  This fixes: https://github.com/plone/plone.restapi/issues/586
+  [sneridagh]
 
 
 3.4.1 (2018-07-22)
