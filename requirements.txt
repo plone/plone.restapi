@@ -18,7 +18,7 @@ Pygments==2.2.0
 pyparsing==2.1.10
 pytz==2017.3
 requests==2.18.4
-six==1.10.0
+six==1.11.0
 snowballstemmer==1.2.1
 Sphinx==1.6.5
 sphinx-rtd-theme==0.2.4
