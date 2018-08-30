@@ -6,7 +6,7 @@ alabaster==0.7.10
 appdirs==1.4.2
 astunparse==1.5.0
 Babel==2.5.1
-certifi==2017.11.5
+certifi==2018.8.24
 chardet==3.0.4
 docutils==0.14
 idna==2.6
