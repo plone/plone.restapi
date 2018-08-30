@@ -1,2 +1,2 @@
-sphinxcontrib-httpdomain
+sphinxcontrib-httpdomain==1.7.0
 sphinxcontrib-httpexample
