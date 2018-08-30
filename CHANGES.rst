@@ -4,7 +4,10 @@ Changelog
 3.4.3 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Add "Use UUID as user ID" support for password resets
+  [sneridagh]
 
 
 3.4.2 (2018-08-27)

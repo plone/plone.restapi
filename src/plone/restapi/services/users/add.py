@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from AccessControl import getSecurityManager
-
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
-from Products.CMFPlone.utils import getFSVersionTuple
-from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.permissions import AddPortalMember
 from Products.CMFCore.permissions import SetOwnPassword
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.RegistrationTool import get_member_by_login_name
+from Products.CMFPlone.utils import getFSVersionTuple
 from zope.component import getAdapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
@@ -240,6 +240,10 @@ class UsersPost(Service):
         portal_membership = getToolByName(portal, 'portal_membership')
         return portal_membership.getMemberById(user_id)
 
+    def _get_user_by_login_name(self, user_id):
+        return get_member_by_login_name(
+            self.context, user_id, raise_exceptions=False)
+
     def _error(self, status, type, message):
         self.request.response.setStatus(status)
         return {'error': {'type': type,
@@ -273,8 +277,16 @@ class UsersPost(Service):
         pwt = getToolByName(self.context, 'portal_password_reset')
 
         if target_user is None:
-            self.request.response.setStatus(404)
-            return
+            portal = getSite()
+            security = getAdapter(portal, ISecuritySchema)
+            if PLONE5 and security.use_uuid_as_userid:
+                target_user = self._get_user_by_login_name(username)
+                if target_user is None:
+                    self.request.response.setStatus(404)
+                    return
+            else:
+                self.request.response.setStatus(404)
+                return
 
         # Send password reset mail
         if data.keys() == []:
