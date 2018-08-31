@@ -4,7 +4,12 @@ Changelog
 3.4.4 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Generalize the last bugfix solution for searching the userid on password
+  reset requests, matching it with Plone's one. This covers all the request
+  use cases.
+  [sneridagh]
 
 
 3.4.3 (2018-08-30)

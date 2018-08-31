@@ -267,7 +267,7 @@ class UsersPost(Service):
 
     def update_password(self, data):
         username = self.params[0]
-        target_user = self._get_user(username)
+        target_user = self._get_user_by_login_name(username)
         reset_token = data.get('reset_token', None)
         old_password = data.get('old_password', None)
         new_password = data.get('new_password', None)
@@ -277,16 +277,8 @@ class UsersPost(Service):
         pwt = getToolByName(self.context, 'portal_password_reset')
 
         if target_user is None:
-            portal = getSite()
-            security = getAdapter(portal, ISecuritySchema)
-            if PLONE5 and security.use_uuid_as_userid:
-                target_user = self._get_user_by_login_name(username)
-                if target_user is None:
-                    self.request.response.setStatus(404)
-                    return
-            else:
-                self.request.response.setStatus(404)
-                return
+            self.request.response.setStatus(404)
+            return
 
         # Send password reset mail
         if data.keys() == []:
