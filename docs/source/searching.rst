@@ -61,9 +61,11 @@ For example, to specify the ``depth`` query option for a path query, the origina
 
 This dictionary will need to be flattened in dotted notation in order to pass it in a query string:
 
-.. code-block:: http
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/search_options.req
 
-    GET /plone/@search?path.query=%2Ffolder&path.depth=2 HTTP/1.1
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/search_options.resp
+   :language: http
 
 Again, this is very similar to how `Record Arguments <http://docs.zope.org/zope2/zdgbook/ObjectPublishing.html?highlight=record#record-arguments>`_ are parsed by ZPublisher, except that you can omit the ``:record`` suffix.
 
@@ -95,10 +97,11 @@ Retrieving additional metadata
 By default the results are represented as summaries that only contain the most basic information about the items, like their URL and title.
 If you need to retrieve additional metadata columns, you can do so by specifying the additional column names in the ``metadata_fields`` parameter:
 
-.. code-block:: http
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/search_metadata_fields.req
 
-    GET /plone/@search?SearchableText=lorem&metadata_fields=modified HTTP/1.1
-    Accept: application/json
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/search_metadata_fields.resp
+   :language: http
 
 The metadata from those columns then will be included in the results.
 In order to specify multiple columns, simply repeat the query string parameter once for every column name (the ``requests`` module will do this automatically for you if you pass it a list of values for a query string parameter).
@@ -113,10 +116,11 @@ If the data provided as metadata is not enough, you can retrieve search results 
 
 You do so by specifying the ``fullobjects`` parameter:
 
-.. code-block:: http
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/search_fullobjects.req
 
-    GET /plone/@search?fullobjects&SearchableText=lorem HTTP/1.1
-    Accept: application/json
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/search_fullobjects.resp
+   :language: http
 
 .. warning::
 
