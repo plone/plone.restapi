@@ -53,6 +53,7 @@ Contents
    i18n
    email-notification
    upgrade-guide
+   contributing
 
 .. include:: ../../README.rst
 
