@@ -70,6 +70,24 @@ This dictionary will need to be flattened in dotted notation in order to pass it
 Again, this is very similar to how `Record Arguments <http://docs.zope.org/zope2/zdgbook/ObjectPublishing.html?highlight=record#record-arguments>`_ are parsed by ZPublisher, except that you can omit the ``:record`` suffix.
 
 
+Restricting search to multiple paths
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To restrict search to multiple paths, the original query as a Python dictionary would look like this (with an optional depth and sort_on)::
+
+    query = {'path': {'query': ('/folder', '/folder2'),
+                      'depth': 2},
+             'sort_on': 'path'}
+
+This dictionary will need to be flattened in dotted notation in order to pass it in a query string. In order to specify multiple paths, simply repeat the query string parameter (the ``requests`` module will do this automatically for you if you pass it a list of values for a query string parameter).
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/search_multiple_paths.req
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/search_multiple_paths.resp
+   :language: http
+
+
 Data types in queries
 ^^^^^^^^^^^^^^^^^^^^^
 

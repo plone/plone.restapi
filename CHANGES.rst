@@ -4,7 +4,10 @@ Changelog
 3.4.5 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Make search work with a path query containing a list of paths in a virtual hosting setting.
+  [sunew]
 
 
 3.4.4 (2018-08-31)
