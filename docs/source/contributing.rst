@@ -23,6 +23,6 @@ Include them in the documentation like this:
        :language: http
 
 
-Build the sphinx docs locally to test the rendering by running ``make html`` in the docs folder.
+Build the sphinx docs locally to test the rendering by running ``./bin/sphinxbuilder``.
 
 Make sure you add and commit the generated files in ``http-examples``.
