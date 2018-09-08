@@ -8,7 +8,7 @@ Content in a Plone site can be searched for by invoking the ``/@search`` endpoin
     GET /plone/@search HTTP/1.1
     Accept: application/json
 
-A search is **contextual** by default, i.e. it is bound to a specific collection and searches within that collection and any sub-collections.
+A search is **contextual** by default, i.e. it is bound to a specific context (a *collection* in HTTP REST terms) and searches within that collection and any sub-collections.
 
 Since a Plone site is also a collection, we therefore have a global search (by invoking the ``/@search`` endpoint on the site root) and contextual searches (by invoking that endpoint on any other context) all using the same pattern.
 
@@ -24,6 +24,17 @@ Search results are represented similar to collections:
 
 The default representation for search results is a summary that contains only the most basic information.
 In order to return specific metadata columns, see the documentation of the ``metadata_fields`` parameter below.
+
+.. note::
+        A search invoked on a container will by default **include that container
+        itself** as part of the search results. This is the same behavior as displayed by
+        ZCatalog, which is used internally.
+        If you add the query string
+        parameter ``depth=1`` to your search, you will only get **immediate**
+        children of the container, and the container itself also won't be part
+        of the results. See the Plone docs on
+        `searching for content within a folder <https://docs.plone.org/develop/plone/searching_and_indexing/query.html#searching-for-content-within-a-folder>`_.
+        for more details.
 
 .. note::
         Search results results will be **batched** if the size of the
