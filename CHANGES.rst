@@ -9,6 +9,9 @@ Bugfixes:
 - Make search work with a path query containing a list of paths in a virtual hosting setting.
   [sunew]
 
+- Fix serializing the Event type. Fixes https://github.com/plone/plone.restapi/issues/574
+  [davisagli]
+
 
 3.4.4 (2018-08-31)
 ------------------
