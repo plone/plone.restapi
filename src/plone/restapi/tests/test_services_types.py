@@ -112,6 +112,12 @@ class TestServicesTypes(unittest.TestCase):
         self.assertIn(
             'file.data', response['properties']['file']['properties'])
 
+    def test_event_type(self):
+        response = self.api_session.get('/@types/Event')
+        response = response.json()
+        self.assertIn('default', response['properties']['start'])
+        self.assertIn('default_timezone', response['properties']['start'])
+
     def test_addable_types_for_non_manager_user(self):
         user = api.user.create(
             email='noam.chomsky@example.com',
