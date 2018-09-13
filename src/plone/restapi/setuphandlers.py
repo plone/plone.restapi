@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from Acquisition import aq_inner
-from Acquisition import aq_parent
 from plone.restapi.pas.plugin import JWTAuthenticationPlugin
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import INonInstallable
@@ -27,20 +25,18 @@ class HiddenProfiles(object):
 
 
 def install_pas_plugin(context):
-    uf_parent = aq_inner(context)
-    while True:
-        uf = getToolByName(uf_parent, 'acl_users')
-        if 'jwt_auth' not in uf:
-            plugin = JWTAuthenticationPlugin('jwt_auth')
-            uf._setObject(plugin.getId(), plugin)
-            plugin = uf['jwt_auth']
-            plugin.manage_activateInterfaces([
-                'IAuthenticationPlugin',
-                'IExtractionPlugin',
-            ])
-        if uf_parent is uf_parent.getPhysicalRoot():
-            break
-        uf_parent = aq_parent(uf_parent)
+    uf = getToolByName(context, 'acl_users', None)
+    if uf is None:
+        return
+
+    if 'jwt_auth' not in uf:
+        plugin = JWTAuthenticationPlugin('jwt_auth')
+        uf._setObject(plugin.getId(), plugin)
+        plugin = uf['jwt_auth']
+        plugin.manage_activateInterfaces([
+            'IAuthenticationPlugin',
+            'IExtractionPlugin',
+        ])
 
 
 def import_various(context):
