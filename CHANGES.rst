@@ -7,7 +7,7 @@ Changelog
 Bugfixes:
 
 - Avoid ``AttributeError`` on add-on installation (fixes `#465 <https://github.com/plone/plone.restapi/issues/465>`_.
-  [hvelarde]
+  [lukasgraf, hvelarde]
 
 - Make search work with a path query containing a list of paths in a virtual hosting setting.
   [sunew]
