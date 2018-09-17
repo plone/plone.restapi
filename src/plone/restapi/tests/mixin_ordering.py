@@ -95,5 +95,5 @@ class OrderingMixin():
 
         self.assertEquals(
             u'Client/server ordering mismatch',
-            cm.exception.message
+            str(cm.exception)
         )

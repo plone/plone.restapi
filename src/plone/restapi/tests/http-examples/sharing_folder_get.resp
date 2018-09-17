@@ -4,36 +4,36 @@ Content-Type: application/json
 {
   "available_roles": [
     {
-      "id": "Contributor", 
+      "id": "Contributor",
       "title": "Can add"
-    }, 
+    },
     {
-      "id": "Editor", 
+      "id": "Editor",
       "title": "Can edit"
-    }, 
+    },
     {
-      "id": "Reader", 
+      "id": "Reader",
       "title": "Can view"
-    }, 
+    },
     {
-      "id": "Reviewer", 
+      "id": "Reviewer",
       "title": "Can review"
     }
-  ], 
+  ],
   "entries": [
     {
-      "disabled": false, 
-      "id": "AuthenticatedUsers", 
-      "login": null, 
+      "disabled": false,
+      "id": "AuthenticatedUsers",
+      "login": null,
       "roles": {
-        "Contributor": false, 
-        "Editor": false, 
-        "Reader": false, 
+        "Contributor": false,
+        "Editor": false,
+        "Reader": false,
         "Reviewer": false
-      }, 
-      "title": "Logged-in users", 
+      },
+      "title": "Logged-in users",
       "type": "group"
     }
-  ], 
+  ],
   "inherit": true
 }

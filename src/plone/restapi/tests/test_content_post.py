@@ -93,7 +93,7 @@ class TestFolderCreate(unittest.TestCase):
             },
         )
         self.assertEqual(400, response.status_code)
-        self.assertIn("Property '@type' is required", response.content)
+        self.assertIn("Property '@type' is required", response.text)
 
     def test_post_without_id_creates_id_from_title(self):
         response = requests.post(

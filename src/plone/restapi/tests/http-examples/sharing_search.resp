@@ -4,72 +4,72 @@ Content-Type: application/json
 {
   "available_roles": [
     {
-      "id": "Contributor", 
+      "id": "Contributor",
       "title": "Can add"
-    }, 
+    },
     {
-      "id": "Editor", 
+      "id": "Editor",
       "title": "Can edit"
-    }, 
+    },
     {
-      "id": "Reader", 
+      "id": "Reader",
       "title": "Can view"
-    }, 
+    },
     {
-      "id": "Reviewer", 
+      "id": "Reviewer",
       "title": "Can review"
     }
-  ], 
+  ],
   "entries": [
     {
-      "id": "Administrators", 
-      "login": null, 
+      "id": "Administrators",
+      "login": null,
       "roles": {
-        "Contributor": false, 
-        "Editor": false, 
-        "Reader": false, 
+        "Contributor": false,
+        "Editor": false,
+        "Reader": false,
         "Reviewer": false
-      }, 
-      "title": "Administrators", 
+      },
+      "title": "Administrators",
       "type": "group"
-    }, 
+    },
     {
-      "disabled": false, 
-      "id": "AuthenticatedUsers", 
-      "login": null, 
+      "disabled": false,
+      "id": "AuthenticatedUsers",
+      "login": null,
       "roles": {
-        "Contributor": false, 
-        "Editor": false, 
-        "Reader": false, 
+        "Contributor": false,
+        "Editor": false,
+        "Reader": false,
         "Reviewer": false
-      }, 
-      "title": "Logged-in users", 
+      },
+      "title": "Logged-in users",
       "type": "group"
-    }, 
+    },
     {
-      "id": "Site Administrators", 
-      "login": null, 
+      "id": "Site Administrators",
+      "login": null,
       "roles": {
-        "Contributor": false, 
-        "Editor": false, 
-        "Reader": false, 
+        "Contributor": false,
+        "Editor": false,
+        "Reader": false,
         "Reviewer": false
-      }, 
-      "title": "Site Administrators", 
+      },
+      "title": "Site Administrators",
       "type": "group"
-    }, 
+    },
     {
-      "disabled": true, 
-      "id": "admin", 
+      "disabled": true,
+      "id": "admin",
       "roles": {
-        "Contributor": "global", 
-        "Editor": "acquired", 
-        "Reader": false, 
+        "Contributor": "global",
+        "Editor": "acquired",
+        "Reader": false,
         "Reviewer": false
-      }, 
-      "title": "admin", 
+      },
+      "title": "admin",
       "type": "user"
     }
-  ], 
+  ],
   "inherit": true
 }

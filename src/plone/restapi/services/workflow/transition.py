@@ -69,7 +69,7 @@ class WorkflowTransition(Service):
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='WorkflowException',
-                message=translate(e.message, context=self.request)))
+                message=translate(str(e), context=self.request)))
         except BadRequest as e:
             self.request.response.setStatus(400)
             return dict(error=dict(

@@ -128,7 +128,7 @@ def save_request_and_response_for_docs(name, response):
 
             req.write(response.request.body)
 
-    with open('{}/{}'.format(base_path, '%s.resp' % name), 'wb') as resp:
+    with open('{}/{}'.format(base_path, '%s.resp' % name), 'w') as resp:
         status = response.status_code
         reason = response.reason
         resp.write('HTTP/1.1 {} {}\n'.format(status, reason))
@@ -136,7 +136,7 @@ def save_request_and_response_for_docs(name, response):
             if key.lower() in RESPONSE_HEADER_KEYS:
                 resp.write('{}: {}\n'.format(key.title(), value))
         resp.write('\n')
-        resp.write(response.content)
+        resp.write(response.text)
 
 
 class TestDocumentation(unittest.TestCase):
@@ -273,7 +273,7 @@ class TestDocumentation(unittest.TestCase):
         )
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
         self.portal.newsitem.image = NamedBlobImage(
-            data=open(image_file, 'r').read(),
+            data=open(image_file, 'rb').read(),
             contentType='image/png',
             filename=u'image.png'
         )
@@ -326,7 +326,7 @@ class TestDocumentation(unittest.TestCase):
             os.path.dirname(__file__), u'file.pdf'
         )
         self.portal.file.file = NamedBlobFile(
-            data=open(pdf_file, 'r').read(),
+            data=open(pdf_file, 'rb').read(),
             contentType='application/pdf',
             filename=u'file.pdf'
         )
@@ -344,7 +344,7 @@ class TestDocumentation(unittest.TestCase):
         self.portal.image.description = u'This is an image'
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
         self.portal.image.image = NamedBlobImage(
-            data=open(image_file, 'r').read(),
+            data=open(image_file, 'rb').read(),
             contentType='image/png',
             filename=u'image.png'
         )

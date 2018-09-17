@@ -108,7 +108,7 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
             self.deserialize(body='{"test_invariant_field1": "Foo",'
                                   ' "test_invariant_field2": "Bar"}')
         self.assertEquals(u'Must have same values',
-                          cm.exception.message[0]['message'])
+                          str(cm.exception.args[0][0]['message']))
 
     def test_deserializer_updates_behavior_field_value(self):
         self.deserialize(body='{"test_behavior_field": "My Value"}')
@@ -128,14 +128,14 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
             self.deserialize(body='{"test_textline_field": "My Value"}',
                              validate_all=True)
         self.assertEquals(u'Required input is missing.',
-                          cm.exception.message[0]['message'])
+                          cm.exception.args[0][0]['message'])
 
         # An empty string should be considered a missing value
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"test_textline_field": ""}',
                              validate_all=True)
         self.assertEquals(u'Required input is missing.',
-                          cm.exception.message[0]['message'])
+                          cm.exception.args[0][0]['message'])
 
     def test_deserializer_succeeds_if_required_value_is_provided(self):
         self.deserialize(body='{"test_required_field": "My Value"}',
@@ -183,10 +183,10 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
                 'test_missing_value_required_field is a required field.',
                 'Setting it to null is not allowed.'
             ),
-            cm.exception.message[0]['message']
+            cm.exception.args[0][0]['message']
         )
         self.assertEquals(u'test_missing_value_required_field',
-                          cm.exception.message[0]['field'])
+                          cm.exception.args[0][0]['field'])
 
     def test_set_layout(self):
         current_layout = self.portal.doc1.getLayout()

@@ -27,7 +27,7 @@ class TestJsonCompatibleConverters(TestCase):
 
     def test_error_when_type_unknown(self):
         err_regex = r'^No converter for making <object object at [^>]*>' + \
-                    r' \(<type \'object\'>\) JSON compatible.$'
+                    r' \(<(class|type) \'object\'>\) JSON compatible.$'
 
         with self.assertRaisesRegexp(TypeError, err_regex):
             json_compatible(object())

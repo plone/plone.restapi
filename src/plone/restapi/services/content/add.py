@@ -53,12 +53,12 @@ class FolderPost(Service):
             self.request.response.setStatus(403)
             return dict(error=dict(
                 type='Forbidden',
-                message=exc.message))
+                message=str(exc)))
         except BadRequest as exc:
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='Bad Request',
-                message=exc.message))
+                message=str(exc)))
 
         # Acquisition wrap temporarily to satisfy things like vocabularies
         # depending on tools

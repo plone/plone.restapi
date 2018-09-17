@@ -72,7 +72,7 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
             self.deserialize(body='{"testURLField": "Not an URL"}')
         self.assertEquals(
             u"Validation failed(isURL): 'Not an URL' is not a valid url.",
-            cm.exception.message[0]['message'])
+            cm.exception.args[0][0]['message'])
 
     def test_deserializer_clears_creation_flag(self):
         self.doc1.markCreationFlag()
@@ -103,7 +103,7 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
             self.deserialize(body='{"testStringField": "My Value"}',
                              validate_all=True)
         self.assertEquals(u'TestRequiredField is required, please correct.',
-                          cm.exception.message[0]['message'])
+                          cm.exception.args[0][0]['message'])
 
     def test_deserializer_succeeds_if_required_value_is_provided(self):
         self.deserialize(body='{"testRequiredField": "My Value"}',
@@ -129,7 +129,7 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
                              validate_all=True)
 
         self.assertEquals(
-            'post_validation_error', cm.exception.message[0]['message'])
+            'post_validation_error', cm.exception.args[0][0]['message'])
 
     def test_pre_validation(self):
 
@@ -150,7 +150,7 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
                              validate_all=True)
 
         self.assertEquals(
-            'pre_validation_error', cm.exception.message[0]['message'])
+            'pre_validation_error', cm.exception.args[0][0]['message'])
 
     def test_set_layout(self):
         current_layout = self.doc1.getLayout()

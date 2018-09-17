@@ -59,7 +59,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
     def test_ascii_deserialization_returns_bytestring(self):
         value = self.deserialize('test_ascii_field', u'Foo')
         self.assertTrue(isinstance(value, str), 'Not a <str>')
-        self.assertEqual('Foo', value)
+        self.assertEqual(b'Foo', value)
 
     def test_asciiline_deserialization_returns_bytestring(self):
         value = self.deserialize('test_asciiline_field', u'Foo')
@@ -78,13 +78,13 @@ class TestDXFieldDeserializer(unittest.TestCase):
 
     def test_bytes_deserialization_returns_bytestring(self):
         value = self.deserialize('test_bytes_field', u'Foo')
-        self.assertTrue(isinstance(value, str), 'Not a <str>')
-        self.assertEqual('Foo', value)
+        self.assertTrue(isinstance(value, bytes), 'Not a <bytes>')
+        self.assertEqual(b'Foo', value)
 
     def test_bytesline_deserialization_returns_bytestring(self):
         value = self.deserialize('test_bytesline_field', u'Foo')
-        self.assertTrue(isinstance(value, str), 'Not a <str>')
-        self.assertEqual('Foo', value)
+        self.assertTrue(isinstance(value, bytes), 'Not a <bytes>')
+        self.assertEqual(b'Foo', value)
 
     def test_choice_deserialization_returns_vocabulary_item(self):
         value = self.deserialize('test_choice_field', u'bar')
@@ -370,7 +370,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             self.deserialize('test_datetime_field',
                              u'2015-15-15T10:39:54.361Z')
         self.assertEqual(u'Invalid date: 2015-15-15T10:39:54.361Z',
-                         cm.exception.message)
+                         str(cm.exception))
 
     def test_datetime_deserializer_validates_value(self):
         with self.assertRaises(ValidationError):
@@ -402,7 +402,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             self.deserialize('test_time_field',
                              u'midnight')
         self.assertEqual(u'Invalid time: midnight',
-                         cm.exception.message)
+                         str(cm.exception))
 
     def test_time_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
@@ -414,9 +414,9 @@ class TestDXFieldDeserializer(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.deserialize('test_timedelta_field',
                              u'2h')
-        self.assertEqual(
-            u'unsupported type for timedelta seconds component: unicode',
-            cm.exception.message)
+        self.assertIn(
+            u'unsupported type for timedelta seconds component:',
+            str(cm.exception))
 
     def test_timedelta_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:

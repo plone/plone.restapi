@@ -191,7 +191,7 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        self.assertItemsEqual([
+        self.assertEqual({
             u'Archivo',
             u'Carpeta',
             u'Colección',
@@ -200,5 +200,5 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
             u'Evento',
             u'Imagen',
             u'Noticia',
-            u'Página'],
-            [item['title'] for item in response.json()])
+            u'Página'},
+            set(item['title'] for item in response.json()))

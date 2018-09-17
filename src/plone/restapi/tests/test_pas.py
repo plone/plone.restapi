@@ -69,7 +69,7 @@ class TestJWTAuthenticationPlugin(unittest.TestCase):
         creds['extractor'] = 'jwt_auth'
         creds['token'] = self.plugin.create_token('admin')
         self.assertEqual(
-            ('admin', 'admin'),
+            (b'admin', b'admin'),
             self.plugin.authenticateCredentials(creds))
 
     def test_authenticate_credentials_returns_byte_string(self):
@@ -78,7 +78,7 @@ class TestJWTAuthenticationPlugin(unittest.TestCase):
         creds['token'] = self.plugin.create_token('admin')
         self.assertIsInstance(
             self.plugin.authenticateCredentials(creds)[0],
-            str
+            bytes
         )
 
     def test_decode_token_after_key_rotation(self):
