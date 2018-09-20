@@ -31,9 +31,9 @@ class TestTranslationInfo(unittest.TestCase):
         alsoProvides(self.layer['request'], IPloneAppMultilingualInstalled)
         login(self.portal, SITE_OWNER_NAME)
         self.en_content = createContentInContainer(
-            self.portal['en'], 'Document', title='Test document')
+            self.portal['en'], 'Document', title=u'Test document')
         self.es_content = createContentInContainer(
-            self.portal['es'], 'Document', title='Test document')
+            self.portal['es'], 'Document', title=u'Test document')
         ITranslationManager(self.en_content).register_translation(
             'es', self.es_content)
 
@@ -71,9 +71,9 @@ class TestLinkContentsAsTranslations(unittest.TestCase):
         alsoProvides(self.layer['request'], IPloneAppMultilingualInstalled)
         login(self.portal, SITE_OWNER_NAME)
         self.en_content = createContentInContainer(
-            self.portal['en'], 'Document', title='Test document')
+            self.portal['en'], 'Document', title=u'Test document')
         self.es_content = createContentInContainer(
-            self.portal['es'], 'Document', title='Test document')
+            self.portal['es'], 'Document', title=u'Test document')
         transaction.commit()
 
     def test_translation_linking_succeeds(self):
@@ -138,9 +138,9 @@ class TestUnLinkContentTranslations(unittest.TestCase):
         alsoProvides(self.layer['request'], IPloneAppMultilingualInstalled)
         login(self.portal, SITE_OWNER_NAME)
         self.en_content = createContentInContainer(
-            self.portal['en'], 'Document', title='Test document')
+            self.portal['en'], 'Document', title=u'Test document')
         self.es_content = createContentInContainer(
-            self.portal['es'], 'Document', title='Test document')
+            self.portal['es'], 'Document', title=u'Test document')
         ITranslationManager(self.en_content).register_translation(
             'es', self.es_content)
         transaction.commit()
