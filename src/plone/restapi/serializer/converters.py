@@ -86,9 +86,9 @@ def default_converter(value):
         ' {0!r} ({1}) JSON compatible.'.format(value, type(value)))
 
 
-@adapter(str)
+@adapter(bytes)
 @implementer(IJsonCompatible)
-def string_converter(value):
+def bytes_converter(value):
     return safe_unicode(value, 'utf-8')
 
 

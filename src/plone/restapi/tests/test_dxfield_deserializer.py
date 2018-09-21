@@ -56,12 +56,12 @@ class TestDXFieldDeserializer(unittest.TestCase):
                                        IFieldDeserializer)
         return deserializer(value)
 
-    def test_ascii_deserialization_returns_bytestring(self):
+    def test_ascii_deserialization_returns_native_string(self):
         value = self.deserialize('test_ascii_field', u'Foo')
         self.assertTrue(isinstance(value, str), 'Not a <str>')
-        self.assertEqual(b'Foo', value)
+        self.assertEqual('Foo', value)
 
-    def test_asciiline_deserialization_returns_bytestring(self):
+    def test_asciiline_deserialization_returns_native_string(self):
         value = self.deserialize('test_asciiline_field', u'Foo')
         self.assertTrue(isinstance(value, str), 'Not a <str>')
         self.assertEqual('Foo', value)
@@ -253,7 +253,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             u'data': u'U3BhbSBhbmQgZWdncyE=',
             u'encoding': u'base64',
         })
-        self.assertEquals('Spam and eggs!', value.data)
+        self.assertEquals(b'Spam and eggs!', value.data)
 
     def test_namedfield_deserialization_sets_content_type(self):
         value = self.deserialize('test_namedfile_field', {
@@ -275,7 +275,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         })
         self.assertTrue(isinstance(value, namedfile.NamedFile),
                         'Not a <NamedFile>')
-        self.assertEqual('Spam and eggs!', value.data)
+        self.assertEqual(b'Spam and eggs!', value.data)
 
     def test_namedimage_deserialization_returns_namedimage(self):
         value = self.deserialize('test_namedimage_field', {
@@ -285,7 +285,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         })
         self.assertTrue(isinstance(value, namedfile.NamedImage),
                         'Not a <NamedImage>')
-        self.assertTrue(value.data.startswith('GIF89a'))
+        self.assertTrue(value.data.startswith(b'GIF89a'))
 
     def test_namedblobfile_deserialization_returns_namedblobfile(self):
         value = self.deserialize('test_namedblobfile_field', {
@@ -293,7 +293,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         })
         self.assertTrue(isinstance(value, namedfile.NamedBlobFile),
                         'Not a <NamedBlobFile>')
-        self.assertEqual('Spam and eggs!', value.data)
+        self.assertEqual(b'Spam and eggs!', value.data)
 
     def test_namedblobimage_deserialization_returns_namedblobimage(self):
         value = self.deserialize('test_namedblobimage_field', {
@@ -303,7 +303,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         })
         self.assertTrue(isinstance(value, namedfile.NamedBlobImage),
                         'Not a <NamedBlobImage>')
-        self.assertTrue(value.data.startswith('GIF89a'))
+        self.assertTrue(value.data.startswith(b'GIF89a'))
 
     def test_namedblobimage_deserialization_fed_with_null_removes_image(self):
         # null in json translates to None in python.
@@ -379,13 +379,13 @@ class TestDXFieldDeserializer(unittest.TestCase):
 
     def test_collection_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
-            self.deserialize('test_list_value_type_field', [1, '2', 3])
+            self.deserialize('test_list_value_type_field', [1, b'2', 3])
 
         # This validation error is actually produced by the
         # DefaultFieldDeserializer that the CollectionFieldDeserializer will
         # delegate to for deserializing collection items.
         self.assertEqual(u'Object is of wrong type.', cm.exception.doc())
-        self.assertEqual(('2', six.integer_types, ''), cm.exception.args)
+        self.assertEqual((b'2', six.integer_types, ''), cm.exception.args)
 
     def test_dict_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
@@ -394,8 +394,16 @@ class TestDXFieldDeserializer(unittest.TestCase):
         # This validation error is actually produced by the
         # DefaultFieldDeserializer that the DictFieldSerializer will delegate
         # to for deserializing keys and values.
-        self.assertEqual(u'Object is of wrong type.', cm.exception.doc())
-        self.assertEqual(('k', six.integer_types, ''), cm.exception.args)
+        # We check for two sets of exception details
+        # because zope.schema changed its exception...
+        self.assertIn(cm.exception.doc(), (
+            u'Object is of wrong type.',
+            u'Invalid int literal.',
+        ))
+        self.assertIn(cm.exception.args, (
+            ('k', (int,), ''),
+            ("invalid literal for int() with base 10: 'k'",),
+        ))
 
     def test_time_deserializer_handles_invalid_value(self):
         with self.assertRaises(ValueError) as cm:
@@ -480,6 +488,6 @@ class TestDXFieldDeserializer(unittest.TestCase):
                                        IFieldDeserializer)
 
         with self.assertRaises(ConstraintNotSatisfied):
-            deserializer("not an int")
+            deserializer(b"not an int")
 
         self.assertEqual(42, deserializer(42))

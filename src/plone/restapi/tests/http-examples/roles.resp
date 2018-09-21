@@ -3,10 +3,28 @@ Content-Type: application/json
 
 [
   {
+    "@id": "http://localhost:55001/plone/@roles/Reader",
+    "@type": "role",
+    "id": "Reader",
+    "title": "Reader"
+  },
+  {
     "@id": "http://localhost:55001/plone/@roles/Contributor",
     "@type": "role",
     "id": "Contributor",
     "title": "Contributor"
+  },
+  {
+    "@id": "http://localhost:55001/plone/@roles/Reviewer",
+    "@type": "role",
+    "id": "Reviewer",
+    "title": "Reviewer"
+  },
+  {
+    "@id": "http://localhost:55001/plone/@roles/Editor",
+    "@type": "role",
+    "id": "Editor",
+    "title": "Editor"
   },
   {
     "@id": "http://localhost:55001/plone/@roles/Member",
@@ -19,24 +37,6 @@ Content-Type: application/json
     "@type": "role",
     "id": "Site Administrator",
     "title": "Site Administrator"
-  },
-  {
-    "@id": "http://localhost:55001/plone/@roles/Reader",
-    "@type": "role",
-    "id": "Reader",
-    "title": "Reader"
-  },
-  {
-    "@id": "http://localhost:55001/plone/@roles/Editor",
-    "@type": "role",
-    "id": "Editor",
-    "title": "Editor"
-  },
-  {
-    "@id": "http://localhost:55001/plone/@roles/Reviewer",
-    "@type": "role",
-    "id": "Reviewer",
-    "title": "Reviewer"
   },
   {
     "@id": "http://localhost:55001/plone/@roles/Manager",

@@ -266,7 +266,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.portal.invokeFactory('Image', id='image1', title='Image 1')
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
         self.portal.image1.image = NamedBlobImage(
-            data=open(image_file, 'r').read(),
+            data=open(image_file, 'rb').read(),
             contentType='image/png',
             filename=u'image.png'
         )

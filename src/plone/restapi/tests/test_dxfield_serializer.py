@@ -80,13 +80,13 @@ class TestDexterityFieldSerializing(TestCase):
         self.assertEqual(False, value)
 
     def test_bytes_field_serialization_returns_unicode(self):
-        value = self.serialize('test_bytes_field', '\xc3\xa4\xc3\xb6\xc3\xbc')
+        value = self.serialize('test_bytes_field', b'\xc3\xa4\xc3\xb6\xc3\xbc')
         self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'\xe4\xf6\xfc', value)
 
     def test_bytesline_field_serialization_returns_unicode(self):
         value = self.serialize('test_bytesline_field',
-                               '\xc3\xa4\xc3\xb6\xc3\xbc')
+                               b'\xc3\xa4\xc3\xb6\xc3\xbc')
         self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'\xe4\xf6\xfc', value)
 
