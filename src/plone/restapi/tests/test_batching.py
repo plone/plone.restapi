@@ -106,7 +106,7 @@ class TestBatchingSearch(TestBatchingDXBase):
         response = self.api_session.get('/folder/@search?b_start=2&b_size=2')
 
         # Response should contain second batch of items
-        self.assertEquals([
+        self.assertEqual([
             u'/plone/folder/doc-2',
             u'/plone/folder/doc-3'],
             result_paths(response.json()))
@@ -173,7 +173,7 @@ class TestBatchingCollections(TestBatchingDXBase):
         response = self.api_session.get('/collection?b_start=2&b_size=2')
 
         # Response should contain second batch of items
-        self.assertEquals([
+        self.assertEqual([
             u'/plone/folder/doc-2',
             u'/plone/folder/doc-3'],
             result_paths(response.json()))
@@ -235,7 +235,7 @@ class TestBatchingDXFolders(TestBatchingDXBase):
         response = self.api_session.get('/folder?b_start=2&b_size=2')
 
         # Response should contain second batch of items
-        self.assertEquals([
+        self.assertEqual([
             u'/plone/folder/doc-3',
             u'/plone/folder/doc-4'],
             result_paths(response.json()))
@@ -293,7 +293,7 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
         response = self.api_session.get('/?b_start=2&b_size=2')
 
         # Response should contain second batch of items
-        self.assertEquals([
+        self.assertEqual([
             u'/plone/doc-3',
             u'/plone/doc-4'],
             result_paths(response.json()))
@@ -375,7 +375,7 @@ class TestBatchingArchetypes(unittest.TestCase):
         response = self.api_session.get('/folder?b_start=2&b_size=2')
 
         # Response should contain second batch of items
-        self.assertEquals([
+        self.assertEqual([
             u'/plone/folder/doc-3',
             u'/plone/folder/doc-4'],
             result_paths(response.json()))
@@ -463,9 +463,9 @@ class TestHypermediaBatch(unittest.TestCase):
         parsed_url = urlparse(batch.canonical_url)
         qs_params = dict(parse_qsl(parsed_url.query))
 
-        self.assertEquals({'one': '1', 'two': '2'}, qs_params)
-        self.assertEquals('nohost', parsed_url.netloc)
-        self.assertEquals('', parsed_url.path)
+        self.assertEqual({'one': '1', 'two': '2'}, qs_params)
+        self.assertEqual('nohost', parsed_url.netloc)
+        self.assertEqual('', parsed_url.path)
 
     def test_canonical_url_preserves_list_like_query_string_params(self):
         items = list(range(1, 26))
@@ -477,7 +477,7 @@ class TestHypermediaBatch(unittest.TestCase):
         # Argument lists (same query string parameter repeated multiple
         # times) should be preserved.
 
-        self.assertEquals(
+        self.assertEqual(
             set([('foolist', '1'), ('foolist', '2')]),
             set(parse_qsl(urlparse(batch.canonical_url).query))
         )
@@ -492,9 +492,9 @@ class TestHypermediaBatch(unittest.TestCase):
         parsed_url = urlparse(batch.canonical_url)
         qs_params = dict(parse_qsl(parsed_url.query))
 
-        self.assertEquals({'one': '1', 'two': '2'}, qs_params)
-        self.assertEquals('nohost', parsed_url.netloc)
-        self.assertEquals('', parsed_url.path)
+        self.assertEqual({'one': '1', 'two': '2'}, qs_params)
+        self.assertEqual('nohost', parsed_url.netloc)
+        self.assertEqual('', parsed_url.path)
 
     def test_canonical_url_strips_sorting_params(self):
         items = list(range(1, 26))
@@ -505,9 +505,9 @@ class TestHypermediaBatch(unittest.TestCase):
         parsed_url = urlparse(batch.canonical_url)
         qs_params = dict(parse_qsl(parsed_url.query))
 
-        self.assertEquals({'one': '1', 'two': '2'}, qs_params)
-        self.assertEquals('nohost', parsed_url.netloc)
-        self.assertEquals('', parsed_url.path)
+        self.assertEqual({'one': '1', 'two': '2'}, qs_params)
+        self.assertEqual('nohost', parsed_url.netloc)
+        self.assertEqual('', parsed_url.path)
 
     def test_current_batch_url(self):
         items = list(range(1, 26))
@@ -545,7 +545,7 @@ class TestHypermediaBatch(unittest.TestCase):
         # times) should be preserved.
 
         batch_params = set([('b_start', '0'), ('b_size', '10')])
-        self.assertEquals(
+        self.assertEqual(
             set([('foolist', '1'), ('foolist', '2')]),
             set(parse_qsl(urlparse(batch.links['first']).query)) - batch_params
         )
@@ -617,5 +617,5 @@ class TestHypermediaBatch(unittest.TestCase):
         self.request.form['b_size'] = 10
         self.request.form['b_start'] = 5
         batch = HypermediaBatch(self.request, items)
-        self.assertEquals(
+        self.assertEqual(
             'http://nohost?b_start=0', batch.links['prev'])

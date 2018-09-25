@@ -12,9 +12,9 @@ Content-Type: application/json
   "users": {
     "@id": "http://localhost:55001/plone/@groups",
     "items": [
-      "test_user_1_",
       "Administrators",
-      "admin"
+      "admin",
+      "test_user_1_"
     ],
     "items_total": 3
   }

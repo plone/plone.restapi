@@ -253,7 +253,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             u'data': u'U3BhbSBhbmQgZWdncyE=',
             u'encoding': u'base64',
         })
-        self.assertEquals(b'Spam and eggs!', value.data)
+        self.assertEqual(b'Spam and eggs!', value.data)
 
     def test_namedfield_deserialization_sets_content_type(self):
         value = self.deserialize('test_namedfile_field', {
@@ -472,7 +472,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
 
     def test_textline_deserializer_strips_value(self):
         value = self.deserialize('test_textline_field', u'  aa  ')
-        self.assertEquals(value, 'aa')
+        self.assertEqual(value, 'aa')
 
     def test_default_field_deserializer_validates_value(self):
 

@@ -105,7 +105,8 @@ class TestATFieldSerializer(unittest.TestCase):
 
     def test_image_field_serialization_returns_dict(self):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
-        image_data = open(image_file, 'rb').read()
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         fn = 'testImageField'
         with patch.object(storage, 'uuid4', return_value='uuid_1'):
             value = self.serialize(
@@ -184,7 +185,8 @@ class TestATFieldSerializer(unittest.TestCase):
 
     def test_blobimage_field_serialization_returns_dict(self):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
-        image_data = open(image_file, 'rb').read()
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         fn = 'testBlobImageField'
         with patch.object(storage, 'uuid4', return_value='uuid_1'):
             value = self.serialize(

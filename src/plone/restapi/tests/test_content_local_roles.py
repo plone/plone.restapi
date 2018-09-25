@@ -402,7 +402,7 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(response.status_code, 501)
         response = response.json()
         self.assertIn('error', response)
-        self.assertEquals(
+        self.assertEqual(
             u'No serializer available.',
             response['error']['message']
         )

@@ -190,7 +190,8 @@ class TestDexterityFieldSerializing(TestCase):
 
     def test_namedimage_field_serialization_returns_dict(self):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
-        image_data = open(image_file, 'rb').read()
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         fn = 'test_namedimage_field'
         with patch.object(storage, 'uuid4', return_value='uuid_1'):
             value = self.serialize(
@@ -267,7 +268,8 @@ class TestDexterityFieldSerializing(TestCase):
 
     def test_namedblobimage_field_serialization_returns_dict(self):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
-        image_data = open(image_file, 'rb').read()
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         fn = 'test_namedblobimage_field'
         with patch.object(storage, 'uuid4', return_value='uuid_1'):
             value = self.serialize(

@@ -265,8 +265,10 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
     def test_serialize_image(self):
         self.portal.invokeFactory('Image', id='image1', title='Image 1')
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         self.portal.image1.image = NamedBlobImage(
-            data=open(image_file, 'rb').read(),
+            data=image_data,
             contentType='image/png',
             filename=u'image.png'
         )

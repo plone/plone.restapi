@@ -157,7 +157,7 @@ class TestATContentSerializer(unittest.TestCase):
         current_layout = self.doc1.getLayout()
         obj = self.serialize(self.doc1)
         self.assertIn('layout', obj)
-        self.assertEquals(current_layout, obj['layout'])
+        self.assertEqual(current_layout, obj['layout'])
 
     def test_serializer_includes_expansion(self):
         provideAdapter(
@@ -182,4 +182,4 @@ class TestATContentSerializer(unittest.TestCase):
                                      ISerializeToJson)
         obj = serializer()
         self.assertIn('is_folderish', obj)
-        self.assertEquals(True, obj['is_folderish'])
+        self.assertEqual(True, obj['is_folderish'])

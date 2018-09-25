@@ -129,8 +129,6 @@ class TestFunctionalAuth(unittest.TestCase):
             'admin',
             timeout=-60
         )
-        if six.PY3:
-            expired_token = expired_token.decode('utf8')
         transaction.commit()
 
         response = requests.get(

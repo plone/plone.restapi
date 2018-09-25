@@ -6,7 +6,7 @@ import json
 
 def json_body(request):
     try:
-        data = json.loads(request.get('BODY', '{}'))
+        data = json.loads(request.get('BODY') or '{}')
     except ValueError:
         raise DeserializationError('No JSON object could be decoded')
     if not isinstance(data, dict):

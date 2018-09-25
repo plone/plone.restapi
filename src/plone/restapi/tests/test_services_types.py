@@ -157,14 +157,14 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.get('/folder_cant_add/@types')
         response = response.json()
 
-        self.assertEquals(
+        self.assertEqual(
             len([a for a in response if a['addable']]), 0)
 
         # and in the root Plone site there's no addable types
         response = self.api_session.get('/@types')
         response = response.json()
 
-        self.assertEquals(
+        self.assertEqual(
             len([a for a in response if a['addable']]), 0)
 
 

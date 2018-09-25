@@ -225,8 +225,8 @@ class TestSearchFunctional(unittest.TestCase):
                  'fullobjects': True}
         response = self.api_session.get('/@search', params=query)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(response.json()['items']), 1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['items']), 1)
 
     def test_full_objects_retrieval_collections(self):
         self.collection = createContentInContainer(
@@ -239,8 +239,8 @@ class TestSearchFunctional(unittest.TestCase):
                  'fullobjects': True}
         response = self.api_session.get('/@search', params=query)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(response.json()['items']), 1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['items']), 1)
 
     # ZCTextIndex
 

@@ -102,7 +102,7 @@ class TestCatalogSerializers(unittest.TestCase):
         brain = lazy_map[0]
         result = getMultiAdapter(
             (brain, self.request), ISerializeToJsonSummary)()
-        self.assertEquals(
+        self.assertEqual(
             {'@id': 'http://nohost/plone/my-folder/my-document',
              '@type': 'Document',
              'title': 'My Document',

@@ -94,8 +94,10 @@ class TestTraversal(unittest.TestCase):
             title='News Item 1'
         )
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         self.portal.news1.image = NamedBlobImage(
-            data=open(image_file, 'r').read(),
+            data=image_data,
             contentType='image/png',
             filename=u'image.png'
         )
@@ -217,8 +219,10 @@ class TestTraversal(unittest.TestCase):
         pdf_file = os.path.join(
             os.path.dirname(__file__), u'file.pdf'
         )
+        with open(pdf_file, 'rb') as f:
+            pdf_data = f.read()
         self.portal.file1.file = NamedBlobFile(
-            data=open(pdf_file, 'r').read(),
+            data=pdf_data,
             contentType='application/pdf',
             filename=u'file.pdf'
         )
@@ -247,8 +251,10 @@ class TestTraversal(unittest.TestCase):
         self.portal.img1.title = 'Image'
         self.portal.img1.description = u'An image'
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         self.portal.img1.image = NamedBlobImage(
-            data=open(image_file, 'r').read(),
+            data=image_data,
             contentType='image/png',
             filename=u'image.png'
         )

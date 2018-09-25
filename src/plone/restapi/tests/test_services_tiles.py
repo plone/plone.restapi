@@ -80,24 +80,24 @@ class TestServicesTiles(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         response = response.json()
-        self.assertEquals(len(response), 1)
-        self.assertEquals(
+        self.assertEqual(len(response), 1)
+        self.assertEqual(
             response[0]['@id'],
             self.portal_url + u'/@tiles/sample.tile')
-        self.assertEquals(response[0]['title'], u'Sample tile')
-        self.assertEquals(
+        self.assertEqual(response[0]['title'], u'Sample tile')
+        self.assertEqual(
             response[0]['description'], u'A tile used for testing')
-        self.assertEquals(response[0]['icon'], 'testicon')
+        self.assertEqual(response[0]['icon'], 'testicon')
 
     def test_get_tile(self):
         response = self.api_session.get('/@tiles/sample.tile')
 
         self.assertEqual(response.status_code, 200)
         response = response.json()
-        self.assertEquals(response['title'], u'Sample tile')
-        self.assertEquals(
+        self.assertEqual(response['title'], u'Sample tile')
+        self.assertEqual(
             response['properties']['title']['title'], u'Title')
-        self.assertEquals(
+        self.assertEqual(
             response['properties']['title']['type'], u'string')
 
     def test_patch_tiles_list(self):
@@ -115,7 +115,7 @@ class TestServicesTiles(unittest.TestCase):
         response = self.api_session.get('/doc')
         response = response.json()
 
-        self.assertEquals(
+        self.assertEqual(
             response['tiles'],
             {
                 'uuid1': {'@type': 'title'},
@@ -137,7 +137,7 @@ class TestServicesTiles(unittest.TestCase):
         response = self.api_session.get('/doc')
         response = response.json()
 
-        self.assertEquals(
+        self.assertEqual(
             response['tiles_layout'],
             {
                 "items": ["#uuid1", "#uuid2"]

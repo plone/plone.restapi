@@ -22,7 +22,7 @@ class TestRolesGet(unittest.TestCase):
     def test_roles_endpoint_lists_roles(self):
         response = self.api_session.get('/@roles')
 
-        self.assertEqual({
+        expected = (
             {u'@id': self.portal_url + u'/@roles/Contributor',
              u'@type': u'role',
              u'id': u'Contributor',
@@ -50,8 +50,12 @@ class TestRolesGet(unittest.TestCase):
             {u'@id': self.portal_url + u'/@roles/Manager',
              u'@type': u'role',
              u'id': u'Manager',
-             u'title': u'Manager'}},
-            set(response.json()))
+             u'title': u'Manager'},
+        )
+        result = response.json()
+        self.assertEqual(len(expected), len(result))
+        for item in result:
+            self.assertIn(item, expected)
 
     def test_roles_endpoint_translates_role_titles(self):
         self.api_session.headers.update({'Accept-Language': 'de'})

@@ -99,7 +99,7 @@ class TestJsonSchemaUtils(TestCase):
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', list(jsonschema['properties']))
         self.assertIn('title', jsonschema['required'])
-        self.assertEquals('default', jsonschema['fieldsets'][0]['id'])
+        self.assertEqual('default', jsonschema['fieldsets'][0]['id'])
         self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
         self.assertIn('layouts', jsonschema)
 
@@ -132,7 +132,7 @@ class TestJsonSchemaUtils(TestCase):
         self.assertEqual(jsonschema['type'], 'object')
         self.assertIn('title', list(jsonschema['properties']))
         self.assertIn('title', jsonschema['required'])
-        self.assertEquals('default', jsonschema['fieldsets'][0]['id'])
+        self.assertEqual('default', jsonschema['fieldsets'][0]['id'])
         self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
 
         jsonschema = get_jsonschema_for_portal_type(

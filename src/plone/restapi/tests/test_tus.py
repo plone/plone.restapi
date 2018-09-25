@@ -315,13 +315,13 @@ class TestTUS(unittest.TestCase):
         location = response.headers['Location']
 
         # upload the data with PATCH
-        pdf_file = open(pdf_file_path, 'rb')
-        response = self.api_session.patch(
-            location,
-            headers={'Content-Type': 'application/offset+octet-stream',
-                     'Upload-Offset': '0',
-                     'Tus-Resumable': '1.0.0'},
-            data=pdf_file)
+        with open(pdf_file_path, 'rb') as pdf_file:
+            response = self.api_session.patch(
+                location,
+                headers={'Content-Type': 'application/offset+octet-stream',
+                        'Upload-Offset': '0',
+                        'Tus-Resumable': '1.0.0'},
+                data=pdf_file)
         self.assertEqual(response.status_code, 204)
 
         transaction.commit()
@@ -374,13 +374,13 @@ class TestTUS(unittest.TestCase):
         location = response.headers['Location']
 
         # upload the data with PATCH
-        pdf_file = open(pdf_file_path, 'rb')
-        response = self.api_session.patch(
-            location,
-            headers={'Content-Type': 'application/offset+octet-stream',
-                     'Upload-Offset': '0',
-                     'Tus-Resumable': '1.0.0'},
-            data=pdf_file)
+        with open(pdf_file_path, 'rb') as pdf_file:
+            response = self.api_session.patch(
+                location,
+                headers={'Content-Type': 'application/offset+octet-stream',
+                        'Upload-Offset': '0',
+                        'Tus-Resumable': '1.0.0'},
+                data=pdf_file)
         self.assertEqual(response.status_code, 204)
 
         transaction.commit()
@@ -613,13 +613,13 @@ class TestTUSWithAT(unittest.TestCase):
         location = response.headers['Location']
 
         # upload the data with PATCH
-        pdf_file = open(pdf_file_path, 'rb')
-        response = self.api_session.patch(
-            location,
-            headers={'Content-Type': 'application/offset+octet-stream',
-                     'Upload-Offset': '0',
-                     'Tus-Resumable': '1.0.0'},
-            data=pdf_file)
+        with open(pdf_file_path, 'rb') as pdf_file:
+            response = self.api_session.patch(
+                location,
+                headers={'Content-Type': 'application/offset+octet-stream',
+                        'Upload-Offset': '0',
+                        'Tus-Resumable': '1.0.0'},
+                data=pdf_file)
         self.assertEqual(response.status_code, 204)
 
         transaction.commit()

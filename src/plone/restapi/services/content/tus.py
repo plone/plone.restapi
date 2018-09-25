@@ -106,7 +106,9 @@ class UploadPost(TUSBaseService):
         for item in self.request.getHeader('Upload-Metadata', '').split(','):
             key_value = item.split()
             if len(key_value) == 2:
-                metadata[key_value[0].lower()] = b64decode(key_value[1])
+                key = key_value[0].lower()
+                value = b64decode(key_value[1]).decode('utf-8')
+                metadata[key] = value
         metadata['length'] = length
         if self.__name__.endswith('@tus-replace'):
             metadata['mode'] = 'replace'
@@ -211,7 +213,10 @@ class UploadPatch(UploadFileBase):
             return self.error(
                 'Bad Request', 'Missing or invalid Upload-Offset header')
 
-        tus_upload.write(self.request._file, offset)
+        request_body = self.request._file
+        if hasattr(request_body, 'raw'):  # Unwrap io.BufferedRandom
+            request_body = request_body.raw
+        tus_upload.write(request_body, offset)
 
         if tus_upload.finished:
             offset = tus_upload.offset()

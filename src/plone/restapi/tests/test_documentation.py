@@ -38,8 +38,9 @@ from zope.site.hooks import getSite
 
 import collections
 import json
-import re
 import os
+import re
+import six
 import transaction
 import unittest
 from six.moves import range
@@ -76,9 +77,9 @@ RESPONSE_HEADER_KEYS = [
 
 base_path = resource_filename('plone.restapi.tests', 'http-examples')
 
-UPLOAD_DATA = 'abcdefgh'
-UPLOAD_MIMETYPE = 'text/plain'
-UPLOAD_FILENAME = 'test.txt'
+UPLOAD_DATA = b'abcdefgh'
+UPLOAD_MIMETYPE = b'text/plain'
+UPLOAD_FILENAME = b'test.txt'
 UPLOAD_LENGTH = len(UPLOAD_DATA)
 
 UPLOAD_PDF_MIMETYPE = 'application/pdf'
@@ -99,7 +100,7 @@ def pretty_json(data):
 
 
 def save_request_and_response_for_docs(name, response):
-    with open('{}/{}'.format(base_path, '%s.req' % name), 'w') as req:
+    with open('{}/{}'.format(base_path, '%s.req' % name), 'w', newline='\n') as req:
         req.write('{} {} HTTP/1.1\n'.format(
             response.request.method,
             response.request.path_url
@@ -126,9 +127,13 @@ def save_request_and_response_for_docs(name, response):
                 # ever decide to dump that header
                 response.request.prepare_body(data=body, files=None)
 
-            req.write(response.request.body)
+            if isinstance(response.request.body, six.text_type):
+                req.write(response.request.body)
+            else:
+                req.buffer.seek(0, 2)
+                req.buffer.write(response.request.body)
 
-    with open('{}/{}'.format(base_path, '%s.resp' % name), 'w') as resp:
+    with open('{}/{}'.format(base_path, '%s.resp' % name), 'w', newline='\n') as resp:
         status = response.status_code
         reason = response.reason
         resp.write('HTTP/1.1 {} {}\n'.format(status, reason))
@@ -272,8 +277,10 @@ class TestDocumentation(unittest.TestCase):
             'text/html'
         )
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         self.portal.newsitem.image = NamedBlobImage(
-            data=open(image_file, 'rb').read(),
+            data=image_data,
             contentType='image/png',
             filename=u'image.png'
         )
@@ -325,8 +332,10 @@ class TestDocumentation(unittest.TestCase):
         pdf_file = os.path.join(
             os.path.dirname(__file__), u'file.pdf'
         )
+        with open(pdf_file, 'rb') as f:
+            pdf_data = f.read()
         self.portal.file.file = NamedBlobFile(
-            data=open(pdf_file, 'rb').read(),
+            data=pdf_data,
             contentType='application/pdf',
             filename=u'file.pdf'
         )
@@ -343,8 +352,10 @@ class TestDocumentation(unittest.TestCase):
         self.portal.image.title = 'My Image'
         self.portal.image.description = u'This is an image'
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         self.portal.image.image = NamedBlobImage(
-            data=open(image_file, 'rb').read(),
+            data=image_data,
             contentType='image/png',
             filename=u'image.png'
         )
@@ -1100,8 +1111,8 @@ class TestDocumentation(unittest.TestCase):
 
         # POST create an upload
         metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_FILENAME.encode('utf8')).decode('utf8'),
-            b64encode(UPLOAD_MIMETYPE.encode('utf8')).decode('utf8')
+            b64encode(UPLOAD_FILENAME).decode('utf-8'),
+            b64encode(UPLOAD_MIMETYPE).decode('utf-8'),
         )
         response = self.api_session.post(
             '/folder/@tus-upload',
@@ -1155,8 +1166,8 @@ class TestDocumentation(unittest.TestCase):
 
         # POST create an upload
         metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_FILENAME),
-            b64encode(UPLOAD_MIMETYPE)
+            b64encode(UPLOAD_FILENAME).decode('utf-8'),
+            b64encode(UPLOAD_MIMETYPE).decode('utf-8'),
         )
         response = self.api_session.post(
             '/myfile/@tus-replace',
@@ -1188,8 +1199,8 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.post(url)
         # Replace dynamic lock token with a static one
         response._content = re.sub(
-            r'"token": "[^"]+"',
-            '"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            rb'"token": "[^"]+"',
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content)
         save_request_and_response_for_docs('lock', response)
 
@@ -1204,8 +1215,8 @@ class TestDocumentation(unittest.TestCase):
         )
         # Replace dynamic lock token with a static one
         response._content = re.sub(
-            r'"token": "[^"]+"',
-            '"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            rb'"token": "[^"]+"',
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content)
         save_request_and_response_for_docs(
             'lock_nonstealable_timeout', response)
@@ -1224,8 +1235,8 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.post(url)
         # Replace dynamic lock token with a static one
         response._content = re.sub(
-            r'"token": "[^"]+"',
-            '"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            rb'"token": "[^"]+"',
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content)
         save_request_and_response_for_docs('refresh_lock', response)
 
@@ -1403,6 +1414,7 @@ class TestCommenting(unittest.TestCase):
     @staticmethod
     def clean_comment_id(response, _id='123456'):
         pattern = r'@comments/(\w+)'
+        pattern_bytes = rb'@comments/(\w+)'
         repl = '@comments/' + _id
 
         # Replaces the dynamic part in the headers with a stable id
@@ -1415,12 +1427,12 @@ class TestCommenting(unittest.TestCase):
         # and the body
         if response.request.body:
             response.request.body = re.sub(
-                pattern, repl, response.request.body
+                pattern_bytes, repl, response.request.body
             )
 
         # and the response
         if response.content:
-            response._content = re.sub(pattern, repl, response._content)
+            response._content = re.sub(pattern_bytes, repl, response._content)
 
     def test_comments_get(self):
         url = '{}/@comments'.format(self.document.absolute_url())

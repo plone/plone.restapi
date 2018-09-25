@@ -22,8 +22,8 @@ class TestJsonCompatibleConverters(TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def test_None(self):
-        self.assertEquals(None, json_compatible(None))
-        self.assertEquals('null', json.dumps(json_compatible(None)))
+        self.assertEqual(None, json_compatible(None))
+        self.assertEqual('null', json.dumps(json_compatible(None)))
 
     def test_error_when_type_unknown(self):
         err_regex = r'^No converter for making <object object at [^>]*>' + \
@@ -36,39 +36,39 @@ class TestJsonCompatibleConverters(TestCase):
             json_compatible({'foo': [object()]})
 
     def test_True(self):
-        self.assertEquals(True, json_compatible(True))
-        self.assertEquals('true', json.dumps(json_compatible(True)))
+        self.assertEqual(True, json_compatible(True))
+        self.assertEqual('true', json.dumps(json_compatible(True)))
 
     def test_False(self):
-        self.assertEquals(False, json_compatible(False))
-        self.assertEquals('false', json.dumps(json_compatible(False)))
+        self.assertEqual(False, json_compatible(False))
+        self.assertEqual('false', json.dumps(json_compatible(False)))
 
     def test_unicode(self):
-        self.assertEquals(u'foo', json_compatible(u'foo'))
+        self.assertEqual(u'foo', json_compatible(u'foo'))
         self.assertIsInstance(json_compatible(u'foo'), six.text_type)
-        self.assertEquals('"foo"', json.dumps(json_compatible('foo')))
+        self.assertEqual('"foo"', json.dumps(json_compatible('foo')))
 
     def test_unicode_with_umlaut(self):
-        self.assertEquals(u'Hall\xf6chen', json_compatible(u'Hall\xf6chen'))
-        self.assertEquals('"Hall\\u00f6chen"',
+        self.assertEqual(u'Hall\xf6chen', json_compatible(u'Hall\xf6chen'))
+        self.assertEqual('"Hall\\u00f6chen"',
                           json.dumps(json_compatible(u'Hall\xf6chen')))
 
     def test_string_is_converted_to_unicode(self):
         # Standard library JSON works with unicode.
-        self.assertEquals(u'foo', json_compatible('foo'))
+        self.assertEqual(u'foo', json_compatible('foo'))
         self.assertIsInstance(json_compatible('foo'), six.text_type)
-        self.assertEquals('"foo"', json.dumps(json_compatible('foo')))
+        self.assertEqual('"foo"', json.dumps(json_compatible('foo')))
 
     def test_string_with_umlaut(self):
         # Standard library JSON works with unicode.
-        self.assertEquals(u'Hall\xf6chen', json_compatible('Hallöchen'))
-        self.assertEquals('"Hall\\u00f6chen"',
+        self.assertEqual(u'Hall\xf6chen', json_compatible('Hallöchen'))
+        self.assertEqual('"Hall\\u00f6chen"',
                           json.dumps(json_compatible('Hallöchen')))
 
     def test_int(self):
-        self.assertEquals(42, json_compatible(42))
+        self.assertEqual(42, json_compatible(42))
         self.assertIsInstance(json_compatible(42), int)
-        self.assertEquals('42', json.dumps(json_compatible(42)))
+        self.assertEqual('42', json.dumps(json_compatible(42)))
 
     def test_long(self):
         def _long(val):
@@ -76,26 +76,26 @@ class TestJsonCompatibleConverters(TestCase):
                 return int(val)
             else:
                 return int(val)
-        self.assertEquals(_long(10), json_compatible(_long(10)))
+        self.assertEqual(_long(10), json_compatible(_long(10)))
         self.assertIsInstance(json_compatible(_long(10)), int)
-        self.assertEquals('10', json.dumps(json_compatible(_long(10))))
+        self.assertEqual('10', json.dumps(json_compatible(_long(10))))
 
     def test_float(self):
-        self.assertEquals(1.4, json_compatible(1.4))
+        self.assertEqual(1.4, json_compatible(1.4))
         self.assertIsInstance(json_compatible(1.4), float)
-        self.assertEquals('1.4', json.dumps(json_compatible(1.4)))
+        self.assertEqual('1.4', json.dumps(json_compatible(1.4)))
 
     def test_list(self):
-        self.assertEquals(['foo'], json_compatible(['foo']))
-        self.assertEquals('["foo"]', json.dumps(json_compatible(['foo'])))
+        self.assertEqual(['foo'], json_compatible(['foo']))
+        self.assertEqual('["foo"]', json.dumps(json_compatible(['foo'])))
         self.assertIsInstance(json_compatible(['foo'])[0],
                               six.text_type,
                               'List values should be converted recursively.')
 
     def test_persistent_list(self):
         value = PersistentList(['foo'])
-        self.assertEquals(['foo'], json_compatible(value))
-        self.assertEquals('["foo"]', json.dumps(json_compatible(value)))
+        self.assertEqual(['foo'], json_compatible(value))
+        self.assertEqual('["foo"]', json.dumps(json_compatible(value)))
         self.assertIsInstance(json_compatible(value)[0],
                               six.text_type,
                               'PersistentList values should be converted'
@@ -104,28 +104,28 @@ class TestJsonCompatibleConverters(TestCase):
     def test_tuple(self):
         # Tuples are converted to list (json would do that anyway and
         # it is easier to implement it with map).
-        self.assertEquals(['foo', None], json_compatible(('foo', None)))
-        self.assertEquals('["foo"]', json.dumps(json_compatible(('foo', ))))
+        self.assertEqual(['foo', None], json_compatible(('foo', None)))
+        self.assertEqual('["foo"]', json.dumps(json_compatible(('foo', ))))
         self.assertIsInstance(json_compatible(('foo',))[0],
                               six.text_type,
                               'Tuple values should be converted recursively.')
 
     def test_frozenset(self):
-        self.assertEquals([[1, 1], [2, 2]],
+        self.assertEqual([[1, 1], [2, 2]],
                           sorted(json_compatible(frozenset([(1, 1), (2, 2)]))))
 
     def test_set(self):
-        self.assertEquals([[1, 1], [2, 2]],
+        self.assertEqual([[1, 1], [2, 2]],
                           sorted(json_compatible(set([(1, 1), (2, 2)]))))
 
     def test_dict(self):
-        self.assertEquals({u'foo': True,
+        self.assertEqual({u'foo': True,
                            u'bar': None,
                            u'baz': 3},
                           json_compatible({'foo': True,
                                            'bar': None,
                                            'baz': 3}))
-        self.assertEquals('{"foo": "bar"}',
+        self.assertEqual('{"foo": "bar"}',
                           json.dumps(json_compatible({'foo': 'bar'})))
         self.assertIsInstance(json_compatible(list({'foo': 'bar'})[0]),
                               six.text_type,
@@ -136,13 +136,13 @@ class TestJsonCompatibleConverters(TestCase):
             'Dict values should be converted recursively.')
 
     def test_dict_empty(self):
-        self.assertEquals({}, json_compatible({}))
-        self.assertEquals('{}', json.dumps(json_compatible({})))
+        self.assertEqual({}, json_compatible({}))
+        self.assertEqual('{}', json.dumps(json_compatible({})))
 
     def test_persistent_mapping(self):
         value = PersistentMapping({'foo': 'bar'})
-        self.assertEquals({u'foo': u'bar'}, json_compatible(value))
-        self.assertEquals('{"foo": "bar"}', json.dumps(json_compatible(value)))
+        self.assertEqual({u'foo': u'bar'}, json_compatible(value))
+        self.assertEqual('{"foo": "bar"}', json.dumps(json_compatible(value)))
         self.assertIsInstance(json_compatible(list(value)[0]),
                               six.text_type,
                               'Dict keys should be converted recursively.')
@@ -152,33 +152,33 @@ class TestJsonCompatibleConverters(TestCase):
 
     def test_python_datetime(self):
         value = DateTime('2015/11/23 19:45:55.649027 GMT+3').asdatetime()
-        self.assertEquals(u'2015-11-23T16:45:55+00:00',
+        self.assertEqual(u'2015-11-23T16:45:55+00:00',
                           json_compatible(value))
-        self.assertEquals('"2015-11-23T16:45:55+00:00"',
+        self.assertEqual('"2015-11-23T16:45:55+00:00"',
                           json.dumps(json_compatible(value)))
 
     def test_zope_DateTime(self):
         value = DateTime('2015/11/23 19:45:55.649027 GMT+3')
-        self.assertEquals(u'2015-11-23T16:45:55+00:00',
+        self.assertEqual(u'2015-11-23T16:45:55+00:00',
                           json_compatible(value))
-        self.assertEquals('"2015-11-23T16:45:55+00:00"',
+        self.assertEqual('"2015-11-23T16:45:55+00:00"',
                           json.dumps(json_compatible(value)))
 
     def test_date(self):
         value = date(2015, 11, 23)
-        self.assertEquals(u'2015-11-23', json_compatible(value))
-        self.assertEquals('"2015-11-23"', json.dumps(json_compatible(value)))
+        self.assertEqual(u'2015-11-23', json_compatible(value))
+        self.assertEqual('"2015-11-23"', json.dumps(json_compatible(value)))
 
     def test_time(self):
         value = time(19, 45, 55)
-        self.assertEquals(u'19:45:55', json_compatible(value))
-        self.assertEquals('"19:45:55"', json.dumps(json_compatible(value)))
+        self.assertEqual(u'19:45:55', json_compatible(value))
+        self.assertEqual('"19:45:55"', json.dumps(json_compatible(value)))
 
     def test_timedelta(self):
-        self.assertEquals(9.58, json_compatible(timedelta(seconds=9.58)))
+        self.assertEqual(9.58, json_compatible(timedelta(seconds=9.58)))
 
     def test_broken_relation_value(self):
-        self.assertEquals(None, json_compatible(RelationValue(12345)))
+        self.assertEqual(None, json_compatible(RelationValue(12345)))
 
     def test_relation_value(self):
         portal = self.layer['portal']
@@ -188,7 +188,7 @@ class TestJsonCompatibleConverters(TestCase):
             description='Description',
         )]
         intids = getUtility(IIntIds)
-        self.assertEquals(
+        self.assertEqual(
             {'@id': 'http://nohost/plone/doc1',
              '@type': 'DXTestDocument',
              'title': 'Document 1',
@@ -199,7 +199,7 @@ class TestJsonCompatibleConverters(TestCase):
     def test_i18n_message(self):
         _ = MessageFactory('plone.restapi.tests')
         msg = _(u'message_id', default=u'default message')
-        self.assertEquals(u'default message', json_compatible(msg))
+        self.assertEqual(u'default message', json_compatible(msg))
 
     def test_missing_value(self):
-        self.assertEquals(None, json_compatible(Missing.Value))
+        self.assertEqual(None, json_compatible(Missing.Value))
