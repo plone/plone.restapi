@@ -401,7 +401,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             u'Invalid int literal.',
         ))
         self.assertIn(cm.exception.args, (
-            ('k', (int,), ''),
+            ('k', six.integer_types, ''),
             ("invalid literal for int() with base 10: 'k'",),
         ))
 

@@ -37,6 +37,7 @@ from zope.interface import alsoProvides
 from zope.site.hooks import getSite
 
 import collections
+import io
 import json
 import os
 import re
@@ -100,7 +101,11 @@ def pretty_json(data):
 
 
 def save_request_and_response_for_docs(name, response):
-    with open('{}/{}'.format(base_path, '%s.req' % name), 'w', newline='\n') as req:
+    if six.PY2:
+        open_kw = {}
+    else:
+        open_kw = {'newline': '\n'}
+    with open('{}/{}'.format(base_path, '%s.req' % name), 'w', **open_kw) as req:
         req.write('{} {} HTTP/1.1\n'.format(
             response.request.method,
             response.request.path_url
@@ -127,13 +132,14 @@ def save_request_and_response_for_docs(name, response):
                 # ever decide to dump that header
                 response.request.prepare_body(data=body, files=None)
 
-            if isinstance(response.request.body, six.text_type):
+            if (isinstance(response.request.body, six.text_type)
+                    or not hasattr(req, 'buffer')):
                 req.write(response.request.body)
             else:
                 req.buffer.seek(0, 2)
                 req.buffer.write(response.request.body)
 
-    with open('{}/{}'.format(base_path, '%s.resp' % name), 'w', newline='\n') as resp:
+    with open('{}/{}'.format(base_path, '%s.resp' % name), 'w', **open_kw) as resp:
         status = response.status_code
         reason = response.reason
         resp.write('HTTP/1.1 {} {}\n'.format(status, reason))
@@ -1199,7 +1205,7 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.post(url)
         # Replace dynamic lock token with a static one
         response._content = re.sub(
-            rb'"token": "[^"]+"',
+            b'"token": "[^"]+"',
             b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content)
         save_request_and_response_for_docs('lock', response)
@@ -1215,7 +1221,7 @@ class TestDocumentation(unittest.TestCase):
         )
         # Replace dynamic lock token with a static one
         response._content = re.sub(
-            rb'"token": "[^"]+"',
+            b'"token": "[^"]+"',
             b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content)
         save_request_and_response_for_docs(
@@ -1235,7 +1241,7 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.post(url)
         # Replace dynamic lock token with a static one
         response._content = re.sub(
-            rb'"token": "[^"]+"',
+            b'"token": "[^"]+"',
             b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content)
         save_request_and_response_for_docs('refresh_lock', response)
@@ -1414,7 +1420,7 @@ class TestCommenting(unittest.TestCase):
     @staticmethod
     def clean_comment_id(response, _id='123456'):
         pattern = r'@comments/(\w+)'
-        pattern_bytes = rb'@comments/(\w+)'
+        pattern_bytes = b'@comments/(\\w+)'
         repl = '@comments/' + _id
 
         # Replaces the dynamic part in the headers with a stable id

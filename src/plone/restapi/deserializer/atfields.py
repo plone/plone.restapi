@@ -13,7 +13,6 @@ if HAS_AT:
     from zope.component import getMultiAdapter
     from zope.interface import implementer
     from zope.publisher.interfaces.browser import IBrowserRequest
-    import six
 
     @implementer(IFieldDeserializer)
     @adapter(IField, IBaseObject, IBrowserRequest)
@@ -71,10 +70,8 @@ if HAS_AT:
 
             for i, v in enumerate(value):
                 # Resolve references given by URL
-                if six.PY2 and isinstance(value, six.text_type):
-                    v = v.encode('utf-8')
                 if v.startswith(portal_url):
-                    path = v[len(portal_url) + 1:]
+                    path = v[len(portal_url) + 1:].encode('utf8')
                     value[i] = portal.unrestrictedTraverse(path, None)
 
             return value, {}

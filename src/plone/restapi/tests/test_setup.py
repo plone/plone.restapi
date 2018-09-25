@@ -33,7 +33,8 @@ class TestInstall(unittest.TestCase):
             installed = qi.is_product_installed(PROJECT_NAME)
         else:
             qi_tool = getToolByName(self.portal, 'portal_quickinstaller')
-            installed = PROJECT_NAME in qi_tool.listInstalledProducts()
+            installed = PROJECT_NAME in [
+                p['id'] for p in qi_tool.listInstalledProducts()]
         self.assertTrue(
             installed, 'package appears not to have been installed')
 
@@ -54,6 +55,7 @@ class TestUninstall(unittest.TestCase):
             qi_tool = getToolByName(self.portal, 'portal_quickinstaller')
             with api.env.adopt_roles(['Manager']):
                 qi_tool.uninstallProducts(products=[PROJECT_NAME])
+            self.installed = qi_tool.isProductInstalled(PROJECT_NAME)
 
     def test_uninstalled(self):
         self.assertFalse(self.installed)
