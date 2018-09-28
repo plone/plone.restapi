@@ -4,7 +4,8 @@ Changelog
 3.4.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Notify UserLoggedInEvent and UserLoggedOutEvent.
+  [thomasdesvenain]
 
 
 3.4.5 (2018-09-14)

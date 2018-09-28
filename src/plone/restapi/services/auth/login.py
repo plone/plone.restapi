@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from Products.PlonePAS.events import UserLoggedInEvent
+from zope.event import notify
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
@@ -58,6 +60,7 @@ class Login(Service):
 
         payload = {}
         payload['fullname'] = user.getProperty('fullname')
+        notify(UserLoggedInEvent(user))
         return {
             'token': plugin.create_token(user.getId(), data=payload)
         }

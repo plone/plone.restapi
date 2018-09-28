@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.utils import getToolByName
+from Products.PlonePAS.events import UserLoggedOutEvent
 from Products.PluggableAuthService.interfaces.plugins import (
     IAuthenticationPlugin)
 from plone.restapi.services import Service
-
+from zope.event import notify
+from plone import api
 
 class Logout(Service):
     """Handles logout by invalidating the JWT
@@ -33,6 +35,10 @@ class Logout(Service):
         creds = plugin.extractCredentials(self.request)
         if creds and 'token' in creds and plugin.delete_token(creds['token']):
             self.request.response.setStatus(200)
+            user = api.user.get_current()
+            if user and not user.isAnonymousUser():
+                notify(UserLoggedOutEvent(user.getId()))
+
             return super(Logout, self).reply()
 
         self.request.response.setStatus(400)
