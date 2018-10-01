@@ -9,7 +9,8 @@ all: .installed.cfg
 	bin/buildout
 
 bin/buildout: bin/pip
-	bin/pip install --upgrade pip setuptools zc.buildout
+	bin/pip install --upgrade pip
+	bin/pip install -r requirements.txt
 	@touch -c $@
 
 bin/python bin/pip:

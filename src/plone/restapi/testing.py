@@ -316,6 +316,31 @@ else:
     PLONE_RESTAPI_AT_FUNCTIONAL_TESTING = PLONE_FIXTURE
 
 
+class PloneRestApiTilesLayer(PloneSandboxLayer):
+
+    defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
+
+    def setUpPloneSite(self, portal):
+        applyProfile(portal, 'plone.restapi:tiles')
+
+
+PLONE_RESTAPI_TILES_FIXTURE = PloneRestApiTilesLayer()
+PLONE_RESTAPI_TILES_INTEGRATION_TESTING = IntegrationTesting(
+    bases=(PLONE_RESTAPI_TILES_FIXTURE,),
+    name="PloneRestApiTilesLayer:Integration"
+)
+PLONE_RESTAPI_TILES_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(PLONE_RESTAPI_TILES_FIXTURE, z2.ZSERVER_FIXTURE),
+    name="PloneRestApiTilesLayer:Functional"
+)
+PLONE_RESTAPI_TILES_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
+    bases=(FREEZE_TIME_FIXTURE,
+           PLONE_RESTAPI_TILES_FIXTURE,
+           z2.ZSERVER_FIXTURE),
+    name="PloneRestApiTilesLayerFreeze:Functional"
+)
+
+
 class RelativeSession(requests.Session):
     """A session that takes a base URL and makes requests relative to that
     base if their URL is relative (doesn't begin with a HTTP[S] scheme).

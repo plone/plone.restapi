@@ -8,7 +8,7 @@ Content in a Plone site can be searched for by invoking the ``/@search`` endpoin
     GET /plone/@search HTTP/1.1
     Accept: application/json
 
-A search is **contextual** by default, i.e. it is bound to a specific collection and searches within that collection and any sub-collections.
+A search is **contextual** by default, i.e. it is bound to a specific context (a *collection* in HTTP REST terms) and searches within that collection and any sub-collections.
 
 Since a Plone site is also a collection, we therefore have a global search (by invoking the ``/@search`` endpoint on the site root) and contextual searches (by invoking that endpoint on any other context) all using the same pattern.
 
@@ -24,6 +24,17 @@ Search results are represented similar to collections:
 
 The default representation for search results is a summary that contains only the most basic information.
 In order to return specific metadata columns, see the documentation of the ``metadata_fields`` parameter below.
+
+.. note::
+        A search invoked on a container will by default **include that container
+        itself** as part of the search results. This is the same behavior as displayed by
+        ZCatalog, which is used internally.
+        If you add the query string
+        parameter ``depth=1`` to your search, you will only get **immediate**
+        children of the container, and the container itself also won't be part
+        of the results. See the Plone docs on
+        `searching for content within a folder <https://docs.plone.org/develop/plone/searching_and_indexing/query.html#searching-for-content-within-a-folder>`_.
+        for more details.
 
 .. note::
         Search results results will be **batched** if the size of the
@@ -61,11 +72,31 @@ For example, to specify the ``depth`` query option for a path query, the origina
 
 This dictionary will need to be flattened in dotted notation in order to pass it in a query string:
 
-.. code-block:: http
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/search_options.req
 
-    GET /plone/@search?path.query=%2Ffolder&path.depth=2 HTTP/1.1
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/search_options.resp
+   :language: http
 
 Again, this is very similar to how `Record Arguments <http://docs.zope.org/zope2/zdgbook/ObjectPublishing.html?highlight=record#record-arguments>`_ are parsed by ZPublisher, except that you can omit the ``:record`` suffix.
+
+
+Restricting search to multiple paths
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To restrict search to multiple paths, the original query as a Python dictionary would look like this (with an optional depth and sort_on)::
+
+    query = {'path': {'query': ('/folder', '/folder2'),
+                      'depth': 2},
+             'sort_on': 'path'}
+
+This dictionary will need to be flattened in dotted notation in order to pass it in a query string. In order to specify multiple paths, simply repeat the query string parameter (the ``requests`` module will do this automatically for you if you pass it a list of values for a query string parameter).
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/search_multiple_paths.req
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/search_multiple_paths.resp
+   :language: http
 
 
 Data types in queries
@@ -95,10 +126,11 @@ Retrieving additional metadata
 By default the results are represented as summaries that only contain the most basic information about the items, like their URL and title.
 If you need to retrieve additional metadata columns, you can do so by specifying the additional column names in the ``metadata_fields`` parameter:
 
-.. code-block:: http
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/search_metadata_fields.req
 
-    GET /plone/@search?SearchableText=lorem&metadata_fields=modified HTTP/1.1
-    Accept: application/json
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/search_metadata_fields.resp
+   :language: http
 
 The metadata from those columns then will be included in the results.
 In order to specify multiple columns, simply repeat the query string parameter once for every column name (the ``requests`` module will do this automatically for you if you pass it a list of values for a query string parameter).
@@ -113,10 +145,11 @@ If the data provided as metadata is not enough, you can retrieve search results 
 
 You do so by specifying the ``fullobjects`` parameter:
 
-.. code-block:: http
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/search_fullobjects.req
 
-    GET /plone/@search?fullobjects&SearchableText=lorem HTTP/1.1
-    Accept: application/json
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/search_fullobjects.resp
+   :language: http
 
 .. warning::
 

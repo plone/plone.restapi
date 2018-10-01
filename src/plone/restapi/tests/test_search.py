@@ -75,6 +75,23 @@ class TestSearchFunctional(unittest.TestCase):
             test_bool_field=False,
         )
 
+        # /plone/folder2
+        self.folder2 = createContentInContainer(
+            self.portal, u'Folder',
+            id=u'folder2',
+            title=u'Another Folder')
+
+        # /plone/folder2/doc
+        createContentInContainer(
+            self.folder2, u'DXTestDocument',
+            id='doc',
+            title=u'Document in second folder',
+            start=DateTime(1975, 1, 1, 0, 0),
+            effective=DateTime(2015, 1, 1, 0, 0),
+            expires=DateTime(2020, 1, 1, 0, 0),
+            test_bool_field=False,
+        )
+
         # /plone/doc-outside-folder
         createContentInContainer(
             self.portal, u'DXTestDocument',
@@ -134,10 +151,61 @@ class TestSearchFunctional(unittest.TestCase):
              u'/folder/other-document'},
             set(result_paths(response.json())))
 
+    def test_search_in_vhm_multiple_paths(self):
+        # Install a Virtual Host Monster
+        if 'virtual_hosting' not in self.app.objectIds():
+            # If ZopeLite was imported, we have no default virtual
+            # host monster
+            from Products.SiteAccess.VirtualHostMonster \
+                import manage_addVirtualHostMonster
+            manage_addVirtualHostMonster(self.app, 'virtual_hosting')
+        transaction.commit()
+
+        # path as a list
+        query = {'path': [
+            '/folder',
+            '/folder2']
+        }
+
+        # If we go through the VHM we will get results for multiple paths
+        # if we only use the part of the path inside the VHM
+        vhm_url = (
+            '%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s' %
+            (self.app.absolute_url(), '@search'))
+        response = self.api_session.get(vhm_url, params=query)
+        self.assertSetEqual(
+            {u'/folder',
+             u'/folder/doc',
+             u'/folder/other-document',
+             u'/folder2',
+             u'/folder2/doc'},
+            set(result_paths(response.json())))
+
+        # path as a dict with a query list
+        query = {'path.query': [
+            '/folder',
+            '/folder2']
+        }
+
+        # If we go through the VHM we will get results for multiple paths
+        # if we only use the part of the path inside the VHM
+        vhm_url = (
+            '%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s' %
+            (self.app.absolute_url(), '@search'))
+        response = self.api_session.get(vhm_url, params=query)
+        self.assertSetEqual(
+            {u'/folder',
+             u'/folder/doc',
+             u'/folder/other-document',
+             u'/folder2',
+             u'/folder2/doc'},
+            set(result_paths(response.json())))
+
     def test_path_gets_prefilled_if_missing_from_path_query_dict(self):
         response = self.api_session.get('/@search?path.depth=1')
         self.assertSetEqual(
             {u'/plone/folder',
+             u'/plone/folder2',
              u'/plone/doc-outside-folder'},
             set(result_paths(response.json())))
 
@@ -176,7 +244,7 @@ class TestSearchFunctional(unittest.TestCase):
              u'exclude_from_nav': False,
              u'expires': u'1999-01-01T00:00:00+00:00',
              u'getId': u'doc',
-             u'getObjSize': u'0 KB',
+             u'getObjSize': u'1 KB',
              u'getPath': u'/plone/folder/doc',
              u'getRemoteUrl': None,
              u'getURL': self.portal_url + u'/folder/doc',
@@ -359,6 +427,39 @@ class TestSearchFunctional(unittest.TestCase):
             [u'/plone/folder',
              u'/plone/folder/doc',
              u'/plone/folder/other-document'],
+            result_paths(response.json())
+        )
+
+    def test_extended_path_index_query_multiple(self):
+        # path as a list
+        query = {'path': [
+                '/'.join(self.folder.getPhysicalPath()),
+                '/'.join(self.folder2.getPhysicalPath())]
+        }
+        response = self.api_session.get('/@search', params=query)
+
+        self.assertEqual(
+            [u'/plone/folder',
+             u'/plone/folder/doc',
+             u'/plone/folder/other-document',
+             u'/plone/folder2',
+             u'/plone/folder2/doc'],
+            result_paths(response.json())
+        )
+
+        # path as a dict with a query list
+        query = {'path.query': [
+                '/'.join(self.folder.getPhysicalPath()),
+                '/'.join(self.folder2.getPhysicalPath())]
+        }
+        response = self.api_session.get('/@search', params=query)
+
+        self.assertEqual(
+            [u'/plone/folder',
+             u'/plone/folder/doc',
+             u'/plone/folder/other-document',
+             u'/plone/folder2',
+             u'/plone/folder2/doc'],
             result_paths(response.json())
         )
 
