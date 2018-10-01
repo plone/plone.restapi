@@ -18,6 +18,9 @@ env:
     - PLONE_VERSION=4.3.x
     - PLONE_VERSION=5.0.x
     - PLONE_VERSION=5.1.x
+    allow_failures:
+      - python: 3.6
+      - python: 3.7
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
   - mkdir $HOME/.buildout
