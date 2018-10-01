@@ -102,8 +102,10 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"testStringField": "My Value"}',
                              validate_all=True)
-        self.assertEqual(u'TestRequiredField is required, please correct.',
-                          cm.exception.args[0][0]['message'])
+        self.assertEqual(
+            u'TestRequiredField is required, please correct.',
+            cm.exception.args[0][0]['message']
+        )
 
     def test_deserializer_succeeds_if_required_value_is_provided(self):
         self.deserialize(body='{"testRequiredField": "My Value"}',

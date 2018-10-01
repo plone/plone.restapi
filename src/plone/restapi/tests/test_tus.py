@@ -318,9 +318,11 @@ class TestTUS(unittest.TestCase):
         with open(pdf_file_path, 'rb') as pdf_file:
             response = self.api_session.patch(
                 location,
-                headers={'Content-Type': 'application/offset+octet-stream',
-                        'Upload-Offset': '0',
-                        'Tus-Resumable': '1.0.0'},
+                headers={
+                    'Content-Type': 'application/offset+octet-stream',
+                    'Upload-Offset': '0',
+                    'Tus-Resumable': '1.0.0'
+                },
                 data=pdf_file)
         self.assertEqual(response.status_code, 204)
 
@@ -377,9 +379,11 @@ class TestTUS(unittest.TestCase):
         with open(pdf_file_path, 'rb') as pdf_file:
             response = self.api_session.patch(
                 location,
-                headers={'Content-Type': 'application/offset+octet-stream',
-                        'Upload-Offset': '0',
-                        'Tus-Resumable': '1.0.0'},
+                headers={
+                    'Content-Type': 'application/offset+octet-stream',
+                    'Upload-Offset': '0',
+                    'Tus-Resumable': '1.0.0'
+                },
                 data=pdf_file)
         self.assertEqual(response.status_code, 204)
 
@@ -616,9 +620,11 @@ class TestTUSWithAT(unittest.TestCase):
         with open(pdf_file_path, 'rb') as pdf_file:
             response = self.api_session.patch(
                 location,
-                headers={'Content-Type': 'application/offset+octet-stream',
-                        'Upload-Offset': '0',
-                        'Tus-Resumable': '1.0.0'},
+                headers={
+                    'Content-Type': 'application/offset+octet-stream',
+                    'Upload-Offset': '0',
+                    'Tus-Resumable': '1.0.0'
+                },
                 data=pdf_file)
         self.assertEqual(response.status_code, 204)
 

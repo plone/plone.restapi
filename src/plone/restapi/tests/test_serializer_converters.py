@@ -50,8 +50,10 @@ class TestJsonCompatibleConverters(TestCase):
 
     def test_unicode_with_umlaut(self):
         self.assertEqual(u'Hall\xf6chen', json_compatible(u'Hall\xf6chen'))
-        self.assertEqual('"Hall\\u00f6chen"',
-                          json.dumps(json_compatible(u'Hall\xf6chen')))
+        self.assertEqual(
+            '"Hall\\u00f6chen"',
+            json.dumps(json_compatible(u'Hall\xf6chen'))
+        )
 
     def test_string_is_converted_to_unicode(self):
         # Standard library JSON works with unicode.
@@ -62,8 +64,10 @@ class TestJsonCompatibleConverters(TestCase):
     def test_string_with_umlaut(self):
         # Standard library JSON works with unicode.
         self.assertEqual(u'Hall\xf6chen', json_compatible('Hallöchen'))
-        self.assertEqual('"Hall\\u00f6chen"',
-                          json.dumps(json_compatible('Hallöchen')))
+        self.assertEqual(
+            '"Hall\\u00f6chen"',
+            json.dumps(json_compatible('Hallöchen'))
+        )
 
     def test_int(self):
         self.assertEqual(42, json_compatible(42))
@@ -111,22 +115,36 @@ class TestJsonCompatibleConverters(TestCase):
                               'Tuple values should be converted recursively.')
 
     def test_frozenset(self):
-        self.assertEqual([[1, 1], [2, 2]],
-                          sorted(json_compatible(frozenset([(1, 1), (2, 2)]))))
+        self.assertEqual(
+            [[1, 1], [2, 2]],
+            sorted(json_compatible(frozenset([(1, 1), (2, 2)])))
+        )
 
     def test_set(self):
-        self.assertEqual([[1, 1], [2, 2]],
-                          sorted(json_compatible(set([(1, 1), (2, 2)]))))
+        self.assertEqual(
+            [[1, 1], [2, 2]],
+            sorted(json_compatible(set([(1, 1), (2, 2)])))
+        )
 
     def test_dict(self):
-        self.assertEqual({u'foo': True,
-                           u'bar': None,
-                           u'baz': 3},
-                          json_compatible({'foo': True,
-                                           'bar': None,
-                                           'baz': 3}))
-        self.assertEqual('{"foo": "bar"}',
-                          json.dumps(json_compatible({'foo': 'bar'})))
+        self.assertEqual(
+            {
+                u'foo': True,
+                u'bar': None,
+                u'baz': 3
+            },
+            json_compatible(
+                {
+                    'foo': True,
+                    'bar': None,
+                    'baz': 3
+                }
+            )
+        )
+        self.assertEqual(
+            '{"foo": "bar"}',
+            json.dumps(json_compatible({'foo': 'bar'}))
+        )
         self.assertIsInstance(json_compatible(list({'foo': 'bar'})[0]),
                               six.text_type,
                               'Dict keys should be converted recursively.')
@@ -152,17 +170,25 @@ class TestJsonCompatibleConverters(TestCase):
 
     def test_python_datetime(self):
         value = DateTime('2015/11/23 19:45:55.649027 GMT+3').asdatetime()
-        self.assertEqual(u'2015-11-23T16:45:55+00:00',
-                          json_compatible(value))
-        self.assertEqual('"2015-11-23T16:45:55+00:00"',
-                          json.dumps(json_compatible(value)))
+        self.assertEqual(
+            u'2015-11-23T16:45:55+00:00',
+            json_compatible(value)
+        )
+        self.assertEqual(
+            '"2015-11-23T16:45:55+00:00"',
+            json.dumps(json_compatible(value))
+        )
 
     def test_zope_DateTime(self):
         value = DateTime('2015/11/23 19:45:55.649027 GMT+3')
-        self.assertEqual(u'2015-11-23T16:45:55+00:00',
-                          json_compatible(value))
-        self.assertEqual('"2015-11-23T16:45:55+00:00"',
-                          json.dumps(json_compatible(value)))
+        self.assertEqual(
+            u'2015-11-23T16:45:55+00:00',
+            json_compatible(value)
+        )
+        self.assertEqual(
+            '"2015-11-23T16:45:55+00:00"',
+            json.dumps(json_compatible(value))
+        )
 
     def test_date(self):
         value = date(2015, 11, 23)

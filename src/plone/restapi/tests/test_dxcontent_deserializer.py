@@ -93,22 +93,28 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         setRoles(self.portal,
                  TEST_USER_ID, ['Member', 'Contributor', 'Editor'])
         self.deserialize(body='{"test_write_permission_field": "Foo"}')
-        self.assertEqual(u'Test Write Permission',
-                          self.portal.doc1.test_write_permission_field)
+        self.assertEqual(
+            u'Test Write Permission',
+            self.portal.doc1.test_write_permission_field
+        )
 
     def test_deserializer_updates_field_with_write_permission(self):
         self.portal.doc1.test_write_permission_field = u'Test Write Permission'
         setRoles(self.portal, TEST_USER_ID, ['Member', 'Manager'])
         self.deserialize(body='{"test_write_permission_field": "Foo"}')
-        self.assertEqual(u'Foo',
-                          self.portal.doc1.test_write_permission_field)
+        self.assertEqual(
+            u'Foo',
+            self.portal.doc1.test_write_permission_field
+        )
 
     def test_deserializer_validates_invariant(self):
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"test_invariant_field1": "Foo",'
                                   ' "test_invariant_field2": "Bar"}')
-        self.assertEqual(u'Must have same values',
-                          str(cm.exception.args[0][0]['message']))
+        self.assertEqual(
+            u'Must have same values',
+            str(cm.exception.args[0][0]['message'])
+        )
 
     def test_deserializer_updates_behavior_field_value(self):
         self.deserialize(body='{"test_behavior_field": "My Value"}')
@@ -127,15 +133,19 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"test_textline_field": "My Value"}',
                              validate_all=True)
-        self.assertEqual(u'Required input is missing.',
-                          cm.exception.args[0][0]['message'])
+        self.assertEqual(
+            u'Required input is missing.',
+            cm.exception.args[0][0]['message']
+        )
 
         # An empty string should be considered a missing value
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"test_textline_field": ""}',
                              validate_all=True)
-        self.assertEqual(u'Required input is missing.',
-                          cm.exception.args[0][0]['message'])
+        self.assertEqual(
+            u'Required input is missing.',
+            cm.exception.args[0][0]['message']
+        )
 
     def test_deserializer_succeeds_if_required_value_is_provided(self):
         self.deserialize(body='{"test_required_field": "My Value"}',
@@ -159,15 +169,21 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
     def test_deserializer_passes_validation_with_not_provided_defaults(self):
         self.deserialize(body='{"test_required_field": "My Value"}',
                          validate_all=True)
-        self.assertEqual(u'Default',
-                          self.portal.doc1.test_default_value_field)
-        self.assertEqual(u'DefaultFactory',
-                          self.portal.doc1.test_default_factory_field)
+        self.assertEqual(
+            u'Default',
+            self.portal.doc1.test_default_value_field
+        )
+        self.assertEqual(
+            u'DefaultFactory',
+            self.portal.doc1.test_default_factory_field
+        )
 
     def test_deserializer_sets_missing_value_when_receiving_null(self):
         self.deserialize(body='{"test_missing_value_field": null}')
-        self.assertEqual(u'missing',
-                          self.portal.doc1.test_missing_value_field)
+        self.assertEqual(
+            u'missing',
+            self.portal.doc1.test_missing_value_field
+        )
 
     def test_deserializer_sets_missing_value_on_required_field(self):
         '''We don't set missing_value if the field is required'''
@@ -176,8 +192,10 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(
                 body='{"test_missing_value_required_field": null}')
-        self.assertEqual(u'valid value',
-                          self.portal.doc1.test_missing_value_required_field)
+        self.assertEqual(
+            u'valid value',
+            self.portal.doc1.test_missing_value_required_field
+        )
         self.assertEqual(
             (
                 'test_missing_value_required_field is a required field.',
@@ -185,8 +203,10 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
             ),
             cm.exception.args[0][0]['message']
         )
-        self.assertEqual(u'test_missing_value_required_field',
-                          cm.exception.args[0][0]['field'])
+        self.assertEqual(
+            u'test_missing_value_required_field',
+            cm.exception.args[0][0]['field']
+        )
 
     def test_set_layout(self):
         current_layout = self.portal.doc1.getLayout()

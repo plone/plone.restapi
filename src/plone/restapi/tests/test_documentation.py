@@ -37,7 +37,6 @@ from zope.interface import alsoProvides
 from zope.site.hooks import getSite
 
 import collections
-import io
 import json
 import os
 import re
@@ -105,7 +104,8 @@ def save_request_and_response_for_docs(name, response):
         open_kw = {}
     else:
         open_kw = {'newline': '\n'}
-    with open('{}/{}'.format(base_path, '%s.req' % name), 'w', **open_kw) as req:
+    filename = '{}/{}'.format(base_path, '%s.req' % name)
+    with open(filename, 'w', **open_kw) as req:
         req.write('{} {} HTTP/1.1\n'.format(
             response.request.method,
             response.request.path_url
@@ -139,7 +139,8 @@ def save_request_and_response_for_docs(name, response):
                 req.buffer.seek(0, 2)
                 req.buffer.write(response.request.body)
 
-    with open('{}/{}'.format(base_path, '%s.resp' % name), 'w', **open_kw) as resp:
+    filename = '{}/{}'.format(base_path, '%s.resp' % name)
+    with open(filename, 'w', **open_kw) as resp:
         status = response.status_code
         reason = response.reason
         resp.write('HTTP/1.1 {} {}\n'.format(status, reason))
