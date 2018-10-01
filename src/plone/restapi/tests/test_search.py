@@ -244,7 +244,7 @@ class TestSearchFunctional(unittest.TestCase):
              u'exclude_from_nav': False,
              u'expires': u'1999-01-01T00:00:00+00:00',
              u'getId': u'doc',
-             u'getObjSize': u'1 KB',
+             u'getObjSize': u'0 KB',
              u'getPath': u'/plone/folder/doc',
              u'getRemoteUrl': None,
              u'getURL': self.portal_url + u'/folder/doc',
