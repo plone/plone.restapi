@@ -3,13 +3,14 @@ Content-Type: application/json
 
 [
   {
-    "@id": "http://localhost:55001/plone/@users/noam",
-    "description": "Professor of Linguistics",
-    "email": "noam.chomsky@example.com",
-    "fullname": "Noam Avram Chomsky",
-    "home_page": "web.mit.edu/chomsky",
-    "id": "noam",
-    "location": "Cambridge, MA",
+    "@id": "http://localhost:55001/plone/@users/noam", 
+    "description": "Professor of Linguistics", 
+    "email": "noam.chomsky@example.com", 
+    "fullname": "Noam Avram Chomsky", 
+    "home_page": "web.mit.edu/chomsky", 
+    "id": "noam", 
+    "location": "Cambridge, MA", 
+    "portrait": null, 
     "roles": [
       "Member"
     ],

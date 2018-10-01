@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '3.2.2.dev0'
+version = '3.4.6-dev.0'
 
 long_description = (
     open('README.rst').read() + '\n' +
@@ -36,7 +36,7 @@ setup(name='plone.restapi',
       description="plone.restapi is a RESTful hypermedia API for Plone.",
       long_description=long_description,
       # Get more strings from
-      # http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      # https://pypi.org/classifiers/
       classifiers=[
           "Development Status :: 5 - Production/Stable",
           "Environment :: Web Environment",
@@ -44,6 +44,7 @@ setup(name='plone.restapi',
           "Framework :: Plone :: 4.3",
           "Framework :: Plone :: 5.0",
           "Framework :: Plone :: 5.1",
+          "Framework :: Plone :: 5.2",
           "Intended Audience :: Developers",
           "Operating System :: OS Independent",
           "Programming Language :: Python",

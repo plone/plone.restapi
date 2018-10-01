@@ -423,6 +423,80 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.get('/@search', params=query)
         save_request_and_response_for_docs('search', response)
 
+    def test_documentation_search_options(self):
+        self.portal.invokeFactory(
+            'Folder',
+            id='folder1',
+            title='Folder 1'
+        )
+        self.portal.folder1.invokeFactory(
+            'Folder',
+            id='folder2',
+            title='Folder 2'
+        )
+        import transaction
+        transaction.commit()
+        query = {'sort_on': 'path',
+                 'path.query': '/plone/folder1',
+                 'path.depth': '1'}
+        response = self.api_session.get('/@search', params=query)
+        save_request_and_response_for_docs('search_options', response)
+
+    def test_documentation_search_multiple_paths(self):
+        self.portal.invokeFactory(
+            'Folder',
+            id='folder1',
+            title='Folder 1'
+        )
+        self.portal.folder1.invokeFactory(
+            'Document',
+            id='doc1',
+            title='Lorem Ipsum'
+        )
+        self.portal.invokeFactory(
+            'Folder',
+            id='folder2',
+            title='Folder 2'
+        )
+        self.portal.folder2.invokeFactory(
+            'Document',
+            id='doc2',
+            title='Lorem Ipsum'
+        )
+        import transaction
+        transaction.commit()
+        query = {'sort_on': 'path',
+                 'path.query': ['/plone/folder1', '/plone/folder2'],
+                 'path.depth': '2'}
+        response = self.api_session.get('/@search', params=query)
+        save_request_and_response_for_docs('search_multiple_paths', response)
+
+    def test_documentation_search_metadata_fields(self):
+        self.portal.invokeFactory(
+            'Document',
+            id='doc1',
+            title='Lorem Ipsum'
+        )
+        import transaction
+        transaction.commit()
+        query = {'SearchableText': 'lorem',
+                 'metadata_fields': ['modified', 'created']}
+        response = self.api_session.get('/@search', params=query)
+        save_request_and_response_for_docs('search_metadata_fields', response)
+
+    def test_documentation_search_fullobjects(self):
+        self.portal.invokeFactory(
+            'Document',
+            id='doc1',
+            title='Lorem Ipsum'
+        )
+        import transaction
+        transaction.commit()
+        query = {'SearchableText': 'lorem',
+                 'fullobjects': 1}
+        response = self.api_session.get('/@search', params=query)
+        save_request_and_response_for_docs('search_fullobjects', response)
+
     def test_documentation_workflow(self):
         response = self.api_session.get(
             '{}/@workflow'.format(self.document.absolute_url()))

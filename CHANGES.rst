@@ -1,7 +1,84 @@
 Changelog
 =========
 
-3.2.2 (unreleased)
+3.4.6 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
+3.4.5 (2018-09-14)
+------------------
+
+Bugfixes:
+
+- Avoid ``AttributeError`` on add-on installation (fixes `#465 <https://github.com/plone/plone.restapi/issues/465>`_.
+  [lukasgraf, hvelarde]
+
+- Make search work with a path query containing a list of paths in a virtual hosting setting.
+  [sunew]
+
+
+3.4.4 (2018-08-31)
+------------------
+
+Bugfixes:
+
+- Generalize the last bugfix solution for searching the userid on password
+  reset requests, matching it with Plone's one. This covers all the request
+  use cases.
+  [sneridagh]
+
+
+3.4.3 (2018-08-30)
+------------------
+
+Bugfixes:
+
+- Add "Use UUID as user ID" support for password resets
+  [sneridagh]
+
+
+3.4.2 (2018-08-27)
+------------------
+
+Bugfixes:
+
+- Add missing "Use UUID as user ID" support to POST @users endpoint on user creation.
+  Also improve the userid/username chooser by using the same process as Plone does.
+  This fixes: https://github.com/plone/plone.restapi/issues/586
+  [sneridagh]
+
+
+3.4.1 (2018-07-22)
+------------------
+
+Bugfixes:
+
+- Make sure the default profile is installed on tiles profile installation.
+  [timo]
+
+
+3.4.0 (2018-07-21)
+------------------
+
+New Features:
+
+- Add tiles profile.
+  [timo]
+
+
+3.3.0 (2018-07-20)
+------------------
+
+New Features:
+
+- Return member fields based on user schema in `@users` endpoint instead of a
+  fixed list of member properties.
+  [buchi]
+
+
+3.2.2 (2018-07-19)
 ------------------
 
 Bugfixes:
@@ -19,6 +96,12 @@ Bugfixes:
 
 - Make setup.py require plone.behavior >= 1.1. This fixes #575.
   [timo]
+
+- Fixes ``test_search`` to work with bug fixed ``plone.indexer``.
+  Now ``DXTestDocument`` explicit got an attribute ``exclude_from_nav``.
+  This fixes `issue 579 <https://github.com/plone/plone.restapi/issues/579>`_.
+  Refers to `Products.CMFPlone Issue 2469 <https://github.com/plone/Products.CMFPlone/issues/2469>`_
+  [jensens]
 
 
 3.2.1 (2018-06-28)
