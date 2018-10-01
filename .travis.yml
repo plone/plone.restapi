@@ -1,8 +1,8 @@
 language: python
 python:
   - 2.7
+  - 3.5
   - 3.6
-  - 3.7
 sudo: required
 services:
   - docker
@@ -19,8 +19,8 @@ env:
     - PLONE_VERSION=5.0.x
     - PLONE_VERSION=5.1.x
     allow_failures:
+      - python: 3.5
       - python: 3.6
-      - python: 3.7
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
   - mkdir $HOME/.buildout
