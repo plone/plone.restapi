@@ -16,7 +16,7 @@ setup(name='plone.restapi',
       description="plone.restapi is a RESTful hypermedia API for Plone.",
       long_description=long_description,
       # Get more strings from
-      # http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      # https://pypi.org/classifiers/
       classifiers=[
           "Development Status :: 5 - Production/Stable",
           "Environment :: Web Environment",
