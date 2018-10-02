@@ -64,7 +64,7 @@ def get_fieldsets(context, request, schema, additional_schemata=None):
     fieldsets = [{
         'id': 'default',
         'title': u'Default',
-        'fields': form.fields.values(),
+        'fields': list(form.fields.values()),
     }]
 
     # Additional fieldsets (AKA z3c.form groups)
@@ -72,7 +72,7 @@ def get_fieldsets(context, request, schema, additional_schemata=None):
         fieldset = {
             'id': group.__name__,
             'title': translate(group.label, context=getRequest()),
-            'fields': group.fields.values(),
+            'fields': list(group.fields.values()),
         }
         fieldsets.append(fieldset)
 

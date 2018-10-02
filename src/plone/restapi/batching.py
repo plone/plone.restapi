@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.batching.batch import Batch
-from urllib import urlencode
-from urlparse import parse_qsl
+from six.moves.urllib.parse import urlencode
+from six.moves.urllib.parse import parse_qsl
 
 
 DEFAULT_BATCH_SIZE = 25
@@ -116,7 +116,7 @@ class HypermediaBatch(object):
         # result of parse_qsl into a dict!
 
         # Drop params to be updated, then prepend new params in order
-        qs_params = filter(lambda x: x[0] not in params.keys(), qs_params)
+        qs_params = [x for x in qs_params if x[0] not in list(params)]
         qs_params = sorted(params.items()) + qs_params
 
         qs = urlencode(qs_params)

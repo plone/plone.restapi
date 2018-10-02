@@ -88,7 +88,7 @@ class DeserializeFromJson(OrderingMixin, object):
                         value = deserializer(data[name])
                     except ValueError as e:
                         errors.append({
-                            'message': e.message, 'field': name, 'error': e})
+                            'message': str(e), 'field': name, 'error': e})
                     except ValidationError as e:
                         errors.append({
                             'message': e.doc(), 'field': name, 'error': e})
@@ -123,7 +123,7 @@ class DeserializeFromJson(OrderingMixin, object):
                 (self.context, self.request, None, schema, None),
                 IManagerValidator)
             for error in validator.validate(field_data):
-                errors.append({'error': error, 'message': error.message})
+                errors.append({'error': error, 'message': str(error)})
 
         if errors:
             raise BadRequest(errors)

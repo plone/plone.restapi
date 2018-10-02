@@ -66,7 +66,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         setRoles(self.portal, TEST_USER_ID, ['Member', 'Manager'])
         self.assertIn(
             'Test Read Permission',
-            self.serialize(self.portal.dxdoc).values()
+            list(self.serialize(self.portal.dxdoc).values())
         )
 
     def test_serialize_cannot_read_as_member(self):
@@ -75,7 +75,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         setRoles(self.portal, TEST_USER_ID, ['Member'])
         self.assertNotIn(
             'Test Read Permission',
-            self.serialize(self.portal.dxdoc).values()
+            list(self.serialize(self.portal.dxdoc).values())
         )
 
     def test_serialize_returns_desciption(self):
@@ -265,8 +265,10 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
     def test_serialize_image(self):
         self.portal.invokeFactory('Image', id='image1', title='Image 1')
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         self.portal.image1.image = NamedBlobImage(
-            data=open(image_file, 'r').read(),
+            data=image_data,
             contentType='image/png',
             filename=u'image.png'
         )

@@ -86,10 +86,10 @@ class TestVocabularyEndpoint(unittest.TestCase):
         response = response.json()
         self.assertTrue(len(response) > 0)
         self.assertTrue(
-            '@id' in response[0].keys()
+            '@id' in list(response[0])
         )
         self.assertTrue(
-            'title' in response[0].keys()
+            'title' in list(response[0])
         )
         self.assertEqual(
             [

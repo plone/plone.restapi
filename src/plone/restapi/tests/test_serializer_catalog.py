@@ -2,6 +2,7 @@
 from DateTime import DateTime
 from plone import api
 from plone.dexterity.utils import createContentInContainer
+from plone.restapi import HAS_AT
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
@@ -101,7 +102,7 @@ class TestCatalogSerializers(unittest.TestCase):
         brain = lazy_map[0]
         result = getMultiAdapter(
             (brain, self.request), ISerializeToJsonSummary)()
-        self.assertEquals(
+        self.assertEqual(
             {'@id': 'http://nohost/plone/my-folder/my-document',
              '@type': 'Document',
              'title': 'My Document',
@@ -177,6 +178,8 @@ class TestCatalogATSerializers(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Testing Archetypes support requires it')
         self.app = self.layer['app']
         self.portal = self.layer['portal']
         self.request = self.portal.REQUEST

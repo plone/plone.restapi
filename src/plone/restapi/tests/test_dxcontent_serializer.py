@@ -156,7 +156,7 @@ class TestDXContentSerializer(unittest.TestCase):
         current_layout = self.portal.doc1.getLayout()
         obj = self.serialize()
         self.assertIn('layout', obj)
-        self.assertEquals(current_layout, obj['layout'])
+        self.assertEqual(current_layout, obj['layout'])
 
     def test_serializer_includes_expansion(self):
         provideAdapter(
@@ -178,7 +178,7 @@ class TestDXContentSerializer(unittest.TestCase):
     def test_get_is_folderish(self):
         obj = self.serialize()
         self.assertIn('is_folderish', obj)
-        self.assertEquals(False, obj['is_folderish'])
+        self.assertEqual(False, obj['is_folderish'])
 
     def test_get_is_folderish_in_folder(self):
         self.portal.invokeFactory('Folder', id=u'folder')
@@ -186,7 +186,7 @@ class TestDXContentSerializer(unittest.TestCase):
                                      ISerializeToJson)
         obj = serializer()
         self.assertIn('is_folderish', obj)
-        self.assertEquals(True, obj['is_folderish'])
+        self.assertEqual(True, obj['is_folderish'])
 
     def test_richtext_serializer_context(self):
         """This checks if the context is passed in correctly.
@@ -208,7 +208,7 @@ class TestDXContentSerializer(unittest.TestCase):
         with AdapterCM(RichtextTransform, (Interface, ), ITransformer):
             obj = self.serialize()
 
-        self.assertEquals(
+        self.assertEqual(
             obj['test_richtext_field']['data'],
             self.portal.doc1.portal_type
         )
@@ -221,7 +221,7 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
 
         self.assertIn('allow_discussion', obj)
-        self.assertEquals(False, obj['allow_discussion'])
+        self.assertEqual(False, obj['allow_discussion'])
 
     def test_allow_discussion_obj_instance_allows_but_not_global_enabled(self):
         self.portal.invokeFactory('Document', id=u'doc2')
@@ -231,7 +231,7 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
 
         self.assertIn('allow_discussion', obj)
-        self.assertEquals(False, obj['allow_discussion'])
+        self.assertEqual(False, obj['allow_discussion'])
 
     def test_allow_discussion_fti_allows_not_global_enabled(self):
         self.portal.invokeFactory('Document', id=u'doc2')
@@ -243,7 +243,7 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
 
         self.assertIn('allow_discussion', obj)
-        self.assertEquals(False, obj['allow_discussion'])
+        self.assertEqual(False, obj['allow_discussion'])
 
     def test_allow_discussion_allows_global_enabled_but_nothing_else(self):
         self.portal.invokeFactory('Document', id=u'doc2')
@@ -255,7 +255,7 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
 
         self.assertIn('allow_discussion', obj)
-        self.assertEquals(False, obj['allow_discussion'])
+        self.assertEqual(False, obj['allow_discussion'])
 
     def test_allow_discussion_obj_instance_allows_global_enabled(self):
         self.portal.invokeFactory('Document', id=u'doc2')
@@ -268,7 +268,7 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
 
         self.assertIn('allow_discussion', obj)
-        self.assertEquals(True, obj['allow_discussion'])
+        self.assertEqual(True, obj['allow_discussion'])
 
     def test_allow_discussion_obj_instance_not_set_global_enabled(self):
         self.portal.invokeFactory('Document', id=u'doc2')
@@ -280,7 +280,7 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
 
         self.assertIn('allow_discussion', obj)
-        self.assertEquals(False, obj['allow_discussion'])
+        self.assertEqual(False, obj['allow_discussion'])
 
     def test_allow_discussion_fti_allows_allows_global_enabled(self):
         self.portal.invokeFactory('Document', id=u'doc2')
@@ -295,7 +295,7 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
 
         self.assertIn('allow_discussion', obj)
-        self.assertEquals(True, obj['allow_discussion'])
+        self.assertEqual(True, obj['allow_discussion'])
 
     def test_allow_discussion_fti_allows_allows_global_enabled_but_no_instance_allowed(self): # noqa
         self.portal.invokeFactory('Document', id=u'doc2')
@@ -312,7 +312,7 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
 
         self.assertIn('allow_discussion', obj)
-        self.assertEquals(False, obj['allow_discussion'])
+        self.assertEqual(False, obj['allow_discussion'])
 
     def test_allow_discussion_fti_allows_allows_global_enabled_but_no_instance_set(self): # noqa
         self.portal.invokeFactory('Document', id=u'doc2')
@@ -328,7 +328,7 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
 
         self.assertIn('allow_discussion', obj)
-        self.assertEquals(True, obj['allow_discussion'])
+        self.assertEqual(True, obj['allow_discussion'])
 
     def test_allow_discussion_fti_disallows_allows_global_enabled_but_instance_allowed(self): # noqa
         self.portal.invokeFactory('Document', id=u'doc2')
@@ -345,7 +345,7 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
 
         self.assertIn('allow_discussion', obj)
-        self.assertEquals(True, obj['allow_discussion'])
+        self.assertEqual(True, obj['allow_discussion'])
 
     def test_allow_discussion_global_enabled_but_instance_has_no_discussion_behavior(self): # noqa
         registry = queryUtility(IRegistry)
@@ -354,4 +354,4 @@ class TestDXContentSerializer(unittest.TestCase):
 
         obj = self.serialize()
         self.assertIn('allow_discussion', obj)
-        self.assertEquals(False, obj['allow_discussion'])
+        self.assertEqual(False, obj['allow_discussion'])

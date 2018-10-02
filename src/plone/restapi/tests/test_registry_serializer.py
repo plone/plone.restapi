@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
-import unittest
-
 from plone.registry import Registry
 from plone.registry import field
 from plone.registry.record import Record
+from plone.restapi import HAS_AT
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
+
+import unittest
+from six.moves import range
 
 
 class TestRegistrySerializer(unittest.TestCase):
@@ -14,6 +16,8 @@ class TestRegistrySerializer(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Testing Archetypes support requires it')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
 
@@ -26,8 +30,8 @@ class TestRegistrySerializer(unittest.TestCase):
         registry = Registry()
         obj = self.serialize(registry)
         expected = ['@id', 'items_total', 'items']
-        self.assertEqual(set(obj.keys()), set(expected))
-        self.assertNotIn('batching', obj.keys())
+        self.assertEqual(set(obj), set(expected))
+        self.assertNotIn('batching', list(obj))
 
     def test_batched(self):
         registry = Registry()
@@ -38,8 +42,8 @@ class TestRegistrySerializer(unittest.TestCase):
 
         obj = self.serialize(registry)
         expected = ['@id', 'items_total', 'items', 'batching']
-        self.assertEqual(set(expected), set(obj.keys()))
-        self.assertEqual(obj['items_total'], len(range(1, 100)))
+        self.assertEqual(set(expected), set(obj))
+        self.assertEqual(obj['items_total'], len(list(range(1, 100))))
 
     def test_structure(self):
         registry = Registry()
@@ -49,7 +53,7 @@ class TestRegistrySerializer(unittest.TestCase):
 
         obj = self.serialize(registry)
         item = obj['items'][0]
-        self.assertEqual(set(item.keys()), set(['name', 'value', 'schema']))
-        self.assertEqual(set(item['schema'].keys()), set(['properties']))
+        self.assertEqual(set(item), set(['name', 'value', 'schema']))
+        self.assertEqual(set(item['schema']), set(['properties']))
         self.assertEqual(item['name'], 'foo.bar')
         self.assertEqual(item['value'], u"Lorem Ipsum")

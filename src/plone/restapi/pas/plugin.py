@@ -15,9 +15,9 @@ from datetime import timedelta
 from plone.keyring.interfaces import IKeyManager
 from plone.keyring.keyring import GenerateSecret
 from zope.component import getUtility
-from zope.interface import implements
-
+from zope.interface import implementer
 import jwt
+import six
 import time
 
 
@@ -39,14 +39,14 @@ def addJWTAuthenticationPlugin(self, id_, title=None, REQUEST=None):
         )
 
 
+@implementer(
+    IAuthenticationPlugin,
+    IChallengePlugin,
+    IExtractionPlugin,
+)
 class JWTAuthenticationPlugin(BasePlugin):
     """Plone PAS plugin for authentication with JSON web tokens (JWT).
     """
-    implements(
-        IAuthenticationPlugin,
-        IChallengePlugin,
-        IExtractionPlugin,
-    )
     meta_type = "JWT Authentication Plugin"
     security = ClassSecurityInfo()
 
@@ -117,7 +117,9 @@ class JWTAuthenticationPlugin(BasePlugin):
         if 'sub' not in payload:
             return None
 
-        userid = payload['sub'].encode('utf8')
+        userid = payload['sub']
+        if six.PY2:
+            userid = userid.encode('utf8')
 
         if self.store_tokens:
             if userid not in self._tokens:
@@ -160,6 +162,8 @@ class JWTAuthenticationPlugin(BasePlugin):
                 token, self._secret + self._path(), verify=verify)
 
     def _jwt_decode(self, token, secret, verify=True):
+        if isinstance(token, six.text_type):
+            token = token.encode('utf-8')
         try:
             return jwt.decode(
                 token, secret, verify=verify, algorithms=['HS256'])
@@ -196,6 +200,8 @@ class JWTAuthenticationPlugin(BasePlugin):
         if data is not None:
             payload.update(data)
         token = jwt.encode(payload, self._signing_secret(), algorithm='HS256')
+        if not six.PY2:
+            token = token.decode('utf-8')
         if self.store_tokens:
             if self._tokens is None:
                 self._tokens = OOBTree()

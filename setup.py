@@ -10,6 +10,26 @@ long_description = (
     open('CHANGES.rst').read() + '\n'
 )
 
+TEST_REQUIRES = [
+    'collective.MockMailHost',
+    'plone.app.contenttypes',
+    'plone.app.robotframework',
+    'plone.app.testing [robot] >= 4.2.2',  # ROBOT_TEST_LEVEL added
+    'plone.api',
+    'requests',
+    'freezegun',
+    'plone.tiles',
+    'mock',
+]
+
+PY2_ONLY = [
+    'Products.Archetypes',
+    'plone.app.collection',
+]
+
+if sys.version_info[0] == 2:
+    TEST_REQUIRES += PY2_ONLY
+
 
 setup(name='plone.restapi',
       version=version,
@@ -50,19 +70,7 @@ setup(name='plone.restapi',
           'PyJWT',
           'pytz',
       ],
-      extras_require={'test': [
-          'Products.Archetypes',
-          'collective.MockMailHost',
-          'plone.app.collection',
-          'plone.app.contenttypes',
-          'plone.app.robotframework',
-          'plone.app.testing [robot] >= 4.2.2',  # ROBOT_TEST_LEVEL added
-          'plone.api',
-          'requests',
-          'freezegun',
-          'plone.tiles',
-          'mock',
-      ]},
+      extras_require={'test': TEST_REQUIRES},
       entry_points="""
       # -*- Entry points: -*-
       [z3c.autoinclude.plugin]

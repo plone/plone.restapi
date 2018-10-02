@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from AccessControl.Permissions import use_mailhost_services
-from email.MIMEText import MIMEText
+from email.mime.text import MIMEText
 from plone.registry.interfaces import IRegistry
 from plone.restapi import _
 from plone.restapi.deserializer import json_body

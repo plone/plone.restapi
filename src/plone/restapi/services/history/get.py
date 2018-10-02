@@ -9,6 +9,7 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from Products.CMFPlone.utils import safe_unicode
 from datetime import datetime as dt
+import six
 
 
 @implementer(IPublishTraverse)
@@ -74,7 +75,7 @@ class HistoryGet(Service):
 
             # Versioning entries use a timestamp,
             # workflow ISO formatted string
-            if not isinstance(item['time'], basestring):
+            if not isinstance(item['time'], six.string_types):
                 item['time'] = dt.fromtimestamp(item['time']).isoformat()
 
             # The create event has an empty 'action', but we like it to say

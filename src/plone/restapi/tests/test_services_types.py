@@ -41,7 +41,7 @@ class TestServicesTypes(unittest.TestCase):
         )
         for item in response.json():
             self.assertEqual(
-                sorted(item.keys()),
+                sorted(item),
                 sorted(['@id', 'title', 'addable'])
             )
 
@@ -157,14 +157,14 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.get('/folder_cant_add/@types')
         response = response.json()
 
-        self.assertEquals(
+        self.assertEqual(
             len([a for a in response if a['addable']]), 0)
 
         # and in the root Plone site there's no addable types
         response = self.api_session.get('/@types')
         response = response.json()
 
-        self.assertEquals(
+        self.assertEqual(
             len([a for a in response if a['addable']]), 0)
 
 
@@ -191,7 +191,7 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        self.assertItemsEqual([
+        self.assertEqual({
             u'Archivo',
             u'Carpeta',
             u'Colección',
@@ -200,5 +200,5 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
             u'Evento',
             u'Imagen',
             u'Noticia',
-            u'Página'],
-            [item['title'] for item in response.json()])
+            u'Página'},
+            set(item['title'] for item in response.json()))

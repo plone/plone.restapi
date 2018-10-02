@@ -39,7 +39,7 @@ class CommentsGet(Service):
 
     def publishTraverse(self, request, name):
         if name:
-            self.comment_id = long(name)
+            self.comment_id = int(name)
         return self
 
     def reply(self):
@@ -64,7 +64,7 @@ class CommentsAdd(Service):
 
     def publishTraverse(self, request, name):
         if name:
-            self.comment_id = long(name)
+            self.comment_id = int(name)
             request['form.widgets.in_reply_to'] = name
         return self
 
@@ -75,7 +75,7 @@ class CommentsAdd(Service):
                          plone.protect.interfaces.IDisableCSRFProtection)
 
         conversation = IConversation(self.context)
-        if self.comment_id and self.comment_id not in conversation.keys():
+        if self.comment_id and self.comment_id not in list(conversation):
             self.request.response.setStatus(404)
             return
 
@@ -104,7 +104,7 @@ class CommentsUpdate(Service):
 
     def publishTraverse(self, request, name):
         if name:
-            self.comment_id = long(name)
+            self.comment_id = int(name)
             request['form.widgets.comment_id'] = name
         return self
 
@@ -113,7 +113,7 @@ class CommentsUpdate(Service):
             raise BadRequest("Comment id is a required part of the url")
 
         conversation = IConversation(self.context)
-        if self.comment_id not in conversation.keys():
+        if self.comment_id not in list(conversation):
             self.request.response.setStatus(404)
             return
         comment = conversation[self.comment_id]
@@ -148,7 +148,7 @@ class CommentsDelete(Service):
     comment_id = None
 
     def publishTraverse(self, request, name):
-        self.comment_id = long(name)
+        self.comment_id = int(name)
         return self
 
     def reply(self):

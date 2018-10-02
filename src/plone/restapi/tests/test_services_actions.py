@@ -72,7 +72,7 @@ class TestRegistry(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         response = response.json()
         self.assertEqual(['category1', 'category2', 'category3'],
-                         sorted(response.keys()))
+                         sorted(response))
 
     def test_actions_selected_categories(self):
         response = self.api_session.get(
@@ -81,7 +81,7 @@ class TestRegistry(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         response = response.json()
         self.assertEqual(['category1', 'category2'],
-                         sorted(response.keys()))
+                         sorted(response))
 
     def test_actions_siteroot(self):
         response = self.api_session.get('/@actions')

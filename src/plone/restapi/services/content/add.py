@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from Acquisition.interfaces import IAcquirer
+from plone.restapi import HAS_AT
 from plone.restapi.deserializer import json_body
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -17,6 +18,14 @@ from zope.interface import alsoProvides
 from zope.lifecycleevent import ObjectCreatedEvent
 
 import plone.protect.interfaces
+
+if HAS_AT:
+    from Products.Archetypes.interfaces import IBaseObject
+else:
+    from zope.interface import Interface
+
+    class IBaseObject(Interface):
+        pass
 
 
 class FolderPost(Service):
@@ -44,12 +53,12 @@ class FolderPost(Service):
             self.request.response.setStatus(403)
             return dict(error=dict(
                 type='Forbidden',
-                message=exc.message))
+                message=str(exc)))
         except BadRequest as exc:
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='Bad Request',
-                message=exc.message))
+                message=str(exc)))
 
         # Acquisition wrap temporarily to satisfy things like vocabularies
         # depending on tools
@@ -77,7 +86,7 @@ class FolderPost(Service):
         if temporarily_wrapped:
             obj = aq_base(obj)
 
-        if not getattr(deserializer, 'notifies_create', False):
+        if not HAS_AT or not IBaseObject.providedBy(obj):
             notify(ObjectCreatedEvent(obj))
 
         obj = add(self.context, obj, rename=not bool(id_))

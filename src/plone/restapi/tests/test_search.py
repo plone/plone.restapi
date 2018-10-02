@@ -8,6 +8,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
+from plone.restapi import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -295,8 +296,8 @@ class TestSearchFunctional(unittest.TestCase):
                  'fullobjects': True}
         response = self.api_session.get('/@search', params=query)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(response.json()['items']), 1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['items']), 1)
 
     def test_full_objects_retrieval_collections(self):
         self.collection = createContentInContainer(
@@ -309,8 +310,8 @@ class TestSearchFunctional(unittest.TestCase):
                  'fullobjects': True}
         response = self.api_session.get('/@search', params=query)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(response.json()['items']), 1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['items']), 1)
 
     # ZCTextIndex
 
@@ -347,7 +348,7 @@ class TestSearchFunctional(unittest.TestCase):
         query = {'test_list_field': ['Keyword2', 'Keyword3']}
         response = self.api_session.get('/@search', params=query)
 
-        self.assertItemsEqual(
+        self.assertEqual(
             [u'/plone/folder/doc',
              u'/plone/folder/other-document'],
             result_paths(response.json())
@@ -610,6 +611,8 @@ class TestSearchATFunctional(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Testing Archetypes support requires it')
         self.app = self.layer['app']
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()

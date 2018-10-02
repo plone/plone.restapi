@@ -19,6 +19,7 @@ from zope.schema._bootstrapinterfaces import RequiredMissing
 from zope.schema.interfaces import ValidationError
 
 import unittest
+import six
 
 
 class RequiredField(object):
@@ -55,12 +56,12 @@ class TestDXFieldDeserializer(unittest.TestCase):
                                        IFieldDeserializer)
         return deserializer(value)
 
-    def test_ascii_deserialization_returns_bytestring(self):
+    def test_ascii_deserialization_returns_native_string(self):
         value = self.deserialize('test_ascii_field', u'Foo')
         self.assertTrue(isinstance(value, str), 'Not a <str>')
         self.assertEqual('Foo', value)
 
-    def test_asciiline_deserialization_returns_bytestring(self):
+    def test_asciiline_deserialization_returns_native_string(self):
         value = self.deserialize('test_asciiline_field', u'Foo')
         self.assertTrue(isinstance(value, str), 'Not a <str>')
         self.assertEqual('Foo', value)
@@ -77,17 +78,17 @@ class TestDXFieldDeserializer(unittest.TestCase):
 
     def test_bytes_deserialization_returns_bytestring(self):
         value = self.deserialize('test_bytes_field', u'Foo')
-        self.assertTrue(isinstance(value, str), 'Not a <str>')
-        self.assertEqual('Foo', value)
+        self.assertTrue(isinstance(value, bytes), 'Not a <bytes>')
+        self.assertEqual(b'Foo', value)
 
     def test_bytesline_deserialization_returns_bytestring(self):
         value = self.deserialize('test_bytesline_field', u'Foo')
-        self.assertTrue(isinstance(value, str), 'Not a <str>')
-        self.assertEqual('Foo', value)
+        self.assertTrue(isinstance(value, bytes), 'Not a <bytes>')
+        self.assertEqual(b'Foo', value)
 
     def test_choice_deserialization_returns_vocabulary_item(self):
         value = self.deserialize('test_choice_field', u'bar')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'bar', value)
 
     def test_date_deserialization_returns_date(self):
@@ -128,7 +129,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         value = self.deserialize('test_datetime_tz_field',
                                  u'2015-05-20T10:39:54.361+02')
         self.assertEqual(timezone("Europe/Zurich").localize(
-            datetime(2015, 05, 20, 10, 39, 54, 361000)), value)
+            datetime(2015, 5, 20, 10, 39, 54, 361000)), value)
 
     def test_datetime_deserialization_none(self):
         # Make sure we don't construct a datetime out of nothing
@@ -179,12 +180,12 @@ class TestDXFieldDeserializer(unittest.TestCase):
 
     def test_text_deserialization_returns_unicode(self):
         value = self.deserialize('test_text_field', u'Foo')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'Foo', value)
 
     def test_textline_deserialization_returns_unicode(self):
         value = self.deserialize('test_textline_field', u'Foo')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'Foo', value)
 
     def test_time_deserialization_returns_time(self):
@@ -252,7 +253,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             u'data': u'U3BhbSBhbmQgZWdncyE=',
             u'encoding': u'base64',
         })
-        self.assertEquals('Spam and eggs!', value.data)
+        self.assertEqual(b'Spam and eggs!', value.data)
 
     def test_namedfield_deserialization_sets_content_type(self):
         value = self.deserialize('test_namedfile_field', {
@@ -274,7 +275,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         })
         self.assertTrue(isinstance(value, namedfile.NamedFile),
                         'Not a <NamedFile>')
-        self.assertEqual('Spam and eggs!', value.data)
+        self.assertEqual(b'Spam and eggs!', value.data)
 
     def test_namedimage_deserialization_returns_namedimage(self):
         value = self.deserialize('test_namedimage_field', {
@@ -284,7 +285,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         })
         self.assertTrue(isinstance(value, namedfile.NamedImage),
                         'Not a <NamedImage>')
-        self.assertTrue(value.data.startswith('GIF89a'))
+        self.assertTrue(value.data.startswith(b'GIF89a'))
 
     def test_namedblobfile_deserialization_returns_namedblobfile(self):
         value = self.deserialize('test_namedblobfile_field', {
@@ -292,7 +293,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         })
         self.assertTrue(isinstance(value, namedfile.NamedBlobFile),
                         'Not a <NamedBlobFile>')
-        self.assertEqual('Spam and eggs!', value.data)
+        self.assertEqual(b'Spam and eggs!', value.data)
 
     def test_namedblobimage_deserialization_returns_namedblobimage(self):
         value = self.deserialize('test_namedblobimage_field', {
@@ -302,7 +303,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         })
         self.assertTrue(isinstance(value, namedfile.NamedBlobImage),
                         'Not a <NamedBlobImage>')
-        self.assertTrue(value.data.startswith('GIF89a'))
+        self.assertTrue(value.data.startswith(b'GIF89a'))
 
     def test_namedblobimage_deserialization_fed_with_null_removes_image(self):
         # null in json translates to None in python.
@@ -332,14 +333,14 @@ class TestDXFieldDeserializer(unittest.TestCase):
         doc2 = self.portal[self.portal.invokeFactory(
             'DXTestDocument', id='doc2', title='Referenceable Document')]
         value = self.deserialize('test_relationchoice_field',
-                                 unicode(doc2.UID()))
+                                 six.text_type(doc2.UID()))
         self.assertEqual(doc2, value)
 
     def test_relationchoice_deserialization_from_url_returns_document(self):
         doc2 = self.portal[self.portal.invokeFactory(
             'DXTestDocument', id='doc2', title='Referenceable Document')]
         value = self.deserialize('test_relationchoice_field',
-                                 unicode(doc2.absolute_url()))
+                                 six.text_type(doc2.absolute_url()))
         self.assertEqual(doc2, value)
 
     def test_relationchoice_deserialization_from_path_returns_document(self):
@@ -353,8 +354,9 @@ class TestDXFieldDeserializer(unittest.TestCase):
             'DXTestDocument', id='doc2', title='Referenceable Document')]
         doc3 = self.portal[self.portal.invokeFactory(
             'DXTestDocument', id='doc3', title='Referenceable Document')]
-        value = self.deserialize('test_relationlist_field',
-                                 [unicode(doc2.UID()), unicode(doc3.UID())])
+        value = self.deserialize(
+            'test_relationlist_field',
+            [six.text_type(doc2.UID()), six.text_type(doc3.UID())])
         self.assertTrue(isinstance(value, list), 'Not a <list>')
         self.assertEqual(doc2, value[0])
         self.assertEqual(doc3, value[1])
@@ -368,7 +370,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             self.deserialize('test_datetime_field',
                              u'2015-15-15T10:39:54.361Z')
         self.assertEqual(u'Invalid date: 2015-15-15T10:39:54.361Z',
-                         cm.exception.message)
+                         str(cm.exception))
 
     def test_datetime_deserializer_validates_value(self):
         with self.assertRaises(ValidationError):
@@ -377,13 +379,13 @@ class TestDXFieldDeserializer(unittest.TestCase):
 
     def test_collection_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
-            self.deserialize('test_list_value_type_field', [1, '2', 3])
+            self.deserialize('test_list_value_type_field', [1, b'2', 3])
 
         # This validation error is actually produced by the
         # DefaultFieldDeserializer that the CollectionFieldDeserializer will
         # delegate to for deserializing collection items.
         self.assertEqual(u'Object is of wrong type.', cm.exception.doc())
-        self.assertEqual(('2', (int, long), ''), cm.exception.args)
+        self.assertEqual((b'2', six.integer_types, ''), cm.exception.args)
 
     def test_dict_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
@@ -392,15 +394,23 @@ class TestDXFieldDeserializer(unittest.TestCase):
         # This validation error is actually produced by the
         # DefaultFieldDeserializer that the DictFieldSerializer will delegate
         # to for deserializing keys and values.
-        self.assertEqual(u'Object is of wrong type.', cm.exception.doc())
-        self.assertEqual(('k', (int, long), ''), cm.exception.args)
+        # We check for two sets of exception details
+        # because zope.schema changed its exception...
+        self.assertIn(cm.exception.doc(), (
+            u'Object is of wrong type.',
+            u'Invalid int literal.',
+        ))
+        self.assertIn(cm.exception.args, (
+            ('k', six.integer_types, ''),
+            ("invalid literal for int() with base 10: 'k'",),
+        ))
 
     def test_time_deserializer_handles_invalid_value(self):
         with self.assertRaises(ValueError) as cm:
             self.deserialize('test_time_field',
                              u'midnight')
         self.assertEqual(u'Invalid time: midnight',
-                         cm.exception.message)
+                         str(cm.exception))
 
     def test_time_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
@@ -412,9 +422,9 @@ class TestDXFieldDeserializer(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.deserialize('test_timedelta_field',
                              u'2h')
-        self.assertEqual(
-            u'unsupported type for timedelta seconds component: unicode',
-            cm.exception.message)
+        self.assertIn(
+            u'unsupported type for timedelta seconds component:',
+            str(cm.exception))
 
     def test_timedelta_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
@@ -462,7 +472,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
 
     def test_textline_deserializer_strips_value(self):
         value = self.deserialize('test_textline_field', u'  aa  ')
-        self.assertEquals(value, 'aa')
+        self.assertEqual(value, 'aa')
 
     def test_default_field_deserializer_validates_value(self):
 
@@ -478,6 +488,6 @@ class TestDXFieldDeserializer(unittest.TestCase):
                                        IFieldDeserializer)
 
         with self.assertRaises(ConstraintNotSatisfied):
-            deserializer("not an int")
+            deserializer(b"not an int")
 
         self.assertEqual(42, deserializer(42))
