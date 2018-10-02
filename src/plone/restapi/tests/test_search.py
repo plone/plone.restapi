@@ -224,6 +224,7 @@ class TestSearchFunctional(unittest.TestCase):
         query = {'SearchableText': 'lorem', 'metadata_fields': '_all'}
         response = self.api_session.get('/@search', params=query)
 
+        first_item = response.json()['items'][0]
         self.assertDictContainsSubset(
             {u'@id': self.portal_url + u'/folder/doc',
              u'Creator': u'test_user_1_',
@@ -243,7 +244,6 @@ class TestSearchFunctional(unittest.TestCase):
              u'exclude_from_nav': False,
              u'expires': u'1999-01-01T00:00:00+00:00',
              u'getId': u'doc',
-             u'getObjSize': u'0 KB',
              u'getPath': u'/plone/folder/doc',
              u'getRemoteUrl': None,
              u'getURL': self.portal_url + u'/folder/doc',
@@ -260,7 +260,10 @@ class TestSearchFunctional(unittest.TestCase):
              u'sync_uid': None,
              u'title': u'Lorem Ipsum',
              u'total_comments': 0},
-            response.json()['items'][0])
+            first_item)
+        # This value changed in Plone 5.2
+        # (Dexterity gained support for getObjSize)
+        self.assertIn(first_item[u'getObjSize'], (u'0 KB', u'1 KB'))
 
     def test_full_objects_retrieval(self):
         query = {'SearchableText': 'lorem',
