@@ -1,8 +1,7 @@
 language: python
 python:
-  - 2.7
-  - 3.5
-  - 3.6
+  - "2.7"
+  - "3.6"
 sudo: required
 services:
   - docker
@@ -29,9 +28,7 @@ matrix:
     env: PLONE_VERSION=5.1.x
   - python: "2.7"
     env: PLONE_VERSION=5.2.x
-  - python: "3.5"
-    env: PLONE_VERSION=5.2.x
-  - python: "3.5"
+  - python: "3.6"
     env: PLONE_VERSION=5.2.x
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
