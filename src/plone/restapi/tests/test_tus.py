@@ -28,7 +28,7 @@ import tempfile
 import transaction
 import unittest
 
-UPLOAD_DATA = 'abcdefgh'
+UPLOAD_DATA = b'abcdefgh'
 UPLOAD_MIMETYPE = 'text/plain'
 UPLOAD_FILENAME = 'test.txt'
 UPLOAD_LENGTH = len(UPLOAD_DATA)
@@ -36,6 +36,19 @@ UPLOAD_LENGTH = len(UPLOAD_DATA)
 UPLOAD_PDF_MIMETYPE = 'application/pdf'
 UPLOAD_PDF_FILENAME = 'file.pdf'
 
+def _base64_str(s):
+    if not isinstance(s, bytes):
+        s = s.encode('utf-8')
+    s = b64encode(s)
+    if not isinstance(s, str):
+        s = s.decode('utf-8')
+    return s
+
+def _prepare_metadata(filename, content_type):
+    return 'filename {},content-type {}'.format(
+        _base64_str(filename),
+        _base64_str(content_type),
+    )
 
 class TestTUS(unittest.TestCase):
 
@@ -109,9 +122,7 @@ class TestTUS(unittest.TestCase):
         upload.cleanup()
 
     def test_tus_post_initialization_with_metadata(self):
-        metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_FILENAME.encode('utf8')).decode('utf8'),
-            b64encode(UPLOAD_MIMETYPE.encode('utf8')).decode('utf8'))
+        metadata = _prepare_metadata(UPLOAD_FILENAME, UPLOAD_MIMETYPE)
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
@@ -268,7 +279,7 @@ class TestTUS(unittest.TestCase):
         self.assertEqual(1, len(self.folder.objectIds()))
         id_ = self.folder.objectIds()[0]
         self.assertEqual(
-            'abcdefghijkl', self.folder[id_].test_namedblobfile_field.data)
+            b'abcdefghijkl', self.folder[id_].test_namedblobfile_field.data)
         tus.cleanup()
 
     def test_patch_in_create_mode_without_add_permission_raises_401(self):
@@ -302,9 +313,7 @@ class TestTUS(unittest.TestCase):
         pdf_file_path = os.path.join(os.path.dirname(__file__),
                                      UPLOAD_PDF_FILENAME)
         pdf_file_size = os.path.getsize(pdf_file_path)
-        metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_PDF_FILENAME.encode('utf8')),
-            b64encode(UPLOAD_PDF_MIMETYPE.encode('utf8')))
+        metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
@@ -331,9 +340,7 @@ class TestTUS(unittest.TestCase):
 
     def test_tus_can_upload_text_file(self):
         # initialize the upload with POST
-        metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_FILENAME.encode('utf8')),
-            b64encode(UPLOAD_MIMETYPE.encode('utf8')))
+        metadata = _prepare_metadata(UPLOAD_FILENAME, UPLOAD_MIMETYPE)
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
@@ -363,9 +370,7 @@ class TestTUS(unittest.TestCase):
         pdf_file_path = os.path.join(os.path.dirname(__file__),
                                      UPLOAD_PDF_FILENAME)
         pdf_file_size = os.path.getsize(pdf_file_path)
-        metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_PDF_FILENAME.encode('utf8')),
-            b64encode(UPLOAD_PDF_MIMETYPE.encode('utf8')))
+        metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
         response = self.api_session.post(
             '{}/@tus-replace'.format(self.file.absolute_url()),
             headers={'Tus-Resumable': '1.0.0',
@@ -604,9 +609,7 @@ class TestTUSWithAT(unittest.TestCase):
         pdf_file_path = os.path.join(os.path.dirname(__file__),
                                      UPLOAD_PDF_FILENAME)
         pdf_file_size = os.path.getsize(pdf_file_path)
-        metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_PDF_FILENAME.encode('utf8')),
-            b64encode(UPLOAD_PDF_MIMETYPE.encode('utf8')))
+        metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
