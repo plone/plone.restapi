@@ -4,8 +4,8 @@ Changelog
 3.4.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
-
+- Drop collective.MockMailHost, use a util class from CMFPlone.
+  [gforcada]
 
 3.4.5 (2018-09-14)
 ------------------
