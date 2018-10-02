@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from Products.MailHost.interfaces import IMailHost
-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -32,7 +30,7 @@ class EmailNotificationEndpoint(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
 
-        self.mailhost = getUtility(IMailHost)
+        self.mailhost = self.portal.MailHost
 
         registry = getUtility(IRegistry)
         registry['plone.email_from_address'] = 'info@plone.org'

@@ -11,7 +11,6 @@ from plone.app.testing import IntegrationTesting
 from plone.app.testing import login
 from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
-from plone.app.testing import quickInstallProduct
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -23,6 +22,7 @@ from plone.testing import z2
 from plone.testing.layer import Layer
 from plone.uuid.interfaces import IUUIDGenerator
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.tests.utils import MockMailHost
 from urlparse import urljoin
 from urlparse import urlparse
 from zope.component import getGlobalSiteManager
@@ -30,7 +30,6 @@ from zope.component import getUtility
 from zope.configuration import xmlconfig
 from zope.interface import implements
 
-import collective.MockMailHost
 import pkg_resources
 import re
 import requests
@@ -160,7 +159,6 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
             context=configurationContext
         )
 
-        self.loadZCML(package=collective.MockMailHost)
         z2.installProduct(app, 'plone.restapi')
 
     def setUpPloneSite(self, portal):
@@ -176,8 +174,7 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
         set_available_languages()
         enable_request_language_negotiation(portal)
-        quickInstallProduct(portal, 'collective.MockMailHost')
-        applyProfile(portal, 'collective.MockMailHost:default')
+        portal.MailHost = MockMailHost('MailHost')
         states = portal.portal_workflow['simple_publication_workflow'].states
         states['published'].title = u'Published with accent é'.encode('utf8')
 

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
-from Products.MailHost.interfaces import IMailHost
 
 from plone import api
 from plone.app.testing import setRoles
@@ -11,7 +10,6 @@ from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.component import getAdapter
-from zope.component import getUtility
 
 try:
     from Products.CMFPlone.interfaces import ISecuritySchema
@@ -32,7 +30,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
 
-        self.mailhost = getUtility(IMailHost)
+        self.mailhost = self.portal.MailHost
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})
