@@ -1,47 +1,5 @@
-HTTP/1.1 500 Internal Server Error
-Content-Type: application/json
+HTTP/1.1 204 No Content
+Upload-Offset: 8
+Location: http://localhost:55001/plone/myfile
+Tus-Resumable: 1.0.0
 
-{
-  "message": "(<InterfaceClass plone.namedfile.interfaces.IStorage>, '_io.BufferedReader')",
-  "traceback": [
-    "File \"/Users/davisagli/Plone/py3/src/Zope/src/ZPublisher/WSGIPublisher.py\", line 128, in transaction_pubevents",
-    "    yield",
-    "",
-    "  File \"/Users/davisagli/Plone/py3/src/Zope/src/ZPublisher/WSGIPublisher.py\", line 270, in publish_module",
-    "    response = _publish(request, new_mod_info)",
-    "",
-    "  File \"/Users/davisagli/Plone/py3/src/Zope/src/ZPublisher/WSGIPublisher.py\", line 210, in publish",
-    "    bind=1)",
-    "",
-    "  File \"/Users/davisagli/Plone/py3/src/Zope/src/ZPublisher/mapply.py\", line 85, in mapply",
-    "    return debug(object, args, context)",
-    "",
-    "  File \"/Users/davisagli/Plone/py3/src/Zope/src/ZPublisher/WSGIPublisher.py\", line 57, in call_object",
-    "    return obj(*args)",
-    "",
-    "  File \"/Users/davisagli/Plone/py3/src/plone.restapi/src/plone/restapi/services/content/tus.py\", line 63, in __call__",
-    "    return self.render()",
-    "",
-    "  File \"/Users/davisagli/Plone/py3/src/plone.restapi/src/plone/restapi/services/__init__.py\", line 19, in render",
-    "    content = self.reply()",
-    "",
-    "  File \"/Users/davisagli/Plone/py3/src/plone.restapi/src/plone/restapi/services/content/tus.py\", line 261, in reply",
-    "    deserializer(data={fieldname: tus_upload})",
-    "",
-    "  File \"/Users/davisagli/Plone/py3/src/plone.restapi/src/plone/restapi/deserializer/dxcontent.py\", line 88, in __call__",
-    "    value = deserializer(data[name])",
-    "",
-    "  File \"/Users/davisagli/Plone/py3/src/plone.restapi/src/plone/restapi/deserializer/dxfields.py\", line 238, in __call__",
-    "    data=data, contentType=content_type, filename=filename)",
-    "",
-    "  File \"/Users/davisagli/Plone/py3/src/plone.namedfile/plone/namedfile/file.py\", line 331, in __init__",
-    "    self._setData(data)",
-    "",
-    "  File \"/Users/davisagli/Plone/py3/src/plone.namedfile/plone/namedfile/file.py\", line 349, in _setData",
-    "    storable = getUtility(IStorage, name=dottedName)",
-    "",
-    "  File \"/Users/davisagli/.buildout/eggs/zope.component-4.4.1-py3.6.egg/zope/component/_api.py\", line 169, in getUtility",
-    "    raise ComponentLookupError(interface, name)"
-  ],
-  "type": "ComponentLookupError"
-}

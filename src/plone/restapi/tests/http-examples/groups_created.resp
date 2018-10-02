@@ -1,21 +1,21 @@
 HTTP/1.1 201 Created
-Location: http://localhost:55001/plone/@groups/fwt
 Content-Type: application/json
+Location: http://localhost:55001/plone/@groups/fwt
 
 {
-  "@id": "http://localhost:55001/plone/@groups/fwt",
-  "description": "The Plone Framework Team",
-  "email": "fwt@plone.org",
-  "groupname": "fwt",
-  "id": "fwt",
-  "title": "Framework Team",
+  "@id": "http://localhost:55001/plone/@groups/fwt", 
+  "description": "The Plone Framework Team", 
+  "email": "fwt@plone.org", 
+  "groupname": "fwt", 
+  "id": "fwt", 
+  "title": "Framework Team", 
   "users": {
-    "@id": "http://localhost:55001/plone/@groups",
+    "@id": "http://localhost:55001/plone/@groups", 
     "items": [
-      "Administrators",
-      "admin",
+      "Administrators", 
+      "admin", 
       "test_user_1_"
-    ],
+    ], 
     "items_total": 3
   }
 }

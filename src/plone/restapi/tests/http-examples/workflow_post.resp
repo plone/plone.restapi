@@ -2,10 +2,10 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "action": "publish",
-  "actor": "admin",
-  "comments": "",
-  "review_state": "published",
-  "time": "2016-10-21T15:05:00+00:00",
+  "action": "publish", 
+  "actor": "admin", 
+  "comments": "", 
+  "review_state": "published", 
+  "time": "2016-10-21T19:05:00+00:00", 
   "title": "Published with accent \u00e9"
 }

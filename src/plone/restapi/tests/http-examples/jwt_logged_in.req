@@ -1,3 +1,3 @@
 GET /plone/ HTTP/1.1
 Accept: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImZ1bGxuYW1lIjoiIn0.krI8ep0NQHyYYObtXl1ygI4NM2UbHUlZqF7kKnx9JFo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmdWxsbmFtZSI6IiIsInN1YiI6ImFkbWluIn0.RVl8ZFJWIaA-8ujyulJvw0j3F3qFjIHDIJFK0GF6j_0

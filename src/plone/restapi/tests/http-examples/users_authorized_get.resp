@@ -12,6 +12,6 @@ Content-Type: application/json
   "portrait": null, 
   "roles": [
     "Member"
-  ],
+  ], 
   "username": "noam"
 }
