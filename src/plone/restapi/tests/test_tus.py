@@ -36,6 +36,7 @@ UPLOAD_LENGTH = len(UPLOAD_DATA)
 UPLOAD_PDF_MIMETYPE = 'application/pdf'
 UPLOAD_PDF_FILENAME = 'file.pdf'
 
+
 def _base64_str(s):
     if not isinstance(s, bytes):
         s = s.encode('utf-8')
@@ -44,11 +45,13 @@ def _base64_str(s):
         s = s.decode('utf-8')
     return s
 
+
 def _prepare_metadata(filename, content_type):
     return 'filename {},content-type {}'.format(
         _base64_str(filename),
         _base64_str(content_type),
     )
+
 
 class TestTUS(unittest.TestCase):
 
