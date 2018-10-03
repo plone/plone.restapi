@@ -9,6 +9,7 @@ from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.interface import Interface
 
+
 @implementer(ISerializeToJson)
 @adapter(ICollection, Interface)
 class SerializeCollectionToJson(SerializeToJson):
