@@ -261,7 +261,7 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(
             sorted_roles(pas.getLocalRolesForDisplay(self.portal.folder1)),
             [['admin', ['Owner',], 'user', 'admin'],
-             ['test-user', ['Reviewer', 'Reader'], 'user', 'test_user_1_']]
+             ['test-user', ['Reader', 'Reviewer'], 'user', 'test_user_1_']]
         )
 
         response = requests.post(
