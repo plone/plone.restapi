@@ -247,7 +247,7 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(
             sorted_roles(pas.getLocalRolesForDisplay(self.portal.folder1)),
-            [['admin', ['Owner',], 'user', 'admin'],
+            [['admin', ['Owner', ], 'user', 'admin'],
              ['test-user', [u'Reader', u'Reviewer'], 'user', u'test_user_1_']]
         )
 
@@ -260,7 +260,7 @@ class TestFolderCreate(unittest.TestCase):
         pas = getToolByName(self.portal, 'acl_users')
         self.assertEqual(
             sorted_roles(pas.getLocalRolesForDisplay(self.portal.folder1)),
-            [['admin', ['Owner',], 'user', 'admin'],
+            [['admin', ['Owner', ], 'user', 'admin'],
              ['test-user', ['Reader', 'Reviewer'], 'user', 'test_user_1_']]
         )
 
