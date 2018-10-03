@@ -16,6 +16,7 @@ from zope.component import queryMultiAdapter
 from zope.interface import Interface
 from zope.interface import implementer
 
+
 @implementer(ISerializeToJson)
 @adapter(IBaseObject, Interface)
 class SerializeToJson(object):
@@ -73,6 +74,7 @@ class SerializeToJson(object):
         review_state = wftool.getInfoFor(
             ob=obj, name='review_state', default=None)
         return review_state
+
 
 @implementer(ISerializeToJson)
 @adapter(IBaseFolder, Interface)

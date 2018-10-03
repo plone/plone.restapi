@@ -17,6 +17,7 @@ from zope.interface import implementer
 
 from .mixins import OrderingMixin
 
+
 @implementer(IDeserializeFromJson)
 @adapter(IBaseObject, Interface)
 class DeserializeFromJson(OrderingMixin, object):
@@ -87,10 +88,10 @@ class DeserializeFromJson(OrderingMixin, object):
     def validate(self):
         # Instead of calling P.Archetypes.BaseObject.validate() we have to
         # provide a custom validation implementation here because some
-        # validators extract the field value from the request. However a
-        # JSON API request does not contain any form values in the request.
-        # Thus we fake a request that extracts form values from the object
-        # on demand.
+        # validators extract the field value from the request. However a JSON
+        # API request does not contain any form values in the request.
+        # Thus we fake a request that extracts form values from the object on
+        # demand.
 
         obj = self.context
         request = ValidationRequest(self.request, obj)
@@ -123,6 +124,7 @@ class DeserializeFromJson(OrderingMixin, object):
 
         return errors
 
+
 class ValidationRequest(dict):
     """A fake request for validation purposes.
     """
@@ -145,6 +147,7 @@ class ValidationRequest(dict):
             return self[key]
         except KeyError:
             return default
+
 
 class ValidationRequestForm(dict):
     """A request form dict that returns values from the content object.

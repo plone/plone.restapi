@@ -11,6 +11,7 @@ from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
+
 @implementer(IFieldDeserializer)
 @adapter(IField, IBaseObject, IBrowserRequest)
 class DefaultFieldDeserializer(object):
@@ -22,6 +23,7 @@ class DefaultFieldDeserializer(object):
 
     def __call__(self, value):
         return value, {}
+
 
 @implementer(IFieldDeserializer)
 @adapter(IFileField, IBaseObject, IBrowserRequest)
@@ -48,10 +50,12 @@ class FileFieldDeserializer(DefaultFieldDeserializer):
 
         return value, kwargs
 
+
 @implementer(IFieldDeserializer)
 @adapter(IBlobField, IBaseObject, IBrowserRequest)
 class BlobFieldDeserializer(FileFieldDeserializer):
     pass
+
 
 @implementer(IFieldDeserializer)
 @adapter(IReferenceField, IBaseObject, IBrowserRequest)

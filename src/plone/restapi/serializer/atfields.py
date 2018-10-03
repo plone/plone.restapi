@@ -25,6 +25,7 @@ except ImportError:
 else:
     from plone.app.collection.field import IQueryField
 
+
 @adapter(IField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
 class DefaultFieldSerializer(object):
@@ -37,6 +38,7 @@ class DefaultFieldSerializer(object):
     def __call__(self):
         accessor = self.field.getAccessor(self.context)
         return json_compatible(accessor())
+
 
 @adapter(IFileField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
@@ -54,6 +56,7 @@ class FileFieldSerializer(DefaultFieldSerializer):
         }
         return json_compatible(result)
 
+
 @adapter(ITextField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
 class TextFieldSerializer(DefaultFieldSerializer):
@@ -67,6 +70,7 @@ class TextFieldSerializer(DefaultFieldSerializer):
                 mimetypes_registry(data)[2].normalized()),
             'data': data
         }
+
 
 @adapter(IImageField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
@@ -93,15 +97,18 @@ class ImageFieldSerializer(DefaultFieldSerializer):
         }
         return json_compatible(result)
 
+
 @adapter(IBlobField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
 class BlobFieldSerializer(FileFieldSerializer):
     pass
 
+
 @adapter(IBlobImageField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
 class BlobImageFieldSerializer(ImageFieldSerializer):
     pass
+
 
 @adapter(IReferenceField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
@@ -116,6 +123,7 @@ class ReferenceFieldSerializer(DefaultFieldSerializer):
             if refs is None:
                 return None
             return json_compatible(refs.absolute_url())
+
 
 @adapter(IQueryField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
