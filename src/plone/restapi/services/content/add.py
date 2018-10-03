@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from Acquisition.interfaces import IAcquirer
-from plone.restapi import HAS_AT
 from plone.restapi.deserializer import json_body
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -18,14 +17,6 @@ from zope.interface import alsoProvides
 from zope.lifecycleevent import ObjectCreatedEvent
 
 import plone.protect.interfaces
-
-if HAS_AT:
-    from Products.Archetypes.interfaces import IBaseObject
-else:
-    from zope.interface import Interface
-
-    class IBaseObject(Interface):
-        pass
 
 
 class FolderPost(Service):
@@ -86,7 +77,7 @@ class FolderPost(Service):
         if temporarily_wrapped:
             obj = aq_base(obj)
 
-        if not HAS_AT or not IBaseObject.providedBy(obj):
+        if not getattr(deserializer, 'notifies_create', False):
             notify(ObjectCreatedEvent(obj))
 
         obj = add(self.context, obj, rename=not bool(id_))
