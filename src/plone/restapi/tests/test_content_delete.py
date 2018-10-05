@@ -10,6 +10,7 @@ from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.testing import login
 from plone.app.testing import setRoles
+from plone.restapi.testing import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from zope.event import notify
@@ -65,6 +66,8 @@ class TestATContentDelete(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Testing Archetypes support requires it')
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         self.doc1 = self.portal[self.portal.invokeFactory(
