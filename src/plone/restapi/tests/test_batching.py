@@ -310,6 +310,59 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
         self.assertNotIn('batching', list(response.json()))
 
 
+class TestAABatchingArchetypes(unittest.TestCase):
+    """This is a dummy test to work around a nasty test-isolation issue.
+
+    It does the same requests as TestBatchingArchetypes (see below).
+    When run with the robot-tests in plone.app.widgets (without isolation)
+    they return rendered templates since 'mark_as_api_request' is not hit.
+
+    Doing the exact same calls here before actually running the tests
+    fixes the issue. Don't ask why, I do not know.
+
+    See https://github.com/plone/Products.CMFPlone/issues/2592 for details.
+    """
+
+    layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Testing Archetypes support requires it')
+        self.portal = self.layer['portal']
+        self.portal_url = self.portal.absolute_url()
+
+        setRoles(self.portal, TEST_USER_ID, ['Member', 'Contributor'])
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+        self.portal[self.portal.invokeFactory(
+            'Folder',
+            id='folder',
+            title='Some Folder',
+        )]
+        transaction.commit()
+
+    def test_contains_canonical_url(self):
+        # Fetch the second page of the batch
+        self.api_session.get('/folder?b_start=2&b_size=2')
+
+    def test_contains_batching_links(self):
+        # Fetch the second page of the batch
+        self.api_session.get('/folder?b_start=2&b_size=2')
+
+    def test_contains_correct_batch_of_items(self):
+        # Fetch the second page of the batch
+        self.api_session.get('/folder?b_start=2&b_size=2')
+
+    def test_total_item_count_is_correct(self):
+        # Fetch the second page of the batch
+        self.api_session.get('/folder?b_start=2&b_size=2')
+
+    def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
+        self.api_session.get('/folder?b_size=100')
+
+
 class TestBatchingArchetypes(unittest.TestCase):
 
     layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
