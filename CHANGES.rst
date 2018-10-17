@@ -4,7 +4,8 @@ Changelog
 3.4.6 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add support for Python 3.
+  [pbauer, davisagli]
 
 
 3.4.5 (2018-09-14)

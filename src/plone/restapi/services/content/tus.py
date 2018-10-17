@@ -15,7 +15,7 @@ from plone.rfc822.interfaces import IPrimaryFieldInfo
 from uuid import uuid4
 from zExceptions import Unauthorized
 from zope.component import queryMultiAdapter
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
 from zope.lifecycleevent import ObjectCreatedEvent
@@ -106,7 +106,9 @@ class UploadPost(TUSBaseService):
         for item in self.request.getHeader('Upload-Metadata', '').split(','):
             key_value = item.split()
             if len(key_value) == 2:
-                metadata[key_value[0].lower()] = b64decode(key_value[1])
+                key = key_value[0].lower()
+                value = b64decode(key_value[1]).decode('utf-8')
+                metadata[key] = value
         metadata['length'] = length
         if self.__name__.endswith('@tus-replace'):
             metadata['mode'] = 'replace'
@@ -123,8 +125,8 @@ class UploadPost(TUSBaseService):
         return super(UploadPost, self).reply()
 
 
+@implementer(IPublishTraverse)
 class UploadFileBase(TUSBaseService):
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(UploadFileBase, self).__init__(context, request)
@@ -183,10 +185,9 @@ class UploadHead(UploadFileBase):
         return super(UploadHead, self).reply()
 
 
+@implementer(IPublishTraverse)
 class UploadPatch(UploadFileBase):
     """TUS upload endpoint for handling PATCH requests"""
-
-    implements(IPublishTraverse)
 
     def reply(self):
 
@@ -212,7 +213,10 @@ class UploadPatch(UploadFileBase):
             return self.error(
                 'Bad Request', 'Missing or invalid Upload-Offset header')
 
-        tus_upload.write(self.request._file, offset)
+        request_body = self.request._file
+        if hasattr(request_body, 'raw'):  # Unwrap io.BufferedRandom
+            request_body = request_body.raw
+        tus_upload.write(request_body, offset)
 
         if tus_upload.finished:
             offset = tus_upload.offset()
@@ -306,7 +310,7 @@ class TUSUpload(object):
     def initalize(self, metadata):
         """Initialize a new TUS upload by writing its metadata to disk."""
         self.cleanup_expired()
-        with open(self.metadata_path, 'wb') as f:
+        with open(self.metadata_path, 'w') as f:
             json.dump(metadata, f)
 
     def length(self):

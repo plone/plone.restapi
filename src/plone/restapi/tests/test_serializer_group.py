@@ -49,7 +49,7 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         self.assertEqual('Plone Team', group.get('title'))
         self.assertEqual('We are Plone', group.get('description'))
         self.assertEqual(
-            set(group['users'].keys()),
+            set(group['users']),
             set(['@id', 'items_total', 'items'])
         )
 

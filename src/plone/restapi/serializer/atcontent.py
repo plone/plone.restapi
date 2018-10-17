@@ -56,7 +56,7 @@ class SerializeToJson(object):
 
         for field in obj.Schema().fields():
 
-            if 'r' not in field.mode or not field.checkPermission('r', obj):
+            if 'r' not in field.mode or not field.checkPermission('r', obj):  # noqa: E501
                 continue
 
             name = field.getName()
@@ -94,7 +94,8 @@ class SerializeFolderToJson(SerializeToJson):
         folder_metadata.update({'is_folderish': True})
         result = folder_metadata
 
-        include_items = self.request.form.get('include_items', include_items)
+        include_items = self.request.form.get(
+            'include_items', include_items)
         include_items = boolean_value(include_items)
         if include_items:
             query = self._build_query()

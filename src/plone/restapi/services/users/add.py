@@ -14,7 +14,7 @@ from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect.interfaces
@@ -36,11 +36,10 @@ except ImportError:   # pragma: no cover
 PLONE5 = getFSVersionTuple()[0] >= 5
 
 
+@implementer(IPublishTraverse)
 class UsersPost(Service):
     """Creates a new user.
     """
-
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(UsersPost, self).__init__(context, request)
@@ -211,7 +210,7 @@ class UsersPost(Service):
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='MissingParameterError',
-                message=str(e.message)))
+                message=str(e)))
 
         if PLONE5:
             # After user creation, we have to fix the login_name if it differs.
@@ -281,7 +280,7 @@ class UsersPost(Service):
             return
 
         # Send password reset mail
-        if data.keys() == []:
+        if list(data) == []:
             registration_tool = getToolByName(self.context,
                                               'portal_registration')
             registration_tool.mailPassword(username, self.request)

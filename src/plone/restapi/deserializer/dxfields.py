@@ -23,7 +23,9 @@ from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
 
+import codecs
 import dateutil
+import six
 
 
 @implementer(IFieldDeserializer)
@@ -38,7 +40,7 @@ class DefaultFieldDeserializer(object):
         self.request = request
 
     def __call__(self, value):
-        if not isinstance(value, unicode):
+        if not isinstance(value, six.text_type):
             self.field.validate(value)
             return value
 
@@ -52,11 +54,11 @@ class DefaultFieldDeserializer(object):
 class TextLineFieldDeserializer(DefaultFieldDeserializer):
 
     def __call__(self, value):
-        if isinstance(value, unicode):
+        if isinstance(value, six.text_type):
             value = IFromUnicode(self.field).fromUnicode(value)
 
         # Mimic what z3c.form does in it's BaseDataConverter.
-        if isinstance(value, unicode):
+        if isinstance(value, six.text_type):
             value = value.strip()
             if value == u'':
                 value = self.field.missing_value
@@ -191,7 +193,7 @@ class TimedeltaFieldDeserializer(DefaultFieldDeserializer):
         try:
             value = timedelta(seconds=value)
         except TypeError as e:
-            raise ValueError(e.message)
+            raise ValueError(str(e))
 
         self.field.validate(value)
         return value
@@ -211,16 +213,18 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
                 # with the 'download' key so we return the same stored file
                 return getattr(self.field.context, self.field.__name__)
 
-            content_type = value.get(u'content-type', content_type).encode(
-                'utf8')
-            filename = value.get(u'filename', filename)
-            if u'encoding' in value:
-                data = value.get('data', '').decode(value[u'encoding'])
-            else:
-                data = value.get('data', '')
+            content_type = value.get('content-type', content_type)
+            filename = value.get('filename', filename)
+            data = value.get('data', '')
+            if isinstance(data, six.text_type):
+                data = data.encode('utf-8')
+            if 'encoding' in value:
+                data = codecs.decode(data, value['encoding'])
+            if isinstance(data, six.text_type):
+                data = data.encode('utf-8')
         elif isinstance(value, TUSUpload):
             content_type = value.metadata().get(
-                'content-type', content_type).encode('utf8')
+                'content-type', content_type)
             filename = value.metadata().get('filename', filename)
             data = value.open()
         else:
@@ -228,6 +232,8 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
 
         # Convert if we have data
         if data:
+            if six.PY2:
+                content_type = content_type.encode('utf8')
             value = self.field._type(
                 data=data, contentType=content_type, filename=filename)
         else:
@@ -246,9 +252,9 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
         content_type = self.field.default_mime_type
         encoding = 'utf8'
         if isinstance(value, dict):
-            content_type = value.get(u'content-type', content_type)
-            encoding = value.get(u'encoding', encoding)
-            data = value.get(u'data', u'')
+            content_type = value.get('content-type', content_type)
+            encoding = value.get('encoding', encoding)
+            data = value.get('data', u'')
         elif isinstance(value, TUSUpload):
             content_type = value.metadata().get('content-type', content_type)
             with open(value.filepath, 'rb') as f:

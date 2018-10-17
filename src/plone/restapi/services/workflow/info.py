@@ -8,6 +8,7 @@ from plone.restapi.services import Service
 from zope.component import adapter
 from zope.interface import Interface
 from zope.interface import implementer
+import six
 
 
 @implementer(IExpandableElement)
@@ -39,20 +40,24 @@ class WorkflowInfo(object):
             if action['category'] != 'workflow':
                 continue
 
+            title = action['title']
+            if isinstance(title, six.binary_type):
+                title = title.decode('utf8')
+
             transitions.append({
                 '@id': '{}/@workflow/{}'.format(
                     self.context.absolute_url(), action['id']),
-                'title': self.context.translate(
-                    action['title'].decode('utf8')),
+                'title': self.context.translate(title),
             })
 
         for item, action in enumerate(history):
-            history[item]['title'] = self.context.translate(
-                wftool.getTitleForStateOnType(
-                    action['review_state'],
-                    self.context.portal_type
-                ).decode('utf8')
+            title = wftool.getTitleForStateOnType(
+                action['review_state'],
+                self.context.portal_type
             )
+            if isinstance(title, six.binary_type):
+                title = title.decode('utf8')
+            history[item]['title'] = self.context.translate(title)
 
         result['workflow'].update({
             'history': json_compatible(history),

@@ -3,6 +3,7 @@ from DateTime import DateTime
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import setRoles
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.testing import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
 
@@ -14,6 +15,8 @@ class TestATContentSerializer(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Testing Archetypes support requires it')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         setRoles(self.portal, TEST_USER_ID, ['Manager'])

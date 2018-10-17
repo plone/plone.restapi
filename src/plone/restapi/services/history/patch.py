@@ -6,6 +6,7 @@ from zExceptions import BadRequest
 from Products.CMFCore.utils import getToolByName
 from Products.CMFEditions import CMFEditionsMessageFactory as _
 from Products.CMFEditions.interfaces.IModifier import FileTooLargeToVersionError  # noqa
+import six
 
 
 class HistoryPatch(Service):
@@ -21,8 +22,8 @@ def revert(context, version):
     pr.revert(context, version)
 
     title = context.title_or_id()
-    if not isinstance(title, unicode):
-        title = unicode(title, 'utf-8', 'ignore')
+    if not isinstance(title, six.text_type):
+        title = six.text_type(title, 'utf-8', 'ignore')
 
     if pr.supportsPolicy(context, 'version_on_revert'):
         try:

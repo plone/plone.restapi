@@ -45,7 +45,7 @@
     <adapter factory=".converters.python_datetime_converter" />
     <adapter factory=".converters.RichtextDXContextConverter" />
     <adapter factory=".converters.set_converter" />
-    <adapter factory=".converters.string_converter" />
+    <adapter factory=".converters.bytes_converter" />
     <adapter factory=".converters.time_converter" />
     <adapter factory=".converters.timedelta_converter" />
     <adapter factory=".converters.tuple_converter" />

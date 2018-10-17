@@ -34,8 +34,9 @@ class TestCopyMove(unittest.TestCase):
         request.environ['PATH_TRANSLATED'] = path
         request.environ['HTTP_ACCEPT'] = accept
         request.environ['REQUEST_METHOD'] = method
+        auth = '%s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         request._auth = 'Basic %s' % b64encode(
-            '%s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
+            auth.encode('utf8')).decode('utf8')
         notify(PubStart(request))
         return request.traverse(path)
 
@@ -95,7 +96,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
         )
         transaction.commit()
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertIn('copy_of_doc1', self.portal.objectIds())
 
     def test_move_single_object(self):
@@ -107,7 +108,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
         )
         transaction.commit()
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertIn('doc1', self.folder1.objectIds())
         self.assertNotIn('doc1', self.portal.objectIds())
 
@@ -118,7 +119,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
                 "source": [self.doc1.absolute_url(), self.doc2.absolute_url()]
             }
         )
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         transaction.commit()
 
         self.assertIn('doc1', self.folder1.objectIds())
@@ -128,7 +129,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
 
     def test_copy_without_source_raises_400(self):
         response = self.api_session.post('/folder1/@copy')
-        self.assertEquals(response.status_code, 400)
+        self.assertEqual(response.status_code, 400)
 
     def test_copy_not_existing_object(self):
         response = self.api_session.post(
@@ -138,7 +139,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
             }
         )
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual([], response.json())
 
     def test_copy_multiple_objects(self):
@@ -150,7 +151,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
         )
         transaction.commit()
 
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertIn('copy_of_doc1', self.portal.objectIds())
         self.assertIn('copy_of_doc2', self.portal.objectIds())
 
@@ -163,7 +164,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
             }
         )
 
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
     def test_copy_single_object_no_auth_raises_401(self):
         self.api_session.auth = ('nonexistent', 'secret')
@@ -174,7 +175,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
             }
         )
 
-        self.assertEquals(response.status_code, 401)
+        self.assertEqual(response.status_code, 401)
 
     def test_move_single_object_no_permissions_raises_403(self):
         self.api_session.auth = ('memberuser', 'secret')
@@ -185,7 +186,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
             }
         )
 
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)
 
     def test_move_single_object_no_auth_raises_401(self):
         self.api_session.auth = ('nonexistent', 'secret')
@@ -196,7 +197,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
             }
         )
 
-        self.assertEquals(response.status_code, 401)
+        self.assertEqual(response.status_code, 401)
 
     def test_move_single_object_no_permission_delete_source_raises_403(self):
         api.user.grant_roles(
@@ -212,4 +213,4 @@ class TestCopyMoveFunctional(unittest.TestCase):
             }
         )
 
-        self.assertEquals(response.status_code, 403)
+        self.assertEqual(response.status_code, 403)

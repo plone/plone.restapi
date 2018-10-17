@@ -21,6 +21,7 @@ from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
 
 import os
+import six
 
 if PLONE_VERSION.base_version >= '5.1':
     GIF_SCALE_FORMAT = 'png'
@@ -60,12 +61,12 @@ class TestDexterityFieldSerializing(TestCase):
 
     def test_ascii_field_serialization_returns_unicode(self):
         value = self.serialize('test_ascii_field', 'foo')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'foo', value)
 
     def test_asciiline_field_serialization_returns_unicode(self):
         value = self.serialize('test_asciiline_field', 'foo')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'foo', value)
 
     def test_bool_field_serialization_returns_true(self):
@@ -79,35 +80,35 @@ class TestDexterityFieldSerializing(TestCase):
         self.assertEqual(False, value)
 
     def test_bytes_field_serialization_returns_unicode(self):
-        value = self.serialize('test_bytes_field', '\xc3\xa4\xc3\xb6\xc3\xbc')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        value = self.serialize('test_bytes_field', b'\xc3\xa4\xc3\xb6\xc3\xbc')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'\xe4\xf6\xfc', value)
 
     def test_bytesline_field_serialization_returns_unicode(self):
         value = self.serialize('test_bytesline_field',
-                               '\xc3\xa4\xc3\xb6\xc3\xbc')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+                               b'\xc3\xa4\xc3\xb6\xc3\xbc')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'\xe4\xf6\xfc', value)
 
     def test_choice_field_serialization_returns_vocabulary_item(self):
         value = self.serialize('test_choice_field', u'foo')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'foo', value)
 
     def test_date_field_serialization_returns_unicode(self):
         value = self.serialize('test_date_field', date(2015, 7, 15))
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'2015-07-15', value)
 
     def test_datetime_field_serialization_returns_unicode(self):
         value = self.serialize('test_datetime_field',
                                datetime(2015, 6, 20, 13, 22, 4))
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'2015-06-20T13:22:04', value)
 
     def test_decimal_field_serialization_returns_unicode(self):
         value = self.serialize('test_decimal_field', '1.1')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'1.1', value)
 
     def test_dict_field_serialization_returns_dict(self):
@@ -143,17 +144,17 @@ class TestDexterityFieldSerializing(TestCase):
 
     def test_text_field_serialization_returns_unicode(self):
         value = self.serialize('test_text_field', u'Käfer')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'Käfer', value)
 
     def test_textline_field_serialization_returns_unicode(self):
         value = self.serialize('test_textline_field', u'Käfer')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'Käfer', value)
 
     def test_time_field_serialization_returns_unicode(self):
         value = self.serialize('test_time_field', time(14, 15, 33))
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'14:15:33', value)
 
     def test_timedelta_field_serialization_returns_float(self):
@@ -189,7 +190,8 @@ class TestDexterityFieldSerializing(TestCase):
 
     def test_namedimage_field_serialization_returns_dict(self):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
-        image_data = open(image_file, 'rb').read()
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         fn = 'test_namedimage_field'
         with patch.object(storage, 'uuid4', return_value='uuid_1'):
             value = self.serialize(
@@ -266,7 +268,8 @@ class TestDexterityFieldSerializing(TestCase):
 
     def test_namedblobimage_field_serialization_returns_dict(self):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
-        image_data = open(image_file, 'rb').read()
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         fn = 'test_namedblobimage_field'
         with patch.object(storage, 'uuid4', return_value='uuid_1'):
             value = self.serialize(
