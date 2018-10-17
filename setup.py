@@ -49,6 +49,8 @@ setup(name='plone.restapi',
           "Operating System :: OS Independent",
           "Programming Language :: Python",
           "Programming Language :: Python :: 2.7",
+          "Programming Language :: Python :: 3.6",
+          "Programming Language :: Python :: 3.7",
           "Topic :: Software Development :: Libraries :: Python Modules",
       ],
       keywords='plone rest restful hypermedia api json',
@@ -64,9 +66,9 @@ setup(name='plone.restapi',
       install_requires=[
           'setuptools',
           'python-dateutil',
-          'plone.behavior>=1.1',  # adds name to behavior directive 
+          'plone.behavior>=1.1',  # adds name to behavior directive
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
-          'plone.schema >= 1.2.0',  # new json field          
+          'plone.schema >= 1.2.0',  # new json field
           'PyJWT',
           'pytz',
       ],
