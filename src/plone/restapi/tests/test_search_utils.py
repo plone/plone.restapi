@@ -22,7 +22,7 @@ class TestUnflattenDottedDict(unittest.TestCase):
         )
 
     def test_works_on_empty_dict(self):
-        self.assertEquals({}, unflatten_dotted_dict({}))
+        self.assertEqual({}, unflatten_dotted_dict({}))
 
     def test_works_with_list_values(self):
         dct = {

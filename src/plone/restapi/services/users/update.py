@@ -6,7 +6,7 @@ from Products.CMFPlone.utils import set_own_login_name
 from Products.CMFCore.utils import getToolByName
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.component import getAdapter
 
@@ -19,11 +19,10 @@ except ImportError:   # pragma: no cover
     from plone.app.controlpanel.security import ISecuritySchema
 
 
+@implementer(IPublishTraverse)
 class UsersPatch(Service):
     """Updates an existing user.
     """
-
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(UsersPatch, self).__init__(context, request)

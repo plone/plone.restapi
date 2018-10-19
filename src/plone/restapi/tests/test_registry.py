@@ -12,6 +12,7 @@ from zope.component import getUtility
 
 import transaction
 import unittest
+from six.moves import range
 
 
 class TestRegistry(unittest.TestCase):

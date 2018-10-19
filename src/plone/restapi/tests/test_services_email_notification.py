@@ -55,7 +55,7 @@ class EmailNotificationEndpoint(unittest.TestCase):
             })
         transaction.commit()
 
-        self.assertEquals(response.status_code, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertTrue('Subject: [No Subject]' in
                         self.mailhost.messages[0])
         self.assertTrue('To: info@plone.org' in
@@ -76,7 +76,7 @@ class EmailNotificationEndpoint(unittest.TestCase):
             })
         transaction.commit()
 
-        self.assertEquals(response.status_code, 204)
+        self.assertEqual(response.status_code, 204)
         self.assertTrue('=?utf-8?q?This_is_the_subject' in
                         self.mailhost.messages[0])
         self.assertTrue('To: info@plone.org' in

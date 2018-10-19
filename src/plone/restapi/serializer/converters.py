@@ -21,6 +21,9 @@ from zope.interface import Interface
 
 import Missing
 import pytz
+import six
+from six.moves import map
+from six.moves import zip
 # import re
 
 
@@ -75,7 +78,7 @@ def default_converter(value):
     if value is None:
         return value
 
-    if type(value) in (unicode, bool, int, float, long):
+    if type(value) in (six.text_type, bool, int, float, int):
         return value
 
     raise TypeError(
@@ -83,16 +86,16 @@ def default_converter(value):
         ' {0!r} ({1}) JSON compatible.'.format(value, type(value)))
 
 
-@adapter(str)
+@adapter(bytes)
 @implementer(IJsonCompatible)
-def string_converter(value):
+def bytes_converter(value):
     return safe_unicode(value, 'utf-8')
 
 
 @adapter(list)
 @implementer(IJsonCompatible)
 def list_converter(value):
-    return map(json_compatible, value)
+    return list(map(json_compatible, value))
 
 
 @adapter(PersistentList)
@@ -104,19 +107,19 @@ def persistent_list_converter(value):
 @adapter(tuple)
 @implementer(IJsonCompatible)
 def tuple_converter(value):
-    return map(json_compatible, value)
+    return list(map(json_compatible, value))
 
 
 @adapter(frozenset)
 @implementer(IJsonCompatible)
 def frozenset_converter(value):
-    return map(json_compatible, value)
+    return list(map(json_compatible, value))
 
 
 @adapter(set)
 @implementer(IJsonCompatible)
 def set_converter(value):
-    return map(json_compatible, value)
+    return list(map(json_compatible, value))
 
 
 @adapter(dict)
@@ -125,10 +128,10 @@ def dict_converter(value):
     if value == {}:
         return {}
 
-    keys, values = zip(*value.items())
-    keys = map(json_compatible, keys)
-    values = map(json_compatible, values)
-    return dict(zip(keys, values))
+    keys, values = list(zip(*list(value.items())))
+    keys = list(map(json_compatible, keys))
+    values = list(map(json_compatible, values))
+    return dict(list(zip(keys, values)))
 
 
 @adapter(PersistentMapping)

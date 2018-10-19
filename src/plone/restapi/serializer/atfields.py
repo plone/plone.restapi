@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from six.moves import map
+
 from Products.Archetypes.interfaces import IBaseObject
 from Products.Archetypes.interfaces.field import IField
 from Products.Archetypes.interfaces.field import IFileField
@@ -60,7 +62,8 @@ class FileFieldSerializer(DefaultFieldSerializer):
 class TextFieldSerializer(DefaultFieldSerializer):
 
     def __call__(self):
-        mimetypes_registry = getToolByName(self.context, 'mimetypes_registry')
+        mimetypes_registry = getToolByName(
+            self.context, 'mimetypes_registry')
         data = super(TextFieldSerializer, self).__call__()
         return {
             'content-type': json_compatible(
@@ -127,4 +130,4 @@ class ReferenceFieldSerializer(DefaultFieldSerializer):
 class QueryFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
         raw_value = self.field.getRaw(self.context)
-        return json_compatible(map(dict, raw_value))
+        return json_compatible(list(map(dict, raw_value)))

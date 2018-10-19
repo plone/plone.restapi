@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.utils import getToolByName
-from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
 
 
 def result_paths(results):
