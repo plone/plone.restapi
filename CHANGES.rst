@@ -4,7 +4,9 @@ Changelog
 3.4.6 (unreleased)
 ------------------
 
-- Add support for Python 3.
+New Features:
+
+- Add Python 3 support.
   [pbauer, davisagli]
 
 
