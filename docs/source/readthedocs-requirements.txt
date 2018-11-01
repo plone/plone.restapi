@@ -1,2 +1,2 @@
 sphinxcontrib-httpdomain
-sphinxcontrib-httpexample
+sphinxcontrib-httpexample==0.9.1
