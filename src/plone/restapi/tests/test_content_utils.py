@@ -65,7 +65,7 @@ class TestATCreateContent(unittest.TestCase):
 
     def setUp(self):
         if not HAS_AT:
-            raise unittest.SkipTest('Testing Archetypes support requires it')
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])
@@ -154,7 +154,7 @@ class TestATAddContent(unittest.TestCase):
 
     def setUp(self):
         if not HAS_AT:
-            raise unittest.SkipTest('Testing Archetypes support requires it')
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])

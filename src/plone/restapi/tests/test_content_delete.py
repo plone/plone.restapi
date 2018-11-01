@@ -67,7 +67,7 @@ class TestATContentDelete(unittest.TestCase):
 
     def setUp(self):
         if not HAS_AT:
-            raise unittest.SkipTest('Testing Archetypes support requires it')
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         self.doc1 = self.portal[self.portal.invokeFactory(

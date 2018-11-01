@@ -30,7 +30,7 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
 
     def setUp(self):
         if not HAS_AT:
-            raise unittest.SkipTest('Testing Archetypes support requires it')
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])
@@ -167,7 +167,7 @@ class TestValidationRequest(unittest.TestCase):
 
     def setUp(self):
         if not HAS_AT:
-            raise unittest.SkipTest('Testing Archetypes support requires it')
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])
         self.doc1 = self.portal[self.portal.invokeFactory(

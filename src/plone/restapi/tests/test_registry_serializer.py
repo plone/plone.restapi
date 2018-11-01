@@ -17,7 +17,7 @@ class TestRegistrySerializer(unittest.TestCase):
 
     def setUp(self):
         if not HAS_AT:
-            raise unittest.SkipTest('Testing Archetypes support requires it')
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
 
