@@ -16,6 +16,15 @@ import transaction
 import unittest
 
 
+def sorted_roles(roles):
+    results = []
+    for line in roles:
+        line = list(line)
+        line[1] = sorted(line[1])
+        results.append(line)
+    return results
+
+
 class TestFolderCreate(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -237,10 +246,9 @@ class TestFolderCreate(unittest.TestCase):
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(
-            pas.getLocalRolesForDisplay(self.portal.folder1),
-            (('admin', ('Owner',), 'user', 'admin'),
-             ('test-user', (u'Reviewer', u'Reader'),
-              'user', u'test_user_1_'))
+            sorted_roles(pas.getLocalRolesForDisplay(self.portal.folder1)),
+            [['admin', ['Owner', ], 'user', 'admin'],
+             ['test-user', [u'Reader', u'Reviewer'], 'user', u'test_user_1_']]
         )
 
     def test_unset_local_roles_for_user(self):
@@ -251,9 +259,9 @@ class TestFolderCreate(unittest.TestCase):
 
         pas = getToolByName(self.portal, 'acl_users')
         self.assertEqual(
-            pas.getLocalRolesForDisplay(self.portal.folder1),
-            (('admin', ('Owner',), 'user', 'admin'),
-             ('test-user', ('Reviewer', 'Reader'), 'user', 'test_user_1_'))
+            sorted_roles(pas.getLocalRolesForDisplay(self.portal.folder1)),
+            [['admin', ['Owner', ], 'user', 'admin'],
+             ['test-user', ['Reader', 'Reviewer'], 'user', 'test_user_1_']]
         )
 
         response = requests.post(
@@ -402,7 +410,7 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(response.status_code, 501)
         response = response.json()
         self.assertIn('error', response)
-        self.assertEquals(
+        self.assertEqual(
             u'No serializer available.',
             response['error']['message']
         )

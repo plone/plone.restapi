@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = '3.4.5-dev.0'
+version = '3.4.6-dev.0'
 
 long_description = (
     open('README.rst').read() + '\n' +
@@ -10,13 +10,33 @@ long_description = (
     open('CHANGES.rst').read() + '\n'
 )
 
+TEST_REQUIRES = [
+    'collective.MockMailHost',
+    'plone.app.contenttypes',
+    'plone.app.robotframework',
+    'plone.app.testing [robot] >= 4.2.2',  # ROBOT_TEST_LEVEL added
+    'plone.api',
+    'requests',
+    'freezegun',
+    'plone.tiles',
+    'mock',
+]
+
+PY2_ONLY = [
+    'Products.Archetypes',
+    'plone.app.collection',
+]
+
+if sys.version_info[0] == 2:
+    TEST_REQUIRES += PY2_ONLY
+
 
 setup(name='plone.restapi',
       version=version,
       description="plone.restapi is a RESTful hypermedia API for Plone.",
       long_description=long_description,
       # Get more strings from
-      # http://pypi.python.org/pypi?%3Aaction=list_classifiers
+      # https://pypi.org/classifiers/
       classifiers=[
           "Development Status :: 5 - Production/Stable",
           "Environment :: Web Environment",
@@ -24,10 +44,13 @@ setup(name='plone.restapi',
           "Framework :: Plone :: 4.3",
           "Framework :: Plone :: 5.0",
           "Framework :: Plone :: 5.1",
+          "Framework :: Plone :: 5.2",
           "Intended Audience :: Developers",
           "Operating System :: OS Independent",
           "Programming Language :: Python",
           "Programming Language :: Python :: 2.7",
+          "Programming Language :: Python :: 3.6",
+          "Programming Language :: Python :: 3.7",
           "Topic :: Software Development :: Libraries :: Python Modules",
       ],
       keywords='plone rest restful hypermedia api json',
@@ -43,25 +66,13 @@ setup(name='plone.restapi',
       install_requires=[
           'setuptools',
           'python-dateutil',
-          'plone.behavior>=1.1',  # adds name to behavior directive 
+          'plone.behavior>=1.1',  # adds name to behavior directive
           'plone.rest >= 1.0a6',  # json renderer moved to plone.restapi
-          'plone.schema >= 1.2.0',  # new json field          
+          'plone.schema >= 1.2.0',  # new json field
           'PyJWT',
           'pytz',
       ],
-      extras_require={'test': [
-          'Products.Archetypes',
-          'collective.MockMailHost',
-          'plone.app.collection',
-          'plone.app.contenttypes',
-          'plone.app.robotframework',
-          'plone.app.testing [robot] >= 4.2.2',  # ROBOT_TEST_LEVEL added
-          'plone.api',
-          'requests',
-          'freezegun',
-          'plone.tiles',
-          'mock',
-      ]},
+      extras_require={'test': TEST_REQUIRES},
       entry_points="""
       # -*- Entry points: -*-
       [z3c.autoinclude.plugin]

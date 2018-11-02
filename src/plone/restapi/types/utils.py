@@ -18,7 +18,7 @@ from copy import copy
 from plone.autoform.form import AutoExtensibleForm
 from plone.autoform.interfaces import WIDGETS_KEY
 from plone.dexterity.utils import getAdditionalSchemata
-from plone.restapi.interfaces import IJsonCompatible
+from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from Products.CMFCore.utils import getToolByName
 from plone.supermodel.utils import mergedTaggedValueDict
@@ -65,7 +65,7 @@ def get_fieldsets(context, request, schema, additional_schemata=None):
     fieldsets = [{
         'id': 'default',
         'title': u'Default',
-        'fields': form.fields.values(),
+        'fields': list(form.fields.values()),
     }]
 
     # Additional fieldsets (AKA z3c.form groups)
@@ -73,7 +73,7 @@ def get_fieldsets(context, request, schema, additional_schemata=None):
         fieldset = {
             'id': group.__name__,
             'title': translate(group.label, context=getRequest()),
-            'fields': group.fields.values(),
+            'fields': list(group.fields.values()),
         }
         fieldsets.append(fieldset)
 
@@ -193,7 +193,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     return {
         'type': 'object',
         'title': translate(fti.Title(), context=getRequest()),
-        'properties': IJsonCompatible(properties),
+        'properties': json_compatible(properties),
         'required': required,
         'fieldsets': get_fieldset_infos(fieldsets),
         'layouts': getattr(fti, 'view_methods', []),

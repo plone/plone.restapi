@@ -25,6 +25,13 @@ try:
 except pkg_resources.DistributionNotFound:  # pragma: no cover
     HAS_PLONE_APP_CONTENTTYPES = False
 
+try:
+    pkg_resources.get_distribution('Products.Archetypes')
+except pkg_resources.DistributionNotFound:
+    HAS_AT = False
+else:
+    HAS_AT = True
+
 
 def initialize(context):
     registerMultiPlugin(plugin.JWTAuthenticationPlugin.meta_type)
@@ -38,7 +45,7 @@ def initialize(context):
         visibility=None,
     )
 
-    if REGISTER_TEST_TYPES:
+    if HAS_AT and REGISTER_TEST_TYPES:
         from Products.Archetypes.ArchetypeTool import process_types, listTypes
         from Products.CMFCore import permissions
         from Products.CMFCore import utils

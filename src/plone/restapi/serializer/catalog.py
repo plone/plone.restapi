@@ -31,7 +31,7 @@ class BrainSerializer(object):
         if metadata_fields and '_all' in metadata_fields:
             site = getSite()
             catalog = getToolByName(site, 'portal_catalog')
-            metadata_attrs = catalog.schema() + BRAIN_METHODS
+            metadata_attrs = list(catalog.schema()) + BRAIN_METHODS
             return metadata_attrs
 
         return metadata_fields

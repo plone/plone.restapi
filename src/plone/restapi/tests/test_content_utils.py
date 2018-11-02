@@ -2,6 +2,7 @@
 from Acquisition import aq_parent
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
+from plone.restapi import HAS_AT
 from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
@@ -63,6 +64,8 @@ class TestATCreateContent(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])
@@ -150,6 +153,8 @@ class TestATAddContent(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])

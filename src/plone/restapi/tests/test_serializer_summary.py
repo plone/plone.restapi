@@ -3,6 +3,7 @@ from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
+from plone.restapi import HAS_AT
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -100,6 +101,8 @@ class TestSummarySerializersATTypes(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])

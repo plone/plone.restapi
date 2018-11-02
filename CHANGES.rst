@@ -1,10 +1,22 @@
 Changelog
 =========
 
-3.4.5 (unreleased)
+3.4.6 (unreleased)
+------------------
+
+New Features:
+
+- Add Python 3 support.
+  [pbauer, davisagli]
+
+
+3.4.5 (2018-09-14)
 ------------------
 
 Bugfixes:
+
+- Avoid ``AttributeError`` on add-on installation (fixes `#465 <https://github.com/plone/plone.restapi/issues/465>`_.
+  [lukasgraf, hvelarde]
 
 - Make search work with a path query containing a list of paths in a virtual hosting setting.
   [sunew]

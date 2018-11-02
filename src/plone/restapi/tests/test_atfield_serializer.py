@@ -4,6 +4,7 @@ from mock import patch
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.interfaces import IFieldSerializer
+from plone.restapi.testing import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_VERSION
 from plone.scale import storage
@@ -11,6 +12,7 @@ from zope.component import getMultiAdapter
 
 import os
 import unittest
+import six
 
 if PLONE_VERSION.base_version >= '5.1':
     GIF_SCALE_FORMAT = 'png'
@@ -23,6 +25,8 @@ class TestATFieldSerializer(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])
@@ -40,7 +44,7 @@ class TestATFieldSerializer(unittest.TestCase):
 
     def test_string_field_serialization_returns_unicode(self):
         value = self.serialize('testStringField', u'Käfer')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'Käfer', value)
 
     def test_boolean_field_serialization_returns_true(self):
@@ -65,13 +69,13 @@ class TestATFieldSerializer(unittest.TestCase):
 
     def test_fixedpoint_field_serialization_returns_unicode(self):
         value = self.serialize('testFixedPointField', u'1.11')
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'1.11', value)
 
     def test_datetime_field_serialization_returns_unicode(self):
         value = self.serialize('testDateTimeField',
                                DateTime('2016-01-21T01:14:48+00:00'))
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'2016-01-21T01:14:48+00:00', value)
 
     def test_lines_field_serialization_returns_list(self):
@@ -101,7 +105,8 @@ class TestATFieldSerializer(unittest.TestCase):
 
     def test_image_field_serialization_returns_dict(self):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
-        image_data = open(image_file, 'rb').read()
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         fn = 'testImageField'
         with patch.object(storage, 'uuid4', return_value='uuid_1'):
             value = self.serialize(
@@ -180,7 +185,8 @@ class TestATFieldSerializer(unittest.TestCase):
 
     def test_blobimage_field_serialization_returns_dict(self):
         image_file = os.path.join(os.path.dirname(__file__), u'1024x768.gif')
-        image_data = open(image_file, 'rb').read()
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         fn = 'testBlobImageField'
         with patch.object(storage, 'uuid4', return_value='uuid_1'):
             value = self.serialize(
@@ -251,7 +257,7 @@ class TestATFieldSerializer(unittest.TestCase):
         doc2 = self.portal[self.portal.invokeFactory(
             'ATTestDocument', id='doc2', title='Referenceable Document')]
         value = self.serialize('testReferenceField', doc2.UID())
-        self.assertTrue(isinstance(value, unicode), 'Not an <unicode>')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'http://nohost/plone/doc2', value)
 
     def test_reference_field_serialization_returns_list(self):

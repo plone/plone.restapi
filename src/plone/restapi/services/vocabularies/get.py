@@ -4,15 +4,14 @@ from plone.restapi.services import Service
 from zope.component import ComponentLookupError
 from zope.component import getMultiAdapter
 from zope.component import getUtility
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
 from zope.component import getUtilitiesFor
 
 
+@implementer(IPublishTraverse)
 class VocabulariesGet(Service):
-
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(VocabulariesGet, self).__init__(context, request)
