@@ -1,5 +1,7 @@
 from setuptools import setup, find_packages
 
+import sys
+
 version = '3.4.6-dev.0'
 
 long_description = (
