@@ -16,6 +16,12 @@ bin/buildout: bin/pip
 bin/python bin/pip:
 	virtualenv --clear --python=python$(version) .
 
+build-python3:
+	virtualenv --clear --python=python3 .
+	bin/pip install --upgrade pip
+	bin/pip install -r requirements.txt
+	bin/buildout -c plone-5.2.x.cfg
+
 test-performance:
 	jmeter -n -t performance.jmx -l jmeter.jtl
 
