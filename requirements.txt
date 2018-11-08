@@ -1,4 +1,4 @@
-# https://github.com/plone/buildout.coredev/blob/5.1/requirements.txt
+# https://github.com/plone/buildout.coredev/blob/5.2/requirements.txt
 setuptools==40.4.3
 zc.buildout==2.12.2
 # Sphinx / ReadTheDocs
