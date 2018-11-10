@@ -3,6 +3,8 @@
 from plone.autoform.interfaces import WIDGETS_KEY
 
 from plone.app.textfield.interfaces import IRichText
+from plone.app.querystring.interfaces import IQuerystringRegistryReader
+from plone.registry.interfaces import IRegistry
 from plone.schema import IJSONField
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -16,7 +18,6 @@ from zope.schema.interfaces import IBool
 from zope.schema.interfaces import IBytes
 from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
-from zope.schema.interfaces import IContextSourceBinder
 from zope.schema.interfaces import IDate
 from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IDecimal
@@ -30,11 +31,11 @@ from zope.schema.interfaces import ISet
 from zope.schema.interfaces import IText
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITuple
-from zope.schema.interfaces import IVocabularyFactory
 
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets, get_tagged_values
 from plone.restapi.types.utils import get_jsonschema_properties
+from plone.restapi.types.utils import get_jsonschema_for_vocab
 
 
 @adapter(IField, Interface, Interface)
@@ -248,43 +249,20 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
         return 'string'
 
     def additional(self):
-        # choices and enumNames are v5 proposals, for now we implement both
-        choices = []
-        enum = []
-        enum_names = []
-        vocabulary = None
+        if not self.should_render_choices:
+            return {}
 
-        if getattr(self.field, 'vocabularyName', None):
-            vocabulary = getUtility(
-                IVocabularyFactory,
-                name=self.field.vocabularyName)(self.context)
-        elif getattr(self.field, 'vocabulary', None):
+        vocabulary = None
+        if getattr(self.field, 'vocabulary', None):
             vocabulary = self.field.vocabulary
-        else:
+        vocab_name = getattr(self.field, 'vocabularyName', None)
+        if not vocab_name and not vocabulary:
             tagged = get_tagged_values([self.field.interface], WIDGETS_KEY)
             tagged_field_values = tagged.get(self.field.getName(), {})
             vocab_name = tagged_field_values.get('vocabulary', None)
-            if vocab_name:
-                vocab_fac = getUtility(IVocabularyFactory, name=vocab_name)
-                vocabulary = vocab_fac(self.context)
 
-        if IContextSourceBinder.providedBy(vocabulary):
-            vocabulary = vocabulary(self.context)
-
-        if hasattr(vocabulary, '__iter__') and self.should_render_choices:
-            for term in vocabulary:
-                title = translate(term.title, context=self.request)
-                choices.append((term.token, title))
-                enum.append(term.token)
-                enum_names.append(title)
-
-            return {
-                'enum': enum,
-                'enumNames': enum_names,
-                'choices': choices,
-            }
-        else:
-            return {}
+        return get_jsonschema_for_vocab(
+            self.context, self.request, vocab_name, vocabulary)
 
 
 @adapter(IObject, Interface, Interface)
@@ -398,3 +376,65 @@ class JSONFieldSchemaProvider(DefaultJsonSchemaProvider):
 
     def get_widget(self):
         return 'json'
+
+
+QUERY_FIELD_WIDGETS = {
+    'DateRangeWidget': 'daterange',
+    'RelativeDateWidget': 'relativedate',
+    'ReferenceWidget': 'reference',
+}
+
+
+@adapter(IList, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class QueryFieldJsonSchemaProvider(ListJsonSchemaProvider):
+
+    def get_items(self):
+        result = super(QueryFieldJsonSchemaProvider, self).get_items()
+        criteria_schemas = []
+        for fname, field, opname, operation in self._iter_criteria():
+            value_schema = {
+                "type": "string",
+            }
+            vocab_name = field.get('vocabulary')
+            if vocab_name:
+                value_schema.update(
+                    get_jsonschema_for_vocab(
+                        self.context, self.request, vocab_name))
+            widget = operation.get('widget')
+            if widget == 'DateWidget':
+                value_schema['type'] = 'datetime'
+            widget = QUERY_FIELD_WIDGETS.get(widget)
+            if widget:
+                value_schema['widget'] = widget
+
+            criteria_schemas.append({
+                "properties": {
+                    "i": {
+                        "const": fname,
+                        "title": field['title'],
+                        "description": field['description'],
+                    },
+                    "o": {
+                        "const": opname,
+                        "title": operation['title'],
+                        "description": operation['description'],
+                    },
+                    "v": value_schema,
+                }
+            })
+        result['anyOf'] = criteria_schemas
+        return result
+
+    def _iter_criteria(self):
+        registry = getUtility(IRegistry)
+        reader = getMultiAdapter(
+            (registry, self.request), IQuerystringRegistryReader)
+        values = reader.parseRegistry()
+        for fname, field in values.get(reader.prefix + '.field').items():
+            for opname in field['operations']:
+                operation = values.get(opname)
+                if opname.startswith('plone.app.querystring.operation.'):
+                    opname = opname[
+                        len('plone.app.querystring.operation') + 1:]
+                yield fname, field, opname, operation

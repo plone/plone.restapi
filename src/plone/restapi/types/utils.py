@@ -25,8 +25,11 @@ from plone.supermodel.utils import mergedTaggedValueDict
 from z3c.form import form as z3c_form
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
+from zope.component import getUtility
 from zope.globalrequest import getRequest
 from zope.i18n import translate
+from zope.schema.interfaces import IContextSourceBinder
+from zope.schema.interfaces import IVocabularyFactory
 
 
 def create_form(context, request, base_schema, additional_schemata=None):
@@ -205,3 +208,34 @@ def get_jsonschema_for_portal_type(portal_type, context, request,
     fti = ttool[portal_type]
     return get_jsonschema_for_fti(
         fti, context, request, excluded_fields=excluded_fields)
+
+
+def get_jsonschema_for_vocab(
+        context, request, vocab_name=None, vocabulary=None):
+    if vocab_name:
+        vocabulary = getUtility(IVocabularyFactory, name=vocab_name)(context)
+    if vocabulary is None:
+        return {}
+
+    if IContextSourceBinder.providedBy(vocabulary):
+        vocabulary = vocabulary(context)
+
+    if hasattr(vocabulary, '__iter__'):
+        # choices and enumNames are v5 proposals, for now we implement both
+        choices = []
+        enum = []
+        enum_names = []
+
+        for term in vocabulary:
+            title = translate(term.title, context=request)
+            choices.append((term.token, title))
+            enum.append(term.token)
+            enum_names.append(title)
+
+        return {
+            'enum': enum,
+            'enumNames': enum_names,
+            'choices': choices,
+        }
+    else:
+        return {}

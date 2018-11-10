@@ -1,10 +1,14 @@
 Changelog
 =========
 
-3.5.1 (unreleased)
+3.6.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+New Features:
+
+- Improve the types service to include schema for the criteria
+  that can be saved in a Collection's query field.
+  [davisagli]
 
 
 3.5.0 (2018-11-06)

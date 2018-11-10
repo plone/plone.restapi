@@ -29,5 +29,6 @@
     <adapter factory=".adapters.DateJsonSchemaProvider" />
     <adapter factory=".adapters.DatetimeJsonSchemaProvider" />
     <adapter factory=".adapters.JSONFieldSchemaProvider" />
+    <adapter factory=".adapters.QueryFieldJsonSchemaProvider" name="ICollection.query" />
 
 </configure>
