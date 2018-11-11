@@ -25,17 +25,26 @@ Example Response:
 Listing add-ons records
 -----------------------
 
-The addons listing uses a batched method to access all addons.
-See :doc:`/batching` for more details on how to work with batched results.
-
+A list of all add-ons in the portal can be retrieved by
+sending a GET request to the @addons endpoint:
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/addons_get_list.req
 
-Example Response:
+Response:
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/addons_get_list.resp
    :language: http
+
+The following fields are returned:
+
+- @id: hypermedia link to the control panel
+- id: the name of the add-on package
+- title: the friendly name of the add-on package
+- description: description of the add-on
+- version: the current version of the add-on
+- is_installed: is the add-on installed?
+- has_uninstall_profile: does the add-on have an uninstall profile
 
 
 Installing an addon

@@ -3,12 +3,6 @@ Content-Type: application/json
 
 {
   "@id": "http://localhost:55001/plone/@addons",
-  "batching": {
-    "@id": "http://localhost:55001/plone/@addons",
-    "first": "http://localhost:55001/plone/@addons?b_start=0",
-    "last": "http://localhost:55001/plone/@addons?b_start=1500",
-    "next": "http://localhost:55001/plone/@addons?b_start=25"
-  },
   "items": [
     {
       "description": "Optional plone.session refresh support.",
