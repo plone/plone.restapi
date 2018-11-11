@@ -42,6 +42,7 @@ Contents
    navigation
    serialization
    searching
+   indexes
    tusupload
    vocabularies
    controlpanels
