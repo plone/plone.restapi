@@ -14,11 +14,11 @@ Reading add-ons records
 Reading a single record:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/addons_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/addons_get.req
 
 Example Response:
 
-.. literalinclude:: _json/addons_get.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/addons_get.resp
    :language: http
 
 
@@ -30,11 +30,11 @@ See :doc:`/batching` for more details on how to work with batched results.
 
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/addons_get_list.req
+    :request: ../../src/plone/restapi/tests/http-examples/addons_get_list.req
 
 Example Response:
 
-.. literalinclude:: _json/addons_get_list.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/addons_get_list.resp
    :language: http
 
 
@@ -44,9 +44,9 @@ Installing an addon
 An individual addon can be installed by issuing a ``POST`` to the given URL:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/addons_install.req
+    :request: ../../src/plone/restapi/tests/http-examples/addons_install.req
 
-.. literalinclude:: _json/addons_install.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/addons_install.resp
    :language: http
 
 
@@ -56,9 +56,9 @@ Uninstalling an addon
 An individual addon can be uninstalled by issuing a ``POST`` to the given URL:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/addons_uninstall.req
+    :request: ../../src/plone/restapi/tests/http-examples/addons_uninstall.req
 
-.. literalinclude:: _json/addons_uninstall.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/addons_uninstall.resp
    :language: http
 
 
@@ -68,7 +68,7 @@ Upgrading an addon
 An individual addon can be upgraded by issuing a ``POST`` to the given URL:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/addons_upgrade.req
+    :request: ../../src/plone/restapi/tests/http-examples/addons_upgrade.req
 
-.. literalinclude:: _json/addons_upgrade.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/addons_upgrade.resp
    :language: http
