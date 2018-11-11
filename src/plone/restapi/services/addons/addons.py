@@ -17,7 +17,6 @@ from zope.publisher.interfaces import IPublishTraverse
 
 import plone
 
-from zope.component import getMultiAdapter
 
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone import PloneMessageFactory as _
@@ -38,74 +37,17 @@ import warnings
 logger = logging.getLogger('Plone')
 
 
-class AddonsPost(Service):
-    """Performs install/upgrade/uninstall functions on an addon."""
+class AddonsInfo(object):
+    """Performs install/upgrade/uninstall functions on an addon.
+       Pulled, mostly intact, from Plone 5.1's products control panel.
+       If we reach the point when plone.restapi isn't supporting releases
+       prior to 5.1, we might be able to remove this as duplicate code.
+    """
 
-    implements(IPublishTraverse)
-
-    def __init__(self, context, request):
-        super(AddonsPost, self).__init__(context, request)
-        self.params = []
-        self.ps = getToolByName(self.context, 'portal_setup')
+    def __init__(self):
+        super(AddonsInfo, self).__init__()
+        self.ps = api.portal.get_tool(name='portal_setup')
         self.errors = {}
-
-    def publishTraverse(self, request, name):
-        # Consume any path segments after /@addons as parameters
-        self.params.append(name)
-        return self
-
-    def reply(self):
-        addon, action = self.params
-
-        # Disable CSRF protection
-        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
-
-        if action == 'install':
-            result = self.install_product(addon)
-        elif action == 'uninstall':
-            result = self.uninstall_product(addon)
-        elif action == 'upgrade':
-            result = self.upgrade(addon)
-        else:
-            raise Exception("Unknown action {}".format(action))
-        if result:
-            
-            # self.request.response.setStatus(204)
-            # return None
-            # 
-            self.request.response.setStatus(200)
-            control_panel = getMultiAdapter((self.context, self.request),
-                                            name='prefs_install_products_form')
-            all_addons = control_panel.get_addons()
-
-            result = {
-                'items': {
-                    '@id': '{}/@addons'.format(self.context.absolute_url()),
-                },
-            }
-            addons_data = []
-            for addon in all_addons.itervalues():
-                addons_data.append(self.serializeAddon(addon))
-            result['items'] = addons_data
-
-            return result
-
-    def serializeAddon(self, addon):
-        return {'@id': '{}/@addons/{}'.format(
-                    self.context.absolute_url(), addon['id']),
-                'id': addon['id'],
-                'title': addon['title'],
-                'description': addon['description'],
-                'install_profile_id': addon['install_profile_id'],
-                'is_installed': addon['is_installed'],
-                'profile_type': addon['profile_type'],
-                'uninstall_profile_id': addon['uninstall_profile_id'],
-                'version': addon['version'],
-                'upgrade_info': addon['upgrade_info']
-                }
-
 
     def is_profile_installed(self, profile_id):
         return self.ps.getLastVersionForProfile(profile_id) != UNKNOWN
@@ -478,3 +420,86 @@ class AddonsPost(Service):
         if install_profile:
             self.ps.unsetLastVersionForProfile(install_profile['id'])
         return True
+
+
+@implementer(IPublishTraverse)
+class AddonsGet(Service):
+
+    def __init__(self, context, request):
+        super(AddonsGet, self).__init__(context, request)
+        self.params = []
+        self.addons = AddonsInfo(self)
+
+    def publishTraverse(self, request, name):
+        # Consume any path segments after /@addons as parameters
+        self.params.append(name)
+        return self
+
+    def reply(self):
+        control_panel = getMultiAdapter((self.context, self.request),
+                                        name='prefs_install_products_form')
+        all_addons = control_panel.get_addons()
+
+        if self.params:
+            return self.serializeAddon(all_addons[self.params[0]])
+
+        result = {
+            'items': {
+                '@id': '{}/@addons'.format(self.context.absolute_url()),
+            },
+        }
+        addons_data = []
+        for addon in all_addons.itervalues():
+            addons_data.append(self.serializeAddon(addon))
+        result['items'] = addons_data
+        return result
+
+    def serializeAddon(self, addon):
+        return {'@id': '{}/@addons/{}'.format(
+                    self.context.absolute_url(), addon['id']),
+                'id': addon['id'],
+                'title': addon['title'],
+                'description': addon['description'],
+                'install_profile_id': addon['install_profile_id'],
+                'is_installed': addon['is_installed'],
+                'profile_type': addon['profile_type'],
+                'uninstall_profile_id': addon['uninstall_profile_id'],
+                'version': addon['version'],
+                'upgrade_info': addon['upgrade_info']
+                }
+
+
+class AddonsPost(Service):
+    """Performs install/upgrade/uninstall functions on an addon."""
+
+    implements(IPublishTraverse)
+
+    def __init__(self, context, request):
+        super(AddonsPost, self).__init__(context, request)
+        self.params = []
+        self.addons = AddonsInfo(self)
+
+    def publishTraverse(self, request, name):
+        # Consume any path segments after /@addons as parameters
+        self.params.append(name)
+        return self
+
+    def reply(self):
+        addon, action = self.params
+
+        # Disable CSRF protection
+        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
+
+        if action == 'install':
+            result = self.addons.install_product(addon)
+        elif action == 'uninstall':
+            result = self.addons.uninstall_product(addon)
+        elif action == 'upgrade':
+            result = self.addons.upgrade(addon)
+        else:
+            raise Exception("Unknown action {}".format(action))
+        if result:
+            self.request.response.setStatus(204)
+            return None
