@@ -3,6 +3,7 @@ python:
   - "2.7.15"
   - "3.6"
   - "3.7"
+dist: xenial
 sudo: required
 services:
   - docker
