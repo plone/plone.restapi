@@ -4,7 +4,10 @@ Changelog
 3.5.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Standardize errors data structure of email-notification endpoint.
+  [cekk]
 
 
 3.5.0 (2018-11-06)
