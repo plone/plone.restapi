@@ -25,7 +25,9 @@ TEST_REQUIRES = [
 ]
 
 PY2_ONLY = [
+    'archetypes.schemaextender',
     'Products.Archetypes',
+    'Products.contentmigration',
     'Products.ATContentTypes',
     'plone.app.blob',
     'plone.app.collection',
