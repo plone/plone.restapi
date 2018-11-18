@@ -20,7 +20,6 @@
     <adapter factory=".dxfields.RichttextFieldSerializer" />
 
     <configure zcml:condition="installed Products.Archetypes">
-      <configure zcml:condition="installed plone.app.blob">
         <adapter factory=".atcontent.SerializeToJson" />
         <adapter factory=".atcontent.SerializeFolderToJson" />
         <adapter factory=".atfields.BlobFieldSerializer" />
@@ -32,7 +31,6 @@
         <adapter factory=".atfields.TextFieldSerializer" />
         <adapter factory=".atfields.QueryFieldSerializer" />
         <adapter factory=".atcollection.SerializeCollectionToJson" />
-      </configure>
     </configure>
 
     <adapter factory=".converters.date_converter" />
