@@ -13,6 +13,17 @@ bin/buildout: bin/pip
 	bin/pip install -r requirements.txt
 	@touch -c $@
 
+build-plone-5.2: .installed.cfg
+	bin/pip install --upgrade pip
+	bin/pip install -r requirements.txt
+	bin/buildout -c plone-5.2.x.cfg
+
+build-py3:
+	virtualenv --python=python3 .
+	bin/pip install --upgrade pip
+	bin/pip install -r requirements.txt
+	bin/buildout -c plone-5.2.x.cfg
+
 bin/python bin/pip:
 	virtualenv --clear --python=python$(version) .
 

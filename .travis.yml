@@ -29,9 +29,6 @@ matrix:
   exclude:
   - python: "2.7"
   - python: "3.6"
-  allow_failures:
-  - python: "3.6"
-    env: PLONE_VERSION=5.2.x
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
   - mkdir $HOME/.buildout
