@@ -26,6 +26,8 @@ TEST_REQUIRES = [
 
 PY2_ONLY = [
     'Products.Archetypes',
+    'Products.ATContentTypes',
+    'plone.app.blob',
     'plone.app.collection',
 ]
 
