@@ -132,6 +132,7 @@ def save_request_and_response_for_docs(name, response):
                 # ever decide to dump that header
                 response.request.prepare_body(data=body, files=None)
 
+            req.flush()
             if (isinstance(response.request.body, six.text_type)
                     or not hasattr(req, 'buffer')):
                 req.write(response.request.body)

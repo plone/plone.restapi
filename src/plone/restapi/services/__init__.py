@@ -19,7 +19,8 @@ class Service(RestService):
         content = self.reply()
         if content is not _no_content_marker:
             self.request.response.setHeader("Content-Type", self.content_type)
-            return json.dumps(content, indent=2, sort_keys=True)
+            return json.dumps(
+                content, indent=2, sort_keys=True, separators=(', ', ': '))
 
     def check_permission(self):
         sm = getSecurityManager()
