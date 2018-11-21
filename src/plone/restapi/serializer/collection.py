@@ -28,7 +28,11 @@ class SerializeCollectionToJson(SerializeToJson):
         if batch.links:
             results['batching'] = batch.links
 
+        fullobjects = self.request.form.get('fullobjects') and include_items
         results['items'] = [
+            fullobjects and
+            getMultiAdapter((brain.getObject(), self.request),
+                            ISerializeToJson)(include_items=False) or
             getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
             for brain in batch
         ]
