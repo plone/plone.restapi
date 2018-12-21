@@ -284,6 +284,8 @@ if HAS_AT:
             z2.installProduct(app, 'plone.restapi')
 
         def setUpPloneSite(self, portal):
+            portal.acl_users.userFolderAddUser(
+                SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ['Manager'], [])
             set_supported_languages(portal)
 
             if portal.portal_setup.profileExists(

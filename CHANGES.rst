@@ -4,6 +4,11 @@ Changelog
 3.5.1 (unreleased)
 ------------------
 
+New Features:
+
+- Add full support for `fullobjects` support for AT content types.
+  [sneridagh]
+
 Bugfixes:
 
 - Standardize errors data structure of email-notification endpoint.
