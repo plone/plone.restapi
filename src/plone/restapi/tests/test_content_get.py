@@ -171,7 +171,6 @@ class TestContentATGet(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.app = self.layer['app']
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ['Member'])
