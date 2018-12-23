@@ -297,7 +297,6 @@ class TestDocumentation(unittest.TestCase):
             '2016-01-21T02:14:48+00:00')
         self.portal.newsitem.modification_date = DateTime(
             '2016-01-21T02:24:11+00:00')
-        import transaction
         transaction.commit()
 
         with patch.object(storage, 'uuid4', return_value='uuid1'):
@@ -315,7 +314,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.event.creation_date = DateTime('2016-01-21T03:14:48+00:00')
         self.portal.event.modification_date = DateTime(
             '2016-01-21T03:24:11+00:00')
-        import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.event.absolute_url())
         save_request_and_response_for_docs('event', response)
@@ -328,7 +326,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.link.creation_date = DateTime('2016-01-21T04:14:48+00:00')
         self.portal.link.modification_date = DateTime(
             '2016-01-21T04:24:11+00:00')
-        import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.link.absolute_url())
         save_request_and_response_for_docs('link', response)
@@ -350,7 +347,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.file.creation_date = DateTime('2016-01-21T05:14:48+00:00')
         self.portal.file.modification_date = DateTime(
             '2016-01-21T05:24:11+00:00')
-        import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.file.absolute_url())
         save_request_and_response_for_docs('file', response)
@@ -370,7 +366,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.image.creation_date = DateTime('2016-01-21T06:14:48+00:00')
         self.portal.image.modification_date = DateTime(
             '2016-01-21T06:24:11+00:00')
-        import transaction
         transaction.commit()
         with patch.object(storage, 'uuid4', return_value='uuid1'):
             response = self.api_session.get(self.portal.image.absolute_url())
@@ -378,7 +373,6 @@ class TestDocumentation(unittest.TestCase):
 
     def test_documentation_folder(self):
         folder = self.create_folder()
-        import transaction
         transaction.commit()
         response = self.api_session.get(folder.absolute_url())
         save_request_and_response_for_docs('folder', response)
@@ -407,7 +401,6 @@ class TestDocumentation(unittest.TestCase):
             '2016-01-21T08:14:48+00:00')
         self.portal.collection.modification_date = DateTime(
             '2016-01-21T08:24:11+00:00')
-        import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.collection.absolute_url())
         save_request_and_response_for_docs('collection', response)
@@ -436,7 +429,6 @@ class TestDocumentation(unittest.TestCase):
             id='folder2',
             title='Folder 2'
         )
-        import transaction
         transaction.commit()
         query = {'sort_on': 'path',
                  'path.query': '/plone/folder1',
@@ -465,7 +457,6 @@ class TestDocumentation(unittest.TestCase):
             id='doc2',
             title='Lorem Ipsum'
         )
-        import transaction
         transaction.commit()
         query = {'sort_on': 'path',
                  'path.query': ['/plone/folder1', '/plone/folder2'],
@@ -479,7 +470,6 @@ class TestDocumentation(unittest.TestCase):
             id='doc1',
             title='Lorem Ipsum'
         )
-        import transaction
         transaction.commit()
         query = {'SearchableText': 'lorem',
                  'metadata_fields': ['modified', 'created']}
@@ -492,7 +482,6 @@ class TestDocumentation(unittest.TestCase):
             id='doc1',
             title='Lorem Ipsum'
         )
-        import transaction
         transaction.commit()
         query = {'SearchableText': 'lorem',
                  'fullobjects': 1}
@@ -551,7 +540,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.acl_users.jwt_auth._secret = 'secret'
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
-        import transaction
         transaction.commit()
         self.api_session.auth = None
         response = self.api_session.post(
@@ -564,7 +552,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
         self.portal.acl_users.jwt_auth.store_tokens = True
-        import transaction
         transaction.commit()
         self.api_session.auth = None
         response = self.api_session.post(
@@ -580,7 +567,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.acl_users.jwt_auth._secret = 'secret'
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
-        import transaction
         transaction.commit()
         self.api_session.auth = None
         response = self.api_session.post(
@@ -597,7 +583,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
         self.portal.acl_users.jwt_auth.store_tokens = True
-        import transaction
         transaction.commit()
         self.api_session.auth = None
         response = self.api_session.post(
@@ -1632,7 +1617,6 @@ class TestPAMDocumentation(unittest.TestCase):
         )
         self.es_content = self.portal['es'].get(es_id)
 
-        import transaction
         transaction.commit()
         self.browser = Browser(self.app)
         self.browser.handleErrors = False
