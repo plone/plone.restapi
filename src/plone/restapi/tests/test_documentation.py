@@ -228,6 +228,7 @@ class TestDocumentation(unittest.TestCase):
     def tearDown(self):
         self.time_freezer.stop()
         popGlobalRegistry(getSite())
+        self.api_session.close()
 
     def test_documentation_content_crud(self):
         folder = self.create_folder()
@@ -1380,6 +1381,7 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
     def tearDown(self):
         self.time_freezer.stop()
         popGlobalRegistry(getSite())
+        self.api_session.close()
 
     def test_translate_messages_types(self):
         response = self.api_session.get('/@types')
@@ -1440,6 +1442,7 @@ class TestCommenting(unittest.TestCase):
 
     def tearDown(self):
         self.time_freezer.stop()
+        self.api_session.close()
 
     def create_document_with_comments(self):
         self.portal.invokeFactory('Document', id='front-page')
@@ -1627,6 +1630,7 @@ class TestPAMDocumentation(unittest.TestCase):
 
     def tearDown(self):
         self.time_freezer.stop()
+        self.api_session.close()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(
