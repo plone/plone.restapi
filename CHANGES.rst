@@ -6,6 +6,12 @@ Changelog
 
 Bugfixes:
 
+- Close the api_session in tests.
+  This prevents lots of ResourceWarnings about unclosed sockets.
+  Fixes issues `636 <https://github.com/plone/plone.restapi/issues/636>`_
+  and `648 <https://github.com/plone/plone.restapi/issues/648>`_.
+  [maurits]
+
 - Standardize errors data structure of email-notification endpoint.
   [cekk]
 
