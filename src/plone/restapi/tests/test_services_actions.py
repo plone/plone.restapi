@@ -17,7 +17,7 @@ import unittest
 TEST_CATEGORY_ID = 'testcategory'
 
 
-class TestRegistry(unittest.TestCase):
+class TestActions(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
