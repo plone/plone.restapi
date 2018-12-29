@@ -139,6 +139,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
             })
 
     def tearDown(self):
+        self.api_session.close()
         gsm = getGlobalSiteManager()
         gsm.unregisterUtility(provided=IVocabularyFactory,
                               name='plone.restapi.tests.test_vocabulary')

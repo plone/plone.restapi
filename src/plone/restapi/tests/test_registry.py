@@ -39,6 +39,9 @@ class TestRegistry(unittest.TestCase):
 
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_get_registry_record(self):
         response = self.api_session.get('/@registry/foo.bar')
 

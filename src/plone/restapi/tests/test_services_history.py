@@ -40,6 +40,9 @@ class TestHistoryEndpoint(unittest.TestCase):
 
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_get_types(self):
         # Check if we have all history types in our test setup
         response = self.api_session.get(self.endpoint_url)
@@ -164,6 +167,9 @@ class TestHistoryEndpointTranslatedMessages(unittest.TestCase):
         self.endpoint_url = '{}/@history'.format(self.doc.absolute_url())
 
         transaction.commit()
+
+    def tearDown(self):
+        self.api_session.close()
 
     def test_actions_are_translated(self):
         url = self.doc.absolute_url() + '/@history'

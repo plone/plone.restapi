@@ -52,6 +52,9 @@ class TestErrorHandling(unittest.TestCase):
         self.folder_url = self.folder.absolute_url()
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     @unittest.skip('Not working since we moved to plone.rest')
     def test_404_not_found(self):
         response = self.api_session.get('non-existing-resource')
