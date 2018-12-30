@@ -46,6 +46,9 @@ class EmailNotificationEndpoint(unittest.TestCase):
 
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_email_notification_missing_parameters(self):
         response = self.api_session.post(
             '/@email-notification',

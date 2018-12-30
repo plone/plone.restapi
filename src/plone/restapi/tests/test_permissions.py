@@ -24,6 +24,9 @@ class TestPermissions(unittest.TestCase):
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_anonymous_allowed_to_use_api_by_default(self):
         setRoles(self.portal, TEST_USER_ID, ['Anonymous'])
         transaction.commit()

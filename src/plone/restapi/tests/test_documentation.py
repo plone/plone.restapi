@@ -226,6 +226,7 @@ class TestDocumentation(unittest.TestCase):
         return folder
 
     def tearDown(self):
+        self.api_session.close()
         self.time_freezer.stop()
         popGlobalRegistry(getSite())
         self.api_session.close()
@@ -646,6 +647,7 @@ class TestDocumentation(unittest.TestCase):
         response = logged_out_api_session.get('@users')
         save_request_and_response_for_docs('users_anonymous', response)
         self.assertEqual(response.status_code, 401)
+        logged_out_api_session.close()
 
     def test_documentations_users_as_unauthorized_user(self):
         properties = {
@@ -671,6 +673,7 @@ class TestDocumentation(unittest.TestCase):
         response = standard_api_session.get('@users')
         save_request_and_response_for_docs('users_unauthorized', response)
         self.assertEqual(response.status_code, 401)
+        standard_api_session.close()
 
     def test_documentation_users_get(self):
         properties = {
@@ -711,6 +714,7 @@ class TestDocumentation(unittest.TestCase):
 
         response = logged_out_api_session.get('@users/noam')
         save_request_and_response_for_docs('users_anonymous_get', response)
+        logged_out_api_session.close()
 
     def test_documentation_users_unauthorized_get(self):
         properties = {
@@ -743,6 +747,7 @@ class TestDocumentation(unittest.TestCase):
 
         response = logged_out_api_session.get('@users/noam')
         save_request_and_response_for_docs('users_unauthorized_get', response)
+        logged_out_api_session.close()
 
     def test_documentation_users_authorized_get(self):
         properties = {
@@ -766,6 +771,7 @@ class TestDocumentation(unittest.TestCase):
         logged_out_api_session.auth = ('noam', 'secret')
         response = logged_out_api_session.get('@users/noam')
         save_request_and_response_for_docs('users_authorized_get', response)
+        logged_out_api_session.close()
 
     def test_documentation_users_filtered_get(self):
         properties = {

@@ -38,6 +38,9 @@ class TestGroupsEndpoint(unittest.TestCase):
                             description=properties['description'])
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_list_groups(self):
         response = self.api_session.get('/@groups')
 

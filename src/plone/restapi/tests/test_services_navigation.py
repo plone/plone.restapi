@@ -55,6 +55,9 @@ class TestServicesNavigation(unittest.TestCase):
             title=u'A document')
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_navigation_with_no_params_gets_only_top_level(self):
         response = self.api_session.get('/folder/@navigation')
 

@@ -35,6 +35,9 @@ class TestServicesBreadcrumbs(unittest.TestCase):
             title=u'A document')
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_breadcrumbs(self):
         response = self.api_session.get('/folder/doc1/@breadcrumbs')
 

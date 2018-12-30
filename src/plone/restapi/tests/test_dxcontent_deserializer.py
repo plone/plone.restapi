@@ -210,7 +210,7 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
 
     def test_set_layout(self):
         current_layout = self.portal.doc1.getLayout()
-        self.assertNotEquals(current_layout, "my_new_layout")
+        self.assertNotEqual(current_layout, "my_new_layout")
         self.deserialize(body='{"layout": "my_new_layout"}')
         self.assertEqual('my_new_layout', self.portal.doc1.getLayout())
 

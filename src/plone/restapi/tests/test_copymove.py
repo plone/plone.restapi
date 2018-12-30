@@ -87,6 +87,9 @@ class TestCopyMoveFunctional(unittest.TestCase):
 
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_copy_single_object(self):
         response = self.api_session.post(
             '/@copy',
