@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
@@ -8,9 +7,10 @@ from plone.app.vocabularies.catalog import CatalogSource
 from plone.autoform.directives import read_permission
 from plone.autoform.directives import write_permission
 from plone.autoform.interfaces import IFormFieldProvider
-from plone.dexterity.content import Item
+from plone.dexterity.content import Container
 from plone.namedfile import field as namedfile
 from plone.supermodel import model
+from Products.CMFCore.utils import getToolByName
 from pytz import timezone
 from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList
@@ -142,7 +142,7 @@ class IDXTestDocumentSchema(model.Schema):
         required=True, defaultFactory=default_factory)
 
 
-class DXTestDocument(Item):
+class DXTestDocument(Container):
     """A Dexterity based test type containing a set of standard fields."""
 
     # Plone standard types (both, dx and at) do provide exclude_from_nav

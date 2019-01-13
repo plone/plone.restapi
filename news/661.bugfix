@@ -1,0 +1,4 @@
+Fix problem when deserializing for nested Dexterity content structures and setting values for the same field.
+A value for a sub node was not set when it was the same value as it's parent node due to Acquisition.
+Fixes: #660
+[thet]

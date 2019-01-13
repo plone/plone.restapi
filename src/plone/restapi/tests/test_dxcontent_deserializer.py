@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
-from plone.app.testing import TEST_USER_ID
+from Acquisition import aq_base
 from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
 from plone.dexterity.interfaces import IDexterityItem
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -8,15 +9,15 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import ITestAnnotationsBehavior
 from plone.restapi.tests.mixin_ordering import OrderingMixin
+from six.moves import range
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.component import provideHandler
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 import json
-import unittest
 import six
-from six.moves import range
+import unittest
 
 
 class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
@@ -213,6 +214,17 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         self.assertNotEqual(current_layout, "my_new_layout")
         self.deserialize(body='{"layout": "my_new_layout"}')
         self.assertEqual('my_new_layout', self.portal.doc1.getLayout())
+
+    def test_nested_contents_same_fields_same_value(self):
+        """Test for issue #660.
+        """
+        self.portal.invokeFactory('DXTestDocument', id=u'f1', test_behavior_field='okay')
+        self.portal.f1.invokeFactory('DXTestDocument', id=u'f2')
+
+        self.deserialize(body='{"test_behavior_field": "okay"}', context=self.portal.f1.f2)
+       
+        self.assertEqual(u'okay', self.portal.f1.f2.test_textline_field)
+        self.assertEqual(u'okay', aq_base(self.portal.f1.f2).test_textline_field)
 
 
 class TestDXContentSerializerDeserializer(unittest.TestCase):

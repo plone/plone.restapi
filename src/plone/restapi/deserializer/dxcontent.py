@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from Acquisition import aq_base
 from AccessControl import getSecurityManager
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContent
@@ -55,7 +56,10 @@ class DeserializeFromJson(OrderingMixin, object):
                     continue
 
                 if name in data:
-                    dm = queryMultiAdapter((self.context, field), IDataManager)
+                    dm = queryMultiAdapter(
+                        (aq_base(self.context), field),
+                        IDataManager
+                    )
                     if not dm.canWrite():
                         continue
 
@@ -94,7 +98,14 @@ class DeserializeFromJson(OrderingMixin, object):
                             'message': e.doc(), 'field': name, 'error': e})
                     else:
                         field_data[name] = value
-                        if value != dm.get():
+
+                        dm_value = object()  # Unique value to compare against.
+                        try:
+                            dm_value = dm.get()
+                        except AttributeError:
+                            pass
+
+                        if value != dm_value:
                             dm.set(value)
                             # Collect the names of the modified fields
                             # Use prefixed name because z3c.form does so
@@ -109,7 +120,10 @@ class DeserializeFromJson(OrderingMixin, object):
                     # fixed in p.a.versioningbehavior
                     if name == 'changeNote':
                         continue
-                    dm = queryMultiAdapter((self.context, field), IDataManager)
+                    dm = queryMultiAdapter(
+                        (aq_base(self.context), field),
+                        IDataManager
+                    )
                     bound = field.bind(self.context)
                     try:
                         bound.validate(dm.get())
