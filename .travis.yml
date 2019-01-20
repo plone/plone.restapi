@@ -2,6 +2,7 @@ language: python
 python:
   - "2.7"
   - "3.6"
+  - "3.7"
 dist: xenial
 sudo: required
 services:
@@ -27,9 +28,12 @@ matrix:
     env: PLONE_VERSION=5.2.x
   - python: "3.6"
     env: PLONE_VERSION=5.2.x
+  - python: "3.7"
+    env: PLONE_VERSION=5.2.x
   exclude:
   - python: "2.7"
   - python: "3.6"
+  - python: "3.7"
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
   - mkdir $HOME/.buildout
