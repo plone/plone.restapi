@@ -18,9 +18,6 @@ Bugfixes:
   and `648 <https://github.com/plone/plone.restapi/issues/648>`_.
   [maurits, gforcada]
 
-- Standardize errors data structure of email-notification endpoint.
-  [cekk]
-
 
 3.5.0 (2018-11-06)
 ------------------
