@@ -6,6 +6,10 @@ Changelog
 
 Bugfixes:
 
+- Do not fail on serializing types with fields having non-parametrized widgets.
+  Fixes issue `664 <https://github.com/plone/plone.restapi/issues/664>`_.
+  [elioschmutz]
+
 - Tests: retry request on ConnectionError.
   On Jenkins we often get one ConnectionError in a seemingly random test.
   Retrying after a short pause helps.
