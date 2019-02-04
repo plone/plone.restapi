@@ -61,7 +61,8 @@ class ITaggedValuesSchema(model.Schema):
 
     parametrized_widget_field = schema.TextLine(
         title=u"Parametrized widget field")
-    form.widget('parametrized_widget_field', a_param='some_value')
+    form.widget('parametrized_widget_field',
+                a_param='some_value', defaultFactory=lambda: 'Foo')
 
     not_parametrized_widget_field = schema.TextLine(
         title=u"No parametrized widget field")
@@ -201,6 +202,20 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
         self.assertEqual(
             u'No parametrized widget field',
             jsonschema['properties']['not_parametrized_widget_field']['title']
+        )
+
+    def test_resolve_callable_widget_params(self):
+        ttool = getToolByName(self.portal, 'portal_types')
+        jsonschema = get_jsonschema_for_fti(
+            ttool['TaggedDocument'],
+            self.portal,
+            self.request
+        )
+
+        self.assertEqual(
+            u'Foo',
+            jsonschema['properties']['parametrized_widget_field'].get(
+                'defaultFactory')
         )
 
 
