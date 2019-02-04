@@ -37,7 +37,7 @@ class UploadOptions(Service):
 
     def reply(self):
         for name, value in TUS_OPTIONS_RESPONSE_HEADERS.items():
-                    self.request.response.setHeader(name, value)
+            self.request.response.setHeader(name, value)
         return super(UploadOptions, self).reply()
 
 
