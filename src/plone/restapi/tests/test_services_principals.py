@@ -52,6 +52,9 @@ class TestPrincipalsEndpoint(unittest.TestCase):
                             description=properties['description'])
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_get_principals(self):
         response = self.api_session.get(
             '/@principals',

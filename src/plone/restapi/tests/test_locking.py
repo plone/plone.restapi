@@ -32,6 +32,9 @@ class TestLocking(unittest.TestCase):
 
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_lock_object(self):
         response = self.api_session.post('/@lock',)
         transaction.commit()

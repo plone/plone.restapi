@@ -75,6 +75,9 @@ class TestServicesTiles(unittest.TestCase):
         provideAdapter(SampleTile, (Interface, Interface),
                        IBasicTile, name=u'sample.tile')
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_get_available_tiles(self):
         response = self.api_session.get('/@tiles')
 

@@ -1,6 +1,8 @@
 from setuptools import setup, find_packages
 
-version = '3.4.6-dev.0'
+import sys
+
+version = '3.5.1.dev.0'
 
 long_description = (
     open('README.rst').read() + '\n' +
@@ -23,7 +25,11 @@ TEST_REQUIRES = [
 ]
 
 PY2_ONLY = [
+    'archetypes.schemaextender',
     'Products.Archetypes',
+    'Products.contentmigration',
+    'Products.ATContentTypes',
+    'plone.app.blob',
     'plone.app.collection',
 ]
 

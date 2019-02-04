@@ -400,6 +400,7 @@ class TestTUS(unittest.TestCase):
         self.assertEqual(pdf_file_size, self.file.file.size)
 
     def tearDown(self):
+        self.api_session.close()
         client_home = os.environ.get('CLIENT_HOME')
         tmp_dir = os.path.join(client_home, 'tus-uploads')
         if os.path.isdir(tmp_dir):
@@ -471,6 +472,7 @@ class TestTUSUploadWithCORS(unittest.TestCase):
         self.assertIn('Tus-Extension', response.headers)
 
     def tearDown(self):
+        self.api_session.close()
         gsm = getGlobalSiteManager()
         gsm.unregisterAdapter(
             CORSTestPolicy, (Interface, IBrowserRequest), ICORSPolicy)
@@ -606,6 +608,9 @@ class TestTUSWithAT(unittest.TestCase):
         self.api_session = RelativeSession(self.portal.absolute_url())
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
+
+    def tearDown(self):
+        self.api_session.close()
 
     def test_tus_can_upload_pdf_file(self):
         # initialize the upload with POST

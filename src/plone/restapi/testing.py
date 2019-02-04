@@ -23,6 +23,7 @@ from plone.testing import z2
 from plone.testing.layer import Layer
 from plone.uuid.interfaces import IUUIDGenerator
 from Products.CMFCore.utils import getToolByName
+from requests.exceptions import ConnectionError
 from six.moves.urllib.parse import urljoin
 from six.moves.urllib.parse import urlparse
 from zope.component import getGlobalSiteManager
@@ -356,7 +357,14 @@ class RelativeSession(requests.Session):
         if urlparse(url).scheme not in ('http', 'https'):
             url = url.lstrip('/')
             url = urljoin(self.__base_url, url)
-        return super(RelativeSession, self).request(method, url, **kwargs)
+        try:
+            return super(RelativeSession, self).request(method, url, **kwargs)
+        except ConnectionError:
+            # On Jenkins we often get one ConnectionError in a seemingly
+            # random test, mostly in test_documentation.py.
+            # The server is still listening: the port is open.  We retry once.
+            time.sleep(1)
+            return super(RelativeSession, self).request(method, url, **kwargs)
 
 
 @implementer(IUUIDGenerator)

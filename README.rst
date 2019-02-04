@@ -21,30 +21,14 @@ Introduction
 plone.restapi is a RESTful hypermedia API for Plone.
 
 
-RESTful Hypermedia API
-----------------------
-
-REST stands for `Representational State Transfer <http://en.wikipedia.org/wiki/Representational_state_transfer>`_. It is a software architectural principle to create loosely coupled web APIs.
-
-Most web APIs have a tight coupling between client and server. This makes them brittle and hard to change over time. It requires them not only to fully document every small detail of the API, but also to write a client implementation that follows that specification 100% correctly and breaks as soon as you change any detail.
-
-A hypermedia API just provides an entry point to the API that contains hyperlinks the clients can follow, just as a human user of a regular website knows the initial URL of the site and then follows hyperlinks to navigate through the site. This has the advantage that the client needs to understand only how to detect and follow links. The URL and other details of the API can change without breaking the client.
-
-
 Documentation
 =============
 
 http://plonerestapi.readthedocs.org
 
 
-Roadmap
-=======
-
-https://github.com/plone/plone.restapi/milestones
-
-
-Live Demo
-=========
+Getting started
+===============
 
 A live demo of Plone 5 with the latest plone.restapi release is available at:
 
@@ -61,39 +45,50 @@ Example POST request to create a new document::
 .. note:: You will need some kind of API browser application to explore the API. We recommend using `Postman <http://www.getpostman.com/>`_.
 
 
-Design Decisions
-================
+Installation
+============
 
-* A truly RESTful API (Hypermedia / HATEOAS / Linked-data)
-* JSON is the main target format; support for other formats (HTML, XML) will come later
-* Use HTTP headers (to set format and versioning, also provide URL-based option to make it easier for people to try it out)
-* No versioning; versioning in the HTTP header can be added later
-* Field names just map over (we will not try to clean up attributes or enforce naming standards like pep8 (e.g. isPrincipiaFoldish -> is_folderish)
+Install plone.restapi by adding it to your buildout::
 
+    [buildout]
 
-Software Quality
-================
+    ...
 
-* 100% test coverage
-* 100% PEP8 compliant
-* Documentation-first approach for enhancements
+    eggs =
+        plone.restapi
 
 
-Further Reading
-===============
-
-* `REST in Practice: Hypermedia and Systems Architecture (Webber, Parastatidis, Robinson) <http://www.amazon.com/gp/product/0596805829>`_
+and then running ``bin/buildout``
 
 
-Standards
-=========
+Contribute
+==========
 
-- `JSON-LD <http://www.w3.org/TR/json-ld/>`_
-- `JSON Schema <http://json-schema.org/>`_
-- `Schema.org <http://schema.org/>`_
-- `Hydra <http://www.w3.org/ns/hydra/spec/latest/core/>`_
-- `Collection+JSON <http://amundsen.com/media-types/collection/>`_
-- `Siren <https://github.com/kevinswiber/siren>`_
+- Issue Tracker: https://github.com/plone/plone.restapi/issues
+- Source Code: https://github.com/plone/plone.restapi
+- Documentation: https://plonerestapi.readthedocs.io/en/latest/
+
+
+Examples
+========
+
+plone.restapi is used in production since the first alpha release.
+It can be seen in action at the following sites:
+
+- Zeelandia.de: https://www.zeelandia.de/ (by kitconcept GmbH)
+- VHS-Ehrenamtsportal: https://vhs-ehrenamtsportal.de/ (by kitconcept GmbH)
+
+
+Support
+=======
+
+If you are having issues, please let us know via the issue tracker.
+
+If you required professional support, here is a list of Plone solution providers that contributed to plone.restapi:
+
+- kitconcept GmbH (Germany) https://kitconcept.com
+- 4teamwork (Switzerland) https://www.4teamwork.ch/
+- CodeSyntax (Spain) https://www.codesyntax.com/en
 
 
 License

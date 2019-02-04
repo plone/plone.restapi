@@ -17,7 +17,7 @@ import unittest
 TEST_CATEGORY_ID = 'testcategory'
 
 
-class TestRegistry(unittest.TestCase):
+class TestActions(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
@@ -65,6 +65,10 @@ class TestRegistry(unittest.TestCase):
         self.cat3 = self.add_category('category3')
 
         transaction.commit()
+
+    def tearDown(self):
+        self.api_session.close()
+        self.anon_api_session.close()
 
     def test_actions_all_categories(self):
         response = self.api_session.get('/@actions')

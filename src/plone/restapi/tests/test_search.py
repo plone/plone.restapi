@@ -102,6 +102,9 @@ class TestSearchFunctional(unittest.TestCase):
 
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_overall_response_format(self):
         response = self.api_session.get('/@search')
 

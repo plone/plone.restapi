@@ -3,6 +3,11 @@
 # CI test that should fail if there are warnings or even errors when building
 # the Sphinx docs.
 
+if [ "$PLONE_VERSION" = "5.2.x" ]; then
+    echo "Skipping checks for sphinx warnings for 5.2.x"
+    exit 0
+fi
+
 set -euo pipefail
 
 BUILD_LOG="sphinx_build.log"

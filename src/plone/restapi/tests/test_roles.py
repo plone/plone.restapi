@@ -19,6 +19,9 @@ class TestRolesGet(unittest.TestCase):
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_roles_endpoint_lists_roles(self):
         response = self.api_session.get('/@roles')
 
