@@ -18,6 +18,7 @@ from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from plone.restapi.types.utils import get_jsonschema_properties
+from z3c.form.browser.text import TextWidget
 
 
 class IDummySchema(model.Schema):
@@ -58,8 +59,13 @@ class ITaggedValuesSchema(model.Schema):
         description=u"",
     )
 
-    another_field = schema.TextLine(title=u"Tagged Values widget params")
-    form.widget('another_field', a_param='some_value')
+    parametrized_widget_field = schema.TextLine(
+        title=u"Parametrized widget field")
+    form.widget('parametrized_widget_field', a_param='some_value')
+
+    not_parametrized_widget_field = schema.TextLine(
+        title=u"No parametrized widget field")
+    form.widget(not_parametrized_widget_field=TextWidget)
 
 
 class TestJsonSchemaUtils(TestCase):
@@ -182,7 +188,19 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
         )
         self.assertEqual(
             'some_value',
-            jsonschema['properties']['another_field']['a_param']
+            jsonschema['properties']['parametrized_widget_field']['a_param']
+        )
+
+    def test_do_not_fail_with_non_parametrized_widget(self):
+        ttool = getToolByName(self.portal, 'portal_types')
+        jsonschema = get_jsonschema_for_fti(
+            ttool['TaggedDocument'],
+            self.portal,
+            self.request
+        )
+        self.assertEqual(
+            u'No parametrized widget field',
+            jsonschema['properties']['not_parametrized_widget_field']['title']
         )
 
 
