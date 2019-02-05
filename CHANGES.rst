@@ -10,18 +10,6 @@ Bugfixes:
   Fixes issue `664 <https://github.com/plone/plone.restapi/issues/664>`_.
   [elioschmutz]
 
-- Tests: retry request on ConnectionError.
-  On Jenkins we often get one ConnectionError in a seemingly random test.
-  Retrying after a short pause helps.
-  Fixes issue `648 <https://github.com/plone/plone.restapi/issues/648>`_.
-  [maurits, gforcada]
-
-- Close the api_session in tests.
-  This prevents lots of ResourceWarnings about unclosed sockets.
-  Fixes issues `636 <https://github.com/plone/plone.restapi/issues/636>`_
-  and `648 <https://github.com/plone/plone.restapi/issues/648>`_.
-  [maurits, gforcada]
-
 
 3.5.0 (2018-11-06)
 ------------------
