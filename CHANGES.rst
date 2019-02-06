@@ -4,7 +4,8 @@ Changelog
 3.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix serializing the Event type. Fixes issue `574 <https://github.com/plone/plone.restapi/issues/574>`_
+  [davisagli]
 
 
 3.5.1 (2019-02-05)
@@ -36,9 +37,6 @@ Bugfixes:
 
 - Make search work with a path query containing a list of paths in a virtual hosting setting.
   [sunew]
-
-- Fix serializing the Event type. Fixes https://github.com/plone/plone.restapi/issues/574
-  [davisagli]
 
 
 3.4.4 (2018-08-31)
