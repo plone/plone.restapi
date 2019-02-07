@@ -18,6 +18,7 @@
   <include package=".navigation"/>
   <include package=".history"/>
   <include package=".locking" />
+  <include package=".portlets"/>
   <include package=".principals"/>
   <include package=".registry"/>
   <include package=".roles"/>
