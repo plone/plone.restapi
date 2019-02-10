@@ -84,7 +84,7 @@ Support
 
 If you are having issues, please let us know via the issue tracker.
 
-If you required professional support, here is a list of Plone solution providers that contributed to plone.restapi:
+If you required professional support, here is a list of Plone solution providers that contributed significantly to plone.restapi in the past:
 
 - kitconcept GmbH (Germany) https://kitconcept.com
 - 4teamwork (Switzerland) https://www.4teamwork.ch/
