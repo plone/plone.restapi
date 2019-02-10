@@ -1,0 +1,2 @@
+- Fix serializing the Event type. Fixes issue `574 <https://github.com/plone/plone.restapi/issues/574>`_
+  [davisagli]

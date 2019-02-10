@@ -141,7 +141,10 @@ def get_tagged_values(schemas, key):
         for field_name in schema:
             widget = tagged_values.get(field_name)
             if IParameterizedWidget.providedBy(widget) and widget.params:
-                params[field_name] = widget.params
+                params[field_name] = widget.params.copy()
+                for k, v in params[field_name].items():
+                    if callable(v):
+                        params[field_name][k] = v()
     return params
 
 
