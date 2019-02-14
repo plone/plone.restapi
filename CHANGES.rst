@@ -4,7 +4,8 @@ Changelog
 3.5.2 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fix serializing the Event type.
+  [davisagli]
 
 
 3.5.1 (2019-02-05)
