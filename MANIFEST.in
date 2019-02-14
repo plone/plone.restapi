@@ -13,6 +13,3 @@ exclude Dockerfile
 exclude Makefile
 exclude bootstrap-buildout.py
 global-exclude *.pyc
-include pyproject.toml
-recursive-exclude news *
-exclude news
