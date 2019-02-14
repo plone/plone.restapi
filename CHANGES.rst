@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.5.2 (unreleased)
+3.5.2 (2019-02-14)
 ------------------
 
 - Fix serializing the Event type. This fixes https://github.com/plone/plone.restapi/issues/664.
