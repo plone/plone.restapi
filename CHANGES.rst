@@ -8,7 +8,7 @@ Changelog
 
 .. towncrier release notes start
 
-3.5.1 (2019-02-05)
+3.5.2 (2019-02-14)
 ------------------
 
 Bugfixes:
