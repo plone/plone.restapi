@@ -11,6 +11,8 @@ Changelog
 3.5.2 (2019-02-14)
 ------------------
 
+Bugfixes:
+
 - Fix serializing the Event type. This fixes https://github.com/plone/plone.restapi/issues/664.
   [davisagli, elioschmutz]
 
