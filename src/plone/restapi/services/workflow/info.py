@@ -35,6 +35,7 @@ class WorkflowInfo(object):
         # response instead of a 404.
         if IPloneSiteRoot.providedBy(self.context):
             result['workflow'].update({'history': [], 'transitions': []})
+            return result
 
         wftool = getToolByName(self.context, 'portal_workflow')
         try:
@@ -77,6 +78,7 @@ class WorkflowInfo(object):
 class WorkflowInfoService(Service):
     """Get workflow information
     """
+
     def reply(self):
         info = WorkflowInfo(self.context, self.request)
         return info(expand=True)['workflow']
