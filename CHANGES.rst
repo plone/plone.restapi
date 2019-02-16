@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+3.6.0 (2019-02-16)
+------------------
+
+New Features:
+
+- Enhance site root to serialize and deserialize 'tiles' and 'tiles_layout' attributes.
+  [sneridagh]
+
+- Fix @workflow endpoint on site root to return an empty object instead of a 404.
+  [sneridagh]
+
+
 3.5.2 (2019-02-14)
 ------------------
 
