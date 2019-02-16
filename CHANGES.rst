@@ -8,6 +8,12 @@ Changelog
 
 .. towncrier release notes start
 
+3.6.1 (unreleased)
+------------------
+
+- Nothing changed yet.
+
+
 3.6.0 (2019-02-16)
 ------------------
 
