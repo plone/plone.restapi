@@ -36,11 +36,11 @@ http://plonedemo.kitconcept.com
 
 Example GET request on the portal root::
 
-  $ curl -i http://plonedemo.kitconcept.com -H "Accept: application/json"
+  $ curl -i https://plonedemo.kitconcept.com -H "Accept: application/json"
 
 Example POST request to create a new document::
 
-  $ curl -i -X POST http://plonedemo.kitconcept.com -H "Accept: application/json" -H "Content-Type: application/json" --data-raw '{"@type": "Document", "title": "My Document"}' --user admin:admin
+  $ curl -i -X POST https://plonedemo.kitconcept.com -H "Accept: application/json" -H "Content-Type: application/json" --data-raw '{"@type": "Document", "title": "My Document"}' --user admin:admin
 
 .. note:: You will need some kind of API browser application to explore the API. We recommend using `Postman <http://www.getpostman.com/>`_.
 
