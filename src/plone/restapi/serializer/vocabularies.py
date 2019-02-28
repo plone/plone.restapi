@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.serializer.converters import json_compatible
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
@@ -43,8 +44,10 @@ class SerializeTermToJson(object):
         term = self.context
         token = term.token
         title = term.title if ITitledTokenizedTerm.providedBy(term) else token
+        value = json_compatible(term.value)
         return {
             '@id': '{}/{}'.format(vocabulary_id, token),
             'token': token,
-            'title': title
+            'title': title,
+            'value': value
         }

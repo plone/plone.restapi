@@ -66,10 +66,12 @@ class TestVocabularyEndpoint(unittest.TestCase):
              u'terms': [
                  {u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary/token1',  # noqa
                   u'title': u'Title 1',
-                  u'token': u'token1'},
+                  u'token': u'token1',
+                  u'value': 42},
                  {u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary/token2',  # noqa
                   u'title': u'Title 2',
-                  u'token': u'token2'}]})
+                  u'token': u'token2',
+                  u'value': 43}]})
 
     def test_get_unknown_vocabulary(self):
         response = self.api_session.get(
@@ -132,10 +134,12 @@ class TestVocabularyEndpoint(unittest.TestCase):
                 u'terms': [
                     {u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/id',  # noqa
                      u'title': u'testdoc',
-                     u'token': u'id'},
+                     u'token': u'id',
+                     u'value': u'testdoc'},
                     {u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/title',  # noqa
                      u'title': u'Document 1',
-                     u'token': u'title'}]
+                     u'token': u'title',
+                     u'value': u'Document 1'}]
             })
 
     def tearDown(self):

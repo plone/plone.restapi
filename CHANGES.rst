@@ -11,7 +11,8 @@ Changelog
 3.6.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add values to vocabulary GET responses.
+  [Rotonen]
 
 
 3.6.0 (2019-02-16)
