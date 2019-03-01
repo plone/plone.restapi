@@ -11,7 +11,8 @@ Changelog
 3.6.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Fixed the 4.3.x travis build by pinning six up to 1.11.0 for the 4.3.x buildout.
+  [Rotonen]
 
 
 3.6.0 (2019-02-16)
