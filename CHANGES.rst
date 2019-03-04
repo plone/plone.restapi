@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+3.7.0 (2019-02-16)
+------------------
+
+New Features:
+
+- Add group roles to @groups serializer
+  [sneridagh]
+
+
 3.6.0 (2019-02-16)
 ------------------
 
