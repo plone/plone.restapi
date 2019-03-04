@@ -8,9 +8,6 @@ Content-Type: application/json
     "email": "ploneteam@plone.org", 
     "groupname": "ploneteam", 
     "id": "ploneteam", 
-    "roles": [
-      "Authenticated"
-    ], 
     "title": "Plone Team"
   }
 ]
