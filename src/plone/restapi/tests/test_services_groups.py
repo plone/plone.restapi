@@ -62,6 +62,8 @@ class TestGroupsEndpoint(unittest.TestCase):
         self.assertEqual('Plone Team', ptgroup.get('title'))
         self.assertEqual('We are Plone', ptgroup.get('description'))
 
+        self.assertEqual(ptgroup.get('roles'), ['Authenticated'])
+
         # We don't want the group members listed in the overview as there
         # might be loads.
         self.assertTrue(

@@ -8,6 +8,10 @@ Content-Type: application/json
     "email": "", 
     "groupname": "Administrators", 
     "id": "Administrators", 
+    "roles": [
+      "Manager", 
+      "Authenticated"
+    ], 
     "title": "Administrators"
   }, 
   {
@@ -16,6 +20,10 @@ Content-Type: application/json
     "email": "", 
     "groupname": "Reviewers", 
     "id": "Reviewers", 
+    "roles": [
+      "Reviewer", 
+      "Authenticated"
+    ], 
     "title": "Reviewers"
   }, 
   {
@@ -24,6 +32,10 @@ Content-Type: application/json
     "email": "", 
     "groupname": "Site Administrators", 
     "id": "Site Administrators", 
+    "roles": [
+      "Site Administrator", 
+      "Authenticated"
+    ], 
     "title": "Site Administrators"
   }, 
   {
@@ -32,6 +44,9 @@ Content-Type: application/json
     "email": "ploneteam@plone.org", 
     "groupname": "ploneteam", 
     "id": "ploneteam", 
+    "roles": [
+      "Authenticated"
+    ], 
     "title": "Plone Team"
   }, 
   {
@@ -40,6 +55,7 @@ Content-Type: application/json
     "email": "", 
     "groupname": "AuthenticatedUsers", 
     "id": "AuthenticatedUsers", 
+    "roles": [], 
     "title": "Authenticated Users (Virtual Group)"
   }
 ]
