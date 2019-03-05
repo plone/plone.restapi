@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+from Acquisition import aq_base
+from Acquisition.interfaces import IAcquirer
 from AccessControl.SecurityManagement import getSecurityManager
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import base_hasattr
+from Products.CMFPlone.utils import safe_hasattr
 from base64 import b64decode
 from email.utils import formatdate
 from fnmatch import fnmatch
@@ -248,6 +251,12 @@ class UploadPatch(UploadFileBase):
             if not fieldname:
                 return self.error('Bad Request', 'Fieldname required', 400)
 
+            # Acquisition wrap temporarily for deserialization
+            temporarily_wrapped = False
+            if IAcquirer.providedBy(obj) and not safe_hasattr(obj, 'aq_base'):
+                obj = obj.__of__(self.context)
+                temporarily_wrapped = True
+
             # Update field with file data
             deserializer = queryMultiAdapter(
                 (obj, self.request), IDeserializeFromJson)
@@ -258,10 +267,14 @@ class UploadPatch(UploadFileBase):
                         obj.portal_type),
                     501)
             try:
-                deserializer(data={fieldname: tus_upload})
+                deserializer(
+                    data={fieldname: tus_upload}, create=mode == 'create')
             except DeserializationError as e:
                 return self.error(
                     'Deserialization Error', str(e), 400)
+
+            if temporarily_wrapped:
+                obj = aq_base(obj)
 
             if mode == 'create':
                 if not getattr(deserializer, 'notifies_create', False):
