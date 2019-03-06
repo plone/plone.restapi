@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+3.7.1 (2019-03-06)
+------------------
+
+Bug fixes:
+
+
+- Fix release to not create universal (Python 2/3) wheels.
+  And install zestreleaser.towncrier in the buildout to the changelog is updated correctly. (#684)
+
+
 3.7.1 (unreleased)
 ------------------
 
