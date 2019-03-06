@@ -8,10 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
-3.7.1 (unreleased)
+3.7.1 (2019-03-06)
 ------------------
 
-- Nothing changed yet.
+Bugfixes:
+
+- Fix release to not create universal (Python 2/3) wheels.
+  [gforcada]
+
+- Install zestreleaser.towncrier in the buildout to the changelog is updated correctly. (#684)
+  [maurits]
 
 
 3.7.0 (2019-03-04)
