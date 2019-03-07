@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+3.7.2 (2019-03-07)
+------------------
+
+Bug fixes:
+
+
+- Fix TUS upload events `#689 <https://github.com/plone/plone.restapi/issues/689>`_.
+  [buchi] (#689)
+
+
 3.7.1 (2019-03-06)
 ------------------
 
