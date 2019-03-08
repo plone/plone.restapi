@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+3.7.3 (2019-03-08)
+------------------
+
+Bug fixes:
+
+
+- Use environment-markers instead of python-logic to specify dependencies for py2.
+  [pbauer] (#688)
+
+
 3.7.2 (2019-03-07)
 ------------------
 
