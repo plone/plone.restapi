@@ -1,0 +1,4 @@
+Use tokens for serialization/deserialization of vocabulary terms.
+This may break clients if the serialization of a term's value is not equal to the token.
+[buchi]
+

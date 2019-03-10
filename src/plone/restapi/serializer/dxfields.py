@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from plone.app.textfield.interfaces import IRichText
+from plone.app.vocabularies.catalog import CatalogVocabulary
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedFileField
 from plone.namedfile.interfaces import INamedImageField
@@ -10,7 +11,10 @@ from plone.restapi.serializer.converters import json_compatible
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.schema.interfaces import IChoice
+from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IField
+from zope.schema.interfaces import IVocabularyTokenized
 
 
 @adapter(IField, IDexterityContent, Interface)
@@ -29,6 +33,47 @@ class DefaultFieldSerializer(object):
         return getattr(self.field.interface(self.context),
                        self.field.__name__,
                        default)
+
+
+@adapter(IChoice, IDexterityContent, Interface)
+@implementer(IFieldSerializer)
+class ChoiceFieldSerializer(DefaultFieldSerializer):
+
+    def __call__(self):
+        # Binding is necessary for named vocabularies
+        if IField.providedBy(self.field):
+            self.field = self.field.bind(self.context)
+        value = self.get_value()
+        if (value is not None
+                and IVocabularyTokenized.providedBy(self.field.vocabulary)):
+            try:
+                term = self.field.vocabulary.getTerm(value)
+                value = term.token
+            # Some fields (e.g. language) have a default value that is not in
+            # vocabulary
+            except LookupError:
+                pass
+        return json_compatible(value)
+
+
+@adapter(ICollection, IDexterityContent, Interface)
+@implementer(IFieldSerializer)
+class CollectionFieldSerializer(DefaultFieldSerializer):
+
+    def __call__(self):
+        # Binding is necessary for named vocabularies
+        if IField.providedBy(self.field):
+            self.field = self.field.bind(self.context)
+        value = self.get_value()
+        value_type = self.field.value_type
+        if (value is not None and IChoice.providedBy(value_type)
+                and IVocabularyTokenized.providedBy(value_type.vocabulary)
+                # CatalogVocabulary provides IVocabularyTokenized but doesn't
+                # implement it
+                and not isinstance(value_type.vocabulary, CatalogVocabulary)):
+            value = self.field._type([value_type.vocabulary.getTerm(v).token
+                                      for v in value])
+        return json_compatible(value)
 
 
 @adapter(INamedImageField, IDexterityContent, Interface)
