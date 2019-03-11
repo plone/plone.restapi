@@ -1,7 +1,6 @@
 Changelog
 =========
 
-
 3.0.0 (unreleased)
 ------------------
 
@@ -43,7 +42,166 @@ Bugfixes:
   [davisagli]
 
 
-3.2.2 (unreleased)
+.. You should *NOT* be adding new change log entries to this file.
+   You should create a file in the news directory instead.
+   For helpful instructions, please see:
+   https://github.com/plone/plone.releaser/blob/master/ADD-A-NEWS-ITEM.rst
+
+.. towncrier release notes start
+
+3.7.3 (2019-03-08)
+------------------
+
+Bug fixes:
+
+
+- Use environment-markers instead of python-logic to specify dependencies for py2.
+  [pbauer] (#688)
+
+
+3.7.2 (2019-03-07)
+------------------
+
+Bug fixes:
+
+
+- Fix TUS upload events `#689 <https://github.com/plone/plone.restapi/issues/689>`_.
+  [buchi] (#689)
+
+
+3.7.1 (2019-03-06)
+------------------
+
+Bugfixes:
+
+- Fix release to not create universal (Python 2/3) wheels.
+  [gforcada]
+
+- Install zestreleaser.towncrier in the buildout to the changelog is updated correctly. (#684)
+  [maurits]
+
+
+3.7.0 (2019-03-04)
+------------------
+
+New Features:
+
+- Add group roles to @groups serializer
+  [sneridagh]
+
+
+3.6.0 (2019-02-16)
+------------------
+
+New Features:
+
+- Enhance site root to serialize and deserialize 'tiles' and 'tiles_layout' attributes.
+  [sneridagh]
+
+- Fix @workflow endpoint on site root to return an empty object instead of a 404.
+  [sneridagh]
+
+
+3.5.2 (2019-02-14)
+------------------
+
+Bugfixes:
+
+- Fix serializing the Event type. This fixes https://github.com/plone/plone.restapi/issues/664.
+  [davisagli, elioschmutz]
+
+
+3.5.1 (2019-02-05)
+------------------
+
+Bugfixes:
+
+- Do not fail on serializing types with fields having non-parametrized widgets.
+  Fixes issue `664 <https://github.com/plone/plone.restapi/issues/664>`_.
+  [elioschmutz]
+
+
+3.5.0 (2018-11-06)
+------------------
+
+New Features:
+
+- Add Python 3 support.
+  [pbauer, davisagli]
+
+
+3.4.5 (2018-09-14)
+------------------
+
+Bugfixes:
+
+- Avoid ``AttributeError`` on add-on installation (fixes `#465 <https://github.com/plone/plone.restapi/issues/465>`_.
+  [lukasgraf, hvelarde]
+
+- Make search work with a path query containing a list of paths in a virtual hosting setting.
+  [sunew]
+
+
+3.4.4 (2018-08-31)
+------------------
+
+Bugfixes:
+
+- Generalize the last bugfix solution for searching the userid on password
+  reset requests, matching it with Plone's one. This covers all the request
+  use cases.
+  [sneridagh]
+
+
+3.4.3 (2018-08-30)
+------------------
+
+Bugfixes:
+
+- Add "Use UUID as user ID" support for password resets
+  [sneridagh]
+
+
+3.4.2 (2018-08-27)
+------------------
+
+Bugfixes:
+
+- Add missing "Use UUID as user ID" support to POST @users endpoint on user creation.
+  Also improve the userid/username chooser by using the same process as Plone does.
+  This fixes: https://github.com/plone/plone.restapi/issues/586
+  [sneridagh]
+
+
+3.4.1 (2018-07-22)
+------------------
+
+Bugfixes:
+
+- Make sure the default profile is installed on tiles profile installation.
+  [timo]
+
+
+3.4.0 (2018-07-21)
+------------------
+
+New Features:
+
+- Add tiles profile.
+  [timo]
+
+
+3.3.0 (2018-07-20)
+------------------
+
+New Features:
+
+- Return member fields based on user schema in `@users` endpoint instead of a
+  fixed list of member properties.
+  [buchi]
+
+
+3.2.2 (2018-07-19)
 ------------------
 
 Bugfixes:
@@ -61,6 +219,12 @@ Bugfixes:
 
 - Make setup.py require plone.behavior >= 1.1. This fixes #575.
   [timo]
+
+- Fixes ``test_search`` to work with bug fixed ``plone.indexer``.
+  Now ``DXTestDocument`` explicit got an attribute ``exclude_from_nav``.
+  This fixes `issue 579 <https://github.com/plone/plone.restapi/issues/579>`_.
+  Refers to `Products.CMFPlone Issue 2469 <https://github.com/plone/Products.CMFPlone/issues/2469>`_
+  [jensens]
 
 
 3.2.1 (2018-06-28)

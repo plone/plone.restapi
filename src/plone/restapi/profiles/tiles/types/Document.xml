@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<object name="Document" meta_type="Dexterity FTI" i18n:domain="plone"
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+ <property name="behaviors" purge="false">
+  <element value="plone.tiles" />
+  <!--<element value="collective.dexteritytextindexer.behavior.IDexterityTextIndexer" />-->
+ </property>
+
+</object>

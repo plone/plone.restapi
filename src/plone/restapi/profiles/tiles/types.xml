@@ -1,0 +1,3 @@
+<object name="portal_types" meta_type="Plone Types Tool">
+  <object name="Document" meta_type="Dexterity FTI" />
+</object>

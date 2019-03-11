@@ -28,6 +28,7 @@ class BaseSerializer(object):
             'email': group.getProperty('email'),
             'title': group.getProperty('title'),
             'description': group.getProperty('description'),
+            'roles': group.getRoles(),
         }
 
 

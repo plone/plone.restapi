@@ -38,10 +38,12 @@ from zope.site.hooks import getSite
 
 import collections
 import json
-import re
 import os
+import re
+import six
 import transaction
 import unittest
+from six.moves import range
 
 if PAM_INSTALLED:
     from plone.app.multilingual.interfaces import ITranslationManager
@@ -75,9 +77,9 @@ RESPONSE_HEADER_KEYS = [
 
 base_path = resource_filename('plone.restapi.tests', 'http-examples')
 
-UPLOAD_DATA = 'abcdefgh'
-UPLOAD_MIMETYPE = 'text/plain'
-UPLOAD_FILENAME = 'test.txt'
+UPLOAD_DATA = b'abcdefgh'
+UPLOAD_MIMETYPE = b'text/plain'
+UPLOAD_FILENAME = b'test.txt'
 UPLOAD_LENGTH = len(UPLOAD_DATA)
 
 UPLOAD_PDF_MIMETYPE = 'application/pdf'
@@ -98,7 +100,12 @@ def pretty_json(data):
 
 
 def save_request_and_response_for_docs(name, response):
-    with open('{}/{}'.format(base_path, '%s.req' % name), 'w') as req:
+    if six.PY2:
+        open_kw = {}
+    else:
+        open_kw = {'newline': '\n'}
+    filename = '{}/{}'.format(base_path, '%s.req' % name)
+    with open(filename, 'w', **open_kw) as req:
         req.write('{} {} HTTP/1.1\n'.format(
             response.request.method,
             response.request.path_url
@@ -125,9 +132,16 @@ def save_request_and_response_for_docs(name, response):
                 # ever decide to dump that header
                 response.request.prepare_body(data=body, files=None)
 
-            req.write(response.request.body)
+            req.flush()
+            if (isinstance(response.request.body, six.text_type)
+                    or not hasattr(req, 'buffer')):
+                req.write(response.request.body)
+            else:
+                req.buffer.seek(0, 2)
+                req.buffer.write(response.request.body)
 
-    with open('{}/{}'.format(base_path, '%s.resp' % name), 'w') as resp:
+    filename = '{}/{}'.format(base_path, '%s.resp' % name)
+    with open(filename, 'w', **open_kw) as resp:
         status = response.status_code
         reason = response.reason
         resp.write('HTTP/1.1 {} {}\n'.format(status, reason))
@@ -135,7 +149,7 @@ def save_request_and_response_for_docs(name, response):
             if key.lower() in RESPONSE_HEADER_KEYS:
                 resp.write('{}: {}\n'.format(key.title(), value))
         resp.write('\n')
-        resp.write(response.content)
+        resp.write(response.text)
 
 
 class TestDocumentation(unittest.TestCase):
@@ -212,8 +226,10 @@ class TestDocumentation(unittest.TestCase):
         return folder
 
     def tearDown(self):
+        self.api_session.close()
         self.time_freezer.stop()
         popGlobalRegistry(getSite())
+        self.api_session.close()
 
     def test_documentation_content_crud(self):
         folder = self.create_folder()
@@ -271,8 +287,10 @@ class TestDocumentation(unittest.TestCase):
             'text/html'
         )
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         self.portal.newsitem.image = NamedBlobImage(
-            data=open(image_file, 'r').read(),
+            data=image_data,
             contentType='image/png',
             filename=u'image.png'
         )
@@ -281,7 +299,6 @@ class TestDocumentation(unittest.TestCase):
             '2016-01-21T02:14:48+00:00')
         self.portal.newsitem.modification_date = DateTime(
             '2016-01-21T02:24:11+00:00')
-        import transaction
         transaction.commit()
 
         with patch.object(storage, 'uuid4', return_value='uuid1'):
@@ -299,7 +316,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.event.creation_date = DateTime('2016-01-21T03:14:48+00:00')
         self.portal.event.modification_date = DateTime(
             '2016-01-21T03:24:11+00:00')
-        import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.event.absolute_url())
         save_request_and_response_for_docs('event', response)
@@ -312,7 +328,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.link.creation_date = DateTime('2016-01-21T04:14:48+00:00')
         self.portal.link.modification_date = DateTime(
             '2016-01-21T04:24:11+00:00')
-        import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.link.absolute_url())
         save_request_and_response_for_docs('link', response)
@@ -324,15 +339,16 @@ class TestDocumentation(unittest.TestCase):
         pdf_file = os.path.join(
             os.path.dirname(__file__), u'file.pdf'
         )
+        with open(pdf_file, 'rb') as f:
+            pdf_data = f.read()
         self.portal.file.file = NamedBlobFile(
-            data=open(pdf_file, 'r').read(),
+            data=pdf_data,
             contentType='application/pdf',
             filename=u'file.pdf'
         )
         self.portal.file.creation_date = DateTime('2016-01-21T05:14:48+00:00')
         self.portal.file.modification_date = DateTime(
             '2016-01-21T05:24:11+00:00')
-        import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.file.absolute_url())
         save_request_and_response_for_docs('file', response)
@@ -342,15 +358,16 @@ class TestDocumentation(unittest.TestCase):
         self.portal.image.title = 'My Image'
         self.portal.image.description = u'This is an image'
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         self.portal.image.image = NamedBlobImage(
-            data=open(image_file, 'r').read(),
+            data=image_data,
             contentType='image/png',
             filename=u'image.png'
         )
         self.portal.image.creation_date = DateTime('2016-01-21T06:14:48+00:00')
         self.portal.image.modification_date = DateTime(
             '2016-01-21T06:24:11+00:00')
-        import transaction
         transaction.commit()
         with patch.object(storage, 'uuid4', return_value='uuid1'):
             response = self.api_session.get(self.portal.image.absolute_url())
@@ -358,7 +375,6 @@ class TestDocumentation(unittest.TestCase):
 
     def test_documentation_folder(self):
         folder = self.create_folder()
-        import transaction
         transaction.commit()
         response = self.api_session.get(folder.absolute_url())
         save_request_and_response_for_docs('folder', response)
@@ -387,7 +403,6 @@ class TestDocumentation(unittest.TestCase):
             '2016-01-21T08:14:48+00:00')
         self.portal.collection.modification_date = DateTime(
             '2016-01-21T08:24:11+00:00')
-        import transaction
         transaction.commit()
         response = self.api_session.get(self.portal.collection.absolute_url())
         save_request_and_response_for_docs('collection', response)
@@ -404,6 +419,76 @@ class TestDocumentation(unittest.TestCase):
         query = {'sort_on': 'path'}
         response = self.api_session.get('/@search', params=query)
         save_request_and_response_for_docs('search', response)
+
+    def test_documentation_search_options(self):
+        self.portal.invokeFactory(
+            'Folder',
+            id='folder1',
+            title='Folder 1'
+        )
+        self.portal.folder1.invokeFactory(
+            'Folder',
+            id='folder2',
+            title='Folder 2'
+        )
+        transaction.commit()
+        query = {'sort_on': 'path',
+                 'path.query': '/plone/folder1',
+                 'path.depth': '1'}
+        response = self.api_session.get('/@search', params=query)
+        save_request_and_response_for_docs('search_options', response)
+
+    def test_documentation_search_multiple_paths(self):
+        self.portal.invokeFactory(
+            'Folder',
+            id='folder1',
+            title='Folder 1'
+        )
+        self.portal.folder1.invokeFactory(
+            'Document',
+            id='doc1',
+            title='Lorem Ipsum'
+        )
+        self.portal.invokeFactory(
+            'Folder',
+            id='folder2',
+            title='Folder 2'
+        )
+        self.portal.folder2.invokeFactory(
+            'Document',
+            id='doc2',
+            title='Lorem Ipsum'
+        )
+        transaction.commit()
+        query = {'sort_on': 'path',
+                 'path.query': ['/plone/folder1', '/plone/folder2'],
+                 'path.depth': '2'}
+        response = self.api_session.get('/@search', params=query)
+        save_request_and_response_for_docs('search_multiple_paths', response)
+
+    def test_documentation_search_metadata_fields(self):
+        self.portal.invokeFactory(
+            'Document',
+            id='doc1',
+            title='Lorem Ipsum'
+        )
+        transaction.commit()
+        query = {'SearchableText': 'lorem',
+                 'metadata_fields': ['modified', 'created']}
+        response = self.api_session.get('/@search', params=query)
+        save_request_and_response_for_docs('search_metadata_fields', response)
+
+    def test_documentation_search_fullobjects(self):
+        self.portal.invokeFactory(
+            'Document',
+            id='doc1',
+            title='Lorem Ipsum'
+        )
+        transaction.commit()
+        query = {'SearchableText': 'lorem',
+                 'fullobjects': 1}
+        response = self.api_session.get('/@search', params=query)
+        save_request_and_response_for_docs('search_fullobjects', response)
 
     def test_documentation_workflow(self):
         response = self.api_session.get(
@@ -457,7 +542,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.acl_users.jwt_auth._secret = 'secret'
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
-        import transaction
         transaction.commit()
         self.api_session.auth = None
         response = self.api_session.post(
@@ -470,7 +554,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
         self.portal.acl_users.jwt_auth.store_tokens = True
-        import transaction
         transaction.commit()
         self.api_session.auth = None
         response = self.api_session.post(
@@ -486,7 +569,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.acl_users.jwt_auth._secret = 'secret'
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
-        import transaction
         transaction.commit()
         self.api_session.auth = None
         response = self.api_session.post(
@@ -503,7 +585,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.acl_users.jwt_auth.use_keyring = False
         self.portal.acl_users.jwt_auth.token_timeout = 0
         self.portal.acl_users.jwt_auth.store_tokens = True
-        import transaction
         transaction.commit()
         self.api_session.auth = None
         response = self.api_session.post(
@@ -566,6 +647,7 @@ class TestDocumentation(unittest.TestCase):
         response = logged_out_api_session.get('@users')
         save_request_and_response_for_docs('users_anonymous', response)
         self.assertEqual(response.status_code, 401)
+        logged_out_api_session.close()
 
     def test_documentations_users_as_unauthorized_user(self):
         properties = {
@@ -591,6 +673,7 @@ class TestDocumentation(unittest.TestCase):
         response = standard_api_session.get('@users')
         save_request_and_response_for_docs('users_unauthorized', response)
         self.assertEqual(response.status_code, 401)
+        standard_api_session.close()
 
     def test_documentation_users_get(self):
         properties = {
@@ -631,6 +714,7 @@ class TestDocumentation(unittest.TestCase):
 
         response = logged_out_api_session.get('@users/noam')
         save_request_and_response_for_docs('users_anonymous_get', response)
+        logged_out_api_session.close()
 
     def test_documentation_users_unauthorized_get(self):
         properties = {
@@ -663,6 +747,7 @@ class TestDocumentation(unittest.TestCase):
 
         response = logged_out_api_session.get('@users/noam')
         save_request_and_response_for_docs('users_unauthorized_get', response)
+        logged_out_api_session.close()
 
     def test_documentation_users_authorized_get(self):
         properties = {
@@ -686,6 +771,7 @@ class TestDocumentation(unittest.TestCase):
         logged_out_api_session.auth = ('noam', 'secret')
         response = logged_out_api_session.get('@users/noam')
         save_request_and_response_for_docs('users_authorized_get', response)
+        logged_out_api_session.close()
 
     def test_documentation_users_filtered_get(self):
         properties = {
@@ -1107,8 +1193,8 @@ class TestDocumentation(unittest.TestCase):
 
         # POST create an upload
         metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_FILENAME),
-            b64encode(UPLOAD_MIMETYPE)
+            b64encode(UPLOAD_FILENAME).decode('utf-8'),
+            b64encode(UPLOAD_MIMETYPE).decode('utf-8'),
         )
         response = self.api_session.post(
             '/folder/@tus-upload',
@@ -1162,8 +1248,8 @@ class TestDocumentation(unittest.TestCase):
 
         # POST create an upload
         metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_FILENAME),
-            b64encode(UPLOAD_MIMETYPE)
+            b64encode(UPLOAD_FILENAME).decode('utf-8'),
+            b64encode(UPLOAD_MIMETYPE).decode('utf-8'),
         )
         response = self.api_session.post(
             '/myfile/@tus-replace',
@@ -1195,8 +1281,8 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.post(url)
         # Replace dynamic lock token with a static one
         response._content = re.sub(
-            r'"token": "[^"]+"',
-            '"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "[^"]+"',
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content)
         save_request_and_response_for_docs('lock', response)
 
@@ -1211,8 +1297,8 @@ class TestDocumentation(unittest.TestCase):
         )
         # Replace dynamic lock token with a static one
         response._content = re.sub(
-            r'"token": "[^"]+"',
-            '"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "[^"]+"',
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content)
         save_request_and_response_for_docs(
             'lock_nonstealable_timeout', response)
@@ -1231,8 +1317,8 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.post(url)
         # Replace dynamic lock token with a static one
         response._content = re.sub(
-            r'"token": "[^"]+"',
-            '"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "[^"]+"',
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content)
         save_request_and_response_for_docs('refresh_lock', response)
 
@@ -1309,6 +1395,7 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
     def tearDown(self):
         self.time_freezer.stop()
         popGlobalRegistry(getSite())
+        self.api_session.close()
 
     def test_translate_messages_types(self):
         response = self.api_session.get('/@types')
@@ -1369,6 +1456,7 @@ class TestCommenting(unittest.TestCase):
 
     def tearDown(self):
         self.time_freezer.stop()
+        self.api_session.close()
 
     def create_document_with_comments(self):
         self.portal.invokeFactory('Document', id='front-page')
@@ -1403,13 +1491,14 @@ class TestCommenting(unittest.TestCase):
                 comment = createObject('plone.Comment')
                 comment.text = 'Comment %d.%d' % (x, y)
                 comment_replies.addComment(comment)
-        self.comment_id, self.comment = replies.items()[0]
+        self.comment_id, self.comment = list(replies.items())[0]
 
         return document
 
     @staticmethod
     def clean_comment_id(response, _id='123456'):
         pattern = r'@comments/(\w+)'
+        pattern_bytes = b'@comments/(\\w+)'
         repl = '@comments/' + _id
 
         # Replaces the dynamic part in the headers with a stable id
@@ -1422,12 +1511,12 @@ class TestCommenting(unittest.TestCase):
         # and the body
         if response.request.body:
             response.request.body = re.sub(
-                pattern, repl, response.request.body
+                pattern_bytes, repl, response.request.body
             )
 
         # and the response
         if response.content:
-            response._content = re.sub(pattern, repl, response._content)
+            response._content = re.sub(pattern_bytes, repl, response._content)
 
     def test_comments_get(self):
         url = '{}/@comments'.format(self.document.absolute_url())
@@ -1545,7 +1634,6 @@ class TestPAMDocumentation(unittest.TestCase):
         )
         self.es_content = self.portal['es'].get(es_id)
 
-        import transaction
         transaction.commit()
         self.browser = Browser(self.app)
         self.browser.handleErrors = False
@@ -1556,6 +1644,7 @@ class TestPAMDocumentation(unittest.TestCase):
 
     def tearDown(self):
         self.time_freezer.stop()
+        self.api_session.close()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(

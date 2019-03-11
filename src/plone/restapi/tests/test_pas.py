@@ -72,13 +72,13 @@ class TestJWTAuthenticationPlugin(unittest.TestCase):
             ('admin', 'admin'),
             self.plugin.authenticateCredentials(creds))
 
-    def test_authenticate_credentials_returns_byte_string(self):
+    def test_authenticate_credentials_returns_native_string(self):
         creds = {}
         creds['extractor'] = 'jwt_auth'
         creds['token'] = self.plugin.create_token('admin')
         self.assertIsInstance(
             self.plugin.authenticateCredentials(creds)[0],
-            str
+            str,
         )
 
     def test_decode_token_after_key_rotation(self):

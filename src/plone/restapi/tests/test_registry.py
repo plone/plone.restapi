@@ -12,6 +12,7 @@ from zope.component import getUtility
 
 import transaction
 import unittest
+from six.moves import range
 
 
 class TestRegistry(unittest.TestCase):
@@ -37,6 +38,9 @@ class TestRegistry(unittest.TestCase):
             registry.records['foo.bar' + str(counter)] = record
 
         transaction.commit()
+
+    def tearDown(self):
+        self.api_session.close()
 
     def test_get_registry_record(self):
         response = self.api_session.get('/@registry/foo.bar')

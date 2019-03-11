@@ -26,6 +26,9 @@ class TestServicesTypes(unittest.TestCase):
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_get_types(self):
         response = self.api_session.get(
             '{}/@types'.format(self.portal.absolute_url())
@@ -41,7 +44,7 @@ class TestServicesTypes(unittest.TestCase):
         )
         for item in response.json():
             self.assertEqual(
-                sorted(item.keys()),
+                sorted(item),
                 sorted(['@id', 'title', 'addable'])
             )
 
@@ -112,6 +115,11 @@ class TestServicesTypes(unittest.TestCase):
         self.assertIn(
             'file.data', response['properties']['file']['properties'])
 
+    def test_event_type(self):
+        response = self.api_session.get('/@types/Event')
+        response = response.json()
+        self.assertIn('title', response['properties']['start'])
+
     def test_addable_types_for_non_manager_user(self):
         user = api.user.create(
             email='noam.chomsky@example.com',
@@ -157,14 +165,14 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.get('/folder_cant_add/@types')
         response = response.json()
 
-        self.assertEquals(
+        self.assertEqual(
             len([a for a in response if a['addable']]), 0)
 
         # and in the root Plone site there's no addable types
         response = self.api_session.get('/@types')
         response = response.json()
 
-        self.assertEquals(
+        self.assertEqual(
             len([a for a in response if a['addable']]), 0)
 
 
@@ -184,6 +192,9 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
 
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_get_types_translated(self):
         response = self.api_session.get(
             '{}/@types'.format(self.portal.absolute_url())
@@ -191,7 +202,7 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        self.assertItemsEqual([
+        self.assertEqual({
             u'Archivo',
             u'Carpeta',
             u'Colección',
@@ -200,5 +211,5 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
             u'Evento',
             u'Imagen',
             u'Noticia',
-            u'Página'],
-            [item['title'] for item in response.json()])
+            u'Página'},
+            set(item['title'] for item in response.json()))

@@ -2,14 +2,13 @@
 from plone.registry.interfaces import IRegistry
 from plone.restapi.services import Service
 from zope.component import getUtility, getMultiAdapter
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from plone.restapi.interfaces import ISerializeToJson
 
 
+@implementer(IPublishTraverse)
 class RegistryGet(Service):
-
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(RegistryGet, self).__init__(context, request)

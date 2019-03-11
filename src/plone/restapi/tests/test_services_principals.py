@@ -52,6 +52,9 @@ class TestPrincipalsEndpoint(unittest.TestCase):
                             description=properties['description'])
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_get_principals(self):
         response = self.api_session.get(
             '/@principals',
@@ -63,8 +66,8 @@ class TestPrincipalsEndpoint(unittest.TestCase):
 
         response = response.json()
         self.assertEqual(2, len(response))
-        self.assertEquals(1, len(response['users']))
-        self.assertEquals('noam', response['users'][0]['id'])
+        self.assertEqual(1, len(response['users']))
+        self.assertEqual('noam', response['users'][0]['id'])
 
         response = self.api_session.get(
             '/@principals',
@@ -76,8 +79,8 @@ class TestPrincipalsEndpoint(unittest.TestCase):
 
         response = response.json()
         self.assertEqual(2, len(response))
-        self.assertEquals(1, len(response['groups']))
-        self.assertEquals('ploneteam', response['groups'][0]['id'])
+        self.assertEqual(1, len(response['groups']))
+        self.assertEqual('ploneteam', response['groups'][0]['id'])
 
     def test_get_principals_response_both(self):
         self.user = api.user.create(
@@ -96,7 +99,7 @@ class TestPrincipalsEndpoint(unittest.TestCase):
 
         response = response.json()
         self.assertEqual(2, len(response))
-        self.assertEquals(1, len(response['users']))
-        self.assertEquals(1, len(response['groups']))
-        self.assertEquals('plone.user', response['users'][0]['id'])
-        self.assertEquals('ploneteam', response['groups'][0]['id'])
+        self.assertEqual(1, len(response['users']))
+        self.assertEqual(1, len(response['groups']))
+        self.assertEqual('plone.user', response['users'][0]['id'])
+        self.assertEqual('ploneteam', response['groups'][0]['id'])

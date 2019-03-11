@@ -10,17 +10,17 @@ from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
 from zope.i18n import translate
 from zope.interface import alsoProvides
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
 
 import plone.protect.interfaces
 
 
+@implementer(IPublishTraverse)
 class WorkflowTransition(Service):
     """Trigger workflow transition
     """
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(WorkflowTransition, self).__init__(context, request)
@@ -69,7 +69,7 @@ class WorkflowTransition(Service):
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='WorkflowException',
-                message=translate(e.message, context=self.request)))
+                message=translate(str(e), context=self.request)))
         except BadRequest as e:
             self.request.response.setStatus(400)
             return dict(error=dict(

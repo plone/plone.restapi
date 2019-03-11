@@ -4,17 +4,16 @@ from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component.hooks import getSite
-from zope.interface import alsoProvides, implements
+from zope.interface import alsoProvides, implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 import plone
 
 
+@implementer(IPublishTraverse)
 class GroupsPatch(Service):
     """Updates an existing group.
     """
-
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(GroupsPatch, self).__init__(context, request)

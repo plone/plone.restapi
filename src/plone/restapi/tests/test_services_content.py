@@ -34,6 +34,9 @@ class TestHistoryVersioning(unittest.TestCase):
 
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_response(self):
         response = self.api_session.get(self.doc.absolute_url())
         self.assertIn('version', response.json())

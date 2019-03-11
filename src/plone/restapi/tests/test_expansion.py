@@ -120,13 +120,16 @@ class TestExpansionFunctional(unittest.TestCase):
             title=u'Some Folder')
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_actions_is_expandable(self):
         response = self.api_session.get('/folder')
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             'actions',
-            response.json().get('@components').keys()
+            list(response.json().get('@components'))
         )
 
     def test_actions_expanded(self):
@@ -160,7 +163,7 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             'navigation',
-            response.json().get('@components').keys()
+            list(response.json().get('@components'))
         )
 
     def test_navigation_expanded(self):
@@ -239,7 +242,7 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             'breadcrumbs',
-            response.json().get('@components').keys()
+            list(response.json().get('@components'))
         )
 
     def test_breadcrumbs_expanded(self):
@@ -266,7 +269,7 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             'workflow',
-            response.json().get('@components').keys()
+            list(response.json().get('@components'))
         )
 
     def test_workflow_expanded(self):
@@ -323,13 +326,16 @@ class TestTranslationExpansionFunctional(unittest.TestCase):
         alsoProvides(self.layer['request'], IPloneAppMultilingualInstalled)
         login(self.portal, SITE_OWNER_NAME)
         self.en_content = createContentInContainer(
-            self.portal['en'], 'Document', title='Test document')
+            self.portal['en'], 'Document', title=u'Test document')
         self.es_content = createContentInContainer(
-            self.portal['es'], 'Document', title='Test document')
+            self.portal['es'], 'Document', title=u'Test document')
         ITranslationManager(self.en_content).register_translation(
             'es', self.es_content)
 
         transaction.commit()
+
+    def tearDown(self):
+        self.api_session.close()
 
     def test_translations_is_expandable(self):
         response = self.api_session.get('/en/test-document')
@@ -337,7 +343,7 @@ class TestTranslationExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             'translations',
-            response.json().get('@components').keys()
+            list(response.json().get('@components'))
         )
 
     def test_translations_expanded(self):

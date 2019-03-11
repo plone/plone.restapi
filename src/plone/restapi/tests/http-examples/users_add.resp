@@ -1,6 +1,6 @@
 HTTP/1.1 201 Created
-Content-Type: application/json
 Location: http://localhost:55001/plone/@users/noamchomsky
+Content-Type: application/json
 
 {
   "@id": "http://localhost:55001/plone/@users/noamchomsky", 
@@ -10,6 +10,7 @@ Location: http://localhost:55001/plone/@users/noamchomsky
   "home_page": "web.mit.edu/chomsky", 
   "id": "noamchomsky", 
   "location": "Cambridge, MA", 
+  "portrait": null, 
   "roles": [
     "Member"
   ], 

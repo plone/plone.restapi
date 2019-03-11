@@ -55,6 +55,10 @@ class TestCommentsEndpoint(unittest.TestCase):
 
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+        self.user_session.close()
+
     def test_list_datastructure(self):
         url = '{}/@comments'.format(self.doc.absolute_url())
         response = self.api_session.get(url)
@@ -63,7 +67,7 @@ class TestCommentsEndpoint(unittest.TestCase):
         data = response.json()
         self.assertEqual(
             set(['items_total', 'items', '@id']),
-            set(data.keys())
+            set(data)
         )
 
     def test_list_batching(self):

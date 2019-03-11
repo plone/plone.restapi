@@ -1,6 +1,10 @@
 language: python
-python: "2.7"
-sudo: false
+python:
+  - "2.7"
+  - "3.6"
+  - "3.7"
+dist: xenial
+sudo: required
 services:
   - docker
 cache:
@@ -11,10 +15,25 @@ env:
   global:
     - secure: "tj9kO7Uyn7AY2Z6zhdOggLSYheaD8e+qKA7ZXvdWTrL2HtPAtnNJK8keQGj1JLQyy6bRfoOCt51aL8+Lc0fzcACaLFpAPjleSLtUChphPOh/dqTu1QX5oL0SxZ94B4ZC5+qfaSAQHMwbiiWUW0us9QtJpxQQmiJUekqiTdQDNEo="
     - secure: "j06un+j2gHjlGfg+xMcvKG2osf1HSzBq/cPPNIonnjGQY3GJfT/YRzYnHe5LJPPt7IJDD7hAEPentRJ4C0zP66U6gcQ2HjWPsMIcvzlgnXoT2QaaCVkMA9YS4WOsN0C5iY/R64GjFwR7J+/bgeG64XvfhpuQ/UBP2+U68PqSBtM="
-  matrix:
-    - PLONE_VERSION=4.3.x
-    - PLONE_VERSION=5.0.x
-    - PLONE_VERSION=5.1.x
+    - ZSERVER_PORT=55001
+matrix:
+  include:
+  - python: "2.7"
+    env: PLONE_VERSION=4.3.x
+  - python: "2.7"
+    env: PLONE_VERSION=5.0.x
+  - python: "2.7"
+    env: PLONE_VERSION=5.1.x
+  - python: "2.7"
+    env: PLONE_VERSION=5.2.x
+  - python: "3.6"
+    env: PLONE_VERSION=5.2.x
+  - python: "3.7"
+    env: PLONE_VERSION=5.2.x
+  exclude:
+  - python: "2.7"
+  - python: "3.6"
+  - python: "3.7"
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
   - mkdir $HOME/.buildout

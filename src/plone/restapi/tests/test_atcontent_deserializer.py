@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
-from Products.Archetypes.interfaces import IBaseObject
-from Products.Archetypes.interfaces import IObjectEditedEvent
-from Products.Archetypes.interfaces import IObjectInitializedEvent
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import setRoles
-from plone.restapi.deserializer.atcontent import ValidationRequest
 from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.testing import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.tests.mixin_ordering import OrderingMixin
 from zExceptions import BadRequest
@@ -14,11 +11,17 @@ from zope.component import provideHandler
 from zope.component import provideSubscriptionAdapter
 from zope.component import adapter
 from zope.interface import implementer
-from Products.Archetypes.interfaces import IObjectPostValidation
-from Products.Archetypes.interfaces import IObjectPreValidation
-
 
 import unittest
+from six.moves import range
+
+if HAS_AT:
+    from plone.restapi.deserializer.atcontent import ValidationRequest
+    from Products.Archetypes.interfaces import IBaseObject
+    from Products.Archetypes.interfaces import IObjectEditedEvent
+    from Products.Archetypes.interfaces import IObjectInitializedEvent
+    from Products.Archetypes.interfaces import IObjectPostValidation
+    from Products.Archetypes.interfaces import IObjectPreValidation
 
 
 class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
@@ -26,6 +29,8 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])
@@ -56,18 +61,18 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
     def test_deserializer_ignores_readonly_fields(self):
         self.doc1.getField('testReadonlyField').set(self.doc1, 'Readonly')
         self.deserialize(body='{"testReadonlyField": "Changed"}')
-        self.assertEquals('Readonly', self.doc1.getTestReadonlyField())
+        self.assertEqual('Readonly', self.doc1.getTestReadonlyField())
 
     def test_deserializer_updates_field_value(self):
         self.deserialize(body='{"testStringField": "Updated"}')
-        self.assertEquals('Updated', self.doc1.getTestStringField())
+        self.assertEqual('Updated', self.doc1.getTestStringField())
 
     def test_deserializer_validates_content(self):
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"testURLField": "Not an URL"}')
-        self.assertEquals(
+        self.assertEqual(
             u"Validation failed(isURL): 'Not an URL' is not a valid url.",
-            cm.exception.message[0]['message'])
+            cm.exception.args[0][0]['message'])
 
     def test_deserializer_clears_creation_flag(self):
         self.doc1.markCreationFlag()
@@ -97,13 +102,15 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body='{"testStringField": "My Value"}',
                              validate_all=True)
-        self.assertEquals(u'TestRequiredField is required, please correct.',
-                          cm.exception.message[0]['message'])
+        self.assertEqual(
+            u'TestRequiredField is required, please correct.',
+            cm.exception.args[0][0]['message']
+        )
 
     def test_deserializer_succeeds_if_required_value_is_provided(self):
         self.deserialize(body='{"testRequiredField": "My Value"}',
                          validate_all=True)
-        self.assertEquals(u'My Value', self.portal.doc1.getTestRequiredField())
+        self.assertEqual(u'My Value', self.portal.doc1.getTestRequiredField())
 
     def test_post_validation(self):
 
@@ -123,8 +130,8 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
             self.deserialize(body='{"testRequiredField": "My Value"}',
                              validate_all=True)
 
-        self.assertEquals(
-            'post_validation_error', cm.exception.message[0]['message'])
+        self.assertEqual(
+            'post_validation_error', cm.exception.args[0][0]['message'])
 
     def test_pre_validation(self):
 
@@ -144,14 +151,14 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
             self.deserialize(body='{"testRequiredField": "My Value"}',
                              validate_all=True)
 
-        self.assertEquals(
-            'pre_validation_error', cm.exception.message[0]['message'])
+        self.assertEqual(
+            'pre_validation_error', cm.exception.args[0][0]['message'])
 
     def test_set_layout(self):
         current_layout = self.doc1.getLayout()
-        self.assertNotEquals(current_layout, "my_new_layout")
+        self.assertNotEqual(current_layout, "my_new_layout")
         self.deserialize(body='{"layout": "my_new_layout"}')
-        self.assertEquals('my_new_layout', self.doc1.getLayout())
+        self.assertEqual('my_new_layout', self.doc1.getLayout())
 
 
 class TestValidationRequest(unittest.TestCase):
@@ -159,6 +166,8 @@ class TestValidationRequest(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])
         self.doc1 = self.portal[self.portal.invokeFactory(
@@ -166,16 +175,16 @@ class TestValidationRequest(unittest.TestCase):
         self.request = ValidationRequest(self.layer['request'], self.doc1)
 
     def test_value_from_validation_request_using_key_access(self):
-        self.assertEquals('Test Document', self.request['title'])
+        self.assertEqual('Test Document', self.request['title'])
 
     def test_value_from_validation_request_using_get(self):
-        self.assertEquals('Test Document', self.request.get('title'))
+        self.assertEqual('Test Document', self.request.get('title'))
 
     def test_value_from_validation_request_form_using_key_access(self):
-        self.assertEquals('Test Document', self.request.form['title'])
+        self.assertEqual('Test Document', self.request.form['title'])
 
     def test_value_from_validation_request_form_using_get(self):
-        self.assertEquals('Test Document', self.request.form.get('title'))
+        self.assertEqual('Test Document', self.request.form.get('title'))
 
     def test_validation_request_contains_key(self):
         self.assertIn('title', self.request)
@@ -188,21 +197,21 @@ class TestValidationRequest(unittest.TestCase):
             self.request['foo']
 
     def test_validation_request_get_returns_default_value(self):
-        self.assertEquals(None, self.request.get('foo'))
+        self.assertEqual(None, self.request.get('foo'))
         marker = object()
-        self.assertEquals(marker, self.request.get('foo', marker))
+        self.assertEqual(marker, self.request.get('foo', marker))
 
     def test_validation_request_form_key_access_raises_keyerror(self):
         with self.assertRaises(KeyError):
             self.request.form['foo']
 
     def test_validation_request_form_get_returns_default_value(self):
-        self.assertEquals(None, self.request.form.get('foo'))
+        self.assertEqual(None, self.request.form.get('foo'))
         marker = object()
-        self.assertEquals(marker, self.request.form.get('foo', marker))
+        self.assertEqual(marker, self.request.form.get('foo', marker))
 
     def test_value_from_real_request_using_key_access(self):
-        self.assertEquals('GET', self.request['REQUEST_METHOD'])
+        self.assertEqual('GET', self.request['REQUEST_METHOD'])
 
     def test_value_form_real_request_using_get(self):
-        self.assertEquals('GET', self.request.get('REQUEST_METHOD'))
+        self.assertEqual('GET', self.request.get('REQUEST_METHOD'))

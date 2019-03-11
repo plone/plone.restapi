@@ -16,6 +16,7 @@ processed the same way they would for a server-rendered form.
 from collections import OrderedDict
 from copy import copy
 from plone.autoform.form import AutoExtensibleForm
+from plone.autoform.interfaces import IParameterizedWidget
 from plone.autoform.interfaces import WIDGETS_KEY
 from plone.dexterity.utils import getAdditionalSchemata
 from plone.restapi.serializer.converters import IJsonCompatible
@@ -65,7 +66,7 @@ def get_fieldsets(context, request, schema, additional_schemata=None):
     fieldsets = [{
         'id': 'default',
         'title': u'Default',
-        'fields': form.fields.values(),
+        'fields': list(form.fields.values()),
     }]
 
     # Additional fieldsets (AKA z3c.form groups)
@@ -73,7 +74,7 @@ def get_fieldsets(context, request, schema, additional_schemata=None):
         fieldset = {
             'id': group.__name__,
             'title': translate(group.label, context=getRequest()),
-            'fields': group.fields.values(),
+            'fields': list(group.fields.values()),
         }
         fieldsets.append(fieldset)
 
@@ -134,7 +135,7 @@ def get_widget_params(schemas):
         tagged_values = mergedTaggedValueDict(schema, WIDGETS_KEY)
         for field_name in schema:
             widget = tagged_values.get(field_name)
-            if widget and widget.params:
+            if IParameterizedWidget.providedBy(widget) and widget.params:
                 params[field_name] = {}
                 for k, v in widget.params.items():
                     if callable(v):

@@ -6,14 +6,13 @@ from zope.component import getMultiAdapter
 from plone.tiles.interfaces import ITileType
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.interfaces import ISerializeToJson
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.component import getUtility
 
 
+@implementer(IPublishTraverse)
 class TilesGet(Service):
-
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(TilesGet, self).__init__(context, request)

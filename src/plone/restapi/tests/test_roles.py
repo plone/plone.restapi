@@ -19,10 +19,13 @@ class TestRolesGet(unittest.TestCase):
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_roles_endpoint_lists_roles(self):
         response = self.api_session.get('/@roles')
 
-        self.assertItemsEqual([
+        expected = (
             {u'@id': self.portal_url + u'/@roles/Contributor',
              u'@type': u'role',
              u'id': u'Contributor',
@@ -50,19 +53,29 @@ class TestRolesGet(unittest.TestCase):
             {u'@id': self.portal_url + u'/@roles/Manager',
              u'@type': u'role',
              u'id': u'Manager',
-             u'title': u'Manager'}],
-            response.json())
+             u'title': u'Manager'},
+        )
+        result = response.json()
+        self.assertEqual(len(expected), len(result))
+        for item in result:
+            self.assertIn(item, expected)
 
     def test_roles_endpoint_translates_role_titles(self):
         self.api_session.headers.update({'Accept-Language': 'de'})
         response = self.api_session.get('/@roles')
-
-        self.assertItemsEqual([
+        # One of the roles has changed translation in German.
+        # Reviewer used to be 'Ver\xf6ffentlichen', but is now simply Reviewer.
+        titles = {item['title'] for item in response.json()}
+        options = {u'Ver\xf6ffentlichen', u'Reviewer'}
+        # One of the options must match:
+        self.assertTrue(titles.intersection(options))
+        # Discard them:
+        titles = titles.difference(options)
+        self.assertEqual({
             u'Hinzuf\xfcgen',
             u'Bearbeiten',
             u'Benutzer',
             u'Ansehen',
-            u'Ver\xf6ffentlichen',
             u'Website-Administrator',
-            u'Verwalten'],
-            [item['title'] for item in response.json()])
+            u'Verwalten'},
+            titles)
