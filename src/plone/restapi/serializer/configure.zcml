@@ -54,6 +54,8 @@
     <adapter factory=".converters.zope_DateTime_converter" />
 
     <configure zcml:condition="installed z3c.relationfield">
+        <adapter factory=".relationfield.RelationChoiceFieldSerializer" />
+        <adapter factory=".relationfield.RelationListFieldSerializer" />
         <adapter factory=".relationfield.relationvalue_converter" />
     </configure>
 

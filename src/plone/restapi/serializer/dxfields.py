@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from plone.app.textfield.interfaces import IRichText
-from plone.app.vocabularies.catalog import CatalogVocabulary
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedFileField
 from plone.namedfile.interfaces import INamedImageField
@@ -67,10 +66,7 @@ class CollectionFieldSerializer(DefaultFieldSerializer):
         value = self.get_value()
         value_type = self.field.value_type
         if (value is not None and IChoice.providedBy(value_type)
-                and IVocabularyTokenized.providedBy(value_type.vocabulary)
-                # CatalogVocabulary provides IVocabularyTokenized but doesn't
-                # implement it
-                and not isinstance(value_type.vocabulary, CatalogVocabulary)):
+                and IVocabularyTokenized.providedBy(value_type.vocabulary)):
             value = self.field._type([value_type.vocabulary.getTerm(v).token
                                       for v in value])
         return json_compatible(value)
