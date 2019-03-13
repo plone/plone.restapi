@@ -38,7 +38,7 @@ class IContextawareJsonCompatible(IJsonCompatible):
     """Convert a value to a JSON compatible data structure, using a context.
     """
 
-    def __init__(value, context,):
+    def __init__(value, context):
         """Adapts value and a context
         """
 
@@ -97,7 +97,8 @@ class IZCatalogCompatibleQuery(Interface):
 
     global_query_params = Attribute(
         "A mapping of query-wide parameters (like 'sort_on') to their data "
-        "type. These need to be treated separately from indexes.")
+        "type. These need to be treated separately from indexes."
+    )
 
     def __init__(context, request):
         """Adapts context and request.
@@ -127,10 +128,12 @@ class IIndexQueryParser(Interface):
 
     query_value_type = Attribute(
         "The data type of the query value for queries against this index. "
-        "The query value may also be a sequence of values of that type.")
+        "The query value may also be a sequence of values of that type."
+    )
 
     query_options = Attribute(
-        "A mapping of query options this index type supports to their type.")
+        "A mapping of query options this index type supports to their type."
+    )
 
     def __init__(index, context, request):
         """Adapts a ZCatalog index, context and request.

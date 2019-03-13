@@ -26,32 +26,42 @@ class DeserializeSiteRootFromJson(OrderingMixin, object):
         # has no schema or something like that.
         data = json_body(self.request)
 
-        if 'layout' in data:
-            layout = data['layout']
+        if "layout" in data:
+            layout = data["layout"]
             self.context.setLayout(layout)
 
         # OrderingMixin
-        if 'ordering' in data and 'subset_ids' not in data['ordering']:
-            data['ordering']['subset_ids'] = self.context.contentIds()
+        if "ordering" in data and "subset_ids" not in data["ordering"]:
+            data["ordering"]["subset_ids"] = self.context.contentIds()
         self.handle_ordering(data)
 
         # Volto Tiles on the Plone Site root faker
-        if 'tiles' in data:
-            if not getattr(self.context, 'tiles', False):
-                self.context.manage_addProperty('tiles', json.dumps(data['tiles']), 'string') # noqa
+        if "tiles" in data:
+            if not getattr(self.context, "tiles", False):
+                self.context.manage_addProperty(
+                    "tiles", json.dumps(data["tiles"]), "string"
+                )  # noqa
             else:
-                self.context.manage_changeProperties(tiles=json.dumps(data['tiles'])) # noqa
+                self.context.manage_changeProperties(
+                    tiles=json.dumps(data["tiles"])
+                )  # noqa
 
-        if 'tiles_layout' in data:
-            if not getattr(self.context, 'tiles_layout', False):
-                self.context.manage_addProperty('tiles_layout', json.dumps(data['tiles_layout']), 'string') # noqa
+        if "tiles_layout" in data:
+            if not getattr(self.context, "tiles_layout", False):
+                self.context.manage_addProperty(
+                    "tiles_layout", json.dumps(data["tiles_layout"]), "string"
+                )  # noqa
             else:
-                self.context.manage_changeProperties(tiles_layout=json.dumps(data['tiles_layout'])) # noqa
+                self.context.manage_changeProperties(
+                    tiles_layout=json.dumps(data["tiles_layout"])
+                )  # noqa
 
-        if 'title' in data:
-            self.context.setTitle(data['title'])
+        if "title" in data:
+            self.context.setTitle(data["title"])
 
-        if 'description' in data:
-            self.context.manage_changeProperties(description=data['description']) # noqa
+        if "description" in data:
+            self.context.manage_changeProperties(
+                description=data["description"]
+            )  # noqa
 
         return self.context

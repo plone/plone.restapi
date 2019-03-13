@@ -29,7 +29,6 @@ else:
 @adapter(IField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
 class DefaultFieldSerializer(object):
-
     def __init__(self, field, context, request):
         self.context = context
         self.request = request
@@ -43,16 +42,15 @@ class DefaultFieldSerializer(object):
 @adapter(IFileField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
 class FileFieldSerializer(DefaultFieldSerializer):
-
     def __call__(self):
-        url = '/'.join((self.context.absolute_url(),
-                        '@@download',
-                        self.field.getName()))
+        url = "/".join(
+            (self.context.absolute_url(), "@@download", self.field.getName())
+        )
         result = {
-            'filename': self.field.getFilename(self.context),
-            'content-type': self.field.getContentType(self.context),
-            'size': self.field.get_size(self.context),
-            'download': url
+            "filename": self.field.getFilename(self.context),
+            "content-type": self.field.getContentType(self.context),
+            "size": self.field.get_size(self.context),
+            "download": url,
         }
         return json_compatible(result)
 
@@ -60,40 +58,35 @@ class FileFieldSerializer(DefaultFieldSerializer):
 @adapter(ITextField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
 class TextFieldSerializer(DefaultFieldSerializer):
-
     def __call__(self):
-        mimetypes_registry = getToolByName(
-            self.context, 'mimetypes_registry')
+        mimetypes_registry = getToolByName(self.context, "mimetypes_registry")
         data = super(TextFieldSerializer, self).__call__()
         return {
-            'content-type': json_compatible(
-                mimetypes_registry(data)[2].normalized()),
-            'data': data
+            "content-type": json_compatible(mimetypes_registry(data)[2].normalized()),
+            "data": data,
         }
 
 
 @adapter(IImageField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
 class ImageFieldSerializer(DefaultFieldSerializer):
-
     def __call__(self):
         image = self.field.get(self.context)
         if not image:
             return None
 
         width, height = image.width, image.height
-        url = get_original_image_url(
-            self.context, self.field.__name__, width, height)
+        url = get_original_image_url(self.context, self.field.__name__, width, height)
 
         scales = get_scales(self.context, self.field, width, height)
         result = {
-            'filename': self.field.getFilename(self.context),
-            'content-type': self.field.get(self.context).getContentType(),
-            'size': self.field.get(self.context).get_size(),
-            'download': url,
-            'width': width,
-            'height': height,
-            'scales': scales,
+            "filename": self.field.getFilename(self.context),
+            "content-type": self.field.get(self.context).getContentType(),
+            "size": self.field.get(self.context).get_size(),
+            "download": url,
+            "width": width,
+            "height": height,
+            "scales": scales,
         }
         return json_compatible(result)
 
@@ -113,7 +106,6 @@ class BlobImageFieldSerializer(ImageFieldSerializer):
 @adapter(IReferenceField, IBaseObject, Interface)
 @implementer(IFieldSerializer)
 class ReferenceFieldSerializer(DefaultFieldSerializer):
-
     def __call__(self):
         accessor = self.field.getAccessor(self.context)
         refs = accessor()

@@ -4,19 +4,19 @@ Content-Type: application/json
 {
   "@components": {
     "actions": {
-      "@id": "http://localhost:55001/plone/folder/@actions"
+      "@id": "http://localhost:61398/plone/folder/@actions"
     }, 
     "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/folder/@breadcrumbs"
+      "@id": "http://localhost:61398/plone/folder/@breadcrumbs"
     }, 
     "navigation": {
-      "@id": "http://localhost:55001/plone/folder/@navigation"
+      "@id": "http://localhost:61398/plone/folder/@navigation"
     }, 
     "workflow": {
-      "@id": "http://localhost:55001/plone/folder/@workflow"
+      "@id": "http://localhost:61398/plone/folder/@workflow"
     }
   }, 
-  "@id": "http://localhost:55001/plone/folder", 
+  "@id": "http://localhost:61398/plone/folder", 
   "@type": "Folder", 
   "UID": "SomeUUID000000000000000000000002", 
   "allow_discussion": false, 
@@ -33,14 +33,14 @@ Content-Type: application/json
   "is_folderish": true, 
   "items": [
     {
-      "@id": "http://localhost:55001/plone/folder/doc1", 
+      "@id": "http://localhost:61398/plone/folder/doc1", 
       "@type": "Document", 
       "description": "", 
       "review_state": "private", 
       "title": "A document within a folder"
     }, 
     {
-      "@id": "http://localhost:55001/plone/folder/doc2", 
+      "@id": "http://localhost:61398/plone/folder/doc2", 
       "@type": "Document", 
       "description": "", 
       "review_state": "private", 
@@ -53,7 +53,7 @@ Content-Type: application/json
   "modified": "2016-01-21T07:24:11+00:00", 
   "nextPreviousEnabled": false, 
   "parent": {
-    "@id": "http://localhost:55001/plone", 
+    "@id": "http://localhost:61398/plone", 
     "@type": "Plone Site", 
     "description": "", 
     "title": "Plone site"

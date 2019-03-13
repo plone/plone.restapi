@@ -24,32 +24,33 @@ def create(container, type_, id_=None, title=None):
     # Generate a temporary id if the id is not given
     if not id_:
         now = DateTime()
-        new_id = '{}.{}.{}{:04d}'.format(
-            type_.lower().replace(' ', '_'),
-            now.strftime('%Y-%m-%d'),
+        new_id = "{}.{}.{}{:04d}".format(
+            type_.lower().replace(" ", "_"),
+            now.strftime("%Y-%m-%d"),
             str(now.millis())[7:],
-            randint(0, 9999))
+            randint(0, 9999),
+        )
     else:
         if six.PY2 and isinstance(id_, six.text_type):
-            new_id = id_.encode('utf8')
+            new_id = id_.encode("utf8")
         else:
             new_id = id_
 
-    portal_types = getToolByName(container, 'portal_types')
+    portal_types = getToolByName(container, "portal_types")
     type_info = portal_types.getTypeInfo(type_)
 
     # Check for add permission
     if not type_info.isConstructionAllowed(container):
-        raise Unauthorized('Cannot create %s' % type_info.getId())
+        raise Unauthorized("Cannot create %s" % type_info.getId())
 
     # Check if allowed subobject type
     container_type_info = portal_types.getTypeInfo(container)
     if not container_type_info.allowType(type_):
-        raise Unauthorized('Disallowed subobject type: %s' % type_)
+        raise Unauthorized("Disallowed subobject type: %s" % type_)
 
     # Check for type constraints
     if type_ not in [fti.getId() for fti in container.allowedContentTypes()]:
-        raise Unauthorized('Disallowed subobject type: %s' % type_)
+        raise Unauthorized("Disallowed subobject type: %s" % type_)
 
     if type_info.product:
         # Oldstyle factory
@@ -61,7 +62,7 @@ def create(container, type_, id_=None, title=None):
         factory = getUtility(IFactory, type_info.factory)
         obj = factory(new_id, title=title)
 
-    if base_hasattr(obj, '_setPortalTypeName'):
+    if base_hasattr(obj, "_setPortalTypeName"):
         obj._setPortalTypeName(type_info.getId())
 
     return obj
@@ -69,11 +70,11 @@ def create(container, type_, id_=None, title=None):
 
 def add(container, obj, rename=True):
     """Add an object to a container."""
-    id_ = getattr(aq_base(obj), 'id', None)
+    id_ = getattr(aq_base(obj), "id", None)
 
     # Archetypes objects are already created in a container thus we just fire
     # the notification events and rename the object if necessary.
-    if base_hasattr(obj, '_at_rename_after_creation'):
+    if base_hasattr(obj, "_at_rename_after_creation"):
         notify(ObjectAddedEvent(obj, container, id_))
         notifyContainerModified(container)
         if obj._at_rename_after_creation and rename:

@@ -69,17 +69,17 @@ class ZCatalogCompatibleQueryAdapter(object):
     """
 
     global_query_params = {
-        'sort_on': str,
-        'sort_order': str,
-        'sort_limit': int,
-        'b_start': int,
-        'b_size': int,
+        "sort_on": str,
+        "sort_order": str,
+        "sort_limit": int,
+        "b_start": int,
+        "b_size": int,
     }
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        self.catalog = getToolByName(self.context, 'portal_catalog')
+        self.catalog = getToolByName(self.context, "portal_catalog")
 
     def get_index(self, name):
         return self.catalog._catalog.indexes.get(name)
@@ -104,7 +104,8 @@ class ZCatalogCompatibleQueryAdapter(object):
                 continue
 
             query_opts_parser = getMultiAdapter(
-                (index, self.context, self.request), IIndexQueryParser)
+                (index, self.context, self.request), IIndexQueryParser
+            )
 
             if query_opts_parser is not None:
                 idx_query = query_opts_parser.parse(idx_query)
@@ -140,8 +141,9 @@ class BaseIndexQueryParser(object):
 
         except (ValueError, DTSyntaxError):
             raise QueryParsingError(
-                "Query value %r for index %s must be of type %r" % (
-                    query_value, self.index, self.query_value_type))
+                "Query value %r for index %s must be of type %r"
+                % (query_value, self.index, self.query_value_type)
+            )
         return self.query_value_type(query_value)
 
     def parse_simple_query(self, idx_query):
@@ -154,11 +156,12 @@ class BaseIndexQueryParser(object):
         parsed_query = {}
 
         try:
-            qv = idx_query.pop('query')
-            parsed_query['query'] = self.parse_simple_query(qv)
+            qv = idx_query.pop("query")
+            parsed_query["query"] = self.parse_simple_query(qv)
         except KeyError:
             raise QueryParsingError(
-                "Query for index %r is missing a 'query' key!" % self.index)
+                "Query for index %r is missing a 'query' key!" % self.index
+            )
 
         for opt_key, opt_value in idx_query.items():
             if opt_key in self.query_options:
@@ -168,11 +171,12 @@ class BaseIndexQueryParser(object):
                 except ValueError:
                     raise QueryParsingError(
                         "Value %r for query option %r (index %r) could not be"
-                        " casted to %r" % (
-                            opt_value, opt_key, self.index, opt_type))
+                        " casted to %r" % (opt_value, opt_key, self.index, opt_type)
+                    )
             else:
-                log.warn("Unrecognized query option %r for index %r" % (
-                    opt_key, self.index))
+                log.warn(
+                    "Unrecognized query option %r for index %r" % (opt_key, self.index)
+                )
                 # Pass along unknown option without modification
                 parsed_query[opt_key] = opt_value
 
@@ -192,10 +196,7 @@ class ZCTextIndexQueryParser(BaseIndexQueryParser):
 class KeywordIndexQueryParser(BaseIndexQueryParser):
 
     query_value_type = ANY_TYPE
-    query_options = {
-        'operator': str,
-        'range': str,
-    }
+    query_options = {"operator": str, "range": str}
 
 
 @implementer(IIndexQueryParser)
@@ -206,10 +207,11 @@ class BooleanIndexQueryParser(BaseIndexQueryParser):
     query_options = {}
 
     def parse_query_value(self, query_value):
-        if not str(query_value).lower() in ('true', 'false', '1', '0'):
+        if not str(query_value).lower() in ("true", "false", "1", "0"):
             raise QueryParsingError(
-                'Could not parse query value %r as boolean' % query_value)
-        return str(query_value).lower() in ('true', '1')
+                "Could not parse query value %r as boolean" % query_value
+            )
+        return str(query_value).lower() in ("true", "1")
 
 
 @implementer(IIndexQueryParser)
@@ -217,9 +219,7 @@ class BooleanIndexQueryParser(BaseIndexQueryParser):
 class FieldIndexQueryParser(BaseIndexQueryParser):
 
     query_value_type = ANY_TYPE
-    query_options = {
-        'range': str,
-    }
+    query_options = {"range": str}
 
 
 @implementer(IIndexQueryParser)
@@ -228,11 +228,11 @@ class ExtendedPathIndexQueryParser(BaseIndexQueryParser):
 
     query_value_type = str
     query_options = {
-        'level': int,
-        'operator': str,
-        'depth': int,
-        'navtree': bool,
-        'navtree_start': int,
+        "level": int,
+        "operator": str,
+        "depth": int,
+        "navtree": bool,
+        "navtree_start": int,
     }
 
 
@@ -241,9 +241,7 @@ class ExtendedPathIndexQueryParser(BaseIndexQueryParser):
 class DateIndexQueryParser(BaseIndexQueryParser):
 
     query_value_type = DateTime
-    query_options = {
-        'range': str,
-    }
+    query_options = {"range": str}
 
 
 @implementer(IIndexQueryParser)
@@ -259,6 +257,4 @@ class DateRangeIndexQueryParser(BaseIndexQueryParser):
 class UUIDIndexQueryParser(BaseIndexQueryParser):
 
     query_value_type = str
-    query_options = {
-        'range': str,
-    }
+    query_options = {"range": str}

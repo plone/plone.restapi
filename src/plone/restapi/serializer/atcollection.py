@@ -13,23 +13,22 @@ from zope.interface import Interface
 @implementer(ISerializeToJson)
 @adapter(ICollection, Interface)
 class SerializeCollectionToJson(SerializeToJson):
-
     def __call__(self, version=None):
-        collection_metadata = super(
-            SerializeCollectionToJson, self).__call__(version=version)
+        collection_metadata = super(SerializeCollectionToJson, self).__call__(
+            version=version
+        )
         results = self.context.results(batch=False)
         batch = HypermediaBatch(self.request, results)
 
         results = collection_metadata
-        if not self.request.form.get('fullobjects'):
-            results['@id'] = batch.canonical_url
-        results['items_total'] = batch.items_total
+        if not self.request.form.get("fullobjects"):
+            results["@id"] = batch.canonical_url
+        results["items_total"] = batch.items_total
         if batch.links:
-            results['batching'] = batch.links
+            results["batching"] = batch.links
 
-        results['items'] = [
-            getMultiAdapter(
-                (brain, self.request), ISerializeToJsonSummary)()
+        results["items"] = [
+            getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
             for brain in batch
         ]
         return results

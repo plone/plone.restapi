@@ -23,13 +23,15 @@ class DefaultJSONSummarySerializer(object):
 
     def __call__(self):
         obj = IContentListingObject(self.context)
-        summary = json_compatible({
-            '@id': obj.getURL(),
-            '@type': obj.PortalType(),
-            'title': obj.Title(),
-            'description': obj.Description(),
-            'review_state': obj.review_state()
-        })
+        summary = json_compatible(
+            {
+                "@id": obj.getURL(),
+                "@type": obj.PortalType(),
+                "title": obj.Title(),
+                "description": obj.Description(),
+                "review_state": obj.review_state(),
+            }
+        )
         return summary
 
 
@@ -44,10 +46,12 @@ class SiteRootJSONSummarySerializer(object):
         self.request = request
 
     def __call__(self):
-        summary = json_compatible({
-            '@id': self.context.absolute_url(),
-            '@type': self.context.portal_type,
-            'title': self.context.title,
-            'description': self.context.description
-        })
+        summary = json_compatible(
+            {
+                "@id": self.context.absolute_url(),
+                "@type": self.context.portal_type,
+                "title": self.context.title,
+                "description": self.context.description,
+            }
+        )
         return summary
