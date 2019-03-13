@@ -2,7 +2,15 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:plone="http://namespaces.plone.org/plone">
 
-  <include package="plone.app.controlpanel" file="permissions.zcml" />
+  <include
+    zcml:condition="have plone-52"
+    package="Products.CMFPlone.controlpanel"
+    file="permissions.zcml" />
+
+  <include
+    zcml:condition="installed plone.app.controlpanel"
+    package="plone.app.controlpanel"
+    file="permissions.zcml" />
 
   <plone:service
     method="GET"

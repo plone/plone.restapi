@@ -70,7 +70,6 @@ setup(name='plone.restapi',
           'plone.schema >= 1.2.0',  # new json field
           'PyJWT',
           'pytz',
-          'plone.app.controlpanel'  # to remove in Plone 6.
       ],
       extras_require={'test': TEST_REQUIRES},
       entry_points="""
