@@ -67,6 +67,10 @@ class TestUsersEndpoint(unittest.TestCase):
         )
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+        self.anon_api_session.close()
+
     def test_list_users(self):
         response = self.api_session.get('/@users')
 
@@ -95,6 +99,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = noam_api_session.get('/@users')
         self.assertEqual(response.status_code, 401)
+        noam_api_session.close()
 
     def test_list_users_as_anonymous(self):
 
@@ -343,6 +348,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = noam_api_session.get('/@users/otheruser')
         self.assertEqual(response.status_code, 401)
+        noam_api_session.close()
 
     def test_get_search_user_with_filter(self):
         response = self.api_session.post(
@@ -406,6 +412,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = noam_api_session.get('/@users', params={'query': 'howa'})
         self.assertEqual(response.status_code, 401)
+        noam_api_session.close()
 
     def test_get_non_existing_user(self):
         response = self.api_session.get('/@users/non-existing-user')

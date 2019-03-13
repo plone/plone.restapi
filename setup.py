@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 import sys
 
-version = '3.5.1-dev.0'
+version = '3.7.5.dev0'
 
 long_description = (
     open('README.rst').read() + '\n' +
@@ -22,20 +22,13 @@ TEST_REQUIRES = [
     'freezegun',
     'plone.tiles',
     'mock',
+    'archetypes.schemaextender ; python_version<"3"',
+    'Products.Archetypes ; python_version<"3"',
+    'Products.contentmigration ; python_version<"3"',
+    'Products.ATContentTypes ; python_version<"3"',
+    'plone.app.blob ; python_version<"3"',
+    'plone.app.collection ; python_version<"3"',
 ]
-
-PY2_ONLY = [
-    'archetypes.schemaextender',
-    'Products.Archetypes',
-    'Products.contentmigration',
-    'Products.ATContentTypes',
-    'plone.app.blob',
-    'plone.app.collection',
-]
-
-if sys.version_info[0] == 2:
-    TEST_REQUIRES += PY2_ONLY
-
 
 setup(name='plone.restapi',
       version=version,
@@ -77,6 +70,7 @@ setup(name='plone.restapi',
           'plone.schema >= 1.2.0',  # new json field
           'PyJWT',
           'pytz',
+          'plone.app.controlpanel'  # to remove in Plone 6.
       ],
       extras_require={'test': TEST_REQUIRES},
       entry_points="""

@@ -38,6 +38,9 @@ class TestGroupsEndpoint(unittest.TestCase):
                             description=properties['description'])
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_list_groups(self):
         response = self.api_session.get('/@groups')
 
@@ -58,6 +61,8 @@ class TestGroupsEndpoint(unittest.TestCase):
         self.assertEqual('ploneteam@plone.org', ptgroup.get('email'))
         self.assertEqual('Plone Team', ptgroup.get('title'))
         self.assertEqual('We are Plone', ptgroup.get('description'))
+
+        self.assertEqual(ptgroup.get('roles'), ['Authenticated'])
 
         # We don't want the group members listed in the overview as there
         # might be loads.

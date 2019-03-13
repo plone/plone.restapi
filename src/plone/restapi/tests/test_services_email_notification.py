@@ -46,18 +46,8 @@ class EmailNotificationEndpoint(unittest.TestCase):
 
         transaction.commit()
 
-    def test_email_notification_missing_parameters(self):
-        response = self.api_session.post(
-            '/@email-notification',
-            json={
-                'message': 'Just want to say hi.'
-            })
-        transaction.commit()
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(self.mailhost.messages, [])
-        error = response.json()
-        self.assertEqual(error['message'],
-                         'Missing from or message parameters')
+    def tearDown(self):
+        self.api_session.close()
 
     def test_email_notification(self):
         response = self.api_session.post(

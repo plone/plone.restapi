@@ -3,6 +3,8 @@
     xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:zcml="http://namespaces.zope.org/zcml">
 
+    <include package="plone.app.multilingual" file="permissions.zcml"/>
+
     <adapter factory=".pam.Translations" name="translations"/>
 
     <plone:service

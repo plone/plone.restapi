@@ -55,6 +55,10 @@ class TestCommentsEndpoint(unittest.TestCase):
 
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+        self.user_session.close()
+
     def test_list_datastructure(self):
         url = '{}/@comments'.format(self.doc.absolute_url())
         response = self.api_session.get(url)

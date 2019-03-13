@@ -6,7 +6,7 @@ Content-Type: application/json
   "batching": {
     "@id": "http://localhost:55001/plone/@registry", 
     "first": "http://localhost:55001/plone/@registry?b_start=0", 
-    "last": "http://localhost:55001/plone/@registry?b_start=1650", 
+    "last": "http://localhost:55001/plone/@registry?b_start=1675", 
     "next": "http://localhost:55001/plone/@registry?b_start=25"
   }, 
   "items": [
@@ -495,5 +495,5 @@ Content-Type: application/json
       "value": false
     }
   ], 
-  "items_total": 1673
+  "items_total": 1683
 }

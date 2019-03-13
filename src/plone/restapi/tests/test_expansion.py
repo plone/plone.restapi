@@ -120,6 +120,9 @@ class TestExpansionFunctional(unittest.TestCase):
             title=u'Some Folder')
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_actions_is_expandable(self):
         response = self.api_session.get('/folder')
 
@@ -330,6 +333,9 @@ class TestTranslationExpansionFunctional(unittest.TestCase):
             'es', self.es_content)
 
         transaction.commit()
+
+    def tearDown(self):
+        self.api_session.close()
 
     def test_translations_is_expandable(self):
         response = self.api_session.get('/en/test-document')
