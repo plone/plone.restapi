@@ -6,6 +6,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.textfield.value import RichTextValue
+from plone.restapi.testing import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from z3c.relationfield import RelationValue
@@ -22,6 +23,8 @@ class TestContentGet(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.app = self.layer['app']
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()

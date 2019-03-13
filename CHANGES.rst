@@ -81,11 +81,6 @@ Bugfixes:
 3.5.1 (2019-02-05)
 ------------------
 
-New Features:
-
-- Add full support for `fullobjects` support for AT content types.
-  [sneridagh]
-
 Bugfixes:
 
 - Do not fail on serializing types with fields having non-parametrized widgets.
