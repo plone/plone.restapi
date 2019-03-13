@@ -4,7 +4,7 @@
     xmlns:zcml="http://namespaces.zope.org/zcml">
 
   <include
-    zcml:condition="have plone-52"
+    zcml:condition="not-installed plone.app.controlpanel"
     package="Products.CMFPlone.controlpanel"
     file="permissions.zcml" />
 
