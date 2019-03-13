@@ -4,19 +4,19 @@ Content-Type: application/json
 {
   "@components": {
     "actions": {
-      "@id": "http://localhost:55001/plone/image/@actions"
+      "@id": "http://localhost:61398/plone/image/@actions"
     }, 
     "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/image/@breadcrumbs"
+      "@id": "http://localhost:61398/plone/image/@breadcrumbs"
     }, 
     "navigation": {
-      "@id": "http://localhost:55001/plone/image/@navigation"
+      "@id": "http://localhost:61398/plone/image/@navigation"
     }, 
     "workflow": {
-      "@id": "http://localhost:55001/plone/image/@workflow"
+      "@id": "http://localhost:61398/plone/image/@workflow"
     }
   }, 
-  "@id": "http://localhost:55001/plone/image", 
+  "@id": "http://localhost:61398/plone/image", 
   "@type": "Image", 
   "UID": "SomeUUID000000000000000000000002", 
   "allow_discussion": false, 
@@ -32,42 +32,42 @@ Content-Type: application/json
   "id": "image", 
   "image": {
     "content-type": "image/png", 
-    "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
+    "download": "http://localhost:61398/plone/image/@@images/uuid1.png", 
     "filename": "image.png", 
     "height": 56, 
     "scales": {
       "icon": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
+        "download": "http://localhost:61398/plone/image/@@images/uuid1.png", 
         "height": 8, 
         "width": 32
       }, 
       "large": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
+        "download": "http://localhost:61398/plone/image/@@images/uuid1.png", 
         "height": 56, 
         "width": 215
       }, 
       "listing": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
+        "download": "http://localhost:61398/plone/image/@@images/uuid1.png", 
         "height": 4, 
         "width": 16
       }, 
       "mini": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
+        "download": "http://localhost:61398/plone/image/@@images/uuid1.png", 
         "height": 52, 
         "width": 200
       }, 
       "preview": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
+        "download": "http://localhost:61398/plone/image/@@images/uuid1.png", 
         "height": 56, 
         "width": 215
       }, 
       "thumb": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
+        "download": "http://localhost:61398/plone/image/@@images/uuid1.png", 
         "height": 33, 
         "width": 128
       }, 
       "tile": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
+        "download": "http://localhost:61398/plone/image/@@images/uuid1.png", 
         "height": 16, 
         "width": 64
       }
@@ -80,7 +80,7 @@ Content-Type: application/json
   "layout": "image_view", 
   "modified": "2016-01-21T06:24:11+00:00", 
   "parent": {
-    "@id": "http://localhost:55001/plone", 
+    "@id": "http://localhost:61398/plone", 
     "@type": "Plone Site", 
     "description": "", 
     "title": "Plone site"

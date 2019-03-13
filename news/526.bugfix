@@ -1,3 +1,0 @@
-- Fix a problem on ZCML loading depending on how the policy package is named,
-  related to the load of permissions in control panels and multilingual.
-  [sneridagh]

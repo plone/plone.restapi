@@ -14,15 +14,16 @@ from zope.schema import getFieldNames
 try:
     # Plone 5
     from plone.app.users.browser.userdatapanel import getUserDataSchema
+
     HAS_TTW_SCHEMAS = True
 except ImportError:
     # Plone 4.3
     from plone.app.users.userdataschema import IUserDataSchemaProvider
+
     HAS_TTW_SCHEMAS = False
 
 
 class BaseSerializer(object):
-
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -35,13 +36,13 @@ class BaseSerializer(object):
         roles = user.getRoles()
         # Anonymous and Authenticated are pseudo roles assign automatically
         # to logged-in or logged-out users. They should not be exposed here
-        roles = list(set(roles) - set(['Anonymous', 'Authenticated', ]))
+        roles = list(set(roles) - set(["Anonymous", "Authenticated"]))
 
         data = {
-            '@id': '{}/@users/{}'.format(portal.absolute_url(), user.id),
-            'id': user.id,
-            'username': user.getUserName(),
-            'roles': roles,
+            "@id": "{}/@users/{}".format(portal.absolute_url(), user.id),
+            "id": user.id,
+            "username": user.getUserName(),
+            "roles": roles,
         }
 
         if HAS_TTW_SCHEMAS:
@@ -51,18 +52,19 @@ class BaseSerializer(object):
             schema = util.getSchema()
 
         for name in getFieldNames(schema):
-            if name == 'portrait':
-                memberdata = getToolByName(portal, 'portal_memberdata')
+            if name == "portrait":
+                memberdata = getToolByName(portal, "portal_memberdata")
                 if user.id in memberdata.portraits:
-                    value = '{}/portal_memberdata/portraits/{}'.format(
-                        portal.absolute_url(), user.id)
+                    value = "{}/portal_memberdata/portraits/{}".format(
+                        portal.absolute_url(), user.id
+                    )
                 else:
                     value = None
-            elif name == 'pdelete':
+            elif name == "pdelete":
                 continue
             else:
-                value = user.getProperty(name, '')
-                if value == '':
+                value = user.getProperty(name, "")
+                if value == "":
                     value = None
                 if value:
                     value = safe_unicode(value)

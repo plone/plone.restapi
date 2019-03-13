@@ -4,19 +4,19 @@ Content-Type: application/json
 {
   "@components": {
     "actions": {
-      "@id": "http://localhost:55001/plone/link/@actions"
+      "@id": "http://localhost:61398/plone/link/@actions"
     }, 
     "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/link/@breadcrumbs"
+      "@id": "http://localhost:61398/plone/link/@breadcrumbs"
     }, 
     "navigation": {
-      "@id": "http://localhost:55001/plone/link/@navigation"
+      "@id": "http://localhost:61398/plone/link/@navigation"
     }, 
     "workflow": {
-      "@id": "http://localhost:55001/plone/link/@workflow"
+      "@id": "http://localhost:61398/plone/link/@workflow"
     }
   }, 
-  "@id": "http://localhost:55001/plone/link", 
+  "@id": "http://localhost:61398/plone/link", 
   "@type": "Link", 
   "UID": "SomeUUID000000000000000000000002", 
   "allow_discussion": false, 
@@ -36,7 +36,7 @@ Content-Type: application/json
   "layout": "link_redirect_view", 
   "modified": "2016-01-21T04:24:11+00:00", 
   "parent": {
-    "@id": "http://localhost:55001/plone", 
+    "@id": "http://localhost:61398/plone", 
     "@type": "Plone Site", 
     "description": "", 
     "title": "Plone site"

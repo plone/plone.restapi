@@ -14,32 +14,33 @@ class ContentPatch(Service):
 
         if is_locked(self.context, self.request):
             self.request.response.setStatus(403)
-            return dict(error=dict(
-                type='Forbidden', message='Resource is locked.'))
+            return dict(error=dict(type="Forbidden", message="Resource is locked."))
 
-        deserializer = queryMultiAdapter((self.context, self.request),
-                                         IDeserializeFromJson)
+        deserializer = queryMultiAdapter(
+            (self.context, self.request), IDeserializeFromJson
+        )
         if deserializer is None:
             self.request.response.setStatus(501)
-            return dict(error=dict(
-                message='Cannot deserialize type {}'.format(
-                    self.context.portal_type)))
+            return dict(
+                error=dict(
+                    message="Cannot deserialize type {}".format(
+                        self.context.portal_type
+                    )
+                )
+            )
 
         try:
             deserializer()
         except DeserializationError as e:
             self.request.response.setStatus(400)
-            return dict(error=dict(
-                type='DeserializationError',
-                message=str(e)))
+            return dict(error=dict(type="DeserializationError", message=str(e)))
 
-        prefer = self.request.getHeader('Prefer')
-        if prefer == 'return=representation':
+        prefer = self.request.getHeader("Prefer")
+        if prefer == "return=representation":
             self.request.response.setStatus(200)
 
             serializer = queryMultiAdapter(
-                (self.context, self.request),
-                ISerializeToJson
+                (self.context, self.request), ISerializeToJson
             )
 
             serialized_obj = serializer()

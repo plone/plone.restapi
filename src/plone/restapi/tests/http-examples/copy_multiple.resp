@@ -3,11 +3,11 @@ Content-Type: application/json
 
 [
   {
-    "source": "http://localhost:55001/plone/front-page", 
-    "target": "http://localhost:55001/plone/copy_of_front-page"
+    "source": "http://localhost:61398/plone/front-page", 
+    "target": "http://localhost:61398/plone/copy_of_front-page"
   }, 
   {
-    "source": "http://localhost:55001/plone/newsitem", 
-    "target": "http://localhost:55001/plone/copy_of_newsitem"
+    "source": "http://localhost:61398/plone/newsitem", 
+    "target": "http://localhost:61398/plone/copy_of_newsitem"
   }
 ]

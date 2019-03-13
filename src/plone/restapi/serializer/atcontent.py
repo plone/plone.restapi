@@ -20,35 +20,35 @@ from zope.interface import implementer
 @implementer(ISerializeToJson)
 @adapter(IBaseObject, Interface)
 class SerializeToJson(object):
-
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def getVersion(self, version):
-        if version == 'current':
+        if version == "current":
             return self.context
         else:
             repo_tool = getToolByName(self.context, "portal_repository")
             return repo_tool.retrieve(self.context, int(version)).object
 
     def __call__(self, version=None, include_items=False):
-        version = 'current' if version is None else version
+        version = "current" if version is None else version
 
         obj = self.getVersion(version)
         parent = aq_parent(aq_inner(obj))
         parent_summary = getMultiAdapter(
-            (parent, self.request), ISerializeToJsonSummary)()
+            (parent, self.request), ISerializeToJsonSummary
+        )()
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
-            '@id': obj.absolute_url(),
-            'id': obj.id,
-            '@type': obj.portal_type,
-            'parent': parent_summary,
-            'review_state': self._get_workflow_state(obj),
-            'UID': obj.UID(),
-            'layout': self.context.getLayout(),
-            'is_folderish': False
+            "@id": obj.absolute_url(),
+            "id": obj.id,
+            "@type": obj.portal_type,
+            "parent": parent_summary,
+            "review_state": self._get_workflow_state(obj),
+            "UID": obj.UID(),
+            "layout": self.context.getLayout(),
+            "is_folderish": False,
         }
 
         # Insert expandable elements
@@ -56,65 +56,62 @@ class SerializeToJson(object):
 
         for field in obj.Schema().fields():
 
-            if 'r' not in field.mode or not field.checkPermission('r', obj):  # noqa: E501
+            if "r" not in field.mode or not field.checkPermission(
+                "r", obj
+            ):  # noqa: E501
                 continue
 
             name = field.getName()
 
             serializer = queryMultiAdapter(
-                (field, self.context, self.request),
-                IFieldSerializer)
+                (field, self.context, self.request), IFieldSerializer
+            )
             if serializer is not None:
                 result[name] = serializer()
 
         return result
 
     def _get_workflow_state(self, obj):
-        wftool = getToolByName(self.context, 'portal_workflow')
-        review_state = wftool.getInfoFor(
-            ob=obj, name='review_state', default=None)
+        wftool = getToolByName(self.context, "portal_workflow")
+        review_state = wftool.getInfoFor(ob=obj, name="review_state", default=None)
         return review_state
 
 
 @implementer(ISerializeToJson)
 @adapter(IBaseFolder, Interface)
 class SerializeFolderToJson(SerializeToJson):
-
     def _build_query(self):
-        path = '/'.join(self.context.getPhysicalPath())
-        query = {'path': {'depth': 1, 'query': path},
-                 'sort_on': 'getObjPositionInParent'}
+        path = "/".join(self.context.getPhysicalPath())
+        query = {
+            "path": {"depth": 1, "query": path},
+            "sort_on": "getObjPositionInParent",
+        }
         return query
 
     def __call__(self, version=None, include_items=True):
-        folder_metadata = super(SerializeFolderToJson, self).__call__(
-            version=version
-        )
+        folder_metadata = super(SerializeFolderToJson, self).__call__(version=version)
 
-        folder_metadata.update({'is_folderish': True})
+        folder_metadata.update({"is_folderish": True})
         result = folder_metadata
 
-        include_items = self.request.form.get(
-            'include_items', include_items)
+        include_items = self.request.form.get("include_items", include_items)
         include_items = boolean_value(include_items)
         if include_items:
             query = self._build_query()
 
-            catalog = getToolByName(self.context, 'portal_catalog')
+            catalog = getToolByName(self.context, "portal_catalog")
             brains = catalog(query)
 
             batch = HypermediaBatch(self.request, brains)
 
-            if not self.request.form.get('fullobjects'):
-                result['@id'] = batch.canonical_url
-            result['items_total'] = batch.items_total
+            if not self.request.form.get("fullobjects"):
+                result["@id"] = batch.canonical_url
+            result["items_total"] = batch.items_total
             if batch.links:
-                result['batching'] = batch.links
+                result["batching"] = batch.links
 
-            result['items'] = [
-                getMultiAdapter(
-                    (brain, self.request), ISerializeToJsonSummary
-                )()
+            result["items"] = [
+                getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
                 for brain in batch
             ]
         return result

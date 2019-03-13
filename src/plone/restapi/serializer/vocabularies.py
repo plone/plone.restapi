@@ -12,7 +12,6 @@ from zope.schema.interfaces import IVocabulary
 @implementer(ISerializeToJson)
 @adapter(IVocabulary, Interface)
 class SerializeVocabularyToJson(object):
-
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -21,20 +20,17 @@ class SerializeVocabularyToJson(object):
         vocabulary = self.context
         serialized_terms = []
         for term in vocabulary:
-            serializer = getMultiAdapter((term, self.request),
-                                         interface=ISerializeToJson)
+            serializer = getMultiAdapter(
+                (term, self.request), interface=ISerializeToJson
+            )
             serialized_terms.append(serializer(vocabulary_id))
 
-        return {
-            '@id': vocabulary_id,
-            'terms': serialized_terms
-        }
+        return {"@id": vocabulary_id, "terms": serialized_terms}
 
 
 @implementer(ISerializeToJson)
 @adapter(ITokenizedTerm, Interface)
 class SerializeTermToJson(object):
-
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -44,7 +40,7 @@ class SerializeTermToJson(object):
         token = term.token
         title = term.title if ITitledTokenizedTerm.providedBy(term) else token
         return {
-            '@id': '{}/{}'.format(vocabulary_id, token),
-            'token': token,
-            'title': title
+            "@id": "{}/{}".format(vocabulary_id, token),
+            "token": token,
+            "title": title,
         }

@@ -16,7 +16,6 @@ from zope.schema.interfaces import IField
 @adapter(IField, IDexterityContent, Interface)
 @implementer(IFieldSerializer)
 class DefaultFieldSerializer(object):
-
     def __init__(self, field, context, request):
         self.context = context
         self.request = request
@@ -26,14 +25,11 @@ class DefaultFieldSerializer(object):
         return json_compatible(self.get_value())
 
     def get_value(self, default=None):
-        return getattr(self.field.interface(self.context),
-                       self.field.__name__,
-                       default)
+        return getattr(self.field.interface(self.context), self.field.__name__, default)
 
 
 @adapter(INamedImageField, IDexterityContent, Interface)
 class ImageFieldSerializer(DefaultFieldSerializer):
-
     def __call__(self):
         image = self.field.get(self.context)
         if not image:
@@ -41,42 +37,34 @@ class ImageFieldSerializer(DefaultFieldSerializer):
 
         width, height = image.getImageSize()
 
-        url = get_original_image_url(
-            self.context,
-            self.field.__name__,
-            width,
-            height,
-        )
+        url = get_original_image_url(self.context, self.field.__name__, width, height)
 
         scales = get_scales(self.context, self.field, width, height)
         result = {
-            'filename': image.filename,
-            'content-type': image.contentType,
-            'size': image.getSize(),
-            'download': url,
-            'width': width,
-            'height': height,
-            'scales': scales
+            "filename": image.filename,
+            "content-type": image.contentType,
+            "size": image.getSize(),
+            "download": url,
+            "width": width,
+            "height": height,
+            "scales": scales,
         }
         return json_compatible(result)
 
 
 @adapter(INamedFileField, IDexterityContent, Interface)
 class FileFieldSerializer(DefaultFieldSerializer):
-
     def __call__(self):
         namedfile = self.field.get(self.context)
         if namedfile is None:
             return None
 
-        url = '/'.join((self.context.absolute_url(),
-                        '@@download',
-                        self.field.__name__))
+        url = "/".join((self.context.absolute_url(), "@@download", self.field.__name__))
         result = {
-            'filename': namedfile.filename,
-            'content-type': namedfile.contentType,
-            'size': namedfile.getSize(),
-            'download': url
+            "filename": namedfile.filename,
+            "content-type": namedfile.contentType,
+            "size": namedfile.getSize(),
+            "download": url,
         }
         return json_compatible(result)
 

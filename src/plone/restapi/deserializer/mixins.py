@@ -5,12 +5,11 @@ from zExceptions import BadRequest
 
 
 class OrderingMixin(object):
-
     def handle_ordering(self, data):
-        if 'ordering' in data:
-            obj_id = data['ordering']['obj_id']
-            delta = data['ordering']['delta']
-            subset_ids = data['ordering'].get('subset_ids')
+        if "ordering" in data:
+            obj_id = data["ordering"]["obj_id"]
+            delta = data["ordering"]["delta"]
+            subset_ids = data["ordering"].get("subset_ids")
 
             # The REST api returns only content items and a Zope resource
             # may contain non-content items. We need to set the subset_ids
@@ -24,21 +23,20 @@ class OrderingMixin(object):
         # Based on wildcard.foldercontents.viewsItemOrder
         ordering = self.getOrdering()
         if ordering is None:
-            msg = 'Content ordering is not supported by this resource'
+            msg = "Content ordering is not supported by this resource"
             raise BadRequest(msg)
 
         # Make sure we're seeing the same order as the client is.
         if subset_ids:
-            position_id = [(ordering.getObjectPosition(i), i)
-                           for i in subset_ids]
+            position_id = [(ordering.getObjectPosition(i), i) for i in subset_ids]
             position_id.sort()
             if subset_ids != [i for position, i in position_id]:
-                raise BadRequest('Client/server ordering mismatch')
+                raise BadRequest("Client/server ordering mismatch")
 
         # All movement is relative to the subset of ids, if passed in.
-        if delta == 'top':
+        if delta == "top":
             ordering.moveObjectsToTop([obj_id], subset_ids=subset_ids)
-        elif delta == 'bottom':
+        elif delta == "bottom":
             ordering.moveObjectsToBottom([obj_id], subset_ids=subset_ids)
         else:
             delta = int(delta)
@@ -47,7 +45,7 @@ class OrderingMixin(object):
     def getOrdering(self):
         if IPloneSiteRoot.providedBy(self.context):
             return self.context
-        elif getattr(self.context, 'getOrdering', None):
+        elif getattr(self.context, "getOrdering", None):
             ordering = self.context.getOrdering()
             if not IExplicitOrdering.providedBy(ordering):
                 return None

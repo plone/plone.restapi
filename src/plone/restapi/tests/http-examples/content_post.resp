@@ -1,23 +1,23 @@
 HTTP/1.1 201 Created
 Content-Type: application/json
-Location: http://localhost:55001/plone/folder/my-document
+Location: http://localhost:61398/plone/folder/my-document
 
 {
   "@components": {
     "actions": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@actions"
+      "@id": "http://localhost:61398/plone/folder/my-document/@actions"
     }, 
     "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@breadcrumbs"
+      "@id": "http://localhost:61398/plone/folder/my-document/@breadcrumbs"
     }, 
     "navigation": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@navigation"
+      "@id": "http://localhost:61398/plone/folder/my-document/@navigation"
     }, 
     "workflow": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@workflow"
+      "@id": "http://localhost:61398/plone/folder/my-document/@workflow"
     }
   }, 
-  "@id": "http://localhost:55001/plone/folder/my-document", 
+  "@id": "http://localhost:61398/plone/folder/my-document", 
   "@type": "Document", 
   "UID": "SomeUUID000000000000000000000005", 
   "allow_discussion": false, 
@@ -37,7 +37,7 @@ Location: http://localhost:55001/plone/folder/my-document
   "layout": "document_view", 
   "modified": "2016-10-21T19:00:00+00:00", 
   "parent": {
-    "@id": "http://localhost:55001/plone/folder", 
+    "@id": "http://localhost:61398/plone/folder", 
     "@type": "Folder", 
     "description": "This is a folder with two documents", 
     "review_state": "private", 

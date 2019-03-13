@@ -17,10 +17,7 @@ class ControlpanelsPatch(Service):
         return self
 
     def get_controlpanel_adapters(self):
-        adapters = getAdapters(
-            (self.context, self.request),
-            provided=IControlpanel
-        )
+        adapters = getAdapters((self.context, self.request), provided=IControlpanel)
         for name, panel in adapters:
             panel.__name__ = name
             yield name, panel
@@ -31,7 +28,7 @@ class ControlpanelsPatch(Service):
 
     def reply(self):
         if not self.controlpanel_name:
-            raise BadRequest('Missing parameter controlpanelname')
+            raise BadRequest("Missing parameter controlpanelname")
 
         panel = self.panel_by_name(self.controlpanel_name)
         deserializer = IDeserializeFromJson(panel)

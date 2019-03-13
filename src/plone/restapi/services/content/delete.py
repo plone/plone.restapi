@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_parent
-from plone.app.linkintegrity.exceptions import (
-    LinkIntegrityNotificationException)
+from plone.app.linkintegrity.exceptions import LinkIntegrityNotificationException
 from plone.restapi.services import Service
 
 

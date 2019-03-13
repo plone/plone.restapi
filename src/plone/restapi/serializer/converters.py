@@ -24,6 +24,7 @@ import pytz
 import six
 from six.moves import map
 from six.moves import zip
+
 # import re
 
 
@@ -31,11 +32,11 @@ def datetimelike_to_iso(value):
     if isinstance(value, DateTime):
         value = value.asdatetime()
 
-    if getattr(value, 'tzinfo', None):
+    if getattr(value, "tzinfo", None):
         # timezone aware date/time objects are converted to UTC first.
-        utc = pytz.timezone('UTC')
+        utc = pytz.timezone("UTC")
         value = value.astimezone(utc)
-    if getattr(value, 'microsecond', False):
+    if getattr(value, "microsecond", False):
         # Microseconds are normally not used in Plone
         value = value.replace(microsecond=0)
     iso = value.isoformat()
@@ -62,10 +63,7 @@ def json_compatible(value, context=None):
     used for converting values that may be None.
     """
     if context is not None:
-        adapter = queryMultiAdapter(
-            (value, context),
-            IContextawareJsonCompatible
-        )
+        adapter = queryMultiAdapter((value, context), IContextawareJsonCompatible)
         if adapter:
             return adapter()
     else:
@@ -82,14 +80,15 @@ def default_converter(value):
         return value
 
     raise TypeError(
-        'No converter for making'
-        ' {0!r} ({1}) JSON compatible.'.format(value, type(value)))
+        "No converter for making"
+        " {0!r} ({1}) JSON compatible.".format(value, type(value))
+    )
 
 
 @adapter(bytes)
 @implementer(IJsonCompatible)
 def bytes_converter(value):
-    return safe_unicode(value, 'utf-8')
+    return safe_unicode(value, "utf-8")
 
 
 @adapter(list)
@@ -181,9 +180,9 @@ class RichtextDXContextConverter(object):
         value = self.value
         output = value.output_relative_to(self.context)
         return {
-            u'data': json_compatible(output),
-            u'content-type': json_compatible(value.mimeType),
-            u'encoding': json_compatible(value.encoding),
+            u"data": json_compatible(output),
+            u"content-type": json_compatible(value.mimeType),
+            u"encoding": json_compatible(value.encoding),
         }
 
 

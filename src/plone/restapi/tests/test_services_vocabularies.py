@@ -16,8 +16,8 @@ import transaction
 import unittest
 
 
-TEST_TERM_1 = SimpleTerm(42, token='token1', title=u'Title 1')
-TEST_TERM_2 = SimpleTerm(43, token='token2', title=u'Title 2')
+TEST_TERM_1 = SimpleTerm(42, token="token1", title=u"Title 1")
+TEST_TERM_2 = SimpleTerm(43, token="token2", title=u"Title 2")
 TEST_VOCABULARY = SimpleVocabulary([TEST_TERM_1, TEST_TERM_2])
 
 
@@ -26,10 +26,12 @@ def test_vocabulary_factory(context):
 
 
 def test_context_vocabulary_factory(context):
-    return SimpleVocabulary([
-        SimpleTerm(context.id, token='id', title=context.id),
-        SimpleTerm(context.title, token='title', title=context.title)
-    ])
+    return SimpleVocabulary(
+        [
+            SimpleTerm(context.id, token="id", title=context.id),
+            SimpleTerm(context.title, token="title", title=context.title),
+        ]
+    )
 
 
 class TestVocabularyEndpoint(unittest.TestCase):
@@ -39,107 +41,124 @@ class TestVocabularyEndpoint(unittest.TestCase):
     maxDiff = None
 
     def setUp(self):
-        self.app = self.layer['app']
-        self.portal = self.layer['portal']
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
         self.api_session = RelativeSession(self.portal_url)
-        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         provideUtility(
             test_vocabulary_factory,
             provides=IVocabularyFactory,
-            name='plone.restapi.tests.test_vocabulary'
+            name="plone.restapi.tests.test_vocabulary",
         )
 
     def test_get_vocabulary(self):
         response = self.api_session.get(
-            '/@vocabularies/plone.restapi.tests.test_vocabulary'
+            "/@vocabularies/plone.restapi.tests.test_vocabulary"
         )
 
         self.assertEqual(200, response.status_code)
         response = response.json()
         self.assertEqual(
             response,
-            {u'@id': self.portal_url + u'/@vocabularies/''plone.restapi.tests.test_vocabulary',  # noqa
-             u'terms': [
-                 {u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary/token1',  # noqa
-                  u'title': u'Title 1',
-                  u'token': u'token1'},
-                 {u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary/token2',  # noqa
-                  u'title': u'Title 2',
-                  u'token': u'token2'}]})
+            {
+                u"@id": self.portal_url + u"/@vocabularies/"
+                "plone.restapi.tests.test_vocabulary",  # noqa
+                u"terms": [
+                    {
+                        u"@id": self.portal_url
+                        + u"/@vocabularies/plone.restapi.tests.test_vocabulary/token1",  # noqa
+                        u"title": u"Title 1",
+                        u"token": u"token1",
+                    },
+                    {
+                        u"@id": self.portal_url
+                        + u"/@vocabularies/plone.restapi.tests.test_vocabulary/token2",  # noqa
+                        u"title": u"Title 2",
+                        u"token": u"token2",
+                    },
+                ],
+            },
+        )
 
     def test_get_unknown_vocabulary(self):
-        response = self.api_session.get(
-            '/@vocabularies/unknown.vocabulary')
+        response = self.api_session.get("/@vocabularies/unknown.vocabulary")
 
         self.assertEqual(404, response.status_code)
         response = response.json()
-        self.assertEqual(response['error']['type'], u"Not Found")
+        self.assertEqual(response["error"]["type"], u"Not Found")
 
     def test_get_all_vocabularies(self):
-        response = self.api_session.get('/@vocabularies')
+        response = self.api_session.get("/@vocabularies")
 
         self.assertEqual(200, response.status_code)
         response = response.json()
         self.assertTrue(len(response) > 0)
-        self.assertTrue(
-            '@id' in list(response[0])
-        )
-        self.assertTrue(
-            'title' in list(response[0])
-        )
+        self.assertTrue("@id" in list(response[0]))
+        self.assertTrue("title" in list(response[0]))
         self.assertEqual(
             [
                 {
-                    u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
-                    u'title': u'plone.restapi.tests.test_vocabulary'
+                    u"@id": self.portal_url
+                    + u"/@vocabularies/plone.restapi.tests.test_vocabulary",  # noqa
+                    u"title": u"plone.restapi.tests.test_vocabulary",
                 }
             ],
             [
-                x for x in response
-                if x.get('title') == 'plone.restapi.tests.test_vocabulary'
-            ]
+                x
+                for x in response
+                if x.get("title") == "plone.restapi.tests.test_vocabulary"
+            ],
         )
 
     def test_context_vocabulary(self):
         api.content.create(
-            container=self.portal,
-            id="testdoc",
-            type='Document',
-            title=u'Document 1',
+            container=self.portal, id="testdoc", type="Document", title=u"Document 1"
         )
         transaction.commit()
 
-        context_vocab_name = 'plone.restapi.tests.test_context_vocabulary'
-        provideUtility(test_context_vocabulary_factory,
-                       provides=IVocabularyFactory,
-                       name=context_vocab_name)
+        context_vocab_name = "plone.restapi.tests.test_context_vocabulary"
+        provideUtility(
+            test_context_vocabulary_factory,
+            provides=IVocabularyFactory,
+            name=context_vocab_name,
+        )
 
         response = self.api_session.get(
-            'testdoc/@vocabularies/{}'.format(context_vocab_name))
+            "testdoc/@vocabularies/{}".format(context_vocab_name)
+        )
 
         gsm = getGlobalSiteManager()
-        gsm.unregisterUtility(provided=IVocabularyFactory,
-                              name=context_vocab_name)
+        gsm.unregisterUtility(provided=IVocabularyFactory, name=context_vocab_name)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json(),
             {
-                u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary',  # noqa
-                u'terms': [
-                    {u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/id',  # noqa
-                     u'title': u'testdoc',
-                     u'token': u'id'},
-                    {u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/title',  # noqa
-                     u'title': u'Document 1',
-                     u'token': u'title'}]
-            })
+                u"@id": self.portal_url
+                + u"/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary",  # noqa
+                u"terms": [
+                    {
+                        u"@id": self.portal_url
+                        + u"/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/id",  # noqa
+                        u"title": u"testdoc",
+                        u"token": u"id",
+                    },
+                    {
+                        u"@id": self.portal_url
+                        + u"/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/title",  # noqa
+                        u"title": u"Document 1",
+                        u"token": u"title",
+                    },
+                ],
+            },
+        )
 
     def tearDown(self):
         self.api_session.close()
         gsm = getGlobalSiteManager()
-        gsm.unregisterUtility(provided=IVocabularyFactory,
-                              name='plone.restapi.tests.test_vocabulary')
+        gsm.unregisterUtility(
+            provided=IVocabularyFactory, name="plone.restapi.tests.test_vocabulary"
+        )

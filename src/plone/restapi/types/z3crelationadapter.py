@@ -12,12 +12,11 @@ from plone.restapi.types.adapters import ListJsonSchemaProvider
 @adapter(IRelationList, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class ChoiceslessRelationListSchemaProvider(ListJsonSchemaProvider):
-
     def get_items(self):
         """Get items properties."""
         value_type_adapter = getMultiAdapter(
-            (self.field.value_type, self.context, self.request),
-            IJsonSchemaProvider)
+            (self.field.value_type, self.context, self.request), IJsonSchemaProvider
+        )
 
         # Prevent rendering all choices.
         value_type_adapter.should_render_choices = False

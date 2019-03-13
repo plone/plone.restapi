@@ -25,7 +25,7 @@ class WorkflowTransition(Service):
     def __init__(self, context, request):
         super(WorkflowTransition, self).__init__(context, request)
         self.transition = None
-        self.wftool = getToolByName(context, 'portal_workflow')
+        self.wftool = getToolByName(context, "portal_workflow")
 
     def publishTraverse(self, request, name):
         if self.transition is None:
@@ -37,64 +37,66 @@ class WorkflowTransition(Service):
     def reply(self):
         if self.transition is None:
             self.request.response.setStatus(400)
-            return dict(error=dict(
-                type='BadRequest',
-                message='Missing transition'))
+            return dict(error=dict(type="BadRequest", message="Missing transition"))
 
         data = json_body(self.request)
 
         # Disable CSRF protection
-        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
-        comment = data.get('comment', '')
-        include_children = data.get('include_children', False)
+        comment = data.get("comment", "")
+        include_children = data.get("include_children", False)
         publication_dates = {}
-        if 'effective' in data:
-            publication_dates['effective'] = data['effective']
-        if 'expires' in data:
-            publication_dates['expires'] = data['expires']
+        if "effective" in data:
+            publication_dates["effective"] = data["effective"]
+        if "expires" in data:
+            publication_dates["expires"] = data["expires"]
         # Archetypes has different field names
-        if 'effectiveDate' in data:
-            publication_dates['effectiveDate'] = data['effectiveDate']
-        if 'expirationDate' in data:
-            publication_dates['expirationDate'] = data['expirationDate']
+        if "effectiveDate" in data:
+            publication_dates["effectiveDate"] = data["effectiveDate"]
+        if "expirationDate" in data:
+            publication_dates["expirationDate"] = data["expirationDate"]
 
         try:
             self.recurse_transition(
-                [self.context], comment, publication_dates, include_children)
+                [self.context], comment, publication_dates, include_children
+            )
 
         except WorkflowException as e:
             self.request.response.setStatus(400)
-            return dict(error=dict(
-                type='WorkflowException',
-                message=translate(str(e), context=self.request)))
+            return dict(
+                error=dict(
+                    type="WorkflowException",
+                    message=translate(str(e), context=self.request),
+                )
+            )
         except BadRequest as e:
             self.request.response.setStatus(400)
-            return dict(error=dict(
-                type='Bad Request',
-                message=str(e)))
+            return dict(error=dict(type="Bad Request", message=str(e)))
 
         history = self.wftool.getInfoFor(self.context, "review_history")
         action = history[-1]
-        action['title'] = self.context.translate(
+        action["title"] = self.context.translate(
             self.wftool.getTitleForStateOnType(
-                action['review_state'],
-                self.context.portal_type).decode('utf8'))
+                action["review_state"], self.context.portal_type
+            ).decode("utf8")
+        )
 
         return json_compatible(action)
 
-    def recurse_transition(self, objs, comment, publication_dates,
-                           include_children=False):
+    def recurse_transition(
+        self, objs, comment, publication_dates, include_children=False
+    ):
         for obj in objs:
             if publication_dates:
-                deserializer = queryMultiAdapter((obj, self.request),
-                                                 IDeserializeFromJson)
+                deserializer = queryMultiAdapter(
+                    (obj, self.request), IDeserializeFromJson
+                )
                 deserializer(data=publication_dates)
 
             self.wftool.doActionFor(obj, self.transition, comment=comment)
             if include_children and IFolderish.providedBy(obj):
                 self.recurse_transition(
-                    obj.objectValues(), comment, publication_dates,
-                    include_children)
+                    obj.objectValues(), comment, publication_dates, include_children
+                )

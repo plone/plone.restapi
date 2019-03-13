@@ -14,5 +14,6 @@ from zope.interface import implementer
 def relationvalue_converter(value):
     if value.to_object:
         summary = getMultiAdapter(
-            (value.to_object, getRequest()), ISerializeToJsonSummary)()
+            (value.to_object, getRequest()), ISerializeToJsonSummary
+        )()
         return json_compatible(summary)
