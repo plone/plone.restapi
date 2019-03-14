@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+3.7.5 (2019-03-14)
+------------------
+
+Bug fixes:
+
+
+- Do not depend on the deprecated plone.app.controlpanel package.
+  [sneridagh] (#696)
+
+
 3.7.4 (2019-03-13)
 ------------------
 
