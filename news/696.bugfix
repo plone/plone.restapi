@@ -1,2 +1,2 @@
-- Fix 5.2 build by not including the deprecated package p.a.controlpanel
-  [sneridagh]
+Do not depend on the deprecated plone.app.controlpanel package.
+[sneridagh]
