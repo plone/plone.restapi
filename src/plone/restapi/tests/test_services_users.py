@@ -508,9 +508,9 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         user = self.api_session.get('/@users/noam').json()
-        self.assertEqual(
-            'http://localhost:55001/plone/portal_memberdata/portraits/noam',
-            user.get('portrait')
+        self.assertTrue(
+            user.get('portrait').endswith(
+                'plone/portal_memberdata/portraits/noam'),
         )
 
     def test_update_portrait_with_default_plone_scaling(self):
@@ -530,9 +530,9 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         user = self.api_session.get('/@users/noam').json()
-        self.assertEqual(
-            'http://localhost:55001/plone/portal_memberdata/portraits/noam',
-            user.get('portrait')
+        self.assertTrue(
+            user.get('portrait').endswith(
+                'plone/portal_memberdata/portraits/noam'),
         )
 
     def test_update_portrait_by_manager(self):
@@ -550,9 +550,9 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         user = self.api_session.get('/@users/noam').json()
-        self.assertEqual(
-            'http://localhost:55001/plone/portal_memberdata/portraits/noam',
-            user.get('portrait')
+        self.assertTrue(
+            user.get('portrait').endswith(
+                'plone/portal_memberdata/portraits/noam'),
         )
 
     def test_anonymous_user_can_not_update_existing_user(self):

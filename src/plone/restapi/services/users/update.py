@@ -163,7 +163,7 @@ class UsersPatch(Service):
         if portrait.get('scale', False):
             # Only scale if the scale (default Plone behavior) boolean is set
             # This should be handled by the core in the future
-            scaled, mimetype = scale_image(six.StringIO(data))
+            scaled, mimetype = scale_image(six.BytesIO(data))
         else:
             # Normally, the scale and cropping is going to be handled in the
             # frontend
