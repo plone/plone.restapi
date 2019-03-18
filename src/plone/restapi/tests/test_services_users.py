@@ -492,6 +492,69 @@ class TestUsersEndpoint(unittest.TestCase):
             old_password_hashes['noam'], new_password_hashes['noam']
         )
 
+    def test_update_portrait(self):
+        payload = {
+            'portrait': {
+                'filename': 'image.png',
+                'encoding': 'base64',
+                'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+                'content-type': 'image/png'
+            }
+        }
+        self.api_session.auth = ('noam', 'password')
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get('/@users/noam').json()
+        self.assertEqual(
+            'http://localhost:55001/plone/portal_memberdata/portraits/noam',
+            user.get('portrait')
+        )
+
+    def test_update_portrait_with_default_plone_scaling(self):
+        payload = {
+            'portrait': {
+                'filename': 'image.png',
+                'encoding': 'base64',
+                'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+                'content-type': 'image/png',
+                'scale': True
+            }
+        }
+        self.api_session.auth = ('noam', 'password')
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get('/@users/noam').json()
+        self.assertEqual(
+            'http://localhost:55001/plone/portal_memberdata/portraits/noam',
+            user.get('portrait')
+        )
+
+    def test_update_portrait_by_manager(self):
+        payload = {
+            'portrait': {
+                'filename': 'image.png',
+                'encoding': 'base64',
+                'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+                'content-type': 'image/png'
+            }
+        }
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get('/@users/noam').json()
+        self.assertEqual(
+            'http://localhost:55001/plone/portal_memberdata/portraits/noam',
+            user.get('portrait')
+        )
+
     def test_anonymous_user_can_not_update_existing_user(self):
         payload = {
             'fullname': 'Noam A. Chomsky',

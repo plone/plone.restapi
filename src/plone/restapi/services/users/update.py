@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
+from OFS.Image import Image
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import SetOwnPassword
-from Products.CMFPlone.utils import set_own_login_name
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import set_own_login_name
+from Products.PlonePAS.utils import scale_image
+from StringIO import StringIO
+from zope.component import getAdapter
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-from zope.component import getAdapter
 
+import codecs
 import json
 import plone
+import six
+
 
 try:  # pragma: no cover
     from Products.CMFPlone.interfaces import ISecuritySchema
@@ -67,6 +73,8 @@ class UsersPatch(Service):
                 elif key == 'username':
                     set_own_login_name(user, value)
                 else:
+                    if key == 'portrait' and value.get('data'):
+                        self.set_member_portrait(user, value)
                     user.setMemberProperties(mapping={key: value})
 
             roles = user_settings_to_update.get('roles', {})
@@ -92,6 +100,8 @@ class UsersPatch(Service):
                    self.can_set_own_password:
                     self._change_user_password(user, value)
                 else:
+                    if key == 'portrait' and value.get('data'):
+                        self.set_member_portrait(user, value)
                     user.setMemberProperties(mapping={key: value})
 
         else:
@@ -133,3 +143,33 @@ class UsersPatch(Service):
         portal = getSite()
         portal_membership = getToolByName(portal, 'portal_membership')
         return portal_membership.isAnonymousUser()
+
+    def set_member_portrait(self, user, portrait):
+        portal = getSite()
+        portal_membership = getToolByName(portal, 'portal_membership')
+        safe_id = portal_membership._getSafeMemberId(user.getId())
+        content_type = 'application/octet-stream'
+        filename = None
+
+        content_type = portrait.get('content-type', content_type)
+        filename = portrait.get('filename', filename)
+        data = portrait.get('data')
+        if isinstance(data, six.text_type):
+            data = data.encode('utf-8')
+        if 'encoding' in portrait:
+            data = codecs.decode(data, portrait['encoding'])
+        if isinstance(data, six.text_type):
+            data = data.encode('utf-8')
+
+        if portrait.get('scale', False):
+            # Only scale if the scale (default Plone behavior) boolean is set
+            # This should be handled by the core in the future
+            scaled, mimetype = scale_image(StringIO(data))
+        else:
+            # Normally, the scale and cropping is going to be handled in the
+            # frontend
+            scaled = data
+
+        portrait = Image(id=safe_id, file=scaled, title='')
+        membertool = getToolByName(self, 'portal_memberdata')
+        membertool._setPortrait(portrait, safe_id)
