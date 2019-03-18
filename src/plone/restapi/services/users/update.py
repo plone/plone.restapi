@@ -6,7 +6,6 @@ from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import set_own_login_name
 from Products.PlonePAS.utils import scale_image
-from StringIO import StringIO
 from zope.component import getAdapter
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
@@ -164,7 +163,7 @@ class UsersPatch(Service):
         if portrait.get('scale', False):
             # Only scale if the scale (default Plone behavior) boolean is set
             # This should be handled by the core in the future
-            scaled, mimetype = scale_image(StringIO(data))
+            scaled, mimetype = scale_image(six.StringIO(data))
         else:
             # Normally, the scale and cropping is going to be handled in the
             # frontend

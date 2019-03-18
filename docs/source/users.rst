@@ -137,6 +137,23 @@ A successful response to a PATCH request will be indicated by a :term:`204 No Co
 
 Any user is able to update their own properties and password (if allowed) by using the same request.
 
+The user portrait/avatar can also be updated using the same serialization as the file one:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/users_update_portrait.req
+
+A successful response to a PATCH request will be indicated by a :term:`204 No Content` response.
+Then asking for the user the portrait URL should be on the response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_update_portrait_get.resp
+   :language: http
+
+Adding the portrait via the @user endpoint does not scale it since it's assumed that the frontend will take care of it (resizing/cropping).
+If you still want that Plone to take care of the scaling using the default Plone behavior for portraits, you have to add the ``scale`` attribute to the request:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/users_update_portrait_scale.req
+
 Delete User
 -----------
 
