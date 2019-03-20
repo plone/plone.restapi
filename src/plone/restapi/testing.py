@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=E1002
 # E1002: Use of super on an old style class
+
 from plone import api
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
@@ -35,6 +36,7 @@ import collective.MockMailHost
 import pkg_resources
 import re
 import requests
+import six
 
 
 PLONE_VERSION = pkg_resources.parse_version(api.env.plone_version())
@@ -186,7 +188,10 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         quickInstallProduct(portal, 'collective.MockMailHost')
         applyProfile(portal, 'collective.MockMailHost:default')
         states = portal.portal_workflow['simple_publication_workflow'].states
-        states['published'].title = u'Published with accent é'.encode('utf8')
+        if six.PY2: #676
+            states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
+        else:
+            states['published'].title = u'Published with accent é'  # noqa: E501
 
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
@@ -240,7 +245,10 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         set_available_languages()
         enable_request_language_negotiation(portal)
         states = portal.portal_workflow['simple_publication_workflow'].states
-        states['published'].title = u'Published with accent é'.encode('utf8')
+        if six.PY2: #676
+            states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
+        else:
+            states['published'].title = u'Published with accent é'  # noqa: E501
 
 
 PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()
@@ -301,7 +309,11 @@ if HAS_AT:
             enable_request_language_negotiation(portal)
             portal.portal_workflow.setDefaultChain('simple_publication_workflow')  # noqa: E501
             states = portal.portal_workflow['simple_publication_workflow'].states  # noqa: E501
-            states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
+            if six.PY2: #676
+                states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
+            else:
+                states['published'].title = u'Published with accent é'  # noqa: E501
+
 
     PLONE_RESTAPI_AT_FIXTURE = PloneRestApiATLayer()
     PLONE_RESTAPI_AT_INTEGRATION_TESTING = IntegrationTesting(
