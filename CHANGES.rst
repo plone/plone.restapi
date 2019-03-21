@@ -13,16 +13,14 @@ Changelog
 
 New features:
 
-
-- - Add support for add/update user portraits (@user endpoint)
-    [sneridagh] (#701)
+- Add support for add/update user portraits (@user endpoint)
+  [sneridagh] (#701)
 
 
 3.7.5 (2019-03-14)
 ------------------
 
 Bug fixes:
-
 
 - Do not depend on the deprecated plone.app.controlpanel package.
   [sneridagh] (#696)
