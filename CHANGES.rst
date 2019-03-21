@@ -13,11 +13,11 @@ Changelog
 
 Bug fixes:
 
-
 - Fixed Python 3 incompatiblity with workflow service (#676)
-  [ajung] (#676)
-- Hide performance, testing, and tiles profile.
-  [Timo] (#700)
+  [ajung]
+
+- Hide performance, testing, and tiles profile. (#700)
+  [Timo]
 
 
 3.8.0 (2019-03-21)
