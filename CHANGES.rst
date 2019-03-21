@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+3.8.1 (2019-03-21)
+------------------
+
+Bug fixes:
+
+
+- Fixed Python 3 incompatiblity with workflow service (#676)
+  [ajung] (#676)
+- Hide performance, testing, and tiles profile.
+  [Timo] (#700)
+
+
 3.8.0 (2019-03-21)
 ------------------
 
