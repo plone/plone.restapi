@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+import six
+
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.serializer.converters import json_compatible
@@ -78,10 +81,16 @@ class WorkflowTransition(Service):
 
         history = self.wftool.getInfoFor(self.context, "review_history")
         action = history[-1]
-        action['title'] = self.context.translate(
-            self.wftool.getTitleForStateOnType(
-                action['review_state'],
-                self.context.portal_type).decode('utf8'))
+        if six.PY2:
+            action['title'] = self.context.translate(
+                self.wftool.getTitleForStateOnType(
+                    action['review_state'],
+                    self.context.portal_type).decode('utf8'))
+        else:
+            action['title'] = self.context.translate(
+                self.wftool.getTitleForStateOnType(
+                    action['review_state'],
+                    self.context.portal_type))
 
         return json_compatible(action)
 
