@@ -188,7 +188,7 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         quickInstallProduct(portal, 'collective.MockMailHost')
         applyProfile(portal, 'collective.MockMailHost:default')
         states = portal.portal_workflow['simple_publication_workflow'].states
-        if six.PY2: #676
+        if six.PY2:  # issue 676
             states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
         else:
             states['published'].title = u'Published with accent é'  # noqa: E501
@@ -245,7 +245,7 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         set_available_languages()
         enable_request_language_negotiation(portal)
         states = portal.portal_workflow['simple_publication_workflow'].states
-        if six.PY2: #676
+        if six.PY2:  # issue 676
             states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
         else:
             states['published'].title = u'Published with accent é'  # noqa: E501
@@ -309,11 +309,10 @@ if HAS_AT:
             enable_request_language_negotiation(portal)
             portal.portal_workflow.setDefaultChain('simple_publication_workflow')  # noqa: E501
             states = portal.portal_workflow['simple_publication_workflow'].states  # noqa: E501
-            if six.PY2: #676
+            if six.PY2:  # issue 676
                 states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
             else:
                 states['published'].title = u'Published with accent é'  # noqa: E501
-
 
     PLONE_RESTAPI_AT_FIXTURE = PloneRestApiATLayer()
     PLONE_RESTAPI_AT_INTEGRATION_TESTING = IntegrationTesting(
