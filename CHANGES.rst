@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+3.8.0 (2019-03-21)
+------------------
+
+New features:
+
+
+- - Add support for add/update user portraits (@user endpoint)
+    [sneridagh] (#701)
+
+
 3.7.5 (2019-03-14)
 ------------------
 
