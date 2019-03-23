@@ -37,6 +37,7 @@ plone.restapi: A RESTful hypermedia API for Plone.
    types
    types-schema
    users
+   userschema
    groups
    principals
    roles
