@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
+from Acquisition import aq_base
+from Acquisition.interfaces import IAcquirer
 from AccessControl.SecurityManagement import getSecurityManager
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import base_hasattr
+from Products.CMFPlone.utils import safe_hasattr
 from base64 import b64decode
 from email.utils import formatdate
 from fnmatch import fnmatch
@@ -217,62 +220,11 @@ class UploadPatch(UploadFileBase):
         if hasattr(request_body, 'raw'):  # Unwrap io.BufferedRandom
             request_body = request_body.raw
         tus_upload.write(request_body, offset)
+        offset = tus_upload.offset()
 
         if tus_upload.finished:
-            offset = tus_upload.offset()
-            filename = metadata.get('filename', '')
-            content_type = metadata.get('content-type',
-                                        'application/octet-stream')
-            mode = metadata.get('mode', 'create')
-            fieldname = metadata.get('fieldname')
-
-            if mode == 'create':
-                type_ = metadata.get('@type')
-                if type_ is None:
-                    ctr = getToolByName(self.context, 'content_type_registry')
-                    type_ = ctr.findTypeName(
-                        filename.lower(), content_type, '') or 'File'
-
-                obj = create(self.context, type_)
-            else:
-                obj = self.context
-
-            if not fieldname:
-                info = IPrimaryFieldInfo(obj, None)
-                if info is not None:
-                    fieldname = info.fieldname
-                elif base_hasattr(obj, 'getPrimaryField'):
-                    field = obj.getPrimaryField()
-                    fieldname = field.getName()
-
-            if not fieldname:
-                return self.error('Bad Request', 'Fieldname required', 400)
-
-            # Update field with file data
-            deserializer = queryMultiAdapter(
-                (obj, self.request), IDeserializeFromJson)
-            if deserializer is None:
-                return self.error(
-                    'Not Implemented',
-                    'Cannot deserialize type {}'.format(
-                        obj.portal_type),
-                    501)
-            try:
-                deserializer(data={fieldname: tus_upload})
-            except DeserializationError as e:
-                return self.error(
-                    'Deserialization Error', str(e), 400)
-
-            if mode == 'create':
-                if not getattr(deserializer, 'notifies_create', False):
-                    notify(ObjectCreatedEvent(obj))
-                obj = add(self.context, obj)
-
-            tus_upload.close()
-            tus_upload.cleanup()
-            self.request.response.setHeader('Location', obj.absolute_url())
+            self.create_or_modify_content(tus_upload)
         else:
-            offset = tus_upload.offset()
             self.request.response.setHeader(
                 'Upload-Expires', tus_upload.expires())
 
@@ -280,6 +232,70 @@ class UploadPatch(UploadFileBase):
         self.request.response.setHeader('Upload-Offset', '{}'.format(offset))
         self.request.response.setStatus(204, lock=1)
         return super(UploadPatch, self).reply()
+
+    def create_or_modify_content(self, tus_upload):
+        metadata = tus_upload.metadata()
+        filename = metadata.get('filename', '')
+        content_type = metadata.get('content-type',
+                                    'application/octet-stream')
+        mode = metadata.get('mode', 'create')
+        fieldname = metadata.get('fieldname')
+
+        if mode == 'create':
+            type_ = metadata.get('@type')
+            if type_ is None:
+                ctr = getToolByName(self.context, 'content_type_registry')
+                type_ = ctr.findTypeName(
+                    filename.lower(), content_type, '') or 'File'
+
+            obj = create(self.context, type_)
+        else:
+            obj = self.context
+
+        if not fieldname:
+            info = IPrimaryFieldInfo(obj, None)
+            if info is not None:
+                fieldname = info.fieldname
+            elif base_hasattr(obj, 'getPrimaryField'):
+                field = obj.getPrimaryField()
+                fieldname = field.getName()
+
+        if not fieldname:
+            return self.error('Bad Request', 'Fieldname required', 400)
+
+        # Acquisition wrap temporarily for deserialization
+        temporarily_wrapped = False
+        if IAcquirer.providedBy(obj) and not safe_hasattr(obj, 'aq_base'):
+            obj = obj.__of__(self.context)
+            temporarily_wrapped = True
+
+        # Update field with file data
+        deserializer = queryMultiAdapter(
+            (obj, self.request), IDeserializeFromJson)
+        if deserializer is None:
+            return self.error(
+                'Not Implemented',
+                'Cannot deserialize type {}'.format(
+                    obj.portal_type),
+                501)
+        try:
+            deserializer(
+                data={fieldname: tus_upload}, create=mode == 'create')
+        except DeserializationError as e:
+            return self.error(
+                'Deserialization Error', str(e), 400)
+
+        if temporarily_wrapped:
+            obj = aq_base(obj)
+
+        if mode == 'create':
+            if not getattr(deserializer, 'notifies_create', False):
+                notify(ObjectCreatedEvent(obj))
+            obj = add(self.context, obj)
+
+        tus_upload.close()
+        tus_upload.cleanup()
+        self.request.response.setHeader('Location', obj.absolute_url())
 
 
 class TUSUpload(object):

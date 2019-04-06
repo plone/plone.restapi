@@ -1,25 +1,29 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
-from six import BytesIO
 from base64 import b64encode
+from DateTime import DateTime
+from OFS.interfaces import IObjectWillBeAddedEvent
 from plone import api
+from plone.app.testing import login
+from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
-from plone.app.testing import login
-from plone.app.testing import setRoles
 from plone.rest.cors import CORSPolicy
 from plone.rest.interfaces import ICORSPolicy
-from plone.restapi.services.content.tus import TUSUpload
 from plone.restapi import HAS_AT
+from plone.restapi.services.content.tus import TUSUpload
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from six import BytesIO
 from zope.component import getGlobalSiteManager
 from zope.component import provideAdapter
 from zope.interface import Interface
+from zope.lifecycleevent.interfaces import IObjectAddedEvent
+from zope.lifecycleevent.interfaces import IObjectCreatedEvent
+from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import os
@@ -398,6 +402,114 @@ class TestTUS(unittest.TestCase):
         transaction.commit()
         self.assertEqual(UPLOAD_PDF_FILENAME, self.file.file.filename)
         self.assertEqual(pdf_file_size, self.file.file.size)
+
+    def test_create_with_tus_fires_proper_events(self):
+        sm = getGlobalSiteManager()
+        fired_events = []
+
+        def record_event(event):
+            fired_events.append(event.__class__.__name__)
+
+        sm.registerHandler(record_event, (IObjectCreatedEvent,))
+        sm.registerHandler(record_event, (IObjectWillBeAddedEvent,))
+        sm.registerHandler(record_event, (IObjectAddedEvent,))
+        sm.registerHandler(record_event, (IObjectModifiedEvent,))
+
+        # initialize the upload with POST
+        pdf_file_path = os.path.join(os.path.dirname(__file__),
+                                     UPLOAD_PDF_FILENAME)
+        pdf_file_size = os.path.getsize(pdf_file_path)
+        metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
+        response = self.api_session.post(
+            self.upload_url,
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(pdf_file_size),
+                     'Upload-Metadata': metadata}
+        )
+        self.assertEqual(response.status_code, 201)
+        location = response.headers['Location']
+
+        # upload the data with PATCH
+        with open(pdf_file_path, 'rb') as pdf_file:
+            response = self.api_session.patch(
+                location,
+                headers={
+                    'Content-Type': 'application/offset+octet-stream',
+                    'Upload-Offset': '0',
+                    'Tus-Resumable': '1.0.0'
+                },
+                data=pdf_file)
+        self.assertEqual(response.status_code, 204)
+
+        self.assertEqual(
+            fired_events,
+            [
+                'ObjectCreatedEvent',
+                'ObjectWillBeAddedEvent',
+                'ObjectAddedEvent',
+                'ContainerModifiedEvent',
+            ])
+
+        sm.unregisterHandler(record_event, (IObjectCreatedEvent,))
+        sm.unregisterHandler(record_event, (IObjectWillBeAddedEvent,))
+        sm.unregisterHandler(record_event, (IObjectAddedEvent,))
+        sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
+
+    def test_replace_with_tus_fires_proper_events(self):
+        # Create a test file
+        self.file = api.content.create(container=self.portal,
+                                       type='File',
+                                       id='testfile',
+                                       title='Testfile')
+        transaction.commit()
+
+        sm = getGlobalSiteManager()
+        fired_events = []
+
+        def record_event(event):
+            fired_events.append(event.__class__.__name__)
+
+        sm.registerHandler(record_event, (IObjectCreatedEvent,))
+        sm.registerHandler(record_event, (IObjectWillBeAddedEvent,))
+        sm.registerHandler(record_event, (IObjectAddedEvent,))
+        sm.registerHandler(record_event, (IObjectModifiedEvent,))
+
+        # initialize the upload with POST
+        pdf_file_path = os.path.join(os.path.dirname(__file__),
+                                     UPLOAD_PDF_FILENAME)
+        pdf_file_size = os.path.getsize(pdf_file_path)
+        metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
+        response = self.api_session.post(
+            '{}/@tus-replace'.format(self.file.absolute_url()),
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(pdf_file_size),
+                     'Upload-Metadata': metadata}
+        )
+        self.assertEqual(response.status_code, 201)
+        location = response.headers['Location']
+
+        # upload the data with PATCH
+        with open(pdf_file_path, 'rb') as pdf_file:
+            response = self.api_session.patch(
+                location,
+                headers={
+                    'Content-Type': 'application/offset+octet-stream',
+                    'Upload-Offset': '0',
+                    'Tus-Resumable': '1.0.0'
+                },
+                data=pdf_file)
+        self.assertEqual(response.status_code, 204)
+
+        self.assertEqual(
+            fired_events,
+            [
+                'ObjectModifiedEvent',
+            ])
+
+        sm.unregisterHandler(record_event, (IObjectCreatedEvent,))
+        sm.unregisterHandler(record_event, (IObjectWillBeAddedEvent,))
+        sm.unregisterHandler(record_event, (IObjectAddedEvent,))
+        sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
 
     def tearDown(self):
         self.api_session.close()

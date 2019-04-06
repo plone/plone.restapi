@@ -30,6 +30,9 @@ bin/python bin/pip:
 test-performance:
 	jmeter -n -t performance.jmx -l jmeter.jtl
 
+release:
+	bin/fullrelease
+
 clean:
 	git clean -Xdf
 
