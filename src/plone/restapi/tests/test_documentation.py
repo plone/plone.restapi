@@ -847,6 +847,49 @@ class TestDocumentation(unittest.TestCase):
         )
         save_request_and_response_for_docs('users_update', response)
 
+    def test_documentation_users_update_portrait(self):
+        payload = {
+            'portrait': {
+                'filename': 'image.png',
+                'encoding': 'base64',
+                'data': 'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+                'content-type': 'image/png'
+            }
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam'
+        )
+        transaction.commit()
+        response = self.api_session.patch('/@users/noam', json=payload)
+        transaction.commit()
+
+        response_get = self.api_session.get('/@users/noam', json=payload)
+
+        save_request_and_response_for_docs('users_update_portrait', response)
+        save_request_and_response_for_docs(
+            'users_update_portrait_get', response_get)
+
+    def test_documentation_users_update_portrait_with_scale(self):
+        payload = {
+            'portrait': {
+                'filename': 'image.png',
+                'encoding': 'base64',
+                'data': 'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+                'content-type': 'image/png',
+                'scale': True
+            }
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam'
+        )
+        transaction.commit()
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        save_request_and_response_for_docs(
+            'users_update_portrait_scale', response)
+
     def test_documentation_users_delete(self):
         properties = {
             'email': 'noam.chomsky@example.com',

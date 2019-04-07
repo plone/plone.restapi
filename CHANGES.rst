@@ -49,11 +49,50 @@ Bugfixes:
 
 .. towncrier release notes start
 
-3.7.3 (2019-03-08)
+3.8.1 (2019-03-21)
 ------------------
 
 Bug fixes:
 
+- Fixed Python 3 incompatiblity with workflow service (#676)
+  [ajung]
+
+- Hide performance, testing, and tiles profile. (#700)
+  [Timo]
+
+
+3.8.0 (2019-03-21)
+------------------
+
+New features:
+
+- Add support for add/update user portraits (@user endpoint)
+  [sneridagh] (#701)
+
+
+3.7.5 (2019-03-14)
+------------------
+
+Bug fixes:
+
+- Do not depend on the deprecated plone.app.controlpanel package.
+  [sneridagh] (#696)
+
+
+3.7.4 (2019-03-13)
+------------------
+
+Bug fixes:
+
+- Fix a problem on ZCML loading depending on how the policy package is named,
+  related to the load of permissions in control panels and multilingual.
+  [sneridagh] (#526)
+
+
+3.7.3 (2019-03-08)
+------------------
+
+Bug fixes:
 
 - Use environment-markers instead of python-logic to specify dependencies for py2.
   [pbauer] (#688)
@@ -63,7 +102,6 @@ Bug fixes:
 ------------------
 
 Bug fixes:
-
 
 - Fix TUS upload events `#689 <https://github.com/plone/plone.restapi/issues/689>`_.
   [buchi] (#689)
