@@ -16,6 +16,7 @@ processed the same way they would for a server-rendered form.
 from collections import OrderedDict
 from copy import copy
 from plone.autoform.form import AutoExtensibleForm
+from plone.autoform.interfaces import IParameterizedWidget
 from plone.autoform.interfaces import WIDGETS_KEY
 from plone.dexterity.utils import getAdditionalSchemata
 from plone.restapi.serializer.converters import json_compatible
@@ -139,8 +140,11 @@ def get_tagged_values(schemas, key):
         tagged_values = mergedTaggedValueDict(schema, key)
         for field_name in schema:
             widget = tagged_values.get(field_name)
-            if widget and widget.params:
-                params[field_name] = widget.params
+            if IParameterizedWidget.providedBy(widget) and widget.params:
+                params[field_name] = widget.params.copy()
+                for k, v in params[field_name].items():
+                    if callable(v):
+                        params[field_name][k] = v()
     return params
 
 

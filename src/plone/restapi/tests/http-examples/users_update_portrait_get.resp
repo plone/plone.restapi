@@ -1,0 +1,17 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@users/noam", 
+  "description": null, 
+  "email": "noam.chomsky@example.com", 
+  "fullname": null, 
+  "home_page": null, 
+  "id": "noam", 
+  "location": null, 
+  "portrait": "http://localhost:55001/plone/portal_memberdata/portraits/noam", 
+  "roles": [
+    "Member"
+  ], 
+  "username": "noam"
+}

@@ -26,6 +26,9 @@ class TestServicesTypes(unittest.TestCase):
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_get_types(self):
         response = self.api_session.get(
             '{}/@types'.format(self.portal.absolute_url())
@@ -112,6 +115,11 @@ class TestServicesTypes(unittest.TestCase):
         self.assertIn(
             'file.data', response['properties']['file']['properties'])
 
+    def test_event_type(self):
+        response = self.api_session.get('/@types/Event')
+        response = response.json()
+        self.assertIn('title', response['properties']['start'])
+
     def test_addable_types_for_non_manager_user(self):
         user = api.user.create(
             email='noam.chomsky@example.com',
@@ -183,6 +191,9 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         transaction.commit()
+
+    def tearDown(self):
+        self.api_session.close()
 
     def test_get_types_translated(self):
         response = self.api_session.get(

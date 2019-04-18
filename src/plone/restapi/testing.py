@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # pylint: disable=E1002
 # E1002: Use of super on an old style class
+
 from plone import api
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
@@ -23,6 +24,7 @@ from plone.testing import z2
 from plone.testing.layer import Layer
 from plone.uuid.interfaces import IUUIDGenerator
 from Products.CMFCore.utils import getToolByName
+from requests.exceptions import ConnectionError
 from six.moves.urllib.parse import urljoin
 from six.moves.urllib.parse import urlparse
 from zope.component import getGlobalSiteManager
@@ -34,6 +36,7 @@ import collective.MockMailHost
 import pkg_resources
 import re
 import requests
+import six
 
 
 PLONE_VERSION = pkg_resources.parse_version(api.env.plone_version())
@@ -185,7 +188,10 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         quickInstallProduct(portal, 'collective.MockMailHost')
         applyProfile(portal, 'collective.MockMailHost:default')
         states = portal.portal_workflow['simple_publication_workflow'].states
-        states['published'].title = u'Published with accent é'.encode('utf8')
+        if six.PY2:  # issue 676
+            states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
+        else:
+            states['published'].title = u'Published with accent é'  # noqa: E501
 
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
@@ -239,7 +245,10 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         set_available_languages()
         enable_request_language_negotiation(portal)
         states = portal.portal_workflow['simple_publication_workflow'].states
-        states['published'].title = u'Published with accent é'.encode('utf8')
+        if six.PY2:  # issue 676
+            states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
+        else:
+            states['published'].title = u'Published with accent é'  # noqa: E501
 
 
 PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()
@@ -284,6 +293,8 @@ if HAS_AT:
             z2.installProduct(app, 'plone.restapi')
 
         def setUpPloneSite(self, portal):
+            portal.acl_users.userFolderAddUser(
+                SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ['Manager'], [])
             set_supported_languages(portal)
 
             if portal.portal_setup.profileExists(
@@ -300,7 +311,10 @@ if HAS_AT:
             enable_request_language_negotiation(portal)
             portal.portal_workflow.setDefaultChain('simple_publication_workflow')  # noqa: E501
             states = portal.portal_workflow['simple_publication_workflow'].states  # noqa: E501
-            states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
+            if six.PY2:  # issue 676
+                states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
+            else:
+                states['published'].title = u'Published with accent é'  # noqa: E501
 
     PLONE_RESTAPI_AT_FIXTURE = PloneRestApiATLayer()
     PLONE_RESTAPI_AT_INTEGRATION_TESTING = IntegrationTesting(
@@ -356,7 +370,14 @@ class RelativeSession(requests.Session):
         if urlparse(url).scheme not in ('http', 'https'):
             url = url.lstrip('/')
             url = urljoin(self.__base_url, url)
-        return super(RelativeSession, self).request(method, url, **kwargs)
+        try:
+            return super(RelativeSession, self).request(method, url, **kwargs)
+        except ConnectionError:
+            # On Jenkins we often get one ConnectionError in a seemingly
+            # random test, mostly in test_documentation.py.
+            # The server is still listening: the port is open.  We retry once.
+            time.sleep(1)
+            return super(RelativeSession, self).request(method, url, **kwargs)
 
 
 @implementer(IUUIDGenerator)

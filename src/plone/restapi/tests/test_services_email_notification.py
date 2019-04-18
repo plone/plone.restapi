@@ -21,7 +21,7 @@ else:
     PLONE5 = True
 
 
-@unittest.skipIf(not PLONE5, 'email notification not implemented for Plone < 5.') # noqa
+@unittest.skipIf(not PLONE5, 'email notification not implemented for Plone < 5.')  # noqa
 class EmailNotificationEndpoint(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -45,6 +45,9 @@ class EmailNotificationEndpoint(unittest.TestCase):
         self.anon_api_session.headers.update({'Accept': 'application/json'})
 
         transaction.commit()
+
+    def tearDown(self):
+        self.api_session.close()
 
     def test_email_notification(self):
         response = self.api_session.post(

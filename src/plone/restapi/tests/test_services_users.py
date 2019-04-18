@@ -67,6 +67,10 @@ class TestUsersEndpoint(unittest.TestCase):
         )
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+        self.anon_api_session.close()
+
     def test_list_users(self):
         response = self.api_session.get('/@users')
 
@@ -95,6 +99,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = noam_api_session.get('/@users')
         self.assertEqual(response.status_code, 401)
+        noam_api_session.close()
 
     def test_list_users_as_anonymous(self):
 
@@ -343,6 +348,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = noam_api_session.get('/@users/otheruser')
         self.assertEqual(response.status_code, 401)
+        noam_api_session.close()
 
     def test_get_search_user_with_filter(self):
         response = self.api_session.post(
@@ -406,6 +412,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = noam_api_session.get('/@users', params={'query': 'howa'})
         self.assertEqual(response.status_code, 401)
+        noam_api_session.close()
 
     def test_get_non_existing_user(self):
         response = self.api_session.get('/@users/non-existing-user')
@@ -483,6 +490,69 @@ class TestUsersEndpoint(unittest.TestCase):
         )
         self.assertNotEqual(
             old_password_hashes['noam'], new_password_hashes['noam']
+        )
+
+    def test_update_portrait(self):
+        payload = {
+            'portrait': {
+                'filename': 'image.png',
+                'encoding': 'base64',
+                'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+                'content-type': 'image/png'
+            }
+        }
+        self.api_session.auth = ('noam', 'password')
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get('/@users/noam').json()
+        self.assertTrue(
+            user.get('portrait').endswith(
+                'plone/portal_memberdata/portraits/noam'),
+        )
+
+    def test_update_portrait_with_default_plone_scaling(self):
+        payload = {
+            'portrait': {
+                'filename': 'image.png',
+                'encoding': 'base64',
+                'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+                'content-type': 'image/png',
+                'scale': True
+            }
+        }
+        self.api_session.auth = ('noam', 'password')
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get('/@users/noam').json()
+        self.assertTrue(
+            user.get('portrait').endswith(
+                'plone/portal_memberdata/portraits/noam'),
+        )
+
+    def test_update_portrait_by_manager(self):
+        payload = {
+            'portrait': {
+                'filename': 'image.png',
+                'encoding': 'base64',
+                'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+                'content-type': 'image/png'
+            }
+        }
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get('/@users/noam').json()
+        self.assertTrue(
+            user.get('portrait').endswith(
+                'plone/portal_memberdata/portraits/noam'),
         )
 
     def test_anonymous_user_can_not_update_existing_user(self):

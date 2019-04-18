@@ -1,13 +1,140 @@
 Changelog
 =========
 
-3.5.1 (unreleased)
-------------------
+.. You should *NOT* be adding new change log entries to this file.
+   You should create a file in the news directory instead.
+   For helpful instructions, please see:
+   https://github.com/plone/plone.releaser/blob/master/ADD-A-NEWS-ITEM.rst
+
+.. towncrier release notes start
+
+3.10.0 (Unreleased)
+-------------------
 
 New Features:
 
 - Add endpoints for managing addons.
-  [esteele]
+[esteele]
+
+
+3.9.0 (2019-04-18)
+------------------
+
+New features:
+
+
+- Add full support for `fullobjects` support for AT content types.
+  [sneridagh] (#698)
+
+
+3.8.1 (2019-03-21)
+------------------
+
+Bug fixes:
+
+- Fixed Python 3 incompatiblity with workflow service (#676)
+  [ajung]
+
+- Hide performance, testing, and tiles profile. (#700)
+  [Timo]
+
+
+3.8.0 (2019-03-21)
+------------------
+
+New features:
+
+- Add support for add/update user portraits (@user endpoint)
+  [sneridagh] (#701)
+
+
+3.7.5 (2019-03-14)
+------------------
+
+Bug fixes:
+
+- Do not depend on the deprecated plone.app.controlpanel package.
+  [sneridagh] (#696)
+
+
+3.7.4 (2019-03-13)
+------------------
+
+Bug fixes:
+
+- Fix a problem on ZCML loading depending on how the policy package is named,
+  related to the load of permissions in control panels and multilingual.
+  [sneridagh] (#526)
+
+
+3.7.3 (2019-03-08)
+------------------
+
+Bug fixes:
+
+- Use environment-markers instead of python-logic to specify dependencies for py2.
+  [pbauer] (#688)
+
+
+3.7.2 (2019-03-07)
+------------------
+
+Bug fixes:
+
+- Fix TUS upload events `#689 <https://github.com/plone/plone.restapi/issues/689>`_.
+  [buchi] (#689)
+
+
+3.7.1 (2019-03-06)
+------------------
+
+Bugfixes:
+
+- Fix release to not create universal (Python 2/3) wheels.
+  [gforcada]
+
+- Install zestreleaser.towncrier in the buildout to the changelog is updated correctly. (#684)
+  [maurits]
+
+
+3.7.0 (2019-03-04)
+------------------
+
+New Features:
+
+- Add group roles to @groups serializer
+  [sneridagh]
+
+
+3.6.0 (2019-02-16)
+------------------
+
+New Features:
+
+- Enhance site root to serialize and deserialize 'tiles' and 'tiles_layout' attributes.
+  [sneridagh]
+
+- Fix @workflow endpoint on site root to return an empty object instead of a 404.
+  [sneridagh]
+
+
+3.5.2 (2019-02-14)
+------------------
+
+Bugfixes:
+
+- Fix serializing the Event type. This fixes https://github.com/plone/plone.restapi/issues/664.
+  [davisagli, elioschmutz]
+
+
+3.5.1 (2019-02-05)
+------------------
+
+Bugfixes:
+
+- Do not fail on serializing types with fields having non-parametrized widgets.
+  Fixes issue `664 <https://github.com/plone/plone.restapi/issues/664>`_.
+  [elioschmutz]
 
 
 3.5.0 (2018-11-06)
