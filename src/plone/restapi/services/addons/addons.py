@@ -1,53 +1,65 @@
 # -*- coding: utf-8 -*-
 
 from AccessControl import getSecurityManager
-
+from plone.memoize import view
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
-from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.permissions import AddPortalMember
 from Products.CMFCore.permissions import SetOwnPassword
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone import PloneMessageFactory as _
+from Products.CMFPlone.interfaces import INonInstallable
+from Products.CMFQuickInstallerTool.interfaces import INonInstallable as QINonInstallable
+from Products.Five.browser import BrowserView
+from Products.GenericSetup import EXTENSION
+from Products.GenericSetup.tool import UNKNOWN
+from Products.statusmessages.interfaces import IStatusMessage
 from zope.component import getAdapter
+from zope.component import getAllUtilitiesRegisteredFor
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 
-import plone
-
-
-from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone import PloneMessageFactory as _
-from Products.CMFPlone.interfaces import INonInstallable
-from Products.CMFQuickInstallerTool.interfaces import INonInstallable as \
-    QINonInstallable
-from Products.Five.browser import BrowserView
-from Products.GenericSetup import EXTENSION
-from Products.GenericSetup.tool import UNKNOWN
-from Products.statusmessages.interfaces import IStatusMessage
-from plone.memoize import view
-from zope.component import getAllUtilitiesRegisteredFor
 import logging
 import pkg_resources
+import plone
 import transaction
 import warnings
+
 
 logger = logging.getLogger('Plone')
 
 
-class AddonsInfo(object):
+class Addons(object):
     """Performs install/upgrade/uninstall functions on an addon.
        Pulled, mostly intact, from Plone 5.1's products control panel.
        If we reach the point when plone.restapi isn't supporting releases
        prior to 5.1, we might be able to remove this as duplicate code.
     """
 
-    def __init__(self):
-        super(AddonsInfo, self).__init__()
-        self.ps = api.portal.get_tool(name='portal_setup')
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+        self.ps = getToolByName(context, 'portal_setup')
         self.errors = {}
+
+    def serializeAddon(self, addon):
+        return {'@id': '{}/@addons/{}'.format(
+                    self.context.absolute_url(), addon['id']),
+                'id': addon['id'],
+                'title': addon['title'],
+                'description': addon['description'],
+                'install_profile_id': addon['install_profile_id'],
+                'is_installed': addon['is_installed'],
+                'profile_type': addon['profile_type'],
+                'uninstall_profile_id': addon['uninstall_profile_id'],
+                'version': addon['version'],
+                'upgrade_info': addon['upgrade_info']
+                }
 
     def is_profile_installed(self, profile_id):
         return self.ps.getLastVersionForProfile(profile_id) != UNKNOWN
@@ -75,16 +87,6 @@ class AddonsInfo(object):
             )
         ]
         return profiles
-
-    def get_install_profiles(self, product_id):
-        """List all installer profile ids of the given name.
-
-        From CMFQuickInstallerTool/QuickInstallerTool.py
-        getInstallProfiles
-
-        TODO Might be superfluous.
-        """
-        return [prof['id'] for prof in self._install_profile_info(product_id)]
 
     def _get_profile(self, product_id, name, strict=True, allow_hidden=False):
         """Return profile with given name.
@@ -330,24 +332,6 @@ class AddonsInfo(object):
             newVersion=profile_version,
         )
 
-    def reinstallProducts(self, products, **kwargs):
-        """Reinstalls a list of products, the main difference to
-        uninstall/install is that it does not remove portal objects
-        created during install (e.g. tools, etc.)
-        """
-        warnings.warn(
-            'reinstallProducts is no longer supported since Plone 5.1. '
-            'It will be removed in Plone 6.0.',
-            DeprecationWarning)
-
-    def upgradeProduct(self, pid):
-        warnings.warn(
-            'upgradeProduct is deprecated since Plone 5.1. '
-            'It will be removed in Plone 6.0. '
-            'Use upgrade_product instead.',
-            DeprecationWarning)
-        return self.upgrade_product(pid)
-
     def upgrade_product(self, product_id):
         """Run the upgrade steps for a product.
 
@@ -421,85 +405,132 @@ class AddonsInfo(object):
             self.ps.unsetLastVersionForProfile(install_profile['id'])
         return True
 
+    @view.memoize
+    def marshall_addons(self):
+        addons = {}
 
-@implementer(IPublishTraverse)
-class AddonsGet(Service):
+        ignore_profiles = []
+        ignore_products = []
+        utils = getAllUtilitiesRegisteredFor(INonInstallable)
+        for util in utils:
+            ni_profiles = getattr(util, 'getNonInstallableProfiles', None)
+            if ni_profiles is not None:
+                ignore_profiles.extend(ni_profiles())
+            ni_products = getattr(util, 'getNonInstallableProducts', None)
+            if ni_products is not None:
+                ignore_products.extend(ni_products())
 
-    def __init__(self, context, request):
-        super(AddonsGet, self).__init__(context, request)
-        self.params = []
-        self.addons = AddonsInfo(self)
+        # Known profiles:
+        profiles = self.ps.listProfileInfo()
+        # Profiles that have upgrade steps (which may or may not have been
+        # applied already).
+        # profiles_with_upgrades = self.ps.listProfilesWithUpgrades()
+        for profile in profiles:
+            if profile['type'] != EXTENSION:
+                continue
 
-    def publishTraverse(self, request, name):
-        # Consume any path segments after /@addons as parameters
-        self.params.append(name)
-        return self
-
-    def reply(self):
-        control_panel = getMultiAdapter((self.context, self.request),
-                                        name='prefs_install_products_form')
-        all_addons = control_panel.get_addons()
-
-        if self.params:
-            return self.serializeAddon(all_addons[self.params[0]])
-
-        result = {
-            'items': {
-                '@id': '{}/@addons'.format(self.context.absolute_url()),
-            },
-        }
-        addons_data = []
-        for addon in all_addons.itervalues():
-            addons_data.append(self.serializeAddon(addon))
-        result['items'] = addons_data
-        return result
-
-    def serializeAddon(self, addon):
-        return {'@id': '{}/@addons/{}'.format(
-                    self.context.absolute_url(), addon['id']),
-                'id': addon['id'],
-                'title': addon['title'],
-                'description': addon['description'],
-                'install_profile_id': addon['install_profile_id'],
-                'is_installed': addon['is_installed'],
-                'profile_type': addon['profile_type'],
-                'uninstall_profile_id': addon['uninstall_profile_id'],
-                'version': addon['version'],
-                'upgrade_info': addon['upgrade_info']
+            pid = profile['id']
+            if pid in ignore_profiles:
+                continue
+            pid_parts = pid.split(':')
+            if len(pid_parts) != 2:
+                logger.error("Profile with id '%s' is invalid." % pid)
+            # Which package (product) is this from?
+            product_id = profile['product']
+            if product_id in ignore_products:
+                continue
+            profile_type = pid_parts[-1]
+            if product_id not in addons:
+                # get some basic information on the product
+                installed = self.is_product_installed(product_id)
+                upgrade_info = {}
+                if installed:
+                    upgrade_info = self.upgrade_info(product_id)
+                elif not self.is_product_installable(product_id):
+                    continue
+                addons[product_id] = {
+                    'id': product_id,
+                    'version': self.get_product_version(product_id),
+                    'title': product_id,
+                    'description': '',
+                    'upgrade_profiles': {},
+                    'other_profiles': [],
+                    'install_profile': None,
+                    'install_profile_id': '',
+                    'uninstall_profile': None,
+                    'uninstall_profile_id': '',
+                    'is_installed': installed,
+                    'upgrade_info': upgrade_info,
+                    'profile_type': profile_type,
                 }
+                # Add info on install and uninstall profile.
+                product = addons[product_id]
+                install_profile = self.get_install_profile(product_id)
+                if install_profile is not None:
+                    product['title'] = install_profile['title']
+                    product['description'] = install_profile['description']
+                    product['install_profile'] = install_profile
+                    product['install_profile_id'] = install_profile['id']
+                    product['profile_type'] = 'default'
+                uninstall_profile = self.get_uninstall_profile(product_id)
+                if uninstall_profile is not None:
+                    product['uninstall_profile'] = uninstall_profile
+                    product['uninstall_profile_id'] = uninstall_profile['id']
+                    # Do not override profile_type.
+                    if not product['profile_type']:
+                        product['profile_type'] = 'uninstall'
+            if profile['id'] in (product['install_profile_id'],
+                                 product['uninstall_profile_id']):
+                # Everything has been done.
+                continue
+            elif 'version' in profile:
+                product['upgrade_profiles'][profile['version']] = profile
+            else:
+                product['other_profiles'].append(profile)
+        return addons
 
+    def get_addons(self, apply_filter=None, product_name=None):
+        """
+        100% based on generic setup profiles now. Kinda.
+        For products magic, use the zope quickinstaller I guess.
 
-class AddonsPost(Service):
-    """Performs install/upgrade/uninstall functions on an addon."""
+        @filter:= 'installed': only products that are installed and not hidden
+                  'upgrades': only products with upgrades
+                  'available': products that are not installed bit
+                               could be
+                  'broken': uninstallable products with broken
+                            dependencies
 
-    implements(IPublishTraverse)
+        @product_name:= a specific product id that you want info on. Do
+                   not pass in the profile type, just the name
 
-    def __init__(self, context, request):
-        super(AddonsPost, self).__init__(context, request)
-        self.params = []
-        self.addons = AddonsInfo(self)
-
-    def publishTraverse(self, request, name):
-        # Consume any path segments after /@addons as parameters
-        self.params.append(name)
-        return self
-
-    def reply(self):
-        addon, action = self.params
-
-        # Disable CSRF protection
-        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
-
-        if action == 'install':
-            result = self.addons.install_product(addon)
-        elif action == 'uninstall':
-            result = self.addons.uninstall_product(addon)
-        elif action == 'upgrade':
-            result = self.addons.upgrade(addon)
+        XXX: I am pretty sure we don't want base profiles ...
+        """
+        addons = self.marshall_addons()
+        filtered = {}
+        if apply_filter == 'broken':
+            all_broken = self.errors.values()
+            for broken in all_broken:
+                filtered[broken['product_id']] = broken
         else:
-            raise Exception("Unknown action {}".format(action))
-        if result:
-            self.request.response.setStatus(204)
-            return None
+            for product_id, addon in addons.items():
+                if product_name and addon['id'] != product_name:
+                    continue
+
+                installed = addon['is_installed']
+                if apply_filter in ['installed', 'upgrades'] and not installed:
+                    continue
+                elif apply_filter == 'available':
+                    if installed:
+                        continue
+                    # filter out upgrade profiles
+                    if addon['profile_type'] != 'default':
+                        continue
+                elif apply_filter == 'upgrades':
+                    upgrade_info = addon['upgrade_info']
+                    if not upgrade_info.get('available'):
+                        continue
+
+                filtered[product_id] = addon
+
+        return filtered

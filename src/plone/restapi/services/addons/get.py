@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
-from zope.component import adapter
-from zope.component import getMultiAdapter
-from zope.interface import Interface
-from zope.interface import implements
+from plone.restapi.services.addons.addons import Addons
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
@@ -15,6 +12,7 @@ class AddonsGet(Service):
     def __init__(self, context, request):
         super(AddonsGet, self).__init__(context, request)
         self.params = []
+        self.addons = Addons(context, request)
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@addons as parameters
@@ -22,12 +20,10 @@ class AddonsGet(Service):
         return self
 
     def reply(self):
-        control_panel = getMultiAdapter((self.context, self.request),
-                                        name='prefs_install_products_form')
-        all_addons = control_panel.get_addons()
+        all_addons = self.addons.get_addons()
 
         if self.params:
-            return self.serializeAddon(all_addons[self.params[0]])
+            return self.addons.serializeAddon(all_addons[self.params[0]])
 
         result = {
             'items': {
@@ -35,21 +31,9 @@ class AddonsGet(Service):
             },
         }
         addons_data = []
-        for addon in all_addons.itervalues():
-            addons_data.append(self.serializeAddon(addon))
+        for addon in all_addons.values():
+            addons_data.append(self.addons.serializeAddon(addon))
         result['items'] = addons_data
+        self.request.response.setStatus(200)
         return result
 
-    def serializeAddon(self, addon):
-        return {'@id': '{}/@addons/{}'.format(
-                    self.context.absolute_url(), addon['id']),
-                'id': addon['id'],
-                'title': addon['title'],
-                'description': addon['description'],
-                'install_profile_id': addon['install_profile_id'],
-                'is_installed': addon['is_installed'],
-                'profile_type': addon['profile_type'],
-                'uninstall_profile_id': addon['uninstall_profile_id'],
-                'version': addon['version'],
-                'upgrade_info': addon['upgrade_info']
-                }
