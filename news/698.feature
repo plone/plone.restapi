@@ -1,2 +1,2 @@
-- Add full support for `fullobjects` support for AT content types.
-  [sneridagh]
+Add full support for `fullobjects` support for AT content types.
+[sneridagh]
