@@ -4,7 +4,10 @@ Changelog
 3.5.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+New Features:
+
+- Add endpoints for managing addons.
+  [esteele]
 
 
 3.5.0 (2018-11-06)
