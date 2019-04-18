@@ -388,24 +388,6 @@ class AddonsPost(Service):
             newVersion=profile_version,
         )
 
-    def reinstallProducts(self, products, **kwargs):
-        """Reinstalls a list of products, the main difference to
-        uninstall/install is that it does not remove portal objects
-        created during install (e.g. tools, etc.)
-        """
-        warnings.warn(
-            'reinstallProducts is no longer supported since Plone 5.1. '
-            'It will be removed in Plone 6.0.',
-            DeprecationWarning)
-
-    def upgradeProduct(self, pid):
-        warnings.warn(
-            'upgradeProduct is deprecated since Plone 5.1. '
-            'It will be removed in Plone 6.0. '
-            'Use upgrade_product instead.',
-            DeprecationWarning)
-        return self.upgrade_product(pid)
-
     def upgrade_product(self, product_id):
         """Run the upgrade steps for a product.
 
