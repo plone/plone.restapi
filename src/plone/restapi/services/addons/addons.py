@@ -1,33 +1,17 @@
 # -*- coding: utf-8 -*-
 
-from AccessControl import getSecurityManager
 from plone.memoize import view
-from plone.restapi.deserializer import json_body
-from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.services import Service
-from Products.CMFCore.permissions import AddPortalMember
-from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone import PloneMessageFactory as _
 from Products.CMFPlone.interfaces import INonInstallable
 from Products.CMFQuickInstallerTool.interfaces import INonInstallable as QINonInstallable
-from Products.Five.browser import BrowserView
 from Products.GenericSetup import EXTENSION
 from Products.GenericSetup.tool import UNKNOWN
-from Products.statusmessages.interfaces import IStatusMessage
-from zope.component import getAdapter
 from zope.component import getAllUtilitiesRegisteredFor
-from zope.component import queryMultiAdapter
-from zope.component.hooks import getSite
-from zope.interface import alsoProvides
-from zope.interface import implements
-from zope.publisher.interfaces import IPublishTraverse
 
 import logging
 import pkg_resources
 import plone
-import transaction
-import warnings
 
 
 logger = logging.getLogger('Plone')
