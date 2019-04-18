@@ -71,8 +71,9 @@ class AddonsPost(Service):
             result = self.addons.upgrade_product(addon)
         else:
             raise Exception("Unknown action {}".format(action))
-        if result:
-            
+
+        prefer = self.request.getHeader('Prefer')
+        if prefer == 'return=representation':
             control_panel = getMultiAdapter((self.context, self.request),
                                             name='prefs_install_products_form')
             all_addons = control_panel.get_addons()
@@ -83,13 +84,12 @@ class AddonsPost(Service):
                 },
             }
             addons_data = []
-            for addon in all_addons.itervalues():
-                addons_data.append(self.addons.serializeAddon(addon))
+            for a in all_addons.itervalues():
+                addons_data.append(self.addons.serializeAddon(a))
             result['items'] = addons_data
 
-        prefer = self.request.getHeader('Prefer')
-        if prefer == 'return=representation':
             self.request.response.setStatus(200)
+            return result
         else:
             self.request.response.setStatus(204)
-        return result
+            return None
