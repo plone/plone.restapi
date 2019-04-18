@@ -10,6 +10,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.component import getUtility
 
+import json
 import transaction
 import unittest
 
@@ -32,8 +33,16 @@ class TestAddons(unittest.TestCase):
         response = self.api_session.get('/@addons/plone.session')
 
         self.assertEqual(response.status_code, 200)
-        import pdb; pdb.set_trace()
-        self.fail()
+        result = json.loads(response.content)
+
+        self.assertEqual(result['@id'], self.portal_url + u'/plone/@addons/plone.session')
+        self.assertEqual(result['id'], u'plone.session')
+        # self.assertEqual(result['is_installed'], False)
+        self.assertEqual(result['title'], u'Session refresh support')
+        self.assertEqual(result['description'], u'Optional plone.session refresh support')
+        self.assertEqual(result['profile_type'], u'default')
+        self.assertEqual(result['upgrade_info'], {})
+        self.assertEqual(result['install_profile_id'], u'plone.session:default')
 
     def test_get_addon_listing(self):
         response = self.api_session.get('/@addons')
@@ -41,15 +50,24 @@ class TestAddons(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         response = response.json()
         self.assertIn('items', response)
-        self.assertIn('batching', response)
-        self.assertIn('next', response['batching'])
 
     def test_install_addon(self):
         # Check to make sure the addon is currently shown as not installed
 
         response = self.api_session.post('/@addons/plone.session/install')
-
         self.assertEqual(response.status_code, 204)
+        response = response.json()
+
+        # Check to make sure the addon is currently shown as installed
+        self.fail()
+
+    def test_install_addon_with_representation(self):
+        # Check to make sure the addon is currently shown as not installed
+
+        response = self.api_session.post(
+            '/@addons/plone.session/install',
+            headers={'Prefer': 'return=representation'})
+        self.assertEqual(response.status_code, 200)
         response = response.json()
 
         # Check to make sure the addon is currently shown as installed
@@ -68,10 +86,37 @@ class TestAddons(unittest.TestCase):
 
         self.fail()
 
+    def test_uninstall_addon_with_representation(self):
+
+        # Check to make sure the addon is currently shown as installed
+
+        response = self.api_session.post(
+            '/@addons/plone.session/uninstall',
+            headers={'Prefer': 'return=representation'})
+
+        self.assertEqual(response.status_code, 200)
+        response = response.json()
+
+        # Check to make sure the addon is currently shown as not installed
+
+        self.fail()
+
     def test_upgrade_addon(self):
         response = self.api_session.post('/@addons/plone.session/upgrade')
 
         self.assertEqual(response.status_code, 204)
+
+        response = response.json()
+
+        self.fail()
+
+    def test_upgrade_addon_with_representation(self):
+        response = self.api_session.post(
+            '/@addons/plone.session/upgrade',
+            headers={'Prefer': 'return=representation'})
+
+        self.assertEqual(response.status_code, 200)
+
         response = response.json()
 
         self.fail()
