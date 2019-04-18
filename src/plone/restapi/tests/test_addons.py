@@ -35,11 +35,11 @@ class TestAddons(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         result = json.loads(response.content)
 
-        self.assertEqual(result['@id'], self.portal_url + u'/plone/@addons/plone.session')
+        self.assertEqual(result['@id'], self.portal_url + u'/@addons/plone.session')
         self.assertEqual(result['id'], u'plone.session')
         # self.assertEqual(result['is_installed'], False)
         self.assertEqual(result['title'], u'Session refresh support')
-        self.assertEqual(result['description'], u'Optional plone.session refresh support')
+        self.assertEqual(result['description'], u'Optional plone.session refresh support.')
         self.assertEqual(result['profile_type'], u'default')
         self.assertEqual(result['upgrade_info'], {})
         self.assertEqual(result['install_profile_id'], u'plone.session:default')
