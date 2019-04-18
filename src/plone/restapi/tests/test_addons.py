@@ -10,7 +10,6 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.component import getUtility
 
-import json
 import transaction
 import unittest
 
@@ -33,7 +32,7 @@ class TestAddons(unittest.TestCase):
         response = self.api_session.get('/@addons/plone.session')
 
         self.assertEqual(response.status_code, 200)
-        result = json.loads(response.content)
+        result = response.json()
 
         self.assertEqual(result['@id'], self.portal_url + u'/@addons/plone.session')
         self.assertEqual(result['id'], u'plone.session')
@@ -51,64 +50,69 @@ class TestAddons(unittest.TestCase):
         response = response.json()
         self.assertIn('items', response)
 
-    def test_install_addon(self):
+    def test_install_uninstall_addon(self):
+    
+        def _get_install_status(self):
+            response = self.api_session.get('/@addons/plone.session')
+            result = response.json()
+            return result['is_installed']
+
         # Check to make sure the addon is currently shown as not installed
+        self.assertEqual(_get_install_status(self), False)
 
         response = self.api_session.post('/@addons/plone.session/install')
         self.assertEqual(response.status_code, 204)
-        response = response.json()
+        self.assertEqual(response.content, '')
 
         # Check to make sure the addon is currently shown as installed
-        self.fail()
+        self.assertEqual(_get_install_status(self), True)
 
-    def test_install_addon_with_representation(self):
+        # Now uninstall the addon
+        response = self.api_session.post('/@addons/plone.session/uninstall')
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.content, '')
         # Check to make sure the addon is currently shown as not installed
+        self.assertEqual(_get_install_status(self), False)
 
+    def test_install_uninstall_addon_with_representation(self):
+
+        # Check to make sure the addon is currently shown as not installed
+        response = self.api_session.get('/@addons/plone.session')
+        result = response.json()
+        self.assertEqual(result['is_installed'], False)
+
+        # Install the addon
         response = self.api_session.post(
             '/@addons/plone.session/install',
             headers={'Prefer': 'return=representation'})
         self.assertEqual(response.status_code, 200)
-        response = response.json()
+        result = response.json()
 
         # Check to make sure the addon is currently shown as installed
-        self.fail()
-
-    def test_uninstall_addon(self):
-
-        # Check to make sure the addon is currently shown as installed
-
-        response = self.api_session.post('/@addons/plone.session/uninstall')
-
-        self.assertEqual(response.status_code, 204)
-        response = response.json()
-
-        # Check to make sure the addon is currently shown as not installed
-
-        self.fail()
-
-    def test_uninstall_addon_with_representation(self):
-
-        # Check to make sure the addon is currently shown as installed
-
+        session = [a for a in result['items'] if a['id'] == u'plone.session']
+        self.assertEqual(len(session), 1)
+        self.assertTrue(session[0]['is_installed'])
+        
+        # Now uninstall the addon
         response = self.api_session.post(
             '/@addons/plone.session/uninstall',
             headers={'Prefer': 'return=representation'})
 
         self.assertEqual(response.status_code, 200)
-        response = response.json()
-
+        result = response.json()
         # Check to make sure the addon is currently shown as not installed
-
-        self.fail()
+        session = [a for a in result['items'] if a['id'] == u'plone.session']
+        self.assertEqual(len(session), 1)
+        self.assertFalse(session[0]['is_installed'])
 
     def test_upgrade_addon(self):
         response = self.api_session.post('/@addons/plone.session/upgrade')
 
         self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.content, '')
 
-        response = response.json()
-
-        self.fail()
+        self.fail('Not finished yet')
 
     def test_upgrade_addon_with_representation(self):
         response = self.api_session.post(
@@ -119,4 +123,4 @@ class TestAddons(unittest.TestCase):
 
         response = response.json()
 
-        self.fail()
+        self.fail('Not finished yet')
