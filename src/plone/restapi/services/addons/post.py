@@ -67,7 +67,7 @@ class AddonsPost(Service):
         elif action == 'uninstall':
             result = self.uninstall_product(addon)
         elif action == 'upgrade':
-            result = self.upgrade(addon)
+            result = self.upgrade_product(addon)
         else:
             raise Exception("Unknown action {}".format(action))
         if result:
