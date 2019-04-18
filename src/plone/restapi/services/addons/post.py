@@ -134,16 +134,6 @@ class AddonsPost(Service):
         ]
         return profiles
 
-    def get_install_profiles(self, product_id):
-        """List all installer profile ids of the given name.
-
-        From CMFQuickInstallerTool/QuickInstallerTool.py
-        getInstallProfiles
-
-        TODO Might be superfluous.
-        """
-        return [prof['id'] for prof in self._install_profile_info(product_id)]
-
     def _get_profile(self, product_id, name, strict=True, allow_hidden=False):
         """Return profile with given name.
 
