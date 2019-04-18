@@ -23,7 +23,10 @@ class AddonsGet(Service):
         all_addons = self.addons.get_addons()
 
         if self.params:
-            return self.addons.serializeAddon(all_addons[self.params[0]])
+            if self.params[0] in all_addons:
+                return self.addons.serializeAddon(all_addons[self.params[0]])
+            else:
+                return []
 
         result = {
             'items': {
