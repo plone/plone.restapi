@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+3.9.0 (2019-04-18)
+------------------
+
+New features:
+
+
+- Add full support for `fullobjects` support for AT content types.
+  [sneridagh] (#698)
+
+
 3.8.1 (2019-03-21)
 ------------------
 
