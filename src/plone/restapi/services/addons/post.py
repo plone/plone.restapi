@@ -2,15 +2,14 @@
 
 from plone.restapi.services import Service
 from plone.restapi.services.addons.addons import Addons
+from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
 
+import logging
 import plone
 
-from zope.component import getMultiAdapter
-
-import logging
 
 logger = logging.getLogger('Plone')
 
