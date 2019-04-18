@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
 from plone.restapi.services.addons.addons import Addons
 from zope.interface import implementer
@@ -39,4 +38,3 @@ class AddonsGet(Service):
         result['items'] = addons_data
         self.request.response.setStatus(200)
         return result
-

@@ -4,7 +4,8 @@ from plone.memoize import view
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone import PloneMessageFactory as _
 from Products.CMFPlone.interfaces import INonInstallable
-from Products.CMFQuickInstallerTool.interfaces import INonInstallable as QINonInstallable
+from Products.CMFQuickInstallerTool.interfaces \
+    import INonInstallable as QINonInstallable
 from Products.GenericSetup import EXTENSION
 from Products.GenericSetup.tool import UNKNOWN
 from zope.component import getAllUtilitiesRegisteredFor

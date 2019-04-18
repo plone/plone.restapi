@@ -3,14 +3,9 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
-from plone.registry import field
-from plone.registry.interfaces import IRegistry
-from plone.registry.record import Record
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from zope.component import getUtility
 
-import transaction
 import unittest
 
 
@@ -34,14 +29,20 @@ class TestAddons(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         result = response.json()
 
-        self.assertEqual(result['@id'], self.portal_url + u'/@addons/plone.session')
+        self.assertEqual(
+            result['@id'],
+            self.portal_url + u'/@addons/plone.session')
         self.assertEqual(result['id'], u'plone.session')
         # self.assertEqual(result['is_installed'], False)
         self.assertEqual(result['title'], u'Session refresh support')
-        self.assertEqual(result['description'], u'Optional plone.session refresh support.')
+        self.assertEqual(
+            result['description'],
+            u'Optional plone.session refresh support.')
         self.assertEqual(result['profile_type'], u'default')
         self.assertEqual(result['upgrade_info'], {})
-        self.assertEqual(result['install_profile_id'], u'plone.session:default')
+        self.assertEqual(
+            result['install_profile_id'],
+            u'plone.session:default')
 
     def test_get_addon_listing(self):
         response = self.api_session.get('/@addons')
@@ -51,7 +52,7 @@ class TestAddons(unittest.TestCase):
         self.assertIn('items', response)
 
     def test_install_uninstall_addon(self):
-    
+
         def _get_install_status(self):
             response = self.api_session.get('/@addons/plone.session')
             result = response.json()
@@ -93,7 +94,7 @@ class TestAddons(unittest.TestCase):
         session = [a for a in result['items'] if a['id'] == u'plone.session']
         self.assertEqual(len(session), 1)
         self.assertTrue(session[0]['is_installed'])
-        
+
         # Now uninstall the addon
         response = self.api_session.post(
             '/@addons/plone.session/uninstall',

@@ -1,17 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from AccessControl import getSecurityManager
-
-from plone.restapi.deserializer import json_body
-from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from plone.restapi.services.addons.addons import Addons
-from Products.CMFCore.utils import getToolByName
-from Products.CMFCore.permissions import AddPortalMember
-from Products.CMFCore.permissions import SetOwnPassword
-from zope.component import getAdapter
-from zope.component import queryMultiAdapter
-from zope.component.hooks import getSite
 from zope.interface import alsoProvides
 from zope.interface import implements
 from zope.publisher.interfaces import IPublishTraverse
@@ -20,21 +10,7 @@ import plone
 
 from zope.component import getMultiAdapter
 
-from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone import PloneMessageFactory as _
-from Products.CMFPlone.interfaces import INonInstallable
-from Products.CMFQuickInstallerTool.interfaces import INonInstallable as \
-    QINonInstallable
-from Products.Five.browser import BrowserView
-from Products.GenericSetup import EXTENSION
-from Products.GenericSetup.tool import UNKNOWN
-from Products.statusmessages.interfaces import IStatusMessage
-from plone.memoize import view
-from zope.component import getAllUtilitiesRegisteredFor
 import logging
-import pkg_resources
-import transaction
-import warnings
 
 logger = logging.getLogger('Plone')
 
@@ -49,7 +25,7 @@ class AddonsPost(Service):
         self.params = []
         self.errors = {}
         self.addons = Addons(context, request)
-    
+
     def publishTraverse(self, request, name):
         # Consume any path segments after /@addons as parameters
         self.params.append(name)
