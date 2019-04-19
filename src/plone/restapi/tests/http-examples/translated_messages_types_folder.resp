@@ -203,12 +203,16 @@ Content-Type: application/json+schema
       "widget": "textarea"
     }, 
     "subjects": {
-      "choices": [], 
+      "additionalItems": true, 
       "description": "Las etiquetas suelen utilizarse para la organizaci\u00f3n a medida del contenido.", 
-      "enum": [], 
-      "enumNames": [], 
+      "items": {
+        "description": "", 
+        "title": "", 
+        "type": "string"
+      }, 
       "title": "Etiquetas", 
-      "type": "string", 
+      "type": "array", 
+      "uniqueItems": true, 
       "vocabulary": "plone.app.vocabularies.Keywords"
     }, 
     "title": {
