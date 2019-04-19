@@ -385,7 +385,7 @@ class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
 
 @adapter(ITuple, Interface, Interface)
 @implementer(IJsonSchemaProvider)
-class SubjectsFieldJsonSchemaProvider(ChoiceJsonSchemaProvider):
+class SubjectsFieldJsonSchemaProvider(TupleJsonSchemaProvider):
     pass
 
 
