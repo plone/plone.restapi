@@ -1,0 +1,1 @@
+Use correct subclass for SubjectsFieldJsonSchemaProvider, fixes #710 [MrTango]
