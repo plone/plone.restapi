@@ -123,7 +123,8 @@ Content-Type: application/json+schema
       "default": false, 
       "description": "Si est\u00e1 marcado, este elemento no aparecer\u00e1 en el \u00e1rbol de navegaci\u00f3n", 
       "title": "Excluir de la navegaci\u00f3n", 
-      "type": "boolean"
+      "type": "boolean", 
+      "widget": "boolean"
     }, 
     "expires": {
       "description": "La fecha en la que expira el documento. Esto har\u00e1 autom\u00e1ticamente el documento invisible a otros a una fecha dada. Si no elije ninguna fecha, nunca expirar\u00e1.", 
@@ -176,7 +177,8 @@ Content-Type: application/json+schema
       "default": false, 
       "description": "Esto habilita el widget siguiente/pr\u00f3ximo en los elementos contenidos en esta carpeta.", 
       "title": "Habilitar la navegaci\u00f3n siguiente/anterior", 
-      "type": "boolean"
+      "type": "boolean", 
+      "widget": "boolean"
     }, 
     "relatedItems": {
       "additionalItems": true, 

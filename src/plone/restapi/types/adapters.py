@@ -175,6 +175,9 @@ class BoolJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return 'boolean'
 
+    def get_widget(self):
+        return 'boolean'
+
 
 @adapter(ICollection, Interface, Interface)
 @implementer(IJsonSchemaProvider)

@@ -16,7 +16,8 @@ Content-Type: application/json
         "properties": {
           "description": "Override the translation machinery", 
           "title": "Enabled", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": false
@@ -61,7 +62,8 @@ Content-Type: application/json
           "default": true, 
           "description": "Allow syndication for collections and folders on site.", 
           "title": "Allowed", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": true
@@ -102,7 +104,8 @@ Content-Type: application/json
           "default": false, 
           "description": "If syndication should be enabled by default for all folders and collections.", 
           "title": "Enabled by default", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": false
@@ -127,7 +130,8 @@ Content-Type: application/json
           "default": false, 
           "description": "If body text available for item, render it, otherwise use description.", 
           "title": "Render Body", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": false
@@ -139,7 +143,8 @@ Content-Type: application/json
           "default": true, 
           "description": "Allows users to subscribe to feeds of search results", 
           "title": "Search RSS enabled", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": true
@@ -151,7 +156,8 @@ Content-Type: application/json
           "default": true, 
           "description": "Should feeds include author information", 
           "title": "Show author info", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": true
@@ -162,7 +168,8 @@ Content-Type: application/json
         "properties": {
           "description": "Makes it possible to customize syndication settings for particular folders and collections ", 
           "title": "Show settings button", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": null
@@ -173,7 +180,8 @@ Content-Type: application/json
         "properties": {
           "description": "Enable RSS link document action on the syndication content item.", 
           "title": "Show feed link", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": null
@@ -272,7 +280,8 @@ Content-Type: application/json
           "default": false, 
           "description": "If not selected only logged-in users will be able to view information about who created an item and when it was modified.", 
           "title": "Allow anyone to view 'about' information", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": false
@@ -429,7 +438,8 @@ Content-Type: application/json
           "default": false, 
           "description": "", 
           "title": "Always show language selector", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": false
@@ -441,7 +451,8 @@ Content-Type: application/json
           "default": false, 
           "description": "If selected, anonymous users are able to post comments without logging in. It is highly recommended to use a captcha solution to prevent spam if this setting is enabled.", 
           "title": "Enable anonymous comments", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": false
@@ -453,7 +464,8 @@ Content-Type: application/json
           "default": false, 
           "description": "If selected, anonymous user will have to give their email.", 
           "title": "Enable anonymous email field", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": false
@@ -489,7 +501,8 @@ Content-Type: application/json
           "default": false, 
           "description": "If selected, supports deleting of own comments for users with the \"Delete own comments\" permission.", 
           "title": "Enable deleting own comments", 
-          "type": "boolean"
+          "type": "boolean", 
+          "widget": "boolean"
         }
       }, 
       "value": false

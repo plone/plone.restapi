@@ -1,0 +1,1 @@
+Return widget info for boolean fields [MrTango]

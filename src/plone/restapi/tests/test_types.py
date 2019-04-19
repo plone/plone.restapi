@@ -84,7 +84,8 @@ class TestJsonSchemaUtils(TestCase):
             'field1': {
                 'title': u'Foo',
                 'description': u'',
-                'type': 'boolean'
+                'type': 'boolean',
+                'widget': 'boolean'
             },
             'field2': {
                 'title': u'Bar',
@@ -301,6 +302,7 @@ class TestJsonSchemaProviders(TestCase):
                 'title': u'My field',
                 'description': u'My great field',
                 'default': False,
+                'widget': 'boolean'
             },
             adapter.get_schema()
         )
@@ -551,7 +553,8 @@ class TestJsonSchemaProviders(TestCase):
                     'field1': {
                         'title': u'Foo',
                         'description': u'',
-                        'type': 'boolean'
+                        'type': 'boolean',
+                        'widget': 'boolean'
                     },
                     'field2': {
                         'title': u'Bar',

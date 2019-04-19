@@ -126,7 +126,8 @@ Content-Type: application/json+schema
       "default": false, 
       "description": "If selected, this item will not appear in the navigation tree", 
       "title": "Exclude from navigation", 
-      "type": "boolean"
+      "type": "boolean", 
+      "widget": "boolean"
     }, 
     "expires": {
       "description": "When this date is reached, the content will no longer be visible in listings and searches.", 
@@ -211,7 +212,8 @@ Content-Type: application/json+schema
     "table_of_contents": {
       "description": "If selected, this will show a table of contents at the top of the page.", 
       "title": "Table of contents", 
-      "type": "boolean"
+      "type": "boolean", 
+      "widget": "boolean"
     }, 
     "text": {
       "description": "", 
@@ -228,7 +230,8 @@ Content-Type: application/json+schema
       "default": true, 
       "description": "Enable/disable versioning for this document.", 
       "title": "Versioning enabled", 
-      "type": "boolean"
+      "type": "boolean", 
+      "widget": "boolean"
     }
   }, 
   "required": [
