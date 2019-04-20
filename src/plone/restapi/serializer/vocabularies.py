@@ -20,7 +20,7 @@ class SerializeVocabularyToJson(object):
 
     def __call__(self, vocabulary_id):
         vocabulary = self.context
-        query = self.request.form.get('q', '')
+        query = self.request.form.get('query', '')
 
         terms = []
         for term in vocabulary:
