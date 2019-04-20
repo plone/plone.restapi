@@ -63,7 +63,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
+                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
                 u'items': [
                     {u'title': u'Title 1', u'token': u'token1'},
                     {u'title': u'Title 2', u'token': u'token2'},
@@ -82,12 +82,12 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
+                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
                 u'batching': {
-                    u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?b_size=1',  # noqa
-                    u'first': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=0&b_size=1',  # noqa
-                    u'last': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1',  # noqa
-                    u'next': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1',  # noqa
+                    u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?b_size=1',  # noqa
+                    u'first': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=0&b_size=1',  # noqa
+                    u'last': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1',  # noqa
+                    u'next': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1',  # noqa
                 },
                 u'items': [
                     {u'title': u'Title 1', u'token': u'token1'},
@@ -106,7 +106,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u'@id': u'http://localhost:55001/plone/@vocabularies/plone.restapi.tests.test_vocabulary?q=2',  # noqa
+                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?q=2',  # noqa
                 u'items': [
                     {
                         u'title': u'Title 2',
@@ -174,7 +174,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                u'@id': u'http://localhost:55001/plone/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary',  # noqa
+                u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary',  # noqa
                 u'items': [
                     {u'title': u'testdoc', u'token': u'id'},
                     {u'title': u'Document 1', u'token': u'title'},
