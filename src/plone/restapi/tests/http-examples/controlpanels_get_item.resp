@@ -52,7 +52,9 @@ Content-Type: application/json
         "description": "Select the default wysiwyg editor. Users will be able to choose their own or select to use the site default.", 
         "title": "Default editor", 
         "type": "string", 
-        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableEditors"
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableEditors"
+        }
       }, 
       "enable_link_integrity_checks": {
         "default": true, 

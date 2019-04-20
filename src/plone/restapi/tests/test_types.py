@@ -410,7 +410,7 @@ class TestJsonSchemaProviders(TestCase):
                 'type': 'string',
                 'title': u'My field',
                 'description': u'My great field',
-                'vocabulary': u'http://nohost/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes'  # noqa
+                'vocabulary': { '@id': u'http://nohost/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes' }  # noqa
             },
             adapter.get_schema()
         )

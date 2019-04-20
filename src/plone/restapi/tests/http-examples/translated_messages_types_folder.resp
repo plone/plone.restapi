@@ -145,7 +145,9 @@ Content-Type: application/json+schema
       "description": "", 
       "title": "Idioma", 
       "type": "string", 
-      "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SupportedContentLanguages"
+      "vocabulary": {
+        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SupportedContentLanguages"
+      }
     }, 
     "nextPreviousEnabled": {
       "default": false, 
@@ -161,7 +163,9 @@ Content-Type: application/json+schema
         "description": "", 
         "title": "Related", 
         "type": "string", 
-        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
+        }
       }, 
       "title": "Contenido relacionado", 
       "type": "array", 
