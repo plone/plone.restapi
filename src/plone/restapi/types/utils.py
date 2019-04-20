@@ -26,6 +26,7 @@ from plone.supermodel.utils import mergedTaggedValueDict
 from z3c.form import form as z3c_form
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
+from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 
@@ -207,9 +208,7 @@ def get_vocabulary_url(vocab_name, context, request):
     try:
         context_url = context.absolute_url()
     except AttributeError:
-        portal = getMultiAdapter(
-            (context, request),
-            name='plone_portal_state').portal()
+        portal = getSite()
         context_url = portal.absolute_url()
     return '{}/@vocabularies/{}'.format(
         context_url,
