@@ -189,7 +189,7 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
         )
         self.assertEqual(
             'some_value',
-            jsonschema['properties']['another_field'][
+            jsonschema['properties']['parametrized_widget_field'][
                 'widgetOptions']['a_param']
         )
 
@@ -215,8 +215,8 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
 
         self.assertEqual(
             u'Foo',
-            jsonschema['properties']['parametrized_widget_field'].get(
-                'defaultFactory')
+            jsonschema['properties']['parametrized_widget_field'][
+                'widgetOptions'].get('defaultFactory')
         )
 
 
