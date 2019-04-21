@@ -4,6 +4,134 @@ Upgrade Guide
 This upgrade guide lists all breaking changes in plone.restapi and explains the necessary steps that are needed to upgrade to the lastest version.
 
 
+Upgrading to plone.restapi 4.x
+------------------------------
+
+Vocabularies
+^^^^^^^^^^^^
+
+Choice fields using named vocabularies are now serialized
+with a ``vocabulary`` property giving the URL of the ``@vocabularies``
+endpoint for the vocabulary instead of including ``choices``,
+``enum`` and ``enumNames`` inline.
+
+Old Response::
+
+    "choices": [
+        [
+            "de",
+            "Deutsch"
+        ],
+        [
+            "en",
+            "English"
+        ],
+    ],
+    "enum": [
+      "de",
+      "en",
+    ],
+    "enumNames": [
+      "Deutsch",
+      "English",
+    ],
+
+New response::
+
+    "vocabulary": {
+        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary"
+    },
+
+  - Serialize widget parameters into a ``widgetOptions`` object
+    instead of adding them to the top level of the schema property.
+
+Old response::
+
+      "vocabulary": "plone.app.vocabularies.Users"
+
+New response::
+
+      "widgetOptions": {
+        "pattern_options": {
+          "recentlyUsed": true
+        },
+        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+      }
+
+Vocabularies Subjects Field
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``subjects`` field is now serialized as an ``array``
+of ``string`` items using the ``plone.app.vocabularies.Keywords`` vocabulary.
+
+Old response::
+
+    "subjects": {
+      "choices": [],
+      "enum": [],
+      "enumNames": [],
+    }
+    "type": "string"
+
+New response::
+
+    "additionalItems": true,
+    "type": "array",
+    "uniqueItems": true,
+    "widgetOptions": {
+        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
+    }
+    "items": {
+      "description": "",
+      "title": "",
+      "type": "string"
+    },
+
+Vocabularies Endpoint
+^^^^^^^^^^^^^^^^^^^^^
+
+The vocabularies endpoint does no longer returns an ``@id`` for terms.
+
+The results are batched, and terms are now listed as ``items`` instead of ``terms`` to match other batched responses.
+
+Batch size is 25 by default but can be overridden using the ``b_size`` parameter.
+
+Old response::
+
+{
+  "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes",
+  "terms": [
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/Collection",
+      "title": "Collection",
+      "token": "Collection"
+    },
+    ...
+  ]
+}
+
+New response::
+
+{
+  "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes",
+  "items": [
+      {
+        "title": "Collection",
+        "token": "Collection"
+      },
+      ...
+  ],
+  "items_total": 12
+}
+
+
+New Features:
+
+- ``@vocabularies`` service: Use ``query`` parameter to filter terms by title
+  (case-insensitive).
+  [davisagli]
+
+
 Upgrading to plone.restapi 3.x
 ------------------------------
 
@@ -12,7 +140,7 @@ Image scales
 
 Image download URLs and image scale URLs are created using the UID based url formats. This allows Plone to create different URLs when the image changes and thus ensuring caches are updated.
 
-Old Response:: 
+Old Response::
 
      {
        "icon": {
@@ -43,7 +171,7 @@ New Response::
        },
       ...
       }
-     
+
 
 @sharing endpoint
 ^^^^^^^^^^^^^^^^^
@@ -56,7 +184,7 @@ Old Response::
 
   HTTP/1.1 200 OK
   Content-Type: application/json
-  
+
   {
     "available_roles": [
       "Contributor",
@@ -75,7 +203,7 @@ New Response::
 
   HTTP/1.1 200 OK
   Content-Type: application/json
-  
+
   {
     "available_roles": [
       {
