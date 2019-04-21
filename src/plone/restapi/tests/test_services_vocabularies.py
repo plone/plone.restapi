@@ -98,7 +98,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
 
     def test_get_vocabulary_filtered(self):
         response = self.api_session.get(
-            '/@vocabularies/plone.restapi.tests.test_vocabulary?q=2'
+            '/@vocabularies/plone.restapi.tests.test_vocabulary?query=2'
         )
 
         self.assertEqual(200, response.status_code)
@@ -106,7 +106,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?q=2',  # noqa
+                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?query=2',  # noqa
                 u'items': [
                     {
                         u'title': u'Title 2',
