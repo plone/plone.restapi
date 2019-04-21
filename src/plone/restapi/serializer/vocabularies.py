@@ -3,6 +3,7 @@ from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from zope.component import adapter
 from zope.component import getMultiAdapter
+from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema.interfaces import ITitledTokenizedTerm
@@ -21,12 +22,19 @@ class SerializeVocabularyToJson(object):
     def __call__(self, vocabulary_id):
         vocabulary = self.context
         query = self.request.form.get('query', '')
+        token = self.request.form.get('token', '')
 
         terms = []
         for term in vocabulary:
-            if query.lower() not in term.title.lower():
-                continue
-            terms.append(term)
+            if token:
+                # Ignore any query param
+                if token.lower() not in term.token.lower():
+                    continue
+                terms.append(term)
+            else:
+                if query.lower() not in term.title.lower():
+                    continue
+                terms.append(term)
 
         batch = HypermediaBatch(self.request, terms)
 
@@ -61,5 +69,5 @@ class SerializeTermToJson(object):
         title = term.title if ITitledTokenizedTerm.providedBy(term) else token
         return {
             'token': token,
-            'title': title
+            'title': translate(title, context=self.request)
         }
