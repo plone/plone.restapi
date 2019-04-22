@@ -140,7 +140,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
 
     def test_get_vocabulary_filtered_by_token_ignore_title(self):
         response = self.api_session.get(
-            '/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1&title=Title'  # noqa
+            '/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1&title=Title'  # noqanges
         )
 
         self.assertEqual(200, response.status_code)
