@@ -191,7 +191,9 @@ Content-Type: application/json
             "description": "", 
             "title": "", 
             "type": "string", 
-            "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicatableFeedItems"
+            "vocabulary": {
+              "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicatableFeedItems"
+            }
           }, 
           "title": "Site RSS", 
           "type": "array", 
@@ -343,7 +345,9 @@ Content-Type: application/json
             "description": "", 
             "title": "", 
             "type": "string", 
-            "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AllowableContentTypes"
+            "vocabulary": {
+              "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AllowableContentTypes"
+            }
           }, 
           "title": "Alternative formats", 
           "type": "array", 
@@ -399,7 +403,9 @@ Content-Type: application/json
           "description": "Use this setting to enable or disable Captcha validation for comments. Install plone.formwidget.captcha, plone.formwidget.recaptcha, collective.akismet, or collective.z3cform.norobots if there are no options available.", 
           "title": "Captcha", 
           "type": "string", 
-          "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary"
+          "vocabulary": {
+            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary"
+          }
         }
       }, 
       "value": "disabled"

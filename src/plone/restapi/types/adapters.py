@@ -261,8 +261,13 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
         vocab_name = getattr(self.field, 'vocabularyName', None)
         if vocab_name:
             return {
-                'vocabulary': get_vocabulary_url(
-                    vocab_name, self.context, self.request)
+                'vocabulary': {
+                    '@id': get_vocabulary_url(
+                        vocab_name,
+                        self.context,
+                        self.request
+                    )
+                }
             }
 
         # Maybe we have an unnamed vocabulary or source.
