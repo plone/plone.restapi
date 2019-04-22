@@ -21,18 +21,18 @@ class SerializeVocabularyToJson(object):
 
     def __call__(self, vocabulary_id):
         vocabulary = self.context
-        query = self.request.form.get('query', '')
+        title = self.request.form.get('title', '')
         token = self.request.form.get('token', '')
 
         terms = []
         for term in vocabulary:
             if token:
-                # Ignore any query param
+                # Ignore any title param
                 if token.lower() not in term.token.lower():
                     continue
                 terms.append(term)
             else:
-                if query.lower() not in term.title.lower():
+                if title.lower() not in term.title.lower():
                     continue
                 terms.append(term)
 
