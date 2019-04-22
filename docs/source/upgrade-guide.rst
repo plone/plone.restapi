@@ -221,31 +221,31 @@ Batch size is 25 by default but can be overridden using the ``b_size`` parameter
 
 Old response::
 
-{
-  "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes",
-  "terms": [
     {
-      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/Collection",
-      "title": "Collection",
-      "token": "Collection"
-    },
-    ...
-  ]
-}
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes",
+      "terms": [
+        {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/Collection",
+          "title": "Collection",
+          "token": "Collection"
+        },
+        ...
+      ]
+    }
 
 New response::
 
-{
-  "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes",
-  "items": [
-      {
-        "title": "Collection",
-        "token": "Collection"
-      },
-      ...
-  ],
-  "items_total": 12
-}
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes",
+      "items": [
+          {
+            "title": "Collection",
+            "token": "Collection"
+          },
+          ...
+      ],
+      "items_total": 12
+    }
 
 
 New Features:
