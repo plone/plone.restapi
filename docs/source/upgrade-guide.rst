@@ -10,7 +10,7 @@ Upgrading to plone.restapi 4.x
 Vocabularies
 ^^^^^^^^^^^^
 
-Choice fields using named vocabularies are now serialized
+Choice and List fields using named vocabularies are now serialized
 with a ``vocabulary`` property giving the URL of the ``@vocabularies``
 endpoint for the vocabulary instead of including ``choices``,
 ``enum`` and ``enumNames`` inline.
@@ -55,11 +55,11 @@ New response::
         "pattern_options": {
           "recentlyUsed": true
         },
-        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+        "vocabulary": { "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users" }
       }
 
-Vocabularies Subjects Field
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Example: Vocabularies Subjects Field
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The ``subjects`` field is now serialized as an ``array``
 of ``string`` items using the ``plone.app.vocabularies.Keywords`` vocabulary.
@@ -79,12 +79,135 @@ New response::
     "type": "array",
     "uniqueItems": true,
     "widgetOptions": {
-        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
-    }
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
+      }
+    },
     "items": {
       "description": "",
       "title": "",
       "type": "string"
+    },
+
+Example: Available Time Zones Field (vocabulary in ``items``)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Old response::
+
+    "available_timezones": {
+      "additionalItems": true,
+      "default": [],
+      "description": "The timezones, which should be available for the portal. Can be set for users and events",
+      "items": {
+        "choices": [
+          [
+            "Africa/Abidjan",
+            "Africa/Abidjan"
+          ],
+          [
+            "Africa/Accra",
+            "Africa/Accra"
+          ],
+          ...
+        "enum": [
+          ...
+        ],
+        "enumNames": [
+          ...
+        ]
+      },
+      title: "Available timezones",
+      type: "array",
+      uniqueItems: true,
+    }
+
+New response::
+
+    "available_timezones": {
+      "additionalItems": true,
+      "default": [],
+      "description": "The timezones, which should be available for the portal. Can be set for users and events",
+      "items": {
+        "description": "",
+        "title": "",
+        "type": "string",
+        "vocabulary": {
+          "@id": "http://localhost:8080/Plone/@vocabularies/plone.app.vocabularies.Timezones"
+        }
+      },
+      "title": "Available timezones",
+      "type": "array",
+      "uniqueItems": true
+    },
+
+Example: Weekday Field (vocabulary in main property)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Old response::
+
+    "first_weekday": {
+      "choices": [
+        [
+          "0",
+          "Monday"
+        ],
+        [
+          "1",
+          "Tuesday"
+        ],
+        [
+          "2",
+          "Wednesday"
+        ],
+        [
+          "3",
+          "Thursday"
+        ],
+        [
+          "4",
+          "Friday"
+        ],
+        [
+          "5",
+          "Saturday"
+        ],
+        [
+          "6",
+          "Sunday"
+        ]
+      ],
+      "description": "First day in the week.",
+      "enum": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "enumNames": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "title": "First weekday",
+      "type": "string"
+    },
+
+New response::
+
+    "first_weekday": {
+      "description": "First day in the week.",
+      "title": "First weekday",
+      "type": "string",
+      "vocabulary": {
+        "@id": "http://localhost:8080/Plone/@vocabularies/plone.app.vocabularies.Weekdays"
+      }
     },
 
 Vocabularies Endpoint
