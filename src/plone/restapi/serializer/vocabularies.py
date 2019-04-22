@@ -26,8 +26,14 @@ class SerializeVocabularyToJson(object):
 
         terms = []
         for term in vocabulary:
+            if title and token:
+                self.request.response.setStatus(400)
+                return dict(error=dict(
+                    type='Invalid parameters',
+                    message='You can not filter by title and token at the same time.')  # noqa
+                )
+
             if token:
-                # Ignore any title param
                 if token.lower() not in term.token.lower():
                     continue
                 terms.append(term)

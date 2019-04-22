@@ -96,7 +96,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
             }
         )
 
-    def test_get_vocabulary_filtered(self):
+    def test_get_vocabulary_filtered_by_title(self):
         response = self.api_session.get(
             '/@vocabularies/plone.restapi.tests.test_vocabulary?title=2'
         )
@@ -138,24 +138,18 @@ class TestVocabularyEndpoint(unittest.TestCase):
             }
         )
 
-    def test_get_vocabulary_filtered_by_token_ignore_title(self):
+    def test_get_vocabulary_filtered_by_title_and_token_returns_error(self):
         response = self.api_session.get(
-            '/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1&title=Title'  # noqanges
+            '/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1&title=Title'  # noqa
         )
 
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(400, response.status_code)
         response = response.json()
         self.assertEqual(
-            response,
+            response.get('error'),
             {
-                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1&title=Title',  # noqa
-                u'items': [
-                    {
-                        u'title': u'Title 1',
-                        u'token': u'token1',
-                    }
-                ],
-                u'items_total': 1,
+                u'message': u'You can not filter by title and token at the same time.',  # noqa
+                u'type': u'Invalid parameters'
             }
         )
 
