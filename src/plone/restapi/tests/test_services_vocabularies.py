@@ -117,6 +117,69 @@ class TestVocabularyEndpoint(unittest.TestCase):
             }
         )
 
+    def test_get_vocabulary_filtered_by_token(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1'
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1',  # noqa
+                u'items': [
+                    {
+                        u'title': u'Title 1',
+                        u'token': u'token1',
+                    }
+                ],
+                u'items_total': 1,
+            }
+        )
+
+    def test_get_vocabulary_filtered_by_token_ignore_query(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1&query=Title' # noqa
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1&query=Title',  # noqa
+                u'items': [
+                    {
+                        u'title': u'Title 1',
+                        u'token': u'token1',
+                    }
+                ],
+                u'items_total': 1,
+            }
+        )
+
+    def test_get_corner_case_vocabulary_filtered_by_token(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.app.vocabularies.Weekdays?token=0'
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                u'@id': self.portal_url + u'/@vocabularies/plone.app.vocabularies.Weekdays?token=0',  # noqa
+                u'items': [
+                    {
+                        'title': 'Monday',
+                        'token': '0'
+                    }
+                ],
+                u'items_total': 1,
+            }
+        )
+
     def test_get_unknown_vocabulary(self):
         response = self.api_session.get(
             '/@vocabularies/unknown.vocabulary')

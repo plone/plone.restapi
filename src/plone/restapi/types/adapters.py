@@ -92,8 +92,9 @@ class DefaultJsonSchemaProvider(object):
         params = all_params.get(self.field.getName(), {})
         if 'vocabulary' in params:
             vocab_name = params['vocabulary']
-            params['vocabulary'] = get_vocabulary_url(
-                vocab_name, self.context, self.request)
+            params['vocabulary'] = {
+                    '@id': get_vocabulary_url(
+                        vocab_name, self.context, self.request)}
         return params
 
 

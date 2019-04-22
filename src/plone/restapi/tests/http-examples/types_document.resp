@@ -95,7 +95,9 @@ Content-Type: application/json+schema
       "type": "array", 
       "uniqueItems": true, 
       "widgetOptions": {
-        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+        }
       }
     }, 
     "creators": {
@@ -110,7 +112,9 @@ Content-Type: application/json+schema
       "type": "array", 
       "uniqueItems": true, 
       "widgetOptions": {
-        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+        }
       }
     }, 
     "description": {
@@ -167,7 +171,9 @@ Content-Type: application/json+schema
         "pattern_options": {
           "recentlyUsed": true
         }, 
-        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
+        }
       }
     }, 
     "rights": {
@@ -189,7 +195,9 @@ Content-Type: application/json+schema
       "type": "array", 
       "uniqueItems": true, 
       "widgetOptions": {
-        "vocabulary": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
+        }
       }
     }, 
     "table_of_contents": {
