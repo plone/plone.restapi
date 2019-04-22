@@ -63,3 +63,7 @@ E.g. search for all terms that contain the string ``doc`` in the token:
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token.resp
    :language: http
+
+.. note::
+    You must not filter by title and token at the same time.
+    The API returns a 400 response code if you do so.
