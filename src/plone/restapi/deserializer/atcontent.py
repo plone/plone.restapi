@@ -44,8 +44,8 @@ class DeserializeFromJson(OrderingMixin, object):
             name = field.getName()
 
             if name in data:
-                deserializer = queryMultiAdapter((field, obj, self.request),
-                                                 IFieldDeserializer)
+                deserializer = queryMultiAdapter(
+                    (field, obj, self.request), IFieldDeserializer)
                 if deserializer is None:
                     continue
                 value, kwargs = deserializer(data[name])

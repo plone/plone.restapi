@@ -33,7 +33,10 @@ class SearchHandler(object):
         if 'path' not in query:
             query['path'] = {}
 
-        if isinstance(query['path'], str):
+        if (
+            isinstance(query['path'], str)
+            or isinstance(query['path'], list)
+        ):
             query['path'] = {'query': query['path']}
 
         # If this is accessed through a VHM the client does not know
@@ -43,9 +46,17 @@ class SearchHandler(object):
         if vhm_physical_path:
             path = query['path'].get('query')
             if path:
-                path = path.lstrip('/')
-                full_path = '/'.join(vhm_physical_path + (path,))
-                query['path']['query'] = full_path
+                if isinstance(path, str):
+                    path = path.lstrip('/')
+                    full_path = '/'.join(vhm_physical_path + (path,))
+                    query['path']['query'] = full_path
+                if isinstance(path, list):
+                    full_paths = []
+                    for p in path:
+                        p = p.lstrip('/')
+                        full_path = '/'.join(vhm_physical_path + (p,))
+                        full_paths.append(full_path)
+                    query['path']['query'] = full_paths
 
         if isinstance(query['path'], dict) and 'query' not in query['path']:
             # We either had no 'path' parameter at all, or an incomplete

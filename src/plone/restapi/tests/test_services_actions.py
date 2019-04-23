@@ -17,7 +17,7 @@ import unittest
 TEST_CATEGORY_ID = 'testcategory'
 
 
-class TestRegistry(unittest.TestCase):
+class TestActions(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
@@ -66,13 +66,17 @@ class TestRegistry(unittest.TestCase):
 
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+        self.anon_api_session.close()
+
     def test_actions_all_categories(self):
         response = self.api_session.get('/@actions')
 
         self.assertEqual(response.status_code, 200)
         response = response.json()
         self.assertEqual(['category1', 'category2', 'category3'],
-                         sorted(response.keys()))
+                         sorted(response))
 
     def test_actions_selected_categories(self):
         response = self.api_session.get(
@@ -81,7 +85,7 @@ class TestRegistry(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         response = response.json()
         self.assertEqual(['category1', 'category2'],
-                         sorted(response.keys()))
+                         sorted(response))
 
     def test_actions_siteroot(self):
         response = self.api_session.get('/@actions')

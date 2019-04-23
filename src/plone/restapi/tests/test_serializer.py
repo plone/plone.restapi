@@ -12,6 +12,7 @@ from plone.scale import storage
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 
+import json
 import os
 import unittest
 
@@ -66,7 +67,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         setRoles(self.portal, TEST_USER_ID, ['Member', 'Manager'])
         self.assertIn(
             'Test Read Permission',
-            self.serialize(self.portal.dxdoc).values()
+            list(self.serialize(self.portal.dxdoc).values())
         )
 
     def test_serialize_cannot_read_as_member(self):
@@ -75,7 +76,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         setRoles(self.portal, TEST_USER_ID, ['Member'])
         self.assertNotIn(
             'Test Read Permission',
-            self.serialize(self.portal.dxdoc).values()
+            list(self.serialize(self.portal.dxdoc).values())
         )
 
     def test_serialize_returns_desciption(self):
@@ -265,8 +266,10 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
     def test_serialize_image(self):
         self.portal.invokeFactory('Image', id='image1', title='Image 1')
         image_file = os.path.join(os.path.dirname(__file__), u'image.png')
+        with open(image_file, 'rb') as f:
+            image_data = f.read()
         self.portal.image1.image = NamedBlobImage(
-            data=open(image_file, 'r').read(),
+            data=image_data,
             contentType='image/png',
             filename=u'image.png'
         )
@@ -367,4 +370,53 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 }
             ],
             self.serialize(self.portal.collection1).get('items')
+        )
+
+    def test_serialize_returns_site_root_common(self):
+        self.assertIn(
+            'title',
+            self.serialize(self.portal),
+        )
+        self.assertIn(
+            'description',
+            self.serialize(self.portal)
+        )
+
+    def test_serialize_returns_site_root_opt_in_tiles_not_present(self):
+        self.assertEqual(
+            self.serialize(self.portal)['tiles'],
+            {}
+        )
+        self.assertEqual(
+            self.serialize(self.portal)['tiles_layout'],
+            {}
+        )
+
+    def test_serialize_returns_site_root_opt_in_tiles_present(self):
+        tiles = {
+            "0358abe2-b4f1-463d-a279-a63ea80daf19": {
+                "@type": "description"
+            },
+            "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {
+                "@type": "title"
+            }
+        }
+        tiles_layout = {
+            "items": [
+                "07c273fc-8bfc-4e7d-a327-d513e5a945bb",
+                "0358abe2-b4f1-463d-a279-a63ea80daf19"
+            ]
+        }
+        self.portal.manage_addProperty(
+            'tiles', json.dumps(tiles), 'string')
+        self.portal.manage_addProperty(
+            'tiles_layout', json.dumps(tiles_layout), 'string')
+
+        self.assertEqual(
+            self.serialize(self.portal)['tiles'],
+            tiles
+        )
+        self.assertEqual(
+            self.serialize(self.portal)['tiles_layout'],
+            tiles_layout
         )

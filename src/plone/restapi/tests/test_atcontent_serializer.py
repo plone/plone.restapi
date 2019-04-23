@@ -4,6 +4,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import setRoles
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.testing import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.tests.test_expansion import ExpandableElementFoo
 from zope.component import getGlobalSiteManager
@@ -21,6 +22,8 @@ class TestATContentSerializer(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         self.request = self.layer['request']
         setRoles(self.portal, TEST_USER_ID, ['Contributor'])
@@ -154,7 +157,7 @@ class TestATContentSerializer(unittest.TestCase):
         current_layout = self.doc1.getLayout()
         obj = self.serialize(self.doc1)
         self.assertIn('layout', obj)
-        self.assertEquals(current_layout, obj['layout'])
+        self.assertEqual(current_layout, obj['layout'])
 
     def test_serializer_includes_expansion(self):
         provideAdapter(
@@ -179,4 +182,4 @@ class TestATContentSerializer(unittest.TestCase):
                                      ISerializeToJson)
         obj = serializer()
         self.assertIn('is_folderish', obj)
-        self.assertEquals(True, obj['is_folderish'])
+        self.assertEqual(True, obj['is_folderish'])

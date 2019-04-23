@@ -6,6 +6,14 @@
   <plone:service
     method="GET"
     name="@workflow"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".info.WorkflowInfoService"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="GET"
+    name="@workflow"
     for="Products.CMFCore.interfaces.IContentish"
     factory=".info.WorkflowInfoService"
     permission="zope2.View"

@@ -18,6 +18,7 @@ from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from plone.restapi.types.utils import get_jsonschema_properties
+from z3c.form.browser.text import TextWidget
 
 
 class IDummySchema(model.Schema):
@@ -58,8 +59,14 @@ class ITaggedValuesSchema(model.Schema):
         description=u"",
     )
 
-    another_field = schema.TextLine(title=u"Tagged Values widget params")
-    form.widget('another_field', a_param='some_value')
+    parametrized_widget_field = schema.TextLine(
+        title=u"Parametrized widget field")
+    form.widget('parametrized_widget_field',
+                a_param='some_value', defaultFactory=lambda: 'Foo')
+
+    not_parametrized_widget_field = schema.TextLine(
+        title=u"No parametrized widget field")
+    form.widget(not_parametrized_widget_field=TextWidget)
 
 
 class TestJsonSchemaUtils(TestCase):
@@ -97,9 +104,9 @@ class TestJsonSchemaUtils(TestCase):
         )
         self.assertEqual(jsonschema['title'], 'Page')
         self.assertEqual(jsonschema['type'], 'object')
-        self.assertIn('title', jsonschema['properties'].keys())
+        self.assertIn('title', list(jsonschema['properties']))
         self.assertIn('title', jsonschema['required'])
-        self.assertEquals('default', jsonschema['fieldsets'][0]['id'])
+        self.assertEqual('default', jsonschema['fieldsets'][0]['id'])
         self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
         self.assertIn('layouts', jsonschema)
 
@@ -109,7 +116,7 @@ class TestJsonSchemaUtils(TestCase):
             request,
             excluded_fields=['title']
         )
-        self.assertNotIn('title', jsonschema['properties'].keys())
+        self.assertNotIn('title', list(jsonschema['properties']))
 
     def test_get_jsonschema_for_fti_non_dx(self):
         """Make sure FTIs without lookupSchema are supported.
@@ -130,14 +137,14 @@ class TestJsonSchemaUtils(TestCase):
         )
         self.assertEqual(jsonschema['title'], 'Page')
         self.assertEqual(jsonschema['type'], 'object')
-        self.assertIn('title', jsonschema['properties'].keys())
+        self.assertIn('title', list(jsonschema['properties']))
         self.assertIn('title', jsonschema['required'])
-        self.assertEquals('default', jsonschema['fieldsets'][0]['id'])
+        self.assertEqual('default', jsonschema['fieldsets'][0]['id'])
         self.assertIn('title', jsonschema['fieldsets'][0]['fields'])
 
         jsonschema = get_jsonschema_for_portal_type(
             'Document', portal, request, excluded_fields=['title'])
-        self.assertNotIn('title', jsonschema['properties'].keys())
+        self.assertNotIn('title', list(jsonschema['properties']))
 
 
 class TestTaggedValuesJsonSchemaUtils(TestCase):
@@ -182,7 +189,33 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
         )
         self.assertEqual(
             'some_value',
-            jsonschema['properties']['another_field']['a_param']
+            jsonschema['properties']['parametrized_widget_field']['a_param']
+        )
+
+    def test_do_not_fail_with_non_parametrized_widget(self):
+        ttool = getToolByName(self.portal, 'portal_types')
+        jsonschema = get_jsonschema_for_fti(
+            ttool['TaggedDocument'],
+            self.portal,
+            self.request
+        )
+        self.assertEqual(
+            u'No parametrized widget field',
+            jsonschema['properties']['not_parametrized_widget_field']['title']
+        )
+
+    def test_resolve_callable_widget_params(self):
+        ttool = getToolByName(self.portal, 'portal_types')
+        jsonschema = get_jsonschema_for_fti(
+            ttool['TaggedDocument'],
+            self.portal,
+            self.request
+        )
+
+        self.assertEqual(
+            u'Foo',
+            jsonschema['properties']['parametrized_widget_field'].get(
+                'defaultFactory')
         )
 
 

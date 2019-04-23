@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from functools import reduce
 
 
 def unflatten_dotted_dict(dct):

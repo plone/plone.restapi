@@ -18,7 +18,7 @@ import unittest
 class InternalServerErrorView(BrowserView):
 
     def __call__(self):  # pragma: no cover
-        from urllib2 import HTTPError
+        from six.moves.urllib.error import HTTPError
         raise HTTPError(
             'http://nohost/plone/internal_server_error',
             500,
@@ -51,6 +51,9 @@ class TestErrorHandling(unittest.TestCase):
         self.folder = self.portal.folder1
         self.folder_url = self.folder.absolute_url()
         transaction.commit()
+
+    def tearDown(self):
+        self.api_session.close()
 
     @unittest.skip('Not working since we moved to plone.rest')
     def test_404_not_found(self):

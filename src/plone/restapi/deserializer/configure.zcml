@@ -30,7 +30,7 @@
     <adapter factory=".atfields.FileFieldDeserializer" />
     <adapter factory=".atfields.ReferenceFieldDeserializer" />
   </configure>
-  
+
   <configure zcml:condition="have plone-5">
     <adapter factory=".controlpanels.ControlpanelDeserializeFromJson" />
   </configure>

@@ -57,7 +57,7 @@ class TestCommentsSerializers(TestCase):
 
         output = serializer()
         self.assertEqual(
-            set(output.keys()),
+            set(output),
             set(['@id', 'items_total', 'items'])
         )
 
@@ -95,11 +95,11 @@ class TestCommentsSerializers(TestCase):
             'is_deletable'
         ]
         self.assertEqual(
-            set(output.keys()),
+            set(output),
             set(expected)
         )
 
         self.assertEqual(
-            set(output['text'].keys()),
+            set(output['text']),
             set(['data', 'mime-type'])
         )

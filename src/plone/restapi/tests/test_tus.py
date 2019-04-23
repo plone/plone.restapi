@@ -1,24 +1,29 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
-from StringIO import StringIO
 from base64 import b64encode
+from DateTime import DateTime
+from OFS.interfaces import IObjectWillBeAddedEvent
 from plone import api
+from plone.app.testing import login
+from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
-from plone.app.testing import login
-from plone.app.testing import setRoles
 from plone.rest.cors import CORSPolicy
 from plone.rest.interfaces import ICORSPolicy
+from plone.restapi import HAS_AT
 from plone.restapi.services.content.tus import TUSUpload
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from six import BytesIO
 from zope.component import getGlobalSiteManager
 from zope.component import provideAdapter
 from zope.interface import Interface
+from zope.lifecycleevent.interfaces import IObjectAddedEvent
+from zope.lifecycleevent.interfaces import IObjectCreatedEvent
+from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import os
@@ -27,13 +32,29 @@ import tempfile
 import transaction
 import unittest
 
-UPLOAD_DATA = 'abcdefgh'
+UPLOAD_DATA = b'abcdefgh'
 UPLOAD_MIMETYPE = 'text/plain'
 UPLOAD_FILENAME = 'test.txt'
 UPLOAD_LENGTH = len(UPLOAD_DATA)
 
 UPLOAD_PDF_MIMETYPE = 'application/pdf'
 UPLOAD_PDF_FILENAME = 'file.pdf'
+
+
+def _base64_str(s):
+    if not isinstance(s, bytes):
+        s = s.encode('utf-8')
+    s = b64encode(s)
+    if not isinstance(s, str):
+        s = s.decode('utf-8')
+    return s
+
+
+def _prepare_metadata(filename, content_type):
+    return 'filename {},content-type {}'.format(
+        _base64_str(filename),
+        _base64_str(content_type),
+    )
 
 
 class TestTUS(unittest.TestCase):
@@ -108,9 +129,7 @@ class TestTUS(unittest.TestCase):
         upload.cleanup()
 
     def test_tus_post_initialization_with_metadata(self):
-        metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_FILENAME),
-            b64encode(UPLOAD_MIMETYPE))
+        metadata = _prepare_metadata(UPLOAD_FILENAME, UPLOAD_MIMETYPE)
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
@@ -245,7 +264,7 @@ class TestTUS(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Content-Type': 'application/offset+octet-stream',
                      'Upload-Offset': '0'},
-            data=StringIO('abcdefghijkl'))
+            data=BytesIO(b'abcdefghijkl'))
         self.assertEqual(204, response.status_code)
         self.assertIn('Upload-Expires', response.headers)
         tus.cleanup()
@@ -260,14 +279,14 @@ class TestTUS(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Content-Type': 'application/offset+octet-stream',
                      'Upload-Offset': '0'},
-            data=StringIO('abcdefghijkl'))
+            data=BytesIO(b'abcdefghijkl'))
 
         self.assertEqual(204, response.status_code)
         transaction.commit()
         self.assertEqual(1, len(self.folder.objectIds()))
         id_ = self.folder.objectIds()[0]
         self.assertEqual(
-            'abcdefghijkl', self.folder[id_].test_namedblobfile_field.data)
+            b'abcdefghijkl', self.folder[id_].test_namedblobfile_field.data)
         tus.cleanup()
 
     def test_patch_in_create_mode_without_add_permission_raises_401(self):
@@ -279,7 +298,7 @@ class TestTUS(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Content-Type': 'application/offset+octet-stream',
                      'Upload-Offset': '0'},
-            data=StringIO('abcdefghijkl'))
+            data=BytesIO(b'abcdefghijkl'))
         self.assertEqual(401, response.status_code)
         tus.cleanup()
 
@@ -292,7 +311,7 @@ class TestTUS(unittest.TestCase):
             headers={'Tus-Resumable': '1.0.0',
                      'Content-Type': 'application/offset+octet-stream',
                      'Upload-Offset': '0'},
-            data=StringIO('abcdefghijkl'))
+            data=BytesIO(b'abcdefghijkl'))
         self.assertEqual(401, response.status_code)
         tus.cleanup()
 
@@ -301,9 +320,7 @@ class TestTUS(unittest.TestCase):
         pdf_file_path = os.path.join(os.path.dirname(__file__),
                                      UPLOAD_PDF_FILENAME)
         pdf_file_size = os.path.getsize(pdf_file_path)
-        metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_PDF_FILENAME),
-            b64encode(UPLOAD_PDF_MIMETYPE))
+        metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
@@ -314,13 +331,15 @@ class TestTUS(unittest.TestCase):
         location = response.headers['Location']
 
         # upload the data with PATCH
-        pdf_file = open(pdf_file_path, 'rb')
-        response = self.api_session.patch(
-            location,
-            headers={'Content-Type': 'application/offset+octet-stream',
-                     'Upload-Offset': '0',
-                     'Tus-Resumable': '1.0.0'},
-            data=pdf_file)
+        with open(pdf_file_path, 'rb') as pdf_file:
+            response = self.api_session.patch(
+                location,
+                headers={
+                    'Content-Type': 'application/offset+octet-stream',
+                    'Upload-Offset': '0',
+                    'Tus-Resumable': '1.0.0'
+                },
+                data=pdf_file)
         self.assertEqual(response.status_code, 204)
 
         transaction.commit()
@@ -328,9 +347,7 @@ class TestTUS(unittest.TestCase):
 
     def test_tus_can_upload_text_file(self):
         # initialize the upload with POST
-        metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_FILENAME),
-            b64encode(UPLOAD_MIMETYPE))
+        metadata = _prepare_metadata(UPLOAD_FILENAME, UPLOAD_MIMETYPE)
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
@@ -346,7 +363,7 @@ class TestTUS(unittest.TestCase):
             headers={'Content-Type': 'application/offset+octet-stream',
                      'Upload-Offset': '0',
                      'Tus-Resumable': '1.0.0'},
-            data=StringIO(UPLOAD_DATA))
+            data=BytesIO(UPLOAD_DATA))
         self.assertEqual(response.status_code, 204)
 
     def test_tus_can_replace_pdf_file(self):
@@ -360,9 +377,7 @@ class TestTUS(unittest.TestCase):
         pdf_file_path = os.path.join(os.path.dirname(__file__),
                                      UPLOAD_PDF_FILENAME)
         pdf_file_size = os.path.getsize(pdf_file_path)
-        metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_PDF_FILENAME),
-            b64encode(UPLOAD_PDF_MIMETYPE))
+        metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
         response = self.api_session.post(
             '{}/@tus-replace'.format(self.file.absolute_url()),
             headers={'Tus-Resumable': '1.0.0',
@@ -373,20 +388,131 @@ class TestTUS(unittest.TestCase):
         location = response.headers['Location']
 
         # upload the data with PATCH
-        pdf_file = open(pdf_file_path, 'rb')
-        response = self.api_session.patch(
-            location,
-            headers={'Content-Type': 'application/offset+octet-stream',
-                     'Upload-Offset': '0',
-                     'Tus-Resumable': '1.0.0'},
-            data=pdf_file)
+        with open(pdf_file_path, 'rb') as pdf_file:
+            response = self.api_session.patch(
+                location,
+                headers={
+                    'Content-Type': 'application/offset+octet-stream',
+                    'Upload-Offset': '0',
+                    'Tus-Resumable': '1.0.0'
+                },
+                data=pdf_file)
         self.assertEqual(response.status_code, 204)
 
         transaction.commit()
         self.assertEqual(UPLOAD_PDF_FILENAME, self.file.file.filename)
         self.assertEqual(pdf_file_size, self.file.file.size)
 
+    def test_create_with_tus_fires_proper_events(self):
+        sm = getGlobalSiteManager()
+        fired_events = []
+
+        def record_event(event):
+            fired_events.append(event.__class__.__name__)
+
+        sm.registerHandler(record_event, (IObjectCreatedEvent,))
+        sm.registerHandler(record_event, (IObjectWillBeAddedEvent,))
+        sm.registerHandler(record_event, (IObjectAddedEvent,))
+        sm.registerHandler(record_event, (IObjectModifiedEvent,))
+
+        # initialize the upload with POST
+        pdf_file_path = os.path.join(os.path.dirname(__file__),
+                                     UPLOAD_PDF_FILENAME)
+        pdf_file_size = os.path.getsize(pdf_file_path)
+        metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
+        response = self.api_session.post(
+            self.upload_url,
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(pdf_file_size),
+                     'Upload-Metadata': metadata}
+        )
+        self.assertEqual(response.status_code, 201)
+        location = response.headers['Location']
+
+        # upload the data with PATCH
+        with open(pdf_file_path, 'rb') as pdf_file:
+            response = self.api_session.patch(
+                location,
+                headers={
+                    'Content-Type': 'application/offset+octet-stream',
+                    'Upload-Offset': '0',
+                    'Tus-Resumable': '1.0.0'
+                },
+                data=pdf_file)
+        self.assertEqual(response.status_code, 204)
+
+        self.assertEqual(
+            fired_events,
+            [
+                'ObjectCreatedEvent',
+                'ObjectWillBeAddedEvent',
+                'ObjectAddedEvent',
+                'ContainerModifiedEvent',
+            ])
+
+        sm.unregisterHandler(record_event, (IObjectCreatedEvent,))
+        sm.unregisterHandler(record_event, (IObjectWillBeAddedEvent,))
+        sm.unregisterHandler(record_event, (IObjectAddedEvent,))
+        sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
+
+    def test_replace_with_tus_fires_proper_events(self):
+        # Create a test file
+        self.file = api.content.create(container=self.portal,
+                                       type='File',
+                                       id='testfile',
+                                       title='Testfile')
+        transaction.commit()
+
+        sm = getGlobalSiteManager()
+        fired_events = []
+
+        def record_event(event):
+            fired_events.append(event.__class__.__name__)
+
+        sm.registerHandler(record_event, (IObjectCreatedEvent,))
+        sm.registerHandler(record_event, (IObjectWillBeAddedEvent,))
+        sm.registerHandler(record_event, (IObjectAddedEvent,))
+        sm.registerHandler(record_event, (IObjectModifiedEvent,))
+
+        # initialize the upload with POST
+        pdf_file_path = os.path.join(os.path.dirname(__file__),
+                                     UPLOAD_PDF_FILENAME)
+        pdf_file_size = os.path.getsize(pdf_file_path)
+        metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
+        response = self.api_session.post(
+            '{}/@tus-replace'.format(self.file.absolute_url()),
+            headers={'Tus-Resumable': '1.0.0',
+                     'Upload-Length': str(pdf_file_size),
+                     'Upload-Metadata': metadata}
+        )
+        self.assertEqual(response.status_code, 201)
+        location = response.headers['Location']
+
+        # upload the data with PATCH
+        with open(pdf_file_path, 'rb') as pdf_file:
+            response = self.api_session.patch(
+                location,
+                headers={
+                    'Content-Type': 'application/offset+octet-stream',
+                    'Upload-Offset': '0',
+                    'Tus-Resumable': '1.0.0'
+                },
+                data=pdf_file)
+        self.assertEqual(response.status_code, 204)
+
+        self.assertEqual(
+            fired_events,
+            [
+                'ObjectModifiedEvent',
+            ])
+
+        sm.unregisterHandler(record_event, (IObjectCreatedEvent,))
+        sm.unregisterHandler(record_event, (IObjectWillBeAddedEvent,))
+        sm.unregisterHandler(record_event, (IObjectAddedEvent,))
+        sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
+
     def tearDown(self):
+        self.api_session.close()
         client_home = os.environ.get('CLIENT_HOME')
         tmp_dir = os.path.join(client_home, 'tus-uploads')
         if os.path.isdir(tmp_dir):
@@ -458,6 +584,7 @@ class TestTUSUploadWithCORS(unittest.TestCase):
         self.assertIn('Tus-Extension', response.headers)
 
     def tearDown(self):
+        self.api_session.close()
         gsm = getGlobalSiteManager()
         gsm.unregisterAdapter(
             CORSTestPolicy, (Interface, IBrowserRequest), ICORSPolicy)
@@ -500,29 +627,29 @@ class TestTUSUpload(unittest.TestCase):
 
     def test_offset_returns_size_of_current_file(self):
         tus = TUSUpload('myuid', {'length': 1024})
-        tus.write(StringIO('0123456789'))
+        tus.write(BytesIO(b'0123456789'))
         self.assertEqual(10, tus.offset())
         tus.cleanup()
 
     def test_write_creates_new_file(self):
         tus = TUSUpload('myuid', {'length': 1024})
-        tus.write(StringIO('0123456789'))
+        tus.write(BytesIO(b'0123456789'))
         self.assertTrue(os.path.isfile(tus.filepath))
         tus.cleanup()
 
     def test_write_appends_to_file_at_given_offset(self):
         tus = TUSUpload('myuid', {'length': 1024})
-        tus.write(StringIO('0123456789'))
-        tus.write(StringIO('abc'), 10)
+        tus.write(BytesIO(b'0123456789'))
+        tus.write(BytesIO(b'abc'), 10)
         self.assertEqual(13, tus.offset())
         with open(tus.filepath, 'rb') as f:
             data = f.read()
-        self.assertEqual('0123456789abc', data)
+        self.assertEqual(b'0123456789abc', data)
         tus.cleanup()
 
     def test_write_sets_finished_flag(self):
         tus = TUSUpload('myuid', {'length': 10})
-        tus.write(StringIO('0123456789'))
+        tus.write(BytesIO(b'0123456789'))
         self.assertTrue(tus.finished)
         tus.cleanup()
 
@@ -533,13 +660,13 @@ class TestTUSUpload(unittest.TestCase):
 
     def test_expires_returns_expiration_time_of_current_upload(self):
         tus = TUSUpload('myuid', {'length': 1024})
-        tus.write(StringIO('0123456789'))
+        tus.write(BytesIO(b'0123456789'))
         self.assertGreater(DateTime(tus.expires()), DateTime())
         tus.cleanup()
 
     def test_cleanup_removes_upload_file(self):
         tus = TUSUpload('myuid', {'length': 1024})
-        tus.write(StringIO('0123456789'))
+        tus.write(BytesIO(b'0123456789'))
         tus.cleanup()
         self.assertFalse(os.path.exists(tus.filepath))
 
@@ -577,6 +704,8 @@ class TestTUSWithAT(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.portal = self.layer['portal']
         setRoles(self.portal, TEST_USER_ID, ['Manager'])
         login(self.portal, TEST_USER_NAME)
@@ -592,14 +721,15 @@ class TestTUSWithAT(unittest.TestCase):
         self.api_session.headers.update({'Accept': 'application/json'})
         self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_tus_can_upload_pdf_file(self):
         # initialize the upload with POST
         pdf_file_path = os.path.join(os.path.dirname(__file__),
                                      UPLOAD_PDF_FILENAME)
         pdf_file_size = os.path.getsize(pdf_file_path)
-        metadata = 'filename {},content-type {}'.format(
-            b64encode(UPLOAD_PDF_FILENAME),
-            b64encode(UPLOAD_PDF_MIMETYPE))
+        metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
         response = self.api_session.post(
             self.upload_url,
             headers={'Tus-Resumable': '1.0.0',
@@ -610,13 +740,15 @@ class TestTUSWithAT(unittest.TestCase):
         location = response.headers['Location']
 
         # upload the data with PATCH
-        pdf_file = open(pdf_file_path, 'rb')
-        response = self.api_session.patch(
-            location,
-            headers={'Content-Type': 'application/offset+octet-stream',
-                     'Upload-Offset': '0',
-                     'Tus-Resumable': '1.0.0'},
-            data=pdf_file)
+        with open(pdf_file_path, 'rb') as pdf_file:
+            response = self.api_session.patch(
+                location,
+                headers={
+                    'Content-Type': 'application/offset+octet-stream',
+                    'Upload-Offset': '0',
+                    'Tus-Resumable': '1.0.0'
+                },
+                data=pdf_file)
         self.assertEqual(response.status_code, 204)
 
         transaction.commit()

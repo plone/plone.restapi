@@ -8,6 +8,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
+from plone.restapi import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -16,6 +17,7 @@ from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getUtility
 
+import six
 import transaction
 import unittest
 
@@ -74,6 +76,23 @@ class TestSearchFunctional(unittest.TestCase):
             test_bool_field=False,
         )
 
+        # /plone/folder2
+        self.folder2 = createContentInContainer(
+            self.portal, u'Folder',
+            id=u'folder2',
+            title=u'Another Folder')
+
+        # /plone/folder2/doc
+        createContentInContainer(
+            self.folder2, u'DXTestDocument',
+            id='doc',
+            title=u'Document in second folder',
+            start=DateTime(1975, 1, 1, 0, 0),
+            effective=DateTime(2015, 1, 1, 0, 0),
+            expires=DateTime(2020, 1, 1, 0, 0),
+            test_bool_field=False,
+        )
+
         # /plone/doc-outside-folder
         createContentInContainer(
             self.portal, u'DXTestDocument',
@@ -82,6 +101,9 @@ class TestSearchFunctional(unittest.TestCase):
         )
 
         transaction.commit()
+
+    def tearDown(self):
+        self.api_session.close()
 
     def test_overall_response_format(self):
         response = self.api_session.get('/@search')
@@ -133,10 +155,61 @@ class TestSearchFunctional(unittest.TestCase):
              u'/folder/other-document'},
             set(result_paths(response.json())))
 
+    def test_search_in_vhm_multiple_paths(self):
+        # Install a Virtual Host Monster
+        if 'virtual_hosting' not in self.app.objectIds():
+            # If ZopeLite was imported, we have no default virtual
+            # host monster
+            from Products.SiteAccess.VirtualHostMonster \
+                import manage_addVirtualHostMonster
+            manage_addVirtualHostMonster(self.app, 'virtual_hosting')
+        transaction.commit()
+
+        # path as a list
+        query = {'path': [
+            '/folder',
+            '/folder2']
+        }
+
+        # If we go through the VHM we will get results for multiple paths
+        # if we only use the part of the path inside the VHM
+        vhm_url = (
+            '%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s' %
+            (self.app.absolute_url(), '@search'))
+        response = self.api_session.get(vhm_url, params=query)
+        self.assertSetEqual(
+            {u'/folder',
+             u'/folder/doc',
+             u'/folder/other-document',
+             u'/folder2',
+             u'/folder2/doc'},
+            set(result_paths(response.json())))
+
+        # path as a dict with a query list
+        query = {'path.query': [
+            '/folder',
+            '/folder2']
+        }
+
+        # If we go through the VHM we will get results for multiple paths
+        # if we only use the part of the path inside the VHM
+        vhm_url = (
+            '%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s' %
+            (self.app.absolute_url(), '@search'))
+        response = self.api_session.get(vhm_url, params=query)
+        self.assertSetEqual(
+            {u'/folder',
+             u'/folder/doc',
+             u'/folder/other-document',
+             u'/folder2',
+             u'/folder2/doc'},
+            set(result_paths(response.json())))
+
     def test_path_gets_prefilled_if_missing_from_path_query_dict(self):
         response = self.api_session.get('/@search?path.depth=1')
         self.assertSetEqual(
             {u'/plone/folder',
+             u'/plone/folder2',
              u'/plone/doc-outside-folder'},
             set(result_paths(response.json())))
 
@@ -156,6 +229,7 @@ class TestSearchFunctional(unittest.TestCase):
         query = {'SearchableText': 'lorem', 'metadata_fields': '_all'}
         response = self.api_session.get('/@search', params=query)
 
+        first_item = response.json()['items'][0]
         self.assertDictContainsSubset(
             {u'@id': self.portal_url + u'/folder/doc',
              u'Creator': u'test_user_1_',
@@ -175,7 +249,6 @@ class TestSearchFunctional(unittest.TestCase):
              u'exclude_from_nav': False,
              u'expires': u'1999-01-01T00:00:00+00:00',
              u'getId': u'doc',
-             u'getObjSize': u'0 KB',
              u'getPath': u'/plone/folder/doc',
              u'getRemoteUrl': None,
              u'getURL': self.portal_url + u'/folder/doc',
@@ -192,7 +265,10 @@ class TestSearchFunctional(unittest.TestCase):
              u'sync_uid': None,
              u'title': u'Lorem Ipsum',
              u'total_comments': 0},
-            response.json()['items'][0])
+            first_item)
+        # This value changed in Plone 5.2
+        # (Dexterity gained support for getObjSize)
+        self.assertIn(first_item[u'getObjSize'], (u'0 KB', u'1 KB'))
 
     def test_full_objects_retrieval(self):
         query = {'SearchableText': 'lorem',
@@ -224,8 +300,8 @@ class TestSearchFunctional(unittest.TestCase):
                  'fullobjects': True}
         response = self.api_session.get('/@search', params=query)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(response.json()['items']), 1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['items']), 1)
 
     def test_full_objects_retrieval_collections(self):
         self.collection = createContentInContainer(
@@ -238,8 +314,8 @@ class TestSearchFunctional(unittest.TestCase):
                  'fullobjects': True}
         response = self.api_session.get('/@search', params=query)
 
-        self.assertEquals(response.status_code, 200)
-        self.assertEquals(len(response.json()['items']), 1)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()['items']), 1)
 
     # ZCTextIndex
 
@@ -276,7 +352,7 @@ class TestSearchFunctional(unittest.TestCase):
         query = {'test_list_field': ['Keyword2', 'Keyword3']}
         response = self.api_session.get('/@search', params=query)
 
-        self.assertItemsEqual(
+        self.assertEqual(
             [u'/plone/folder/doc',
              u'/plone/folder/other-document'],
             result_paths(response.json())
@@ -294,6 +370,7 @@ class TestSearchFunctional(unittest.TestCase):
             result_paths(response.json())
         )
 
+    @unittest.skipIf(six.PY3, "Python 3 can't sort mixed types")
     def test_keyword_index_int_query(self):
         self.doc.test_list_field = [42, 23]
         self.doc.reindexObject()
@@ -358,6 +435,39 @@ class TestSearchFunctional(unittest.TestCase):
             [u'/plone/folder',
              u'/plone/folder/doc',
              u'/plone/folder/other-document'],
+            result_paths(response.json())
+        )
+
+    def test_extended_path_index_query_multiple(self):
+        # path as a list
+        query = {'path': [
+                '/'.join(self.folder.getPhysicalPath()),
+                '/'.join(self.folder2.getPhysicalPath())]
+        }
+        response = self.api_session.get('/@search', params=query)
+
+        self.assertEqual(
+            [u'/plone/folder',
+             u'/plone/folder/doc',
+             u'/plone/folder/other-document',
+             u'/plone/folder2',
+             u'/plone/folder2/doc'],
+            result_paths(response.json())
+        )
+
+        # path as a dict with a query list
+        query = {'path.query': [
+                '/'.join(self.folder.getPhysicalPath()),
+                '/'.join(self.folder2.getPhysicalPath())]
+        }
+        response = self.api_session.get('/@search', params=query)
+
+        self.assertEqual(
+            [u'/plone/folder',
+             u'/plone/folder/doc',
+             u'/plone/folder/other-document',
+             u'/plone/folder2',
+             u'/plone/folder2/doc'],
             result_paths(response.json())
         )
 
@@ -506,6 +616,8 @@ class TestSearchATFunctional(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 
     def setUp(self):
+        if not HAS_AT:
+            raise unittest.SkipTest('Skip tests if Archetypes is not present')
         self.app = self.layer['app']
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()

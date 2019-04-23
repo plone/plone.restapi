@@ -16,8 +16,10 @@ processed the same way they would for a server-rendered form.
 from collections import OrderedDict
 from copy import copy
 from plone.autoform.form import AutoExtensibleForm
+from plone.autoform.interfaces import IParameterizedWidget
 from plone.autoform.interfaces import WIDGETS_KEY
 from plone.dexterity.utils import getAdditionalSchemata
+from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from Products.CMFCore.utils import getToolByName
 from plone.supermodel.utils import mergedTaggedValueDict
@@ -64,7 +66,7 @@ def get_fieldsets(context, request, schema, additional_schemata=None):
     fieldsets = [{
         'id': 'default',
         'title': u'Default',
-        'fields': form.fields.values(),
+        'fields': list(form.fields.values()),
     }]
 
     # Additional fieldsets (AKA z3c.form groups)
@@ -72,7 +74,7 @@ def get_fieldsets(context, request, schema, additional_schemata=None):
         fieldset = {
             'id': group.__name__,
             'title': translate(group.label, context=getRequest()),
-            'fields': group.fields.values(),
+            'fields': list(group.fields.values()),
         }
         fieldsets.append(fieldset)
 
@@ -138,8 +140,11 @@ def get_tagged_values(schemas, key):
         tagged_values = mergedTaggedValueDict(schema, key)
         for field_name in schema:
             widget = tagged_values.get(field_name)
-            if widget and widget.params:
-                params[field_name] = widget.params
+            if IParameterizedWidget.providedBy(widget) and widget.params:
+                params[field_name] = widget.params.copy()
+                for k, v in params[field_name].items():
+                    if callable(v):
+                        params[field_name][k] = v()
     return params
 
 
@@ -189,7 +194,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     return {
         'type': 'object',
         'title': translate(fti.Title(), context=getRequest()),
-        'properties': properties,
+        'properties': json_compatible(properties),
         'required': required,
         'fieldsets': get_fieldset_infos(fieldsets),
         'layouts': getattr(fti, 'view_methods', []),

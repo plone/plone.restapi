@@ -10,6 +10,8 @@ from zope.component import getMultiAdapter
 from zope.interface import Interface
 from zope.interface import implementer
 
+import json
+
 
 @implementer(ISerializeToJson)
 @adapter(IPloneSiteRoot, Interface)
@@ -44,7 +46,10 @@ class SerializeSiteRootToJson(object):
             '@type': 'Plone Site',
             'title': self.context.Title(),
             'parent': {},
-            'is_folderish': True
+            'is_folderish': True,
+            'description': self.context.description,
+            'tiles': json.loads(getattr(self.context, 'tiles', '{}')),
+            'tiles_layout': json.loads(getattr(self.context, 'tiles_layout', '{}')) # noqa
         }
 
         # Insert expandable elements

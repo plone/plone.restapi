@@ -68,6 +68,10 @@ class TestUsersEndpoint(unittest.TestCase):
         api.group.create(groupname='ploneteam')
         transaction.commit()
 
+    def tearDown(self):
+        self.api_session.close()
+        self.anon_api_session.close()
+
     def test_list_users(self):
         response = self.api_session.get('/@users')
 
@@ -96,6 +100,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = noam_api_session.get('/@users')
         self.assertEqual(response.status_code, 401)
+        noam_api_session.close()
 
     def test_list_users_as_anonymous(self):
 
@@ -317,6 +322,28 @@ class TestUsersEndpoint(unittest.TestCase):
         fields = [x['field'] for x in errors]
         self.assertEqual(['groups'], fields)
 
+    def test_add_user_with_uuid_as_userid_enabled(self):
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        security_settings.use_uuid_as_userid = True
+        transaction.commit()
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "email": "howard.zinn@example.com",
+                "password": "secret"
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+        user_id = response.json()['id']
+        user = api.user.get(userid=user_id)
+        self.assertTrue(user)
+        self.assertEqual('howard.zinn@example.com', user.getUserName())
+        self.assertEqual('howard.zinn@example.com', user.getProperty('email'))
+
     def test_get_user(self):
         response = self.api_session.get('/@users/noam')
 
@@ -346,6 +373,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = noam_api_session.get('/@users/otheruser')
         self.assertEqual(response.status_code, 401)
+        noam_api_session.close()
 
     def test_get_search_user_with_filter(self):
         response = self.api_session.post(
@@ -409,6 +437,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = noam_api_session.get('/@users', params={'query': 'howa'})
         self.assertEqual(response.status_code, 401)
+        noam_api_session.close()
 
     def test_get_non_existing_user(self):
         response = self.api_session.get('/@users/non-existing-user')
@@ -590,6 +619,69 @@ class TestUsersEndpoint(unittest.TestCase):
             old_password_hashes['noam'], new_password_hashes['noam']
         )
 
+    def test_update_portrait(self):
+        payload = {
+            'portrait': {
+                'filename': 'image.png',
+                'encoding': 'base64',
+                'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+                'content-type': 'image/png'
+            }
+        }
+        self.api_session.auth = ('noam', 'password')
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get('/@users/noam').json()
+        self.assertTrue(
+            user.get('portrait').endswith(
+                'plone/portal_memberdata/portraits/noam'),
+        )
+
+    def test_update_portrait_with_default_plone_scaling(self):
+        payload = {
+            'portrait': {
+                'filename': 'image.png',
+                'encoding': 'base64',
+                'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+                'content-type': 'image/png',
+                'scale': True
+            }
+        }
+        self.api_session.auth = ('noam', 'password')
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get('/@users/noam').json()
+        self.assertTrue(
+            user.get('portrait').endswith(
+                'plone/portal_memberdata/portraits/noam'),
+        )
+
+    def test_update_portrait_by_manager(self):
+        payload = {
+            'portrait': {
+                'filename': 'image.png',
+                'encoding': 'base64',
+                'data': u'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+                'content-type': 'image/png'
+            }
+        }
+        response = self.api_session.patch('/@users/noam', json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get('/@users/noam').json()
+        self.assertTrue(
+            user.get('portrait').endswith(
+                'plone/portal_memberdata/portraits/noam'),
+        )
+
     def test_anonymous_user_can_not_update_existing_user(self):
         payload = {
             'fullname': 'Noam A. Chomsky',
@@ -724,6 +816,107 @@ class TestUsersEndpoint(unittest.TestCase):
                                                     {})
         self.assertTrue(authed)
 
+    def test_reset_with_uuid_as_userid_and_login_email_using_id(self):
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        security_settings.use_uuid_as_userid = True
+        transaction.commit()
+
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "email": "howard.zinn@example.com",
+                "password": "secret"
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+        user_id = response.json()['id']
+        user = api.user.get(userid=user_id)
+        self.assertTrue(user)
+
+        reset_tool = getToolByName(self.portal, 'portal_password_reset')
+        reset_info = reset_tool.requestReset(user.id)
+        token = reset_info['randomstring']
+        transaction.commit()
+
+        payload = {'reset_token': token,
+                   'new_password': 'new_password'}
+        response = self.api_session.post(
+            '/@users/{}/reset-password'.format(user.id),
+            json=payload)
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_reset_with_uuid_as_userid_and_login_email_using_mail(self):
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        security_settings.use_uuid_as_userid = True
+        transaction.commit()
+
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "email": "howard.zinn@example.com",
+                "password": "secret"
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+        user_id = response.json()['id']
+        user = api.user.get(userid=user_id)
+        self.assertTrue(user)
+
+        reset_tool = getToolByName(self.portal, 'portal_password_reset')
+        reset_info = reset_tool.requestReset(user.id)
+        token = reset_info['randomstring']
+        transaction.commit()
+
+        payload = {'reset_token': token,
+                   'new_password': 'new_password'}
+        response = self.api_session.post(
+            '/@users/{}/reset-password'.format(user.getUserName()),
+            json=payload)
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_reset_and_login_email_using_mail(self):
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+
+        response = self.api_session.post(
+            '/@users',
+            json={
+                "email": "howard.zinn@example.com",
+                "password": "secret"
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(201, response.status_code)
+        user_id = response.json()['id']
+        user = api.user.get(userid=user_id)
+        self.assertTrue(user)
+
+        reset_tool = getToolByName(self.portal, 'portal_password_reset')
+        reset_info = reset_tool.requestReset(user.id)
+        token = reset_info['randomstring']
+        transaction.commit()
+
+        payload = {'reset_token': token,
+                   'new_password': 'new_password'}
+        response = self.api_session.post(
+            '/@users/{}/reset-password'.format(user.getUserName()),
+            json=payload)
+
+        self.assertEqual(response.status_code, 200)
+
     def test_delete_user(self):
         response = self.api_session.delete('/@users/noam')
         transaction.commit()
@@ -854,7 +1047,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = response.json()
         self.assertIn('Member', response['roles'])
-        self.assertEquals(1, len(response['roles']))
+        self.assertEqual(1, len(response['roles']))
 
     def test_add_user_no_roles_sets_member_as_sensible_default(self):
         response = self.api_session.post(
@@ -888,3 +1081,4 @@ class TestUsersEndpoint(unittest.TestCase):
         response = response.json()
         self.assertEqual(1, len(response['groups']))
         self.assertEqual('ploneteam', response['groups'][0]['id'])
+        self.assertEqual(1, len(response['roles']))

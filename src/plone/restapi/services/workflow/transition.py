@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+import six
+
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.serializer.converters import json_compatible
@@ -10,17 +13,17 @@ from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
 from zope.i18n import translate
 from zope.interface import alsoProvides
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
 
 import plone.protect.interfaces
 
 
+@implementer(IPublishTraverse)
 class WorkflowTransition(Service):
     """Trigger workflow transition
     """
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(WorkflowTransition, self).__init__(context, request)
@@ -69,7 +72,7 @@ class WorkflowTransition(Service):
             self.request.response.setStatus(400)
             return dict(error=dict(
                 type='WorkflowException',
-                message=translate(e.message, context=self.request)))
+                message=translate(str(e), context=self.request)))
         except BadRequest as e:
             self.request.response.setStatus(400)
             return dict(error=dict(
@@ -78,10 +81,16 @@ class WorkflowTransition(Service):
 
         history = self.wftool.getInfoFor(self.context, "review_history")
         action = history[-1]
-        action['title'] = self.context.translate(
-            self.wftool.getTitleForStateOnType(
-                action['review_state'],
-                self.context.portal_type).decode('utf8'))
+        if six.PY2:
+            action['title'] = self.context.translate(
+                self.wftool.getTitleForStateOnType(
+                    action['review_state'],
+                    self.context.portal_type).decode('utf8'))
+        else:
+            action['title'] = self.context.translate(
+                self.wftool.getTitleForStateOnType(
+                    action['review_state'],
+                    self.context.portal_type))
 
         return json_compatible(action)
 

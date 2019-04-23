@@ -79,6 +79,14 @@ class TestWorkflowInfo(TestCase):
         self.assertIn('transitions', obj['@components']['workflow'])
         self.assertIn('history', obj['@components']['workflow'])
 
+    def test_workflow_info_empty_on_siteroot(self):
+        wfinfo = getMultiAdapter((self.portal, self.request),
+                                 name=u'GET_application_json_@workflow')
+        obj = wfinfo.reply()
+
+        self.assertEquals(obj['transitions'], [])
+        self.assertEquals(obj['history'], [])
+
 
 class TestWorkflowTransition(TestCase):
 
@@ -98,8 +106,9 @@ class TestWorkflowTransition(TestCase):
         request.environ['PATH_TRANSLATED'] = path
         request.environ['HTTP_ACCEPT'] = accept
         request.environ['REQUEST_METHOD'] = method
+        auth = '%s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         request._auth = 'Basic %s' % b64encode(
-            '%s:%s' % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD))
+            auth.encode('utf8')).decode('utf8')
         notify(PubStart(request))
         return request.traverse(path)
 

@@ -40,6 +40,14 @@
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
+  <genericsetup:registerProfile
+      name="tiles"
+      title="plone.restapi tiles"
+      directory="profiles/tiles"
+      description="Enables tiles on the Document content type"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
   <!-- Register "various" import step -->
   <genericsetup:importStep
     name="plone.restapi"

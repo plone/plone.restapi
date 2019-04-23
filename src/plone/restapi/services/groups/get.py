@@ -6,15 +6,14 @@ from Products.CMFCore.utils import getToolByName
 from zExceptions import BadRequest
 from zope.component.hooks import getSite
 from zope.component import queryMultiAdapter
-from zope.interface import implements
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
 
 
+@implementer(IPublishTraverse)
 class GroupsGet(Service):
-
-    implements(IPublishTraverse)
 
     def __init__(self, context, request):
         super(GroupsGet, self).__init__(context, request)

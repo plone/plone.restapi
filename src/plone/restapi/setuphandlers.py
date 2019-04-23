@@ -4,6 +4,7 @@ from Acquisition import aq_parent
 from plone.restapi.pas.plugin import JWTAuthenticationPlugin
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import INonInstallable
+from Products.PluggableAuthService.interfaces.authservice import IPluggableAuthService  # noqa: E501
 from zope.interface import implementer
 
 
@@ -13,6 +14,9 @@ class HiddenProfiles(object):
     def getNonInstallableProfiles(self):  # pragma: no cover
         """Do not show on Plone's list of installable profiles."""
         return [
+            u'plone.restapi:performance',
+            u'plone.restapi:testing',
+            u'plone.restapi:tiles',
             u'plone.restapi:uninstall',
         ]
 
@@ -30,7 +34,7 @@ def install_pas_plugin(context):
     uf_parent = aq_inner(context)
     while True:
         uf = getToolByName(uf_parent, 'acl_users')
-        if 'jwt_auth' not in uf:
+        if IPluggableAuthService.providedBy(uf) and 'jwt_auth' not in uf:
             plugin = JWTAuthenticationPlugin('jwt_auth')
             uf._setObject(plugin.getId(), plugin)
             plugin = uf['jwt_auth']
