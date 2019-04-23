@@ -13,7 +13,20 @@ Content-Type: application/json
       "@id": "http://localhost:55001/plone/portal_memberdata/noam/@navigation"
     }, 
     "user-groups": {
-      "@id": "http://localhost:55001/plone/portal_memberdata/noam/@user-groups"
+      "@id": "http://localhost:55001/plone/portal_memberdata/noam/@user-groups", 
+      "groups": [
+        {
+          "@id": "http://localhost:55001/plone/@groups/ploneteam", 
+          "description": null, 
+          "email": "", 
+          "groupname": "ploneteam", 
+          "id": "ploneteam", 
+          "roles": [
+            "Authenticated"
+          ], 
+          "title": null
+        }
+      ]
     }
   }, 
   "@id": "http://localhost:55001/plone/@users/noam", 

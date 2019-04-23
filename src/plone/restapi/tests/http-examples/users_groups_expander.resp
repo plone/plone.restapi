@@ -14,7 +14,20 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone/portal_memberdata/admin/@navigation"
       }, 
       "user-groups": {
-        "@id": "http://localhost:55001/plone/portal_memberdata/admin/@user-groups"
+        "@id": "http://localhost:55001/plone/portal_memberdata/admin/@user-groups", 
+        "groups": [
+          {
+            "@id": "http://localhost:55001/plone/@groups/ploneteam", 
+            "description": null, 
+            "email": "", 
+            "groupname": "ploneteam", 
+            "id": "ploneteam", 
+            "roles": [
+              "Authenticated"
+            ], 
+            "title": null
+          }
+        ]
       }
     }, 
     "@id": "http://localhost:55001/plone/@users/admin", 
@@ -42,7 +55,8 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone/portal_memberdata/test_user_1_/@navigation"
       }, 
       "user-groups": {
-        "@id": "http://localhost:55001/plone/portal_memberdata/test_user_1_/@user-groups"
+        "@id": "http://localhost:55001/plone/portal_memberdata/test_user_1_/@user-groups", 
+        "groups": []
       }
     }, 
     "@id": "http://localhost:55001/plone/@users/test_user_1_", 

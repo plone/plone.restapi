@@ -19,6 +19,8 @@ class UsersGet(Service):
         super(UsersGet, self).__init__(context, request)
         self.params = []
         self.query = self.request.form.copy()
+        # expand is handled in the serializer/expander code
+        self.query.pop('expand', None)
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
@@ -52,7 +54,6 @@ class UsersGet(Service):
 
     def reply(self):
         sm = getSecurityManager()
-        include_groups = self.query.pop('include_groups', False)
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get('query', '')
             limit = self.query.get('limit', DEFAULT_SEARCH_RESULTS_LIMIT)
@@ -67,7 +68,7 @@ class UsersGet(Service):
                             ISerializeToJson
                         )
                         result.append(
-                            serializer(include_groups=include_groups))
+                            serializer())
                     return result
                 else:
                     self.request.response.setStatus(401)
@@ -84,7 +85,7 @@ class UsersGet(Service):
                         (user, self.request),
                         ISerializeToJson
                     )
-                    result.append(serializer(include_groups=include_groups))
+                    result.append(serializer())
                 return result
             else:
                 self.request.response.setStatus(401)
@@ -108,7 +109,7 @@ class UsersGet(Service):
                 (user, self.request),
                 ISerializeToJson
             )
-            return serializer(include_groups=include_groups)
+            return serializer()
         else:
             self.request.response.setStatus(401)
             return

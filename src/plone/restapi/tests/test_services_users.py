@@ -362,6 +362,21 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual('Professor of Linguistics', response.json().get('description'))  # noqa
         self.assertEqual('Cambridge, MA', response.json().get('location'))
 
+    def test_get_user_groups_expander(self):
+        api.group.add_user(groupname='ploneteam', username='noam')
+        transaction.commit()
+        response = self.api_session.get('/@users/noam?expand=user-groups')
+
+        self.assertEqual(response.status_code, 200)
+        response = response.json()
+        components = response['@components']
+        self.assertTrue('user-groups' in components)       
+        self.assertTrue('groups' in components['user-groups'])
+        expanded_groups = components['user-groups']['groups']
+        self.assertEqual(1, len(expanded_groups))
+        self.assertEqual(u'ploneteam', expanded_groups[0]['id'])
+
+
     def test_get_user_as_anonymous(self):
         response = self.anon_api_session.get('/@users/noam')
         self.assertEqual(response.status_code, 401)
@@ -1078,7 +1093,8 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(201, response.status_code)
-        response = response.json()
-        self.assertEqual(1, len(response['groups']))
-        self.assertEqual('ploneteam', response['groups'][0]['id'])
-        self.assertEqual(1, len(response['roles']))
+        user = api.user.get(userid='howard')
+        self.assertEqual('howard', user.id)
+        groups = api.group.get_groups(user=user)
+        self.assertTrue('ploneteam' in [group.id for group in groups])
+

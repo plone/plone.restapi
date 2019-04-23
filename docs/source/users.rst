@@ -6,7 +6,7 @@ Available users in a Plone site can be created, queried, updated and deleted by 
 List Users
 ----------
 
-To retrieve a list of all current users in the portal, call the ``/@users`` endpoint with a ``GET`` request. If you want to include the list groups a user is in, you can pass the URL parameter ``include_groups``:
+To retrieve a list of all current users in the portal, call the ``/@users`` endpoint with a ``GET`` request:
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/users.req
@@ -51,6 +51,15 @@ The server will respond with a list the filtered users in the portal with userna
 
 The endpoint also takes a ``limit`` parameter that defaults to a maximum of 25 users at a time for performance reasons.
 
+It also supports an :doc:`expander <expansion>` named ``user-groups`` that includes the groups for each user: ``...?expand=user-groups``.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/users_groups_expander.req
+
+The server will respond with a list of all users in the portal:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_groups_expander.resp
+   :language: http
 
 Create User
 -----------
@@ -118,6 +127,18 @@ In this case, the server will respond with a 200 OK status code and the JSON res
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_authorized_get.resp
    :language: http
+
+GET supports an :doc:`expander <expansion>` named ``user-groups`` that includes the groups of the user: ``...?expand=user-groups``.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/users_authorized_get_groups_expander.req
+
+In this case, the server will respond with a 200 OK status code and the JSON respresentation of the user in the body:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/users_authorized_get_groups_expander.resp
+   :language: http
+
+
 
 Update User
 -----------

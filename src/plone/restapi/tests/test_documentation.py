@@ -637,8 +637,35 @@ class TestDocumentation(unittest.TestCase):
         }
         admin.setMemberProperties(mapping=properties)
         transaction.commit()
-        response = self.api_session.get('/@users?include_groups=1')
+        response = self.api_session.get('/@users')
         save_request_and_response_for_docs('users', response)
+
+    def test_documentation_users_groups_expander(self):
+        api.group.create(groupname='ploneteam')
+        test_user = api.user.get(username=TEST_USER_ID)
+        properties = {
+            "description": "This is a test user",
+            "email": "test@example.com",
+            "fullname": "Test User",
+            "home_page": "http://www.example.com",
+            "location": "Bonn",
+            "username": "test-user"
+        }
+        test_user.setMemberProperties(mapping=properties)
+        admin = api.user.get(username='admin')
+        properties = {
+            "description": "This is an admin user",
+            "email": "admin@example.com",
+            "fullname": "Administrator",
+            "home_page": "http://www.example.com",
+            "location": "Berlin",
+            "username": "admin"
+        }
+        admin.setMemberProperties(mapping=properties)
+        api.group.add_user(groupname='ploneteam', username='admin')
+        transaction.commit()
+        response = self.api_session.get('/@users?expand=user-groups')
+        save_request_and_response_for_docs('users_groups_expander', response)
 
     def test_documentation_users_as_anonymous(self):
         logged_out_api_session = RelativeSession(self.portal_url)
@@ -690,7 +717,7 @@ class TestDocumentation(unittest.TestCase):
             properties=properties
         )
         transaction.commit()
-        response = self.api_session.get('@users/noam?include_groups=1')
+        response = self.api_session.get('@users/noam')
         save_request_and_response_for_docs('users_get', response)
 
     def test_documentation_users_anonymous_get(self):
@@ -771,6 +798,34 @@ class TestDocumentation(unittest.TestCase):
         logged_out_api_session.auth = ('noam', 'secret')
         response = logged_out_api_session.get('@users/noam')
         save_request_and_response_for_docs('users_authorized_get', response)
+        logged_out_api_session.close()
+
+    def test_documentation_users_authorized_get_groups_expander(self):
+        properties = {
+            'email': 'noam.chomsky@example.com',
+            'username': 'noamchomsky',
+            'fullname': 'Noam Avram Chomsky',
+            'home_page': 'web.mit.edu/chomsky',
+            'description': 'Professor of Linguistics',
+            'location': 'Cambridge, MA'
+        }
+        api.user.create(
+            email='noam.chomsky@example.com',
+            username='noam',
+            password='secret',
+            properties=properties
+        )
+        api.group.create(groupname='ploneteam')
+        api.group.add_user(groupname='ploneteam', username='noam')
+        transaction.commit()
+
+        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session.headers.update({'Accept': 'application/json'})
+        logged_out_api_session.auth = ('noam', 'secret')
+        response = logged_out_api_session.get('@users/noam?expand=user-groups')
+        save_request_and_response_for_docs(
+            'users_authorized_get_groups_expander',
+            response)
         logged_out_api_session.close()
 
     def test_documentation_users_filtered_get(self):

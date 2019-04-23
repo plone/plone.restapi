@@ -32,7 +32,9 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
         api.group.create(groupname='philosophers')
         api.group.add_user(groupname='philosophers', user=self.user)
 
-    def serialize(self, user, **kwargs):
+    def serialize(self, user, request=None, **kwargs):
+        if request is None:
+            request = self.request
         serializer = getMultiAdapter((user, self.request),
                                      ISerializeToJson)
         return serializer(**kwargs)
@@ -57,10 +59,19 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
         user = self.serialize(self.user)
         self.assertNotIn('groups', user)
 
-        user = self.serialize(self.user, include_groups=True)
-        self.assertIn('groups', user)
-        self.assertNotIn('AuthenticatedUsers', user['groups'])
-        self.assertEqual(user['groups'][0]['id'], 'philosophers')
+        marker = object()
+        old_expand = self.request.form.get('expand', marker)
+        self.request.form['expand'] = 'user-groups'
+        user = self.serialize(self.user)
+        self.assertIn('user-groups', user['@components'])
+        self.assertIn('groups', user['@components']['user-groups'])
+        groups = user['@components']['user-groups']['groups']
+        self.assertEquals(1, len(groups))
+        self.assertEqual(groups[0]['id'], 'philosophers')
+        if old_expand is marker:
+            del self.request.form['expand']
+        else:
+            self.request.form['expand'] = old_expand
 
     @unittest.skipUnless(HAS_TTW_SCHEMAS, 'Requires TTW user schemas')
     def test_serialize_custom_member_schema(self):

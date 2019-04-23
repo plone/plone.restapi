@@ -58,6 +58,7 @@
     <adapter factory=".catalog.BrainSerializer" />
     <adapter factory=".catalog.LazyCatalogResultSerializer" />
 
+    <adapter factory=".user.UserGroupsExpander" name="user-groups"/>
     <adapter factory=".user.SerializeUserToJson" />
     <adapter factory=".user.SerializeUserToJsonSummary" />
     <adapter factory=".group.SerializeGroupToJson" />

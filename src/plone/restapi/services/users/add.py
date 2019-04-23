@@ -238,7 +238,7 @@ class UsersPost(Service):
             (user, self.request),
             ISerializeToJson
         )
-        return serializer(include_groups=True)
+        return serializer()
 
     def _get_user(self, user_id):
         portal = getSite()

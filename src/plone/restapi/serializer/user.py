@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.serializer.expansion import expandable_elements
 from Products.CMFCore.interfaces._tools import IMemberData
 from Products.CMFCore.utils import getToolByName
 
@@ -9,6 +11,7 @@ from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component.hooks import getSite
+from zope.interface import Interface
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
 from zope.schema import getFieldNames
@@ -23,13 +26,27 @@ except ImportError:
     HAS_TTW_SCHEMAS = False
 
 
+def get_groups(portal, request, user):
+    group_tool = getToolByName(portal, 'portal_groups')
+    group_ids = group_tool.getGroupsForPrincipal(user)
+    group_ids = list(set(group_ids) - set(['AuthenticatedUsers']))
+    groups = []
+    for group_id in group_ids:
+        group = group_tool.getGroupById(group_id)
+        if group:
+            groups.append(
+                getMultiAdapter((group, request),
+                                interface=ISerializeToJsonSummary)())
+    return groups
+
+
 class BaseSerializer(object):
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
-    def __call__(self, include_groups=False):
+    def __call__(self):
         user = self.context
         portal = getSite()
 
@@ -70,20 +87,30 @@ class BaseSerializer(object):
                     value = safe_unicode(value)
             data[name] = value
 
-        if include_groups:
-            group_tool = getToolByName(portal, 'portal_groups')
-            group_ids = group_tool.getGroupsForPrincipal(user)
-            group_ids = list(set(group_ids) - set(['AuthenticatedUsers']))
-            groups = []
-            for group_id in group_ids:
-                group = group_tool.getGroupById(group_id)
-                if group:
-                    groups.append(
-                        getMultiAdapter((group, self.request),
-                                        interface=ISerializeToJsonSummary)())
-            data['groups'] = groups
+        # Insert expandable elements
+        data.update(expandable_elements(self.context, self.request))
 
         return data
+
+
+@implementer(IExpandableElement)
+@adapter(IMemberData, Interface)
+class UserGroupsExpander(object):
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, expand=False):
+        result = {
+            'user-groups': {
+                '@id': '{}/@user-groups'.format(self.context.absolute_url()),
+            },
+        }
+        if expand:
+            result['user-groups']['groups'] = get_groups(
+                self.context, self.request, self.context)
+        return result
 
 
 @implementer(ISerializeToJson)
