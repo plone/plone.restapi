@@ -54,6 +54,70 @@ class UsersPatch(Service):
         acl_users = getToolByName(self.context, 'acl_users')
         acl_users.userSetPassword(user.getUserId(), value)
 
+    def update_as_manager(self, user, user_settings_to_update):
+        for key, value in user_settings_to_update.items():
+            if key == 'password':
+                self._change_user_password(user, value)
+            elif key == 'username':
+                set_own_login_name(user, value)
+            else:
+                if key == 'portrait' and value.get('data'):
+                    self.set_member_portrait(user, value)
+                user.setMemberProperties(mapping={key: value})
+
+        roles = user_settings_to_update.get('roles', {})
+        if roles:
+            to_add = [key for key, enabled in roles.items() if enabled]
+            to_remove = [key for key, enabled in roles.items()
+                         if not enabled]
+
+            target_roles = set(user.getRoles()) - set(to_remove)
+            target_roles = target_roles | set(to_add)
+
+            acl_users = getToolByName(self.context, 'acl_users')
+            acl_users.userFolderEditUser(
+                principal_id=user.id,
+                password=None,
+                roles=target_roles,
+                domains=user.getDomains(),
+            )
+
+        groups = user_settings_to_update.get('groups', {})
+        if groups:
+            to_add = [key for key, enabled in groups.items() if enabled]
+            to_remove = [key for key, enabled in groups.items()
+                         if not enabled]
+            groups_tool = getToolByName(self.context, 'portal_groups')
+            current = groups_tool.getGroupsForPrincipal(user)
+            for group in to_add:
+                if group not in current:
+                    groups_tool.addPrincipalToGroup(user.id, group)
+            for group in to_remove:
+                if group in current:
+                    groups_tool.removePrincipalFromGroup(user.id, group)
+
+    def update_own_settings(self, user, user_settings_to_update):
+        if not self.can_manage_users:
+            if 'roles' in user_settings_to_update:
+                return self._error(
+                    403, 'Forbidden',
+                    'You can\'t update your roles')
+            if 'groups' in user_settings_to_update:
+                return self._error(
+                    403, 'Forbidden',
+                    'You can\'t update your groups')
+
+        for key, value in user_settings_to_update.items():
+            security = getAdapter(self.context, ISecuritySchema)
+            if key == 'password' and \
+               security.enable_user_pwd_choice and \
+               self.can_set_own_password:
+                self._change_user_password(user, value)
+            else:
+                if key == 'portrait' and value.get('data'):
+                    self.set_member_portrait(user, value)
+                user.setMemberProperties(mapping={key: value})
+
     def reply(self):
         user_settings_to_update = json.loads(self.request.get('BODY', '{}'))
         user = self._get_user(self._get_user_id)
@@ -63,81 +127,22 @@ class UsersPatch(Service):
             alsoProvides(self.request,
                          plone.protect.interfaces.IDisableCSRFProtection)
 
-        security = getAdapter(self.context, ISecuritySchema)
+        self.request.response.setStatus(204)
 
         if self.can_manage_users:
-            for key, value in user_settings_to_update.items():
-                if key == 'password':
-                    self._change_user_password(user, value)
-                elif key == 'username':
-                    set_own_login_name(user, value)
-                else:
-                    if key == 'portrait' and value.get('data'):
-                        self.set_member_portrait(user, value)
-                    user.setMemberProperties(mapping={key: value})
-
-            roles = user_settings_to_update.get('roles', {})
-            if roles:
-                to_add = [key for key, enabled in roles.items() if enabled]
-                to_remove = [key for key, enabled in roles.items()
-                             if not enabled]
-
-                target_roles = set(user.getRoles()) - set(to_remove)
-                target_roles = target_roles | set(to_add)
-
-                acl_users = getToolByName(self.context, 'acl_users')
-                acl_users.userFolderEditUser(
-                    principal_id=user.id,
-                    password=None,
-                    roles=target_roles,
-                    domains=user.getDomains(),
-                )
-
-            groups = user_settings_to_update.get('groups', {})
-            if groups:
-                to_add = [key for key, enabled in groups.items() if enabled]
-                to_remove = [key for key, enabled in groups.items()
-                             if not enabled]
-                groups_tool = getToolByName(self.context, 'portal_groups')
-                current = groups_tool.getGroupsForPrincipal(user)
-                for group in to_add:
-                    if group not in current:
-                        groups_tool.addPrincipalToGroup(user.id, group)
-                for group in to_remove:
-                    if group in current:
-                        groups_tool.removePrincipalFromGroup(user.id, group)
+            return self.update_as_manager(user, user_settings_to_update)
 
         elif self._get_current_user == self._get_user_id:
-            if not self.can_manage_users:
-                if 'roles' in user_settings_to_update:
-                    return self._error(
-                        403, 'Forbidden',
-                        'You can\'t update your roles')
-                if 'groups' in user_settings_to_update:
-                    return self._error(
-                        403, 'Forbidden',
-                        'You can\'t update your groups')
+            return self.update_own_settings(user, user_settings_to_update)
 
-            for key, value in user_settings_to_update.items():
-                if key == 'password' and \
-                   security.enable_user_pwd_choice and \
-                   self.can_set_own_password:
-                    self._change_user_password(user, value)
-                else:
-                    if key == 'portrait' and value.get('data'):
-                        self.set_member_portrait(user, value)
-                    user.setMemberProperties(mapping={key: value})
-
+        if self._is_anonymous:
+            return self._error(401, 'Unauthorized',
+                               'You are not authorized to perform this '
+                               'action')
         else:
-            if self._is_anonymous:
-                return self._error(401, 'Unauthorized',
-                                   'You are not authorized to perform this '
-                                   'action')
-            else:
-                return self._error(403, 'Forbidden', 'You can\'t update the '
-                                        'properties of this user')
+            return self._error(403, 'Forbidden', 'You can\'t update the '
+                                    'properties of this user')
 
-        self.request.response.setStatus(204)
         return None
 
     @property
