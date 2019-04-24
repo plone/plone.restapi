@@ -94,7 +94,11 @@ Content-Type: application/json+schema
       "title": "Contributors", 
       "type": "array", 
       "uniqueItems": true, 
-      "vocabulary": "plone.app.vocabularies.Users"
+      "widgetOptions": {
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+        }
+      }
     }, 
     "creators": {
       "additionalItems": true, 
@@ -107,7 +111,11 @@ Content-Type: application/json+schema
       "title": "Creators", 
       "type": "array", 
       "uniqueItems": true, 
-      "vocabulary": "plone.app.vocabularies.Users"
+      "widgetOptions": {
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+        }
+      }
     }, 
     "description": {
       "description": "Used in item listings and search results.", 
@@ -140,40 +148,13 @@ Content-Type: application/json+schema
       "type": "string"
     }, 
     "language": {
-      "choices": [
-        [
-          "de", 
-          "Deutsch"
-        ], 
-        [
-          "en", 
-          "English"
-        ], 
-        [
-          "es", 
-          "Espa\u00f1ol"
-        ], 
-        [
-          "fr", 
-          "Fran\u00e7ais"
-        ]
-      ], 
       "default": "en", 
       "description": "", 
-      "enum": [
-        "de", 
-        "en", 
-        "es", 
-        "fr"
-      ], 
-      "enumNames": [
-        "Deutsch", 
-        "English", 
-        "Espa\u00f1ol", 
-        "Fran\u00e7ais"
-      ], 
       "title": "Language", 
-      "type": "string"
+      "type": "string", 
+      "vocabulary": {
+        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SupportedContentLanguages"
+      }
     }, 
     "relatedItems": {
       "additionalItems": true, 
@@ -182,15 +163,22 @@ Content-Type: application/json+schema
       "items": {
         "description": "", 
         "title": "Related", 
-        "type": "string"
-      }, 
-      "pattern_options": {
-        "recentlyUsed": true
+        "type": "string", 
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
+        }
       }, 
       "title": "Related Items", 
       "type": "array", 
       "uniqueItems": true, 
-      "vocabulary": "plone.app.vocabularies.Catalog"
+      "widgetOptions": {
+        "pattern_options": {
+          "recentlyUsed": true
+        }, 
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
+        }
+      }
     }, 
     "rights": {
       "description": "Copyright statement or other rights information on this item.", 
@@ -200,13 +188,21 @@ Content-Type: application/json+schema
       "widget": "textarea"
     }, 
     "subjects": {
-      "choices": [], 
+      "additionalItems": true, 
       "description": "Tags are commonly used for ad-hoc organization of content.", 
-      "enum": [], 
-      "enumNames": [], 
+      "items": {
+        "description": "", 
+        "title": "", 
+        "type": "string"
+      }, 
       "title": "Tags", 
-      "type": "string", 
-      "vocabulary": "plone.app.vocabularies.Keywords"
+      "type": "array", 
+      "uniqueItems": true, 
+      "widgetOptions": {
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
+        }
+      }
     }, 
     "table_of_contents": {
       "description": "If selected, this will show a table of contents at the top of the page.", 

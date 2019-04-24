@@ -189,7 +189,8 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
         )
         self.assertEqual(
             'some_value',
-            jsonschema['properties']['parametrized_widget_field']['a_param']
+            jsonschema['properties']['parametrized_widget_field'][
+                'widgetOptions']['a_param']
         )
 
     def test_do_not_fail_with_non_parametrized_widget(self):
@@ -214,8 +215,8 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
 
         self.assertEqual(
             u'Foo',
-            jsonschema['properties']['parametrized_widget_field'].get(
-                'defaultFactory')
+            jsonschema['properties']['parametrized_widget_field'][
+                'widgetOptions'].get('defaultFactory')
         )
 
 
@@ -391,6 +392,25 @@ class TestJsonSchemaProviders(TestCase):
                 'enum': ['foo', 'bar'],
                 'enumNames': ['Foo', 'Bar'],
                 'choices': [('foo', 'Foo'), ('bar', 'Bar')],
+            },
+            adapter.get_schema()
+        )
+
+    def test_choice_named_vocab(self):
+        field = schema.Choice(
+            title=u'My field',
+            description=u'My great field',
+            vocabulary='plone.app.vocabularies.ReallyUserFriendlyTypes',
+        )
+        adapter = getMultiAdapter((field, self.portal, self.request),
+                                  IJsonSchemaProvider)
+
+        self.assertEqual(
+            {
+                'type': 'string',
+                'title': u'My field',
+                'description': u'My great field',
+                'vocabulary': { '@id': u'http://nohost/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes' }  # noqa
             },
             adapter.get_schema()
         )
@@ -600,7 +620,7 @@ class TestJsonSchemaProviders(TestCase):
                 'title': u'My field',
                 'description': u'My great field',
                 'default': date(2016, 1, 1),
-                'widget': u'date',
+                'widget': u'date'
             },
             adapter.get_schema()
         )

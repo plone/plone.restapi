@@ -62,14 +62,117 @@ class TestVocabularyEndpoint(unittest.TestCase):
         response = response.json()
         self.assertEqual(
             response,
-            {u'@id': self.portal_url + u'/@vocabularies/''plone.restapi.tests.test_vocabulary',  # noqa
-             u'terms': [
-                 {u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary/token1',  # noqa
-                  u'title': u'Title 1',
-                  u'token': u'token1'},
-                 {u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary/token2',  # noqa
-                  u'title': u'Title 2',
-                  u'token': u'token2'}]})
+            {
+                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
+                u'items': [
+                    {u'title': u'Title 1', u'token': u'token1'},
+                    {u'title': u'Title 2', u'token': u'token2'},
+                ],
+                u'items_total': 2,
+            }
+        )
+
+    def test_get_vocabulary_batched(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.restapi.tests.test_vocabulary?b_size=1'
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary',  # noqa
+                u'batching': {
+                    u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?b_size=1',  # noqa
+                    u'first': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=0&b_size=1',  # noqa
+                    u'last': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1',  # noqa
+                    u'next': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1',  # noqa
+                },
+                u'items': [
+                    {u'title': u'Title 1', u'token': u'token1'},
+                ],
+                u'items_total': 2,
+            }
+        )
+
+    def test_get_vocabulary_filtered_by_title(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.restapi.tests.test_vocabulary?title=2'
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?title=2',  # noqa
+                u'items': [
+                    {
+                        u'title': u'Title 2',
+                        u'token': u'token2',
+                    }
+                ],
+                u'items_total': 1,
+            }
+        )
+
+    def test_get_vocabulary_filtered_by_token(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1'
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1',  # noqa
+                u'items': [
+                    {
+                        u'title': u'Title 1',
+                        u'token': u'token1',
+                    }
+                ],
+                u'items_total': 1,
+            }
+        )
+
+    def test_get_vocabulary_filtered_by_title_and_token_returns_error(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1&title=Title'  # noqa
+        )
+
+        self.assertEqual(400, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response.get('error'),
+            {
+                u'message': u'You can not filter by title and token at the same time.',  # noqa
+                u'type': u'Invalid parameters'
+            }
+        )
+
+    def test_get_corner_case_vocabulary_filtered_by_token(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.app.vocabularies.Weekdays?token=0'
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                u'@id': self.portal_url + u'/@vocabularies/plone.app.vocabularies.Weekdays?token=0',  # noqa
+                u'items': [
+                    {
+                        'title': 'Monday',
+                        'token': '0'
+                    }
+                ],
+                u'items_total': 1,
+            }
+        )
 
     def test_get_unknown_vocabulary(self):
         response = self.api_session.get(
@@ -129,13 +232,12 @@ class TestVocabularyEndpoint(unittest.TestCase):
             response.json(),
             {
                 u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary',  # noqa
-                u'terms': [
-                    {u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/id',  # noqa
-                     u'title': u'testdoc',
-                     u'token': u'id'},
-                    {u'@id': self.portal_url + u'/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary/title',  # noqa
-                     u'title': u'Document 1',
-                     u'token': u'title'}]
+                u'items': [
+                    {u'title': u'testdoc', u'token': u'id'},
+                    {u'title': u'Document 1', u'token': u'title'},
+                ],
+                u'items_total': 2,
+
             })
 
     def tearDown(self):

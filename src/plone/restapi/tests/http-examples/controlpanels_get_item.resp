@@ -48,28 +48,13 @@ Content-Type: application/json
         "uniqueItems": false
       }, 
       "default_editor": {
-        "choices": [
-          [
-            "TinyMCE", 
-            "TinyMCE"
-          ], 
-          [
-            "None", 
-            "None"
-          ]
-        ], 
         "default": "TinyMCE", 
         "description": "Select the default wysiwyg editor. Users will be able to choose their own or select to use the site default.", 
-        "enum": [
-          "TinyMCE", 
-          "None"
-        ], 
-        "enumNames": [
-          "TinyMCE", 
-          "None"
-        ], 
         "title": "Default editor", 
-        "type": "string"
+        "type": "string", 
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableEditors"
+        }
       }, 
       "enable_link_integrity_checks": {
         "default": true, 

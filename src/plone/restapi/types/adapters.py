@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
 """JsonSchema providers."""
-from plone.autoform.interfaces import WIDGETS_KEY
-
 from plone.app.textfield.interfaces import IRichText
 from plone.schema import IJSONField
 from zope.component import adapter
 from zope.component import getMultiAdapter
-from zope.component import getUtility
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
@@ -30,11 +27,11 @@ from zope.schema.interfaces import ISet
 from zope.schema.interfaces import IText
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITuple
-from zope.schema.interfaces import IVocabularyFactory
 
 from plone.restapi.types.interfaces import IJsonSchemaProvider
-from plone.restapi.types.utils import get_fieldsets, get_tagged_values
+from plone.restapi.types.utils import get_fieldsets, get_widget_params
 from plone.restapi.types.utils import get_jsonschema_properties
+from plone.restapi.types.utils import get_vocabulary_url
 
 
 @adapter(IField, Interface, Interface)
@@ -74,6 +71,10 @@ class DefaultJsonSchemaProvider(object):
         if widget:
             schema['widget'] = widget
 
+        widget_options = self.get_widget_params()
+        if widget_options:
+            schema['widgetOptions'] = widget_options
+
         if self.field.default is not None:
             schema['default'] = self.field.default
 
@@ -85,6 +86,16 @@ class DefaultJsonSchemaProvider(object):
 
     def get_widget(self):
         return None
+
+    def get_widget_params(self):
+        all_params = get_widget_params([self.field.interface])
+        params = all_params.get(self.field.getName(), {})
+        if 'vocabulary' in params:
+            vocab_name = params['vocabulary']
+            params['vocabulary'] = {
+                    '@id': get_vocabulary_url(
+                        vocab_name, self.context, self.request)}
+        return params
 
 
 @adapter(IBytes, Interface, Interface)
@@ -232,7 +243,6 @@ class SetJsonSchemaProvider(CollectionJsonSchemaProvider):
 @adapter(ITuple, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class TupleJsonSchemaProvider(SetJsonSchemaProvider):
-
     pass
 
 
@@ -248,30 +258,30 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
         return 'string'
 
     def additional(self):
-        # choices and enumNames are v5 proposals, for now we implement both
-        choices = []
-        enum = []
-        enum_names = []
-        vocabulary = None
+        vocab_name = getattr(self.field, 'vocabularyName', None)
+        if vocab_name:
+            return {
+                'vocabulary': {
+                    '@id': get_vocabulary_url(
+                        vocab_name,
+                        self.context,
+                        self.request
+                    )
+                }
+            }
 
-        if getattr(self.field, 'vocabularyName', None):
-            vocabulary = getUtility(
-                IVocabularyFactory,
-                name=self.field.vocabularyName)(self.context)
-        elif getattr(self.field, 'vocabulary', None):
-            vocabulary = self.field.vocabulary
-        else:
-            tagged = get_tagged_values([self.field.interface], WIDGETS_KEY)
-            tagged_field_values = tagged.get(self.field.getName(), {})
-            vocab_name = tagged_field_values.get('vocabulary', None)
-            if vocab_name:
-                vocab_fac = getUtility(IVocabularyFactory, name=vocab_name)
-                vocabulary = vocab_fac(self.context)
+        # Maybe we have an unnamed vocabulary or source.
 
+        vocabulary = getattr(self.field, 'vocabulary', None)
         if IContextSourceBinder.providedBy(vocabulary):
             vocabulary = vocabulary(self.context)
 
         if hasattr(vocabulary, '__iter__') and self.should_render_choices:
+            # choices and enumNames are v5 proposals, for now we implement both
+            choices = []
+            enum = []
+            enum_names = []
+
             for term in vocabulary:
                 title = translate(term.title, context=self.request)
                 choices.append((term.token, title))
