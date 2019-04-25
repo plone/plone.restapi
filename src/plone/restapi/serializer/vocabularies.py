@@ -34,7 +34,7 @@ class SerializeVocabularyToJson(object):
                 )
 
             if token:
-                if token.lower() not in term.token.lower():
+                if token.lower() != term.token.lower():
                     continue
                 terms.append(term)
             else:

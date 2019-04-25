@@ -3,19 +3,6 @@ Content-Type: application/json
 
 {
   "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?token=doc", 
-  "items": [
-    {
-      "title": "DX Test Document", 
-      "token": "DXTestDocument"
-    }, 
-    {
-      "title": "Page", 
-      "token": "Document"
-    }, 
-    {
-      "title": "Test Document", 
-      "token": "ATTestDocument"
-    }
-  ], 
-  "items_total": 3
+  "items": [], 
+  "items_total": 0
 }

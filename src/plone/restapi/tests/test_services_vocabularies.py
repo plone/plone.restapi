@@ -138,6 +138,22 @@ class TestVocabularyEndpoint(unittest.TestCase):
             }
         )
 
+    def test_get_vocabulary_filtered_by_token_partial_not_match(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.restapi.tests.test_vocabulary?token=token'
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                u'@id': self.portal_url + u'/@vocabularies/plone.restapi.tests.test_vocabulary?token=token',  # noqa
+                u'items': [],
+                u'items_total': 0,
+            }
+        )
+
     def test_get_vocabulary_filtered_by_title_and_token_returns_error(self):
         response = self.api_session.get(
             '/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1&title=Title'  # noqa

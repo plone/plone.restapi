@@ -7,7 +7,7 @@ Changelog
 Breaking Changes:
 
 - `@vocabularies` service:
-  
+
   - No longer returns an ``@id`` for terms.
   - Results are batched, and terms are now listed as ``items``
     instead of ``terms`` to match other batched responses.
@@ -32,7 +32,8 @@ Breaking Changes:
 
 New Features:
 
-- ``@vocabularies`` service: Use ``q`` parameter to filter terms by title
+- ``@vocabularies`` service: Use ``title`` parameter to filter terms by title
+  and ``token`` for getting the title of a term given a token.
   (case-insensitive).
   [davisagli]
 
