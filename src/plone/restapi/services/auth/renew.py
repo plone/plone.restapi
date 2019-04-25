@@ -32,6 +32,12 @@ class Renew(Service):
                          plone.protect.interfaces.IDisableCSRFProtection)
 
         mtool = getToolByName(self.context, 'portal_membership')
+        if (bool(mtool.isAnonymousUser())):
+            # Don't generate authentication tokens for anonymous users.
+            self.request.response.setStatus(401)
+            return dict(error=dict(
+                type='Invalid authentication token',
+                message='The authentication token is invalid.'))
         user = mtool.getAuthenticatedMember()
         payload = {}
         payload['fullname'] = user.getProperty('fullname')
