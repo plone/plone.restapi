@@ -1135,7 +1135,7 @@ class TestDocumentation(unittest.TestCase):
     def test_documentation_vocabularies_get_filtered_by_token(self):
         response = self.api_session.get(
             '/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?'
-            'token=doc'
+            'token=Document'
         )
         save_request_and_response_for_docs(
             'vocabularies_get_filtered_by_token', response)
