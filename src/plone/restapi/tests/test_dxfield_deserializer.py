@@ -91,6 +91,18 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'bar', value)
 
+    def test_choice_deserialization_from_token_returns_vocabulary_value(self):
+        value = self.deserialize('test_choice_field_with_vocabulary',
+                                 u'token1')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
+        self.assertEqual(u'value1', value)
+
+    def test_choice_deserialization_from_value_returns_vocabulary_value(self):
+        value = self.deserialize('test_choice_field_with_vocabulary',
+                                 u'value1')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
+        self.assertEqual(u'value1', value)
+
     def test_date_deserialization_returns_date(self):
         value = self.deserialize('test_date_field', u'2015-12-20')
         self.assertTrue(isinstance(value, date))
@@ -172,6 +184,18 @@ class TestDXFieldDeserializer(unittest.TestCase):
         value = self.deserialize('test_list_field', [1, 2, 3])
         self.assertTrue(isinstance(value, list), 'Not a <list>')
         self.assertEqual([1, 2, 3], value)
+
+    def test_list_deserialization_from_tokens_returns_list_of_values(self):
+        value = self.deserialize('test_list_field_with_choice_with_vocabulary',
+                                 [u'token1', u'token3'])
+        self.assertTrue(isinstance(value, list), 'Not a <list>')
+        self.assertEqual([u'value1', u'value3'], value)
+
+    def test_list_deserialization_from_values_returns_list_of_values(self):
+        value = self.deserialize('test_list_field_with_choice_with_vocabulary',
+                                 [u'value1', u'value3'])
+        self.assertTrue(isinstance(value, list), 'Not a <list>')
+        self.assertEqual([u'value1', u'value3'], value)
 
     def test_set_deserialization_returns_set(self):
         value = self.deserialize('test_set_field', [1, 2, 3])

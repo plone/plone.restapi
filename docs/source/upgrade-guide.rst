@@ -7,6 +7,47 @@ This upgrade guide lists all breaking changes in plone.restapi and explains the 
 Upgrading to plone.restapi 4.x
 ------------------------------
 
+Serialization and Deserialization of fields with vocabularies
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The serialization of fields with vocabularies (e.g. ``Choice``) now returns the
+token of the vocabulary term instead of the stored value. For text values this
+should not make much a difference as the token and the value are usually the
+same. However if the term's value is not equal to it's token it may be neccessary
+to adopt the client implementation.
+
+Example:
+
+The date and time controlpanel previously returned a number for the
+``first_weekday`` property::
+
+  {
+    "@id": "http://localhost:55001/plone/@controlpanels/date-and-time",
+    "data": {
+        ...
+        "first_weekday": 0,
+        ...
+    }
+    ...
+  }
+
+Now it returns a string::
+
+  {
+    "@id": "http://localhost:55001/plone/@controlpanels/date-and-time",
+    "data": {
+        ...
+        "first_weekday": "0",
+        ...
+    }
+    ...
+  }
+
+Deserialization now also expects the token, but still works using the value.
+However it's highly recommended to always use the token as vocabulary terms
+may contain values that are not JSON serializable.
+
+
 Vocabularies
 ^^^^^^^^^^^^
 

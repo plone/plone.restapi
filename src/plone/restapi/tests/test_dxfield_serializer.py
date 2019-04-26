@@ -95,6 +95,11 @@ class TestDexterityFieldSerializing(TestCase):
         self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'foo', value)
 
+    def test_choice_field_serialization_returns_vocabulary_token(self):
+        value = self.serialize('test_choice_field_with_vocabulary', u'value1')
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
+        self.assertEqual(u'token1', value)
+
     def test_date_field_serialization_returns_unicode(self):
         value = self.serialize('test_date_field', date(2015, 7, 15))
         self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
@@ -136,6 +141,13 @@ class TestDexterityFieldSerializing(TestCase):
         value = self.serialize('test_list_field', [1, 'two', 3])
         self.assertTrue(isinstance(value, list), 'Not a <list>')
         self.assertEqual([1, u'two', 3], value)
+
+    def test_list_field_with_vocabulary_choice_serialization_returns_tokens(
+            self):
+        value = self.serialize('test_list_field_with_choice_with_vocabulary',
+                               [u'value1', u'value3'])
+        self.assertTrue(isinstance(value, list), 'Not a <list>')
+        self.assertEqual([u'token1', u'token3'], value)
 
     def test_set_field_serialization_returns_list(self):
         value = self.serialize('test_set_field', set(['a', 'b', 'c']))

@@ -14,6 +14,7 @@ from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IDict
@@ -22,6 +23,7 @@ from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
+from zope.schema.interfaces import IVocabularyTokenized
 
 import codecs
 import dateutil
@@ -110,6 +112,21 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
             value = tz.normalize(dt.astimezone(tz))
         else:
             value = utc.normalize(dt.astimezone(utc)).replace(tzinfo=None)
+
+        self.field.validate(value)
+        return value
+
+
+@implementer(IFieldDeserializer)
+@adapter(IChoice, IDexterityContent, IBrowserRequest)
+class ChoiceFieldDeserializer(DefaultFieldDeserializer):
+
+    def __call__(self, value):
+        if IVocabularyTokenized.providedBy(self.field.vocabulary):
+            try:
+                value = self.field.vocabulary.getTermByToken(value).value
+            except LookupError:
+                pass
 
         self.field.validate(value)
         return value
