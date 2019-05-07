@@ -202,5 +202,5 @@ class TestRenew(TestCase):
         )
         self.assertEqual(
             res['error']['type'],
-            'Invalid authentication token'
+            'Invalid or expired authentication token'
         )
