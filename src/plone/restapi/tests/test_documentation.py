@@ -1124,6 +1124,22 @@ class TestDocumentation(unittest.TestCase):
         )
         save_request_and_response_for_docs('vocabularies_get', response)
 
+    def test_documentation_vocabularies_get_filtered_by_title(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?'
+            'title=doc'
+        )
+        save_request_and_response_for_docs(
+            'vocabularies_get_filtered_by_title', response)
+
+    def test_documentation_vocabularies_get_filtered_by_token(self):
+        response = self.api_session.get(
+            '/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?'
+            'token=Document'
+        )
+        save_request_and_response_for_docs(
+            'vocabularies_get_filtered_by_token', response)
+
     def test_documentation_sharing_folder_get(self):
         self.portal.invokeFactory('Folder', id='folder')
         transaction.commit()

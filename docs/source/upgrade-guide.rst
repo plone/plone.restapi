@@ -4,6 +4,301 @@ Upgrade Guide
 This upgrade guide lists all breaking changes in plone.restapi and explains the necessary steps that are needed to upgrade to the lastest version.
 
 
+Upgrading to plone.restapi 4.x
+------------------------------
+
+Serialization and Deserialization of fields with vocabularies
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The serialization of fields with vocabularies (e.g. ``Choice``) now returns the
+`token` and the `title` of the vocabulary term instead of the stored value.
+This is allows displaying the term (title) without additionally querying the
+vocabulary. However it's necessary to adopt existing client implementations.
+
+Example:
+
+The date and time controlpanel previously returned a number for the
+``first_weekday`` property::
+
+  {
+    "@id": "http://localhost:55001/plone/@controlpanels/date-and-time",
+    "data": {
+        ...
+        "first_weekday": 0,
+        ...
+    }
+    ...
+  }
+
+Now it returns an object with a token and a title::
+
+  {
+    "@id": "http://localhost:55001/plone/@controlpanels/date-and-time",
+    "data": {
+        ...
+        "first_weekday": {
+            "title": "Monday",
+            "token": "0"
+        },
+        ...
+    }
+    ...
+  }
+
+Deserialization accepts objects that contain a token, but also just the token
+or the value.
+However it's highly recommended to always use the token as vocabulary terms
+may contain values that are not JSON serializable.
+
+
+Vocabularies
+^^^^^^^^^^^^
+
+Choice and List fields using named vocabularies are now serialized
+with a ``vocabulary`` property giving the URL of the ``@vocabularies``
+endpoint for the vocabulary instead of including ``choices``,
+``enum`` and ``enumNames`` inline.
+
+Old Response::
+
+    "choices": [
+        [
+            "de",
+            "Deutsch"
+        ],
+        [
+            "en",
+            "English"
+        ],
+    ],
+    "enum": [
+      "de",
+      "en",
+    ],
+    "enumNames": [
+      "Deutsch",
+      "English",
+    ],
+
+New response::
+
+    "vocabulary": {
+        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary"
+    },
+
+  - Serialize widget parameters into a ``widgetOptions`` object
+    instead of adding them to the top level of the schema property.
+
+Old response::
+
+      "vocabulary": "plone.app.vocabularies.Users"
+
+New response::
+
+      "widgetOptions": {
+        "pattern_options": {
+          "recentlyUsed": true
+        },
+        "vocabulary": { "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users" }
+      }
+
+Example: Vocabularies Subjects Field
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``subjects`` field is now serialized as an ``array``
+of ``string`` items using the ``plone.app.vocabularies.Keywords`` vocabulary.
+
+Old response::
+
+    "subjects": {
+      "choices": [],
+      "enum": [],
+      "enumNames": [],
+    }
+    "type": "string"
+
+New response::
+
+    "additionalItems": true,
+    "type": "array",
+    "uniqueItems": true,
+    "widgetOptions": {
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
+      }
+    },
+    "items": {
+      "description": "",
+      "title": "",
+      "type": "string"
+    },
+
+Example: Available Time Zones Field (vocabulary in ``items``)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Old response::
+
+    "available_timezones": {
+      "additionalItems": true,
+      "default": [],
+      "description": "The timezones, which should be available for the portal. Can be set for users and events",
+      "items": {
+        "choices": [
+          [
+            "Africa/Abidjan",
+            "Africa/Abidjan"
+          ],
+          [
+            "Africa/Accra",
+            "Africa/Accra"
+          ],
+          ...
+        "enum": [
+          ...
+        ],
+        "enumNames": [
+          ...
+        ]
+      },
+      title: "Available timezones",
+      type: "array",
+      uniqueItems: true,
+    }
+
+New response::
+
+    "available_timezones": {
+      "additionalItems": true,
+      "default": [],
+      "description": "The timezones, which should be available for the portal. Can be set for users and events",
+      "items": {
+        "description": "",
+        "title": "",
+        "type": "string",
+        "vocabulary": {
+          "@id": "http://localhost:8080/Plone/@vocabularies/plone.app.vocabularies.Timezones"
+        }
+      },
+      "title": "Available timezones",
+      "type": "array",
+      "uniqueItems": true
+    },
+
+Example: Weekday Field (vocabulary in main property)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Old response::
+
+    "first_weekday": {
+      "choices": [
+        [
+          "0",
+          "Monday"
+        ],
+        [
+          "1",
+          "Tuesday"
+        ],
+        [
+          "2",
+          "Wednesday"
+        ],
+        [
+          "3",
+          "Thursday"
+        ],
+        [
+          "4",
+          "Friday"
+        ],
+        [
+          "5",
+          "Saturday"
+        ],
+        [
+          "6",
+          "Sunday"
+        ]
+      ],
+      "description": "First day in the week.",
+      "enum": [
+        "0",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "enumNames": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday"
+      ],
+      "title": "First weekday",
+      "type": "string"
+    },
+
+New response::
+
+    "first_weekday": {
+      "description": "First day in the week.",
+      "title": "First weekday",
+      "type": "string",
+      "vocabulary": {
+        "@id": "http://localhost:8080/Plone/@vocabularies/plone.app.vocabularies.Weekdays"
+      }
+    },
+
+Vocabularies Endpoint
+^^^^^^^^^^^^^^^^^^^^^
+
+The vocabularies endpoint does no longer returns an ``@id`` for terms.
+
+The results are batched, and terms are now listed as ``items`` instead of ``terms`` to match other batched responses.
+
+Batch size is 25 by default but can be overridden using the ``b_size`` parameter.
+
+Old response::
+
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes",
+      "terms": [
+        {
+          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes/Collection",
+          "title": "Collection",
+          "token": "Collection"
+        },
+        ...
+      ]
+    }
+
+New response::
+
+    {
+      "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes",
+      "items": [
+          {
+            "title": "Collection",
+            "token": "Collection"
+          },
+          ...
+      ],
+      "items_total": 12
+    }
+
+
+New Features:
+
+- ``@vocabularies`` service: Use ``query`` parameter to filter terms by title
+  (case-insensitive).
+  [davisagli]
+
+
 Upgrading to plone.restapi 3.x
 ------------------------------
 
@@ -12,7 +307,7 @@ Image scales
 
 Image download URLs and image scale URLs are created using the UID based url formats. This allows Plone to create different URLs when the image changes and thus ensuring caches are updated.
 
-Old Response:: 
+Old Response::
 
      {
        "icon": {
@@ -43,7 +338,7 @@ New Response::
        },
       ...
       }
-     
+
 
 @sharing endpoint
 ^^^^^^^^^^^^^^^^^
@@ -56,7 +351,7 @@ Old Response::
 
   HTTP/1.1 200 OK
   Content-Type: application/json
-  
+
   {
     "available_roles": [
       "Contributor",
@@ -75,7 +370,7 @@ New Response::
 
   HTTP/1.1 200 OK
   Content-Type: application/json
-  
+
   {
     "available_roles": [
       {

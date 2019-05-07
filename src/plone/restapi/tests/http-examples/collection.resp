@@ -26,10 +26,22 @@ Content-Type: application/json
     "test_user_1_"
   ], 
   "customViewFields": [
-    "Title", 
-    "Creator", 
-    "Type", 
-    "ModificationDate"
+    {
+      "title": "Title", 
+      "token": "Title"
+    }, 
+    {
+      "title": "Creator", 
+      "token": "Creator"
+    }, 
+    {
+      "title": "Type", 
+      "token": "Type"
+    }, 
+    {
+      "title": "ModificationDate", 
+      "token": "ModificationDate"
+    }
   ], 
   "description": "This is a collection with two documents", 
   "effective": null, 

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.services import Service
-from zope.component import getMultiAdapter
 from plone.restapi.deserializer import json_body
+from plone.restapi.services import Service
+from zExceptions import BadRequest
+from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
 
 import plone
@@ -18,18 +19,12 @@ class EmailNotificationPost(Service):
         subject = data.get('subject', '')
 
         if not sender_from_address or not message:
-            self.request.response.setStatus(400)
-            return dict(error=dict(
-                type='BadRequest',
-                message='Missing from or message parameters'))
+            raise BadRequest('Missing from or message parameters')
 
         overview_controlpanel = getMultiAdapter((self.context, self.request),
                                                 name='overview-controlpanel')
         if overview_controlpanel.mailhost_warning():
-            self.request.response.setStatus(400)
-            return dict(error=dict(
-                type='BadRequest',
-                message='MailHost is not configured.'))
+            raise BadRequest('MailHost is not configured.')
 
         # Disable CSRF protection
         if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
@@ -41,10 +36,10 @@ class EmailNotificationPost(Service):
 
         contact_info_view.send_message(
             dict(
-              message=message,
-              subject=subject,
-              sender_from_address=sender_from_address,
-              sender_fullname=sender_fullname
+                message=message,
+                subject=subject,
+                sender_from_address=sender_from_address,
+                sender_fullname=sender_fullname
             )
         )
 

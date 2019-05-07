@@ -1,6 +1,48 @@
 Changelog
 =========
 
+3.0.0 (unreleased)
+------------------
+
+Breaking Changes:
+
+- `@vocabularies` service:
+
+  - No longer returns an ``@id`` for terms.
+  - Results are batched, and terms are now listed as ``items``
+    instead of ``terms`` to match other batched responses.
+    Batch size is 25 by default but can be overridden
+    using the ``b_size`` parameter.
+
+  [davisagli]
+
+- `@types` service:
+
+  - Choice fields using named vocabularies are now serialized
+    with a ``vocabulary`` property giving the URL of the ``@vocabularies``
+    endpoint for the vocabulary instead of including ``choices``,
+    ``enum`` and ``enumNames`` inline.
+  - The ``subjects`` field is now serialized as an ``array``
+    of ``string`` items using the ``plone.app.vocabularies.Keywords`` vocabulary.
+    [davisagli]
+  - Serialize widget parameters into a ``widgetOptions`` object
+    instead of adding them to the top level of the schema property.
+
+  [davisagli]
+
+New Features:
+
+- ``@vocabularies`` service: Use ``title`` parameter to filter terms by title
+  and ``token`` for getting the title of a term given a token.
+  (case-insensitive).
+  [davisagli]
+
+Bugfixes:
+
+- Avoid calculating batch links for catalog results twice.
+  [davisagli]
+
+
 .. You should *NOT* be adding new change log entries to this file.
    You should create a file in the news directory instead.
    For helpful instructions, please see:

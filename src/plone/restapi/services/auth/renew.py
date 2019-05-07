@@ -10,6 +10,7 @@ import plone.protect.interfaces
 class Renew(Service):
     """Renew authentication token
     """
+
     def reply(self):
         plugin = None
         acl_users = getToolByName(self, "acl_users")
@@ -32,6 +33,12 @@ class Renew(Service):
                          plone.protect.interfaces.IDisableCSRFProtection)
 
         mtool = getToolByName(self.context, 'portal_membership')
+        if (bool(mtool.isAnonymousUser())):
+            # Don't generate authentication tokens for anonymous users.
+            self.request.response.setStatus(401)
+            return dict(error=dict(
+                type='Invalid or expired authentication token',
+                message='The authentication token is invalid or expired.'))
         user = mtool.getAuthenticatedMember()
         payload = {}
         payload['fullname'] = user.getProperty('fullname')

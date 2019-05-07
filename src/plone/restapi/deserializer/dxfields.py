@@ -14,6 +14,7 @@ from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IDict
@@ -22,6 +23,7 @@ from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
+from zope.schema.interfaces import IVocabularyTokenized
 
 import codecs
 import dateutil
@@ -116,6 +118,23 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
 
 
 @implementer(IFieldDeserializer)
+@adapter(IChoice, IDexterityContent, IBrowserRequest)
+class ChoiceFieldDeserializer(DefaultFieldDeserializer):
+
+    def __call__(self, value):
+        if isinstance(value, dict) and 'token' in value:
+            value = value['token']
+        if IVocabularyTokenized.providedBy(self.field.vocabulary):
+            try:
+                value = self.field.vocabulary.getTermByToken(value).value
+            except LookupError:
+                pass
+
+        self.field.validate(value)
+        return value
+
+
+@implementer(IFieldDeserializer)
 @adapter(ICollection, IDexterityContent, IBrowserRequest)
 class CollectionFieldDeserializer(DefaultFieldDeserializer):
 
@@ -129,6 +148,8 @@ class CollectionFieldDeserializer(DefaultFieldDeserializer):
                 IFieldDeserializer)
 
             for i, v in enumerate(value):
+                if isinstance(v, dict) and 'token' in v:
+                    v = v['token']
                 value[i] = deserializer(v)
 
         value = self.field._type(value)
