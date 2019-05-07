@@ -11,10 +11,9 @@ Serialization and Deserialization of fields with vocabularies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The serialization of fields with vocabularies (e.g. ``Choice``) now returns the
-token of the vocabulary term instead of the stored value. For text values this
-should not make much a difference as the token and the value are usually the
-same. However if the term's value is not equal to it's token it may be neccessary
-to adopt the client implementation.
+`token` and the `title` of the vocabulary term instead of the stored value.
+This is allows displaying the term (title) without additionally querying the
+vocabulary. However it's necessary to adopt existing client implementations.
 
 Example:
 
@@ -31,19 +30,23 @@ The date and time controlpanel previously returned a number for the
     ...
   }
 
-Now it returns a string::
+Now it returns an object with a token and a title::
 
   {
     "@id": "http://localhost:55001/plone/@controlpanels/date-and-time",
     "data": {
         ...
-        "first_weekday": "0",
+        "first_weekday": {
+            "title": "Monday",
+            "token": "0"
+        },
         ...
     }
     ...
   }
 
-Deserialization now also expects the token, but still works using the value.
+Deserialization accepts objects that contain a token, but also just the token
+or the value.
 However it's highly recommended to always use the token as vocabulary terms
 may contain values that are not JSON serializable.
 

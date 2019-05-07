@@ -103,6 +103,12 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
         self.assertEqual(u'value1', value)
 
+    def test_choice_deserialization_from_term_returns_vocabulary_value(self):
+        value = self.deserialize('test_choice_field_with_vocabulary',
+                                 {u'token': u'token1', u'title': u'title1'})
+        self.assertTrue(isinstance(value, six.text_type), 'Not an <unicode>')
+        self.assertEqual(u'value1', value)
+
     def test_date_deserialization_returns_date(self):
         value = self.deserialize('test_date_field', u'2015-12-20')
         self.assertTrue(isinstance(value, date))
@@ -194,6 +200,13 @@ class TestDXFieldDeserializer(unittest.TestCase):
     def test_list_deserialization_from_values_returns_list_of_values(self):
         value = self.deserialize('test_list_field_with_choice_with_vocabulary',
                                  [u'value1', u'value3'])
+        self.assertTrue(isinstance(value, list), 'Not a <list>')
+        self.assertEqual([u'value1', u'value3'], value)
+
+    def test_list_deserialization_from_terms_returns_list_of_values(self):
+        value = self.deserialize('test_list_field_with_choice_with_vocabulary',
+                                 [{u'token': u'token1', u'title': u'title1'},
+                                  {u'token': u'token3', u'title': u'title3'}])
         self.assertTrue(isinstance(value, list), 'Not a <list>')
         self.assertEqual([u'value1', u'value3'], value)
 
