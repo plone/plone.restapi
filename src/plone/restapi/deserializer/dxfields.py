@@ -122,6 +122,8 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
 class ChoiceFieldDeserializer(DefaultFieldDeserializer):
 
     def __call__(self, value):
+        if isinstance(value, dict) and 'token' in value:
+            value = value['token']
         if IVocabularyTokenized.providedBy(self.field.vocabulary):
             try:
                 value = self.field.vocabulary.getTermByToken(value).value
@@ -146,6 +148,8 @@ class CollectionFieldDeserializer(DefaultFieldDeserializer):
                 IFieldDeserializer)
 
             for i, v in enumerate(value):
+                if isinstance(v, dict) and 'token' in v:
+                    v = v['token']
                 value[i] = deserializer(v)
 
         value = self.field._type(value)

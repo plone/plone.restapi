@@ -47,7 +47,7 @@ class ChoiceFieldSerializer(DefaultFieldSerializer):
                 and IVocabularyTokenized.providedBy(self.field.vocabulary)):
             try:
                 term = self.field.vocabulary.getTerm(value)
-                value = term.token
+                value = {'token': term.token, 'title': term.title}
             # Some fields (e.g. language) have a default value that is not in
             # vocabulary
             except LookupError:
@@ -67,8 +67,11 @@ class CollectionFieldSerializer(DefaultFieldSerializer):
         value_type = self.field.value_type
         if (value is not None and IChoice.providedBy(value_type)
                 and IVocabularyTokenized.providedBy(value_type.vocabulary)):
-            value = self.field._type([value_type.vocabulary.getTerm(v).token
-                                      for v in value])
+            values = []
+            for v in value:
+                term = value_type.vocabulary.getTerm(v)
+                values.append({u'token': term.token, u'title': term.title})
+            value = self.field._type(values)
         return json_compatible(value)
 
 

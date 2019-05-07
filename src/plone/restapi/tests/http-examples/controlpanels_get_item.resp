@@ -8,7 +8,10 @@ Content-Type: application/json
       "TinyMCE", 
       "None"
     ], 
-    "default_editor": "TinyMCE", 
+    "default_editor": {
+      "title": "TinyMCE", 
+      "token": "TinyMCE"
+    }, 
     "enable_link_integrity_checks": true, 
     "ext_editor": false, 
     "lock_on_ttw_edit": true, 
