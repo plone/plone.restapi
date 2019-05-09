@@ -1,7 +1,7 @@
 Changelog
 =========
 
-3.0.0 (unreleased)
+4.0.0 (unreleased)
 ------------------
 
 Breaking Changes:
@@ -54,7 +54,6 @@ Bugfixes:
 ------------------
 
 New features:
-
 
 - Add full support for `fullobjects` support for AT content types.
   [sneridagh] (#698)
