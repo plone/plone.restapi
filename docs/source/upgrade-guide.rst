@@ -7,15 +7,21 @@ This upgrade guide lists all breaking changes in plone.restapi and explains the 
 Upgrading to plone.restapi 4.x
 ------------------------------
 
+plone.restapi 4.0.0 introduces the following breaking changes:
+
+1) Fields with vocabularies now return the `token` and `title` instead of the stored value.
+2) Choice and list fields return a hyperlink to a vocabulary instead of `choices`, `enum`, and `enumNames`.
+3) Serialize widget parameters into a ``widgetOptions`` object instead of adding them to the top level of the schema property.
+4) The vocabularies endpoint does no longer returns an ``@id`` for terms, the results are batched, and terms are now listed as ``items`` instead of ``terms`` to match other batched responses.
+
+
 Serialization and Deserialization of fields with vocabularies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The serialization of fields with vocabularies (e.g. ``Choice``) now returns the
+The serialization of fields with vocabularies (e.g. ``Choice``) now return the
 `token` and the `title` of the vocabulary term instead of the stored value.
 This is allows displaying the term (title) without additionally querying the
 vocabulary. However it's necessary to adopt existing client implementations.
-
-Example:
 
 The date and time controlpanel previously returned a number for the
 ``first_weekday`` property::
@@ -47,12 +53,13 @@ Now it returns an object with a token and a title::
 
 Deserialization accepts objects that contain a token, but also just the token
 or the value.
+
 However it's highly recommended to always use the token as vocabulary terms
 may contain values that are not JSON serializable.
 
 
-Vocabularies
-^^^^^^^^^^^^
+Choice and List fields return link to vocabulary instead of the values
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Choice and List fields using named vocabularies are now serialized
 with a ``vocabulary`` property giving the URL of the ``@vocabularies``
@@ -86,8 +93,10 @@ New response::
         "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary"
     },
 
-  - Serialize widget parameters into a ``widgetOptions`` object
-    instead of adding them to the top level of the schema property.
+Serialize widget parameters into a ``widgetOptions`` object
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Serialize widget parameters into a ``widgetOptions`` object instead of adding them to the top level of the schema property.
 
 Old response::
 
@@ -102,6 +111,7 @@ New response::
         "vocabulary": { "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users" }
       }
 
+
 Example: Vocabularies Subjects Field
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -111,9 +121,9 @@ of ``string`` items using the ``plone.app.vocabularies.Keywords`` vocabulary.
 Old response::
 
     "subjects": {
-      "choices": [],
-      "enum": [],
-      "enumNames": [],
+      "choices": [...],
+      "enum": [...],
+      "enumNames": [...],
     }
     "type": "string"
 
@@ -290,13 +300,6 @@ New response::
       ],
       "items_total": 12
     }
-
-
-New Features:
-
-- ``@vocabularies`` service: Use ``query`` parameter to filter terms by title
-  (case-insensitive).
-  [davisagli]
 
 
 Upgrading to plone.restapi 3.x

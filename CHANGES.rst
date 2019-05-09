@@ -69,7 +69,7 @@ Bug fixes:
   [ajung]
 
 - Hide performance, testing, and tiles profile. (#700)
-  [Timo]
+  [timo]
 
 
 3.8.0 (2019-03-21)
