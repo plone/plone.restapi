@@ -9,8 +9,8 @@ Upgrading to plone.restapi 4.x
 
 plone.restapi 4.0.0 introduces the following breaking changes:
 
-1) Fields with vocabularies now return the `token` and `title` instead of the stored value.
-2) Choice and list fields return a hyperlink to a vocabulary instead of `choices`, `enum`, and `enumNames`.
+1) Fields with vocabularies now return the ``token`` and ``title`` instead of the stored value.
+2) Choice and list fields return a hyperlink to a vocabulary instead of ``choices``, ``enum``, and ``enumNames``.
 3) Serialize widget parameters into a ``widgetOptions`` object instead of adding them to the top level of the schema property.
 4) The vocabularies endpoint does no longer returns an ``@id`` for terms, the results are batched, and terms are now listed as ``items`` instead of ``terms`` to match other batched responses.
 
