@@ -1,3 +1,0 @@
-- Use interface name in the ``tiles`` profile instead of the shorthand behavior
-  name. This fixes #724.
-  [sneridagh]

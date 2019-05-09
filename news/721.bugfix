@@ -1,2 +1,0 @@
-When renewing an expired or invalid authentication token with ``@login-renew`` fail with a ``401`` error instead of returning a new authentication token.
-[thet]
