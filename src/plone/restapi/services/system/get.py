@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.services import Service
-from Products.CMFPlone.controlpanel.browser.overview import OverviewControlPanel
+
+try:
+    from Products.CMFPlone.controlpanel.browser.overview import OverviewControlPanel
+except ImportError:
+    from plone.app.controlpanel.browser.overview import OverviewControlPanel
 
 
 class SystemGet(Service):
