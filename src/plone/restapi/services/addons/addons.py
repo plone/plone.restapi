@@ -12,7 +12,6 @@ from zope.component import getAllUtilitiesRegisteredFor
 
 import logging
 import pkg_resources
-import plone
 
 
 logger = logging.getLogger('Plone')
