@@ -46,8 +46,7 @@ class DeserializeFromJson(OrderingMixin, object):
         errors = []
 
         for schema in iterSchemata(self.context):
-            write_permissions = mergedTaggedValueDict(
-                schema, WRITE_PERMISSIONS_KEY)
+            write_permissions = mergedTaggedValueDict(schema, WRITE_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
 
@@ -92,11 +91,9 @@ class DeserializeFromJson(OrderingMixin, object):
                     try:
                         value = deserializer(data[name])
                     except ValueError as e:
-                        errors.append(
-                            {"message": str(e), "field": name, "error": e})
+                        errors.append({"message": str(e), "field": name, "error": e})
                     except ValidationError as e:
-                        errors.append(
-                            {"message": e.doc(), "field": name, "error": e})
+                        errors.append({"message": e.doc(), "field": name, "error": e})
                     else:
                         field_data[name] = value
                         if value != dm.get():
@@ -104,8 +101,7 @@ class DeserializeFromJson(OrderingMixin, object):
                             # Collect the names of the modified fields
                             # Use prefixed name because z3c.form does so
                             prefixed_name = schema.__name__ + "." + name
-                            modified.setdefault(
-                                schema, []).append(prefixed_name)
+                            modified.setdefault(schema, []).append(prefixed_name)
 
                 elif validate_all:
                     # Never validate the changeNote of p.a.versioningbehavior
@@ -119,8 +115,7 @@ class DeserializeFromJson(OrderingMixin, object):
                     try:
                         bound.validate(dm.get())
                     except ValidationError as e:
-                        errors.append(
-                            {"message": e.doc(), "field": name, "error": e})
+                        errors.append({"message": e.doc(), "field": name, "error": e})
 
         # Validate schemata
         for schema, field_data in schema_data.items():

@@ -4,10 +4,8 @@ from Products.CMFPlone.controlpanel.browser.overview import OverviewControlPanel
 
 
 class SystemGet(Service):
-
     def reply(self):
-        overview_control_panel = OverviewControlPanel(
-            self.context, self.request)
+        overview_control_panel = OverviewControlPanel(self.context, self.request)
         core_versions = overview_control_panel.core_versions()
         return {
             "@id": "{}/@system".format(self.context.absolute_url()),
@@ -18,5 +16,7 @@ class SystemGet(Service):
             "pil_version": core_versions.get("PIL"),
             "debug-mode": core_versions.get("Debug mode"),
             "plone_gs_metadata_version_installed": core_versions.get("Plone Instance"),
-            "plone_gs_metadata_version_file_system": core_versions.get("Plone File System")
+            "plone_gs_metadata_version_file_system": core_versions.get(
+                "Plone File System"
+            ),
         }
