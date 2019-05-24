@@ -111,8 +111,7 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/@search")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.headers.get(
-            "Content-Type"), "application/json")
+        self.assertEqual(response.headers.get("Content-Type"), "application/json")
 
         results = response.json()
         self.assertEqual(
@@ -124,8 +123,7 @@ class TestSearchFunctional(unittest.TestCase):
     def test_search_on_context_constrains_query_by_path(self):
         response = self.api_session.get("/folder/@search")
         self.assertSetEqual(
-            {u"/plone/folder", u"/plone/folder/doc",
-                u"/plone/folder/other-document"},
+            {u"/plone/folder", u"/plone/folder/doc", u"/plone/folder/other-document"},
             set(result_paths(response.json())),
         )
 
@@ -296,8 +294,7 @@ class TestSearchFunctional(unittest.TestCase):
             response.json()["items"][0]["test_richtext_field"]["data"],
         )
         self.assertEqual(
-            self.portal_url +
-            u"/folder/doc", response.json()["items"][0]["@id"]
+            self.portal_url + u"/folder/doc", response.json()["items"][0]["@id"]
         )
 
     def test_full_objects_retrieval_discussion(self):
@@ -422,8 +419,7 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/@search", params=query)
 
         self.assertEqual(
-            [u"/plone/folder", u"/plone/folder/doc",
-                u"/plone/folder/other-document"],
+            [u"/plone/folder", u"/plone/folder/doc", u"/plone/folder/other-document"],
             result_paths(response.json()),
         )
 
@@ -520,16 +516,9 @@ class TestSearchFunctional(unittest.TestCase):
         query = {"effectiveRange": date(1997, 1, 1).isoformat()}
         response = self.api_session.get("/folder/@search", params=query)
 
-        self.assertEqual(
-            2,
-            len(result_paths(response.json()))
-        )
-        self.assertTrue(
-            u"/plone/folder" in result_paths(response.json())
-        )
-        self.assertTrue(
-            u"/plone/folder/doc" in result_paths(response.json())
-        )
+        self.assertEqual(2, len(result_paths(response.json())))
+        self.assertTrue(u"/plone/folder" in result_paths(response.json()))
+        self.assertTrue(u"/plone/folder/doc" in result_paths(response.json()))
 
     # DateRecurringIndex
 
@@ -555,8 +544,7 @@ class TestSearchFunctional(unittest.TestCase):
         query = {"start": date(2013, 1, 1).isoformat()}
         response = self.api_session.get("/folder/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/event"],
-                         result_paths(response.json()))
+        self.assertEqual([u"/plone/folder/event"], result_paths(response.json()))
 
         # No event that day
         query = {"start": date(2013, 1, 2).isoformat()}
@@ -568,8 +556,7 @@ class TestSearchFunctional(unittest.TestCase):
         query = {"start": date(2013, 1, 3).isoformat()}
         response = self.api_session.get("/folder/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/event"],
-                         result_paths(response.json()))
+        self.assertEqual([u"/plone/folder/event"], result_paths(response.json()))
 
         # Ranged query
         query = {
@@ -578,8 +565,7 @@ class TestSearchFunctional(unittest.TestCase):
         }
         response = self.api_session.get("/folder/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/event"],
-                         result_paths(response.json()))
+        self.assertEqual([u"/plone/folder/event"], result_paths(response.json()))
 
     # UUIDIndex
 
@@ -670,6 +656,5 @@ class TestSearchATFunctional(unittest.TestCase):
             response.json()["items"][0]["testTextField"],
         )
         self.assertEqual(
-            self.portal_url +
-            u"/folder/doc", response.json()["items"][0]["@id"]
+            self.portal_url + u"/folder/doc", response.json()["items"][0]["@id"]
         )
