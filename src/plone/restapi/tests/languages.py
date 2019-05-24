@@ -42,7 +42,7 @@ class ModifiableLanguages(object):
         available = self.getAvailableLanguages(combined=combined)
         languages = {k: v for k, v in languages.items() if k in available}
 
-        return [(code, languages[code][u'name']) for code in languages]
+        return [(code, languages[code][u"name"]) for code in languages]
 
 
 class ModifiableContentLanguages(ModifiableLanguages, ContentLanguages):

@@ -19,10 +19,7 @@ class ControlpanelsGet(Service):
         return self
 
     def get_controlpanel_adapters(self):
-        adapters = getAdapters(
-            (self.context, self.request),
-            provided=IControlpanel
-        )
+        adapters = getAdapters((self.context, self.request), provided=IControlpanel)
         for name, panel in adapters:
             panel.__name__ = name
             yield name, panel
@@ -33,10 +30,10 @@ class ControlpanelsGet(Service):
             [(p.configlet_id, name) for name, p in panels.items()]
         )
 
-        pctool = getToolByName(self.context, 'portal_controlpanel')
+        pctool = getToolByName(self.context, "portal_controlpanel")
         for group in pctool.getGroups():
-            for action_data in pctool.enumConfiglets(group=group['id']):
-                name = panels_by_configlet.get(action_data['id'])
+            for action_data in pctool.enumConfiglets(group=group["id"]):
+                name = panels_by_configlet.get(action_data["id"])
                 panel = panels.get(name)
                 if panel:
                     yield panel

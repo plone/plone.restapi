@@ -19,26 +19,22 @@ class GroupsPost(Service):
         portal = getSite()
         data = json_body(self.request)
 
-        groupname = data.get('groupname', None)
+        groupname = data.get("groupname", None)
 
         if not groupname:
             raise BadRequest("Property 'groupname' is required")
 
-        email = data.get('email', None)
-        title = data.get('title', None)
-        description = data.get('description', None)
-        roles = data.get('roles', None)
-        groups = data.get('groups', None)
-        users = data.get('users', [])
+        email = data.get("email", None)
+        title = data.get("title", None)
+        description = data.get("description", None)
+        roles = data.get("roles", None)
+        groups = data.get("groups", None)
+        users = data.get("users", [])
 
-        properties = {
-            'title': title,
-            'description': description,
-            'email': email,
-        }
+        properties = {"title": title, "description": description, "email": email}
 
-        gtool = getToolByName(self.context, 'portal_groups')
-        regtool = getToolByName(self.context, 'portal_registration')
+        gtool = getToolByName(self.context, "portal_groups")
+        regtool = getToolByName(self.context, "portal_registration")
 
         if not regtool.isMemberIdAllowed(groupname):
             raise BadRequest("The group name you entered is not valid.")
@@ -48,17 +44,21 @@ class GroupsPost(Service):
             raise BadRequest("The group name you entered already exists.")
 
         # Disable CSRF protection
-        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
-        success = gtool.addGroup(groupname, roles, groups,
-                                 properties=properties,
-                                 title=title,
-                                 description=description)
+        success = gtool.addGroup(
+            groupname,
+            roles,
+            groups,
+            properties=properties,
+            title=title,
+            description=description,
+        )
         if not success:
             raise BadRequest(
-                "Error occurred, could not add group {}.".format(groupname))
+                "Error occurred, could not add group {}.".format(groupname)
+            )
 
         # Add members
         group = gtool.getGroupById(groupname)
@@ -67,10 +67,7 @@ class GroupsPost(Service):
 
         self.request.response.setStatus(201)
         self.request.response.setHeader(
-            'Location', portal.absolute_url() + '/@groups/' + groupname
+            "Location", portal.absolute_url() + "/@groups/" + groupname
         )
-        serializer = queryMultiAdapter(
-            (group, self.request),
-            ISerializeToJson
-        )
+        serializer = queryMultiAdapter((group, self.request), ISerializeToJson)
         return serializer()

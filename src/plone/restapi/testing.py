@@ -43,7 +43,7 @@ PLONE_VERSION = pkg_resources.parse_version(api.env.plone_version())
 
 
 try:
-    pkg_resources.get_distribution('plone.app.multilingual')
+    pkg_resources.get_distribution("plone.app.multilingual")
     PAM_INSTALLED = True
 except pkg_resources.DistributionNotFound:
     PAM_INSTALLED = False
@@ -56,13 +56,13 @@ else:
     PLONE_5 = True  # pragma: no cover
 
 try:
-    pkg_resources.get_distribution('Products.Archetypes')
+    pkg_resources.get_distribution("Products.Archetypes")
 except pkg_resources.DistributionNotFound:
     HAS_AT = False
 else:
     HAS_AT = True
 
-ENABLED_LANGUAGES = ['de', 'en', 'es', 'fr']
+ENABLED_LANGUAGES = ["de", "en", "es", "fr"]
 
 
 def set_available_languages():
@@ -79,7 +79,7 @@ def set_available_languages():
 def set_supported_languages(portal):
     """Set supported languages to the same predictable set for all test layers.
     """
-    language_tool = getToolByName(portal, 'portal_languages')
+    language_tool = getToolByName(portal, "portal_languages")
     for lang in ENABLED_LANGUAGES:
         language_tool.addSupportedLanguage(lang)
 
@@ -92,28 +92,31 @@ def enable_request_language_negotiation(portal):
     """
     if PLONE_5:
         from Products.CMFPlone.interfaces import ILanguageSchema
+
         registry = getUtility(IRegistry)
-        settings = registry.forInterface(ILanguageSchema, prefix='plone')
+        settings = registry.forInterface(ILanguageSchema, prefix="plone")
         settings.use_request_negotiation = True
     else:
-        lang_tool = getToolByName(portal, 'portal_languages')
+        lang_tool = getToolByName(portal, "portal_languages")
         lang_tool.use_request_negotiation = True
 
 
 class DateTimeFixture(Layer):
-
     def setUp(self):
-        tz = 'UTC'
+        tz = "UTC"
         # Patch DateTime's timezone for deterministic behavior.
         from DateTime import DateTime
+
         self.DT_orig_localZone = DateTime.localZone
         DateTime.localZone = lambda cls=None, ltm=None: tz
         from plone.dexterity import content
+
         content.FLOOR_DATE = DateTime(1970, 0)
         content.CEILING_DATE = DateTime(2500, 0)
 
     def tearDown(self):
         from DateTime import DateTime
+
         DateTime.localZone = self.DT_orig_localZone
 
 
@@ -123,29 +126,31 @@ DATE_TIME_FIXTURE = DateTimeFixture()
 import time  # noqa
 from persistent.TimeStamp import TimeStamp  # noqa
 
+
 def patchedNewTid(old):  # noqa
-    if getattr(time.time, 'previous_time_function', False):
+    if getattr(time.time, "previous_time_function", False):
         t = time.time.previous_time_function()
-        ts = TimeStamp(*time.gmtime.previous_gmtime_function(t)[:5]+(t % 60,))
+        ts = TimeStamp(*time.gmtime.previous_gmtime_function(t)[:5] + (t % 60,))
     else:
         t = time.time()
-        ts = TimeStamp(*time.gmtime(t)[:5]+(t % 60,))
+        ts = TimeStamp(*time.gmtime(t)[:5] + (t % 60,))
     if old is not None:
         ts = ts.laterThan(TimeStamp(old))
     return ts.raw()
 
 
 class FreezeTimeFixture(Layer):
-
     def setUp(self):
-        if PLONE_VERSION.base_version >= '5.1':
+        if PLONE_VERSION.base_version >= "5.1":
             from ZODB import utils
+
             self.ZODB_orig_newTid = utils.newTid
             utils.newTid = patchedNewTid
 
     def tearDown(self):
-        if PLONE_VERSION.base_version >= '5.1':
+        if PLONE_VERSION.base_version >= "5.1":
             from ZODB import utils
+
             utils.newTid = self.ZODB_orig_newTid
 
 
@@ -154,176 +159,168 @@ FREEZE_TIME_FIXTURE = FreezeTimeFixture()
 
 class PloneRestApiDXLayer(PloneSandboxLayer):
 
-    defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE,)
+    defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE)
 
     def setUpZope(self, app, configurationContext):
         import plone.restapi
-        xmlconfig.file(
-            'configure.zcml',
-            plone.restapi,
-            context=configurationContext
-        )
-        xmlconfig.file(
-            'testing.zcml',
-            plone.restapi,
-            context=configurationContext
-        )
+
+        xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
+        xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
 
         self.loadZCML(package=collective.MockMailHost)
-        z2.installProduct(app, 'plone.restapi')
+        z2.installProduct(app, "plone.restapi")
 
     def setUpPloneSite(self, portal):
         portal.acl_users.userFolderAddUser(
-            SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ['Manager'], [])
+            SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ["Manager"], []
+        )
         login(portal, SITE_OWNER_NAME)
-        setRoles(portal, TEST_USER_ID, ['Manager'])
+        setRoles(portal, TEST_USER_ID, ["Manager"])
 
         set_supported_languages(portal)
 
-        applyProfile(portal, 'plone.restapi:default')
-        applyProfile(portal, 'plone.restapi:testing')
+        applyProfile(portal, "plone.restapi:default")
+        applyProfile(portal, "plone.restapi:testing")
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
         set_available_languages()
         enable_request_language_negotiation(portal)
-        quickInstallProduct(portal, 'collective.MockMailHost')
-        applyProfile(portal, 'collective.MockMailHost:default')
-        states = portal.portal_workflow['simple_publication_workflow'].states
+        quickInstallProduct(portal, "collective.MockMailHost")
+        applyProfile(portal, "collective.MockMailHost:default")
+        states = portal.portal_workflow["simple_publication_workflow"].states
         if six.PY2:  # issue 676
-            states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
+            states["published"].title = u"Published with accent é".encode(
+                "utf8"
+            )  # noqa: E501
         else:
-            states['published'].title = u'Published with accent é'  # noqa: E501
+            states["published"].title = u"Published with accent é"  # noqa: E501
 
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
 PLONE_RESTAPI_DX_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_DX_FIXTURE,),
-    name="PloneRestApiDXLayer:Integration"
+    bases=(PLONE_RESTAPI_DX_FIXTURE,), name="PloneRestApiDXLayer:Integration"
 )
 PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="PloneRestApiDXLayer:Functional"
+    name="PloneRestApiDXLayer:Functional",
 )
 PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
-    bases=(FREEZE_TIME_FIXTURE,
-           PLONE_RESTAPI_DX_FIXTURE,
-           z2.ZSERVER_FIXTURE),
-    name="PloneRestApiDXLayerFreeze:Functional"
+    bases=(FREEZE_TIME_FIXTURE, PLONE_RESTAPI_DX_FIXTURE, z2.ZSERVER_FIXTURE),
+    name="PloneRestApiDXLayerFreeze:Functional",
 )
 
 
 class PloneRestApiDXPAMLayer(PloneSandboxLayer):
 
-    defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE,)
+    defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE)
 
     def setUpZope(self, app, configurationContext):
         import plone.restapi
-        xmlconfig.file(
-            'configure.zcml',
-            plone.restapi,
-            context=configurationContext
-        )
-        xmlconfig.file(
-            'testing.zcml',
-            plone.restapi,
-            context=configurationContext
-        )
 
-        z2.installProduct(app, 'plone.restapi')
+        xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
+        xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
+
+        z2.installProduct(app, "plone.restapi")
 
     def setUpPloneSite(self, portal):
         portal.acl_users.userFolderAddUser(
-            SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ['Manager'], [])
+            SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ["Manager"], []
+        )
         login(portal, SITE_OWNER_NAME)
-        setRoles(portal, TEST_USER_ID, ['Manager'])
+        setRoles(portal, TEST_USER_ID, ["Manager"])
 
         set_supported_languages(portal)
-        if portal.portal_setup.profileExists('plone.app.multilingual:default'):
-            applyProfile(portal, 'plone.app.multilingual:default')
-        applyProfile(portal, 'plone.restapi:default')
-        applyProfile(portal, 'plone.restapi:testing')
+        if portal.portal_setup.profileExists("plone.app.multilingual:default"):
+            applyProfile(portal, "plone.app.multilingual:default")
+        applyProfile(portal, "plone.restapi:default")
+        applyProfile(portal, "plone.restapi:testing")
         add_catalog_indexes(portal, DX_TYPES_INDEXES)
         set_available_languages()
         enable_request_language_negotiation(portal)
-        states = portal.portal_workflow['simple_publication_workflow'].states
+        states = portal.portal_workflow["simple_publication_workflow"].states
         if six.PY2:  # issue 676
-            states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
+            states["published"].title = u"Published with accent é".encode(
+                "utf8"
+            )  # noqa: E501
         else:
-            states['published'].title = u'Published with accent é'  # noqa: E501
+            states["published"].title = u"Published with accent é"  # noqa: E501
 
 
 PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()
 PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE,),
-    name="PloneRestApiDXPAMLayer:Integration"
+    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE,), name="PloneRestApiDXPAMLayer:Integration"
 )
 PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="PloneRestApiDXPAMLayer:Functional"
+    name="PloneRestApiDXPAMLayer:Functional",
 )
 PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
-    bases=(FREEZE_TIME_FIXTURE,
-           PLONE_RESTAPI_DX_PAM_FIXTURE,
-           z2.ZSERVER_FIXTURE),
-    name="PloneRestApiDXPAMLayerFreeze:Functional"
+    bases=(FREEZE_TIME_FIXTURE, PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
+    name="PloneRestApiDXPAMLayerFreeze:Functional",
 )
 
 
 if HAS_AT:
+
     class PloneRestApiATLayer(PloneSandboxLayer):
 
-        defaultBases = (DATE_TIME_FIXTURE, PLONE_FIXTURE,)
+        defaultBases = (DATE_TIME_FIXTURE, PLONE_FIXTURE)
 
         def setUpZope(self, app, configurationContext):
             import Products.ATContentTypes
+
             self.loadZCML(package=Products.ATContentTypes)
             import plone.app.dexterity
+
             self.loadZCML(package=plone.app.dexterity)
 
             import plone.restapi
+
             xmlconfig.file(
-                'configure.zcml',
-                plone.restapi,
-                context=configurationContext
+                "configure.zcml", plone.restapi, context=configurationContext
             )
 
-            z2.installProduct(app, 'Products.Archetypes')
-            z2.installProduct(app, 'Products.ATContentTypes')
-            z2.installProduct(app, 'plone.app.collection')
-            z2.installProduct(app, 'plone.app.blob')
-            z2.installProduct(app, 'plone.restapi')
+            z2.installProduct(app, "Products.Archetypes")
+            z2.installProduct(app, "Products.ATContentTypes")
+            z2.installProduct(app, "plone.app.collection")
+            z2.installProduct(app, "plone.app.blob")
+            z2.installProduct(app, "plone.restapi")
 
         def setUpPloneSite(self, portal):
             portal.acl_users.userFolderAddUser(
-                SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ['Manager'], [])
+                SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ["Manager"], []
+            )
             set_supported_languages(portal)
 
-            if portal.portal_setup.profileExists(
-                    'Products.ATContentTypes:default'):
-                applyProfile(portal, 'Products.ATContentTypes:default')
-            if portal.portal_setup.profileExists(
-                    'plone.app.collection:default'):
-                applyProfile(portal, 'plone.app.collection:default')
+            if portal.portal_setup.profileExists("Products.ATContentTypes:default"):
+                applyProfile(portal, "Products.ATContentTypes:default")
+            if portal.portal_setup.profileExists("plone.app.collection:default"):
+                applyProfile(portal, "plone.app.collection:default")
 
-            applyProfile(portal, 'plone.app.dexterity:default')
-            applyProfile(portal, 'plone.restapi:default')
-            applyProfile(portal, 'plone.restapi:testing')
+            applyProfile(portal, "plone.app.dexterity:default")
+            applyProfile(portal, "plone.restapi:default")
+            applyProfile(portal, "plone.restapi:testing")
             set_available_languages()
             enable_request_language_negotiation(portal)
-            portal.portal_workflow.setDefaultChain('simple_publication_workflow')  # noqa: E501
-            states = portal.portal_workflow['simple_publication_workflow'].states  # noqa: E501
+            portal.portal_workflow.setDefaultChain(
+                "simple_publication_workflow"
+            )  # noqa: E501
+            states = portal.portal_workflow[
+                "simple_publication_workflow"
+            ].states  # noqa: E501
             if six.PY2:  # issue 676
-                states['published'].title = u'Published with accent é'.encode('utf8')  # noqa: E501
+                states["published"].title = u"Published with accent é".encode(
+                    "utf8"
+                )  # noqa: E501
             else:
-                states['published'].title = u'Published with accent é'  # noqa: E501
+                states["published"].title = u"Published with accent é"  # noqa: E501
 
     PLONE_RESTAPI_AT_FIXTURE = PloneRestApiATLayer()
     PLONE_RESTAPI_AT_INTEGRATION_TESTING = IntegrationTesting(
-        bases=(PLONE_RESTAPI_AT_FIXTURE,),
-        name="PloneRestApiATLayer:Integration"
+        bases=(PLONE_RESTAPI_AT_FIXTURE,), name="PloneRestApiATLayer:Integration"
     )
     PLONE_RESTAPI_AT_FUNCTIONAL_TESTING = FunctionalTesting(
         bases=(PLONE_RESTAPI_AT_FIXTURE, z2.ZSERVER_FIXTURE),
-        name="PloneRestApiATLayer:Functional"
+        name="PloneRestApiATLayer:Functional",
     )
 else:
     PLONE_RESTAPI_AT_INTEGRATION_TESTING = PLONE_FIXTURE
@@ -335,23 +332,20 @@ class PloneRestApiTilesLayer(PloneSandboxLayer):
     defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
 
     def setUpPloneSite(self, portal):
-        applyProfile(portal, 'plone.restapi:tiles')
+        applyProfile(portal, "plone.restapi:tiles")
 
 
 PLONE_RESTAPI_TILES_FIXTURE = PloneRestApiTilesLayer()
 PLONE_RESTAPI_TILES_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_TILES_FIXTURE,),
-    name="PloneRestApiTilesLayer:Integration"
+    bases=(PLONE_RESTAPI_TILES_FIXTURE,), name="PloneRestApiTilesLayer:Integration"
 )
 PLONE_RESTAPI_TILES_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_TILES_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="PloneRestApiTilesLayer:Functional"
+    name="PloneRestApiTilesLayer:Functional",
 )
 PLONE_RESTAPI_TILES_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
-    bases=(FREEZE_TIME_FIXTURE,
-           PLONE_RESTAPI_TILES_FIXTURE,
-           z2.ZSERVER_FIXTURE),
-    name="PloneRestApiTilesLayerFreeze:Functional"
+    bases=(FREEZE_TIME_FIXTURE, PLONE_RESTAPI_TILES_FIXTURE, z2.ZSERVER_FIXTURE),
+    name="PloneRestApiTilesLayerFreeze:Functional",
 )
 
 
@@ -362,13 +356,13 @@ class RelativeSession(requests.Session):
 
     def __init__(self, base_url):
         super(RelativeSession, self).__init__()
-        if not base_url.endswith('/'):
-            base_url += '/'
+        if not base_url.endswith("/"):
+            base_url += "/"
         self.__base_url = base_url
 
     def request(self, method, url, **kwargs):
-        if urlparse(url).scheme not in ('http', 'https'):
-            url = url.lstrip('/')
+        if urlparse(url).scheme not in ("http", "https"):
+            url = url.lstrip("/")
             url = urljoin(self.__base_url, url)
         try:
             return super(RelativeSession, self).request(method, url, **kwargs)
@@ -393,11 +387,11 @@ class StaticUUIDGenerator(object):
 
     def __call__(self):
         self.counter += 1
-        postfix = str(self.counter).rjust(32 - len(self.prefix), '0')
+        postfix = str(self.counter).rjust(32 - len(self.prefix), "0")
         return self.prefix + postfix
 
 
 def register_static_uuid_utility(prefix):
-    prefix = re.sub(r'[^a-zA-Z0-9\-_]', '', prefix)
+    prefix = re.sub(r"[^a-zA-Z0-9\-_]", "", prefix)
     generator = StaticUUIDGenerator(prefix)
     getGlobalSiteManager().registerUtility(component=generator)

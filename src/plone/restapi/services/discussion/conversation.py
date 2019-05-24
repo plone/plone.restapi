@@ -26,11 +26,11 @@ import plone.protect.interfaces
 def fix_location_header(context, request):
     # This replaces the location header as sent by p.a.discussion's forms with
     # a RESTapi compatible location.
-    location = request.response.headers.get('location')
-    if location and '#' in location:
-        comment_id = location.split('#')[-1]
-        url = '{}/@comments/{}'.format(context.absolute_url(), comment_id)
-        request.response.headers['location'] = url
+    location = request.response.headers.get("location")
+    if location and "#" in location:
+        comment_id = location.split("#")[-1]
+        url = "{}/@comments/{}".format(context.absolute_url(), comment_id)
+        request.response.headers["location"] = url
 
 
 @implementer(IPublishTraverse)
@@ -45,16 +45,10 @@ class CommentsGet(Service):
     def reply(self):
         conversation = IConversation(self.context)
         if not self.comment_id:
-            serializer = getMultiAdapter(
-                (conversation, self.request),
-                ISerializeToJson
-            )
+            serializer = getMultiAdapter((conversation, self.request), ISerializeToJson)
         else:
             comment = conversation[self.comment_id]
-            serializer = getMultiAdapter(
-                (comment, self.request),
-                ISerializeToJson
-            )
+            serializer = getMultiAdapter((comment, self.request), ISerializeToJson)
         return serializer()
 
 
@@ -65,14 +59,13 @@ class CommentsAdd(Service):
     def publishTraverse(self, request, name):
         if name:
             self.comment_id = int(name)
-            request['form.widgets.in_reply_to'] = name
+            request["form.widgets.in_reply_to"] = name
         return self
 
     def reply(self):
         # Disable CSRF protection
-        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         conversation = IConversation(self.context)
         if self.comment_id and self.comment_id not in list(conversation):
@@ -82,15 +75,15 @@ class CommentsAdd(Service):
         # Fake request data
         body = json_body(self.request)
         for key, value in body.items():
-            self.request.form['form.widgets.' + key] = value
+            self.request.form["form.widgets." + key] = value
 
         form = CommentForm(self.context, self.request)
         form.update()
 
-        action = form.actions['comment']
+        action = form.actions["comment"]
         data, errors = form.extractData()
         if errors:
-            raise BadRequest({'errors': [err.error for err in errors]})
+            raise BadRequest({"errors": [err.error for err in errors]})
 
         form.handleComment(form=form, action=action)
 
@@ -105,7 +98,7 @@ class CommentsUpdate(Service):
     def publishTraverse(self, request, name):
         if name:
             self.comment_id = int(name)
-            request['form.widgets.comment_id'] = name
+            request["form.widgets.comment_id"] = name
         return self
 
     def reply(self):
@@ -125,16 +118,16 @@ class CommentsUpdate(Service):
         # Fake request data
         body = json_body(self.request)
         for key, value in body.items():
-            self.request.form['form.widgets.' + key] = value
+            self.request.form["form.widgets." + key] = value
 
         form = EditCommentForm(comment, self.request)
         form.__parent__ = form.context.__parent__.__parent__
         form.update()
 
-        action = form.actions['comment']
+        action = form.actions["comment"]
         data, errors = form.extractData()
         if errors:
-            raise BadRequest({'errors': [err.error for err in errors]})
+            raise BadRequest({"errors": [err.error for err in errors]})
 
         comment.modification_date = datetime.utcnow()
         form.handleComment(form=form, action=action)

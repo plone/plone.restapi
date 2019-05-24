@@ -13,7 +13,7 @@ from zope.interface import implementer
 from zope.interface import Interface
 
 
-BRAIN_METHODS = ['getPath', 'getURL']
+BRAIN_METHODS = ["getPath", "getURL"]
 
 
 @implementer(ISerializeToJson)
@@ -28,20 +28,19 @@ class BrainSerializer(object):
         self.request = request
 
     def _get_metadata_to_include(self, metadata_fields):
-        if metadata_fields and '_all' in metadata_fields:
+        if metadata_fields and "_all" in metadata_fields:
             site = getSite()
-            catalog = getToolByName(site, 'portal_catalog')
+            catalog = getToolByName(site, "portal_catalog")
             metadata_attrs = list(catalog.schema()) + BRAIN_METHODS
             return metadata_attrs
 
         return metadata_fields
 
-    def __call__(self, metadata_fields=('_all',)):
+    def __call__(self, metadata_fields=("_all",)):
         metadata_to_include = self._get_metadata_to_include(metadata_fields)
 
         # Start with a summary representation as our base
-        result = getMultiAdapter(
-            (self.brain, self.request), ISerializeToJsonSummary)()
+        result = getMultiAdapter((self.brain, self.request), ISerializeToJsonSummary)()
 
         for attr in metadata_to_include:
             value = getattr(self.brain, attr, None)
@@ -75,29 +74,30 @@ class LazyCatalogResultSerializer(object):
         batch = HypermediaBatch(self.request, self.lazy_resultset)
 
         results = {}
-        results['@id'] = batch.canonical_url
-        results['items_total'] = batch.items_total
+        results["@id"] = batch.canonical_url
+        results["items_total"] = batch.items_total
         links = batch.links
         if links:
-            results['batching'] = links
+            results["batching"] = links
 
-        results['items'] = []
+        results["items"] = []
         for brain in batch:
             if fullobjects:
                 result = getMultiAdapter(
-                    (brain.getObject(), self.request), ISerializeToJson)(
-                        include_items=False)
+                    (brain.getObject(), self.request), ISerializeToJson
+                )(include_items=False)
             else:
                 result = getMultiAdapter(
-                    (brain, self.request), ISerializeToJsonSummary)()
+                    (brain, self.request), ISerializeToJsonSummary
+                )()
 
                 # Merge additional metadata into the summary we already have
                 if metadata_fields:
-                    metadata = getMultiAdapter(
-                        (brain, self.request),
-                        ISerializeToJson)(metadata_fields=metadata_fields)
+                    metadata = getMultiAdapter((brain, self.request), ISerializeToJson)(
+                        metadata_fields=metadata_fields
+                    )
                     result.update(metadata)
 
-            results['items'].append(result)
+            results["items"].append(result)
 
         return results

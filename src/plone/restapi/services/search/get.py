@@ -5,7 +5,6 @@ from plone.restapi.services import Service
 
 
 class SearchGet(Service):
-
     def reply(self):
         query = self.request.form.copy()
         query = unflatten_dotted_dict(query)

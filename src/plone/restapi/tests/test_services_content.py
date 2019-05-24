@@ -15,22 +15,20 @@ class TestHistoryVersioning(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.app = self.layer['app']
-        self.portal = self.layer['portal']
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
         self.api_session = RelativeSession(self.portal_url)
-        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         self.portal.invokeFactory(
-            'Document',
-            id='doc_with_history',
-            title='My Document'
+            "Document", id="doc_with_history", title="My Document"
         )
         self.doc = self.portal.doc_with_history
-        self.doc.setTitle('Current version')
+        self.doc.setTitle("Current version")
 
         transaction.commit()
 
@@ -39,4 +37,4 @@ class TestHistoryVersioning(unittest.TestCase):
 
     def test_response(self):
         response = self.api_session.get(self.doc.absolute_url())
-        self.assertIn('version', response.json())
+        self.assertIn("version", response.json())
