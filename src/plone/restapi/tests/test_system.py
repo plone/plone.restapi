@@ -1,25 +1,11 @@
 # -*- coding: utf-8 -*-
-from datetime import date
-from DateTime import DateTime
-from plone import api
-from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.textfield.value import RichTextValue
-from plone.dexterity.utils import createContentInContainer
-from plone.registry.interfaces import IRegistry
-from plone.restapi import HAS_AT
-from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from plone.restapi.tests.helpers import result_paths
-from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.controlpanel.browser.overview import OverviewControlPanel
-from zope.component import getUtility
 
-import six
-import transaction
 import unittest
 
 
