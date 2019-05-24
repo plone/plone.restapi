@@ -46,6 +46,11 @@ class IDXTestDocumentSchema(model.Schema):
     test_bytes_field = schema.Bytes(required=False)
     test_bytesline_field = schema.BytesLine(required=False)
     test_choice_field = schema.Choice(values=[u'foo', u'bar'], required=False)
+    test_choice_field_with_vocabulary = schema.Choice(
+        vocabulary=SimpleVocabulary([
+            SimpleTerm(u'value1', 'token1', u'title1'),
+            SimpleTerm(u'value2', 'token2', u'title2'),
+        ]),  required=False)
     test_date_field = schema.Date(required=False)
     test_datetime_field = schema.Datetime(required=False)
     test_datetime_tz_field = schema.Datetime(
@@ -58,6 +63,12 @@ class IDXTestDocumentSchema(model.Schema):
     test_frozenset_field = schema.FrozenSet(required=False)
     test_int_field = schema.Int(required=False)
     test_list_field = schema.List(required=False)
+    test_list_field_with_choice_with_vocabulary = schema.List(
+        value_type=schema.Choice(vocabulary=SimpleVocabulary([
+            SimpleTerm(u'value1', 'token1', u'title1'),
+            SimpleTerm(u'value2', 'token2', u'title2'),
+            SimpleTerm(u'value3', 'token3', u'title3'),
+        ])), required=False)
     test_set_field = schema.Set(required=False)
     test_text_field = schema.Text(required=False)
     test_textline_field = schema.TextLine(required=False)

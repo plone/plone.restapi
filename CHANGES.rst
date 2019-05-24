@@ -8,20 +8,57 @@ Changelog
 
 .. towncrier release notes start
 
-3.10.0 (Unreleased)
--------------------
+4.0.0 (2019-05-09)
+------------------
+
+Breaking changes:
+
+- @vocabularies service: No longer returns an @id for terms. Results are batched, and terms are now listed as items instead of terms to match other batched responses. Batch size is 25 by default but can be overridden using the b_size parameter.
+  [davisagli]
+
+- @types service: Choice fields using named vocabularies are now serialized with a vocabulary property giving the URL of the @vocabularies endpoint for the vocabulary instead of including choices, enum and enumNames inline. The subjects field is now serialized as an array of string items using the plone.app.vocabularies.Keywords vocabulary.
+  [davisagli]
+
+- Serialize widget parameters into a widgetOptions object instead of adding them to the top level of the schema property.
+  [davisagli]
+
+- Add `title` and `token` filter to the vocabularies endpoint.
+  [davisagli, sneridagh, timo] (#535)
+
+- Use tokens for serialization/deserialization of vocabulary terms.
+  [buchi] (#691)
+
+- Return the token and the title of vocabulary terms in serialization.
+  See upgrade guide for more information.
+  [buchi] (#726)
 
 New Features:
 
-- Add endpoints for managing addons.
-[esteele]
+- ``@vocabularies`` service: Use ``title`` parameter to filter terms by title
+  and ``token`` for getting the title of a term given a token.
+  (case-insensitive).
+  [davisagli, sneridagh, timo]
+
+Bug fixes:
+
+- Standardize errors data structure of email-notification endpoint.
+  [cekk] (#708)
+
+- When renewing an expired or invalid authentication token with ``@login-renew`` fail with a ``401`` error instead of returning a new authentication token.
+  [thet] (#721)
+
+- Use interface name in the ``tiles`` profile instead of the shorthand behavior name. This fixes #724.
+  [sneridagh] (#724)
+
+- Avoid calculating batch links for catalog results twice.
+  [davisagli]
+>>>>>>> master
 
 
 3.9.0 (2019-04-18)
 ------------------
 
 New features:
-
 
 - Add full support for `fullobjects` support for AT content types.
   [sneridagh] (#698)
@@ -36,7 +73,7 @@ Bug fixes:
   [ajung]
 
 - Hide performance, testing, and tiles profile. (#700)
-  [Timo]
+  [timo]
 
 
 3.8.0 (2019-03-21)

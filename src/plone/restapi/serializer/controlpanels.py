@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
+from plone.dexterity.interfaces import IDexterityContent
+from plone.registry.interfaces import IRegistry
 from plone.restapi.controlpanels import IControlpanel
+from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.types import utils
-from plone.registry.interfaces import IRegistry
-from zope.interface import implementer
 from zope.component import adapter, queryMultiAdapter, getUtility
+from zope.interface import alsoProvides
+from zope.interface import implementer
+from zope.interface import noLongerProvides
 
 import zope.schema
 
@@ -86,6 +89,10 @@ class ControlpanelSerializeToJson(object):
             self.schema, prefix=self.schema_prefix
         )
 
+        # Temporarily provide IDexterityContent, so we can use DX field
+        # serializers
+        alsoProvides(proxy, IDexterityContent)
+
         json_data = {}
         for name, field in zope.schema.getFields(self.schema).items():
             serializer = queryMultiAdapter(
@@ -97,6 +104,8 @@ class ControlpanelSerializeToJson(object):
             else:
                 value = getattr(proxy, name, None)
             json_data[json_compatible(name)] = value
+
+        noLongerProvides(proxy, IDexterityContent)
 
         # JSON schema
         return {

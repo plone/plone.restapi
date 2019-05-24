@@ -174,6 +174,9 @@ class TestRenew(TestCase):
         self.assertIn('error', res)
 
     def test_renew_returns_token(self):
+        self.portal.acl_users.jwt_auth.store_tokens = True
+        token = self.portal.acl_users.jwt_auth.create_token('admin')
+        self.request._auth = 'Bearer {}'.format(token)
         service = self.traverse()
         res = service.reply()
         self.assertIn('token', res)
@@ -187,3 +190,17 @@ class TestRenew(TestCase):
         self.assertIn('token', res)
         self.assertEqual(
             1, len(self.portal.acl_users.jwt_auth._tokens['admin']))
+
+    def test_renew_fails_on_invalid_token(self):
+        token = 'this is an invalid token'
+        self.request._auth = 'Bearer {}'.format(token)
+        service = self.traverse()
+        res = service.reply()
+        self.assertEqual(
+            service.request.response.status,
+            401
+        )
+        self.assertEqual(
+            res['error']['type'],
+            'Invalid or expired authentication token'
+        )

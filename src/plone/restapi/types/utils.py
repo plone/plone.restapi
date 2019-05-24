@@ -19,13 +19,14 @@ from plone.autoform.form import AutoExtensibleForm
 from plone.autoform.interfaces import IParameterizedWidget
 from plone.autoform.interfaces import WIDGETS_KEY
 from plone.dexterity.utils import getAdditionalSchemata
-from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.serializer.converters import IJsonCompatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from Products.CMFCore.utils import getToolByName
 from plone.supermodel.utils import mergedTaggedValueDict
 from z3c.form import form as z3c_form
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
+from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.i18n import translate
 
@@ -95,7 +96,7 @@ def get_fieldset_infos(fieldsets):
 
 
 def get_jsonschema_properties(context, request, fieldsets, prefix='',
-                              excluded_fields=None, tagged_values={}):
+                              excluded_fields=None):
     """Build a JSON schema 'properties' list, based on a list of fieldset
     dicts as returned by `get_fieldsets()`.
     """
@@ -124,27 +125,23 @@ def get_jsonschema_properties(context, request, fieldsets, prefix='',
 
             properties[fieldname] = adapter.get_schema()
 
-            for key, value in tagged_values.get(fieldname, {}).items():
-                if key in properties[fieldname]:
-                    continue
-                properties[fieldname][key] = value
-
     return properties
 
 
-def get_tagged_values(schemas, key):
+def get_widget_params(schemas):
     params = {}
     for schema in schemas:
         if not schema:
             continue
-        tagged_values = mergedTaggedValueDict(schema, key)
+        tagged_values = mergedTaggedValueDict(schema, WIDGETS_KEY)
         for field_name in schema:
             widget = tagged_values.get(field_name)
             if IParameterizedWidget.providedBy(widget) and widget.params:
-                params[field_name] = widget.params.copy()
-                for k, v in params[field_name].items():
+                params[field_name] = {}
+                for k, v in widget.params.items():
                     if callable(v):
-                        params[field_name][k] = v()
+                        v = v()
+                    params[field_name][k] = v
     return params
 
 
@@ -168,16 +165,12 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
             context, request, schema, additional_schemata
         )
 
-    # Mangle the properties a bit to add widgets hints
-    schemas = (schema,) + additional_schemata
-
     # Build JSON schema properties
     properties = get_jsonschema_properties(
         context,
         request,
         fieldsets,
         excluded_fields=excluded_fields,
-        tagged_values=get_tagged_values(schemas, WIDGETS_KEY)
     )
 
     # Determine required fields
@@ -194,7 +187,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     return {
         'type': 'object',
         'title': translate(fti.Title(), context=getRequest()),
-        'properties': json_compatible(properties),
+        'properties': IJsonCompatible(properties),
         'required': required,
         'fieldsets': get_fieldset_infos(fieldsets),
         'layouts': getattr(fti, 'view_methods', []),
@@ -209,3 +202,15 @@ def get_jsonschema_for_portal_type(portal_type, context, request,
     fti = ttool[portal_type]
     return get_jsonschema_for_fti(
         fti, context, request, excluded_fields=excluded_fields)
+
+
+def get_vocabulary_url(vocab_name, context, request):
+    try:
+        context_url = context.absolute_url()
+    except AttributeError:
+        portal = getSite()
+        context_url = portal.absolute_url()
+    return '{}/@vocabularies/{}'.format(
+        context_url,
+        vocab_name,
+    )
