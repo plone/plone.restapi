@@ -516,9 +516,9 @@ class TestSearchFunctional(unittest.TestCase):
         query = {"effectiveRange": date(1997, 1, 1).isoformat()}
         response = self.api_session.get("/folder/@search", params=query)
 
-        self.assertEqual(
-            [u"/plone/folder", u"/plone/folder/doc"], result_paths(response.json())
-        )
+        self.assertEqual(2, len(result_paths(response.json())))
+        self.assertTrue(u"/plone/folder" in result_paths(response.json()))
+        self.assertTrue(u"/plone/folder/doc" in result_paths(response.json()))
 
     # DateRecurringIndex
 
