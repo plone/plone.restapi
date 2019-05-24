@@ -46,6 +46,7 @@ install:
   - sed -ie "s#plone-x.x.x.cfg#plone-$PLONE_VERSION.cfg#" travis.cfg
   - buildout -t 10 -c travis.cfg
 script:
+  - if [[ "$PYTHON_VERSION" == 3.* ]]; then black src/; fi
   - bin/code-analysis
   - bin/sphinxbuilder
   - bin/test
