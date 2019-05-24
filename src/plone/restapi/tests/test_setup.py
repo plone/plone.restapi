@@ -21,8 +21,8 @@ class TestInstall(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
-        self.app = self.layer['app']
-        self.portal = self.layer['portal']
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
 
     def test_product_is_installed(self):
         """ Validate that our products GS profile has been run and the product
@@ -32,11 +32,11 @@ class TestInstall(unittest.TestCase):
             qi = get_installer(self.portal)
             installed = qi.is_product_installed(PROJECT_NAME)
         else:
-            qi_tool = getToolByName(self.portal, 'portal_quickinstaller')
+            qi_tool = getToolByName(self.portal, "portal_quickinstaller")
             installed = PROJECT_NAME in [
-                p['id'] for p in qi_tool.listInstalledProducts()]
-        self.assertTrue(
-            installed, 'package appears not to have been installed')
+                p["id"] for p in qi_tool.listInstalledProducts()
+            ]
+        self.assertTrue(installed, "package appears not to have been installed")
 
 
 class TestUninstall(unittest.TestCase):
@@ -44,16 +44,16 @@ class TestUninstall(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
-        self.app = self.layer['app']
-        self.portal = self.layer['portal']
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
 
         if HAS_INSTALLER:
             qi = get_installer(self.portal)
             qi.uninstall_product(PROJECT_NAME)
             self.installed = qi.is_product_installed(PROJECT_NAME)
         else:
-            qi_tool = getToolByName(self.portal, 'portal_quickinstaller')
-            with api.env.adopt_roles(['Manager']):
+            qi_tool = getToolByName(self.portal, "portal_quickinstaller")
+            with api.env.adopt_roles(["Manager"]):
                 qi_tool.uninstallProducts(products=[PROJECT_NAME])
             self.installed = qi_tool.isProductInstalled(PROJECT_NAME)
 
@@ -62,4 +62,4 @@ class TestUninstall(unittest.TestCase):
 
     def test_addon_layer_removed(self):
         layers = [l.getName() for l in registered_layers()]
-        self.assertNotIn('IPloneRestapiLayer', layers)
+        self.assertNotIn("IPloneRestapiLayer", layers)

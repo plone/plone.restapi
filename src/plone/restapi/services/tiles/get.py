@@ -13,7 +13,6 @@ from zope.component import getUtility
 
 @implementer(IPublishTraverse)
 class TilesGet(Service):
-
     def __init__(self, context, request):
         super(TilesGet, self).__init__(context, request)
         self.params = []
@@ -28,23 +27,19 @@ class TilesGet(Service):
             self.content_type = "application/json+schema"
             try:
                 tile = getUtility(ITileType, name=self.params[0])
-                return getMultiAdapter(
-                    (tile, self.request), ISerializeToJson)()
+                return getMultiAdapter((tile, self.request), ISerializeToJson)()
             except KeyError:
                 self.content_type = "application/json"
                 self.request.response.setStatus(404)
                 return {
-                    'type': 'NotFound',
-                    'message': 'Tile "{}" could not be found.'.format(
-                        self.params[0]
-                    )
+                    "type": "NotFound",
+                    "message": 'Tile "{}" could not be found.'.format(self.params[0]),
                 }
 
         result = []
         tiles = getUtilitiesFor(ITileType, context=self.context)
         for name, tile in tiles:
-            serializer = getMultiAdapter(
-                (tile, self.request), ISerializeToJsonSummary)
+            serializer = getMultiAdapter((tile, self.request), ISerializeToJsonSummary)
             if checkPermission(tile.add_permission, self.context):
                 result.append(serializer())
 

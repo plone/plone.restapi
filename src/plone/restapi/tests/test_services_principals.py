@@ -16,90 +16,76 @@ class TestPrincipalsEndpoint(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.app = self.layer['app']
-        self.portal = self.layer['portal']
-        self.request = self.layer['request']
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
         self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
         self.api_session = RelativeSession(self.portal_url)
-        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         properties = {
-            'email': 'noam.chomsky@example.com',
-            'username': 'noamchomsky',
-            'fullname': 'Noam Avram Chomsky',
-            'home_page': 'web.mit.edu/chomsky',
-            'description': 'Professor of Linguistics',
-            'location': 'Cambridge, MA'
+            "email": "noam.chomsky@example.com",
+            "username": "noamchomsky",
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
         }
         self.user = api.user.create(
-            email='noam.chomsky@example.com',
-            username='noam',
-            properties=properties
+            email="noam.chomsky@example.com", username="noam", properties=properties
         )
 
-        self.gtool = api.portal.get_tool('portal_groups')
+        self.gtool = api.portal.get_tool("portal_groups")
         properties = {
-            'title': 'Plone Team',
-            'description': 'We are Plone',
-            'email': 'ploneteam@plone.org',
+            "title": "Plone Team",
+            "description": "We are Plone",
+            "email": "ploneteam@plone.org",
         }
-        self.gtool.addGroup('ploneteam', (), (),
-                            properties=properties,
-                            title=properties['title'],
-                            description=properties['description'])
+        self.gtool.addGroup(
+            "ploneteam",
+            (),
+            (),
+            properties=properties,
+            title=properties["title"],
+            description=properties["description"],
+        )
         transaction.commit()
 
     def tearDown(self):
         self.api_session.close()
 
     def test_get_principals(self):
-        response = self.api_session.get(
-            '/@principals',
-            params={
-                "search": "noam"
-            }
-        )
+        response = self.api_session.get("/@principals", params={"search": "noam"})
         self.assertEqual(200, response.status_code)
 
         response = response.json()
         self.assertEqual(2, len(response))
-        self.assertEqual(1, len(response['users']))
-        self.assertEqual('noam', response['users'][0]['id'])
+        self.assertEqual(1, len(response["users"]))
+        self.assertEqual("noam", response["users"][0]["id"])
 
-        response = self.api_session.get(
-            '/@principals',
-            params={
-                "search": "plone"
-            }
-        )
+        response = self.api_session.get("/@principals", params={"search": "plone"})
         self.assertEqual(200, response.status_code)
 
         response = response.json()
         self.assertEqual(2, len(response))
-        self.assertEqual(1, len(response['groups']))
-        self.assertEqual('ploneteam', response['groups'][0]['id'])
+        self.assertEqual(1, len(response["groups"]))
+        self.assertEqual("ploneteam", response["groups"][0]["id"])
 
     def test_get_principals_response_both(self):
         self.user = api.user.create(
-            email='plone.user@example.com',
-            username='plone.user'
+            email="plone.user@example.com", username="plone.user"
         )
         transaction.commit()
 
-        response = self.api_session.get(
-            '/@principals',
-            params={
-                "search": "plone"
-            }
-        )
+        response = self.api_session.get("/@principals", params={"search": "plone"})
         self.assertEqual(200, response.status_code)
 
         response = response.json()
         self.assertEqual(2, len(response))
-        self.assertEqual(1, len(response['users']))
-        self.assertEqual(1, len(response['groups']))
-        self.assertEqual('plone.user', response['users'][0]['id'])
-        self.assertEqual('ploneteam', response['groups'][0]['id'])
+        self.assertEqual(1, len(response["users"]))
+        self.assertEqual(1, len(response["groups"]))
+        self.assertEqual("plone.user", response["users"][0]["id"])
+        self.assertEqual("ploneteam", response["groups"][0]["id"])

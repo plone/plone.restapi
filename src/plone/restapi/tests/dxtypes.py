@@ -31,10 +31,8 @@ INDEXES = (
 
 
 def vocabularyRequireingContextFactory(context):
-    catalog = getToolByName(context, 'portal_catalog')
-    return SimpleVocabulary([SimpleTerm(catalog.id,
-                                        catalog.id,
-                                        catalog.id)])
+    catalog = getToolByName(context, "portal_catalog")
+    return SimpleVocabulary([SimpleTerm(catalog.id, catalog.id, catalog.id)])
 
 
 class IDXTestDocumentSchema(model.Schema):
@@ -45,18 +43,24 @@ class IDXTestDocumentSchema(model.Schema):
     test_bool_field = schema.Bool(required=False)
     test_bytes_field = schema.Bytes(required=False)
     test_bytesline_field = schema.BytesLine(required=False)
-    test_choice_field = schema.Choice(values=[u'foo', u'bar'], required=False)
+    test_choice_field = schema.Choice(values=[u"foo", u"bar"], required=False)
     test_choice_field_with_vocabulary = schema.Choice(
-        vocabulary=SimpleVocabulary([
-            SimpleTerm(u'value1', 'token1', u'title1'),
-            SimpleTerm(u'value2', 'token2', u'title2'),
-        ]),  required=False)
+        vocabulary=SimpleVocabulary(
+            [
+                SimpleTerm(u"value1", "token1", u"title1"),
+                SimpleTerm(u"value2", "token2", u"title2"),
+            ]
+        ),
+        required=False,
+    )
     test_date_field = schema.Date(required=False)
     test_datetime_field = schema.Datetime(required=False)
     test_datetime_tz_field = schema.Datetime(
         required=False,
         defaultFactory=lambda: timezone("Europe/Zurich").localize(
-            datetime(2017, 10, 31, 10, 0)))
+            datetime(2017, 10, 31, 10, 0)
+        ),
+    )
     test_decimal_field = schema.Decimal(required=False)
     test_dict_field = schema.Dict(required=False)
     test_float_field = schema.Float(required=False)
@@ -64,30 +68,37 @@ class IDXTestDocumentSchema(model.Schema):
     test_int_field = schema.Int(required=False)
     test_list_field = schema.List(required=False)
     test_list_field_with_choice_with_vocabulary = schema.List(
-        value_type=schema.Choice(vocabulary=SimpleVocabulary([
-            SimpleTerm(u'value1', 'token1', u'title1'),
-            SimpleTerm(u'value2', 'token2', u'title2'),
-            SimpleTerm(u'value3', 'token3', u'title3'),
-        ])), required=False)
+        value_type=schema.Choice(
+            vocabulary=SimpleVocabulary(
+                [
+                    SimpleTerm(u"value1", "token1", u"title1"),
+                    SimpleTerm(u"value2", "token2", u"title2"),
+                    SimpleTerm(u"value3", "token3", u"title3"),
+                ]
+            )
+        ),
+        required=False,
+    )
     test_set_field = schema.Set(required=False)
     test_text_field = schema.Text(required=False)
     test_textline_field = schema.TextLine(required=False)
     test_time_field = schema.Time(required=False)
     test_timedelta_field = schema.Timedelta(required=False)
     test_tuple_field = schema.Tuple(required=False)
-    test_nested_list_field = schema.List(
-        required=False, value_type=schema.Tuple())
+    test_nested_list_field = schema.List(required=False, value_type=schema.Tuple())
     test_nested_dict_field = schema.Dict(
-        required=False, key_type=schema.ASCIILine(), value_type=schema.Tuple())
+        required=False, key_type=schema.ASCIILine(), value_type=schema.Tuple()
+    )
     test_list_choice_with_context_vocabulary_field = schema.List(
-        title=u'Field',
-        value_type=schema.Choice(
-            vocabulary='plone.restapi.testing.context_vocabulary'),
-        required=False)
+        title=u"Field",
+        value_type=schema.Choice(vocabulary="plone.restapi.testing.context_vocabulary"),
+        required=False,
+    )
 
     # plone.app.textfield
     test_richtext_field = RichText(
-        required=False, allowed_mime_types=['text/html', 'text/plain'])
+        required=False, allowed_mime_types=["text/html", "text/plain"]
+    )
 
     # plone.namedfile fields
     test_namedfile_field = namedfile.NamedFile(required=False)
@@ -97,60 +108,60 @@ class IDXTestDocumentSchema(model.Schema):
 
     # z3c.relationfield
     test_relationchoice_field = RelationChoice(
-        required=False, source=CatalogSource(id=['doc1', 'doc2']))
+        required=False, source=CatalogSource(id=["doc1", "doc2"])
+    )
     test_relationlist_field = RelationList(
-        required=False, value_type=RelationChoice(
-            vocabulary="plone.app.vocabularies.Catalog"))
+        required=False,
+        value_type=RelationChoice(vocabulary="plone.app.vocabularies.Catalog"),
+    )
 
     # Test fields for validation
     test_required_field = schema.TextLine(required=True)
     test_readonly_field = schema.TextLine(required=False, readonly=True)
     test_maxlength_field = schema.TextLine(required=False, max_length=10)
-    test_constraint_field = schema.TextLine(required=False,
-                                            constraint=lambda x: u'00' in x)
-    test_datetime_min_field = schema.Datetime(required=False,
-                                              min=datetime(2000, 1, 1))
+    test_constraint_field = schema.TextLine(
+        required=False, constraint=lambda x: u"00" in x
+    )
+    test_datetime_min_field = schema.Datetime(required=False, min=datetime(2000, 1, 1))
     test_time_min_field = schema.Time(required=False, min=time(1))
-    test_timedelta_min_field = schema.Timedelta(required=False,
-                                                min=timedelta(100))
-    test_list_value_type_field = schema.List(required=False,
-                                             value_type=schema.Int())
-    test_dict_key_type_field = schema.Dict(required=False,
-                                           key_type=schema.Int())
+    test_timedelta_min_field = schema.Timedelta(required=False, min=timedelta(100))
+    test_list_value_type_field = schema.List(required=False, value_type=schema.Int())
+    test_dict_key_type_field = schema.Dict(required=False, key_type=schema.Int())
 
-    read_permission(test_read_permission_field='cmf.ManagePortal')
+    read_permission(test_read_permission_field="cmf.ManagePortal")
     test_read_permission_field = schema.TextLine(required=False)
-    write_permission(test_write_permission_field='cmf.ManagePortal')
+    write_permission(test_write_permission_field="cmf.ManagePortal")
     test_write_permission_field = schema.TextLine(required=False)
 
-    read_permission(test_read_permission_field='cmf.ManagePortal')
+    read_permission(test_read_permission_field="cmf.ManagePortal")
     test_read_permission_field = schema.TextLine(required=False)
 
     test_invariant_field1 = schema.TextLine(required=False)
     test_invariant_field2 = schema.TextLine(required=False)
 
-    test_missing_value_field = schema.TextLine(required=False,
-                                               missing_value=u'missing',
-                                               default=u'default')
+    test_missing_value_field = schema.TextLine(
+        required=False, missing_value=u"missing", default=u"default"
+    )
 
     test_missing_value_required_field = schema.TextLine(
-        required=True, missing_value=u'missing', default=u'some value')
+        required=True, missing_value=u"missing", default=u"some value"
+    )
 
     @invariant
     def validate_same_value(data):
         if data.test_invariant_field1 != data.test_invariant_field2:
-            raise Invalid(u'Must have same values')
+            raise Invalid(u"Must have same values")
 
     # Test fields with default values
-    test_default_value_field = schema.TextLine(
-        required=True, default=u'Default')
+    test_default_value_field = schema.TextLine(required=True, default=u"Default")
 
     @provider(IContextAwareDefaultFactory)
     def default_factory(context):
-        return u'DefaultFactory'
+        return u"DefaultFactory"
 
     test_default_factory_field = schema.TextLine(
-        required=True, defaultFactory=default_factory)
+        required=True, defaultFactory=default_factory
+    )
 
 
 class DXTestDocument(Item):

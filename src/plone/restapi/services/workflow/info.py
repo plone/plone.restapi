@@ -15,16 +15,13 @@ import six
 @implementer(IExpandableElement)
 @adapter(IWorkflowAware, Interface)
 class WorkflowInfo(object):
-
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, expand=False):
         result = {
-            'workflow': {
-                "@id": '{}/@workflow'.format(self.context.absolute_url()),
-            },
+            "workflow": {"@id": "{}/@workflow".format(self.context.absolute_url())}
         }
         if not expand:
             return result
@@ -34,10 +31,10 @@ class WorkflowInfo(object):
         # API we fake the response to the endpoint by providing an empty
         # response instead of a 404.
         if IPloneSiteRoot.providedBy(self.context):
-            result['workflow'].update({'history': [], 'transitions': []})
+            result["workflow"].update({"history": [], "transitions": []})
             return result
 
-        wftool = getToolByName(self.context, 'portal_workflow')
+        wftool = getToolByName(self.context, "portal_workflow")
         try:
             history = wftool.getInfoFor(self.context, "review_history")
         except WorkflowException:
@@ -46,32 +43,33 @@ class WorkflowInfo(object):
         actions = wftool.listActionInfos(object=self.context)
         transitions = []
         for action in actions:
-            if action['category'] != 'workflow':
+            if action["category"] != "workflow":
                 continue
 
-            title = action['title']
+            title = action["title"]
             if isinstance(title, six.binary_type):
-                title = title.decode('utf8')
+                title = title.decode("utf8")
 
-            transitions.append({
-                '@id': '{}/@workflow/{}'.format(
-                    self.context.absolute_url(), action['id']),
-                'title': self.context.translate(title),
-            })
+            transitions.append(
+                {
+                    "@id": "{}/@workflow/{}".format(
+                        self.context.absolute_url(), action["id"]
+                    ),
+                    "title": self.context.translate(title),
+                }
+            )
 
         for item, action in enumerate(history):
             title = wftool.getTitleForStateOnType(
-                action['review_state'],
-                self.context.portal_type
+                action["review_state"], self.context.portal_type
             )
             if isinstance(title, six.binary_type):
-                title = title.decode('utf8')
-            history[item]['title'] = self.context.translate(title)
+                title = title.decode("utf8")
+            history[item]["title"] = self.context.translate(title)
 
-        result['workflow'].update({
-            'history': json_compatible(history),
-            'transitions': transitions,
-        })
+        result["workflow"].update(
+            {"history": json_compatible(history), "transitions": transitions}
+        )
         return result
 
 
@@ -81,4 +79,4 @@ class WorkflowInfoService(Service):
 
     def reply(self):
         info = WorkflowInfo(self.context, self.request)
-        return info(expand=True)['workflow']
+        return info(expand=True)["workflow"]

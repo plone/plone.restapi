@@ -24,13 +24,14 @@ def unflatten_dotted_dict(dct):
            'foo': 3},
      'bar': 4}
     """
+
     def create_or_get(dct, key):
         return dct.setdefault(key, {})
 
     result = {}
 
     for key, value in dct.items():
-        key_segments = key.split('.')
+        key_segments = key.split(".")
         # Create nested dicts from parent keys, if any
         inner = reduce(create_or_get, [result] + key_segments[:-1])
         # Assign value to terminal key

@@ -4,7 +4,6 @@ from unittest import TestCase
 
 
 class TestGetActualScale(TestCase):
-
     def test_constrains_landscape_to_width(self):
         img = (800, 400)
         bbox = (200, 200)

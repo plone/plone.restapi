@@ -37,7 +37,6 @@ from plone.restapi.types.utils import get_vocabulary_url
 @adapter(IField, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DefaultJsonSchemaProvider(object):
-
     def __init__(self, field, context, request):
         self.field = field
         self.context = context
@@ -52,7 +51,7 @@ class DefaultJsonSchemaProvider(object):
 
     def get_description(self):
         if self.field.description is None:
-            return u''
+            return u""
 
         return translate(self.field.description, context=self.request)
 
@@ -62,21 +61,21 @@ class DefaultJsonSchemaProvider(object):
         You should override `additional` method to provide more properties
         about the field."""
         schema = {
-            'type': self.get_type(),
-            'title': self.get_title(),
-            'description': self.get_description(),
+            "type": self.get_type(),
+            "title": self.get_title(),
+            "description": self.get_description(),
         }
 
         widget = self.get_widget()
         if widget:
-            schema['widget'] = widget
+            schema["widget"] = widget
 
         widget_options = self.get_widget_params()
         if widget_options:
-            schema['widgetOptions'] = widget_options
+            schema["widgetOptions"] = widget_options
 
         if self.field.default is not None:
-            schema['default'] = self.field.default
+            schema["default"] = self.field.default
 
         schema.update(self.additional())
         return schema
@@ -90,46 +89,43 @@ class DefaultJsonSchemaProvider(object):
     def get_widget_params(self):
         all_params = get_widget_params([self.field.interface])
         params = all_params.get(self.field.getName(), {})
-        if 'vocabulary' in params:
-            vocab_name = params['vocabulary']
-            params['vocabulary'] = {
-                    '@id': get_vocabulary_url(
-                        vocab_name, self.context, self.request)}
+        if "vocabulary" in params:
+            vocab_name = params["vocabulary"]
+            params["vocabulary"] = {
+                "@id": get_vocabulary_url(vocab_name, self.context, self.request)
+            }
         return params
 
 
 @adapter(IBytes, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class BytesLineJsonSchemaProvider(DefaultJsonSchemaProvider):
-
     def get_type(self):
-        return 'string'
+        return "string"
 
 
 @adapter(ITextLine, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class TextLineJsonSchemaProvider(DefaultJsonSchemaProvider):
-
     def get_type(self):
-        return 'string'
+        return "string"
 
 
 @adapter(IText, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class TextJsonSchemaProvider(TextLineJsonSchemaProvider):
-
     def additional(self):
         info = {}
         if self.field.min_length is not None:
-            info['minLength'] = self.field.min_length
+            info["minLength"] = self.field.min_length
 
         if self.field.max_length is not None:
-            info['maxLength'] = self.field.max_length
+            info["maxLength"] = self.field.max_length
 
         return info
 
     def get_widget(self):
-        return 'textarea'
+        return "textarea"
 
 
 @adapter(IASCII, Interface, Interface)
@@ -149,17 +145,16 @@ class ASCIILineJsonSchemaProvider(TextLineJsonSchemaProvider):
 @adapter(IFloat, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class FloatJsonSchemaProvider(DefaultJsonSchemaProvider):
-
     def get_type(self):
-        return 'number'
+        return "number"
 
     def additional(self):
         info = {}
         if self.field.min is not None:
-            info['minimum'] = self.field.min
+            info["minimum"] = self.field.min
 
         if self.field.max is not None:
-            info['maximum'] = self.field.max
+            info["maximum"] = self.field.max
 
         return info
 
@@ -174,44 +169,41 @@ class DecimalJsonSchemaProvider(FloatJsonSchemaProvider):
 @adapter(IInt, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class IntegerJsonSchemaProvider(FloatJsonSchemaProvider):
-
     def get_type(self):
-        return 'integer'
+        return "integer"
 
 
 @adapter(IBool, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class BoolJsonSchemaProvider(DefaultJsonSchemaProvider):
-
     def get_type(self):
-        return 'boolean'
+        return "boolean"
 
 
 @adapter(ICollection, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
-
     def get_type(self):
-        return 'array'
+        return "array"
 
     def get_items(self):
         """Get items properties."""
         value_type_adapter = getMultiAdapter(
-            (self.field.value_type, self.context, self.request),
-            IJsonSchemaProvider)
+            (self.field.value_type, self.context, self.request), IJsonSchemaProvider
+        )
 
         return value_type_adapter.get_schema()
 
     def additional(self):
         info = {}
-        info['additionalItems'] = True
+        info["additionalItems"] = True
         if self.field.min_length:
-            info['minItems'] = self.field.min_length
+            info["minItems"] = self.field.min_length
 
         if self.field.max_length:
-            info['maxItems'] = self.field.max_length
+            info["maxItems"] = self.field.max_length
 
-        info['items'] = self.get_items()
+        info["items"] = self.get_items()
 
         return info
 
@@ -219,13 +211,12 @@ class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
 @adapter(IList, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
-
     def additional(self):
         info = super(ListJsonSchemaProvider, self).additional()
         if IChoice.providedBy(self.field.value_type):
-            info['uniqueItems'] = True
+            info["uniqueItems"] = True
         else:
-            info['uniqueItems'] = False
+            info["uniqueItems"] = False
 
         return info
 
@@ -233,10 +224,9 @@ class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
 @adapter(ISet, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class SetJsonSchemaProvider(CollectionJsonSchemaProvider):
-
     def additional(self):
         info = super(SetJsonSchemaProvider, self).additional()
-        info['uniqueItems'] = True
+        info["uniqueItems"] = True
         return info
 
 
@@ -255,28 +245,24 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
     should_render_choices = True
 
     def get_type(self):
-        return 'string'
+        return "string"
 
     def additional(self):
-        vocab_name = getattr(self.field, 'vocabularyName', None)
+        vocab_name = getattr(self.field, "vocabularyName", None)
         if vocab_name:
             return {
-                'vocabulary': {
-                    '@id': get_vocabulary_url(
-                        vocab_name,
-                        self.context,
-                        self.request
-                    )
+                "vocabulary": {
+                    "@id": get_vocabulary_url(vocab_name, self.context, self.request)
                 }
             }
 
         # Maybe we have an unnamed vocabulary or source.
 
-        vocabulary = getattr(self.field, 'vocabulary', None)
+        vocabulary = getattr(self.field, "vocabulary", None)
         if IContextSourceBinder.providedBy(vocabulary):
             vocabulary = vocabulary(self.context)
 
-        if hasattr(vocabulary, '__iter__') and self.should_render_choices:
+        if hasattr(vocabulary, "__iter__") and self.should_render_choices:
             # choices and enumNames are v5 proposals, for now we implement both
             choices = []
             enum = []
@@ -288,11 +274,7 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
                 enum.append(term.token)
                 enum_names.append(title)
 
-            return {
-                'enum': enum,
-                'enumNames': enum_names,
-                'choices': choices,
-            }
+            return {"enum": enum, "enumNames": enum_names, "choices": choices}
         else:
             return {}
 
@@ -301,14 +283,14 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
 
-    prefix = ''
+    prefix = ""
 
     def get_type(self):
-        return 'object'
+        return "object"
 
     def get_properties(self):
         if self.prefix:
-            prefix = '.'.join([self.prefix, self.field.__name__])
+            prefix = ".".join([self.prefix, self.field.__name__])
         else:
             prefix = self.field.__name__
 
@@ -319,34 +301,31 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
 
     def additional(self):
         info = super(ObjectJsonSchemaProvider, self).additional()
-        info['properties'] = self.get_properties()
+        info["properties"] = self.get_properties()
         return info
 
 
 @adapter(IDict, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
-
     def get_type(self):
-        return 'dict'
+        return "dict"
 
     def additional(self):
         info = {}
         key_type = getMultiAdapter(
-            (self.field.key_type, self.context, self.request),
-            IJsonSchemaProvider
+            (self.field.key_type, self.context, self.request), IJsonSchemaProvider
         )
-        info['key_type'] = {
-            'schema': key_type.get_schema(),
-            'additional': key_type.additional(),
+        info["key_type"] = {
+            "schema": key_type.get_schema(),
+            "additional": key_type.additional(),
         }
         value_type = getMultiAdapter(
-            (self.field.key_type, self.context, self.request),
-            IJsonSchemaProvider
+            (self.field.key_type, self.context, self.request), IJsonSchemaProvider
         )
-        info['value_type'] = {
-            'schema': value_type.get_schema(),
-            'additional': value_type.additional(),
+        info["value_type"] = {
+            "schema": value_type.get_schema(),
+            "additional": value_type.additional(),
         }
         return info
 
@@ -355,42 +334,40 @@ class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class RichTextJsonSchemaProvider(DefaultJsonSchemaProvider):
 
-    prefix = ''
+    prefix = ""
 
     def get_type(self):
-        return 'string'
+        return "string"
 
     def get_widget(self):
-        return 'richtext'
+        return "richtext"
 
 
 @adapter(IDate, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DateJsonSchemaProvider(DefaultJsonSchemaProvider):
-
     def get_type(self):
-        return 'string'
+        return "string"
 
     def additional(self):
         info = {}
         if self.field.min is not None:
-            info['minimum'] = self.field.min
+            info["minimum"] = self.field.min
 
         if self.field.max is not None:
-            info['maximum'] = self.field.max
+            info["maximum"] = self.field.max
 
         return info
 
     def get_widget(self):
-        return 'date'
+        return "date"
 
 
 @adapter(IDatetime, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
-
     def get_widget(self):
-        return 'datetime'
+        return "datetime"
 
 
 @adapter(ITuple, Interface, Interface)
@@ -402,9 +379,8 @@ class SubjectsFieldJsonSchemaProvider(ChoiceJsonSchemaProvider):
 @adapter(IJSONField, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class JSONFieldSchemaProvider(DefaultJsonSchemaProvider):
-
     def get_type(self):
-        return 'dict'
+        return "dict"
 
     def get_widget(self):
-        return 'json'
+        return "json"

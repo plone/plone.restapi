@@ -9,7 +9,6 @@ from plone.restapi.interfaces import ISerializeToJson
 
 @implementer(IPublishTraverse)
 class RegistryGet(Service):
-
     def __init__(self, context, request):
         super(RegistryGet, self).__init__(context, request)
         self.params = []
@@ -24,7 +23,8 @@ class RegistryGet(Service):
         if len(self.params) != 1:
             raise Exception(
                 "Must supply exactly one parameter (dotted name of"
-                "the record to be retrieved)")
+                "the record to be retrieved)"
+            )
 
         return self.params[0]
 
@@ -34,7 +34,5 @@ class RegistryGet(Service):
             value = registry[self._get_record_name]
             return value
         else:  # batched listing
-            serializer = getMultiAdapter(
-                (registry, self.request), ISerializeToJson
-            )
+            serializer = getMultiAdapter((registry, self.request), ISerializeToJson)
             return serializer()
