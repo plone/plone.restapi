@@ -4,7 +4,7 @@ from plone.restapi.services import Service
 try:
     from Products.CMFPlone.controlpanel.browser.overview import OverviewControlPanel
 except ImportError:
-    from plone.app.controlpanel.browser.overview import OverviewControlPanel
+    from plone.app.controlpanel.overview import OverviewControlPanel
 
 
 class SystemGet(Service):
