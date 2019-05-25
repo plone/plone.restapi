@@ -13,7 +13,6 @@ Changelog
 
 New features:
 
-
 - Use Black on the code base. [timo] (#693)
 
 
