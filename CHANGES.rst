@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+4.1.0 (2019-05-25)
+------------------
+
+New features:
+
+
+- Use Black on the code base. [timo] (#693)
+
+
 4.0.0 (2019-05-09)
 ------------------
 
