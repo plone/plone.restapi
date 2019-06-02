@@ -80,6 +80,30 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(400, response.status_code)
         self.assertIn("Property '@type' is required", response.text)
 
+    def test_post_with_invalid_related_items_returns_error(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My Document",
+                "relatedItems": [
+                    "eb972ac2ab854f5685d6cc99cda6eab4",
+                    "89fda10a5f234ba3bd87bdcbe03151b0",
+                    "278ee35ad8da49ecb2a7b0c78b40adda",
+                    "e6fd07eb55da4fd6bb489905ec937760",
+                ],
+            },
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            "[{'message': 'Required input is missing.', 'field': 'relatedItems', 'error': RequiredMissing('')}]",
+            response.json().get("message"),
+        )
+
     def test_post_without_id_creates_id_from_title(self):
         response = requests.post(
             self.portal.folder1.absolute_url(),
