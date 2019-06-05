@@ -10,6 +10,8 @@ from zope.schema.interfaces import ITitledTokenizedTerm
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabulary
 
+import six
+
 
 @implementer(ISerializeToJson)
 @adapter(IVocabulary, Interface)
@@ -75,4 +77,6 @@ class SerializeTermToJson(object):
         term = self.context
         token = term.token
         title = term.title if ITitledTokenizedTerm.providedBy(term) else token
+        if isinstance(title, six.binary_type):
+            title = title.decode("UTF-8")
         return {"token": token, "title": translate(title, context=self.request)}

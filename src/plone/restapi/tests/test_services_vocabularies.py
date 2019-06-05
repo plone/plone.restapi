@@ -13,6 +13,7 @@ from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary
 from zope.schema.vocabulary import SimpleTerm
 
+import six
 import transaction
 import unittest
 
@@ -21,7 +22,16 @@ TEST_TERM_1 = SimpleTerm(42, token="token1", title=u"Title 1")
 TEST_TERM_2 = SimpleTerm(43, token="token2", title=u"Title 2")
 TEST_TERM_3 = SimpleTerm(44, token="token3")
 TEST_TERM_4 = UtilityTerm(45, "token4")
-TEST_VOCABULARY = SimpleVocabulary([TEST_TERM_1, TEST_TERM_2, TEST_TERM_3, TEST_TERM_4])
+if six.PY2:
+    TEST_TERM_5 = SimpleTerm(46, token="token5", title=u"T\xf6tle 5")
+    TEST_TERM_6 = SimpleTerm(47, token="token6", title="T\xc3\xb6tle 6")
+else:
+    TEST_TERM_5 = SimpleTerm(46, token="token5", title="Tötle 5")
+    TEST_TERM_6 = SimpleTerm(47, token="token6", title="Tötle 6")
+
+TEST_VOCABULARY = SimpleVocabulary(
+    [TEST_TERM_1, TEST_TERM_2, TEST_TERM_3, TEST_TERM_4, TEST_TERM_5, TEST_TERM_6]
+)
 
 
 def test_vocabulary_factory(context):
@@ -75,8 +85,10 @@ class TestVocabularyEndpoint(unittest.TestCase):
                     {u"title": u"Title 2", u"token": u"token2"},
                     {u"title": u"token3", u"token": u"token3"},
                     {u"title": u"token4", u"token": u"token4"},
+                    {u"title": u"T\xf6tle 5", u"token": u"token5"},
+                    {u"title": u"T\xf6tle 6", u"token": u"token6"},
                 ],
-                u"items_total": 4,
+                u"items_total": 6,
             },
         )
 
@@ -98,12 +110,12 @@ class TestVocabularyEndpoint(unittest.TestCase):
                     u"first": self.portal_url
                     + u"/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=0&b_size=1",  # noqa
                     u"last": self.portal_url
-                    + u"/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=3&b_size=1",  # noqa
+                    + u"/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=5&b_size=1",  # noqa
                     u"next": self.portal_url
                     + u"/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1",  # noqa
                 },
                 u"items": [{u"title": u"Title 1", u"token": u"token1"}],
-                u"items_total": 4,
+                u"items_total": 6,
             },
         )
 
