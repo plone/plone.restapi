@@ -8,6 +8,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.component import getGlobalSiteManager
 from zope.component import provideUtility
+from zope.componentvocabulary.vocabulary import UtilityTerm
 from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleVocabulary
 from zope.schema.vocabulary import SimpleTerm
@@ -18,7 +19,9 @@ import unittest
 
 TEST_TERM_1 = SimpleTerm(42, token="token1", title=u"Title 1")
 TEST_TERM_2 = SimpleTerm(43, token="token2", title=u"Title 2")
-TEST_VOCABULARY = SimpleVocabulary([TEST_TERM_1, TEST_TERM_2])
+TEST_TERM_3 = SimpleTerm(44, token="token3")
+TEST_TERM_4 = UtilityTerm(45, "token4")
+TEST_VOCABULARY = SimpleVocabulary([TEST_TERM_1, TEST_TERM_2, TEST_TERM_3, TEST_TERM_4])
 
 
 def test_vocabulary_factory(context):
@@ -70,8 +73,10 @@ class TestVocabularyEndpoint(unittest.TestCase):
                 u"items": [
                     {u"title": u"Title 1", u"token": u"token1"},
                     {u"title": u"Title 2", u"token": u"token2"},
+                    {u"title": u"token3", u"token": u"token3"},
+                    {u"title": u"token4", u"token": u"token4"},
                 ],
-                u"items_total": 2,
+                u"items_total": 4,
             },
         )
 
@@ -93,12 +98,12 @@ class TestVocabularyEndpoint(unittest.TestCase):
                     u"first": self.portal_url
                     + u"/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=0&b_size=1",  # noqa
                     u"last": self.portal_url
-                    + u"/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1",  # noqa
+                    + u"/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=3&b_size=1",  # noqa
                     u"next": self.portal_url
                     + u"/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1",  # noqa
                 },
                 u"items": [{u"title": u"Title 1", u"token": u"token1"}],
-                u"items_total": 2,
+                u"items_total": 4,
             },
         )
 

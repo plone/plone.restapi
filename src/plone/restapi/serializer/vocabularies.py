@@ -39,7 +39,8 @@ class SerializeVocabularyToJson(object):
                     continue
                 terms.append(term)
             else:
-                if title.lower() not in term.title.lower():
+                term_title = getattr(term, "title", None) or ""
+                if title.lower() not in term_title.lower():
                     continue
                 terms.append(term)
 
