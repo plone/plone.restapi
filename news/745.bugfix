@@ -1,0 +1,2 @@
+Circumvent ZODB some read conflicts arising from (hopefully) time freezing.
+[Rotonen]

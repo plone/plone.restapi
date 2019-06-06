@@ -2,8 +2,6 @@
 from base64 import b64encode
 from datetime import datetime
 from DateTime import DateTime
-from datetime import timedelta
-from freezegun import freeze_time
 from mock import patch
 from pkg_resources import parse_version
 from pkg_resources import resource_filename
@@ -25,10 +23,8 @@ from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PAM_INSTALLED
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME  # noqa
-from plone.restapi.testing import (
-    PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME,
-)  # noqa
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.scale import storage
@@ -153,7 +149,7 @@ def save_request_and_response_for_docs(name, response):
 
 class TestDocumentation(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.app = self.layer["app"]
@@ -164,9 +160,6 @@ class TestDocumentation(unittest.TestCase):
         # Register custom UUID generator to produce stable UUIDs during tests
         pushGlobalRegistry(getSite())
         register_static_uuid_utility(prefix="SomeUUID")
-
-        self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        self.frozen_time = self.time_freezer.start()
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({"Accept": "application/json"})
@@ -216,7 +209,6 @@ class TestDocumentation(unittest.TestCase):
 
     def tearDown(self):
         self.api_session.close()
-        self.time_freezer.stop()
         popGlobalRegistry(getSite())
         self.api_session.close()
 
@@ -413,14 +405,12 @@ class TestDocumentation(unittest.TestCase):
         save_request_and_response_for_docs("workflow_get", response)
 
     def test_documentation_workflow_transition(self):
-        self.frozen_time.tick(timedelta(minutes=5))
         response = self.api_session.post(
             "{}/@workflow/publish".format(self.document.absolute_url())
         )
         save_request_and_response_for_docs("workflow_post", response)
 
     def test_documentation_workflow_transition_with_body(self):
-        self.frozen_time.tick(timedelta(minutes=5))
         folder = self.portal[self.portal.invokeFactory("Folder", id="folder")]
         transaction.commit()
         response = self.api_session.post(
@@ -1291,7 +1281,7 @@ class TestDocumentation(unittest.TestCase):
 
 class TestDocumentationMessageTranslations(unittest.TestCase):
 
-    layer = layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.app = self.layer["app"]
@@ -1302,9 +1292,6 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
         # Register custom UUID generator to produce stable UUIDs during tests
         pushGlobalRegistry(getSite())
         register_static_uuid_utility(prefix="SomeUUID")
-
-        self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        self.frozen_time = self.time_freezer.start()
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({"Accept": "application/json"})
@@ -1343,7 +1330,6 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
         return document
 
     def tearDown(self):
-        self.time_freezer.stop()
         popGlobalRegistry(getSite())
         self.api_session.close()
 
@@ -1370,16 +1356,13 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
 
 class TestCommenting(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.app = self.layer["app"]
         self.request = self.layer["request"]
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
-
-        self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        self.frozen_time = self.time_freezer.start()
 
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IDiscussionSettings, check=False)
@@ -1402,7 +1385,6 @@ class TestCommenting(unittest.TestCase):
         )
 
     def tearDown(self):
-        self.time_freezer.stop()
         self.api_session.close()
 
     def create_document_with_comments(self):
@@ -1523,16 +1505,13 @@ class TestCommenting(unittest.TestCase):
 )  # NOQA
 class TestPAMDocumentation(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME
+    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.app = self.layer["app"]
         self.request = self.layer["request"]
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
-
-        self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        self.frozen_time = self.time_freezer.start()
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({"Accept": "application/json"})
@@ -1561,7 +1540,6 @@ class TestPAMDocumentation(unittest.TestCase):
         )
 
     def tearDown(self):
-        self.time_freezer.stop()
         self.api_session.close()
 
     def test_documentation_translations_post(self):

@@ -27,6 +27,7 @@ from Products.CMFCore.utils import getToolByName
 from requests.exceptions import ConnectionError
 from six.moves.urllib.parse import urljoin
 from six.moves.urllib.parse import urlparse
+from time import time
 from zope.component import getGlobalSiteManager
 from zope.component import getUtility
 from zope.configuration import xmlconfig
@@ -123,40 +124,6 @@ class DateTimeFixture(Layer):
 DATE_TIME_FIXTURE = DateTimeFixture()
 
 
-import time  # noqa
-from persistent.TimeStamp import TimeStamp  # noqa
-
-
-def patchedNewTid(old):  # noqa
-    if getattr(time.time, "previous_time_function", False):
-        t = time.time.previous_time_function()
-        ts = TimeStamp(*time.gmtime.previous_gmtime_function(t)[:5] + (t % 60,))
-    else:
-        t = time.time()
-        ts = TimeStamp(*time.gmtime(t)[:5] + (t % 60,))
-    if old is not None:
-        ts = ts.laterThan(TimeStamp(old))
-    return ts.raw()
-
-
-class FreezeTimeFixture(Layer):
-    def setUp(self):
-        if PLONE_VERSION.base_version >= "5.1":
-            from ZODB import utils
-
-            self.ZODB_orig_newTid = utils.newTid
-            utils.newTid = patchedNewTid
-
-    def tearDown(self):
-        if PLONE_VERSION.base_version >= "5.1":
-            from ZODB import utils
-
-            utils.newTid = self.ZODB_orig_newTid
-
-
-FREEZE_TIME_FIXTURE = FreezeTimeFixture()
-
-
 class PloneRestApiDXLayer(PloneSandboxLayer):
 
     defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE)
@@ -203,10 +170,6 @@ PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApiDXLayer:Functional",
 )
-PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
-    bases=(FREEZE_TIME_FIXTURE, PLONE_RESTAPI_DX_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="PloneRestApiDXLayerFreeze:Functional",
-)
 
 
 class PloneRestApiDXPAMLayer(PloneSandboxLayer):
@@ -252,10 +215,6 @@ PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING = IntegrationTesting(
 PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApiDXPAMLayer:Functional",
-)
-PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
-    bases=(FREEZE_TIME_FIXTURE, PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="PloneRestApiDXPAMLayerFreeze:Functional",
 )
 
 
@@ -342,10 +301,6 @@ PLONE_RESTAPI_TILES_INTEGRATION_TESTING = IntegrationTesting(
 PLONE_RESTAPI_TILES_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_TILES_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApiTilesLayer:Functional",
-)
-PLONE_RESTAPI_TILES_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
-    bases=(FREEZE_TIME_FIXTURE, PLONE_RESTAPI_TILES_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="PloneRestApiTilesLayerFreeze:Functional",
 )
 
 
