@@ -16,6 +16,8 @@ from unittest import TestCase
 from z3c.form.browser.text import TextWidget
 from zope import schema
 from zope.component import getMultiAdapter
+from zope.interface import provider
+from zope.schema.interfaces import IContextAwareDefaultFactory
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
@@ -198,6 +200,32 @@ class TestJsonSchemaProviders(TestCase):
                 SimpleTerm(value=u"foo", title=u"Foo"),
                 SimpleTerm(value=u"bar", title=u"Bar"),
             ]
+        )
+
+    def test_context_aware_default_factory(self):
+        folder = self.portal[self.portal.invokeFactory(
+            "Folder", id="folder", title="My Folder")]
+
+        @provider(IContextAwareDefaultFactory)
+        def uppercased_title_default(context):
+            return context.title.upper()
+
+        field = schema.TextLine(
+            title=u"My field", description=u"My great field",
+            defaultFactory=uppercased_title_default
+        )
+        adapter = getMultiAdapter(
+            (field, folder, self.request), IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": u"My field",
+                "description": u"My great field",
+                "default": u"MY FOLDER",
+            },
+            adapter.get_schema(),
         )
 
     def test_textline(self):
