@@ -37,7 +37,7 @@ from zope.schema.interfaces import ITuple
 @implementer(IJsonSchemaProvider)
 class DefaultJsonSchemaProvider(object):
     def __init__(self, field, context, request):
-        self.field = field
+        self.field = field.bind(context)
         self.context = context
         self.request = request
 
