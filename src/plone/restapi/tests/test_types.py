@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
 from datetime import date
 from decimal import Decimal
-from unittest import TestCase
-
-from zope.component import getMultiAdapter
-from zope import schema
-from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from plone.app.textfield import RichText
 from plone.autoform import directives as form
 from plone.dexterity.fti import DexterityFTI
-from plone.supermodel import model
-from Products.CMFCore.utils import getToolByName
-
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from plone.restapi.types.utils import get_jsonschema_properties
+from plone.supermodel import model
+from Products.CMFCore.utils import getToolByName
+from unittest import TestCase
 from z3c.form.browser.text import TextWidget
+from zope import schema
+from zope.component import getMultiAdapter
+from zope.schema.vocabulary import SimpleTerm
+from zope.schema.vocabulary import SimpleVocabulary
 
 
 class IDummySchema(model.Schema):
