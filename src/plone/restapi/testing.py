@@ -37,6 +37,7 @@ import pkg_resources
 import re
 import requests
 import six
+import time
 
 
 PLONE_VERSION = pkg_resources.parse_version(api.env.plone_version())
@@ -123,17 +124,19 @@ class DateTimeFixture(Layer):
 DATE_TIME_FIXTURE = DateTimeFixture()
 
 
-import time  # noqa
-from persistent.TimeStamp import TimeStamp  # noqa
-
-
 def patchedNewTid(old):  # noqa
-    if getattr(time.time, "previous_time_function", False):
-        t = time.time.previous_time_function()
-        ts = TimeStamp(*time.gmtime.previous_gmtime_function(t)[:5] + (t % 60,))
-    else:
-        t = time.time()
-        ts = TimeStamp(*time.gmtime(t)[:5] + (t % 60,))
+    """Make sure ZODB.utils.newTid always uses the real time functions
+
+    instead of the ones possibly patched by freezegun.
+    This is necessary because ZODB seems to be relying on time being monotonic
+    for its transaction IDs, and freezing time results in
+    POSException.ReadConflictErrors.
+    """
+    from persistent.TimeStamp import TimeStamp  # noqa
+    import freezegun  # noqa
+
+    t = freezegun.api.real_time()
+    ts = TimeStamp(*freezegun.api.real_gmtime(t)[:5] + (t % 60,))
     if old is not None:
         ts = ts.laterThan(TimeStamp(old))
     return ts.raw()
