@@ -1,3 +1,0 @@
-Handle a term having a non-ASCII ``str`` title attribute in the vocabulary
-serializer.
-[Rotonen]

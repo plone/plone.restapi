@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+4.1.1 (2019-06-13)
+------------------
+
+Bug fixes:
+
+
+- Handle ``None`` as a vocabulary term title in the vocabulary serializer.
+  [Rotonen] (#742)
+- Handle a term not having a title attribute in the vocabulary serializer.
+  [Rotonen] (#742)
+- Handle a term having a non-ASCII ``str`` title attribute in the vocabulary
+  serializer.
+  [Rotonen] (#743)
+- Fix time freezing in Plone 5.1 tests.
+  [lgraf] (#745)
+
+
 4.1.0 (2019-05-25)
 ------------------
 
