@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+4.1.2 (2019-06-15)
+------------------
+
+Bug fixes:
+
+
+- @types endpoint: Fix support for context aware default factories.
+  [lgraf] (#748)
+
+
 4.1.1 (2019-06-13)
 ------------------
 
