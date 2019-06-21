@@ -19,6 +19,7 @@
   <include package=".history"/>
   <include package=".locking" />
   <include package=".principals"/>
+  <include package=".querystring"/>
   <include package=".registry"/>
   <include package=".roles"/>
   <include package=".search"/>
