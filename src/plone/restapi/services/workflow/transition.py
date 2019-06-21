@@ -16,6 +16,7 @@ from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
+from DateTime import DateTime
 
 import plone.protect.interfaces
 
@@ -104,6 +105,10 @@ class WorkflowTransition(Service):
                     (obj, self.request), IDeserializeFromJson
                 )
                 deserializer(data=publication_dates)
+
+            if obj.EffectiveDate() == 'None':
+                obj.setEffectiveDate(DateTime())
+                obj.reindexObject()
 
             self.wftool.doActionFor(obj, self.transition, comment=comment)
             if include_children and IFolderish.providedBy(obj):
