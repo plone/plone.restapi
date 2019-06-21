@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+4.1.3 (2019-06-21)
+------------------
+
+Bug fixes:
+
+
+- Improve documentation for how to set relations by adding some examples.
+  [buchi] (#732)
+- Return an error message if a referenced object can not be resolved.
+  [buchi] (#738)
+
+
 4.1.2 (2019-06-15)
 ------------------
 
