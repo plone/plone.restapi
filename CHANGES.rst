@@ -99,7 +99,6 @@ Bug fixes:
 
 - Avoid calculating batch links for catalog results twice.
   [davisagli]
->>>>>>> master
 
 
 3.9.0 (2019-04-18)
