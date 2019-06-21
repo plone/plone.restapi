@@ -8,6 +8,7 @@
   <adapter factory=".dxcontent.DeserializeFromJson" />
   <adapter factory=".dxfields.DefaultFieldDeserializer" />
   <adapter factory=".dxfields.DatetimeFieldDeserializer" />
+  <adapter factory=".dxfields.ChoiceFieldDeserializer" />
   <adapter factory=".dxfields.CollectionFieldDeserializer" />
   <adapter factory=".dxfields.DictFieldDeserializer" />
   <adapter factory=".dxfields.TextLineFieldDeserializer" />

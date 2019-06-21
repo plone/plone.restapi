@@ -1,0 +1,57 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?title=doc", 
+  "items": [
+    {
+      "title": "Collection", 
+      "token": "Collection"
+    }, 
+    {
+      "title": "Comment", 
+      "token": "Discussion Item"
+    }, 
+    {
+      "title": "DX Test Document", 
+      "token": "DXTestDocument"
+    }, 
+    {
+      "title": "Event", 
+      "token": "Event"
+    }, 
+    {
+      "title": "File", 
+      "token": "File"
+    }, 
+    {
+      "title": "Folder", 
+      "token": "Folder"
+    }, 
+    {
+      "title": "Image", 
+      "token": "Image"
+    }, 
+    {
+      "title": "Link", 
+      "token": "Link"
+    }, 
+    {
+      "title": "News Item", 
+      "token": "News Item"
+    }, 
+    {
+      "title": "Page", 
+      "token": "Document"
+    }, 
+    {
+      "title": "Test Document", 
+      "token": "ATTestDocument"
+    }, 
+    {
+      "title": "Test Folder", 
+      "token": "ATTestFolder"
+    }
+  ], 
+  "items_total": 12
+}

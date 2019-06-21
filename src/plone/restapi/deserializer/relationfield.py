@@ -16,38 +16,46 @@ import six
 @implementer(IFieldDeserializer)
 @adapter(IRelationChoice, IDexterityContent, IBrowserRequest)
 class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
-
     def __call__(self, value):
         obj = None
 
         if isinstance(value, dict):
             # We are trying to deserialize the output of a serialization
             # which is enhanced, extract it and put it on the loop again
-            value = value['@id']
+            value = value["@id"]
 
         if isinstance(value, int):
             # Resolve by intid
             intids = queryUtility(IIntIds)
             obj = intids.queryObject(value)
+            resolved_by = "intid"
         elif isinstance(value, six.string_types):
             if six.PY2 and isinstance(value, six.text_type):
-                value = value.encode('utf8')
-            portal = getMultiAdapter((self.context, self.request),
-                                     name='plone_portal_state').portal()
+                value = value.encode("utf8")
+            portal = getMultiAdapter(
+                (self.context, self.request), name="plone_portal_state"
+            ).portal()
             portal_url = portal.absolute_url()
             if value.startswith(portal_url):
                 # Resolve by URL
-                obj = portal.restrictedTraverse(
-                    value[len(portal_url) + 1:], None)
-            elif value.startswith('/'):
+                obj = portal.restrictedTraverse(value[len(portal_url) + 1 :], None)
+                resolved_by = "URL"
+            elif value.startswith("/"):
                 # Resolve by path
-                obj = portal.restrictedTraverse(value.lstrip('/'), None)
+                obj = portal.restrictedTraverse(value.lstrip("/"), None)
+                resolved_by = "path"
             else:
                 # Resolve by UID
-                catalog = getToolByName(self.context, 'portal_catalog')
+                catalog = getToolByName(self.context, "portal_catalog")
                 brain = catalog(UID=value)
                 if brain:
                     obj = brain[0].getObject()
+                resolved_by = "UID"
+
+        if obj is None:
+            raise ValueError(
+                u"Could not resolve object for {}={}".format(resolved_by, value)
+            )
 
         self.field.validate(obj)
         return obj

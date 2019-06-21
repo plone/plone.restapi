@@ -1,35 +1,37 @@
 # -*- coding: utf-8 -*-
+from plone.dexterity.interfaces import IDexterityContent
+from plone.registry.interfaces import IRegistry
 from plone.restapi.controlpanels import IControlpanel
+from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.types import utils
-from plone.registry.interfaces import IRegistry
-from zope.interface import implementer
 from zope.component import adapter, queryMultiAdapter, getUtility
+from zope.interface import alsoProvides
+from zope.interface import implementer
+from zope.interface import noLongerProvides
 
 import zope.schema
 
-SERVICE_ID = '@controlpanels'
+SERVICE_ID = "@controlpanels"
 
 
 @implementer(ISerializeToJsonSummary)
 @adapter(IControlpanel)
 class ControlpanelSummarySerializeToJson(object):
-
     def __init__(self, controlpanel):
         self.controlpanel = controlpanel
 
     def __call__(self):
         return {
-            '@id': '{}/{}/{}'.format(
+            "@id": "{}/{}/{}".format(
                 self.controlpanel.context.absolute_url(),
                 SERVICE_ID,
-                self.controlpanel.__name__
+                self.controlpanel.__name__,
             ),
-            'title': self.controlpanel.title,
-            'group': self.controlpanel.group,
+            "title": self.controlpanel.title,
+            "group": self.controlpanel.group,
         }
 
 
@@ -41,9 +43,7 @@ def get_jsonschema_for_controlpanel(controlpanel, context, request):
     fieldsets = utils.get_fieldsets(context, request, schema)
 
     # Build JSON schema properties
-    properties = utils.get_jsonschema_properties(
-        context, request, fieldsets
-    )
+    properties = utils.get_jsonschema_properties(context, request, fieldsets)
 
     # Determine required fields
     required = []
@@ -54,20 +54,19 @@ def get_jsonschema_for_controlpanel(controlpanel, context, request):
     # Include field modes
     for field in utils.iter_fields(fieldsets):
         if field.mode:
-            properties[field.field.getName()]['mode'] = field.mode
+            properties[field.field.getName()]["mode"] = field.mode
 
     return {
-        'type': 'object',
-        'properties': properties,
-        'required': required,
-        'fieldsets': utils.get_fieldset_infos(fieldsets),
+        "type": "object",
+        "properties": properties,
+        "required": required,
+        "fieldsets": utils.get_fieldset_infos(fieldsets),
     }
 
 
 @implementer(ISerializeToJson)
 @adapter(IControlpanel)
 class ControlpanelSerializeToJson(object):
-
     def __init__(self, controlpanel):
         self.controlpanel = controlpanel
         self.schema = self.controlpanel.schema
@@ -77,20 +76,19 @@ class ControlpanelSerializeToJson(object):
 
     def __call__(self):
         json_schema = get_jsonschema_for_controlpanel(
-            self.controlpanel,
-            self.controlpanel.context,
-            self.controlpanel.request
+            self.controlpanel, self.controlpanel.context, self.controlpanel.request
         )
 
-        proxy = self.registry.forInterface(
-            self.schema, prefix=self.schema_prefix
-        )
+        proxy = self.registry.forInterface(self.schema, prefix=self.schema_prefix)
+
+        # Temporarily provide IDexterityContent, so we can use DX field
+        # serializers
+        alsoProvides(proxy, IDexterityContent)
 
         json_data = {}
         for name, field in zope.schema.getFields(self.schema).items():
             serializer = queryMultiAdapter(
-                (field, proxy, self.controlpanel.request),
-                IFieldSerializer
+                (field, proxy, self.controlpanel.request), IFieldSerializer
             )
             if serializer:
                 value = serializer()
@@ -98,15 +96,17 @@ class ControlpanelSerializeToJson(object):
                 value = getattr(proxy, name, None)
             json_data[json_compatible(name)] = value
 
+        noLongerProvides(proxy, IDexterityContent)
+
         # JSON schema
         return {
-            '@id': '{}/{}/{}'.format(
+            "@id": "{}/{}/{}".format(
                 self.controlpanel.context.absolute_url(),
                 SERVICE_ID,
-                self.controlpanel.__name__
+                self.controlpanel.__name__,
             ),
-            'title': self.controlpanel.title,
-            'group': self.controlpanel.group,
-            'schema': json_schema,
-            'data': json_data,
+            "title": self.controlpanel.title,
+            "group": self.controlpanel.group,
+            "schema": json_schema,
+            "data": json_data,
         }

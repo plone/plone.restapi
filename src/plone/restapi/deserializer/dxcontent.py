@@ -35,7 +35,9 @@ class DeserializeFromJson(OrderingMixin, object):
         self.sm = getSecurityManager()
         self.permission_cache = {}
 
-    def __call__(self, validate_all=False, data=None, create=False):  # noqa: ignore=C901
+    def __call__(
+        self, validate_all=False, data=None, create=False
+    ):  # noqa: ignore=C901
         if data is None:
             data = json_body(self.request)
 
@@ -44,8 +46,7 @@ class DeserializeFromJson(OrderingMixin, object):
         errors = []
 
         for schema in iterSchemata(self.context):
-            write_permissions = mergedTaggedValueDict(
-                schema, WRITE_PERMISSIONS_KEY)
+            write_permissions = mergedTaggedValueDict(schema, WRITE_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
 
@@ -67,71 +68,70 @@ class DeserializeFromJson(OrderingMixin, object):
                         if not field.required:
                             dm.set(field.missing_value)
                         else:
-                            errors.append({
-                                'field': field.__name__,
-                                'message': (
-                                    '{} is a required field.'.format(
-                                        field.__name__
+                            errors.append(
+                                {
+                                    "field": field.__name__,
+                                    "message": (
+                                        "{} is a required field.".format(
+                                            field.__name__
+                                        ),
+                                        "Setting it to null is not allowed.",
                                     ),
-                                    'Setting it to null is not allowed.'
-                                )})
+                                }
+                            )
                         continue
 
                     # Deserialize to field value
                     deserializer = queryMultiAdapter(
-                        (field, self.context, self.request),
-                        IFieldDeserializer)
+                        (field, self.context, self.request), IFieldDeserializer
+                    )
                     if deserializer is None:
                         continue
 
                     try:
                         value = deserializer(data[name])
                     except ValueError as e:
-                        errors.append({
-                            'message': str(e), 'field': name, 'error': e})
+                        errors.append({"message": str(e), "field": name, "error": e})
                     except ValidationError as e:
-                        errors.append({
-                            'message': e.doc(), 'field': name, 'error': e})
+                        errors.append({"message": e.doc(), "field": name, "error": e})
                     else:
                         field_data[name] = value
                         if value != dm.get():
                             dm.set(value)
                             # Collect the names of the modified fields
                             # Use prefixed name because z3c.form does so
-                            prefixed_name = schema.__name__ + '.' + name
-                            modified.setdefault(schema, []).append(
-                                prefixed_name)
+                            prefixed_name = schema.__name__ + "." + name
+                            modified.setdefault(schema, []).append(prefixed_name)
 
                 elif validate_all:
                     # Never validate the changeNote of p.a.versioningbehavior
                     # The Versionable adapter always returns an empty string
                     # which is the wrong type. Should be unicode and should be
                     # fixed in p.a.versioningbehavior
-                    if name == 'changeNote':
+                    if name == "changeNote":
                         continue
                     dm = queryMultiAdapter((self.context, field), IDataManager)
                     bound = field.bind(self.context)
                     try:
                         bound.validate(dm.get())
                     except ValidationError as e:
-                        errors.append({
-                            'message': e.doc(), 'field': name, 'error': e})
+                        errors.append({"message": e.doc(), "field": name, "error": e})
 
         # Validate schemata
         for schema, field_data in schema_data.items():
             validator = queryMultiAdapter(
-                (self.context, self.request, None, schema, None),
-                IManagerValidator)
+                (self.context, self.request, None, schema, None), IManagerValidator
+            )
             for error in validator.validate(field_data):
-                errors.append({'error': error, 'message': str(error)})
+                errors.append({"error": error, "message": str(error)})
 
         if errors:
             raise BadRequest(errors)
 
         # We'll set the layout after the validation and and even if there
         # are no other changes.
-        if 'layout' in data:
-            layout = data['layout']
+        if "layout" in data:
+            layout = data["layout"]
             self.context.setLayout(layout)
 
         # OrderingMixin
@@ -150,11 +150,11 @@ class DeserializeFromJson(OrderingMixin, object):
             return True
 
         if permission_name not in self.permission_cache:
-            permission = queryUtility(IPermission,
-                                      name=permission_name)
+            permission = queryUtility(IPermission, name=permission_name)
             if permission is None:
                 self.permission_cache[permission_name] = True
             else:
                 self.permission_cache[permission_name] = bool(
-                    self.sm.checkPermission(permission.title, self.context))
+                    self.sm.checkPermission(permission.title, self.context)
+                )
         return self.permission_cache[permission_name]

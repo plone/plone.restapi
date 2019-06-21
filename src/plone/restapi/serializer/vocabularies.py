@@ -1,50 +1,82 @@
 # -*- coding: utf-8 -*-
+from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from zope.component import adapter
 from zope.component import getMultiAdapter
+from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema.interfaces import ITitledTokenizedTerm
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabulary
 
+import six
+
 
 @implementer(ISerializeToJson)
 @adapter(IVocabulary, Interface)
 class SerializeVocabularyToJson(object):
-
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, vocabulary_id):
         vocabulary = self.context
-        serialized_terms = []
-        for term in vocabulary:
-            serializer = getMultiAdapter((term, self.request),
-                                         interface=ISerializeToJson)
-            serialized_terms.append(serializer(vocabulary_id))
+        title = self.request.form.get("title", "")
+        token = self.request.form.get("token", "")
 
-        return {
-            '@id': vocabulary_id,
-            'terms': serialized_terms
+        terms = []
+        for term in vocabulary:
+            if title and token:
+                self.request.response.setStatus(400)
+                return dict(
+                    error=dict(
+                        type="Invalid parameters",
+                        message="You can not filter by title and token at the same time.",
+                    )  # noqa
+                )
+
+            if token:
+                if token.lower() != term.token.lower():
+                    continue
+                terms.append(term)
+            else:
+                term_title = getattr(term, "title", None) or ""
+                if title.lower() not in term_title.lower():
+                    continue
+                terms.append(term)
+
+        batch = HypermediaBatch(self.request, terms)
+
+        serialized_terms = []
+        for term in batch:
+            serializer = getMultiAdapter(
+                (term, self.request), interface=ISerializeToJson
+            )
+            serialized_terms.append(serializer())
+
+        result = {
+            "@id": batch.canonical_url,
+            "items": serialized_terms,
+            "items_total": batch.items_total,
         }
+        links = batch.links
+        if links:
+            result["batching"] = links
+        return result
 
 
 @implementer(ISerializeToJson)
 @adapter(ITokenizedTerm, Interface)
 class SerializeTermToJson(object):
-
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
-    def __call__(self, vocabulary_id):
+    def __call__(self):
         term = self.context
         token = term.token
         title = term.title if ITitledTokenizedTerm.providedBy(term) else token
-        return {
-            '@id': '{}/{}'.format(vocabulary_id, token),
-            'token': token,
-            'title': title
-        }
+        if isinstance(title, six.binary_type):
+            title = title.decode("UTF-8")
+        return {"token": token, "title": translate(title, context=self.request)}

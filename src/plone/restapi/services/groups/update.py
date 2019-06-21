@@ -27,13 +27,12 @@ class GroupsPatch(Service):
     @property
     def _get_group_id(self):
         if len(self.params) != 1:
-            raise Exception(
-                "Must supply exactly one parameter (group id)")
+            raise Exception("Must supply exactly one parameter (group id)")
         return self.params[0]
 
     def _get_group(self, group_id):
         portal = getSite()
-        portal_groups = getToolByName(portal, 'portal_groups')
+        portal_groups = getToolByName(portal, "portal_groups")
         return portal_groups.getGroupById(group_id)
 
     def reply(self):
@@ -41,23 +40,27 @@ class GroupsPatch(Service):
         group = self._get_group(self._get_group_id)
 
         if not group:
-            raise BadRequest('Trying to update a non-existing group.')
+            raise BadRequest("Trying to update a non-existing group.")
 
-        title = data.get('title', None)
-        description = data.get('description', None)
-        roles = data.get('roles', None)
-        groups = data.get('groups', None)
-        users = data.get('users', {})
+        title = data.get("title", None)
+        description = data.get("description", None)
+        roles = data.get("roles", None)
+        groups = data.get("groups", None)
+        users = data.get("users", {})
 
         # Disable CSRF protection
-        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
-        portal_groups = getToolByName(self.context, 'portal_groups')
+        portal_groups = getToolByName(self.context, "portal_groups")
 
-        portal_groups.editGroup(self._get_group_id, roles=roles, groups=groups,
-                                title=title, description=description)
+        portal_groups.editGroup(
+            self._get_group_id,
+            roles=roles,
+            groups=groups,
+            title=title,
+            description=description,
+        )
 
         properties = {}
         for id, property in group.propertyItems():
