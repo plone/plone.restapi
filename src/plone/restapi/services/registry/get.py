@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from plone.registry.interfaces import IRegistry
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
-from zope.component import getUtility, getMultiAdapter
+from zope.component import getMultiAdapter
+from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-from plone.restapi.interfaces import ISerializeToJson
 
 
 @implementer(IPublishTraverse)

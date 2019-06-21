@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_base
-from Products.CMFCore.utils import getToolByName
 from plone import api
+from plone.app.testing import login
+from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
-from plone.app.testing import login
-from plone.app.testing import setRoles
 from plone.restapi.serializer.local_roles import SerializeLocalRolesToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from Products.CMFCore.utils import getToolByName
 from zope.component import getGlobalSiteManager
 
 import requests

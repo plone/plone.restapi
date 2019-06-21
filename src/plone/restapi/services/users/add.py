@@ -19,6 +19,7 @@ from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect.interfaces
 
+
 try:  # pragma: no cover
     from Products.CMFPlone.interfaces import ISecuritySchema
 except ImportError:  # pragma: no cover

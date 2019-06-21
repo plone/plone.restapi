@@ -1,23 +1,24 @@
 # -*- coding: utf-8 -*-
-from ZPublisher.pubevents import PubStart
 from base64 import b64encode
 from pkg_resources import get_distribution
 from pkg_resources import parse_version
+from plone.app.testing import login
+from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
-from plone.app.testing import login
-from plone.app.testing import setRoles
 from plone.restapi.testing import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from zope.event import notify
+from ZPublisher.pubevents import PubStart
 
 import requests
 import transaction
 import unittest
+
 
 linkintegrity_version = get_distribution("plone.app.linkintegrity").version
 if parse_version(linkintegrity_version) >= parse_version("3.0.dev0"):

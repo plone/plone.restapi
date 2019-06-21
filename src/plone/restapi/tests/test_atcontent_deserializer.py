@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
-from plone.app.testing import TEST_USER_ID
 from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.tests.mixin_ordering import OrderingMixin
+from six.moves import range
 from zExceptions import BadRequest
+from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import provideHandler
 from zope.component import provideSubscriptionAdapter
-from zope.component import adapter
 from zope.interface import implementer
 
 import unittest
-from six.moves import range
+
 
 if HAS_AT:
     from plone.restapi.deserializer.atcontent import ValidationRequest

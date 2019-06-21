@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+from plone.restapi.deserializer import json_body
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
-from plone.restapi.deserializer import json_body
-from zExceptions import BadRequest
 from Products.CMFCore.utils import getToolByName
 from Products.CMFEditions import CMFEditionsMessageFactory as _
 from Products.CMFEditions.interfaces.IModifier import FileTooLargeToVersionError  # noqa
+from zExceptions import BadRequest
+
 import six
 
 

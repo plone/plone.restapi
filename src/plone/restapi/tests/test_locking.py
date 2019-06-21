@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
+from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import login
+from plone.locking.interfaces import ILockable
+from plone.locking.interfaces import INonStealableLock
 from plone.locking.interfaces import ITTWLockable
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.interface import alsoProvides
-from plone.locking.interfaces import ILockable
-from plone.locking.interfaces import INonStealableLock
 
-
-import unittest
 import transaction
+import unittest
 
 
 class TestLocking(unittest.TestCase):

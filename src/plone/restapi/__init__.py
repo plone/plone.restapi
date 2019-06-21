@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 from AccessControl import allow_module
 from AccessControl.Permissions import add_user_folders
-from Products.PluggableAuthService.PluggableAuthService import (
-    registerMultiPlugin,
-)  # noqa
 from plone.restapi.pas import plugin
+from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin  # noqa
 from zope.i18nmessageid import MessageFactory
 
 import pkg_resources
+
 
 _ = MessageFactory("plone.restapi")
 PROJECT_NAME = "plone.restapi"

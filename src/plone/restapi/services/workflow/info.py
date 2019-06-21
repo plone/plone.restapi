@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.WorkflowCore import WorkflowException
-from Products.CMFCore.utils import getToolByName
-from Products.CMFCore.interfaces._content import IWorkflowAware
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
+from Products.CMFCore.interfaces._content import IWorkflowAware
+from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.WorkflowCore import WorkflowException
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
-from zope.interface import Interface
 from zope.interface import implementer
+from zope.interface import Interface
+
 import six
 
 

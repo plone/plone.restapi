@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from plone.app.discussion.browser.comment import EditCommentForm
 from plone.app.discussion.browser.comments import CommentForm
 from plone.app.discussion.interfaces import IConversation
@@ -19,7 +20,6 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.security.interfaces import IPermission
 
-from datetime import datetime
 import plone.protect.interfaces
 
 

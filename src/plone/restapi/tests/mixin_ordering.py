@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import json
-
 from zExceptions import BadRequest
+
+import json
 
 
 class OrderingMixin:

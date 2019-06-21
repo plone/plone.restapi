@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.permissions import SetOwnPassword
-from Products.CMFCore.utils import getToolByName
-from Products.MailHost.interfaces import IMailHost
-
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -10,16 +6,21 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from Products.CMFCore.permissions import SetOwnPassword
+from Products.CMFCore.utils import getToolByName
+from Products.MailHost.interfaces import IMailHost
 from zope.component import getAdapter
 from zope.component import getUtility
+
+import transaction
+import unittest
+
 
 try:
     from Products.CMFPlone.interfaces import ISecuritySchema
 except ImportError:
     from plone.app.controlpanel.security import ISecuritySchema
 
-import transaction
-import unittest
 
 
 class TestUsersEndpoint(unittest.TestCase):

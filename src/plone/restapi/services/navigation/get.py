@@ -1,15 +1,15 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.interfaces import IExpandableElement
-from plone.restapi.services import Service
-from zope.component import adapter
-from zope.component import getMultiAdapter
-from zope.interface import Interface
-from zope.interface import implementer
-from Products.CMFPlone.browser.navtree import NavtreeQueryBuilder
 from plone.app.layout.navigation.navtree import buildFolderTree
 from plone.app.layout.navigation.root import getNavigationRoot
+from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.services import Service
+from Products.CMFPlone.browser.navtree import NavtreeQueryBuilder
 from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
+from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.component.hooks import getSite
+from zope.interface import implementer
+from zope.interface import Interface
 
 
 class NavigationTreeQueryBuilder(NavtreeQueryBuilder):
