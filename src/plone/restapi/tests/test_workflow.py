@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from DateTime import DateTime
 from Products.CMFCore.utils import getToolByName
 from ZPublisher.pubevents import PubStart
 from base64 import b64encode
@@ -125,6 +126,15 @@ class TestWorkflowTransition(TestCase):
         self.assertEqual(
             u"published", self.wftool.getInfoFor(self.portal.doc1, u"review_state")
         )
+
+    def test_transition_action_succeeds_changes_effective(self):
+        doc1 = self.portal.doc1
+        self.assertEqual(doc1.effective_date, None)
+        now = DateTime()
+        service = self.traverse('/plone/doc1/@workflow/publish')
+        service.reply()
+        self.assertTrue(isinstance(doc1.effective_date, DateTime))
+        self.assertTrue(doc1.effective_date >= now)
 
     def test_calling_endpoint_without_transition_gives_400(self):
         service = self.traverse("/plone/doc1/@workflow")
