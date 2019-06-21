@@ -28,6 +28,7 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
             # Resolve by intid
             intids = queryUtility(IIntIds)
             obj = intids.queryObject(value)
+            resolved_by = "intid"
         elif isinstance(value, six.string_types):
             if six.PY2 and isinstance(value, six.text_type):
                 value = value.encode("utf8")
@@ -38,15 +39,23 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
             if value.startswith(portal_url):
                 # Resolve by URL
                 obj = portal.restrictedTraverse(value[len(portal_url) + 1 :], None)
+                resolved_by = "URL"
             elif value.startswith("/"):
                 # Resolve by path
                 obj = portal.restrictedTraverse(value.lstrip("/"), None)
+                resolved_by = "path"
             else:
                 # Resolve by UID
                 catalog = getToolByName(self.context, "portal_catalog")
                 brain = catalog(UID=value)
                 if brain:
                     obj = brain[0].getObject()
+                resolved_by = "UID"
+
+        if obj is None:
+            raise ValueError(
+                u"Could not resolve object for {}={}".format(resolved_by, value)
+            )
 
         self.field.validate(obj)
         return obj
