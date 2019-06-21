@@ -1,0 +1,2 @@
+Gracefully handle corrupt images when serializing scales.
+[lgraf]
