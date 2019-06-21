@@ -4,6 +4,7 @@ from mock import patch
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.interfaces import IFieldSerializer
+from plone.restapi.imaging import get_scale_infos
 from plone.restapi.testing import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_VERSION
@@ -112,13 +113,13 @@ class TestATFieldSerializer(unittest.TestCase):
         )
 
     def test_image_field_serialization_returns_dict(self):
-        image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
+        image_file = os.path.join(os.path.dirname(__file__), u"image.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
         fn = "testImageField"
         with patch.object(storage, "uuid4", return_value="uuid_1"):
             value = self.serialize(
-                fn, image_data, filename="1024x768.gif", mimetype="image/gif"
+                fn, image_data, filename="image.gif", mimetype="image/gif"
             )
             self.assertTrue(isinstance(value, dict), "Not a <dict>")
 
@@ -128,27 +129,28 @@ class TestATFieldSerializer(unittest.TestCase):
             download_url = u"{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, GIF_SCALE_FORMAT
             )
-            scales = {
-                u"listing": {u"download": download_url, u"width": 16, u"height": 12},
-                u"icon": {u"download": download_url, u"width": 32, u"height": 24},
-                u"tile": {u"download": download_url, u"width": 64, u"height": 48},
-                u"thumb": {u"download": download_url, u"width": 80, u"height": 60},
-                u"mini": {u"download": download_url, u"width": 200, u"height": 150},
-                u"preview": {u"download": download_url, u"width": 400, u"height": 300},
-                u"large": {u"download": download_url, u"width": 768, u"height": 576},
-            }
+            allowed_sizes = get_scale_infos()
+
+            scales = value["scales"]
+            del value["scales"]
+
             self.assertEqual(
                 {
-                    u"filename": u"1024x768.gif",
+                    u"filename": u"image.gif",
                     u"content-type": u"image/gif",
-                    u"size": 1514,
+                    u"size": 3223,
                     u"download": download_url,
-                    u"width": 1024,
-                    u"height": 768,
-                    u"scales": scales,
+                    u"width": 2000,
+                    u"height": 1500,
                 },
                 value,
             )
+
+            for allowed_size in allowed_sizes:
+                name, width, height = allowed_size
+                self.assertIn(name, scales)
+                self.assertEqual(width, scales[name]["width"])
+                self.assertEqual(download_url, scales[name]["download"])
 
     def test_blob_field_serialization_returns_dict(self):
         value = self.serialize(
@@ -187,13 +189,13 @@ class TestATFieldSerializer(unittest.TestCase):
         )
 
     def test_blobimage_field_serialization_returns_dict(self):
-        image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
+        image_file = os.path.join(os.path.dirname(__file__), u"image.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
         fn = "testBlobImageField"
         with patch.object(storage, "uuid4", return_value="uuid_1"):
             value = self.serialize(
-                fn, image_data, filename="1024x768.gif", mimetype="image/gif"
+                fn, image_data, filename="image.gif", mimetype="image/gif"
             )
             self.assertTrue(isinstance(value, dict), "Not a <dict>")
             scale_url_uuid = "uuid_1"
@@ -201,27 +203,28 @@ class TestATFieldSerializer(unittest.TestCase):
             download_url = u"{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, GIF_SCALE_FORMAT
             )
-            scales = {
-                u"listing": {u"download": download_url, u"width": 16, u"height": 12},
-                u"icon": {u"download": download_url, u"width": 32, u"height": 24},
-                u"tile": {u"download": download_url, u"width": 64, u"height": 48},
-                u"thumb": {u"download": download_url, u"width": 128, u"height": 96},
-                u"mini": {u"download": download_url, u"width": 200, u"height": 150},
-                u"preview": {u"download": download_url, u"width": 400, u"height": 300},
-                u"large": {u"download": download_url, u"width": 768, u"height": 576},
-            }
+            allowed_sizes = get_scale_infos()
+
+            scales = value["scales"]
+            del value["scales"]
+
             self.assertEqual(
                 {
-                    u"filename": u"1024x768.gif",
+                    u"filename": u"image.gif",
                     u"content-type": u"image/gif",
-                    u"size": 1514,
+                    u"size": 3223,
                     u"download": download_url,
-                    u"width": 1024,
-                    u"height": 768,
-                    u"scales": scales,
+                    u"width": 2000,
+                    u"height": 1500,
                 },
                 value,
             )
+
+            for allowed_size in allowed_sizes:
+                name, width, height = allowed_size
+                self.assertIn(name, scales)
+                self.assertEqual(width, scales[name]["width"])
+                self.assertEqual(download_url, scales[name]["download"])
 
     def test_query_field_serialization_returns_list(self):
         query_data = [

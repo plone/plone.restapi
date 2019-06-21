@@ -11,6 +11,7 @@ from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.namedfile.file import NamedImage
+from plone.restapi.imaging import get_scale_infos
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -350,7 +351,7 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
         """In Plone < 5.1 the image returned when requesting an image
         scale with the same width and height of the original image is
         a Pillow-generated image scale in JPEG format"""
-        image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
+        image_file = os.path.join(os.path.dirname(__file__), u"image.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
         fn = "test_namedimage_field"
@@ -358,7 +359,7 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
             value = self.serialize(
                 fn,
                 NamedImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType=u"image/gif", filename=u"image.gif"
                 ),
             )
             self.assertTrue(isinstance(value, dict), "Not a <dict>")
@@ -375,47 +376,27 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
             scale_download_url = u"{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "jpeg"
             )
-            scales = {
-                u"listing": {
-                    u"download": scale_download_url,
-                    u"width": 16,
-                    u"height": 12,
-                },
-                u"icon": {u"download": scale_download_url, u"width": 32, u"height": 24},
-                u"tile": {u"download": scale_download_url, u"width": 64, u"height": 48},
-                u"thumb": {
-                    u"download": scale_download_url,
-                    u"width": 128,
-                    u"height": 96,
-                },
-                u"mini": {
-                    u"download": scale_download_url,
-                    u"width": 200,
-                    u"height": 150,
-                },
-                u"preview": {
-                    u"download": scale_download_url,
-                    u"width": 400,
-                    u"height": 300,
-                },
-                u"large": {
-                    u"download": scale_download_url,
-                    u"width": 768,
-                    u"height": 576,
-                },
-            }
+            allowed_sizes = get_scale_infos()
+
+            scales = value["scales"]
+            del value["scales"]
+
             self.assertEqual(
                 {
-                    u"filename": u"1024x768.gif",
+                    u"filename": u"image.gif",
                     u"content-type": u"image/gif",
-                    u"size": 1514,
+                    u"size": 3223,
                     u"download": original_download_url,
                     u"width": 1024,
                     u"height": 768,
-                    u"scales": scales,
                 },
                 value,
             )
+            for allowed_size in allowed_sizes:
+                name, width, height = allowed_size
+                self.assertIn(name, scales)
+                self.assertEqual(width, scales[name]["width"])
+                self.assertEqual(scale_download_url, scales[name]["download"])
 
     def test_namedimage_field_serialization_doesnt_choke_on_corrupt_image(self):
         """Original image url will be None because the original image is corrupted
@@ -447,7 +428,7 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
         """In Plone < 5.1 the image returned when requesting an image
         scale with the same width and height of the original image is
         a Pillow-generated image scale in JPEG format"""
-        image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
+        image_file = os.path.join(os.path.dirname(__file__), u"image.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
         fn = "test_namedblobimage_field"
@@ -455,7 +436,7 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
             value = self.serialize(
                 fn,
                 NamedBlobImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType=u"image/gif", filename=u"image.gif"
                 ),
             )
             self.assertTrue(isinstance(value, dict), "Not a <dict>")
@@ -472,47 +453,27 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
             scale_download_url = u"{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "jpeg"
             )
-            scales = {
-                u"listing": {
-                    u"download": scale_download_url,
-                    u"width": 16,
-                    u"height": 12,
-                },
-                u"icon": {u"download": scale_download_url, u"width": 32, u"height": 24},
-                u"tile": {u"download": scale_download_url, u"width": 64, u"height": 48},
-                u"thumb": {
-                    u"download": scale_download_url,
-                    u"width": 128,
-                    u"height": 96,
-                },
-                u"mini": {
-                    u"download": scale_download_url,
-                    u"width": 200,
-                    u"height": 150,
-                },
-                u"preview": {
-                    u"download": scale_download_url,
-                    u"width": 400,
-                    u"height": 300,
-                },
-                u"large": {
-                    u"download": scale_download_url,
-                    u"width": 768,
-                    u"height": 576,
-                },
-            }
+            allowed_sizes = get_scale_infos()
+
+            scales = value["scales"]
+            del value["scales"]
+
             self.assertEqual(
                 {
-                    u"filename": u"1024x768.gif",
+                    u"filename": u"image.gif",
                     u"content-type": u"image/gif",
-                    u"size": 1514,
+                    u"size": 3223,
                     u"download": original_download_url,
                     u"width": 1024,
                     u"height": 768,
-                    u"scales": scales,
                 },
                 value,
             )
+            for allowed_size in allowed_sizes:
+                name, width, height = allowed_size
+                self.assertIn(name, scales)
+                self.assertEqual(width, scales[name]["width"])
+                self.assertEqual(scale_download_url, scales[name]["download"])
 
     def test_namedblobimage_field_serialization_doesnt_choke_on_corrupt_image(self):
         """Original image url will be None because the original image is corrupted
