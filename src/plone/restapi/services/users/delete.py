@@ -23,16 +23,13 @@ class UsersDelete(Service):
     @property
     def _get_user_id(self):
         if len(self.params) != 1:
-            raise Exception(
-                "Must supply exactly one parameter (user id)")
+            raise Exception("Must supply exactly one parameter (user id)")
         return self.params[0]
 
     def reply(self):
         portal = getSite()
-        portal_membership = getToolByName(portal, 'portal_membership')
-        delete_successful = portal_membership.deleteMembers(
-            (self._get_user_id,)
-        )
+        portal_membership = getToolByName(portal, "portal_membership")
+        delete_successful = portal_membership.deleteMembers((self._get_user_id,))
         if delete_successful:
             self.request.response.setStatus(204)
         else:

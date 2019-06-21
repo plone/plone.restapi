@@ -10,27 +10,30 @@ from zope.schema.interfaces import ITitledTokenizedTerm
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabulary
 
+import six
+
 
 @implementer(ISerializeToJson)
 @adapter(IVocabulary, Interface)
 class SerializeVocabularyToJson(object):
-
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, vocabulary_id):
         vocabulary = self.context
-        title = self.request.form.get('title', '')
-        token = self.request.form.get('token', '')
+        title = self.request.form.get("title", "")
+        token = self.request.form.get("token", "")
 
         terms = []
         for term in vocabulary:
             if title and token:
                 self.request.response.setStatus(400)
-                return dict(error=dict(
-                    type='Invalid parameters',
-                    message='You can not filter by title and token at the same time.')  # noqa
+                return dict(
+                    error=dict(
+                        type="Invalid parameters",
+                        message="You can not filter by title and token at the same time.",
+                    )  # noqa
                 )
 
             if token:
@@ -38,7 +41,8 @@ class SerializeVocabularyToJson(object):
                     continue
                 terms.append(term)
             else:
-                if title.lower() not in term.title.lower():
+                term_title = getattr(term, "title", None) or ""
+                if title.lower() not in term_title.lower():
                     continue
                 terms.append(term)
 
@@ -46,25 +50,25 @@ class SerializeVocabularyToJson(object):
 
         serialized_terms = []
         for term in batch:
-            serializer = getMultiAdapter((term, self.request),
-                                         interface=ISerializeToJson)
+            serializer = getMultiAdapter(
+                (term, self.request), interface=ISerializeToJson
+            )
             serialized_terms.append(serializer())
 
         result = {
-            '@id': batch.canonical_url,
-            'items': serialized_terms,
-            'items_total': batch.items_total,
+            "@id": batch.canonical_url,
+            "items": serialized_terms,
+            "items_total": batch.items_total,
         }
         links = batch.links
         if links:
-            result['batching'] = links
+            result["batching"] = links
         return result
 
 
 @implementer(ISerializeToJson)
 @adapter(ITokenizedTerm, Interface)
 class SerializeTermToJson(object):
-
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -73,7 +77,6 @@ class SerializeTermToJson(object):
         term = self.context
         token = term.token
         title = term.title if ITitledTokenizedTerm.providedBy(term) else token
-        return {
-            'token': token,
-            'title': translate(title, context=self.request)
-        }
+        if isinstance(title, six.binary_type):
+            title = title.decode("UTF-8")
+        return {"token": token, "title": translate(title, context=self.request)}

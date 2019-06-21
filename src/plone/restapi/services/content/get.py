@@ -9,11 +9,10 @@ class ContentGet(Service):
     """
 
     def reply(self):
-        serializer = queryMultiAdapter((self.context, self.request),
-                                       ISerializeToJson)
+        serializer = queryMultiAdapter((self.context, self.request), ISerializeToJson)
 
         if serializer is None:
             self.request.response.setStatus(501)
-            return dict(error=dict(message='No serializer available.'))
+            return dict(error=dict(message="No serializer available."))
 
-        return serializer(version=self.request.get('version'))
+        return serializer(version=self.request.get("version"))

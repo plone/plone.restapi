@@ -11,7 +11,6 @@ from zope.publisher.interfaces import IRequest
 @implementer(ISerializeToJson)
 @adapter(IRegistry, IRequest)
 class SerializeRegistryToJson(object):
-
     def __init__(self, registry, request):
         self.registry = registry
         self.request = request
@@ -22,26 +21,20 @@ class SerializeRegistryToJson(object):
         batch = HypermediaBatch(self.request, list(records))
 
         results = {}
-        results['@id'] = batch.canonical_url
-        results['items_total'] = batch.items_total
+        results["@id"] = batch.canonical_url
+        results["items_total"] = batch.items_total
         if batch.links:
-            results['batching'] = batch.links
+            results["batching"] = batch.links
 
         def make_item(key):
             record = records[key]
             schema = getMultiAdapter(
-                (record.field, record, self.request),
-                IJsonSchemaProvider
+                (record.field, record, self.request), IJsonSchemaProvider
             )
-            data = {
-                'name': key,
-                'value': self.registry[key]
-            }
+            data = {"name": key, "value": self.registry[key]}
             __traceback_info__ = (record, record.field, schema)
-            data['schema'] = {
-                'properties': schema.get_schema(),
-            }
+            data["schema"] = {"properties": schema.get_schema()}
             return data
 
-        results['items'] = [make_item(key) for key in batch]
+        results["items"] = [make_item(key) for key in batch]
         return results

@@ -53,7 +53,7 @@ def iter_fields(fieldsets):
     as returned by `get_fieldsets`.
     """
     for fieldset in fieldsets:
-        for field in fieldset['fields']:
+        for field in fieldset["fields"]:
             yield field
 
 
@@ -64,18 +64,16 @@ def get_fieldsets(context, request, schema, additional_schemata=None):
     form = create_form(context, request, schema, additional_schemata)
 
     # Default fieldset
-    fieldsets = [{
-        'id': 'default',
-        'title': u'Default',
-        'fields': list(form.fields.values()),
-    }]
+    fieldsets = [
+        {"id": "default", "title": u"Default", "fields": list(form.fields.values())}
+    ]
 
     # Additional fieldsets (AKA z3c.form groups)
     for group in form.groups:
         fieldset = {
-            'id': group.__name__,
-            'title': translate(group.label, context=getRequest()),
-            'fields': list(group.fields.values()),
+            "id": group.__name__,
+            "title": translate(group.label, context=getRequest()),
+            "fields": list(group.fields.values()),
         }
         fieldsets.append(fieldset)
 
@@ -90,13 +88,14 @@ def get_fieldset_infos(fieldsets):
     fieldset_infos = []
     for fieldset in fieldsets:
         fs_info = copy(fieldset)
-        fs_info['fields'] = [f.field.getName() for f in fs_info['fields']]
+        fs_info["fields"] = [f.field.getName() for f in fs_info["fields"]]
         fieldset_infos.append(fs_info)
     return fieldset_infos
 
 
-def get_jsonschema_properties(context, request, fieldsets, prefix='',
-                              excluded_fields=None):
+def get_jsonschema_properties(
+    context, request, fieldsets, prefix="", excluded_fields=None
+):
     """Build a JSON schema 'properties' list, based on a list of fieldset
     dicts as returned by `get_fieldsets()`.
     """
@@ -113,15 +112,16 @@ def get_jsonschema_properties(context, request, fieldsets, prefix='',
             adapter = queryMultiAdapter(
                 (field.field, context, request),
                 interface=IJsonSchemaProvider,
-                name=field.__name__)
+                name=field.__name__,
+            )
 
             adapter = adapter or getMultiAdapter(
-                (field.field, context, request),
-                interface=IJsonSchemaProvider)
+                (field.field, context, request), interface=IJsonSchemaProvider
+            )
 
             adapter.prefix = prefix
             if prefix:
-                fieldname = '.'.join([prefix, fieldname])
+                fieldname = ".".join([prefix, fieldname])
 
             properties[fieldname] = adapter.get_schema()
 
@@ -161,16 +161,11 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
         additional_schemata = ()
     else:
         additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-        fieldsets = get_fieldsets(
-            context, request, schema, additional_schemata
-        )
+        fieldsets = get_fieldsets(context, request, schema, additional_schemata)
 
     # Build JSON schema properties
     properties = get_jsonschema_properties(
-        context,
-        request,
-        fieldsets,
-        excluded_fields=excluded_fields,
+        context, request, fieldsets, excluded_fields=excluded_fields
     )
 
     # Determine required fields
@@ -182,26 +177,26 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     # Include field modes
     for field in iter_fields(fieldsets):
         if field.mode:
-            properties[field.field.getName()]['mode'] = field.mode
+            properties[field.field.getName()]["mode"] = field.mode
 
     return {
-        'type': 'object',
-        'title': translate(fti.Title(), context=getRequest()),
-        'properties': IJsonCompatible(properties),
-        'required': required,
-        'fieldsets': get_fieldset_infos(fieldsets),
-        'layouts': getattr(fti, 'view_methods', []),
+        "type": "object",
+        "title": translate(fti.Title(), context=getRequest()),
+        "properties": IJsonCompatible(properties),
+        "required": required,
+        "fieldsets": get_fieldset_infos(fieldsets),
+        "layouts": getattr(fti, "view_methods", []),
     }
 
 
-def get_jsonschema_for_portal_type(portal_type, context, request,
-                                   excluded_fields=None):
+def get_jsonschema_for_portal_type(portal_type, context, request, excluded_fields=None):
     """Build a complete JSON schema for the given portal_type.
     """
-    ttool = getToolByName(context, 'portal_types')
+    ttool = getToolByName(context, "portal_types")
     fti = ttool[portal_type]
     return get_jsonschema_for_fti(
-        fti, context, request, excluded_fields=excluded_fields)
+        fti, context, request, excluded_fields=excluded_fields
+    )
 
 
 def get_vocabulary_url(vocab_name, context, request):
@@ -210,7 +205,4 @@ def get_vocabulary_url(vocab_name, context, request):
     except AttributeError:
         portal = getSite()
         context_url = portal.absolute_url()
-    return '{}/@vocabularies/{}'.format(
-        context_url,
-        vocab_name,
-    )
+    return "{}/@vocabularies/{}".format(context_url, vocab_name)

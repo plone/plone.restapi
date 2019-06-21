@@ -19,9 +19,9 @@ class TestCommentsSerializers(TestCase):
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
-        self.app = self.layer['app']
-        self.portal = self.layer['portal']
-        self.request = self.layer['request']
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
         self.portal_url = self.portal.absolute_url()
 
         # Allow discussion
@@ -34,72 +34,58 @@ class TestCommentsSerializers(TestCase):
         # doc with comments
         self.doc = api.content.create(
             container=self.portal,
-            type='Document',
-            id='doc_with_comments',
-            title='Document with comments',
-            allow_discussion=True
+            type="Document",
+            id="doc_with_comments",
+            title="Document with comments",
+            allow_discussion=True,
         )
         self.conversation = IConversation(self.doc)
         self.replies = IReplies(self.conversation)
-        comment = createObject('plone.Comment')
-        comment.text = 'Comment'
+        comment = createObject("plone.Comment")
+        comment.text = "Comment"
         self.comment = self.replies[self.replies.addComment(comment)]
 
-        comment = createObject('plone.Comment')
-        comment.text = 'Comment 2'
+        comment = createObject("plone.Comment")
+        comment.text = "Comment 2"
         self.replies.addComment(comment)
 
     def test_conversation(self):
         serializer = getMultiAdapter(
-            (self.conversation, self.request),
-            ISerializeToJson
+            (self.conversation, self.request), ISerializeToJson
         )
 
         output = serializer()
-        self.assertEqual(
-            set(output),
-            set(['@id', 'items_total', 'items'])
-        )
+        self.assertEqual(set(output), set(["@id", "items_total", "items"]))
 
     def test_conversation_batched(self):
-        self.request.form['b_size'] = 1
+        self.request.form["b_size"] = 1
         serializer = getMultiAdapter(
-            (self.conversation, self.request),
-            ISerializeToJson
+            (self.conversation, self.request), ISerializeToJson
         )
 
         output = serializer()
-        self.assertIn('batching', output)
+        self.assertIn("batching", output)
 
     def test_comment(self):
-        serializer = getMultiAdapter(
-            (self.comment, self.request),
-            ISerializeToJson
-        )
+        serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
 
         output = serializer()
 
         expected = [
-            '@id',
-            '@type',
-            '@parent',
-            'comment_id',
-            'in_reply_to',
-            'text',
-            'user_notification',
-            'author_username',
-            'author_name',
-            'creation_date',
-            'modification_date',
-            'is_editable',
-            'is_deletable'
+            "@id",
+            "@type",
+            "@parent",
+            "comment_id",
+            "in_reply_to",
+            "text",
+            "user_notification",
+            "author_username",
+            "author_name",
+            "creation_date",
+            "modification_date",
+            "is_editable",
+            "is_deletable",
         ]
-        self.assertEqual(
-            set(output),
-            set(expected)
-        )
+        self.assertEqual(set(output), set(expected))
 
-        self.assertEqual(
-            set(output['text']),
-            set(['data', 'mime-type'])
-        )
+        self.assertEqual(set(output["text"]), set(["data", "mime-type"]))
