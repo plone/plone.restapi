@@ -203,20 +203,20 @@ class TestJsonSchemaProviders(TestCase):
         )
 
     def test_context_aware_default_factory(self):
-        folder = self.portal[self.portal.invokeFactory(
-            "Folder", id="folder", title="My Folder")]
+        folder = self.portal[
+            self.portal.invokeFactory("Folder", id="folder", title="My Folder")
+        ]
 
         @provider(IContextAwareDefaultFactory)
         def uppercased_title_default(context):
             return context.title.upper()
 
         field = schema.TextLine(
-            title=u"My field", description=u"My great field",
-            defaultFactory=uppercased_title_default
+            title=u"My field",
+            description=u"My great field",
+            defaultFactory=uppercased_title_default,
         )
-        adapter = getMultiAdapter(
-            (field, folder, self.request), IJsonSchemaProvider
-        )
+        adapter = getMultiAdapter((field, folder, self.request), IJsonSchemaProvider)
 
         self.assertEqual(
             {

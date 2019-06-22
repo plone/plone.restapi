@@ -131,7 +131,7 @@ class TestWorkflowTransition(TestCase):
         doc1 = self.portal.doc1
         self.assertEqual(doc1.effective_date, None)
         now = DateTime()
-        service = self.traverse('/plone/doc1/@workflow/publish')
+        service = self.traverse("/plone/doc1/@workflow/publish")
         service.reply()
         self.assertTrue(isinstance(doc1.effective_date, DateTime))
         self.assertTrue(doc1.effective_date >= now)

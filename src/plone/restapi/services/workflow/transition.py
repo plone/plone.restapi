@@ -105,7 +105,7 @@ class WorkflowTransition(Service):
                 )
                 deserializer(data=publication_dates)
 
-            if obj.EffectiveDate() == 'None':
+            if obj.EffectiveDate() == "None":
                 obj.setEffectiveDate(DateTime())
                 obj.reindexObject()
 

@@ -70,7 +70,7 @@ class ReferenceFieldDeserializer(DefaultFieldDeserializer):
         for i, v in enumerate(value):
             # Resolve references given by URL
             if v.startswith(portal_url):
-                path = v[len(portal_url) + 1 :].encode("utf8")
+                path = v[len(portal_url) + 1:].encode("utf8")
                 value[i] = portal.unrestrictedTraverse(path, None)
 
         return value, {}

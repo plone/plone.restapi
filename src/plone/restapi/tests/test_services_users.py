@@ -22,7 +22,6 @@ except ImportError:
     from plone.app.controlpanel.security import ISecuritySchema
 
 
-
 class TestUsersEndpoint(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING

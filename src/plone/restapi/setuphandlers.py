@@ -4,7 +4,9 @@ from Acquisition import aq_parent
 from plone.restapi.pas.plugin import JWTAuthenticationPlugin
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import INonInstallable
-from Products.PluggableAuthService.interfaces.authservice import IPluggableAuthService  # noqa: E501
+from Products.PluggableAuthService.interfaces.authservice import (
+    IPluggableAuthService,
+)  # noqa: E501
 from zope.interface import implementer
 
 

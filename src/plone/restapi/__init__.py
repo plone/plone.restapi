@@ -2,7 +2,9 @@
 from AccessControl import allow_module
 from AccessControl.Permissions import add_user_folders
 from plone.restapi.pas import plugin
-from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin  # noqa
+from Products.PluggableAuthService.PluggableAuthService import (
+    registerMultiPlugin,
+)
 from zope.i18nmessageid import MessageFactory
 
 import pkg_resources
