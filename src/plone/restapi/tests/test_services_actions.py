@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.ActionInformation import Action
-from Products.CMFCore.ActionInformation import ActionCategory
-from Products.CMFCore import permissions
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -9,6 +6,9 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from Products.CMFCore import permissions
+from Products.CMFCore.ActionInformation import Action
+from Products.CMFCore.ActionInformation import ActionCategory
 
 import transaction
 import unittest

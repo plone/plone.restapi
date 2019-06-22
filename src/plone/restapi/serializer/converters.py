@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
 from datetime import date
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
+from DateTime import DateTime
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
 from plone.app.textfield.interfaces import IRichTextValue
@@ -11,6 +11,8 @@ from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IContextawareJsonCompatible
 from plone.restapi.interfaces import IJsonCompatible
 from Products.CMFPlone.utils import safe_unicode
+from six.moves import map
+from six.moves import zip
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
@@ -22,8 +24,7 @@ from zope.interface import Interface
 import Missing
 import pytz
 import six
-from six.moves import map
-from six.moves import zip
+
 
 # import re
 

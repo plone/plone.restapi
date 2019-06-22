@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-from plone.app.testing import TEST_USER_ID
 from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.testing import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
 
-import unittest
 import six
+import unittest
 
 
 class TestATFieldDeserializer(unittest.TestCase):

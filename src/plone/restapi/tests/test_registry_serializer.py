@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-from plone.registry import Registry
 from plone.registry import field
+from plone.registry import Registry
 from plone.registry.record import Record
 from plone.restapi import HAS_AT
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
+from six.moves import range
 from zope.component import getMultiAdapter
 
 import unittest
-from six.moves import range
 
 
 class TestRegistrySerializer(unittest.TestCase):

@@ -11,6 +11,7 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
 from zope.schema import getFieldNames
 
+
 try:
     # Plone 5
     from plone.app.users.browser.userdatapanel import getUserDataSchema

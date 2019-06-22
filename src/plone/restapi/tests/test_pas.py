@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
 from plone.keyring.interfaces import IKeyManager
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from Products.CMFCore.utils import getToolByName
 from zope.component import getUtility
 
 import unittest

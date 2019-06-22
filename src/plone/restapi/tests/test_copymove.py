@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-from plone import api
-from ZPublisher.pubevents import PubStart
 from base64 import b64encode
+from plone import api
+from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
-from plone.app.testing import setRoles
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.event import notify
+from ZPublisher.pubevents import PubStart
 
-import unittest
 import transaction
+import unittest
 
 
 class TestCopyMove(unittest.TestCase):

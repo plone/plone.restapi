@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 from freezegun import freeze_time
+
 import freezegun
 import time
 import unittest
 
 
 class TestTimeFreezing(unittest.TestCase):
-
     def test_freezegun_provides_original_time_functions(self):
         """This test guards against future API changes in freezegun.
         """
         # These module globals in freezegun.api provide access to the
         # original time functions.
-        self.assertTrue(hasattr(freezegun.api, 'real_time'))
-        self.assertTrue(hasattr(freezegun.api, 'real_gmtime'))
+        self.assertTrue(hasattr(freezegun.api, "real_time"))
+        self.assertTrue(hasattr(freezegun.api, "real_gmtime"))
 
         # Before freezing time, they should be references to the
         # real time functions

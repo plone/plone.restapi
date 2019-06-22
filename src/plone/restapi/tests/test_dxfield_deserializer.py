@@ -9,17 +9,16 @@ from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from pytz import timezone
-
 from plone.restapi.tests.dxtypes import IDXTestDocumentSchema
+from pytz import timezone
 from zope.component import getMultiAdapter
-from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.schema import Field
 from zope.schema._bootstrapinterfaces import RequiredMissing
+from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.schema.interfaces import ValidationError
 
-import unittest
 import six
+import unittest
 
 
 class RequiredField(object):

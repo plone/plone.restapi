@@ -10,8 +10,8 @@ from zope.component import getGlobalSiteManager
 from zope.component import provideUtility
 from zope.componentvocabulary.vocabulary import UtilityTerm
 from zope.schema.interfaces import IVocabularyFactory
-from zope.schema.vocabulary import SimpleVocabulary
 from zope.schema.vocabulary import SimpleTerm
+from zope.schema.vocabulary import SimpleVocabulary
 
 import six
 import transaction

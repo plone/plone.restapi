@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import six
-
+from DateTime import DateTime
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.serializer.converters import json_compatible
@@ -16,9 +15,9 @@ from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
-from DateTime import DateTime
 
 import plone.protect.interfaces
+import six
 
 
 @implementer(IPublishTraverse)
@@ -106,7 +105,7 @@ class WorkflowTransition(Service):
                 )
                 deserializer(data=publication_dates)
 
-            if obj.EffectiveDate() == 'None':
+            if obj.EffectiveDate() == "None":
                 obj.setEffectiveDate(DateTime())
                 obj.reindexObject()
 

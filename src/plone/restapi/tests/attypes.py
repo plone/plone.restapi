@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
-from Products.ATContentTypes.content.base import registerATCT
-from Products.ATContentTypes.content.document import ATDocumentBase
-from Products.ATContentTypes.content.document import ATDocumentSchema
-from Products.Archetypes import atapi
-from Products.CMFCore import permissions
 from plone.app.blob.field import BlobField
 from plone.app.blob.field import FileField
 from plone.app.blob.field import ImageField
 from plone.app.folder.folder import ATFolder
 from plone.app.folder.folder import ATFolderSchema
+from Products.Archetypes import atapi
+from Products.ATContentTypes.content.base import registerATCT
+from Products.ATContentTypes.content.document import ATDocumentBase
+from Products.ATContentTypes.content.document import ATDocumentSchema
+from Products.CMFCore import permissions
+
 
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa

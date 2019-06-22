@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+from plone.app.blob.interfaces import IBlobField
+from plone.restapi.interfaces import IFieldDeserializer
+from plone.restapi.services.content.tus import TUSUpload
 from Products.Archetypes.interfaces import IBaseObject
 from Products.Archetypes.interfaces.field import IField
 from Products.Archetypes.interfaces.field import IFileField
 from Products.Archetypes.interfaces.field import IReferenceField
-from plone.app.blob.interfaces import IBlobField
-from plone.restapi.interfaces import IFieldDeserializer
-from plone.restapi.services.content.tus import TUSUpload
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
@@ -70,7 +70,7 @@ class ReferenceFieldDeserializer(DefaultFieldDeserializer):
         for i, v in enumerate(value):
             # Resolve references given by URL
             if v.startswith(portal_url):
-                path = v[len(portal_url) + 1 :].encode("utf8")
+                path = v[len(portal_url) + 1:].encode("utf8")
                 value[i] = portal.unrestrictedTraverse(path, None)
 
         return value, {}

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from .mixins import OrderingMixin
 from AccessControl import getSecurityManager
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContent
@@ -14,15 +15,13 @@ from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
 from zope.event import notify
-from zope.interface import Interface
 from zope.interface import implementer
+from zope.interface import Interface
 from zope.lifecycleevent import Attributes
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.schema import getFields
 from zope.schema.interfaces import ValidationError
 from zope.security.interfaces import IPermission
-
-from .mixins import OrderingMixin
 
 
 @implementer(IDeserializeFromJson)

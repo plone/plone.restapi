@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
-from Products.CMFCore.utils import getToolByName
-from ZPublisher.pubevents import PubStart
 from base64 import b64encode
+from DateTime import DateTime
+from plone.app.testing import login
+from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
-from plone.app.testing import login
-from plone.app.testing import setRoles
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
 from zExceptions import NotFound
 from zope.component import getMultiAdapter
 from zope.event import notify
+from ZPublisher.pubevents import PubStart
 
 
 class TestWorkflowInfo(TestCase):
@@ -131,7 +131,7 @@ class TestWorkflowTransition(TestCase):
         doc1 = self.portal.doc1
         self.assertEqual(doc1.effective_date, None)
         now = DateTime()
-        service = self.traverse('/plone/doc1/@workflow/publish')
+        service = self.traverse("/plone/doc1/@workflow/publish")
         service.reply()
         self.assertTrue(isinstance(doc1.effective_date, DateTime))
         self.assertTrue(doc1.effective_date >= now)

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.interfaces import IActionCategory
-from Products.CMFCore.utils import getToolByName
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
+from Products.CMFCore.interfaces import IActionCategory
+from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.i18n import translate
-from zope.interface import Interface
 from zope.interface import implementer
+from zope.interface import Interface
 
 
 @implementer(IExpandableElement)

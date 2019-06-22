@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
 from datetime import date
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
+from DateTime import DateTime
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID

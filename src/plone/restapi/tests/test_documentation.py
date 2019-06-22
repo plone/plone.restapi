@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from base64 import b64encode
 from datetime import datetime
-from DateTime import DateTime
 from datetime import timedelta
+from DateTime import DateTime
 from freezegun import freeze_time
 from mock import patch
 from pkg_resources import parse_version
@@ -24,15 +24,14 @@ from plone.locking.interfaces import ITTWLockable
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
-from plone.restapi.testing import PAM_INSTALLED
+from plone.restapi.testing import PAM_INSTALLED  # noqa
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME  # noqa
-from plone.restapi.testing import (
-    PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME,
-)  # noqa
+from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.scale import storage
 from plone.testing.z2 import Browser
+from six.moves import range
 from zope.component import createObject
 from zope.component import getUtility
 from zope.interface import alsoProvides
@@ -45,7 +44,7 @@ import re
 import six
 import transaction
 import unittest
-from six.moves import range
+
 
 if PAM_INSTALLED:
     from plone.app.multilingual.interfaces import ITranslationManager

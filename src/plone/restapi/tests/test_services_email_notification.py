@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-from Products.MailHost.interfaces import IMailHost
-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from Products.MailHost.interfaces import IMailHost
 from zope.component import getUtility
-from plone.registry.interfaces import IRegistry
 
 import transaction
 import unittest
+
 
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
