@@ -21,6 +21,7 @@
   <include package=".principals"/>
   <include package=".registry"/>
   <include package=".roles"/>
+  <include package=".schema"/>
   <include package=".search"/>
   <include package=".types"/>
   <include package=".users"/>

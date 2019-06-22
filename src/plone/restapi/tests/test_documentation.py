@@ -457,6 +457,11 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.get("@types/Document")
         save_request_and_response_for_docs("types_document", response)
 
+    def test_documentation_schema(self):
+        response = self.api_session.get("{}/@schema".format(
+            self.document.absolute_url()))
+        save_request_and_response_for_docs("schema", response)
+
     def test_documentation_jwt_login(self):
         self.portal.acl_users.jwt_auth._secret = "secret"
         self.portal.acl_users.jwt_auth.use_keyring = False
