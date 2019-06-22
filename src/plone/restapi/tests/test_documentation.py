@@ -233,6 +233,11 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.get(document.absolute_url())
         save_request_and_response_for_docs("content_get", response)
 
+        response = self.api_session.get(
+            folder.absolute_url() + "?metadata_fields=UID&metadata_fields=Creator"
+        )
+        save_request_and_response_for_docs("content_get_folder", response)
+
         response = self.api_session.patch(
             document.absolute_url(), json={"title": "My New Document Title"}
         )
