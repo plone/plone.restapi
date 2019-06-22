@@ -26,7 +26,6 @@ in the reponse of any content GET request::
         {"@id": "http://localhost:55001/plone/front-page/@actions"},
         {"@id": "http://localhost:55001/plone/front-page/@breadcrumbs"},
         {"@id": "http://localhost:55001/plone/front-page/@navigation"},
-        {"@id": "http://localhost:55001/plone/front-page/@schema"},
         {"@id": "http://localhost:55001/plone/front-page/@workflow"},
         ...
     },
