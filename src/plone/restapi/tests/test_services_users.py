@@ -496,6 +496,33 @@ class TestUsersEndpoint(unittest.TestCase):
             user.get("portrait").endswith("plone/portal_memberdata/portraits/noam")
         )
 
+    def test_delete_portrait(self):
+        payload = {
+            "portrait": None,
+        }
+        self.api_session.auth = ("noam", "password")
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get("/@users/noam").json()
+
+        self.assertTrue(user.get("portrait") is None)
+
+    def test_delete_portrait_by_manager(self):
+        payload = {
+            "portrait": None,
+        }
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get("/@users/noam").json()
+
+        self.assertTrue(user.get("portrait") is None)
+
     def test_anonymous_user_can_not_update_existing_user(self):
         payload = {
             "fullname": "Noam A. Chomsky",
