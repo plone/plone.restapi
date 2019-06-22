@@ -13,6 +13,9 @@ Location: http://localhost:55001/plone/folder/my-document
     "navigation": {
       "@id": "http://localhost:55001/plone/folder/my-document/@navigation"
     }, 
+    "types": {
+      "@id": "http://localhost:55001/plone/folder/my-document/@types"
+    }, 
     "workflow": {
       "@id": "http://localhost:55001/plone/folder/my-document/@workflow"
     }

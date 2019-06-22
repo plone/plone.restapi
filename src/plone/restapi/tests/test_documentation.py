@@ -1090,7 +1090,7 @@ class TestDocumentation(unittest.TestCase):
 
     def test_documentation_expansion_expanded_full(self):
         response = self.api_session.get(
-            "/front-page?expand=actions,breadcrumbs,navigation,workflow"
+            "/front-page?expand=actions,breadcrumbs,navigation,workflow,types"
         )
         save_request_and_response_for_docs("expansion_expanded_full", response)
 

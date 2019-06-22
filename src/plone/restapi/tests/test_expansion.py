@@ -257,6 +257,53 @@ class TestExpansionFunctional(unittest.TestCase):
             response.json()["@components"]["workflow"]["transitions"],
         )
 
+    def test_types_is_expandable(self):
+        response = self.api_session.get("/folder")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("types", list(response.json().get("@components")))
+
+    def test_types_expanded(self):
+        response = self.api_session.get("/folder", params={"expand": "types"})
+
+        self.assertEqual(response.status_code, 200)
+
+        # XXX: Note: The @types endpoint currently doesn't conform to JSON-LD
+        # because it's directly returning a list, and does not have an @id
+        # property.
+
+        base_url = self.portal.absolute_url()
+
+        self.assertEqual([
+            {u'@id': u'/'.join((base_url, '@types/Collection')),
+             u'addable': True,
+             u'title': u'Collection'},
+            {u'@id': u'/'.join((base_url, '@types/DXTestDocument')),
+             u'addable': True,
+             u'title': u'DX Test Document'},
+            {u'@id': u'/'.join((base_url, '@types/Event')),
+             u'addable': True,
+             u'title': u'Event'},
+            {u'@id': u'/'.join((base_url, '@types/File')),
+             u'addable': True,
+             u'title': u'File'},
+            {u'@id': u'/'.join((base_url, '@types/Folder')),
+             u'addable': True,
+             u'title': u'Folder'},
+            {u'@id': u'/'.join((base_url, '@types/Image')),
+             u'addable': True,
+             u'title': u'Image'},
+            {u'@id': u'/'.join((base_url, '@types/Link')),
+             u'addable': True,
+             u'title': u'Link'},
+            {u'@id': u'/'.join((base_url, '@types/News Item')),
+             u'addable': True,
+             u'title': u'News Item'},
+            {u'@id': u'/'.join((base_url, '@types/Document')),
+             u'addable': True,
+             u'title': u'Page'}],
+            response.json().get("@components").get("types"))
+
 
 @unittest.skipUnless(
     PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
