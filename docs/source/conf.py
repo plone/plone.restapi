@@ -32,6 +32,20 @@ extensions = [
     'sphinxcontrib.httpexample',
 ]
 
+
+def patch_pygments_to_highlight_jsonschema():
+    """Append 'application/json+schema' to the list of mimetypes the
+    Pygments JSON lexer is registered to handle.
+    """
+    try:
+        from pygments.lexers._mapping import LEXERS
+        mod, lexer_name, aliases, filenames, mimetypes = LEXERS['JsonLexer']
+        mimetypes = mimetypes + ('application/json+schema', )
+        LEXERS['JsonLexer'] = (mod, lexer_name, aliases, filenames, mimetypes)
+    except:
+        # Be defensive (don't fail a docs build if this doesn't work)
+        pass
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -248,3 +262,4 @@ texinfo_documents = [
 
 suppress_warnings = ['image.nonlocal_uri']
 
+patch_pygments_to_highlight_jsonschema()
