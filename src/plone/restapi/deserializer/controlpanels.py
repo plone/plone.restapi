@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
+from plone.dexterity.interfaces import IDexterityContent
 from plone.registry.interfaces import IRegistry
 from plone.restapi.controlpanels import IControlpanel
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.interfaces import IFieldDeserializer
+from z3c.form.interfaces import IManagerValidator
 from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import getUtility
+from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.schema import getFields
 from zope.schema.interfaces import ValidationError
-from plone.dexterity.interfaces import IDexterityContent
-from zope.component import queryMultiAdapter
-from plone.restapi.interfaces import IFieldDeserializer
-from z3c.form.interfaces import IManagerValidator
 
 
 @implementer(IDexterityContent)

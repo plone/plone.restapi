@@ -3,11 +3,11 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from zope.component import ComponentLookupError
 from zope.component import getMultiAdapter
+from zope.component import getUtilitiesFor
 from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
-from zope.component import getUtilitiesFor
 
 
 @implementer(IPublishTraverse)

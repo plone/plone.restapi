@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-import unittest
-
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+import unittest
 
 
 class TestBooleanValue(unittest.TestCase):

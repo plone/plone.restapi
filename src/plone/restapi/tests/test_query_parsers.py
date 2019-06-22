@@ -10,6 +10,7 @@ from plone.restapi.search.query import FieldIndexQueryParser
 from plone.restapi.search.query import KeywordIndexQueryParser
 from plone.restapi.search.query import UUIDIndexQueryParser
 from plone.restapi.search.query import ZCTextIndexQueryParser
+
 import unittest
 
 

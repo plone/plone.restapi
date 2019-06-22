@@ -21,6 +21,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 import transaction
 import unittest
 
+
 if PAM_INSTALLED:
     from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled  # noqa
     from plone.app.multilingual.interfaces import ITranslationManager

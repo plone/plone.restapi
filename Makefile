@@ -66,6 +66,7 @@ build-py3:  ## Build Plone 5.2 with Python 3
 	virtualenv --python=python3 .
 	bin/pip install --upgrade pip
 	bin/pip install -r requirements.txt
+	bin/pip install black
 	bin/buildout -c plone-5.2.x.cfg
 
 bin/python bin/pip:

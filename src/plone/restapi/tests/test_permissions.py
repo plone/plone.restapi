@@ -7,8 +7,8 @@ from plone.restapi.permissions import UseRESTAPI
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 
-import unittest
 import transaction
+import unittest
 
 
 class TestPermissions(unittest.TestCase):

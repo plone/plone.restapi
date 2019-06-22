@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+from plone.registry.interfaces import IRegistry
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.types.interfaces import IJsonSchemaProvider
-from plone.registry.interfaces import IRegistry
-from zope.component import adapter, getMultiAdapter
+from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
 

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-from ZPublisher.pubevents import PubStart
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.restapi.permissions import UseRESTAPI
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest import TestCase
-from zope.event import notify
 from zExceptions import Unauthorized
+from zope.event import notify
+from ZPublisher.pubevents import PubStart
 
 
 class TestLogin(TestCase):

@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+4.1.4 (2019-06-21)
+------------------
+
+Bug fixes:
+
+
+- Set effective_date and reindex obj on workflow transitions. [wkbkhard] (#760)
+
+
 4.1.3 (2019-06-21)
 ------------------
 

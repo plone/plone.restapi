@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
 from plone import api
+from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-
-from plone.app.discussion.interfaces import IDiscussionSettings
-
 from zope.component import getUtility
 
 import transaction

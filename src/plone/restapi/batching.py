@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.batching.batch import Batch
-from six.moves.urllib.parse import urlencode
 from six.moves.urllib.parse import parse_qsl
+from six.moves.urllib.parse import urlencode
 
 
 DEFAULT_BATCH_SIZE = 25

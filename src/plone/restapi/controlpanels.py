@@ -1,19 +1,20 @@
 # -*- coding: utf-8 -*-
-from zope.interface import implementer, Interface, Attribute
-from zope.component import adapter
 from Products.CMFCore.utils import getToolByName
-
 from Products.CMFPlone.interfaces.controlpanel import IDateAndTimeSchema
 from Products.CMFPlone.interfaces.controlpanel import IEditingSchema
+from Products.CMFPlone.interfaces.controlpanel import IImagingSchema
 from Products.CMFPlone.interfaces.controlpanel import ILanguageSchema
 from Products.CMFPlone.interfaces.controlpanel import IMailSchema
-from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
-from Products.CMFPlone.interfaces.controlpanel import ISiteSchema
-from Products.CMFPlone.interfaces.controlpanel import ISearchSchema
-from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
-from Products.CMFPlone.interfaces.controlpanel import IImagingSchema
 from Products.CMFPlone.interfaces.controlpanel import IMarkupSchema
+from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
+from Products.CMFPlone.interfaces.controlpanel import ISearchSchema
 from Products.CMFPlone.interfaces.controlpanel import ISecuritySchema
+from Products.CMFPlone.interfaces.controlpanel import ISiteSchema
+from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
+from zope.component import adapter
+from zope.interface import Attribute
+from zope.interface import implementer
+from zope.interface import Interface
 
 
 class IControlpanel(Interface):

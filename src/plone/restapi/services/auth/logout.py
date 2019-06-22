@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
-from plone.restapi.services import Service
 
 
 class Logout(Service):

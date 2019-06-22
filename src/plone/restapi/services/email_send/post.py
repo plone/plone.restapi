@@ -7,12 +7,12 @@ from plone.restapi import _
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import ISiteSchema
 from Products.CMFPlone.interfaces.controlpanel import IMailSchema
 from smtplib import SMTPException
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import alsoProvides
-from Products.CMFPlone.interfaces import ISiteSchema
 
 import plone
 

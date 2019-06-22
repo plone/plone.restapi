@@ -9,6 +9,7 @@ from zope.event import notify
 from zope.interface import implementer
 from zope.interface import Interface
 
+
 try:
     from plone.app.workflow.events import LocalrolesModifiedEvent
 
