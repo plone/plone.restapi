@@ -1,3 +1,5 @@
+.. _httpstatuscodes:
+
 HTTP Status Codes
 =================
 

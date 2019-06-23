@@ -1,0 +1,17 @@
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{
+  "details": {
+    "Just kidding": "Jokes on you", 
+    "traceback": [
+      "File \"/srv/plone.restapi/src/plone/restapi/tests/test_error_handling.py\", line 38, in reply", 
+      "    self.broken_method()", 
+      "", 
+      "  File \"/srv/plone.restapi/src/plone/restapi/tests/test_error_handling.py\", line 51, in broken_method", 
+      "    raise AssertionError('You should not call this method')"
+    ]
+  }, 
+  "message": "Something went wrong.", 
+  "type": "somethingWentWrong"
+}

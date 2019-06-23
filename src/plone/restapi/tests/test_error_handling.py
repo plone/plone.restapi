@@ -3,6 +3,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.restapi.services import Service
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.Five.browser import BrowserView
@@ -27,6 +28,27 @@ class InternalServerErrorView(BrowserView):
             None,
         )
         raise HTTPError
+
+
+class ApiExceptionExampleService(Service):
+
+    def reply(self):
+        from plone.rest.errors import RestApiException
+        try:
+            self.broken_method()
+        except AssertionError, OriginalException:
+            raise RestApiException(
+                500,                               # status code
+                'somethingWentWrong',              # type
+                'Something went wrong.',           # message
+                details={
+                    'Just kidding': 'Jokes on you'
+                },
+                exception=OriginalException,
+            )
+
+    def broken_method(self):
+        raise AssertionError('You should not call this method')
 
 
 class TestErrorHandling(unittest.TestCase):

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from plone.rest.errors import RestApiException
 from plone.restapi.services import Service
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from Products.CMFCore.interfaces import IFolderish
@@ -27,7 +28,7 @@ class TypesGet(Service):
     def _get_record_name(self):
         if len(self.params) != 1:
             raise Exception(
-                "Must supply exactly one parameter (dotted name of"
+                "Must supply exactly one parameter (dotted name of "
                 "the record to be retrieved)"
             )
 
@@ -51,11 +52,11 @@ class TypesGet(Service):
                 )
             except KeyError:
                 self.content_type = "application/json"
-                self.request.response.setStatus(404)
-                return {
-                    "type": "NotFound",
-                    "message": 'Type "{}" could not be found.'.format(portal_type),
-                }
+                raise RestApiException(
+                    404, 'NotFound',
+                    'Type "{}" could not be found.'.format(portal_type),
+                )
+
         vocab_factory = getUtility(
             IVocabularyFactory, name="plone.app.vocabularies.ReallyUserFriendlyTypes"
         )

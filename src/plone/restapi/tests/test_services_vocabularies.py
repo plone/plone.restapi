@@ -206,8 +206,14 @@ class TestVocabularyEndpoint(unittest.TestCase):
         response = self.api_session.get("/@vocabularies/unknown.vocabulary")
 
         self.assertEqual(404, response.status_code)
-        response = response.json()
-        self.assertEqual(response["error"]["type"], u"Not Found")
+        self.assertEqual(
+            response.json(),
+            {
+                u'details': None,
+                u'message': u"The vocabulary 'unknown.vocabulary' does not exist",
+                u'type': u'Not Found',
+            }
+        )
 
     def test_get_all_vocabularies(self):
         response = self.api_session.get("/@vocabularies")
