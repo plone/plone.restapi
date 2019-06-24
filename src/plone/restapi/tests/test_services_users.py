@@ -439,10 +439,10 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_update_portrait(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
             }
         }
         self.api_session.auth = ("noam", "password")
@@ -459,10 +459,10 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_update_portrait_with_default_plone_scaling(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
                 "scale": True,
             }
         }
@@ -480,10 +480,10 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_update_portrait_by_manager(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
             }
         }
         response = self.api_session.patch("/@users/noam", json=payload)

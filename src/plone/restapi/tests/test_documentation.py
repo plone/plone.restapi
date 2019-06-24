@@ -764,10 +764,10 @@ class TestDocumentation(unittest.TestCase):
     def test_documentation_users_update_portrait(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
             }
         }
         api.user.create(email="noam.chomsky@example.com", username="noam")
@@ -783,10 +783,10 @@ class TestDocumentation(unittest.TestCase):
     def test_documentation_users_update_portrait_with_scale(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
                 "scale": True,
             }
         }
