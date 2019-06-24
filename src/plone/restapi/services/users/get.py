@@ -15,6 +15,80 @@ DEFAULT_SEARCH_RESULTS_LIMIT = 25
 
 @implementer(IPublishTraverse)
 class UsersGet(Service):
+
+    __restapi_doc_definitions__ = {
+        "User": {
+            "type": "object",
+            "required": [
+                "id",
+                ],
+            "properties": {
+                "@id": {
+                    "type": "string",
+                    "example": "http://localhost:55001/plone/@users/admin",
+                },
+                "id": {
+                    "type": "string",
+                    "example": "admin",
+                },
+                "username": {
+                    "type": "string",
+                    "example": "admin",
+                },
+                "email": {
+                    "type": "string",
+                    "example": "admin@example.com",
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "example": "Manager",
+                        }
+                },
+            }
+        },
+    }
+
+    __restapi_doc__ = {
+        "/@users": {
+            "get": {
+                "summary": "Get a list of users in a site",
+                "description": ("This endpoint is only available for Users "
+                                "with management permissions."),
+                "consumes": [
+                    "application/json",
+                    ],
+                "produces": [
+                    "application/json"
+                    ],
+                "parameters": [
+                     {
+                         "in": "query",
+                         "name": "query",
+                         "description": ("Returns only users were the "
+                                         "username starts with the query"),
+                         "required": False,
+                     },
+                ],
+                "responses": {
+                    "200": {
+                        "description": "successful operation",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/User"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized"
+                    }
+                },
+            },
+        },
+    }
+
     def __init__(self, context, request):
         super(UsersGet, self).__init__(context, request)
         self.params = []

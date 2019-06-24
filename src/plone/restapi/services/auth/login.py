@@ -17,6 +17,60 @@ class Login(Service):
     """Handles login and returns a JSON web token (JWT).
     """
 
+    __restapi_doc__ = {
+        "/@login": {
+            "post": {
+                "summary": "Log a user into the site",
+                "consumes": [
+                    "application/json",
+                    ],
+                "produces": [
+                    "application/json"
+                    ],
+                "parameters": [
+                     {
+                         "in": "body",
+                         "name": "login",
+                         "description": "The username of the user",
+                         "required": True,
+                         "type": "string",
+                     },
+                     {
+                         "in": "body",
+                         "name": "password",
+                         "description": "The password of the user",
+                         "required": True,
+                         "type": "string",
+                     },
+
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User logged in sucessfully.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "token": "string",
+                                "payload": {
+                                    "type": "object",
+                                    "properties": {
+                                        "fullname": "string",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    "400": {
+                        "description": "Missing Credentials"
+                    },
+                    "501": {
+                        "description": "Login Failed"
+                    },
+                },
+            },
+        },
+    }
+
     def reply(self):
         data = json_body(self.request)
         if "login" not in data or "password" not in data:
