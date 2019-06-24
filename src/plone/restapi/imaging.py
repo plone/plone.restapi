@@ -33,6 +33,10 @@ def get_scales(context, field, width, height):
                 field.__name__, width=actual_width, height=actual_height
             )
 
+        if scale is None:
+            # If we still can't get a scale, it's probably a corrupt image
+            continue
+
         url = scale.url
         actual_width = scale.width
         actual_height = scale.height
@@ -52,6 +56,9 @@ def get_original_image_url(context, fieldname, width, height):
     scale = images_view.scale(
         fieldname, width=width, height=height, direction="thumbnail"
     )
+    if not scale:
+        # This might happen for corrupt images.
+        return None
 
     return scale.url
 
