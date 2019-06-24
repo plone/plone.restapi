@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from plone.rest.errors import RestApiException
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from zope.component import ComponentLookupError
@@ -21,10 +22,6 @@ class VocabulariesGet(Service):
         self.params.append(name)
         return self
 
-    def _error(self, status, type, message):
-        self.request.response.setStatus(status)
-        return {"error": {"type": type, "message": message}}
-
     def reply(self):
         if len(self.params) == 0:
             return [
@@ -41,8 +38,9 @@ class VocabulariesGet(Service):
         try:
             factory = getUtility(IVocabularyFactory, name=name)
         except ComponentLookupError:
-            return self._error(
-                404, "Not Found", "The vocabulary '{}' does not exist".format(name)
+            raise RestApiException(
+                404, "Not Found",
+                "The vocabulary '{}' does not exist".format(name),
             )
 
         vocabulary = factory(self.context)

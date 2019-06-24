@@ -10,6 +10,7 @@
       component=".tests.dxtypes.vocabularyRequireingContextFactory"
       name="plone.restapi.testing.context_vocabulary" />
 
+  
   <include package="plone.behavior" file="meta.zcml"/>
 
 	<plone:behavior
@@ -25,5 +26,14 @@
 	    provides=".tests.dxtypes.ITestAnnotationsBehavior"
 	    factory="plone.behavior.AnnotationStorage"
 	    />
+
+
+    <plone:service
+        method="GET"
+        for="*"
+        name="@api-exception-example"
+        factory=".tests.test_error_handling.ApiExceptionExampleService"
+        permission="zope2.View"
+    />
 
 </configure>

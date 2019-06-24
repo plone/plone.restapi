@@ -15,7 +15,10 @@ Contents
    :maxdepth: 1
 
    introduction
+
+
 .. toctree::
+   :caption: Using Endpoints
    :maxdepth: 2
 
    authentication
@@ -46,8 +49,14 @@ Contents
    vocabularies
    controlpanels
    tiles
+
+.. toctree::
+   :caption: Developing and Customizing Endpoints
+   :maxdepth: 2
+
    customization
    conventions
+   handling-errors
    translations
    email-send
    i18n

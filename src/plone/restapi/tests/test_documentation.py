@@ -29,6 +29,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
+
 from plone.scale import storage
 from plone.testing.z2 import Browser
 from six.moves import range
@@ -153,6 +154,7 @@ def save_request_and_response_for_docs(name, response):
 class TestDocumentation(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
+    maxDiff = None
 
     def setUp(self):
         self.app = self.layer["app"]
@@ -1286,6 +1288,23 @@ class TestDocumentation(unittest.TestCase):
             "Lock-Token"
         ] = u"0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
         save_request_and_response_for_docs("lock_update", response)
+
+    def test_raising_restapiexception(self):
+        '''
+        Check the example in /docs/source/handling-errors.rst
+        if this test breaks
+        '''
+        response = self.api_session.get("/@api-exception-example")
+        response = response.json()
+        self.assertEqual(response[u'message'], 'Something went wrong.')
+        self.assertEqual(response[u'type'], 'somethingWentWrong')
+        self.assertEqual(response[u'details']['Just kidding'], 'Jokes on you')
+        self.assertIn('traceback', response[u'details'])
+        traceback = '\n'.join(response[u'details']['traceback'])
+        self.assertIn('self.broken_method()', traceback)
+        self.assertIn(
+            "raise AssertionError('You should not call this method')",
+            traceback)
 
 
 class TestDocumentationMessageTranslations(unittest.TestCase):
