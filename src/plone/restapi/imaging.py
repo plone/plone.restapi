@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 from Products.CMFCore.interfaces import IPropertiesTool
+from six.moves import map
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.globalrequest import getRequest
-from six.moves import map
+
 
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa

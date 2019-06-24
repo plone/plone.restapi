@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
+from plone.restapi.deserializer.mixins import OrderingMixin
 from plone.restapi.interfaces import IDeserializeFromJson
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.interface import implementer
-
-from plone.restapi.deserializer.mixins import OrderingMixin
 from zope.publisher.interfaces import IRequest
 
 import json

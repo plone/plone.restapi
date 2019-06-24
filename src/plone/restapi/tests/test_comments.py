@@ -1,18 +1,15 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from unittest import TestCase
-from zope.component import getMultiAdapter
-
-from plone.restapi.interfaces import ISerializeToJson
-from plone.app.discussion.interfaces import IDiscussionSettings
+from plone import api
 from plone.app.discussion.interfaces import IConversation
+from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.registry.interfaces import IRegistry
-
+from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from unittest import TestCase
 from zope.component import createObject
+from zope.component import getMultiAdapter
 from zope.component import getUtility
-
-from plone import api
 
 
 class TestCommentsSerializers(TestCase):

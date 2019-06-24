@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
@@ -11,6 +10,7 @@ from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.content import Item
 from plone.namedfile import field as namedfile
 from plone.supermodel import model
+from Products.CMFCore.utils import getToolByName
 from pytz import timezone
 from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList

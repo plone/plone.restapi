@@ -8,11 +8,11 @@ from plone.registry.interfaces import IRegistry
 from plone.registry.record import Record
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from six.moves import range
 from zope.component import getUtility
 
 import transaction
 import unittest
-from six.moves import range
 
 
 class TestRegistry(unittest.TestCase):

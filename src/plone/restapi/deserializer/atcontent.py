@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
+from .mixins import OrderingMixin
+from plone.restapi.deserializer import json_body
+from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.interfaces import IFieldDeserializer
 from Products.Archetypes.event import ObjectEditedEvent
 from Products.Archetypes.event import ObjectInitializedEvent
 from Products.Archetypes.interfaces import IBaseObject
 from Products.Archetypes.interfaces import IObjectPostValidation
 from Products.Archetypes.interfaces import IObjectPreValidation
-from plone.restapi.deserializer import json_body
-from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.interfaces import IFieldDeserializer
 from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.component import subscribers
 from zope.event import notify
-from zope.interface import Interface
 from zope.interface import implementer
-
-from .mixins import OrderingMixin
+from zope.interface import Interface
 
 
 @implementer(IDeserializeFromJson)

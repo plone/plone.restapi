@@ -23,6 +23,7 @@ from zope.interface.verify import verifyClass
 import os
 import six
 
+
 if PLONE_VERSION.base_version >= "5.1":
     GIF_SCALE_FORMAT = "png"
 else:

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
 from plone.restapi.interfaces import IFieldDeserializer
+from Products.CMFCore.utils import getToolByName
 from z3c.relationfield.interfaces import IRelationChoice
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -10,6 +10,7 @@ from zope.component import queryUtility
 from zope.interface import implementer
 from zope.intid.interfaces import IIntIds
 from zope.publisher.interfaces.browser import IBrowserRequest
+
 import six
 
 
@@ -28,6 +29,7 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
             # Resolve by intid
             intids = queryUtility(IIntIds)
             obj = intids.queryObject(value)
+            resolved_by = "intid"
         elif isinstance(value, six.string_types):
             if six.PY2 and isinstance(value, six.text_type):
                 value = value.encode("utf8")
@@ -37,16 +39,24 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
             portal_url = portal.absolute_url()
             if value.startswith(portal_url):
                 # Resolve by URL
-                obj = portal.restrictedTraverse(value[len(portal_url) + 1 :], None)
+                obj = portal.restrictedTraverse(value[len(portal_url) + 1:], None)
+                resolved_by = "URL"
             elif value.startswith("/"):
                 # Resolve by path
                 obj = portal.restrictedTraverse(value.lstrip("/"), None)
+                resolved_by = "path"
             else:
                 # Resolve by UID
                 catalog = getToolByName(self.context, "portal_catalog")
                 brain = catalog(UID=value)
                 if brain:
                     obj = brain[0].getObject()
+                resolved_by = "UID"
+
+        if obj is None:
+            raise ValueError(
+                u"Could not resolve object for {}={}".format(resolved_by, value)
+            )
 
         self.field.validate(obj)
         return obj

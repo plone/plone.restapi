@@ -3,8 +3,8 @@ from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
-from zope.interface import alsoProvides
 from zope.component import queryMultiAdapter
+from zope.interface import alsoProvides
 from zope.security import checkPermission
 
 import plone.protect.interfaces

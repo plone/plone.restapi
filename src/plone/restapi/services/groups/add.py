@@ -3,9 +3,9 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
-from zExceptions import BadRequest
 from zope.interface import alsoProvides
 
 import plone.protect.interfaces

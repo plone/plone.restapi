@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
-import unittest
-
-from Products.CMFCore.utils import getToolByName
-from plone.browserlayer.utils import registered_layers
-
 from plone import api
+from plone.browserlayer.utils import registered_layers
 from plone.restapi import PROJECT_NAME
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from Products.CMFCore.utils import getToolByName
+
+import unittest
+
 
 try:
     from Products.CMFPlone.utils import get_installer
