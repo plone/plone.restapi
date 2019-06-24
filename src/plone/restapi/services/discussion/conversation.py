@@ -87,8 +87,8 @@ class CommentsAdd(Service):
 
         form.handleComment(form=form, action=action)
 
-        self.request.response.setStatus(204)
         fix_location_header(self.context, self.request)
+        return self.reply_no_content()
 
 
 @implementer(IPublishTraverse)
@@ -132,8 +132,8 @@ class CommentsUpdate(Service):
         comment.modification_date = datetime.utcnow()
         form.handleComment(form=form, action=action)
 
-        self.request.response.setStatus(204)
         fix_location_header(self.context, self.request)
+        return self.reply_no_content()
 
 
 @implementer(IPublishTraverse)
@@ -162,7 +162,7 @@ class CommentsDelete(Service):
             raise Unauthorized()
 
         del conversation[self.comment_id]
-        self.request.response.setStatus(204)
+        return self.reply_no_content()
 
     # Helper functions copied from p.a.discussion's viewlet to support Plone 4
 

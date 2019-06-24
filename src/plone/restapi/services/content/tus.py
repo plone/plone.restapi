@@ -227,8 +227,7 @@ class UploadPatch(UploadFileBase):
 
         self.request.response.setHeader("Tus-Resumable", "1.0.0")
         self.request.response.setHeader("Upload-Offset", "{}".format(offset))
-        self.request.response.setStatus(204, lock=1)
-        return super(UploadPatch, self).reply()
+        return self.reply_no_content()
 
     def create_or_modify_content(self, tus_upload):
         metadata = tus_upload.metadata()

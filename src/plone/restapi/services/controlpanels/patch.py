@@ -34,4 +34,4 @@ class ControlpanelsPatch(Service):
         deserializer = IDeserializeFromJson(panel)
         deserializer()  # The deserializer knows where to put it.
 
-        self.request.response.setStatus(204)
+        return self.reply_no_content()

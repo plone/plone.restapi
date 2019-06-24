@@ -43,5 +43,4 @@ class EmailNotificationPost(Service):
             )
         )
 
-        self.request.response.setStatus(204)
-        return
+        return self.reply_no_content()
