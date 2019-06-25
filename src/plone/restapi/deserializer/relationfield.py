@@ -54,6 +54,7 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
                 resolved_by = "UID"
 
         if obj is None:
+            self.request.response.setStatus(400)
             raise ValueError(
                 u"Could not resolve object for {}={}".format(resolved_by, value)
             )
