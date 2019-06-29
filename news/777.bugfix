@@ -1,2 +1,0 @@
-Return status 400 if a referenced object can not be resolved during deserialization.
-[lgraf]

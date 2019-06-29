@@ -8,6 +8,32 @@ Changelog
 
 .. towncrier release notes start
 
+4.2.0 (2019-06-29)
+------------------
+
+New features:
+
+
+- Make @types endpoint expandable.
+  [lgraf] (#766)
+- Factor out permission checks in @users endpoint
+  to make it more easily customizable.
+  [lgraf] (#771)
+
+
+Bug fixes:
+
+
+- Gracefully handle corrupt images when serializing scales.
+  [lgraf] (#729)
+- Docs: Make sure application/json+schema examples also get syntax highlighted.
+  [lgraf] (#764)
+- Return empty response for status 204 (No Content).
+  [buchi] (#775)
+- Return status 400 if a referenced object can not be resolved during deserialization.
+  [lgraf] (#777)
+
+
 4.1.4 (2019-06-21)
 ------------------
 
