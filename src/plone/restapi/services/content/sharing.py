@@ -63,5 +63,4 @@ class SharingPost(Service):
             return dict(error=dict(type="DeserializationError", message=str(e)))
 
         # TODO: alternativley return the patched object with a 200
-        self.request.response.setStatus(204)
-        return
+        return self.reply_no_content()

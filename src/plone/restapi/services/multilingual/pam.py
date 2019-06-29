@@ -136,5 +136,4 @@ class UnlinkTranslations(Service):
             )
 
         manager.remove_translation(language)
-        self.request.response.setStatus(204)
-        return {}
+        return self.reply_no_content()

@@ -16,5 +16,4 @@ class ContentDelete(Service):
         except LinkIntegrityNotificationException:
             pass
 
-        self.request.response.setStatus(204)
-        return None
+        return self.reply_no_content()

@@ -24,5 +24,4 @@ class RegistryUpdate(Service):
                     "records! Couldn't find key %r" % key
                 )
             registry[key] = value
-        self.request.response.setStatus(204)
-        return None
+        return self.reply_no_content()

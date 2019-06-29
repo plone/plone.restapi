@@ -35,3 +35,7 @@ class Service(RestService):
            the no content marker if the response body should be empty.
         """
         return _no_content_marker
+
+    def reply_no_content(self, status=204):
+        self.request.response.setStatus(status)
+        return _no_content_marker

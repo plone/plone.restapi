@@ -119,5 +119,4 @@ class EmailSendPost(Service):
             self.request.response.setStatus(500)
             return dict(error=dict(type="InternalServerError", message=message))
 
-        self.request.response.setStatus(204)
-        return
+        return self.reply_no_content()
