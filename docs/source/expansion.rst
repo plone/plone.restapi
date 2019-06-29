@@ -26,7 +26,7 @@ in the reponse of any content GET request::
         {"@id": "http://localhost:55001/plone/front-page/@actions"},
         {"@id": "http://localhost:55001/plone/front-page/@breadcrumbs"},
         {"@id": "http://localhost:55001/plone/front-page/@navigation"},
-        {"@id": "http://localhost:55001/plone/front-page/@schema"},
+        {"@id": "http://localhost:55001/plone/front-page/@types"},
         {"@id": "http://localhost:55001/plone/front-page/@workflow"},
         ...
     },
@@ -35,61 +35,25 @@ in the reponse of any content GET request::
     ...
   }
 
-Request Unexpanded:
+Request (unexpanded):
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/expansion.req
 
-Response Unexpanded:
+Response (unexpanded):
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/expansion.resp
    :language: http
 
-In order to expand and embed one or more components, use the "expand" GET
+In order to expand and embed one or more components, use the ``expand`` GET
 parameter and provide either a single component or a comma-separated list
-of the components you want to embed. Say you want to expand the "breadcrumbs"
-component::
-
-  GET /plone/front-page?expand=breadcrumbs HTTP/1.1
-  Accept: application/json
-  Authorization: Basic YWRtaW46c2VjcmV0
-
-  {
-    "@id": "http://localhost:55001/plone/front-page",
-    "@type": "Document",
-    "@components": {
-      "actions": {
-        "@id": "http://localhost:55001/plone/front-page/@actions"
-      },
-      "breadcrumbs": {
-        "@id": "http://localhost:55001/plone/front-page/@components/breadcrumbs",
-        "items": [
-          {
-            "title": "Welcome to Plone",
-            "url": "http://localhost:55001/plone/front-page"
-          }
-        ]
-      },
-      "navigation": {
-        "@id": "http://localhost:55001/plone/front-page/@navigation"
-      },
-      "schema": {
-        "@id": "http://localhost:55001/plone/front-page/@schema"
-      },
-      "workflow": {
-        "@id": http://localhost:55001/plone/front-page/@workflow"
-      },
-    },
-    "UID": "1f699ffa110e45afb1ba502f75f7ec33",
-    "title": "Welcome to Plone"
-  }
-
-Request Expanded:
+of the components you want to embed. Say you want to expand the ``breadcrumbs``
+component:
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/expansion_expanded.req
 
-Response Expanded:
+Response (breadcrumbs expanded):
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/expansion_expanded.resp
    :language: http

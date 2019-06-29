@@ -125,6 +125,53 @@ Content-Type: application/json
         }
       ]
     }, 
+    "types": [
+      {
+        "@id": "http://localhost:55001/plone/@types/Collection", 
+        "addable": false, 
+        "title": "Collection"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/DXTestDocument", 
+        "addable": false, 
+        "title": "DX Test Document"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/Event", 
+        "addable": false, 
+        "title": "Event"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/File", 
+        "addable": false, 
+        "title": "File"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/Folder", 
+        "addable": false, 
+        "title": "Folder"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/Image", 
+        "addable": false, 
+        "title": "Image"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/Link", 
+        "addable": false, 
+        "title": "Link"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/News Item", 
+        "addable": false, 
+        "title": "News Item"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/Document", 
+        "addable": false, 
+        "title": "Page"
+      }
+    ], 
     "workflow": {
       "@id": "http://localhost:55001/plone/front-page/@workflow", 
       "history": [
