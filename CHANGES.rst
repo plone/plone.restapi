@@ -8,6 +8,17 @@ Changelog
 
 .. towncrier release notes start
 
+4.3.0 (2019-06-30)
+------------------
+
+New features:
+
+
+- Support retrieval of additional metadata fields in summaries in the same way as
+  in search results.
+  [buchi] (#681)
+
+
 4.2.0 (2019-06-29)
 ------------------
 
