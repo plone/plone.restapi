@@ -33,6 +33,7 @@ from zope.configuration import xmlconfig
 from zope.interface import implementer
 
 import collective.MockMailHost
+import os
 import pkg_resources
 import re
 import requests
@@ -105,20 +106,32 @@ def enable_request_language_negotiation(portal):
 class DateTimeFixture(Layer):
     def setUp(self):
         tz = "UTC"
+        os.environ['TZ'] = tz
+        time.tzset()
+
         # Patch DateTime's timezone for deterministic behavior.
         from DateTime import DateTime
-
         self.DT_orig_localZone = DateTime.localZone
         DateTime.localZone = lambda cls=None, ltm=None: tz
-        from plone.dexterity import content
 
+        from plone.dexterity import content
         content.FLOOR_DATE = DateTime(1970, 0)
         content.CEILING_DATE = DateTime(2500, 0)
+        self._orig_content_zone = content._zone
+        content._zone = tz
 
     def tearDown(self):
-        from DateTime import DateTime
+        if 'TZ' in os.environ:
+            del os.environ['TZ']
+        time.tzset()
 
+        from DateTime import DateTime
         DateTime.localZone = self.DT_orig_localZone
+
+        from plone.dexterity import content
+        content._zone = self._orig_content_zone
+        content.FLOOR_DATE = DateTime(1970, 0)
+        content.CEILING_DATE = DateTime(2500, 0)
 
 
 DATE_TIME_FIXTURE = DateTimeFixture()
