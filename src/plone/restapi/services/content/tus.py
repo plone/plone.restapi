@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
+from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
 from Acquisition.interfaces import IAcquirer
-from AccessControl.SecurityManagement import getSecurityManager
-from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import base_hasattr
-from Products.CMFPlone.utils import safe_hasattr
 from base64 import b64decode
 from email.utils import formatdate
 from fnmatch import fnmatch
@@ -12,21 +9,25 @@ from plone.rest.interfaces import ICORSPolicy
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.services import Service
-from plone.restapi.services.content.utils import create
 from plone.restapi.services.content.utils import add
+from plone.restapi.services.content.utils import create
 from plone.rfc822.interfaces import IPrimaryFieldInfo
+from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import base_hasattr
+from Products.CMFPlone.utils import safe_hasattr
 from uuid import uuid4
 from zExceptions import Unauthorized
 from zope.component import queryMultiAdapter
+from zope.event import notify
 from zope.interface import implementer
+from zope.lifecycleevent import ObjectCreatedEvent
 from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
-from zope.lifecycleevent import ObjectCreatedEvent
-from zope.event import notify
 
 import json
 import os
 import time
+
 
 TUS_OPTIONS_RESPONSE_HEADERS = {
     "Tus-Resumable": "1.0.0",
@@ -226,8 +227,7 @@ class UploadPatch(UploadFileBase):
 
         self.request.response.setHeader("Tus-Resumable", "1.0.0")
         self.request.response.setHeader("Upload-Offset", "{}".format(offset))
-        self.request.response.setStatus(204, lock=1)
-        return super(UploadPatch, self).reply()
+        return self.reply_no_content()
 
     def create_or_modify_content(self, tus_upload):
         metadata = tus_upload.metadata()

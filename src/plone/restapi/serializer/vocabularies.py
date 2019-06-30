@@ -10,6 +10,8 @@ from zope.schema.interfaces import ITitledTokenizedTerm
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabulary
 
+import six
+
 
 @implementer(ISerializeToJson)
 @adapter(IVocabulary, Interface)
@@ -39,7 +41,8 @@ class SerializeVocabularyToJson(object):
                     continue
                 terms.append(term)
             else:
-                if title.lower() not in term.title.lower():
+                term_title = getattr(term, "title", None) or ""
+                if title.lower() not in term_title.lower():
                     continue
                 terms.append(term)
 
@@ -74,4 +77,6 @@ class SerializeTermToJson(object):
         term = self.context
         token = term.token
         title = term.title if ITitledTokenizedTerm.providedBy(term) else token
+        if isinstance(title, six.binary_type):
+            title = title.decode("UTF-8")
         return {"token": token, "title": translate(title, context=self.request)}

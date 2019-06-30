@@ -8,6 +8,88 @@ Changelog
 
 .. towncrier release notes start
 
+4.2.0 (2019-06-29)
+------------------
+
+New features:
+
+
+- Make @types endpoint expandable.
+  [lgraf] (#766)
+- Factor out permission checks in @users endpoint
+  to make it more easily customizable.
+  [lgraf] (#771)
+
+
+Bug fixes:
+
+
+- Gracefully handle corrupt images when serializing scales.
+  [lgraf] (#729)
+- Docs: Make sure application/json+schema examples also get syntax highlighted.
+  [lgraf] (#764)
+- Return empty response for status 204 (No Content).
+  [buchi] (#775)
+- Return status 400 if a referenced object can not be resolved during deserialization.
+  [lgraf] (#777)
+
+
+4.1.4 (2019-06-21)
+------------------
+
+Bug fixes:
+
+
+- Set effective_date and reindex obj on workflow transitions. [wkbkhard] (#760)
+
+
+4.1.3 (2019-06-21)
+------------------
+
+Bug fixes:
+
+
+- Improve documentation for how to set relations by adding some examples.
+  [buchi] (#732)
+- Return an error message if a referenced object can not be resolved.
+  [buchi] (#738)
+
+
+4.1.2 (2019-06-15)
+------------------
+
+Bug fixes:
+
+
+- @types endpoint: Fix support for context aware default factories.
+  [lgraf] (#748)
+
+
+4.1.1 (2019-06-13)
+------------------
+
+Bug fixes:
+
+
+- Handle ``None`` as a vocabulary term title in the vocabulary serializer.
+  [Rotonen] (#742)
+- Handle a term not having a title attribute in the vocabulary serializer.
+  [Rotonen] (#742)
+- Handle a term having a non-ASCII ``str`` title attribute in the vocabulary
+  serializer.
+  [Rotonen] (#743)
+- Fix time freezing in Plone 5.1 tests.
+  [lgraf] (#745)
+
+
+4.1.0 (2019-05-25)
+------------------
+
+New features:
+
+- Use Black on the code base. [timo] (#693)
+
+
 4.0.0 (2019-05-09)
 ------------------
 

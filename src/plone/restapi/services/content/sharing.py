@@ -3,8 +3,8 @@ from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
-from zope.interface import alsoProvides
 from zope.component import queryMultiAdapter
+from zope.interface import alsoProvides
 from zope.security import checkPermission
 
 import plone.protect.interfaces
@@ -63,5 +63,4 @@ class SharingPost(Service):
             return dict(error=dict(type="DeserializationError", message=str(e)))
 
         # TODO: alternativley return the patched object with a 200
-        self.request.response.setStatus(204)
-        return
+        return self.reply_no_content()

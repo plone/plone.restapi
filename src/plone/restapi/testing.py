@@ -33,10 +33,12 @@ from zope.configuration import xmlconfig
 from zope.interface import implementer
 
 import collective.MockMailHost
+import os
 import pkg_resources
 import re
 import requests
 import six
+import time
 
 
 PLONE_VERSION = pkg_resources.parse_version(api.env.plone_version())
@@ -104,36 +106,50 @@ def enable_request_language_negotiation(portal):
 class DateTimeFixture(Layer):
     def setUp(self):
         tz = "UTC"
+        os.environ['TZ'] = tz
+        time.tzset()
+
         # Patch DateTime's timezone for deterministic behavior.
         from DateTime import DateTime
-
         self.DT_orig_localZone = DateTime.localZone
         DateTime.localZone = lambda cls=None, ltm=None: tz
-        from plone.dexterity import content
 
+        from plone.dexterity import content
         content.FLOOR_DATE = DateTime(1970, 0)
         content.CEILING_DATE = DateTime(2500, 0)
+        self._orig_content_zone = content._zone
+        content._zone = tz
 
     def tearDown(self):
-        from DateTime import DateTime
+        if 'TZ' in os.environ:
+            del os.environ['TZ']
+        time.tzset()
 
+        from DateTime import DateTime
         DateTime.localZone = self.DT_orig_localZone
+
+        from plone.dexterity import content
+        content._zone = self._orig_content_zone
+        content.FLOOR_DATE = DateTime(1970, 0)
+        content.CEILING_DATE = DateTime(2500, 0)
 
 
 DATE_TIME_FIXTURE = DateTimeFixture()
 
 
-import time  # noqa
-from persistent.TimeStamp import TimeStamp  # noqa
-
-
 def patchedNewTid(old):  # noqa
-    if getattr(time.time, "previous_time_function", False):
-        t = time.time.previous_time_function()
-        ts = TimeStamp(*time.gmtime.previous_gmtime_function(t)[:5] + (t % 60,))
-    else:
-        t = time.time()
-        ts = TimeStamp(*time.gmtime(t)[:5] + (t % 60,))
+    """Make sure ZODB.utils.newTid always uses the real time functions
+
+    instead of the ones possibly patched by freezegun.
+    This is necessary because ZODB seems to be relying on time being monotonic
+    for its transaction IDs, and freezing time results in
+    POSException.ReadConflictErrors.
+    """
+    from persistent.TimeStamp import TimeStamp  # noqa
+    import freezegun  # noqa
+
+    t = freezegun.api.real_time()
+    ts = TimeStamp(*freezegun.api.real_gmtime(t)[:5] + (t % 60,))
     if old is not None:
         ts = ts.laterThan(TimeStamp(old))
     return ts.raw()

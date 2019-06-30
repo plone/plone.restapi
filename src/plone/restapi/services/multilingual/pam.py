@@ -97,7 +97,7 @@ class LinkTranslations(Service):
         portal = purl.getPortalObject()
         portal_url = portal.absolute_url()
         if url.startswith(portal_url):
-            content_path = url[len(portal_url) + 1 :]
+            content_path = url[len(portal_url) + 1:]
             content_path = content_path.split("/")
             content_item = portal.restrictedTraverse(content_path)
             return content_item
@@ -136,5 +136,4 @@ class UnlinkTranslations(Service):
             )
 
         manager.remove_translation(language)
-        self.request.response.setStatus(204)
-        return {}
+        return self.reply_no_content()

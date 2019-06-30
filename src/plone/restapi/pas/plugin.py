@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
-from AccessControl.SecurityInfo import ClassSecurityInfo
 from AccessControl.requestmethod import postonly
+from AccessControl.SecurityInfo import ClassSecurityInfo
 from BTrees.OIBTree import OIBTree
 from BTrees.OOBTree import OOBTree
+from datetime import datetime
+from datetime import timedelta
+from plone.keyring.interfaces import IKeyManager
+from plone.keyring.keyring import GenerateSecret
 from Products.CMFCore.permissions import ManagePortal
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
 from Products.PluggableAuthService.interfaces.plugins import IChallengePlugin
 from Products.PluggableAuthService.interfaces.plugins import IExtractionPlugin
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
-from datetime import datetime
-from datetime import timedelta
-from plone.keyring.interfaces import IKeyManager
-from plone.keyring.keyring import GenerateSecret
 from zope.component import getUtility
 from zope.interface import implementer
+
 import jwt
 import six
 import time

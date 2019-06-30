@@ -29,7 +29,7 @@ class BaseCopyMove(Service):
         if isinstance(key, six.string_types):
             if key.startswith(self.portal_url):
                 # Resolve by URL
-                key = key[len(self.portal_url) + 1 :]
+                key = key[len(self.portal_url) + 1:]
                 if six.PY2:
                     key = key.encode("utf8")
                 return self.portal.restrictedTraverse(key, None)

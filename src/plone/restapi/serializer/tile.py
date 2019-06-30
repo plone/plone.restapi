@@ -2,11 +2,12 @@
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.types import utils
-from zope.interface import implementer
-from zope.interface import Interface
 from plone.tiles.interfaces import ITileType
 from zope.component import adapter
 from zope.component.hooks import getSite
+from zope.interface import implementer
+from zope.interface import Interface
+
 
 SERVICE_ID = "@tiles"
 

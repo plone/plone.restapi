@@ -6,6 +6,7 @@ from zExceptions import Unauthorized
 
 import json
 
+
 _no_content_marker = object()
 
 
@@ -33,4 +34,8 @@ class Service(RestService):
         """Process the request and return a JSON serializable data structure or
            the no content marker if the response body should be empty.
         """
+        return _no_content_marker
+
+    def reply_no_content(self, status=204):
+        self.request.response.setStatus(status)
         return _no_content_marker

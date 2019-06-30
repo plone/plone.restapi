@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.exceptions import DeserializationError
-from plone.restapi.interfaces import IDeserializeFromJson, ISerializeToJson
+from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from plone.restapi.services.locking.locking import is_locked
 from zope.component import queryMultiAdapter
@@ -46,5 +47,4 @@ class ContentPatch(Service):
             serialized_obj = serializer()
             return serialized_obj
 
-        self.request.response.setStatus(204)
-        return None
+        return self.reply_no_content()

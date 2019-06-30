@@ -7,12 +7,15 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.types import utils
-from zope.component import adapter, queryMultiAdapter, getUtility
+from zope.component import adapter
+from zope.component import getUtility
+from zope.component import queryMultiAdapter
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import noLongerProvides
 
 import zope.schema
+
 
 SERVICE_ID = "@controlpanels"
 

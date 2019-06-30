@@ -2,10 +2,10 @@
 from plone.restapi.controlpanels import IControlpanel
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.services import Service
+from zExceptions import BadRequest
 from zope.component import getAdapters
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-from zExceptions import BadRequest
 
 
 @implementer(IPublishTraverse)
@@ -34,4 +34,4 @@ class ControlpanelsPatch(Service):
         deserializer = IDeserializeFromJson(panel)
         deserializer()  # The deserializer knows where to put it.
 
-        self.request.response.setStatus(204)
+        return self.reply_no_content()

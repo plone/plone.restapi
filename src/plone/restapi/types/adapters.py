@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 """JsonSchema providers."""
 from plone.app.textfield.interfaces import IRichText
+from plone.restapi.types.interfaces import IJsonSchemaProvider
+from plone.restapi.types.utils import get_fieldsets
+from plone.restapi.types.utils import get_jsonschema_properties
+from plone.restapi.types.utils import get_vocabulary_url
+from plone.restapi.types.utils import get_widget_params
 from plone.schema import IJSONField
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -28,17 +33,12 @@ from zope.schema.interfaces import IText
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITuple
 
-from plone.restapi.types.interfaces import IJsonSchemaProvider
-from plone.restapi.types.utils import get_fieldsets, get_widget_params
-from plone.restapi.types.utils import get_jsonschema_properties
-from plone.restapi.types.utils import get_vocabulary_url
-
 
 @adapter(IField, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DefaultJsonSchemaProvider(object):
     def __init__(self, field, context, request):
-        self.field = field
+        self.field = field.bind(context)
         self.context = context
         self.request = request
 

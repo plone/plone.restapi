@@ -21,8 +21,8 @@ from plone.autoform.interfaces import WIDGETS_KEY
 from plone.dexterity.utils import getAdditionalSchemata
 from plone.restapi.serializer.converters import IJsonCompatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
-from Products.CMFCore.utils import getToolByName
 from plone.supermodel.utils import mergedTaggedValueDict
+from Products.CMFCore.utils import getToolByName
 from z3c.form import form as z3c_form
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter

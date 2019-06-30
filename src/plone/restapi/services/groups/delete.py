@@ -42,7 +42,6 @@ class GroupsDelete(Service):
 
         delete_successful = portal_groups.removeGroup(self._get_group_id)
         if delete_successful:
-            self.request.response.setStatus(204)
+            return self.reply_no_content()
         else:
-            self.request.response.setStatus(404)
-        return None
+            return self.reply_no_content(status=404)

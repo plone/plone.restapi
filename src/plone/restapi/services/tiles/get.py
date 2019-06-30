@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.services import Service
 from AccessControl.security import checkPermission
-from zope.component import getUtilitiesFor
-from zope.component import getMultiAdapter
-from plone.tiles.interfaces import ITileType
-from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.services import Service
+from plone.tiles.interfaces import ITileType
+from zope.component import getMultiAdapter
+from zope.component import getUtilitiesFor
+from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-from zope.component import getUtility
 
 
 @implementer(IPublishTraverse)

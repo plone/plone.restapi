@@ -1,24 +1,25 @@
 # -*- coding: utf-8 -*-
 from datetime import date
 from decimal import Decimal
-from unittest import TestCase
-
-from zope.component import getMultiAdapter
-from zope import schema
-from zope.schema.vocabulary import SimpleVocabulary, SimpleTerm
 from plone.app.textfield import RichText
 from plone.autoform import directives as form
 from plone.dexterity.fti import DexterityFTI
-from plone.supermodel import model
-from Products.CMFCore.utils import getToolByName
-
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from plone.restapi.types.utils import get_jsonschema_properties
+from plone.supermodel import model
+from Products.CMFCore.utils import getToolByName
+from unittest import TestCase
 from z3c.form.browser.text import TextWidget
+from zope import schema
+from zope.component import getMultiAdapter
+from zope.interface import provider
+from zope.schema.interfaces import IContextAwareDefaultFactory
+from zope.schema.vocabulary import SimpleTerm
+from zope.schema.vocabulary import SimpleVocabulary
 
 
 class IDummySchema(model.Schema):
@@ -199,6 +200,32 @@ class TestJsonSchemaProviders(TestCase):
                 SimpleTerm(value=u"foo", title=u"Foo"),
                 SimpleTerm(value=u"bar", title=u"Bar"),
             ]
+        )
+
+    def test_context_aware_default_factory(self):
+        folder = self.portal[
+            self.portal.invokeFactory("Folder", id="folder", title="My Folder")
+        ]
+
+        @provider(IContextAwareDefaultFactory)
+        def uppercased_title_default(context):
+            return context.title.upper()
+
+        field = schema.TextLine(
+            title=u"My field",
+            description=u"My great field",
+            defaultFactory=uppercased_title_default,
+        )
+        adapter = getMultiAdapter((field, folder, self.request), IJsonSchemaProvider)
+
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": u"My field",
+                "description": u"My great field",
+                "default": u"MY FOLDER",
+            },
+            adapter.get_schema(),
         )
 
     def test_textline(self):

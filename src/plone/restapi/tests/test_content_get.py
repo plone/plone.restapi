@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-from Products.CMFCore.utils import getToolByName
+from plone.app.testing import login
+from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
-from plone.app.testing import login
-from plone.app.testing import setRoles
 from plone.app.textfield.value import RichTextValue
 from plone.restapi.testing import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from Products.CMFCore.utils import getToolByName
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds

@@ -3,7 +3,6 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
 
-
 import json
 import unittest
 

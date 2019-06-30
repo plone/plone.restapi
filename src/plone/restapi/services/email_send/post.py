@@ -7,12 +7,12 @@ from plone.restapi import _
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import ISiteSchema
 from Products.CMFPlone.interfaces.controlpanel import IMailSchema
 from smtplib import SMTPException
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import alsoProvides
-from Products.CMFPlone.interfaces import ISiteSchema
 
 import plone
 
@@ -119,5 +119,4 @@ class EmailSendPost(Service):
             self.request.response.setStatus(500)
             return dict(error=dict(type="InternalServerError", message=message))
 
-        self.request.response.setStatus(204)
-        return
+        return self.reply_no_content()

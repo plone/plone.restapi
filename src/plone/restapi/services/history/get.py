@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime as dt
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
+from Products.CMFPlone.utils import safe_unicode
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-from Products.CMFPlone.utils import safe_unicode
-from datetime import datetime as dt
+
 import six
 
 

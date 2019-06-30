@@ -9,17 +9,16 @@ from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from pytz import timezone
-
 from plone.restapi.tests.dxtypes import IDXTestDocumentSchema
+from pytz import timezone
 from zope.component import getMultiAdapter
-from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.schema import Field
 from zope.schema._bootstrapinterfaces import RequiredMissing
+from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.schema.interfaces import ValidationError
 
-import unittest
 import six
+import unittest
 
 
 class RequiredField(object):
@@ -415,6 +414,48 @@ class TestDXFieldDeserializer(unittest.TestCase):
         ]
         value = self.deserialize("test_relationchoice_field", u"/doc2")
         self.assertEqual(doc2, value)
+
+    def test_relationchoice_deserialization_from_invalid_intid_raises(self):
+        with self.assertRaises(ValueError) as cm:
+            self.deserialize("test_relationchoice_field", 123456789)
+        self.assertEqual(
+            str(cm.exception), u"Could not resolve object for intid=123456789"
+        )
+        self.assertEqual(400, self.request.response.getStatus())
+
+    def test_relationchoice_deserialization_from_invalid_uid_raises(self):
+        with self.assertRaises(ValueError) as cm:
+            self.deserialize(
+                "test_relationchoice_field",
+                six.text_type("ac12b24913cf45c6863937367aacc263"),
+            )
+        self.assertEqual(
+            str(cm.exception),
+            u"Could not resolve object for UID=ac12b24913cf45c6863937367aacc263",
+        )
+        self.assertEqual(400, self.request.response.getStatus())
+
+    def test_relationchoice_deserialization_from_invalid_url_raises(self):
+        with self.assertRaises(ValueError) as cm:
+            self.deserialize(
+                "test_relationchoice_field",
+                six.text_type("http://nohost/plone/doesnotexist"),
+            )
+        self.assertEqual(
+            str(cm.exception),
+            u"Could not resolve object for URL=http://nohost/plone/doesnotexist",
+        )
+        self.assertEqual(400, self.request.response.getStatus())
+
+    def test_relationchoice_deserialization_from_invalid_path_raises(self):
+        with self.assertRaises(ValueError) as cm:
+            self.deserialize(
+                "test_relationchoice_field", six.text_type("/doesnotexist")
+            )
+        self.assertEqual(
+            str(cm.exception), u"Could not resolve object for path=/doesnotexist"
+        )
+        self.assertEqual(400, self.request.response.getStatus())
 
     def test_relationlist_deserialization_returns_list_of_documents(self):
         doc2 = self.portal[

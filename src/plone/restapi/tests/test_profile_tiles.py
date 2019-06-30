@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import TEST_USER_ID
 from plone.app.testing import login
 from plone.app.testing import setRoles
-from plone.restapi.testing import PLONE_RESTAPI_TILES_INTEGRATION_TESTING
+from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import TEST_USER_ID
 from plone.restapi.behaviors import ITiles
+from plone.restapi.testing import PLONE_RESTAPI_TILES_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
 
 import unittest
