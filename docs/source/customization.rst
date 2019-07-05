@@ -57,3 +57,9 @@ It is recommended to pass all values through ``json_compatible`` in order to val
 For customizing a specific field instance, a named ``IFieldSerializer`` adapter can be registered.
 The name may either be the full dottedname of the field
 (``plone.app.dexterity.behaviors.exclfromnav.IExcludeFromNavigation.exclude_from_nav``) or the shortname of the field (``exclude_from_nav``).
+
+
+Writing a custom service
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+http://mrtango.planetcrazy.de/writing-a-custom-service-for-plone-rest-api.html
