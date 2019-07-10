@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+4.3.1 (2019-07-10)
+------------------
+
+Bug fixes:
+
+
+- Fix @sharing POST when called on the plone site root
+  [csenger] (#780)
+
+
 4.3.0 (2019-06-30)
 ------------------
 
