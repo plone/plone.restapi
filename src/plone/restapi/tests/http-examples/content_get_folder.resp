@@ -12,6 +12,9 @@ Content-Type: application/json
     "navigation": {
       "@id": "http://localhost:55001/plone/folder/@navigation"
     }, 
+    "types": {
+      "@id": "http://localhost:55001/plone/folder/@types"
+    }, 
     "workflow": {
       "@id": "http://localhost:55001/plone/folder/@workflow"
     }
