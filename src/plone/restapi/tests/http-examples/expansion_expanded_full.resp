@@ -125,6 +125,9 @@ Content-Type: application/json
         }
       ]
     }, 
+    "relations": {
+      "@id": "http://localhost:55001/plone/front-page/@relations"
+    }, 
     "types": [
       {
         "@id": "http://localhost:55001/plone/@types/Collection", 

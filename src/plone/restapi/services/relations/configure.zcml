@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <adapter factory=".get.Relations" name="relations"/>
+
+  <plone:service
+    method="GET"
+    for="z3c.relationfield.interfaces.IHasRelations"
+    factory=".get.RelationsGet"
+    name="@relations"
+    permission="zope2.View"
+    />
+
+</configure>

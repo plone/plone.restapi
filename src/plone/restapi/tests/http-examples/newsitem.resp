@@ -12,6 +12,9 @@ Content-Type: application/json
     "navigation": {
       "@id": "http://localhost:55001/plone/newsitem/@navigation"
     }, 
+    "relations": {
+      "@id": "http://localhost:55001/plone/newsitem/@relations"
+    }, 
     "types": {
       "@id": "http://localhost:55001/plone/newsitem/@types"
     }, 

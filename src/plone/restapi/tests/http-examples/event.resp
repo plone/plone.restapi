@@ -12,6 +12,9 @@ Content-Type: application/json
     "navigation": {
       "@id": "http://localhost:55001/plone/event/@navigation"
     }, 
+    "relations": {
+      "@id": "http://localhost:55001/plone/event/@relations"
+    }, 
     "types": {
       "@id": "http://localhost:55001/plone/event/@types"
     }, 
