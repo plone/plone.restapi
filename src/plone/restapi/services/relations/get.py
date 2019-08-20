@@ -25,10 +25,12 @@ class Relations(object):
         if not expand:
             return result
 
-        data = {
-            'incoming': {},
-            'outgoing': {}
-        }
+        # by default, just list incoming relations. Outgoing relations
+        # are typically serialized as attributes of the current item.
+        data = {'incoming': {}}
+        # render outgoing relations also, if explicitly requested
+        if 'allrelations' in self.request.form:
+            data['outgoing'] = {}
 
         portal_catalog = api.portal.get_tool('portal_catalog')
         catalog = getUtility(ICatalog)
