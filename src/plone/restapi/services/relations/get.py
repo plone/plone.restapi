@@ -21,13 +21,13 @@ class Relations(object):
         self.request = request
 
     def __call__(self, expand=False):
-        result = {"relations": {"@id": "{}/@relations".format(self.context.absolute_url())}}
+        result = {'relations': {'@id': '{}/@relations'.format(self.context.absolute_url())}}
         if not expand:
             return result
 
         data = {
-            "incoming": {},
-            "outgoing": {}
+            'incoming': {},
+            'outgoing': {}
         }
 
         portal_catalog = api.portal.get_tool('portal_catalog')
@@ -35,12 +35,12 @@ class Relations(object):
         intids = getUtility(IIntIds)
         intid = intids.getId(aq_inner(self.context))
         for relation_type in data.keys():
-            if relation_type == "incoming":
+            if relation_type == 'incoming':
                 query = dict(to_id=intid)
-                direction = "from"
+                direction = 'from'
             else:
                 query = dict(from_id=intid)
-                direction = "to"
+                direction = 'to'
             for rel in catalog.findRelations(query):
                 if rel.isBroken():
                     # skip broken relations
@@ -57,11 +57,11 @@ class Relations(object):
                         data[relation_type][rel.from_attribute].append(summary)
                     else:
                         data[relation_type][rel.from_attribute] = [summary]
-        result["relations"].update(data)
+        result['relations'].update(data)
         return result
 
 
 class RelationsGet(Service):
     def reply(self):
         relations = Relations(self.context, self.request)
-        return relations(expand=True)["relations"]
+        return relations(expand=True)['relations']
