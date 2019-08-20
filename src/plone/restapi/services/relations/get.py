@@ -41,7 +41,7 @@ class Relations(object):
             else:
                 query = dict(from_id=intid)
                 direction = 'to'
-            for rel in catalog.findRelations(query):
+            for rel in sorted(catalog.findRelations(query)):
                 if rel.isBroken():
                     # skip broken relations
                     continue
