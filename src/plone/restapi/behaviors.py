@@ -32,7 +32,7 @@ class ITiles(model.Schema):
     )
 
     tiles_layout = JSONField(
-        title=u"Tiles Layout)",
+        title=u"Tiles Layout",
         description=u"The JSON representation of the object tiles layout. Must be a JSON array.",  # noqa
         schema=LAYOUT_SCHEMA,
         default={"items": []},
