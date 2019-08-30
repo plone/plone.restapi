@@ -1292,6 +1292,11 @@ class TestDocumentation(unittest.TestCase):
         ] = u"0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
         save_request_and_response_for_docs("lock_update", response)
 
+    def test_querystring_get(self):
+        url = "/@querystring"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("querystring_get", response)
+
 
 class TestDocumentationMessageTranslations(unittest.TestCase):
 
