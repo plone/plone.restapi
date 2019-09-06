@@ -12,6 +12,7 @@ from plone.namedfile import field as namedfile
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
 from pytz import timezone
+from z3c.formwidget.query.interfaces import IQuerySource
 from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList
 from zope import schema
@@ -56,6 +57,23 @@ class MyIterableSource(object):
         return iter(terms)
 
 
+@implementer(IQuerySource)
+class MyIterableQuerySource(object):
+    values = [1, 2, 3]
+
+    def __contains__(self, value):
+        return value in self.values
+
+    def search(self, query):
+        terms = [SimpleTerm(value=v, token='token%s' % v, title='Title %s' % v)
+                 for v in self.values]
+        return [t for t in terms if query in str(t.token)]
+
+    def __iter__(self):
+        # The @querysources endpoint should never attempt to enumerate terms
+        raise NotImplementedError
+
+
 @implementer(IIterableSource)
 class MyIterableContextSource(object):
 
@@ -73,8 +91,30 @@ class MyIterableContextSource(object):
         return iter(self.terms)
 
 
+@implementer(IQuerySource)
+class MyContextQuerySource(object):
+
+    def __init__(self, context):
+        self.context = context
+
+        title_words = self.context.title.split()
+        self.terms = [SimpleTerm(value=w.lower(), token=w.lower(), title=w)
+                      for w in title_words]
+
+    def __contains__(self, value):
+        return value in [t.value for t in self.terms]
+
+    def __iter__(self):
+        # The @querysources endpoint should never attempt to enumerate terms
+        raise NotImplementedError
+
+    def search(self, query):
+        return [t for t in iter(self.terms) if query in str(t.token)]
+
+
 my_iterable_source = MyIterableSource()
 my_non_iterable_source = MyNonIterableSource()
+my_querysource = MyIterableQuerySource()
 
 
 def my_context_source_binder(context):
@@ -82,6 +122,13 @@ def my_context_source_binder(context):
 
 
 directlyProvides(my_context_source_binder, IContextSourceBinder)
+
+
+def my_context_querysource_binder(context):
+    return MyContextQuerySource(context)
+
+
+directlyProvides(my_context_querysource_binder, IContextSourceBinder)
 
 
 def vocabularyRequireingContextFactory(context):
@@ -114,6 +161,10 @@ class IDXTestDocumentSchema(model.Schema):
         required=False, source=my_iterable_source)
     test_choice_with_context_source = schema.Choice(
         required=False, source=my_context_source_binder)
+    test_choice_with_querysource = schema.Choice(
+        required=False, source=my_querysource)
+    test_choice_with_context_querysource = schema.Choice(
+        required=False, source=my_context_querysource_binder)
 
     test_date_field = schema.Date(required=False)
     test_datetime_field = schema.Datetime(required=False)

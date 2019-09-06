@@ -30,6 +30,13 @@ nature, and are often used for larger sets of terms. They are also not
 registered with a global name like vocabularies, but are instead addressed via
 the field they are assigned to.
 
+**Query Sources** are sources that are capable of being queried / searched.
+The source will then return only the subset of terms that match the query.
+
+The use of such a source is usually a strong indication that no attempt should
+be made to enumerate the full set of terms, but instead the source should only
+be queried, by presenting the user with an autocomplete widget for example.
+
 Both vocabularies and sources can be context-sensitive, meaning that they
 take the context into account and their contents may therefore change
 depending on the context they're invoked on.
@@ -158,3 +165,40 @@ purposes. The token is what should be sent to the server to address that term.
     implement ``ISource``, but not ``IIterableSource``). These cannot be
     enumerated using the ``@sources`` endpoint, and it will respond with a
     corresponding error.
+
+
+Querying a query source
+-----------------------
+
+.. http:get:: (context)/@querysources/(field_name)?query=(search_query)
+
+Query sources (sources implementing `IQuerySource`) can be queried using this
+endpoint, by passing the search term in the ``query`` parameter. This search
+term will be passed to the query source's ``search()`` method, and the
+source's results are returned.
+
+Example:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/querysources_get.req
+
+The server will respond with a list of terms. The title is purely for display
+purposes. The token is what should be sent to the server to address that term.
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/querysources_get.resp
+   :language: http
+
+.. note::
+    Even though technically sources that implement ``IQuerySource`` are required
+    to implement ``__iter__`` as well (when strictly following the interface
+    interitance hierarchy), they usually are used in Plone in situations where
+    their full contents shouldn't or can't be enumerated (imagine a source of
+    all users, backed by a large LDAP, for example).
+
+    For this reason, ``plone.restapi`` takes the stance that the ``IQuerySource``
+    interface is a strong indication that this source should **only** be queried,
+    and therefore doesn't support enumeration of terms via the ``@querysources``
+    endpoint.
+
+    *(If the source does actually implement IIterableSource in addition to
+    IQuerySource, it can still be enumerated via the @sources endpoint)*
