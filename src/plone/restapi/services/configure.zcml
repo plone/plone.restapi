@@ -20,6 +20,7 @@
   <include package=".locking" />
   <include package=".principals"/>
   <include package=".querystring"/>
+  <include package=".querystringsearch"/>
   <include package=".registry"/>
   <include package=".roles"/>
   <include package=".search"/>

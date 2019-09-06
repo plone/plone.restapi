@@ -60,6 +60,7 @@
     </configure>
 
     <adapter factory=".catalog.LazyCatalogResultSerializer" />
+    <adapter factory=".catalog.BatchResultSerializer" />
 
     <adapter factory=".user.SerializeUserToJson" />
     <adapter factory=".user.SerializeUserToJsonSummary" />
