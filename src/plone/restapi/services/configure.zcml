@@ -24,6 +24,7 @@
   <include package=".registry"/>
   <include package=".roles"/>
   <include package=".search"/>
+  <include package=".sources"/>
   <include package=".types"/>
   <include package=".users"/>
   <include package=".vocabularies"/>

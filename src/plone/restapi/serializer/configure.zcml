@@ -71,6 +71,7 @@
              />
 
     <adapter factory=".vocabularies.SerializeVocabularyToJson" />
+    <adapter factory=".vocabularies.SerializeSourceToJson" />
     <adapter factory=".vocabularies.SerializeTermToJson" />
 
     <adapter factory=".registry.SerializeRegistryToJson" />

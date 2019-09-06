@@ -15,10 +15,15 @@ from pytz import timezone
 from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList
 from zope import schema
+from zope.interface import directlyProvides
+from zope.interface import implementer
 from zope.interface import Invalid
 from zope.interface import invariant
 from zope.interface import provider
 from zope.schema.interfaces import IContextAwareDefaultFactory
+from zope.schema.interfaces import IContextSourceBinder
+from zope.schema.interfaces import IIterableSource
+from zope.schema.interfaces import ISource
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
@@ -28,6 +33,55 @@ INDEXES = (
     ("test_list_field", "KeywordIndex"),
     ("test_bool_field", "BooleanIndex"),
 )
+
+
+@implementer(ISource)
+class MyNonIterableSource(object):
+    divisor = 2
+
+    def __contains__(self, value):
+        return bool(value % self.divisor)
+
+
+@implementer(IIterableSource)
+class MyIterableSource(object):
+    values = [1, 2, 3]
+
+    def __contains__(self, value):
+        return value in self.values
+
+    def __iter__(self):
+        terms = [SimpleTerm(value=v, token='token%s' % v, title='Title %s' % v)
+                 for v in self.values]
+        return iter(terms)
+
+
+@implementer(IIterableSource)
+class MyIterableContextSource(object):
+
+    def __init__(self, context):
+        self.context = context
+
+        title_words = self.context.title.split()
+        self.terms = [SimpleTerm(value=w.lower(), token=w.lower(), title=w)
+                      for w in title_words]
+
+    def __contains__(self, value):
+        return value in [t.value for t in self.terms]
+
+    def __iter__(self):
+        return iter(self.terms)
+
+
+my_iterable_source = MyIterableSource()
+my_non_iterable_source = MyNonIterableSource()
+
+
+def my_context_source_binder(context):
+    return MyIterableContextSource(context)
+
+
+directlyProvides(my_context_source_binder, IContextSourceBinder)
 
 
 def vocabularyRequireingContextFactory(context):
@@ -53,6 +107,14 @@ class IDXTestDocumentSchema(model.Schema):
         ),
         required=False,
     )
+
+    test_choice_with_non_iterable_source = schema.Choice(
+        required=False, source=my_non_iterable_source)
+    test_choice_with_source = schema.Choice(
+        required=False, source=my_iterable_source)
+    test_choice_with_context_source = schema.Choice(
+        required=False, source=my_context_source_binder)
+
     test_date_field = schema.Date(required=False)
     test_datetime_field = schema.Datetime(required=False)
     test_datetime_tz_field = schema.Datetime(
