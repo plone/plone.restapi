@@ -1,3 +1,5 @@
+.. _vocabularies:
+
 Vocabularies and Sources
 ========================
 

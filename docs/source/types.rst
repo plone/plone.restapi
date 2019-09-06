@@ -25,6 +25,19 @@ To get the schema of a content type, access the ``/@types`` endpoint  with the n
 
 The content type schema uses the `JSON Schema <http://json-schema.org/>`_ format.
 The tagged values for the widgets are also exposed in the the "properties" attribute of the schema.
-If a 'vocabulary' is defined, it will be the name of the vocabulary which should be used via the `@vocabularies` endpoint on the actual resource.
+
+For ``Choice`` fields, their vocabulary or source will be linked to in a
+``vocabulary`` or ``querysource`` property (one or the other, never both):
+
+
+- If a ``querysource`` property is included, that field is backed by an
+  ``IQuerysource``. In that case, the source's terms can't be enumerated, and
+  the terms need to be **queried** by issuing a request to the linked endpoint
+  and including the user's search terms in the ``?query=`` parameter.
+- If a ``vocabulary`` property is included, the field is backed by a vocabulary
+  or another kind of iterable source. The terms can then be **enumerated** by
+  issuing a request to the linked endpoint.
+
+See :ref:`vocabularies` for details on these endpoints.
 
 See :ref:`types-schema` for a detailed documentation about the available field types.
