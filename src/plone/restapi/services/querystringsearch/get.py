@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.services import Service
-from zope.component import getMultiAdapter
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.services import Service
+from zope.component import getMultiAdapter
 
 
 class QuerystringSearchPost(Service):
@@ -26,7 +26,6 @@ class QuerystringSearchPost(Service):
         results = querybuilder(
             query=query,
             brains=True,
-            # batch=True,
             b_start=b_start,
             b_size=b_size,
             sort_on=sort_on,

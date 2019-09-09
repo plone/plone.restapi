@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from plone.batching.batch import BaseBatch
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -45,9 +44,3 @@ class LazyCatalogResultSerializer(object):
             results["items"].append(result)
 
         return results
-
-
-@implementer(ISerializeToJson)
-@adapter(BaseBatch, Interface)
-class BatchResultSerializer(LazyCatalogResultSerializer):
-    """ """
