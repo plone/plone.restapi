@@ -24,9 +24,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-        self.portal.invokeFactory("Document",
-                                  "testdocument",
-                                  title="Test Document")
+        self.portal.invokeFactory("Document", "testdocument", title="Test Document")
         self.doc = self.portal.testdocument
 
         transaction.commit()
@@ -50,11 +48,11 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-        self.assertIn('items', response.json())
-        self.assertIn('items_total', response.json())
-        self.assertEquals(response.json()['items_total'], 1)
-        self.assertEquals(len(response.json()['items']), 1)
-        self.assertNotIn('effective', response.json()['items'][0])
+        self.assertIn("items", response.json())
+        self.assertIn("items_total", response.json())
+        self.assertEquals(response.json()["items_total"], 1)
+        self.assertEquals(len(response.json()["items"]), 1)
+        self.assertNotIn("effective", response.json()["items"][0])
 
     def test_querystringsearch_fullobjects(self):
         response = self.api_session.post(
@@ -67,13 +65,13 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
                         "v": ["File", "Document"],
                     }
                 ],
-                "fullobjects": True
+                "fullobjects": True,
             },
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn('items', response.json())
-        self.assertIn('items_total', response.json())
-        self.assertIn('effective', response.json()['items'][0])
-        self.assertEquals(response.json()['items_total'], 1)
-        self.assertEquals(len(response.json()['items']), 1)
+        self.assertIn("items", response.json())
+        self.assertIn("items_total", response.json())
+        self.assertIn("effective", response.json()["items"][0])
+        self.assertEquals(response.json()["items_total"], 1)
+        self.assertEquals(len(response.json()["items"]), 1)
