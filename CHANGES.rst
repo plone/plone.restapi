@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+4.4.0 (2019-08-30)
+------------------
+
+New features:
+
+
+- Add @querystring endpoint that dumps p.a.querystring config.
+  [lgraf] (#754)
+
+
+Bug fixes:
+
+
+- Fix typo in the ``tiles_layout`` field title name.
+  [sneridagh] (#785)
+
+
 4.3.1 (2019-07-10)
 ------------------
 
