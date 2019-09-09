@@ -39,15 +39,14 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
                 "query": [
                     {
                         "i": "portal_type",
-                        "o": "plone.app.querystring.operation.selection.any",
-                        "v": ["File", "Document"],
+                        "o": "plone.app.querystring.operation.selection.is",
+                        "v": ["Document"],
                     }
                 ]
             },
         )
 
         self.assertEqual(response.status_code, 200)
-
         self.assertIn("items", response.json())
         self.assertIn("items_total", response.json())
         self.assertEquals(response.json()["items_total"], 1)
@@ -61,8 +60,8 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
                 "query": [
                     {
                         "i": "portal_type",
-                        "o": "plone.app.querystring.operation.selection.any",
-                        "v": ["File", "Document"],
+                        "o": "plone.app.querystring.operation.selection.is",
+                        "v": ["Document"],
                     }
                 ],
                 "fullobjects": True,
