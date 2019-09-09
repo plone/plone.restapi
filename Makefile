@@ -3,7 +3,7 @@
 SHELL := /bin/bash
 CURRENT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
-version = 2.7
+version = 3.7
 
 # We like colors
 # From: https://coderwall.com/p/izxssa/colored-makefile-for-golang-projects
@@ -36,22 +36,31 @@ update: ## Update Make and Buildout
 bin/buildout: bin/pip
 	bin/pip install --upgrade pip
 	bin/pip install -r requirements.txt
+	bin/pip install black || true
 	@touch -c $@
 
+bin/python bin/pip:
+	python$(version) -m venv . || virtualenv --clear --python=python$(version) .
+
+py2:
+	virtualenv --clear --python=python2 .
+	bin/pip install --upgrade pip
+	bin/pip install -r requirements.txt
+
 .PHONY: Build Plone 4.3
-build-plone-4.3: .installed.cfg ## Build Plone 4.3
+build-plone-4.3: py2 ## Build Plone 4.3
 	bin/pip install --upgrade pip
 	bin/pip install -r requirements.txt
 	bin/buildout -c plone-4.3.x.cfg
 
 .PHONY: Build Plone 5.0
-build-plone-5.0: .installed.cfg ## Build Plone 5.0
+build-plone-5.0: py2 ## Build Plone 5.0
 	bin/pip install --upgrade pip
 	bin/pip install -r requirements.txt
 	bin/buildout -c plone-5.0.x.cfg
 
 .PHONY: Build Plone 5.1
-build-plone-5.1: .installed.cfg  ## Build Plone 5.1
+build-plone-5.1: py2  ## Build Plone 5.1
 	bin/pip install --upgrade pip
 	bin/pip install -r requirements.txt
 	bin/buildout -c plone-5.1.x.cfg
@@ -61,17 +70,6 @@ build-plone-5.2: .installed.cfg  ## Build Plone 5.2
 	bin/pip install --upgrade pip
 	bin/pip install -r requirements.txt
 	bin/buildout -c plone-5.2.x.cfg
-
- ## Build Plone 5.2 with Python 3
-build-py3:  ## Build Plone 5.2 with Python 3
-	virtualenv --python=python3 .
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
-	bin/pip install black
-	bin/buildout -c plone-5.2.x.cfg
-
-bin/python bin/pip:
-	virtualenv --clear --python=python$(version) .
 
 .PHONY: Test
 test:  ## Test
