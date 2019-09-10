@@ -13,10 +13,6 @@ function red {
     echo "$RED $1 $RESET"
 }
 
-# debug
-echo "TRAVIS_PYTHON_VERSION:"
-echo $TRAVIS_PYTHON_VERSION
-
 if [ "$PLONE_VERSION" = "4.3.x" ] || [ "$PLONE_VERSION" = "5.0.x" ] || [ "$PLONE_VERSION" = "5.1.x" ] || [ $TRAVIS_PYTHON_VERSION == '2.7' ]; then
     # request/response dumps have known differences for Plone 5
     # => skip, we can't have the Plone 5 build fail because of those

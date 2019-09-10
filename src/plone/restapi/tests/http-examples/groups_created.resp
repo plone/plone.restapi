@@ -16,9 +16,9 @@ Location: http://localhost:55001/plone/@groups/fwt
   "users": {
     "@id": "http://localhost:55001/plone/@groups", 
     "items": [
+      "test_user_1_", 
       "admin", 
-      "Administrators", 
-      "test_user_1_"
+      "Administrators"
     ], 
     "items_total": 3
   }
