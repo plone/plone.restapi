@@ -12,8 +12,8 @@ class HypermediaBatch(object):
     def __init__(self, request, results):
         self.request = request
 
-        self.b_start = json_body(self.request).get('b_start', False) or int(self.request.form.get("b_start", 0))
-        self.b_size = json_body(self.request).get('b_size', False) or int(self.request.form.get("b_size", DEFAULT_BATCH_SIZE))
+        self.b_start = int(json_body(self.request).get('b_start', False)) or int(self.request.form.get("b_start", 0))
+        self.b_size = int(json_body(self.request).get('b_size', False)) or int(self.request.form.get("b_size", DEFAULT_BATCH_SIZE))
 
         self.batch = Batch(results, self.b_size, self.b_start)
 

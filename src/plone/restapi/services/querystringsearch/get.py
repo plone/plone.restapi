@@ -12,13 +12,18 @@ class QuerystringSearchPost(Service):
     def reply(self):
         data = json_body(self.request)
         query = data.get("query", None)
-        b_start = data.get("b_start", 0)
-        b_size = data.get("b_size", 25)
+        b_start = int(data.get("b_start", 0))
+        b_size = int(data.get("b_size", 25))
         sort_on = data.get("sort_on", None)
-        limit = data.get("limit", None)
+        sort_order = data.get("sort_order", None)
+        limit = int(data.get("limit", 1000))
         fullobjects = data.get("fullobjects", False)
+
         if query is None:
             raise Exception("No query supplied")
+
+        if sort_order:
+            sort_order = 'descending' if sort_order else 'ascending'
 
         querybuilder = getMultiAdapter(
             (self.context, self.request), name="querybuilderresults"
@@ -29,6 +34,7 @@ class QuerystringSearchPost(Service):
             b_start=b_start,
             b_size=b_size,
             sort_on=sort_on,
+            sort_order=sort_order,
             limit=limit,
         )
 
