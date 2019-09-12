@@ -12,3 +12,13 @@ The server will respond with the results:
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/querystringsearch_post.resp
    :language: http
+
+The endpoint accepts the same parameters than the querystring search accept:
+
+  - ``b_start``
+  - ``b_size``
+  - ``sort_on``
+  - ``sort_order``
+  - ``limit``
+
+and also the ``fullobjects`` parameter for return the whole objects instead of the summary serialization of them.
