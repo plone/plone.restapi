@@ -10,6 +10,7 @@
 /dist
 /local.cfg
 /extras
+/pyvenv.cfg
 .coverage
 *.egg-info
 *.eggs

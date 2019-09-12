@@ -205,38 +205,6 @@ Content-Type: application/json
       ]
     }, 
     {
-      "name": "Products.ResourceRegistries.interfaces.settings.IResourceRegistriesSettings.resourceBundlesForThemes", 
-      "schema": {
-        "properties": {
-          "description": "Maps skin names to lists of resource bundle names", 
-          "key_type": {
-            "additional": {}, 
-            "schema": {
-              "description": "", 
-              "title": "", 
-              "type": "string"
-            }
-          }, 
-          "title": "Resource bundles for themes", 
-          "type": "dict", 
-          "value_type": {
-            "additional": {}, 
-            "schema": {
-              "description": "", 
-              "title": "", 
-              "type": "string"
-            }
-          }
-        }
-      }, 
-      "value": {
-        "(default)": [
-          "jquery", 
-          "default"
-        ]
-      }
-    }, 
-    {
       "name": "plone.alignment_styles", 
       "schema": {
         "properties": {
@@ -421,7 +389,19 @@ Content-Type: application/json
         }
       }, 
       "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.edit_comment_enabled", 
+      "schema": {
+        "properties": {
+          "default": false, 
+          "description": "If selected, supports editing of comments for users with the \"Edit comments\" permission.", 
+          "title": "Enable editing of comments", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
     }
   ], 
-  "items_total": 1683
+  "items_total": 1686
 }

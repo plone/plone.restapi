@@ -52,6 +52,11 @@ Content-Type: application/json
           "icon": "", 
           "id": "rename", 
           "title": "Rename"
+        }, 
+        {
+          "icon": "", 
+          "id": "redirection", 
+          "title": "URL Management"
         }
       ], 
       "portal_tabs": [
@@ -228,7 +233,7 @@ Content-Type: application/json
   "table_of_contents": null, 
   "text": {
     "content-type": "text/plain", 
-    "data": "<p>If you're seeing this instead of the web site you were expecting, the owner of this web site has just installed Plone. Do not contact the Plone Team or the Plone mailing lists about this.</p>", 
+    "data": "<p>If you&#x27;re seeing this instead of the web site you were expecting, the owner of this web site has just installed Plone. Do not contact the Plone Team or the Plone mailing lists about this.</p>", 
     "encoding": "utf-8"
   }, 
   "title": "Welcome to Plone", 
