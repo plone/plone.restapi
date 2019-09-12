@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+4.5.0 (2019-09-12)
+------------------
+
+New features:
+
+
+- Add @querystring-search endpoint that returns the results of a search using a p.a.querystring query.
+  [sneridagh] (#789)
+- Use Plone 5.2 and Python 3 as default to generate documentation. [timo] (#800)
+
+
+Bug fixes:
+
+
+- Make group serializer results predictable by returning sorted item results. [timo] (#798)
+
+
 4.4.0 (2019-08-30)
 ------------------
 
