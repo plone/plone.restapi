@@ -1297,6 +1297,27 @@ class TestDocumentation(unittest.TestCase):
         response = self.api_session.get(url)
         save_request_and_response_for_docs("querystring_get", response)
 
+    def test_querystringsearch_post(self):
+        url = "/@querystring-search"
+
+        self.portal.invokeFactory("Document",
+                                  "testdocument",
+                                  title="Test Document")
+        transaction.commit()
+
+        response = self.api_session.post(
+            url,
+            json={
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.any",
+                        "v": ["Document"],
+                    }
+                ]
+            })
+        save_request_and_response_for_docs("querystringsearch_post", response)
+
 
 class TestDocumentationMessageTranslations(unittest.TestCase):
 
