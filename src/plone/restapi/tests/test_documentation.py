@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from base64 import b64encode
 from datetime import datetime
-from datetime import timedelta
 from DateTime import DateTime
 from mock import patch
 from pkg_resources import parse_version
@@ -28,6 +27,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
+from plone.restapi.tests.statictime import StaticTime
 from plone.scale import storage
 from plone.testing.z2 import Browser
 from six.moves import range
@@ -154,6 +154,9 @@ class TestDocumentation(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
+        self.statictime = StaticTime()
+        self.statictime.start()
+
         self.app = self.layer["app"]
         self.request = self.layer["request"]
         self.portal = self.layer["portal"]
@@ -213,6 +216,7 @@ class TestDocumentation(unittest.TestCase):
         self.api_session.close()
         popGlobalRegistry(getSite())
         self.api_session.close()
+        self.statictime.stop()
 
     def test_documentation_content_crud(self):
         folder = self.create_folder()
@@ -1317,6 +1321,9 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
     layer = layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
+        self.statictime = StaticTime()
+        self.statictime.start()
+
         self.app = self.layer["app"]
         self.request = self.layer["request"]
         self.portal = self.layer["portal"]
@@ -1365,6 +1372,7 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
     def tearDown(self):
         popGlobalRegistry(getSite())
         self.api_session.close()
+        self.statictime.stop()
 
     def test_translate_messages_types(self):
         response = self.api_session.get("/@types")
@@ -1392,6 +1400,9 @@ class TestCommenting(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
+        self.statictime = StaticTime()
+        self.statictime.start()
+
         self.app = self.layer["app"]
         self.request = self.layer["request"]
         self.portal = self.layer["portal"]
@@ -1419,6 +1430,7 @@ class TestCommenting(unittest.TestCase):
 
     def tearDown(self):
         self.api_session.close()
+        self.statictime.stop()
 
     def create_document_with_comments(self):
         self.portal.invokeFactory("Document", id="front-page")
@@ -1459,7 +1471,7 @@ class TestCommenting(unittest.TestCase):
         return document
 
     @staticmethod
-    def clean_comment_id(response, _id="123456"):
+    def clean_comment_id_from_urls(response, _id="123456"):
         pattern = r"@comments/(\w+)"
         pattern_bytes = b"@comments/(\\w+)"
         repl = "@comments/" + _id
@@ -1477,18 +1489,36 @@ class TestCommenting(unittest.TestCase):
 
         # and the response
         if response.content:
-            response._content = re.sub(pattern_bytes, repl, response._content)
+            response._content = re.sub(pattern_bytes, repl.encode('utf-8'), response._content)
+
+    @staticmethod
+    def clean_comment_id_from_body(response):
+        # Build a mapping of all comment IDs found in the response, and
+        # replace them with static ones.
+        # Assumption: comment IDs are long enough to be unique.
+        pattern_bytes = re.compile(b'"comment_id": "(\\w+)"')
+        comment_ids = re.findall(pattern_bytes, response._content)
+
+        def new_cid(idx):
+            return str(idx + 1400000000000000).encode('ascii')
+
+        static_comment_ids = {old_cid: new_cid(idx)
+                              for idx, old_cid in enumerate(comment_ids)}
+
+        for cid, idx in static_comment_ids.items():
+            response._content = re.sub(cid, idx, response._content)
 
     def test_comments_get(self):
         url = "{}/@comments".format(self.document.absolute_url())
         response = self.api_session.get(url)
+        self.clean_comment_id_from_body(response)
         save_request_and_response_for_docs("comments_get", response)
 
     def test_comments_add_root(self):
         url = "{}/@comments/".format(self.document.absolute_url())
         payload = {"text": "My comment"}
         response = self.api_session.post(url, json=payload)
-        self.clean_comment_id(response)
+        self.clean_comment_id_from_urls(response)
         save_request_and_response_for_docs("comments_add_root", response)
 
     def test_comments_add_sub(self):
@@ -1497,20 +1527,20 @@ class TestCommenting(unittest.TestCase):
         payload = {"text": "My reply"}
         response = self.api_session.post(url, json=payload)
 
-        self.clean_comment_id(response)
+        self.clean_comment_id_from_urls(response)
         save_request_and_response_for_docs("comments_add_sub", response)
 
     def test_comments_update(self):
         url = "{}/@comments/{}".format(self.document.absolute_url(), self.comment_id)
         payload = {"text": "My NEW comment"}
         response = self.api_session.patch(url, json=payload)
-        self.clean_comment_id(response)
+        self.clean_comment_id_from_urls(response)
         save_request_and_response_for_docs("comments_update", response)
 
     def test_comments_delete(self):
         url = "{}/@comments/{}".format(self.document.absolute_url(), self.comment_id)
         response = self.api_session.delete(url)
-        self.clean_comment_id(response)
+        self.clean_comment_id_from_urls(response)
         save_request_and_response_for_docs("comments_delete", response)
 
     def test_roles_get(self):
@@ -1541,6 +1571,9 @@ class TestPAMDocumentation(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
+        self.statictime = StaticTime()
+        self.statictime.start()
+
         self.app = self.layer["app"]
         self.request = self.layer["request"]
         self.portal = self.layer["portal"]
@@ -1574,6 +1607,7 @@ class TestPAMDocumentation(unittest.TestCase):
 
     def tearDown(self):
         self.api_session.close()
+        self.statictime.stop()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(
