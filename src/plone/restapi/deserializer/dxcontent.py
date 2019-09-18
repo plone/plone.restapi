@@ -65,6 +65,13 @@ class DeserializeFromJson(OrderingMixin, object):
                     # set the field to missing_value if we receive null
                     if data[name] is None:
                         if not field.required:
+                            if dm.get():
+                                # Collect the names of the modified fields
+                                # Use prefixed name because z3c.form does so
+                                prefixed_name = schema.__name__ + '.' + name
+                                modified.setdefault(schema, []).append(
+                                    prefixed_name)
+
                             dm.set(field.missing_value)
                         else:
                             errors.append(
