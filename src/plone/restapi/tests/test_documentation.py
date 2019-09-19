@@ -148,9 +148,7 @@ def save_request_and_response_for_docs(name, response):
         resp.write(response.text)
 
 
-class TestDocumentation(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestDocumentationBase(unittest.TestCase):
 
     def setUp(self):
         self.statictime = StaticTime()
@@ -169,16 +167,33 @@ class TestDocumentation(unittest.TestCase):
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-        self.document = self.create_document()
-        alsoProvides(self.document, ITTWLockable)
-
-        transaction.commit()
         self.browser = Browser(self.app)
         self.browser.handleErrors = False
         self.browser.addHeader(
             "Authorization", "Basic %s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
+
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+
+    def tearDown(self):
+        popGlobalRegistry(getSite())
+        self.api_session.close()
+        self.statictime.stop()
+
+
+class TestDocumentation(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super(TestDocumentation, self).setUp()
+        self.document = self.create_document()
+        alsoProvides(self.document, ITTWLockable)
+
+        transaction.commit()
+
+    def tearDown(self):
+        super(TestDocumentation, self).tearDown()
 
     def create_document(self):
         self.portal.invokeFactory("Document", id="front-page")
@@ -205,12 +220,6 @@ class TestDocumentation(unittest.TestCase):
         folder.invokeFactory("Document", id="doc1", title="A document within a folder")
         folder.invokeFactory("Document", id="doc2", title="A document within a folder")
         return folder
-
-    def tearDown(self):
-        self.api_session.close()
-        popGlobalRegistry(getSite())
-        self.api_session.close()
-        self.statictime.stop()
 
     def test_documentation_content_crud(self):
         folder = self.create_folder()
@@ -1298,38 +1307,21 @@ class TestDocumentation(unittest.TestCase):
         save_request_and_response_for_docs("querystringsearch_post", response)
 
 
-class TestDocumentationMessageTranslations(unittest.TestCase):
+class TestDocumentationMessageTranslations(TestDocumentationBase):
 
     layer = layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.statictime = StaticTime()
-        self.statictime.start()
+        super(TestDocumentationMessageTranslations, self).setUp()
 
-        self.app = self.layer["app"]
-        self.request = self.layer["request"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-
-        # Register custom UUID generator to produce stable UUIDs during tests
-        pushGlobalRegistry(getSite())
-        register_static_uuid_utility(prefix="SomeUUID")
-
-        self.api_session = RelativeSession(self.portal_url)
-        self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.headers.update({"Accept-Language": "es"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
         self.document = self.create_document()
         alsoProvides(self.document, ITTWLockable)
-
         transaction.commit()
-        self.browser = Browser(self.app)
-        self.browser.handleErrors = False
-        self.browser.addHeader(
-            "Authorization", "Basic %s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+
+    def tearDown(self):
+        super(TestDocumentationMessageTranslations, self).tearDown()
 
     def create_document(self):
         self.portal.invokeFactory("Document", id="front-page")
@@ -1347,11 +1339,6 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
             "text/html",
         )
         return document
-
-    def tearDown(self):
-        popGlobalRegistry(getSite())
-        self.api_session.close()
-        self.statictime.stop()
 
     def test_translate_messages_types(self):
         response = self.api_session.get("/@types")
@@ -1374,18 +1361,12 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
         )
 
 
-class TestCommenting(unittest.TestCase):
+class TestCommenting(TestDocumentationBase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.statictime = StaticTime()
-        self.statictime.start()
-
-        self.app = self.layer["app"]
-        self.request = self.layer["request"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
+        super(TestCommenting, self).setUp()
 
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IDiscussionSettings, check=False)
@@ -1393,23 +1374,11 @@ class TestCommenting(unittest.TestCase):
         settings.edit_comment_enabled = True
         settings.delete_own_comment_enabled = True
 
-        self.api_session = RelativeSession(self.portal_url)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
         self.document = self.create_document_with_comments()
-
         transaction.commit()
-        self.browser = Browser(self.app)
-        self.browser.handleErrors = False
-        self.browser.addHeader(
-            "Authorization", "Basic %s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
 
     def tearDown(self):
-        self.api_session.close()
-        self.statictime.stop()
+        super(TestCommenting, self).tearDown()
 
     def create_document_with_comments(self):
         self.portal.invokeFactory("Document", id="front-page")
@@ -1542,29 +1511,18 @@ class TestCommenting(unittest.TestCase):
 @unittest.skipUnless(
     PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
 )  # NOQA
-class TestPAMDocumentation(unittest.TestCase):
+class TestPAMDocumentation(TestDocumentationBase):
 
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.statictime = StaticTime()
-        self.statictime.start()
-
-        self.app = self.layer["app"]
-        self.request = self.layer["request"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-
-        self.api_session = RelativeSession(self.portal_url)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        super(TestPAMDocumentation, self).setUp()
 
         language_tool = api.portal.get_tool("portal_languages")
         language_tool.addSupportedLanguage("en")
         language_tool.addSupportedLanguage("es")
         applyProfile(self.portal, "plone.app.multilingual:default")
+
         en_id = self.portal["en"].invokeFactory(
             "Document", id="test-document", title="Test document"
         )
@@ -1573,17 +1531,10 @@ class TestPAMDocumentation(unittest.TestCase):
             "Document", id="test-document", title="Test document"
         )
         self.es_content = self.portal["es"].get(es_id)
-
         transaction.commit()
-        self.browser = Browser(self.app)
-        self.browser.handleErrors = False
-        self.browser.addHeader(
-            "Authorization", "Basic %s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
 
     def tearDown(self):
-        self.api_session.close()
-        self.statictime.stop()
+        super(TestPAMDocumentation, self).setUp()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(
