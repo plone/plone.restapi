@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 from base64 import b64encode
 from datetime import datetime
-from DateTime import DateTime
 from mock import patch
 from pkg_resources import parse_version
 from pkg_resources import resource_filename
@@ -196,9 +195,6 @@ class TestDocumentation(unittest.TestCase):
             "text/plain",
             "text/html",
         )
-        document.creation_date = DateTime("2016-01-21T01:14:48+00:00")
-        document.reindexObject()
-        document.modification_date = DateTime("2016-01-21T01:24:11+00:00")
         return document
 
     def create_folder(self):
@@ -208,8 +204,6 @@ class TestDocumentation(unittest.TestCase):
         folder.description = u"This is a folder with two documents"
         folder.invokeFactory("Document", id="doc1", title="A document within a folder")
         folder.invokeFactory("Document", id="doc2", title="A document within a folder")
-        folder.creation_date = DateTime("2016-01-21T07:14:48+00:00")
-        folder.modification_date = DateTime("2016-01-21T07:24:11+00:00")
         return folder
 
     def tearDown(self):
@@ -271,8 +265,6 @@ class TestDocumentation(unittest.TestCase):
             data=image_data, contentType="image/png", filename=u"image.png"
         )
         self.portal.newsitem.image_caption = u"This is an image caption."
-        self.portal.newsitem.creation_date = DateTime("2016-01-21T02:14:48+00:00")
-        self.portal.newsitem.modification_date = DateTime("2016-01-21T02:24:11+00:00")
         transaction.commit()
 
         with patch.object(storage, "uuid4", return_value="uuid1"):
@@ -285,8 +277,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.event.description = u"This is an event"
         self.portal.event.start = datetime(2013, 1, 1, 10, 0)
         self.portal.event.end = datetime(2013, 1, 1, 12, 0)
-        self.portal.event.creation_date = DateTime("2016-01-21T03:14:48+00:00")
-        self.portal.event.modification_date = DateTime("2016-01-21T03:24:11+00:00")
         transaction.commit()
         response = self.api_session.get(self.portal.event.absolute_url())
         save_request_and_response_for_docs("event", response)
@@ -296,8 +286,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.link.title = "My Link"
         self.portal.link.description = u"This is a link"
         self.portal.remoteUrl = "http://plone.org"
-        self.portal.link.creation_date = DateTime("2016-01-21T04:14:48+00:00")
-        self.portal.link.modification_date = DateTime("2016-01-21T04:24:11+00:00")
         transaction.commit()
         response = self.api_session.get(self.portal.link.absolute_url())
         save_request_and_response_for_docs("link", response)
@@ -312,8 +300,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.file.file = NamedBlobFile(
             data=pdf_data, contentType="application/pdf", filename=u"file.pdf"
         )
-        self.portal.file.creation_date = DateTime("2016-01-21T05:14:48+00:00")
-        self.portal.file.modification_date = DateTime("2016-01-21T05:24:11+00:00")
         transaction.commit()
         response = self.api_session.get(self.portal.file.absolute_url())
         save_request_and_response_for_docs("file", response)
@@ -328,8 +314,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.image.image = NamedBlobImage(
             data=image_data, contentType="image/png", filename=u"image.png"
         )
-        self.portal.image.creation_date = DateTime("2016-01-21T06:14:48+00:00")
-        self.portal.image.modification_date = DateTime("2016-01-21T06:24:11+00:00")
         transaction.commit()
         with patch.object(storage, "uuid4", return_value="uuid1"):
             response = self.api_session.get(self.portal.image.absolute_url())
@@ -354,8 +338,6 @@ class TestDocumentation(unittest.TestCase):
         ]
         self.portal.invokeFactory("Document", id="doc1", title="Document 1")
         self.portal.invokeFactory("Document", id="doc2", title="Document 2")
-        self.portal.collection.creation_date = DateTime("2016-01-21T08:14:48+00:00")
-        self.portal.collection.modification_date = DateTime("2016-01-21T08:24:11+00:00")
         transaction.commit()
         response = self.api_session.get(self.portal.collection.absolute_url())
         save_request_and_response_for_docs("collection", response)
@@ -1364,9 +1346,6 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
             "text/plain",
             "text/html",
         )
-        document.creation_date = DateTime("2016-01-21T01:14:48+00:00")
-        document.reindexObject()
-        document.modification_date = DateTime("2016-01-21T01:24:11+00:00")
         return document
 
     def tearDown(self):
@@ -1448,9 +1427,6 @@ class TestCommenting(unittest.TestCase):
             "text/plain",
             "text/html",
         )
-        document.creation_date = DateTime("2016-01-21T01:14:48+00:00")
-        document.reindexObject()
-        document.modification_date = DateTime("2016-01-21T01:24:11+00:00")
 
         # Add a bunch of comments to the default conversation so we can do
         # batching
