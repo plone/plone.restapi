@@ -151,8 +151,7 @@ def save_request_and_response_for_docs(name, response):
 class TestDocumentationBase(unittest.TestCase):
 
     def setUp(self):
-        self.statictime = StaticTime()
-        self.statictime.start()
+        self.statictime = self.setup_with_context_manager(StaticTime())
 
         self.app = self.layer["app"]
         self.request = self.layer["request"]
@@ -175,10 +174,22 @@ class TestDocumentationBase(unittest.TestCase):
 
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
+    def setup_with_context_manager(self, cm):
+        """Use a contextmanager to setUp a test case.
+
+        Registering the cm's __exit__ as a cleanup hook *guarantees* that it
+        will be called after a test run, unlike tearDown().
+
+        This is used to make sure plone.restapi never leaves behind any time
+        freezing monkey patches that haven't gotten reverted.
+        """
+        val = cm.__enter__()
+        self.addCleanup(cm.__exit__, None, None, None)
+        return val
+
     def tearDown(self):
         popGlobalRegistry(getSite())
         self.api_session.close()
-        self.statictime.stop()
 
 
 class TestDocumentation(TestDocumentationBase):
@@ -1534,7 +1545,7 @@ class TestPAMDocumentation(TestDocumentationBase):
         transaction.commit()
 
     def tearDown(self):
-        super(TestPAMDocumentation, self).setUp()
+        super(TestPAMDocumentation, self).tearDown()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(
