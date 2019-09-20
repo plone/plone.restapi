@@ -33,14 +33,46 @@ class DeserializeFromJson(OrderingMixin, object):
 
         self.sm = getSecurityManager()
         self.permission_cache = {}
+        self.modified = {}
 
     def __call__(
         self, validate_all=False, data=None, create=False
     ):  # noqa: ignore=C901
+
         if data is None:
             data = json_body(self.request)
 
-        modified = {}
+        schema_data, errors = self.get_schema_data(data, validate_all)
+
+        # Validate schemata
+        for schema, field_data in schema_data.items():
+            validator = queryMultiAdapter(
+                (self.context, self.request, None, schema, None), IManagerValidator
+            )
+            for error in validator.validate(field_data):
+                errors.append({"error": error, "message": str(error)})
+
+        if errors:
+            raise BadRequest(errors)
+
+        # We'll set the layout after the validation and even if there
+        # are no other changes.
+        if "layout" in data:
+            layout = data["layout"]
+            self.context.setLayout(layout)
+
+        # OrderingMixin
+        self.handle_ordering(data)
+
+        if self.modified and not create:
+            descriptions = []
+            for interface, names in self.modified.items():
+                descriptions.append(Attributes(interface, *names))
+            notify(ObjectModifiedEvent(self.context, *descriptions))
+
+        return self.context
+
+    def get_schema_data(self, data, validate_all):
         schema_data = {}
         errors = []
 
@@ -66,12 +98,7 @@ class DeserializeFromJson(OrderingMixin, object):
                     if data[name] is None:
                         if not field.required:
                             if dm.get():
-                                # Collect the names of the modified fields
-                                # Use prefixed name because z3c.form does so
-                                prefixed_name = schema.__name__ + '.' + name
-                                modified.setdefault(schema, []).append(
-                                    prefixed_name)
-
+                                self.mark_field_as_changed(schema, name)
                             dm.set(field.missing_value)
                         else:
                             errors.append(
@@ -104,10 +131,7 @@ class DeserializeFromJson(OrderingMixin, object):
                         field_data[name] = value
                         if value != dm.get():
                             dm.set(value)
-                            # Collect the names of the modified fields
-                            # Use prefixed name because z3c.form does so
-                            prefixed_name = schema.__name__ + "." + name
-                            modified.setdefault(schema, []).append(prefixed_name)
+                            self.mark_field_as_changed(schema, name)
 
                 elif validate_all:
                     # Never validate the changeNote of p.a.versioningbehavior
@@ -123,33 +147,15 @@ class DeserializeFromJson(OrderingMixin, object):
                     except ValidationError as e:
                         errors.append({"message": e.doc(), "field": name, "error": e})
 
-        # Validate schemata
-        for schema, field_data in schema_data.items():
-            validator = queryMultiAdapter(
-                (self.context, self.request, None, schema, None), IManagerValidator
-            )
-            for error in validator.validate(field_data):
-                errors.append({"error": error, "message": str(error)})
+        return schema_data, errors
 
-        if errors:
-            raise BadRequest(errors)
+    def mark_field_as_changed(self, schema, fieldname):
+        """Collect the names of the modified fields. Use prefixed name because
+        z3c.form does so.
+        """
 
-        # We'll set the layout after the validation and and even if there
-        # are no other changes.
-        if "layout" in data:
-            layout = data["layout"]
-            self.context.setLayout(layout)
-
-        # OrderingMixin
-        self.handle_ordering(data)
-
-        if modified and not create:
-            descriptions = []
-            for interface, names in modified.items():
-                descriptions.append(Attributes(interface, *names))
-            notify(ObjectModifiedEvent(self.context, *descriptions))
-
-        return self.context
+        prefixed_name = schema.__name__ + '.' + fieldname
+        self.modified.setdefault(schema, []).append(prefixed_name)
 
     def check_permission(self, permission_name):
         if permission_name is None:
