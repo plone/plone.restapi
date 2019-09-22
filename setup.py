@@ -19,7 +19,6 @@ TEST_REQUIRES = [
     'plone.app.testing [robot] >= 4.2.2',  # ROBOT_TEST_LEVEL added
     'plone.api',
     'requests',
-    'freezegun',
     'plone.tiles',
     'mock',
     'archetypes.schemaextender ; python_version<"3"',

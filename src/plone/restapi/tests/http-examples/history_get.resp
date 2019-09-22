@@ -3,21 +3,6 @@ Content-Type: application/json
 
 [
   {
-    "action": "Create", 
-    "actor": {
-      "@id": "http://localhost:55001/plone/@users/test_user_1_", 
-      "fullname": "", 
-      "id": "test_user_1_", 
-      "username": "test-user"
-    }, 
-    "comments": "", 
-    "review_state": "private", 
-    "state_title": "Private", 
-    "time": "2016-10-21T19:00:00", 
-    "transition_title": "Create", 
-    "type": "workflow"
-  }, 
-  {
     "@id": "http://localhost:55001/plone/front-page/@history/0", 
     "action": "Edited", 
     "actor": {
@@ -28,9 +13,24 @@ Content-Type: application/json
     }, 
     "comments": "Initial version", 
     "may_revert": true, 
-    "time": "2016-10-21T19:00:00", 
+    "time": "1995-07-31T17:30:00", 
     "transition_title": "Edited", 
     "type": "versioning", 
     "version": 0
+  }, 
+  {
+    "action": "Create", 
+    "actor": {
+      "@id": "http://localhost:55001/plone/@users/test_user_1_", 
+      "fullname": "", 
+      "id": "test_user_1_", 
+      "username": "test-user"
+    }, 
+    "comments": "", 
+    "review_state": "private", 
+    "state_title": "Private", 
+    "time": "1995-07-31T18:30:00", 
+    "transition_title": "Create", 
+    "type": "workflow"
   }
 ]
