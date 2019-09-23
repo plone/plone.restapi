@@ -1,2 +1,0 @@
-Testing: Drop freezegun and instead selectively patch some timestamp accessors.
-[lgraf]

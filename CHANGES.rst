@@ -17,6 +17,9 @@ Bug fixes:
 - Fire ModifiedEvent when field is set to null in a PATCH request.
   [phgross] (#802)
 
+- Testing: Drop freezegun and instead selectively patch some timestamp accessors.
+  [lgraf] (#803)
+
 
 4.5.0 (2019-09-12)
 ------------------
