@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+4.5.1 (2019-09-23)
+------------------
+
+Bug fixes:
+
+
+- Fire ModifiedEvent when field is set to null in a PATCH request.
+  [phgross] (#802)
+
+
 4.5.0 (2019-09-12)
 ------------------
 
