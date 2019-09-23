@@ -15,3 +15,4 @@
 - Roel Bruggink
 - Yann Fouillat, alias Gagaro
 - Sune Brøndum Wøller
+- Philippe Gross
