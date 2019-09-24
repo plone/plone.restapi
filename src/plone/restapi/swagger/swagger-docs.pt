@@ -1,0 +1,103 @@
+<metal:page define-macro="master">
+<tal:doctype tal:replace="structure string:&lt;!DOCTYPE html&gt;" />
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:tal="http://xml.zope.org/namespaces/tal"
+      xmlns:metal="http://xml.zope.org/namespaces/metal"
+      xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+      tal:define="navroot context/@@plone_portal_state/navigation_root_url;
+                  config view/config;"
+      i18n:domain="plone.restapi">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="x-ua-compatible" content="IE=edge" />
+  <title>Not Guillotina</title>
+  <link rel="icon" type="image/png"
+        href="{{static_url}}images/favicon-32x32.png"
+        sizes="32x32"
+        />
+  <link rel="icon" type="image/png"
+        href="{{static_url}}images/favicon-16x16.png"
+        sizes="16x16"
+        />
+  <link href='css/swagger-ui.css'
+        tal:attributes="href string:${navroot}/++resource++restapi-swagger-docs/css/swagger-ui.css"
+        media='screen' rel='stylesheet' type='text/css'/>
+
+  <script type="application/json" id="swagger-configuration"
+          tal:content="config/swagger_settings">
+  </script>
+  <script src='{{static_url}}integration.js'
+          tal:attributes="src string:${navroot}/++resource++restapi-swagger-docs/integration.js"
+          type="text/javascript">
+  </script>
+</head>
+
+<body class="swagger-section">
+<!-- <div id='header'>
+  <div class="swagger-ui-wrap">
+    <a id="logo" href="{{base_url}}">
+      <img class="logo__img" alt="swagger" height="30" width="30" src="{{static_url}}images/logo_small.png">
+      <span class="logo__title">{{swagger_settings['base_configuration']['info']['title']}}</span></a>
+    {% if swagger_settings['authentication_allowed'] %}
+    <form id='api_selector'>
+      <div id="auth_container">
+        <div>
+          <a class="authorize__btn" href="#">Authorize</a>
+        </div>
+      </div>
+    </form>
+    {% endif %}
+  </div>
+</div> -->
+
+
+<div class="api-popup-dialog" id="login-modal" style="display:none;">
+  <div class="api-popup-dialog-wrapper">
+    <div class="api-popup-title">Authenticate</div>
+    <div class="api-popup-content">
+      <div class="auth-container">
+        <div class="wrapper">
+          <label for="baseUrl">Base API Endpoint URL:</label>
+          <section class="clear block-tablet col-10-tablet block-desktop col-10-desktop">
+            <input type="text" id="baseUrl" data-name="baseUrl">
+          </section>
+        </div>
+        <div class="wrapper">
+          <label for="authorization">Authorization Token:</label>
+          <section class="clear block-tablet col-10-tablet block-desktop col-10-desktop">
+            <input type="text" id="authorization" data-name="authorization">
+          </section>
+        </div>
+        <hr />
+        <h4>Or...</h4>
+        <div class="wrapper">
+          <label for="username">Username:</label>
+          <section class="clear block-tablet col-10-tablet block-desktop col-10-desktop">
+            <input type="text" id="username" data-name="username">
+          </section>
+        </div>
+        <div class="wrapper">
+          <label for="password">Password:</label>
+          <section class="clear block-tablet col-10-tablet block-desktop col-10-desktop">
+            <input type="password" id="password" data-name="password">
+          </section>
+        </div>
+      </div>
+      <div class="api-popup-actions">
+        <button type="submit" id="authenticate" class="auth__button auth_submit__button">Authorize</button>
+        <button type="submit" id="cancel" class="auth__button auth_submit__button">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <div class="api-popup-dialog-shadow"></div>
+</div>
+
+<div id="message-bar" class="swagger-ui-wrap" data-sw-translate>&nbsp;</div>
+<div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+</body>
+<script src='{{static_url}}swagger-ui-bundle.js'
+        tal:attributes="src string:${navroot}/++resource++restapi-swagger-docs/swagger-ui-bundle.js"
+></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/3.22.1/swagger-ui-standalone-preset.js"> </script>
+</html>
