@@ -1048,6 +1048,16 @@ class TestDocumentation(TestDocumentationBase):
             "vocabularies_get_filtered_by_token", response
         )
 
+    def test_documentation_sources_get(self):
+        api.content.create(
+            container=self.portal, id="doc", type="DXTestDocument", title=u"DX Document"
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            "/doc/@sources/test_choice_with_source"
+        )
+        save_request_and_response_for_docs("sources_get", response)
+
     def test_documentation_sharing_folder_get(self):
         self.portal.invokeFactory("Folder", id="folder")
         transaction.commit()

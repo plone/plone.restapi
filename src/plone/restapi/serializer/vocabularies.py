@@ -6,6 +6,7 @@ from zope.component import getMultiAdapter
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.schema.interfaces import IIterableSource
 from zope.schema.interfaces import ITitledTokenizedTerm
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabulary
@@ -14,8 +15,11 @@ import six
 
 
 @implementer(ISerializeToJson)
-@adapter(IVocabulary, Interface)
-class SerializeVocabularyToJson(object):
+class SerializeVocabLikeToJson(object):
+    """Base implementation to serialize vocabularies and sources to JSON.
+
+    Implements server-side filtering as well as batching.
+    """
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -64,6 +68,18 @@ class SerializeVocabularyToJson(object):
         if links:
             result["batching"] = links
         return result
+
+
+@adapter(IVocabulary, Interface)
+class SerializeVocabularyToJson(SerializeVocabLikeToJson):
+    """Serializes IVocabulary to JSON.
+    """
+
+
+@adapter(IIterableSource, Interface)
+class SerializeSourceToJson(SerializeVocabLikeToJson):
+    """Serializes IIterableSource to JSON.
+    """
 
 
 @implementer(ISerializeToJson)
