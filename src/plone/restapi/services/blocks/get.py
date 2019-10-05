@@ -26,8 +26,8 @@ class TilesGet(Service):
         if self.params and len(self.params) > 0:
             self.content_type = "application/json+schema"
             try:
-                tile = getUtility(ITileType, name=self.params[0])
-                return getMultiAdapter((tile, self.request), ISerializeToJson)()
+                block = getUtility(ITileType, name=self.params[0])
+                return getMultiAdapter((block, self.request), ISerializeToJson)()
             except KeyError:
                 self.content_type = "application/json"
                 self.request.response.setStatus(404)
@@ -38,9 +38,9 @@ class TilesGet(Service):
 
         result = []
         blocks = getUtilitiesFor(ITileType, context=self.context)
-        for name, tile in blocks:
-            serializer = getMultiAdapter((tile, self.request), ISerializeToJsonSummary)
-            if checkPermission(tile.add_permission, self.context):
+        for name, block in blocks:
+            serializer = getMultiAdapter((block, self.request), ISerializeToJsonSummary)
+            if checkPermission(block.add_permission, self.context):
                 result.append(serializer())
 
         return result

@@ -26,10 +26,10 @@ class ISampleTile(Interface):
 
 class SampleTile(Tile):
 
-    __name__ = "sample.tile"  # would normally be set by a ZCML handler
+    __name__ = "sample.block"  # would normally be set by a ZCML handler
 
     def __call__(self):
-        return "<html><body><b>My tile</b></body></html>"
+        return "<html><body><b>My block</b></body></html>"
 
 
 class TestServicesTiles(unittest.TestCase):
@@ -58,17 +58,17 @@ class TestServicesTiles(unittest.TestCase):
         transaction.commit()
 
         sampleTileType = TileType(
-            u"sample.tile",
-            u"Sample tile",
+            u"sample.block",
+            u"Sample block",
             "cmf.ModifyPortalContent",
             "zope.Public",
-            description=u"A tile used for testing",
+            description=u"A block used for testing",
             schema=ISampleTile,
             icon="testicon",
         )
-        provideUtility(sampleTileType, name=u"sample.tile")
+        provideUtility(sampleTileType, name=u"sample.block")
         provideAdapter(
-            SampleTile, (Interface, Interface), IBasicTile, name=u"sample.tile"
+            SampleTile, (Interface, Interface), IBasicTile, name=u"sample.block"
         )
 
     def tearDown(self):
@@ -80,17 +80,17 @@ class TestServicesTiles(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         response = response.json()
         self.assertEqual(len(response), 1)
-        self.assertEqual(response[0]["@id"], self.portal_url + u"/@blocks/sample.tile")
-        self.assertEqual(response[0]["title"], u"Sample tile")
-        self.assertEqual(response[0]["description"], u"A tile used for testing")
+        self.assertEqual(response[0]["@id"], self.portal_url + u"/@blocks/sample.block")
+        self.assertEqual(response[0]["title"], u"Sample block")
+        self.assertEqual(response[0]["description"], u"A block used for testing")
         self.assertEqual(response[0]["icon"], "testicon")
 
-    def test_get_tile(self):
-        response = self.api_session.get("/@blocks/sample.tile")
+    def test_get_block(self):
+        response = self.api_session.get("/@blocks/sample.block")
 
         self.assertEqual(response.status_code, 200)
         response = response.json()
-        self.assertEqual(response["title"], u"Sample tile")
+        self.assertEqual(response["title"], u"Sample block")
         self.assertEqual(response["properties"]["title"]["title"], u"Title")
         self.assertEqual(response["properties"]["title"]["type"], u"string")
 
