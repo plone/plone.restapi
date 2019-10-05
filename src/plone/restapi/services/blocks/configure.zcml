@@ -6,7 +6,7 @@
     method="GET"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".get.TilesGet"
-    name="@tiles"
+    name="@blocks"
     permission="zope2.View"
     />
 

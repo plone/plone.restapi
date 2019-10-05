@@ -48,7 +48,7 @@ class TestServicesTiles(unittest.TestCase):
 
         fti = queryUtility(IDexterityFTI, name="Document")
         behavior_list = [a for a in fti.behaviors]
-        behavior_list.append("plone.tiles")
+        behavior_list.append("plone.blocks")
         behavior_list.append("plone.leadimage")
         fti.behaviors = tuple(behavior_list)
 
@@ -74,19 +74,19 @@ class TestServicesTiles(unittest.TestCase):
     def tearDown(self):
         self.api_session.close()
 
-    def test_get_available_tiles(self):
-        response = self.api_session.get("/@tiles")
+    def test_get_available_blocks(self):
+        response = self.api_session.get("/@blocks")
 
         self.assertEqual(response.status_code, 200)
         response = response.json()
         self.assertEqual(len(response), 1)
-        self.assertEqual(response[0]["@id"], self.portal_url + u"/@tiles/sample.tile")
+        self.assertEqual(response[0]["@id"], self.portal_url + u"/@blocks/sample.tile")
         self.assertEqual(response[0]["title"], u"Sample tile")
         self.assertEqual(response[0]["description"], u"A tile used for testing")
         self.assertEqual(response[0]["icon"], "testicon")
 
     def test_get_tile(self):
-        response = self.api_session.get("/@tiles/sample.tile")
+        response = self.api_session.get("/@blocks/sample.tile")
 
         self.assertEqual(response.status_code, 200)
         response = response.json()
@@ -94,11 +94,11 @@ class TestServicesTiles(unittest.TestCase):
         self.assertEqual(response["properties"]["title"]["title"], u"Title")
         self.assertEqual(response["properties"]["title"]["type"], u"string")
 
-    def test_patch_tiles_list(self):
+    def test_patch_blocks_list(self):
         response = self.api_session.patch(
             "/doc",
             json={
-                "tiles": {
+                "blocks": {
                     "uuid1": {"@type": "title"},
                     "uuid2": {"@type": "description"},
                 }
@@ -111,13 +111,13 @@ class TestServicesTiles(unittest.TestCase):
         response = response.json()
 
         self.assertEqual(
-            response["tiles"],
+            response["blocks"],
             {"uuid1": {"@type": "title"}, "uuid2": {"@type": "description"}},
         )
 
-    def test_patch_tiles_layout(self):
+    def test_patch_blocks_layout(self):
         response = self.api_session.patch(
-            "/doc", json={"tiles_layout": {"items": ["#uuid1", "#uuid2"]}}
+            "/doc", json={"blocks_layout": {"items": ["#uuid1", "#uuid2"]}}
         )
 
         self.assertEqual(response.status_code, 204)
@@ -125,9 +125,9 @@ class TestServicesTiles(unittest.TestCase):
         response = self.api_session.get("/doc")
         response = response.json()
 
-        self.assertEqual(response["tiles_layout"], {"items": ["#uuid1", "#uuid2"]})
+        self.assertEqual(response["blocks_layout"], {"items": ["#uuid1", "#uuid2"]})
 
-    def test_get_tiles_layout_schema(self):
+    def test_get_blocks_layout_schema(self):
         response = self.api_session.get("/@types/Document")
 
         self.assertEqual(response.status_code, 200)
@@ -135,18 +135,18 @@ class TestServicesTiles(unittest.TestCase):
 
     # These are not failing because the patch operations doesn't validate
     # fields right now
-    # def test_patch_tiles_list_wrong_type(self):
+    # def test_patch_blocks_list_wrong_type(self):
     #     response = self.api_session.patch(
     #         '/doc',
     #         json={
-    #             "tiles": [{'uuid1': {'@type': 'title'}}]
+    #             "blocks": [{'uuid1': {'@type': 'title'}}]
     #         })
     #     self.assertEqual(response.status_code, 500)
 
-    # def test_patch_tiles_layout_wrong_type(self):
+    # def test_patch_blocks_layout_wrong_type(self):
     #     response = self.api_session.patch(
     #         '/doc',
     #         json={
-    #             "tiles_layout": {'uuid1': {'@type': 'title'}}
+    #             "blocks_layout": {'uuid1': {'@type': 'title'}}
     #         })
     #     self.assertEqual(response.status_code, 500)

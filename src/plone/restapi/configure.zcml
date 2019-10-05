@@ -46,10 +46,10 @@
       />
 
   <genericsetup:registerProfile
-      name="tiles"
-      title="plone.restapi tiles"
-      directory="profiles/tiles"
-      description="Enables tiles on the Document content type"
+      name="blocks"
+      title="plone.restapi blocks"
+      directory="profiles/blocks"
+      description="Enables blocks on the Document content type"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
@@ -83,10 +83,10 @@
     <include package="plone.behavior" file="meta.zcml"/>
 
     <plone:behavior
-        name="plone.tiles"
+        name="plone.blocks"
         title="Tiles"
-        description="Existing tiles on the object and their layout"
-        provides=".behaviors.ITiles"
+        description="Existing blocks on the object and their layout"
+        provides=".behaviors.IBlocks"
         for="plone.dexterity.interfaces.IDexterityContent"
       />
 

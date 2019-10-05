@@ -36,7 +36,7 @@
       zcml:condition="have plone-5"/>
   <include package=".email_send"
       zcml:condition="have plone-5"/>
-  <include package=".tiles"
+  <include package=".blocks"
       zcml:condition="installed plone.tiles" />
 
 </configure>

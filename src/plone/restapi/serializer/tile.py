@@ -9,7 +9,7 @@ from zope.interface import implementer
 from zope.interface import Interface
 
 
-SERVICE_ID = "@tiles"
+SERVICE_ID = "@blocks"
 
 
 @implementer(ISerializeToJsonSummary)

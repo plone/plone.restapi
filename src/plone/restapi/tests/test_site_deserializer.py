@@ -52,12 +52,12 @@ class TestSiteRootDeserializer(unittest.TestCase):
         deserializer = getMultiAdapter((context, self.request), IDeserializeFromJson)
         return deserializer(validate_all=validate_all)
 
-    def test_opt_in_tiles_deserializer(self):
-        tiles = {
+    def test_opt_in_blocks_deserializer(self):
+        blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {"@type": "description"},
             "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
         }
-        tiles_layout = {
+        blocks_layout = {
             "items": [
                 "07c273fc-8bfc-4e7d-a327-d513e5a945bb",
                 "0358abe2-b4f1-463d-a279-a63ea80daf19",
@@ -65,10 +65,10 @@ class TestSiteRootDeserializer(unittest.TestCase):
         }
 
         self.deserialize(
-            body='{{"tiles": {}, "tiles_layout": {}}}'.format(
-                json.dumps(tiles), json.dumps(tiles_layout)
+            body='{{"blocks": {}, "blocks_layout": {}}}'.format(
+                json.dumps(blocks), json.dumps(blocks_layout)
             )
         )
 
-        self.assertEqual(tiles, json.loads(self.portal.tiles))
-        self.assertEqual(tiles_layout, json.loads(self.portal.tiles_layout))
+        self.assertEqual(blocks, json.loads(self.portal.blocks))
+        self.assertEqual(blocks_layout, json.loads(self.portal.blocks_layout))

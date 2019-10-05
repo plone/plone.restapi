@@ -37,8 +37,8 @@ class TilesGet(Service):
                 }
 
         result = []
-        tiles = getUtilitiesFor(ITileType, context=self.context)
-        for name, tile in tiles:
+        blocks = getUtilitiesFor(ITileType, context=self.context)
+        for name, tile in blocks:
             serializer = getMultiAdapter((tile, self.request), ISerializeToJsonSummary)
             if checkPermission(tile.add_permission, self.context):
                 result.append(serializer())

@@ -45,7 +45,7 @@ Contents
    tusupload
    vocabularies
    controlpanels
-   tiles
+   blocks
    querystring
    querystringsearch
    customization
