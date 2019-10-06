@@ -1,2 +1,0 @@
-Explicitly load zcml of dependencies, instead of using ``includeDependencies``
-[maurits]

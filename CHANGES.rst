@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+4.6.0 (2019-10-06)
+------------------
+
+New features:
+
+
+- Add @sources and @querysources endpoints, and link to them from JSON schema in @types response.
+  [lgraf] (#790)
+
+
+Bug fixes:
+
+
+- Explicitly load zcml of dependencies, instead of using ``includeDependencies``
+  [maurits] (#2952)
+
+
 4.5.1 (2019-09-23)
 ------------------
 
