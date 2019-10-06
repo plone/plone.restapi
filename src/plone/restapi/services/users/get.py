@@ -48,14 +48,26 @@ class UsersGet(Service):
         results = acl_users.searchUsers(id=query, max_results=limit)
         return [portal_membership.getMemberById(user["userid"]) for user in results]
 
-    def reply(self):
+    def has_permission_to_query(self):
         sm = getSecurityManager()
+        return sm.checkPermission("Manage portal", self.context)
+
+    def has_permission_to_enumerate(self):
+        sm = getSecurityManager()
+        return sm.checkPermission("Manage portal", self.context)
+
+    def has_permission_to_access_user_info(self):
+        sm = getSecurityManager()
+        return sm.checkPermission(
+            "plone.restapi: Access Plone user information", self.context)
+
+    def reply(self):
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
             limit = self.query.get("limit", DEFAULT_SEARCH_RESULTS_LIMIT)
             if query:
                 # Someone is searching users, check if he is authorized
-                if sm.checkPermission("Manage portal", self.context):
+                if self.has_permission_to_query():
                     users = self._get_filtered_users(query, limit)
                     result = []
                     for user in users:
@@ -72,7 +84,7 @@ class UsersGet(Service):
 
         if len(self.params) == 0:
             # Someone is asking for all users, check if he is authorized
-            if sm.checkPermission("Manage portal", self.context):
+            if self.has_permission_to_enumerate():
                 result = []
                 for user in self._get_users():
                     serializer = queryMultiAdapter(
@@ -89,9 +101,8 @@ class UsersGet(Service):
         mt = getToolByName(self.context, "portal_membership")
         current_user_id = mt.getAuthenticatedMember().getId()
 
-        if sm.checkPermission(
-            "plone.restapi: Access Plone user information", self.context
-        ) or (current_user_id and current_user_id == self._get_user_id):
+        if self.has_permission_to_access_user_info() or (
+                current_user_id and current_user_id == self._get_user_id):
 
             # we retrieve the user on the user id not the username
             user = self._get_user(self._get_user_id)

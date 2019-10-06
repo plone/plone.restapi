@@ -47,6 +47,8 @@ Contents
    vocabularies
    controlpanels
    tiles
+   querystring
+   querystringsearch
    customization
    conventions
    translations

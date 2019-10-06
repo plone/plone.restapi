@@ -52,6 +52,11 @@ Content-Type: application/json
           "icon": "", 
           "id": "rename", 
           "title": "Rename"
+        }, 
+        {
+          "icon": "", 
+          "id": "redirection", 
+          "title": "URL Management"
         }
       ], 
       "portal_tabs": [
@@ -125,6 +130,53 @@ Content-Type: application/json
         }
       ]
     }, 
+    "types": [
+      {
+        "@id": "http://localhost:55001/plone/@types/Collection", 
+        "addable": false, 
+        "title": "Collection"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/DXTestDocument", 
+        "addable": false, 
+        "title": "DX Test Document"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/Event", 
+        "addable": false, 
+        "title": "Event"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/File", 
+        "addable": false, 
+        "title": "File"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/Folder", 
+        "addable": false, 
+        "title": "Folder"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/Image", 
+        "addable": false, 
+        "title": "Image"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/Link", 
+        "addable": false, 
+        "title": "Link"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/News Item", 
+        "addable": false, 
+        "title": "News Item"
+      }, 
+      {
+        "@id": "http://localhost:55001/plone/@types/Document", 
+        "addable": false, 
+        "title": "Page"
+      }
+    ], 
     "workflow": {
       "@id": "http://localhost:55001/plone/front-page/@workflow", 
       "history": [
@@ -133,7 +185,7 @@ Content-Type: application/json
           "actor": "test_user_1_", 
           "comments": "", 
           "review_state": "private", 
-          "time": "2016-10-21T19:00:00+00:00", 
+          "time": "1995-07-31T17:30:00", 
           "title": "Private"
         }
       ], 
@@ -155,7 +207,7 @@ Content-Type: application/json
   "allow_discussion": false, 
   "changeNote": "", 
   "contributors": [], 
-  "created": "2016-01-21T01:14:48+00:00", 
+  "created": "1995-07-31T13:45:00", 
   "creators": [
     "test_user_1_"
   ], 
@@ -167,7 +219,7 @@ Content-Type: application/json
   "is_folderish": false, 
   "language": "", 
   "layout": "document_view", 
-  "modified": "2016-01-21T01:24:11+00:00", 
+  "modified": "1995-07-31T17:30:00", 
   "parent": {
     "@id": "http://localhost:55001/plone", 
     "@type": "Plone Site", 
@@ -181,7 +233,7 @@ Content-Type: application/json
   "table_of_contents": null, 
   "text": {
     "content-type": "text/plain", 
-    "data": "<p>If you're seeing this instead of the web site you were expecting, the owner of this web site has just installed Plone. Do not contact the Plone Team or the Plone mailing lists about this.</p>", 
+    "data": "<p>If you&#x27;re seeing this instead of the web site you were expecting, the owner of this web site has just installed Plone. Do not contact the Plone Team or the Plone mailing lists about this.</p>", 
     "encoding": "utf-8"
   }, 
   "title": "Welcome to Plone", 

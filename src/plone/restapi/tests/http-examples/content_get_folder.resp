@@ -1,0 +1,83 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@components": {
+    "actions": {
+      "@id": "http://localhost:55001/plone/folder/@actions"
+    }, 
+    "breadcrumbs": {
+      "@id": "http://localhost:55001/plone/folder/@breadcrumbs"
+    }, 
+    "navigation": {
+      "@id": "http://localhost:55001/plone/folder/@navigation"
+    }, 
+    "types": {
+      "@id": "http://localhost:55001/plone/folder/@types"
+    }, 
+    "workflow": {
+      "@id": "http://localhost:55001/plone/folder/@workflow"
+    }
+  }, 
+  "@id": "http://localhost:55001/plone/folder?metadata_fields=UID&metadata_fields=Creator", 
+  "@type": "Folder", 
+  "UID": "SomeUUID000000000000000000000002", 
+  "allow_discussion": false, 
+  "contributors": [], 
+  "created": "1995-07-31T13:45:00", 
+  "creators": [
+    "test_user_1_"
+  ], 
+  "description": "This is a folder with two documents", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "id": "folder", 
+  "is_folderish": true, 
+  "items": [
+    {
+      "@id": "http://localhost:55001/plone/folder/doc1", 
+      "@type": "Document", 
+      "Creator": "test_user_1_", 
+      "UID": "SomeUUID000000000000000000000003", 
+      "description": "", 
+      "review_state": "private", 
+      "title": "A document within a folder"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/folder/doc2", 
+      "@type": "Document", 
+      "Creator": "test_user_1_", 
+      "UID": "SomeUUID000000000000000000000004", 
+      "description": "", 
+      "review_state": "private", 
+      "title": "A document within a folder"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/folder/my-document", 
+      "@type": "Document", 
+      "Creator": "admin", 
+      "UID": "SomeUUID000000000000000000000005", 
+      "description": "", 
+      "review_state": "private", 
+      "title": "My Document"
+    }
+  ], 
+  "items_total": 3, 
+  "language": "", 
+  "layout": "listing_view", 
+  "modified": "1995-07-31T17:30:00", 
+  "nextPreviousEnabled": false, 
+  "parent": {
+    "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
+    "description": "", 
+    "title": "Plone site"
+  }, 
+  "relatedItems": [], 
+  "review_state": "private", 
+  "rights": "", 
+  "subjects": [], 
+  "title": "My Folder", 
+  "version": "current"
+}

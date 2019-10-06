@@ -8,6 +8,117 @@ Changelog
 
 .. towncrier release notes start
 
+4.6.0 (2019-10-06)
+------------------
+
+New features:
+
+
+- Add @sources and @querysources endpoints, and link to them from JSON schema in @types response.
+  [lgraf] (#790)
+
+
+Bug fixes:
+
+
+- Explicitly load zcml of dependencies, instead of using ``includeDependencies``
+  [maurits] (#2952)
+
+
+4.5.1 (2019-09-23)
+------------------
+
+Bug fixes:
+
+
+- Fire ModifiedEvent when field is set to null in a PATCH request.
+  [phgross] (#802)
+
+- Testing: Drop freezegun and instead selectively patch some timestamp accessors.
+  [lgraf] (#803)
+
+
+4.5.0 (2019-09-12)
+------------------
+
+New features:
+
+
+- Add @querystring-search endpoint that returns the results of a search using a p.a.querystring query.
+  [sneridagh] (#789)
+- Use Plone 5.2 and Python 3 as default to generate documentation. [timo] (#800)
+
+
+Bug fixes:
+
+
+- Make group serializer results predictable by returning sorted item results. [timo] (#798)
+
+
+4.4.0 (2019-08-30)
+------------------
+
+New features:
+
+
+- Add @querystring endpoint that dumps p.a.querystring config.
+  [lgraf] (#754)
+
+
+Bug fixes:
+
+
+- Fix typo in the ``tiles_layout`` field title name.
+  [sneridagh] (#785)
+
+
+4.3.1 (2019-07-10)
+------------------
+
+Bug fixes:
+
+
+- Fix @sharing POST when called on the plone site root
+  [csenger] (#780)
+
+
+4.3.0 (2019-06-30)
+------------------
+
+New features:
+
+
+- Support retrieval of additional metadata fields in summaries in the same way as
+  in search results.
+  [buchi] (#681)
+
+
+4.2.0 (2019-06-29)
+------------------
+
+New features:
+
+
+- Make @types endpoint expandable.
+  [lgraf] (#766)
+- Factor out permission checks in @users endpoint
+  to make it more easily customizable.
+  [lgraf] (#771)
+
+
+Bug fixes:
+
+
+- Gracefully handle corrupt images when serializing scales.
+  [lgraf] (#729)
+- Docs: Make sure application/json+schema examples also get syntax highlighted.
+  [lgraf] (#764)
+- Return empty response for status 204 (No Content).
+  [buchi] (#775)
+- Return status 400 if a referenced object can not be resolved during deserialization.
+  [lgraf] (#777)
+
+
 4.1.4 (2019-06-21)
 ------------------
 

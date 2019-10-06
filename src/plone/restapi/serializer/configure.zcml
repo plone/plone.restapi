@@ -59,7 +59,6 @@
         <adapter factory=".relationfield.relationvalue_converter" />
     </configure>
 
-    <adapter factory=".catalog.BrainSerializer" />
     <adapter factory=".catalog.LazyCatalogResultSerializer" />
 
     <adapter factory=".user.SerializeUserToJson" />
@@ -72,6 +71,7 @@
              />
 
     <adapter factory=".vocabularies.SerializeVocabularyToJson" />
+    <adapter factory=".vocabularies.SerializeSourceToJson" />
     <adapter factory=".vocabularies.SerializeTermToJson" />
 
     <adapter factory=".registry.SerializeRegistryToJson" />

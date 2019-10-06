@@ -80,5 +80,4 @@ class GroupsPatch(Service):
                 if userid in memberids:
                     group.removeMember(userid)
 
-        self.request.response.setStatus(204)
-        return None
+        return self.reply_no_content()

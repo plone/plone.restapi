@@ -91,7 +91,7 @@ class TestJsonSchemaUtils(TestCase):
     def test_get_jsonschema_for_fti_non_dx(self):
         """Make sure FTIs without lookupSchema are supported.
         """
-        fti = self.portal.portal_types["Plone Site"]
+        fti = self.portal.portal_types["Discussion Item"]
         self.assertFalse(hasattr(fti, "lookupSchema"))
 
         # This shouldn't raise an error.
@@ -357,6 +357,7 @@ class TestJsonSchemaProviders(TestCase):
 
     def test_choice(self):
         field = schema.Choice(
+            __name__="myfield",
             title=u"My field",
             description=u"My great field",
             vocabulary=self.dummy_vocabulary,
@@ -373,6 +374,7 @@ class TestJsonSchemaProviders(TestCase):
                 "enum": ["foo", "bar"],
                 "enumNames": ["Foo", "Bar"],
                 "choices": [("foo", "Foo"), ("bar", "Bar")],
+                'vocabulary': {'@id': 'http://nohost/plone/@sources/myfield'},
             },
             adapter.get_schema(),
         )
@@ -401,6 +403,7 @@ class TestJsonSchemaProviders(TestCase):
 
     def test_choice_source_vocab(self):
         field = schema.Choice(
+            __name__="myfield",
             title=u"My field",
             description=u"My great field",
             source=self.dummy_source_vocab,
@@ -417,6 +420,7 @@ class TestJsonSchemaProviders(TestCase):
                 "enum": ["foo", "bar"],
                 "enumNames": ["Foo", "Bar"],
                 "choices": [("foo", "Foo"), ("bar", "Bar")],
+                "vocabulary": {'@id': 'http://nohost/plone/@sources/myfield'},
             },
             adapter.get_schema(),
         )
@@ -493,6 +497,7 @@ class TestJsonSchemaProviders(TestCase):
 
         # List of choices
         field = schema.List(
+            __name__="myfield",
             title=u"My field",
             value_type=schema.Choice(vocabulary=self.dummy_vocabulary),
         )
@@ -514,6 +519,7 @@ class TestJsonSchemaProviders(TestCase):
                     "enum": ["foo", "bar"],
                     "enumNames": ["Foo", "Bar"],
                     "choices": [("foo", "Foo"), ("bar", "Bar")],
+                    'vocabulary': {'@id': 'http://nohost/plone/@sources/'},
                 },
             },
             adapter.get_schema(),

@@ -112,8 +112,6 @@ After a successful POST, we can access the resource by sending a GET request to 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/content_get.req
 
-You can also set the `include_items` GET parameter to false if you don't want to include children.
-
 
 Successful Response (200 OK)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -121,6 +119,23 @@ Successful Response (200 OK)
 If a resource has been retrieved successfully, the server responds with :term:`200 OK`:
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/content_get.resp
+   :language: http
+
+
+For folderish types, their childrens are automatically included in the response
+as ``items``. To disable the inclusion, add the GET parameter ``include_items=false``
+to the URL.
+
+By default only basic metadata is included. To include additional metadata,
+you can specify the names of the properties with the ``metadata_fields`` parameter.
+See also :ref:`retrieving-additional-metadata`.
+
+The following example additionaly retrieves the UID and Creator:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/content_get_folder.req
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/content_get_folder.resp
    :language: http
 
 .. note::

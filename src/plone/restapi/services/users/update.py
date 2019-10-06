@@ -114,8 +114,7 @@ class UsersPatch(Service):
                     403, "Forbidden", "You can't update the " "properties of this user"
                 )
 
-        self.request.response.setStatus(204)
-        return None
+        return self.reply_no_content()
 
     @property
     def can_manage_users(self):

@@ -421,6 +421,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertEqual(
             str(cm.exception), u"Could not resolve object for intid=123456789"
         )
+        self.assertEqual(400, self.request.response.getStatus())
 
     def test_relationchoice_deserialization_from_invalid_uid_raises(self):
         with self.assertRaises(ValueError) as cm:
@@ -432,6 +433,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             str(cm.exception),
             u"Could not resolve object for UID=ac12b24913cf45c6863937367aacc263",
         )
+        self.assertEqual(400, self.request.response.getStatus())
 
     def test_relationchoice_deserialization_from_invalid_url_raises(self):
         with self.assertRaises(ValueError) as cm:
@@ -443,6 +445,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             str(cm.exception),
             u"Could not resolve object for URL=http://nohost/plone/doesnotexist",
         )
+        self.assertEqual(400, self.request.response.getStatus())
 
     def test_relationchoice_deserialization_from_invalid_path_raises(self):
         with self.assertRaises(ValueError) as cm:
@@ -452,6 +455,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertEqual(
             str(cm.exception), u"Could not resolve object for path=/doesnotexist"
         )
+        self.assertEqual(400, self.request.response.getStatus())
 
     def test_relationlist_deserialization_returns_list_of_documents(self):
         doc2 = self.portal[

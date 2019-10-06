@@ -4,9 +4,12 @@ from plone.app.textfield.interfaces import IRichText
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_properties
+from plone.restapi.types.utils import get_querysource_url
+from plone.restapi.types.utils import get_source_url
 from plone.restapi.types.utils import get_vocabulary_url
 from plone.restapi.types.utils import get_widget_params
 from plone.schema import IJSONField
+from z3c.formwidget.query.interfaces import IQuerySource
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.i18n import translate
@@ -248,6 +251,7 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
         return "string"
 
     def additional(self):
+        # Named global vocabulary
         vocab_name = getattr(self.field, "vocabularyName", None)
         if vocab_name:
             return {
@@ -256,12 +260,33 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
                 }
             }
 
-        # Maybe we have an unnamed vocabulary or source.
-
+        # Maybe an unnamed vocabulary or source.
         vocabulary = getattr(self.field, "vocabulary", None)
         if IContextSourceBinder.providedBy(vocabulary):
             vocabulary = vocabulary(self.context)
 
+        # Query source
+        if IQuerySource.providedBy(vocabulary):
+            return {
+                "querysource": {
+                    "@id": get_querysource_url(self.field, self.context, self.request)
+                }
+            }
+
+        # Unamed ISource or vocabulary - render link addressing it via field
+        #
+        # Even though the URL will point to the @sources endpoint, we also
+        # list it under the 'vocabulary' key, because the semantics for an
+        # API consumer are exactly the same: A GET to that URL will enumerate
+        # terms, and will support batching and filtering by title/token.
+        result = {
+            "vocabulary": {
+                "@id": get_source_url(self.field, self.context, self.request)
+            }
+        }
+
+        # Optionally inline choices for unnamed sources
+        # (this is for BBB, and may eventually be deprecated)
         if hasattr(vocabulary, "__iter__") and self.should_render_choices:
             # choices and enumNames are v5 proposals, for now we implement both
             choices = []
@@ -274,9 +299,12 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
                 enum.append(term.token)
                 enum_names.append(title)
 
-            return {"enum": enum, "enumNames": enum_names, "choices": choices}
-        else:
-            return {}
+            result.update(
+                {"enum": enum,
+                 "enumNames": enum_names,
+                 "choices": choices})
+
+        return result
 
 
 @adapter(IObject, Interface, Interface)

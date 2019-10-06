@@ -9,7 +9,12 @@
 
   <i18n:registerTranslations directory="locales" />
 
-  <includeDependencies package="." />
+  <include package="plone.behavior" file="meta.zcml"/>
+  <include package="plone.rest" file="meta.zcml"/>
+
+  <include package="plone.behavior" />
+  <include package="plone.rest" />
+  <include package="plone.schema" />
 
   <five:registerPackage package="." initialize=".initialize" />
 

@@ -119,6 +119,7 @@ In that case, ``plone.restapi`` simply can't know what data type to cast your qu
 
 Please refer to the `Documentation on Argument Conversion in ZPublisher <http://docs.zope.org/zope2/zdgbook/ObjectPublishing.html#argument-conversion>`_ for details.
 
+.. _retrieving-additional-metadata:
 
 Retrieving additional metadata
 ------------------------------

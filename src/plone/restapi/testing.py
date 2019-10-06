@@ -33,6 +33,7 @@ from zope.configuration import xmlconfig
 from zope.interface import implementer
 
 import collective.MockMailHost
+import os
 import pkg_resources
 import re
 import requests
@@ -105,59 +106,35 @@ def enable_request_language_negotiation(portal):
 class DateTimeFixture(Layer):
     def setUp(self):
         tz = "UTC"
+        os.environ['TZ'] = tz
+        time.tzset()
+
         # Patch DateTime's timezone for deterministic behavior.
         from DateTime import DateTime
-
         self.DT_orig_localZone = DateTime.localZone
         DateTime.localZone = lambda cls=None, ltm=None: tz
-        from plone.dexterity import content
 
+        from plone.dexterity import content
+        content.FLOOR_DATE = DateTime(1970, 0)
+        content.CEILING_DATE = DateTime(2500, 0)
+        self._orig_content_zone = content._zone
+        content._zone = tz
+
+    def tearDown(self):
+        if 'TZ' in os.environ:
+            del os.environ['TZ']
+        time.tzset()
+
+        from DateTime import DateTime
+        DateTime.localZone = self.DT_orig_localZone
+
+        from plone.dexterity import content
+        content._zone = self._orig_content_zone
         content.FLOOR_DATE = DateTime(1970, 0)
         content.CEILING_DATE = DateTime(2500, 0)
 
-    def tearDown(self):
-        from DateTime import DateTime
-
-        DateTime.localZone = self.DT_orig_localZone
-
 
 DATE_TIME_FIXTURE = DateTimeFixture()
-
-
-def patchedNewTid(old):  # noqa
-    """Make sure ZODB.utils.newTid always uses the real time functions
-
-    instead of the ones possibly patched by freezegun.
-    This is necessary because ZODB seems to be relying on time being monotonic
-    for its transaction IDs, and freezing time results in
-    POSException.ReadConflictErrors.
-    """
-    from persistent.TimeStamp import TimeStamp  # noqa
-    import freezegun  # noqa
-
-    t = freezegun.api.real_time()
-    ts = TimeStamp(*freezegun.api.real_gmtime(t)[:5] + (t % 60,))
-    if old is not None:
-        ts = ts.laterThan(TimeStamp(old))
-    return ts.raw()
-
-
-class FreezeTimeFixture(Layer):
-    def setUp(self):
-        if PLONE_VERSION.base_version >= "5.1":
-            from ZODB import utils
-
-            self.ZODB_orig_newTid = utils.newTid
-            utils.newTid = patchedNewTid
-
-    def tearDown(self):
-        if PLONE_VERSION.base_version >= "5.1":
-            from ZODB import utils
-
-            utils.newTid = self.ZODB_orig_newTid
-
-
-FREEZE_TIME_FIXTURE = FreezeTimeFixture()
 
 
 class PloneRestApiDXLayer(PloneSandboxLayer):
@@ -206,10 +183,6 @@ PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApiDXLayer:Functional",
 )
-PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
-    bases=(FREEZE_TIME_FIXTURE, PLONE_RESTAPI_DX_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="PloneRestApiDXLayerFreeze:Functional",
-)
 
 
 class PloneRestApiDXPAMLayer(PloneSandboxLayer):
@@ -255,10 +228,6 @@ PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING = IntegrationTesting(
 PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApiDXPAMLayer:Functional",
-)
-PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
-    bases=(FREEZE_TIME_FIXTURE, PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="PloneRestApiDXPAMLayerFreeze:Functional",
 )
 
 
@@ -345,10 +314,6 @@ PLONE_RESTAPI_TILES_INTEGRATION_TESTING = IntegrationTesting(
 PLONE_RESTAPI_TILES_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_TILES_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApiTilesLayer:Functional",
-)
-PLONE_RESTAPI_TILES_FUNCTIONAL_TESTING_FREEZETIME = FunctionalTesting(
-    bases=(FREEZE_TIME_FIXTURE, PLONE_RESTAPI_TILES_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="PloneRestApiTilesLayerFreeze:Functional",
 )
 
 

@@ -311,6 +311,44 @@ class TestFolderCreate(unittest.TestCase):
             ),
         )
 
+    def test_set_local_roles_on_site_root(self):
+
+        pas = getToolByName(self.portal, "acl_users")
+        self.assertEqual(
+            pas.getLocalRolesForDisplay(self.portal),
+            (("admin", ("Owner",), "user", "admin"),),
+        )
+
+        response = requests.post(
+            self.portal.absolute_url() + "/@sharing",
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "entries": [
+                    {
+                        u"id": TEST_USER_ID,
+                        u"roles": {
+                            u"Contributor": False,
+                            u"Editor": False,
+                            u"Reader": True,
+                            u"Reviewer": True,
+                        },
+                        u"type": u"user",
+                    }
+                ]
+            },
+        )
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(
+            sorted_roles(pas.getLocalRolesForDisplay(self.portal)),
+            [
+                ["admin", ["Owner"], "user", "admin"],
+                ["test-user", [u"Reader", u"Reviewer"], "user", u"test_user_1_"],
+            ],
+        )
+
     def test_get_local_roles_inherit_roles(self):
         # __ac_local_roles_block__ specifies to block inheritance:
         # https://docs.plone.org/develop/plone/security/local_roles.html

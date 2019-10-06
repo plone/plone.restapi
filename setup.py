@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 import sys
 
-version = '4.1.5.dev0'
+version = '4.6.1.dev0'
 
 long_description = (
     open('README.rst').read() + '\n' +
@@ -19,7 +19,6 @@ TEST_REQUIRES = [
     'plone.app.testing [robot] >= 4.2.2',  # ROBOT_TEST_LEVEL added
     'plone.api',
     'requests',
-    'freezegun',
     'plone.tiles',
     'mock',
     'archetypes.schemaextender ; python_version<"3"',

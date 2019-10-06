@@ -47,5 +47,4 @@ class ContentPatch(Service):
             serialized_obj = serializer()
             return serialized_obj
 
-        self.request.response.setStatus(204)
-        return None
+        return self.reply_no_content()

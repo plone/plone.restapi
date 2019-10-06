@@ -2,10 +2,39 @@
 from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
+from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
+
+# fmt: off
+DEFAULT_METADATA_FIELDS = set([
+    '@id',
+    '@type',
+    'description',
+    'review_state',
+    'title',
+])
+
+FIELD_ACCESSORS = {
+    "@id": "getURL",
+    "@type": "PortalType",
+    "description": "Description",
+    "title": "Title",
+}
+
+NON_METADATA_ATTRIBUTES = set([
+    "getPath",
+    "getURL",
+])
+
+BLACKLISTED_ATTRIBUTES = set([
+    'getDataOrigin',
+    'getObject',
+    'getUserData',
+])
+# fmt: on
 
 
 @implementer(ISerializeToJsonSummary)
@@ -23,16 +52,33 @@ class DefaultJSONSummarySerializer(object):
 
     def __call__(self):
         obj = IContentListingObject(self.context)
-        summary = json_compatible(
-            {
-                "@id": obj.getURL(),
-                "@type": obj.PortalType(),
-                "title": obj.Title(),
-                "description": obj.Description(),
-                "review_state": obj.review_state(),
-            }
-        )
+
+        summary = {}
+        for field in self.metadata_fields():
+            if field.startswith("_") or field in BLACKLISTED_ATTRIBUTES:
+                continue
+            accessor = FIELD_ACCESSORS.get(field, field)
+            value = getattr(obj, accessor, None)
+            if callable(value):
+                value = value()
+            summary[field] = json_compatible(value)
         return summary
+
+    def metadata_fields(self):
+        additional_metadata_fields = self.request.form.get("metadata_fields", [])
+        if not isinstance(additional_metadata_fields, list):
+            additional_metadata_fields = [additional_metadata_fields]
+        additional_metadata_fields = set(additional_metadata_fields)
+
+        if "_all" in additional_metadata_fields:
+            fields_cache = self.request.get('_summary_fields_cache', None)
+            if fields_cache is None:
+                catalog = getToolByName(self.context, "portal_catalog")
+                fields_cache = set(catalog.schema()) | NON_METADATA_ATTRIBUTES
+                self.request.set('_summary_fields_cache', fields_cache)
+            additional_metadata_fields = fields_cache
+
+        return DEFAULT_METADATA_FIELDS | additional_metadata_fields
 
 
 @implementer(ISerializeToJsonSummary)

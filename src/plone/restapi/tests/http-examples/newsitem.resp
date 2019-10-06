@@ -12,6 +12,9 @@ Content-Type: application/json
     "navigation": {
       "@id": "http://localhost:55001/plone/newsitem/@navigation"
     }, 
+    "types": {
+      "@id": "http://localhost:55001/plone/newsitem/@types"
+    }, 
     "workflow": {
       "@id": "http://localhost:55001/plone/newsitem/@workflow"
     }
@@ -22,7 +25,7 @@ Content-Type: application/json
   "allow_discussion": false, 
   "changeNote": "", 
   "contributors": [], 
-  "created": "2016-01-21T02:14:48+00:00", 
+  "created": "1995-07-31T13:45:00", 
   "creators": [
     "test_user_1_"
   ], 
@@ -80,7 +83,7 @@ Content-Type: application/json
   "is_folderish": false, 
   "language": "", 
   "layout": "newsitem_view", 
-  "modified": "2016-01-21T02:24:11+00:00", 
+  "modified": "1995-07-31T17:30:00", 
   "parent": {
     "@id": "http://localhost:55001/plone", 
     "@type": "Plone Site", 
