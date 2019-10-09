@@ -47,6 +47,8 @@ Contents
    vocabularies
    controlpanels
    tiles
+   querystring
+   querystringsearch
    customization
    conventions
    translations
@@ -54,6 +56,7 @@ Contents
    i18n
    email-notification
    upgrade-guide
+   contributing
 
 .. include:: ../../README.rst
 

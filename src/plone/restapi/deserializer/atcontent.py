@@ -1,21 +1,20 @@
 # -*- coding: utf-8 -*-
+from .mixins import OrderingMixin
+from plone.restapi.deserializer import json_body
+from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.interfaces import IFieldDeserializer
 from Products.Archetypes.event import ObjectEditedEvent
 from Products.Archetypes.event import ObjectInitializedEvent
 from Products.Archetypes.interfaces import IBaseObject
 from Products.Archetypes.interfaces import IObjectPostValidation
 from Products.Archetypes.interfaces import IObjectPreValidation
-from plone.restapi.deserializer import json_body
-from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.interfaces import IFieldDeserializer
 from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.component import subscribers
 from zope.event import notify
-from zope.interface import Interface
 from zope.interface import implementer
-
-from .mixins import OrderingMixin
+from zope.interface import Interface
 
 
 @implementer(IDeserializeFromJson)
@@ -23,6 +22,8 @@ from .mixins import OrderingMixin
 class DeserializeFromJson(OrderingMixin, object):
     """JSON deserializer for Archetypes content types
     """
+
+    notifies_create = True
 
     def __init__(self, context, request):
         self.context = context
@@ -42,8 +43,9 @@ class DeserializeFromJson(OrderingMixin, object):
             name = field.getName()
 
             if name in data:
-                deserializer = queryMultiAdapter((field, obj, self.request),
-                                                 IFieldDeserializer)
+                deserializer = queryMultiAdapter(
+                    (field, obj, self.request), IFieldDeserializer
+                )
                 if deserializer is None:
                     continue
                 value, kwargs = deserializer(data[name])
@@ -56,10 +58,10 @@ class DeserializeFromJson(OrderingMixin, object):
             if not validate_all:
                 errors = {f: e for f, e in errors.items() if f in data}
             if errors:
-                errors = [{
-                    'message': e,
-                    'field': f,
-                    'error': 'ValidationError'} for f, e in errors.items()]
+                errors = [
+                    {"message": e, "field": f, "error": "ValidationError"}
+                    for f, e in errors.items()
+                ]
                 raise BadRequest(errors)
 
             if create:
@@ -74,8 +76,8 @@ class DeserializeFromJson(OrderingMixin, object):
 
         # We'll set the layout after the validation and and even if there
         # are no other changes.
-        if 'layout' in data:
-            layout = data['layout']
+        if "layout" in data:
+            layout = data["layout"]
             self.context.setLayout(layout)
 
         # OrderingMixin
@@ -106,8 +108,9 @@ class DeserializeFromJson(OrderingMixin, object):
                     else:
                         errors[field_name] = error_message
 
-        obj.Schema().validate(instance=obj, REQUEST=None,
-                              errors=errors, data=True, metadata=True)
+        obj.Schema().validate(
+            instance=obj, REQUEST=None, errors=errors, data=True, metadata=True
+        )
 
         obj.post_validate(request, errors)
 
@@ -150,6 +153,7 @@ class ValidationRequest(dict):
 class ValidationRequestForm(dict):
     """A request form dict that returns values from the content object.
     """
+
     def __init__(self, request, context):
         self.request = request
         self.context = context

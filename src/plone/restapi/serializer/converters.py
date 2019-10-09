@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
 from datetime import date
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
+from DateTime import DateTime
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
 from plone.app.textfield.interfaces import IRichTextValue
@@ -11,6 +11,8 @@ from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IContextawareJsonCompatible
 from plone.restapi.interfaces import IJsonCompatible
 from Products.CMFPlone.utils import safe_unicode
+from six.moves import map
+from six.moves import zip
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
@@ -21,6 +23,9 @@ from zope.interface import Interface
 
 import Missing
 import pytz
+import six
+
+
 # import re
 
 
@@ -28,11 +33,11 @@ def datetimelike_to_iso(value):
     if isinstance(value, DateTime):
         value = value.asdatetime()
 
-    if getattr(value, 'tzinfo', None):
+    if getattr(value, "tzinfo", None):
         # timezone aware date/time objects are converted to UTC first.
-        utc = pytz.timezone('UTC')
+        utc = pytz.timezone("UTC")
         value = value.astimezone(utc)
-    if getattr(value, 'microsecond', False):
+    if getattr(value, "microsecond", False):
         # Microseconds are normally not used in Plone
         value = value.replace(microsecond=0)
     iso = value.isoformat()
@@ -59,10 +64,7 @@ def json_compatible(value, context=None):
     used for converting values that may be None.
     """
     if context is not None:
-        adapter = queryMultiAdapter(
-            (value, context),
-            IContextawareJsonCompatible
-        )
+        adapter = queryMultiAdapter((value, context), IContextawareJsonCompatible)
         if adapter:
             return adapter()
     else:
@@ -75,24 +77,25 @@ def default_converter(value):
     if value is None:
         return value
 
-    if type(value) in (unicode, bool, int, float, long):
+    if type(value) in (six.text_type, bool, int, float, int):
         return value
 
     raise TypeError(
-        'No converter for making'
-        ' {0!r} ({1}) JSON compatible.'.format(value, type(value)))
+        "No converter for making"
+        " {0!r} ({1}) JSON compatible.".format(value, type(value))
+    )
 
 
-@adapter(str)
+@adapter(bytes)
 @implementer(IJsonCompatible)
-def string_converter(value):
-    return safe_unicode(value, 'utf-8')
+def bytes_converter(value):
+    return safe_unicode(value, "utf-8")
 
 
 @adapter(list)
 @implementer(IJsonCompatible)
 def list_converter(value):
-    return map(json_compatible, value)
+    return list(map(json_compatible, value))
 
 
 @adapter(PersistentList)
@@ -104,19 +107,19 @@ def persistent_list_converter(value):
 @adapter(tuple)
 @implementer(IJsonCompatible)
 def tuple_converter(value):
-    return map(json_compatible, value)
+    return list(map(json_compatible, value))
 
 
 @adapter(frozenset)
 @implementer(IJsonCompatible)
 def frozenset_converter(value):
-    return map(json_compatible, value)
+    return list(map(json_compatible, value))
 
 
 @adapter(set)
 @implementer(IJsonCompatible)
 def set_converter(value):
-    return map(json_compatible, value)
+    return list(map(json_compatible, value))
 
 
 @adapter(dict)
@@ -125,10 +128,10 @@ def dict_converter(value):
     if value == {}:
         return {}
 
-    keys, values = zip(*value.items())
-    keys = map(json_compatible, keys)
-    values = map(json_compatible, values)
-    return dict(zip(keys, values))
+    keys, values = list(zip(*list(value.items())))
+    keys = list(map(json_compatible, keys))
+    values = list(map(json_compatible, values))
+    return dict(list(zip(keys, values)))
 
 
 @adapter(PersistentMapping)
@@ -178,9 +181,9 @@ class RichtextDXContextConverter(object):
         value = self.value
         output = value.output_relative_to(self.context)
         return {
-            u'data': json_compatible(output),
-            u'content-type': json_compatible(value.mimeType),
-            u'encoding': json_compatible(value.encoding),
+            u"data": json_compatible(output),
+            u"content-type": json_compatible(value.mimeType),
+            u"encoding": json_compatible(value.encoding),
         }
 
 

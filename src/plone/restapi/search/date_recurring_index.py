@@ -13,6 +13,4 @@ from zope.interface import Interface
 class DateRecurringIndexQueryParser(BaseIndexQueryParser):
 
     query_value_type = DateTime
-    query_options = {
-        'range': str,
-    }
+    query_options = {"range": str}

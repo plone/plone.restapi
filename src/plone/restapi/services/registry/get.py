@@ -1,16 +1,15 @@
 # -*- coding: utf-8 -*-
 from plone.registry.interfaces import IRegistry
-from plone.restapi.services import Service
-from zope.component import getUtility, getMultiAdapter
-from zope.interface import implements
-from zope.publisher.interfaces import IPublishTraverse
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.services import Service
+from zope.component import getMultiAdapter
+from zope.component import getUtility
+from zope.interface import implementer
+from zope.publisher.interfaces import IPublishTraverse
 
 
+@implementer(IPublishTraverse)
 class RegistryGet(Service):
-
-    implements(IPublishTraverse)
-
     def __init__(self, context, request):
         super(RegistryGet, self).__init__(context, request)
         self.params = []
@@ -25,7 +24,8 @@ class RegistryGet(Service):
         if len(self.params) != 1:
             raise Exception(
                 "Must supply exactly one parameter (dotted name of"
-                "the record to be retrieved)")
+                "the record to be retrieved)"
+            )
 
         return self.params[0]
 
@@ -35,7 +35,5 @@ class RegistryGet(Service):
             value = registry[self._get_record_name]
             return value
         else:  # batched listing
-            serializer = getMultiAdapter(
-                (registry, self.request), ISerializeToJson
-            )
+            serializer = getMultiAdapter((registry, self.request), ISerializeToJson)
             return serializer()

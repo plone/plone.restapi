@@ -19,15 +19,13 @@ class BaseSerializer(object):
         portal = getSite()
 
         return {
-            '@id': '{}/@groups/{}'.format(
-                portal.absolute_url(),
-                group.id
-            ),
-            'id': group.id,
-            'groupname': group.getGroupName(),
-            'email': group.getProperty('email'),
-            'title': group.getProperty('title'),
-            'description': group.getProperty('description'),
+            "@id": "{}/@groups/{}".format(portal.absolute_url(), group.id),
+            "id": group.id,
+            "groupname": group.getGroupName(),
+            "email": group.getProperty("email"),
+            "title": group.getProperty("title"),
+            "description": group.getProperty("description"),
+            "roles": group.getRoles(),
         }
 
 
@@ -40,20 +38,18 @@ class SerializeGroupToJsonSummary(BaseSerializer):
 @implementer(ISerializeToJson)
 @adapter(IGroupData, Interface)
 class SerializeGroupToJson(BaseSerializer):
-
     def __call__(self):
         data = super(SerializeGroupToJson, self).__call__()
         group = self.context
         members = group.getGroupMemberIds()
         batch = HypermediaBatch(self.request, members)
-
         users_data = {
-            '@id': batch.canonical_url,
-            'items_total': batch.items_total,
-            'items': list(batch),
+            "@id": batch.canonical_url,
+            "items_total": batch.items_total,
+            "items": sorted(batch),
         }
         if batch.links:
-            users_data['batching'] = batch.links
+            users_data["batching"] = batch.links
 
-        data['users'] = users_data
+        data["users"] = users_data
         return data

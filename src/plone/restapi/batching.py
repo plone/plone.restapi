@@ -1,19 +1,19 @@
 # -*- coding: utf-8 -*-
 from plone.batching.batch import Batch
-from urllib import urlencode
-from urlparse import parse_qsl
+from plone.restapi.deserializer import json_body
+from six.moves.urllib.parse import parse_qsl
+from six.moves.urllib.parse import urlencode
 
 
 DEFAULT_BATCH_SIZE = 25
 
 
 class HypermediaBatch(object):
-
     def __init__(self, request, results):
         self.request = request
 
-        self.b_start = int(self.request.form.get('b_start', 0))
-        self.b_size = int(self.request.form.get('b_size', DEFAULT_BATCH_SIZE))
+        self.b_start = int(json_body(self.request).get('b_start', False)) or int(self.request.form.get("b_start", 0))
+        self.b_size = int(json_body(self.request).get('b_size', False)) or int(self.request.form.get("b_size", DEFAULT_BATCH_SIZE))
 
         self.batch = Batch(results, self.b_size, self.b_start)
 
@@ -34,28 +34,27 @@ class HypermediaBatch(object):
         preserving query string params, but stripping all batching related
         params from it.
         """
-        url = self.request['ACTUAL_URL']
-        qs_params = parse_qsl(self.request['QUERY_STRING'])
+        url = self.request["ACTUAL_URL"]
+        qs_params = parse_qsl(self.request["QUERY_STRING"])
 
         # Remove any batching / sorting related parameters.
         # Also take care to preserve list-like query string params.
         for key, value in qs_params[:]:
-            if key in ('b_size', 'b_start',
-                       'sort_on', 'sort_order', 'sort_limit'):
+            if key in ("b_size", "b_start", "sort_on", "sort_order", "sort_limit"):
                 qs_params.remove((key, value))
 
         qs = urlencode(qs_params)
 
         if qs_params:
-            url = '?'.join((url, qs))
+            url = "?".join((url, qs))
         return url
 
     @property
     def current_batch_url(self):
-        url = self.request['ACTUAL_URL']
-        qs = self.request['QUERY_STRING']
+        url = self.request["ACTUAL_URL"]
+        qs = self.request["QUERY_STRING"]
         if qs:
-            url = '?'.join((url, qs))
+            url = "?".join((url, qs))
         return url
 
     @property
@@ -73,15 +72,15 @@ class HypermediaBatch(object):
         next = self.batch.next
         prev = self.batch.previous
 
-        links['@id'] = self.current_batch_url
-        links['first'] = self._url_for_batch(first)
-        links['last'] = self._url_for_batch(last)
+        links["@id"] = self.current_batch_url
+        links["first"] = self._url_for_batch(first)
+        links["last"] = self._url_for_batch(last)
 
         if next:
-            links['next'] = self._url_for_batch(next)
+            links["next"] = self._url_for_batch(next)
 
         if prev:
-            links['prev'] = self._url_for_batch(prev)
+            links["prev"] = self._url_for_batch(prev)
 
         return links
 
@@ -89,9 +88,8 @@ class HypermediaBatch(object):
         """Return a new Batch object for the given pagenumber.
         """
         new_batch = Batch.fromPagenumber(
-            self.batch._sequence,
-            pagesize=self.b_size,
-            pagenumber=pagenumber)
+            self.batch._sequence, pagesize=self.b_size, pagenumber=pagenumber
+        )
         return new_batch
 
     def _url_for_batch(self, batch):
@@ -101,26 +99,26 @@ class HypermediaBatch(object):
         # Make sure we account for plone.batching's one-based indexing and
         # that the start never drops below zero
         new_start = max(0, batch.start - 1)
-        url = self._url_with_params(params={'b_start': new_start})
+        url = self._url_with_params(params={"b_start": new_start})
         return url
 
     def _url_with_params(self, params):
         """Build an URL based on the actual URL of the current request URL
         and add or update some query string parameters in it.
         """
-        url = self.request['ACTUAL_URL']
-        qs_params = parse_qsl(self.request['QUERY_STRING'])
+        url = self.request["ACTUAL_URL"]
+        qs_params = parse_qsl(self.request["QUERY_STRING"])
 
         # Take care to preserve list-like query string arguments (same QS
         # param repeated multiple times). In other words, don't turn the
         # result of parse_qsl into a dict!
 
         # Drop params to be updated, then prepend new params in order
-        qs_params = filter(lambda x: x[0] not in params.keys(), qs_params)
+        qs_params = [x for x in qs_params if x[0] not in list(params)]
         qs_params = sorted(params.items()) + qs_params
 
         qs = urlencode(qs_params)
 
         if qs_params:
-            url = '?'.join((url, qs))
+            url = "?".join((url, qs))
         return url

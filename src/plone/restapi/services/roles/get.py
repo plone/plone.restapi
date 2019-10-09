@@ -6,16 +6,15 @@ from zope.i18n import translate
 
 
 class RolesGet(Service):
-
     def reply(self):
-        pmemb = getToolByName(aq_inner(self.context), 'portal_membership')
-        roles = [r for r in pmemb.getPortalRoles() if r != 'Owner']
+        pmemb = getToolByName(aq_inner(self.context), "portal_membership")
+        roles = [r for r in pmemb.getPortalRoles() if r != "Owner"]
         return [
             {
-                '@type': 'role',
-                '@id': '{}/@roles/{}'.format(self.context.absolute_url(), r),
-                'id': r,
-                'title': translate(r, context=self.request, domain='plone'),
+                "@type": "role",
+                "@id": "{}/@roles/{}".format(self.context.absolute_url(), r),
+                "id": r,
+                "title": translate(r, context=self.request, domain="plone"),
             }
             for r in roles
         ]

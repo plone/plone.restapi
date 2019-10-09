@@ -14,6 +14,7 @@ from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDatetime
 from zope.schema.interfaces import IDict
@@ -22,14 +23,16 @@ from zope.schema.interfaces import IFromUnicode
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
+from zope.schema.interfaces import IVocabularyTokenized
 
+import codecs
 import dateutil
+import six
 
 
 @implementer(IFieldDeserializer)
 @adapter(IField, IDexterityContent, IBrowserRequest)
 class DefaultFieldDeserializer(object):
-
     def __init__(self, field, context, request):
         self.field = field
         if IField.providedBy(self.field):
@@ -38,7 +41,7 @@ class DefaultFieldDeserializer(object):
         self.request = request
 
     def __call__(self, value):
-        if not isinstance(value, unicode):
+        if not isinstance(value, six.text_type):
             self.field.validate(value)
             return value
 
@@ -50,15 +53,14 @@ class DefaultFieldDeserializer(object):
 @implementer(IFieldDeserializer)
 @adapter(ITextLine, IDexterityContent, IBrowserRequest)
 class TextLineFieldDeserializer(DefaultFieldDeserializer):
-
     def __call__(self, value):
-        if isinstance(value, unicode):
+        if isinstance(value, six.text_type):
             value = IFromUnicode(self.field).fromUnicode(value)
 
         # Mimic what z3c.form does in it's BaseDataConverter.
-        if isinstance(value, unicode):
+        if isinstance(value, six.text_type):
             value = value.strip()
-            if value == u'':
+            if value == u"":
                 value = self.field.missing_value
 
         self.field.validate(value)
@@ -68,7 +70,6 @@ class TextLineFieldDeserializer(DefaultFieldDeserializer):
 @implementer(IFieldDeserializer)
 @adapter(IDatetime, IDexterityContent, IBrowserRequest)
 class DatetimeFieldDeserializer(DefaultFieldDeserializer):
-
     def __call__(self, value):
         # Datetime fields may contain timezone naive or timezone aware
         # objects. Unfortunately the zope.schema.Datetime field does not
@@ -94,7 +95,7 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
         try:
             dt = dateutil.parser.parse(value)
         except ValueError:
-            raise ValueError(u'Invalid date: {}'.format(value))
+            raise ValueError(u"Invalid date: {}".format(value))
 
         # Convert to TZ aware in UTC
         if dt.tzinfo is not None:
@@ -114,19 +115,36 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
 
 
 @implementer(IFieldDeserializer)
+@adapter(IChoice, IDexterityContent, IBrowserRequest)
+class ChoiceFieldDeserializer(DefaultFieldDeserializer):
+    def __call__(self, value):
+        if isinstance(value, dict) and "token" in value:
+            value = value["token"]
+        if IVocabularyTokenized.providedBy(self.field.vocabulary):
+            try:
+                value = self.field.vocabulary.getTermByToken(value).value
+            except LookupError:
+                pass
+
+        self.field.validate(value)
+        return value
+
+
+@implementer(IFieldDeserializer)
 @adapter(ICollection, IDexterityContent, IBrowserRequest)
 class CollectionFieldDeserializer(DefaultFieldDeserializer):
-
     def __call__(self, value):
         if not isinstance(value, list):
             value = [value]
 
         if IField.providedBy(self.field.value_type):
             deserializer = getMultiAdapter(
-                (self.field.value_type, self.context, self.request),
-                IFieldDeserializer)
+                (self.field.value_type, self.context, self.request), IFieldDeserializer
+            )
 
             for i, v in enumerate(value):
+                if isinstance(v, dict) and "token" in v:
+                    v = v["token"]
                 value[i] = deserializer(v)
 
         value = self.field._type(value)
@@ -138,21 +156,22 @@ class CollectionFieldDeserializer(DefaultFieldDeserializer):
 @implementer(IFieldDeserializer)
 @adapter(IDict, IDexterityContent, IBrowserRequest)
 class DictFieldDeserializer(DefaultFieldDeserializer):
-
     def __call__(self, value):
         if IField.providedBy(self.field.key_type):
             kdeserializer = getMultiAdapter(
-                (self.field.key_type, self.context, self.request),
-                IFieldDeserializer)
+                (self.field.key_type, self.context, self.request), IFieldDeserializer
+            )
         else:
+
             def kdeserializer(k):
                 return k
 
         if IField.providedBy(self.field.value_type):
             vdeserializer = getMultiAdapter(
-                (self.field.value_type, self.context, self.request),
-                IFieldDeserializer)
+                (self.field.value_type, self.context, self.request), IFieldDeserializer
+            )
         else:
+
             def vdeserializer(v):
                 return v
 
@@ -167,7 +186,6 @@ class DictFieldDeserializer(DefaultFieldDeserializer):
 @implementer(IFieldDeserializer)
 @adapter(ITime, IDexterityContent, IBrowserRequest)
 class TimeFieldDeserializer(DefaultFieldDeserializer):
-
     def __call__(self, value):
         try:
             # Create an ISO 8601 datetime string and parse it with Zope's
@@ -177,7 +195,7 @@ class TimeFieldDeserializer(DefaultFieldDeserializer):
             # using ``timetz()`` would be timezone aware.
             value = dateutil.parser.parse(value).time()
         except ValueError:
-            raise ValueError(u'Invalid time: {}'.format(value))
+            raise ValueError(u"Invalid time: {}".format(value))
 
         self.field.validate(value)
         return value
@@ -186,12 +204,11 @@ class TimeFieldDeserializer(DefaultFieldDeserializer):
 @implementer(IFieldDeserializer)
 @adapter(ITimedelta, IDexterityContent, IBrowserRequest)
 class TimedeltaFieldDeserializer(DefaultFieldDeserializer):
-
     def __call__(self, value):
         try:
             value = timedelta(seconds=value)
         except TypeError as e:
-            raise ValueError(e.message)
+            raise ValueError(str(e))
 
         self.field.validate(value)
         return value
@@ -200,36 +217,39 @@ class TimedeltaFieldDeserializer(DefaultFieldDeserializer):
 @implementer(IFieldDeserializer)
 @adapter(INamedField, IDexterityContent, IBrowserRequest)
 class NamedFieldDeserializer(DefaultFieldDeserializer):
-
     def __call__(self, value):
-        content_type = 'application/octet-stream'
+        content_type = "application/octet-stream"
         filename = None
         if isinstance(value, dict):
-            if 'data' not in value:
+            if "data" not in value:
                 # We are probably pushing the contents of a previous GET
                 # That contain the read representation of the file
                 # with the 'download' key so we return the same stored file
                 return getattr(self.field.context, self.field.__name__)
 
-            content_type = value.get(u'content-type', content_type).encode(
-                'utf8')
-            filename = value.get(u'filename', filename)
-            if u'encoding' in value:
-                data = value.get('data', '').decode(value[u'encoding'])
-            else:
-                data = value.get('data', '')
+            content_type = value.get("content-type", content_type)
+            filename = value.get("filename", filename)
+            data = value.get("data", "")
+            if isinstance(data, six.text_type):
+                data = data.encode("utf-8")
+            if "encoding" in value:
+                data = codecs.decode(data, value["encoding"])
+            if isinstance(data, six.text_type):
+                data = data.encode("utf-8")
         elif isinstance(value, TUSUpload):
-            content_type = value.metadata().get(
-                'content-type', content_type).encode('utf8')
-            filename = value.metadata().get('filename', filename)
+            content_type = value.metadata().get("content-type", content_type)
+            filename = value.metadata().get("filename", filename)
             data = value.open()
         else:
             data = value
 
         # Convert if we have data
         if data:
+            if six.PY2:
+                content_type = content_type.encode("utf8")
             value = self.field._type(
-                data=data, contentType=content_type, filename=filename)
+                data=data, contentType=content_type, filename=filename
+            )
         else:
             value = None
 
@@ -241,18 +261,17 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
 @implementer(IFieldDeserializer)
 @adapter(IRichText, IDexterityContent, IBrowserRequest)
 class RichTextFieldDeserializer(DefaultFieldDeserializer):
-
     def __call__(self, value):
         content_type = self.field.default_mime_type
-        encoding = 'utf8'
+        encoding = "utf8"
         if isinstance(value, dict):
-            content_type = value.get(u'content-type', content_type)
-            encoding = value.get(u'encoding', encoding)
-            data = value.get(u'data', u'')
+            content_type = value.get("content-type", content_type)
+            encoding = value.get("encoding", encoding)
+            data = value.get("data", u"")
         elif isinstance(value, TUSUpload):
-            content_type = value.metadata().get('content-type', content_type)
-            with open(value.filepath, 'rb') as f:
-                data = f.read().decode('utf8')
+            content_type = value.metadata().get("content-type", content_type)
+            with open(value.filepath, "rb") as f:
+                data = f.read().decode("utf8")
         else:
             data = value
 

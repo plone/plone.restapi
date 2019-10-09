@@ -9,21 +9,19 @@ import plone.protect.interfaces
 
 
 class RegistryUpdate(Service):
-
     def reply(self):
-        records_to_update = json.loads(self.request.get('BODY', '{}'))
+        records_to_update = json.loads(self.request.get("BODY", "{}"))
         registry = getUtility(IRegistry)
 
         # Disable CSRF protection
-        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         for key, value in records_to_update.items():
             if key not in registry:
                 raise NotImplementedError(
                     "This endpoint is only intended to update existing "
-                    "records! Couldn't find key %r" % key)
+                    "records! Couldn't find key %r" % key
+                )
             registry[key] = value
-        self.request.response.setStatus(204)
-        return None
+        return self.reply_no_content()

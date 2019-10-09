@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+from __future__ import division
 from Products.CMFCore.interfaces import IPropertiesTool
+from six.moves import map
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.globalrequest import getRequest
+
 
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
@@ -18,7 +21,7 @@ def get_scales(context, field, width, height):
     """
     scales = {}
     request = getRequest()
-    images_view = getMultiAdapter((context, request), name='images')
+    images_view = getMultiAdapter((context, request), name="images")
 
     for name, actual_width, actual_height in get_scale_infos():
         # Try first with scale name
@@ -27,29 +30,35 @@ def get_scales(context, field, width, height):
             # Sometimes it fails, but we can create it
             # using scale sizes
             scale = images_view.scale(
-                field.__name__, width=actual_width, height=actual_height)
+                field.__name__, width=actual_width, height=actual_height
+            )
+
+        if scale is None:
+            # If we still can't get a scale, it's probably a corrupt image
+            continue
 
         url = scale.url
         actual_width = scale.width
         actual_height = scale.height
 
         scales[name] = {
-            u'download': url,
-            u'width': actual_width,
-            u'height': actual_height}
+            u"download": url,
+            u"width": actual_width,
+            u"height": actual_height,
+        }
 
     return scales
 
 
 def get_original_image_url(context, fieldname, width, height):
     request = getRequest()
-    images_view = getMultiAdapter((context, request), name='images')
+    images_view = getMultiAdapter((context, request), name="images")
     scale = images_view.scale(
-        fieldname,
-        width=width,
-        height=height,
-        direction='thumbnail'
+        fieldname, width=width, height=height, direction="thumbnail"
     )
+    if not scale:
+        # This might happen for corrupt images.
+        return None
 
     return scale.url
 
@@ -62,8 +71,8 @@ def get_actual_scale(dimensions, bbox):
     This is supposed to emulate / predict the behavior of Plone's
     ImageScaling implementations.
     """
-    width, height = map(float, dimensions)
-    max_width, max_height = map(float, bbox)
+    width, height = dimensions
+    max_width, max_height = bbox
     resize_ratio = min(max_width / width, max_height / height)
 
     # Plone doesn't upscale images for the default named scales - limit
@@ -83,22 +92,21 @@ def get_scale_infos():
     """
     if PLONE_5:
         from plone.registry.interfaces import IRegistry
+
         registry = getUtility(IRegistry)
         from Products.CMFPlone.interfaces import IImagingSchema
-        imaging_settings = registry.forInterface(
-            IImagingSchema,
-            prefix='plone'
-        )
+
+        imaging_settings = registry.forInterface(IImagingSchema, prefix="plone")
         allowed_sizes = imaging_settings.allowed_sizes
 
     else:
         ptool = getUtility(IPropertiesTool)
         image_properties = ptool.imaging_properties
-        allowed_sizes = image_properties.getProperty('allowed_sizes')
+        allowed_sizes = image_properties.getProperty("allowed_sizes")
 
     def split_scale_info(allowed_size):
-        name, dims = allowed_size.split(' ')
-        width, height = map(int, dims.split(':'))
+        name, dims = allowed_size.split(" ")
+        width, height = list(map(int, dims.split(":")))
         return name, width, height
 
     return [split_scale_info(size) for size in allowed_sizes]

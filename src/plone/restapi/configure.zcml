@@ -9,7 +9,12 @@
 
   <i18n:registerTranslations directory="locales" />
 
-  <includeDependencies package="." />
+  <include package="plone.behavior" file="meta.zcml"/>
+  <include package="plone.rest" file="meta.zcml"/>
+
+  <include package="plone.behavior" />
+  <include package="plone.rest" />
+  <include package="plone.schema" />
 
   <five:registerPackage package="." initialize=".initialize" />
 
@@ -37,6 +42,14 @@
       title="plone.restapi performance testing"
       directory="profiles/performance"
       description="Adds sample content for performance testing"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      />
+
+  <genericsetup:registerProfile
+      name="tiles"
+      title="plone.restapi tiles"
+      directory="profiles/tiles"
+      description="Enables tiles on the Document content type"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 

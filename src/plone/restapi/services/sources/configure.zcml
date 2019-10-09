@@ -1,0 +1,14 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone">
+
+  <plone:service
+    method="GET"
+    accept="application/json"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".get.SourcesGet"
+    name="@sources"
+    permission="plone.restapi.vocabularies"
+    />
+
+</configure>

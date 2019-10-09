@@ -1,20 +1,18 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.services import Service
 from AccessControl.security import checkPermission
-from zope.component import getUtilitiesFor
-from zope.component import getMultiAdapter
-from plone.tiles.interfaces import ITileType
-from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.interfaces import ISerializeToJson
-from zope.interface import implements
-from zope.publisher.interfaces import IPublishTraverse
+from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.services import Service
+from plone.tiles.interfaces import ITileType
+from zope.component import getMultiAdapter
+from zope.component import getUtilitiesFor
 from zope.component import getUtility
+from zope.interface import implementer
+from zope.publisher.interfaces import IPublishTraverse
 
 
+@implementer(IPublishTraverse)
 class TilesGet(Service):
-
-    implements(IPublishTraverse)
-
     def __init__(self, context, request):
         super(TilesGet, self).__init__(context, request)
         self.params = []
@@ -29,23 +27,19 @@ class TilesGet(Service):
             self.content_type = "application/json+schema"
             try:
                 tile = getUtility(ITileType, name=self.params[0])
-                return getMultiAdapter(
-                    (tile, self.request), ISerializeToJson)()
+                return getMultiAdapter((tile, self.request), ISerializeToJson)()
             except KeyError:
                 self.content_type = "application/json"
                 self.request.response.setStatus(404)
                 return {
-                    'type': 'NotFound',
-                    'message': 'Tile "{}" could not be found.'.format(
-                        self.params[0]
-                    )
+                    "type": "NotFound",
+                    "message": 'Tile "{}" could not be found.'.format(self.params[0]),
                 }
 
         result = []
         tiles = getUtilitiesFor(ITileType, context=self.context)
         for name, tile in tiles:
-            serializer = getMultiAdapter(
-                (tile, self.request), ISerializeToJsonSummary)
+            serializer = getMultiAdapter((tile, self.request), ISerializeToJsonSummary)
             if checkPermission(tile.add_permission, self.context):
                 result.append(serializer())
 

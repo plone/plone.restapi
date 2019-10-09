@@ -150,11 +150,46 @@ Deserialization
 In order to set a relation when creating or updating content, you can use one
 of several ways to specify relations:
 
-======================================= ======================================
-Type                                    Example
-======================================= ======================================
-UID                                     ``'9b6a4eadb9074dde97d86171bb332ae9'``
-IntId                                   ``123456``
-Path                                    ``'/plone/doc1'``
-URL                                     ``'http://localhost:8080/plone/doc1'``
-======================================= ======================================
+- UID
+- path
+- URL
+- intid
+
+Specify relations by UID:
+
+.. code-block:: json
+
+  {
+    "relatedItems": [
+      "158e5361282647e39bf0698fe238814b",
+      "5597250bda4b41eab6ed37cd25fb0979"
+    ]
+  }
+
+Specify relations by path:
+
+.. code-block:: json
+
+  {
+    "relatedItems": ["/page1", "/page2"]
+  }
+
+Specify relations by URL:
+
+.. code-block:: json
+
+  {
+    "relatedItems": [
+      "http://localhost:8080/Plone/page1",
+      "http://localhost:8080/Plone/page2"
+    ]
+  }
+
+Specify relations by intid:
+
+.. code-block:: json
+
+  {
+    "relatedItems": [347127075, 347127076]
+  }
+

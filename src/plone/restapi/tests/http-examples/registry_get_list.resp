@@ -6,7 +6,7 @@ Content-Type: application/json
   "batching": {
     "@id": "http://localhost:55001/plone/@registry", 
     "first": "http://localhost:55001/plone/@registry?b_start=0", 
-    "last": "http://localhost:55001/plone/@registry?b_start=1525", 
+    "last": "http://localhost:55001/plone/@registry?b_start=1675", 
     "next": "http://localhost:55001/plone/@registry?b_start=25"
   }, 
   "items": [
@@ -188,12 +188,12 @@ Content-Type: application/json
           ], 
           "description": "Paths to folders and collections to link to at the portal root.", 
           "items": {
-            "choices": [], 
             "description": "", 
-            "enum": [], 
-            "enumNames": [], 
             "title": "", 
-            "type": "string"
+            "type": "string", 
+            "vocabulary": {
+              "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicatableFeedItems"
+            }
           }, 
           "title": "Site RSS", 
           "type": "array", 
@@ -203,38 +203,6 @@ Content-Type: application/json
       "value": [
         "/news/aggregator"
       ]
-    }, 
-    {
-      "name": "Products.ResourceRegistries.interfaces.settings.IResourceRegistriesSettings.resourceBundlesForThemes", 
-      "schema": {
-        "properties": {
-          "description": "Maps skin names to lists of resource bundle names", 
-          "key_type": {
-            "additional": {}, 
-            "schema": {
-              "description": "", 
-              "title": "", 
-              "type": "string"
-            }
-          }, 
-          "title": "Resource bundles for themes", 
-          "type": "dict", 
-          "value_type": {
-            "additional": {}, 
-            "schema": {
-              "description": "", 
-              "title": "", 
-              "type": "string"
-            }
-          }
-        }
-      }, 
-      "value": {
-        "(default)": [
-          "jquery", 
-          "default"
-        ]
-      }
     }, 
     {
       "name": "plone.alignment_styles", 
@@ -342,75 +310,12 @@ Content-Type: application/json
           ], 
           "description": "Select which formats are available for users as alternative to the default format. Note that if new formats are installed, they will be enabled for text fields by default unless explicitly turned off here or by the relevant installer.", 
           "items": {
-            "choices": [
-              [
-                "text/html", 
-                "text/html"
-              ], 
-              [
-                "text/plain", 
-                "text/plain"
-              ], 
-              [
-                "text/plain-pre", 
-                "text/plain-pre"
-              ], 
-              [
-                "text/restructured", 
-                "text/restructured"
-              ], 
-              [
-                "text/structured", 
-                "text/structured"
-              ], 
-              [
-                "text/x-python", 
-                "text/x-python"
-              ], 
-              [
-                "text/x-rst", 
-                "text/x-rst"
-              ], 
-              [
-                "text/x-web-intelligent", 
-                "text/x-web-intelligent"
-              ], 
-              [
-                "text/x-web-markdown", 
-                "text/x-web-markdown"
-              ], 
-              [
-                "text/x-web-textile", 
-                "text/x-web-textile"
-              ]
-            ], 
             "description": "", 
-            "enum": [
-              "text/html", 
-              "text/plain", 
-              "text/plain-pre", 
-              "text/restructured", 
-              "text/structured", 
-              "text/x-python", 
-              "text/x-rst", 
-              "text/x-web-intelligent", 
-              "text/x-web-markdown", 
-              "text/x-web-textile"
-            ], 
-            "enumNames": [
-              "text/html", 
-              "text/plain", 
-              "text/plain-pre", 
-              "text/restructured", 
-              "text/structured", 
-              "text/x-python", 
-              "text/x-rst", 
-              "text/x-web-intelligent", 
-              "text/x-web-markdown", 
-              "text/x-web-textile"
-            ], 
             "title": "", 
-            "type": "string"
+            "type": "string", 
+            "vocabulary": {
+              "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AllowableContentTypes"
+            }
           }, 
           "title": "Alternative formats", 
           "type": "array", 
@@ -462,22 +367,13 @@ Content-Type: application/json
       "name": "plone.app.discussion.interfaces.IDiscussionSettings.captcha", 
       "schema": {
         "properties": {
-          "choices": [
-            [
-              "disabled", 
-              "Disabled"
-            ]
-          ], 
           "default": "disabled", 
           "description": "Use this setting to enable or disable Captcha validation for comments. Install plone.formwidget.captcha, plone.formwidget.recaptcha, collective.akismet, or collective.z3cform.norobots if there are no options available.", 
-          "enum": [
-            "disabled"
-          ], 
-          "enumNames": [
-            "Disabled"
-          ], 
           "title": "Captcha", 
-          "type": "string"
+          "type": "string", 
+          "vocabulary": {
+            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary"
+          }
         }
       }, 
       "value": "disabled"
@@ -493,7 +389,19 @@ Content-Type: application/json
         }
       }, 
       "value": false
+    }, 
+    {
+      "name": "plone.app.discussion.interfaces.IDiscussionSettings.edit_comment_enabled", 
+      "schema": {
+        "properties": {
+          "default": false, 
+          "description": "If selected, supports editing of comments for users with the \"Edit comments\" permission.", 
+          "title": "Enable editing of comments", 
+          "type": "boolean"
+        }
+      }, 
+      "value": false
     }
   ], 
-  "items_total": 1547
+  "items_total": 1686
 }

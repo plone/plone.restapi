@@ -15,7 +15,6 @@ from zope.interface import Interface
 @adapter(IRoleManager, Interface)
 @implementer(ISerializeToJson)
 class SerializeLocalRolesToJson(object):
-
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -27,25 +26,24 @@ class SerializeLocalRolesToJson(object):
         return util.title
 
     def __call__(self, search=None):
-        self.request.form['search_term'] = search
-        sharing_view = getMultiAdapter((self.context, self.request),
-                                       name='sharing')
+        self.request.form["search_term"] = search
+        sharing_view = getMultiAdapter((self.context, self.request), name="sharing")
         local_roles = sharing_view.role_settings()
 
         available_roles = []
-        for role in sorted(sharing_view.roles(), key=itemgetter('id')):
-            util = queryUtility(ISharingPageRole, name=role['id'])
+        for role in sorted(sharing_view.roles(), key=itemgetter("id")):
+            util = queryUtility(ISharingPageRole, name=role["id"])
             title = util.title
-            available_roles.append({
-                'id': role['id'],
-                'title': translate(title, context=self.request)})
+            available_roles.append(
+                {"id": role["id"], "title": translate(title, context=self.request)}
+            )
 
         blocked_roles = getattr(
-            aq_base(self.context),
-            '__ac_local_roles_block__',
-            False,
+            aq_base(self.context), "__ac_local_roles_block__", False
         )
 
-        return {'inherit': not blocked_roles,
-                'entries': local_roles,
-                'available_roles': available_roles}
+        return {
+            "inherit": not blocked_roles,
+            "entries": local_roles,
+            "available_roles": available_roles,
+        }

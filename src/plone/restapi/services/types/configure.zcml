@@ -11,4 +11,6 @@
     permission="zope2.View"
     />
 
+  <adapter factory=".get.TypesInfo" name="types"/>
+
 </configure>

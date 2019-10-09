@@ -20,17 +20,18 @@ class Lock(Service):
         if lockable is not None:
             lockable.lock()
 
-            if 'stealable' in data and not data['stealable']:
+            if "stealable" in data and not data["stealable"]:
                 alsoProvides(self.context, INonStealableLock)
 
-            if 'timeout' in data:
+            if "timeout" in data:
                 lock_item = webdav_lock(self.context)
-                lock_item.setTimeout("Second-%s" % data['timeout'])
+                lock_item.setTimeout("Second-%s" % data["timeout"])
 
             # Disable CSRF protection
-            if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-                alsoProvides(self.request,
-                             plone.protect.interfaces.IDisableCSRFProtection)
+            if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+                alsoProvides(
+                    self.request, plone.protect.interfaces.IDisableCSRFProtection
+                )
 
         return lock_info(self.context)
 
@@ -47,9 +48,10 @@ class Unlock(Service):
                 noLongerProvides(self.context, INonStealableLock)
 
             # Disable CSRF protection
-            if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-                alsoProvides(self.request,
-                             plone.protect.interfaces.IDisableCSRFProtection)
+            if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+                alsoProvides(
+                    self.request, plone.protect.interfaces.IDisableCSRFProtection
+                )
 
         return lock_info(self.context)
 
@@ -63,9 +65,10 @@ class RefreshLock(Service):
             lockable.refresh_lock()
 
             # Disable CSRF protection
-            if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-                alsoProvides(self.request,
-                             plone.protect.interfaces.IDisableCSRFProtection)
+            if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+                alsoProvides(
+                    self.request, plone.protect.interfaces.IDisableCSRFProtection
+                )
 
         return lock_info(self.context)
 
@@ -81,21 +84,18 @@ def lock_info(obj):
     """Returns lock information about the given object."""
     lockable = ILockable(obj, None)
     if lockable is not None:
-        info = {
-            'locked': lockable.locked(),
-            'stealable': lockable.stealable(),
-        }
+        info = {"locked": lockable.locked(), "stealable": lockable.stealable()}
         lock_info = lockable.lock_info()
         if len(lock_info) > 0:
-            info['creator'] = lock_info[0]['creator']
-            info['time'] = lock_info[0]['time']
-            info['token'] = lock_info[0]['token']
-            lock_type = lock_info[0]['type']
+            info["creator"] = lock_info[0]["creator"]
+            info["time"] = lock_info[0]["time"]
+            info["token"] = lock_info[0]["token"]
+            lock_type = lock_info[0]["type"]
             if lock_type:
-                info['name'] = lock_info[0]['type'].__name__
+                info["name"] = lock_info[0]["type"].__name__
             lock_item = webdav_lock(obj)
             if lock_item:
-                info['timeout'] = lock_item.getTimeout()
+                info["timeout"] = lock_item.getTimeout()
         return info
 
 
@@ -107,7 +107,7 @@ def webdav_lock(obj):
 
     lock_info = lockable.lock_info()
     if len(lock_info) > 0:
-        token = lock_info[0]['token']
+        token = lock_info[0]["token"]
         return obj.wl_getLock(token)
 
 
@@ -119,9 +119,9 @@ def is_locked(obj, request):
     if lockable is None:
         return False
     if lockable.locked():
-        token = request.getHeader('Lock-Token', '')
+        token = request.getHeader("Lock-Token", "")
         lock_info = lockable.lock_info()
-        if len(lock_info) > 0 and lock_info[0]['token'] == token:
+        if len(lock_info) > 0 and lock_info[0]["token"] == token:
             return False
         return True
     return False

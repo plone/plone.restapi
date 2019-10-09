@@ -7,8 +7,8 @@ from plone.restapi.permissions import UseRESTAPI
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 
-import unittest
 import transaction
+import unittest
 
 
 class TestPermissions(unittest.TestCase):
@@ -16,30 +16,33 @@ class TestPermissions(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.app = self.layer['app']
-        self.portal = self.layer['portal']
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
 
         self.api_session = RelativeSession(self.portal_url)
-        self.api_session.headers.update({'Accept': 'application/json'})
+        self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
 
+    def tearDown(self):
+        self.api_session.close()
+
     def test_anonymous_allowed_to_use_api_by_default(self):
-        setRoles(self.portal, TEST_USER_ID, ['Anonymous'])
+        setRoles(self.portal, TEST_USER_ID, ["Anonymous"])
         transaction.commit()
 
         response = self.api_session.get(self.portal_url)
         self.assertEqual(response.status_code, 200)
 
     def test_authenticated_allowed_to_use_api_by_default(self):
-        setRoles(self.portal, TEST_USER_ID, ['Authenticated'])
+        setRoles(self.portal, TEST_USER_ID, ["Authenticated"])
         transaction.commit()
 
         response = self.api_session.get(self.portal_url)
         self.assertEqual(response.status_code, 200)
 
     def test_manager_allowed_to_use_api_by_default(self):
-        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
         transaction.commit()
 
         response = self.api_session.get(self.portal_url)
@@ -54,6 +57,9 @@ class TestPermissions(unittest.TestCase):
         response = self.api_session.get(self.portal_url)
         self.assertEqual(response.status_code, 401)
         self.assertDictContainsSubset(
-            {u'type': u'Unauthorized',
-             u'message': u"Missing 'plone.restapi: Use REST API' permission"},
-            response.json())
+            {
+                u"type": u"Unauthorized",
+                u"message": u"Missing 'plone.restapi: Use REST API' permission",
+            },
+            response.json(),
+        )

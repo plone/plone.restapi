@@ -1,0 +1,16 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@search?path.query=%2Fplone%2Ffolder1&path.depth=1", 
+  "items": [
+    {
+      "@id": "http://localhost:55001/plone/folder1/folder2", 
+      "@type": "Folder", 
+      "description": "", 
+      "review_state": "private", 
+      "title": "Folder 2"
+    }
+  ], 
+  "items_total": 1
+}

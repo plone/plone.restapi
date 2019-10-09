@@ -10,6 +10,7 @@
 /dist
 /local.cfg
 /extras
+/pyvenv.cfg
 .coverage
 *.egg-info
 *.eggs
@@ -25,6 +26,7 @@ docs/Makefile
 docs/make.bat
 docs/doctrees
 docs/html
+sphinx_build.log
 htmlcov
 npm-debug.log
 *.hprof
@@ -34,3 +36,4 @@ pip-selfcheck.json
 /.idea
 /.vscode
 /.ipython
+/.mypy_cache/

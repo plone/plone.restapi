@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from datetime import datetime
 from plone.app.discussion.browser.comment import EditCommentForm
 from plone.app.discussion.browser.comments import CommentForm
 from plone.app.discussion.interfaces import IConversation
@@ -19,18 +20,17 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.security.interfaces import IPermission
 
-from datetime import datetime
 import plone.protect.interfaces
 
 
 def fix_location_header(context, request):
     # This replaces the location header as sent by p.a.discussion's forms with
     # a RESTapi compatible location.
-    location = request.response.headers.get('location')
-    if location and '#' in location:
-        comment_id = location.split('#')[-1]
-        url = '{}/@comments/{}'.format(context.absolute_url(), comment_id)
-        request.response.headers['location'] = url
+    location = request.response.headers.get("location")
+    if location and "#" in location:
+        comment_id = location.split("#")[-1]
+        url = "{}/@comments/{}".format(context.absolute_url(), comment_id)
+        request.response.headers["location"] = url
 
 
 @implementer(IPublishTraverse)
@@ -39,22 +39,16 @@ class CommentsGet(Service):
 
     def publishTraverse(self, request, name):
         if name:
-            self.comment_id = long(name)
+            self.comment_id = int(name)
         return self
 
     def reply(self):
         conversation = IConversation(self.context)
         if not self.comment_id:
-            serializer = getMultiAdapter(
-                (conversation, self.request),
-                ISerializeToJson
-            )
+            serializer = getMultiAdapter((conversation, self.request), ISerializeToJson)
         else:
             comment = conversation[self.comment_id]
-            serializer = getMultiAdapter(
-                (comment, self.request),
-                ISerializeToJson
-            )
+            serializer = getMultiAdapter((comment, self.request), ISerializeToJson)
         return serializer()
 
 
@@ -64,38 +58,37 @@ class CommentsAdd(Service):
 
     def publishTraverse(self, request, name):
         if name:
-            self.comment_id = long(name)
-            request['form.widgets.in_reply_to'] = name
+            self.comment_id = int(name)
+            request["form.widgets.in_reply_to"] = name
         return self
 
     def reply(self):
         # Disable CSRF protection
-        if 'IDisableCSRFProtection' in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         conversation = IConversation(self.context)
-        if self.comment_id and self.comment_id not in conversation.keys():
+        if self.comment_id and self.comment_id not in list(conversation):
             self.request.response.setStatus(404)
             return
 
         # Fake request data
         body = json_body(self.request)
         for key, value in body.items():
-            self.request.form['form.widgets.' + key] = value
+            self.request.form["form.widgets." + key] = value
 
         form = CommentForm(self.context, self.request)
         form.update()
 
-        action = form.actions['comment']
+        action = form.actions["comment"]
         data, errors = form.extractData()
         if errors:
-            raise BadRequest({'errors': [err.error for err in errors]})
+            raise BadRequest({"errors": [err.error for err in errors]})
 
         form.handleComment(form=form, action=action)
 
-        self.request.response.setStatus(204)
         fix_location_header(self.context, self.request)
+        return self.reply_no_content()
 
 
 @implementer(IPublishTraverse)
@@ -104,8 +97,8 @@ class CommentsUpdate(Service):
 
     def publishTraverse(self, request, name):
         if name:
-            self.comment_id = long(name)
-            request['form.widgets.comment_id'] = name
+            self.comment_id = int(name)
+            request["form.widgets.comment_id"] = name
         return self
 
     def reply(self):
@@ -113,7 +106,7 @@ class CommentsUpdate(Service):
             raise BadRequest("Comment id is a required part of the url")
 
         conversation = IConversation(self.context)
-        if self.comment_id not in conversation.keys():
+        if self.comment_id not in list(conversation):
             self.request.response.setStatus(404)
             return
         comment = conversation[self.comment_id]
@@ -125,22 +118,22 @@ class CommentsUpdate(Service):
         # Fake request data
         body = json_body(self.request)
         for key, value in body.items():
-            self.request.form['form.widgets.' + key] = value
+            self.request.form["form.widgets." + key] = value
 
         form = EditCommentForm(comment, self.request)
         form.__parent__ = form.context.__parent__.__parent__
         form.update()
 
-        action = form.actions['comment']
+        action = form.actions["comment"]
         data, errors = form.extractData()
         if errors:
-            raise BadRequest({'errors': [err.error for err in errors]})
+            raise BadRequest({"errors": [err.error for err in errors]})
 
         comment.modification_date = datetime.utcnow()
         form.handleComment(form=form, action=action)
 
-        self.request.response.setStatus(204)
         fix_location_header(self.context, self.request)
+        return self.reply_no_content()
 
 
 @implementer(IPublishTraverse)
@@ -148,7 +141,7 @@ class CommentsDelete(Service):
     comment_id = None
 
     def publishTraverse(self, request, name):
-        self.comment_id = long(name)
+        self.comment_id = int(name)
         return self
 
     def reply(self):
@@ -169,7 +162,7 @@ class CommentsDelete(Service):
             raise Unauthorized()
 
         del conversation[self.comment_id]
-        self.request.response.setStatus(204)
+        return self.reply_no_content()
 
     # Helper functions copied from p.a.discussion's viewlet to support Plone 4
 

@@ -7,18 +7,16 @@ Tiles
   not rely on those technologies. The serialization of the tile information on objects are subject to change in
   the future to extend or improve features.
 
-A tile is an HTML snippet that can contain arbitrary content (e.g. text, images, videos).
+A tile in Plone is an HTML snippet that can contain arbitrary content (e.g. text, images, videos).
 
-The @tiles endpoint is context specific.
-Called on the portal root it will list all available tiles,
-and allows to retrieve the JSON schema for those tiles.
-
-If called on a content object, it will return the tiles that are actually stored on that content object.
 
 Listing available tiles
 -----------------------
 
-List all available tiles type by sending a GET request to the @tiles endpoint on the portal roots::
+.. note::
+  This endpoint currently does not return any data. The functionality needs to be implemented.
+
+List all available tiles type by sending a GET request to the @tiles endpoint on the portal root::
 
   GET /plone/@tiles HTTP/1.1
   Accept: application/json
@@ -41,8 +39,12 @@ The server responds with a `Status 200` and list all available tiles::
     },
   ]
 
-Retrieve Tile JSON schema
--------------------------
+
+Retrieve JSON schema of an individual tile
+------------------------------------------
+
+.. note::
+  This endpoint currently does not return any data. The functionality needs to be implemented.
 
 Retrieve the JSON schema of a specific tile by calling the '@tiles' endpoint with the id of the tile::
 
@@ -75,51 +77,14 @@ The server responds with a JSON schema definition for that particular tile::
 Retrieving tiles on a content object
 ------------------------------------
 
-Retrieve a list of tiles stored on a content object by calling the @tiles endpoint on a content object::
+Tiles data are stored in the objects via a Dexterity behavior `plone.tiles`. It has two attributes that stores existing tiles in the object (`tiles`) and the current layout (`tiles_layout`).
+As it's a dexterity behavior, both attributes will be returned in a simple GET::
 
-  GET /plone/my-document/@tiles HTTP/1.1
+  GET /plone/my-document HTTP/1.1
   Accept: application/json
   Authorization: Basic YWRtaW46c2VjcmV0
 
 The server responds with a `Status 200` and list all stored tiles on that content object::
-
-  HTTP/1.1 200 OK
-  Content-Type: application/json
-  {
-    "@id": "http://localhost:55001/plone/my-document",
-    ...
-    "tiles": [
-      {
-        "@id": "http://localhost:55001/plone/my-document/@tiles/my-title",
-        "type": "title",
-      },
-      {
-        "@id": "http://localhost:55001/plone/my-document/@tiles/my-description",
-        "type": "description",
-      },
-      {
-        "@id": "http://localhost:55001/plone/my-document/@tiles/image-1",
-        "type": "image",
-        "data": {
-          "image": "<some random url>",
-          "caption": "My pony",
-        },
-      },
-      {
-        "type": "image",
-        "data": {
-          "image": "<some random url>",
-          "caption": "My cow",
-        },
-      },
-    ]
-  }
-
-
-Fetching tiles on an object
----------------------------
-Tiles data are stored in the objects via a Dexterity behavior `plone.tiles`. It has two attributes that stores existing tiles in the object (`tiles`) and the current layout (`tiles_layout`).
-As it's a dexterity behavior, both attributes will be returned in a simple GET::
 
   GET /plone/my-document HTTP/1.1
   Accept: application/json

@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 from Products.CMFCore.utils import getToolByName
-from urlparse import urlparse
+from six.moves.urllib.parse import urlparse
 
 
 def result_paths(results):
     """Helper function to make it easier to write list-based assertions on
     result sets from the search endpoint.
     """
-    def get_path(item):
-        if 'getPath' in item:
-            return item['getPath']
-        return urlparse(item['@id']).path
 
-    return [get_path(item) for item in results['items']]
+    def get_path(item):
+        if "getPath" in item:
+            return item["getPath"]
+        return urlparse(item["@id"]).path
+
+    return [get_path(item) for item in results["items"]]
 
 
 def add_catalog_indexes(portal, indexes):
@@ -24,7 +25,7 @@ def add_catalog_indexes(portal, indexes):
     `ZCTextIndex` index).
 
     """
-    catalog = getToolByName(portal, 'portal_catalog')
+    catalog = getToolByName(portal, "portal_catalog")
     current_indexes = catalog.indexes()
 
     indexables = []

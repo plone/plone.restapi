@@ -1,12 +1,449 @@
 Changelog
 =========
 
-3.2.2 (unreleased)
+.. You should *NOT* be adding new change log entries to this file.
+   You should create a file in the news directory instead.
+   For helpful instructions, please see:
+   https://github.com/plone/plone.releaser/blob/master/ADD-A-NEWS-ITEM.rst
+
+.. towncrier release notes start
+
+4.6.0 (2019-10-06)
 ------------------
+
+New features:
+
+
+- Add @sources and @querysources endpoints, and link to them from JSON schema in @types response.
+  [lgraf] (#790)
+
+
+Bug fixes:
+
+
+- Explicitly load zcml of dependencies, instead of using ``includeDependencies``
+  [maurits] (#2952)
+
+
+4.5.1 (2019-09-23)
+------------------
+
+Bug fixes:
+
+
+- Fire ModifiedEvent when field is set to null in a PATCH request.
+  [phgross] (#802)
+
+- Testing: Drop freezegun and instead selectively patch some timestamp accessors.
+  [lgraf] (#803)
+
+
+4.5.0 (2019-09-12)
+------------------
+
+New features:
+
+
+- Add @querystring-search endpoint that returns the results of a search using a p.a.querystring query.
+  [sneridagh] (#789)
+- Use Plone 5.2 and Python 3 as default to generate documentation. [timo] (#800)
+
+
+Bug fixes:
+
+
+- Make group serializer results predictable by returning sorted item results. [timo] (#798)
+
+
+4.4.0 (2019-08-30)
+------------------
+
+New features:
+
+
+- Add @querystring endpoint that dumps p.a.querystring config.
+  [lgraf] (#754)
+
+
+Bug fixes:
+
+
+- Fix typo in the ``tiles_layout`` field title name.
+  [sneridagh] (#785)
+
+
+4.3.1 (2019-07-10)
+------------------
+
+Bug fixes:
+
+
+- Fix @sharing POST when called on the plone site root
+  [csenger] (#780)
+
+
+4.3.0 (2019-06-30)
+------------------
+
+New features:
+
+
+- Support retrieval of additional metadata fields in summaries in the same way as
+  in search results.
+  [buchi] (#681)
+
+
+4.2.0 (2019-06-29)
+------------------
+
+New features:
+
+
+- Make @types endpoint expandable.
+  [lgraf] (#766)
+- Factor out permission checks in @users endpoint
+  to make it more easily customizable.
+  [lgraf] (#771)
+
+
+Bug fixes:
+
+
+- Gracefully handle corrupt images when serializing scales.
+  [lgraf] (#729)
+- Docs: Make sure application/json+schema examples also get syntax highlighted.
+  [lgraf] (#764)
+- Return empty response for status 204 (No Content).
+  [buchi] (#775)
+- Return status 400 if a referenced object can not be resolved during deserialization.
+  [lgraf] (#777)
+
+
+4.1.4 (2019-06-21)
+------------------
+
+Bug fixes:
+
+
+- Set effective_date and reindex obj on workflow transitions. [wkbkhard] (#760)
+
+
+4.1.3 (2019-06-21)
+------------------
+
+Bug fixes:
+
+
+- Improve documentation for how to set relations by adding some examples.
+  [buchi] (#732)
+- Return an error message if a referenced object can not be resolved.
+  [buchi] (#738)
+
+
+4.1.2 (2019-06-15)
+------------------
+
+Bug fixes:
+
+
+- @types endpoint: Fix support for context aware default factories.
+  [lgraf] (#748)
+
+
+4.1.1 (2019-06-13)
+------------------
+
+Bug fixes:
+
+
+- Handle ``None`` as a vocabulary term title in the vocabulary serializer.
+  [Rotonen] (#742)
+- Handle a term not having a title attribute in the vocabulary serializer.
+  [Rotonen] (#742)
+- Handle a term having a non-ASCII ``str`` title attribute in the vocabulary
+  serializer.
+  [Rotonen] (#743)
+- Fix time freezing in Plone 5.1 tests.
+  [lgraf] (#745)
+
+
+4.1.0 (2019-05-25)
+------------------
+
+New features:
+
+- Use Black on the code base. [timo] (#693)
+
+
+4.0.0 (2019-05-09)
+------------------
+
+Breaking changes:
+
+- @vocabularies service: No longer returns an @id for terms. Results are batched, and terms are now listed as items instead of terms to match other batched responses. Batch size is 25 by default but can be overridden using the b_size parameter.
+  [davisagli]
+
+- @types service: Choice fields using named vocabularies are now serialized with a vocabulary property giving the URL of the @vocabularies endpoint for the vocabulary instead of including choices, enum and enumNames inline. The subjects field is now serialized as an array of string items using the plone.app.vocabularies.Keywords vocabulary.
+  [davisagli]
+
+- Serialize widget parameters into a widgetOptions object instead of adding them to the top level of the schema property.
+  [davisagli]
+
+- Add `title` and `token` filter to the vocabularies endpoint.
+  [davisagli, sneridagh, timo] (#535)
+
+- Use tokens for serialization/deserialization of vocabulary terms.
+  [buchi] (#691)
+
+- Return the token and the title of vocabulary terms in serialization.
+  See upgrade guide for more information.
+  [buchi] (#726)
+
+New Features:
+
+- ``@vocabularies`` service: Use ``title`` parameter to filter terms by title
+  and ``token`` for getting the title of a term given a token.
+  (case-insensitive).
+  [davisagli, sneridagh, timo]
+
+Bug fixes:
+
+- Standardize errors data structure of email-notification endpoint.
+  [cekk] (#708)
+
+- When renewing an expired or invalid authentication token with ``@login-renew`` fail with a ``401`` error instead of returning a new authentication token.
+  [thet] (#721)
+
+- Use interface name in the ``tiles`` profile instead of the shorthand behavior name. This fixes #724.
+  [sneridagh] (#724)
+
+- Avoid calculating batch links for catalog results twice.
+  [davisagli]
+
+
+3.9.0 (2019-04-18)
+------------------
+
+New features:
+
+- Add full support for `fullobjects` support for AT content types.
+  [sneridagh] (#698)
+
+
+3.8.1 (2019-03-21)
+------------------
+
+Bug fixes:
+
+- Fixed Python 3 incompatiblity with workflow service (#676)
+  [ajung]
+
+- Hide performance, testing, and tiles profile. (#700)
+  [timo]
+
+
+3.8.0 (2019-03-21)
+------------------
+
+New features:
+
+- Add support for add/update user portraits (@user endpoint)
+  [sneridagh] (#701)
+
+
+3.7.5 (2019-03-14)
+------------------
+
+Bug fixes:
+
+- Do not depend on the deprecated plone.app.controlpanel package.
+  [sneridagh] (#696)
+
+
+3.7.4 (2019-03-13)
+------------------
+
+Bug fixes:
+
+- Fix a problem on ZCML loading depending on how the policy package is named,
+  related to the load of permissions in control panels and multilingual.
+  [sneridagh] (#526)
+
+
+3.7.3 (2019-03-08)
+------------------
+
+Bug fixes:
+
+- Use environment-markers instead of python-logic to specify dependencies for py2.
+  [pbauer] (#688)
+
+
+3.7.2 (2019-03-07)
+------------------
+
+Bug fixes:
+
+- Fix TUS upload events `#689 <https://github.com/plone/plone.restapi/issues/689>`_.
+  [buchi] (#689)
+
+
+3.7.1 (2019-03-06)
+------------------
+
+Bugfixes:
+
+- Fix release to not create universal (Python 2/3) wheels.
+  [gforcada]
+
+- Install zestreleaser.towncrier in the buildout to the changelog is updated correctly. (#684)
+  [maurits]
+
+
+3.7.0 (2019-03-04)
+------------------
+
+New Features:
+
+- Add group roles to @groups serializer
+  [sneridagh]
+
+
+3.6.0 (2019-02-16)
+------------------
+
+New Features:
+
+- Enhance site root to serialize and deserialize 'tiles' and 'tiles_layout' attributes.
+  [sneridagh]
+
+- Fix @workflow endpoint on site root to return an empty object instead of a 404.
+  [sneridagh]
+
+
+3.5.2 (2019-02-14)
+------------------
+
+Bugfixes:
+
+- Fix serializing the Event type. This fixes https://github.com/plone/plone.restapi/issues/664.
+  [davisagli, elioschmutz]
+
+
+3.5.1 (2019-02-05)
+------------------
+
+Bugfixes:
+
+- Do not fail on serializing types with fields having non-parametrized widgets.
+  Fixes issue `664 <https://github.com/plone/plone.restapi/issues/664>`_.
+  [elioschmutz]
+
+
+3.5.0 (2018-11-06)
+------------------
+
+New Features:
+
+- Add Python 3 support.
+  [pbauer, davisagli]
+
+
+3.4.5 (2018-09-14)
+------------------
+
+Bugfixes:
+
+- Avoid ``AttributeError`` on add-on installation (fixes `#465 <https://github.com/plone/plone.restapi/issues/465>`_.
+  [lukasgraf, hvelarde]
+
+- Make search work with a path query containing a list of paths in a virtual hosting setting.
+  [sunew]
+
+
+3.4.4 (2018-08-31)
+------------------
+
+Bugfixes:
+
+- Generalize the last bugfix solution for searching the userid on password
+  reset requests, matching it with Plone's one. This covers all the request
+  use cases.
+  [sneridagh]
+
+
+3.4.3 (2018-08-30)
+------------------
+
+Bugfixes:
+
+- Add "Use UUID as user ID" support for password resets
+  [sneridagh]
+
+
+3.4.2 (2018-08-27)
+------------------
+
+Bugfixes:
+
+- Add missing "Use UUID as user ID" support to POST @users endpoint on user creation.
+  Also improve the userid/username chooser by using the same process as Plone does.
+  This fixes: https://github.com/plone/plone.restapi/issues/586
+  [sneridagh]
+
+
+3.4.1 (2018-07-22)
+------------------
+
+Bugfixes:
+
+- Make sure the default profile is installed on tiles profile installation.
+  [timo]
+
+
+3.4.0 (2018-07-21)
+------------------
+
+New Features:
+
+- Add tiles profile.
+  [timo]
+
+
+3.3.0 (2018-07-20)
+------------------
+
+New Features:
+
+- Return member fields based on user schema in `@users` endpoint instead of a
+  fixed list of member properties.
+  [buchi]
+
+
+3.2.2 (2018-07-19)
+------------------
+
+Bugfixes:
 
 - Do not include HTTP examples using data_files anymore, but move them below
   src/plone/restapi instead and use package_data to include them.
   [lgraf]
+
+- Rename Dexterity content before adding it to a container.
+  [buchi]
+
+- Avoid hard dependency on Archetypes introduced in 3.0.0.
+  This fixes `issue 570 <https://github.com/plone/plone.restapi/issues/570>`_.
+  [buchi]
+
+- Make setup.py require plone.behavior >= 1.1. This fixes #575.
+  [timo]
+
+- Fixes ``test_search`` to work with bug fixed ``plone.indexer``.
+  Now ``DXTestDocument`` explicit got an attribute ``exclude_from_nav``.
+  This fixes `issue 579 <https://github.com/plone/plone.restapi/issues/579>`_.
+  Refers to `Products.CMFPlone Issue 2469 <https://github.com/plone/Products.CMFPlone/issues/2469>`_
+  [jensens]
 
 
 3.2.1 (2018-06-28)

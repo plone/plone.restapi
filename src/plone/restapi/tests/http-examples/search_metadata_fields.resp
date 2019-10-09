@@ -1,0 +1,18 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@search?SearchableText=lorem&metadata_fields=modified&metadata_fields=created", 
+  "items": [
+    {
+      "@id": "http://localhost:55001/plone/doc1", 
+      "@type": "Document", 
+      "created": "1995-07-31T13:45:00", 
+      "description": "", 
+      "modified": "1995-07-31T17:30:00", 
+      "review_state": "private", 
+      "title": "Lorem Ipsum"
+    }
+  ], 
+  "items_total": 1
+}
