@@ -40,7 +40,6 @@ class DeserializePortletFromJson(object):
         self.portletmanagers = dict(get_portletmanagers())
         self.portlettypes = dict(get_portlet_types())
 
-
     def __call__(self, data=None):
         errors = []
         if data is None:

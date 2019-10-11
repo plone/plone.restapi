@@ -1531,16 +1531,13 @@ class TestCommenting(TestDocumentationBase):
 
 class TestPortlets(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.app = self.layer['app']
         self.request = self.layer['request']
         self.portal = self.layer['portal']
         self.portal_url = self.portal.absolute_url()
-
-        self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        self.frozen_time = self.time_freezer.start()
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({'Accept': 'application/json'})
@@ -1571,13 +1568,10 @@ class TestPortlets(unittest.TestCase):
             'text/plain',
             'text/html'
         )
-        document.creation_date = DateTime('2016-01-21T01:14:48+00:00')
+        document.creation_date = datetime(2016, 1, 21, 1, 14, 48)
         document.reindexObject()
-        document.modification_date = DateTime('2016-01-21T01:24:11+00:00')
+        document.modification_date = datetime(2016, 1, 21, 1, 24, 11)
         return document
-
-    def tearDown(self):
-        self.time_freezer.stop()
 
     def test_portlets_get_managers(self):
         response = self.api_session.get(
@@ -1605,6 +1599,7 @@ class TestPortlets(unittest.TestCase):
         )
         save_request_and_response_for_docs(
             'portlets_get_left_column_doc', response)
+
 
 @unittest.skipUnless(
     PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
