@@ -12,4 +12,12 @@
     permission="zope2.View"
     />
 
+  <plone:service
+    method="POST"
+    name="@portlets"
+    for="*"
+    factory=".add.PortletPost"
+    permission="plone.app.portlets.ManageOwnPortlets"
+    />
+
 </configure>
