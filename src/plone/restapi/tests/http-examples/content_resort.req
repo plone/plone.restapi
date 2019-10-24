@@ -4,5 +4,5 @@ Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    "sort": {"on": "modified", "order": "descending"]}
+    "sort": {"on": "modified", "order": "descending"}
 }
