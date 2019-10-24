@@ -382,6 +382,6 @@ The `on` subkey defines the catalog index to be sorted on. The `order` subkey in
 A response 400 BadRequest with a message 'Content ordering is not supported by this resource' will be returned if the container does not support ordering.
 
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/content_rearrange.req
+    :request: ../../src/plone/restapi/tests/http-examples/content_resort.req
 
 
