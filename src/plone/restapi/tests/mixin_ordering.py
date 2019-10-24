@@ -241,8 +241,7 @@ class OrderingMixin:
             self.folder.contentIds(),
         )
 
-        # Normal
-        # Move to top
+        # Resort all Ids descending
         data = {"sort": {"on": "id", "order": "descending"}}
         self.deserialize(body=json.dumps(data), context=self.folder)
         self.assertEqual(

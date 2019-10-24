@@ -374,3 +374,14 @@ A response 400 BadRequest with a message 'Content ordering is not supported by t
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/content_reorder.req
+
+To rearrange all items in a folderish context use the `sort` key.
+
+The `on` subkey defines the catalog index to be sorted on. The `order` subkey indicates 'ascending' or 'descending' order of items.
+
+A response 400 BadRequest with a message 'Content ordering is not supported by this resource' will be returned if the container does not support ordering.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/content_rearrange.req
+
+
