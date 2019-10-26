@@ -19,7 +19,6 @@ except pkg_resources.DistributionNotFound:
 else:
     HAS_BLOB = True
     from plone.app.blob.interfaces import IBlobField
-    # from plone.app.blob.interfaces import IBlobImageField
 
 
 @implementer(IFieldDeserializer)
