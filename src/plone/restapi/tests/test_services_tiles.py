@@ -98,7 +98,7 @@ class TestServicesTiles(unittest.TestCase):
         response = self.api_session.patch(
             "/doc",
             json={
-                "tiles": {
+                "blocks": {
                     "uuid1": {"@type": "title"},
                     "uuid2": {"@type": "description"},
                 }
@@ -111,13 +111,13 @@ class TestServicesTiles(unittest.TestCase):
         response = response.json()
 
         self.assertEqual(
-            response["tiles"],
+            response["blocks"],
             {"uuid1": {"@type": "title"}, "uuid2": {"@type": "description"}},
         )
 
-    def test_patch_tiles_layout(self):
+    def test_patch_blocks_layout(self):
         response = self.api_session.patch(
-            "/doc", json={"tiles_layout": {"items": ["#uuid1", "#uuid2"]}}
+            "/doc", json={"blocks_layout": {"items": ["#uuid1", "#uuid2"]}}
         )
 
         self.assertEqual(response.status_code, 204)
@@ -125,7 +125,7 @@ class TestServicesTiles(unittest.TestCase):
         response = self.api_session.get("/doc")
         response = response.json()
 
-        self.assertEqual(response["tiles_layout"], {"items": ["#uuid1", "#uuid2"]})
+        self.assertEqual(response["blocks_layout"], {"items": ["#uuid1", "#uuid2"]})
 
     def test_get_tiles_layout_schema(self):
         response = self.api_session.get("/@types/Document")

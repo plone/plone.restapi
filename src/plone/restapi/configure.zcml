@@ -86,7 +86,7 @@
         name="plone.tiles"
         title="Tiles"
         description="Existing tiles on the object and their layout"
-        provides=".behaviors.ITiles"
+        provides=".behaviors.IBlocks"
         for="plone.dexterity.interfaces.IDexterityContent"
       />
 

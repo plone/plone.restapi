@@ -4,7 +4,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.dexterity.fti import DexterityFTI
-from plone.restapi.behaviors import ITiles
+from plone.restapi.behaviors import IBlocks
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.interface import alsoProvides
 
@@ -25,7 +25,7 @@ class TestTilesBehavior(unittest.TestCase):
         fti.klass = "plone.dexterity.content.Container"
         fti.behaviors = ("plone.tiles",)
         self.fti = fti
-        alsoProvides(self.request, ITiles)
+        alsoProvides(self.request, IBlocks)
 
     def test_basic_fields(self):
         self.portal.invokeFactory(
@@ -47,4 +47,4 @@ class TestTilesBehavior(unittest.TestCase):
             "tiledfolder", id="tiledfolder", title=u"Folder with tiles"
         )
 
-        ITiles.providedBy(self.portal["tiledfolder"])
+        IBlocks.providedBy(self.portal["tiledfolder"])
