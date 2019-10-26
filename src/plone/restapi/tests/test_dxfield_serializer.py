@@ -156,6 +156,19 @@ class TestDexterityFieldSerializing(TestCase):
         self.assertTrue(isinstance(value, list), "Not a <list>")
         self.assertEqual([u"a", u"b", u"c"], sorted(value))
 
+    def test_set_field_with_vocabulary_choice_serialization_returns_terms(self):
+        value = self.serialize(
+            "test_set_field_with_choice_with_vocabulary", set([u"value1", u"value3"])
+        )
+        self.assertTrue(isinstance(value, list), "Not a <list>")
+        self.assertEqual(
+            [
+                {u"token": u"token1", u"title": u"title1"},
+                {u"token": u"token3", u"title": u"title3"},
+            ],
+            sorted(value, key=lambda x: x[u"token"]),
+        )
+
     def test_text_field_serialization_returns_unicode(self):
         value = self.serialize("test_text_field", u"Käfer")
         self.assertTrue(isinstance(value, six.text_type), "Not an <unicode>")

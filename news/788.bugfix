@@ -1,0 +1,2 @@
+Fix serialization of vocabulary items for fields that need hashable items (e.g. sets).
+[buchi]
