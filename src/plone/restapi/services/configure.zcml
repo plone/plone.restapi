@@ -15,6 +15,7 @@
   <include package=".copymove"/>
   <include package=".discussion"/>
   <include package=".groups"/>
+  <include package=".globals"/>
   <include package=".navigation"/>
   <include package=".history"/>
   <include package=".locking" />
