@@ -1,0 +1,2 @@
+Fixed startup error when Archetypes is there, but ``plone.app.blob`` or ``plone.app.collection`` not.
+[maurits]

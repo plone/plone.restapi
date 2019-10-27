@@ -24,15 +24,19 @@
     <configure zcml:condition="installed Products.Archetypes">
         <adapter factory=".atcontent.SerializeToJson" />
         <adapter factory=".atcontent.SerializeFolderToJson" />
-        <adapter factory=".atfields.BlobFieldSerializer" />
-        <adapter factory=".atfields.BlobImageFieldSerializer" />
+        <configure zcml:condition="installed plone.app.blob">
+            <adapter factory=".atfields.BlobFieldSerializer" />
+            <adapter factory=".atfields.BlobImageFieldSerializer" />
+        </configure>
         <adapter factory=".atfields.DefaultFieldSerializer" />
         <adapter factory=".atfields.FileFieldSerializer" />
         <adapter factory=".atfields.ImageFieldSerializer" />
         <adapter factory=".atfields.ReferenceFieldSerializer" />
         <adapter factory=".atfields.TextFieldSerializer" />
-        <adapter factory=".atfields.QueryFieldSerializer" />
-        <adapter factory=".atcollection.SerializeCollectionToJson" />
+        <configure zcml:condition="installed plone.app.collection">
+            <adapter factory=".atfields.QueryFieldSerializer" />
+            <adapter factory=".atcollection.SerializeCollectionToJson" />
+        </configure>
     </configure>
 
     <adapter factory=".converters.date_converter" />
