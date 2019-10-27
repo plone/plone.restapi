@@ -16,6 +16,7 @@
   <adapter factory=".dxfields.TimedeltaFieldDeserializer" />
   <adapter factory=".dxfields.NamedFieldDeserializer" />
   <adapter factory=".dxfields.RichTextFieldDeserializer" />
+  <adapter factory=".blocks.BlocksJSONFieldDeserializer" />
 
   <adapter factory=".local_roles.DeserializeFromJson"
            name="local_roles"/>
