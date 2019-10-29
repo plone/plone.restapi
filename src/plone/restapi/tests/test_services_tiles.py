@@ -48,7 +48,6 @@ class TestServicesTiles(unittest.TestCase):
 
         fti = queryUtility(IDexterityFTI, name="Document")
         behavior_list = [a for a in fti.behaviors]
-        behavior_list.append("plone.tiles")
         behavior_list.append("plone.leadimage")
         fti.behaviors = tuple(behavior_list)
 
@@ -93,60 +92,3 @@ class TestServicesTiles(unittest.TestCase):
         self.assertEqual(response["title"], u"Sample tile")
         self.assertEqual(response["properties"]["title"]["title"], u"Title")
         self.assertEqual(response["properties"]["title"]["type"], u"string")
-
-    def test_patch_tiles_list(self):
-        response = self.api_session.patch(
-            "/doc",
-            json={
-                "blocks": {
-                    "uuid1": {"@type": "title"},
-                    "uuid2": {"@type": "description"},
-                }
-            },
-        )
-
-        self.assertEqual(response.status_code, 204)
-
-        response = self.api_session.get("/doc")
-        response = response.json()
-
-        self.assertEqual(
-            response["blocks"],
-            {"uuid1": {"@type": "title"}, "uuid2": {"@type": "description"}},
-        )
-
-    def test_patch_blocks_layout(self):
-        response = self.api_session.patch(
-            "/doc", json={"blocks_layout": {"items": ["#uuid1", "#uuid2"]}}
-        )
-
-        self.assertEqual(response.status_code, 204)
-
-        response = self.api_session.get("/doc")
-        response = response.json()
-
-        self.assertEqual(response["blocks_layout"], {"items": ["#uuid1", "#uuid2"]})
-
-    def test_get_tiles_layout_schema(self):
-        response = self.api_session.get("/@types/Document")
-
-        self.assertEqual(response.status_code, 200)
-        response = response.json()
-
-    # These are not failing because the patch operations doesn't validate
-    # fields right now
-    # def test_patch_tiles_list_wrong_type(self):
-    #     response = self.api_session.patch(
-    #         '/doc',
-    #         json={
-    #             "tiles": [{'uuid1': {'@type': 'title'}}]
-    #         })
-    #     self.assertEqual(response.status_code, 500)
-
-    # def test_patch_tiles_layout_wrong_type(self):
-    #     response = self.api_session.patch(
-    #         '/doc',
-    #         json={
-    #             "tiles_layout": {'uuid1': {'@type': 'title'}}
-    #         })
-    #     self.assertEqual(response.status_code, 500)
