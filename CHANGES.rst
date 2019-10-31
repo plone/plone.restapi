@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+5.0.0 (2019-10-31)
+------------------
+
+Breaking changes:
+
+
+- Rename tiles behavior and fields to blocks, migration step.
+  [timo, sneridagh] (#821)
+
+
+Bug fixes:
+
+
+- Fixed startup error when Archetypes is there, but ``plone.app.blob`` or ``plone.app.collection`` not.
+  [maurits] (#690)
+
+
 4.6.0 (2019-10-06)
 ------------------
 
