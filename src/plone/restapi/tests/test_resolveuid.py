@@ -2,7 +2,7 @@
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.interfaces import IFieldSerializer
-from plone.restapi.testing import PLONE_RESTAPI_TILES_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
 from plone.uuid.interfaces import IUUID
 from unittest import TestCase
 from z3c.form.interfaces import IDataManager
@@ -10,7 +10,7 @@ from zope.component import getMultiAdapter
 
 
 class TestBlocksResolveUID(TestCase):
-    layer = PLONE_RESTAPI_TILES_INTEGRATION_TESTING
+    layer = PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
     maxDiff = None
 
     def setUp(self):
@@ -19,7 +19,7 @@ class TestBlocksResolveUID(TestCase):
 
         self.doc1 = self.portal[
             self.portal.invokeFactory(
-                "Document", id="doc1", title="Document with Tiles"
+                "Document", id="doc1", title="Document with Blocks"
             )
         ]
         self.doc2 = self.portal[
@@ -48,7 +48,7 @@ class TestBlocksResolveUID(TestCase):
 
     def test_blocks_field_serialization_resolves_uids(self):
         uid = IUUID(self.doc2)
-        tiles = {
+        blocks = {
             "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
             "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
                 "@type": "text",
@@ -78,7 +78,7 @@ class TestBlocksResolveUID(TestCase):
                 },
             },
         }
-        value = self.serialize("tiles", tiles)
+        value = self.serialize("blocks", blocks)
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
@@ -94,7 +94,7 @@ class TestBlocksResolveUID(TestCase):
 
     def test_resolveuid_keeps_suffix(self):
         uid = IUUID(self.doc2)
-        tiles = {
+        blocks = {
             "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
                 "@type": "text",
                 "text": {
@@ -112,7 +112,7 @@ class TestBlocksResolveUID(TestCase):
                 },
             }
         }
-        value = self.serialize("tiles", tiles)
+        value = self.serialize("blocks", blocks)
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
@@ -128,7 +128,7 @@ class TestBlocksResolveUID(TestCase):
 
     def test_keeps_resolveuid_link_if_unknown_uid(self):
         uid = "0000"
-        tiles = {
+        blocks = {
             "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
                 "@type": "text",
                 "text": {
@@ -146,7 +146,7 @@ class TestBlocksResolveUID(TestCase):
                 },
             }
         }
-        value = self.serialize("tiles", tiles)
+        value = self.serialize("blocks", blocks)
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
@@ -162,7 +162,7 @@ class TestBlocksResolveUID(TestCase):
 
     def test_blocks_field_deserialization_resolves_paths_to_uids(self):
         uid = IUUID(self.doc2)
-        tiles = {
+        blocks = {
             "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
             "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
                 "@type": "text",
@@ -192,7 +192,7 @@ class TestBlocksResolveUID(TestCase):
                 },
             },
         }
-        value = self.deserialize("tiles", tiles)
+        value = self.deserialize("blocks", blocks)
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
@@ -207,7 +207,7 @@ class TestBlocksResolveUID(TestCase):
         )
 
     def test_keeps_url_if_unknown_path(self):
-        tiles = {
+        blocks = {
             "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
                 "@type": "text",
                 "text": {
@@ -225,7 +225,7 @@ class TestBlocksResolveUID(TestCase):
                 },
             }
         }
-        value = self.deserialize("tiles", tiles)
+        value = self.deserialize("blocks", blocks)
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
@@ -241,7 +241,7 @@ class TestBlocksResolveUID(TestCase):
 
     def test_path_keeps_suffix(self):
         uid = IUUID(self.doc2)
-        tiles = {
+        blocks = {
             "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
                 "@type": "text",
                 "text": {
@@ -259,7 +259,7 @@ class TestBlocksResolveUID(TestCase):
                 },
             }
         }
-        value = self.deserialize("tiles", tiles)
+        value = self.deserialize("blocks", blocks)
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
