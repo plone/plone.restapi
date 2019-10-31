@@ -27,7 +27,9 @@
 
   <configure zcml:condition="installed Products.Archetypes">
     <adapter factory=".atcontent.DeserializeFromJson" />
-    <adapter factory=".atfields.BlobFieldDeserializer" />
+    <configure zcml:condition="installed plone.app.blob">
+        <adapter factory=".atfields.BlobFieldDeserializer" />
+    </configure>
     <adapter factory=".atfields.DefaultFieldDeserializer" />
     <adapter factory=".atfields.FileFieldDeserializer" />
     <adapter factory=".atfields.ReferenceFieldDeserializer" />

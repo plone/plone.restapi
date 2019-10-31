@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from plone.app.blob.interfaces import IBlobField
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.services.content.tus import TUSUpload
 from Products.Archetypes.interfaces import IBaseObject
@@ -10,6 +9,16 @@ from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
+
+import pkg_resources
+
+try:
+    pkg_resources.get_distribution("plone.app.blob")
+except pkg_resources.DistributionNotFound:
+    HAS_BLOB = False
+else:
+    HAS_BLOB = True
+    from plone.app.blob.interfaces import IBlobField
 
 
 @implementer(IFieldDeserializer)
@@ -49,10 +58,11 @@ class FileFieldDeserializer(DefaultFieldDeserializer):
         return value, kwargs
 
 
-@implementer(IFieldDeserializer)
-@adapter(IBlobField, IBaseObject, IBrowserRequest)
-class BlobFieldDeserializer(FileFieldDeserializer):
-    pass
+if HAS_BLOB:
+    @implementer(IFieldDeserializer)
+    @adapter(IBlobField, IBaseObject, IBrowserRequest)
+    class BlobFieldDeserializer(FileFieldDeserializer):
+        pass
 
 
 @implementer(IFieldDeserializer)

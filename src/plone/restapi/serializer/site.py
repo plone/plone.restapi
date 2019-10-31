@@ -49,9 +49,9 @@ class SerializeSiteRootToJson(object):
             "parent": {},
             "is_folderish": True,
             "description": self.context.description,
-            "tiles": json.loads(getattr(self.context, "tiles", "{}")),
-            "tiles_layout": json.loads(
-                getattr(self.context, "tiles_layout", "{}")
+            "blocks": json.loads(getattr(self.context, "blocks", "{}")),
+            "blocks_layout": json.loads(
+                getattr(self.context, "blocks_layout", "{}")
             ),  # noqa
         }
 

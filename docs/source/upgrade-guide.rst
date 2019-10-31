@@ -3,6 +3,45 @@ Upgrade Guide
 
 This upgrade guide lists all breaking changes in plone.restapi and explains the necessary steps that are needed to upgrade to the lastest version.
 
+Upgrading to plone.restapi 5.x
+------------------------------
+
+plone.restapi 5.0.0 introduces the following breaking change:
+
+- Rename tiles behavior and fields to blocks, migration step. [timo, sneridagh] (#821)
+
+The "tiles" field has been renamed to "blocks" and the "tiles_layout" field to "blocks_layout". This changes the response format from::
+
+  {
+    "@id": "http://localhost:55001/plone/my-document",
+    ...
+    "tiles_layout": [
+      "#title-1",
+      "#description-1",
+      "#image-1"
+    ],
+    "tiles": {
+      ...
+    }
+  }
+
+to::
+
+{
+    "@id": "http://localhost:55001/plone/my-document",
+    ...
+    "blocks_layout": [
+      "#title-1",
+      "#description-1",
+      "#image-1"
+    ],
+    "blocks": {
+      ...
+    }
+  }
+
+This change affects the GET, PATCH and POST formats. Though, it should only affect you if you use Volto.
+
 
 Upgrading to plone.restapi 4.x
 ------------------------------
