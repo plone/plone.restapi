@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.interfaces import IFieldSerializer
@@ -22,9 +23,7 @@ class TestBlocksResolveUID(TestCase):
             )
         ]
         self.doc2 = self.portal[
-            self.portal.invokeFactory(
-                "Document", id="doc2", title="Target Document"
-            )
+            self.portal.invokeFactory("Document", id="doc2", title="Target Document")
         ]
 
     def serialize(self, fieldname, value):
@@ -34,8 +33,7 @@ class TestBlocksResolveUID(TestCase):
                 break
         dm = getMultiAdapter((self.doc1, field), IDataManager)
         dm.set(value)
-        serializer = getMultiAdapter((field, self.doc1, self.request),
-                                     IFieldSerializer)
+        serializer = getMultiAdapter((field, self.doc1, self.request), IFieldSerializer)
         return serializer()
 
     def deserialize(self, fieldname, value):
@@ -51,9 +49,7 @@ class TestBlocksResolveUID(TestCase):
     def test_blocks_field_serialization_resolves_uids(self):
         uid = IUUID(self.doc2)
         tiles = {
-            "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {
-                "@type": "title"
-            },
+            "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
             "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
                 "@type": "text",
                 "text": {
@@ -61,17 +57,11 @@ class TestBlocksResolveUID(TestCase):
                         {
                             "data": {},
                             "depth": 0,
-                            "entityRanges": [
-                                {
-                                    "key": 0,
-                                    "length": 5,
-                                    "offset": 0
-                                }
-                            ],
+                            "entityRanges": [{"key": 0, "length": 5, "offset": 0}],
                             "inlineStyleRanges": [],
                             "key": "68rve",
                             "text": "Volto also supports other APIs.",
-                            "type": "unstyled"
+                            "type": "unstyled",
                         }
                     ],
                     "entityMap": {
@@ -82,23 +72,25 @@ class TestBlocksResolveUID(TestCase):
                                 "url": "../resolveuid/{}".format(uid),
                             },
                             "mutability": "MUTABLE",
-                            "type": "LINK"
+                            "type": "LINK",
                         }
-                    }
-                }
-            }
+                    },
+                },
+            },
         }
         value = self.serialize("tiles", tiles)
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
-                "0"]["data"]["href"],
-            self.doc2.absolute_url()
-            )
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["href"],
+            self.doc2.absolute_url(),
+        )
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
-                "0"]["data"]["url"],
-            self.doc2.absolute_url()
-            )
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["url"],
+            self.doc2.absolute_url(),
+        )
 
     def test_resolveuid_keeps_suffix(self):
         uid = IUUID(self.doc2)
@@ -114,23 +106,25 @@ class TestBlocksResolveUID(TestCase):
                                 "url": "../resolveuid/{}/view".format(uid),
                             },
                             "mutability": "MUTABLE",
-                            "type": "LINK"
+                            "type": "LINK",
                         }
                     }
-                }
+                },
             }
         }
         value = self.serialize("tiles", tiles)
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
-                "0"]["data"]["href"],
-            self.doc2.absolute_url() + '/view'
-            )
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["href"],
+            self.doc2.absolute_url() + "/view",
+        )
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
-                "0"]["data"]["url"],
-            self.doc2.absolute_url() + '/view'
-            )
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["url"],
+            self.doc2.absolute_url() + "/view",
+        )
 
     def test_keeps_resolveuid_link_if_unknown_uid(self):
         uid = "0000"
@@ -146,30 +140,30 @@ class TestBlocksResolveUID(TestCase):
                                 "url": "../resolveuid/{}".format(uid),
                             },
                             "mutability": "MUTABLE",
-                            "type": "LINK"
+                            "type": "LINK",
                         }
                     }
-                }
+                },
             }
         }
         value = self.serialize("tiles", tiles)
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
-                "0"]["data"]["href"],
-            "../resolveuid/{}".format(uid)
-            )
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["href"],
+            "../resolveuid/{}".format(uid),
+        )
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
-                "0"]["data"]["url"],
-            "../resolveuid/{}".format(uid)
-            )
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["url"],
+            "../resolveuid/{}".format(uid),
+        )
 
     def test_blocks_field_deserialization_resolves_paths_to_uids(self):
         uid = IUUID(self.doc2)
         tiles = {
-            "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {
-                "@type": "title"
-            },
+            "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
             "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
                 "@type": "text",
                 "text": {
@@ -177,17 +171,11 @@ class TestBlocksResolveUID(TestCase):
                         {
                             "data": {},
                             "depth": 0,
-                            "entityRanges": [
-                                {
-                                    "key": 0,
-                                    "length": 5,
-                                    "offset": 0
-                                }
-                            ],
+                            "entityRanges": [{"key": 0, "length": 5, "offset": 0}],
                             "inlineStyleRanges": [],
                             "key": "68rve",
                             "text": "Volto also supports other APIs.",
-                            "type": "unstyled"
+                            "type": "unstyled",
                         }
                     ],
                     "entityMap": {
@@ -198,23 +186,25 @@ class TestBlocksResolveUID(TestCase):
                                 "url": self.doc2.absolute_url(),
                             },
                             "mutability": "MUTABLE",
-                            "type": "LINK"
+                            "type": "LINK",
                         }
-                    }
-                }
-            }
+                    },
+                },
+            },
         }
         value = self.deserialize("tiles", tiles)
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
-                "0"]["data"]["href"],
-            "../resolveuid/{}".format(uid)
-            )
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["href"],
+            "../resolveuid/{}".format(uid),
+        )
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
-                "0"]["data"]["url"],
-            "../resolveuid/{}".format(uid)
-            )
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["url"],
+            "../resolveuid/{}".format(uid),
+        )
 
     def test_keeps_url_if_unknown_path(self):
         tiles = {
@@ -224,28 +214,30 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": self.portal.absolute_url() + '/foo',
+                                "href": self.portal.absolute_url() + "/foo",
                                 "rel": "nofollow",
-                                "url": self.portal.absolute_url() + '/foo',
+                                "url": self.portal.absolute_url() + "/foo",
                             },
                             "mutability": "MUTABLE",
-                            "type": "LINK"
+                            "type": "LINK",
                         }
                     }
-                }
+                },
             }
         }
         value = self.deserialize("tiles", tiles)
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
-                "0"]["data"]["href"],
-            self.portal.absolute_url() + '/foo'
-            )
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["href"],
+            self.portal.absolute_url() + "/foo",
+        )
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
-                "0"]["data"]["url"],
-            self.portal.absolute_url() + '/foo'
-            )
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["url"],
+            self.portal.absolute_url() + "/foo",
+        )
 
     def test_path_keeps_suffix(self):
         uid = IUUID(self.doc2)
@@ -256,25 +248,27 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": self.doc2.absolute_url() + '/view',
+                                "href": self.doc2.absolute_url() + "/view",
                                 "rel": "nofollow",
-                                "url": self.doc2.absolute_url() + '/view',
+                                "url": self.doc2.absolute_url() + "/view",
                             },
                             "mutability": "MUTABLE",
-                            "type": "LINK"
+                            "type": "LINK",
                         }
                     }
-                }
+                },
             }
         }
         value = self.deserialize("tiles", tiles)
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
-                "0"]["data"]["href"],
-            "../resolveuid/{}/view".format(uid)
-            )
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["href"],
+            "../resolveuid/{}/view".format(uid),
+        )
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
-                "0"]["data"]["url"],
-            "../resolveuid/{}/view".format(uid)
-            )
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["url"],
+            "../resolveuid/{}/view".format(uid),
+        )
