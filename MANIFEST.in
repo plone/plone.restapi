@@ -12,6 +12,7 @@ exclude .editorconfig
 exclude Dockerfile
 exclude Makefile
 exclude bootstrap-buildout.py
+exclude CODEOWNERS
 recursive-exclude docs/doctrees *
 recursive-exclude docs/html *
 global-exclude *.pyc
