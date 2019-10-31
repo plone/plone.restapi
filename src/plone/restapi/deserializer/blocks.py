@@ -11,10 +11,12 @@ from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
+import six
+
 
 def path2uid(context, path):
-    # convert bytestring -> string; unrestrictedTraverse does not work with bytestrings
-    path = path.decode("utf-8")
+    if isinstance(path, six.binary_type):
+        path = path.decode("utf-8")
     obj = context.unrestrictedTraverse(path, None)
     if obj is None:
         return None, None
