@@ -46,6 +46,7 @@ install:
   - buildout -t 10 -c travis.cfg
 script:
   - bin/code-analysis
+  - bin/black --check src/
   - bin/sphinxbuilder
   - bin/test
   - bin/test-no-uncommitted-doc-changes
