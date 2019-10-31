@@ -41,4 +41,13 @@
         provides="Products.GenericSetup.interfaces.EXTENSION"
         />
 
+    <genericsetup:upgradeStep
+        title="Rename tiles and tiles_layout fields from Tiles behavior to blocks"
+        description=""
+        source="0004"
+        destination="0005"
+        handler="plone.restapi.upgrades.to0005.rename_tiles_to_blocks"
+        profile="plone.restapi:default"
+        />
+
 </configure>

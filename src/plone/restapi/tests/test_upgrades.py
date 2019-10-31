@@ -34,3 +34,10 @@ class TestUpgrades(TestCase):
         portal_setup = getToolByName(self.portal, "portal_setup")
         assign_get_users_permission(portal_setup)
         self.assertTrue(True)
+
+    def test_run_migration_profile_to_0005(self):
+        from plone.restapi.upgrades.to0005 import rename_tiles_to_blocks
+
+        portal_setup = getToolByName(self.portal, "portal_setup")
+        rename_tiles_to_blocks(portal_setup)
+        self.assertTrue(True)

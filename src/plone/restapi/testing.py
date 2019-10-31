@@ -304,15 +304,15 @@ class PloneRestApIBlocksLayer(PloneSandboxLayer):
     defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
 
     def setUpPloneSite(self, portal):
-        applyProfile(portal, "plone.restapi:tiles")
+        applyProfile(portal, "plone.restapi:blocks")
 
 
-PLONE_RESTAPI_TILES_FIXTURE = PloneRestApIBlocksLayer()
-PLONE_RESTAPI_TILES_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_TILES_FIXTURE,), name="PloneRestApIBlocksLayer:Integration"
+PLONE_RESTAPI_BLOCKS_FIXTURE = PloneRestApIBlocksLayer()
+PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING = IntegrationTesting(
+    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE,), name="PloneRestApIBlocksLayer:Integration"
 )
-PLONE_RESTAPI_TILES_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_RESTAPI_TILES_FIXTURE, z2.ZSERVER_FIXTURE),
+PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApIBlocksLayer:Functional",
 )
 

@@ -330,25 +330,25 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.assertIn("title", self.serialize(self.portal))
         self.assertIn("description", self.serialize(self.portal))
 
-    def test_serialize_returns_site_root_opt_in_tiles_not_present(self):
-        self.assertEqual(self.serialize(self.portal)["tiles"], {})
-        self.assertEqual(self.serialize(self.portal)["tiles_layout"], {})
+    def test_serialize_returns_site_root_opt_in_blocks_not_present(self):
+        self.assertEqual(self.serialize(self.portal)["blocks"], {})
+        self.assertEqual(self.serialize(self.portal)["blocks_layout"], {})
 
-    def test_serialize_returns_site_root_opt_in_tiles_present(self):
-        tiles = {
+    def test_serialize_returns_site_root_opt_in_blocks_present(self):
+        blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {"@type": "description"},
             "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
         }
-        tiles_layout = {
+        blocks_layout = {
             "items": [
                 "07c273fc-8bfc-4e7d-a327-d513e5a945bb",
                 "0358abe2-b4f1-463d-a279-a63ea80daf19",
             ]
         }
-        self.portal.manage_addProperty("tiles", json.dumps(tiles), "string")
+        self.portal.manage_addProperty("blocks", json.dumps(blocks), "string")
         self.portal.manage_addProperty(
-            "tiles_layout", json.dumps(tiles_layout), "string"
+            "blocks_layout", json.dumps(blocks_layout), "string"
         )
 
-        self.assertEqual(self.serialize(self.portal)["tiles"], tiles)
-        self.assertEqual(self.serialize(self.portal)["tiles_layout"], tiles_layout)
+        self.assertEqual(self.serialize(self.portal)["blocks"], blocks)
+        self.assertEqual(self.serialize(self.portal)["blocks_layout"], blocks_layout)
