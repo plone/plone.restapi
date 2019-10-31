@@ -10,9 +10,9 @@ from Products.CMFCore.WorkflowTool import WorkflowTool
 
 
 _originals = {
-    'WorkflowTool.getInfoFor': WorkflowTool.getInfoFor,
-    'ContentHistoryViewlet.fullHistory': ContentHistoryViewlet.fullHistory,
-    'TTWLockable.lock_info': TTWLockable.lock_info,
+    "WorkflowTool.getInfoFor": WorkflowTool.getInfoFor,
+    "ContentHistoryViewlet.fullHistory": ContentHistoryViewlet.fullHistory,
+    "TTWLockable.lock_info": TTWLockable.lock_info,
 }
 
 
@@ -67,9 +67,11 @@ class StaticTime(object):
     def __exit__(self, _type, exc, _traceback):
         self.stop()
 
-    def __init__(self,
-                 created=datetime(1995, 7, 31, 13, 45),
-                 modified=datetime(1995, 7, 31, 17, 30)):
+    def __init__(
+        self,
+        created=datetime(1995, 7, 31, 13, 45),
+        modified=datetime(1995, 7, 31, 17, 30),
+    ):
         self.static_created = created
         self.static_modified = modified
         """Set up a static time helper.
@@ -98,38 +100,41 @@ class StaticTime(object):
         # __init__. In order to fake the returned times we patch a property
         # onto the class which will shadow these instance attributes.
         DexterityContent.creation_date = property(
-            static_creation_date_getter_factory(self.static_created),
-            nop_setter)
+            static_creation_date_getter_factory(self.static_created), nop_setter
+        )
         DexterityContent.modification_date = property(
-            static_modification_date_getter_factory(self.static_modified),
-            nop_setter)
+            static_modification_date_getter_factory(self.static_modified), nop_setter
+        )
 
         # Patch the lightweight p.a.discussion 'Comment' type. Its dates are
         # Python datetimes, unlike DX Content types which use zope DateTimes.
         Comment.creation_date = property(
-            static_creation_date_getter_factory(
-                self.static_created, type_=datetime),
-            nop_setter)
+            static_creation_date_getter_factory(self.static_created, type_=datetime),
+            nop_setter,
+        )
         Comment.modification_date = property(
             static_modification_date_getter_factory(
-                self.static_modified, type_=datetime),
-            nop_setter)
+                self.static_modified, type_=datetime
+            ),
+            nop_setter,
+        )
 
-        WorkflowTool.getInfoFor = static_get_info_for_factory(
-            self.static_modified)
+        WorkflowTool.getInfoFor = static_get_info_for_factory(self.static_modified)
 
         ContentHistoryViewlet.fullHistory = static_full_history_factory(
-            self.static_modified)
+            self.static_modified
+        )
 
-        TTWLockable.lock_info = static_lock_info_factory(
-            self.static_modified)
+        TTWLockable.lock_info = static_lock_info_factory(self.static_modified)
 
     def stop(self):
         """Undo all the patches.
         """
-        TTWLockable.lock_info = _originals['TTWLockable.lock_info']
-        ContentHistoryViewlet.fullHistory = _originals['ContentHistoryViewlet.fullHistory']
-        WorkflowTool.getInfoFor = _originals['WorkflowTool.getInfoFor']
+        TTWLockable.lock_info = _originals["TTWLockable.lock_info"]
+        ContentHistoryViewlet.fullHistory = _originals[
+            "ContentHistoryViewlet.fullHistory"
+        ]
+        WorkflowTool.getInfoFor = _originals["WorkflowTool.getInfoFor"]
 
         Comment.modification_date = None
         Comment.creation_date = None
@@ -157,9 +162,10 @@ def static_get_info_for_factory(dt_value):
         In other words, they will be stable (static), but different for each
         event, and should still reflect proper order of events.
         """
-        res = _originals['WorkflowTool.getInfoFor'](
-            self, ob, name, default=default, wf_id=wf_id, *args, **kw)
-        if name == 'review_history':
+        res = _originals["WorkflowTool.getInfoFor"](
+            self, ob, name, default=default, wf_id=wf_id, *args, **kw
+        )
+        if name == "review_history":
             base_date = dt_value
 
             # The ContentHistoryViewlet.fullHistory method assembles results
@@ -174,14 +180,15 @@ def static_get_info_for_factory(dt_value):
             # will also be patched, timestamps in the combined results will be
             # replaced there.)
             import traceback
+
             stack = traceback.format_stack()
-            if 'static_full_history' in str(stack):
+            if "static_full_history" in str(stack):
                 return res
 
             for idx, item in enumerate(res):
                 fake_date = base_date + (idx / 24.0)  # plus one hour
-                if 'time' in item:
-                    item['time'] = fake_date
+                if "time" in item:
+                    item["time"] = fake_date
 
         return res
 
@@ -207,21 +214,21 @@ def static_full_history_factory(dt_value):
         In other words, they will be stable (static), but different for each
         event, and should still reflect proper order of events.
         """
-        actions = _originals['ContentHistoryViewlet.fullHistory'](self)
+        actions = _originals["ContentHistoryViewlet.fullHistory"](self)
 
         base_date = dt_value
         for idx, action in enumerate(actions):
-            if 'time' in action:
+            if "time" in action:
                 fake_date = base_date + (idx / 24.0)  # plus one hour
 
                 # Depending on the kind of action, timestamps may either
                 # be zope DateTimes or floats. Let's reserve the same type.
-                if isinstance(action['time'], float):
-                    action['time'] = float(fake_date)
-                elif isinstance(action['time'], DateTime):
-                    action['time'] = fake_date
+                if isinstance(action["time"], float):
+                    action["time"] = float(fake_date)
+                elif isinstance(action["time"], DateTime):
+                    action["time"] = fake_date
                 else:
-                    raise Exception("Don't know how to patch %r" % action['time'])
+                    raise Exception("Don't know how to patch %r" % action["time"])
 
         return actions
 
@@ -279,12 +286,12 @@ def static_lock_info_factory(dt_value):
         In other words, they will be stable (static), but different for each
         lock_info, and should still reflect proper order of events.
         """
-        infos = _originals['TTWLockable.lock_info'](self)
+        infos = _originals["TTWLockable.lock_info"](self)
         base_date = dt_value
         for idx, info in enumerate(infos):
             fake_date = base_date + (idx / 24.0)  # plus one hour
-            if 'time' in info:
-                info['time'] = float(fake_date)
+            if "time" in info:
+                info["time"] = float(fake_date)
 
         return infos
 

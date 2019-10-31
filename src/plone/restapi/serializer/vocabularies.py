@@ -20,6 +20,7 @@ class SerializeVocabLikeToJson(object):
 
     Implements server-side filtering as well as batching.
     """
+
     def __init__(self, context, request):
         self.context = context
         self.request = request

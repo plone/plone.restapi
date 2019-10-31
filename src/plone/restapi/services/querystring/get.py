@@ -15,9 +15,8 @@ class QuerystringGet(Service):
 
     def reply(self):
         registry = getUtility(IRegistry)
-        reader = getMultiAdapter(
-            (registry, self.request), IQuerystringRegistryReader)
+        reader = getMultiAdapter((registry, self.request), IQuerystringRegistryReader)
 
         result = reader()
-        result['@id'] = '%s/@querystring' % self.context.absolute_url()
+        result["@id"] = "%s/@querystring" % self.context.absolute_url()
         return result

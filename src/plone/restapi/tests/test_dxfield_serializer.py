@@ -258,7 +258,7 @@ class TestDexterityFieldSerializing(TestCase):
             )
 
     def test_namedimage_field_serialization_doesnt_choke_on_corrupt_image(self):
-        image_data = b'INVALID IMAGE DATA'
+        image_data = b"INVALID IMAGE DATA"
         fn = "test_namedimage_field"
         with patch.object(storage, "uuid4", return_value="uuid_1"):
             value = self.serialize(
@@ -269,15 +269,16 @@ class TestDexterityFieldSerializing(TestCase):
             )
         self.assertEqual(
             {
-                u'content-type': u'image/gif',
-                u'download': None,
-                u'filename': u'1024x768.gif',
-                u'height': -1,
-                u'scales': {},
-                u'size': 18,
-                u'width': -1,
+                u"content-type": u"image/gif",
+                u"download": None,
+                u"filename": u"1024x768.gif",
+                u"height": -1,
+                u"scales": {},
+                u"size": 18,
+                u"width": -1,
             },
-            value)
+            value,
+        )
 
     def test_namedblobfile_field_serialization_returns_dict(self):
         value = self.serialize(

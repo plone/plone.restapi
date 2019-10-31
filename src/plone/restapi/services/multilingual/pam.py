@@ -97,7 +97,7 @@ class LinkTranslations(Service):
         portal = purl.getPortalObject()
         portal_url = portal.absolute_url()
         if url.startswith(portal_url):
-            content_path = url[len(portal_url) + 1:]
+            content_path = url[len(portal_url) + 1 :]
             content_path = content_path.split("/")
             content_item = portal.restrictedTraverse(content_path)
             return content_item

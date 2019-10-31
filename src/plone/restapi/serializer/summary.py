@@ -71,11 +71,11 @@ class DefaultJSONSummarySerializer(object):
         additional_metadata_fields = set(additional_metadata_fields)
 
         if "_all" in additional_metadata_fields:
-            fields_cache = self.request.get('_summary_fields_cache', None)
+            fields_cache = self.request.get("_summary_fields_cache", None)
             if fields_cache is None:
                 catalog = getToolByName(self.context, "portal_catalog")
                 fields_cache = set(catalog.schema()) | NON_METADATA_ATTRIBUTES
-                self.request.set('_summary_fields_cache', fields_cache)
+                self.request.set("_summary_fields_cache", fields_cache)
             additional_metadata_fields = fields_cache
 
         return DEFAULT_METADATA_FIELDS | additional_metadata_fields

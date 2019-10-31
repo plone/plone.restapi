@@ -56,8 +56,9 @@ class DeserializeFromJson(object):
             roles_reindex = sharing_view.update_role_settings(new_roles, reindex=False)
 
         # reindex object security
-        can_reindex = (ICatalogAware(self.context, None) or
-                       IPloneSiteRoot.providedBy(self.context))
+        can_reindex = ICatalogAware(self.context, None) or IPloneSiteRoot.providedBy(
+            self.context
+        )
         if can_reindex and (inherit_reindex or roles_reindex):
             self.context.reindexObjectSecurity()
             if LOCALROLES_MODIFIED_EVENT_AVAILABLE:
