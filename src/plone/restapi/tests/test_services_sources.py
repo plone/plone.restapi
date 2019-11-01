@@ -179,7 +179,7 @@ class TestSourcesEndpoint(unittest.TestCase):
         )
 
     def test_context_source(self):
-        self.doc.title = "Foo Bar Baz"
+        self.doc.title = u'Foo Bar Baz'
         transaction.commit()
 
         response = self.api_session.get(
@@ -198,6 +198,27 @@ class TestSourcesEndpoint(unittest.TestCase):
                     {u"token": u"baz", u"title": u"Baz"},
                 ],
                 u"items_total": 3,
+            },
+        )
+
+    def test_source_filtered_by_non_ascii_title(self):
+        self.doc.title = u'Bär'
+        transaction.commit()
+
+        response = self.api_session.get(
+            "%s/@sources/test_choice_with_context_source?title=b%%C3%%A4r" % self.doc.absolute_url()
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                u"@id": self.portal_url
+                + u"/testdoc/@sources/test_choice_with_context_source?title=b%C3%A4r",  # noqa
+                u"items": [
+                    {u'token': u'b=C3=A4r', u'title': u'B\xe4r'},
+                ],
+                u"items_total": 1,
             },
         )
 
