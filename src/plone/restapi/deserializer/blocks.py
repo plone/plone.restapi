@@ -15,7 +15,7 @@ import six
 
 
 def path2uid(context, path):
-    if isinstance(path, six.binary_type):
+    if six.PY3:
         path = path.decode("utf-8")
     obj = context.unrestrictedTraverse(path, None)
     if obj is None:
