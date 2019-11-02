@@ -11,11 +11,11 @@ from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-import six
-
 
 def path2uid(context, path):
-    if six.PY3:
+    # unrestrictedTraverse requires a string on py3. see:
+    # https://github.com/zopefoundation/Zope/issues/674
+    if not isinstance(path, str):
         path = path.decode("utf-8")
     obj = context.unrestrictedTraverse(path, None)
     if obj is None:
