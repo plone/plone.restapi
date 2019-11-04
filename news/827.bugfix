@@ -1,0 +1,2 @@
+Prevent converting bytestring ids to unicode ids when reordering (see upgrade guide for potential migration).
+[deiferni]
