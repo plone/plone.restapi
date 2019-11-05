@@ -95,13 +95,17 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         def handler(obj, event):
             obj._handler_called = True
             self.event = event
-        provideHandler(handler, (IDexterityItem, IObjectModifiedEvent,))
+
+        provideHandler(handler, (IDexterityItem, IObjectModifiedEvent))
         self.deserialize(body='{"test_textline_field": null}')
-        self.assertTrue(getattr(self.portal.doc1, '_handler_called', False),
-                        'IObjectModifiedEvent not notified')
+        self.assertTrue(
+            getattr(self.portal.doc1, "_handler_called", False),
+            "IObjectModifiedEvent not notified",
+        )
         self.assertEqual(
-            ('IDXTestDocumentSchema.test_textline_field',),
-            self.event.descriptions[0].attributes)
+            ("IDXTestDocumentSchema.test_textline_field",),
+            self.event.descriptions[0].attributes,
+        )
 
     def test_deserializer_does_not_update_field_without_write_permission(self):
         self.portal.doc1.test_write_permission_field = u"Test Write Permission"

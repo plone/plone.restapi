@@ -28,13 +28,17 @@ class TestQuerysourcesEndpoint(unittest.TestCase):
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         self.doc = api.content.create(
-            container=self.portal, id="testdoc", type="DXTestDocument", title=u"Document 1"
+            container=self.portal,
+            id="testdoc",
+            type="DXTestDocument",
+            title=u"Document 1",
         )
         transaction.commit()
 
     def test_get_querysource_xxx(self):
         response = self.api_session.get(
-            "%s/@querysources/test_choice_with_querysource?query=2" % self.doc.absolute_url()
+            "%s/@querysources/test_choice_with_querysource?query=2"
+            % self.doc.absolute_url()
         )
 
         self.assertEqual(200, response.status_code)
@@ -42,17 +46,17 @@ class TestQuerysourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.doc.absolute_url() + u"/@querysources/test_choice_with_querysource?query=2",  # noqa
-                u"items": [
-                    {u"title": u"Title 2", u"token": u"token2"},
-                ],
+                u"@id": self.doc.absolute_url()
+                + u"/@querysources/test_choice_with_querysource?query=2",  # noqa
+                u"items": [{u"title": u"Title 2", u"token": u"token2"}],
                 u"items_total": 1,
             },
         )
 
     def test_get_querysource_batched(self):
         response = self.api_session.get(
-            "%s/@querysources/test_choice_with_querysource?query=token&b_size=1" % self.doc.absolute_url()
+            "%s/@querysources/test_choice_with_querysource?query=token&b_size=1"
+            % self.doc.absolute_url()
         )
 
         self.assertEqual(200, response.status_code)
@@ -60,7 +64,8 @@ class TestQuerysourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.doc.absolute_url() + u"/@querysources/test_choice_with_querysource?query=token",  # noqa
+                u"@id": self.doc.absolute_url()
+                + u"/@querysources/test_choice_with_querysource?query=token",  # noqa
                 u"batching": {
                     u"@id": self.doc.absolute_url()
                     + u"/@querysources/test_choice_with_querysource?query=token&b_size=1",  # noqa
@@ -71,9 +76,7 @@ class TestQuerysourcesEndpoint(unittest.TestCase):
                     u"next": self.doc.absolute_url()
                     + u"/@querysources/test_choice_with_querysource?b_start=1&query=token&b_size=1",  # noqa
                 },
-                u"items": [
-                    {u"title": u"Title 1", u"token": u"token1"},
-                ],
+                u"items": [{u"title": u"Title 1", u"token": u"token1"}],
                 u"items_total": 3,
             },
         )
@@ -90,27 +93,35 @@ class TestQuerysourcesEndpoint(unittest.TestCase):
             response.get("error"),
             {
                 u"type": u"Bad Request",
-                u"message": u'Enumerating querysources is not supported. '
-                            u'Please search the source using the ?query= QS parameter',
+                u"message": u"Enumerating querysources is not supported. "
+                u"Please search the source using the ?query= QS parameter",
             },
         )
 
     def test_get_querysource_for_unknown_field(self):
-        response = self.api_session.get("%s/@querysources/unknown_field" % self.doc.absolute_url())
+        response = self.api_session.get(
+            "%s/@querysources/unknown_field" % self.doc.absolute_url()
+        )
 
         self.assertEqual(404, response.status_code)
         response = response.json()
-        self.assertEqual(response, {
-            u'error': {
-                u'type': u'Not Found',
-                u'message': u"No such field: 'unknown_field'"}})
+        self.assertEqual(
+            response,
+            {
+                u"error": {
+                    u"type": u"Not Found",
+                    u"message": u"No such field: 'unknown_field'",
+                }
+            },
+        )
 
     def test_context_querysource_xxx(self):
-        self.doc.title = 'Foo Bar Baz'
+        self.doc.title = "Foo Bar Baz"
         transaction.commit()
 
         response = self.api_session.get(
-            "%s/@querysources/test_choice_with_context_querysource?query=foo" % self.doc.absolute_url()
+            "%s/@querysources/test_choice_with_context_querysource?query=foo"
+            % self.doc.absolute_url()
         )
 
         self.assertEqual(response.status_code, 200)
@@ -119,9 +130,7 @@ class TestQuerysourcesEndpoint(unittest.TestCase):
             {
                 u"@id": self.portal_url
                 + u"/testdoc/@querysources/test_choice_with_context_querysource?query=foo",  # noqa
-                u"items": [
-                    {u'token': u'foo', u'title': u'Foo'},
-                ],
+                u"items": [{u"token": u"foo", u"title": u"Foo"}],
                 u"items_total": 1,
             },
         )

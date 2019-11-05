@@ -107,6 +107,7 @@ class ImageFieldSerializer(DefaultFieldSerializer):
 
 
 if HAS_BLOB:
+
     @adapter(IBlobField, IBaseObject, Interface)
     @implementer(IFieldSerializer)
     class BlobFieldSerializer(FileFieldSerializer):
@@ -133,6 +134,7 @@ class ReferenceFieldSerializer(DefaultFieldSerializer):
 
 
 if IQueryField is not None:
+
     @adapter(IQueryField, IBaseObject, Interface)
     @implementer(IFieldSerializer)
     class QueryFieldSerializer(DefaultFieldSerializer):

@@ -374,7 +374,7 @@ class TestJsonSchemaProviders(TestCase):
                 "enum": ["foo", "bar"],
                 "enumNames": ["Foo", "Bar"],
                 "choices": [("foo", "Foo"), ("bar", "Bar")],
-                'vocabulary': {'@id': 'http://nohost/plone/@sources/myfield'},
+                "vocabulary": {"@id": "http://nohost/plone/@sources/myfield"},
             },
             adapter.get_schema(),
         )
@@ -420,7 +420,7 @@ class TestJsonSchemaProviders(TestCase):
                 "enum": ["foo", "bar"],
                 "enumNames": ["Foo", "Bar"],
                 "choices": [("foo", "Foo"), ("bar", "Bar")],
-                "vocabulary": {'@id': 'http://nohost/plone/@sources/myfield'},
+                "vocabulary": {"@id": "http://nohost/plone/@sources/myfield"},
             },
             adapter.get_schema(),
         )
@@ -519,7 +519,7 @@ class TestJsonSchemaProviders(TestCase):
                     "enum": ["foo", "bar"],
                     "enumNames": ["Foo", "Bar"],
                     "choices": [("foo", "Foo"), ("bar", "Bar")],
-                    'vocabulary': {'@id': 'http://nohost/plone/@sources/'},
+                    "vocabulary": {"@id": "http://nohost/plone/@sources/"},
                 },
             },
             adapter.get_schema(),

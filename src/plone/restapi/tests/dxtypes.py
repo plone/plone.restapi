@@ -52,8 +52,10 @@ class MyIterableSource(object):
         return value in self.values
 
     def __iter__(self):
-        terms = [SimpleTerm(value=v, token='token%s' % v, title='Title %s' % v)
-                 for v in self.values]
+        terms = [
+            SimpleTerm(value=v, token="token%s" % v, title="Title %s" % v)
+            for v in self.values
+        ]
         return iter(terms)
 
 
@@ -65,8 +67,10 @@ class MyIterableQuerySource(object):
         return value in self.values
 
     def search(self, query):
-        terms = [SimpleTerm(value=v, token='token%s' % v, title='Title %s' % v)
-                 for v in self.values]
+        terms = [
+            SimpleTerm(value=v, token="token%s" % v, title="Title %s" % v)
+            for v in self.values
+        ]
         return [t for t in terms if query in str(t.token)]
 
     def __iter__(self):
@@ -76,13 +80,13 @@ class MyIterableQuerySource(object):
 
 @implementer(IIterableSource)
 class MyIterableContextSource(object):
-
     def __init__(self, context):
         self.context = context
 
         title_words = self.context.title.split()
-        self.terms = [SimpleTerm(value=w.lower(), token=w.lower(), title=w)
-                      for w in title_words]
+        self.terms = [
+            SimpleTerm(value=w.lower(), token=w.lower(), title=w) for w in title_words
+        ]
 
     def __contains__(self, value):
         return value in [t.value for t in self.terms]
@@ -93,13 +97,13 @@ class MyIterableContextSource(object):
 
 @implementer(IQuerySource)
 class MyContextQuerySource(object):
-
     def __init__(self, context):
         self.context = context
 
         title_words = self.context.title.split()
-        self.terms = [SimpleTerm(value=w.lower(), token=w.lower(), title=w)
-                      for w in title_words]
+        self.terms = [
+            SimpleTerm(value=w.lower(), token=w.lower(), title=w) for w in title_words
+        ]
 
     def __contains__(self, value):
         return value in [t.value for t in self.terms]
@@ -156,15 +160,16 @@ class IDXTestDocumentSchema(model.Schema):
     )
 
     test_choice_with_non_iterable_source = schema.Choice(
-        required=False, source=my_non_iterable_source)
-    test_choice_with_source = schema.Choice(
-        required=False, source=my_iterable_source)
+        required=False, source=my_non_iterable_source
+    )
+    test_choice_with_source = schema.Choice(required=False, source=my_iterable_source)
     test_choice_with_context_source = schema.Choice(
-        required=False, source=my_context_source_binder)
-    test_choice_with_querysource = schema.Choice(
-        required=False, source=my_querysource)
+        required=False, source=my_context_source_binder
+    )
+    test_choice_with_querysource = schema.Choice(required=False, source=my_querysource)
     test_choice_with_context_querysource = schema.Choice(
-        required=False, source=my_context_querysource_binder)
+        required=False, source=my_context_querysource_binder
+    )
 
     test_date_field = schema.Date(required=False)
     test_datetime_field = schema.Datetime(required=False)
