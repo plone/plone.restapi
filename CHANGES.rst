@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+5.0.1 (2019-11-05)
+------------------
+
+Bug fixes:
+
+
+- Fix serialization of vocabulary items for fields that need hashable items (e.g. sets).
+  [buchi] (#788)
+
+
 5.0.0 (2019-10-31)
 ------------------
 
