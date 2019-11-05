@@ -193,6 +193,18 @@ class IDXTestDocumentSchema(model.Schema):
         required=False,
     )
     test_set_field = schema.Set(required=False)
+    test_set_field_with_choice_with_vocabulary = schema.Set(
+        value_type=schema.Choice(
+            vocabulary=SimpleVocabulary(
+                [
+                    SimpleTerm(u"value1", "token1", u"title1"),
+                    SimpleTerm(u"value2", "token2", u"title2"),
+                    SimpleTerm(u"value3", "token3", u"title3"),
+                ]
+            )
+        ),
+        required=False,
+    )
     test_text_field = schema.Text(required=False)
     test_textline_field = schema.TextLine(required=False)
     test_time_field = schema.Time(required=False)
