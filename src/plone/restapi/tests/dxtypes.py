@@ -9,6 +9,7 @@ from plone.autoform.directives import write_permission
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.content import Item
 from plone.namedfile import field as namedfile
+from plone.restapi.tests.helpers import ascii_token
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
 from pytz import timezone
@@ -84,9 +85,10 @@ class MyIterableContextSource(object):
         self.context = context
 
         title_words = self.context.title.split()
-        self.terms = [
-            SimpleTerm(value=w.lower(), token=w.lower(), title=w) for w in title_words
-        ]
+        self.terms = [SimpleTerm(value=w.lower(),
+                                 token=ascii_token(w.lower()),
+                                 title=w)
+                      for w in title_words]
 
     def __contains__(self, value):
         return value in [t.value for t in self.terms]
@@ -101,9 +103,10 @@ class MyContextQuerySource(object):
         self.context = context
 
         title_words = self.context.title.split()
-        self.terms = [
-            SimpleTerm(value=w.lower(), token=w.lower(), title=w) for w in title_words
-        ]
+        self.terms = [SimpleTerm(value=w.lower(),
+                                 token=ascii_token(w.lower()),
+                                 title=w)
+                      for w in title_words]
 
     def __contains__(self, value):
         return value in [t.value for t in self.terms]
