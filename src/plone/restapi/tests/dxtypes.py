@@ -9,6 +9,7 @@ from plone.autoform.directives import write_permission
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.content import Item
 from plone.namedfile import field as namedfile
+from plone.restapi.tests.helpers import ascii_token
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
 from pytz import timezone
@@ -52,8 +53,10 @@ class MyIterableSource(object):
         return value in self.values
 
     def __iter__(self):
-        terms = [SimpleTerm(value=v, token='token%s' % v, title='Title %s' % v)
-                 for v in self.values]
+        terms = [
+            SimpleTerm(value=v, token="token%s" % v, title="Title %s" % v)
+            for v in self.values
+        ]
         return iter(terms)
 
 
@@ -65,8 +68,10 @@ class MyIterableQuerySource(object):
         return value in self.values
 
     def search(self, query):
-        terms = [SimpleTerm(value=v, token='token%s' % v, title='Title %s' % v)
-                 for v in self.values]
+        terms = [
+            SimpleTerm(value=v, token="token%s" % v, title="Title %s" % v)
+            for v in self.values
+        ]
         return [t for t in terms if query in str(t.token)]
 
     def __iter__(self):
@@ -76,12 +81,13 @@ class MyIterableQuerySource(object):
 
 @implementer(IIterableSource)
 class MyIterableContextSource(object):
-
     def __init__(self, context):
         self.context = context
 
         title_words = self.context.title.split()
-        self.terms = [SimpleTerm(value=w.lower(), token=w.lower(), title=w)
+        self.terms = [SimpleTerm(value=w.lower(),
+                                 token=ascii_token(w.lower()),
+                                 title=w)
                       for w in title_words]
 
     def __contains__(self, value):
@@ -93,12 +99,13 @@ class MyIterableContextSource(object):
 
 @implementer(IQuerySource)
 class MyContextQuerySource(object):
-
     def __init__(self, context):
         self.context = context
 
         title_words = self.context.title.split()
-        self.terms = [SimpleTerm(value=w.lower(), token=w.lower(), title=w)
+        self.terms = [SimpleTerm(value=w.lower(),
+                                 token=ascii_token(w.lower()),
+                                 title=w)
                       for w in title_words]
 
     def __contains__(self, value):
@@ -156,15 +163,16 @@ class IDXTestDocumentSchema(model.Schema):
     )
 
     test_choice_with_non_iterable_source = schema.Choice(
-        required=False, source=my_non_iterable_source)
-    test_choice_with_source = schema.Choice(
-        required=False, source=my_iterable_source)
+        required=False, source=my_non_iterable_source
+    )
+    test_choice_with_source = schema.Choice(required=False, source=my_iterable_source)
     test_choice_with_context_source = schema.Choice(
-        required=False, source=my_context_source_binder)
-    test_choice_with_querysource = schema.Choice(
-        required=False, source=my_querysource)
+        required=False, source=my_context_source_binder
+    )
+    test_choice_with_querysource = schema.Choice(required=False, source=my_querysource)
     test_choice_with_context_querysource = schema.Choice(
-        required=False, source=my_context_querysource_binder)
+        required=False, source=my_context_querysource_binder
+    )
 
     test_date_field = schema.Date(required=False)
     test_datetime_field = schema.Datetime(required=False)
@@ -193,6 +201,18 @@ class IDXTestDocumentSchema(model.Schema):
         required=False,
     )
     test_set_field = schema.Set(required=False)
+    test_set_field_with_choice_with_vocabulary = schema.Set(
+        value_type=schema.Choice(
+            vocabulary=SimpleVocabulary(
+                [
+                    SimpleTerm(u"value1", "token1", u"title1"),
+                    SimpleTerm(u"value2", "token2", u"title2"),
+                    SimpleTerm(u"value3", "token3", u"title3"),
+                ]
+            )
+        ),
+        required=False,
+    )
     test_text_field = schema.Text(required=False)
     test_textline_field = schema.TextLine(required=False)
     test_time_field = schema.Time(required=False)

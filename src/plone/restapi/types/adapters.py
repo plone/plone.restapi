@@ -299,10 +299,7 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
                 enum.append(term.token)
                 enum_names.append(title)
 
-            result.update(
-                {"enum": enum,
-                 "enumNames": enum_names,
-                 "choices": choices})
+            result.update({"enum": enum, "enumNames": enum_names, "choices": choices})
 
         return result
 

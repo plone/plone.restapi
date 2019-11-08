@@ -28,7 +28,10 @@ class TestSourcesEndpoint(unittest.TestCase):
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         self.doc = api.content.create(
-            container=self.portal, id="testdoc", type="DXTestDocument", title=u"Document 1"
+            container=self.portal,
+            id="testdoc",
+            type="DXTestDocument",
+            title=u"Document 1",
         )
         transaction.commit()
 
@@ -42,7 +45,8 @@ class TestSourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.doc.absolute_url() + u"/@sources/test_choice_with_source",  # noqa
+                u"@id": self.doc.absolute_url()
+                + u"/@sources/test_choice_with_source",  # noqa
                 u"items": [
                     {u"title": u"Title 1", u"token": u"token1"},
                     {u"title": u"Title 2", u"token": u"token2"},
@@ -62,7 +66,8 @@ class TestSourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.doc.absolute_url() + u"/@sources/test_choice_with_source",  # noqa
+                u"@id": self.doc.absolute_url()
+                + u"/@sources/test_choice_with_source",  # noqa
                 u"batching": {
                     u"@id": self.doc.absolute_url()
                     + u"/@sources/test_choice_with_source?b_size=1",  # noqa
@@ -73,9 +78,7 @@ class TestSourcesEndpoint(unittest.TestCase):
                     u"next": self.doc.absolute_url()
                     + u"/@sources/test_choice_with_source?b_start=1&b_size=1",  # noqa
                 },
-                u"items": [
-                    {u"title": u"Title 1", u"token": u"token1"},
-                ],
+                u"items": [{u"title": u"Title 1", u"token": u"token1"}],
                 u"items_total": 3,
             },
         )
@@ -133,7 +136,8 @@ class TestSourcesEndpoint(unittest.TestCase):
 
     def test_get_source_filtered_by_title_and_token_returns_error(self):
         response = self.api_session.get(
-            "%s/@sources/test_choice_with_source?token=token1&title=Title" % self.doc.absolute_url()  # noqa
+            "%s/@sources/test_choice_with_source?token=token1&title=Title"
+            % self.doc.absolute_url()  # noqa
         )
 
         self.assertEqual(400, response.status_code)
@@ -162,21 +166,20 @@ class TestSourcesEndpoint(unittest.TestCase):
         )
 
     def test_get_source_for_unknown_field(self):
-        response = self.api_session.get("%s/@sources/unknown_field" % self.doc.absolute_url())
+        response = self.api_session.get(
+            "%s/@sources/unknown_field" % self.doc.absolute_url()
+        )
 
         self.assertEqual(404, response.status_code)
         response = response.json()
 
         self.assertEqual(
             response.get("error"),
-            {
-                u"type": u"Not Found",
-                u"message": u"No such field: 'unknown_field'",
-            },
+            {u"type": u"Not Found", u"message": u"No such field: 'unknown_field'"},
         )
 
     def test_context_source(self):
-        self.doc.title = 'Foo Bar Baz'
+        self.doc.title = u'Foo Bar Baz'
         transaction.commit()
 
         response = self.api_session.get(
@@ -190,11 +193,32 @@ class TestSourcesEndpoint(unittest.TestCase):
                 u"@id": self.portal_url
                 + u"/testdoc/@sources/test_choice_with_context_source",  # noqa
                 u"items": [
-                    {u'token': u'foo', u'title': u'Foo'},
-                    {u'token': u'bar', u'title': u'Bar'},
-                    {u'token': u'baz', u'title': u'Baz'},
+                    {u"token": u"foo", u"title": u"Foo"},
+                    {u"token": u"bar", u"title": u"Bar"},
+                    {u"token": u"baz", u"title": u"Baz"},
                 ],
                 u"items_total": 3,
+            },
+        )
+
+    def test_source_filtered_by_non_ascii_title(self):
+        self.doc.title = u'Bär'
+        transaction.commit()
+
+        response = self.api_session.get(
+            "%s/@sources/test_choice_with_context_source?title=b%%C3%%A4r" % self.doc.absolute_url()
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                u"@id": self.portal_url
+                + u"/testdoc/@sources/test_choice_with_context_source?title=b%C3%A4r",  # noqa
+                u"items": [
+                    {u'token': u'b=C3=A4r', u'title': u'B\xe4r'},
+                ],
+                u"items_total": 1,
             },
         )
 

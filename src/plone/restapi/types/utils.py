@@ -205,16 +205,16 @@ def get_vocab_like_url(endpoint, locator, context, request):
     except AttributeError:
         portal = getSite()
         context_url = portal.absolute_url()
-    return '/'.join((context_url, endpoint, locator))
+    return "/".join((context_url, endpoint, locator))
 
 
 def get_vocabulary_url(vocab_name, context, request):
-    return get_vocab_like_url('@vocabularies', vocab_name, context, request)
+    return get_vocab_like_url("@vocabularies", vocab_name, context, request)
 
 
 def get_querysource_url(field, context, request):
-    return get_vocab_like_url('@querysources', field.getName(), context, request)
+    return get_vocab_like_url("@querysources", field.getName(), context, request)
 
 
 def get_source_url(field, context, request):
-    return get_vocab_like_url('@sources', field.getName(), context, request)
+    return get_vocab_like_url("@sources", field.getName(), context, request)

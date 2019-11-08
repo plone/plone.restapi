@@ -68,7 +68,7 @@ class CollectionFieldSerializer(DefaultFieldSerializer):
             for v in value:
                 term = value_type.vocabulary.getTerm(v)
                 values.append({u"token": term.token, u"title": term.title})
-            value = self.field._type(values)
+            value = values
         return json_compatible(value)
 
 

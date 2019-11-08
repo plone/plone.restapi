@@ -26,15 +26,12 @@ def check_security(context):
 @implementer(IExpandableElement)
 @adapter(IDexterityContent, Interface)
 class TypesInfo(object):
-
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, expand=False):
-        result = {
-            "types": {"@id": "{}/@types".format(self.context.absolute_url())}
-        }
+        result = {"types": {"@id": "{}/@types".format(self.context.absolute_url())}}
         if not expand:
             return result
 
@@ -62,7 +59,7 @@ class TypesInfo(object):
         ftis = [portal_types[x.value] for x in vocab_factory(self.context)]
         ftis = [fti for fti in ftis if getattr(fti, "lookupSchema", None)]
 
-        result['types'] = [
+        result["types"] = [
             {
                 "@id": "{}/@types/{}".format(portal_url, fti.getId()),
                 "title": translate(fti.Title(), context=self.request),
