@@ -50,7 +50,8 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
                     entity_map = block.get("text", {}).get("entityMap", {})
                     for entity in entity_map.values():
                         if entity.get("type") == "LINK":
-                            href = entity.get("data", {}).get("href", "")
+                            href = entity.get("data", {}).get("url", "")
+                            # before = href
                             if href:
                                 path = href
                                 uid, suffix = path2uid(portal, path)
@@ -60,4 +61,5 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
                                         href += suffix
                                     entity["data"]["href"] = href
                                     entity["data"]["url"] = href
+                                # print("DESERIALIZE " + before + " -> " + href)
         return value
