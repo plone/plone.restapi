@@ -48,14 +48,18 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
                     entity_map = block.get("text", {}).get("entityMap", {})
                     for entity in entity_map.values():
                         if entity.get("type") == "LINK":
-                            href = entity.get("data", {}).get("href", "")
-                            if href and href.startswith(portal_url):
-                                path = href[len(portal_url) + 1 :].encode("utf8")
+                            print("DESERIALIZE")
+                            print("FROM: " + str(entity))
+                            href = entity.get("data", {}).get("url", "")
+                            if href:
+                                # path = href[len(portal_url) + 1 :].encode("utf8")
+                                path = href.lstrip("/")
                                 uid, suffix = path2uid(portal, path)
                                 if uid:
                                     href = relative_up * "../" + "resolveuid/" + uid
                                     if suffix:
                                         href += suffix
-                                    entity["data"]["href"] = href
+                                    # entity["data"]["href"] = href
                                     entity["data"]["url"] = href
+                            print("TO: " + str(entity))
         return value
