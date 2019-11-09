@@ -181,9 +181,9 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": self.doc2.absolute_url(),
+                                "href": "/doc2",
                                 "rel": "nofollow",
-                                "url": self.doc2.absolute_url(),
+                                "url": "/doc2",
                             },
                             "mutability": "MUTABLE",
                             "type": "LINK",
@@ -213,11 +213,7 @@ class TestBlocksResolveUID(TestCase):
                 "text": {
                     "entityMap": {
                         "0": {
-                            "data": {
-                                "href": self.portal.absolute_url() + "/foo",
-                                "rel": "nofollow",
-                                "url": self.portal.absolute_url() + "/foo",
-                            },
+                            "data": {"href": "/foo", "rel": "nofollow", "url": "/foo"},
                             "mutability": "MUTABLE",
                             "type": "LINK",
                         }
@@ -230,13 +226,13 @@ class TestBlocksResolveUID(TestCase):
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["href"],
-            self.portal.absolute_url() + "/foo",
+            "/foo",
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["url"],
-            self.portal.absolute_url() + "/foo",
+            "/foo",
         )
 
     def test_path_keeps_suffix(self):
@@ -248,9 +244,9 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": self.doc2.absolute_url() + "/view",
+                                "href": "/doc2" + "/view",
                                 "rel": "nofollow",
-                                "url": self.doc2.absolute_url() + "/view",
+                                "url": "/doc2" + "/view",
                             },
                             "mutability": "MUTABLE",
                             "type": "LINK",
