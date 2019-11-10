@@ -38,9 +38,9 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                                 if match is not None:
                                     uid, suffix = match.groups()
                                     href = uuidToURL(uid)
-                                    href = href.replace(portal_url, "")
                                     if href is None:
                                         continue
+                                    href = href.replace(portal_url, "")
                                     if suffix:
                                         href += "/" + suffix
                                     entity["data"]["href"] = href
