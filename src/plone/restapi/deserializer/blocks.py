@@ -61,5 +61,5 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
                                         href += suffix
                                     entity["data"]["href"] = href
                                     entity["data"]["url"] = href
-                                print("DESERIALIZE " + before + " -> " + href)
+                                print("DESERIALIZE " + before + " -> " + href)  # noqa
         return value

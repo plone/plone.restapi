@@ -45,5 +45,5 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                                         href += "/" + suffix
                                     entity["data"]["href"] = href
                                     entity["data"]["url"] = href
-                                    print("SERIALIZE " + before + " -> " + href)
+                                    print("SERIALIZE " + before + " -> " + href)  # noqa
         return json_compatible(self.get_value())
