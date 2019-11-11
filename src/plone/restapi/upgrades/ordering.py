@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from persistent.list import PersistentList
+from plone import api
 from plone.folder.default import DefaultOrdering
+from Products.Five.browser import BrowserView
 from zope.annotation.interfaces import IAnnotatable
 from zope.annotation.interfaces import IAnnotations
 
@@ -8,6 +10,7 @@ import six
 
 
 ORDER_KEY = DefaultOrdering.ORDER_KEY
+QUERY = {'is_folderish': True}
 
 
 def safe_utf8(to_utf8):
@@ -44,3 +47,24 @@ def ensure_child_ordering_object_ids_are_native_strings(container):
     fixed_ordering = PersistentList(
         safe_utf8(item_id) for item_id in annotations[ORDER_KEY])
     annotations[ORDER_KEY] = fixed_ordering
+
+
+class FixOrderingView(BrowserView):
+    """Attempt to fix ordering for all potentially affected objects.
+
+    By default will fix ordering object ids for every object that considers
+    itself folderish.
+
+    The problem only exists with python 2 so we do nothing when we are
+    called on python 3 by mistake.
+    """
+    def __call__(self):
+        if six.PY3:
+            return "Aborted, fixing ordering is only necessary on python 2."
+
+        catalog = api.portal.get_tool("portal_catalog")
+        for brain in catalog.unrestrictedSearchResults(QUERY):
+            folderish = brain.getObject()
+            ensure_child_ordering_object_ids_are_native_strings(folderish)
+
+        return "Done."

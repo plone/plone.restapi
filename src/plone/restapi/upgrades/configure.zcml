@@ -1,7 +1,16 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="plone.restapi">
+
+    <!-- Upgrade to fix ordering, call manually via this browser-view if necessary -->
+    <browser:page
+        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+        name="plone-restapi-upgrade-fix-ordering"
+        class=".ordering.FixOrderingView"
+        permission="cmf.ManagePortal"
+        />
 
     <!-- 0001 -> 0002 -->
     <genericsetup:upgradeStep

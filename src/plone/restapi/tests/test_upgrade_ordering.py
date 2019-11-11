@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.upgrades.ordering import ensure_child_ordering_object_ids_are_native_strings
 
@@ -51,3 +53,27 @@ class TestUpgradeOrdering(unittest.TestCase):
     def test_upgrade_can_be_called_with_not_annotatable(self):
         ensure_child_ordering_object_ids_are_native_strings(object())
 
+    def test_upgrade_view(self):
+        ordering = self.folder.getOrdering()
+        # use incorrect type for ordering, results in mixed type ordering ids
+        # on folder
+        ordering.moveObjectsToBottom([six.text_type('doc1')])
+
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        view = self.portal.restrictedTraverse(
+            '@@plone-restapi-upgrade-fix-ordering')
+        view()
+
+        self.assertEqual(
+            [
+                "doc2",
+                "doc3",
+                "doc1",
+            ],  # noqa
+            self.folder.objectIds(),
+        )
+
+        # upgrade helper should ensure bytestring ids in python2 and do nothing
+        # on python3
+        for id_ in self.folder.objectIds():
+            self.assertIsInstance(id_, str)
