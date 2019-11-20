@@ -6,9 +6,9 @@
   <!-- TODO: what interface do we want to register for ? -->
   <plone:service
     method="GET"
+    name="@portlets"
     for="zope.interface.Interface"
     factory=".get.PortletsGet"
-    name="@portlets"
     permission="zope2.View"
     />
 
@@ -17,6 +17,14 @@
     name="@portlets"
     for="*"
     factory=".add.PortletPost"
+    permission="plone.app.portlets.ManageOwnPortlets"
+    />
+
+  <plone:service
+    method="PATCH"
+    name="@portlets"
+    for="*"
+    factory=".update.PortletPatch"
     permission="plone.app.portlets.ManageOwnPortlets"
     />
 

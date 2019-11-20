@@ -8,6 +8,10 @@ from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces import IRequest
 from plone.portlets.interfaces import IPortletAssignmentMapping
+from plone.portlets.interfaces import ILocalPortletAssignmentManager
+from plone.portlets.constants import GROUP_CATEGORY
+from plone.portlets.constants import CONTENT_TYPE_CATEGORY
+from plone.portlets.constants import CONTEXT_CATEGORY
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -45,15 +49,26 @@ class DeserializePortletFromJson(object):
         if data is None:
             data = json_body(self.request)
 
-        portlet_type = data.get('@type', None)
         portlet_manager = data.get('manager', None)
 
         if portlet_manager not in self.portletmanagers:
             raise BadRequest("Invalid manager {}".format(portlet_manager))
 
-        if portlet_type not in self.portlettypes:
-            raise BadRequest("Invalid type {}".format(portlet_type))
+        if '@type' in data:
+            self.create_portlet(data)
+        else:
+            self.configure_manager(data)
 
+    def configure_manager(self, data):
+        assignable = queryMultiAdapter((self.context, self.manager),
+                                       ILocalPortletAssignmentManager)
+
+        assignable.setBlacklistStatus(GROUP_CATEGORY, data.get('blacklist_status_group', None))
+        assignable.setBlacklistStatus(CONTENT_TYPE_CATEGORY, data.get('blacklist_status_ct', None))
+        assignable.setBlacklistStatus(CONTEXT_CATEGORY, data.get('blacklist_status_context', None))
+
+    def create_portlet(self, data):
+        portlet_type = data.get('@type', None)
         iface = self.portlettypes.get(portlet_type)
         fields = getFields(iface)
         portlet_data = dict()
