@@ -45,7 +45,6 @@ class DeserializePortletFromJson(object):
         self.portlettypes = dict(get_portlet_types())
 
     def __call__(self, data=None):
-        errors = []
         if data is None:
             data = json_body(self.request)
 
@@ -68,6 +67,7 @@ class DeserializePortletFromJson(object):
         assignable.setBlacklistStatus(CONTEXT_CATEGORY, data.get('blacklist_status_context', None))
 
     def create_portlet(self, data):
+        errors = []
         portlet_type = data.get('@type', None)
         iface = self.portlettypes.get(portlet_type)
         fields = getFields(iface)
