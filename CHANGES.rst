@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+5.0.3 (2019-12-06)
+------------------
+
+Bug fixes:
+
+
+- Change to use the short name for the Blocks behavior instead of using the interface one. It fixes #838.
+  [sneridagh] (#838)
+
+
 5.0.2 (2019-11-06)
 ------------------
 
