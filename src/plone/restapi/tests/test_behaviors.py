@@ -23,7 +23,7 @@ class TestBlocksBehavior(unittest.TestCase):
         fti = DexterityFTI("blocksfolder")
         self.portal.portal_types._setObject("blocksfolder", fti)
         fti.klass = "plone.dexterity.content.Container"
-        fti.behaviors = ("plone.restapi.behaviors.IBlocks",)
+        fti.behaviors = ("volto.blocks",)
         self.fti = fti
         alsoProvides(self.request, IBlocks)
 

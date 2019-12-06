@@ -50,4 +50,13 @@
         profile="plone.restapi:default"
         />
 
+    <genericsetup:upgradeStep
+        title="Rename iface name to the short name in blocks"
+        description=""
+        source="0005"
+        destination="0006"
+        handler="plone.restapi.upgrades.to0006.rename_iface_to_name_in_blocks_behavior"
+        profile="plone.restapi:default"
+        />
+
 </configure>
