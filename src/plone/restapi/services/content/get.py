@@ -9,10 +9,12 @@ class ContentGet(Service):
     """
 
     def reply(self):
-        serializer = queryMultiAdapter((self.context, self.request), ISerializeToJson)
+        try:
+            serializer = queryMultiAdapter((self.context, self.request), ISerializeToJson)
 
-        if serializer is None:
-            self.request.response.setStatus(501)
-            return dict(error=dict(message="No serializer available."))
-
+            if serializer is None:
+                self.request.response.setStatus(501)
+                return dict(error=dict(message="No serializer available."))
+        except:
+            import pdb; pdb.set_trace()
         return serializer(version=self.request.get("version"))

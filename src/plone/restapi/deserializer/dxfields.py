@@ -274,7 +274,11 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
                 data = f.read().decode("utf8")
         else:
             data = value
-
+        import sys
+        import pdb
+        for attr in ('stdin', 'stdout', 'stderr'):
+            setattr(sys, attr, getattr(sys, '__%s__' % attr))
+        pdb.set_trace()
         value = RichTextValue(
             raw=data,
             mimeType=content_type,
@@ -282,4 +286,4 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
             encoding=encoding,
         )
         self.field.validate(value)
-        return value
+        return value.output

@@ -129,6 +129,7 @@ class DeserializeFromJson(OrderingMixin, object):
                         errors.append({"message": e.doc(), "field": name, "error": e})
                     else:
                         field_data[name] = value
+                        # THIS IS WHERE dm.get()
                         if value != dm.get():
                             dm.set(value)
                             self.mark_field_as_changed(schema, name)

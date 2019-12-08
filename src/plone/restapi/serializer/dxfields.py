@@ -99,22 +99,36 @@ class ImageFieldSerializer(DefaultFieldSerializer):
 @adapter(INamedFileField, IDexterityContent, Interface)
 class FileFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
-        namedfile = self.field.get(self.context)
-        if namedfile is None:
-            return None
+        try:
+            namedfile = self.field.get(self.context)
+            if namedfile is None:
+                return None
 
-        url = "/".join((self.context.absolute_url(), "@@download", self.field.__name__))
-        result = {
-            "filename": namedfile.filename,
-            "content-type": namedfile.contentType,
-            "size": namedfile.getSize(),
-            "download": url,
-        }
-        return json_compatible(result)
-
+            url = "/".join((self.context.absolute_url(), "@@download", self.field.__name__))
+            result = {
+                "filename": namedfile.filename,
+                "content-type": namedfile.contentType,
+                "size": namedfile.getSize(),
+                "download": url,
+            }
+            return json_compatible(result)
+        except:
+            import sys
+            import pdb
+            for attr in ('stdin', 'stdout', 'stderr'):
+                setattr(sys, attr, getattr(sys, '__%s__' % attr))
+            pdb.set_trace()
 
 @adapter(IRichText, IDexterityContent, Interface)
 class RichttextFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
+        # try:
         value = self.get_value()
         return json_compatible(value, self.context)
+            # return json_compatible(getattr(value, 'raw', None), self.context)
+        # except:
+        #     import sys
+        #     import pdb
+        #     for attr in ('stdin', 'stdout', 'stderr'):
+        #         setattr(sys, attr, getattr(sys, '__%s__' % attr))
+        #     pdb.set_trace()

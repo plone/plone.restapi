@@ -33,6 +33,11 @@ class ContentPatch(Service):
         try:
             deserializer()
         except DeserializationError as e:
+            import sys
+            import pdb
+            for attr in ('stdin', 'stdout', 'stderr'):
+                setattr(sys, attr, getattr(sys, '__%s__' % attr))
+            pdb.set_trace()
             self.request.response.setStatus(400)
             return dict(error=dict(type="DeserializationError", message=str(e)))
 

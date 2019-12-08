@@ -80,7 +80,14 @@ class SerializeToJson(object):
                 serializer = queryMultiAdapter(
                     (field, obj, self.request), IFieldSerializer
                 )
+                # try:
                 value = serializer()
+                # except:
+                #     import sys
+                #     import pdb
+                #     for attr in ('stdin', 'stdout', 'stderr'):
+                #         setattr(sys, attr, getattr(sys, '__%s__' % attr))
+                #     pdb.set_trace()
                 result[json_compatible(name)] = value
 
         result["allow_discussion"] = getMultiAdapter(
