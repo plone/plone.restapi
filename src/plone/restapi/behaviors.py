@@ -24,16 +24,16 @@ class IBlocks(model.Schema):
     model.fieldset("layout", label=_(u"Layout"), fields=["blocks", "blocks_layout"])
 
     blocks = JSONField(
-        title=u"Blocks",
-        description=u"The JSON representation of the object blocks information. Must be a JSON object.",  # noqa
+        title=_(u"Blocks"),
+        description=_(u"The JSON representation of the object blocks information. Must be a JSON object."),  # noqa
         schema=BLOCKS_SCHEMA,
         default={},
         required=False,
     )
 
     blocks_layout = JSONField(
-        title=u"Blocks Layout",
-        description=u"The JSON representation of the object blocks layout. Must be a JSON array.",  # noqa
+        title=_(u"Blocks Layout"),
+        description=_(u"The JSON representation of the object blocks layout. Must be a JSON array."),  # noqa
         schema=LAYOUT_SCHEMA,
         default={"items": []},
         required=False,

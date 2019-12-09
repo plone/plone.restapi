@@ -16,3 +16,5 @@
 - Yann Fouillat, alias Gagaro
 - Sune Brøndum Wøller
 - Philippe Gross
+- Leonardo J. Caballero G.
+

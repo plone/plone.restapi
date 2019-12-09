@@ -34,7 +34,7 @@
 
     function($scope, $http) {
       var someText = {};
-      someText.message = 'Plone REST API - Demo - Angular';
+      someText.message = 'Plone REST API - Demo - Angular'; // TODO: Add i18n support
       $scope.someText = someText;
       $scope.get = '';
       $scope.get_successful = '';
@@ -97,14 +97,15 @@
   </script>
 </head>
 <body ng-controller="TextController">
-  <p>{{someText.message}}</p>
-  <h4>GET /front-page</h4>
+  <p i18n:ignore="">{{someText.message}}</p>
+  <h4 i18n:ignore="">GET /front-page</h4>
   <pre ng-bind="get_successful"></pre>
-  <h4>GET /non-existing-resource</h4>
+  <h4 i18n:ignore="">GET /non-existing-resource</h4>
   <pre ng-bind="get"></pre>
-  <h4>GET /private</h4>
+  <h4 i18n:ignore="">GET /private</h4>
   <pre ng-bind="get_unauthorized"></pre>
-  <h4>GET /500-internal-server-error</h4>
+  <h4 i18n:ignore="">GET /500-internal-server-error</h4>
   <pre ng-bind="get_internal_server_error"></pre>
 </body>
 </html>
+

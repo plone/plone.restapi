@@ -4,7 +4,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2018-03-02 15:33+0000\n"
+"POT-Creation-Date: 2019-12-09 10:14+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,50 +17,92 @@ msgstr ""
 "Preferred-Encodings: utf-8 latin1\n"
 "Domain: plone.restapi\n"
 
-#: plone/restapi/services/email_send/post.py:81
+#: plone/restapi/services/email_send/post.py:82
 msgid "${sender_fullname} via ${portal_title}"
 msgstr ""
 
-#: plone/restapi/services/email_send/post.py:76
+#: plone/restapi/services/email_send/post.py:75
 msgid "A portal user via ${portal_title}"
 msgstr ""
 
-#: plone/restapi/configure.zcml:39
+#: plone/restapi/configure.zcml:46
 msgid "Adds sample content for performance testing"
 msgstr ""
 
-#: plone/restapi/configure.zcml:31
+#: plone/restapi/configure.zcml:38
 msgid "Adds sample content types for testing"
 msgstr ""
 
-#: plone/restapi/configure.zcml:55
+#: plone/restapi/behaviors.py:27
+#: plone/restapi/configure.zcml:90
+msgid "Blocks"
+msgstr ""
+
+#: plone/restapi/behaviors.py:35
+msgid "Blocks Layout"
+msgstr ""
+
+#: plone/restapi/configure.zcml:90
+msgid "Enables Volto Blocks support"
+msgstr ""
+
+#: plone/restapi/configure.zcml:54
+msgid "Enables blocks on the Document content type"
+msgstr ""
+
+#: plone/restapi/behaviors.py:24
+msgid "Layout"
+msgstr ""
+
+#: plone/restapi/configure.zcml:70
 msgid "RESTful hypermedia API for Plone - Uninstall"
 msgstr ""
 
-#: plone/restapi/configure.zcml:22
+#: plone/restapi/configure.zcml:29
 msgid "RESTful hypermedia API for Plone."
 msgstr ""
 
-#: plone/restapi/services/history/patch.py:30
+#: plone/restapi/services/history/patch.py:31
 msgid "Reverted to revision ${version}"
 msgstr ""
 
-#: plone/restapi/services/email_send/post.py:88
+#: plone/restapi/behaviors.py:28
+msgid "The JSON representation of the object blocks information. Must be a JSON object."
+msgstr ""
+
+#: plone/restapi/behaviors.py:36
+msgid "The JSON representation of the object blocks layout. Must be a JSON array."
+msgstr ""
+
+#: plone/restapi/configure.zcml:54
+msgid "Volto Blocks"
+msgstr ""
+
+#: plone/restapi/services/email_send/post.py:92
 msgid "You are receiving this mail because ${sender_fullname} sent this message via the site ${portal_title}:"
 msgstr ""
 
-#: plone/restapi/configure.zcml:22
+#. Default: "default message"
+#: plone/restapi/tests/test_serializer_converters.py:221
+msgid "message_id"
+msgstr ""
+
+#: plone/restapi/configure.zcml:29
 msgid "plone.restapi"
 msgstr ""
 
-#: plone/restapi/configure.zcml:39
+#: plone/restapi/configure.zcml:46
 msgid "plone.restapi performance testing"
 msgstr ""
 
-#: plone/restapi/configure.zcml:31
+#: plone/restapi/configure.zcml:38
 msgid "plone.restapi testing"
 msgstr ""
 
 #: plone/restapi/upgrades/configure.zcml:23
 msgid "plone.restapi.upgrades.0002"
+msgstr ""
+
+#: plone/restapi/upgrades/configure.zcml:42
+msgid "plone.restapi.upgrades.0004"
 msgstr ""
