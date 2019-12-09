@@ -1,0 +1,112 @@
+# --- PLEASE EDIT THE LINES BELOW CORRECTLY ---
+# SOME DESCRIPTIVE TITLE.
+# Leonardo J. Caballero G. <leonardocaballero@gmail.com>, 2019.
+msgid ""
+msgstr ""
+"Project-Id-Version: Plone\n"
+"POT-Creation-Date: 2019-12-09 10:14+0000\n"
+"PO-Revision-Date: 2019-12-08 18:18-0400\n"
+"Last-Translator: Leonardo J. Caballero G. <leonardocaballero@gmail.com>\n"
+"Language-Team: ES <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language-Code: es\n"
+"Language-Name: Español\n"
+"Preferred-Encodings: utf-8 latin1\n"
+"Domain: plone.restapi\n"
+"Language: es\n"
+"X-Generator: Virtaal 0.7.1\n"
+"X-Is-Fallback-For: es-ar es-bo es-cl es-co es-cr es-do es-ec es-es es-sv es-gt es-hn es-mx es-ni es-pa es-py es-pe es-pr es-us es-uy es-ve\n"
+
+#: plone/restapi/services/email_send/post.py:82
+msgid "${sender_fullname} via ${portal_title}"
+msgstr "${sender_fullname} vía ${portal_title}"
+
+#: plone/restapi/services/email_send/post.py:75
+msgid "A portal user via ${portal_title}"
+msgstr "Un usuario de portal user vía ${portal_title}"
+
+#: plone/restapi/configure.zcml:46
+msgid "Adds sample content for performance testing"
+msgstr "Agregar contenido de ejemplo para efectuar pruebas"
+
+#: plone/restapi/configure.zcml:38
+msgid "Adds sample content types for testing"
+msgstr "Agregar tipos de contenido de ejemplo para pruebas"
+
+#: plone/restapi/behaviors.py:27
+#: plone/restapi/configure.zcml:90
+msgid "Blocks"
+msgstr "Bloques"
+
+#: plone/restapi/behaviors.py:35
+msgid "Blocks Layout"
+msgstr "Diseño de bloques"
+
+#: plone/restapi/configure.zcml:90
+msgid "Enables Volto Blocks support"
+msgstr "Habilitar soporte a Bloques Volto"
+
+#: plone/restapi/configure.zcml:54
+msgid "Enables blocks on the Document content type"
+msgstr "Habilitar bloques en el tipo de contenido Documento"
+
+#: plone/restapi/behaviors.py:24
+msgid "Layout"
+msgstr "Diseño"
+
+#: plone/restapi/configure.zcml:70
+msgid "RESTful hypermedia API for Plone - Uninstall"
+msgstr "API de hipermedia RESTful para Plone - Desinstalar"
+
+#: plone/restapi/configure.zcml:29
+msgid "RESTful hypermedia API for Plone."
+msgstr "API de hipermedia RESTful para Plone."
+
+#: plone/restapi/services/history/patch.py:31
+msgid "Reverted to revision ${version}"
+msgstr "Revertido a la revisión ${version}"
+
+#: plone/restapi/behaviors.py:28
+msgid "The JSON representation of the object blocks information. Must be a JSON object."
+msgstr "La representación de la información de bloques del objeto. Debe ser un objeto JSON."
+
+#: plone/restapi/behaviors.py:36
+msgid "The JSON representation of the object blocks layout. Must be a JSON array."
+msgstr "La representación del diseño de bloques del objeto. Debe ser un arreglo JSON."
+
+#: plone/restapi/configure.zcml:54
+msgid "Volto Blocks"
+msgstr "Bloques Volto"
+
+#: plone/restapi/services/email_send/post.py:92
+msgid "You are receiving this mail because ${sender_fullname} sent this message via the site ${portal_title}:"
+msgstr "Está recibiendo este correo porque ${sender_fullname} envió este mensaje a través del sitio ${portal_title}:"
+
+#. Default: "default message"
+#: plone/restapi/tests/test_serializer_converters.py:221
+msgid "message_id"
+msgstr "mensaje por defecto"
+
+#: plone/restapi/configure.zcml:29
+msgid "plone.restapi"
+msgstr "plone.restapi"
+
+#: plone/restapi/configure.zcml:46
+msgid "plone.restapi performance testing"
+msgstr "plone.restapi - prueba de rendimiento"
+
+#: plone/restapi/configure.zcml:38
+msgid "plone.restapi testing"
+msgstr "plone.restapi - pruebas"
+
+#: plone/restapi/upgrades/configure.zcml:23
+msgid "plone.restapi.upgrades.0002"
+msgstr "plone.restapi.upgrades.0002"
+
+#: plone/restapi/upgrades/configure.zcml:42
+msgid "plone.restapi.upgrades.0004"
+msgstr "plone.restapi.upgrades.0004"
+

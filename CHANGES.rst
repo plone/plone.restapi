@@ -14,6 +14,9 @@ Changelog
 
 New Features:
 
+- Add Spanish translation
+  [macagua]
+
 - Add more i18n improvements
   [macagua]
 
