@@ -67,6 +67,7 @@ Contribute
 - Issue Tracker: https://github.com/plone/plone.restapi/issues
 - Source Code: https://github.com/plone/plone.restapi
 - Documentation: https://plonerestapi.readthedocs.io/en/latest
+- Translations: https://www.transifex.com/plone/plone5/plone-restapi-pot/
 
 
 Examples
