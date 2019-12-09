@@ -1,0 +1,10 @@
+[main]
+host = https://www.transifex.com
+
+[plone5.plone-restapi-pot]
+file_filter = src/plone/restapi/locales/<lang>/LC_MESSAGES/plone.restapi.po
+minimum_perc = 0
+source_file = src/plone/restapi/locales/plone.restapi.pot
+source_lang = en
+type = PO
+
