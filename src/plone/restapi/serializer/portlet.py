@@ -13,6 +13,7 @@ from plone import api
 from plone.app.layout.navigation.navtree import buildFolderTree
 from plone.app.portlets.interfaces import IPortletTypeInterface
 from plone.app.textfield.interfaces import IRichText
+from plone.app.uuid.utils import uuidToObject
 from plone.memoize import forever
 from plone.portlets.interfaces import IPortletAssignment
 from plone.portlets.interfaces import IPortletDataProvider
@@ -283,7 +284,13 @@ class NavigationPortletSerializer(PortletSerializer):
 
     def __call__(self):
         res = super(NavigationPortletSerializer, self).__call__()
-        nav = PortletNavigation(self.context, self.request)
+
+        root = self.context
+
+        if self.assignment.root_uid:
+            root = uuidToObject(self.assignment.root_uid)
+
+        nav = PortletNavigation(root, self.request)
         res['navtree'] = nav(depth=self.assignment.bottomLevel)
 
         return res
@@ -342,10 +349,10 @@ def getNavigationRoot(context):
 # nothing is customized here, just this getNavigationRoot method
 class CustomNavtreeStrategy(SitemapNavtreeStrategy):
 
-    def __init__(self, context):
+    def __init__(self, context, bottomLevel=0):
         SitemapNavtreeStrategy.__init__(self, context, None)
         self.context = context
-        self.bottomLevel = 0
+        self.bottomLevel = bottomLevel
         self.rootPath = self.getRootPath()
 
     def subtreeFilter(self, node):
@@ -570,7 +577,7 @@ class PortletNavigation(object):
         if tabObj is None:
             return ""
 
-        strategy = CustomNavtreeStrategy(tabObj)
+        strategy = CustomNavtreeStrategy(tabObj, self.depth)
         queryBuilder = NavigationTreeQueryBuilder(tabObj, self.depth)
         query = queryBuilder()
         data = buildFolderTree(
