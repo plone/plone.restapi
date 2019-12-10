@@ -93,7 +93,7 @@ class TestQuerystringEndpoint(unittest.TestCase):
             u"published": {u"title": u"Published with accent \xe9 [published]"},
             u"visible": {u"title": u"Public draft [visible]"},
         }
-        self.assertEqual(expected_vocab_values, idx["values"])
+        self.assertDictContainsSubset(expected_vocab_values, idx["values"])
 
     def test_endpoint_inlines_operators(self):
         response = self.api_session.get("/@querystring")
