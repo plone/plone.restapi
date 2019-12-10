@@ -12,7 +12,9 @@ from Acquisition import aq_inner
 from plone import api
 from plone.api import content
 from plone.app.layout.navigation.navtree import buildFolderTree
+from plone.app.layout.navigation.root import getNavigationRoot
 from plone.app.portlets.interfaces import IPortletTypeInterface
+from plone.app.portlets.navigation import Renderer
 from plone.app.textfield.interfaces import IRichText
 from plone.app.uuid.utils import uuidToObject
 from plone.memoize import forever
@@ -288,14 +290,15 @@ class NavigationPortletSerializer(PortletSerializer):
 
         root = self.context
 
-        if self.assignment.root_uid:
-            root = uuidToObject(self.assignment.root_uid)
+        # if self.assignment.root_uid:
+        #     root = uuidToObject(self.assignment.root_uid)
 
-        nav = PortletNavigation(root, self.request)
-        res['navtree'] = nav(
-            depth=self.assignment.bottomLevel,
-            includeTop=self.assignment.includeTop
-        )
+        # nav = PortletNavigation(root, self.request)
+        # res['navtree'] = nav(
+        #     depth=self.assignment.bottomLevel,
+        #     includeTop=self.assignment.includeTop,
+        #     currentFolderOnly=self.assignment.currentFolderOnly,
+        # )
 
         return res
 
@@ -335,6 +338,8 @@ class RichttextPortletFieldSerializer(DefaultPortletFieldSerializer):
 
 class NavigationTreeQueryBuilder(NavtreeQueryBuilder):
     """Build a folder tree query
+
+    Used to build a tab subtree queries for the PortletNavigation class
     """
 
     def __init__(self, context, depth):
@@ -346,7 +351,7 @@ class NavigationTreeQueryBuilder(NavtreeQueryBuilder):
         }
 
 
-def getNavigationRoot(context):
+def getLocalNavigationRoot(context):
     return "/".join(context.getPhysicalPath())
 
 
@@ -372,7 +377,7 @@ class CustomNavtreeStrategy(SitemapNavtreeStrategy):
             return True
 
     def getRootPath(self, topLevel=1):
-        rootPath = getNavigationRoot(self.context)
+        rootPath = getLocalNavigationRoot(self.context)
 
         rootPath = contextPath = "/".join(self.context.getPhysicalPath())
 
@@ -434,11 +439,14 @@ def get_view_url(context):
 
 
 class CatalogNavigationTabs(object):
+    """ Gets the top level children as "tabs"
+    """
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
-    def _getNavQuery(self):
+    def _getNavQuery(self, currentFolderOnly):
                 # check whether we only want actions
         registry = getUtility(IRegistry)
         navigation_settings = registry.forInterface(
@@ -453,8 +461,13 @@ class CatalogNavigationTabs(object):
         else:
             query = {}
 
+        if currentFolderOnly:
+            path = getLocalNavigationRoot(self.context)
+        else:
+            path = getNavigationRoot(self.context)
+
         query['path'] = {
-            'query': getNavigationRoot(self.context),
+            'query': path,
             'depth': 1
         }
         query['portal_type'] = [t for t in navigation_settings.displayed_types]
@@ -475,7 +488,7 @@ class CatalogNavigationTabs(object):
 
         return query
 
-    def topLevelTabs(self):
+    def topLevelTabs(self, currentFolderOnly):
         context = aq_inner(self.context)
         mtool = getToolByName(context, 'portal_membership')
         member = mtool.getAuthenticatedMember().id
@@ -484,7 +497,7 @@ class CatalogNavigationTabs(object):
         # Build result dict
         result = []
 
-        query = self._getNavQuery()
+        query = self._getNavQuery(currentFolderOnly)
 
         rawresult = catalog.searchResults(query)
 
@@ -513,25 +526,23 @@ class CatalogNavigationTabs(object):
 
 
 class PortletNavigation(object):
+    """ Builds the tree for the navigation portlet serializer
+    """
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
         self.portal = getSite()
 
-    def __call__(self, depth, includeTop):
+    def __call__(self, depth, includeTop, currentFolderOnly):
         self.depth = depth
-        # if self.request.form.get("expand.navigation.depth", False):
-        #     self.depth = int(self.request.form["expand.navigation.depth"])
-        # else:
-        #     self.depth = 1
-        #
         result = {}
 
         # uses local context as "root" instead of default INavigationRoot
         tabs = CatalogNavigationTabs(self.context, self.request)
         items = []
 
-        for tab in tabs.topLevelTabs():
+        for tab in tabs.topLevelTabs(currentFolderOnly):
             if self.depth != 1:
                 subitems = self.getTabSubTree(
                     tabUrl=tab["url"], tabPath=tab.get("path")
