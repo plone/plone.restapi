@@ -37,3 +37,4 @@ pip-selfcheck.json
 /.vscode
 /.ipython
 /.mypy_cache/
+*~
