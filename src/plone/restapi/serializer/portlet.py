@@ -10,6 +10,7 @@
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from plone import api
+from plone.api import content
 from plone.app.layout.navigation.navtree import buildFolderTree
 from plone.app.portlets.interfaces import IPortletTypeInterface
 from plone.app.textfield.interfaces import IRichText
@@ -291,7 +292,10 @@ class NavigationPortletSerializer(PortletSerializer):
             root = uuidToObject(self.assignment.root_uid)
 
         nav = PortletNavigation(root, self.request)
-        res['navtree'] = nav(depth=self.assignment.bottomLevel)
+        res['navtree'] = nav(
+            depth=self.assignment.bottomLevel,
+            includeTop=self.assignment.includeTop
+        )
 
         return res
 
@@ -471,7 +475,7 @@ class CatalogNavigationTabs(object):
 
         return query
 
-    def topLevelTabs(self):
+    def topLevelTabs(self, includeTop):
         context = aq_inner(self.context)
         mtool = getToolByName(context, 'portal_membership')
         member = mtool.getAuthenticatedMember().id
@@ -491,6 +495,20 @@ class CatalogNavigationTabs(object):
             return get_view_url(item)
 
         # now add the content to results
+
+        if includeTop:
+            if utils.safe_hasattr(context, 'getRemoteUrl'):
+                item_url = context.getRemoteUrl()
+            else:
+                cid, item_url = get_view_url(context)
+            data = {
+                'name': context.pretty_title_or_id(),
+                'id': context.getId(),
+                'url': item_url,
+                'description': context.Description(),
+                'review_state': content.get_state(context)
+            }
+            result.append(data)
 
         for item in rawresult:
             # if item.exclude_from_nav:
@@ -514,7 +532,7 @@ class PortletNavigation(object):
         self.request = request
         self.portal = getSite()
 
-    def __call__(self, depth):
+    def __call__(self, depth, includeTop):
         self.depth = depth
         # if self.request.form.get("expand.navigation.depth", False):
         #     self.depth = int(self.request.form["expand.navigation.depth"])
@@ -527,7 +545,7 @@ class PortletNavigation(object):
         tabs = CatalogNavigationTabs(self.context, self.request)
         items = []
 
-        for tab in tabs.topLevelTabs():
+        for tab in tabs.topLevelTabs(includeTop):
             if self.depth != 1:
                 subitems = self.getTabSubTree(
                     tabUrl=tab["url"], tabPath=tab.get("path")
