@@ -475,7 +475,7 @@ class CatalogNavigationTabs(object):
 
         return query
 
-    def topLevelTabs(self, includeTop):
+    def topLevelTabs(self):
         context = aq_inner(self.context)
         mtool = getToolByName(context, 'portal_membership')
         member = mtool.getAuthenticatedMember().id
@@ -495,20 +495,6 @@ class CatalogNavigationTabs(object):
             return get_view_url(item)
 
         # now add the content to results
-
-        if includeTop:
-            if utils.safe_hasattr(context, 'getRemoteUrl'):
-                item_url = context.getRemoteUrl()
-            else:
-                cid, item_url = get_view_url(context)
-            data = {
-                'name': context.pretty_title_or_id(),
-                'id': context.getId(),
-                'url': item_url,
-                'description': context.Description(),
-                'review_state': content.get_state(context)
-            }
-            result.append(data)
 
         for item in rawresult:
             # if item.exclude_from_nav:
@@ -545,7 +531,7 @@ class PortletNavigation(object):
         tabs = CatalogNavigationTabs(self.context, self.request)
         items = []
 
-        for tab in tabs.topLevelTabs(includeTop):
+        for tab in tabs.topLevelTabs():
             if self.depth != 1:
                 subitems = self.getTabSubTree(
                     tabUrl=tab["url"], tabPath=tab.get("path")
@@ -566,6 +552,21 @@ class PortletNavigation(object):
                         "description": tab.get("description", ""),
                     }
                 )
+
+        if includeTop:
+            if utils.safe_hasattr(self.context, 'getRemoteUrl'):
+                item_url = self.context.getRemoteUrl()
+            else:
+                cid, item_url = get_view_url(self.context)
+            data = {
+                'title': self.context.pretty_title_or_id(),
+                'id': self.context.getId(),
+                '@id': item_url,
+                'description': self.context.Description(),
+                # 'review_state': content.get_state(self.context)
+            }
+            items = [data] + items
+
         result["items"] = items
 
         return result
