@@ -83,6 +83,12 @@
     <adapter factory=".discussion.ConversationSerializer" />
     <adapter factory=".discussion.CommentSerializer" />
 
+    <adapter factory=".portlet.PortletManagerSummarySerializer" />
+    <adapter factory=".portlet.PortletManagerSerializer" />
+    <adapter factory=".portlet.PortletSerializer" />
+    <adapter factory=".portlet.DefaultPortletFieldSerializer" />
+    <adapter factory=".portlet.RichttextPortletFieldSerializer" />
+
     <configure zcml:condition="installed plone.tiles">
         <adapter factory=".tile.TileSummarySerializeToJson" />
         <adapter factory=".tile.TileSerializeToJson" />
