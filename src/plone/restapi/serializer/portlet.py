@@ -34,6 +34,9 @@ from zope.schema.interfaces import IField
 import logging
 
 
+# import six
+
+
 logger = logging.getLogger(__name__)
 
 SERVICE_ID = '@portlets'
@@ -210,13 +213,19 @@ class PortletSerializer(object):
             content_url,
             portlet_metadata['manager'],
             portlet_metadata['name'])
+
+        phash = portlet_metadata['hash']
+
+        if isinstance(phash, bytes):
+            phash = phash.decode("utf8")
+
         result = {
             '@id': url,
             'portlet_id': portlet_metadata['name'],
             'portlet_manager': portlet_metadata['manager'],
             'portlet_category': portlet_metadata['category'],
             'portlet_key': portlet_metadata['key'],
-            'portlet_hash': portlet_metadata['hash'],
+            'portlet_hash': phash,
         }
 
         type_, schema = get_portlet_info(self.assignment)
