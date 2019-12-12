@@ -428,7 +428,7 @@ class NavtreePortletRenderer(Renderer):
                 'is_in_path': node['currentParent'],
                 'items': [],
                 'normalized_id': node['normalized_id'],
-                'review_state': node['review_state'],
+                'review_state': node['review_state'] or '',
                 'thumb': thumb,
                 'title': node['Title'],
                 'type': utils.normalizeString(node['portal_type']),
