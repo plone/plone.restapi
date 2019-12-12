@@ -335,7 +335,7 @@ class NavtreePortletRenderer(Renderer):
             'items': [],
         }
 
-        if self.include_top:
+        if self.include_top():
             root = self.navigation_root()
 
             if utils.safe_hasattr(self.context, 'getRemoteUrl'):
@@ -350,6 +350,12 @@ class NavtreePortletRenderer(Renderer):
                          if root_is_portal else utils.normalizeString(
                              root.portal_type, context=root))
             normalized_id = utils.normalizeString(root.Title(), context=root)
+
+            if root_is_portal:
+                state = ''
+            else:
+                state = api.content.get_state(root)
+
             res['items'].append({
                 '@id': root.absolute_url(),
                 'description': root.Description() or '',
@@ -358,12 +364,15 @@ class NavtreePortletRenderer(Renderer):
                 'is_current': bool(self.root_item_class()),
                 'is_folderish': True,
                 'is_in_path': True,
-                'items': self.createNavTree(),
+                'items': [],
                 'normalized_id': normalized_id,
                 'thumb': '',
                 'title': root_title,
                 'type': root_type,
+                'review_state': state,
             })
+
+        res['items'].append(self.createNavTree())
 
         return res
 
@@ -410,6 +419,7 @@ class NavtreePortletRenderer(Renderer):
                 'is_in_path': node['currentParent'],
                 'items': [],
                 'normalized_id': node['normalized_id'],
+                'review_state': node['review_state'],
                 'thumb': thumb,
                 'title': node['Title'],
                 'type': utils.normalizeString(node['portal_type']),
