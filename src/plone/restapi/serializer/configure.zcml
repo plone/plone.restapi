@@ -85,8 +85,11 @@
 
     <adapter factory=".portlet.PortletManagerSummarySerializer" />
     <adapter factory=".portlet.PortletManagerSerializer" />
+
     <adapter factory=".portlet.PortletSerializer" />
     <adapter factory=".portlet.NavigationPortletSerializer" name="portlets.Navigation"/>
+    <adapter factory=".portlet.NewsPortletSerializer" name="portlets.News"/>
+
     <adapter factory=".portlet.DefaultPortletFieldSerializer" />
     <adapter factory=".portlet.RichttextPortletFieldSerializer" />
 

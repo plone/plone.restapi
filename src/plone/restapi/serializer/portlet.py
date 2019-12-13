@@ -4,6 +4,7 @@ from Acquisition import aq_base
 from plone import api
 from plone.app.portlets.interfaces import IPortletTypeInterface
 from plone.app.portlets.portlets.navigation import Renderer
+from plone.app.portlets.portlets.news import Renderer as NewsRenderer
 from plone.app.textfield.interfaces import IRichText
 from plone.memoize import forever
 from plone.portlets.interfaces import IPortletAssignment
@@ -162,7 +163,6 @@ class PortletManagerSerializer(object):
 
             if portlet_json:
                 result['portlets'].append(portlet_json)
-
         return result
 
 
@@ -277,6 +277,25 @@ class PortletSerializer(object):
         return result
 
 
+class NewsPortletSerializer(PortletSerializer):
+    """ Portlet serializer for news  portlet
+    """
+
+    def __call__(self):
+        res = super(NewsPortletSerializer, self).__call__()
+        #import pdb; pdb.set_trace()
+        renderer = NewsPortletRenderer(
+            self.context,
+            self.request,
+            None,
+            None,
+            self.assignment
+        )
+        res['newsportlet'] = renderer.render()
+
+        return res
+
+
 class NavigationPortletSerializer(PortletSerializer):
     """ Portlet serializer for navigation portlet
     """
@@ -333,6 +352,24 @@ def get_view_url(context):
         name += '/view'
 
     return name, item_url
+
+
+class NewsPortletRenderer(NewsRenderer):
+    def render(self):
+        items = []
+        news = self.published_news_items()
+        #import pdb; pdb.set_trace()
+        for new in news:
+            itemList = getMultiAdapter((new, self.request), ISerializeToJsonSummary)()
+            itemList['icon'] = new.getObject().getIcon()
+            items.append(itemList)
+        res = {
+            #'title': self.title(),
+            #'url': self.all_news_link(),
+            #'has_custom_name': bool(self.hasName()),
+            'items': items
+            }
+        return res
 
 
 class NavtreePortletRenderer(Renderer):
@@ -428,7 +465,7 @@ class NavtreePortletRenderer(Renderer):
                 'is_in_path': node['currentParent'],
                 'items': [],
                 'normalized_id': node['normalized_id'],
-                'review_state': node['review_state'],
+                'review_state': node['review_state'] or '',
                 'thumb': thumb,
                 'title': node['Title'],
                 'type': utils.normalizeString(node['portal_type']),
