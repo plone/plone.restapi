@@ -395,9 +395,7 @@ class NavtreePortletRenderer(Renderer):
         show_thumbs = not self.data.no_thumbs
         show_icons = not self.data.no_icons
 
-        thumb_scale = self.thumb_scale
-        image_scale = getMultiAdapter((api.portal.get(), self.request),
-                                      name='image_scale')
+        thumb_scale = self.thumb_scale()
 
         for node in children:
             brain = node['item']
@@ -412,7 +410,8 @@ class NavtreePortletRenderer(Renderer):
             thumb = ''
 
             if show_thumbs and has_thumb and thumb_scale:
-                thumb = image_scale.tag(brain, 'image', scale=thumb_scale)
+                thumb = '{}/@@images/image/{}'.format(
+                        node['item'].getURL(), thumb_scale)
 
             show_children = node['show_children']
             item_remote_url = node['getRemoteUrl']
@@ -431,7 +430,7 @@ class NavtreePortletRenderer(Renderer):
                 'review_state': node['review_state'] or '',
                 'thumb': thumb,
                 'title': node['Title'],
-                'type': utils.normalizeString(node['portal_type']),
+                'type': node['normalized_portal_type'],
             }
 
             nodechildren = node['children']
