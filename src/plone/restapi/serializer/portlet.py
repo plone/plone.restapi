@@ -381,7 +381,7 @@ class NavtreePortletRenderer(Renderer):
                 'review_state': state,
             })
 
-        res['items'] = self.createNavTree()
+        res['items'].extend(self.createNavTree())
 
         return res
 
@@ -434,11 +434,12 @@ class NavtreePortletRenderer(Renderer):
                 'type': utils.normalizeString(node['portal_type']),
             }
 
-            if children and show_children and \
+            nodechildren = node['children']
+
+            if nodechildren and show_children and \
                     ((bottomLevel < level) or (bottomLevel == 0)):
-                children = node['children']
                 item['items'] = self.recurse(
-                    children, level=level + 1, bottomLevel=bottomLevel)
+                    nodechildren, level=level + 1, bottomLevel=bottomLevel)
 
             res.append(item)
 
