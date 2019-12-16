@@ -381,7 +381,7 @@ class NavtreePortletRenderer(Renderer):
                 'review_state': state,
             })
 
-        res['items'].append(self.createNavTree())
+        res['items'] = self.createNavTree()
 
         return res
 
