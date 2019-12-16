@@ -1,0 +1,15 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="plone.restapi">
+
+    <adapter factory=".PortletManagerSummarySerializer" />
+    <adapter factory=".PortletManagerSerializer" />
+    <adapter factory=".PortletSerializer" />
+
+    <adapter factory=".DefaultPortletFieldSerializer" />
+    <adapter factory=".RichttextPortletFieldSerializer" />
+
+    <adapter factory=".navigation.NavigationPortletSerializer" name="portlets.Navigation"/>
+
+</configure>
