@@ -6,6 +6,7 @@ from plone.app.portlets.interfaces import IPortletTypeInterface
 from plone.app.portlets.portlets.navigation import Renderer
 from plone.app.portlets.portlets.news import Renderer as NewsRenderer
 from plone.app.textfield.interfaces import IRichText
+from plone.portlet.static.static import Renderer as StaticRenderer
 from plone.memoize import forever
 from plone.portlets.interfaces import IPortletAssignment
 from plone.portlets.interfaces import IPortletDataProvider
@@ -277,13 +278,30 @@ class PortletSerializer(object):
         return result
 
 
+class StaticPortletSerializer(PortletSerializer):
+    """ Portlet serializer for static portlet
+    """
+
+    def __call__(self):
+        res = super(StaticPortletSerializer, self).__call__()
+        renderer = StaticPortletRenderer(
+            self.context,
+            self.request,
+            None,
+            None,
+            self.assignment
+        )
+        res['staticportlet'] = renderer.render()
+
+        return res
+
+
 class NewsPortletSerializer(PortletSerializer):
     """ Portlet serializer for news  portlet
     """
 
     def __call__(self):
         res = super(NewsPortletSerializer, self).__call__()
-        #import pdb; pdb.set_trace()
         renderer = NewsPortletRenderer(
             self.context,
             self.request,
@@ -358,18 +376,17 @@ class NewsPortletRenderer(NewsRenderer):
     def render(self):
         items = []
         news = self.published_news_items()
-        #import pdb; pdb.set_trace()
         for new in news:
             itemList = getMultiAdapter((new, self.request), ISerializeToJsonSummary)()
             itemList['icon'] = new.getObject().getIcon()
             items.append(itemList)
-        res = {
-            #'title': self.title(),
-            #'url': self.all_news_link(),
-            #'has_custom_name': bool(self.hasName()),
-            'items': items
-            }
+        res = {'items': items}
         return res
+
+
+class StaticPortletRenderer(StaticRenderer):
+    def render(self):
+        return self
 
 
 class NavtreePortletRenderer(Renderer):
