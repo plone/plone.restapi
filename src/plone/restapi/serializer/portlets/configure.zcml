@@ -11,5 +11,6 @@
     <adapter factory=".RichttextPortletFieldSerializer" />
 
     <adapter factory=".navigation.NavigationPortletSerializer" name="portlets.Navigation"/>
+    <adapter factory=".classic.ClassicPortletSerializer" name="portlets.Classic"/>
 
 </configure>
