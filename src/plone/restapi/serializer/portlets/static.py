@@ -2,13 +2,13 @@ from . import PortletSerializer
 from plone.portlet.static.static import Renderer
 
 
-class StaticPortletSerializer(PortletSerializer):
+class StaticTextPortletSerializer(PortletSerializer):
     """ Portlet serializer for static portlet
     """
 
     def __call__(self):
-        res = super(StaticPortletSerializer, self).__call__()
-        renderer = StaticPortletRenderer(
+        res = super(StaticTextPortletSerializer, self).__call__()
+        renderer = StaticTextPortletRenderer(
             self.context,
             self.request,
             None,
@@ -16,12 +16,12 @@ class StaticPortletSerializer(PortletSerializer):
             self.assignment
         )
 
-        res['classicportlet'] = renderer.render()
+        res['statictextportlet'] = renderer.render()
 
         return res
 
 
-class StaticPortletRenderer(Renderer):
+class StaticTextPortletRenderer(Renderer):
     def render(self):
         res = {
             'header': self.data.header,
