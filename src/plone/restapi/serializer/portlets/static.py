@@ -24,10 +24,7 @@ class StaticTextPortletSerializer(PortletSerializer):
 class StaticTextPortletRenderer(Renderer):
     def render(self):
         res = {
-            'header': self.data.header,
             'text': self.transformed(),
-            'omit_border': self.data.omit_border,
-            'footer': self.data.footer,
-            'more_url': self.data.more_url
         }
+
         return res
