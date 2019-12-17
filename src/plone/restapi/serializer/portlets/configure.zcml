@@ -12,5 +12,6 @@
 
     <adapter factory=".navigation.NavigationPortletSerializer" name="portlets.Navigation"/>
     <adapter factory=".classic.ClassicPortletSerializer" name="portlets.Classic"/>
+    <adapter factory=".actions.ActionsPortletSerializer" name="portlets.Actions"/>
 
 </configure>

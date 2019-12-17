@@ -1,10 +1,5 @@
 from . import PortletSerializer
-from Acquisition import aq_base
-from plone import api
 from plone.app.portlets.portlets.classic import Renderer
-from plone.registry.interfaces import IRegistry
-from Products.CMFPlone import utils
-from zope.component import getUtility
 
 
 class ClassicPortletSerializer(PortletSerializer):
