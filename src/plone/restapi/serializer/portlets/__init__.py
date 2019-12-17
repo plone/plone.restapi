@@ -3,7 +3,6 @@
 from plone import api
 from plone.app.portlets.interfaces import IPortletTypeInterface
 from plone.app.textfield.interfaces import IRichText
-from plone.portlet.static.static import Renderer as StaticRenderer
 from plone.memoize import forever
 from plone.portlets.interfaces import IPortletAssignment
 from plone.portlets.interfaces import IPortletDataProvider
