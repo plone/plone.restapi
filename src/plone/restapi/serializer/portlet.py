@@ -5,6 +5,8 @@ from plone import api
 from plone.app.portlets.interfaces import IPortletTypeInterface
 from plone.app.portlets.portlets.navigation import Renderer
 from plone.app.portlets.portlets.news import Renderer as NewsRenderer
+from plone.app.event.portlets.portlet_events import Renderer as EventsRenderer
+from plone.app.portlets.portlets.search import Renderer as SearchRenderer
 from plone.app.textfield.interfaces import IRichText
 from plone.portlet.static.static import Renderer as StaticRenderer
 from plone.memoize import forever
@@ -296,8 +298,26 @@ class StaticPortletSerializer(PortletSerializer):
         return res
 
 
+class SearchPortletSerializer(PortletSerializer):
+    """ Portlet serializer for search portlet
+    """
+
+    def __call__(self):
+        res = super(SearchPortletSerializer, self).__call__()
+        renderer = SearchPortletRenderer(
+            self.context,
+            self.request,
+            None,
+            None,
+            self.assignment
+        )
+        res['searchportlet'] = renderer.render()
+
+        return res
+
+
 class NewsPortletSerializer(PortletSerializer):
-    """ Portlet serializer for news  portlet
+    """ Portlet serializer for news portlet
     """
 
     def __call__(self):
@@ -310,6 +330,24 @@ class NewsPortletSerializer(PortletSerializer):
             self.assignment
         )
         res['newsportlet'] = renderer.render()
+
+        return res
+
+
+class EventsPortletSerializer(PortletSerializer):
+    """ Portlet serializer for events portlet
+    """
+
+    def __call__(self):
+        res = super(EventsPortletSerializer, self).__call__()
+        renderer = EventsPortletRenderer(
+            self.context,
+            self.request,
+            None,
+            None,
+            self.assignment
+        )
+        res['eventsportlet'] = renderer.render()
 
         return res
 
@@ -372,13 +410,25 @@ def get_view_url(context):
     return name, item_url
 
 
+class EventsPortletRenderer(EventsRenderer):
+    def render(self):
+        items = []
+        events = self.events()
+        for event in events:
+            itemList = getMultiAdapter((event, self.request), ISerializeToJsonSummary)()
+            itemList['icon'] = new.getObject().getIcon()
+            items.append(itemList)
+        res = {'items': items}
+        return res
+
+
 class NewsPortletRenderer(NewsRenderer):
     def render(self):
         items = []
         news = self.published_news_items()
         for new in news:
             itemList = getMultiAdapter((new, self.request), ISerializeToJsonSummary)()
-            itemList['icon'] = new.getObject().getIcon()
+            #itemList['icon'] = new.getObject().getIcon()
             items.append(itemList)
         res = {'items': items}
         return res
@@ -392,6 +442,14 @@ class StaticPortletRenderer(StaticRenderer):
             'omit_border': self.data.omit_border,
             'footer': self.data.footer,
             'more_url': self.data.more_url
+        }
+        return res
+
+
+class SearchPortletRenderer(SearchRenderer):
+    def render(self):
+        res = {
+            'enable_livesearch': self.enable_livesearch()
         }
         return res
 

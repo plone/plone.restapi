@@ -89,6 +89,7 @@
     <adapter factory=".portlet.PortletSerializer" />
     <adapter factory=".portlet.NavigationPortletSerializer" name="portlets.Navigation"/>
     <adapter factory=".portlet.NewsPortletSerializer" name="portlets.News"/>
+    <adapter factory=".portlet.EventsPortletSerializer" name="portlets.Events"/>
     <adapter factory=".portlet.StaticPortletSerializer" name="portlets.Static"/>
 
     <adapter factory=".portlet.DefaultPortletFieldSerializer" />
