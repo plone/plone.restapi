@@ -80,14 +80,13 @@ class TestPortletsRender(unittest.TestCase):
 
         self.assertEqual(len(result['items']), 7)
 
-    @patch('plone.app.portlets.portlets.rss.feedparser')
-    def test_portlets_render_rss(self, feedparser):
-        feedparser.parse.return_value = [1, 2, 3]
+    @patch('plone.app.portlets.portlets')
+    def test_portlets_render_rss(self, portlets):
+        portlets.RSSFeed.items.return_value = [1, 2, 3]
         assignment = rss.Assignment(
             count=3, url='https://planetpython.org/rss20.xml')
         renderer = RssPortletRenderer(
             self.context, self.request, None, None, assignment)
-        renderer.items = []
         result = renderer.render()
 
         self.assertEqual(len(result['items']), 3)
