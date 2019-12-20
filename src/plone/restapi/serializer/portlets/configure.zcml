@@ -16,6 +16,7 @@
     <adapter factory=".events.EventsPortletSerializer" name="portlets.Events"/>
     <adapter factory=".news.NewsPortletSerializer" name="portlets.News"/>
     <adapter factory=".recent.RecentPortletSerializer" name="portlets.Recent"/>
+    <adapter factory=".rss.RssPortletSerializer" name="portlets.rss"/>
     <adapter factory=".static.StaticTextPortletSerializer" name="plone.portlet.static.Static"/>
 
 </configure>
