@@ -1,7 +1,7 @@
 from . import PortletSerializer
-from zope.component import getMultiAdapter
-from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.app.portlets.portlets.rss import Renderer
+from plone.restapi.interfaces import ISerializeToJsonSummary
+from zope.component import getMultiAdapter
 
 
 class RssPortletSerializer(PortletSerializer):
@@ -24,11 +24,11 @@ class RssPortletSerializer(PortletSerializer):
 
 class RssPortletRenderer(Renderer):
     def render(self):
-        items = []
         self.update()
-        rsss = self.items
-        # import pdb; pdb.set_trace()
-        for rss in rsss:
-            rss['updated'] = rss['updated'].strftime('%Y-%m-%d %X %Z').strip()
-            items.append(rss)
+        items = []
+
+        for o in self.items:
+            o['updated'] = o['updated'].strftime('%Y-%m-%d %X %Z').strip()
+            items.append(o)
+
         return {'items': items}
