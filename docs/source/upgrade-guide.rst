@@ -4,12 +4,14 @@ Upgrade Guide
 This upgrade guide lists all breaking changes in plone.restapi and explains the necessary steps that are needed to upgrade to the lastest version.
 
 
-Upgrading to plone.restapi X.y
+Upgrading to plone.restapi 6.x
 ------------------------------
 
-All versions before plone.restapi x.y.z are potentially affected by an issue
-that converts ids of reordered content to unicode from a bytestring when
-running on python2.
+plone.restapi 6.0.0 removes the IAPIRequest marker interface (https://github.com/plone/plone.restapi/pull/819).
+
+It also ships with a fix that prevents converting bytestring ids to unicode ids when reordering on Python 2 (https://github.com/plone/plone.restapi/issues/827).
+
+All versions before plone.restapi 6.0.0 are potentially affected by this issue.
 
 You may be affected by this issue and should run the fix if:
 
