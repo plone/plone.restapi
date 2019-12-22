@@ -1,0 +1,1 @@
+Remove IAPIRequest marker interface from plone.restapi. The correct interface should be imported from plone.rest.interfaces instead. If anybody was using this marker Interface, it didn't do anything.

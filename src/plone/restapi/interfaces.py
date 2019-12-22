@@ -13,11 +13,6 @@ class IPloneRestapiLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
 
-class IAPIRequest(Interface):
-    """Marker for API requests.
-    """
-
-
 class ISerializeToJson(Interface):
     """Adapter to serialize a Dexterity object into a JSON object.
     """
