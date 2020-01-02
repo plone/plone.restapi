@@ -1,22 +1,14 @@
 # -*- coding: utf-8 -*-
+from Products.CMFPlone.utils import safe_nativestring
 from plone.restapi.behaviors import IBlocks
 from plone.indexer.decorator import indexer
 from plone.app.contenttypes.indexers import SearchableText
-import six
 
 
 def _extract_text(block):
-    result = ""
-    for paragraph in block.get("text").get("blocks"):
-        text = paragraph["text"]
-        if six.PY2:
-            if isinstance(text, six.text_type):
-                text = text.encode("utf-8", "replace")
-            if text:
-                result = " ".join((result, text))
-        else:
-            result = " ".join((result, text))
-    return result
+    return " ".join(
+        safe_nativestring(paragraph["text"]) for paragraph in block.get("text").get("blocks")
+    )
 
 
 @indexer(IBlocks)
