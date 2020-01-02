@@ -8,6 +8,22 @@ Changelog
 
 .. towncrier release notes start
 
+6.0.0 (2019-12-22)
+------------------
+
+Breaking changes:
+
+
+- Remove IAPIRequest marker interface from plone.restapi. The correct interface should be imported from plone.rest.interfaces instead. If anybody was using this marker Interface, it didn't do anything. (#819)
+
+
+Bug fixes:
+
+
+- Prevent converting bytestring ids to unicode ids when reordering (see upgrade guide for potential migration).
+  [deiferni] (#827)
+
+
 5.1.0 (2019-12-07)
 ------------------
 
