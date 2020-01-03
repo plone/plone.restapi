@@ -2,11 +2,7 @@
 from Products.CMFPlone.utils import safe_nativestring
 from plone.restapi.behaviors import IBlocks
 from plone.indexer.decorator import indexer
-try:
-    from plone.app.contenttypes.indexers import SearchableText
-    HAS_PAC = True
-except ImportError:
-    HAS_PAC = False
+from plone.app.contenttypes.indexers import SearchableText
 
 
 def _extract_text(block):
@@ -17,8 +13,6 @@ def _extract_text(block):
 
 @indexer(IBlocks)
 def SearchableText_blocks(obj):
-    if not HAS_PAC:
-        return ""
     std_text = SearchableText(obj)
     blocks = obj.blocks
     blocks_text = [
