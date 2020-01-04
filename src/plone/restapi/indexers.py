@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+# XXX: EXPERIMENTAL!!!
+# This is an experimental feature meant for use in Volto only!
+# This code is likely to change in the future, even within minor releases.
+# We will make sure plone.restapi latest always works with the latest Volto release.
+# This code is planned to being refactored into CMFPlone 6.0 as soon as Volto 4 final is out.
+# <tisto@plone.org>
 from plone.restapi.behaviors import IBlocks
 from plone.indexer.decorator import indexer
 from plone.app.contenttypes.indexers import SearchableText
