@@ -22,6 +22,7 @@
   <property name="behaviors">
     <element value="plone.restapi.tests.dxtypes.ITestBehavior"/>
     <element value="plone.restapi.tests.dxtypes.ITestAnnotationsBehavior"/>
+    <element value="plone.app.dexterity.behaviors.metadata.IBasic"/>
   </property>
 
   <!-- View information -->

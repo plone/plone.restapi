@@ -149,7 +149,6 @@ def save_request_and_response_for_docs(name, response):
 
 
 class TestDocumentationBase(unittest.TestCase):
-
     def setUp(self):
         self.statictime = self.setup_with_context_manager(StaticTime())
 
@@ -1053,9 +1052,7 @@ class TestDocumentation(TestDocumentationBase):
             container=self.portal, id="doc", type="DXTestDocument", title=u"DX Document"
         )
         transaction.commit()
-        response = self.api_session.get(
-            "/doc/@sources/test_choice_with_source"
-        )
+        response = self.api_session.get("/doc/@sources/test_choice_with_source")
         save_request_and_response_for_docs("sources_get", response)
 
     def test_documentation_sharing_folder_get(self):
@@ -1309,9 +1306,7 @@ class TestDocumentation(TestDocumentationBase):
     def test_querystringsearch_post(self):
         url = "/@querystring-search"
 
-        self.portal.invokeFactory("Document",
-                                  "testdocument",
-                                  title="Test Document")
+        self.portal.invokeFactory("Document", "testdocument", title="Test Document")
         transaction.commit()
 
         response = self.api_session.post(
@@ -1324,7 +1319,8 @@ class TestDocumentation(TestDocumentationBase):
                         "v": ["Document"],
                     }
                 ]
-            })
+            },
+        )
         save_request_and_response_for_docs("querystringsearch_post", response)
 
 
@@ -1455,7 +1451,9 @@ class TestCommenting(TestDocumentationBase):
 
         # and the response
         if response.content:
-            response._content = re.sub(pattern_bytes, repl.encode('utf-8'), response._content)
+            response._content = re.sub(
+                pattern_bytes, repl.encode("utf-8"), response._content
+            )
 
     @staticmethod
     def clean_comment_id_from_body(response):
@@ -1466,10 +1464,11 @@ class TestCommenting(TestDocumentationBase):
         comment_ids = re.findall(pattern_bytes, response._content)
 
         def new_cid(idx):
-            return str(idx + 1400000000000000).encode('ascii')
+            return str(idx + 1400000000000000).encode("ascii")
 
-        static_comment_ids = {old_cid: new_cid(idx)
-                              for idx, old_cid in enumerate(comment_ids)}
+        static_comment_ids = {
+            old_cid: new_cid(idx) for idx, old_cid in enumerate(comment_ids)
+        }
 
         for cid, idx in static_comment_ids.items():
             response._content = re.sub(cid, idx, response._content)

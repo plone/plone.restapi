@@ -1,7 +1,16 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     i18n_domain="plone.restapi">
+
+    <!-- Upgrade to fix ordering, call manually via this browser-view if necessary -->
+    <browser:page
+        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+        name="plone-restapi-upgrade-fix-ordering"
+        class=".ordering.FixOrderingView"
+        permission="cmf.ManagePortal"
+        />
 
     <!-- 0001 -> 0002 -->
     <genericsetup:upgradeStep
@@ -47,6 +56,15 @@
         source="0004"
         destination="0005"
         handler="plone.restapi.upgrades.to0005.rename_tiles_to_blocks"
+        profile="plone.restapi:default"
+        />
+
+    <genericsetup:upgradeStep
+        title="Rename iface name to the short name in blocks"
+        description=""
+        source="0005"
+        destination="0006"
+        handler="plone.restapi.upgrades.to0006.rename_iface_to_name_in_blocks_behavior"
         profile="plone.restapi:default"
         />
 

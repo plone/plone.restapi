@@ -3,6 +3,7 @@ python:
   - "2.7"
   - "3.6"
   - "3.7"
+  - "3.8"
 dist: xenial
 sudo: required
 services:
@@ -30,10 +31,13 @@ matrix:
       env: PLONE_VERSION=5.2.x
     - python: "3.7"
       env: PLONE_VERSION=5.2.x
+    - python: "3.8"
+      env: PLONE_VERSION=5.2.x
   exclude:
     - python: "2.7"
     - python: "3.6"
     - python: "3.7"
+    - python: "3.8"
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
   - mkdir $HOME/.buildout
@@ -46,6 +50,7 @@ install:
   - buildout -t 10 -c travis.cfg
 script:
   - bin/code-analysis
+  - if [ -f "bin/black" ]; then bin/black src/ --check ; fi
   - bin/sphinxbuilder
   - bin/test
   - bin/test-no-uncommitted-doc-changes

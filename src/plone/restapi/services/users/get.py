@@ -59,7 +59,8 @@ class UsersGet(Service):
     def has_permission_to_access_user_info(self):
         sm = getSecurityManager()
         return sm.checkPermission(
-            "plone.restapi: Access Plone user information", self.context)
+            "plone.restapi: Access Plone user information", self.context
+        )
 
     def reply(self):
         if len(self.query) > 0 and len(self.params) == 0:
@@ -102,7 +103,8 @@ class UsersGet(Service):
         current_user_id = mt.getAuthenticatedMember().getId()
 
         if self.has_permission_to_access_user_info() or (
-                current_user_id and current_user_id == self._get_user_id):
+            current_user_id and current_user_id == self._get_user_id
+        ):
 
             # we retrieve the user on the user id not the username
             user = self._get_user(self._get_user_id)

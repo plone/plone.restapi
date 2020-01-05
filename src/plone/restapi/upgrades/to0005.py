@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 OLD_BEHAVIOR_NAME = "plone.restapi.behaviors.ITiles"
 SHORT_OLD_BEHAVIOR_NAME = "plone.tiles"
-NEW_BEHAVIOR_NAME = "plone.restapi.behaviors.IBlocks"
+SHORT_NEW_NAME = "volto.blocks"
 
 
 def rename_tiles_to_blocks(setup_context):
@@ -28,7 +28,7 @@ def rename_tiles_to_blocks(setup_context):
                 for currentbehavior in fti.behaviors
                 if currentbehavior != OLD_BEHAVIOR_NAME
             ]
-            new_fti.append(NEW_BEHAVIOR_NAME)
+            new_fti.append(SHORT_NEW_NAME)
             fti.behaviors = tuple(new_fti)
             logger.info("Migrated behavior of {} type".format(_type))
 
@@ -40,7 +40,7 @@ def rename_tiles_to_blocks(setup_context):
                 for currentbehavior in fti.behaviors
                 if currentbehavior != SHORT_OLD_BEHAVIOR_NAME
             ]
-            new_fti.append(NEW_BEHAVIOR_NAME)
+            new_fti.append(SHORT_NEW_NAME)
             fti.behaviors = tuple(new_fti)
             logger.info("Migrated behavior of {} type".format(_type))
 

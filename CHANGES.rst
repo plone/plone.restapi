@@ -8,6 +8,71 @@ Changelog
 
 .. towncrier release notes start
 
+6.1.0 (2020-01-05)
+------------------
+
+New features:
+
+
+- Add SearchableText indexing for text in blocks
+  [luca-bellenghi] (#844)
+
+
+6.0.0 (2019-12-22)
+------------------
+
+Breaking changes:
+
+
+- Remove IAPIRequest marker interface from plone.restapi. The correct interface should be imported from plone.rest.interfaces instead. If anybody was using this marker Interface, it didn't do anything. (#819)
+
+
+Bug fixes:
+
+
+- Prevent converting bytestring ids to unicode ids when reordering (see upgrade guide for potential migration).
+  [deiferni] (#827)
+
+
+5.1.0 (2019-12-07)
+------------------
+
+New features:
+
+
+- Add Python 3.8 support @timo (#829)
+
+
+5.0.3 (2019-12-06)
+------------------
+
+Bug fixes:
+
+
+- Change to use the short name for the Blocks behavior instead of using the interface one. It fixes #838.
+  [sneridagh] (#838)
+
+
+5.0.2 (2019-11-06)
+------------------
+
+Bug fixes:
+
+
+- Fix filtering vocabs and sources by title with non-ASCII characters.
+  [lgraf] (#825)
+
+
+5.0.1 (2019-11-05)
+------------------
+
+Bug fixes:
+
+
+- Fix serialization of vocabulary items for fields that need hashable items (e.g. sets).
+  [buchi] (#788)
+
+
 5.0.0 (2019-10-31)
 ------------------
 

@@ -29,7 +29,7 @@ class TestContentBlocks(unittest.TestCase):
 
         fti = queryUtility(IDexterityFTI, name="Document")
         behavior_list = [a for a in fti.behaviors]
-        behavior_list.append("plone.restapi.behaviors.IBlocks")
+        behavior_list.append("volto.blocks")
         behavior_list.append("plone.leadimage")
         fti.behaviors = tuple(behavior_list)
 

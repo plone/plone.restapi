@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
+from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.i18n import translate
@@ -20,13 +21,14 @@ class SerializeVocabLikeToJson(object):
 
     Implements server-side filtering as well as batching.
     """
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, vocabulary_id):
         vocabulary = self.context
-        title = self.request.form.get("title", "")
+        title = safe_unicode(self.request.form.get("title", ""))
         token = self.request.form.get("token", "")
 
         terms = []
@@ -45,7 +47,7 @@ class SerializeVocabLikeToJson(object):
                     continue
                 terms.append(term)
             else:
-                term_title = getattr(term, "title", None) or ""
+                term_title = safe_unicode(getattr(term, "title", None) or "")
                 if title.lower() not in term_title.lower():
                     continue
                 terms.append(term)
