@@ -27,7 +27,8 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                     entity_map = block.get("text", {}).get("entityMap", {})
                     for entity in entity_map.values():
                         if entity.get("type") == "LINK":
-                            href = entity.get("data", {}).get("href", "")
+                            href = entity.get("data", {}).get("url", "")
+                            before = href  # noqa
                             if href:
                                 match = RESOLVEUID_RE.match(href)
                                 if match is not None:
@@ -39,4 +40,5 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                                         href += "/" + suffix
                                     entity["data"]["href"] = href
                                     entity["data"]["url"] = href
+                                    print("SERIALIZE " + before + " -> " + href)  # noqa
         return json_compatible(self.get_value())
