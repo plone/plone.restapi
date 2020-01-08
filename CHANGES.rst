@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+6.1.0 (2020-01-05)
+------------------
+
+New features:
+
+
+- Add SearchableText indexing for text in blocks
+  [luca-bellenghi] (#844)
+
+
 6.0.0 (2019-12-22)
 ------------------
 
