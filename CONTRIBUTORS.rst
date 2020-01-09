@@ -2,20 +2,20 @@
     place names and roles of the people who contribute to this package
     in this file, one to a line, like so:
 
-- Andrea Cecchi
+- Timo Stollenwerk, Original Author
+- Thomas Buchberger
+- Lukas Graf
+- Víctor Fernández de Alba
+- Paul Roeland
+- Mikel Larreategi
+- Eric Brehault
 - Andreas Zeidler
 - Carsten Senger
-- Eric Brehault
-- Giacomo Monari
-- Luca Bellenghi
-- Lukas Graf
-- Mikel Larreategi
-- Paul Roeland
-- Philippe Gross
-- Roel Bruggink
-- Sune Brøndum Wøller
-- Thomas Buchberger
-- Timo Stollenwerk, Original Author
 - Tom Gross
-- Víctor Fernández de Alba
+- Roel Bruggink
 - Yann Fouillat, alias Gagaro
+- Sune Brøndum Wøller
+- Philippe Gross
+- Andrea Cecchi
+- Luca Bellenghi
+- Giacomo Monari
