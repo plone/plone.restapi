@@ -64,6 +64,7 @@ class DefaultJSONSummarySerializer(object):
                 if callable(value):
                     value = value()
             except WorkflowException:
+                summary[field] = None
                 continue
             summary[field] = json_compatible(value)
         return summary
