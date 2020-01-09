@@ -110,3 +110,13 @@ Collection:
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/collection.resp
    :language: http
+
+
+You can also get all the data of each of the items of a collection, appending the `?fullobjects`
+parameter to the query:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/collection_fullobjects.req
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/collection_fullobjects.resp
+   :language: http
