@@ -8,6 +8,25 @@ Changelog
 
 .. towncrier release notes start
 
+6.2.0 (2020-01-10)
+------------------
+
+New features:
+
+
+- Make ?fullobjects work in AT Collections to get the full JSON representation of the items
+  [erral] (#698)
+- Make ?fullobjects work in Dexterity Collections to get the full JSON representation of the items
+  [erral] (#848)
+
+
+Bug fixes:
+
+
+- Fix WorkflowException for related items with no review_state.
+  [arsenico13] (#376)
+
+
 6.1.0 (2020-01-05)
 ------------------
 
