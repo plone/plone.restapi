@@ -64,6 +64,13 @@ except pkg_resources.DistributionNotFound:
 else:
     HAS_AT = True
 
+try:
+    pkg_resources.get_distribution("plone.dexterity")
+except pkg_resources.DistributionNotFound:
+    HAS_DX = False
+else:
+    HAS_DX = True
+
 ENABLED_LANGUAGES = ["de", "en", "es", "fr"]
 
 
