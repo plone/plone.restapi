@@ -191,3 +191,61 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
             response.json()["items"][4]["title"], u"Test Document 9")
         self.assertEquals(
             response.json()["items"][4]["@id"], u"{}/testdocument9".format(self.portal_url))
+
+    def test_querystringsearch_fullobjects_complex_collection(self):
+
+        for a in range(10):
+            self.portal.invokeFactory(
+                "Collection", "testcollection" + str(a), title="Test Collection " + str(a)
+            )
+
+        transaction.commit()
+
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.is",
+                        "v": ["Collection"],
+                    }
+                ],
+                "fullobjects": True,
+                "b_size": 5,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("items", response.json())
+        self.assertIn("items_total", response.json())
+        self.assertEquals(response.json()["items_total"], 10)
+        self.assertEquals(len(response.json()["items"]), 5)
+        self.assertEquals(
+            response.json()["items"][4]["title"], u"Test Collection 4")
+
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.is",
+                        "v": ["Collection"],
+                    }
+                ],
+                "fullobjects": True,
+                "b_size": 5,
+                "b_start": 5,
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("items", response.json())
+        self.assertIn("items_total", response.json())
+        self.assertEquals(response.json()["items_total"], 10)
+        self.assertEquals(len(response.json()["items"]), 5)
+        self.assertEquals(
+            response.json()["items"][4]["title"], u"Test Collection 9")
+        self.assertEquals(
+            response.json()["items"][4]["@id"], u"{}/testcollection9".format(self.portal_url))
