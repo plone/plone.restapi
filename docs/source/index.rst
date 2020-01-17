@@ -41,6 +41,7 @@ Contents
    components
    breadcrumbs
    navigation
+   portlets
    serialization
    searching
    tusupload

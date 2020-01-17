@@ -20,6 +20,10 @@
   <adapter factory=".local_roles.DeserializeFromJson"
            name="local_roles"/>
 
+  <adapter factory=".portlet.DeserializePortletFromJson" />
+  <adapter factory=".portlet.DefaultGeneralFieldDeserializer" />
+  <adapter factory=".portlet.RichTextGeneralFieldDeserializer" />
+
   <configure zcml:condition="installed z3c.relationfield">
     <adapter factory=".relationfield.RelationChoiceFieldDeserializer" />
   </configure>
