@@ -76,13 +76,17 @@ class NavtreePortletRenderer(Renderer):
 
         if self.include_top():
             root = self.navigation_root()
+            root_is_portal = self.root_is_portal()
+
+            if root is None:
+                root = self.urltool.getPortalObject()
+                root_is_portal = True
 
             if utils.safe_hasattr(self.context, 'getRemoteUrl'):
                 root_url = root.getRemoteUrl()
             else:
                 cid, root_url = get_view_url(root)
 
-            root_is_portal = self.root_is_portal()
             root_title = ('Home'
                           if root_is_portal else root.pretty_title_or_id())
             root_type = ('plone-site'
