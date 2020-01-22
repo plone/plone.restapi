@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+6.2.1 (2020-01-22)
+------------------
+
+Bug fixes:
+
+
+- Sharing POST: Limit roles to ones the user is allowed to delegate.
+  [lgraf] (#857)
+
+
 6.2.0 (2020-01-10)
 ------------------
 
