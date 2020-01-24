@@ -15,6 +15,10 @@ from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IVocabularyTokenized
 
+import logging
+
+log = logging.getLogger(__name__)
+
 
 @adapter(IField, IDexterityContent, Interface)
 @implementer(IFieldSerializer)
@@ -66,8 +70,11 @@ class CollectionFieldSerializer(DefaultFieldSerializer):
         ):
             values = []
             for v in value:
-                term = value_type.vocabulary.getTerm(v)
-                values.append({u"token": term.token, u"title": term.title})
+                try:
+                    term = value_type.vocabulary.getTerm(v)
+                    values.append({u"token": term.token, u"title": term.title})
+                except LookupError:
+                    log.warn("Term lookup error: %r" % v)
             value = values
         return json_compatible(value)
 
