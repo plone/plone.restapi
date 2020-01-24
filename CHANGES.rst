@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+6.2.2 (2020-01-24)
+------------------
+
+Bug fixes:
+
+
+- Degrade gracefully when a term set in a content field does not exists in the assigned vocabulary [sneridagh] (#856)
+
+
 6.2.1 (2020-01-22)
 ------------------
 
