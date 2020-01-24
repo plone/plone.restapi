@@ -1,0 +1,3 @@
+- Degrade gracefully when a term set in a content field does not exists in the assigned
+  vocabulary
+  [sneridagh]
