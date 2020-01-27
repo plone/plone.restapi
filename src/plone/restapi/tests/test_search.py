@@ -15,6 +15,7 @@ from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import result_paths
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import ISearchSchema
 from zope.component import getUtility
 
 import six
@@ -124,6 +125,17 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/folder/@search")
         self.assertSetEqual(
             {u"/plone/folder", u"/plone/folder/doc", u"/plone/folder/other-document"},
+            set(result_paths(response.json())),
+        )
+
+    def test_types_not_searched(self):
+        registry = getUtility(IRegistry)
+        search_settings = registry.forInterface(ISearchSchema, prefix="plone")
+        search_settings.types_not_searched = ('Folder',)
+
+        response = self.api_session.get("/folder/@search")
+        self.assertSetEqual(
+            {u"/plone/folder/doc", u"/plone/folder/other-document"},
             set(result_paths(response.json())),
         )
 
