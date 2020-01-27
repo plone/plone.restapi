@@ -8,6 +8,8 @@ Changelog
 
 .. towncrier release notes start
 
+- Respect `types_not_searched` field for search [rodfersou] (#861)
+
 6.2.2 (2020-01-24)
 ------------------
 
