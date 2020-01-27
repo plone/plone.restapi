@@ -65,11 +65,9 @@ class SearchHandler(object):
             path = "/".join(self.context.getPhysicalPath())
             query["path"]["query"] = path
 
-    def filter_types(self, types):
+    def filter_types(self):
         plone_utils = getToolByName(self.context, 'plone_utils')
-        if not isinstance(types, list):
-            types = [types]
-        return plone_utils.getUserFriendlyTypes(types)
+        return plone_utils.getUserFriendlyTypes([])
 
     def search(self, query=None):
         if query is None:
@@ -80,10 +78,8 @@ class SearchHandler(object):
         else:
             fullobjects = False
 
-        types = query.get('portal_type', [])
-        if 'query' in types:
-            types = types['query']
-        query['portal_type'] = self.filter_types(types)
+        if 'portal_type' not in query:
+            query['portal_type'] = self.filter_types()
 
         metadata_fields = query.pop("metadata_fields", [])
         if not isinstance(metadata_fields, list):
