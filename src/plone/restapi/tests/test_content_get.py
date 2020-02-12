@@ -5,7 +5,9 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
+from plone.namedfile.file import NamedBlobImage
 from plone.restapi.testing import HAS_AT
+from plone.restapi.testing import HAS_DX
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from Products.CMFCore.utils import getToolByName
@@ -13,6 +15,7 @@ from z3c.relationfield import RelationValue
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 
+import os
 import requests
 import transaction
 import unittest
@@ -23,8 +26,8 @@ class TestContentGet(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        if not HAS_AT:
-            raise unittest.SkipTest("Skip tests if Archetypes is not present")
+        if not HAS_DX:
+            raise unittest.SkipTest("Skip tests if Dexterity is not present")
         self.app = self.layer["app"]
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
@@ -134,6 +137,44 @@ class TestContentGet(unittest.TestCase):
                     u"description": u"",
                     u"review_state": u"published",
                     u"title": u"My Document 2",
+                }
+            ],
+            response.json()["relatedItems"],
+        )
+
+    def test_get_content_related_items_without_workflow(self):
+        intids = getUtility(IIntIds)
+
+        self.portal.invokeFactory("Image", id="imagewf")
+        self.portal.imagewf.title = "Image without workflow"
+        self.portal.imagewf.description = u"This is an image"
+        image_file = os.path.join(os.path.dirname(__file__), u"image.png")
+        with open(image_file, "rb") as f:
+            image_data = f.read()
+        self.portal.imagewf.image = NamedBlobImage(
+            data=image_data, contentType="image/png", filename=u"image.png"
+        )
+        transaction.commit()
+
+        self.portal.folder1.doc1.relatedItems = [
+            RelationValue(intids.getId(self.portal.imagewf))
+        ]
+        transaction.commit()
+        response = requests.get(
+            self.portal.folder1.doc1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(1, len(response.json()["relatedItems"]))
+        self.assertEqual(
+            [
+                {
+                    u"@id": self.portal_url + u"/imagewf",
+                    u"@type": u"Image",
+                    u"description": u"This is an image",
+                    u"review_state": None,
+                    u"title": u"Image without workflow",
                 }
             ],
             response.json()["relatedItems"],

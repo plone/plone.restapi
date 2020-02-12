@@ -27,8 +27,14 @@ class SerializeCollectionToJson(SerializeToJson):
         if batch.links:
             results["batching"] = batch.links
 
-        results["items"] = [
-            getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
-            for brain in batch
-        ]
+        if "fullobjects" in list(self.request.form):
+            results["items"] = [
+                getMultiAdapter((brain.getObject(), self.request), ISerializeToJson)()
+                for brain in batch
+            ]
+        else:
+            results["items"] = [
+                getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
+                for brain in batch
+            ]
         return results

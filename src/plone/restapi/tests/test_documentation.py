@@ -361,6 +361,25 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get(self.portal.collection.absolute_url())
         save_request_and_response_for_docs("collection", response)
 
+    def test_documentation_collection_fullobjects(self):
+        self.portal.invokeFactory("Collection", id="collection")
+        self.portal.collection.title = "My Collection"
+        self.portal.collection.description = u"This is a collection with two documents"
+        self.portal.collection.query = [
+            {
+                "i": "portal_type",
+                "o": "plone.app.querystring.operation.string.is",
+                "v": "Document",
+            }
+        ]
+        self.portal.invokeFactory("Document", id="doc1", title="Document 1")
+        self.portal.invokeFactory("Document", id="doc2", title="Document 2")
+        transaction.commit()
+        response = self.api_session.get(
+            self.portal.collection.absolute_url() + "?fullobjects"
+        )
+        save_request_and_response_for_docs("collection_fullobjects", response)
+
     def test_documentation_siteroot(self):
         response = self.api_session.get(self.portal.absolute_url())
         save_request_and_response_for_docs("siteroot", response)
