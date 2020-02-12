@@ -102,3 +102,13 @@ class TestResolveUIDFunctional(unittest.TestCase):
             .get("data")
             .get("url"),
         )
+        self.assertEqual(
+            "http://localhost:55001/Plone/target",
+            self.portal.document.blocks
+            .get("791bf004-7c88-4278-8490-13b85c3fa4b4")
+            .get("text")
+            .get("entityMap")
+            .get("0")
+            .get("data")
+            .get("url"),
+        )
