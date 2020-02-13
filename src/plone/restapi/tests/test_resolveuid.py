@@ -160,6 +160,56 @@ class TestBlocksResolveUID(TestCase):
             "../resolveuid/{}".format(uid),
         )
 
+    def test_blocks_field_serialization_doesnt_update_stored_values(self):
+        uid = IUUID(self.doc2)
+        blocks = {
+            "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
+            "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
+                "@type": "text",
+                "text": {
+                    "blocks": [
+                        {
+                            "data": {},
+                            "depth": 0,
+                            "entityRanges": [{"key": 0, "length": 5, "offset": 0}],
+                            "inlineStyleRanges": [],
+                            "key": "68rve",
+                            "text": "Volto also supports other APIs.",
+                            "type": "unstyled",
+                        }
+                    ],
+                    "entityMap": {
+                        "0": {
+                            "data": {
+                                "href": "../resolveuid/{}".format(uid),
+                                "rel": "nofollow",
+                                "url": "../resolveuid/{}".format(uid),
+                            },
+                            "mutability": "MUTABLE",
+                            "type": "LINK",
+                        }
+                    },
+                },
+            },
+        }
+        value = self.serialize("blocks", blocks)
+        self.assertNotEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["href"],
+            blocks["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["href"],
+        )
+        self.assertNotEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["url"],
+            blocks["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["url"],
+        )
+
     def test_blocks_field_deserialization_resolves_paths_to_uids(self):
         uid = IUUID(self.doc2)
         blocks = {
