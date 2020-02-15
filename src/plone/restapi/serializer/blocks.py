@@ -8,6 +8,8 @@ from plone.schema import IJSONField
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
+
+import copy
 import re
 
 
@@ -18,7 +20,7 @@ RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
 @implementer(IFieldSerializer)
 class BlocksJSONFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
-        value = self.get_value()
+        value = copy.deepcopy(self.get_value())
 
         # Resolve UID links
         if self.field.getName() == "blocks":
@@ -41,4 +43,4 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                                     entity["data"]["href"] = href
                                     entity["data"]["url"] = href
                                     print("SERIALIZE " + before + " -> " + href)  # noqa
-        return json_compatible(self.get_value())
+        return json_compatible(value)
