@@ -76,7 +76,7 @@ class TestResolveUIDFunctional(unittest.TestCase):
                                     "type": "LINK",
                                     "mutability": "MUTABLE",
                                     "data": {
-                                        "url": "http://localhost:55001/plone/target"
+                                        "url": "{}/target".format(self.portal_url)
                                     },
                                 }
                             },
