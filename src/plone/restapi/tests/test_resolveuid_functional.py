@@ -7,6 +7,7 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.dexterity.fti import DexterityFTI
 from plone.restapi.behaviors import IBlocks
+from plone.uuid.interfaces import IUUID
 
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -39,6 +40,7 @@ class TestResolveUIDFunctional(unittest.TestCase):
 
         self.portal.invokeFactory("Document", id="target", title="Target")
         self.target = self.portal.target
+        self.target_uuid = IUUID(self.target)
 
         transaction.commit()
 
@@ -46,7 +48,7 @@ class TestResolveUIDFunctional(unittest.TestCase):
         self.api_session.close()
 
     def test_resolveuid(self):
-        response = self.api_session.post(
+        self.api_session.post(
             "/",
             json={
                 "title": "Document",
@@ -91,18 +93,7 @@ class TestResolveUIDFunctional(unittest.TestCase):
         )
         transaction.commit()
         self.assertEqual(
-            "http://localhost:55001/plone/target",
-            response.json()
-            .get("blocks")
-            .get("791bf004-7c88-4278-8490-13b85c3fa4b4")
-            .get("text")
-            .get("entityMap")
-            .get("0")
-            .get("data")
-            .get("url"),
-        )
-        self.assertEqual(
-            "http://localhost:55001/plone/target",
+            "../resolveuid/{}".format(self.target_uuid),
             self.portal.document.blocks
             .get("791bf004-7c88-4278-8490-13b85c3fa4b4")
             .get("text")
