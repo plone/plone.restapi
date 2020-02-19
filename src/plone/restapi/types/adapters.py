@@ -294,7 +294,10 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
             enum_names = []
 
             for term in vocabulary:
-                title = translate(term.title, context=self.request)
+                if term.title:
+                    title = translate(term.title, context=self.request)
+                else:
+                    title = None
                 choices.append((term.token, title))
                 enum.append(term.token)
                 enum_names.append(title)
