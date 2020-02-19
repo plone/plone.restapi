@@ -1,2 +1,1 @@
-- Return proper None instead of string "None" on the choice schema serializer
-  [sneridagh]
+Return proper None instead of string "None" on the choice schema serializer [sneridagh]
