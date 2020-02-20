@@ -33,7 +33,6 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                         if resolved_href:
                             entity["data"]["href"] = resolved_href
                             entity["data"]["url"] = resolved_href
-                            print("SERIALIZE " + href + " -> " + resolved_href)
             else:
                 # standard blocks can have an "url" or "href" field
                 url = block.get('url', '')
@@ -42,10 +41,8 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                 resolved_url = self.uid_to_url(href=url)
                 if resolved_href:
                     block["href"] = resolved_href
-                    print("SERIALIZE " + href + " -> " + resolved_href)
                 if resolved_url:
                     block["url"] = resolved_url
-                    print("SERIALIZE " + url + " -> " + resolved_url)
         return json_compatible(value)
 
     def uid_to_url(self, href):

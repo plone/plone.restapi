@@ -64,12 +64,6 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
                             )
                             entity["data"]["href"] = deserialized_href
                             entity["data"]["url"] = deserialized_href
-                            print(
-                                "DESERIALIZE "
-                                + href
-                                + " -> "
-                                + deserialized_href
-                            )
                 else:
                     # standard blocks can have an "url" or "href" field
                     url = block.get("url", "")
@@ -82,6 +76,4 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
                     )
                     block["url"] = deserialized_url
                     block["href"] = deserialized_href
-                    print("DESERIALIZE " + url + " -> " + deserialized_url)
-                    print("DESERIALIZE " + href + " -> " + deserialized_href)
         return value
