@@ -12,20 +12,34 @@ from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 
-def path2uid(context, path):
+def path2uid(context, portal, href):
     # unrestrictedTraverse requires a string on py3. see:
     # https://github.com/zopefoundation/Zope/issues/674
-    if not isinstance(path, str):
-        path = path.decode("utf-8")
-    obj = context.unrestrictedTraverse(path, None)
+    if not href:
+        return ''
+    portal_url = portal.absolute_url()
+    portal_path = '/'.join(portal.getPhysicalPath())
+    path = href
+    context_url = context.absolute_url()
+    relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
+    if path.startswith(portal_url):
+        path = path[len(portal_url) + 1 :]
+    if not path.startswith(portal_path):
+        path = '{portal_path}/{path}'.format(
+            portal_path=portal_path, path=path.lstrip("/")
+        )
+    obj = portal.unrestrictedTraverse(path, None)
     if obj is None:
-        return None, None
+        return href
     segments = path.split("/")
     suffix = ""
     while not IUUIDAware.providedBy(obj):
         obj = aq_parent(obj)
         suffix += "/" + segments.pop()
-    return IUUID(obj), suffix
+    href = relative_up * "../" + "resolveuid/" + IUUID(obj)
+    if suffix:
+        href += suffix
+    return href
 
 
 @implementer(IFieldDeserializer)
@@ -38,9 +52,6 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
         portal = getMultiAdapter(
             (self.context, self.request), name="plone_portal_state"
         ).portal()
-        portal_url = portal.absolute_url()
-        context_url = self.context.absolute_url()
-        relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
         if self.field.getName() == "blocks":
             for block in value.values():
                 if block.get("@type") == "text":
@@ -48,15 +59,29 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
                     for entity in entity_map.values():
                         if entity.get("type") == "LINK":
                             href = entity.get("data", {}).get("url", "")
-                            before = href  # noqa
-                            if href and href.startswith(portal_url):
-                                path = href[len(portal_url) + 1 :].encode("utf8")
-                                uid, suffix = path2uid(portal, path)
-                                if uid:
-                                    href = relative_up * "../" + "resolveuid/" + uid
-                                    if suffix:
-                                        href += suffix
-                                    entity["data"]["href"] = href
-                                    entity["data"]["url"] = href
-                                print("DESERIALIZE " + before + " -> " + href)  # noqa
+                            deserialized_href = path2uid(
+                                context=self.context, portal=portal, href=href
+                            )
+                            entity["data"]["href"] = deserialized_href
+                            entity["data"]["url"] = deserialized_href
+                            print(
+                                "DESERIALIZE "
+                                + href
+                                + " -> "
+                                + deserialized_href
+                            )
+                else:
+                    # standard blocks can have an "url" or "href" field
+                    url = block.get("url", "")
+                    href = block.get("href", "")
+                    deserialized_url = path2uid(
+                        context=self.context, portal=portal, href=url
+                    )
+                    deserialized_href = path2uid(
+                        context=self.context, portal=portal, href=href
+                    )
+                    block["url"] = deserialized_url
+                    block["href"] = deserialized_href
+                    print("DESERIALIZE " + url + " -> " + deserialized_url)
+                    print("DESERIALIZE " + href + " -> " + deserialized_href)
         return value

@@ -20,27 +20,43 @@ RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
 @implementer(IFieldSerializer)
 class BlocksJSONFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
+        if self.field.getName() != "blocks":
+            return json_compatible(self.get_value())
         value = copy.deepcopy(self.get_value())
-
-        # Resolve UID links
-        if self.field.getName() == "blocks":
-            for block in value.values():
-                if block.get("@type") == "text":
-                    entity_map = block.get("text", {}).get("entityMap", {})
-                    for entity in entity_map.values():
-                        if entity.get("type") == "LINK":
-                            href = entity.get("data", {}).get("url", "")
-                            before = href  # noqa
-                            if href:
-                                match = RESOLVEUID_RE.match(href)
-                                if match is not None:
-                                    uid, suffix = match.groups()
-                                    href = uuidToURL(uid)
-                                    if href is None:
-                                        continue
-                                    if suffix:
-                                        href += "/" + suffix
-                                    entity["data"]["href"] = href
-                                    entity["data"]["url"] = href
-                                    print("SERIALIZE " + before + " -> " + href)  # noqa
+        for block in value.values():
+            if block.get("@type") == "text":
+                entity_map = block.get("text", {}).get("entityMap", {})
+                for entity in entity_map.values():
+                    if entity.get("type") == "LINK":
+                        href = entity.get("data", {}).get("url", "")
+                        resolved_href = self.uid_to_url(href=href)
+                        if resolved_href:
+                            entity["data"]["href"] = resolved_href
+                            entity["data"]["url"] = resolved_href
+                            print("SERIALIZE " + href + " -> " + resolved_href)
+            else:
+                # standard blocks can have an "url" or "href" field
+                url = block.get('url', '')
+                href = block.get('href', '')
+                resolved_href = self.uid_to_url(href=href)
+                resolved_url = self.uid_to_url(href=url)
+                if resolved_href:
+                    block["href"] = resolved_href
+                    print("SERIALIZE " + href + " -> " + resolved_href)
+                if resolved_url:
+                    block["url"] = resolved_url
+                    print("SERIALIZE " + url + " -> " + resolved_url)
         return json_compatible(value)
+
+    def uid_to_url(self, href):
+        if not href:
+            return ''
+        match = RESOLVEUID_RE.match(href)
+        if match is not None:
+            uid, suffix = match.groups()
+            href = uuidToURL(uid)
+            if href is None:
+                return ''
+            if suffix:
+                href += "/" + suffix
+        return href

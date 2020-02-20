@@ -23,7 +23,15 @@ class TestBlocksResolveUID(TestCase):
             )
         ]
         self.doc2 = self.portal[
-            self.portal.invokeFactory("Document", id="doc2", title="Target Document")
+            self.portal.invokeFactory(
+                "Document", id="doc2", title="Target Document"
+            )
+        ]
+
+        self.image = self.portal[
+            self.portal.invokeFactory(
+                "Image", id="image1", title="Target image"
+            )
         ]
 
     def serialize(self, fieldname, value):
@@ -33,7 +41,9 @@ class TestBlocksResolveUID(TestCase):
                 break
         dm = getMultiAdapter((self.doc1, field), IDataManager)
         dm.set(value)
-        serializer = getMultiAdapter((field, self.doc1, self.request), IFieldSerializer)
+        serializer = getMultiAdapter(
+            (field, self.doc1, self.request), IFieldSerializer
+        )
         return serializer()
 
     def deserialize(self, fieldname, value):
@@ -57,7 +67,9 @@ class TestBlocksResolveUID(TestCase):
                         {
                             "data": {},
                             "depth": 0,
-                            "entityRanges": [{"key": 0, "length": 5, "offset": 0}],
+                            "entityRanges": [
+                                {"key": 0, "length": 5, "offset": 0}
+                            ],
                             "inlineStyleRanges": [],
                             "key": "68rve",
                             "text": "Volto also supports other APIs.",
@@ -80,15 +92,15 @@ class TestBlocksResolveUID(TestCase):
         }
         value = self.serialize("blocks", blocks)
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["href"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["href"],
             self.doc2.absolute_url(),
         )
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["url"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["url"],
             self.doc2.absolute_url(),
         )
 
@@ -114,15 +126,15 @@ class TestBlocksResolveUID(TestCase):
         }
         value = self.serialize("blocks", blocks)
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["href"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["href"],
             self.doc2.absolute_url() + "/view",
         )
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["url"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["url"],
             self.doc2.absolute_url() + "/view",
         )
 
@@ -148,15 +160,15 @@ class TestBlocksResolveUID(TestCase):
         }
         value = self.serialize("blocks", blocks)
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["href"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["href"],
             "../resolveuid/{}".format(uid),
         )
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["url"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["url"],
             "../resolveuid/{}".format(uid),
         )
 
@@ -171,7 +183,9 @@ class TestBlocksResolveUID(TestCase):
                         {
                             "data": {},
                             "depth": 0,
-                            "entityRanges": [{"key": 0, "length": 5, "offset": 0}],
+                            "entityRanges": [
+                                {"key": 0, "length": 5, "offset": 0}
+                            ],
                             "inlineStyleRanges": [],
                             "key": "68rve",
                             "text": "Volto also supports other APIs.",
@@ -194,20 +208,20 @@ class TestBlocksResolveUID(TestCase):
         }
         value = self.serialize("blocks", blocks)
         self.assertNotEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["href"],
-            blocks["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["href"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["href"],
+            blocks["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"][
+                "entityMap"
+            ]["0"]["data"]["href"],
         )
         self.assertNotEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["url"],
-            blocks["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["url"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["url"],
+            blocks["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"][
+                "entityMap"
+            ]["0"]["data"]["url"],
         )
 
     def test_blocks_field_deserialization_resolves_paths_to_uids(self):
@@ -221,7 +235,9 @@ class TestBlocksResolveUID(TestCase):
                         {
                             "data": {},
                             "depth": 0,
-                            "entityRanges": [{"key": 0, "length": 5, "offset": 0}],
+                            "entityRanges": [
+                                {"key": 0, "length": 5, "offset": 0}
+                            ],
                             "inlineStyleRanges": [],
                             "key": "68rve",
                             "text": "Volto also supports other APIs.",
@@ -233,7 +249,7 @@ class TestBlocksResolveUID(TestCase):
                             "data": {
                                 "href": self.doc2.absolute_url(),
                                 "rel": "nofollow",
-                                "url": self.doc2.absolute_url(),
+                                "url": "/doc2",
                             },
                             "mutability": "MUTABLE",
                             "type": "LINK",
@@ -244,15 +260,15 @@ class TestBlocksResolveUID(TestCase):
         }
         value = self.deserialize("blocks", blocks)
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["href"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["href"],
             "../resolveuid/{}".format(uid),
         )
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["url"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["url"],
             "../resolveuid/{}".format(uid),
         )
 
@@ -277,15 +293,15 @@ class TestBlocksResolveUID(TestCase):
         }
         value = self.deserialize("blocks", blocks)
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["href"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["href"],
             self.portal.absolute_url() + "/foo",
         )
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["url"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["url"],
             self.portal.absolute_url() + "/foo",
         )
 
@@ -311,14 +327,59 @@ class TestBlocksResolveUID(TestCase):
         }
         value = self.deserialize("blocks", blocks)
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["href"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["href"],
             "../resolveuid/{}/view".format(uid),
         )
         self.assertEqual(
-            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
-                "data"
-            ]["url"],
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"][
+                "0"
+            ]["data"]["url"],
             "../resolveuid/{}/view".format(uid),
+        )
+
+    def test_resolveuid_for_image_block(self):
+        image_uid = IUUID(self.image)
+        doc2_uid = IUUID(self.doc2)
+        blocks = {
+            "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
+                '@type': 'image',
+                'url': self.image.absolute_url(),
+                'href': self.doc2.absolute_url(),
+            }
+        }
+        value = self.deserialize("blocks", blocks)
+        self.assertEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["url"],
+            "../resolveuid/{}".format(image_uid),
+        )
+        self.assertEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["href"],
+            "../resolveuid/{}".format(doc2_uid),
+        )
+
+    def test_resolveuid_for_custom_block(self):
+        image_uid = IUUID(self.image)
+        doc2_uid = IUUID(self.doc2)
+        blocks = {
+            "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
+                '@type': 'foo',
+                'url': self.image.absolute_url(),
+                'href': self.doc2.absolute_url(),
+                'href_bis': self.doc2.absolute_url(),
+            }
+        }
+        value = self.deserialize("blocks", blocks)
+        self.assertEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["url"],
+            "../resolveuid/{}".format(image_uid),
+        )
+        self.assertEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["href"],
+            "../resolveuid/{}".format(doc2_uid),
+        )
+        self.assertEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["href_bis"],
+            self.doc2.absolute_url(),
         )

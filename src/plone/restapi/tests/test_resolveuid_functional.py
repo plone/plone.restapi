@@ -42,12 +42,18 @@ class TestResolveUIDFunctional(unittest.TestCase):
         self.target = self.portal.target
         self.target_uuid = IUUID(self.target)
 
+        self.portal.invokeFactory(
+            "Image", id="target-image", title="Target image"
+        )
+        self.target_image = self.portal['target-image']
+        self.target_image_uuid = IUUID(self.target_image)
+
         transaction.commit()
 
     def tearDown(self):
         self.api_session.close()
 
-    def test_resolveuid(self):
+    def test_resolveuid_with_portal_url(self):
         self.api_session.post(
             "/",
             json={
@@ -76,7 +82,9 @@ class TestResolveUIDFunctional(unittest.TestCase):
                                     "type": "LINK",
                                     "mutability": "MUTABLE",
                                     "data": {
-                                        "url": "{}/target".format(self.portal_url)
+                                        "url": "{}/target".format(
+                                            self.portal_url
+                                        )
                                     },
                                 }
                             },
@@ -94,11 +102,181 @@ class TestResolveUIDFunctional(unittest.TestCase):
         transaction.commit()
         self.assertEqual(
             "../resolveuid/{}".format(self.target_uuid),
-            self.portal.document.blocks
-            .get("791bf004-7c88-4278-8490-13b85c3fa4b4")
+            self.portal.document.blocks.get(
+                "791bf004-7c88-4278-8490-13b85c3fa4b4"
+            )
             .get("text")
             .get("entityMap")
             .get("0")
             .get("data")
             .get("url"),
+        )
+
+    def test_resolveuid_with_context_path(self):
+        self.api_session.post(
+            "/",
+            json={
+                "title": "Document",
+                "@type": "blockspage",
+                "blocks": {
+                    "ca5908a5-3f58-4cd5-beb7-9bd1539d6744": {"@type": "title"},
+                    "791bf004-7c88-4278-8490-13b85c3fa4b4": {
+                        "@type": "text",
+                        "text": {
+                            "blocks": [
+                                {
+                                    "key": "3bnq6",
+                                    "text": "Link",
+                                    "type": "unstyled",
+                                    "depth": 0,
+                                    "inlineStyleRanges": [],
+                                    "entityRanges": [
+                                        {"offset": 0, "length": 4, "key": 0}
+                                    ],
+                                    "data": {},
+                                }
+                            ],
+                            "entityMap": {
+                                "0": {
+                                    "type": "LINK",
+                                    "mutability": "MUTABLE",
+                                    "data": {"url": "/target"},
+                                }
+                            },
+                        },
+                    },
+                },
+                "blocks_layout": {
+                    "items": [
+                        "ca5908a5-3f58-4cd5-beb7-9bd1539d6744",
+                        "791bf004-7c88-4278-8490-13b85c3fa4b4",
+                    ]
+                },
+            },
+        )
+        transaction.commit()
+        self.assertEqual(
+            "../resolveuid/{}".format(self.target_uuid),
+            self.portal.document.blocks.get(
+                "791bf004-7c88-4278-8490-13b85c3fa4b4"
+            )
+            .get("text")
+            .get("entityMap")
+            .get("0")
+            .get("data")
+            .get("url"),
+        )
+
+    def test_resolveuid_for_image(self):
+        self.api_session.post(
+            "/",
+            json={
+                "title": "Document",
+                "@type": "blockspage",
+                "blocks": {
+                    "ca5908a5-3f58-4cd5-beb7-9bd1539d6744": {"@type": "title"},
+                    "791bf004-7c88-4278-8490-13b85c3fa4b4": {
+                        '@type': 'image',
+                        'url': '/target-image',
+                    },
+                },
+                "blocks_layout": {
+                    "items": [
+                        "ca5908a5-3f58-4cd5-beb7-9bd1539d6744",
+                        "791bf004-7c88-4278-8490-13b85c3fa4b4",
+                    ]
+                },
+            },
+        )
+        transaction.commit()
+        self.assertEqual(
+            "../resolveuid/{}".format(self.target_image_uuid),
+            self.portal.document.blocks.get(
+                "791bf004-7c88-4278-8490-13b85c3fa4b4"
+            ).get("url"),
+        )
+
+    def test_resolveuid_for_image_with_link(self):
+        self.api_session.post(
+            "/",
+            json={
+                "title": "Document",
+                "@type": "blockspage",
+                "blocks": {
+                    "ca5908a5-3f58-4cd5-beb7-9bd1539d6744": {"@type": "title"},
+                    "791bf004-7c88-4278-8490-13b85c3fa4b4": {
+                        '@type': 'image',
+                        'url': '/target-image',
+                        'href': '/target',
+                    },
+                },
+                "blocks_layout": {
+                    "items": [
+                        "ca5908a5-3f58-4cd5-beb7-9bd1539d6744",
+                        "791bf004-7c88-4278-8490-13b85c3fa4b4",
+                    ]
+                },
+            },
+        )
+        transaction.commit()
+        self.assertEqual(
+            "../resolveuid/{}".format(self.target_image_uuid),
+            self.portal.document.blocks.get(
+                "791bf004-7c88-4278-8490-13b85c3fa4b4"
+            ).get("url"),
+        )
+        self.assertEqual(
+            "../resolveuid/{}".format(self.target_uuid),
+            self.portal.document.blocks.get(
+                "791bf004-7c88-4278-8490-13b85c3fa4b4"
+            ).get("href"),
+        )
+
+    def test_resolveuid_for_generic_block(self):
+        self.api_session.post(
+            "/",
+            json={
+                "title": "Document",
+                "@type": "blockspage",
+                "blocks": {
+                    "ca5908a5-3f58-4cd5-beb7-9bd1539d6744": {"@type": "title"},
+                    "791bf004-7c88-4278-8490-13b85c3fa4b4": {
+                        '@type': 'foo',
+                        'url': '/target-image',
+                        'href': '/target',
+                        'href_bis': '/target',
+                    },
+                },
+                "blocks_layout": {
+                    "items": [
+                        "ca5908a5-3f58-4cd5-beb7-9bd1539d6744",
+                        "791bf004-7c88-4278-8490-13b85c3fa4b4",
+                    ]
+                },
+            },
+        )
+        transaction.commit()
+        self.assertEqual(
+            "../resolveuid/{}".format(self.target_image_uuid),
+            self.portal.document.blocks.get(
+                "791bf004-7c88-4278-8490-13b85c3fa4b4"
+            ).get("url"),
+        )
+        self.assertEqual(
+            "../resolveuid/{}".format(self.target_uuid),
+            self.portal.document.blocks.get(
+                "791bf004-7c88-4278-8490-13b85c3fa4b4"
+            ).get("href"),
+        )
+        self.assertNotEqual(
+            "../resolveuid/{}".format(self.target_uuid),
+            self.portal.document.blocks.get(
+                "791bf004-7c88-4278-8490-13b85c3fa4b4"
+            ).get("href_bis"),
+        )
+        self.assertEqual(
+            "/target",
+            self.portal.document.blocks.get(
+                "791bf004-7c88-4278-8490-13b85c3fa4b4"
+            ).get("href_bis"),
         )
