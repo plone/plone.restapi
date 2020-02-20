@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+6.2.4 (2020-02-20)
+------------------
+
+Bug fixes:
+
+
+- fullobjects qs is missing in response batch links in batching operations
+  [sneridagh] (#868)
+
+
 6.2.3 (2020-02-19)
 ------------------
 
