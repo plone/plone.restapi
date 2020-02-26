@@ -151,6 +151,18 @@ class TestDexterityFieldSerializing(TestCase):
             value,
         )
 
+    def test_list_field_with_vocabulary_choice_serialization_no_valid_term(self):
+        value = self.serialize(
+            "test_list_field_with_choice_with_vocabulary", [u"value3", u"value4"]
+        )
+        self.assertTrue(isinstance(value, list), "Not a <list>")
+        self.assertEqual(
+            [
+                {u"token": u"token3", u"title": u"title3"},
+            ],
+            value,
+        )
+
     def test_set_field_serialization_returns_list(self):
         value = self.serialize("test_set_field", set(["a", "b", "c"]))
         self.assertTrue(isinstance(value, list), "Not a <list>")

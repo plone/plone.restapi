@@ -32,7 +32,10 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             "DXTestDocument", id="dxdoc", title="DX Test Document"
         )
 
-    def serialize(self, obj):
+    def serialize(self, obj, fullobjects=False):
+        if fullobjects:
+            self.request.form["fullobjects"] = 1
+
         serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
         return serializer()
 
@@ -325,6 +328,35 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             ],
             self.serialize(self.portal.collection1).get("items"),
         )
+
+    def test_serialize_to_json_collection_fullobjects(self):
+        self.portal.invokeFactory("Collection", id="collection1")
+        self.portal.collection1.title = "My Collection"
+        self.portal.collection1.description = u"This is a collection with two documents"
+        self.portal.collection1.query = [
+            {
+                "i": "portal_type",
+                "o": "plone.app.querystring.operation.string.is",
+                "v": "Document",
+            }
+        ]
+        self.portal.invokeFactory("Document", id="doc2", title="Document 2")
+        self.portal.doc1.reindexObject()
+        self.portal.doc2.reindexObject()
+
+        self.assertEqual(
+            u"Collection", self.serialize(self.portal.collection1).get("@type")
+        )
+        self.assertEqual(
+            u"Collection", self.serialize(self.portal.collection1).get("@type")
+        )
+
+        items = self.serialize(self.portal.collection1, fullobjects=True).get("items")
+        self.assertIn("UID", items[0])
+        self.assertEquals(items[0]["id"], self.portal.doc1.getId())
+
+        self.assertIn("UID", items[1])
+        self.assertEquals(items[1]["id"], self.portal.doc2.getId())
 
     def test_serialize_returns_site_root_common(self):
         self.assertIn("title", self.serialize(self.portal))

@@ -8,6 +8,70 @@ Changelog
 
 .. towncrier release notes start
 
+6.2.2 (2020-01-24)
+------------------
+
+Bug fixes:
+
+
+- Degrade gracefully when a term set in a content field does not exists in the assigned vocabulary [sneridagh] (#856)
+
+
+6.2.1 (2020-01-22)
+------------------
+
+Bug fixes:
+
+
+- Sharing POST: Limit roles to ones the user is allowed to delegate.
+  [lgraf] (#857)
+
+
+6.2.0 (2020-01-10)
+------------------
+
+New features:
+
+
+- Make ?fullobjects work in AT Collections to get the full JSON representation of the items
+  [erral] (#698)
+- Make ?fullobjects work in Dexterity Collections to get the full JSON representation of the items
+  [erral] (#848)
+
+
+Bug fixes:
+
+
+- Fix WorkflowException for related items with no review_state.
+  [arsenico13] (#376)
+
+
+6.1.0 (2020-01-05)
+------------------
+
+New features:
+
+
+- Add SearchableText indexing for text in blocks
+  [luca-bellenghi] (#844)
+
+
+6.0.0 (2019-12-22)
+------------------
+
+Breaking changes:
+
+
+- Remove IAPIRequest marker interface from plone.restapi. The correct interface should be imported from plone.rest.interfaces instead. If anybody was using this marker Interface, it didn't do anything. (#819)
+
+
+Bug fixes:
+
+
+- Prevent converting bytestring ids to unicode ids when reordering (see upgrade guide for potential migration).
+  [deiferni] (#827)
+
+
 5.1.0 (2019-12-07)
 ------------------
 

@@ -1,0 +1,248 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@components": {
+    "actions": {
+      "@id": "http://localhost:55001/plone/collection/@actions"
+    }, 
+    "breadcrumbs": {
+      "@id": "http://localhost:55001/plone/collection/@breadcrumbs"
+    }, 
+    "navigation": {
+      "@id": "http://localhost:55001/plone/collection/@navigation"
+    }, 
+    "types": {
+      "@id": "http://localhost:55001/plone/collection/@types"
+    }, 
+    "workflow": {
+      "@id": "http://localhost:55001/plone/collection/@workflow"
+    }
+  }, 
+  "@id": "http://localhost:55001/plone/collection", 
+  "@type": "Collection", 
+  "UID": "SomeUUID000000000000000000000002", 
+  "allow_discussion": false, 
+  "contributors": [], 
+  "created": "1995-07-31T13:45:00", 
+  "creators": [
+    "test_user_1_"
+  ], 
+  "customViewFields": [
+    {
+      "title": "Title", 
+      "token": "Title"
+    }, 
+    {
+      "title": "Creator", 
+      "token": "Creator"
+    }, 
+    {
+      "title": "Type", 
+      "token": "Type"
+    }, 
+    {
+      "title": "ModificationDate", 
+      "token": "ModificationDate"
+    }
+  ], 
+  "description": "This is a collection with two documents", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "id": "collection", 
+  "is_folderish": false, 
+  "item_count": 30, 
+  "items": [
+    {
+      "@components": {
+        "actions": {
+          "@id": "http://localhost:55001/plone/front-page/@actions"
+        }, 
+        "breadcrumbs": {
+          "@id": "http://localhost:55001/plone/front-page/@breadcrumbs"
+        }, 
+        "navigation": {
+          "@id": "http://localhost:55001/plone/front-page/@navigation"
+        }, 
+        "types": {
+          "@id": "http://localhost:55001/plone/front-page/@types"
+        }, 
+        "workflow": {
+          "@id": "http://localhost:55001/plone/front-page/@workflow"
+        }
+      }, 
+      "@id": "http://localhost:55001/plone/front-page", 
+      "@type": "Document", 
+      "UID": "SomeUUID000000000000000000000001", 
+      "allow_discussion": false, 
+      "changeNote": "", 
+      "contributors": [], 
+      "created": "1995-07-31T13:45:00", 
+      "creators": [
+        "test_user_1_"
+      ], 
+      "description": "Congratulations! You have successfully installed Plone.", 
+      "effective": null, 
+      "exclude_from_nav": false, 
+      "expires": null, 
+      "id": "front-page", 
+      "is_folderish": false, 
+      "language": "", 
+      "layout": "document_view", 
+      "modified": "1995-07-31T17:30:00", 
+      "parent": {
+        "@id": "http://localhost:55001/plone", 
+        "@type": "Plone Site", 
+        "description": "", 
+        "title": "Plone site"
+      }, 
+      "relatedItems": [], 
+      "review_state": "private", 
+      "rights": "", 
+      "subjects": [], 
+      "table_of_contents": null, 
+      "text": {
+        "content-type": "text/plain", 
+        "data": "<p>If you&#x27;re seeing this instead of the web site you were expecting, the owner of this web site has just installed Plone. Do not contact the Plone Team or the Plone mailing lists about this.</p>", 
+        "encoding": "utf-8"
+      }, 
+      "title": "Welcome to Plone", 
+      "version": "current", 
+      "versioning_enabled": true
+    }, 
+    {
+      "@components": {
+        "actions": {
+          "@id": "http://localhost:55001/plone/doc1/@actions"
+        }, 
+        "breadcrumbs": {
+          "@id": "http://localhost:55001/plone/doc1/@breadcrumbs"
+        }, 
+        "navigation": {
+          "@id": "http://localhost:55001/plone/doc1/@navigation"
+        }, 
+        "types": {
+          "@id": "http://localhost:55001/plone/doc1/@types"
+        }, 
+        "workflow": {
+          "@id": "http://localhost:55001/plone/doc1/@workflow"
+        }
+      }, 
+      "@id": "http://localhost:55001/plone/doc1", 
+      "@type": "Document", 
+      "UID": "SomeUUID000000000000000000000003", 
+      "allow_discussion": false, 
+      "changeNote": "", 
+      "contributors": [], 
+      "created": "1995-07-31T13:45:00", 
+      "creators": [
+        "test_user_1_"
+      ], 
+      "description": "", 
+      "effective": null, 
+      "exclude_from_nav": false, 
+      "expires": null, 
+      "id": "doc1", 
+      "is_folderish": false, 
+      "language": "", 
+      "layout": "document_view", 
+      "modified": "1995-07-31T17:30:00", 
+      "parent": {
+        "@id": "http://localhost:55001/plone", 
+        "@type": "Plone Site", 
+        "description": "", 
+        "title": "Plone site"
+      }, 
+      "relatedItems": [], 
+      "review_state": "private", 
+      "rights": "", 
+      "subjects": [], 
+      "table_of_contents": null, 
+      "text": null, 
+      "title": "Document 1", 
+      "version": "current", 
+      "versioning_enabled": true
+    }, 
+    {
+      "@components": {
+        "actions": {
+          "@id": "http://localhost:55001/plone/doc2/@actions"
+        }, 
+        "breadcrumbs": {
+          "@id": "http://localhost:55001/plone/doc2/@breadcrumbs"
+        }, 
+        "navigation": {
+          "@id": "http://localhost:55001/plone/doc2/@navigation"
+        }, 
+        "types": {
+          "@id": "http://localhost:55001/plone/doc2/@types"
+        }, 
+        "workflow": {
+          "@id": "http://localhost:55001/plone/doc2/@workflow"
+        }
+      }, 
+      "@id": "http://localhost:55001/plone/doc2", 
+      "@type": "Document", 
+      "UID": "SomeUUID000000000000000000000004", 
+      "allow_discussion": false, 
+      "changeNote": "", 
+      "contributors": [], 
+      "created": "1995-07-31T13:45:00", 
+      "creators": [
+        "test_user_1_"
+      ], 
+      "description": "", 
+      "effective": null, 
+      "exclude_from_nav": false, 
+      "expires": null, 
+      "id": "doc2", 
+      "is_folderish": false, 
+      "language": "", 
+      "layout": "document_view", 
+      "modified": "1995-07-31T17:30:00", 
+      "parent": {
+        "@id": "http://localhost:55001/plone", 
+        "@type": "Plone Site", 
+        "description": "", 
+        "title": "Plone site"
+      }, 
+      "relatedItems": [], 
+      "review_state": "private", 
+      "rights": "", 
+      "subjects": [], 
+      "table_of_contents": null, 
+      "text": null, 
+      "title": "Document 2", 
+      "version": "current", 
+      "versioning_enabled": true
+    }
+  ], 
+  "items_total": 3, 
+  "language": "", 
+  "layout": "listing_view", 
+  "limit": 1000, 
+  "modified": "1995-07-31T17:30:00", 
+  "parent": {
+    "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
+    "description": "", 
+    "title": "Plone site"
+  }, 
+  "query": [
+    {
+      "i": "portal_type", 
+      "o": "plone.app.querystring.operation.string.is", 
+      "v": "Document"
+    }
+  ], 
+  "relatedItems": [], 
+  "review_state": "private", 
+  "rights": "", 
+  "sort_on": null, 
+  "sort_reversed": null, 
+  "subjects": [], 
+  "text": null, 
+  "title": "My Collection", 
+  "version": "current"
+}

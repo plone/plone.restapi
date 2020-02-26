@@ -15,6 +15,7 @@
   <include package="plone.behavior" />
   <include package="plone.rest" />
   <include package="plone.schema" />
+  <include file="indexers.zcml" />
 
   <five:registerPackage package="." initialize=".initialize" />
 
