@@ -108,7 +108,7 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_addable_types_for_non_manager_user(self):
         user = api.user.create(
-            email="noam.chomsky@example.com", username="noam", password="1234"
+            email="noam.chomsky@example.com", username="noam", password="12345"
         )
 
         folder = api.content.create(
@@ -128,7 +128,7 @@ class TestServicesTypes(unittest.TestCase):
 
         transaction.commit()
 
-        self.api_session.auth = ("noam", "1234")
+        self.api_session.auth = ("noam", "12345")
         # In the folder, the user should be able to add types since we granted
         # Contributor role on it
         response = self.api_session.get("/folder/@types")
