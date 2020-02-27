@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 import sys
 
-version = '6.2.3.eea-dev0'
+version = '6.2.3.eea-dev1'
 
 long_description = (
     open("README.rst").read() + "\n" + "Contributors\n"
