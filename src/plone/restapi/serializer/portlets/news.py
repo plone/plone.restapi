@@ -32,6 +32,11 @@ class NewsPortletRenderer(Renderer):
             ploneview = getMultiAdapter(
                             (self.context, self.request), name='plone')
             itemList['date'] = ploneview.toLocalizedTime(brain.created)
+            # Using datetime fails with:
+            #   Object of type DateTime is not JSON serializable
+            #itemList['date'] = brain.created.asdatetime()
+
+            itemList['date'] = brain.created.strftime('%Y-%m-%d %X')
             itemList['thumb'] = ''
             if self.thumb_scale and brain.getIcon:
                 itemList['thumb'] = '{}/@@images/image/{}'.format(
