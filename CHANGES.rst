@@ -8,6 +8,25 @@ Changelog
 
 .. towncrier release notes start
 
+6.3.0 (2020-03-03)
+------------------
+
+New features:
+
+
+- Allow using object paths and UIDs to link translations
+  [erral] (#645)
+
+
+Bug fixes:
+
+
+- Add a catalog serializer guard when returning fullobjects in case the object doesn't
+  exist anymore because for some reason it failed to uncatalog itself.
+  [sneridagh] (#877)
+- Use longer password in tests.  [maurits] (#3044)
+
+
 6.2.4 (2020-02-20)
 ------------------
 

@@ -1,3 +1,0 @@
-Add a catalog serializer guard when returning fullobjects in case the object doesn't
-exist anymore because for some reason it failed to uncatalog itself.
-[sneridagh]
