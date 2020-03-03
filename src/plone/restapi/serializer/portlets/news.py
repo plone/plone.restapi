@@ -27,8 +27,15 @@ class NewsPortletRenderer(Renderer):
         items = []
         brains = self.published_news_items()
         for brain in brains:
-            itemList = getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
-            itemList['date'] = brain.created.strftime('%Y-%m-%d %X')
+            itemList = getMultiAdapter(
+                            (brain, self.request), ISerializeToJsonSummary)()
+            ploneview = getMultiAdapter(
+                            (self.context, self.request), name='plone')
+            itemList['date'] = ploneview.toLocalizedTime(brain.created)
+            itemList['thumb'] = ''
+            if self.thumb_scale and brain.getIcon:
+                itemList['thumb'] = '{}/@@images/image/{}'.format(
+                                    brain.getURL(), self.thumb_scale())
             items.append(itemList)
         res = {'items': items}
         return res
