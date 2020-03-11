@@ -1654,6 +1654,20 @@ class TestPAMDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("translations_post", response)
 
+    def test_documentation_translations_post_by_id(self):
+        response = self.api_session.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            json={"id": self.es_content.absolute_url().replace(self.portal_url, "")},
+        )
+        save_request_and_response_for_docs("translations_post_by_id", response)
+
+    def test_documentation_translations_post_by_uid(self):
+        response = self.api_session.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            json={"id": self.es_content.UID()},
+        )
+        save_request_and_response_for_docs("translations_post_by_uid", response)
+
     def test_documentation_translations_get(self):
         ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()

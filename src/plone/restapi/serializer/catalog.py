@@ -8,6 +8,10 @@ from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.interface import Interface
 
+import logging
+
+log = logging.getLogger(__name__)
+
 
 @implementer(ISerializeToJson)
 @adapter(Lazy, Interface)
@@ -33,9 +37,19 @@ class LazyCatalogResultSerializer(object):
         results["items"] = []
         for brain in batch:
             if fullobjects:
-                result = getMultiAdapter(
-                    (brain.getObject(), self.request), ISerializeToJson
-                )(include_items=False)
+                try:
+                    result = getMultiAdapter(
+                        (brain.getObject(), self.request), ISerializeToJson
+                    )(include_items=False)
+                except KeyError:
+                    # Guard in case the brain returned refers to an object that doesn't
+                    # exists because it failed to uncatalog itself or the catalog has
+                    # stale cataloged objects for some reason
+                    log.warn(
+                        "Brain getObject error: {} doesn't exist anymore".format(
+                            brain.getPath()
+                        )
+                    )
             else:
                 result = getMultiAdapter(
                     (brain, self.request), ISerializeToJsonSummary

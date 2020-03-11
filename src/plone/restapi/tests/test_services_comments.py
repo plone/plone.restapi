@@ -39,7 +39,7 @@ class TestCommentsEndpoint(unittest.TestCase):
         )
         api.content.transition(self.doc, "publish")
 
-        api.user.create(username="jos", password="jos", email="jos@plone.org")
+        api.user.create(username="jos", password="josjos", email="jos@plone.org")
 
         # Admin session
         self.api_session = RelativeSession(self.portal_url)
