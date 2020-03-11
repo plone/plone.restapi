@@ -1,7 +1,7 @@
 from . import PortletSerializer
-from zope.component import getMultiAdapter
-from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.app.portlets.portlets.news import Renderer
+from plone.restapi.interfaces import ISerializeToJsonSummary
+from zope.component import getMultiAdapter
 
 
 class NewsPortletSerializer(PortletSerializer):
@@ -26,21 +26,27 @@ class NewsPortletRenderer(Renderer):
     def render(self):
         items = []
         brains = self.published_news_items()
+
         for brain in brains:
             itemList = getMultiAdapter(
-                            (brain, self.request), ISerializeToJsonSummary)()
+                (brain, self.request), ISerializeToJsonSummary)()
             ploneview = getMultiAdapter(
-                            (self.context, self.request), name='plone')
+                (self.context, self.request), name='plone')
             itemList['date'] = ploneview.toLocalizedTime(brain.created)
             # Using datetime fails with:
             #   Object of type DateTime is not JSON serializable
-            #itemList['date'] = brain.created.asdatetime()
+            # itemList['date'] = brain.created.asdatetime()
 
             itemList['date'] = brain.created.strftime('%Y-%m-%d %X')
             itemList['thumb'] = ''
+
             if self.thumb_scale and brain.getIcon:
                 itemList['thumb'] = '{}/@@images/image/{}'.format(
                                     brain.getURL(), self.thumb_scale())
             items.append(itemList)
-        res = {'items': items}
+        res = {
+            'items': items,
+            'all_news_link': self.all_news_link(),
+        }
+
         return res

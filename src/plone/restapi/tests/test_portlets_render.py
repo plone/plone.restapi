@@ -53,7 +53,8 @@ class TestPortletsRender(unittest.TestCase):
         self.portal.invokeFactory('News Item', 'n3')
         self.portal.invokeFactory('News Item', 'n4')
 
-        self.portal.n2.image = NamedBlobImage(data=open(filename, "rb").read(), filename=filename)
+        self.portal.n2.image = NamedBlobImage(
+            data=open(filename, "rb").read(), filename=filename)
 
         self.portal.portal_workflow.doActionFor(self.portal.n1, 'publish')
         self.portal.portal_workflow.doActionFor(self.portal.n2, 'publish')
@@ -65,8 +66,20 @@ class TestPortletsRender(unittest.TestCase):
         result = renderer.render()
 
         self.assertEqual(result['items'][0]['thumb'], '')
-        self.assertNotEqual(result['items'][1]['thumb'], '')
+        self.assertTrue(
+            '/plone/n2/@@images/image/icon' in result['items'][1]['thumb'])
         self.assertEqual(len(result['items']), 2)
+
+        self.assertEqual(result['all_news_link'], None)
+
+        self.portal.invokeFactory('Folder', 'news')
+
+        renderer = NewsPortletRenderer(
+            self.context, self.request, None, None, assignment)
+        result = renderer.render()
+
+        self.assertEqual(self.portal.news.absolute_url(),
+                         result['all_news_link'])
 
     def test_portlets_render_recent(self):
         self.portal.invokeFactory('Event', 'e1')
@@ -90,16 +103,15 @@ class TestPortletsRender(unittest.TestCase):
 
         self.assertEqual(len(result['items']), 7)
 
-    #def test_portlets_render_rss(self, feedparser):
+    # def test_portlets_render_rss(self, feedparser):
     @patch('plone.app.portlets.portlets.rss.RSSFeed')
-    def aa_test_portlets_render_rss(self, RSSFeed):
+    def disabled_test_portlets_render_rss(self, RSSFeed):
         RSSFeed.items.return_value = [1, 2, 3]
         assignment = rss.Assignment(
             count=3, url='https://planetpython.org/rss20.xml')
         renderer = RssPortletRenderer(
             self.context, self.request, None, None, assignment)
         result = renderer.render()
-        #import pdb; pdb.set_trace()
 
         self.assertEqual(len(result['items']), 2)
 
