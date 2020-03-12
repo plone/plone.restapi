@@ -14,7 +14,7 @@ pipeline {
     // Performance Tests
     stage('Performance Tests') {
       agent {
-        label 'master'
+        label 'node'
       }
       steps {
         deleteDir()
