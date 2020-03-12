@@ -21,10 +21,10 @@ pipeline {
         checkout scm
         sh "virtualenv ."
         sh "bin/pip install -r requirements.txt"
-        sh "bin/buildout -c plone-5.1.x-performance.cfg"
+        sh "bin/buildout -c plone-5.2.x-performance.cfg"
         sh "bin/instance start"
         sh "sleep 10"
-        sh "/opt/jmeter/bin/jmeter -n -t performance.jmx -l jmeter.csv"
+        sh "jmeter -n -t performance.jmx -l jmeter.csv"
         sh "cat jmeter.csv"
         sh "bin/instance stop"
       }
