@@ -45,18 +45,18 @@ The API will return a `201 Created` response if the linking was successful.
 We can also use the object's path to link the translation instead of the full URL:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/translations_post_by_id.req
+    :request: ../../src/plone/restapi/tests/http-examples//translations_post_by_id.req
 
-.. literalinclude:: _json/translations_post_by_id.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples//translations_post_by_id.resp
    :language: http
 
 
 We can also use the object's UID to link the translation:
 
 ..  http:example:: curl httpie python-requests
-    :request: _json/translations_post_by_uid.req
+    :request: ../../src/plone/restapi/tests/http-examples//translations_post_by_uid.req
 
-.. literalinclude:: _json/translations_post_by_id.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples//translations_post_by_id.resp
    :language: http
 
 
