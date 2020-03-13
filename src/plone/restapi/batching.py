@@ -111,7 +111,7 @@ class HypermediaBatch(object):
         and add or update some query string parameters in it.
         """
         url = self.request["ACTUAL_URL"]
-        qs_params = parse_qsl(self.request["QUERY_STRING"])
+        qs_params = parse_qsl(self.request["QUERY_STRING"], keep_blank_values=1)
 
         # Take care to preserve list-like query string arguments (same QS
         # param repeated multiple times). In other words, don't turn the

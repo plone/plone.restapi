@@ -36,10 +36,10 @@ def set_image(obj):
         from plone.namedfile.file import NamedBlobImage
 
         filename = os.path.join(os.path.dirname(__file__), u"image.png")
-        obj.image = NamedBlobImage(data=open(filename, "r").read(), filename=filename)
+        obj.image = NamedBlobImage(data=open(filename, "rb").read(), filename=filename)
     else:
         filename = os.path.join(os.path.dirname(__file__), u"image.png")
-        obj.setImage(open(filename, "r").read())
+        obj.setImage(open(filename, "rb").read())
 
 
 def set_file(obj):
@@ -48,13 +48,13 @@ def set_file(obj):
 
         filename = os.path.join(os.path.dirname(__file__), u"file.pdf")
         obj.file = NamedBlobFile(
-            data=open(filename, "r").read(),
+            data=open(filename, "rb").read(),
             filename=filename,
             contentType="application/pdf",
         )
     else:
         filename = os.path.join(os.path.dirname(__file__), u"file.pdf")
-        obj.setFile(open(filename, "r").read())
+        obj.setFile(open(filename, "rb").read())
 
 
 def publish(content):

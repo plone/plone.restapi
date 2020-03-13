@@ -379,6 +379,31 @@ class TestJsonSchemaProviders(TestCase):
             adapter.get_schema(),
         )
 
+    def test_choice_inline_array(self):
+        field = schema.Choice(
+            __name__="myfield",
+            title=u"My field",
+            description=u"My great field",
+            values=["foo", "bar"],
+        )
+
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": u"My field",
+                "description": u"My great field",
+                "enum": ["foo", "bar"],
+                "enumNames": [None, None],
+                "choices": [("foo", None), ("bar", None)],
+                "vocabulary": {"@id": "http://nohost/plone/@sources/myfield"},
+            },
+            adapter.get_schema(),
+        )
+
     def test_choice_named_vocab(self):
         field = schema.Choice(
             title=u"My field",
