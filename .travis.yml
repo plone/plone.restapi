@@ -21,6 +21,20 @@ env:
 - PLONE_VERSION=4.3.x
 - PLONE_VERSION=5.1.x
 - PLONE_VERSION=5.2.x
+jobs:
+  exclude:
+    - python: 3.6
+      env: PLONE_VERSION=4.3.x
+    - python: 3.7
+      env: PLONE_VERSION=4.3.x
+    - python: 3.8
+      env: PLONE_VERSION=4.3.x
+    - python: 3.6
+      env: PLONE_VERSION=5.1.x
+    - python: 3.7
+      env: PLONE_VERSION=5.1.x
+    - python: 3.8
+      env: PLONE_VERSION=5.1.x
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
   - mkdir $HOME/.buildout
