@@ -48,8 +48,8 @@ install:
 script:
   - bin/code-analysis
   - if [ -f "bin/black" ]; then bin/black src/ --check ; fi
-  - bin/sphinxbuilder
   - bin/test
+  - if [ $PLONE_VERSION == 5.2.x ]; then bin/sphinxbuilder; fi
   - bin/test-no-uncommitted-doc-changes
   - bin/test-no-sphinx-warnings
 after_success:
