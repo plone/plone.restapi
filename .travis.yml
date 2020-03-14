@@ -53,7 +53,7 @@ install:
 script:
   - bin/code-analysis
   - if [ -f "bin/black" ]; then bin/black src/ --check ; fi
-  - bin/sphinxbuilder
+  - if [ "$PLONE_VERSION" == "5.2.x" ] && [ $TRAVIS_PYTHON_VERSION == '3.7' ]; then bin/sphinxbuilder ; fi
   - bin/test
   - bin/test-no-uncommitted-doc-changes
   - bin/test-no-sphinx-warnings
