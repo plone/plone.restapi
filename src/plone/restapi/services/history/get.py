@@ -56,7 +56,7 @@ class HistoryGet(Service):
                 "@id": "{}/@users/{}".format(site_url, item["actorid"]),
                 "id": item["actorid"],
                 "fullname": item["actor"].get("fullname"),
-                "username": item["actor"].get("username"),
+                "username": item["actor"].get("username") or item["actorid"],
             }
 
             if item["type"] == "versioning":

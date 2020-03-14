@@ -123,6 +123,20 @@ class TestHistoryEndpoint(unittest.TestCase):
         response = self.api_session.get(url)
         self.assertNotIn("sharing", response.json())
 
+    def test_history_get_contains_actor(self):
+        response = self.api_session.get(self.endpoint_url)
+        data = response.json()
+
+        self.assertEqual(
+            {
+                '@id': '{}/@users/test_user_1_'.format(self.portal_url),
+                'fullname': 'test_user_1_',
+                'id': 'test_user_1_',
+                'username': 'test_user_1_'
+            },
+            data[0].get('actor')
+        )
+
 
 class TestHistoryEndpointTranslatedMessages(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
