@@ -56,7 +56,7 @@ script:
   - if [ "$PLONE_VERSION" == "5.2.x" ] && [ $TRAVIS_PYTHON_VERSION == '3.7' ]; then bin/sphinxbuilder ; fi
   - bin/test
   - bin/test-no-uncommitted-doc-changes
-  - bin/test-no-sphinx-warnings
+  - if [ "$PLONE_VERSION" == "5.2.x" ] && [ $TRAVIS_PYTHON_VERSION == '3.7' ]; then bin/test-no-sphinx-warnings ; fi
 after_success:
   - bin/test-coverage
   - pip install coverage==3.7.1 coveralls
