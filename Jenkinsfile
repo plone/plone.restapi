@@ -30,7 +30,7 @@ pipeline {
       }
       post {
         always {
-          perfReport '**/*.csv'
+          perfReport '**/jmeter.csv'
         }
       }
     }
