@@ -143,7 +143,10 @@ class DefaultPrimaryFieldTarget(object):
 
     def use_primary_field_target(self):
         sm = getSecurityManager()
-        return sm.checkPermission(ModifyPortalContent, self.context)
+        perm = bool(sm.checkPermission(ModifyPortalContent, self.context))
+        if perm:
+            return False
+        return True
 
     def __call__(self):
         return
@@ -158,6 +161,6 @@ class PrimaryFileFieldTarget(DefaultPrimaryFieldTarget):
 
         namedfile = self.field.get(self.context)
         if namedfile is None:
-            return None
+            return
 
         return "/".join((self.context.absolute_url(), "@@download", self.field.__name__))
