@@ -52,6 +52,21 @@ class IFieldSerializer(Interface):
         """
 
 
+class IPrimaryFieldTarget(Interface):
+    """Return a URL to direct the user to if this is the primary field.
+    Useful e.g. if you want to redirect certain users to a download url
+    instead of the item's view.
+    """
+
+    def __init__(field, context, request):
+        """Adapts field, context and request.
+        """
+
+    def __call__():
+        """Returns a URL.
+        """
+
+
 class IDeserializeFromJson(Interface):
     """An adapter to deserialize a JSON object into an object in Plone."""
 

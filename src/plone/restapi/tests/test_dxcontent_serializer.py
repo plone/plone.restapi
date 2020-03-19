@@ -4,6 +4,7 @@ from datetime import datetime
 from datetime import time
 from datetime import timedelta
 from DateTime import DateTime
+from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
@@ -24,6 +25,7 @@ from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import json
+import transaction
 import unittest
 
 
@@ -349,3 +351,17 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = self.serialize()
         self.assertIn("allow_discussion", obj)
         self.assertEqual(False, obj["allow_discussion"])
+
+    def test_primary_field_target(self):
+        file1 = api.content.create(
+            container=self.portal, type="File", id="testfile", title="Testfile"
+        )
+        transaction.commit()
+
+        serializer = getMultiAdapter((file1, self.request), ISerializeToJson)
+        data = serializer()
+        self.assertIn("targetUrl", data)
+        download_url = u"/".join(
+            [file1.absolute_url(), u"@@download/test_primary_namedfile_field"]
+        )
+        self.assertEqual(data["targetUrl"], download_url)
