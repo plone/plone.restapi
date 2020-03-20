@@ -20,6 +20,7 @@
     <adapter factory=".dxfields.FileFieldSerializer" />
     <adapter factory=".dxfields.ImageFieldSerializer" />
     <adapter factory=".dxfields.RichttextFieldSerializer" />
+    <adapter factory=".blocks.BlocksJSONFieldSerializer" />
 
     <configure zcml:condition="installed Products.Archetypes">
         <adapter factory=".atcontent.SerializeToJson" />
