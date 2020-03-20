@@ -8,6 +8,7 @@ pipeline {
     buildDiscarder(logRotator(numToKeepStr:'30'))
     timeout(time: 30, unit: 'MINUTES')
     disableConcurrentBuilds()
+    triggers{ cron('@midnight') }
   }
 
   stages {
