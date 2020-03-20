@@ -81,12 +81,40 @@ class TestLinkContentsAsTranslations(unittest.TestCase):
         )
         transaction.commit()
 
-    def test_translation_linking_succeeds(self):
+    def test_translation_linking_by_url(self):
         response = requests.post(
             "{}/@translations".format(self.en_content.absolute_url()),
             headers={"Accept": "application/json"},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
             json={"id": self.es_content.absolute_url()},
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        manager = ITranslationManager(self.en_content)
+        for language, translation in manager.get_translations():
+            if language == ILanguage(self.es_content).get_language():
+                self.assertEqual(translation, self.es_content)
+
+    def test_translation_linking_by_path(self):
+        response = requests.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"id": "/es/test-document"},
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        manager = ITranslationManager(self.en_content)
+        for language, translation in manager.get_translations():
+            if language == ILanguage(self.es_content).get_language():
+                self.assertEqual(translation, self.es_content)
+
+    def test_translation_linking_by_uid(self):
+        response = requests.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"id": self.es_content.UID()},
         )
         self.assertEqual(201, response.status_code)
         transaction.begin()
