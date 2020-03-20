@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+
+from AccessControl import getSecurityManager
+from Products.CMFCore.permissions import ModifyPortalContent
+
 from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedFileField
@@ -6,6 +10,7 @@ from plone.namedfile.interfaces import INamedImageField
 from plone.restapi.imaging import get_original_image_url
 from plone.restapi.imaging import get_scales
 from plone.restapi.interfaces import IFieldSerializer
+from plone.restapi.interfaces import IPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
 from zope.component import adapter
 from zope.interface import implementer
@@ -125,3 +130,37 @@ class RichttextFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
         value = self.get_value()
         return json_compatible(value, self.context)
+
+
+@adapter(IField, IDexterityContent, Interface)
+@implementer(IPrimaryFieldTarget)
+class DefaultPrimaryFieldTarget(object):
+
+    def __init__(self, field, context, request):
+        self.context = context
+        self.request = request
+        self.field = field
+
+    def use_primary_field_target(self):
+        sm = getSecurityManager()
+        perm = bool(sm.checkPermission(ModifyPortalContent, self.context))
+        if perm:
+            return False
+        return True
+
+    def __call__(self):
+        return
+
+
+@adapter(INamedFileField, IDexterityContent, Interface)
+class PrimaryFileFieldTarget(DefaultPrimaryFieldTarget):
+
+    def __call__(self):
+        if not self.use_primary_field_target():
+            return
+
+        namedfile = self.field.get(self.context)
+        if namedfile is None:
+            return
+
+        return "/".join((self.context.absolute_url(), "@@download", self.field.__name__))
