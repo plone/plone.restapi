@@ -206,3 +206,48 @@ class TestUnLinkContentTranslations(unittest.TestCase):
             json={"language": "es"},
         )
         self.assertEqual(400, response.status_code)
+
+
+@unittest.skipUnless(
+    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
+)  # NOQA
+class TestCreateContentsAsTranslations(unittest.TestCase):
+    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
+        alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
+        login(self.portal, SITE_OWNER_NAME)
+        self.en_content = createContentInContainer(
+            self.portal["en"], "Document", title=u"Test document"
+        )
+        self.es_content = createContentInContainer(
+            self.portal["es"], "Document", title=u"Test document"
+        )
+        transaction.commit()
+
+    def test_post_to_folder_creates_document_translated(self):
+        response = requests.post(
+            "{}/de".format(self.portal.absolute_url()),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My Document DE",
+                "translationOf": self.es_content.UID(),
+                "language": "de",
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.commit()
+
+        manager = ITranslationManager(self.es_content)
+
+        self.assertTrue("de" in manager.get_translations())
+        self.assertEqual("My Document DE", manager.get_translations()["de"].title)
+
+        self.assertEqual("Document", response.json().get("@type"))
+        self.assertEqual("mydocument", response.json().get("id"))
+        self.assertEqual("My Document DE", response.json().get("title"))

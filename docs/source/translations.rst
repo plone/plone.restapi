@@ -84,6 +84,17 @@ endpoint of the content item and provide the language code you want to unlink.:
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/translations_delete.resp
    :language: http
 
+Creating a translation from an existing content
+-----------------------------------------------
+
+The POST content endpoint to a folder is capable also of linking this new content with an
+exising translation using two parameters: ``translationOf`` and ``language``.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/translations_link_on_post.req
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translations_link_on_post.resp
+   :language: http
 
 Expansion
 ---------

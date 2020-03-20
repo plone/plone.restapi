@@ -15,8 +15,12 @@ from zope.component import queryMultiAdapter
 from zope.event import notify
 from zope.interface import alsoProvides
 from zope.lifecycleevent import ObjectCreatedEvent
+from plone.restapi.testing import PAM_INSTALLED
+from zope.component import getMultiAdapter
+from Products.CMFCore.utils import getToolByName
 
 import plone.protect.interfaces
+import six
 
 
 class FolderPost(Service):
@@ -29,6 +33,8 @@ class FolderPost(Service):
         type_ = data.get("@type", None)
         id_ = data.get("id", None)
         title = data.get("title", None)
+        translationOf = data.get("translationOf", None)
+        language = data.get("language", None)
 
         if not type_:
             raise BadRequest("Property '@type' is required")
@@ -75,6 +81,23 @@ class FolderPost(Service):
 
         obj = add(self.context, obj, rename=not bool(id_))
 
+        # Link translation given the translationOf property
+        if PAM_INSTALLED:
+            from plone.app.multilingual.interfaces import (
+                IPloneAppMultilingualInstalled,
+            )  # noqa
+            from plone.app.multilingual.interfaces import ITranslationManager
+
+            if (
+                IPloneAppMultilingualInstalled.providedBy(self.request)
+                and translationOf
+                and language
+            ):
+                source = self.get_object(translationOf)
+                if source:
+                    manager = ITranslationManager(source)
+                    manager.register_translation(language, obj)
+
         self.request.response.setStatus(201)
         self.request.response.setHeader("Location", obj.absolute_url())
 
@@ -88,3 +111,27 @@ class FolderPost(Service):
         serialized_obj["@id"] = obj.absolute_url()
 
         return serialized_obj
+
+    def get_object(self, key):
+        portal = getMultiAdapter(
+            (self.context, self.request), name="plone_portal_state"
+        ).portal()
+        catalog = getToolByName(self.context, "portal_catalog")
+
+        if isinstance(key, six.string_types):
+            if key.startswith(portal.absolute_url()):
+                # Resolve by URL
+                key = key[len(portal.absolute_url()) + 1 :]
+                if six.PY2:
+                    key = key.encode("utf8")
+                return portal.restrictedTraverse(key, None)
+            elif key.startswith("/"):
+                if six.PY2:
+                    key = key.encode("utf8")
+                # Resolve by path
+                return portal.restrictedTraverse(key.lstrip("/"), None)
+            else:
+                # Resolve by UID
+                brain = catalog(UID=key)
+                if brain:
+                    return brain[0].getObject()

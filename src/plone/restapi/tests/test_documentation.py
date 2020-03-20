@@ -1560,6 +1560,7 @@ class TestPAMDocumentation(TestDocumentationBase):
         language_tool = api.portal.get_tool("portal_languages")
         language_tool.addSupportedLanguage("en")
         language_tool.addSupportedLanguage("es")
+        language_tool.addSupportedLanguage("de")
         applyProfile(self.portal, "plone.app.multilingual:default")
 
         en_id = self.portal["en"].invokeFactory(
@@ -1613,3 +1614,16 @@ class TestPAMDocumentation(TestDocumentationBase):
             json={"language": "es"},
         )
         save_request_and_response_for_docs("translations_delete", response)
+
+    def test_documentation_translations_link_on_post(self):
+        response = self.api_session.post(
+            "{}/de".format(self.portal.absolute_url()),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My German Document",
+                "translationOf": self.es_content.UID(),
+                "language": "de",
+            },
+        )
+        save_request_and_response_for_docs("translations_link_on_post", response)
