@@ -22,6 +22,7 @@
     <adapter factory=".dxfields.RichttextFieldSerializer" />
     <adapter factory=".dxfields.DefaultPrimaryFieldTarget" />
     <adapter factory=".dxfields.PrimaryFileFieldTarget" />
+    <adapter factory=".blocks.BlocksJSONFieldSerializer" />
 
     <configure zcml:condition="installed Products.Archetypes">
         <adapter factory=".atcontent.SerializeToJson" />
