@@ -4,11 +4,14 @@ pipeline {
 
   agent any
 
+  triggers{
+    cron('H 23 * * *')
+  }
+
   options {
     buildDiscarder(logRotator(numToKeepStr:'30'))
     timeout(time: 30, unit: 'MINUTES')
     disableConcurrentBuilds()
-    triggers{ cron('H 23 * * *') }
   }
 
   stages {
