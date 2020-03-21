@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.2">
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.2.1">
   <hashTree>
     <TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="plone.restapi" enabled="true">
       <stringProp name="TestPlan.comments"></stringProp>
@@ -76,7 +76,6 @@
               <stringProp name="Header.value"></stringProp>
             </elementProp>
           </collectionProp>
-          <stringProp name="TestPlan.comments">: Bearer</stringProp>
         </HeaderManager>
         <hashTree/>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Create Document" enabled="true">
@@ -248,7 +247,13 @@
                 <stringProp name="Argument.value">{&#xd;
 	&quot;@type&quot;: &quot;Collection&quot;, &#xd;
 	&quot;title&quot;: &quot;My Collection&quot;, &#xd;
-	&quot;query&quot;: []&#xd;
+	&quot;query&quot;: [&#xd;
+    		{&#xd;
+      		&quot;i&quot;: &quot;portal_type&quot;, &#xd;
+      		&quot;o&quot;: &quot;plone.app.querystring.operation.string.is&quot;, &#xd;
+      		&quot;v&quot;: &quot;Document&quot;&#xd;
+    		}&#xd;
+  	]&#xd;
 }</stringProp>
                 <stringProp name="Argument.metadata">=</stringProp>
               </elementProp>

@@ -1,0 +1,84 @@
+[server:main]
+use = egg:dataflake.wsgi.werkzeug#debugger
+hostname = 127.0.0.1
+port = 12345
+
+[app:zope]
+use = egg:Zope#main
+zope_conf = %(location)s/etc/zope.conf
+
+[filter:translogger]
+use = egg:Paste#translogger
+setup_console_handler = False
+
+[filter:sentry]
+use = egg:plone.recipe.zope2instance#sentry
+dsn = %(sentry_dsn)s
+level = %(sentry_level)s
+event_level = %(sentry_event_level)s
+ignorelist = %(sentry_ignore)s
+
+[pipeline:main]
+pipeline =
+    %(pipeline)s
+
+[loggers]
+keys = root, plone, waitress.queue, waitress, wsgi
+
+[handlers]
+keys = console, accesslog, eventlog
+
+[formatters]
+keys = generic, message
+
+[logger_root]
+level = %(eventlog_level)s
+handlers = %(root_handlers)s
+
+[logger_plone]
+level = %(eventlog_level)s
+handlers = %(event_handlers)s
+qualname = plone
+
+[logger_waitress.queue]
+level = INFO
+handlers = eventlog
+qualname = waitress.queue
+propagate = 0
+
+[logger_waitress]
+level = %(eventlog_level)s
+handlers = %(event_handlers)s
+qualname = waitress
+
+[logger_wsgi]
+level = %(accesslog_level)s
+handlers = accesslog
+qualname = wsgi
+propagate = 0
+
+[handler_console]
+class = StreamHandler
+args = (sys.stderr,)
+level = NOTSET
+formatter = generic
+
+[handler_accesslog]
+class = %(accesslog_handler)s
+args = %(accesslog_args)s
+kwargs = %(accesslog_kwargs)s
+level = %(accesslog_level)s
+formatter = message
+
+[handler_eventlog]
+class = %(eventlog_handler)s
+args = %(eventlog_args)s
+kwargs = %(eventlog_kwargs)s
+level = NOTSET
+formatter = generic
+
+[formatter_generic]
+format = %%(asctime)s %%(levelname)-7.7s [%%(name)s:%%(lineno)s][%%(threadName)s] %%(message)s
+
+[formatter_message]
+format = %%(message)s
