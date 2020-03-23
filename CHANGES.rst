@@ -8,6 +8,26 @@ Changelog
 
 .. towncrier release notes start
 
+6.4.0 (2020-03-23)
+------------------
+
+New features:
+
+
+- Add targetUrl to the dxcontent serializer for primary file fields to be able to download a file directly.
+  [csenger] (#886)
+
+
+Bug fixes:
+
+
+- Fixed package install error with Python 3.6 without locale.
+  See `coredev issue 642 <https://github.com/plone/buildout.coredev/issues/642#issuecomment-597008272>`_.
+  [maurits] (#642)
+- plone.app.discussion extends the review workflow for moderation of comments. This change takes the additional workflow states into account.
+  [ksuess] (#842)
+
+
 6.3.0 (2020-03-03)
 ------------------
 
