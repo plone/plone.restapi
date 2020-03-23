@@ -103,9 +103,11 @@ When you create a translation in Plone, there are policies in place for finding 
 placement for it. This endpoint returns the proper placement for the newly going to be
 created translation.
 
-GET: /en/cars/my-english-document/@translation-location?targetLanguage=DE
-Response (container for the new object): /de/autos/
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/translation_locator.req
 
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/translation_locator.resp
+   :language: http
 
 Expansion
 ---------

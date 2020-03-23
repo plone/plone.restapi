@@ -1627,3 +1627,13 @@ class TestPAMDocumentation(TestDocumentationBase):
             },
         )
         save_request_and_response_for_docs("translations_link_on_post", response)
+
+    def test_documentation_translation_locator(self):
+        response = self.api_session.get(
+            "{}/@translation-locator?targetLanguage=de".format(
+                self.es_content.absolute_url()
+            ),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        save_request_and_response_for_docs("translation_locator", response)

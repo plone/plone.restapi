@@ -219,9 +219,6 @@ class TestCreateContentsAsTranslations(unittest.TestCase):
         self.request = self.layer["request"]
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
         login(self.portal, SITE_OWNER_NAME)
-        self.en_content = createContentInContainer(
-            self.portal["en"], "Document", title=u"Test document"
-        )
         self.es_content = createContentInContainer(
             self.portal["es"], "Document", title=u"Test document"
         )
@@ -251,3 +248,32 @@ class TestCreateContentsAsTranslations(unittest.TestCase):
         self.assertEqual("Document", response.json().get("@type"))
         self.assertEqual("mydocument", response.json().get("id"))
         self.assertEqual("My Document DE", response.json().get("title"))
+
+
+@unittest.skipUnless(
+    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
+)  # NOQA
+class TestTranslationLocator(unittest.TestCase):
+    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
+        alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
+        login(self.portal, SITE_OWNER_NAME)
+        self.es_content = createContentInContainer(
+            self.portal["es"], "Document", title=u"Test document"
+        )
+        transaction.commit()
+
+    def test_translation_locator(self):
+        response = requests.get(
+            "{}/@translation-locator?targetLanguage=de".format(
+                self.es_content.absolute_url()
+            ),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertEqual(200, response.status_code)
+
+        self.assertEqual("http://localhost:55001/plone/de", response.json().get("@id"))
