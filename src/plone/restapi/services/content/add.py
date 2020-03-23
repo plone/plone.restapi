@@ -15,12 +15,19 @@ from zope.component import queryMultiAdapter
 from zope.event import notify
 from zope.interface import alsoProvides
 from zope.lifecycleevent import ObjectCreatedEvent
-from plone.restapi.testing import PAM_INSTALLED
 from zope.component import getMultiAdapter
 from Products.CMFCore.utils import getToolByName
 
 import plone.protect.interfaces
+import pkg_resources
 import six
+
+
+try:
+    pkg_resources.get_distribution("plone.app.multilingual")
+    PAM_INSTALLED = True
+except pkg_resources.DistributionNotFound:
+    PAM_INSTALLED = False
 
 
 class FolderPost(Service):
