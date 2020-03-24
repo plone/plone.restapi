@@ -10,6 +10,7 @@ from unittest import TestCase
 from zope.component import createObject
 from zope.component import getMultiAdapter
 from zope.component import getUtility
+from zope.component import queryUtility
 
 
 class TestCommentsSerializers(TestCase):
@@ -86,3 +87,27 @@ class TestCommentsSerializers(TestCase):
         self.assertEqual(set(output), set(expected))
 
         self.assertEqual(set(output["text"]), set(["data", "mime-type"]))
+
+    def test_comment_with_intelligent_text(self):
+        # Set text transform to intelligent text
+        registry = queryUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.text_transform = "text/x-web-intelligent"
+
+        self.conversation = IConversation(self.doc)
+        self.replies = IReplies(self.conversation)
+        comment = createObject("plone.Comment")
+        comment.text = "Go to https://www.plone.org"
+        comment.mime_type = "text/x-web-intelligent"
+        self.comment = self.replies[self.replies.addComment(comment)]
+
+        serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
+
+        # serializer should return HTML with a clickable link
+        self.assertEqual(
+            'Go to <a href="https://www.plone.org" '
+            + 'rel="nofollow">https://www.plone.org</a>',
+            serializer()["text"]["data"],
+        )
+        # serializer should return mimetype = text/x-web-intelligent
+        self.assertEqual("text/x-web-intelligent", serializer()["text"]["mime-type"])
