@@ -93,8 +93,8 @@ class TestWorkflowInfo(TestCase):
         )
         obj = wfinfo.reply()
 
-        self.assertEquals(obj["transitions"], [])
-        self.assertEquals(obj["history"], [])
+        self.assertEqual(obj["transitions"], [])
+        self.assertEqual(obj["history"], [])
 
 
 class TestWorkflowTransition(TestCase):
