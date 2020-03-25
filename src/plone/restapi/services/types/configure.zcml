@@ -11,6 +11,15 @@
     permission="zope2.View"
     />
 
+  <plone:service
+    method="POST"
+    accept="application/json,application/schema+json"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".add.TypesPost"
+    name="@types"
+    permission="plone.schemaeditor.ManageSchemata"
+    />
+
   <adapter factory=".get.TypesInfo" name="types"/>
 
 </configure>
