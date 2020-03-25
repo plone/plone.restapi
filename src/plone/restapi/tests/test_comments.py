@@ -88,6 +88,25 @@ class TestCommentsSerializers(TestCase):
 
         self.assertEqual(set(output["text"]), set(["data", "mime-type"]))
 
+    def test_comment_with_mimetype_text_plain(self):
+
+        self.conversation = IConversation(self.doc)
+        self.replies = IReplies(self.conversation)
+        comment = createObject("plone.Comment")
+        comment.text = "Hey, I am plain text!"
+        comment.mime_type = "text/plain"
+        self.comment = self.replies[self.replies.addComment(comment)]
+
+        serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
+
+        # serializer should return HTML with a clickable link
+        self.assertEqual(
+            'Hey, I am plain text!',
+            serializer()["text"]["data"],
+        )
+        # serializer should return mimetype = text/x-web-intelligent
+        self.assertEqual("text/plain", serializer()["text"]["mime-type"])
+
     def test_comment_with_mimetype_intelligent_text(self):
         # Set text transform to intelligent text
         registry = queryUtility(IRegistry)
@@ -109,11 +128,11 @@ class TestCommentsSerializers(TestCase):
             + 'rel="nofollow">https://www.plone.org</a>',
             serializer()["text"]["data"],
         )
-        # serializer should return mimetype = text/x-web-intelligent
-        self.assertEqual("text/x-web-intelligent", serializer()["text"]["mime-type"])
+        # serializer should return mimetype = text/html
+        self.assertEqual("text/html", serializer()["text"]["mime-type"])
 
     def test_comment_with_mimetype_html(self):
-        # Set text transform to intelligent text
+        # Set text transform to text/html
         registry = queryUtility(IRegistry)
         settings = registry.forInterface(IDiscussionSettings, check=False)
         settings.text_transform = "text/html"

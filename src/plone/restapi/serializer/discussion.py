@@ -64,6 +64,12 @@ class CommentSerializer(object):
         doc_allowed = delete_own_comment_allowed()
         delete_own = doc_allowed and can_delete_own(self.context)
 
+        if self.context.mime_type == "text/plain":
+            text_data = self.context.text
+            text_mime_type = self.context.mime_type
+        else:
+            text_data = self.context.getText()
+            text_mime_type = 'text/html'
         return {
             "@id": url,
             "@type": self.context.portal_type,
@@ -71,8 +77,8 @@ class CommentSerializer(object):
             "comment_id": str(self.context.id),
             "in_reply_to": in_reply_to,
             "text": {
-                "data": self.context.getText(),
-                "mime-type": self.context.mime_type,
+                "data": text_data,
+                "mime-type": text_mime_type,
             },
             "user_notification": self.context.user_notification,
             "author_username": self.context.author_username,
