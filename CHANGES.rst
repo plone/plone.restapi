@@ -14,7 +14,7 @@ Changelog
 Bug fixes:
 
 
-- - Make discussion endpoint return content that is deserialized via portal transforms (e.g. 'text/x-web-intelligent') [timo] (#889)
+- Make discussion endpoint return content that is deserialized via portal transforms (e.g. 'text/x-web-intelligent') [timo] (#889)
 
 
 6.4.0 (2020-03-23)
