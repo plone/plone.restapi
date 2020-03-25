@@ -11,6 +11,7 @@ from plone.dexterity.content import Item
 from plone.namedfile import field as namedfile
 from plone.restapi.tests.helpers import ascii_token
 from plone.supermodel import model
+from plone.supermodel.directives import primary
 from Products.CMFCore.utils import getToolByName
 from pytz import timezone
 from z3c.formwidget.query.interfaces import IQuerySource
@@ -238,6 +239,9 @@ class IDXTestDocumentSchema(model.Schema):
     test_namedimage_field = namedfile.NamedImage(required=False)
     test_namedblobfile_field = namedfile.NamedBlobFile(required=False)
     test_namedblobimage_field = namedfile.NamedBlobImage(required=False)
+
+    primary('test_primary_namedfile_field')
+    test_primary_namedfile_field = namedfile.NamedFile(required=False)
 
     # z3c.relationfield
     test_relationchoice_field = RelationChoice(

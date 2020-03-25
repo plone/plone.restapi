@@ -1,3 +1,4 @@
+os: linux
 language: python
 python:
   - "2.7"
@@ -5,39 +6,41 @@ python:
   - "3.7"
   - "3.8"
 dist: xenial
-sudo: required
-services:
-  - docker
+# services:
+#   - docker
 cache:
   pip: true
   directories:
     - $HOME/buildout-cache
 env:
   global:
-    - secure: "tj9kO7Uyn7AY2Z6zhdOggLSYheaD8e+qKA7ZXvdWTrL2HtPAtnNJK8keQGj1JLQyy6bRfoOCt51aL8+Lc0fzcACaLFpAPjleSLtUChphPOh/dqTu1QX5oL0SxZ94B4ZC5+qfaSAQHMwbiiWUW0us9QtJpxQQmiJUekqiTdQDNEo="
-    - secure: "j06un+j2gHjlGfg+xMcvKG2osf1HSzBq/cPPNIonnjGQY3GJfT/YRzYnHe5LJPPt7IJDD7hAEPentRJ4C0zP66U6gcQ2HjWPsMIcvzlgnXoT2QaaCVkMA9YS4WOsN0C5iY/R64GjFwR7J+/bgeG64XvfhpuQ/UBP2+U68PqSBtM="
+    # - secure: "tj9kO7Uyn7AY2Z6zhdOggLSYheaD8e+qKA7ZXvdWTrL2HtPAtnNJK8keQGj1JLQyy6bRfoOCt51aL8+Lc0fzcACaLFpAPjleSLtUChphPOh/dqTu1QX5oL0SxZ94B4ZC5+qfaSAQHMwbiiWUW0us9QtJpxQQmiJUekqiTdQDNEo="
+    # - secure: "j06un+j2gHjlGfg+xMcvKG2osf1HSzBq/cPPNIonnjGQY3GJfT/YRzYnHe5LJPPt7IJDD7hAEPentRJ4C0zP66U6gcQ2HjWPsMIcvzlgnXoT2QaaCVkMA9YS4WOsN0C5iY/R64GjFwR7J+/bgeG64XvfhpuQ/UBP2+U68PqSBtM="
     - ZSERVER_PORT=55001
-matrix:
-  include:
-    - python: "2.7"
-      env: PLONE_VERSION=4.3.x
-    - python: "2.7"
-      env: PLONE_VERSION=5.0.x
-    - python: "2.7"
-      env: PLONE_VERSION=5.1.x
-    - python: "2.7"
-      env: PLONE_VERSION=5.2.x
-    - python: "3.6"
-      env: PLONE_VERSION=5.2.x
-    - python: "3.7"
-      env: PLONE_VERSION=5.2.x
-    - python: "3.8"
-      env: PLONE_VERSION=5.2.x
+  jobs:
+    - PLONE_VERSION=4.3.x
+    - PLONE_VERSION=5.1.x
+    - PLONE_VERSION=5.2.x
+jobs:
   exclude:
-    - python: "2.7"
     - python: "3.6"
+      env: PLONE_VERSION=4.3.x
+    - python: "3.6"
+      env: PLONE_VERSION=5.0.x
+    - python: "3.6"
+      env: PLONE_VERSION=5.1.x
     - python: "3.7"
+      env: PLONE_VERSION=4.3.x
+    - python: "3.7"
+      env: PLONE_VERSION=5.0.x
+    - python: "3.7"
+      env: PLONE_VERSION=5.1.x
     - python: "3.8"
+      env: PLONE_VERSION=4.3.x
+    - python: "3.8"
+      env: PLONE_VERSION=5.0.x
+    - python: "3.8"
+      env: PLONE_VERSION=5.1.x
 before_install:
   - mkdir -p $HOME/buildout-cache/{eggs,downloads}
   - mkdir $HOME/.buildout
@@ -51,10 +54,10 @@ install:
 script:
   - bin/code-analysis
   - if [ -f "bin/black" ]; then bin/black src/ --check ; fi
-  - bin/sphinxbuilder
+  - if [ "$PLONE_VERSION" == "5.2.x" ] && [ $TRAVIS_PYTHON_VERSION == '3.7' ]; then bin/sphinxbuilder ; fi
   - bin/test
   - bin/test-no-uncommitted-doc-changes
-  - bin/test-no-sphinx-warnings
+  - if [ "$PLONE_VERSION" == "5.2.x" ] && [ $TRAVIS_PYTHON_VERSION == '3.7' ]; then bin/test-no-sphinx-warnings ; fi
 after_success:
   - bin/test-coverage
   - pip install coverage==3.7.1 coveralls

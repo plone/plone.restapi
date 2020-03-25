@@ -10,6 +10,44 @@ Changelog
 
 - Respect `types_not_searched` field for search [rodfersou] (#861)
 
+6.3.0 (2020-03-03)
+------------------
+
+New features:
+
+
+- Allow using object paths and UIDs to link translations
+  [erral] (#645)
+
+
+Bug fixes:
+
+
+- Add a catalog serializer guard when returning fullobjects in case the object doesn't
+  exist anymore because for some reason it failed to uncatalog itself.
+  [sneridagh] (#877)
+- Use longer password in tests.  [maurits] (#3044)
+
+
+6.2.4 (2020-02-20)
+------------------
+
+Bug fixes:
+
+
+- fullobjects qs is missing in response batch links in batching operations
+  [sneridagh] (#868)
+
+
+6.2.3 (2020-02-19)
+------------------
+
+Bug fixes:
+
+
+- Return proper None instead of string "None" on the choice schema serializer [sneridagh] (#863)
+
+
 6.2.2 (2020-01-24)
 ------------------
 

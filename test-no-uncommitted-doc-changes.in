@@ -13,10 +13,12 @@ function red {
     echo "$RED $1 $RESET"
 }
 
-if [ "$PLONE_VERSION" = "4.3.x" ] || [ "$PLONE_VERSION" = "5.0.x" ] || [ "$PLONE_VERSION" = "5.1.x" ] || [ $TRAVIS_PYTHON_VERSION == '2.7' ]; then
+if [ "$PLONE_VERSION" == "5.2.x" ] && [ $TRAVIS_PYTHON_VERSION == '3.7' ]; then
+    echo "Running check for undocumented changes for Plone 5.2.x on Python 3.7"
+else
     # request/response dumps have known differences for Plone 5
     # => skip, we can't have the Plone 5 build fail because of those
-    echo "Skipping checks for undocumented changes for Plone 4, 5.0.x, and 5.1.x."
+    echo "Skipping checks for undocumented changes for everything except Plone 5.2.x on Python 3.7"
     exit 0
 fi
 

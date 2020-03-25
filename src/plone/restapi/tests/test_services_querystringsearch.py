@@ -49,8 +49,8 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("items", response.json())
         self.assertIn("items_total", response.json())
-        self.assertEquals(response.json()["items_total"], 1)
-        self.assertEquals(len(response.json()["items"]), 1)
+        self.assertEqual(response.json()["items_total"], 1)
+        self.assertEqual(len(response.json()["items"]), 1)
         self.assertNotIn("effective", response.json()["items"][0])
 
     def test_querystringsearch_fullobjects(self):
@@ -72,8 +72,8 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertIn("items", response.json())
         self.assertIn("items_total", response.json())
         self.assertIn("effective", response.json()["items"][0])
-        self.assertEquals(response.json()["items_total"], 1)
-        self.assertEquals(len(response.json()["items"]), 1)
+        self.assertEqual(response.json()["items_total"], 1)
+        self.assertEqual(len(response.json()["items"]), 1)
 
     def test_querystringsearch_complex(self):
 
@@ -102,10 +102,10 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("items", response.json())
         self.assertIn("items_total", response.json())
-        self.assertEquals(response.json()["items_total"], 10)
-        self.assertEquals(len(response.json()["items"]), 5)
+        self.assertEqual(response.json()["items_total"], 10)
+        self.assertEqual(len(response.json()["items"]), 5)
         self.assertNotIn("effective", response.json()["items"][0])
-        self.assertEquals(response.json()["items"][4]["title"], u"Test Document 4")
+        self.assertEqual(response.json()["items"][4]["title"], u"Test Document 4")
 
         response = self.api_session.post(
             "/@querystring-search",
@@ -125,7 +125,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("items", response.json())
         self.assertIn("items_total", response.json())
-        self.assertEquals(response.json()["items_total"], 10)
-        self.assertEquals(len(response.json()["items"]), 5)
+        self.assertEqual(response.json()["items_total"], 10)
+        self.assertEqual(len(response.json()["items"]), 5)
         self.assertNotIn("effective", response.json()["items"][0])
-        self.assertEquals(response.json()["items"][4]["title"], u"Test Document 9")
+        self.assertEqual(response.json()["items"][4]["title"], u"Test Document 9")

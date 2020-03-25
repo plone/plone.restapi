@@ -109,10 +109,10 @@ class TestATContentSerializer(unittest.TestCase):
         items = obj["items"]
         items = sorted(items, key=lambda item: item[u"@id"])
         self.assertIn("UID", items[0])
-        self.assertEquals(items[0]["id"], "folder")
+        self.assertEqual(items[0]["id"], "folder")
 
         self.assertIn("UID", items[1])
-        self.assertEquals(items[1]["id"], "subfolder-1")
+        self.assertEqual(items[1]["id"], "subfolder-1")
 
         self.assertIn("UID", items[2])
-        self.assertEquals(items[2]["id"], "subfolder-2")
+        self.assertEqual(items[2]["id"], "subfolder-2")
