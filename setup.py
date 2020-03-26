@@ -62,6 +62,7 @@ setup(
         "Framework :: Plone :: 5.0",
         "Framework :: Plone :: 5.1",
         "Framework :: Plone :: 5.2",
+        "Framework :: Plone :: Core",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
