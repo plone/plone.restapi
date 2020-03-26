@@ -14,12 +14,21 @@
   <plone:service
     method="POST"
     accept="application/json,application/schema+json"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    for="Products.CMFCore.interfaces.ISiteRoot"
     factory=".add.TypesPost"
     name="@types"
-    permission="plone.schemaeditor.ManageSchemata"
+    permission="cmf.ManagePortal"
     />
 
-  <adapter factory=".get.TypesInfo" name="types"/>
+  <plone:service
+    method="DELETE"
+    accept="application/json,application/schema+json"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    factory=".delete.TypesDelete"
+    name="@types"
+    permission="cmf.ManagePortal"
+    />
+
+  <adapter factory=".get.TypesInfo" name="types" />
 
 </configure>
