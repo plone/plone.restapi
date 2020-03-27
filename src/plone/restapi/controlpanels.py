@@ -139,6 +139,11 @@ class MarkupControlpanel(RegistryConfigletPanel):
     configlet_id = "MarkupSettings"
     configlet_category_id = "plone-content"
 
+@adapter(Interface, Interface)
+class DexterityTypesControlpanel(RegistryConfigletPanel):
+    schema = Interface
+    configlet_id = "dexterity-types"
+    configlet_category_id = "plone-content"
 
 # Security
 

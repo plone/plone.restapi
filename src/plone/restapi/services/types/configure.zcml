@@ -3,21 +3,21 @@
     xmlns:plone="http://namespaces.plone.org/plone">
 
   <plone:service
-    method="GET"
-    accept="application/json,application/schema+json"
-    for="*"
-    factory=".get.TypesGet"
-    name="@types"
-    permission="zope2.View"
-    />
-
-  <plone:service
     method="POST"
     accept="application/json,application/schema+json"
     for="Products.CMFCore.interfaces.ISiteRoot"
     factory=".add.TypesPost"
     name="@types"
     permission="cmf.ManagePortal"
+    />
+
+  <plone:service
+    method="GET"
+    accept="application/json,application/schema+json"
+    for="*"
+    factory=".get.TypesGet"
+    name="@types"
+    permission="zope2.View"
     />
 
   <plone:service

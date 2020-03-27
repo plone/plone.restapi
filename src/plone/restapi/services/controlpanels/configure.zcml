@@ -73,6 +73,10 @@
     factory="plone.restapi.controlpanels.MarkupControlpanel"
     name="markup" />
 
+  <adapter
+    factory="plone.restapi.controlpanels.DexterityTypesControlpanel"
+    name="dexterity-types" />
+
 <!-- Security -->
   <adapter
     factory="plone.restapi.controlpanels.SecurityControlpanel"
