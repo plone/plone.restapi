@@ -258,6 +258,7 @@ class TestTranslationLocator(unittest.TestCase):
 
     def setUp(self):
         self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
         self.request = self.layer["request"]
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
         login(self.portal, SITE_OWNER_NAME)
@@ -276,4 +277,4 @@ class TestTranslationLocator(unittest.TestCase):
         )
         self.assertEqual(200, response.status_code)
 
-        self.assertEqual("http://localhost:55001/plone/de", response.json().get("@id"))
+        self.assertEqual(self.portal_url + "/de", response.json().get("@id"))
