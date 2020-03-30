@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+6.5.0 (2020-03-30)
+------------------
+
+New features:
+
+
+- Link translation on content creation feature and new @translation-locator endpoint
+  [sneridagh] (#887)
+
+
 6.4.1 (2020-03-25)
 ------------------
 
