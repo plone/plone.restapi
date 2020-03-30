@@ -125,20 +125,19 @@ class FolderPost(Service):
         ).portal()
         catalog = getToolByName(self.context, "portal_catalog")
 
-        if isinstance(key, six.string_types):
-            if key.startswith(portal.absolute_url()):
-                # Resolve by URL
-                key = key[len(portal.absolute_url()) + 1 :]
-                if six.PY2:
-                    key = key.encode("utf8")
-                return portal.restrictedTraverse(key, None)
-            elif key.startswith("/"):
-                if six.PY2:
-                    key = key.encode("utf8")
-                # Resolve by path
-                return portal.restrictedTraverse(key.lstrip("/"), None)
-            else:
-                # Resolve by UID
-                brain = catalog(UID=key)
-                if brain:
-                    return brain[0].getObject()
+        if key.startswith(portal.absolute_url()):
+            # Resolve by URL
+            key = key[len(portal.absolute_url()) + 1 :]
+            if six.PY2:
+                key = key.encode("utf8")
+            return portal.restrictedTraverse(key, None)
+        elif key.startswith("/"):
+            if six.PY2:
+                key = key.encode("utf8")
+            # Resolve by path
+            return portal.restrictedTraverse(key.lstrip("/"), None)
+        else:
+            # Resolve by UID
+            brain = catalog(UID=key)
+            if brain:
+                return brain[0].getObject()
