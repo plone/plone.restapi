@@ -17,16 +17,16 @@ from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getUtility
 
+import six
+import transaction
+import unittest
+
 try:
     # Plone 5.x
     from Products.CMFPlone.interfaces import ISearchSchema
 except ImportError:
     # Plone 4.x
-    from Products.CMFPlone.interfaces.controlpanel.search import ISearchSchema
-
-import six
-import transaction
-import unittest
+    from Products.CMFPlone.controlpanel.search import ISearchSchema
 
 
 class TestSearchFunctional(unittest.TestCase):
