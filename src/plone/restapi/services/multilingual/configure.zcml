@@ -31,4 +31,12 @@
       permission="plone.app.multilingual.ManageTranslations"
     />
 
+  <plone:service
+    method="GET"
+    name="@translation-locator"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".locator.TranslationLocator"
+    permission="plone.app.multilingual.ManageTranslations"
+  />
+
 </configure>
