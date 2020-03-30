@@ -96,8 +96,8 @@ exising translation using two parameters: ``translationOf`` and ``language``.
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/translations_link_on_post.resp
    :language: http
 
-Get location placement in the tree for new translations
--------------------------------------------------------
+Get location location in the tree for new translations
+------------------------------------------------------
 
 When you create a translation in Plone, there are policies in place for finding a suitable
 placement for it. This endpoint returns the proper placement for the newly going to be
