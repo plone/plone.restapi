@@ -20,7 +20,7 @@ try:
     from Products.CMFPlone.interfaces import ISearchSchema
 except ImportError:
     # Plone 4.x
-    from Products.CMFPlone.interfaces.controlpanel import ISearchSchem
+    from Products.CMFPlone.interfaces.controlpanel import ISearchSchema
 
 
 class IControlpanel(Interface):
