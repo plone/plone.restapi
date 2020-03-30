@@ -15,8 +15,14 @@ from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import result_paths
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import ISearchSchema
 from zope.component import getUtility
+
+try:
+    # Plone 5.x
+    from Products.CMFPlone.interfaces import ISearchSchema
+except ImportError:
+    # Plone 4.x
+    from Products.CMFPlone.interfaces.controlpanel import ISearchSchem
 
 import six
 import transaction

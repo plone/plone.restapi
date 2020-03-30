@@ -7,7 +7,6 @@ from Products.CMFPlone.interfaces.controlpanel import ILanguageSchema
 from Products.CMFPlone.interfaces.controlpanel import IMailSchema
 from Products.CMFPlone.interfaces.controlpanel import IMarkupSchema
 from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
-from Products.CMFPlone.interfaces.controlpanel import ISearchSchema
 from Products.CMFPlone.interfaces.controlpanel import ISecuritySchema
 from Products.CMFPlone.interfaces.controlpanel import ISiteSchema
 from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
@@ -15,6 +14,13 @@ from zope.component import adapter
 from zope.interface import Attribute
 from zope.interface import implementer
 from zope.interface import Interface
+
+try:
+    # Plone 5.x
+    from Products.CMFPlone.interfaces import ISearchSchema
+except ImportError:
+    # Plone 4.x
+    from Products.CMFPlone.interfaces.controlpanel import ISearchSchem
 
 
 class IControlpanel(Interface):
