@@ -8,5 +8,5 @@ Content-Type: application/json
     "id": "mydocument",
     "language": "de",
     "title": "My German Document",
-    "translationOf": "SomeUUID000000000000000000000003"
+    "translation_of": "SomeUUID000000000000000000000003"
 }

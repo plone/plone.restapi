@@ -233,7 +233,7 @@ class TestCreateContentsAsTranslations(unittest.TestCase):
                 "@type": "Document",
                 "id": "mydocument",
                 "title": "My Document DE",
-                "translationOf": self.es_content.UID(),
+                "translation_of": self.es_content.UID(),
                 "language": "de",
             },
         )
@@ -269,7 +269,7 @@ class TestTranslationLocator(unittest.TestCase):
 
     def test_translation_locator(self):
         response = requests.get(
-            "{}/@translation-locator?targetLanguage=de".format(
+            "{}/@translation-locator?target_language=de".format(
                 self.es_content.absolute_url()
             ),
             headers={"Accept": "application/json"},

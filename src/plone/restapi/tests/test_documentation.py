@@ -1622,7 +1622,7 @@ class TestPAMDocumentation(TestDocumentationBase):
                 "@type": "Document",
                 "id": "mydocument",
                 "title": "My German Document",
-                "translationOf": self.es_content.UID(),
+                "translation_of": self.es_content.UID(),
                 "language": "de",
             },
         )
@@ -1630,7 +1630,7 @@ class TestPAMDocumentation(TestDocumentationBase):
 
     def test_documentation_translation_locator(self):
         response = self.api_session.get(
-            "{}/@translation-locator?targetLanguage=de".format(
+            "{}/@translation-locator?target_language=de".format(
                 self.es_content.absolute_url()
             ),
             headers={"Accept": "application/json"},

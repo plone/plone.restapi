@@ -40,7 +40,7 @@ class FolderPost(Service):
         type_ = data.get("@type", None)
         id_ = data.get("id", None)
         title = data.get("title", None)
-        translationOf = data.get("translationOf", None)
+        translation_of = data.get("translation_of", None)
         language = data.get("language", None)
 
         if not type_:
@@ -88,7 +88,7 @@ class FolderPost(Service):
 
         obj = add(self.context, obj, rename=not bool(id_))
 
-        # Link translation given the translationOf property
+        # Link translation given the translation_of property
         if PAM_INSTALLED:
             from plone.app.multilingual.interfaces import (
                 IPloneAppMultilingualInstalled,
@@ -97,10 +97,10 @@ class FolderPost(Service):
 
             if (
                 IPloneAppMultilingualInstalled.providedBy(self.request)
-                and translationOf
+                and translation_of
                 and language
             ):
-                source = self.get_object(translationOf)
+                source = self.get_object(translation_of)
                 if source:
                     manager = ITranslationManager(source)
                     manager.register_translation(language, obj)
