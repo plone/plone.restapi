@@ -1,8 +1,11 @@
 Conventions
 ===========
 
+Naming Convention for REST API Resources/Endpoints
+--------------------------------------------------
+
 Nouns vs Verbs
---------------
+^^^^^^^^^^^^^^
 
 Rule: Use nouns to represent resources.
 
@@ -35,7 +38,7 @@ specific actions or calculations, .e.g.::
 
 
 Singluar vs Plural
-------------------
+^^^^^^^^^^^^^^^^^^
 
 Rule: Use plural resources.
 
@@ -57,27 +60,8 @@ is confusing (e.g. user "/users" for retrieving users and "/user/21" to
 retrieve a single user).
 
 
-Attribute names in URIs
------------------------
-
-Rule: Use hyphens to improve readability of URIs.
-
-Do::
-
-    /users/noam/reset-password
-
-Don't::
-
-    /users/noam/resetPassword
-    /users/noam/ResetPassword
-    /users/noam/reset_password
-
-Reason:
-
-
-
 Upper vs. Lowercase
--------------------
+^^^^^^^^^^^^^^^^^^^
 
 Rule: Use lowercase letters in URIs.
 
@@ -104,10 +88,36 @@ While this one is not equivalent to the two URIs above::
 To avoid confusion we always use lowercase letters in URIs.
 
 
+Naming Convention for attribute names in URIs
+---------------------------------------------
+
+Rule: Use hyphens (spinal case) to improve readability of URIs.
+
+Do::
+
+    /users/noam/reset-password
+
+Don't::
+
+    /users/noam/resetPassword
+    /users/noam/ResetPassword
+    /users/noam/reset_password
+
+Reason:
+
+Spinal case is better to read and safer to use than camelCase (URLs are case sensitive (RFC3986)).
+Plone uses spinal case for URL creation (title "My page" becomes "my-page") and mixed naming conventions in URLs would be confusing (e.g. "/my-folder/@send_url_to_user").
+Google recommends spinal-case in URLs for better SEO (https://support.google.com/webmasters/answer/76329).
+
+Discussion:
+
+https://github.com/plone/plone.restapi/issues/194
+
+
 Versioning
 ----------
 
-Versioning APIs does make a lot of sense for public API services. 
-Especially if an API provider needs to ship different versions of the API at the same time. 
+Versioning APIs does make a lot of sense for public API services.
+Especially if an API provider needs to ship different versions of the API at the same time.
 Though, Plone already has a way to version packages and it currently does not make sense for us to expose that information via the API.
 We will always just ship one version of the API at a time and we are usually in full control over the backend and the frontend.

@@ -1,1 +1,0 @@
-- Make discussion endpoint return content that is deserialized via portal transforms (e.g. 'text/x-web-intelligent') [timo]
