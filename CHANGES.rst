@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+6.5.2 (2020-04-01)
+------------------
+
+Bug fixes:
+
+
+- Fix for the use case while updating user properties in the @user endpoint, and the
+  portrait is already previously set but the request includes the (previously) serialized
+  value as a string because the user are not updating it
+  [sneridagh] (#896)
+
+
 6.5.1 (2020-04-01)
 ------------------
 
