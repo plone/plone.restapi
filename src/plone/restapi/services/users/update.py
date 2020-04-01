@@ -72,8 +72,10 @@ class UsersPatch(Service):
                 elif key == "username":
                     set_own_login_name(user, value)
                 else:
-
-                    if key == 'portrait':
+                    # If the portrait is already set but has not been changed change it,
+                    # then the serialized value comes again in the request as a string,
+                    # no data on it, then we should not set it since it will fail
+                    if key == "portrait" and isinstance(value, dict):
                         self.set_member_portrait(user, value)
                     user.setMemberProperties(mapping={key: value})
 
@@ -101,7 +103,10 @@ class UsersPatch(Service):
                 ):
                     self._change_user_password(user, value)
                 else:
-                    if key == "portrait":
+                    # If the portrait is already set but has not been changed change it,
+                    # then the serialized value comes again in the request as a string,
+                    # no data on it, then we should not set it since it will fail
+                    if key == "portrait" and isinstance(value, dict):
                         self.set_member_portrait(user, value)
                     user.setMemberProperties(mapping={key: value})
 
