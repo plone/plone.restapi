@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+6.5.1 (2020-04-01)
+------------------
+
+Bug fixes:
+
+
+- Fix deleting user portrait.
+  [buchi] (#751)
+
+
 6.5.0 (2020-03-30)
 ------------------
 
