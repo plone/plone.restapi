@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
+from Acquisition import aq_inner
 from OFS.Image import Image
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import set_own_login_name
+from Products.PlonePAS.tools.membership import default_portrait
 from Products.PlonePAS.utils import scale_image
 from zope.component import getAdapter
 from zope.component.hooks import getSite
@@ -70,7 +72,8 @@ class UsersPatch(Service):
                 elif key == "username":
                     set_own_login_name(user, value)
                 else:
-                    if key == "portrait" and value.get("data"):
+
+                    if key == 'portrait':
                         self.set_member_portrait(user, value)
                     user.setMemberProperties(mapping={key: value})
 
@@ -98,7 +101,7 @@ class UsersPatch(Service):
                 ):
                     self._change_user_password(user, value)
                 else:
-                    if key == "portrait" and value.get("data"):
+                    if key == "portrait":
                         self.set_member_portrait(user, value)
                     user.setMemberProperties(mapping={key: value})
 
@@ -146,6 +149,14 @@ class UsersPatch(Service):
         portal = getSite()
         portal_membership = getToolByName(portal, "portal_membership")
         safe_id = portal_membership._getSafeMemberId(user.getId())
+
+        if portrait is None:
+            previous = portal_membership.getPersonalPortrait(safe_id)
+            default_portrait_value = getattr(portal, default_portrait, None)
+            if aq_inner(previous) != aq_inner(default_portrait_value):
+                portal_membership.deletePersonalPortrait(str(safe_id))
+            return
+
         content_type = "application/octet-stream"
         filename = None
 
@@ -156,8 +167,6 @@ class UsersPatch(Service):
             data = data.encode("utf-8")
         if "encoding" in portrait:
             data = codecs.decode(data, portrait["encoding"])
-        if isinstance(data, six.text_type):
-            data = data.encode("utf-8")
 
         if portrait.get("scale", False):
             # Only scale if the scale (default Plone behavior) boolean is set
