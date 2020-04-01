@@ -1,4 +1,0 @@
-Fix for the use case while updating user properties in the @user endpoint, and the
-portrait is already previously set but the request includes the (previously) serialized
-value as a string because the user are not updating it
-[sneridagh]
