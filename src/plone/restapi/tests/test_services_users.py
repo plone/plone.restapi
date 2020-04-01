@@ -523,6 +523,38 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertTrue(user.get("portrait") is None)
 
+    def test_update_user_with_portrait_set_without_updating_portrait(self):
+        payload = {
+            "portrait": {
+                "filename": "image.gif",
+                "encoding": "base64",
+                "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
+                "content-type": "image/gif",
+            }
+        }
+        self.api_session.auth = ("noam", "password")
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        payload = {
+            "fullname": "Noam A. Chomsky",
+            "username": "noam",
+            "email": "avram.chomsky@plone.org",
+            "portrait": "http://localhost:55001/plone/portal_memberdata/portraits/noam",
+        }
+        self.api_session.auth = ("noam", "password")
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get("/@users/noam").json()
+        self.assertTrue(
+            user.get("portrait").endswith("plone/portal_memberdata/portraits/noam")
+        )
+
     def test_anonymous_user_can_not_update_existing_user(self):
         payload = {
             "fullname": "Noam A. Chomsky",
