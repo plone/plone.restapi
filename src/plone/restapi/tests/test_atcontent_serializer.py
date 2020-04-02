@@ -195,12 +195,12 @@ class TestATContentSerializer(unittest.TestCase):
         self.assertIn("is_folderish", obj)
         self.assertEqual(True, obj["is_folderish"])
 
-    def test_nextprev_alone(self):
+    def test_nextprev_disabled(self):
         folder = api.content.create(
             container=self.portal,
             type="Folder",
             title="Folder with items",
-            description="This is a folder with some documents"
+            description="This is a folder with some documents",
         )
         doc = api.content.create(
             container=folder,
@@ -209,15 +209,34 @@ class TestATContentSerializer(unittest.TestCase):
             description="One item alone in the folder"
         )
         data = self.serialize(doc)
-        self.assertEqual(data["previous_item"], None)
-        self.assertEqual(data["next_item"], None)
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual({}, data["next_item"])
+
+    def test_nextprev_no_nextprev(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+            nextPreviousEnabled=True,
+        )
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="One item alone in the folder"
+        )
+        data = self.serialize(doc)
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual({}, data["next_item"])
 
     def test_nextprev_has_prev(self):
         folder = api.content.create(
             container=self.portal,
             type="Folder",
             title="Folder with items",
-            description="This is a folder with some documents"
+            description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         api.content.create(
             container=folder,
@@ -232,21 +251,24 @@ class TestATContentSerializer(unittest.TestCase):
             description="Current item"
         )
         data = self.serialize(doc)
-        previous_item = {
-            "@id": "http://nohost/plone/folder-with-items/item-1",
-            "@type": "Document",
-            "title": "Item 1",
-            "description": "Previous item"
-        }
-        self.assertEqual(data["previous_item"], previous_item)
-        self.assertEqual(data["next_item"], None)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/folder-with-items/item-1",
+                "@type": "Document",
+                "title": "Item 1",
+                "description": "Previous item"
+            },
+            data["previous_item"]
+        )
+        self.assertEqual({}, data["next_item"])
 
     def test_nextprev_has_next(self):
         folder = api.content.create(
             container=self.portal,
             type="Folder",
             title="Folder with items",
-            description="This is a folder with some documents"
+            description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         doc = api.content.create(
             container=folder,
@@ -261,21 +283,24 @@ class TestATContentSerializer(unittest.TestCase):
             description="Next item"
         )
         data = self.serialize(doc)
-        self.assertEqual(data["previous_item"], None)
-        next_item = {
-            "@id": "http://nohost/plone/folder-with-items/item-2",
-            "@type": "Document",
-            "title": "Item 2",
-            "description": "Next item"
-        }
-        self.assertEqual(data["next_item"], next_item)
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/folder-with-items/item-2",
+                "@type": "Document",
+                "title": "Item 2",
+                "description": "Next item"
+            },
+            data["next_item"]
+        )
 
     def test_nextprev_has_nextprev(self):
         folder = api.content.create(
             container=self.portal,
             type="Folder",
             title="Folder with items",
-            description="This is a folder with some documents"
+            description="This is a folder with some documents",
+            nextPreviousEnabled=True,
         )
         api.content.create(
             container=folder,
@@ -296,17 +321,21 @@ class TestATContentSerializer(unittest.TestCase):
             description="Next item"
         )
         data = self.serialize(doc)
-        previous_item = {
-            "@id": "http://nohost/plone/folder-with-items/item-1",
-            "@type": "Document",
-            "title": "Item 1",
-            "description": "Previous item"
-        }
-        self.assertEqual(data["previous_item"], previous_item)
-        next_item = {
-            "@id": "http://nohost/plone/folder-with-items/item-3",
-            "@type": "Document",
-            "title": "Item 3",
-            "description": "Next item"
-        }
-        self.assertEqual(data["next_item"], next_item)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/folder-with-items/item-1",
+                "@type": "Document",
+                "title": "Item 1",
+                "description": "Previous item"
+            },
+            data["previous_item"]
+        )
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/folder-with-items/item-3",
+                "@type": "Document",
+                "title": "Item 3",
+                "description": "Next item"
+            },
+            data["next_item"]
+        )
