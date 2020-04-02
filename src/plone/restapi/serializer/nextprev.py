@@ -10,12 +10,20 @@ class NextPrevious(object):
     def __init__(self, context):
         self.context = context
         parent = aq_parent(aq_inner(context))
-        self.adapter = INextPreviousProvider(parent)
+        self.adapter = None
+        if INextPreviousProvider.providedBy(parent):
+            self.adapter = INextPreviousProvider(parent)
+
+    @property
+    def _enabled(self):
+        if self.adapter is None:
+            return False
+        return self.adapter.enabled
 
     @property
     def next(self):
         """ return info about the next item in the container """
-        if not self.adapter.enabled:
+        if not self._enabled:
             return {}
         data = self.adapter.getNextItem(self.context)
         if data is None:
@@ -30,7 +38,7 @@ class NextPrevious(object):
     @property
     def previous(self):
         """ return info about the previous item in the container """
-        if not self.adapter.enabled:
+        if not self._enabled:
             return {}
         data = self.adapter.getPreviousItem(self.context)
         if data is None:
