@@ -7,6 +7,7 @@ from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
+from plone.registry.interfaces import IRegistry
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
@@ -17,15 +18,78 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
+from Products.CMFCore.interfaces import IContentish
 from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import getMultiAdapter
+from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
+
+
+class NextPrevious(object):
+    """
+    Based on plone.app.dexterity.behaviors.nextprevious.NextPreviousBase
+    but works for IPloneSite object
+    """
+
+    def __init__(self, context):
+        self.context = context
+        registry = getUtility(IRegistry)
+        self.vat = registry.get('plone.types_use_view_action_in_listings', [])
+        self.security = getSecurityManager()
+        self.parent = aq_parent(aq_inner(context))
+        self.order = self.parent.contentIds()
+
+    def _get_data(self, obj):
+        """ return the expected mapping, see `INextPreviousProvider` """
+        if not self.security.checkPermission('View', obj):
+            return
+        elif not IContentish.providedBy(obj):
+            # do not return a not contentish object
+            # such as a local workflow policy for example (#11234)
+            return
+
+        ptype = obj.portal_type
+        url = obj.absolute_url()
+        if ptype in self.vat:       # "use view action in listings"
+            url += '/view'
+        return {
+            "id": obj.getId(),
+            "url": url,
+            "title": obj.Title(),
+            "description": obj.Description(),
+            "portal_type": ptype,
+        }
+
+    @property
+    def next(self):
+        """ return info about the next item in the container """
+        if not self.order:
+            return
+        pos = self.parent.getObjectPosition(self.context.getId())
+        for oid in self.order[pos + 1:]:
+            data = self._get_data(self.context[oid])
+            if not data:
+                continue
+            return data
+
+    @property
+    def previous(self):
+        """ return info about the previous item in the container """
+        if not self.order:
+            return
+        order_reversed = list(reversed(self.order))
+        pos = order_reversed.index(self.context.getId())
+        for oid in order_reversed[pos + 1:]:
+            data = self._get_data(self.context[oid])
+            if not data:
+                continue
+            return data
 
 
 @implementer(ISerializeToJson)
@@ -52,6 +116,7 @@ class SerializeToJson(object):
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary
         )()
+        nextprev = NextPrevious(obj)
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             "@id": obj.absolute_url(),
@@ -65,6 +130,10 @@ class SerializeToJson(object):
             "version": version,
             "layout": self.context.getLayout(),
             "is_folderish": False,
+            "next_prev": {
+                "next": nextprev.next,
+                "prev": nextprev.previous,
+            },
         }
 
         # Insert expandable elements

@@ -186,6 +186,11 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertIn("is_folderish", obj)
         self.assertEqual(True, obj["is_folderish"])
 
+    def test_get_next_prev(self):
+        obj = self.serialize()
+        self.assertIn("next_prev", obj)
+        self.assertEqual({"next": None, "prev": None}, obj["next_prev"])
+
     def test_richtext_serializer_context(self):
         """This checks if the context is passed in correctly.
 

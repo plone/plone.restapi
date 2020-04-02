@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from plone.app.layout.nextprevious.interfaces import INextPreviousProvider
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
@@ -39,6 +40,7 @@ class SerializeToJson(object):
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary
         )()
+        nextprev = INextPreviousProvider(obj)
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             "@id": obj.absolute_url(),
@@ -49,6 +51,10 @@ class SerializeToJson(object):
             "UID": obj.UID(),
             "layout": self.context.getLayout(),
             "is_folderish": False,
+            "next_prev": {
+                "next": nextprev.getNextItem(),
+                "prev": nextprev.getPrevItem(),
+            },
         }
 
         # Insert expandable elements
