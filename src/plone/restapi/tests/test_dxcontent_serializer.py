@@ -4,6 +4,7 @@ from datetime import datetime
 from datetime import time
 from datetime import timedelta
 from DateTime import DateTime
+from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import logout
 from plone.app.testing import setRoles
@@ -187,8 +188,34 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(True, obj["is_folderish"])
 
     def test_get_next_prev(self):
+        api.content.copy(source=self.portal.doc1, id='doc0')
+        self.portal.doc0.title = "Previous"
+        self.portal.moveObjectsToTop('doc0')
+        api.content.copy(source=self.portal.doc1, id='doc2')
+        self.portal.doc2.title = "Next"
+        self.assertEqual(self.portal.contentIds(), ['doc0', 'doc1', 'doc2'])
+
+        data = self.serialize()
+        expected = {
+            'prev': {
+                'description': '',
+                'id': 'doc0',
+                'portal_type': 'DXTestDocument',
+                'title': 'Previous',
+                'url': 'http://nohost/plone/doc0'
+            },
+            'next': {
+                'description': '',
+                'id': 'doc2',
+                'portal_type': 'DXTestDocument',
+                'title': 'Next',
+                'url': 'http://nohost/plone/doc2'
+            },
+        }
+        self.assertEqual(data["next_prev"], expected)
+
+    def test_get_next_prev_empty(self):
         obj = self.serialize()
-        self.assertIn("next_prev", obj)
         self.assertEqual({"next": None, "prev": None}, obj["next_prev"])
 
     def test_richtext_serializer_context(self):
