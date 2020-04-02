@@ -193,3 +193,8 @@ class TestATContentSerializer(unittest.TestCase):
         obj = serializer()
         self.assertIn("is_folderish", obj)
         self.assertEqual(True, obj["is_folderish"])
+
+    def test_get_next_prev(self):
+        obj = self.serialize()
+        self.assertIn("next_prev", obj)
+        self.assertEqual({"next": None, "prev": None}, obj["next_prev"])

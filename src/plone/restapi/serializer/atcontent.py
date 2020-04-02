@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from plone.app.layout.nextprevious.interfaces import INextPreviousProvider
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.expansion import expandable_elements
+from plone.restapi.serializer.nextprev import NextPrevious
 from Products.Archetypes.interfaces import IBaseFolder
 from Products.Archetypes.interfaces import IBaseObject
 from Products.CMFCore.utils import getToolByName
@@ -40,7 +40,6 @@ class SerializeToJson(object):
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary
         )()
-        nextprev = INextPreviousProvider(obj)
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             "@id": obj.absolute_url(),
@@ -51,11 +50,16 @@ class SerializeToJson(object):
             "UID": obj.UID(),
             "layout": self.context.getLayout(),
             "is_folderish": False,
-            "next_prev": {
-                "next": nextprev.getNextItem(),
-                "prev": nextprev.getPrevItem(),
-            },
         }
+
+        # Insert next/prev information
+        np = NextPrevious(obj)
+        result.update({
+            "next_prev": {
+                "next": np.next,
+                "prev": np.previous,
+            },
+        })
 
         # Insert expandable elements
         result.update(expandable_elements(self.context, self.request))
