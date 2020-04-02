@@ -233,7 +233,7 @@ class TestATContentSerializer(unittest.TestCase):
         )
         data = self.serialize(doc)
         previous_item = {
-            "@id": "http://nohost/plone/folder-with-items/item-1", 
+            "@id": "http://nohost/plone/folder-with-items/item-1",
             "@type": "Document",
             "title": "Item 1",
             "description": "Previous item"
@@ -263,7 +263,7 @@ class TestATContentSerializer(unittest.TestCase):
         data = self.serialize(doc)
         self.assertEqual(data["previous_item"], None)
         next_item = {
-            "@id": "http://nohost/plone/folder-with-items/item-2", 
+            "@id": "http://nohost/plone/folder-with-items/item-2",
             "@type": "Document",
             "title": "Item 2",
             "description": "Next item"
@@ -297,14 +297,14 @@ class TestATContentSerializer(unittest.TestCase):
         )
         data = self.serialize(doc)
         previous_item = {
-            "@id": "http://nohost/plone/folder-with-items/item-1", 
+            "@id": "http://nohost/plone/folder-with-items/item-1",
             "@type": "Document",
             "title": "Item 1",
             "description": "Previous item"
         }
         self.assertEqual(data["previous_item"], previous_item)
         next_item = {
-            "@id": "http://nohost/plone/folder-with-items/item-3", 
+            "@id": "http://nohost/plone/folder-with-items/item-3",
             "@type": "Document",
             "title": "Item 3",
             "description": "Next item"
