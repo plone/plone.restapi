@@ -8,6 +8,9 @@ Changelog
 
 .. towncrier release notes start
 
+- Add next / prev feature.
+  [rodfersou] (#900)
+
 6.5.2 (2020-04-01)
 ------------------
 

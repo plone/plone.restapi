@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from DateTime import DateTime
+from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.interfaces import IExpandableElement
@@ -193,3 +194,119 @@ class TestATContentSerializer(unittest.TestCase):
         obj = serializer()
         self.assertIn("is_folderish", obj)
         self.assertEqual(True, obj["is_folderish"])
+
+    def test_nextprev_alone(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents"
+        )
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="One item alone in the folder"
+        )
+        data = self.serialize(doc)
+        self.assertEqual(data["previous_item"], None)
+        self.assertEqual(data["next_item"], None)
+
+    def test_nextprev_has_prev(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents"
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Previous item"
+        )
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Current item"
+        )
+        data = self.serialize(doc)
+        previous_item = {
+            "@id": "http://nohost/plone/folder-with-items/item-1", 
+            "@type": "Document",
+            "title": "Item 1",
+            "description": "Previous item"
+        }
+        self.assertEqual(data["previous_item"], previous_item)
+        self.assertEqual(data["next_item"], None)
+
+    def test_nextprev_has_next(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents"
+        )
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Current item"
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Next item"
+        )
+        data = self.serialize(doc)
+        self.assertEqual(data["previous_item"], None)
+        next_item = {
+            "@id": "http://nohost/plone/folder-with-items/item-2", 
+            "@type": "Document",
+            "title": "Item 2",
+            "description": "Next item"
+        }
+        self.assertEqual(data["next_item"], next_item)
+
+    def test_nextprev_has_nextprev(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents"
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Previous item"
+        )
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Current item"
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 3",
+            description="Next item"
+        )
+        data = self.serialize(doc)
+        previous_item = {
+            "@id": "http://nohost/plone/folder-with-items/item-1", 
+            "@type": "Document",
+            "title": "Item 1",
+            "description": "Previous item"
+        }
+        self.assertEqual(data["previous_item"], previous_item)
+        next_item = {
+            "@id": "http://nohost/plone/folder-with-items/item-3", 
+            "@type": "Document",
+            "title": "Item 3",
+            "description": "Next item"
+        }
+        self.assertEqual(data["next_item"], next_item)
