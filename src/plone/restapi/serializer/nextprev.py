@@ -21,10 +21,7 @@ class NextPreviousFixed(NextPreviousBase):
 
 
 class NextPrevious(object):
-    """
-    Based on plone.app.dexterity.behaviors.nextprevious.NextPreviousBase
-    but works for IPloneSite object
-    """
+    """Facade with more pythonic interface"""
 
     def __init__(self, context):
         self.context = context
