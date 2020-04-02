@@ -8,6 +8,9 @@ Changelog
 
 .. towncrier release notes start
 
+- Document next previous feature.
+  [rodfersou] (#900)
+
 6.5.2 (2020-04-01)
 ------------------
 

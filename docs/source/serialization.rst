@@ -193,3 +193,56 @@ Specify relations by intid:
     "relatedItems": [347127075, 347127076]
   }
 
+Walking the content
+-------------------
+
+The serialized content have some hints on how to move to the items around.
+
+Parent
+^^^^^^
+
+The parent is the folder where the page is inserted.
+
+.. code-block:: json
+
+  {
+    "parent": {
+      "@id": "http://nohost/plone/folder-with-items", 
+      "@type": "Folder", 
+      "title": "Folder with items",
+      "description": "This is a folder with two documents", 
+    }
+  }
+
+Previous Item
+^^^^^^^^^^^^^
+
+The previous item is the simbling that comes before in the current folder.
+
+.. code-block:: json
+
+  {
+    "previous_item": {
+      "@id": "http://nohost/plone/folder-with-items/item-1", 
+      "@type": "Document",
+      "title": "Item 1",
+      "description": "This the previous item"
+    }
+  }
+
+Next Item
+^^^^^^^^^
+
+The next item is the simbling that comes after in the current folder.
+
+.. code-block:: json
+
+  {
+    "next_item": {
+      "@id": "http://nohost/plone/folder-with-items/item-2", 
+      "@type": "Document",
+      "title": "Item 2",
+      "description": "This the next item"
+    }
+  }
+
