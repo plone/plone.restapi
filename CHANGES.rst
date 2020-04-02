@@ -8,6 +8,9 @@ Changelog
 
 .. towncrier release notes start
 
+- Fix buildout configuration
+  [rodfersou]
+
 6.5.2 (2020-04-01)
 ------------------
 
