@@ -193,15 +193,15 @@ Specify relations by intid:
     "relatedItems": [347127075, 347127076]
   }
 
-Walking the content
--------------------
+Next/Previous/Parent Navigation
+-------------------------------
 
-The serialized content have some hints on how to move to the items around.
+The response body of a GET request contains three attributes that allows navigating to the parent and the next and previous sibling in the container the current document is located.
 
 Parent
 ^^^^^^
 
-The parent is the folder where the page is inserted.
+The "parent" attribute points to the parent container of the current content object.
 
 .. code-block:: json
 
@@ -217,7 +217,7 @@ The parent is the folder where the page is inserted.
 Previous Item
 ^^^^^^^^^^^^^
 
-The previous item is the sibling that comes before in the current folder.
+The "previous_item" attribute points to the sibling that is located before the current element in the parent container (Plone uses the getObjectPositionInParent attribute to sort content objects within a folderish container).
 
 .. code-block:: json
 
@@ -233,7 +233,7 @@ The previous item is the sibling that comes before in the current folder.
 Next Item
 ^^^^^^^^^
 
-The next item is the sibling that comes after in the current folder.
+The "next_item" attribute points to the sibling that is located after the current element in the parent container (Plone uses the getObjectPositionInParent attribute to sort content objects within a folderish container).
 
 .. code-block:: json
 
