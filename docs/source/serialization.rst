@@ -217,7 +217,7 @@ The parent is the folder where the page is inserted.
 Previous Item
 ^^^^^^^^^^^^^
 
-The previous item is the simbling that comes before in the current folder.
+The previous item is the sibling that comes before in the current folder.
 
 .. code-block:: json
 
@@ -233,7 +233,7 @@ The previous item is the simbling that comes before in the current folder.
 Next Item
 ^^^^^^^^^
 
-The next item is the simbling that comes after in the current folder.
+The next item is the sibling that comes after in the current folder.
 
 .. code-block:: json
 
