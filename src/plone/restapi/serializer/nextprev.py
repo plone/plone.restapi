@@ -29,7 +29,7 @@ class NextPrevious(object):
         if data is None:
             return {}
         return {
-            "@id": data["url"].ltrim('/view'),
+            "@id": data["url"].lstrip('/view'),
             "@type": data["portal_type"],
             "title": data["title"],
             "description": data["description"],
@@ -44,7 +44,7 @@ class NextPrevious(object):
         if data is None:
             return {}
         return {
-            "@id": data["url"].ltrim('/view'),
+            "@id": data["url"].lstrip('/view'),
             "@type": data["portal_type"],
             "title": data["title"],
             "description": data["description"],
