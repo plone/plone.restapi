@@ -198,13 +198,13 @@ class TestATContentSerializer(unittest.TestCase):
     def test_nextprev_disabled(self):
         folder = api.content.create(
             container=self.portal,
-            type="Folder",
+            type="ATFolder",
             title="Folder with items",
             description="This is a folder with some documents",
         )
         doc = api.content.create(
             container=folder,
-            type="Document",
+            type="ATDocument",
             title="Item 1",
             description="One item alone in the folder"
         )
@@ -215,14 +215,14 @@ class TestATContentSerializer(unittest.TestCase):
     def test_nextprev_no_nextprev(self):
         folder = api.content.create(
             container=self.portal,
-            type="Folder",
+            type="ATFolder",
             title="Folder with items",
             description="This is a folder with some documents",
             nextPreviousEnabled=True,
         )
         doc = api.content.create(
             container=folder,
-            type="Document",
+            type="ATDocument",
             title="Item 1",
             description="One item alone in the folder"
         )
@@ -233,20 +233,20 @@ class TestATContentSerializer(unittest.TestCase):
     def test_nextprev_has_prev(self):
         folder = api.content.create(
             container=self.portal,
-            type="Folder",
+            type="ATFolder",
             title="Folder with items",
             description="This is a folder with some documents",
             nextPreviousEnabled=True,
         )
         api.content.create(
             container=folder,
-            type="Document",
+            type="ATDocument",
             title="Item 1",
             description="Previous item"
         )
         doc = api.content.create(
             container=folder,
-            type="Document",
+            type="ATDocument",
             title="Item 2",
             description="Current item"
         )
@@ -265,20 +265,20 @@ class TestATContentSerializer(unittest.TestCase):
     def test_nextprev_has_next(self):
         folder = api.content.create(
             container=self.portal,
-            type="Folder",
+            type="ATFolder",
             title="Folder with items",
             description="This is a folder with some documents",
             nextPreviousEnabled=True,
         )
         doc = api.content.create(
             container=folder,
-            type="Document",
+            type="ATDocument",
             title="Item 1",
             description="Current item"
         )
         api.content.create(
             container=folder,
-            type="Document",
+            type="ATDocument",
             title="Item 2",
             description="Next item"
         )
@@ -297,26 +297,26 @@ class TestATContentSerializer(unittest.TestCase):
     def test_nextprev_has_nextprev(self):
         folder = api.content.create(
             container=self.portal,
-            type="Folder",
+            type="ATFolder",
             title="Folder with items",
             description="This is a folder with some documents",
             nextPreviousEnabled=True,
         )
         api.content.create(
             container=folder,
-            type="Document",
+            type="ATDocument",
             title="Item 1",
             description="Previous item"
         )
         doc = api.content.create(
             container=folder,
-            type="Document",
+            type="ATDocument",
             title="Item 2",
             description="Current item"
         )
         api.content.create(
             container=folder,
-            type="Document",
+            type="ATDocument",
             title="Item 3",
             description="Next item"
         )

@@ -7,6 +7,7 @@ from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.expansion import expandable_elements
+from plone.restapi.serializer.nextprev import NextPrevious
 from Products.Archetypes.interfaces import IBaseFolder
 from Products.Archetypes.interfaces import IBaseObject
 from Products.CMFCore.utils import getToolByName
@@ -50,6 +51,13 @@ class SerializeToJson(object):
             "layout": self.context.getLayout(),
             "is_folderish": False,
         }
+
+        # Insert next/prev information
+        np = NextPrevious(obj)
+        result.update({
+            "previous_item": np.next,
+            "next_item": np.previous,
+        })
 
         # Insert expandable elements
         result.update(expandable_elements(self.context, self.request))
