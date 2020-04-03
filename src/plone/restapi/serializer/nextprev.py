@@ -10,9 +10,7 @@ class NextPrevious(object):
     def __init__(self, context):
         self.context = context
         parent = aq_parent(aq_inner(context))
-        self.adapter = None
-        if INextPreviousProvider.providedBy(parent):
-            self.adapter = INextPreviousProvider(parent)
+        self.adapter = INextPreviousProvider(parent, None)
 
     @property
     def _enabled(self):

@@ -71,8 +71,8 @@ class SerializeToJson(object):
         # Insert next/prev information
         np = NextPrevious(obj)
         result.update({
-            "previous_item": np.next,
-            "next_item": np.previous,
+            "previous_item": np.previous,
+            "next_item": np.next,
         })
 
         # Insert expandable elements
