@@ -92,7 +92,7 @@ class ImageFieldSerializer(DefaultFieldSerializer):
             return None
 
         width, height = image.getImageSize()
-
+        # import pdb; pdb.set_trace()
         url = get_original_image_url(self.context, self.field.__name__, width, height)
 
         scales = get_scales(self.context, self.field, width, height)

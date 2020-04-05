@@ -53,6 +53,7 @@ def get_scales(context, field, width, height):
 def get_original_image_url(context, fieldname, width, height):
     request = getRequest()
     images_view = getMultiAdapter((context, request), name="images")
+    # import pdb; pdb.set_trace()
     scale = images_view.scale(
         fieldname, width=width, height=height, direction="thumbnail"
     )
