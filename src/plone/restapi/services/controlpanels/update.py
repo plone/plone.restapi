@@ -9,7 +9,7 @@ from zope.publisher.interfaces import IPublishTraverse
 
 
 @implementer(IPublishTraverse)
-class ControlpanelsPatch(Service):
+class ControlpanelsUpdate(Service):
     controlpanel_name = None
 
     def publishTraverse(self, request, name):

@@ -24,7 +24,7 @@
   <plone:service
     method="PATCH"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".patch.ControlpanelsPatch"
+    factory=".update.ControlpanelsUpdate"
     name="@controlpanels"
     permission="plone.app.controlpanel.Overview"
     />
