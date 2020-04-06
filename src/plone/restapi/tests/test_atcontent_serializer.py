@@ -320,7 +320,7 @@ class TestATContentSerializer(unittest.TestCase):
         )
 
     def test_nextprev_root_no_nextprev(self):
-        data = self.serialize()
+        data = self.serialize(self.doc1)
         self.assertEqual({}, data["previous_item"])
         self.assertEqual({}, data["next_item"])
 
@@ -336,7 +336,7 @@ class TestATContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "ATTestDocument",
-                "title": "",
+                "title": "Test Document",
                 "description": ""
             },
             data["previous_item"]
@@ -350,7 +350,7 @@ class TestATContentSerializer(unittest.TestCase):
             title="Item 2",
             description="Next item"
         )
-        data = self.serialize()
+        data = self.serialize(self.doc1)
         self.assertEqual({}, data["previous_item"])
         self.assertEqual(
             {
