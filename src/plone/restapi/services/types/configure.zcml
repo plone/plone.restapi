@@ -11,15 +11,6 @@
     permission="zope2.View"
     />
 
-  <plone:service
-    method="DELETE"
-    accept="application/json,application/schema+json"
-    for="Products.CMFCore.interfaces.ISiteRoot"
-    factory=".delete.TypesDelete"
-    name="@types"
-    permission="cmf.ManagePortal"
-    />
-
-  <adapter factory=".get.TypesInfo" name="types" />
+  <adapter factory=".get.TypesInfo" name="types"/>
 
 </configure>
