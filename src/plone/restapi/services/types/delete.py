@@ -40,5 +40,5 @@ class TypesDelete(Service):
         if not fti:
             raise NotFound("Trying to delete a non-existing type.")
 
-        edit.form_instance.remove((tid, None))
+        edit.form_instance.remove((tid,))
         return self.reply_no_content()
