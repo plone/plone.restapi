@@ -15,7 +15,6 @@ from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
 from plone.restapi.controlpanels.interfaces import IControlpanel
-from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
 
 
 @implementer(IControlpanel)
@@ -126,14 +125,6 @@ class ImagingControlpanel(RegistryConfigletPanel):
 class MarkupControlpanel(RegistryConfigletPanel):
     schema = IMarkupSchema
     configlet_id = "MarkupSettings"
-    configlet_category_id = "plone-content"
-
-
-@adapter(Interface, Interface)
-@implementer(IDexterityTypesControlpanel)
-class DexterityTypesControlpanel(RegistryConfigletPanel):
-    schema = Interface
-    configlet_id = "dexterity-types"
     configlet_category_id = "plone-content"
 
 

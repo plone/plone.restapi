@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.controlpanels import IControlpanel
-from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.services import Service
 from zExceptions import BadRequest
 from zope.component import getAdapters
@@ -9,11 +8,13 @@ from zope.publisher.interfaces import IPublishTraverse
 
 
 @implementer(IPublishTraverse)
-class ControlpanelsAdd(Service):
-    controlpanel_name = None
+class ControlpanelsDelete(Service):
+    def __init__(self, *args, **kwargs):
+        super(ControlpanelsDelete, self).__init__(*args, **kwargs)
+        self.controlpanel_names = []
 
     def publishTraverse(self, request, name):
-        self.controlpanel_name = name
+        self.controlpanel_names.append(name)
         return self
 
     def get_controlpanel_adapters(self):
@@ -27,10 +28,11 @@ class ControlpanelsAdd(Service):
         return panels.get(name)
 
     def reply(self):
-        if not self.controlpanel_name:
+        if len(self.controlpanel_names) < 2:
             raise BadRequest("Missing parameter controlpanelname")
 
-        panel = self.panel_by_name(self.controlpanel_name)
-        panel.add()
+        name, child = self.controlpanel_names
+        panel = self.panel_by_name(name)
+        panel.delete(child)
 
         return self.reply_no_content()
