@@ -45,6 +45,7 @@ Content-Type: application/json
   "layout": "event_view", 
   "location": null, 
   "modified": "1995-07-31T17:30:00", 
+  "next_item": {}, 
   "open_end": false, 
   "parent": {
     "@id": "http://localhost:55001/plone", 
@@ -52,6 +53,7 @@ Content-Type: application/json
     "description": "", 
     "title": "Plone site"
   }, 
+  "previous_item": {}, 
   "recurrence": null, 
   "relatedItems": [], 
   "review_state": "private", 

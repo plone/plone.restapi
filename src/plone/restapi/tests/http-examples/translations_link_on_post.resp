@@ -45,6 +45,7 @@ Location: http://localhost:55001/plone/de/mydocument
   }, 
   "layout": "document_view", 
   "modified": "1995-07-31T17:30:00", 
+  "next_item": {}, 
   "parent": {
     "@id": "http://localhost:55001/plone/de", 
     "@type": "LRF", 
@@ -52,6 +53,7 @@ Location: http://localhost:55001/plone/de/mydocument
     "review_state": "published", 
     "title": "Deutsch"
   }, 
+  "previous_item": {}, 
   "relatedItems": [], 
   "review_state": "private", 
   "rights": "", 
