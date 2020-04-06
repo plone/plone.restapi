@@ -318,3 +318,85 @@ class TestATContentSerializer(unittest.TestCase):
             },
             data["next_item"]
         )
+
+    def test_nextprev_root_no_nextprev(self):
+        data = self.serialize()
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual({}, data["next_item"])
+
+    def test_nextprev_root_has_prev(self):
+        doc = api.content.create(
+            container=self.portal,
+            type="ATTestDocument",
+            title="Item 2",
+            description="Current item"
+        )
+        data = self.serialize(doc)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/doc1",
+                "@type": "DXTestDocument",
+                "title": "",
+                "description": ""
+            },
+            data["previous_item"]
+        )
+        self.assertEqual({}, data["next_item"])
+
+    def test_nextprev_root_has_next(self):
+        api.content.create(
+            container=self.portal,
+            type="ATTestDocument",
+            title="Item 2",
+            description="Next item"
+        )
+        data = self.serialize()
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/item-2",
+                "@type": "DXTestDocument",
+                "title": "Item 2",
+                "description": "Next item"
+            },
+            data["next_item"]
+        )
+
+    def test_nextprev_root_has_nextprev(self):
+        api.content.create(
+            container=self.portal,
+            type="ATTestDocument",
+            title="Item 1",
+            description="Previous item"
+        )
+        doc = api.content.create(
+            container=self.portal,
+            type="ATTestDocument",
+            title="Item 2",
+            description="Current item"
+        )
+        api.content.create(
+            container=self.portal,
+            type="ATTestDocument",
+            title="Item 3",
+            description="Next item"
+        )
+        data = self.serialize(doc)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/item-1",
+                "@type": "DXTestDocument",
+                "title": "Item 1",
+                "description": "Previous item"
+            },
+            data["previous_item"]
+        )
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/item-3",
+                "@type": "DXTestDocument",
+                "title": "Item 3",
+                "description": "Next item"
+            },
+            data["next_item"]
+        )
