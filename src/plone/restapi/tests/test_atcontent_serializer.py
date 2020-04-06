@@ -195,30 +195,12 @@ class TestATContentSerializer(unittest.TestCase):
         self.assertIn("is_folderish", obj)
         self.assertEqual(True, obj["is_folderish"])
 
-    def test_nextprev_disabled(self):
-        folder = api.content.create(
-            container=self.portal,
-            type="ATTestFolder",
-            title="Folder with items",
-            description="This is a folder with some documents",
-        )
-        doc = api.content.create(
-            container=folder,
-            type="ATTestDocument",
-            title="Item 1",
-            description="One item alone in the folder"
-        )
-        data = self.serialize(doc)
-        self.assertEqual({}, data["previous_item"])
-        self.assertEqual({}, data["next_item"])
-
     def test_nextprev_no_nextprev(self):
         folder = api.content.create(
             container=self.portal,
             type="ATTestFolder",
             title="Folder with items",
             description="This is a folder with some documents",
-            nextPreviousEnabled=True,
         )
         doc = api.content.create(
             container=folder,
@@ -236,7 +218,6 @@ class TestATContentSerializer(unittest.TestCase):
             type="ATTestFolder",
             title="Folder with items",
             description="This is a folder with some documents",
-            nextPreviousEnabled=True,
         )
         api.content.create(
             container=folder,
@@ -268,7 +249,6 @@ class TestATContentSerializer(unittest.TestCase):
             type="ATTestFolder",
             title="Folder with items",
             description="This is a folder with some documents",
-            nextPreviousEnabled=True,
         )
         doc = api.content.create(
             container=folder,
@@ -300,7 +280,6 @@ class TestATContentSerializer(unittest.TestCase):
             type="ATTestFolder",
             title="Folder with items",
             description="This is a folder with some documents",
-            nextPreviousEnabled=True,
         )
         api.content.create(
             container=folder,

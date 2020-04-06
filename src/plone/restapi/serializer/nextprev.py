@@ -13,15 +13,9 @@ class NextPrevious(object):
         self.adapter = INextPreviousProvider(parent, None)
 
     @property
-    def _enabled(self):
-        if self.adapter is None:
-            return False
-        return self.adapter.enabled
-
-    @property
     def next(self):
         """ return info about the next item in the container """
-        if not self._enabled:
+        if self.adapter is None:
             return {}
         data = self.adapter.getNextItem(self.context)
         if data is None:
@@ -36,7 +30,7 @@ class NextPrevious(object):
     @property
     def previous(self):
         """ return info about the previous item in the container """
-        if not self._enabled:
+        if self.adapter is None:
             return {}
         data = self.adapter.getPreviousItem(self.context)
         if data is None:
