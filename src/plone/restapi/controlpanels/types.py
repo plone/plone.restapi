@@ -6,10 +6,13 @@ from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import Interface
 from plone.i18n.normalizer import idnormalizer
+from plone.restapi.interfaces import IJsonCompatible
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.deserializer import json_body
 from plone.restapi.controlpanels import RegistryConfigletPanel
 from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
 import plone.protect.interfaces
+from plone.app.dexterity.interfaces import ITypeSettings
 
 
 @adapter(Interface, Interface)
@@ -46,6 +49,13 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
         add_type = queryMultiAdapter((context, self.request), name='add-type')
         fti = add_type.form_instance.create(data=properties)
         add_type.form_instance.add(fti)
+
+    def get(self, name):
+        self.schema = ITypeSettings
+        self.title = name
+        context = queryMultiAdapter((self.context, self.request), name='dexterity-types')
+        context = context.publishTraverse(self.request, name)
+        return IJsonCompatible(ISerializeToJson(self)(context.fti))
 
     def delete(self, name):
         context = queryMultiAdapter((self.context, self.request), name='dexterity-types')

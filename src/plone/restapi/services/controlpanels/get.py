@@ -12,10 +12,12 @@ from zope.publisher.interfaces import IPublishTraverse
 
 @implementer(IPublishTraverse)
 class ControlpanelsGet(Service):
-    controlpanel_name = None
+    def __init__(self, *args, **kwargs):
+        super(ControlpanelsGet, self).__init__(*args, **kwargs)
+        self.controlpanel_names = []
 
     def publishTraverse(self, request, name):
-        self.controlpanel_name = name
+        self.controlpanel_names.append(name)
         return self
 
     def get_controlpanel_adapters(self):
@@ -43,7 +45,7 @@ class ControlpanelsGet(Service):
         return panels.get(name)
 
     def reply(self):
-        if self.controlpanel_name:
+        if self.controlpanel_names:
             return self.reply_panel()
 
         def serialize(panels):
@@ -55,8 +57,12 @@ class ControlpanelsGet(Service):
         return IJsonCompatible(list(serialize(panels)))
 
     def reply_panel(self):
-        panel = self.panel_by_name(self.controlpanel_name)
+        name = self.controlpanel_names[0]
+        panel = self.panel_by_name(name)
         if panel is None:
             self.request.response.setStatus(404)
             return
+
+        if len(self.controlpanel_names) > 1:
+            return panel.get(self.controlpanel_names[1])
         return IJsonCompatible(ISerializeToJson(panel)())
