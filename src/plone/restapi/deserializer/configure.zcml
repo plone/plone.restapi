@@ -36,7 +36,7 @@
   </configure>
 
   <configure zcml:condition="have plone-5">
-    <adapter factory=".controlpanels.ControlpanelDeserializeFromJson" />
+    <include package=".controlpanels" />
   </configure>
 
 </configure>
