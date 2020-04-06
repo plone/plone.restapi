@@ -313,6 +313,45 @@ class TestDXContentSerializer(unittest.TestCase):
             data["next_item"]
         )
 
+    def test_nextprev_root_has_nextprev(self):
+        api.content.create(
+            container=self.portal,
+            type="Document",
+            title="Item 1",
+            description="Previous item"
+        )
+        doc = api.content.create(
+            container=self.portal,
+            type="Document",
+            title="Item 2",
+            description="Current item"
+        )
+        api.content.create(
+            container=self.portal,
+            type="Document",
+            title="Item 3",
+            description="Next item"
+        )
+        data = self.serialize(doc)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/folder-with-items/item-1",
+                "@type": "Document",
+                "title": "Item 1",
+                "description": "Previous item"
+            },
+            data["previous_item"]
+        )
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/folder-with-items/item-3",
+                "@type": "Document",
+                "title": "Item 3",
+                "description": "Next item"
+            },
+            data["next_item"]
+        )
+
     def test_richtext_serializer_context(self):
         """This checks if the context is passed in correctly.
 
