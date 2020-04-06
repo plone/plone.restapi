@@ -1,0 +1,12 @@
+POST /plone/de HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "@type": "Document",
+    "id": "mydocument",
+    "language": "de",
+    "title": "My German Document",
+    "translation_of": "SomeUUID000000000000000000000003"
+}

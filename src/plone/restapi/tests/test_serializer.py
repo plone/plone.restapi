@@ -353,10 +353,10 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
 
         items = self.serialize(self.portal.collection1, fullobjects=True).get("items")
         self.assertIn("UID", items[0])
-        self.assertEquals(items[0]["id"], self.portal.doc1.getId())
+        self.assertEqual(items[0]["id"], self.portal.doc1.getId())
 
         self.assertIn("UID", items[1])
-        self.assertEquals(items[1]["id"], self.portal.doc2.getId())
+        self.assertEqual(items[1]["id"], self.portal.doc2.getId())
 
     def test_serialize_returns_site_root_common(self):
         self.assertIn("title", self.serialize(self.portal))

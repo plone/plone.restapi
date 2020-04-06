@@ -786,10 +786,10 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_users_update_portrait(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
             }
         }
         api.user.create(email="noam.chomsky@example.com", username="noam")
@@ -805,10 +805,10 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_users_update_portrait_with_scale(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
                 "scale": True,
             }
         }
@@ -1560,6 +1560,7 @@ class TestPAMDocumentation(TestDocumentationBase):
         language_tool = api.portal.get_tool("portal_languages")
         language_tool.addSupportedLanguage("en")
         language_tool.addSupportedLanguage("es")
+        language_tool.addSupportedLanguage("de")
         applyProfile(self.portal, "plone.app.multilingual:default")
 
         en_id = self.portal["en"].invokeFactory(
@@ -1613,3 +1614,26 @@ class TestPAMDocumentation(TestDocumentationBase):
             json={"language": "es"},
         )
         save_request_and_response_for_docs("translations_delete", response)
+
+    def test_documentation_translations_link_on_post(self):
+        response = self.api_session.post(
+            "{}/de".format(self.portal.absolute_url()),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My German Document",
+                "translation_of": self.es_content.UID(),
+                "language": "de",
+            },
+        )
+        save_request_and_response_for_docs("translations_link_on_post", response)
+
+    def test_documentation_translation_locator(self):
+        response = self.api_session.get(
+            "{}/@translation-locator?target_language=de".format(
+                self.es_content.absolute_url()
+            ),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        save_request_and_response_for_docs("translation_locator", response)

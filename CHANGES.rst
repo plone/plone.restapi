@@ -8,6 +8,67 @@ Changelog
 
 .. towncrier release notes start
 
+6.5.2 (2020-04-01)
+------------------
+
+Bug fixes:
+
+
+- Fix for the use case while updating user properties in the @user endpoint, and the
+  portrait is already previously set but the request includes the (previously) serialized
+  value as a string because the user are not updating it
+  [sneridagh] (#896)
+
+
+6.5.1 (2020-04-01)
+------------------
+
+Bug fixes:
+
+
+- Fix deleting user portrait.
+  [buchi] (#751)
+
+
+6.5.0 (2020-03-30)
+------------------
+
+New features:
+
+
+- Link translation on content creation feature and new @translation-locator endpoint
+  [sneridagh] (#887)
+
+
+6.4.1 (2020-03-25)
+------------------
+
+Bug fixes:
+
+
+- Make discussion endpoint return content that is deserialized via portal transforms (e.g. 'text/x-web-intelligent') [timo] (#889)
+
+
+6.4.0 (2020-03-23)
+------------------
+
+New features:
+
+
+- Add targetUrl to the dxcontent serializer for primary file fields to be able to download a file directly.
+  [csenger] (#886)
+
+
+Bug fixes:
+
+
+- Fixed package install error with Python 3.6 without locale.
+  See `coredev issue 642 <https://github.com/plone/buildout.coredev/issues/642#issuecomment-597008272>`_.
+  [maurits] (#642)
+- plone.app.discussion extends the review workflow for moderation of comments. This change takes the additional workflow states into account.
+  [ksuess] (#842)
+
+
 6.3.0 (2020-03-03)
 ------------------
 
