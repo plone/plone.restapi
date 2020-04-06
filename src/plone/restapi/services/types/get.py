@@ -30,12 +30,6 @@ class TypesInfo(object):
         self.context = context
         self.request = request
 
-    def count(self, portal_type):
-        catalog = getToolByName(self.context, 'portal_catalog')
-        lengths = dict(
-            catalog.Indexes['portal_type'].uniqueValues(withLengths=True))
-        return lengths.get(portal_type, 0)
-
     def __call__(self, expand=False):
         result = {"types": {"@id": "{}/@types".format(self.context.absolute_url())}}
         if not expand:
@@ -70,8 +64,6 @@ class TypesInfo(object):
                 "@id": "{}/@types/{}".format(portal_url, fti.getId()),
                 "title": translate(fti.Title(), context=self.request),
                 "addable": fti.getId() in allowed_types if can_add else False,
-                "description": translate(fti.Description(), context=self.request),
-                "count": self.count(fti.getId()),
             }
             for fti in ftis
         ]
