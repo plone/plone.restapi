@@ -31,7 +31,7 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
             name = fti.__name__
             json['items'].append({
                 "@id": "{}/controlpanel/dexterity-types/{}".format(portal_url, name),
-                "@type": fti.name,
+                "@type": name,
                 "meta_type": fti.meta_type,
                 "id": name,
                 "title": fti.Title(),
