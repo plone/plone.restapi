@@ -75,6 +75,7 @@
 
   <adapter
     factory="plone.restapi.controlpanels.DexterityTypesControlpanel"
+    provides="plone.restapi.controlpanels.interfaces.IDexterityTypesControlpanel"
     name="dexterity-types" />
 
 <!-- Security -->

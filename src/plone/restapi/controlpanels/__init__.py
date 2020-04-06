@@ -12,21 +12,10 @@ from Products.CMFPlone.interfaces.controlpanel import ISecuritySchema
 from Products.CMFPlone.interfaces.controlpanel import ISiteSchema
 from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
 from zope.component import adapter
-from zope.interface import Attribute
 from zope.interface import implementer
 from zope.interface import Interface
-
-
-class IControlpanel(Interface):
-    __name__ = Attribute("Name of the controlpanel in the URL")
-    title = Attribute("Title of this controlpanel")
-    group = Attribute("Group name of this controlpanel")
-    schema = Attribute("Registry schema of this controlpanel")
-
-    configlet_id = Attribute("Id the configlet, ie MailHost")
-    configlet_category_id = Attribute(
-        "Category of the configlet, ie plone-general"
-    )  # noqa
+from plone.restapi.controlpanels.interfaces import IControlpanel
+from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
 
 
 @implementer(IControlpanel)
@@ -139,11 +128,14 @@ class MarkupControlpanel(RegistryConfigletPanel):
     configlet_id = "MarkupSettings"
     configlet_category_id = "plone-content"
 
+
 @adapter(Interface, Interface)
+@implementer(IDexterityTypesControlpanel)
 class DexterityTypesControlpanel(RegistryConfigletPanel):
     schema = Interface
     configlet_id = "dexterity-types"
     configlet_category_id = "plone-content"
+
 
 # Security
 
