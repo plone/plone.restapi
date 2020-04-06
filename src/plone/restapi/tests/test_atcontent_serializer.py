@@ -335,7 +335,7 @@ class TestATContentSerializer(unittest.TestCase):
         self.assertEqual(
             {
                 "@id": "http://nohost/plone/doc1",
-                "@type": "DXTestDocument",
+                "@type": "ATTestDocument",
                 "title": "",
                 "description": ""
             },
@@ -355,7 +355,7 @@ class TestATContentSerializer(unittest.TestCase):
         self.assertEqual(
             {
                 "@id": "http://nohost/plone/item-2",
-                "@type": "DXTestDocument",
+                "@type": "ATTestDocument",
                 "title": "Item 2",
                 "description": "Next item"
             },
@@ -385,7 +385,7 @@ class TestATContentSerializer(unittest.TestCase):
         self.assertEqual(
             {
                 "@id": "http://nohost/plone/item-1",
-                "@type": "DXTestDocument",
+                "@type": "ATTestDocument",
                 "title": "Item 1",
                 "description": "Previous item"
             },
@@ -394,7 +394,7 @@ class TestATContentSerializer(unittest.TestCase):
         self.assertEqual(
             {
                 "@id": "http://nohost/plone/item-3",
-                "@type": "DXTestDocument",
+                "@type": "ATTestDocument",
                 "title": "Item 3",
                 "description": "Next item"
             },
