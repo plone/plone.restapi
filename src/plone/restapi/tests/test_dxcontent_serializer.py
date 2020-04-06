@@ -335,7 +335,7 @@ class TestDXContentSerializer(unittest.TestCase):
         data = self.serialize(doc)
         self.assertEqual(
             {
-                "@id": "http://nohost/plone/folder-with-items/item-1",
+                "@id": "http://nohost/plone/item-1",
                 "@type": "Document",
                 "title": "Item 1",
                 "description": "Previous item"
@@ -344,7 +344,7 @@ class TestDXContentSerializer(unittest.TestCase):
         )
         self.assertEqual(
             {
-                "@id": "http://nohost/plone/folder-with-items/item-3",
+                "@id": "http://nohost/plone/item-3",
                 "@type": "Document",
                 "title": "Item 3",
                 "description": "Next item"
