@@ -193,3 +193,56 @@ Specify relations by intid:
     "relatedItems": [347127075, 347127076]
   }
 
+Next/Previous/Parent Navigation
+-------------------------------
+
+The response body of a GET request contains three attributes that allows navigating to the parent and the next and previous sibling in the container the current document is located.
+
+Parent
+^^^^^^
+
+The "parent" attribute points to the parent container of the current content object.
+
+.. code-block:: json
+
+  {
+    "parent": {
+      "@id": "http://nohost/plone/folder-with-items", 
+      "@type": "Folder", 
+      "title": "Folder with items",
+      "description": "This is a folder with two documents", 
+    }
+  }
+
+Previous Item
+^^^^^^^^^^^^^
+
+The "previous_item" attribute points to the sibling that is located before the current element in the parent container (Plone uses the getObjectPositionInParent attribute to sort content objects within a folderish container).
+
+.. code-block:: json
+
+  {
+    "previous_item": {
+      "@id": "http://nohost/plone/folder-with-items/item-1", 
+      "@type": "Document",
+      "title": "Item 1",
+      "description": "This the previous item"
+    }
+  }
+
+Next Item
+^^^^^^^^^
+
+The "next_item" attribute points to the sibling that is located after the current element in the parent container (Plone uses the getObjectPositionInParent attribute to sort content objects within a folderish container).
+
+.. code-block:: json
+
+  {
+    "next_item": {
+      "@id": "http://nohost/plone/folder-with-items/item-2", 
+      "@type": "Document",
+      "title": "Item 2",
+      "description": "This the next item"
+    }
+  }
+
