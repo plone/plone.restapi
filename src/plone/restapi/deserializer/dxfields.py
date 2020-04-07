@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
+from decimal import Decimal
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
@@ -17,6 +18,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IDatetime
+from zope.schema.interfaces import IDecimal
 from zope.schema.interfaces import IDict
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import IFromUnicode
@@ -281,5 +283,16 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
             outputMimeType=self.field.output_mime_type,
             encoding=encoding,
         )
+        self.field.validate(value)
+        return value
+
+
+@implementer(IFieldDeserializer)
+@adapter(IDecimal, IDexterityContent, IBrowserRequest)
+class DecimalFieldDeserializer(DefaultFieldDeserializer):
+
+    def __call__(self, value):
+        if not isinstance(value, Decimal):
+            value = Decimal(value)
         self.field.validate(value)
         return value
