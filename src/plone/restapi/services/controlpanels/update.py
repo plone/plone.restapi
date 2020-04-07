@@ -10,10 +10,12 @@ from zope.publisher.interfaces import IPublishTraverse
 
 @implementer(IPublishTraverse)
 class ControlpanelsUpdate(Service):
-    controlpanel_name = None
+    def __init__(self, context, request):
+        super(ControlpanelsUpdate, self).__init__(context, request)
+        self.params = []
 
     def publishTraverse(self, request, name):
-        self.controlpanel_name = name
+        self.params.append(name)
         return self
 
     def get_controlpanel_adapters(self):
@@ -27,11 +29,16 @@ class ControlpanelsUpdate(Service):
         return panels.get(name)
 
     def reply(self):
-        if not self.controlpanel_name:
+        if not self.params:
             raise BadRequest("Missing parameter controlpanelname")
 
-        panel = self.panel_by_name(self.controlpanel_name)
-        deserializer = IDeserializeFromJson(panel)
-        deserializer()  # The deserializer knows where to put it.
+        panel = self.panel_by_name(self.params[0])
+        if len(self.params) > 1:
+            # Update panel child
+            panel.update(self.params[1:])
+        else:
+            # Update panel
+            deserializer = IDeserializeFromJson(panel)
+            deserializer()  # The deserializer knows where to put it.
 
         return self.reply_no_content()

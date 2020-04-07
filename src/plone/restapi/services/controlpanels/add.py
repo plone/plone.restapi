@@ -9,10 +9,12 @@ from zope.publisher.interfaces import IPublishTraverse
 
 @implementer(IPublishTraverse)
 class ControlpanelsAdd(Service):
-    controlpanel_name = None
+    def __init__(self, context, request):
+        super(ControlpanelsAdd, self).__init__(context, request)
+        self.params = []
 
     def publishTraverse(self, request, name):
-        self.controlpanel_name = name
+        self.params.append(name)
         return self
 
     def get_controlpanel_adapters(self):
@@ -26,10 +28,10 @@ class ControlpanelsAdd(Service):
         return panels.get(name)
 
     def reply(self):
-        if not self.controlpanel_name:
+        if not self.params:
             raise BadRequest("Missing parameter controlpanelname")
 
-        panel = self.panel_by_name(self.controlpanel_name)
-        panel.add()
+        panel = self.panel_by_name(self.params[0])
+        panel.add(self.params[1:])
 
         return self.reply_no_content()

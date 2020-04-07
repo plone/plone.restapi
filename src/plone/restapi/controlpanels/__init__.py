@@ -14,6 +14,7 @@ from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.publisher.interfaces import NotFound
 from plone.restapi.controlpanels.interfaces import IControlpanel
 
 
@@ -50,6 +51,18 @@ class RegistryConfigletPanel(object):
         if self.configlet:
             self.title = self.configlet["title"]
             self.group = self._get_group_title()
+
+    def add(self, names):
+        raise NotFound(self.context, names, self.request)
+
+    def get(self, names):
+        raise NotFound(self.context, names, self.request)
+
+    def update(self, names):
+        raise NotFound(self.context, names, self.request)
+
+    def delete(self, names):
+        raise NotFound(self.context, names, self.request)
 
 
 # General

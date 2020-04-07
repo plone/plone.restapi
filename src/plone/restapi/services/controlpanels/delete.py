@@ -9,12 +9,12 @@ from zope.publisher.interfaces import IPublishTraverse
 
 @implementer(IPublishTraverse)
 class ControlpanelsDelete(Service):
-    def __init__(self, *args, **kwargs):
-        super(ControlpanelsDelete, self).__init__(*args, **kwargs)
-        self.controlpanel_names = []
+    def __init__(self, context, request):
+        super(ControlpanelsDelete, self).__init__(context, request)
+        self.params = []
 
     def publishTraverse(self, request, name):
-        self.controlpanel_names.append(name)
+        self.params.append(name)
         return self
 
     def get_controlpanel_adapters(self):
@@ -28,11 +28,10 @@ class ControlpanelsDelete(Service):
         return panels.get(name)
 
     def reply(self):
-        if len(self.controlpanel_names) < 2:
-            raise BadRequest("Missing parameter controlpanelname")
+        if len(self.params) < 2:
+            raise BadRequest("Can't delete Control Panel: %s" % self.params)
 
-        name, child = self.controlpanel_names
-        panel = self.panel_by_name(name)
-        panel.delete(child)
+        panel = self.panel_by_name(self.params[0])
+        panel.delete(self.params[1:])
 
         return self.reply_no_content()

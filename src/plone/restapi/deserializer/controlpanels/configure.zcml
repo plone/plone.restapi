@@ -3,5 +3,6 @@
     i18n_domain="plone.restapi">
 
     <adapter factory=".ControlpanelDeserializeFromJson" />
+    <adapter factory=".types.DexterityTypesControlpanelDeserializeFromJson" />
 
 </configure>

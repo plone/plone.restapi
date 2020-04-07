@@ -8,6 +8,7 @@ from zope.interface import Interface
 from plone.i18n.normalizer import idnormalizer
 from plone.restapi.interfaces import IJsonCompatible
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.deserializer import json_body
 from plone.restapi.controlpanels import RegistryConfigletPanel
 from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
@@ -22,7 +23,7 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
     configlet_id = "dexterity-types"
     configlet_category_id = "plone-content"
 
-    def add(self):
+    def add(self, names):
         data = json_body(self.request)
 
         title = data.get("title", None)
@@ -50,14 +51,23 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
         fti = add_type.form_instance.create(data=properties)
         add_type.form_instance.add(fti)
 
-    def get(self, name):
+    def get(self, names):
+        name = names[0]
         self.schema = ITypeSettings
-        self.title = name
         context = queryMultiAdapter((self.context, self.request), name='dexterity-types')
         context = context.publishTraverse(self.request, name)
         return IJsonCompatible(ISerializeToJson(self)(context.fti))
 
-    def delete(self, name):
+    def update(self, names):
+        name = names[0]
+        context = queryMultiAdapter((self.context, self.request), name='dexterity-types')
+        context = context.publishTraverse(self.request, name)
+
+        deserializer = IDeserializeFromJson(self)
+        return deserializer(context)
+
+    def delete(self, names):
+        name = names[0]
         context = queryMultiAdapter((self.context, self.request), name='dexterity-types')
         edit = queryMultiAdapter((context, self.request), name='edit')
         edit.form_instance.remove((name, None))
