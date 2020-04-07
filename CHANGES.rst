@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+6.6.0 (2020-04-07)
+------------------
+
+New features:
+
+
+- Add next_item and previous_item attributes to allow to navigate to the previous and next sibling in the container the document is located.
+  [rodfersou] (#900)
+
+
 6.5.2 (2020-04-01)
 ------------------
 
