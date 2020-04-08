@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from zope.publisher.interfaces import NotFound
 from plone.restapi.controlpanels import IControlpanel
 from plone.restapi.interfaces import IJsonCompatible
 from plone.restapi.interfaces import ISerializeToJson
@@ -61,12 +62,11 @@ class ControlpanelsGet(Service):
         name = self.params[0]
         panel = self.panel_by_name(name)
         if panel is None:
-            self.request.response.setStatus(404)
-            return
+            raise NotFound(name)
 
         # Panel child request
         if len(self.params) > 1:
-            return panel.get(self.params[1:])
+            return IJsonCompatible(panel.get(self.params[1:]))
 
         # Panel request
         return IJsonCompatible(ISerializeToJson(panel)())

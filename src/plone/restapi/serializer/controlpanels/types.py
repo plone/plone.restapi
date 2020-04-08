@@ -13,7 +13,6 @@ from zope.component import getAllUtilitiesRegisteredFor
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
-import zope.schema
 
 
 @implementer(ISerializeToJson)
@@ -26,19 +25,21 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
         return lengths.get(portal_type, 0)
 
     def serialize_item(self, proxy):
+        overview = queryMultiAdapter((proxy, self.controlpanel.request), name='overview')
+        form = overview.form_instance
         json_schema = get_jsonschema_for_controlpanel(
-            self.controlpanel, self.controlpanel.context, self.controlpanel.request
+            self.controlpanel, self.controlpanel.context, self.controlpanel.request, form
         )
 
         json_data = {}
-        for name, field in zope.schema.getFields(self.schema).items():
+        for name, item in form.fields.items():
             serializer = queryMultiAdapter(
-                (field, proxy, self.controlpanel.request), IFieldSerializer
+                (item.field, proxy.fti, self.controlpanel.request), IFieldSerializer
             )
             if serializer:
                 value = serializer()
             else:
-                value = getattr(proxy, name, None)
+                value = getattr(proxy.fti, name, None)
             json_data[json_compatible(name)] = value
 
          # JSON schema
