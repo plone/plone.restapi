@@ -1,6 +1,8 @@
 from . import PortletSerializer
+from DateTime import DateTime
 from plone.app.portlets.portlets.news import Renderer
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.serializer.converters import json_compatible
 from zope.component import getMultiAdapter
 
 
@@ -23,27 +25,35 @@ class NewsPortletSerializer(PortletSerializer):
 
 
 class NewsPortletRenderer(Renderer):
+    def as_date(self, value):
+        if value:
+            if isinstance(value, DateTime):
+                value = value.asdatetime()
+
+            return json_compatible(value)
+
     def render(self):
         items = []
         brains = self.published_news_items()
 
-        for brain in brains:
-            itemList = getMultiAdapter(
-                (brain, self.request), ISerializeToJsonSummary)()
-            ploneview = getMultiAdapter(
-                (self.context, self.request), name='plone')
-            itemList['date'] = ploneview.toLocalizedTime(brain.created)
-            # Using datetime fails with:
-            #   Object of type DateTime is not JSON serializable
-            # itemList['date'] = brain.created.asdatetime()
+        # ploneview = getMultiAdapter(
+        #     (self.context, self.request), name='plone')
+        # item['date'] = ploneview.toLocalizedTime(brain.Date)
 
-            itemList['date'] = brain.created.strftime('%Y-%m-%d %X')
-            itemList['thumb'] = ''
+        for brain in brains:
+            item = getMultiAdapter(
+                (brain, self.request), ISerializeToJsonSummary)()
+
+            item['created'] = self.as_date(brain.created)
+            item['effective'] = self.as_date(brain.effective)
+            item['thumb'] = ''
 
             if self.thumb_scale and brain.getIcon:
-                itemList['thumb'] = '{}/@@images/image/{}'.format(
-                                    brain.getURL(), self.thumb_scale())
-            items.append(itemList)
+                item['thumb'] = '{}/@@images/image/{}'.format(
+                    brain.getURL(), self.thumb_scale())
+
+            items.append(item)
+
         res = {
             'items': items,
             'all_news_link': self.all_news_link(),

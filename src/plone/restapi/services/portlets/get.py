@@ -17,6 +17,7 @@ class PortletsGet(Service):
     def publishTraverse(self, request, name):  # noqa
         if name:
             self.portletmanager_id = name
+
         return self
 
     def reply(self):
@@ -26,21 +27,27 @@ class PortletsGet(Service):
         def serialize(portletmanagers):
             for name, manager in portletmanagers:
                 serializer = queryMultiAdapter(
-                   (manager, self.context, self.request),
-                   ISerializeToJsonSummary)
+                    (manager, self.context, self.request),
+                    ISerializeToJsonSummary)
                 yield serializer()
 
         portletmanagers = get_portletmanagers()
+
         return IJsonCompatible(list(serialize(portletmanagers)))
 
     def reply_portletmanager(self):
         manager = manager_by_name(self.context, self.portletmanager_id)
+
         if manager is None:
             self.request.response.setStatus(404)
+
             return
         serializer = queryMultiAdapter((manager, self.context, self.request),
                                        ISerializeToJson)
+
         if serializer is None:
             self.request.response.setStatus(501)
+
             return dict(error=dict(message='No serializer available.'))
+
         return serializer()
