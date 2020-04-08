@@ -138,7 +138,8 @@ class TestSearchFunctional(unittest.TestCase):
         registry = getUtility(IRegistry)
         search_settings = registry.forInterface(ISearchSchema, prefix="plone")
         search_settings.types_not_searched = ('Folder',)
-
+        transaction.commit()
+        
         response = self.api_session.get("/folder/@search")
         self.assertSetEqual(
             {u"/plone/folder/doc", u"/plone/folder/other-document"},
