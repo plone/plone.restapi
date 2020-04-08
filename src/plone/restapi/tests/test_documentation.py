@@ -1546,6 +1546,15 @@ class TestCommenting(TestDocumentationBase):
         response = self.api_session.get("/@controlpanels/editing")
         save_request_and_response_for_docs("controlpanels_get_item", response)
 
+    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
+    def test_controlpanels_get_dexterity(self):
+        response = self.api_session.get("/@controlpanels/dexterity-types")
+        save_request_and_response_for_docs("controlpanels_get_dexterity", response)
+
+    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
+    def test_controlpanels_get_dexterity_item(self):
+        response = self.api_session.get("/@controlpanels/dexterity-types/Document")
+        save_request_and_response_for_docs("controlpanels_get_dexterity_item", response)
 
 @unittest.skipUnless(
     PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
