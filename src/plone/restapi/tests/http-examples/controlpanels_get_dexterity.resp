@@ -18,7 +18,7 @@ Content-Type: application/json
     {
       "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Document", 
       "@type": "Document", 
-      "count": 1, 
+      "count": 0, 
       "description": "", 
       "id": "Document", 
       "meta_type": "Dexterity FTI", 

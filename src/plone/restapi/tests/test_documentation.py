@@ -24,6 +24,7 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PAM_INSTALLED  # noqa
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_APP_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.statictime import StaticTime
@@ -1345,7 +1346,7 @@ class TestDocumentation(TestDocumentationBase):
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
 
-    layer = layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         super(TestDocumentationMessageTranslations, self).setUp()
@@ -1536,25 +1537,51 @@ class TestCommenting(TestDocumentationBase):
         response = self.api_session.get("/front-page?expand=breadcrumbs,workflow")
         save_request_and_response_for_docs("expansion", response)
 
-    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
+
+@unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
+class TestControlPanelDocumentation(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_APP_FUNCTIONAL_TESTING
+
     def test_controlpanels_get_listing(self):
         response = self.api_session.get("/@controlpanels")
         save_request_and_response_for_docs("controlpanels_get", response)
 
-    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
     def test_controlpanels_get_item(self):
         response = self.api_session.get("/@controlpanels/editing")
         save_request_and_response_for_docs("controlpanels_get_item", response)
 
-    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
     def test_controlpanels_get_dexterity(self):
         response = self.api_session.get("/@controlpanels/dexterity-types")
         save_request_and_response_for_docs("controlpanels_get_dexterity", response)
 
-    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
-    def test_controlpanels_get_dexterity_item(self):
-        response = self.api_session.get("/@controlpanels/dexterity-types/Document")
+    def test_controlpanels_crud_dexterity(self):
+        # POST
+        response = self.api_session.post("/@controlpanels/dexterity-types",
+            json={
+                "title": "My Custom Content Types",
+                "description": "A custom content-type",
+            },
+        )
+        save_request_and_response_for_docs("controlpanels_post_dexterity_item", response)
+
+        # GET
+        response = self.api_session.get("/@controlpanels/dexterity-types/my-custom-content-type")
         save_request_and_response_for_docs("controlpanels_get_dexterity_item", response)
+
+        # PATCH
+        response = self.api_session.patch("/@controlpanels/dexterity-types/my-custom-content-type",
+            json={
+                "title": "My Content Types",
+                "description": "A content-type",
+            },
+        )
+        save_request_and_response_for_docs("controlpanels_patch_dexterity_item", response)
+
+        # DELETE
+        response = self.api_session.delete("/@controlpanels/dexterity-types/my-custom-content-type")
+        save_request_and_response_for_docs("controlpanels_delete_dexterity_item", response)
+
 
 @unittest.skipUnless(
     PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"

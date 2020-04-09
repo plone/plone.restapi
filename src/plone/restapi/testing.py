@@ -195,6 +195,59 @@ PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
     name="PloneRestApiDXLayer:Functional",
 )
 
+class PloneRestApiDXAppLayer(PloneSandboxLayer):
+
+    defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE)
+
+    def setUpZope(self, app, configurationContext):
+        import plone.restapi
+        xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
+        xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
+
+        self.loadZCML(package=collective.MockMailHost)
+        z2.installProduct(app, "plone.restapi")
+
+        import plone.app.dexterity
+        self.loadZCML(name='meta.zcml', package=plone.app.dexterity)
+        self.loadZCML(package=plone.app.dexterity)
+
+
+    def setUpPloneSite(self, portal):
+        portal.acl_users.userFolderAddUser(
+            SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ["Manager"], []
+        )
+        login(portal, SITE_OWNER_NAME)
+        setRoles(portal, TEST_USER_ID, ["Manager"])
+
+        set_supported_languages(portal)
+
+        applyProfile(portal, "plone.restapi:default")
+        applyProfile(portal, "plone.restapi:testing")
+        applyProfile(portal, "plone.app.dexterity:testing")
+
+        add_catalog_indexes(portal, DX_TYPES_INDEXES)
+        set_available_languages()
+        enable_request_language_negotiation(portal)
+        quickInstallProduct(portal, "collective.MockMailHost")
+        applyProfile(portal, "collective.MockMailHost:default")
+        states = portal.portal_workflow["simple_publication_workflow"].states
+        if six.PY2:  # issue 676
+            states["published"].title = u"Published with accent é".encode(
+                "utf8"
+            )  # noqa: E501
+        else:
+            states["published"].title = u"Published with accent é"  # noqa: E501
+
+
+PLONE_RESTAPI_DX_APP_FIXTURE = PloneRestApiDXAppLayer()
+PLONE_RESTAPI_DX_APP_INTEGRATION_TESTING = IntegrationTesting(
+    bases=(PLONE_RESTAPI_DX_APP_FIXTURE,), name="PloneRestApiDXAppLayer:Integration"
+)
+PLONE_RESTAPI_DX_APP_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(PLONE_RESTAPI_DX_APP_FIXTURE, z2.ZSERVER_FIXTURE),
+    name="PloneRestApiDXAppLayer:Functional",
+)
+
 
 class PloneRestApiDXPAMLayer(PloneSandboxLayer):
 
