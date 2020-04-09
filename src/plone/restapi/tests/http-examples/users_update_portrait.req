@@ -5,9 +5,9 @@ Content-Type: application/json
 
 {
     "portrait": {
-        "content-type": "image/png",
+        "content-type": "image/gif",
         "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
         "encoding": "base64",
-        "filename": "image.png"
+        "filename": "image.gif"
     }
 }

@@ -39,12 +39,19 @@ Location: http://localhost:55001/plone/folder/my-document
   "language": "", 
   "layout": "document_view", 
   "modified": "1995-07-31T17:30:00", 
+  "next_item": {}, 
   "parent": {
     "@id": "http://localhost:55001/plone/folder", 
     "@type": "Folder", 
     "description": "This is a folder with two documents", 
     "review_state": "private", 
     "title": "My Folder"
+  }, 
+  "previous_item": {
+    "@id": "http://localhost:55001/plone/folder/doc2", 
+    "@type": "Document", 
+    "description": "", 
+    "title": "A document within a folder"
   }, 
   "relatedItems": [], 
   "review_state": "private", 

@@ -8,7 +8,47 @@ Changelog
 
 .. towncrier release notes start
 
-- Respect `types_not_searched` field for search [rodfersou] (#861)
+6.6.0 (2020-04-07)
+------------------
+
+New features:
+
+
+- Add next_item and previous_item attributes to allow to navigate to the previous and next sibling in the container the document is located.
+  [rodfersou] (#900)
+
+
+6.5.2 (2020-04-01)
+------------------
+
+Bug fixes:
+
+
+- Fix for the use case while updating user properties in the @user endpoint, and the
+  portrait is already previously set but the request includes the (previously) serialized
+  value as a string because the user are not updating it
+  [sneridagh] (#896)
+
+
+6.5.1 (2020-04-01)
+------------------
+
+Bug fixes:
+
+
+- Fix deleting user portrait.
+  [buchi] (#751)
+
+
+6.5.0 (2020-03-30)
+------------------
+
+New features:
+
+
+- Link translation on content creation feature and new @translation-locator endpoint
+  [sneridagh] (#887)
+
 
 6.4.1 (2020-03-25)
 ------------------
