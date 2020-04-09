@@ -28,6 +28,13 @@ except ImportError:
     # Plone 4.x
     from plone.app.controlpanel.search import ISearchSchema
 
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE4  # noqa
+except ImportError:
+    PLONE4 = False
+else:
+    PLONE4 = True
+
 
 class TestSearchFunctional(unittest.TestCase):
 
@@ -135,9 +142,13 @@ class TestSearchFunctional(unittest.TestCase):
         )
 
     def test_types_not_searched(self):
-        registry = getUtility(IRegistry)
-        search_settings = registry.forInterface(ISearchSchema, prefix="plone")
-        search_settings.types_not_searched = ('Folder',)
+        if PLONE4:
+            self.portal.portal_properties.site_properties.types_not_searched = ['Folder']
+        else:
+            registry = getUtility(IRegistry)
+            search_settings = registry.forInterface(ISearchSchema, prefix="plone")
+            search_settings.types_not_searched = ('Folder',)
+        transaction.commit()
 
         response = self.api_session.get("/folder/@search")
         self.assertSetEqual(
