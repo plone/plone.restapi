@@ -5,5 +5,5 @@ Content-Type: application/json
 
 {
     "description": "A custom content-type",
-    "title": "My Custom Content Types"
+    "title": "My Custom Content Type"
 }

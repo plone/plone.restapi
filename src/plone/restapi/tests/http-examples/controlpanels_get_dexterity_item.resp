@@ -1,38 +1,96 @@
-HTTP/1.1 500 Internal Server Error
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "message": "'DexterityTypesControlpanel' object has no attribute 'publishTraverse'",
-  "traceback": [
-    "File \"/joint/backend/plone.restapi/eggs/Zope-4.1.3-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 156, in transaction_pubevents",
-    "    yield",
-    "",
-    "  File \"/joint/backend/plone.restapi/eggs/Zope-4.1.3-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 338, in publish_module",
-    "    response = _publish(request, new_mod_info)",
-    "",
-    "  File \"/joint/backend/plone.restapi/eggs/Zope-4.1.3-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 248, in publish",
-    "    result = mapply(obj,",
-    "",
-    "  File \"/joint/backend/plone.restapi/eggs/Zope-4.1.3-py3.8.egg/ZPublisher/mapply.py\", line 85, in mapply",
-    "    return debug(object, args, context)",
-    "",
-    "  File \"/joint/backend/plone.restapi/eggs/Zope-4.1.3-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 62, in call_object",
-    "    return obj(*args)",
-    "",
-    "  File \"/joint/backend/plone.restapi/eggs/plone.rest-1.6.0-py3.8.egg/plone/rest/service.py\", line 22, in __call__",
-    "    return self.render()",
-    "",
-    "  File \"/joint/backend/plone.restapi/src/plone/restapi/services/__init__.py\", line 21, in render",
-    "    content = self.reply()",
-    "",
-    "  File \"/joint/backend/plone.restapi/src/plone/restapi/services/controlpanels/get.py\", line 49, in reply",
-    "    return self.reply_panel()",
-    "",
-    "  File \"/joint/backend/plone.restapi/src/plone/restapi/services/controlpanels/get.py\", line 69, in reply_panel",
-    "    return IJsonCompatible(panel.get(self.params[1:]))",
-    "",
-    "  File \"/joint/backend/plone.restapi/src/plone/restapi/controlpanels/types.py\", line 55, in get",
-    "    context = context.publishTraverse(self.request, name)"
-  ],
-  "type": "AttributeError"
+  "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_content_type", 
+  "data": {
+    "allowed_content_types": [], 
+    "description": "A custom content-type", 
+    "filter_content_types": true, 
+    "title": "My Custom Content Type"
+  }, 
+  "group": "Content", 
+  "items": [], 
+  "schema": {
+    "fieldsets": [
+      {
+        "fields": [
+          "title", 
+          "description", 
+          "allowed_content_types", 
+          "filter_content_types"
+        ], 
+        "id": "default", 
+        "title": "Default"
+      }
+    ], 
+    "properties": {
+      "allowed_content_types": {
+        "additionalItems": true, 
+        "description": "", 
+        "items": {
+          "description": "", 
+          "title": "", 
+          "type": "string", 
+          "vocabulary": {
+            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes"
+          }
+        }, 
+        "title": "Allowed Content Types", 
+        "type": "array", 
+        "uniqueItems": true
+      }, 
+      "description": {
+        "description": "", 
+        "minLength": 0, 
+        "title": "Description", 
+        "type": "string", 
+        "widget": "textarea"
+      }, 
+      "filter_content_types": {
+        "choices": [
+          [
+            "none", 
+            null
+          ], 
+          [
+            "all", 
+            null
+          ], 
+          [
+            "some", 
+            null
+          ]
+        ], 
+        "default": "none", 
+        "description": "Items of this type can act as a folder containing other  items. What content types should be allowed inside?", 
+        "enum": [
+          "none", 
+          "all", 
+          "some"
+        ], 
+        "enumNames": [
+          null, 
+          null, 
+          null
+        ], 
+        "title": "Filter Contained Types", 
+        "type": "string", 
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@sources/filter_content_types"
+        }
+      }, 
+      "title": {
+        "description": "", 
+        "title": "Type Name", 
+        "type": "string"
+      }
+    }, 
+    "required": [
+      "title", 
+      "filter_content_types"
+    ], 
+    "type": "object"
+  }, 
+  "title": "Dexterity Content Types"
 }

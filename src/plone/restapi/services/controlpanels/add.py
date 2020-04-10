@@ -32,6 +32,8 @@ class ControlpanelsAdd(Service):
             raise BadRequest("Missing parameter controlpanelname")
 
         panel = self.panel_by_name(self.params[0])
-        panel.add(self.params[1:])
+        res = panel.add(self.params[1:])
 
-        return self.reply_no_content()
+        self.request.response.setStatus(201)
+        self.request.response.setHeader("Location", res["@id"])
+        return res

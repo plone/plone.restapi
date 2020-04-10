@@ -12,9 +12,10 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.controlpanels import RegistryConfigletPanel
 from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
 import plone.protect.interfaces
+from zope.interface import noLongerProvides
+from plone.restapi.interfaces import IPloneRestapiLayer
 
-
-@adapter(Interface, Interface)
+@adapter(Interface, IPloneRestapiLayer)
 @implementer(IDexterityTypesControlpanel)
 class DexterityTypesControlpanel(RegistryConfigletPanel):
     schema = Interface
@@ -44,13 +45,21 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
+        if IPloneRestapiLayer.providedBy(self.request):
+            noLongerProvides(self.request, IPloneRestapiLayer)
+
         context = queryMultiAdapter((self.context, self.request), name='dexterity-types')
         add_type = queryMultiAdapter((context, self.request), name='add-type')
         fti = add_type.form_instance.create(data=properties)
         add_type.form_instance.add(fti)
+        return self.get([tid,])
 
     def get(self, names):
         name = names[0]
+
+        if IPloneRestapiLayer.providedBy(self.request):
+            noLongerProvides(self.request, IPloneRestapiLayer)
+
         context = queryMultiAdapter((self.context, self.request), name='dexterity-types')
         context = context.publishTraverse(self.request, name)
         serializer = ISerializeToJson(self)
@@ -58,6 +67,10 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
 
     def update(self, names):
         name = names[0]
+
+        if IPloneRestapiLayer.providedBy(self.request):
+            noLongerProvides(self.request, IPloneRestapiLayer)
+
         context = queryMultiAdapter((self.context, self.request), name='dexterity-types')
         context = context.publishTraverse(self.request, name)
         deserializer = IDeserializeFromJson(self)
@@ -65,6 +78,10 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
 
     def delete(self, names):
         name = names[0]
+
+        if IPloneRestapiLayer.providedBy(self.request):
+            noLongerProvides(self.request, IPloneRestapiLayer)
+
         context = queryMultiAdapter((self.context, self.request), name='dexterity-types')
         edit = queryMultiAdapter((context, self.request), name='edit')
         edit.form_instance.remove((name, None))
