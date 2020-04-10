@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
 from plone.restapi.deserializer import json_body
 from plone.restapi.deserializer.controlpanels import ControlpanelDeserializeFromJson

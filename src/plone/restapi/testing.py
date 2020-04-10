@@ -195,6 +195,7 @@ PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
     name="PloneRestApiDXLayer:Functional",
 )
 
+
 class PloneRestApiDXAppLayer(PloneSandboxLayer):
 
     defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE)
@@ -210,7 +211,6 @@ class PloneRestApiDXAppLayer(PloneSandboxLayer):
         import plone.app.dexterity
         self.loadZCML(name='meta.zcml', package=plone.app.dexterity)
         self.loadZCML(package=plone.app.dexterity)
-
 
     def setUpPloneSite(self, portal):
         portal.acl_users.userFolderAddUser(

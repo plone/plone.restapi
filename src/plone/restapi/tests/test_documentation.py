@@ -1557,7 +1557,8 @@ class TestControlPanelDocumentation(TestDocumentationBase):
 
     def test_controlpanels_crud_dexterity(self):
         # POST
-        response = self.api_session.post("/@controlpanels/dexterity-types",
+        response = self.api_session.post(
+            "/@controlpanels/dexterity-types",
             json={
                 "title": "My Custom Content Type",
                 "description": "A custom content-type",
@@ -1570,7 +1571,8 @@ class TestControlPanelDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("controlpanels_get_dexterity_item", response)
 
         # PATCH
-        response = self.api_session.patch("/@controlpanels/dexterity-types/my_custom_content_type",
+        response = self.api_session.patch(
+            "/@controlpanels/dexterity-types/my_custom_content_type",
             json={
                 "title": "My Content Type",
                 "description": "A content-type",
@@ -1579,7 +1581,8 @@ class TestControlPanelDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("controlpanels_patch_dexterity_item", response)
 
         # DELETE
-        response = self.api_session.delete("/@controlpanels/dexterity-types/my_custom_content_type")
+        response = self.api_session.delete(
+            "/@controlpanels/dexterity-types/my_custom_content_type")
         save_request_and_response_for_docs("controlpanels_delete_dexterity_item", response)
 
 

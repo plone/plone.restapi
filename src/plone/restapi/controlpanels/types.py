@@ -15,6 +15,7 @@ import plone.protect.interfaces
 from zope.interface import noLongerProvides
 from plone.restapi.interfaces import IPloneRestapiLayer
 
+
 @adapter(Interface, IPloneRestapiLayer)
 @implementer(IDexterityTypesControlpanel)
 class DexterityTypesControlpanel(RegistryConfigletPanel):
@@ -52,7 +53,7 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
         add_type = queryMultiAdapter((context, self.request), name='add-type')
         fti = add_type.form_instance.create(data=properties)
         add_type.form_instance.add(fti)
-        return self.get([tid,])
+        return self.get([tid, ])
 
     def get(self, names):
         name = names[0]

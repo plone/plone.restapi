@@ -42,7 +42,7 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
                 value = getattr(proxy.fti, name, None)
             json_data[json_compatible(name)] = value
 
-         # JSON schema
+        # JSON schema
         return {
             "@id": "{}/{}/{}/{}".format(
                 self.controlpanel.context.absolute_url(),
