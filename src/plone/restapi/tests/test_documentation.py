@@ -24,7 +24,6 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PAM_INSTALLED  # noqa
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
-from plone.restapi.testing import PLONE_RESTAPI_DX_APP_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.statictime import StaticTime
@@ -1541,7 +1540,7 @@ class TestCommenting(TestDocumentationBase):
 @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
 class TestControlPanelDocumentation(TestDocumentationBase):
 
-    layer = PLONE_RESTAPI_DX_APP_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def test_controlpanels_get_listing(self):
         response = self.api_session.get("/@controlpanels")
