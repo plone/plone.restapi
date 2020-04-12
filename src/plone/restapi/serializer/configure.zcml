@@ -93,8 +93,7 @@
     </configure>
 
     <configure zcml:condition="have plone-5">
-        <adapter factory=".controlpanels.ControlpanelSerializeToJson" />
-        <adapter factory=".controlpanels.ControlpanelSummarySerializeToJson" />
+        <include package=".controlpanels" />
     </configure>
 
 </configure>

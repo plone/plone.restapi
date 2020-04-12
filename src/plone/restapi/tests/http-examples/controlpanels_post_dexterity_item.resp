@@ -1,0 +1,97 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_content_type
+
+{
+  "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_content_type", 
+  "data": {
+    "allowed_content_types": [], 
+    "description": "A custom content-type", 
+    "filter_content_types": true, 
+    "title": "My Custom Content Type"
+  }, 
+  "group": "Content", 
+  "items": [], 
+  "schema": {
+    "fieldsets": [
+      {
+        "fields": [
+          "title", 
+          "description", 
+          "allowed_content_types", 
+          "filter_content_types"
+        ], 
+        "id": "default", 
+        "title": "Default"
+      }
+    ], 
+    "properties": {
+      "allowed_content_types": {
+        "additionalItems": true, 
+        "description": "", 
+        "items": {
+          "description": "", 
+          "title": "", 
+          "type": "string", 
+          "vocabulary": {
+            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes"
+          }
+        }, 
+        "title": "Allowed Content Types", 
+        "type": "array", 
+        "uniqueItems": true
+      }, 
+      "description": {
+        "description": "", 
+        "minLength": 0, 
+        "title": "Description", 
+        "type": "string", 
+        "widget": "textarea"
+      }, 
+      "filter_content_types": {
+        "choices": [
+          [
+            "none", 
+            null
+          ], 
+          [
+            "all", 
+            null
+          ], 
+          [
+            "some", 
+            null
+          ]
+        ], 
+        "default": "none", 
+        "description": "Items of this type can act as a folder containing other  items. What content types should be allowed inside?", 
+        "enum": [
+          "none", 
+          "all", 
+          "some"
+        ], 
+        "enumNames": [
+          null, 
+          null, 
+          null
+        ], 
+        "title": "Filter Contained Types", 
+        "type": "string", 
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@sources/filter_content_types"
+        }
+      }, 
+      "title": {
+        "description": "", 
+        "title": "Type Name", 
+        "type": "string"
+      }
+    }, 
+    "required": [
+      "title", 
+      "filter_content_types"
+    ], 
+    "type": "object"
+  }, 
+  "title": "Dexterity Content Types"
+}
