@@ -9,9 +9,9 @@ class IControlpanel(Interface):
     group = Attribute("Group name of this controlpanel")
     schema = Attribute("Registry schema of this controlpanel")
 
-    configlet_id = Attribute("Id the configlet, ie MailHost")
+    configlet_id = Attribute("Id of the configlet, e.g. MailHost")
     configlet_category_id = Attribute(
-        "Category of the configlet, ie plone-general"
+        "Category of the configlet, e.g. plone-general"
     )  # noqa
 
     def add(names):
