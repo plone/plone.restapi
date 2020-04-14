@@ -77,10 +77,10 @@ A successful response to a PATCH request will be indicated by a :term:`204 No Co
    :language: http
 
 
-Control Panels not based on plone.app.registry
-----------------------------------------------
+Control Panels not based on plone.registry
+------------------------------------------
 
-Control panel which are not based on plone.app.registry have a custom ``@controlpanels/:panel`` endpoint implementation.
+Control panel which are not based on plone.registry have a custom ``@controlpanels/:panel`` endpoint implementation.
 
 Dexterity Types
 ^^^^^^^^^^^^^^^
