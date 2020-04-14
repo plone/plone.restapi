@@ -13,6 +13,7 @@ from plone.restapi.serializer.portlets.static import StaticTextPortletRenderer
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from unittest.mock import patch
 
+import datetime
 import os
 import transaction
 import unittest
@@ -40,8 +41,15 @@ class TestPortletsRender(unittest.TestCase):
         renderer = EventsPortletRenderer(
             self.context, self.request, None, None, assignment)
         result = renderer.render()
-        # import pdb; pdb.set_trace()
         self.assertEqual(len(result['items']), 2)
+
+        today = datetime.date.today().isoformat()
+
+        for item in result['items']:
+            assert today in item['start']
+            assert today in item['end']
+            assert today in item['created']
+            assert today in item['modified']
 
     def test_portlets_render_news(self):
         from plone.namedfile.file import NamedBlobImage
@@ -134,17 +142,17 @@ class TestPortletsRender(unittest.TestCase):
         # self.assertEqual(result['header'], u'a static title')
         self.assertEqual(result['text'], u'a static text')
 
-    import mock
-
-    @mock.patch('os.urandom')
-    def test_abc_urandom(self, urandom_function):
-        import os
-
-        urandom_function.return_value = 'pumpkins'
-        assert os.urandom(5) == 'pumpkins'
-        urandom_function.return_value = 'lemons'
-        assert os.urandom(5) == 'lemons'
-        urandom_function.side_effect = (
-            lambda l: 'f' * l
-        )
-        assert os.urandom(5) == 'fffff'
+    # import mock
+    #
+    # @mock.patch('os.urandom')
+    # def test_abc_urandom(self, urandom_function):
+    #     import os
+    #
+    #     urandom_function.return_value = 'pumpkins'
+    #     assert os.urandom(5) == 'pumpkins'
+    #     urandom_function.return_value = 'lemons'
+    #     assert os.urandom(5) == 'lemons'
+    #     urandom_function.side_effect = (
+    #         lambda l: 'f' * l
+    #     )
+    #     assert os.urandom(5) == 'fffff'
