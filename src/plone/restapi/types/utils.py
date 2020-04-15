@@ -60,9 +60,16 @@ def iter_fields(fieldsets):
 def get_form_fieldsets(form):
     """ Get fieldsets from form
     """
-    fieldsets = [
-        {"id": "default", "title": u"Default", "fields": list(form.fields.values())}
-    ]
+    fieldsets = []
+    form_fields = getattr(form, 'fields', {})
+    fields_values = list(form_fields.values())
+    if form_fields:
+        fieldsets.append({
+            "id": "default",
+            "title": translate("label_schema_default", default="Default",
+                               domain="plone", context=getRequest()),
+            "fields": fields_values
+        })
 
     # Additional fieldsets (AKA z3c.form groups)
     for group in getattr(form, 'groups', []):
@@ -72,7 +79,6 @@ def get_form_fieldsets(form):
             "fields": list(group.fields.values()),
         }
         fieldsets.append(fieldset)
-
     return fieldsets
 
 

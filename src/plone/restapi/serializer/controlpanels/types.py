@@ -13,6 +13,7 @@ from zope.component import getAllUtilitiesRegisteredFor
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
+from zope.i18n import translate
 
 
 @implementer(ISerializeToJson)
@@ -25,13 +26,15 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
         return lengths.get(portal_type, 0)
 
     def serialize_item(self, proxy):
+        json_data = {}
+        json_schema = {}
+
         overview = queryMultiAdapter((proxy, self.controlpanel.request), name='overview')
         form = overview.form_instance
         json_schema = get_jsonschema_for_controlpanel(
             self.controlpanel, self.controlpanel.context, self.controlpanel.request, form
         )
 
-        json_data = {}
         for name, item in form.fields.items():
             serializer = queryMultiAdapter(
                 (item.field, proxy.fti, self.controlpanel.request), IFieldSerializer
@@ -41,6 +44,21 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
             else:
                 value = getattr(proxy.fti, name, None)
             json_data[json_compatible(name)] = value
+
+        behaviors = queryMultiAdapter((proxy, self.controlpanel.request), name='behaviors')
+        form = behaviors.form_instance
+        behaviors_schema = get_jsonschema_for_controlpanel(
+            self.controlpanel, self.controlpanel.context, self.controlpanel.request, form
+        )
+
+        behaviors_schema['fieldsets'][0]['id'] = 'behaviors'
+        behaviors_schema['fieldsets'][0]['title'] = translate('Behaviors', domain="plone", context=self.controlpanel.request)
+        json_schema['fieldsets'].extend(behaviors_schema['fieldsets'])
+        json_schema['properties'].update(behaviors_schema['properties'])
+
+        for name, item in form.fields.items():
+            behaviors = getattr(proxy.fti, 'behaviors', [])
+            json_data[json_compatible(name)] = name in behaviors
 
         # JSON schema
         return {
