@@ -56,10 +56,12 @@ class TestContentBlocks(unittest.TestCase):
 
         response = self.api_session.get("/doc")
         response = response.json()
-
         self.assertEqual(
             response["blocks"],
-            {"uuid1": {"@type": "title"}, "uuid2": {"@type": "description"}},
+            {
+                'uuid1': {'@type': 'title', 'href': '', 'url': ''},
+                'uuid2': {'@type': 'description', 'href': '', 'url': ''}
+            },
         )
 
     def test_patch_blocks_layout(self):
