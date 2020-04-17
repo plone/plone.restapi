@@ -1,4 +1,4 @@
-# coding=ascii
+# -*- coding: utf-8 -*-
 
 from .interfaces import IBlockTransformer
 from plone import api
