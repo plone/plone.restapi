@@ -182,6 +182,27 @@ class TestFolderCreate(unittest.TestCase):
         sm.unregisterHandler(record_event, (IObjectAddedEvent,))
         sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
 
+    def test_post_to_folder_with_apostrophe_dont_return_500(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Document",
+                "id": "mydocument2",
+                "title": "My Document 2",
+                "text": {
+                    "content-type": "text/html",
+                    "encoding": "utf8",
+                    "data": "<p>example with &#x27;</p>"
+                }
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        self.assertEqual("<p>example with '</p>", self.portal.folder1.mydocument2.text.raw)
+        self.assertEqual("<p>example with '</p>", response.json()['text']['data'])
+
 
 class TestATFolderCreate(unittest.TestCase):
 
