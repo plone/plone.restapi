@@ -2,6 +2,7 @@
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import getMultiAdapter
 
 
@@ -28,7 +29,8 @@ class QuerystringSearchPost(Service):
         querybuilder = getMultiAdapter(
             (self.context, self.request), name="querybuilderresults"
         )
-        results = querybuilder(
+
+        querybuilder_parameters = dict(
             query=query,
             brains=True,
             b_start=b_start,
@@ -37,6 +39,13 @@ class QuerystringSearchPost(Service):
             sort_order=sort_order,
             limit=limit,
         )
+
+        if not (IPloneSiteRoot.providedBy(self.context)):
+            querybuilder_parameters.update(
+                dict(custom_query={"UID": {"not": self.context.UID()}})
+            )
+
+        results = querybuilder(**querybuilder_parameters)
 
         results = getMultiAdapter((results, self.request), ISerializeToJson)(
             fullobjects=fullobjects

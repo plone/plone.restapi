@@ -129,3 +129,29 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(len(response.json()["items"]), 5)
         self.assertNotIn("effective", response.json()["items"][0])
         self.assertEqual(response.json()["items"][4]["title"], u"Test Document 9")
+
+    def test_querystringsearch_do_not_return_context(self):
+        self.portal.invokeFactory("Document", "testdocument2", title="Test Document 2")
+        self.doc = self.portal.testdocument
+
+        transaction.commit()
+
+        response = self.api_session.post(
+            "/testdocument/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.is",
+                        "v": ["Document"],
+                    }
+                ],
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["items_total"], 1)
+        self.assertEqual(
+            response.json()["items"][0]["@id"],
+            "http://localhost:55001/plone/testdocument2",
+        )
