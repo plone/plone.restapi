@@ -301,6 +301,10 @@ class TestDXFieldDeserializer(unittest.TestCase):
         )
         self.assertEqual("latin1", value.encoding)
 
+    def test_richtext_deserialization_fix_apostrophe(self):
+        value = self.deserialize("test_richtext_field", u"<p>char with &#x27;</p>")
+        self.assertEqual("<p>char with '</p>", value.raw)
+
     def test_namedfield_deserialization_decodes_value(self):
         value = self.deserialize(
             "test_namedfile_field",
