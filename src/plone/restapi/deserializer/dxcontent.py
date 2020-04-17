@@ -154,7 +154,7 @@ class DeserializeFromJson(OrderingMixin, object):
         z3c.form does so.
         """
 
-        prefixed_name = schema.__name__ + '.' + fieldname
+        prefixed_name = schema.__name__ + "." + fieldname
         self.modified.setdefault(schema, []).append(prefixed_name)
 
     def check_permission(self, permission_name):

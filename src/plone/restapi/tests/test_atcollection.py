@@ -46,7 +46,10 @@ class TestATContentSerializer(unittest.TestCase):
         self.doc1.setQuery(query_data)
         self.doc1.setSort_on("created")
 
-    def serialize(self, obj):
+    def serialize(self, obj, fullobjects=False):
+        if fullobjects:
+            self.request.form["fullobjects"] = 1
+
         serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
         return serializer()
 
@@ -91,3 +94,25 @@ class TestATContentSerializer(unittest.TestCase):
             },
             items[2],
         )
+
+    def test_serializer_includes_collection_fullobjects(self):
+        """ when using the fullobjects parameter, the collection needs to
+            serialize its contents with the standard object serializer"""
+        folder = self.portal[
+            self.portal.invokeFactory("ATTestFolder", id="folder", title="Test Folder")
+        ]
+        folder.invokeFactory("ATTestFolder", id="subfolder-1", title="Subfolder 1")
+        folder.invokeFactory("ATTestFolder", id="subfolder-2", title="Subfolder 2")
+        folder.invokeFactory("ATTestDocument", id="doc", title="A Document")
+        obj = self.serialize(self.doc1, fullobjects=True)
+        self.assertIn("items", obj)
+        items = obj["items"]
+        items = sorted(items, key=lambda item: item[u"@id"])
+        self.assertIn("UID", items[0])
+        self.assertEqual(items[0]["id"], "folder")
+
+        self.assertIn("UID", items[1])
+        self.assertEqual(items[1]["id"], "subfolder-1")
+
+        self.assertIn("UID", items[2])
+        self.assertEqual(items[2]["id"], "subfolder-2")

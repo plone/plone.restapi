@@ -36,10 +36,11 @@ def set_image(obj):
         from plone.namedfile.file import NamedBlobImage
 
         filename = os.path.join(os.path.dirname(__file__), u"image.png")
-        obj.image = NamedBlobImage(data=open(filename, "r").read(), filename=filename)
+        obj.image = NamedBlobImage(
+            data=open(filename, "rb").read(), filename=filename)
     else:
         filename = os.path.join(os.path.dirname(__file__), u"image.png")
-        obj.setImage(open(filename, "r").read())
+        obj.setImage(open(filename, "rb").read())
 
 
 def set_file(obj):
@@ -48,13 +49,13 @@ def set_file(obj):
 
         filename = os.path.join(os.path.dirname(__file__), u"file.pdf")
         obj.file = NamedBlobFile(
-            data=open(filename, "r").read(),
+            data=open(filename, "rb").read(),
             filename=filename,
             contentType="application/pdf",
         )
     else:
         filename = os.path.join(os.path.dirname(__file__), u"file.pdf")
-        obj.setFile(open(filename, "r").read())
+        obj.setFile(open(filename, "rb").read())
 
 
 def publish(content):
@@ -73,11 +74,13 @@ def step_setup_content(context):
     portal = getSite()
 
     # Testfolder WRITE
-    portal.invokeFactory("Folder", id="testfolder-write", title="Testfolder Write")
+    portal.invokeFactory("Folder", id="testfolder-write",
+                         title="Testfolder Write")
     publish(portal["testfolder-write"])
 
     # Testfolder READ
-    portal.invokeFactory("Folder", id="testfolder-read", title="Testfolder Read")
+    portal.invokeFactory("Folder", id="testfolder-read",
+                         title="Testfolder Read")
     publish(portal["testfolder-read"])
     portal = portal["testfolder-read"]
 
@@ -102,7 +105,8 @@ def step_setup_content(context):
     publish(portal.folder)
 
     # Folder with 10 Items
-    portal.invokeFactory("Folder", id="folder-with-10-items", title="Folder 10")
+    portal.invokeFactory(
+        "Folder", id="folder-with-10-items", title="Folder 10")
     folder10 = portal["folder-with-10-items"]
     set_description(folder10)
     publish(folder10)
@@ -113,7 +117,8 @@ def step_setup_content(context):
         publish(folder10["doc{}".format(i)])
 
     # Folder with 100 Items
-    portal.invokeFactory("Folder", id="folder-with-100-items", title="Folder 100")
+    portal.invokeFactory(
+        "Folder", id="folder-with-100-items", title="Folder 100")
     folder100 = portal["folder-with-100-items"]
     set_description(folder100)
     publish(folder100)
@@ -124,7 +129,8 @@ def step_setup_content(context):
         publish(folder100["doc{}".format(i)])
 
     # Folder with 1000 Items
-    portal.invokeFactory("Folder", id="folder-with-1000-items", title="Folder 1000")
+    portal.invokeFactory(
+        "Folder", id="folder-with-1000-items", title="Folder 1000")
     folder1000 = portal["folder-with-1000-items"]
     set_description(folder1000)
     publish(folder1000)
@@ -133,6 +139,19 @@ def step_setup_content(context):
             "Document", id="doc{}".format(i), title="Doc {}".format(i)
         )
         publish(folder1000["doc{}".format(i)])
+
+    # Folder with 10 Items and next/previous enabled
+    portal.invokeFactory("Folder", id="folder-with-10-items-next-prev-enabled",
+                         title="Folder 10 (next/prev enabled)")
+    folder10np = portal["folder-with-10-items-next-prev-enabled"]
+    folder10np.nextPreviousEnabled = True
+    set_description(folder10np)
+    publish(folder10np)
+    for i in range(1, 11):
+        folder10np.invokeFactory(
+            "Document", id="doc{}".format(i), title="Doc {}".format(i)
+        )
+        publish(folder10np["doc{}".format(i)])
 
     # Collection
     portal.invokeFactory("Collection", id="collection", title="Collection")

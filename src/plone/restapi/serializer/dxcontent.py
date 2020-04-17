@@ -2,6 +2,7 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from Products.CMFPlone.utils import base_hasattr
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
@@ -9,10 +10,13 @@ from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
+from plone.restapi.interfaces import IPrimaryFieldTarget
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
+from plone.restapi.serializer.nextprev import NextPrevious
+from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
@@ -64,12 +68,19 @@ class SerializeToJson(object):
             "is_folderish": False,
         }
 
+        # Insert next/prev information
+        nextprevious = NextPrevious(obj)
+        result.update({
+            "previous_item": nextprevious.previous,
+            "next_item": nextprevious.next,
+        })
+
         # Insert expandable elements
         result.update(expandable_elements(self.context, self.request))
 
         # Insert field values
+        primary_field_name = self.get_primary_field_name()
         for schema in iterSchemata(self.context):
-
             read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
@@ -77,11 +88,22 @@ class SerializeToJson(object):
                 if not self.check_permission(read_permissions.get(name), obj):
                     continue
 
+                # serialize the field
                 serializer = queryMultiAdapter(
                     (field, obj, self.request), IFieldSerializer
                 )
                 value = serializer()
                 result[json_compatible(name)] = value
+
+                # check for a special primary filed target
+                if name == primary_field_name:
+                    target_adapter = queryMultiAdapter(
+                        (field, obj, self.request),
+                        IPrimaryFieldTarget)
+                    if target_adapter:
+                        target = target_adapter()
+                        if target:
+                            result['targetUrl'] = target
 
         result["allow_discussion"] = getMultiAdapter(
             (self.context, self.request), name="conversation_view"
@@ -93,6 +115,21 @@ class SerializeToJson(object):
         wftool = getToolByName(self.context, "portal_workflow")
         review_state = wftool.getInfoFor(ob=obj, name="review_state", default=None)
         return review_state
+
+    def get_primary_field_name(self):
+        fieldname = None
+        info = None
+        try:
+            info = IPrimaryFieldInfo(self.context, None)
+        except TypeError:
+            # No primary field present
+            pass
+        if info is not None:
+            fieldname = info.fieldname
+        elif base_hasattr(self.context, "getPrimaryField"):
+            field = self.context.getPrimaryField()
+            fieldname = field.getName()
+        return fieldname
 
     def check_permission(self, permission_name, obj):
         if permission_name is None:

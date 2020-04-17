@@ -374,7 +374,32 @@ class TestJsonSchemaProviders(TestCase):
                 "enum": ["foo", "bar"],
                 "enumNames": ["Foo", "Bar"],
                 "choices": [("foo", "Foo"), ("bar", "Bar")],
-                'vocabulary': {'@id': 'http://nohost/plone/@sources/myfield'},
+                "vocabulary": {"@id": "http://nohost/plone/@sources/myfield"},
+            },
+            adapter.get_schema(),
+        )
+
+    def test_choice_inline_array(self):
+        field = schema.Choice(
+            __name__="myfield",
+            title=u"My field",
+            description=u"My great field",
+            values=["foo", "bar"],
+        )
+
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": u"My field",
+                "description": u"My great field",
+                "enum": ["foo", "bar"],
+                "enumNames": [None, None],
+                "choices": [("foo", None), ("bar", None)],
+                "vocabulary": {"@id": "http://nohost/plone/@sources/myfield"},
             },
             adapter.get_schema(),
         )
@@ -420,7 +445,7 @@ class TestJsonSchemaProviders(TestCase):
                 "enum": ["foo", "bar"],
                 "enumNames": ["Foo", "Bar"],
                 "choices": [("foo", "Foo"), ("bar", "Bar")],
-                "vocabulary": {'@id': 'http://nohost/plone/@sources/myfield'},
+                "vocabulary": {"@id": "http://nohost/plone/@sources/myfield"},
             },
             adapter.get_schema(),
         )
@@ -519,7 +544,7 @@ class TestJsonSchemaProviders(TestCase):
                     "enum": ["foo", "bar"],
                     "enumNames": ["Foo", "Bar"],
                     "choices": [("foo", "Foo"), ("bar", "Bar")],
-                    'vocabulary': {'@id': 'http://nohost/plone/@sources/'},
+                    "vocabulary": {"@id": "http://nohost/plone/@sources/"},
                 },
             },
             adapter.get_schema(),

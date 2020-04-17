@@ -11,38 +11,33 @@ from zope.publisher.interfaces import IPublishTraverse
 
 @implementer(IPublishTraverse)
 class QuerySourcesGet(SourcesGet):
-
     def reply(self):
         if len(self.params) != 1:
             return self._error(
-                400, "Bad Request",
-                "Must supply exactly one path parameter (fieldname)"
+                400, "Bad Request", "Must supply exactly one path parameter (fieldname)"
             )
         fieldname = self.params[0]
 
         field = get_field_by_name(fieldname, self.context)
         if field is None:
-            return self._error(
-                404, "Not Found",
-                "No such field: %r" % fieldname
-            )
+            return self._error(404, "Not Found", "No such field: %r" % fieldname)
         bound_field = field.bind(self.context)
 
         source = bound_field.source
         if not IQuerySource.providedBy(source):
             return self._error(
-                404, "Not Found",
-                "Field %r does not have an IQuerySource" % fieldname
+                404, "Not Found", "Field %r does not have an IQuerySource" % fieldname
             )
 
-        if 'query' not in self.request.form:
+        if "query" not in self.request.form:
             return self._error(
-                400, "Bad Request",
-                u'Enumerating querysources is not supported. Please search '
-                u'the source using the ?query= QS parameter'
+                400,
+                "Bad Request",
+                u"Enumerating querysources is not supported. Please search "
+                u"the source using the ?query= QS parameter",
             )
 
-        query = self.request.form['query']
+        query = self.request.form["query"]
 
         result = source.search(query)
 

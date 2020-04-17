@@ -8,7 +8,7 @@ from zope.interface import provider
 import json
 
 
-TILES_SCHEMA = json.dumps({"type": "object", "properties": {}})
+BLOCKS_SCHEMA = json.dumps({"type": "object", "properties": {}})
 
 LAYOUT_SCHEMA = json.dumps(
     {
@@ -19,21 +19,21 @@ LAYOUT_SCHEMA = json.dumps(
 
 
 @provider(IFormFieldProvider)
-class ITiles(model.Schema):
+class IBlocks(model.Schema):
 
-    model.fieldset("layout", label=_(u"Layout"), fields=["tiles", "tiles_layout"])
+    model.fieldset("layout", label=_(u"Layout"), fields=["blocks", "blocks_layout"])
 
-    tiles = JSONField(
-        title=u"Tiles",
-        description=u"The JSON representation of the object tiles information. Must be a JSON object.",  # noqa
-        schema=TILES_SCHEMA,
+    blocks = JSONField(
+        title=u"Blocks",
+        description=u"The JSON representation of the object blocks information. Must be a JSON object.",  # noqa
+        schema=BLOCKS_SCHEMA,
         default={},
         required=False,
     )
 
-    tiles_layout = JSONField(
-        title=u"Tiles Layout",
-        description=u"The JSON representation of the object tiles layout. Must be a JSON array.",  # noqa
+    blocks_layout = JSONField(
+        title=u"Blocks Layout",
+        description=u"The JSON representation of the object blocks layout. Must be a JSON array.",  # noqa
         schema=LAYOUT_SCHEMA,
         default={"items": []},
         required=False,

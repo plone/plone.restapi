@@ -11,7 +11,7 @@
       name="plone.restapi.testing.context_vocabulary" />
 
   <include package="plone.behavior" file="meta.zcml"/>
-
+  <include package="plone.rfc822" />
 	<plone:behavior
 	    title="Test Behavior"
 	    description="Schema-only behavior using attributes"

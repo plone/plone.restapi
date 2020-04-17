@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<metadata>
+  <version>0001</version>
+  <dependencies>
+    <dependency>profile-plone.restapi:default</dependency>
+  </dependencies>
+</metadata>

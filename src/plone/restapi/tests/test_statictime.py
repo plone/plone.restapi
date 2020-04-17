@@ -85,28 +85,32 @@ class TestStaticTime(unittest.TestCase):
         self.assertTrue(
             lower < pydt < upper,
             "Expected %r to be now (within +/- %r). "
-            "It's currently %s though, and the date time is off by %r" % (
-                pydt, epsilon, now, now - pydt))
+            "It's currently %s though, and the date time is off by %r"
+            % (pydt, epsilon, now, now - pydt),
+        )
 
     def assert_of_same_type(self, fake_datetimes, real_datetimes):
         for fake, real in zip(fake_datetimes, real_datetimes):
             # Guard against accidentally comparing the same objects
             self.assertNotEqual(fake, real)
-            self.assertIsInstance(fake, real.__class__,
-                                  "Faked static time %r is of a different "
-                                  "type than the real %r" % (fake, real))
+            self.assertIsInstance(
+                fake,
+                real.__class__,
+                "Faked static time %r is of a different "
+                "type than the real %r" % (fake, real),
+            )
 
     def test_statictime_dxcontent_created(self):
         frozen_time = datetime(1950, 7, 31, 13, 45)
         statictime = StaticTime(created=frozen_time)
 
         statictime.start()
-        doc1 = self.create_document('doc1')
+        doc1 = self.create_document("doc1")
         self.assertEqual(DateTime(frozen_time), doc1.creation_date)
         fake_datetimes = [doc1.creation_date]
 
         statictime.stop()
-        doc2 = self.create_document('doc2')
+        doc2 = self.create_document("doc2")
         self.assert_roughly_now(doc2.creation_date)
         real_datetimes = [doc2.creation_date]
 
@@ -117,12 +121,12 @@ class TestStaticTime(unittest.TestCase):
         statictime = StaticTime(modified=frozen_time)
 
         statictime.start()
-        doc1 = self.create_document('doc1')
+        doc1 = self.create_document("doc1")
         self.assertEqual(DateTime(frozen_time), doc1.modification_date)
         fake_datetimes = [doc1.modification_date]
 
         statictime.stop()
-        doc2 = self.create_document('doc2')
+        doc2 = self.create_document("doc2")
         self.assert_roughly_now(doc2.modification_date)
         real_datetimes = [doc2.modification_date]
 
@@ -133,13 +137,13 @@ class TestStaticTime(unittest.TestCase):
         statictime = StaticTime(created=frozen_time)
 
         statictime.start()
-        doc1 = self.create_document('doc1')
+        doc1 = self.create_document("doc1")
         comments = self.create_comments(doc1)
         self.assertEqual(frozen_time, comments[0].creation_date)
         fake_datetimes = [comments[0].creation_date]
 
         statictime.stop()
-        doc2 = self.create_document('doc2')
+        doc2 = self.create_document("doc2")
         comments = self.create_comments(doc2)
         self.assert_roughly_now(comments[0].creation_date)
         real_datetimes = [comments[0].creation_date]
@@ -151,13 +155,13 @@ class TestStaticTime(unittest.TestCase):
         statictime = StaticTime(modified=frozen_time)
 
         statictime.start()
-        doc1 = self.create_document('doc1')
+        doc1 = self.create_document("doc1")
         comments = self.create_comments(doc1)
         self.assertEqual(frozen_time, comments[0].modification_date)
         fake_datetimes = [comments[0].modification_date]
 
         statictime.stop()
-        doc2 = self.create_document('doc2')
+        doc2 = self.create_document("doc2")
         comments = self.create_comments(doc2)
         self.assert_roughly_now(comments[0].modification_date)
         real_datetimes = [comments[0].modification_date]
@@ -166,28 +170,27 @@ class TestStaticTime(unittest.TestCase):
 
     def test_statictime_get_info_for(self):
         frozen_time = datetime(1950, 7, 31, 17, 30)
-        wftool = api.portal.get_tool('portal_workflow')
+        wftool = api.portal.get_tool("portal_workflow")
         statictime = StaticTime(modified=frozen_time)
 
         statictime.start()
-        doc1 = self.create_document('doc1')
-        api.content.transition(doc1, 'publish')
+        doc1 = self.create_document("doc1")
+        api.content.transition(doc1, "publish")
 
-        history = wftool.getInfoFor(doc1, 'review_history')
+        history = wftool.getInfoFor(doc1, "review_history")
 
-        fake_datetimes = list(map(itemgetter('time'), history))
+        fake_datetimes = list(map(itemgetter("time"), history))
         self.assertEqual(
             fake_datetimes,
-            [DateTime('1950/07/31 17:30:00 UTC'),
-             DateTime('1950/07/31 18:30:00 UTC')]
+            [DateTime("1950/07/31 17:30:00 UTC"), DateTime("1950/07/31 18:30:00 UTC")],
         )
 
         statictime.stop()
-        doc2 = self.create_document('doc2')
-        api.content.transition(doc2, 'publish')
+        doc2 = self.create_document("doc2")
+        api.content.transition(doc2, "publish")
 
-        history = wftool.getInfoFor(doc2, 'review_history')
-        real_datetimes = list(map(itemgetter('time'), history))
+        history = wftool.getInfoFor(doc2, "review_history")
+        real_datetimes = list(map(itemgetter("time"), history))
         for ts in real_datetimes:
             self.assert_roughly_now(ts)
 
@@ -198,7 +201,7 @@ class TestStaticTime(unittest.TestCase):
         statictime = StaticTime(modified=frozen_time)
 
         statictime.start()
-        doc1 = self.create_document('doc1')
+        doc1 = self.create_document("doc1")
         doc1.setTitle("Current version")
         api.content.transition(doc1, "publish")
         viewlet = ContentHistoryViewlet(doc1, doc1.REQUEST, None)
@@ -206,16 +209,18 @@ class TestStaticTime(unittest.TestCase):
 
         history = viewlet.fullHistory()
 
-        real_datetimes = list(map(itemgetter('time'), history))
+        real_datetimes = list(map(itemgetter("time"), history))
         self.assertEqual(
             real_datetimes,
-            [DateTime('1950/07/31 17:30:00 UTC'),
-             -612855000.0,
-             DateTime('1950/07/31 19:30:00 UTC')]
+            [
+                DateTime("1950/07/31 17:30:00 UTC"),
+                -612855000.0,
+                DateTime("1950/07/31 19:30:00 UTC"),
+            ],
         )
 
         statictime.stop()
-        doc2 = self.create_document('doc2')
+        doc2 = self.create_document("doc2")
         doc2.setTitle("Current version")
         api.content.transition(doc2, "publish")
         viewlet = ContentHistoryViewlet(doc2, doc2.REQUEST, None)
@@ -223,7 +228,7 @@ class TestStaticTime(unittest.TestCase):
 
         history = viewlet.fullHistory()
 
-        fake_datetimes = list(map(itemgetter('time'), history))
+        fake_datetimes = list(map(itemgetter("time"), history))
         for ts in fake_datetimes:
             self.assert_roughly_now(ts)
 
@@ -233,7 +238,7 @@ class TestStaticTime(unittest.TestCase):
         frozen_time = datetime(1950, 7, 31, 17, 30)
         statictime = StaticTime(modified=frozen_time)
 
-        doc1 = self.create_document('doc1')
+        doc1 = self.create_document("doc1")
         alsoProvides(doc1, ITTWLockable)
         lockable = ILockable(doc1)
         lockable.lock()
@@ -241,13 +246,13 @@ class TestStaticTime(unittest.TestCase):
         statictime.start()
         lock_infos = lockable.lock_info()
         self.assertEqual(1, len(lock_infos))
-        self.assertEqual(-612858600.0, lock_infos[0]['time'])
-        fake_datetimes = [lock_infos[0]['time']]
+        self.assertEqual(-612858600.0, lock_infos[0]["time"])
+        fake_datetimes = [lock_infos[0]["time"]]
 
         statictime.stop()
         lock_infos = lockable.lock_info()
         self.assertEqual(1, len(lock_infos))
-        self.assert_roughly_now(lock_infos[0]['time'])
-        real_datetimes = [lock_infos[0]['time']]
+        self.assert_roughly_now(lock_infos[0]["time"])
+        real_datetimes = [lock_infos[0]["time"]]
 
         self.assert_of_same_type(fake_datetimes, real_datetimes)

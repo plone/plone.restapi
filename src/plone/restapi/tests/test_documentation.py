@@ -149,7 +149,6 @@ def save_request_and_response_for_docs(name, response):
 
 
 class TestDocumentationBase(unittest.TestCase):
-
     def setUp(self):
         self.statictime = self.setup_with_context_manager(StaticTime())
 
@@ -361,6 +360,25 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
         response = self.api_session.get(self.portal.collection.absolute_url())
         save_request_and_response_for_docs("collection", response)
+
+    def test_documentation_collection_fullobjects(self):
+        self.portal.invokeFactory("Collection", id="collection")
+        self.portal.collection.title = "My Collection"
+        self.portal.collection.description = u"This is a collection with two documents"
+        self.portal.collection.query = [
+            {
+                "i": "portal_type",
+                "o": "plone.app.querystring.operation.string.is",
+                "v": "Document",
+            }
+        ]
+        self.portal.invokeFactory("Document", id="doc1", title="Document 1")
+        self.portal.invokeFactory("Document", id="doc2", title="Document 2")
+        transaction.commit()
+        response = self.api_session.get(
+            self.portal.collection.absolute_url() + "?fullobjects"
+        )
+        save_request_and_response_for_docs("collection_fullobjects", response)
 
     def test_documentation_siteroot(self):
         response = self.api_session.get(self.portal.absolute_url())
@@ -768,10 +786,10 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_users_update_portrait(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
             }
         }
         api.user.create(email="noam.chomsky@example.com", username="noam")
@@ -787,10 +805,10 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_users_update_portrait_with_scale(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
                 "scale": True,
             }
         }
@@ -1053,9 +1071,7 @@ class TestDocumentation(TestDocumentationBase):
             container=self.portal, id="doc", type="DXTestDocument", title=u"DX Document"
         )
         transaction.commit()
-        response = self.api_session.get(
-            "/doc/@sources/test_choice_with_source"
-        )
+        response = self.api_session.get("/doc/@sources/test_choice_with_source")
         save_request_and_response_for_docs("sources_get", response)
 
     def test_documentation_sharing_folder_get(self):
@@ -1309,9 +1325,7 @@ class TestDocumentation(TestDocumentationBase):
     def test_querystringsearch_post(self):
         url = "/@querystring-search"
 
-        self.portal.invokeFactory("Document",
-                                  "testdocument",
-                                  title="Test Document")
+        self.portal.invokeFactory("Document", "testdocument", title="Test Document")
         transaction.commit()
 
         response = self.api_session.post(
@@ -1324,7 +1338,8 @@ class TestDocumentation(TestDocumentationBase):
                         "v": ["Document"],
                     }
                 ]
-            })
+            },
+        )
         save_request_and_response_for_docs("querystringsearch_post", response)
 
 
@@ -1455,7 +1470,9 @@ class TestCommenting(TestDocumentationBase):
 
         # and the response
         if response.content:
-            response._content = re.sub(pattern_bytes, repl.encode('utf-8'), response._content)
+            response._content = re.sub(
+                pattern_bytes, repl.encode("utf-8"), response._content
+            )
 
     @staticmethod
     def clean_comment_id_from_body(response):
@@ -1466,10 +1483,11 @@ class TestCommenting(TestDocumentationBase):
         comment_ids = re.findall(pattern_bytes, response._content)
 
         def new_cid(idx):
-            return str(idx + 1400000000000000).encode('ascii')
+            return str(idx + 1400000000000000).encode("ascii")
 
-        static_comment_ids = {old_cid: new_cid(idx)
-                              for idx, old_cid in enumerate(comment_ids)}
+        static_comment_ids = {
+            old_cid: new_cid(idx) for idx, old_cid in enumerate(comment_ids)
+        }
 
         for cid, idx in static_comment_ids.items():
             response._content = re.sub(cid, idx, response._content)
@@ -1542,6 +1560,7 @@ class TestPAMDocumentation(TestDocumentationBase):
         language_tool = api.portal.get_tool("portal_languages")
         language_tool.addSupportedLanguage("en")
         language_tool.addSupportedLanguage("es")
+        language_tool.addSupportedLanguage("de")
         applyProfile(self.portal, "plone.app.multilingual:default")
 
         en_id = self.portal["en"].invokeFactory(
@@ -1564,6 +1583,20 @@ class TestPAMDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("translations_post", response)
 
+    def test_documentation_translations_post_by_id(self):
+        response = self.api_session.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            json={"id": self.es_content.absolute_url().replace(self.portal_url, "")},
+        )
+        save_request_and_response_for_docs("translations_post_by_id", response)
+
+    def test_documentation_translations_post_by_uid(self):
+        response = self.api_session.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            json={"id": self.es_content.UID()},
+        )
+        save_request_and_response_for_docs("translations_post_by_uid", response)
+
     def test_documentation_translations_get(self):
         ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()
@@ -1581,3 +1614,26 @@ class TestPAMDocumentation(TestDocumentationBase):
             json={"language": "es"},
         )
         save_request_and_response_for_docs("translations_delete", response)
+
+    def test_documentation_translations_link_on_post(self):
+        response = self.api_session.post(
+            "{}/de".format(self.portal.absolute_url()),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My German Document",
+                "translation_of": self.es_content.UID(),
+                "language": "de",
+            },
+        )
+        save_request_and_response_for_docs("translations_link_on_post", response)
+
+    def test_documentation_translation_locator(self):
+        response = self.api_session.get(
+            "{}/@translation-locator?target_language=de".format(
+                self.es_content.absolute_url()
+            ),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        save_request_and_response_for_docs("translation_locator", response)

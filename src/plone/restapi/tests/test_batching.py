@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from DateTime import DateTime
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -44,9 +43,6 @@ class TestBatchingDXBase(unittest.TestCase):
             u"DXTestDocument",
             id="doc-%s" % str(number + 1),
             title=u"Document %s" % str(number + 1),
-            created=DateTime(1975, 1, 1, 0, 0),
-            effective=DateTime(2015, 1, 1, 0, 0),
-            expires=DateTime(2020, 1, 1, 0, 0),
         )
 
 
@@ -251,6 +247,24 @@ class TestBatchingDXFolders(TestBatchingDXBase):
     def test_batching_links_omitted_if_resulset_fits_in_single_batch(self):
         response = self.api_session.get("/folder?b_size=100")
         self.assertNotIn("batching", list(response.json()))
+
+    def test_contains_batching_links_using_fullobjects(self):
+        # Fetch the second page of the batch using fullobjects
+        response = self.api_session.get("/folder?b_start=2&b_size=2&fullobjects")
+
+        # Batch info in response should contain appropriate batching links
+        batch_info = response.json()["batching"]
+
+        self.assertDictEqual(
+            {
+                u"@id": self.portal_url + "/folder?b_start=2&b_size=2&fullobjects",
+                u"first": self.portal_url + "/folder?b_start=0&b_size=2&fullobjects=",
+                u"next": self.portal_url + "/folder?b_start=4&b_size=2&fullobjects=",
+                u"prev": self.portal_url + "/folder?b_start=0&b_size=2&fullobjects=",
+                u"last": self.portal_url + "/folder?b_start=4&b_size=2&fullobjects=",
+            },
+            batch_info,
+        )
 
 
 class TestBatchingSiteRoot(TestBatchingDXBase):

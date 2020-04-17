@@ -12,8 +12,10 @@ exclude .editorconfig
 exclude Dockerfile
 exclude Makefile
 exclude bootstrap-buildout.py
+exclude CODEOWNERS
 recursive-exclude docs/doctrees *
 recursive-exclude docs/html *
+recursive-exclude performance *
 global-exclude *.pyc
 include pyproject.toml
 recursive-exclude news *

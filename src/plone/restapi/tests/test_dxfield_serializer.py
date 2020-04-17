@@ -151,10 +151,35 @@ class TestDexterityFieldSerializing(TestCase):
             value,
         )
 
+    def test_list_field_with_vocabulary_choice_serialization_no_valid_term(self):
+        value = self.serialize(
+            "test_list_field_with_choice_with_vocabulary", [u"value3", u"value4"]
+        )
+        self.assertTrue(isinstance(value, list), "Not a <list>")
+        self.assertEqual(
+            [
+                {u"token": u"token3", u"title": u"title3"},
+            ],
+            value,
+        )
+
     def test_set_field_serialization_returns_list(self):
         value = self.serialize("test_set_field", set(["a", "b", "c"]))
         self.assertTrue(isinstance(value, list), "Not a <list>")
         self.assertEqual([u"a", u"b", u"c"], sorted(value))
+
+    def test_set_field_with_vocabulary_choice_serialization_returns_terms(self):
+        value = self.serialize(
+            "test_set_field_with_choice_with_vocabulary", set([u"value1", u"value3"])
+        )
+        self.assertTrue(isinstance(value, list), "Not a <list>")
+        self.assertEqual(
+            [
+                {u"token": u"token1", u"title": u"title1"},
+                {u"token": u"token3", u"title": u"title3"},
+            ],
+            sorted(value, key=lambda x: x[u"token"]),
+        )
 
     def test_text_field_serialization_returns_unicode(self):
         value = self.serialize("test_text_field", u"Käfer")
@@ -258,7 +283,7 @@ class TestDexterityFieldSerializing(TestCase):
             )
 
     def test_namedimage_field_serialization_doesnt_choke_on_corrupt_image(self):
-        image_data = b'INVALID IMAGE DATA'
+        image_data = b"INVALID IMAGE DATA"
         fn = "test_namedimage_field"
         with patch.object(storage, "uuid4", return_value="uuid_1"):
             value = self.serialize(
@@ -269,15 +294,16 @@ class TestDexterityFieldSerializing(TestCase):
             )
         self.assertEqual(
             {
-                u'content-type': u'image/gif',
-                u'download': None,
-                u'filename': u'1024x768.gif',
-                u'height': -1,
-                u'scales': {},
-                u'size': 18,
-                u'width': -1,
+                u"content-type": u"image/gif",
+                u"download": None,
+                u"filename": u"1024x768.gif",
+                u"height": -1,
+                u"scales": {},
+                u"size": 18,
+                u"width": -1,
             },
-            value)
+            value,
+        )
 
     def test_namedblobfile_field_serialization_returns_dict(self):
         value = self.serialize(

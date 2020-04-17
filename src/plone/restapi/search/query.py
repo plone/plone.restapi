@@ -100,7 +100,7 @@ class ZCatalogCompatibleQueryAdapter(object):
             # that could not be serialized in a query string or JSON
             index = self.get_index(idx_name)
             if index is None:
-                log.warn("No such index: %r" % idx_name)
+                log.warning("No such index: %r" % idx_name)
                 continue
 
             query_opts_parser = getMultiAdapter(
@@ -174,7 +174,7 @@ class BaseIndexQueryParser(object):
                         " casted to %r" % (opt_value, opt_key, self.index, opt_type)
                     )
             else:
-                log.warn(
+                log.warning(
                     "Unrecognized query option %r for index %r" % (opt_key, self.index)
                 )
                 # Pass along unknown option without modification

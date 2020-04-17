@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from plone.app.blob.interfaces import IBlobField
-from plone.app.blob.interfaces import IBlobImageField
 from plone.restapi.imaging import get_original_image_url
 from plone.restapi.imaging import get_scales
 from plone.restapi.interfaces import IFieldSerializer
@@ -17,13 +15,30 @@ from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
 
+import pkg_resources
+
+
+# When we have plone.app.collection, we need a serializer for IQueryField.
+# On Plone 5 it comes from p.a.collection.
+# On Plone 4 we also have p.a.collection, but the field is in archetypes.querywidget.
+try:
+    pkg_resources.get_distribution("plone.app.collection")
+except pkg_resources.DistributionNotFound:
+    IQueryField = None
+else:
+    try:
+        from plone.app.collection.field import IQueryField
+    except ImportError:
+        from archetypes.querywidget.interfaces import IQueryField
 
 try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    from archetypes.querywidget.interfaces import IQueryField
+    pkg_resources.get_distribution("plone.app.blob")
+except pkg_resources.DistributionNotFound:
+    HAS_BLOB = False
 else:
-    from plone.app.collection.field import IQueryField
+    HAS_BLOB = True
+    from plone.app.blob.interfaces import IBlobField
+    from plone.app.blob.interfaces import IBlobImageField
 
 
 @adapter(IField, IBaseObject, Interface)
@@ -91,16 +106,17 @@ class ImageFieldSerializer(DefaultFieldSerializer):
         return json_compatible(result)
 
 
-@adapter(IBlobField, IBaseObject, Interface)
-@implementer(IFieldSerializer)
-class BlobFieldSerializer(FileFieldSerializer):
-    pass
+if HAS_BLOB:
 
+    @adapter(IBlobField, IBaseObject, Interface)
+    @implementer(IFieldSerializer)
+    class BlobFieldSerializer(FileFieldSerializer):
+        pass
 
-@adapter(IBlobImageField, IBaseObject, Interface)
-@implementer(IFieldSerializer)
-class BlobImageFieldSerializer(ImageFieldSerializer):
-    pass
+    @adapter(IBlobImageField, IBaseObject, Interface)
+    @implementer(IFieldSerializer)
+    class BlobImageFieldSerializer(ImageFieldSerializer):
+        pass
 
 
 @adapter(IReferenceField, IBaseObject, Interface)
@@ -117,9 +133,11 @@ class ReferenceFieldSerializer(DefaultFieldSerializer):
             return json_compatible(refs.absolute_url())
 
 
-@adapter(IQueryField, IBaseObject, Interface)
-@implementer(IFieldSerializer)
-class QueryFieldSerializer(DefaultFieldSerializer):
-    def __call__(self):
-        raw_value = self.field.getRaw(self.context)
-        return json_compatible(list(map(dict, raw_value)))
+if IQueryField is not None:
+
+    @adapter(IQueryField, IBaseObject, Interface)
+    @implementer(IFieldSerializer)
+    class QueryFieldSerializer(DefaultFieldSerializer):
+        def __call__(self):
+            raw_value = self.field.getRaw(self.context)
+            return json_compatible(list(map(dict, raw_value)))

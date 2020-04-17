@@ -15,6 +15,8 @@ Content-Type: application/json
   }, 
   "@id": "http://localhost:55001/plone/", 
   "@type": "Plone Site", 
+  "blocks": {}, 
+  "blocks_layout": {}, 
   "description": "", 
   "id": "plone", 
   "is_folderish": true, 
@@ -29,7 +31,5 @@ Content-Type: application/json
   ], 
   "items_total": 1, 
   "parent": {}, 
-  "tiles": {}, 
-  "tiles_layout": {}, 
   "title": "Plone site"
 }

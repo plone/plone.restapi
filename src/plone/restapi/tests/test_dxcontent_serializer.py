@@ -4,11 +4,14 @@ from datetime import datetime
 from datetime import time
 from datetime import timedelta
 from DateTime import DateTime
+from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
+from plone.app.testing import logout
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.interfaces import ITransformer
 from plone.app.textfield.value import RichTextValue
+from plone.namedfile.file import NamedFile
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import ISerializeToJson
@@ -86,8 +89,10 @@ class TestDXContentSerializer(unittest.TestCase):
         self.portal.doc1.modification_date = DateTime("2015-04-27T10:24:11+00:00")
         IMutableUUID(self.portal.doc1).set("30314724b77a4ec0abbad03d262837aa")
 
-    def serialize(self):
-        serializer = getMultiAdapter((self.portal.doc1, self.request), ISerializeToJson)
+    def serialize(self, obj=None):
+        if obj is None:
+            obj = self.portal.doc1
+        serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
         return serializer()
 
     def test_serializer_returns_json_serializeable_object(self):
@@ -183,6 +188,212 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = serializer()
         self.assertIn("is_folderish", obj)
         self.assertEqual(True, obj["is_folderish"])
+
+    def test_nextprev_no_nextprev(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+        )
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="One item alone in the folder"
+        )
+        data = self.serialize(doc)
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual({}, data["next_item"])
+
+    def test_nextprev_has_prev(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Previous item"
+        )
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Current item"
+        )
+        data = self.serialize(doc)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/folder-with-items/item-1",
+                "@type": "Document",
+                "title": "Item 1",
+                "description": "Previous item"
+            },
+            data["previous_item"]
+        )
+        self.assertEqual({}, data["next_item"])
+
+    def test_nextprev_has_next(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+        )
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Current item"
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Next item"
+        )
+        data = self.serialize(doc)
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/folder-with-items/item-2",
+                "@type": "Document",
+                "title": "Item 2",
+                "description": "Next item"
+            },
+            data["next_item"]
+        )
+
+    def test_nextprev_has_nextprev(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="Previous item"
+        )
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 2",
+            description="Current item"
+        )
+        api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 3",
+            description="Next item"
+        )
+        data = self.serialize(doc)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/folder-with-items/item-1",
+                "@type": "Document",
+                "title": "Item 1",
+                "description": "Previous item"
+            },
+            data["previous_item"]
+        )
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/folder-with-items/item-3",
+                "@type": "Document",
+                "title": "Item 3",
+                "description": "Next item"
+            },
+            data["next_item"]
+        )
+
+    def test_nextprev_root_no_nextprev(self):
+        data = self.serialize()
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual({}, data["next_item"])
+
+    def test_nextprev_root_has_prev(self):
+        doc = api.content.create(
+            container=self.portal,
+            type="Document",
+            title="Item 2",
+            description="Current item"
+        )
+        data = self.serialize(doc)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/doc1",
+                "@type": "DXTestDocument",
+                "title": "",
+                "description": ""
+            },
+            data["previous_item"]
+        )
+        self.assertEqual({}, data["next_item"])
+
+    def test_nextprev_root_has_next(self):
+        api.content.create(
+            container=self.portal,
+            type="Document",
+            title="Item 2",
+            description="Next item"
+        )
+        data = self.serialize()
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/item-2",
+                "@type": "Document",
+                "title": "Item 2",
+                "description": "Next item"
+            },
+            data["next_item"]
+        )
+
+    def test_nextprev_root_has_nextprev(self):
+        api.content.create(
+            container=self.portal,
+            type="Document",
+            title="Item 1",
+            description="Previous item"
+        )
+        doc = api.content.create(
+            container=self.portal,
+            type="Document",
+            title="Item 2",
+            description="Current item"
+        )
+        api.content.create(
+            container=self.portal,
+            type="Document",
+            title="Item 3",
+            description="Next item"
+        )
+        data = self.serialize(doc)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/item-1",
+                "@type": "Document",
+                "title": "Item 1",
+                "description": "Previous item"
+            },
+            data["previous_item"]
+        )
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/item-3",
+                "@type": "Document",
+                "title": "Item 3",
+                "description": "Next item"
+            },
+            data["next_item"]
+        )
 
     def test_richtext_serializer_context(self):
         """This checks if the context is passed in correctly.
@@ -349,3 +560,55 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = self.serialize()
         self.assertIn("allow_discussion", obj)
         self.assertEqual(False, obj["allow_discussion"])
+
+
+class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
+
+        self.portal.invokeFactory(
+            "DXTestDocument",
+            id=u"doc1",
+            test_primary_namedfile_field=NamedFile(
+                data=u"Spam and eggs", contentType=u"text/plain", filename=u"test.txt"
+            ),
+        )
+
+        self.portal.invokeFactory(
+            "DXTestDocument",
+            id=u"doc2",
+            test_primary_namedfile_field=None,
+        )
+
+        self.portal.doc1.creation_date = DateTime("2015-04-27T10:14:48+00:00")
+        self.portal.doc1.modification_date = DateTime("2015-04-27T10:24:11+00:00")
+        IMutableUUID(self.portal.doc1).set("30314724b77a4ec0abbad03d262837aa")
+
+    def serialize(self):
+        serializer = getMultiAdapter((self.portal.doc1, self.request), ISerializeToJson)
+        return serializer()
+
+    def test_primary_field_target(self):
+        logout()
+        serializer = getMultiAdapter((self.portal.doc1, self.request), ISerializeToJson)
+        data = serializer()
+        self.assertIn("targetUrl", data)
+        download_url = u"/".join(
+            [self.portal.doc1.absolute_url(), u"@@download/test_primary_namedfile_field"]
+        )
+        self.assertEqual(data["targetUrl"], download_url)
+
+    def test_primary_field_target_without_file(self):
+        logout()
+        serializer = getMultiAdapter((self.portal.doc2, self.request), ISerializeToJson)
+        data = serializer()
+        self.assertNotIn("targetUrl", data)
+
+    def test_primary_field_target_with_edit_permissions(self):
+        serializer = getMultiAdapter((self.portal.doc1, self.request), ISerializeToJson)
+        data = serializer()
+        self.assertNotIn("targetUrl", data)

@@ -83,7 +83,7 @@ Invalidating a token (@logout)
 
 The ``@logout`` endpoint can be used to invalidate tokens. However by default
 tokens are not persisted on the server and thus can not be invalidated. To enable
-token invaldiation, activate the ``store_tokes`` option in the PAS plugin. If you
+token invaldiation, activate the ``store_tokens`` option in the PAS plugin. If you
 need tokens that are valid indefinitely you should also disable the use of Plone's
 keyring in the PAS plugin (option ``use_keyring``).
 

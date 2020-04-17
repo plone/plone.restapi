@@ -21,6 +21,7 @@ Contents
    authentication
    exploring
    content
+   blocks
    history
    batching
    addons
