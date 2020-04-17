@@ -106,12 +106,6 @@
         provides=".interfaces.IBlockTransformer"
         name="html"
       />
-    <adapter
-        factory=".handlers.ImageBlockUpload"
-        for=".behaviors.IBlocks *"
-        provides=".interfaces.IBlockTransformer"
-        name="image"
-      />
   </configure>
 
   <utility

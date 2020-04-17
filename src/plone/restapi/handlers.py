@@ -1,7 +1,5 @@
 from .interfaces import IBlockTransformer
-from base64 import b64decode
 from plone import api
-from plone.dexterity.utils import createContentInContainer
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
 
@@ -33,31 +31,5 @@ class HTMLBlockCleanup(object):
                                            mimetype="text/html")
         html = data.getData()
         block_value['html'] = html
-
-        return block_value
-
-
-class ImageBlockUpload(object):
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
-    def upload_image(self, payload):
-        data = b64decode(payload['data'])
-        name = payload['filename']
-        image = createContentInContainer(
-            self.context, u"Image", id=name, title=name, image=data
-        )
-        path = image.getPhysicalPath()
-        portal_path = api.portal.get().getPhysicalPath()
-
-        return '/'.join(path[len(portal_path) - 1:])
-
-    def transform(self, block_value, event=None):
-        if block_value.get('payload'):
-            path = self.upload_image(block_value['payload'])
-
-            del block_value['payload']
-            block_value['url'] = path
 
         return block_value
