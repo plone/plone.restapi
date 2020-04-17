@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+6.6.1 (2020-04-17)
+------------------
+
+Bug fixes:
+
+
+- call unescape method on received html for richtext before save it in Plone.
+  [cekk] (#913)
+- Small fix in IBlocks test, addedd a missing assert call
+  [tiberiuichim] (#914)
+
+
 6.6.0 (2020-04-07)
 ------------------
 

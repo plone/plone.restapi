@@ -1,2 +1,0 @@
-call unescape method on received html for richtext before save it in Plone.
-[cekk]
