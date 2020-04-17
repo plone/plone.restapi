@@ -77,15 +77,15 @@ A successful response to a PATCH request will be indicated by a :term:`204 No Co
    :language: http
 
 
-Custom Control Panels
----------------------
+Control Panels not based on plone.registry
+------------------------------------------
 
-Some control panels are not based on ``plone.registry`` and they may need a custom ``@controlpanels/:panel`` endpoint implementation.
+Control panel which are not based on plone.registry have a custom ``@controlpanels/:panel`` endpoint implementation.
 
 Dexterity Types
 ^^^^^^^^^^^^^^^
 
-``@controlpanels/dexterity-types`` is a custom folderish control panel endpoint, that will allow you to add, remove and configure available :ref:`types`
+``@controlpanels/dexterity-types`` is a custom control panel endpoint, that will allow you to add, remove and configure available :ref:`types`
 
 Reading or writing Dexterity Content Types require the ``plone.schemaeditor.ManageSchemata`` permission.
 
@@ -103,7 +103,7 @@ DELETE  ``/@controlpanels/dexterity-types/{type-id}``   Remove content-type
 Listing Dexterity Content Types
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To list configurable content-types you can access ``@controlpanels/dexterity-types``
+To list the available content-types send a GET request to ``@controlpanels/dexterity-types``
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/controlpanels_get_dexterity.req
@@ -126,7 +126,7 @@ The following fields are returned:
 Creating a new Dexterity Type with POST
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To create a new content-type, we send a POST request to the ``/@controlpanels/dexterity-types`` endpoint.
+To create a new content-type, send a POST request to the ``/@controlpanels/dexterity-types`` endpoint.
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/controlpanels_post_dexterity_item.req
@@ -140,7 +140,7 @@ Response:
 Reading a Dexterity Type with GET
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-After a successful POST, we can access the content-type by sending a GET request to the ``/@controlpanels/dexterity-types/{type-id}``:
+After a successful POST, access the content-type by sending a GET request to the ``/@controlpanels/dexterity-types/{type-id}``:
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/controlpanels_get_dexterity_item.req
@@ -169,7 +169,7 @@ Response:
 Removing a Dexterity Type with DELETE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-We can delete an existing content-type by sending a DELETE request:
+Delete an existing content-type by sending a DELETE request to the URL of an existing content-type:
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/controlpanels_delete_dexterity_item.req

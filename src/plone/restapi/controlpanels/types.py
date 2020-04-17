@@ -42,7 +42,7 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
             "description": description
         }
 
-        # # Disable CSRF protection
+        # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 

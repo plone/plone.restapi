@@ -11,9 +11,11 @@ from zope.interface import implementer
 @adapter(IDexterityTypesControlpanel)
 class DexterityTypesControlpanelDeserializeFromJson(ControlpanelDeserializeFromJson):
     def deserialize_item(self, proxy):
-        form = queryMultiAdapter((proxy, self.request), name='overview')
         data = json_body(self.request)
-        form.form_instance.applyChanges(data)
+        overview = queryMultiAdapter((proxy, self.request), name='overview')
+        overview.form_instance.applyChanges(data)
+        behaviors = queryMultiAdapter((proxy, self.request), name='behaviors')
+        behaviors.form_instance.applyChanges(data)
 
     def __call__(self, item=None):
         if item is not None:
