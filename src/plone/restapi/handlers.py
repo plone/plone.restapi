@@ -1,3 +1,5 @@
+# -*- coding: ascii -*-
+
 from .interfaces import IBlockTransformer
 from plone import api
 from zope.component import queryMultiAdapter
