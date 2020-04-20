@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 
 from plone.dexterity.interfaces import IDexterityFTI
-from plone.dexterity.utils import createContentInContainer
+from plone.dexterity.interfaces import IDexterityItem
+from plone.restapi.behaviors import IBlocks
+from plone.restapi.interfaces import IBlockDeserializer
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from zope.component import adapter
 from zope.component import getMultiAdapter
+from zope.component import provideAdapter
 from zope.component import queryUtility
-from zope.lifecycleevent import modified
+from zope.interface import implementer
+from zope.publisher.interfaces.browser import IBrowserRequest
 
 import json
 import unittest
@@ -36,6 +41,32 @@ class TestBlocksDeserializer(unittest.TestCase):
             (context, self.request), IDeserializeFromJson)
 
         return deserializer(validate_all=validate_all)
+
+    def test_register_deserializer(self):
+
+        @implementer(IBlockDeserializer)
+        @adapter(IBlocks, IBrowserRequest)
+        class TestAdapter(object):
+            def __init__(self, context, request):
+                self.context = context
+                self.request = request
+
+            def __call__(self, value):
+                self.context._handler_called = True
+
+                value['value'] = u"changed: {}".format(value['value'])
+
+                return value
+
+        provideAdapter(TestAdapter, (IDexterityItem, IBrowserRequest),
+                       name="test_adapter")
+
+        self.deserialize(blocks={
+            '123': {'@type': 'test_adapter', 'value': u'text'}
+        })
+
+        assert self.portal.doc1._handler_called is True
+        assert self.portal.doc1.blocks['123']['value'] == u'changed: text'
 
     def test_blocks_html_cleanup(self):
         self.deserialize(blocks={
