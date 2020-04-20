@@ -176,15 +176,3 @@ class IIndexQueryParser(Interface):
         have been reconstructed to the proper data types that the adapted
         index expects.
         """
-
-
-class IBlockTransformer(Interface):
-    """ A multiadapter that can post-process (transform) the value of a block
-    """
-
-    def transform(value, event):
-        """ Given initial value of block, returns the new block value
-
-        Having the event available allows transformers to decide the type of
-        transformation to perform on the provided value
-        """
