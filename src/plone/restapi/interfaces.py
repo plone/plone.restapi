@@ -163,3 +163,18 @@ class IIndexQueryParser(Interface):
         have been reconstructed to the proper data types that the adapted
         index expects.
         """
+
+
+class IBlockSearchableText(Interface):
+    """ Allow blocks to provide text for the SearchableText index
+
+    Register as a named adapter, where the name is the block @type
+    """
+
+    def __init__(field, context, request):
+        """Adapts a context and the request.
+        """
+
+    def __call__(value):
+        """Extract text from the block value. Returns text
+        """
