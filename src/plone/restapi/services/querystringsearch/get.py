@@ -48,7 +48,9 @@ class QuerystringSearchPost(Service):
             limit=limit,
         )
 
-        if SUPPORT_NOT_UUID_QUERIES and not (IPloneSiteRoot.providedBy(self.context)):
+        # Exclude "self" content item from the results when ZCatalog supports NOT UUID
+        # queries and it is called on a content object.
+        if not IPloneSiteRoot.providedBy(self.context) and SUPPORT_NOT_UUID_QUERIES:
             querybuilder_parameters.update(
                 dict(custom_query={"UID": {"not": self.context.UID()}})
             )
