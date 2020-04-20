@@ -93,7 +93,7 @@ class IBlockDeserializer(Interface):
         """
 
     def __call__(value):
-        """Convert the provided JSON value to a block value.
+        """Convert the provided raw Python value to a block value.
         """
 
 
