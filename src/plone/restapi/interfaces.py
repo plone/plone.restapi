@@ -84,6 +84,19 @@ class IFieldDeserializer(Interface):
         """
 
 
+class IBlockDeserializer(Interface):
+    """An adapter to deserialize a block JSON value into a block value.
+    """
+
+    def __init__(field, context, request):
+        """Adapts context and the request.
+        """
+
+    def __call__(value):
+        """Convert the provided JSON value to a block value.
+        """
+
+
 class IExpandableElement(Interface):
     """A named adapter that deserializes an element in expanded or collapsed
        form.

@@ -90,22 +90,6 @@
         provides=".behaviors.IBlocks"
       />
 
-    <subscriber
-        for=".behaviors.IBlocks
-             zope.lifecycleevent.interfaces.IObjectAddedEvent"
-        handler=".handlers.transform_blocks" />
-
-    <subscriber
-        for=".behaviors.IBlocks
-             zope.lifecycleevent.interfaces.IObjectModifiedEvent"
-        handler=".handlers.transform_blocks" />
-
-    <adapter
-        factory=".handlers.HTMLBlockCleanup"
-        for=".behaviors.IBlocks *"
-        provides=".interfaces.IBlockTransformer"
-        name="html"
-      />
   </configure>
 
   <utility
