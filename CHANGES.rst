@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+6.7.0 (2020-04-21)
+------------------
+
+New features:
+
+
+- Make @querystring-search endpoint context aware
+  [sneridagh] (#911)
+
+
+Bug fixes:
+
+
+- Fix sphinxbuilder with Python 3.8
+  [avoinea] (#905)
+
+
 6.6.1 (2020-04-17)
 ------------------
 
