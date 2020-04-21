@@ -1,2 +1,2 @@
-- Make ``@querystring-search`` endpoint context aware
+Make ``@querystring-search`` endpoint context aware
 [sneridagh]
