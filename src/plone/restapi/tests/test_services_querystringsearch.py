@@ -135,7 +135,8 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertIn("items_total", response.json())
         self.assertEquals(response.json()["items_total"], 10)
         self.assertEquals(len(response.json()["items"]), 5)
-        self.assertNotIn("effective", response.json()["items"][0])        self.assertEqual(response.json()["items"][4]["title"], u"Test Document 9")
+        self.assertNotIn("effective", response.json()["items"][0])
+        self.assertEqual(response.json()["items"][4]["title"], u"Test Document 9")
 
     @unittest.skipIf(
         not SUPPORT_NOT_UUID_QUERIES,
