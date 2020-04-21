@@ -86,8 +86,7 @@ class TextBlockDeserializer(object):
                 before = href  # noqa
 
                 if href and href.startswith(portal_url):
-                    path = href[len(portal_url) +
-                                1:].encode("utf8")
+                    path = href[len(portal_url) + 1:].encode("utf8")
                     uid, suffix = path2uid(portal, path)
 
                     if uid:
