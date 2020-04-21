@@ -3,7 +3,7 @@
 SHELL := /bin/bash
 CURRENT_DIR:=$(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 
-version = 3
+version = 3.7
 
 # We like colors
 # From: https://coderwall.com/p/izxssa/colored-makefile-for-golang-projects
@@ -88,6 +88,12 @@ test-performance:
 .PHONY: Code Analysis
 code-analysis:  ## Code Analysis
 	bin/code-analysis
+	if [ -f "bin/black" ]; then bin/black src/ --check ; fi
+
+.PHONY: Black
+black:  ## Black
+	bin/code-analysis
+	if [ -f "bin/black" ]; then bin/black src/ ; fi
 
 .PHONY: Build Docs
 docs:  ## Build Docs
