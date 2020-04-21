@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from pkg_resources import get_distribution
+from pkg_resources import parse_version
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -8,6 +10,12 @@ from plone.restapi.testing import RelativeSession
 
 import transaction
 import unittest
+
+zcatalog_version = get_distribution("Products.ZCatalog").version
+if parse_version(zcatalog_version) >= parse_version("5.1"):
+    SUPPORT_NOT_UUID_QUERIES = True
+else:
+    SUPPORT_NOT_UUID_QUERIES = False
 
 
 class TestQuerystringSearchEndpoint(unittest.TestCase):
@@ -127,5 +135,34 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertIn("items_total", response.json())
         self.assertEquals(response.json()["items_total"], 10)
         self.assertEquals(len(response.json()["items"]), 5)
-        self.assertNotIn("effective", response.json()["items"][0])
-        self.assertEquals(response.json()["items"][4]["title"], u"Test Document 9")
+        self.assertNotIn("effective", response.json()["items"][0])        self.assertEqual(response.json()["items"][4]["title"], u"Test Document 9")
+
+    @unittest.skipIf(
+        not SUPPORT_NOT_UUID_QUERIES,
+        "Skipping because ZCatalog allows not queries on UUIDIndex from >=5.1",
+    )
+    def test_querystringsearch_do_not_return_context(self):
+        self.portal.invokeFactory("Document", "testdocument2", title="Test Document 2")
+        self.doc = self.portal.testdocument
+
+        transaction.commit()
+
+        response = self.api_session.post(
+            "/testdocument/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.is",
+                        "v": ["Document"],
+                    }
+                ],
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["items_total"], 1)
+        self.assertEqual(
+            response.json()["items"][0]["@id"],
+            "http://localhost:55001/plone/testdocument2",
+        )
