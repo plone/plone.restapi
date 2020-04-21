@@ -89,13 +89,7 @@ Content-Type: application/json
     }
   ], 
   "schema": {
-    "fieldsets": [
-      {
-        "fields": [], 
-        "id": "default", 
-        "title": "Default"
-      }
-    ], 
+    "fieldsets": [], 
     "properties": {}, 
     "required": [], 
     "type": "object"
