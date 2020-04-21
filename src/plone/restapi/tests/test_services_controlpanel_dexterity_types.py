@@ -95,14 +95,42 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
     def test_controlpanels_dexterity_types_document_patch(self):
         response = self.api_session.patch(
             "/@controlpanels/dexterity-types/Document",
-            json={"title": "My Content Type", "description": "A content-type"},
+            json={
+                "title": "New Content Type Title",
+                "description": "New content type description",
+            },
         )
 
         self.assertEqual(204, response.status_code)
         # TODO
+        # self.assertEqual(
+        #     'New Content Type Title',
+        #     response.json().get("title")
+        # )
+        # self.assertEqual(
+        #     'New content type description',
+        #     response.json().get("description")
+        # )
 
     def test_controlpanels_dexterity_types_document_delete(self):
         response = self.api_session.delete("/@controlpanels/dexterity-types/Document")
 
         self.assertEqual(204, response.status_code)
-        # TODO
+        self.assertEqual(
+            [
+                "Collection",
+                "Folder",
+                "Link",
+                "File",
+                "Image",
+                "News Item",
+                "Event",
+                "DXTestDocument",
+            ],
+            [
+                x.get("id")
+                for x in self.api_session.get("/@controlpanels/dexterity-types")
+                .json()
+                .get("items")
+            ],
+        )
