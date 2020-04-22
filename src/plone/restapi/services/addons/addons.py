@@ -32,18 +32,19 @@ class Addons(object):
         self.errors = {}
 
     def serializeAddon(self, addon):
-        return {'@id': '{}/@addons/{}'.format(
-                    self.context.absolute_url(), addon['id']),
-                'id': addon['id'],
-                'title': addon['title'],
-                'description': addon['description'],
-                'install_profile_id': addon['install_profile_id'],
-                'is_installed': addon['is_installed'],
-                'profile_type': addon['profile_type'],
-                'uninstall_profile_id': addon['uninstall_profile_id'],
-                'version': addon['version'],
-                'upgrade_info': addon['upgrade_info']
-                }
+        return {
+            '@id': '{}/@addons/{}'.format(
+                self.context.absolute_url(), addon['id']),
+            'id': addon['id'],
+            'title': addon['title'],
+            'description': addon['description'],
+            'install_profile_id': addon['install_profile_id'],
+            'is_installed': addon['is_installed'],
+            'profile_type': addon['profile_type'],
+            'uninstall_profile_id': addon['uninstall_profile_id'],
+            'version': addon['version'],
+            'upgrade_info': addon['upgrade_info']
+        }
 
     def is_profile_installed(self, profile_id):
         return self.ps.getLastVersionForProfile(profile_id) != UNKNOWN
@@ -66,8 +67,10 @@ class Addons(object):
         profiles = [
             prof for prof in profiles
             if prof['type'] == EXTENSION and (
-                prof['product'] == product_id or
-                prof['product'] == 'Products.%s' % product_id
+                prof['product'] in (
+                    product_id,
+                    'Products.{0}'.format(product_id),
+                )
             )
         ]
         return profiles
