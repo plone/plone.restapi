@@ -41,6 +41,7 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
     "title": "My Custom Content Type", 
     "volto.blocks": false
   }, 
+  "description": "A custom content-type", 
   "group": "Content", 
   "items": [], 
   "schema": {
@@ -316,5 +317,5 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
     ], 
     "type": "object"
   }, 
-  "title": "Dexterity Content Types"
+  "title": "My Custom Content Type"
 }

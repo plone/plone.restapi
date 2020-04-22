@@ -28,6 +28,7 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
     def serialize_item(self, proxy):
         json_data = {}
         json_schema = {}
+        fti = proxy.fti
 
         overview = queryMultiAdapter((proxy, self.controlpanel.request), name='overview')
         form = overview.form_instance
@@ -37,12 +38,12 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
 
         for name, item in form.fields.items():
             serializer = queryMultiAdapter(
-                (item.field, proxy.fti, self.controlpanel.request), IFieldSerializer
+                (item.field, fti, self.controlpanel.request), IFieldSerializer
             )
             if serializer:
                 value = serializer()
             else:
-                value = getattr(proxy.fti, name, None)
+                value = getattr(fti, name, None)
             json_data[json_compatible(name)] = value
 
         behaviors = queryMultiAdapter((proxy, self.controlpanel.request), name='behaviors')
@@ -57,7 +58,7 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
         json_schema['properties'].update(behaviors_schema['properties'])
 
         for name, item in form.fields.items():
-            behaviors = getattr(proxy.fti, 'behaviors', [])
+            behaviors = getattr(fti, 'behaviors', [])
             json_data[json_compatible(name)] = name in behaviors
 
         # JSON schema
@@ -68,7 +69,8 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
                 self.controlpanel.__name__,
                 proxy.__name__
             ),
-            "title": self.controlpanel.title,
+            "title": fti.Title(),
+            "description": fti.Description(),
             "group": self.controlpanel.group,
             "schema": json_schema,
             "data": json_data,
