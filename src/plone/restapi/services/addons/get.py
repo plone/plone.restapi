@@ -27,7 +27,7 @@ class AddonsGet(Service):
                 return []
 
         result = {
-            "items": {"@id": "{}/@addons".format(self.context.absolute_url()),},
+            "items": {"@id": "{}/@addons".format(self.context.absolute_url())},
         }
         addons_data = []
         for addon in all_addons.values():
