@@ -20,9 +20,8 @@ from zope.i18n import translate
 @adapter(IDexterityTypesControlpanel)
 class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
     def count(self, portal_type):
-        catalog = getToolByName(self.controlpanel.context, 'portal_catalog')
-        lengths = dict(
-            catalog.Indexes['portal_type'].uniqueValues(withLengths=True))
+        catalog = getToolByName(self.controlpanel.context, "portal_catalog")
+        lengths = dict(catalog.Indexes["portal_type"].uniqueValues(withLengths=True))
         return lengths.get(portal_type, 0)
 
     def serialize_item(self, proxy):
@@ -30,10 +29,15 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
         json_schema = {}
         fti = proxy.fti
 
-        overview = queryMultiAdapter((proxy, self.controlpanel.request), name='overview')
+        overview = queryMultiAdapter(
+            (proxy, self.controlpanel.request), name="overview"
+        )
         form = overview.form_instance
         json_schema = get_jsonschema_for_controlpanel(
-            self.controlpanel, self.controlpanel.context, self.controlpanel.request, form
+            self.controlpanel,
+            self.controlpanel.context,
+            self.controlpanel.request,
+            form,
         )
 
         for name, item in form.fields.items():
@@ -46,19 +50,26 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
                 value = getattr(fti, name, None)
             json_data[json_compatible(name)] = value
 
-        behaviors = queryMultiAdapter((proxy, self.controlpanel.request), name='behaviors')
+        behaviors = queryMultiAdapter(
+            (proxy, self.controlpanel.request), name="behaviors"
+        )
         form = behaviors.form_instance
         behaviors_schema = get_jsonschema_for_controlpanel(
-            self.controlpanel, self.controlpanel.context, self.controlpanel.request, form
+            self.controlpanel,
+            self.controlpanel.context,
+            self.controlpanel.request,
+            form,
         )
 
-        behaviors_schema['fieldsets'][0]['id'] = 'behaviors'
-        behaviors_schema['fieldsets'][0]['title'] = translate('Behaviors', domain="plone", context=self.controlpanel.request)
-        json_schema['fieldsets'].extend(behaviors_schema['fieldsets'])
-        json_schema['properties'].update(behaviors_schema['properties'])
+        behaviors_schema["fieldsets"][0]["id"] = "behaviors"
+        behaviors_schema["fieldsets"][0]["title"] = translate(
+            "Behaviors", domain="plone", context=self.controlpanel.request
+        )
+        json_schema["fieldsets"].extend(behaviors_schema["fieldsets"])
+        json_schema["properties"].update(behaviors_schema["properties"])
 
         for name, item in form.fields.items():
-            behaviors = getattr(fti, 'behaviors', [])
+            behaviors = getattr(fti, "behaviors", [])
             json_data[json_compatible(name)] = name in behaviors
 
         # JSON schema
@@ -67,14 +78,14 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
                 self.controlpanel.context.absolute_url(),
                 SERVICE_ID,
                 self.controlpanel.__name__,
-                proxy.__name__
+                proxy.__name__,
             ),
             "title": fti.Title(),
             "description": fti.Description(),
             "group": self.controlpanel.group,
             "schema": json_schema,
             "data": json_data,
-            "items": []
+            "items": [],
         }
 
     def __call__(self, item=None):
@@ -82,7 +93,7 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
             return self.serialize_item(item)
 
         json = super(DexterityTypesControlpanelSerializeToJson, self).__call__()
-        json['items'] = []
+        json["items"] = []
 
         portal = getSite()
         portal_url = portal.absolute_url()
@@ -90,13 +101,17 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
         ftis = getAllUtilitiesRegisteredFor(IDexterityFTI)
         for fti in ftis:
             name = fti.__name__
-            json['items'].append({
-                "@id": "{}/@controlpanels/dexterity-types/{}".format(portal_url, name),
-                "@type": name,
-                "meta_type": fti.meta_type,
-                "id": name,
-                "title": fti.Title(),
-                "description": fti.Description(),
-                "count": self.count(name)
-            })
+            json["items"].append(
+                {
+                    "@id": "{}/@controlpanels/dexterity-types/{}".format(
+                        portal_url, name
+                    ),
+                    "@type": name,
+                    "meta_type": fti.meta_type,
+                    "id": name,
+                    "title": fti.Title(),
+                    "description": fti.Description(),
+                    "count": self.count(name),
+                }
+            )
         return json

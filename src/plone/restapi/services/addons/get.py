@@ -7,7 +7,6 @@ from zope.publisher.interfaces import IPublishTraverse
 
 @implementer(IPublishTraverse)
 class AddonsGet(Service):
-
     def __init__(self, context, request):
         super(AddonsGet, self).__init__(context, request)
         self.params = []
@@ -28,13 +27,11 @@ class AddonsGet(Service):
                 return []
 
         result = {
-            'items': {
-                '@id': '{}/@addons'.format(self.context.absolute_url()),
-            },
+            "items": {"@id": "{}/@addons".format(self.context.absolute_url()),},
         }
         addons_data = []
         for addon in all_addons.values():
             addons_data.append(self.addons.serializeAddon(addon))
-        result['items'] = addons_data
+        result["items"] = addons_data
         self.request.response.setStatus(200)
         return result

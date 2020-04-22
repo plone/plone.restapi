@@ -101,8 +101,7 @@ class TestCommentsSerializers(TestCase):
 
         # serializer should return HTML with a clickable link
         self.assertEqual(
-            'Hey, I am plain text!',
-            serializer()["text"]["data"],
+            "Hey, I am plain text!", serializer()["text"]["data"],
         )
         # serializer should return mimetype = text/x-web-intelligent
         self.assertEqual("text/plain", serializer()["text"]["mime-type"])

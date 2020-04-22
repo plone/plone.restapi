@@ -4,8 +4,9 @@ from plone.memoize import view
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone import PloneMessageFactory as _
 from Products.CMFPlone.interfaces import INonInstallable
-from Products.CMFQuickInstallerTool.interfaces \
-    import INonInstallable as QINonInstallable
+from Products.CMFQuickInstallerTool.interfaces import (
+    INonInstallable as QINonInstallable,
+)
 from Products.GenericSetup import EXTENSION
 from Products.GenericSetup.tool import UNKNOWN
 from zope.component import getAllUtilitiesRegisteredFor
@@ -14,7 +15,7 @@ import logging
 import pkg_resources
 
 
-logger = logging.getLogger('Plone')
+logger = logging.getLogger("Plone")
 
 
 class Addons(object):
@@ -28,22 +29,21 @@ class Addons(object):
         self.context = context
         self.request = request
 
-        self.ps = getToolByName(context, 'portal_setup')
+        self.ps = getToolByName(context, "portal_setup")
         self.errors = {}
 
     def serializeAddon(self, addon):
         return {
-            '@id': '{}/@addons/{}'.format(
-                self.context.absolute_url(), addon['id']),
-            'id': addon['id'],
-            'title': addon['title'],
-            'description': addon['description'],
-            'install_profile_id': addon['install_profile_id'],
-            'is_installed': addon['is_installed'],
-            'profile_type': addon['profile_type'],
-            'uninstall_profile_id': addon['uninstall_profile_id'],
-            'version': addon['version'],
-            'upgrade_info': addon['upgrade_info']
+            "@id": "{}/@addons/{}".format(self.context.absolute_url(), addon["id"]),
+            "id": addon["id"],
+            "title": addon["title"],
+            "description": addon["description"],
+            "install_profile_id": addon["install_profile_id"],
+            "is_installed": addon["is_installed"],
+            "profile_type": addon["profile_type"],
+            "uninstall_profile_id": addon["uninstall_profile_id"],
+            "version": addon["version"],
+            "upgrade_info": addon["upgrade_info"],
         }
 
     def is_profile_installed(self, profile_id):
@@ -53,7 +53,7 @@ class Addons(object):
         profile = self.get_install_profile(product_id, allow_hidden=True)
         if not profile:
             return False
-        return self.is_profile_installed(profile['id'])
+        return self.is_profile_installed(profile["id"])
 
     def _install_profile_info(self, product_id):
         """List extension profile infos of a given product.
@@ -65,13 +65,10 @@ class Addons(object):
         # We are only interested in extension profiles for the product.
         # TODO Remove the manual Products.* check here. It is still needed.
         profiles = [
-            prof for prof in profiles
-            if prof['type'] == EXTENSION and (
-                prof['product'] in (
-                    product_id,
-                    'Products.{0}'.format(product_id),
-                )
-            )
+            prof
+            for prof in profiles
+            if prof["type"] == EXTENSION
+            and (prof["product"] in (product_id, "Products.{0}".format(product_id),))
         ]
         return profiles
 
@@ -101,7 +98,7 @@ class Addons(object):
         utils = getAllUtilitiesRegisteredFor(INonInstallable)
         hidden = []
         for util in utils:
-            gnip = getattr(util, 'getNonInstallableProfiles', None)
+            gnip = getattr(util, "getNonInstallableProfiles", None)
             if gnip is None:
                 continue
             hidden.extend(gnip())
@@ -111,8 +108,8 @@ class Addons(object):
         prime_candidates = []
         hidden_candidates = []
         for profile in profiles:
-            profile_id = profile['id']
-            profile_id_parts = profile_id.split(':')
+            profile_id = profile["id"]
+            profile_id_parts = profile_id.split(":")
             if len(profile_id_parts) != 2:
                 logger.error("Profile with id '%s' is invalid." % profile_id)
                 continue
@@ -152,8 +149,9 @@ class Addons(object):
         :returns: True on success, False otherwise.
         :rtype: boolean
         """
-        return self._get_profile(product_id, 'default', strict=False,
-                                 allow_hidden=allow_hidden)
+        return self._get_profile(
+            product_id, "default", strict=False, allow_hidden=allow_hidden
+        )
 
     def get_uninstall_profile(self, product_id):
         """Return the uninstall profile.
@@ -161,7 +159,8 @@ class Addons(object):
         Note: not used yet.
         """
         return self._get_profile(
-            product_id, 'uninstall', strict=True, allow_hidden=True)
+            product_id, "uninstall", strict=True, allow_hidden=True
+        )
 
     def is_product_installable(self, product_id, allow_hidden=False):
         """Does a product have an installation profile?
@@ -181,7 +180,7 @@ class Addons(object):
             not_installable = []
             utils = getAllUtilitiesRegisteredFor(INonInstallable)
             for util in utils:
-                gnip = getattr(util, 'getNonInstallableProducts', None)
+                gnip = getattr(util, "getNonInstallableProducts", None)
                 if gnip is None:
                     continue
                 not_installable.extend(gnip())
@@ -196,12 +195,11 @@ class Addons(object):
             if product_id in not_installable:
                 return False
 
-        profile = self.get_install_profile(
-            product_id, allow_hidden=allow_hidden)
+        profile = self.get_install_profile(product_id, allow_hidden=allow_hidden)
         if profile is None:
             return
         try:
-            self.ps.getProfileDependencyChain(profile['id'])
+            self.ps.getProfileDependencyChain(profile["id"])
         except KeyError as e:
             # Don't show twice the same error: old install and profile
             # oldinstall is test in first in other methods we may have an extra
@@ -213,30 +211,24 @@ class Addons(object):
             # 3. Make sense of the next five lines: they remove 'Products.'
             #    when it is there, and add it when it is not???
             checkname = product_id
-            if checkname.startswith('Products.'):
+            if checkname.startswith("Products."):
                 checkname = checkname[9:]
             else:
-                checkname = 'Products.' + checkname
+                checkname = "Products." + checkname
             if checkname in self.errors:
-                if self.errors[checkname]['value'] == e.args[0]:
+                if self.errors[checkname]["value"] == e.args[0]:
                     return False
                 # A new error is found, register it
                 self.errors[product_id] = dict(
-                    type=_(
-                        u"dependency_missing",
-                        default=u"Missing dependency"
-                    ),
+                    type=_(u"dependency_missing", default=u"Missing dependency"),
                     value=e.args[0],
-                    product_id=product_id
+                    product_id=product_id,
                 )
             else:
                 self.errors[product_id] = dict(
-                    type=_(
-                        u"dependency_missing",
-                        default=u"Missing dependency"
-                    ),
+                    type=_(u"dependency_missing", default=u"Missing dependency"),
                     value=e.args[0],
-                    product_id=product_id
+                    product_id=product_id,
                 )
             return False
         return True
@@ -252,10 +244,10 @@ class Addons(object):
             dist = pkg_resources.get_distribution(product_id)
             return dist.version
         except pkg_resources.DistributionNotFound:
-            if '.' in product_id:
-                return ''
+            if "." in product_id:
+                return ""
         # For CMFPlacefulWorkflow we need to try Products.CMFPlacefulWorkflow.
-        return self.get_product_version('Products.' + product_id)
+        return self.get_product_version("Products." + product_id)
 
     def get_latest_upgrade_step(self, profile_id):
         """Get highest ordered upgrade step for profile.
@@ -270,8 +262,7 @@ class Addons(object):
             available = self.ps.listUpgrades(profile_id, True)
             if available:  # could return empty sequence
                 latest = available[-1]
-                profile_version = max(latest['dest'],
-                                      key=pkg_resources.parse_version)
+                profile_version = max(latest["dest"], key=pkg_resources.parse_version)
         except Exception:
             pass
         return profile_version
@@ -296,21 +287,19 @@ class Addons(object):
         if profile is None:
             # No GS profile, not supported.
             return {}
-        profile_id = profile['id']
+        profile_id = profile["id"]
         if not self.is_profile_installed(profile_id):
             return {}
         profile_version = str(self.ps.getVersionForProfile(profile_id))
-        if profile_version == 'latest':
+        if profile_version == "latest":
             profile_version = self.get_latest_upgrade_step(profile_id)
         if profile_version == UNKNOWN:
             # If a profile doesn't have a metadata.xml use the package version.
             profile_version = self.get_product_version(product_id)
-        installed_profile_version = self.ps.getLastVersionForProfile(
-            profile_id)
+        installed_profile_version = self.ps.getLastVersionForProfile(profile_id)
         # getLastVersionForProfile returns the version as a tuple or unknown.
         if installed_profile_version != UNKNOWN:
-            installed_profile_version = str(
-                '.'.join(installed_profile_version))
+            installed_profile_version = str(".".join(installed_profile_version))
         return dict(
             required=profile_version != installed_profile_version,
             available=len(self.ps.listUpgrades(profile_id)) > 0,
@@ -328,7 +317,7 @@ class Addons(object):
         if profile is None:
             logger.error("Could not upgrade %s, no profile.", product_id)
             return False
-        self.ps.upgradeProfile(profile['id'])
+        self.ps.upgradeProfile(profile["id"])
         return True
 
     def install_product(self, product_id, allow_hidden=False):
@@ -346,26 +335,28 @@ class Addons(object):
         :returns: True on success, False otherwise.
         :rtype: boolean
         """
-        profile = self.get_install_profile(
-            product_id, allow_hidden=allow_hidden)
+        profile = self.get_install_profile(product_id, allow_hidden=allow_hidden)
         if not profile:
             logger.error("Could not install %s: no profile found.", product_id)
             # TODO Possibly raise an error.
             return False
 
         if self.is_product_installed(product_id):
-            logger.error("Could not install %s: profile already installed.",
-                         product_id)
+            logger.error("Could not install %s: profile already installed.", product_id)
             return False
 
         # Okay, actually install the profile.
-        profile_id = profile['id']
-        self.ps.runAllImportStepsFromProfile('profile-%s' % profile_id)
+        profile_id = profile["id"]
+        self.ps.runAllImportStepsFromProfile("profile-%s" % profile_id)
 
         if not self.is_profile_installed(profile_id):
             version = self.get_product_version(product_id)
-            logger.warn('Profile %s has no metadata.xml version. Falling back '
-                        'to package version %s', profile_id, version)
+            logger.warn(
+                "Profile %s has no metadata.xml version. Falling back "
+                "to package version %s",
+                profile_id,
+                version,
+            )
             self.ps.setLastVersionForProfile(profile_id, version)
 
         # No problems encountered.
@@ -378,18 +369,17 @@ class Addons(object):
         """
         profile = self.get_uninstall_profile(product_id)
         if not profile:
-            logger.error("Could not uninstall %s: no uninstall profile "
-                         "found.", product_id)
+            logger.error(
+                "Could not uninstall %s: no uninstall profile " "found.", product_id
+            )
             return False
 
-        self.ps.runAllImportStepsFromProfile(
-            'profile-%s' % profile['id'])
+        self.ps.runAllImportStepsFromProfile("profile-%s" % profile["id"])
 
         # Unmark the install profile.
-        install_profile = self.get_install_profile(
-            product_id, allow_hidden=True)
+        install_profile = self.get_install_profile(product_id, allow_hidden=True)
         if install_profile:
-            self.ps.unsetLastVersionForProfile(install_profile['id'])
+            self.ps.unsetLastVersionForProfile(install_profile["id"])
         return True
 
     @view.memoize
@@ -400,10 +390,10 @@ class Addons(object):
         ignore_products = []
         utils = getAllUtilitiesRegisteredFor(INonInstallable)
         for util in utils:
-            ni_profiles = getattr(util, 'getNonInstallableProfiles', None)
+            ni_profiles = getattr(util, "getNonInstallableProfiles", None)
             if ni_profiles is not None:
                 ignore_profiles.extend(ni_profiles())
-            ni_products = getattr(util, 'getNonInstallableProducts', None)
+            ni_products = getattr(util, "getNonInstallableProducts", None)
             if ni_products is not None:
                 ignore_products.extend(ni_products())
 
@@ -413,17 +403,17 @@ class Addons(object):
         # applied already).
         # profiles_with_upgrades = self.ps.listProfilesWithUpgrades()
         for profile in profiles:
-            if profile['type'] != EXTENSION:
+            if profile["type"] != EXTENSION:
                 continue
 
-            pid = profile['id']
+            pid = profile["id"]
             if pid in ignore_profiles:
                 continue
-            pid_parts = pid.split(':')
+            pid_parts = pid.split(":")
             if len(pid_parts) != 2:
                 logger.error("Profile with id '%s' is invalid." % pid)
             # Which package (product) is this from?
-            product_id = profile['product']
+            product_id = profile["product"]
             if product_id in ignore_products:
                 continue
             profile_type = pid_parts[-1]
@@ -436,44 +426,46 @@ class Addons(object):
                 elif not self.is_product_installable(product_id):
                     continue
                 addons[product_id] = {
-                    'id': product_id,
-                    'version': self.get_product_version(product_id),
-                    'title': product_id,
-                    'description': '',
-                    'upgrade_profiles': {},
-                    'other_profiles': [],
-                    'install_profile': None,
-                    'install_profile_id': '',
-                    'uninstall_profile': None,
-                    'uninstall_profile_id': '',
-                    'is_installed': installed,
-                    'upgrade_info': upgrade_info,
-                    'profile_type': profile_type,
+                    "id": product_id,
+                    "version": self.get_product_version(product_id),
+                    "title": product_id,
+                    "description": "",
+                    "upgrade_profiles": {},
+                    "other_profiles": [],
+                    "install_profile": None,
+                    "install_profile_id": "",
+                    "uninstall_profile": None,
+                    "uninstall_profile_id": "",
+                    "is_installed": installed,
+                    "upgrade_info": upgrade_info,
+                    "profile_type": profile_type,
                 }
                 # Add info on install and uninstall profile.
                 product = addons[product_id]
                 install_profile = self.get_install_profile(product_id)
                 if install_profile is not None:
-                    product['title'] = install_profile['title']
-                    product['description'] = install_profile['description']
-                    product['install_profile'] = install_profile
-                    product['install_profile_id'] = install_profile['id']
-                    product['profile_type'] = 'default'
+                    product["title"] = install_profile["title"]
+                    product["description"] = install_profile["description"]
+                    product["install_profile"] = install_profile
+                    product["install_profile_id"] = install_profile["id"]
+                    product["profile_type"] = "default"
                 uninstall_profile = self.get_uninstall_profile(product_id)
                 if uninstall_profile is not None:
-                    product['uninstall_profile'] = uninstall_profile
-                    product['uninstall_profile_id'] = uninstall_profile['id']
+                    product["uninstall_profile"] = uninstall_profile
+                    product["uninstall_profile_id"] = uninstall_profile["id"]
                     # Do not override profile_type.
-                    if not product['profile_type']:
-                        product['profile_type'] = 'uninstall'
-            if profile['id'] in (product['install_profile_id'],
-                                 product['uninstall_profile_id']):
+                    if not product["profile_type"]:
+                        product["profile_type"] = "uninstall"
+            if profile["id"] in (
+                product["install_profile_id"],
+                product["uninstall_profile_id"],
+            ):
                 # Everything has been done.
                 continue
-            elif 'version' in profile:
-                product['upgrade_profiles'][profile['version']] = profile
+            elif "version" in profile:
+                product["upgrade_profiles"][profile["version"]] = profile
             else:
-                product['other_profiles'].append(profile)
+                product["other_profiles"].append(profile)
         return addons
 
     def get_addons(self, apply_filter=None, product_name=None):
@@ -495,27 +487,27 @@ class Addons(object):
         """
         addons = self.marshall_addons()
         filtered = {}
-        if apply_filter == 'broken':
+        if apply_filter == "broken":
             all_broken = self.errors.values()
             for broken in all_broken:
-                filtered[broken['product_id']] = broken
+                filtered[broken["product_id"]] = broken
         else:
             for product_id, addon in addons.items():
-                if product_name and addon['id'] != product_name:
+                if product_name and addon["id"] != product_name:
                     continue
 
-                installed = addon['is_installed']
-                if apply_filter in ['installed', 'upgrades'] and not installed:
+                installed = addon["is_installed"]
+                if apply_filter in ["installed", "upgrades"] and not installed:
                     continue
-                elif apply_filter == 'available':
+                elif apply_filter == "available":
                     if installed:
                         continue
                     # filter out upgrade profiles
-                    if addon['profile_type'] != 'default':
+                    if addon["profile_type"] != "default":
                         continue
-                elif apply_filter == 'upgrades':
-                    upgrade_info = addon['upgrade_info']
-                    if not upgrade_info.get('available'):
+                elif apply_filter == "upgrades":
+                    upgrade_info = addon["upgrade_info"]
+                    if not upgrade_info.get("available"):
                         continue
 
                 filtered[product_id] = addon

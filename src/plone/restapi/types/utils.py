@@ -61,18 +61,24 @@ def get_form_fieldsets(form):
     """ Get fieldsets from form
     """
     fieldsets = []
-    form_fields = getattr(form, 'fields', {})
+    form_fields = getattr(form, "fields", {})
     fields_values = list(form_fields.values())
     if form_fields:
-        fieldsets.append({
-            "id": "default",
-            "title": translate("label_schema_default", default="Default",
-                               domain="plone", context=getRequest()),
-            "fields": fields_values
-        })
+        fieldsets.append(
+            {
+                "id": "default",
+                "title": translate(
+                    "label_schema_default",
+                    default="Default",
+                    domain="plone",
+                    context=getRequest(),
+                ),
+                "fields": fields_values,
+            }
+        )
 
     # Additional fieldsets (AKA z3c.form groups)
-    for group in getattr(form, 'groups', []):
+    for group in getattr(form, "groups", []):
         fieldset = {
             "id": group.__name__,
             "title": translate(group.label, context=getRequest()),
