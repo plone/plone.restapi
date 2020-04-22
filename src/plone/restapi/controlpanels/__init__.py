@@ -12,21 +12,10 @@ from Products.CMFPlone.interfaces.controlpanel import ISecuritySchema
 from Products.CMFPlone.interfaces.controlpanel import ISiteSchema
 from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
 from zope.component import adapter
-from zope.interface import Attribute
 from zope.interface import implementer
 from zope.interface import Interface
-
-
-class IControlpanel(Interface):
-    __name__ = Attribute("Name of the controlpanel in the URL")
-    title = Attribute("Title of this controlpanel")
-    group = Attribute("Group name of this controlpanel")
-    schema = Attribute("Registry schema of this controlpanel")
-
-    configlet_id = Attribute("Id the configlet, ie MailHost")
-    configlet_category_id = Attribute(
-        "Category of the configlet, ie plone-general"
-    )  # noqa
+from zope.publisher.interfaces import NotFound
+from plone.restapi.controlpanels.interfaces import IControlpanel
 
 
 @implementer(IControlpanel)
@@ -62,6 +51,18 @@ class RegistryConfigletPanel(object):
         if self.configlet:
             self.title = self.configlet["title"]
             self.group = self._get_group_title()
+
+    def add(self, names):
+        raise NotFound(self.context, names, self.request)
+
+    def get(self, names):
+        raise NotFound(self.context, names, self.request)
+
+    def update(self, names):
+        raise NotFound(self.context, names, self.request)
+
+    def delete(self, names):
+        raise NotFound(self.context, names, self.request)
 
 
 # General
