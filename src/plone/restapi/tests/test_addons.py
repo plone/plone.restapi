@@ -5,6 +5,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from Products.CMFPlone.utils import safe_unicode
 
 import unittest
 
@@ -58,7 +59,7 @@ class TestAddons(unittest.TestCase):
 
         response = self.api_session.post("/@addons/plone.session/install")
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(response.content, "")
+        self.assertEqual(safe_unicode(response.content), "")
 
         # Check to make sure the addon is currently shown as installed
         self.assertEqual(_get_install_status(self), True)
@@ -67,7 +68,7 @@ class TestAddons(unittest.TestCase):
         response = self.api_session.post("/@addons/plone.session/uninstall")
 
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(response.content, "")
+        self.assertEqual(safe_unicode(response.content), "")
         # Check to make sure the addon is currently shown as not installed
         self.assertEqual(_get_install_status(self), False)
 
@@ -108,7 +109,7 @@ class TestAddons(unittest.TestCase):
         response = self.api_session.post("/@addons/plone.session/upgrade")
 
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(response.content, "")
+        self.assertEqual(safe_unicode(response.content), "")
 
         self.fail("Not finished yet")
 

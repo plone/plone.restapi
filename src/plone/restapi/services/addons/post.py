@@ -56,7 +56,7 @@ class AddonsPost(Service):
                 "items": {"@id": "{}/@addons".format(self.context.absolute_url())}
             }
             addons_data = []
-            for a in all_addons.itervalues():
+            for a in all_addons.values():
                 addons_data.append(self.addons.serializeAddon(a))
             result["items"] = addons_data
 
