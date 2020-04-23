@@ -18,8 +18,8 @@
   <adapter factory=".dxfields.RichTextFieldDeserializer" />
   <adapter factory=".blocks.BlocksJSONFieldDeserializer" />
 
-  <adapter factory=".blocks.TextBlockDeserializer" name="text" />
-  <adapter factory=".blocks.HTMLBlockDeserializer" name="html" />
+  <adapter factory=".blocks.TextBlockConverter" name="text" />
+  <adapter factory=".blocks.HTMLBlockConverter" name="html" />
 
   <adapter factory=".local_roles.DeserializeFromJson"
            name="local_roles"/>
