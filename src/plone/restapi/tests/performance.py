@@ -2,6 +2,7 @@
 from datetime import datetime
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
+from plone.namedfile.file import NamedBlobImage
 from Products.CMFCore.utils import getToolByName
 from six.moves import range
 from zope.component.hooks import getSite
@@ -36,8 +37,7 @@ def set_image(obj):
         from plone.namedfile.file import NamedBlobImage
 
         filename = os.path.join(os.path.dirname(__file__), u"image.png")
-        obj.image = NamedBlobImage(
-            data=open(filename, "rb").read(), filename=filename)
+        obj.image = NamedBlobImage(data=open(filename, "rb").read(), filename=filename)
     else:
         filename = os.path.join(os.path.dirname(__file__), u"image.png")
         obj.setImage(open(filename, "rb").read())
@@ -74,13 +74,11 @@ def step_setup_content(context):
     portal = getSite()
 
     # Testfolder WRITE
-    portal.invokeFactory("Folder", id="testfolder-write",
-                         title="Testfolder Write")
+    portal.invokeFactory("Folder", id="testfolder-write", title="Testfolder Write")
     publish(portal["testfolder-write"])
 
     # Testfolder READ
-    portal.invokeFactory("Folder", id="testfolder-read",
-                         title="Testfolder Read")
+    portal.invokeFactory("Folder", id="testfolder-read", title="Testfolder Read")
     publish(portal["testfolder-read"])
     portal = portal["testfolder-read"]
 
@@ -105,8 +103,7 @@ def step_setup_content(context):
     publish(portal.folder)
 
     # Folder with 10 Items
-    portal.invokeFactory(
-        "Folder", id="folder-with-10-items", title="Folder 10")
+    portal.invokeFactory("Folder", id="folder-with-10-items", title="Folder 10")
     folder10 = portal["folder-with-10-items"]
     set_description(folder10)
     publish(folder10)
@@ -117,8 +114,7 @@ def step_setup_content(context):
         publish(folder10["doc{}".format(i)])
 
     # Folder with 100 Items
-    portal.invokeFactory(
-        "Folder", id="folder-with-100-items", title="Folder 100")
+    portal.invokeFactory("Folder", id="folder-with-100-items", title="Folder 100")
     folder100 = portal["folder-with-100-items"]
     set_description(folder100)
     publish(folder100)
@@ -129,8 +125,7 @@ def step_setup_content(context):
         publish(folder100["doc{}".format(i)])
 
     # Folder with 1000 Items
-    portal.invokeFactory(
-        "Folder", id="folder-with-1000-items", title="Folder 1000")
+    portal.invokeFactory("Folder", id="folder-with-1000-items", title="Folder 1000")
     folder1000 = portal["folder-with-1000-items"]
     set_description(folder1000)
     publish(folder1000)
@@ -141,8 +136,11 @@ def step_setup_content(context):
         publish(folder1000["doc{}".format(i)])
 
     # Folder with 10 Items and next/previous enabled
-    portal.invokeFactory("Folder", id="folder-with-10-items-next-prev-enabled",
-                         title="Folder 10 (next/prev enabled)")
+    portal.invokeFactory(
+        "Folder",
+        id="folder-with-10-items-next-prev-enabled",
+        title="Folder 10 (next/prev enabled)",
+    )
     folder10np = portal["folder-with-10-items-next-prev-enabled"]
     folder10np.nextPreviousEnabled = True
     set_description(folder10np)
@@ -202,3 +200,31 @@ def step_setup_content(context):
     portal.invokeFactory("File", id="file", title="File")
     set_description(portal.file)
     set_file(portal.file)
+
+    # Image 1 MB
+    portal.invokeFactory("Image", id="image-1mb", title="Image 1 MB")
+    filename = os.path.join(os.path.dirname(__file__), "images", u"image-1mb.jpg")
+    portal.get("image-1mb").image = NamedBlobImage(
+        data=open(filename, "rb").read(), filename=filename
+    )
+
+    # Image 2 MB
+    portal.invokeFactory("Image", id="image-2mb", title="Image 2 MB")
+    filename = os.path.join(os.path.dirname(__file__), "images", u"image-2mb.jpg")
+    portal.get("image-2mb").image = NamedBlobImage(
+        data=open(filename, "rb").read(), filename=filename
+    )
+
+    # Image 3 MB
+    portal.invokeFactory("Image", id="image-3mb", title="Image 3 MB")
+    filename = os.path.join(os.path.dirname(__file__), "images", u"image-3mb.jpg")
+    portal.get("image-3mb").image = NamedBlobImage(
+        data=open(filename, "rb").read(), filename=filename
+    )
+
+    # Image 10 MB
+    portal.invokeFactory("Image", id="image-10mb", title="Image 10 MB")
+    filename = os.path.join(os.path.dirname(__file__), "images", u"image-10mb.jpg")
+    portal.get("image-10mb").image = NamedBlobImage(
+        data=open(filename, "rb").read(), filename=filename
+    )
