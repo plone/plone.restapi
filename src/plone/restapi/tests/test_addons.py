@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from pkg_resources import parse_version
+from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -12,6 +14,17 @@ import transaction
 import unittest
 
 
+PLONE_VERSION = parse_version(api.env.plone_version())
+
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    PLONE5 = False
+else:
+    PLONE5 = True
+
+
+@unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
 class TestAddons(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
