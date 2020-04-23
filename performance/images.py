@@ -10,7 +10,33 @@ def image_01mb_get(self):
     self.client.get(
         "/testfolder-read/image-1mb/@@images/image.jpeg",
         headers=headers,
-        name="Image 1 MB GET",
+        name="Image 01 MB GET",
+    )
+
+
+def image_01mb_get_scale_large(self):
+    headers = {
+        "Accept": "application/json",
+        "Authorization": "Basic YWRtaW46YWRtaW4=",
+        "Content-Type": "application/json",
+    }
+    self.client.get(
+        "/testfolder-read/image-1mb/@@images/image/large",
+        headers=headers,
+        name="Image 01 MB GET (Scale Large)",
+    )
+
+
+def image_01mb_get_scale_preview(self):
+    headers = {
+        "Accept": "application/json",
+        "Authorization": "Basic YWRtaW46YWRtaW4=",
+        "Content-Type": "application/json",
+    }
+    self.client.get(
+        "/testfolder-read/image-1mb/@@images/image/preview",
+        headers=headers,
+        name="Image 01 MB GET (Scale Preview)",
     )
 
 
@@ -23,7 +49,7 @@ def image_02mb_get(self):
     self.client.get(
         "/testfolder-read/image-2mb/@@images/image.jpeg",
         headers=headers,
-        name="Image 2 MB GET",
+        name="Image 02 MB GET",
     )
 
 
@@ -36,7 +62,7 @@ def image_03mb_get(self):
     self.client.get(
         "/testfolder-read/image-3mb/@@images/image.jpeg",
         headers=headers,
-        name="Image 3 MB GET",
+        name="Image 03 MB GET",
     )
 
 
@@ -56,6 +82,8 @@ def image_10mb_get(self):
 class UserBehavior(TaskSet):
     tasks = {
         image_01mb_get: 10,
+        image_01mb_get_scale_large: 20,
+        image_01mb_get_scale_preview: 20,
         image_02mb_get: 10,
         image_03mb_get: 10,
         image_10mb_get: 5,
