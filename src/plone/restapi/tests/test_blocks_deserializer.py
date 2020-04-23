@@ -3,7 +3,7 @@
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.interfaces import IBlockDeserializer
+from plone.restapi.interfaces import IBlockConverter
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import adapter
@@ -44,7 +44,7 @@ class TestBlocksDeserializer(unittest.TestCase):
 
     def test_register_deserializer(self):
 
-        @implementer(IBlockDeserializer)
+        @implementer(IBlockConverter)
         @adapter(IBlocks, IBrowserRequest)
         class TestAdapter(object):
             def __init__(self, context, request):
