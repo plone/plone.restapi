@@ -194,14 +194,16 @@ class TestFolderCreate(unittest.TestCase):
                 "text": {
                     "content-type": "text/html",
                     "encoding": "utf8",
-                    "data": "<p>example with &#x27;</p>"
-                }
+                    "data": "<p>example with &#x27;</p>",
+                },
             },
         )
         self.assertEqual(201, response.status_code)
         transaction.begin()
-        self.assertEqual("<p>example with '</p>", self.portal.folder1.mydocument2.text.raw)
-        self.assertEqual("<p>example with '</p>", response.json()['text']['data'])
+        self.assertEqual(
+            "<p>example with '</p>", self.portal.folder1.mydocument2.text.raw
+        )
+        self.assertEqual("<p>example with '</p>", response.json()["text"]["data"])
 
 
 class TestATFolderCreate(unittest.TestCase):

@@ -86,10 +86,10 @@ class MyIterableContextSource(object):
         self.context = context
 
         title_words = self.context.title.split()
-        self.terms = [SimpleTerm(value=w.lower(),
-                                 token=ascii_token(w.lower()),
-                                 title=w)
-                      for w in title_words]
+        self.terms = [
+            SimpleTerm(value=w.lower(), token=ascii_token(w.lower()), title=w)
+            for w in title_words
+        ]
 
     def __contains__(self, value):
         return value in [t.value for t in self.terms]
@@ -104,10 +104,10 @@ class MyContextQuerySource(object):
         self.context = context
 
         title_words = self.context.title.split()
-        self.terms = [SimpleTerm(value=w.lower(),
-                                 token=ascii_token(w.lower()),
-                                 title=w)
-                      for w in title_words]
+        self.terms = [
+            SimpleTerm(value=w.lower(), token=ascii_token(w.lower()), title=w)
+            for w in title_words
+        ]
 
     def __contains__(self, value):
         return value in [t.value for t in self.terms]
@@ -240,7 +240,7 @@ class IDXTestDocumentSchema(model.Schema):
     test_namedblobfile_field = namedfile.NamedBlobFile(required=False)
     test_namedblobimage_field = namedfile.NamedBlobImage(required=False)
 
-    primary('test_primary_namedfile_field')
+    primary("test_primary_namedfile_field")
     test_primary_namedfile_field = namedfile.NamedFile(required=False)
 
     # z3c.relationfield

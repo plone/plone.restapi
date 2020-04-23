@@ -94,8 +94,7 @@ class TestResolveUIDFunctional(unittest.TestCase):
         transaction.commit()
         self.assertEqual(
             "../resolveuid/{}".format(self.target_uuid),
-            self.portal.document.blocks
-            .get("791bf004-7c88-4278-8490-13b85c3fa4b4")
+            self.portal.document.blocks.get("791bf004-7c88-4278-8490-13b85c3fa4b4")
             .get("text")
             .get("entityMap")
             .get("0")
