@@ -48,6 +48,7 @@ before_install:
   - echo "download-cache = $HOME/buildout-cache/downloads" >> $HOME/.buildout/default.cfg
   - echo "eggs-directory = $HOME/buildout-cache/eggs" >> $HOME/.buildout/default.cfg
   - pip install -r requirements.txt
+  - if [ "$PLONE_VERSION" == "5.2.x" ] && [ $TRAVIS_PYTHON_VERSION == '3.7' ]; then bin/pip install black ; fi
 install:
   - sed -ie "s#plone-x.x.x.cfg#plone-$PLONE_VERSION.cfg#" travis.cfg
   - buildout -t 10 -c travis.cfg
