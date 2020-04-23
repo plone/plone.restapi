@@ -5,8 +5,10 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
 
+import transaction
 import unittest
 
 
@@ -17,12 +19,14 @@ class TestAddons(unittest.TestCase):
     def setUp(self):
         self.app = self.layer["app"]
         self.portal = self.layer["portal"]
+        self.ps = getToolByName(self.portal, "portal_setup")
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
 
     def test_get_addon_record(self):
         response = self.api_session.get("/@addons/plone.session")
@@ -66,9 +70,9 @@ class TestAddons(unittest.TestCase):
 
         # Now uninstall the addon
         response = self.api_session.post("/@addons/plone.session/uninstall")
-
         self.assertEqual(response.status_code, 204)
         self.assertEqual(safe_unicode(response.content), "")
+
         # Check to make sure the addon is currently shown as not installed
         self.assertEqual(_get_install_status(self), False)
 
@@ -97,30 +101,79 @@ class TestAddons(unittest.TestCase):
             "/@addons/plone.session/uninstall",
             headers={"Prefer": "return=representation"},
         )
-
         self.assertEqual(response.status_code, 200)
         result = response.json()
+
         # Check to make sure the addon is currently shown as not installed
         session = [a for a in result["items"] if a["id"] == u"plone.session"]
         self.assertEqual(len(session), 1)
         self.assertFalse(session[0]["is_installed"])
 
     def test_upgrade_addon(self):
-        response = self.api_session.post("/@addons/plone.session/upgrade")
+        def _get_upgrade_info(self):
+            response = self.api_session.get("/@addons/plone.restapi")
+            result = response.json()
+            return result["upgrade_info"]
 
-        self.assertEqual(response.status_code, 204)
-        self.assertEqual(safe_unicode(response.content), "")
-
-        self.fail("Not finished yet")
-
-    def test_upgrade_addon_with_representation(self):
-        response = self.api_session.post(
-            "/@addons/plone.session/upgrade",
-            headers={"Prefer": "return=representation"},
+        # Set need upgrade state
+        self.ps.setLastVersionForProfile("plone.restapi:default", "0002")
+        transaction.commit()
+        self.assertEqual(
+            {
+                'available': True,
+                'hasProfile': True,
+                'installedVersion': '0002',
+                'newVersion': '0006',
+                'required': True,
+            },
+            _get_upgrade_info(self)
         )
 
+        # Now call the upgrade
+        response = self.api_session.post("/@addons/plone.restapi/upgrade")
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(safe_unicode(response.content), "")
+        self.assertEqual(
+            {
+                'available': False,
+                'hasProfile': True,
+                'installedVersion': '0006',
+                'newVersion': '0006',
+                'required': False,
+            },
+            _get_upgrade_info(self)
+        )
+
+    def test_upgrade_addon_with_representation(self):
+        response = self.api_session.get("/@addons/plone.restapi")
+        result = response.json()
+        last_version = result["upgrade_info"]
+
+        # Set need upgrade state
+        self.ps.setLastVersionForProfile("plone.restapi:default", "0002")
+        transaction.commit()
+        response = self.api_session.get("/@addons/plone.restapi")
+        result = response.json()
+        self.assertEqual(
+            {
+                'available': True,
+                'hasProfile': True,
+                'installedVersion': '0002',
+                'newVersion': last_version["newVersion"],
+                'required': True,
+            },
+            result["upgrade_info"],
+        )
+
+        # Now call the upgrade
+        response = self.api_session.post(
+            "/@addons/plone.restapi/upgrade",
+            headers={"Prefer": "return=representation"},
+        )
         self.assertEqual(response.status_code, 200)
+        result = response.json()
 
-        response = response.json()
-
-        self.fail("Not finished yet")
+        # Check to make sure the addon is at last version
+        session = [a for a in result["items"] if a["id"] == u"plone.restapi"]
+        self.assertEqual(len(session), 1)
+        self.assertEqual(last_version, session[0]["upgrade_info"])
