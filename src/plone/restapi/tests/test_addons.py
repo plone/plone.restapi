@@ -27,7 +27,6 @@ class TestAddons(unittest.TestCase):
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-
     def test_get_addon_record(self):
         response = self.api_session.get("/@addons/plone.session")
 
@@ -120,13 +119,13 @@ class TestAddons(unittest.TestCase):
         transaction.commit()
         self.assertEqual(
             {
-                'available': True,
-                'hasProfile': True,
-                'installedVersion': '0002',
-                'newVersion': '0006',
-                'required': True,
+                "available": True,
+                "hasProfile": True,
+                "installedVersion": "0002",
+                "newVersion": "0006",
+                "required": True,
             },
-            _get_upgrade_info(self)
+            _get_upgrade_info(self),
         )
 
         # Now call the upgrade
@@ -135,13 +134,13 @@ class TestAddons(unittest.TestCase):
         self.assertEqual(safe_unicode(response.content), "")
         self.assertEqual(
             {
-                'available': False,
-                'hasProfile': True,
-                'installedVersion': '0006',
-                'newVersion': '0006',
-                'required': False,
+                "available": False,
+                "hasProfile": True,
+                "installedVersion": "0006",
+                "newVersion": "0006",
+                "required": False,
             },
-            _get_upgrade_info(self)
+            _get_upgrade_info(self),
         )
 
     def test_upgrade_addon_with_representation(self):
@@ -156,11 +155,11 @@ class TestAddons(unittest.TestCase):
         result = response.json()
         self.assertEqual(
             {
-                'available': True,
-                'hasProfile': True,
-                'installedVersion': '0002',
-                'newVersion': last_version["newVersion"],
-                'required': True,
+                "available": True,
+                "hasProfile": True,
+                "installedVersion": "0002",
+                "newVersion": last_version["newVersion"],
+                "required": True,
             },
             result["upgrade_info"],
         )
