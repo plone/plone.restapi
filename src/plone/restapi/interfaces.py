@@ -84,8 +84,8 @@ class IFieldDeserializer(Interface):
         """
 
 
-class IBlockDeserializer(Interface):
-    """An adapter to deserialize a block JSON value into a block value.
+class IBlockConverter(Interface):
+    """Adapter to convert/adjust raw block deserialized value into block value.
     """
 
     def __init__(field, context, request):

@@ -4,7 +4,7 @@ from Acquisition import aq_parent
 from plone import api
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
-from plone.restapi.interfaces import IBlockDeserializer
+from plone.restapi.interfaces import IBlockConverter
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.schema import IJSONField
 from plone.uuid.interfaces import IUUID
@@ -47,21 +47,21 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
             for id, block_value in value.items():
                 block_type = block_value.get("@type", '')
 
-                adapter = queryMultiAdapter((self.context, self.request),
-                                            IBlockDeserializer,
+                convert = queryMultiAdapter((self.context, self.request),
+                                            IBlockConverter,
                                             name=block_type)
 
-                if adapter is not None:
-                    block_value = adapter(block_value)
+                if convert is not None:
+                    block_value = convert(block_value)
 
                 value[id] = block_value
 
         return value
 
 
-@implementer(IBlockDeserializer)
+@implementer(IBlockConverter)
 @adapter(IBlocks, IBrowserRequest)
-class TextBlockDeserializer(object):
+class TextBlockConverter(object):
 
     def __init__(self, context, request):
         self.context = context
@@ -101,9 +101,9 @@ class TextBlockDeserializer(object):
         return value
 
 
-@implementer(IBlockDeserializer)
+@implementer(IBlockConverter)
 @adapter(IBlocks, IBrowserRequest)
-class HTMLBlockDeserializer(object):
+class HTMLBlockConverter(object):
 
     def __init__(self, context, request):
         self.context = context
