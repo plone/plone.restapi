@@ -85,6 +85,9 @@ test:  ## Test
 test-performance:
 	jmeter -n -t performance.jmx -l jmeter.jtl
 
+start-locust:
+	bin/locust -f performance/images.py --no-web -c 1000 -r 100 --run-time 1m --host http://localhost:12345/Plone
+
 .PHONY: Code Analysis
 code-analysis:  ## Code Analysis
 	bin/code-analysis
