@@ -10,6 +10,7 @@ from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from plone.restapi.types.utils import get_jsonschema_properties
+from plone.schema import Email
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
@@ -307,6 +308,81 @@ class TestJsonSchemaProviders(TestCase):
                 "title": u"My field",
                 "description": u"My great field",
                 "default": 0.5,
+            },
+            adapter.get_schema(),
+        )
+
+    def test_email(self):
+        field = Email(
+            title=u"Email",
+            description=u"Email field",
+            default=u"foo@bar.com",
+            min_length=10,
+            max_length=20,
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": u"Email",
+                "description": u"Email field",
+                "widget": "email",
+                "default": u"foo@bar.com",
+                "minLength": 10,
+                "maxLength": 20,
+            },
+            adapter.get_schema(),
+        )
+
+    def test_password(self):
+        field = schema.Password(
+            title=u"Password",
+            description=u"Password field",
+            default=u"secret",
+            min_length=4,
+            max_length=8,
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": u"Password",
+                "description": u"Password field",
+                "widget": "password",
+                "default": u"secret",
+                "minLength": 4,
+                "maxLength": 8,
+            },
+            adapter.get_schema(),
+        )
+
+    def test_uri(self):
+        field = schema.URI(
+            title=u"URI",
+            description=u"URI field",
+            default=u"http://foo.bar",
+            min_length=10,
+            max_length=100,
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": u"URI",
+                "description": u"URI field",
+                "widget": "url",
+                "default": u"http://foo.bar",
+                "minLength": 10,
+                "maxLength": 100,
             },
             adapter.get_schema(),
         )
