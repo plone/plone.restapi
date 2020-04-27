@@ -316,7 +316,7 @@ class TestJsonSchemaProviders(TestCase):
         field = Email(
             title=u"Email",
             description=u"Email field",
-            default=u"foo@bar.com",
+            default="foo@bar.com",
             min_length=10,
             max_length=20,
         )
@@ -327,10 +327,10 @@ class TestJsonSchemaProviders(TestCase):
         self.assertEqual(
             {
                 "type": "string",
-                "title": u"Email",
-                "description": u"Email field",
+                "title": "Email",
+                "description": "Email field",
                 "widget": "email",
-                "default": u"foo@bar.com",
+                "default": "foo@bar.com",
                 "minLength": 10,
                 "maxLength": 20,
             },
@@ -352,10 +352,10 @@ class TestJsonSchemaProviders(TestCase):
         self.assertEqual(
             {
                 "type": "string",
-                "title": u"Password",
-                "description": u"Password field",
+                "title": "Password",
+                "description": "Password field",
                 "widget": "password",
-                "default": u"secret",
+                "default": "secret",
                 "minLength": 4,
                 "maxLength": 8,
             },
@@ -366,7 +366,7 @@ class TestJsonSchemaProviders(TestCase):
         field = schema.URI(
             title=u"URI",
             description=u"URI field",
-            default=u"http://foo.bar",
+            default="http://foo.bar",
             min_length=10,
             max_length=100,
         )
@@ -377,10 +377,10 @@ class TestJsonSchemaProviders(TestCase):
         self.assertEqual(
             {
                 "type": "string",
-                "title": u"URI",
-                "description": u"URI field",
+                "title": "URI",
+                "description": "URI field",
                 "widget": "url",
-                "default": u"http://foo.bar",
+                "default": "http://foo.bar",
                 "minLength": 10,
                 "maxLength": 100,
             },
