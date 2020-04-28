@@ -395,6 +395,24 @@ class TestDXContentSerializer(unittest.TestCase):
             data["next_item"]
         )
 
+    def test_nextprev_unordered_folder(self):
+        folder = api.content.create(
+            container=self.portal,
+            type="Folder",
+            title="Folder with items",
+            description="This is a folder with some documents",
+        )
+        folder.setOrdering('unordered')
+        doc = api.content.create(
+            container=folder,
+            type="Document",
+            title="Item 1",
+            description="One item alone in the folder"
+        )
+        data = self.serialize(doc)
+        self.assertEqual({}, data["previous_item"])
+        self.assertEqual({}, data["next_item"])
+
     def test_richtext_serializer_context(self):
         """This checks if the context is passed in correctly.
 
