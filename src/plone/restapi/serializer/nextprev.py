@@ -32,13 +32,10 @@ class NextPrevious(object):
     @property
     def next(self):
         """ return info about the next item in the container """
-        try:
-            data = self.nextprev.getNextItem(self.context)
-        except TypeError as e:
-            if self.parent._ordering == 'unordered':
-                # Unordered folder
-                return {}
-            raise e
+        if self.parent._ordering == 'unordered':
+            # Unordered folder
+            return {}
+        data = self.nextprev.getNextItem(self.context)
         if data is None:
             return {}
         return {
@@ -51,13 +48,10 @@ class NextPrevious(object):
     @property
     def previous(self):
         """ return info about the previous item in the container """
-        try:
-            data = self.nextprev.getPreviousItem(self.context)
-        except TypeError as e:
-            if self.parent._ordering == 'unordered':
-                # Unordered folder
-                return {}
-            raise e
+        if self.parent._ordering == 'unordered':
+            # Unordered folder
+            return {}
+        data = self.nextprev.getPreviousItem(self.context)
         if data is None:
             return {}
         return {
