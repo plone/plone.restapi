@@ -36,11 +36,7 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
 
         description = data.get("description", "")
 
-        properties = {
-            "id": tid,
-            "title": title,
-            "description": description
-        }
+        properties = {"id": tid, "title": title, "description": description}
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
@@ -49,11 +45,13 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
         if IPloneRestapiLayer.providedBy(self.request):
             noLongerProvides(self.request, IPloneRestapiLayer)
 
-        context = queryMultiAdapter((self.context, self.request), name='dexterity-types')
-        add_type = queryMultiAdapter((context, self.request), name='add-type')
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types"
+        )
+        add_type = queryMultiAdapter((context, self.request), name="add-type")
         fti = add_type.form_instance.create(data=properties)
         add_type.form_instance.add(fti)
-        return self.get([tid, ])
+        return self.get([tid,])
 
     def get(self, names):
         name = names[0]
@@ -61,7 +59,9 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
         if IPloneRestapiLayer.providedBy(self.request):
             noLongerProvides(self.request, IPloneRestapiLayer)
 
-        context = queryMultiAdapter((self.context, self.request), name='dexterity-types')
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types"
+        )
         context = context.publishTraverse(self.request, name)
         serializer = ISerializeToJson(self)
         return serializer(context)
@@ -72,7 +72,9 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
         if IPloneRestapiLayer.providedBy(self.request):
             noLongerProvides(self.request, IPloneRestapiLayer)
 
-        context = queryMultiAdapter((self.context, self.request), name='dexterity-types')
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types"
+        )
         context = context.publishTraverse(self.request, name)
         deserializer = IDeserializeFromJson(self)
         return deserializer(context)
@@ -83,6 +85,8 @@ class DexterityTypesControlpanel(RegistryConfigletPanel):
         if IPloneRestapiLayer.providedBy(self.request):
             noLongerProvides(self.request, IPloneRestapiLayer)
 
-        context = queryMultiAdapter((self.context, self.request), name='dexterity-types')
-        edit = queryMultiAdapter((context, self.request), name='edit')
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types"
+        )
+        edit = queryMultiAdapter((context, self.request), name="edit")
         edit.form_instance.remove((name, None))

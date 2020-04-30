@@ -200,7 +200,7 @@ class TestDXContentSerializer(unittest.TestCase):
             container=folder,
             type="Document",
             title="Item 1",
-            description="One item alone in the folder"
+            description="One item alone in the folder",
         )
         data = self.serialize(doc)
         self.assertEqual({}, data["previous_item"])
@@ -217,13 +217,13 @@ class TestDXContentSerializer(unittest.TestCase):
             container=folder,
             type="Document",
             title="Item 1",
-            description="Previous item"
+            description="Previous item",
         )
         doc = api.content.create(
             container=folder,
             type="Document",
             title="Item 2",
-            description="Current item"
+            description="Current item",
         )
         data = self.serialize(doc)
         self.assertEqual(
@@ -231,9 +231,9 @@ class TestDXContentSerializer(unittest.TestCase):
                 "@id": "http://nohost/plone/folder-with-items/item-1",
                 "@type": "Document",
                 "title": "Item 1",
-                "description": "Previous item"
+                "description": "Previous item",
             },
-            data["previous_item"]
+            data["previous_item"],
         )
         self.assertEqual({}, data["next_item"])
 
@@ -248,13 +248,10 @@ class TestDXContentSerializer(unittest.TestCase):
             container=folder,
             type="Document",
             title="Item 1",
-            description="Current item"
+            description="Current item",
         )
         api.content.create(
-            container=folder,
-            type="Document",
-            title="Item 2",
-            description="Next item"
+            container=folder, type="Document", title="Item 2", description="Next item"
         )
         data = self.serialize(doc)
         self.assertEqual({}, data["previous_item"])
@@ -263,9 +260,9 @@ class TestDXContentSerializer(unittest.TestCase):
                 "@id": "http://nohost/plone/folder-with-items/item-2",
                 "@type": "Document",
                 "title": "Item 2",
-                "description": "Next item"
+                "description": "Next item",
             },
-            data["next_item"]
+            data["next_item"],
         )
 
     def test_nextprev_has_nextprev(self):
@@ -279,19 +276,16 @@ class TestDXContentSerializer(unittest.TestCase):
             container=folder,
             type="Document",
             title="Item 1",
-            description="Previous item"
+            description="Previous item",
         )
         doc = api.content.create(
             container=folder,
             type="Document",
             title="Item 2",
-            description="Current item"
+            description="Current item",
         )
         api.content.create(
-            container=folder,
-            type="Document",
-            title="Item 3",
-            description="Next item"
+            container=folder, type="Document", title="Item 3", description="Next item"
         )
         data = self.serialize(doc)
         self.assertEqual(
@@ -299,18 +293,18 @@ class TestDXContentSerializer(unittest.TestCase):
                 "@id": "http://nohost/plone/folder-with-items/item-1",
                 "@type": "Document",
                 "title": "Item 1",
-                "description": "Previous item"
+                "description": "Previous item",
             },
-            data["previous_item"]
+            data["previous_item"],
         )
         self.assertEqual(
             {
                 "@id": "http://nohost/plone/folder-with-items/item-3",
                 "@type": "Document",
                 "title": "Item 3",
-                "description": "Next item"
+                "description": "Next item",
             },
-            data["next_item"]
+            data["next_item"],
         )
 
     def test_nextprev_root_no_nextprev(self):
@@ -323,7 +317,7 @@ class TestDXContentSerializer(unittest.TestCase):
             container=self.portal,
             type="Document",
             title="Item 2",
-            description="Current item"
+            description="Current item",
         )
         data = self.serialize(doc)
         self.assertEqual(
@@ -331,9 +325,9 @@ class TestDXContentSerializer(unittest.TestCase):
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "title": "",
-                "description": ""
+                "description": "",
             },
-            data["previous_item"]
+            data["previous_item"],
         )
         self.assertEqual({}, data["next_item"])
 
@@ -342,7 +336,7 @@ class TestDXContentSerializer(unittest.TestCase):
             container=self.portal,
             type="Document",
             title="Item 2",
-            description="Next item"
+            description="Next item",
         )
         data = self.serialize()
         self.assertEqual({}, data["previous_item"])
@@ -351,9 +345,9 @@ class TestDXContentSerializer(unittest.TestCase):
                 "@id": "http://nohost/plone/item-2",
                 "@type": "Document",
                 "title": "Item 2",
-                "description": "Next item"
+                "description": "Next item",
             },
-            data["next_item"]
+            data["next_item"],
         )
 
     def test_nextprev_root_has_nextprev(self):
@@ -361,19 +355,19 @@ class TestDXContentSerializer(unittest.TestCase):
             container=self.portal,
             type="Document",
             title="Item 1",
-            description="Previous item"
+            description="Previous item",
         )
         doc = api.content.create(
             container=self.portal,
             type="Document",
             title="Item 2",
-            description="Current item"
+            description="Current item",
         )
         api.content.create(
             container=self.portal,
             type="Document",
             title="Item 3",
-            description="Next item"
+            description="Next item",
         )
         data = self.serialize(doc)
         self.assertEqual(
@@ -381,18 +375,18 @@ class TestDXContentSerializer(unittest.TestCase):
                 "@id": "http://nohost/plone/item-1",
                 "@type": "Document",
                 "title": "Item 1",
-                "description": "Previous item"
+                "description": "Previous item",
             },
-            data["previous_item"]
+            data["previous_item"],
         )
         self.assertEqual(
             {
                 "@id": "http://nohost/plone/item-3",
                 "@type": "Document",
                 "title": "Item 3",
-                "description": "Next item"
+                "description": "Next item",
             },
-            data["next_item"]
+            data["next_item"],
         )
 
     def test_richtext_serializer_context(self):
@@ -498,7 +492,7 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(True, obj["allow_discussion"])
 
     def test_allow_discussion_fti_allows_allows_global_enabled_but_no_instance_allowed(
-        self
+        self,
     ):  # noqa
         self.portal.invokeFactory("Document", id=u"doc2")
         registry = queryUtility(IRegistry)
@@ -516,7 +510,7 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(False, obj["allow_discussion"])
 
     def test_allow_discussion_fti_allows_allows_global_enabled_but_no_instance_set(
-        self
+        self,
     ):  # noqa
         self.portal.invokeFactory("Document", id=u"doc2")
         registry = queryUtility(IRegistry)
@@ -533,7 +527,7 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(True, obj["allow_discussion"])
 
     def test_allow_discussion_fti_disallows_allows_global_enabled_but_instance_allowed(
-        self
+        self,
     ):  # noqa
         self.portal.invokeFactory("Document", id=u"doc2")
         registry = queryUtility(IRegistry)
@@ -551,7 +545,7 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(True, obj["allow_discussion"])
 
     def test_allow_discussion_global_enabled_but_instance_has_no_discussion_behavior(
-        self
+        self,
     ):  # noqa
         registry = queryUtility(IRegistry)
         settings = registry.forInterface(IDiscussionSettings, check=False)
@@ -579,9 +573,7 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
         )
 
         self.portal.invokeFactory(
-            "DXTestDocument",
-            id=u"doc2",
-            test_primary_namedfile_field=None,
+            "DXTestDocument", id=u"doc2", test_primary_namedfile_field=None,
         )
 
         self.portal.doc1.creation_date = DateTime("2015-04-27T10:14:48+00:00")
@@ -598,7 +590,10 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
         data = serializer()
         self.assertIn("targetUrl", data)
         download_url = u"/".join(
-            [self.portal.doc1.absolute_url(), u"@@download/test_primary_namedfile_field"]
+            [
+                self.portal.doc1.absolute_url(),
+                u"@@download/test_primary_namedfile_field",
+            ]
         )
         self.assertEqual(data["targetUrl"], download_url)
 

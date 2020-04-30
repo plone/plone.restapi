@@ -12,9 +12,9 @@ from zope.interface import implementer
 class DexterityTypesControlpanelDeserializeFromJson(ControlpanelDeserializeFromJson):
     def deserialize_item(self, proxy):
         data = json_body(self.request)
-        overview = queryMultiAdapter((proxy, self.request), name='overview')
+        overview = queryMultiAdapter((proxy, self.request), name="overview")
         overview.form_instance.applyChanges(data)
-        behaviors = queryMultiAdapter((proxy, self.request), name='behaviors')
+        behaviors = queryMultiAdapter((proxy, self.request), name="behaviors")
         behaviors.form_instance.applyChanges(data)
 
     def __call__(self, item=None):

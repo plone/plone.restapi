@@ -90,7 +90,7 @@ class TestDexterityFieldSerializing(TestCase):
         self.assertEqual({u"token": u"foo", u"title": None}, value)
 
     def test_choice_field_with_vocabulary_serialization_returns_vocabulary_term(
-        self
+        self,
     ):  # noqa
         value = self.serialize("test_choice_field_with_vocabulary", u"value1")
         self.assertTrue(isinstance(value, dict))
@@ -157,10 +157,7 @@ class TestDexterityFieldSerializing(TestCase):
         )
         self.assertTrue(isinstance(value, list), "Not a <list>")
         self.assertEqual(
-            [
-                {u"token": u"token3", u"title": u"title3"},
-            ],
-            value,
+            [{u"token": u"token3", u"title": u"title3"},], value,
         )
 
     def test_set_field_serialization_returns_list(self):

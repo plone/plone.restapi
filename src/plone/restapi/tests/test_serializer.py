@@ -121,7 +121,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         )
 
     def test_serialize_folder_orders_items_by_get_object_position_in_parent(
-        self
+        self,
     ):  # noqa
         self.portal.invokeFactory("Folder", id="folder1", title="Folder 1")
         self.portal.folder1.invokeFactory("Document", id="doc1")

@@ -60,12 +60,10 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
         )
 
     def test_controlpanels_dexterity_types_document_get(self):
-        response = self.api_session.get(
-            "/@controlpanels/dexterity-types/Document")
+        response = self.api_session.get("/@controlpanels/dexterity-types/Document")
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            "{}/@controlpanels/dexterity-types/Document".format(
-                self.portal_url),
+            "{}/@controlpanels/dexterity-types/Document".format(self.portal_url),
             response.json().get("@id"),
         )
         self.assertEqual("Page", response.json().get("title"))
@@ -82,17 +80,12 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
         self.assertEqual(201, response.status_code)
         self.assertEqual(
             "{}/@controlpanels/dexterity-types/my_custom_content_type".format(
-                self.portal_url),
+                self.portal_url
+            ),
             response.json().get("@id"),
         )
-        self.assertEqual(
-            'My Custom Content Type',
-            response.json().get("title")
-        )
-        self.assertEqual(
-            'A custom content-type',
-            response.json().get("description")
-        )
+        self.assertEqual("My Custom Content Type", response.json().get("title"))
+        self.assertEqual("A custom content-type", response.json().get("description"))
 
     def test_controlpanels_dexterity_types_document_patch(self):
         response = self.api_session.patch(
@@ -106,21 +99,15 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
         # PATCH returns no content
         self.assertEqual(204, response.status_code)
 
-        response = self.api_session.get(
-            "/@controlpanels/dexterity-types/Document")
+        response = self.api_session.get("/@controlpanels/dexterity-types/Document")
         self.assertEqual(200, response.status_code)
+        self.assertEqual("New Content Type Title", response.json().get("title"))
         self.assertEqual(
-            'New Content Type Title',
-            response.json().get("title")
-        )
-        self.assertEqual(
-            'New content type description',
-            response.json().get("description")
+            "New content type description", response.json().get("description")
         )
 
     def test_controlpanels_dexterity_types_document_delete(self):
-        response = self.api_session.delete(
-            "/@controlpanels/dexterity-types/Document")
+        response = self.api_session.delete("/@controlpanels/dexterity-types/Document")
 
         self.assertEqual(204, response.status_code)
         self.assertEqual(
