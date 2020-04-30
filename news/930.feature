@@ -1,0 +1,1 @@
+Replace internal links to files in blocks with a download url if the user has no edit permissions [csenger] 

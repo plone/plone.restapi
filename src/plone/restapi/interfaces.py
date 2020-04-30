@@ -67,6 +67,20 @@ class IPrimaryFieldTarget(Interface):
         """
 
 
+class IObjectPrimaryFieldTarget(Interface):
+    """Return a URL to direct the user to if the object has a primary field
+    that provides an IPrimaryFieldTarget.
+    """
+
+    def __init__(field, context, request):
+        """Adapts field, context and request.
+        """
+
+    def __call__():
+        """Returns a URL.
+        """
+
+
 class IDeserializeFromJson(Interface):
     """An adapter to deserialize a JSON object into an object in Plone."""
 

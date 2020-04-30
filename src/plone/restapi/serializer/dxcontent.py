@@ -13,6 +13,7 @@ from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import IPrimaryFieldTarget
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.rfc822.interfaces import IPrimaryFieldInfo
@@ -71,7 +72,6 @@ class SerializeToJson(object):
         result.update(expandable_elements(self.context, self.request))
 
         # Insert field values
-        primary_field_name = self.get_primary_field_name()
         for schema in iterSchemata(self.context):
             read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
@@ -87,15 +87,10 @@ class SerializeToJson(object):
                 value = serializer()
                 result[json_compatible(name)] = value
 
-                # check for a special primary filed target
-                if name == primary_field_name:
-                    target_adapter = queryMultiAdapter(
-                        (field, obj, self.request),
-                        IPrimaryFieldTarget)
-                    if target_adapter:
-                        target = target_adapter()
-                        if target:
-                            result['targetUrl'] = target
+        target_url = getMultiAdapter((self.context, self.request),
+                                     IObjectPrimaryFieldTarget)()
+        if target_url:
+            result['targetUrl'] = target_url
 
         result["allow_discussion"] = getMultiAdapter(
             (self.context, self.request), name="conversation_view"
@@ -107,21 +102,6 @@ class SerializeToJson(object):
         wftool = getToolByName(self.context, "portal_workflow")
         review_state = wftool.getInfoFor(ob=obj, name="review_state", default=None)
         return review_state
-
-    def get_primary_field_name(self):
-        fieldname = None
-        info = None
-        try:
-            info = IPrimaryFieldInfo(self.context, None)
-        except TypeError:
-            # No primary field present
-            pass
-        if info is not None:
-            fieldname = info.fieldname
-        elif base_hasattr(self.context, "getPrimaryField"):
-            field = self.context.getPrimaryField()
-            fieldname = field.getName()
-        return fieldname
 
     def check_permission(self, permission_name, obj):
         if permission_name is None:
@@ -182,3 +162,65 @@ class SerializeFolderToJson(SerializeToJson):
                     for brain in batch
                 ]
         return result
+
+
+@adapter(IDexterityContent, Interface)
+@implementer(IObjectPrimaryFieldTarget)
+class DexterityObjectPrimaryFieldTarget(object):
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+        self.permission_cache = {}
+
+    def __call__(self):
+        primary_field_name = self.get_primary_field_name()
+        for schema in iterSchemata(self.context):
+            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
+
+            for name, field in getFields(schema).items():
+
+                if not self.check_permission(read_permissions.get(name), self.context):
+                    continue
+
+                if name != primary_field_name:
+                    continue
+
+                target_adapter = queryMultiAdapter(
+                    (field, self.context, self.request),
+                    IPrimaryFieldTarget)
+                if target_adapter:
+                    target = target_adapter()
+                    if target:
+                        return target
+
+    def get_primary_field_name(self):
+        fieldname = None
+        info = None
+        try:
+            info = IPrimaryFieldInfo(self.context, None)
+        except TypeError:
+            # No primary field present
+            pass
+        if info is not None:
+            fieldname = info.fieldname
+        elif base_hasattr(self.context, "getPrimaryField"):
+            field = self.context.getPrimaryField()
+            fieldname = field.getName()
+        return fieldname
+
+    def check_permission(self, permission_name, obj):
+        if permission_name is None:
+            return True
+
+        if permission_name not in self.permission_cache:
+            permission = queryUtility(IPermission, name=permission_name)
+            if permission is None:
+                self.permission_cache[permission_name] = True
+            else:
+                sm = getSecurityManager()
+                self.permission_cache[permission_name] = bool(
+                    sm.checkPermission(permission.title, obj)
+                )
+        return self.permission_cache[permission_name]
