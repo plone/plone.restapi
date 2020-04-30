@@ -31,6 +31,7 @@ import six
 
 if six.PY2:
     import HTMLParser
+
     html_parser = HTMLParser.HTMLParser()
 else:
     import html as html_parser

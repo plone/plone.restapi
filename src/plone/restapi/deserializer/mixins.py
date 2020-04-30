@@ -38,11 +38,11 @@ class OrderingMixin(object):
         # Make sure we use bytestring ids for PY2.
         if six.PY2:
             if isinstance(obj_id, six.text_type):
-                obj_id = obj_id.encode('utf-8')
+                obj_id = obj_id.encode("utf-8")
             if subset_ids:
                 subset_ids = [
-                    id_.encode('utf-8') if isinstance(id_, six.text_type)
-                    else id_ for id_ in subset_ids
+                    id_.encode("utf-8") if isinstance(id_, six.text_type) else id_
+                    for id_ in subset_ids
                 ]
 
         # All movement is relative to the subset of ids, if passed in.

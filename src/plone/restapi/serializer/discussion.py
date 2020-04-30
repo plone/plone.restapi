@@ -69,17 +69,14 @@ class CommentSerializer(object):
             text_mime_type = self.context.mime_type
         else:
             text_data = self.context.getText()
-            text_mime_type = 'text/html'
+            text_mime_type = "text/html"
         return {
             "@id": url,
             "@type": self.context.portal_type,
             "@parent": parent_url,
             "comment_id": str(self.context.id),
             "in_reply_to": in_reply_to,
-            "text": {
-                "data": text_data,
-                "mime-type": text_mime_type,
-            },
+            "text": {"data": text_data, "mime-type": text_mime_type,},
             "user_notification": self.context.user_notification,
             "author_username": self.context.author_username,
             "author_name": self.context.author_name,
