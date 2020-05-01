@@ -9,7 +9,7 @@ Content-Type: application/json+schema
         "description"
       ], 
       "id": "default", 
-      "title": "Default"
+      "title": "Por defecto"
     }, 
     {
       "fields": [
