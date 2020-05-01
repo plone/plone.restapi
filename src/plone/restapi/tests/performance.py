@@ -94,6 +94,7 @@ def step_setup_content(context):
     portal.invokeFactory("News Item", id="newsitem", title="NewsItem")
     set_description(portal.newsitem)
     set_text(portal.newsitem)
+    set_image(portal.newsitem)
     publish(portal.newsitem)
     portal.newsitem.reindexObject()
 
@@ -229,10 +230,27 @@ def step_setup_content(context):
         data=open(filename, "rb").read(), filename=filename
     )
 
-    # Volto Page with images
+    # Volto Page with images and news items
     portal.invokeFactory("Folder", id="volto-page", title="Volto Page")
     volto_page = portal.get("volto-page")
     publish(volto_page)
+
+    for i in range(1, 11):
+        volto_page.invokeFactory(
+            "News Item", id="newsitem{}".format(i), title="NewsItem {}".format(i)
+        )
+        newsitem = volto_page.get("newsitem{}".format(i))
+        set_description(newsitem)
+        set_text(newsitem)
+        image_file = os.path.join(os.path.dirname(__file__), u"image.jpeg")
+        with open(image_file, "rb") as f:
+            image_data = f.read()
+        newsitem.image = NamedBlobImage(
+            data=image_data, contentType="image/jpeg", filename=u"image.jpeg"
+        )
+        publish(newsitem)
+        newsitem.reindexObject()
+
     for i in range(1, 31):
         volto_page.invokeFactory(
             "Image", id="image{}".format(i), title="Image {}".format(i)
