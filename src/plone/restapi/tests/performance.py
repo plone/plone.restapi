@@ -205,7 +205,7 @@ def step_setup_content(context):
     portal.invokeFactory("Folder", id="volto-page", title="Volto Page")
     volto_page = portal.get("volto-page")
     publish(volto_page)
-    for i in range(1, 21):
+    for i in range(1, 31):
         volto_page.invokeFactory(
             "Image", id="image{}".format(i), title="Image {}".format(i)
         )
