@@ -235,7 +235,7 @@ def step_setup_content(context):
     volto_page = portal.get("volto-page")
     publish(volto_page)
 
-    for i in range(1, 11):
+    for i in range(1, 31):
         volto_page.invokeFactory(
             "News Item", id="newsitem{}".format(i), title="NewsItem {}".format(i)
         )
