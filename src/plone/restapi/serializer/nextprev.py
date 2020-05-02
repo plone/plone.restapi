@@ -16,7 +16,7 @@ class NextPreviousFixed(NextPreviousBase):
     def __init__(self, context):
         self.context = context
         registry = getUtility(IRegistry)
-        self.vat = registry.get('plone.types_use_view_action_in_listings', [])
+        self.vat = registry.get("plone.types_use_view_action_in_listings", [])
         self.security = getSecurityManager()
         self.order = self.context.objectIds()
 
@@ -39,7 +39,7 @@ class NextPrevious(object):
         if data is None:
             return {}
         return {
-            "@id": data["url"].lstrip('/view'),
+            "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
             "title": data["title"],
             "description": data["description"],
@@ -55,7 +55,7 @@ class NextPrevious(object):
         if data is None:
             return {}
         return {
-            "@id": data["url"].lstrip('/view'),
+            "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
             "title": data["title"],
             "description": data["description"],
