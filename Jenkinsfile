@@ -31,6 +31,9 @@ pipeline {
         sh "sleep 20"
 
         sh "jmeter -n -t performance.jmx -l jmeter.csv"
+
+        sh "jmeter -n -t volto.jmx -l volto.csv"
+
         sh "bin/pip install locust"
         sh "bin/locust -f performance/images.py --no-web -c 100 -r 10 --run-time 1m --host http://localhost:12345/Plone"
 
@@ -38,7 +41,7 @@ pipeline {
       }
       post {
         always {
-          perfReport '**/jmeter.csv'
+          perfReport '**/*.csv'
         }
       }
     }
