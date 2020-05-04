@@ -76,7 +76,7 @@ class CommentSerializer(object):
             "@parent": parent_url,
             "comment_id": str(self.context.id),
             "in_reply_to": in_reply_to,
-            "text": {"data": text_data, "mime-type": text_mime_type,},
+            "text": {"data": text_data, "mime-type": text_mime_type},
             "user_notification": self.context.user_notification,
             "author_username": self.context.author_username,
             "author_name": self.context.author_name,
