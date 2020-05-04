@@ -216,7 +216,7 @@ class TestSourcesEndpoint(unittest.TestCase):
             {
                 u"@id": self.portal_url
                 + u"/testdoc/@sources/test_choice_with_context_source?title=b%C3%A4r",  # noqa
-                u"items": [{u"token": u"b=C3=A4r", u"title": u"B\xe4r"},],
+                u"items": [{u"token": u"b=C3=A4r", u"title": u"B\xe4r"}],
                 u"items_total": 1,
             },
         )
