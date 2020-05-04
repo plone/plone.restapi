@@ -396,12 +396,12 @@ class TestDXContentSerializer(unittest.TestCase):
             title="Folder with items",
             description="This is a folder with some documents",
         )
-        folder.setOrdering('unordered')
+        folder.setOrdering("unordered")
         doc = api.content.create(
             container=folder,
             type="Document",
             title="Item 1",
-            description="One item alone in the folder"
+            description="One item alone in the folder",
         )
         data = self.serialize(doc)
         self.assertEqual({}, data["previous_item"])
