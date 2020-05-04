@@ -8,6 +8,369 @@ Changelog
 
 .. towncrier release notes start
 
+6.8.1 (2020-05-04)
+------------------
+
+Bug fixes:
+
+
+- Treat next/prev items for unordered folders.
+  [rodfersou] (#928)
+
+
+6.8.0 (2020-04-23)
+------------------
+
+New features:
+
+
+- Managing Dexterity Type Creation (CRUD) via plone.restapi
+  [avoinea] (#534)
+
+
+6.7.0 (2020-04-21)
+------------------
+
+New features:
+
+
+- Make @querystring-search endpoint context aware
+  [sneridagh] (#911)
+
+
+Bug fixes:
+
+
+- Fix sphinxbuilder with Python 3.8
+  [avoinea] (#905)
+
+
+6.6.1 (2020-04-17)
+------------------
+
+Bug fixes:
+
+
+- call unescape method on received html for richtext before save it in Plone.
+  [cekk] (#913)
+- Small fix in IBlocks test, addedd a missing assert call
+  [tiberiuichim] (#914)
+
+
+6.6.0 (2020-04-07)
+------------------
+
+New features:
+
+
+- Add next_item and previous_item attributes to allow to navigate to the previous and next sibling in the container the document is located.
+  [rodfersou] (#900)
+
+
+6.5.2 (2020-04-01)
+------------------
+
+Bug fixes:
+
+
+- Fix for the use case while updating user properties in the @user endpoint, and the
+  portrait is already previously set but the request includes the (previously) serialized
+  value as a string because the user are not updating it
+  [sneridagh] (#896)
+
+
+6.5.1 (2020-04-01)
+------------------
+
+Bug fixes:
+
+
+- Fix deleting user portrait.
+  [buchi] (#751)
+
+
+6.5.0 (2020-03-30)
+------------------
+
+New features:
+
+
+- Link translation on content creation feature and new @translation-locator endpoint
+  [sneridagh] (#887)
+
+
+6.4.1 (2020-03-25)
+------------------
+
+Bug fixes:
+
+
+- Make discussion endpoint return content that is deserialized via portal transforms (e.g. 'text/x-web-intelligent') [timo] (#889)
+
+
+6.4.0 (2020-03-23)
+------------------
+
+New features:
+
+
+- Add targetUrl to the dxcontent serializer for primary file fields to be able to download a file directly.
+  [csenger] (#886)
+
+
+Bug fixes:
+
+
+- Fixed package install error with Python 3.6 without locale.
+  See `coredev issue 642 <https://github.com/plone/buildout.coredev/issues/642#issuecomment-597008272>`_.
+  [maurits] (#642)
+- plone.app.discussion extends the review workflow for moderation of comments. This change takes the additional workflow states into account.
+  [ksuess] (#842)
+
+
+6.3.0 (2020-03-03)
+------------------
+
+New features:
+
+
+- Allow using object paths and UIDs to link translations
+  [erral] (#645)
+
+
+Bug fixes:
+
+
+- Add a catalog serializer guard when returning fullobjects in case the object doesn't
+  exist anymore because for some reason it failed to uncatalog itself.
+  [sneridagh] (#877)
+- Use longer password in tests.  [maurits] (#3044)
+
+
+6.2.4 (2020-02-20)
+------------------
+
+Bug fixes:
+
+
+- fullobjects qs is missing in response batch links in batching operations
+  [sneridagh] (#868)
+
+
+6.2.3 (2020-02-19)
+------------------
+
+Bug fixes:
+
+
+- Return proper None instead of string "None" on the choice schema serializer [sneridagh] (#863)
+
+
+6.2.2 (2020-01-24)
+------------------
+
+Bug fixes:
+
+
+- Degrade gracefully when a term set in a content field does not exists in the assigned vocabulary [sneridagh] (#856)
+
+
+6.2.1 (2020-01-22)
+------------------
+
+Bug fixes:
+
+
+- Sharing POST: Limit roles to ones the user is allowed to delegate.
+  [lgraf] (#857)
+
+
+6.2.0 (2020-01-10)
+------------------
+
+New features:
+
+
+- Make ?fullobjects work in AT Collections to get the full JSON representation of the items
+  [erral] (#698)
+- Make ?fullobjects work in Dexterity Collections to get the full JSON representation of the items
+  [erral] (#848)
+
+
+Bug fixes:
+
+
+- Fix WorkflowException for related items with no review_state.
+  [arsenico13] (#376)
+
+
+6.1.0 (2020-01-05)
+------------------
+
+New features:
+
+
+- Add SearchableText indexing for text in blocks
+  [luca-bellenghi] (#844)
+
+
+6.0.0 (2019-12-22)
+------------------
+
+Breaking changes:
+
+
+- Remove IAPIRequest marker interface from plone.restapi. The correct interface should be imported from plone.rest.interfaces instead. If anybody was using this marker Interface, it didn't do anything. (#819)
+
+
+Bug fixes:
+
+
+- Prevent converting bytestring ids to unicode ids when reordering (see upgrade guide for potential migration).
+  [deiferni] (#827)
+
+
+5.1.0 (2019-12-07)
+------------------
+
+New features:
+
+
+- Add Python 3.8 support @timo (#829)
+
+
+5.0.3 (2019-12-06)
+------------------
+
+Bug fixes:
+
+
+- Change to use the short name for the Blocks behavior instead of using the interface one. It fixes #838.
+  [sneridagh] (#838)
+
+
+5.0.2 (2019-11-06)
+------------------
+
+Bug fixes:
+
+
+- Fix filtering vocabs and sources by title with non-ASCII characters.
+  [lgraf] (#825)
+
+
+5.0.1 (2019-11-05)
+------------------
+
+Bug fixes:
+
+
+- Fix serialization of vocabulary items for fields that need hashable items (e.g. sets).
+  [buchi] (#788)
+
+
+5.0.0 (2019-10-31)
+------------------
+
+Breaking changes:
+
+
+- Rename tiles behavior and fields to blocks, migration step.
+  [timo, sneridagh] (#821)
+
+
+Bug fixes:
+
+
+- Fixed startup error when Archetypes is there, but ``plone.app.blob`` or ``plone.app.collection`` not.
+  [maurits] (#690)
+
+
+4.6.0 (2019-10-06)
+------------------
+
+New features:
+
+
+- Add @sources and @querysources endpoints, and link to them from JSON schema in @types response.
+  [lgraf] (#790)
+
+
+Bug fixes:
+
+
+- Explicitly load zcml of dependencies, instead of using ``includeDependencies``
+  [maurits] (#2952)
+
+
+4.5.1 (2019-09-23)
+------------------
+
+Bug fixes:
+
+
+- Fire ModifiedEvent when field is set to null in a PATCH request.
+  [phgross] (#802)
+
+- Testing: Drop freezegun and instead selectively patch some timestamp accessors.
+  [lgraf] (#803)
+
+
+4.5.0 (2019-09-12)
+------------------
+
+New features:
+
+
+- Add @querystring-search endpoint that returns the results of a search using a p.a.querystring query.
+  [sneridagh] (#789)
+- Use Plone 5.2 and Python 3 as default to generate documentation. [timo] (#800)
+
+
+Bug fixes:
+
+
+- Make group serializer results predictable by returning sorted item results. [timo] (#798)
+
+
+4.4.0 (2019-08-30)
+------------------
+
+New features:
+
+
+- Add @querystring endpoint that dumps p.a.querystring config.
+  [lgraf] (#754)
+
+
+Bug fixes:
+
+
+- Fix typo in the ``tiles_layout`` field title name.
+  [sneridagh] (#785)
+
+
+4.3.1 (2019-07-10)
+------------------
+
+Bug fixes:
+
+
+- Fix @sharing POST when called on the plone site root
+  [csenger] (#780)
+
+
+4.3.0 (2019-06-30)
+------------------
+
+New features:
+
+
+- Support retrieval of additional metadata fields in summaries in the same way as
+  in search results.
+  [buchi] (#681)
+
+
 4.2.0 (2019-06-29)
 ------------------
 

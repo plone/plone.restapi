@@ -2,6 +2,8 @@
 from Products.CMFCore.utils import getToolByName
 from six.moves.urllib.parse import urlparse
 
+import quopri
+
 
 def result_paths(results):
     """Helper function to make it easier to write list-based assertions on
@@ -35,3 +37,10 @@ def add_catalog_indexes(portal, indexes):
             indexables.append(name)
     if len(indexables) > 0:
         catalog.manage_reindexIndex(ids=indexables)
+
+
+def ascii_token(text):
+    """Turn a text (unicode in Py2, str in Py3) into a ASCII-only
+    bytestring that is safe to use in term tokens.
+    """
+    return quopri.encodestring(text.encode("utf-8"))

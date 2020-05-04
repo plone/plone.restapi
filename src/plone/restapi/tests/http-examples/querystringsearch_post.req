@@ -1,0 +1,16 @@
+POST /plone/@querystring-search HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "query": [
+        {
+            "i": "portal_type",
+            "o": "plone.app.querystring.operation.selection.any",
+            "v": [
+                "Document"
+            ]
+        }
+    ]
+}

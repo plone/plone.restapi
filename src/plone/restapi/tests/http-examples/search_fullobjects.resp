@@ -2,7 +2,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "@id": "http://localhost:55001/plone/@search?fullobjects=1&SearchableText=lorem", 
+  "@id": "http://localhost:55001/plone/@search?SearchableText=lorem&fullobjects=1", 
   "items": [
     {
       "@components": {
@@ -28,7 +28,7 @@ Content-Type: application/json
       "allow_discussion": false, 
       "changeNote": "", 
       "contributors": [], 
-      "created": "2016-10-21T19:00:00+00:00", 
+      "created": "1995-07-31T13:45:00", 
       "creators": [
         "test_user_1_"
       ], 
@@ -40,12 +40,19 @@ Content-Type: application/json
       "is_folderish": false, 
       "language": "", 
       "layout": "document_view", 
-      "modified": "2016-10-21T19:00:00+00:00", 
+      "modified": "1995-07-31T17:30:00", 
+      "next_item": {}, 
       "parent": {
         "@id": "http://localhost:55001/plone", 
         "@type": "Plone Site", 
         "description": "", 
         "title": "Plone site"
+      }, 
+      "previous_item": {
+        "@id": "http://localhost:55001/plone/front-page", 
+        "@type": "Document", 
+        "description": "Congratulations! You have successfully installed Plone.", 
+        "title": "Welcome to Plone"
       }, 
       "relatedItems": [], 
       "review_state": "private", 

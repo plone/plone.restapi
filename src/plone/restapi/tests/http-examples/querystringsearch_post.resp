@@ -1,0 +1,23 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@querystring-search", 
+  "items": [
+    {
+      "@id": "http://localhost:55001/plone/front-page", 
+      "@type": "Document", 
+      "description": "Congratulations! You have successfully installed Plone.", 
+      "review_state": "private", 
+      "title": "Welcome to Plone"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/testdocument", 
+      "@type": "Document", 
+      "description": "", 
+      "review_state": "private", 
+      "title": "Test Document"
+    }
+  ], 
+  "items_total": 2
+}

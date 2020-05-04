@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from freezegun import freeze_time
+from DateTime import DateTime
 from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
@@ -15,7 +15,6 @@ from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 from zope.site.hooks import getSite
 
-
 import Missing
 import unittest
 
@@ -30,8 +29,6 @@ class TestSummarySerializers(unittest.TestCase):
 
         pushGlobalRegistry(getSite())
         register_static_uuid_utility(prefix="c6dcbd55ab2746e199cd4ed458")
-        self.time_freezer = freeze_time("2019-06-22 12:47:03")
-        self.time_freezer.start()
 
         self.catalog = getToolByName(self.portal, "portal_catalog")
 
@@ -43,8 +40,11 @@ class TestSummarySerializers(unittest.TestCase):
             description=u"Description",
         )
 
+        self.doc1.creation_date = DateTime("2016-01-21T01:14:48+00:00")
+        self.doc1.modification_date = DateTime("2017-01-21T01:14:48+00:00")
+        self.doc1.reindexObject(["modified"])
+
     def tearDown(self):
-        self.time_freezer.stop()
         popGlobalRegistry(getSite())
 
     def test_site_root_summary(self):
@@ -115,17 +115,17 @@ class TestSummarySerializers(unittest.TestCase):
 
     def test_brain_summary_includes_additional_metadata_fields(self):
         brain = self.catalog(UID=self.doc1.UID())[0]
-        self.request.form.update({'metadata_fields': ['UID', 'Creator']})
+        self.request.form.update({"metadata_fields": ["UID", "Creator"]})
         summary = getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
 
         self.assertDictEqual(
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
-                'UID': 'c6dcbd55ab2746e199cd4ed458000001',
-                'Creator': 'test_user_1_',
+                "UID": "c6dcbd55ab2746e199cd4ed458000001",
+                "Creator": "test_user_1_",
                 "title": "Lorem Ipsum",
-                "description": 'Description',
+                "description": "Description",
                 "review_state": "private",
             },
             summary,
@@ -133,59 +133,60 @@ class TestSummarySerializers(unittest.TestCase):
 
     def test_brain_summary_includes_all_metadata_fields(self):
         brain = self.catalog(UID=self.doc1.UID())[0]
-        self.request.form.update({'metadata_fields': '_all'})
+        self.request.form.update({"metadata_fields": "_all"})
         summary = getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
 
         # mime_type was added in Plone 5.1
         # Make sure tests pass on older Plone versions
-        if 'mime_type' not in summary:
-            summary['mime_type'] = u'text/plain'
+        if "mime_type" not in summary:
+            summary["mime_type"] = u"text/plain"
 
+        self.maxDiff = None
         self.assertDictEqual(
             {
-                '@id': u'http://nohost/plone/doc1',
-                '@type': u'DXTestDocument',
-                'CreationDate': u'2019-06-22T12:47:03+00:00',
-                'Creator': u'test_user_1_',
-                'Date': u'2019-06-22T12:47:03+00:00',
-                'Description': u'Description',
-                'EffectiveDate': u'None',
-                'ExpirationDate': u'None',
-                'ModificationDate': u'2019-06-22T12:47:03+00:00',
-                'Subject': [],
-                'Title': u'Lorem Ipsum',
-                'Type': u'DX Test Document',
-                'UID': u'c6dcbd55ab2746e199cd4ed458000001',
-                'author_name': None,
-                'cmf_uid': None,
-                'commentators': [],
-                'created': u'2019-06-22T12:47:03+00:00',
-                'description': u'Description',
-                'effective': u'1969-12-31T00:00:00+00:00',
-                'end': None,
-                'exclude_from_nav': False,
-                'expires': u'2499-12-31T00:00:00+00:00',
-                'getIcon': None,
-                'getId': u'doc1',
-                'getObjSize': u'0 KB',
-                'getPath': u'/plone/doc1',
-                'getRemoteUrl': None,
-                'getURL': u'http://nohost/plone/doc1',
-                'id': u'doc1',
-                'in_response_to': None,
-                'is_folderish': False,
-                'last_comment_date': None,
-                'listCreators': [u'test_user_1_'],
-                'location': None,
-                'meta_type': u'Dexterity Item',
-                'mime_type': u'text/plain',
-                'modified': u'2019-06-22T12:47:03+00:00',
-                'portal_type': u'DXTestDocument',
-                'review_state': u'private',
-                'start': None,
-                'sync_uid': None,
-                'title': u'Lorem Ipsum',
-                'total_comments': 0,
+                "@id": u"http://nohost/plone/doc1",
+                "@type": u"DXTestDocument",
+                "CreationDate": u"2016-01-21T01:14:48+00:00",
+                "Creator": u"test_user_1_",
+                "Date": u"2017-01-21T01:14:48+00:00",
+                "Description": u"Description",
+                "EffectiveDate": u"None",
+                "ExpirationDate": u"None",
+                "ModificationDate": u"2017-01-21T01:14:48+00:00",
+                "Subject": [],
+                "Title": u"Lorem Ipsum",
+                "Type": u"DX Test Document",
+                "UID": u"c6dcbd55ab2746e199cd4ed458000001",
+                "author_name": None,
+                "cmf_uid": None,
+                "commentators": [],
+                "created": u"2016-01-21T01:14:48+00:00",
+                "description": u"Description",
+                "effective": u"1969-12-31T00:00:00+00:00",
+                "end": None,
+                "exclude_from_nav": False,
+                "expires": u"2499-12-31T00:00:00+00:00",
+                "getIcon": None,
+                "getId": u"doc1",
+                "getObjSize": u"0 KB",
+                "getPath": u"/plone/doc1",
+                "getRemoteUrl": None,
+                "getURL": u"http://nohost/plone/doc1",
+                "id": u"doc1",
+                "in_response_to": None,
+                "is_folderish": False,
+                "last_comment_date": None,
+                "listCreators": [u"test_user_1_"],
+                "location": None,
+                "meta_type": u"Dexterity Item",
+                "mime_type": u"text/plain",
+                "modified": u"2017-01-21T01:14:48+00:00",
+                "portal_type": u"DXTestDocument",
+                "review_state": u"private",
+                "start": None,
+                "sync_uid": None,
+                "title": u"Lorem Ipsum",
+                "total_comments": 0,
             },
             summary,
         )

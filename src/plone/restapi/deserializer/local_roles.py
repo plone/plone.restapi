@@ -3,6 +3,7 @@ from AccessControl.interfaces import IRoleManager
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from Products.CMFCore.interfaces import ICatalogAware
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.event import notify
@@ -46,15 +47,25 @@ class DeserializeFromJson(object):
         # roles
         roles_reindex = False
         new_roles = data.get("entries", None)
+        managed_roles = frozenset([r["id"] for r in sharing_view.roles()])
+
         if new_roles is not None:
             # the roles are converted into a FrozenSet so we have to filter
             # the data structure we get.
             for user in new_roles:
                 roles_list = [key for key in user["roles"] if user["roles"][key]]
+
+                # Limit roles to ones the user is allowed to delegate
+                roles_list = set(roles_list).intersection(managed_roles)
+
                 user["roles"] = roles_list
             roles_reindex = sharing_view.update_role_settings(new_roles, reindex=False)
 
-        if ICatalogAware(self.context) and (inherit_reindex or roles_reindex):
+        # reindex object security
+        can_reindex = ICatalogAware(self.context, None) or IPloneSiteRoot.providedBy(
+            self.context
+        )
+        if can_reindex and (inherit_reindex or roles_reindex):
             self.context.reindexObjectSecurity()
             if LOCALROLES_MODIFIED_EVENT_AVAILABLE:
                 notify(LocalrolesModifiedEvent(self.context, self.request))

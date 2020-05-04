@@ -24,7 +24,7 @@ Content-Type: application/json
   "UID": "SomeUUID000000000000000000000002", 
   "allow_discussion": false, 
   "contributors": [], 
-  "created": "2016-01-21T08:14:48+00:00", 
+  "created": "1995-07-31T13:45:00", 
   "creators": [
     "test_user_1_"
   ], 
@@ -80,12 +80,24 @@ Content-Type: application/json
   "language": "", 
   "layout": "listing_view", 
   "limit": 1000, 
-  "modified": "2016-01-21T08:24:11+00:00", 
+  "modified": "1995-07-31T17:30:00", 
+  "next_item": {
+    "@id": "http://localhost:55001/plone/doc1", 
+    "@type": "Document", 
+    "description": "", 
+    "title": "Document 1"
+  }, 
   "parent": {
     "@id": "http://localhost:55001/plone", 
     "@type": "Plone Site", 
     "description": "", 
     "title": "Plone site"
+  }, 
+  "previous_item": {
+    "@id": "http://localhost:55001/plone/front-page", 
+    "@type": "Document", 
+    "description": "Congratulations! You have successfully installed Plone.", 
+    "title": "Welcome to Plone"
   }, 
   "query": [
     {

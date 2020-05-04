@@ -21,6 +21,7 @@ Contents
    authentication
    exploring
    content
+   blocks
    history
    batching
    comments
@@ -46,6 +47,8 @@ Contents
    vocabularies
    controlpanels
    tiles
+   querystring
+   querystringsearch
    customization
    conventions
    translations

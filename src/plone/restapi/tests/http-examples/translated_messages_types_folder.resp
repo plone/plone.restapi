@@ -9,7 +9,7 @@ Content-Type: application/json+schema
         "description"
       ], 
       "id": "default", 
-      "title": "Default"
+      "title": "Por defecto"
     }, 
     {
       "fields": [
@@ -78,7 +78,10 @@ Content-Type: application/json+schema
         "No"
       ], 
       "title": "Permitir comentarios", 
-      "type": "string"
+      "type": "string", 
+      "vocabulary": {
+        "@id": "http://localhost:55001/plone/@sources/allow_discussion"
+      }
     }, 
     "contributors": {
       "additionalItems": true, 

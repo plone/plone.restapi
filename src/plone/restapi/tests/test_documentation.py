@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 from base64 import b64encode
 from datetime import datetime
-from datetime import timedelta
-from DateTime import DateTime
-from freezegun import freeze_time
 from mock import patch
 from pkg_resources import parse_version
 from pkg_resources import resource_filename
@@ -25,10 +22,11 @@ from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PAM_INSTALLED  # noqa
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME  # noqa
-from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
+from plone.restapi.tests.statictime import StaticTime
 from plone.scale import storage
 from plone.testing.z2 import Browser
 from six.moves import range
@@ -150,11 +148,10 @@ def save_request_and_response_for_docs(name, response):
         resp.write(response.text)
 
 
-class TestDocumentation(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
-
+class TestDocumentationBase(unittest.TestCase):
     def setUp(self):
+        self.statictime = self.setup_with_context_manager(StaticTime())
+
         self.app = self.layer["app"]
         self.request = self.layer["request"]
         self.portal = self.layer["portal"]
@@ -164,23 +161,49 @@ class TestDocumentation(unittest.TestCase):
         pushGlobalRegistry(getSite())
         register_static_uuid_utility(prefix="SomeUUID")
 
-        self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        self.frozen_time = self.time_freezer.start()
-
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-        self.document = self.create_document()
-        alsoProvides(self.document, ITTWLockable)
-
-        transaction.commit()
         self.browser = Browser(self.app)
         self.browser.handleErrors = False
         self.browser.addHeader(
             "Authorization", "Basic %s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         )
+
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+
+    def setup_with_context_manager(self, cm):
+        """Use a contextmanager to setUp a test case.
+
+        Registering the cm's __exit__ as a cleanup hook *guarantees* that it
+        will be called after a test run, unlike tearDown().
+
+        This is used to make sure plone.restapi never leaves behind any time
+        freezing monkey patches that haven't gotten reverted.
+        """
+        val = cm.__enter__()
+        self.addCleanup(cm.__exit__, None, None, None)
+        return val
+
+    def tearDown(self):
+        popGlobalRegistry(getSite())
+        self.api_session.close()
+
+
+class TestDocumentation(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super(TestDocumentation, self).setUp()
+        self.document = self.create_document()
+        alsoProvides(self.document, ITTWLockable)
+
+        transaction.commit()
+
+    def tearDown(self):
+        super(TestDocumentation, self).tearDown()
 
     def create_document(self):
         self.portal.invokeFactory("Document", id="front-page")
@@ -197,9 +220,6 @@ class TestDocumentation(unittest.TestCase):
             "text/plain",
             "text/html",
         )
-        document.creation_date = DateTime("2016-01-21T01:14:48+00:00")
-        document.reindexObject()
-        document.modification_date = DateTime("2016-01-21T01:24:11+00:00")
         return document
 
     def create_folder(self):
@@ -209,15 +229,7 @@ class TestDocumentation(unittest.TestCase):
         folder.description = u"This is a folder with two documents"
         folder.invokeFactory("Document", id="doc1", title="A document within a folder")
         folder.invokeFactory("Document", id="doc2", title="A document within a folder")
-        folder.creation_date = DateTime("2016-01-21T07:14:48+00:00")
-        folder.modification_date = DateTime("2016-01-21T07:24:11+00:00")
         return folder
-
-    def tearDown(self):
-        self.api_session.close()
-        self.time_freezer.stop()
-        popGlobalRegistry(getSite())
-        self.api_session.close()
 
     def test_documentation_content_crud(self):
         folder = self.create_folder()
@@ -272,8 +284,6 @@ class TestDocumentation(unittest.TestCase):
             data=image_data, contentType="image/png", filename=u"image.png"
         )
         self.portal.newsitem.image_caption = u"This is an image caption."
-        self.portal.newsitem.creation_date = DateTime("2016-01-21T02:14:48+00:00")
-        self.portal.newsitem.modification_date = DateTime("2016-01-21T02:24:11+00:00")
         transaction.commit()
 
         with patch.object(storage, "uuid4", return_value="uuid1"):
@@ -286,8 +296,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.event.description = u"This is an event"
         self.portal.event.start = datetime(2013, 1, 1, 10, 0)
         self.portal.event.end = datetime(2013, 1, 1, 12, 0)
-        self.portal.event.creation_date = DateTime("2016-01-21T03:14:48+00:00")
-        self.portal.event.modification_date = DateTime("2016-01-21T03:24:11+00:00")
         transaction.commit()
         response = self.api_session.get(self.portal.event.absolute_url())
         save_request_and_response_for_docs("event", response)
@@ -297,8 +305,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.link.title = "My Link"
         self.portal.link.description = u"This is a link"
         self.portal.remoteUrl = "http://plone.org"
-        self.portal.link.creation_date = DateTime("2016-01-21T04:14:48+00:00")
-        self.portal.link.modification_date = DateTime("2016-01-21T04:24:11+00:00")
         transaction.commit()
         response = self.api_session.get(self.portal.link.absolute_url())
         save_request_and_response_for_docs("link", response)
@@ -313,8 +319,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.file.file = NamedBlobFile(
             data=pdf_data, contentType="application/pdf", filename=u"file.pdf"
         )
-        self.portal.file.creation_date = DateTime("2016-01-21T05:14:48+00:00")
-        self.portal.file.modification_date = DateTime("2016-01-21T05:24:11+00:00")
         transaction.commit()
         response = self.api_session.get(self.portal.file.absolute_url())
         save_request_and_response_for_docs("file", response)
@@ -329,8 +333,6 @@ class TestDocumentation(unittest.TestCase):
         self.portal.image.image = NamedBlobImage(
             data=image_data, contentType="image/png", filename=u"image.png"
         )
-        self.portal.image.creation_date = DateTime("2016-01-21T06:14:48+00:00")
-        self.portal.image.modification_date = DateTime("2016-01-21T06:24:11+00:00")
         transaction.commit()
         with patch.object(storage, "uuid4", return_value="uuid1"):
             response = self.api_session.get(self.portal.image.absolute_url())
@@ -355,11 +357,28 @@ class TestDocumentation(unittest.TestCase):
         ]
         self.portal.invokeFactory("Document", id="doc1", title="Document 1")
         self.portal.invokeFactory("Document", id="doc2", title="Document 2")
-        self.portal.collection.creation_date = DateTime("2016-01-21T08:14:48+00:00")
-        self.portal.collection.modification_date = DateTime("2016-01-21T08:24:11+00:00")
         transaction.commit()
         response = self.api_session.get(self.portal.collection.absolute_url())
         save_request_and_response_for_docs("collection", response)
+
+    def test_documentation_collection_fullobjects(self):
+        self.portal.invokeFactory("Collection", id="collection")
+        self.portal.collection.title = "My Collection"
+        self.portal.collection.description = u"This is a collection with two documents"
+        self.portal.collection.query = [
+            {
+                "i": "portal_type",
+                "o": "plone.app.querystring.operation.string.is",
+                "v": "Document",
+            }
+        ]
+        self.portal.invokeFactory("Document", id="doc1", title="Document 1")
+        self.portal.invokeFactory("Document", id="doc2", title="Document 2")
+        transaction.commit()
+        response = self.api_session.get(
+            self.portal.collection.absolute_url() + "?fullobjects"
+        )
+        save_request_and_response_for_docs("collection_fullobjects", response)
 
     def test_documentation_siteroot(self):
         response = self.api_session.get(self.portal.absolute_url())
@@ -417,14 +436,12 @@ class TestDocumentation(unittest.TestCase):
         save_request_and_response_for_docs("workflow_get", response)
 
     def test_documentation_workflow_transition(self):
-        self.frozen_time.tick(timedelta(minutes=5))
         response = self.api_session.post(
             "{}/@workflow/publish".format(self.document.absolute_url())
         )
         save_request_and_response_for_docs("workflow_post", response)
 
     def test_documentation_workflow_transition_with_body(self):
-        self.frozen_time.tick(timedelta(minutes=5))
         folder = self.portal[self.portal.invokeFactory("Folder", id="folder")]
         transaction.commit()
         response = self.api_session.post(
@@ -769,10 +786,10 @@ class TestDocumentation(unittest.TestCase):
     def test_documentation_users_update_portrait(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
             }
         }
         api.user.create(email="noam.chomsky@example.com", username="noam")
@@ -788,10 +805,10 @@ class TestDocumentation(unittest.TestCase):
     def test_documentation_users_update_portrait_with_scale(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
                 "scale": True,
             }
         }
@@ -1049,6 +1066,14 @@ class TestDocumentation(unittest.TestCase):
             "vocabularies_get_filtered_by_token", response
         )
 
+    def test_documentation_sources_get(self):
+        api.content.create(
+            container=self.portal, id="doc", type="DXTestDocument", title=u"DX Document"
+        )
+        transaction.commit()
+        response = self.api_session.get("/doc/@sources/test_choice_with_source")
+        save_request_and_response_for_docs("sources_get", response)
+
     def test_documentation_sharing_folder_get(self):
         self.portal.invokeFactory("Folder", id="folder")
         transaction.commit()
@@ -1292,39 +1317,47 @@ class TestDocumentation(unittest.TestCase):
         ] = u"0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
         save_request_and_response_for_docs("lock_update", response)
 
+    def test_querystring_get(self):
+        url = "/@querystring"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("querystring_get", response)
 
-class TestDocumentationMessageTranslations(unittest.TestCase):
+    def test_querystringsearch_post(self):
+        url = "/@querystring-search"
 
-    layer = layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
+        self.portal.invokeFactory("Document", "testdocument", title="Test Document")
+        transaction.commit()
+
+        response = self.api_session.post(
+            url,
+            json={
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.any",
+                        "v": ["Document"],
+                    }
+                ]
+            },
+        )
+        save_request_and_response_for_docs("querystringsearch_post", response)
+
+
+class TestDocumentationMessageTranslations(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.request = self.layer["request"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
+        super(TestDocumentationMessageTranslations, self).setUp()
 
-        # Register custom UUID generator to produce stable UUIDs during tests
-        pushGlobalRegistry(getSite())
-        register_static_uuid_utility(prefix="SomeUUID")
-
-        self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        self.frozen_time = self.time_freezer.start()
-
-        self.api_session = RelativeSession(self.portal_url)
-        self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.headers.update({"Accept-Language": "es"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
         self.document = self.create_document()
         alsoProvides(self.document, ITTWLockable)
-
         transaction.commit()
-        self.browser = Browser(self.app)
-        self.browser.handleErrors = False
-        self.browser.addHeader(
-            "Authorization", "Basic %s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
+
+    def tearDown(self):
+        super(TestDocumentationMessageTranslations, self).tearDown()
 
     def create_document(self):
         self.portal.invokeFactory("Document", id="front-page")
@@ -1341,15 +1374,7 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
             "text/plain",
             "text/html",
         )
-        document.creation_date = DateTime("2016-01-21T01:14:48+00:00")
-        document.reindexObject()
-        document.modification_date = DateTime("2016-01-21T01:24:11+00:00")
         return document
-
-    def tearDown(self):
-        self.time_freezer.stop()
-        popGlobalRegistry(getSite())
-        self.api_session.close()
 
     def test_translate_messages_types(self):
         response = self.api_session.get("/@types")
@@ -1372,18 +1397,12 @@ class TestDocumentationMessageTranslations(unittest.TestCase):
         )
 
 
-class TestCommenting(unittest.TestCase):
+class TestCommenting(TestDocumentationBase):
 
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING_FREEZETIME
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.request = self.layer["request"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-
-        self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        self.frozen_time = self.time_freezer.start()
+        super(TestCommenting, self).setUp()
 
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IDiscussionSettings, check=False)
@@ -1391,23 +1410,11 @@ class TestCommenting(unittest.TestCase):
         settings.edit_comment_enabled = True
         settings.delete_own_comment_enabled = True
 
-        self.api_session = RelativeSession(self.portal_url)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
         self.document = self.create_document_with_comments()
-
         transaction.commit()
-        self.browser = Browser(self.app)
-        self.browser.handleErrors = False
-        self.browser.addHeader(
-            "Authorization", "Basic %s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
 
     def tearDown(self):
-        self.time_freezer.stop()
-        self.api_session.close()
+        super(TestCommenting, self).tearDown()
 
     def create_document_with_comments(self):
         self.portal.invokeFactory("Document", id="front-page")
@@ -1425,9 +1432,6 @@ class TestCommenting(unittest.TestCase):
             "text/plain",
             "text/html",
         )
-        document.creation_date = DateTime("2016-01-21T01:14:48+00:00")
-        document.reindexObject()
-        document.modification_date = DateTime("2016-01-21T01:24:11+00:00")
 
         # Add a bunch of comments to the default conversation so we can do
         # batching
@@ -1448,7 +1452,7 @@ class TestCommenting(unittest.TestCase):
         return document
 
     @staticmethod
-    def clean_comment_id(response, _id="123456"):
+    def clean_comment_id_from_urls(response, _id="123456"):
         pattern = r"@comments/(\w+)"
         pattern_bytes = b"@comments/(\\w+)"
         repl = "@comments/" + _id
@@ -1466,18 +1470,39 @@ class TestCommenting(unittest.TestCase):
 
         # and the response
         if response.content:
-            response._content = re.sub(pattern_bytes, repl, response._content)
+            response._content = re.sub(
+                pattern_bytes, repl.encode("utf-8"), response._content
+            )
+
+    @staticmethod
+    def clean_comment_id_from_body(response):
+        # Build a mapping of all comment IDs found in the response, and
+        # replace them with static ones.
+        # Assumption: comment IDs are long enough to be unique.
+        pattern_bytes = re.compile(b'"comment_id": "(\\w+)"')
+        comment_ids = re.findall(pattern_bytes, response._content)
+
+        def new_cid(idx):
+            return str(idx + 1400000000000000).encode("ascii")
+
+        static_comment_ids = {
+            old_cid: new_cid(idx) for idx, old_cid in enumerate(comment_ids)
+        }
+
+        for cid, idx in static_comment_ids.items():
+            response._content = re.sub(cid, idx, response._content)
 
     def test_comments_get(self):
         url = "{}/@comments".format(self.document.absolute_url())
         response = self.api_session.get(url)
+        self.clean_comment_id_from_body(response)
         save_request_and_response_for_docs("comments_get", response)
 
     def test_comments_add_root(self):
         url = "{}/@comments/".format(self.document.absolute_url())
         payload = {"text": "My comment"}
         response = self.api_session.post(url, json=payload)
-        self.clean_comment_id(response)
+        self.clean_comment_id_from_urls(response)
         save_request_and_response_for_docs("comments_add_root", response)
 
     def test_comments_add_sub(self):
@@ -1486,20 +1511,20 @@ class TestCommenting(unittest.TestCase):
         payload = {"text": "My reply"}
         response = self.api_session.post(url, json=payload)
 
-        self.clean_comment_id(response)
+        self.clean_comment_id_from_urls(response)
         save_request_and_response_for_docs("comments_add_sub", response)
 
     def test_comments_update(self):
         url = "{}/@comments/{}".format(self.document.absolute_url(), self.comment_id)
         payload = {"text": "My NEW comment"}
         response = self.api_session.patch(url, json=payload)
-        self.clean_comment_id(response)
+        self.clean_comment_id_from_urls(response)
         save_request_and_response_for_docs("comments_update", response)
 
     def test_comments_delete(self):
         url = "{}/@comments/{}".format(self.document.absolute_url(), self.comment_id)
         response = self.api_session.delete(url)
-        self.clean_comment_id(response)
+        self.clean_comment_id_from_urls(response)
         save_request_and_response_for_docs("comments_delete", response)
 
     def test_roles_get(self):
@@ -1511,43 +1536,77 @@ class TestCommenting(unittest.TestCase):
         response = self.api_session.get("/front-page?expand=breadcrumbs,workflow")
         save_request_and_response_for_docs("expansion", response)
 
-    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
+
+@unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
+class TestControlPanelDocumentation(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
     def test_controlpanels_get_listing(self):
         response = self.api_session.get("/@controlpanels")
         save_request_and_response_for_docs("controlpanels_get", response)
 
-    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
     def test_controlpanels_get_item(self):
         response = self.api_session.get("/@controlpanels/editing")
         save_request_and_response_for_docs("controlpanels_get_item", response)
+
+    def test_controlpanels_get_dexterity(self):
+        response = self.api_session.get("/@controlpanels/dexterity-types")
+        save_request_and_response_for_docs("controlpanels_get_dexterity", response)
+
+    def test_controlpanels_crud_dexterity(self):
+        # POST
+        response = self.api_session.post(
+            "/@controlpanels/dexterity-types",
+            json={
+                "title": "My Custom Content Type",
+                "description": "A custom content-type",
+            },
+        )
+        save_request_and_response_for_docs(
+            "controlpanels_post_dexterity_item", response
+        )
+
+        # GET
+        response = self.api_session.get(
+            "/@controlpanels/dexterity-types/my_custom_content_type"
+        )
+        save_request_and_response_for_docs("controlpanels_get_dexterity_item", response)
+
+        # PATCH
+        response = self.api_session.patch(
+            "/@controlpanels/dexterity-types/my_custom_content_type",
+            json={"title": "My Content Type", "description": "A content-type"},
+        )
+        save_request_and_response_for_docs(
+            "controlpanels_patch_dexterity_item", response
+        )
+
+        # DELETE
+        response = self.api_session.delete(
+            "/@controlpanels/dexterity-types/my_custom_content_type"
+        )
+        save_request_and_response_for_docs(
+            "controlpanels_delete_dexterity_item", response
+        )
 
 
 @unittest.skipUnless(
     PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
 )  # NOQA
-class TestPAMDocumentation(unittest.TestCase):
+class TestPAMDocumentation(TestDocumentationBase):
 
-    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING_FREEZETIME
+    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.request = self.layer["request"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-
-        self.time_freezer = freeze_time("2016-10-21 19:00:00")
-        self.frozen_time = self.time_freezer.start()
-
-        self.api_session = RelativeSession(self.portal_url)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        super(TestPAMDocumentation, self).setUp()
 
         language_tool = api.portal.get_tool("portal_languages")
         language_tool.addSupportedLanguage("en")
         language_tool.addSupportedLanguage("es")
+        language_tool.addSupportedLanguage("de")
         applyProfile(self.portal, "plone.app.multilingual:default")
+
         en_id = self.portal["en"].invokeFactory(
             "Document", id="test-document", title="Test document"
         )
@@ -1556,17 +1615,10 @@ class TestPAMDocumentation(unittest.TestCase):
             "Document", id="test-document", title="Test document"
         )
         self.es_content = self.portal["es"].get(es_id)
-
         transaction.commit()
-        self.browser = Browser(self.app)
-        self.browser.handleErrors = False
-        self.browser.addHeader(
-            "Authorization", "Basic %s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        )
 
     def tearDown(self):
-        self.time_freezer.stop()
-        self.api_session.close()
+        super(TestPAMDocumentation, self).tearDown()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(
@@ -1574,6 +1626,20 @@ class TestPAMDocumentation(unittest.TestCase):
             json={"id": self.es_content.absolute_url()},
         )
         save_request_and_response_for_docs("translations_post", response)
+
+    def test_documentation_translations_post_by_id(self):
+        response = self.api_session.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            json={"id": self.es_content.absolute_url().replace(self.portal_url, "")},
+        )
+        save_request_and_response_for_docs("translations_post_by_id", response)
+
+    def test_documentation_translations_post_by_uid(self):
+        response = self.api_session.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            json={"id": self.es_content.UID()},
+        )
+        save_request_and_response_for_docs("translations_post_by_uid", response)
 
     def test_documentation_translations_get(self):
         ITranslationManager(self.en_content).register_translation("es", self.es_content)
@@ -1592,3 +1658,26 @@ class TestPAMDocumentation(unittest.TestCase):
             json={"language": "es"},
         )
         save_request_and_response_for_docs("translations_delete", response)
+
+    def test_documentation_translations_link_on_post(self):
+        response = self.api_session.post(
+            "{}/de".format(self.portal.absolute_url()),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My German Document",
+                "translation_of": self.es_content.UID(),
+                "language": "de",
+            },
+        )
+        save_request_and_response_for_docs("translations_link_on_post", response)
+
+    def test_documentation_translation_locator(self):
+        response = self.api_session.get(
+            "{}/@translation-locator?target_language=de".format(
+                self.es_content.absolute_url()
+            ),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        save_request_and_response_for_docs("translation_locator", response)

@@ -9,16 +9,24 @@ from plone.autoform.directives import write_permission
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.dexterity.content import Item
 from plone.namedfile import field as namedfile
+from plone.restapi.tests.helpers import ascii_token
 from plone.supermodel import model
+from plone.supermodel.directives import primary
 from Products.CMFCore.utils import getToolByName
 from pytz import timezone
+from z3c.formwidget.query.interfaces import IQuerySource
 from z3c.relationfield.schema import RelationChoice
 from z3c.relationfield.schema import RelationList
 from zope import schema
+from zope.interface import directlyProvides
+from zope.interface import implementer
 from zope.interface import Invalid
 from zope.interface import invariant
 from zope.interface import provider
 from zope.schema.interfaces import IContextAwareDefaultFactory
+from zope.schema.interfaces import IContextSourceBinder
+from zope.schema.interfaces import IIterableSource
+from zope.schema.interfaces import ISource
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
@@ -28,6 +36,107 @@ INDEXES = (
     ("test_list_field", "KeywordIndex"),
     ("test_bool_field", "BooleanIndex"),
 )
+
+
+@implementer(ISource)
+class MyNonIterableSource(object):
+    divisor = 2
+
+    def __contains__(self, value):
+        return bool(value % self.divisor)
+
+
+@implementer(IIterableSource)
+class MyIterableSource(object):
+    values = [1, 2, 3]
+
+    def __contains__(self, value):
+        return value in self.values
+
+    def __iter__(self):
+        terms = [
+            SimpleTerm(value=v, token="token%s" % v, title="Title %s" % v)
+            for v in self.values
+        ]
+        return iter(terms)
+
+
+@implementer(IQuerySource)
+class MyIterableQuerySource(object):
+    values = [1, 2, 3]
+
+    def __contains__(self, value):
+        return value in self.values
+
+    def search(self, query):
+        terms = [
+            SimpleTerm(value=v, token="token%s" % v, title="Title %s" % v)
+            for v in self.values
+        ]
+        return [t for t in terms if query in str(t.token)]
+
+    def __iter__(self):
+        # The @querysources endpoint should never attempt to enumerate terms
+        raise NotImplementedError
+
+
+@implementer(IIterableSource)
+class MyIterableContextSource(object):
+    def __init__(self, context):
+        self.context = context
+
+        title_words = self.context.title.split()
+        self.terms = [
+            SimpleTerm(value=w.lower(), token=ascii_token(w.lower()), title=w)
+            for w in title_words
+        ]
+
+    def __contains__(self, value):
+        return value in [t.value for t in self.terms]
+
+    def __iter__(self):
+        return iter(self.terms)
+
+
+@implementer(IQuerySource)
+class MyContextQuerySource(object):
+    def __init__(self, context):
+        self.context = context
+
+        title_words = self.context.title.split()
+        self.terms = [
+            SimpleTerm(value=w.lower(), token=ascii_token(w.lower()), title=w)
+            for w in title_words
+        ]
+
+    def __contains__(self, value):
+        return value in [t.value for t in self.terms]
+
+    def __iter__(self):
+        # The @querysources endpoint should never attempt to enumerate terms
+        raise NotImplementedError
+
+    def search(self, query):
+        return [t for t in iter(self.terms) if query in str(t.token)]
+
+
+my_iterable_source = MyIterableSource()
+my_non_iterable_source = MyNonIterableSource()
+my_querysource = MyIterableQuerySource()
+
+
+def my_context_source_binder(context):
+    return MyIterableContextSource(context)
+
+
+directlyProvides(my_context_source_binder, IContextSourceBinder)
+
+
+def my_context_querysource_binder(context):
+    return MyContextQuerySource(context)
+
+
+directlyProvides(my_context_querysource_binder, IContextSourceBinder)
 
 
 def vocabularyRequireingContextFactory(context):
@@ -53,6 +162,19 @@ class IDXTestDocumentSchema(model.Schema):
         ),
         required=False,
     )
+
+    test_choice_with_non_iterable_source = schema.Choice(
+        required=False, source=my_non_iterable_source
+    )
+    test_choice_with_source = schema.Choice(required=False, source=my_iterable_source)
+    test_choice_with_context_source = schema.Choice(
+        required=False, source=my_context_source_binder
+    )
+    test_choice_with_querysource = schema.Choice(required=False, source=my_querysource)
+    test_choice_with_context_querysource = schema.Choice(
+        required=False, source=my_context_querysource_binder
+    )
+
     test_date_field = schema.Date(required=False)
     test_datetime_field = schema.Datetime(required=False)
     test_datetime_tz_field = schema.Datetime(
@@ -80,6 +202,18 @@ class IDXTestDocumentSchema(model.Schema):
         required=False,
     )
     test_set_field = schema.Set(required=False)
+    test_set_field_with_choice_with_vocabulary = schema.Set(
+        value_type=schema.Choice(
+            vocabulary=SimpleVocabulary(
+                [
+                    SimpleTerm(u"value1", "token1", u"title1"),
+                    SimpleTerm(u"value2", "token2", u"title2"),
+                    SimpleTerm(u"value3", "token3", u"title3"),
+                ]
+            )
+        ),
+        required=False,
+    )
     test_text_field = schema.Text(required=False)
     test_textline_field = schema.TextLine(required=False)
     test_time_field = schema.Time(required=False)
@@ -105,6 +239,9 @@ class IDXTestDocumentSchema(model.Schema):
     test_namedimage_field = namedfile.NamedImage(required=False)
     test_namedblobfile_field = namedfile.NamedBlobFile(required=False)
     test_namedblobimage_field = namedfile.NamedBlobImage(required=False)
+
+    primary("test_primary_namedfile_field")
+    test_primary_namedfile_field = namedfile.NamedFile(required=False)
 
     # z3c.relationfield
     test_relationchoice_field = RelationChoice(

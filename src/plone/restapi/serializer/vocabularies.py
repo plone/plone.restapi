@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
+from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.schema.interfaces import IIterableSource
 from zope.schema.interfaces import ITitledTokenizedTerm
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabulary
@@ -14,15 +16,19 @@ import six
 
 
 @implementer(ISerializeToJson)
-@adapter(IVocabulary, Interface)
-class SerializeVocabularyToJson(object):
+class SerializeVocabLikeToJson(object):
+    """Base implementation to serialize vocabularies and sources to JSON.
+
+    Implements server-side filtering as well as batching.
+    """
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, vocabulary_id):
         vocabulary = self.context
-        title = self.request.form.get("title", "")
+        title = safe_unicode(self.request.form.get("title", ""))
         token = self.request.form.get("token", "")
 
         terms = []
@@ -41,7 +47,7 @@ class SerializeVocabularyToJson(object):
                     continue
                 terms.append(term)
             else:
-                term_title = getattr(term, "title", None) or ""
+                term_title = safe_unicode(getattr(term, "title", None) or "")
                 if title.lower() not in term_title.lower():
                     continue
                 terms.append(term)
@@ -64,6 +70,18 @@ class SerializeVocabularyToJson(object):
         if links:
             result["batching"] = links
         return result
+
+
+@adapter(IVocabulary, Interface)
+class SerializeVocabularyToJson(SerializeVocabLikeToJson):
+    """Serializes IVocabulary to JSON.
+    """
+
+
+@adapter(IIterableSource, Interface)
+class SerializeSourceToJson(SerializeVocabLikeToJson):
+    """Serializes IIterableSource to JSON.
+    """
 
 
 @implementer(ISerializeToJson)

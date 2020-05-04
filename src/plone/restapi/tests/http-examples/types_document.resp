@@ -76,7 +76,10 @@ Content-Type: application/json+schema
         "No"
       ], 
       "title": "Allow discussion", 
-      "type": "string"
+      "type": "string", 
+      "vocabulary": {
+        "@id": "http://localhost:55001/plone/@sources/allow_discussion"
+      }
     }, 
     "changeNote": {
       "description": "Enter a comment that describes the changes you made.", 

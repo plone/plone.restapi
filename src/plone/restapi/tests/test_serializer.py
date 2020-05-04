@@ -32,7 +32,10 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             "DXTestDocument", id="dxdoc", title="DX Test Document"
         )
 
-    def serialize(self, obj):
+    def serialize(self, obj, fullobjects=False):
+        if fullobjects:
+            self.request.form["fullobjects"] = 1
+
         serializer = getMultiAdapter((obj, self.request), ISerializeToJson)
         return serializer()
 
@@ -118,7 +121,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         )
 
     def test_serialize_folder_orders_items_by_get_object_position_in_parent(
-        self
+        self,
     ):  # noqa
         self.portal.invokeFactory("Folder", id="folder1", title="Folder 1")
         self.portal.folder1.invokeFactory("Document", id="doc1")
@@ -326,29 +329,58 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             self.serialize(self.portal.collection1).get("items"),
         )
 
+    def test_serialize_to_json_collection_fullobjects(self):
+        self.portal.invokeFactory("Collection", id="collection1")
+        self.portal.collection1.title = "My Collection"
+        self.portal.collection1.description = u"This is a collection with two documents"
+        self.portal.collection1.query = [
+            {
+                "i": "portal_type",
+                "o": "plone.app.querystring.operation.string.is",
+                "v": "Document",
+            }
+        ]
+        self.portal.invokeFactory("Document", id="doc2", title="Document 2")
+        self.portal.doc1.reindexObject()
+        self.portal.doc2.reindexObject()
+
+        self.assertEqual(
+            u"Collection", self.serialize(self.portal.collection1).get("@type")
+        )
+        self.assertEqual(
+            u"Collection", self.serialize(self.portal.collection1).get("@type")
+        )
+
+        items = self.serialize(self.portal.collection1, fullobjects=True).get("items")
+        self.assertIn("UID", items[0])
+        self.assertEqual(items[0]["id"], self.portal.doc1.getId())
+
+        self.assertIn("UID", items[1])
+        self.assertEqual(items[1]["id"], self.portal.doc2.getId())
+
     def test_serialize_returns_site_root_common(self):
         self.assertIn("title", self.serialize(self.portal))
         self.assertIn("description", self.serialize(self.portal))
 
-    def test_serialize_returns_site_root_opt_in_tiles_not_present(self):
-        self.assertEqual(self.serialize(self.portal)["tiles"], {})
-        self.assertEqual(self.serialize(self.portal)["tiles_layout"], {})
+    def test_serialize_returns_site_root_opt_in_blocks_not_present(self):
+        self.assertEqual(self.serialize(self.portal)["blocks"], {})
+        self.assertEqual(self.serialize(self.portal)["blocks_layout"], {})
 
-    def test_serialize_returns_site_root_opt_in_tiles_present(self):
-        tiles = {
+    def test_serialize_returns_site_root_opt_in_blocks_present(self):
+        blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {"@type": "description"},
             "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
         }
-        tiles_layout = {
+        blocks_layout = {
             "items": [
                 "07c273fc-8bfc-4e7d-a327-d513e5a945bb",
                 "0358abe2-b4f1-463d-a279-a63ea80daf19",
             ]
         }
-        self.portal.manage_addProperty("tiles", json.dumps(tiles), "string")
+        self.portal.manage_addProperty("blocks", json.dumps(blocks), "string")
         self.portal.manage_addProperty(
-            "tiles_layout", json.dumps(tiles_layout), "string"
+            "blocks_layout", json.dumps(blocks_layout), "string"
         )
 
-        self.assertEqual(self.serialize(self.portal)["tiles"], tiles)
-        self.assertEqual(self.serialize(self.portal)["tiles_layout"], tiles_layout)
+        self.assertEqual(self.serialize(self.portal)["blocks"], blocks)
+        self.assertEqual(self.serialize(self.portal)["blocks_layout"], blocks_layout)
