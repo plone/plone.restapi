@@ -8,6 +8,26 @@ Changelog
 
 .. towncrier release notes start
 
+6.8.1 (2020-05-04)
+------------------
+
+Bug fixes:
+
+
+- Treat next/prev items for unordered folders.
+  [rodfersou] (#928)
+
+
+6.8.0 (2020-04-23)
+------------------
+
+New features:
+
+
+- Managing Dexterity Type Creation (CRUD) via plone.restapi
+  [avoinea] (#534)
+
+
 6.7.0 (2020-04-21)
 ------------------
 

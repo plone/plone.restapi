@@ -52,8 +52,8 @@ install:
   - sed -ie "s#plone-x.x.x.cfg#plone-$PLONE_VERSION.cfg#" travis.cfg
   - buildout -t 10 -c travis.cfg
 script:
+  - if [ "$PLONE_VERSION" == "5.2.x" ] && [ $TRAVIS_PYTHON_VERSION == '3.7' ]; then pip install black && black src/ --check; fi
   - bin/code-analysis
-  - if [ -f "bin/black" ]; then bin/black src/ --check ; fi
   - if [ "$PLONE_VERSION" == "5.2.x" ] && [ $TRAVIS_PYTHON_VERSION == '3.7' ]; then bin/sphinxbuilder ; fi
   - bin/test
   - bin/test-no-uncommitted-doc-changes

@@ -26,12 +26,15 @@ class NextPrevious(object):
 
     def __init__(self, context):
         self.context = context
-        parent = aq_parent(aq_inner(context))
-        self.nextprev = NextPreviousFixed(parent)
+        self.parent = aq_parent(aq_inner(context))
+        self.nextprev = NextPreviousFixed(self.parent)
 
     @property
     def next(self):
         """ return info about the next item in the container """
+        if getattr(self.parent, "_ordering", "") == "unordered":
+            # Unordered folder
+            return {}
         data = self.nextprev.getNextItem(self.context)
         if data is None:
             return {}
@@ -45,6 +48,9 @@ class NextPrevious(object):
     @property
     def previous(self):
         """ return info about the previous item in the container """
+        if getattr(self.parent, "_ordering", "") == "unordered":
+            # Unordered folder
+            return {}
         data = self.nextprev.getPreviousItem(self.context)
         if data is None:
             return {}
