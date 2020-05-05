@@ -4,14 +4,14 @@ from Acquisition import aq_parent
 from plone import api
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
-from plone.restapi.interfaces import IBlockConverter
+from plone.restapi.interfaces import IBlockDeserializer
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.schema import IJSONField
 from plone.uuid.interfaces import IUUID
 from plone.uuid.interfaces import IUUIDAware
 from zope.component import adapter
 from zope.component import getMultiAdapter
-from zope.component import queryMultiAdapter
+from zope.component import subscribers
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
@@ -47,21 +47,24 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
             for id, block_value in value.items():
                 block_type = block_value.get("@type", '')
 
-                convert = queryMultiAdapter((self.context, self.request),
-                                            IBlockConverter,
-                                            name=block_type)
+                handlers = [h for h in
+                            subscribers((self.context, self.request),
+                                        IBlockDeserializer
+                                        ) if h.block_type == block_type]
 
-                if convert is not None:
-                    block_value = convert(block_value)
+                for handler in sorted(handlers, key=lambda h: h.order):
+                    block_value = handler(block_value)
 
                 value[id] = block_value
 
         return value
 
 
-@implementer(IBlockConverter)
+@implementer(IBlockDeserializer)
 @adapter(IBlocks, IBrowserRequest)
 class TextBlockConverter(object):
+    order = 100
+    block_type = 'text'
 
     def __init__(self, context, request):
         self.context = context
@@ -101,9 +104,11 @@ class TextBlockConverter(object):
         return value
 
 
-@implementer(IBlockConverter)
+@implementer(IBlockDeserializer)
 @adapter(IBlocks, IBrowserRequest)
 class HTMLBlockConverter(object):
+    order = 100
+    block_type = 'html'
 
     def __init__(self, context, request):
         self.context = context

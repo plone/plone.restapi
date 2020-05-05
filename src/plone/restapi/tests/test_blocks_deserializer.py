@@ -3,12 +3,12 @@
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.interfaces import IBlockConverter
+from plone.restapi.interfaces import IBlockDeserializer
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import adapter
 from zope.component import getMultiAdapter
-from zope.component import provideAdapter
+from zope.component import provideSubscriptionAdapter
 from zope.component import queryUtility
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -44,9 +44,12 @@ class TestBlocksDeserializer(unittest.TestCase):
 
     def test_register_deserializer(self):
 
-        @implementer(IBlockConverter)
+        @implementer(IBlockDeserializer)
         @adapter(IBlocks, IBrowserRequest)
         class TestAdapter(object):
+            order = 10
+            block_type = 'test_adapter'
+
             def __init__(self, context, request):
                 self.context = context
                 self.request = request
@@ -58,8 +61,8 @@ class TestBlocksDeserializer(unittest.TestCase):
 
                 return value
 
-        provideAdapter(TestAdapter, (IDexterityItem, IBrowserRequest),
-                       name="test_adapter")
+        provideSubscriptionAdapter(TestAdapter,
+                                   (IDexterityItem, IBrowserRequest),)
 
         self.deserialize(blocks={
             '123': {'@type': 'test_adapter', 'value': u'text'}

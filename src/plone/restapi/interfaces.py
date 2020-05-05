@@ -84,7 +84,7 @@ class IFieldDeserializer(Interface):
         """
 
 
-class IBlockConverter(Interface):
+class IBlockDeserializer(Interface):
     """Adapter to convert/adjust raw block deserialized value into block value.
     """
 
