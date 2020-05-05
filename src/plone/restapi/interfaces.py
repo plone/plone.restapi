@@ -88,6 +88,25 @@ class IBlockDeserializer(Interface):
     """Adapter to convert/adjust raw block deserialized value into block value.
     """
 
+    order = Attribute("A number used in sorting value transformers. "
+                      "Smaller is executed first")
+
+    def __init__(field, context, request):
+        """Adapts context and the request.
+        """
+
+    def __call__(value):
+        """Convert the provided raw Python value to a block value.
+        """
+
+
+class IBlockSerializer(Interface):
+    """On-the-fly convert/adjust stored block value to use in frontend
+    """
+
+    order = Attribute("A number used in sorting value transformers. "
+                      "Smaller is executed first")
+
     def __init__(field, context, request):
         """Adapts context and the request.
         """

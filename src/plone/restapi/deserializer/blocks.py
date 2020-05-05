@@ -28,6 +28,7 @@ def path2uid(context, portal, href):
     relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
     if path.startswith(portal_url):
         path = path[len(portal_url) + 1:]
+
     if not path.startswith(portal_path):
         path = '{portal_path}/{path}'.format(
             portal_path=portal_path, path=path.lstrip("/")
@@ -89,27 +90,16 @@ class TextBlockDeserializer(object):
         portal = getMultiAdapter(
             (self.context, self.request), name="plone_portal_state"
         ).portal()
-        portal_url = portal.absolute_url()
-        context_url = self.context.absolute_url()
-        relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
 
+        entity_map = value.get("text", {}).get("entityMap", {})
         for entity in entity_map.values():
             if entity.get("type") == "LINK":
                 href = entity.get("data", {}).get("url", "")
-                before = href  # noqa
-
-                if href and href.startswith(portal_url):
-                    path = href[len(portal_url) + 1:].encode("utf8")
-                    uid, suffix = path2uid(portal, path)
-
-                    if uid:
-                        href = relative_up * "../" + "resolveuid/" + uid
-
-                        if suffix:
-                            href += suffix
-                        entity["data"]["href"] = href
-                        entity["data"]["url"] = href
-                    print("DESERIALIZE " + before + " -> " + href)  # noqa
+                deserialized_href = path2uid(
+                    context=self.context, portal=portal, href=href
+                )
+                entity["data"]["href"] = deserialized_href
+                entity["data"]["url"] = deserialized_href
 
         return value
 

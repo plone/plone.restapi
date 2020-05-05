@@ -24,6 +24,8 @@
     <adapter factory=".dxfields.PrimaryFileFieldTarget" />
 
     <adapter factory=".blocks.BlocksJSONFieldSerializer" />
+    <subscriber factory=".blocks.TextBlockSerializer"
+      provides="plone.restapi.interfaces.IBlockSerializer"/>
 
     <configure zcml:condition="installed Products.Archetypes">
         <adapter factory=".atcontent.SerializeToJson" />
