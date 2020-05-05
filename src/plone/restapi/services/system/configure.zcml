@@ -4,10 +4,10 @@
 
   <plone:service
     method="GET"
-    for="zope.interface.Interface"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".get.SystemGet"
     name="@system"
-    permission="zope2.View"
+    permission="plone.app.controlpanel.Overview"
     />
 
 </configure>
