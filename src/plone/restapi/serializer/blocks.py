@@ -25,15 +25,14 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
         value = copy.deepcopy(self.get_value())
 
-        # Resolve UID links
         if self.field.getName() == "blocks":
             for id, block_value in value.items():
                 block_type = block_value.get("@type", '')
 
                 handlers = [h for h in
                             subscribers((self.context, self.request),
-                                        IBlockSerializer
-                                        ) if h.block_type == block_type]
+                                        IBlockSerializer)
+                            if h.block_type == block_type]
 
                 for handler in sorted(handlers, key=lambda h: h.order):
                     block_value = handler(block_value)
@@ -54,6 +53,7 @@ class TextBlockSerializer(object):
         self.request = request
 
     def __call__(self, value):
+        # Resolve UID links
         entity_map = value.get("text", {}).get("entityMap", {})
         for entity in entity_map.values():
             if entity.get("type") == "LINK":
