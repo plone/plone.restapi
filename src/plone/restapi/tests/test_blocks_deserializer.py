@@ -54,7 +54,7 @@ class TestBlocksDeserializer(unittest.TestCase):
         @adapter(IBlocks, IBrowserRequest)
         class TestAdapter(object):
             order = 10
-            block_type = 'test_adapter'
+            block_type = 'test'
 
             def __init__(self, context, request):
                 self.context = context
@@ -71,11 +71,61 @@ class TestBlocksDeserializer(unittest.TestCase):
                                    (IDexterityItem, IBrowserRequest),)
 
         self.deserialize(blocks={
-            '123': {'@type': 'test_adapter', 'value': u'text'}
+            '123': {'@type': 'test', 'value': u'text'}
         })
 
         assert self.portal.doc1._handler_called is True
         assert self.portal.doc1.blocks['123']['value'] == u'changed: text'
+
+    def test_register_multiple_transform(self):
+
+        @implementer(IBlockDeserializer)
+        @adapter(IBlocks, IBrowserRequest)
+        class TestAdapterA(object):
+            order = 10
+            block_type = 'test_multi'
+
+            def __init__(self, context, request):
+                self.context = context
+                self.request = request
+
+            def __call__(self, value):
+                self.context._handler_called_a = True
+
+                value['value'] = value['value'].replace(u'a', u'b')
+
+                return value
+
+        @implementer(IBlockDeserializer)
+        @adapter(IBlocks, IBrowserRequest)
+        class TestAdapterB(object):
+            order = 11
+            block_type = 'test_multi'
+
+            def __init__(self, context, request):
+                self.context = context
+                self.request = request
+
+            def __call__(self, value):
+                self.context._handler_called_b = True
+
+                value['value'] = value['value'].replace(u'b', u'c')
+
+                return value
+
+        provideSubscriptionAdapter(TestAdapterB,
+                                   (IDexterityItem, IBrowserRequest),)
+
+        provideSubscriptionAdapter(TestAdapterA,
+                                   (IDexterityItem, IBrowserRequest),)
+
+        self.deserialize(blocks={
+            '123': {'@type': 'test_multi', 'value': u'a'}
+        })
+
+        assert self.portal.doc1._handler_called_a is True
+        assert self.portal.doc1._handler_called_b is True
+        assert self.portal.doc1.blocks['123']['value'] == u'c'
 
     def test_blocks_html_cleanup(self):
         self.deserialize(blocks={
