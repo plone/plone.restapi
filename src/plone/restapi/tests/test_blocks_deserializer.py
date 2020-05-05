@@ -6,6 +6,7 @@ from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IBlockDeserializer
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.uuid.interfaces import IUUID
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import provideSubscriptionAdapter
@@ -32,6 +33,11 @@ class TestBlocksDeserializer(unittest.TestCase):
         fti.behaviors = tuple(behavior_list)
 
         self.portal.invokeFactory("Document", id=u"doc1",)
+        self.image = self.portal[
+            self.portal.invokeFactory(
+                "Image", id="image-1", title="Target image"
+            )
+        ]
 
     def deserialize(self, blocks=None, validate_all=False, context=None):
         blocks = blocks or ''
@@ -79,3 +85,12 @@ class TestBlocksDeserializer(unittest.TestCase):
 
         assert self.portal.doc1.blocks['123']['html'] == \
             u'<div>This stays</div>'
+
+    def test_blocks_image_resolve2uid(self):
+        image_uid = IUUID(self.image)
+        self.deserialize(blocks={
+            '123': {'@type': 'image', 'url': self.image.absolute_url()}
+        })
+
+        assert self.portal.doc1.blocks['123']['url'] == \
+            "../resolveuid/{}".format(image_uid)
