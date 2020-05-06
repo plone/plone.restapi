@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from plone.outputfilters.browser.resolveuid import uuidToURL
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.interfaces import IBlockSerializer
+from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
@@ -31,7 +31,7 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
 
                 handlers = [h for h in
                             subscribers((self.context, self.request),
-                                        IBlockSerializer)
+                                        IBlockFieldSerializationTransformer)
                             if h.block_type == block_type]
 
                 for handler in sorted(handlers, key=lambda h: h.order):
@@ -42,7 +42,7 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
         return json_compatible(value)
 
 
-@implementer(IBlockSerializer)
+@implementer(IBlockFieldSerializationTransformer)
 @adapter(IBlocks, IBrowserRequest)
 class TextBlockSerializer(object):
     order = 100

@@ -4,7 +4,7 @@ from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.interfaces import IBlockSerializer
+from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from z3c.form.interfaces import IDataManager
@@ -54,7 +54,7 @@ class TestBlocksSerializer(unittest.TestCase):
     def test_register_serializer(self):
 
         @adapter(IBlocks, IBrowserRequest)
-        @implementer(IBlockSerializer)
+        @implementer(IBlockFieldSerializationTransformer)
         class TestAdapterA(object):
             order = 10
             block_type = 'test_multi'
@@ -71,7 +71,7 @@ class TestBlocksSerializer(unittest.TestCase):
                 return value
 
         @adapter(IBlocks, IBrowserRequest)
-        @implementer(IBlockSerializer)
+        @implementer(IBlockFieldSerializationTransformer)
         class TestAdapterB(object):
             order = 11
             block_type = 'test_multi'

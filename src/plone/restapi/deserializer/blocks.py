@@ -4,7 +4,7 @@ from Acquisition import aq_parent
 from plone import api
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
-from plone.restapi.interfaces import IBlockDeserializer
+from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.schema import IJSONField
 from plone.uuid.interfaces import IUUID
@@ -45,7 +45,7 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
 
                 handlers = [h for h in
                             subscribers((self.context, self.request),
-                                        IBlockDeserializer
+                                        IBlockFieldDeserializationTransformer
                                         ) if h.block_type == block_type]
 
                 for handler in sorted(handlers, key=lambda h: h.order):
@@ -57,7 +57,7 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
 
 
 @adapter(IBlocks, IBrowserRequest)
-@implementer(IBlockDeserializer)
+@implementer(IBlockFieldDeserializationTransformer)
 class TextBlockDeserializer(object):
     order = 100
     block_type = 'text'
@@ -96,7 +96,7 @@ class TextBlockDeserializer(object):
 
 
 @adapter(IBlocks, IBrowserRequest)
-@implementer(IBlockDeserializer)
+@implementer(IBlockFieldDeserializationTransformer)
 class HTMLBlockDeserializer(object):
     order = 100
     block_type = 'html'
@@ -118,7 +118,7 @@ class HTMLBlockDeserializer(object):
 
 
 @adapter(IBlocks, IBrowserRequest)
-@implementer(IBlockDeserializer)
+@implementer(IBlockFieldDeserializationTransformer)
 class ImageBlockDeserializer(object):
     order = 100
     block_type = 'image'

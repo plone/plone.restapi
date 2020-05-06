@@ -84,8 +84,8 @@ class IFieldDeserializer(Interface):
         """
 
 
-class IBlockDeserializer(Interface):
-    """Adapter to convert/adjust raw block deserialized value into block value.
+class IBlockFieldDeserializationTransformer(Interface):
+    """Convert/adjust raw block deserialized value into block value.
     """
 
     order = Attribute("A number used in sorting value transformers. "
@@ -100,12 +100,12 @@ class IBlockDeserializer(Interface):
         """
 
 
-class IBlockSerializer(Interface):
-    """On-the-fly convert/adjust stored block value to use in frontend
+class IBlockFieldSerializationTransformer(Interface):
+    """Transform block value before final JSON serialization
     """
 
-    order = Attribute("A number used in sorting value transformers. "
-                      "Smaller is executed first")
+    order = Attribute("A number used in sorting value transformers for the "
+                      "same block. Smaller is executed first")
 
     def __init__(field, context, request):
         """Adapts context and the request.

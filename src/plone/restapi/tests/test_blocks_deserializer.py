@@ -3,7 +3,7 @@
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.interfaces import IBlockDeserializer
+from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.uuid.interfaces import IUUID
@@ -50,7 +50,7 @@ class TestBlocksDeserializer(unittest.TestCase):
 
     def test_register_deserializer(self):
 
-        @implementer(IBlockDeserializer)
+        @implementer(IBlockFieldDeserializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
         class TestAdapter(object):
             order = 10
@@ -79,7 +79,7 @@ class TestBlocksDeserializer(unittest.TestCase):
 
     def test_register_multiple_transform(self):
 
-        @implementer(IBlockDeserializer)
+        @implementer(IBlockFieldDeserializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
         class TestAdapterA(object):
             order = 10
@@ -96,7 +96,7 @@ class TestBlocksDeserializer(unittest.TestCase):
 
                 return value
 
-        @implementer(IBlockDeserializer)
+        @implementer(IBlockFieldDeserializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
         class TestAdapterB(object):
             order = 11
