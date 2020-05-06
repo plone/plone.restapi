@@ -88,6 +88,8 @@ class IBlockFieldDeserializationTransformer(Interface):
     """Convert/adjust raw block deserialized value into block value.
     """
 
+    block_type = Attribute("A string with the type of block, the @type from "
+                           "the block value")
     order = Attribute("A number used in sorting value transformers. "
                       "Smaller is executed first")
 
@@ -104,6 +106,8 @@ class IBlockFieldSerializationTransformer(Interface):
     """Transform block value before final JSON serialization
     """
 
+    block_type = Attribute("A string with the type of block, the @type from "
+                           "the block value")
     order = Attribute("A number used in sorting value transformers for the "
                       "same block. Smaller is executed first")
 
