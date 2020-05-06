@@ -144,3 +144,11 @@ class TestBlocksDeserializer(unittest.TestCase):
 
         self.assertEqual(self.portal.doc1.blocks['123']['url'],
                          "../resolveuid/{}".format(image_uid))
+
+    def test_blocks_image_href(self):
+        self.deserialize(blocks={
+            '123': {'@type': 'image', 'url': 'http://example.com/1.jpg'}
+        })
+
+        self.assertEqual(self.portal.doc1.blocks['123']['url'],
+                         'http://example.com/1.jpg')
