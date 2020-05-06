@@ -27,7 +27,7 @@
       <stringProp name="TestPlan.user_define_classpath"></stringProp>
     </TestPlan>
     <hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Volto Images (Read)" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Volto Page 30 Images (Read)" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Schleifen-Controller (Loop Controller)" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -73,7 +73,7 @@
           </collectionProp>
         </HeaderManager>
         <hashTree/>
-        <com.blazemeter.jmeter.controller.ParallelSampler guiclass="com.blazemeter.jmeter.controller.ParallelControllerGui" testclass="com.blazemeter.jmeter.controller.ParallelSampler" testname="Volto Page with 30 images" enabled="true">
+        <com.blazemeter.jmeter.controller.ParallelSampler guiclass="com.blazemeter.jmeter.controller.ParallelControllerGui" testclass="com.blazemeter.jmeter.controller.ParallelSampler" testname="Volto Page 30 Images" enabled="true">
           <boolProp name="PARENT_SAMPLE">false</boolProp>
         </com.blazemeter.jmeter.controller.ParallelSampler>
         <hashTree>
@@ -752,7 +752,7 @@
         </ResultCollector>
         <hashTree/>
       </hashTree>
-      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Volto Front Page (Read)" enabled="true">
+      <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Volto Page 30 News Items (Read)" enabled="true">
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
         <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Schleifen-Controller (Loop Controller)" enabled="true">
           <boolProp name="LoopController.continue_forever">false</boolProp>
@@ -798,7 +798,7 @@
           </collectionProp>
         </HeaderManager>
         <hashTree/>
-        <com.blazemeter.jmeter.controller.ParallelSampler guiclass="com.blazemeter.jmeter.controller.ParallelControllerGui" testclass="com.blazemeter.jmeter.controller.ParallelSampler" testname="Volto Front Page" enabled="true">
+        <com.blazemeter.jmeter.controller.ParallelSampler guiclass="com.blazemeter.jmeter.controller.ParallelControllerGui" testclass="com.blazemeter.jmeter.controller.ParallelSampler" testname="Volto 30 News Items" enabled="true">
           <boolProp name="PARENT_SAMPLE">false</boolProp>
         </com.blazemeter.jmeter.controller.ParallelSampler>
         <hashTree>
