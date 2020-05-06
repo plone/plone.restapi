@@ -20,3 +20,4 @@
 - Luca Bellenghi
 - Giacomo Monari
 - Alin Voinea
+- Rodrigo Ferreira de Souza
