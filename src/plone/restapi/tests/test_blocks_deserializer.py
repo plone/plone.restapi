@@ -123,9 +123,9 @@ class TestBlocksDeserializer(unittest.TestCase):
             '123': {'@type': 'test_multi', 'value': u'a'}
         })
 
-        assert self.portal.doc1._handler_called_a is True
-        assert self.portal.doc1._handler_called_b is True
-        assert self.portal.doc1.blocks['123']['value'] == u'c'
+        self.assertTrue(self.portal.doc1._handler_called_a)
+        self.assertTrue(self.portal.doc1._handler_called_b)
+        self.assertEqual(self.portal.doc1.blocks['123']['value'], u'c')
 
     def test_blocks_html_cleanup(self):
         self.deserialize(blocks={
@@ -133,8 +133,8 @@ class TestBlocksDeserializer(unittest.TestCase):
                     u'<script>nasty</script><div>This stays</div>'}
         })
 
-        assert self.portal.doc1.blocks['123']['html'] == \
-            u'<div>This stays</div>'
+        self.assertEqual(self.portal.doc1.blocks['123']['html'],
+                         u'<div>This stays</div>')
 
     def test_blocks_image_resolve2uid(self):
         image_uid = IUUID(self.image)
@@ -142,5 +142,5 @@ class TestBlocksDeserializer(unittest.TestCase):
             '123': {'@type': 'image', 'url': self.image.absolute_url()}
         })
 
-        assert self.portal.doc1.blocks['123']['url'] == \
-            "../resolveuid/{}".format(image_uid)
+        self.assertEqual(self.portal.doc1.blocks['123']['url'],
+                         "../resolveuid/{}".format(image_uid))

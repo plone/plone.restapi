@@ -71,8 +71,8 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
         return value
 
 
-@implementer(IBlockDeserializer)
 @adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockDeserializer)
 class TextBlockDeserializer(object):
     order = 100
     block_type = 'text'
@@ -104,8 +104,8 @@ class TextBlockDeserializer(object):
         return value
 
 
-@implementer(IBlockDeserializer)
 @adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockDeserializer)
 class HTMLBlockDeserializer(object):
     order = 100
     block_type = 'html'
@@ -126,8 +126,8 @@ class HTMLBlockDeserializer(object):
         return value
 
 
-@implementer(IBlockDeserializer)
 @adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockDeserializer)
 class ImageBlockDeserializer(object):
     order = 100
     block_type = 'image'
