@@ -18,7 +18,7 @@ class SystemGet(Service):
             "python_version": core_versions.get("Python"),
             "cmf_version": core_versions.get("CMF"),
             "pil_version": core_versions.get("PIL"),
-            "debug-mode": core_versions.get("Debug mode"),
+            "debug_mode": core_versions.get("Debug mode"),
             "plone_gs_metadata_version_installed": core_versions.get("Plone Instance"),
             "plone_gs_metadata_version_file_system": core_versions.get(
                 "Plone File System"

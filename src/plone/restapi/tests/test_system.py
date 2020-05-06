@@ -42,7 +42,7 @@ class TestSystemFunctional(unittest.TestCase):
         results = response.json()
         self.assertEqual(results[u"@id"], self.portal.absolute_url() + "/@system")
         self.assertEqual(results["cmf_version"], self.core_versions.get("CMF"))
-        self.assertEqual(results["debug-mode"], self.core_versions.get("Debug mode"))
+        self.assertEqual(results["debug_mode"], self.core_versions.get("Debug mode"))
         self.assertEqual(results["pil_version"], self.core_versions.get("PIL"))
         self.assertEqual(results["python_version"], self.core_versions.get("Python"))
         self.assertEqual(
