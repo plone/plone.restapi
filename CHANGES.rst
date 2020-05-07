@@ -8,6 +8,19 @@ Changelog
 
 .. towncrier release notes start
 
+6.9.1 (2020-05-07)
+------------------
+
+Bug fixes:
+
+
+- - Fixed @translations endpoint to only retrieve the translations that the current user
+    can really access using ``get_restricted_translations`` instead. This fixes the use
+    case where an user with no permissions on a translation accessing the endpoint returned
+    a 401.
+    [sneridagh] (#937)
+
+
 6.9.0 (2020-05-06)
 ------------------
 
