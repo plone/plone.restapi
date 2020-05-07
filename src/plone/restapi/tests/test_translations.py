@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from plone import api
 from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -151,6 +152,26 @@ class TestLinkContentsAsTranslations(unittest.TestCase):
             json={"id": "http://this-content-does-not-exist"},
         )
         self.assertEqual(400, response.status_code)
+
+    def test_get_translations_on_content_with_no_permissions(self):
+        response = requests.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"id": self.es_content.absolute_url()},
+        )
+        self.assertEqual(201, response.status_code)
+        api.content.transition(self.en_content, "publish")
+        transaction.commit()
+
+        response = requests.get(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            headers={"Accept": "application/json"},
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertTrue(len(response["items"]) == 0)
 
 
 @unittest.skipUnless(
