@@ -70,10 +70,9 @@ class SerializeToJson(object):
 
         # Insert next/prev information
         nextprevious = NextPrevious(obj)
-        result.update({
-            "previous_item": nextprevious.previous,
-            "next_item": nextprevious.next,
-        })
+        result.update(
+            {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
+        )
 
         # Insert expandable elements
         result.update(expandable_elements(self.context, self.request))
@@ -98,12 +97,12 @@ class SerializeToJson(object):
                 # check for a special primary filed target
                 if name == primary_field_name:
                     target_adapter = queryMultiAdapter(
-                        (field, obj, self.request),
-                        IPrimaryFieldTarget)
+                        (field, obj, self.request), IPrimaryFieldTarget
+                    )
                     if target_adapter:
                         target = target_adapter()
                         if target:
-                            result['targetUrl'] = target
+                            result["targetUrl"] = target
 
         result["allow_discussion"] = getMultiAdapter(
             (self.context, self.request), name="conversation_view"

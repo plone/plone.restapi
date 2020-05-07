@@ -1563,26 +1563,32 @@ class TestControlPanelDocumentation(TestDocumentationBase):
                 "description": "A custom content-type",
             },
         )
-        save_request_and_response_for_docs("controlpanels_post_dexterity_item", response)
+        save_request_and_response_for_docs(
+            "controlpanels_post_dexterity_item", response
+        )
 
         # GET
-        response = self.api_session.get("/@controlpanels/dexterity-types/my_custom_content_type")
+        response = self.api_session.get(
+            "/@controlpanels/dexterity-types/my_custom_content_type"
+        )
         save_request_and_response_for_docs("controlpanels_get_dexterity_item", response)
 
         # PATCH
         response = self.api_session.patch(
             "/@controlpanels/dexterity-types/my_custom_content_type",
-            json={
-                "title": "My Content Type",
-                "description": "A content-type",
-            },
+            json={"title": "My Content Type", "description": "A content-type"},
         )
-        save_request_and_response_for_docs("controlpanels_patch_dexterity_item", response)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_dexterity_item", response
+        )
 
         # DELETE
         response = self.api_session.delete(
-            "/@controlpanels/dexterity-types/my_custom_content_type")
-        save_request_and_response_for_docs("controlpanels_delete_dexterity_item", response)
+            "/@controlpanels/dexterity-types/my_custom_content_type"
+        )
+        save_request_and_response_for_docs(
+            "controlpanels_delete_dexterity_item", response
+        )
 
 
 @unittest.skipUnless(

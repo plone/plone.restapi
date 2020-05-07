@@ -128,7 +128,7 @@ class TestATContentSerializer(unittest.TestCase):
         )
 
     def test_serializer_orders_folder_items_by_get_object_position_in_parent(
-        self
+        self,
     ):  # noqa
         folder = self.portal[
             self.portal.invokeFactory("ATTestFolder", id="folder", title="Test Folder")
@@ -206,7 +206,7 @@ class TestATContentSerializer(unittest.TestCase):
             container=folder,
             type="ATTestDocument",
             title="Item 1",
-            description="One item alone in the folder"
+            description="One item alone in the folder",
         )
         data = self.serialize(doc)
         self.assertEqual({}, data["previous_item"])
@@ -223,13 +223,13 @@ class TestATContentSerializer(unittest.TestCase):
             container=folder,
             type="ATTestDocument",
             title="Item 1",
-            description="Previous item"
+            description="Previous item",
         )
         doc = api.content.create(
             container=folder,
             type="ATTestDocument",
             title="Item 2",
-            description="Current item"
+            description="Current item",
         )
         data = self.serialize(doc)
         self.assertEqual(
@@ -237,9 +237,9 @@ class TestATContentSerializer(unittest.TestCase):
                 "@id": "http://nohost/plone/folder-with-items/item-1",
                 "@type": "ATTestDocument",
                 "title": "Item 1",
-                "description": "Previous item"
+                "description": "Previous item",
             },
-            data["previous_item"]
+            data["previous_item"],
         )
         self.assertEqual({}, data["next_item"])
 
@@ -254,13 +254,13 @@ class TestATContentSerializer(unittest.TestCase):
             container=folder,
             type="ATTestDocument",
             title="Item 1",
-            description="Current item"
+            description="Current item",
         )
         api.content.create(
             container=folder,
             type="ATTestDocument",
             title="Item 2",
-            description="Next item"
+            description="Next item",
         )
         data = self.serialize(doc)
         self.assertEqual({}, data["previous_item"])
@@ -269,9 +269,9 @@ class TestATContentSerializer(unittest.TestCase):
                 "@id": "http://nohost/plone/folder-with-items/item-2",
                 "@type": "ATTestDocument",
                 "title": "Item 2",
-                "description": "Next item"
+                "description": "Next item",
             },
-            data["next_item"]
+            data["next_item"],
         )
 
     def test_nextprev_has_nextprev(self):
@@ -285,19 +285,19 @@ class TestATContentSerializer(unittest.TestCase):
             container=folder,
             type="ATTestDocument",
             title="Item 1",
-            description="Previous item"
+            description="Previous item",
         )
         doc = api.content.create(
             container=folder,
             type="ATTestDocument",
             title="Item 2",
-            description="Current item"
+            description="Current item",
         )
         api.content.create(
             container=folder,
             type="ATTestDocument",
             title="Item 3",
-            description="Next item"
+            description="Next item",
         )
         data = self.serialize(doc)
         self.assertEqual(
@@ -305,18 +305,18 @@ class TestATContentSerializer(unittest.TestCase):
                 "@id": "http://nohost/plone/folder-with-items/item-1",
                 "@type": "ATTestDocument",
                 "title": "Item 1",
-                "description": "Previous item"
+                "description": "Previous item",
             },
-            data["previous_item"]
+            data["previous_item"],
         )
         self.assertEqual(
             {
                 "@id": "http://nohost/plone/folder-with-items/item-3",
                 "@type": "ATTestDocument",
                 "title": "Item 3",
-                "description": "Next item"
+                "description": "Next item",
             },
-            data["next_item"]
+            data["next_item"],
         )
 
     def test_nextprev_root_no_nextprev(self):
@@ -329,7 +329,7 @@ class TestATContentSerializer(unittest.TestCase):
             container=self.portal,
             type="ATTestDocument",
             title="Item 2",
-            description="Current item"
+            description="Current item",
         )
         data = self.serialize(doc)
         self.assertEqual(
@@ -337,9 +337,9 @@ class TestATContentSerializer(unittest.TestCase):
                 "@id": "http://nohost/plone/doc1",
                 "@type": "ATTestDocument",
                 "title": "Test Document",
-                "description": ""
+                "description": "",
             },
-            data["previous_item"]
+            data["previous_item"],
         )
         self.assertEqual({}, data["next_item"])
 
@@ -348,7 +348,7 @@ class TestATContentSerializer(unittest.TestCase):
             container=self.portal,
             type="ATTestDocument",
             title="Item 2",
-            description="Next item"
+            description="Next item",
         )
         data = self.serialize(self.doc1)
         self.assertEqual({}, data["previous_item"])
@@ -357,9 +357,9 @@ class TestATContentSerializer(unittest.TestCase):
                 "@id": "http://nohost/plone/item-2",
                 "@type": "ATTestDocument",
                 "title": "Item 2",
-                "description": "Next item"
+                "description": "Next item",
             },
-            data["next_item"]
+            data["next_item"],
         )
 
     def test_nextprev_root_has_nextprev(self):
@@ -367,19 +367,19 @@ class TestATContentSerializer(unittest.TestCase):
             container=self.portal,
             type="ATTestDocument",
             title="Item 1",
-            description="Previous item"
+            description="Previous item",
         )
         doc = api.content.create(
             container=self.portal,
             type="ATTestDocument",
             title="Item 2",
-            description="Current item"
+            description="Current item",
         )
         api.content.create(
             container=self.portal,
             type="ATTestDocument",
             title="Item 3",
-            description="Next item"
+            description="Next item",
         )
         data = self.serialize(doc)
         self.assertEqual(
@@ -387,16 +387,16 @@ class TestATContentSerializer(unittest.TestCase):
                 "@id": "http://nohost/plone/item-1",
                 "@type": "ATTestDocument",
                 "title": "Item 1",
-                "description": "Previous item"
+                "description": "Previous item",
             },
-            data["previous_item"]
+            data["previous_item"],
         )
         self.assertEqual(
             {
                 "@id": "http://nohost/plone/item-3",
                 "@type": "ATTestDocument",
                 "title": "Item 3",
-                "description": "Next item"
+                "description": "Next item",
             },
-            data["next_item"]
+            data["next_item"],
         )

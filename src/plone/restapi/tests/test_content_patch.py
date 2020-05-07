@@ -188,7 +188,7 @@ class TestContentPatch(unittest.TestCase):
             "text": {
                 "content-type": "text/html",
                 "encoding": "utf8",
-                "data": "<p>example with &#x27;</p>"
+                "data": "<p>example with &#x27;</p>",
             }
         }
         response = requests.patch(

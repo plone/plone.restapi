@@ -135,7 +135,6 @@ class RichttextFieldSerializer(DefaultFieldSerializer):
 @adapter(IField, IDexterityContent, Interface)
 @implementer(IPrimaryFieldTarget)
 class DefaultPrimaryFieldTarget(object):
-
     def __init__(self, field, context, request):
         self.context = context
         self.request = request
@@ -154,7 +153,6 @@ class DefaultPrimaryFieldTarget(object):
 
 @adapter(INamedFileField, IDexterityContent, Interface)
 class PrimaryFileFieldTarget(DefaultPrimaryFieldTarget):
-
     def __call__(self):
         if not self.use_primary_field_target():
             return
@@ -163,4 +161,6 @@ class PrimaryFileFieldTarget(DefaultPrimaryFieldTarget):
         if namedfile is None:
             return
 
-        return "/".join((self.context.absolute_url(), "@@download", self.field.__name__))
+        return "/".join(
+            (self.context.absolute_url(), "@@download", self.field.__name__)
+        )
