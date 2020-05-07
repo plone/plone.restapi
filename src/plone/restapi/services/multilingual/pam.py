@@ -34,7 +34,7 @@ class Translations(object):
 
         translations = []
         manager = ITranslationManager(self.context)
-        for language, translation in manager.get_translations().items():
+        for language, translation in manager.get_restricted_translations().items():
             if language != ILanguage(self.context).get_language():
                 translations.append(
                     {"@id": translation.absolute_url(), "language": language}
