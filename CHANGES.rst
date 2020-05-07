@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+6.10.0 (2020-05-07)
+-------------------
+
+New features:
+
+
+- Add system endpoint. [timo] (#736)
+
+
 6.9.1 (2020-05-07)
 ------------------
 
