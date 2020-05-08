@@ -9,6 +9,9 @@
     <adapter factory=".adapters.TextJsonSchemaProvider" />
     <adapter factory=".adapters.ASCIIJsonSchemaProvider" />
     <adapter factory=".adapters.ASCIILineJsonSchemaProvider" />
+    <adapter factory=".adapters.EmailJsonSchemaProvider" />
+    <adapter factory=".adapters.PasswordJsonSchemaProvider" />
+    <adapter factory=".adapters.URIJsonSchemaProvider" />
     <adapter factory=".adapters.FloatJsonSchemaProvider" />
     <adapter factory=".adapters.DecimalJsonSchemaProvider" />
     <adapter factory=".adapters.IntegerJsonSchemaProvider" />

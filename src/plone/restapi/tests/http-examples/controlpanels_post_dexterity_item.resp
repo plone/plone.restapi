@@ -112,7 +112,6 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
       }, 
       "description": {
         "description": "", 
-        "minLength": 0, 
         "title": "Description", 
         "type": "string", 
         "widget": "textarea"

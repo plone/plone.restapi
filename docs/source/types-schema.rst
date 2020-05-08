@@ -383,3 +383,63 @@ JSON Schema::
         'description': u'My great field',
         'widget': u'datetime',
     }
+
+
+Email
+-----
+
+Zope Schema::
+
+    plone.schema.Email(
+        title=u'My field',
+        description=u'My great field',
+    )
+
+JSON Schema::
+
+    {
+        'type': 'string',
+        'title': u'My field',
+        'description': u'My great field',
+        'widget': u'email',
+    }
+
+
+Password
+--------
+
+Zope Schema::
+
+    zope.schema.Password(
+        title=u'My field',
+        description=u'My great field',
+    )
+
+JSON Schema::
+
+    {
+        'type': 'string',
+        'title': u'My field',
+        'description': u'My great field',
+        'widget': u'password',
+    }
+
+
+URI
+---
+
+Zope Schema::
+
+    zope.schema.URI(
+        title=u'My field',
+        description=u'My great field',
+    )
+
+JSON Schema::
+
+    {
+        'type': 'string',
+        'title': u'My field',
+        'description': u'My great field',
+        'widget': u'url',
+    }
