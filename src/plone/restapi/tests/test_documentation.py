@@ -1342,6 +1342,14 @@ class TestDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("querystringsearch_post", response)
 
+    def test_system_get(self):
+        response = self.api_session.get("/@system")
+        save_request_and_response_for_docs("system_get", response)
+
+    def test_database_get(self):
+        response = self.api_session.get("/@database")
+        save_request_and_response_for_docs("database_get", response)
+
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
 
