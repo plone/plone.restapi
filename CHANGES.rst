@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+6.11.0 (2020-05-08)
+-------------------
+
+New features:
+
+
+- Add type-schema adapters for: Email, URI and Password
+  [avoinea] (#926)
+
+
 6.10.0 (2020-05-07)
 -------------------
 
