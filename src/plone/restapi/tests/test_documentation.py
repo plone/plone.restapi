@@ -148,6 +148,50 @@ def save_request_and_response_for_docs(name, response):
         resp.write(response.text)
 
 
+def save_request_for_docs(name, response):
+    if six.PY2:
+        open_kw = {}
+    else:
+        open_kw = {"newline": "\n"}
+    filename = "{}/{}".format(base_path, "%s.req" % name)
+    with open(filename, "w", **open_kw) as req:
+        req.write(
+            "{} {} HTTP/1.1\n".format(
+                response.request.method, response.request.path_url
+            )
+        )
+        ordered_request_headers = collections.OrderedDict(
+            sorted(response.request.headers.items())
+        )
+        for key, value in ordered_request_headers.items():
+            if key.lower() in REQUEST_HEADER_KEYS:
+                req.write("{}: {}\n".format(key.title(), value))
+        if response.request.body:
+            # If request has a body, make sure to set Content-Type header
+            if "content-type" not in REQUEST_HEADER_KEYS:
+                content_type = response.request.headers["Content-Type"]
+                req.write("Content-Type: %s\n" % content_type)
+
+            req.write("\n")
+
+            # Pretty print JSON request body
+            if content_type == "application/json":
+                json_body = json.loads(response.request.body)
+                body = pretty_json(json_body)
+                # Make sure Content-Length gets updated, just in case we
+                # ever decide to dump that header
+                response.request.prepare_body(data=body, files=None)
+
+            req.flush()
+            if isinstance(response.request.body, six.text_type) or not hasattr(
+                req, "buffer"
+            ):
+                req.write(response.request.body)
+            else:
+                req.buffer.seek(0, 2)
+                req.buffer.write(response.request.body)
+
+
 class TestDocumentationBase(unittest.TestCase):
     def setUp(self):
         self.statictime = self.setup_with_context_manager(StaticTime())
@@ -1344,11 +1388,11 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_system_get(self):
         response = self.api_session.get("/@system")
-        save_request_and_response_for_docs("system_get", response)
+        save_request_for_docs("system_get", response)
 
     def test_database_get(self):
         response = self.api_session.get("/@database")
-        save_request_and_response_for_docs("database_get", response)
+        save_request_for_docs("database_get", response)
 
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
