@@ -6,6 +6,10 @@ try:
 except ImportError:
     from plone.app.controlpanel.overview import OverviewControlPanel
 
+import pkg_resources
+
+plone_restapi_version = pkg_resources.require("plone.restapi")[0].version
+
 
 class SystemGet(Service):
     def reply(self):
@@ -15,6 +19,7 @@ class SystemGet(Service):
             "@id": "{}/@system".format(self.context.absolute_url()),
             "zope_version": core_versions.get("Zope"),
             "plone_version": core_versions.get("Plone"),
+            "plone_restapi_version": plone_restapi_version,
             "python_version": core_versions.get("Python"),
             "cmf_version": core_versions.get("CMF"),
             "pil_version": core_versions.get("PIL"),

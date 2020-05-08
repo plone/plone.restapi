@@ -5,12 +5,12 @@ Content-Type: application/json
   "@id": "http://localhost:55001/plone/@database", 
   "cache_detail_length": [
     {
-      "connection": "<Connection at 11238e150>", 
+      "connection": "<Connection at 111f30f10>", 
       "ngsize": 393, 
       "size": 862
     }, 
     {
-      "connection": "<Connection at 112530c50>", 
+      "connection": "<Connection at 1129d9410>", 
       "ngsize": 46, 
       "size": 261
     }
@@ -20,5 +20,5 @@ Content-Type: application/json
   "cache_size": 400, 
   "database_size": 230, 
   "db_name": "FunctionalTest", 
-  "db_size": 92516
+  "db_size": 92509
 }
