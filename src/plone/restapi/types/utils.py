@@ -122,7 +122,6 @@ def get_jsonschema_properties(
     for field in iter_fields(fieldsets):
         fieldname = field.field.getName()
         if fieldname not in excluded_fields:
-
             # We need to special case relatedItems not to render choices
             # so we try a named adapter first and fallback to unnamed ones.
             adapter = queryMultiAdapter(

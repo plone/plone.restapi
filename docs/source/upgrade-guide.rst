@@ -56,7 +56,7 @@ The "tiles" field has been renamed to "blocks" and the "tiles_layout" field to "
 
 to::
 
-{
+  {
     "@id": "http://localhost:55001/plone/my-document",
     ...
     "blocks_layout": [

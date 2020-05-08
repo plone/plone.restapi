@@ -111,7 +111,6 @@ Content-Type: application/json
       }, 
       "description": {
         "description": "", 
-        "minLength": 0, 
         "title": "Description", 
         "type": "string", 
         "widget": "textarea"

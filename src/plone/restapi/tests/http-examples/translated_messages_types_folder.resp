@@ -119,7 +119,6 @@ Content-Type: application/json+schema
     }, 
     "description": {
       "description": "Usado en listados de elementos y resultados de b\u00fasquedas.", 
-      "minLength": 0, 
       "title": "Descripci\u00f3n", 
       "type": "string", 
       "widget": "textarea"
@@ -188,7 +187,6 @@ Content-Type: application/json+schema
     }, 
     "rights": {
       "description": "Declaraci\u00f3n de copyright o informaci\u00f3n de otros derechos sobre este elemento.", 
-      "minLength": 0, 
       "title": "Derechos de Autor", 
       "type": "string", 
       "widget": "textarea"
