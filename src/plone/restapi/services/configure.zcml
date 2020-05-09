@@ -7,6 +7,8 @@
 
   <include package=".auth" />
   <include package=".actions" />
+  <include package=".addons"
+      zcml:condition="have plone-5"/>
   <include package=".breadcrumbs"/>
   <include package=".content"/>
   <configure zcml:condition="have plone-5">
@@ -25,6 +27,7 @@
   <include package=".registry"/>
   <include package=".roles"/>
   <include package=".search"/>
+  <include package=".system"/>
   <include package=".sources"/>
   <include package=".types"/>
   <include package=".users"/>
