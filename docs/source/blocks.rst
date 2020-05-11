@@ -77,6 +77,75 @@ Storing blocks is done also via a default PATCH content operation::
     }
   }
 
+Block serializers and deserializers
+-----------------------------------
+
+Practical experience has shown that it is useful to transform, server-side, the
+value of block fields on inbound (deserialization) and also outbound
+(serialization) operations. For example, HTML field values are cleaned up using
+``portal_transforms``, paths in Image blocks are transformed to use resolveuid
+and so on.
+
+It is possible to influence the transformation of block values per block type.
+For example, to tweak the value stored in Image type block, we can create a
+new subscriber like::
+
+  @implementer(IBlockFieldDeserializationTransformer)
+  @adapter(IBlocks, IBrowserRequest)
+  class ImageBlockDeserializeTransformer(object):
+      order = 100
+      block_type = 'image'
+
+      def __init__(self, context, request):
+          self.context = context
+          self.request = request
+
+      def __call__(self, value):
+          portal = getMultiAdapter(
+              (self.context, self.request), name="plone_portal_state"
+          ).portal()
+          url = value.get('url', '')
+          deserialized_url = path2uid(
+              context=self.context, portal=portal,
+              href=url
+          )
+          value["url"] = deserialized_url
+          return value
+
+Then register as a subscription adapter::
+
+  <subscriber factory=".blocks.ImageBlockDeserializeTransformer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+
+This would replace the ``url`` value to use resolveuid instead of hardcoding
+the image path.
+
+The ``block_type`` attribute needs to match the ``@type`` field of the block
+value. The ``order`` attribute is used in sorting the subscribers for the same
+field. Lower number has higher precedence (is executed first).
+
+On the serialization path, a block value can be tweaked with a similar
+transformer, for example on an imaginary Database Listing block type::
+
+  @implementer(IBlockFieldDeserializationTransformer)
+  @adapter(IBlocks, IBrowserRequest)
+  class DatabaseQueryDeserializeTransformer(object):
+      order = 100
+      block_type = 'database_listing'
+
+      def __init__(self, context, request):
+          self.context = context
+          self.request = request
+
+      def __call__(self, value):
+          value["items"] = db.query(value)    # pseudocode
+          return value
+
+Then register as a subscription adapter::
+
+  <subscriber factory=".blocks.DatabaseQueryDeserializeTransformer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+
 SearchableText indexing for blocks
 ----------------------------------
 

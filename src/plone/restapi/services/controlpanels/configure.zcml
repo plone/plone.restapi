@@ -14,6 +14,14 @@
     file="permissions.zcml" />
 
   <plone:service
+    method="POST"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".add.ControlpanelsAdd"
+    name="@controlpanels"
+    permission="plone.app.controlpanel.Overview"
+    />
+
+  <plone:service
     method="GET"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".get.ControlpanelsGet"
@@ -24,11 +32,18 @@
   <plone:service
     method="PATCH"
     for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".patch.ControlpanelsPatch"
+    factory=".update.ControlpanelsUpdate"
     name="@controlpanels"
     permission="plone.app.controlpanel.Overview"
     />
 
+  <plone:service
+    method="DELETE"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".delete.ControlpanelsDelete"
+    name="@controlpanels"
+    permission="plone.app.controlpanel.Overview"
+    />
 
 <!-- General -->
   <adapter
@@ -72,6 +87,11 @@
   <adapter
     factory="plone.restapi.controlpanels.MarkupControlpanel"
     name="markup" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.types.DexterityTypesControlpanel"
+    provides="plone.restapi.controlpanels.interfaces.IDexterityTypesControlpanel"
+    name="dexterity-types" />
 
 <!-- Security -->
   <adapter

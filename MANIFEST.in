@@ -13,6 +13,7 @@ exclude Dockerfile
 exclude Makefile
 exclude bootstrap-buildout.py
 exclude CODEOWNERS
+exclude docs/make.bat
 recursive-exclude docs/doctrees *
 recursive-exclude docs/html *
 recursive-exclude performance *

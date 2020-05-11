@@ -72,7 +72,7 @@ If the creation of the comment has been successful, the server will respond with
 Updating a Comment
 ------------------
 
-..note: The permission to update a comment is, by default, only granted to the creater (owner role) of the comment.
+.. note:: The permission to update a comment is, by default, only granted to the creater (owner role) of the comment.
 
 An existing comment can be updated by sending a PATCH request to the URL of the comment. The request body needs to contain a JSON structure with at least a 'text' attribute:
 
@@ -90,7 +90,7 @@ Deleting a Comment
 
 An existing comment can be deleted by sending a DELETE request to the URL of the comment.
 
-..note: Deleting a comment will, by default, also delete all existing replies to that comment.
+.. note:: Deleting a comment will, by default, also delete all existing replies to that comment.
 
 ..  http:example:: curl httpie python-requests
 	 :request: ../../src/plone/restapi/tests/http-examples/comments_delete.req

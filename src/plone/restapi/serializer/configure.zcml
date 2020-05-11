@@ -24,6 +24,8 @@
     <adapter factory=".dxfields.PrimaryFileFieldTarget" />
 
     <adapter factory=".blocks.BlocksJSONFieldSerializer" />
+    <subscriber factory=".blocks.TextBlockSerializer"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
 
     <configure zcml:condition="installed Products.Archetypes">
         <adapter factory=".atcontent.SerializeToJson" />
@@ -93,8 +95,7 @@
     </configure>
 
     <configure zcml:condition="have plone-5">
-        <adapter factory=".controlpanels.ControlpanelSerializeToJson" />
-        <adapter factory=".controlpanels.ControlpanelSummarySerializeToJson" />
+        <include package=".controlpanels" />
     </configure>
 
 </configure>

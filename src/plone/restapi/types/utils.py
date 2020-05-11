@@ -57,27 +57,43 @@ def iter_fields(fieldsets):
             yield field
 
 
-def get_fieldsets(context, request, schema, additional_schemata=None):
-    """Given a base schema, and optionally some additional schemata,
-    build a list of fieldsets with the corresponding z3c.form fields in them.
+def get_form_fieldsets(form):
+    """ Get fieldsets from form
     """
-    form = create_form(context, request, schema, additional_schemata)
-
-    # Default fieldset
-    fieldsets = [
-        {"id": "default", "title": u"Default", "fields": list(form.fields.values())}
-    ]
+    fieldsets = []
+    form_fields = getattr(form, "fields", {})
+    fields_values = list(form_fields.values())
+    if form_fields:
+        fieldsets.append(
+            {
+                "id": "default",
+                "title": translate(
+                    "label_schema_default",
+                    default="Default",
+                    domain="plone",
+                    context=getRequest(),
+                ),
+                "fields": fields_values,
+            }
+        )
 
     # Additional fieldsets (AKA z3c.form groups)
-    for group in form.groups:
+    for group in getattr(form, "groups", []):
         fieldset = {
             "id": group.__name__,
             "title": translate(group.label, context=getRequest()),
             "fields": list(group.fields.values()),
         }
         fieldsets.append(fieldset)
-
     return fieldsets
+
+
+def get_fieldsets(context, request, schema, additional_schemata=None):
+    """Given a base schema, and optionally some additional schemata,
+    build a list of fieldsets with the corresponding z3c.form fields in them.
+    """
+    form = create_form(context, request, schema, additional_schemata)
+    return get_form_fieldsets(form)
 
 
 def get_fieldset_infos(fieldsets):
@@ -106,7 +122,6 @@ def get_jsonschema_properties(
     for field in iter_fields(fieldsets):
         fieldname = field.field.getName()
         if fieldname not in excluded_fields:
-
             # We need to special case relatedItems not to render choices
             # so we try a named adapter first and fallback to unnamed ones.
             adapter = queryMultiAdapter(
