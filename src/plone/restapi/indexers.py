@@ -53,9 +53,10 @@ def SearchableText_blocks(obj):
 
     for block in blocks.values():
 
-        block_type = block.get('@type', '')
-        adapter = queryMultiAdapter((obj, request), IBlockSearchableText,
-                                    name=block_type)
+        block_type = block.get("@type", "")
+        adapter = queryMultiAdapter(
+            (obj, request), IBlockSearchableText, name=block_type
+        )
 
         if adapter is not None:
             text = adapter(block)

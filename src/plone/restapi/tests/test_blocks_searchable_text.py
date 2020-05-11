@@ -105,7 +105,6 @@ class TestSearchTextInBlocks(unittest.TestCase):
         self.assertEqual(json_response["items"][0]["Title"], "A document")
 
     def test_register_block_searchabletext(self):
-
         @implementer(IBlockSearchableText)
         @adapter(IBlocks, IBrowserRequest)
         class TestSearchableTextAdapter(object):
@@ -115,11 +114,13 @@ class TestSearchTextInBlocks(unittest.TestCase):
 
             def __call__(self, value):
 
-                return "discovered: %s" % value['text']
+                return "discovered: %s" % value["text"]
 
-        provideAdapter(TestSearchableTextAdapter,
-                       (IDexterityItem, IBrowserRequest),
-                       name="test_block")
+        provideAdapter(
+            TestSearchableTextAdapter,
+            (IDexterityItem, IBrowserRequest),
+            name="test_block",
+        )
 
         blocks = {
             "uuid1": {
@@ -139,16 +140,15 @@ class TestSearchTextInBlocks(unittest.TestCase):
                     "entityMap": {},
                 },
             },
-            "uuid3": {
-                "@type": "test_block",
-                "text": 'sample text'
-            }
+            "uuid3": {"@type": "test_block", "text": "sample text"},
         }
 
         self.doc.blocks = blocks
         from zope.component import queryMultiAdapter
         from plone.indexer.interfaces import IIndexableObject
+
         wrapper = queryMultiAdapter(
-            (self.doc, self.portal.portal_catalog,), IIndexableObject)
+            (self.doc, self.portal.portal_catalog,), IIndexableObject
+        )
 
         assert "discovered: sample text" in wrapper.SearchableText
