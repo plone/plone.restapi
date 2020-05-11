@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+6.12.0 (2020-05-11)
+-------------------
+
+New features:
+
+
+- Add database endpoint [timo] (#941)
+
+
 6.11.0 (2020-05-08)
 -------------------
 

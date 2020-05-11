@@ -1,1 +1,0 @@
-Add database endpoint [timo]
