@@ -18,6 +18,13 @@
   <adapter factory=".dxfields.RichTextFieldDeserializer" />
   <adapter factory=".blocks.BlocksJSONFieldDeserializer" />
 
+  <subscriber factory=".blocks.TextBlockDeserializer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  <subscriber factory=".blocks.HTMLBlockDeserializer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  <subscriber factory=".blocks.ImageBlockDeserializer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+
   <adapter factory=".local_roles.DeserializeFromJson"
            name="local_roles"/>
 
