@@ -32,32 +32,30 @@ class TestBlocksSerializer(unittest.TestCase):
         behavior_list.append("volto.blocks")
         fti.behaviors = tuple(behavior_list)
 
-        self.portal.invokeFactory("Document", id=u"doc1",)
+        self.portal.invokeFactory(
+            "Document", id=u"doc1",
+        )
         self.image = self.portal[
-            self.portal.invokeFactory(
-                "Image", id="image-1", title="Target image"
-            )
+            self.portal.invokeFactory("Image", id="image-1", title="Target image")
         ]
 
     def serialize(self, context, blocks):
-        fieldname = 'blocks'
+        fieldname = "blocks"
         for schema in iterSchemata(context):
             if fieldname in schema:
                 field = schema.get(fieldname)
                 break
         dm = getMultiAdapter((context, field), IDataManager)
         dm.set(blocks)
-        serializer = getMultiAdapter((field, context, self.request),
-                                     IFieldSerializer)
+        serializer = getMultiAdapter((field, context, self.request), IFieldSerializer)
         return serializer()
 
     def test_register_serializer(self):
-
         @adapter(IBlocks, IBrowserRequest)
         @implementer(IBlockFieldSerializationTransformer)
         class TestAdapterA(object):
             order = 10
-            block_type = 'test_multi'
+            block_type = "test_multi"
 
             def __init__(self, context, request):
                 self.context = context
@@ -66,7 +64,7 @@ class TestBlocksSerializer(unittest.TestCase):
             def __call__(self, value):
                 self.context._handler_called_a = True
 
-                value['value'] = value['value'].replace(u'a', u'b')
+                value["value"] = value["value"].replace(u"a", u"b")
 
                 return value
 
@@ -74,7 +72,7 @@ class TestBlocksSerializer(unittest.TestCase):
         @implementer(IBlockFieldSerializationTransformer)
         class TestAdapterB(object):
             order = 11
-            block_type = 'test_multi'
+            block_type = "test_multi"
 
             def __init__(self, context, request):
                 self.context = context
@@ -83,15 +81,14 @@ class TestBlocksSerializer(unittest.TestCase):
             def __call__(self, value):
                 self.context._handler_called_b = True
 
-                value['value'] = value['value'].replace(u'b', u'c')
+                value["value"] = value["value"].replace(u"b", u"c")
 
                 return value
 
-        provideSubscriptionAdapter(TestAdapterA,
-                                   (IDexterityItem, IBrowserRequest))
-        provideSubscriptionAdapter(TestAdapterB,
-                                   (IDexterityItem, IBrowserRequest))
-        value = self.serialize(context=self.portal.doc1, blocks={
-            '123': {'@type': 'test_multi', 'value': u'a'}
-        })
-        self.assertEqual(value['123']['value'], u'c')
+        provideSubscriptionAdapter(TestAdapterA, (IDexterityItem, IBrowserRequest))
+        provideSubscriptionAdapter(TestAdapterB, (IDexterityItem, IBrowserRequest))
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={"123": {"@type": "test_multi", "value": u"a"}},
+        )
+        self.assertEqual(value["123"]["value"], u"c")

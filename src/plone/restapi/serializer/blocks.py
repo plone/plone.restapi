@@ -27,12 +27,16 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
 
         if self.field.getName() == "blocks":
             for id, block_value in value.items():
-                block_type = block_value.get("@type", '')
+                block_type = block_value.get("@type", "")
 
-                handlers = [h for h in
-                            subscribers((self.context, self.request),
-                                        IBlockFieldSerializationTransformer)
-                            if h.block_type == block_type]
+                handlers = [
+                    h
+                    for h in subscribers(
+                        (self.context, self.request),
+                        IBlockFieldSerializationTransformer,
+                    )
+                    if h.block_type == block_type
+                ]
 
                 for handler in sorted(handlers, key=lambda h: h.order):
                     block_value = handler(block_value)
@@ -46,7 +50,7 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
 @adapter(IBlocks, IBrowserRequest)
 class TextBlockSerializer(object):
     order = 100
-    block_type = 'text'
+    block_type = "text"
 
     def __init__(self, context, request):
         self.context = context

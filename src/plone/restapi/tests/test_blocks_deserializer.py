@@ -32,29 +32,27 @@ class TestBlocksDeserializer(unittest.TestCase):
         behavior_list.append("volto.blocks")
         fti.behaviors = tuple(behavior_list)
 
-        self.portal.invokeFactory("Document", id=u"doc1",)
+        self.portal.invokeFactory(
+            "Document", id=u"doc1",
+        )
         self.image = self.portal[
-            self.portal.invokeFactory(
-                "Image", id="image-1", title="Target image"
-            )
+            self.portal.invokeFactory("Image", id="image-1", title="Target image")
         ]
 
     def deserialize(self, blocks=None, validate_all=False, context=None):
-        blocks = blocks or ''
+        blocks = blocks or ""
         context = context or self.portal.doc1
-        self.request["BODY"] = json.dumps({'blocks': blocks})
-        deserializer = getMultiAdapter(
-            (context, self.request), IDeserializeFromJson)
+        self.request["BODY"] = json.dumps({"blocks": blocks})
+        deserializer = getMultiAdapter((context, self.request), IDeserializeFromJson)
 
         return deserializer(validate_all=validate_all)
 
     def test_register_deserializer(self):
-
         @implementer(IBlockFieldDeserializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
         class TestAdapter(object):
             order = 10
-            block_type = 'test'
+            block_type = "test"
 
             def __init__(self, context, request):
                 self.context = context
@@ -63,27 +61,25 @@ class TestBlocksDeserializer(unittest.TestCase):
             def __call__(self, value):
                 self.context._handler_called = True
 
-                value['value'] = u"changed: {}".format(value['value'])
+                value["value"] = u"changed: {}".format(value["value"])
 
                 return value
 
-        provideSubscriptionAdapter(TestAdapter,
-                                   (IDexterityItem, IBrowserRequest),)
+        provideSubscriptionAdapter(
+            TestAdapter, (IDexterityItem, IBrowserRequest),
+        )
 
-        self.deserialize(blocks={
-            '123': {'@type': 'test', 'value': u'text'}
-        })
+        self.deserialize(blocks={"123": {"@type": "test", "value": u"text"}})
 
         assert self.portal.doc1._handler_called is True
-        assert self.portal.doc1.blocks['123']['value'] == u'changed: text'
+        assert self.portal.doc1.blocks["123"]["value"] == u"changed: text"
 
     def test_register_multiple_transform(self):
-
         @implementer(IBlockFieldDeserializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
         class TestAdapterA(object):
             order = 10
-            block_type = 'test_multi'
+            block_type = "test_multi"
 
             def __init__(self, context, request):
                 self.context = context
@@ -92,7 +88,7 @@ class TestBlocksDeserializer(unittest.TestCase):
             def __call__(self, value):
                 self.context._handler_called_a = True
 
-                value['value'] = value['value'].replace(u'a', u'b')
+                value["value"] = value["value"].replace(u"a", u"b")
 
                 return value
 
@@ -100,7 +96,7 @@ class TestBlocksDeserializer(unittest.TestCase):
         @adapter(IBlocks, IBrowserRequest)
         class TestAdapterB(object):
             order = 11
-            block_type = 'test_multi'
+            block_type = "test_multi"
 
             def __init__(self, context, request):
                 self.context = context
@@ -109,46 +105,53 @@ class TestBlocksDeserializer(unittest.TestCase):
             def __call__(self, value):
                 self.context._handler_called_b = True
 
-                value['value'] = value['value'].replace(u'b', u'c')
+                value["value"] = value["value"].replace(u"b", u"c")
 
                 return value
 
-        provideSubscriptionAdapter(TestAdapterB,
-                                   (IDexterityItem, IBrowserRequest),)
+        provideSubscriptionAdapter(
+            TestAdapterB, (IDexterityItem, IBrowserRequest),
+        )
 
-        provideSubscriptionAdapter(TestAdapterA,
-                                   (IDexterityItem, IBrowserRequest),)
+        provideSubscriptionAdapter(
+            TestAdapterA, (IDexterityItem, IBrowserRequest),
+        )
 
-        self.deserialize(blocks={
-            '123': {'@type': 'test_multi', 'value': u'a'}
-        })
+        self.deserialize(blocks={"123": {"@type": "test_multi", "value": u"a"}})
 
         self.assertTrue(self.portal.doc1._handler_called_a)
         self.assertTrue(self.portal.doc1._handler_called_b)
-        self.assertEqual(self.portal.doc1.blocks['123']['value'], u'c')
+        self.assertEqual(self.portal.doc1.blocks["123"]["value"], u"c")
 
     def test_blocks_html_cleanup(self):
-        self.deserialize(blocks={
-            '123': {'@type': 'html', 'html':
-                    u'<script>nasty</script><div>This stays</div>'}
-        })
+        self.deserialize(
+            blocks={
+                "123": {
+                    "@type": "html",
+                    "html": u"<script>nasty</script><div>This stays</div>",
+                }
+            }
+        )
 
-        self.assertEqual(self.portal.doc1.blocks['123']['html'],
-                         u'<div>This stays</div>')
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["html"], u"<div>This stays</div>"
+        )
 
     def test_blocks_image_resolve2uid(self):
         image_uid = IUUID(self.image)
-        self.deserialize(blocks={
-            '123': {'@type': 'image', 'url': self.image.absolute_url()}
-        })
+        self.deserialize(
+            blocks={"123": {"@type": "image", "url": self.image.absolute_url()}}
+        )
 
-        self.assertEqual(self.portal.doc1.blocks['123']['url'],
-                         "../resolveuid/{}".format(image_uid))
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(image_uid)
+        )
 
     def test_blocks_image_href(self):
-        self.deserialize(blocks={
-            '123': {'@type': 'image', 'url': 'http://example.com/1.jpg'}
-        })
+        self.deserialize(
+            blocks={"123": {"@type": "image", "url": "http://example.com/1.jpg"}}
+        )
 
-        self.assertEqual(self.portal.doc1.blocks['123']['url'],
-                         'http://example.com/1.jpg')
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["url"], "http://example.com/1.jpg"
+        )

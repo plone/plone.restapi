@@ -41,12 +41,16 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
         if self.field.getName() == "blocks":
 
             for id, block_value in value.items():
-                block_type = block_value.get("@type", '')
+                block_type = block_value.get("@type", "")
 
-                handlers = [h for h in
-                            subscribers((self.context, self.request),
-                                        IBlockFieldDeserializationTransformer
-                                        ) if h.block_type == block_type]
+                handlers = [
+                    h
+                    for h in subscribers(
+                        (self.context, self.request),
+                        IBlockFieldDeserializationTransformer,
+                    )
+                    if h.block_type == block_type
+                ]
 
                 for handler in sorted(handlers, key=lambda h: h.order):
                     block_value = handler(block_value)
@@ -60,7 +64,7 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
 @implementer(IBlockFieldDeserializationTransformer)
 class TextBlockDeserializer(object):
     order = 100
-    block_type = 'text'
+    block_type = "text"
 
     def __init__(self, context, request):
         self.context = context
@@ -82,7 +86,7 @@ class TextBlockDeserializer(object):
                 href = entity.get("data", {}).get("url", "")
                 before = href  # noqa
                 if href and href.startswith(portal_url):
-                    path = href[len(portal_url) + 1:].encode("utf8")
+                    path = href[len(portal_url) + 1 :].encode("utf8")
                     uid, suffix = path2uid(portal, path)
                     if uid:
                         href = relative_up * "../" + "resolveuid/" + uid
@@ -99,7 +103,7 @@ class TextBlockDeserializer(object):
 @implementer(IBlockFieldDeserializationTransformer)
 class HTMLBlockDeserializer(object):
     order = 100
-    block_type = 'html'
+    block_type = "html"
 
     def __init__(self, context, request):
         self.context = context
@@ -107,12 +111,13 @@ class HTMLBlockDeserializer(object):
 
     def __call__(self, value):
 
-        portal_transforms = api.portal.get_tool(name='portal_transforms')
-        raw_html = value.get('html', '')
-        data = portal_transforms.convertTo('text/x-html-safe', raw_html,
-                                           mimetype="text/html")
+        portal_transforms = api.portal.get_tool(name="portal_transforms")
+        raw_html = value.get("html", "")
+        data = portal_transforms.convertTo(
+            "text/x-html-safe", raw_html, mimetype="text/html"
+        )
         html = data.getData()
-        value['html'] = html
+        value["html"] = html
 
         return value
 
@@ -121,7 +126,7 @@ class HTMLBlockDeserializer(object):
 @implementer(IBlockFieldDeserializationTransformer)
 class ImageBlockDeserializer(object):
     order = 100
-    block_type = 'image'
+    block_type = "image"
 
     def __init__(self, context, request):
         self.context = context
@@ -135,10 +140,10 @@ class ImageBlockDeserializer(object):
         context_url = self.context.absolute_url()
         relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
 
-        href = value.get('url', '')
+        href = value.get("url", "")
 
         if href and href.startswith(portal_url):
-            path = href[len(portal_url) + 1:].encode("utf8")
+            path = href[len(portal_url) + 1 :].encode("utf8")
             uid, suffix = path2uid(portal, path)
             if uid:
                 href = relative_up * "../" + "resolveuid/" + uid
