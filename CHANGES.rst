@@ -8,6 +8,24 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0a1 (2020-05-11)
+--------------------
+
+New features:
+
+
+- Resolve links in blocks to UIDs during deserialization and back to paths during
+  serialization.
+  [buchi,timo,cekk] (#808)
+
+
+Bug fixes:
+
+
+- Adapt tests to the new way of handling original image urls
+  [erral] (#932)
+
+
 6.12.0 (2020-05-11)
 -------------------
 
