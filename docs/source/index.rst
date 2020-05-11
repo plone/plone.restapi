@@ -58,6 +58,8 @@ Contents
    email-notification
    upgrade-guide
    contributing
+   system
+   database
 
 .. include:: ../../README.rst
 
