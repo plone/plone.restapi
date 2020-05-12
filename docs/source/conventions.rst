@@ -114,6 +114,29 @@ Discussion:
 https://github.com/plone/plone.restapi/issues/194
 
 
+Naming Convention for attribute names in response body
+------------------------------------------------------
+
+Rule: Use snake_case to reflect Python best practices.
+
+Do::
+
+    {
+      translation_of: ...
+    }
+
+Don't::
+
+    {
+      translationOf: ...,
+      TranslationOf: ...,
+    }
+
+Reason:
+
+We map over Python attributes 1:1 no matter if they are snake case (modern Python/Plone, Dexterity) of lowerCamelCase (Zope 2, Archetypes).
+
+
 Versioning
 ----------
 

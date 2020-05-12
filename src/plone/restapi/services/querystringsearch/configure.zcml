@@ -10,4 +10,11 @@
     permission="zope2.View"
     />
 
+  <plone:service
+    method="POST"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".get.QuerystringSearchPost"
+    name="@querystring-search"
+    permission="zope2.View"
+    />
 </configure>

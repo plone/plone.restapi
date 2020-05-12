@@ -8,6 +8,165 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0a1 (2020-05-11)
+--------------------
+
+New features:
+
+
+- Resolve links in blocks to UIDs during deserialization and back to paths during
+  serialization.
+  [buchi,timo,cekk] (#808)
+
+
+Bug fixes:
+
+
+- Adapt tests to the new way of handling original image urls
+  [erral] (#932)
+
+
+6.12.0 (2020-05-11)
+-------------------
+
+New features:
+
+
+- Add database endpoint [timo] (#941)
+
+
+6.11.0 (2020-05-08)
+-------------------
+
+New features:
+
+
+- Add type-schema adapters for: Email, URI and Password
+  [avoinea] (#926)
+
+
+6.10.0 (2020-05-07)
+-------------------
+
+New features:
+
+
+- Add system endpoint. [timo] (#736)
+
+
+6.9.1 (2020-05-07)
+------------------
+
+Bug fixes:
+
+
+- Fixed @translations endpoint to only retrieve the translations that the current user
+  can really access using ``get_restricted_translations`` instead. This fixes the use
+  case where an user with no permissions on a translation accessing the endpoint returned
+  a 401.
+  [sneridagh] (#937)
+
+
+6.9.0 (2020-05-06)
+------------------
+
+New features:
+
+
+- Add endpoints for managing addons. [esteele] (#733)
+
+
+6.8.1 (2020-05-04)
+------------------
+
+Bug fixes:
+
+
+- Treat next/prev items for unordered folders.
+  [rodfersou] (#928)
+
+
+6.8.0 (2020-04-23)
+------------------
+
+New features:
+
+
+- Managing Dexterity Type Creation (CRUD) via plone.restapi
+  [avoinea] (#534)
+
+
+6.7.0 (2020-04-21)
+------------------
+
+New features:
+
+
+- Make @querystring-search endpoint context aware
+  [sneridagh] (#911)
+
+
+Bug fixes:
+
+
+- Fix sphinxbuilder with Python 3.8
+  [avoinea] (#905)
+
+
+6.6.1 (2020-04-17)
+------------------
+
+Bug fixes:
+
+
+- call unescape method on received html for richtext before save it in Plone.
+  [cekk] (#913)
+- Small fix in IBlocks test, addedd a missing assert call
+  [tiberiuichim] (#914)
+
+
+6.6.0 (2020-04-07)
+------------------
+
+New features:
+
+
+- Add next_item and previous_item attributes to allow to navigate to the previous and next sibling in the container the document is located.
+  [rodfersou] (#900)
+
+
+6.5.2 (2020-04-01)
+------------------
+
+Bug fixes:
+
+
+- Fix for the use case while updating user properties in the @user endpoint, and the
+  portrait is already previously set but the request includes the (previously) serialized
+  value as a string because the user are not updating it
+  [sneridagh] (#896)
+
+
+6.5.1 (2020-04-01)
+------------------
+
+Bug fixes:
+
+
+- Fix deleting user portrait.
+  [buchi] (#751)
+
+
+6.5.0 (2020-03-30)
+------------------
+
+New features:
+
+
+- Link translation on content creation feature and new @translation-locator endpoint
+  [sneridagh] (#887)
+
+
 6.4.1 (2020-03-25)
 ------------------
 

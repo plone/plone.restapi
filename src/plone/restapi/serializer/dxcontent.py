@@ -16,6 +16,7 @@ from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
+from plone.restapi.serializer.nextprev import NextPrevious
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
@@ -67,6 +68,12 @@ class SerializeToJson(object):
             "layout": self.context.getLayout(),
             "is_folderish": False,
         }
+
+        # Insert next/prev information
+        nextprevious = NextPrevious(obj)
+        result.update(
+            {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
+        )
 
         # Insert expandable elements
         result.update(expandable_elements(self.context, self.request))

@@ -148,8 +148,10 @@ class TestVocabularyEndpoint(unittest.TestCase):
             {
                 u"@id": self.portal_url
                 + u"/@vocabularies/plone.restapi.tests.test_vocabulary?title=t%C3%B6tle",  # noqa
-                u"items": [{u"title": u"T\xf6tle 5", u"token": u"token5"},
-                           {u"title": u"T\xf6tle 6", u"token": u"token6"}],
+                u"items": [
+                    {u"title": u"T\xf6tle 5", u"token": u"token5"},
+                    {u"title": u"T\xf6tle 6", u"token": u"token6"},
+                ],
                 u"items_total": 2,
             },
         )

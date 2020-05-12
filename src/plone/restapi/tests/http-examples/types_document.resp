@@ -122,7 +122,6 @@ Content-Type: application/json+schema
     }, 
     "description": {
       "description": "Used in item listings and search results.", 
-      "minLength": 0, 
       "title": "Summary", 
       "type": "string", 
       "widget": "textarea"
@@ -185,7 +184,6 @@ Content-Type: application/json+schema
     }, 
     "rights": {
       "description": "Copyright statement or other rights information on this item.", 
-      "minLength": 0, 
       "title": "Rights", 
       "type": "string", 
       "widget": "textarea"
