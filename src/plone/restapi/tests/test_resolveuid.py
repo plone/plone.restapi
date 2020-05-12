@@ -30,10 +30,14 @@ class TestBlocksResolveUID(TestCase):
 
         self.doc_primary_field_url = self.portal[
             self.portal.invokeFactory(
-                "DXTestDocument", id="doc_primary_field_url",
+                "DXTestDocument",
+                id="doc_primary_field_url",
                 title="Target Document with primary file field",
                 test_primary_namedfile_field=NamedFile(
-                    data=u"Spam and eggs", contentType=u"text/plain", filename=u"test.txt"),
+                    data=u"Spam and eggs",
+                    contentType=u"text/plain",
+                    filename=u"test.txt",
+                ),
             )
         ]
 
@@ -372,16 +376,20 @@ class TestBlocksResolveUID(TestCase):
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["href"],
-            self.doc_primary_field_url.absolute_url() + "/@@download/test_primary_namedfile_field",
+            self.doc_primary_field_url.absolute_url()
+            + "/@@download/test_primary_namedfile_field",
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["url"],
-            self.doc_primary_field_url.absolute_url() + "/@@download/test_primary_namedfile_field",
+            self.doc_primary_field_url.absolute_url()
+            + "/@@download/test_primary_namedfile_field",
         )
 
-    def test_blocks_field_serialization_resolves_uids_primary_url_with_edit_permission(self):
+    def test_blocks_field_serialization_resolves_uids_primary_url_with_edit_permission(
+        self,
+    ):
         uid = IUUID(self.doc_primary_field_url)
         blocks = {
             "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
@@ -418,13 +426,13 @@ class TestBlocksResolveUID(TestCase):
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["href"],
-            self.doc_primary_field_url.absolute_url()
+            self.doc_primary_field_url.absolute_url(),
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["url"],
-            self.doc_primary_field_url.absolute_url()
+            self.doc_primary_field_url.absolute_url(),
         )
 
     def test_resolveuid_with_primary_field_url_keeps_suffix(self):

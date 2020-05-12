@@ -88,7 +88,8 @@ class TextBlockSerializer(object):
         target_object = uuidToObject(uid)
         if not target_object:
             return
-        adapter = queryMultiAdapter((target_object, self.request),
-                                    IObjectPrimaryFieldTarget)
+        adapter = queryMultiAdapter(
+            (target_object, self.request), IObjectPrimaryFieldTarget
+        )
         if adapter:
             return adapter()

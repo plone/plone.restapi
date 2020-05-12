@@ -94,10 +94,11 @@ class SerializeToJson(object):
                 value = serializer()
                 result[json_compatible(name)] = value
 
-        target_url = getMultiAdapter((self.context, self.request),
-                                     IObjectPrimaryFieldTarget)()
+        target_url = getMultiAdapter(
+            (self.context, self.request), IObjectPrimaryFieldTarget
+        )()
         if target_url:
-            result['targetUrl'] = target_url
+            result["targetUrl"] = target_url
 
         result["allow_discussion"] = getMultiAdapter(
             (self.context, self.request), name="conversation_view"
@@ -174,7 +175,6 @@ class SerializeFolderToJson(SerializeToJson):
 @adapter(IDexterityContent, Interface)
 @implementer(IObjectPrimaryFieldTarget)
 class DexterityObjectPrimaryFieldTarget(object):
-
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -195,8 +195,8 @@ class DexterityObjectPrimaryFieldTarget(object):
                     continue
 
                 target_adapter = queryMultiAdapter(
-                    (field, self.context, self.request),
-                    IPrimaryFieldTarget)
+                    (field, self.context, self.request), IPrimaryFieldTarget
+                )
                 if target_adapter:
                     target = target_adapter()
                     if target:
