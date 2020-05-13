@@ -145,3 +145,27 @@ Then register as a subscription adapter::
 
   <subscriber factory=".blocks.DatabaseQueryDeserializeTransformer"
     provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+
+SearchableText indexing for blocks
+----------------------------------
+
+As the main consumer of plone.restapi's blocks, this functionality is specific to Volto blocks. By default searchable text (for Plone's SearchableText index) is extracted from `text` blocks.
+
+To extract searchable text for other types of blocks, you need to write an adapter that can process that type of block.::
+
+  @implementer(IBlockSearchableText)
+  @adapter(IBlocks, IBrowserRequest)
+  class ImageSearchableText(object):
+      def __init__(self, context, request):
+          self.context = context
+          self.request = request
+
+      def __call__(self, block_value):
+          return block_value['alt_text']
+
+See ``plone.restapi.interfaces.IBlockSearchableText`` for details. The ``__call__`` methods needs to return a string, for the text to be indexed.
+
+This adapter needs to be registered as a named adapter, where the name is the same as the block type (its `@type` property from the block value).::
+
+    <adapter name="image" factory=".indexers.ImageBlockSearchableText" />
+

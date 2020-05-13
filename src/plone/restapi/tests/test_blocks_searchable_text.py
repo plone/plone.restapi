@@ -4,10 +4,17 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.interfaces import IDexterityFTI
+from plone.dexterity.interfaces import IDexterityItem
 from plone.dexterity.utils import createContentInContainer
+from plone.restapi.behaviors import IBlocks
+from plone.restapi.interfaces import IBlockSearchableText
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from zope.component import adapter
+from zope.component import provideAdapter
 from zope.component import queryUtility
+from zope.interface import implementer
+from zope.publisher.interfaces.browser import IBrowserRequest
 
 import transaction
 import unittest
@@ -96,3 +103,52 @@ class TestSearchTextInBlocks(unittest.TestCase):
         json_response = response.json()
         self.assertEqual(json_response["items_total"], 1)
         self.assertEqual(json_response["items"][0]["Title"], "A document")
+
+    def test_register_block_searchabletext(self):
+        @implementer(IBlockSearchableText)
+        @adapter(IBlocks, IBrowserRequest)
+        class TestSearchableTextAdapter(object):
+            def __init__(self, context, request):
+                self.context = context
+                self.request = request
+
+            def __call__(self, value):
+
+                return "discovered: %s" % value["text"]
+
+        provideAdapter(
+            TestSearchableTextAdapter,
+            (IDexterityItem, IBrowserRequest),
+            name="test_block",
+        )
+
+        blocks = {
+            "uuid1": {
+                "@type": "text",
+                "text": {
+                    "blocks": [
+                        {
+                            "data": {},
+                            "depth": 0,
+                            "entityRanges": [],
+                            "inlineStyleRanges": [],
+                            "key": "acv4f",
+                            "text": "Plone " "text " "for " "block ",
+                            "type": "unstyled",
+                        }
+                    ],
+                    "entityMap": {},
+                },
+            },
+            "uuid3": {"@type": "test_block", "text": "sample text"},
+        }
+
+        self.doc.blocks = blocks
+        from zope.component import queryMultiAdapter
+        from plone.indexer.interfaces import IIndexableObject
+
+        wrapper = queryMultiAdapter(
+            (self.doc, self.portal.portal_catalog,), IIndexableObject
+        )
+
+        assert "discovered: sample text" in wrapper.SearchableText
