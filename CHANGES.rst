@@ -8,6 +8,17 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0a3 (2020-05-13)
+--------------------
+
+New features:
+
+
+- In block text indexing, query for IBlockSearchableText named adapters to allow
+  extraction from any block type. This avoids hardcoding for the 'text' block type.
+  [tiberiuichim] (#917)
+
+
 7.0.0a2 (2020-05-12)
 --------------------
 
