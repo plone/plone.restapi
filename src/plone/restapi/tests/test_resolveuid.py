@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+from plone.app.testing import logout
 from plone.dexterity.utils import iterSchemata
+from plone.namedfile.file import NamedFile
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
@@ -24,6 +26,19 @@ class TestBlocksResolveUID(TestCase):
         ]
         self.doc2 = self.portal[
             self.portal.invokeFactory("Document", id="doc2", title="Target Document")
+        ]
+
+        self.doc_primary_field_url = self.portal[
+            self.portal.invokeFactory(
+                "DXTestDocument",
+                id="doc_primary_field_url",
+                title="Target Document with primary file field",
+                test_primary_namedfile_field=NamedFile(
+                    data=u"Spam and eggs",
+                    contentType=u"text/plain",
+                    filename=u"test.txt",
+                ),
+            )
         ]
 
     def serialize(self, fieldname, value):
@@ -321,4 +336,135 @@ class TestBlocksResolveUID(TestCase):
                 "data"
             ]["url"],
             "../resolveuid/{}/view".format(uid),
+        )
+
+    def test_blocks_field_serialization_resolves_uids_with_primary_field_url(self):
+        logout()
+        uid = IUUID(self.doc_primary_field_url)
+        blocks = {
+            "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
+            "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
+                "@type": "text",
+                "text": {
+                    "blocks": [
+                        {
+                            "data": {},
+                            "depth": 0,
+                            "entityRanges": [{"key": 0, "length": 5, "offset": 0}],
+                            "inlineStyleRanges": [],
+                            "key": "68rve",
+                            "text": "Volto also supports other APIs.",
+                            "type": "unstyled",
+                        }
+                    ],
+                    "entityMap": {
+                        "0": {
+                            "data": {
+                                "href": "../resolveuid/{}".format(uid),
+                                "rel": "nofollow",
+                                "url": "../resolveuid/{}".format(uid),
+                            },
+                            "mutability": "MUTABLE",
+                            "type": "LINK",
+                        }
+                    },
+                },
+            },
+        }
+        value = self.serialize("blocks", blocks)
+        self.assertEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["href"],
+            self.doc_primary_field_url.absolute_url()
+            + "/@@download/test_primary_namedfile_field",
+        )
+        self.assertEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["url"],
+            self.doc_primary_field_url.absolute_url()
+            + "/@@download/test_primary_namedfile_field",
+        )
+
+    def test_blocks_field_serialization_resolves_uids_primary_url_with_edit_permission(
+        self,
+    ):
+        uid = IUUID(self.doc_primary_field_url)
+        blocks = {
+            "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
+            "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
+                "@type": "text",
+                "text": {
+                    "blocks": [
+                        {
+                            "data": {},
+                            "depth": 0,
+                            "entityRanges": [{"key": 0, "length": 5, "offset": 0}],
+                            "inlineStyleRanges": [],
+                            "key": "68rve",
+                            "text": "Volto also supports other APIs.",
+                            "type": "unstyled",
+                        }
+                    ],
+                    "entityMap": {
+                        "0": {
+                            "data": {
+                                "href": "../resolveuid/{}".format(uid),
+                                "rel": "nofollow",
+                                "url": "../resolveuid/{}".format(uid),
+                            },
+                            "mutability": "MUTABLE",
+                            "type": "LINK",
+                        }
+                    },
+                },
+            },
+        }
+        value = self.serialize("blocks", blocks)
+        self.assertEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["href"],
+            self.doc_primary_field_url.absolute_url(),
+        )
+        self.assertEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["url"],
+            self.doc_primary_field_url.absolute_url(),
+        )
+
+    def test_resolveuid_with_primary_field_url_keeps_suffix(self):
+        uid = IUUID(self.doc2)
+        blocks = {
+            "effbdcdc-253c-41a7-841e-5edb3b56ce32": {
+                "@type": "text",
+                "text": {
+                    "entityMap": {
+                        "0": {
+                            "data": {
+                                "href": "../resolveuid/{}/view".format(uid),
+                                "rel": "nofollow",
+                                "url": "../resolveuid/{}/view".format(uid),
+                            },
+                            "mutability": "MUTABLE",
+                            "type": "LINK",
+                        }
+                    }
+                },
+            }
+        }
+        value = self.serialize("blocks", blocks)
+        self.assertEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["href"],
+            self.doc2.absolute_url() + "/view",
+        )
+        self.assertEqual(
+            value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
+                "data"
+            ]["url"],
+            self.doc2.absolute_url() + "/view",
         )
