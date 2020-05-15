@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0a4 (2020-05-15)
+--------------------
+
+New features:
+
+
+- Replace internal links to files in blocks with a download url if the user has no edit permissions [csenger] (#930)
+
+
 7.0.0a3 (2020-05-13)
 --------------------
 
