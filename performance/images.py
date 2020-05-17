@@ -1,4 +1,4 @@
-from locust import HttpLocust, TaskSet, between
+from locust import HttpUser, TaskSet, between
 
 
 def image_01mb_get(self):
@@ -154,6 +154,6 @@ class UserBehavior(TaskSet):
         pass
 
 
-class WebsiteUser(HttpLocust):
+class WebsiteUser(HttpUser):
     task_set = UserBehavior
     wait_time = between(5.0, 9.0)
