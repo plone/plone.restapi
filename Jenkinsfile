@@ -34,8 +34,8 @@ pipeline {
 
         sh "jmeter -n -t volto.jmx -l performance-volto.csv"
 
-        sh "bin/pip install locust"
-        sh "bin/locust -f performance/images.py --no-web -c 100 -r 10 --run-time 1m --host http://localhost:12345/Plone"
+        // sh "bin/pip install locust"
+        // sh "bin/locust -f performance/images.py --no-web -c 100 -r 10 --run-time 1m --host http://localhost:12345/Plone"
 
         sh "bin/instance stop"
       }
