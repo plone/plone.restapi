@@ -4,6 +4,74 @@ Upgrade Guide
 This upgrade guide lists all breaking changes in plone.restapi and explains the necessary steps that are needed to upgrade to the lastest version.
 
 
+Upgrading to plone.restapi 6.x
+------------------------------
+
+plone.restapi 6.0.0 removes the IAPIRequest marker interface (https://github.com/plone/plone.restapi/pull/819).
+
+It also ships with a fix that prevents converting bytestring ids to unicode ids when reordering on Python 2 (https://github.com/plone/plone.restapi/issues/827).
+
+All versions before plone.restapi 6.0.0 are potentially affected by this issue.
+
+You may be affected by this issue and should run the fix if:
+
+- You used the PATCH "ordering" functionality of plone.restapi
+- Were using Python 2 at that point
+- Are seeing issues with objectIds() returning mixed string types
+
+If you need to fix object ids you can do one of the following:
+
+- Use the browser-view ``@@plone-restapi-upgrade-fix-ordering`` as a "Manager"
+  to fix all folderish content types in your Plone site.
+- Run the helper function
+  ``ensure_child_ordering_object_ids_are_native_strings``
+  from ``plone.restapi.upgrades.ordering`` for all affected objects. You could
+  do this in a custom upgrade-step implemented in your policy.
+
+We expect that most content won't actually be affected. See
+https://github.com/plone/plone.restapi/issues/827 for more details.
+
+
+Upgrading to plone.restapi 5.x
+------------------------------
+
+plone.restapi 5.0.0 introduces the following breaking change:
+
+- Rename tiles behavior and fields to blocks, migration step. [timo, sneridagh] (#821)
+
+The "tiles" field has been renamed to "blocks" and the "tiles_layout" field to "blocks_layout". This changes the response format from::
+
+  {
+    "@id": "http://localhost:55001/plone/my-document",
+    ...
+    "tiles_layout": [
+      "#title-1",
+      "#description-1",
+      "#image-1"
+    ],
+    "tiles": {
+      ...
+    }
+  }
+
+to::
+
+  {
+    "@id": "http://localhost:55001/plone/my-document",
+    ...
+    "blocks_layout": [
+      "#title-1",
+      "#description-1",
+      "#image-1"
+    ],
+    "blocks": {
+      ...
+    }
+  }
+
+This change affects the GET, PATCH and POST formats. Though, it should only affect you if you use Volto.
+
+
 Upgrading to plone.restapi 4.x
 ------------------------------
 

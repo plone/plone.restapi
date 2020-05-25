@@ -6,6 +6,8 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.serializer.local_roles import SerializeLocalRolesToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from Products.CMFCore.utils import getToolByName
@@ -263,6 +265,140 @@ class TestFolderCreate(unittest.TestCase):
                 ["admin", ["Owner"], "user", "admin"],
                 ["test-user", [u"Reader", u"Reviewer"], "user", u"test_user_1_"],
             ],
+        )
+
+    def test_may_only_manage_roles_already_held(self):
+        # Grant Editor role to our test user (which gives them the required
+        # "plone.DelegateRoles" permission to manage local roles at all)
+        api.user.grant_roles(
+            username=TEST_USER_ID, obj=self.portal.folder1, roles=["Editor"]
+        )
+        transaction.commit()
+
+        # Guard assertion - our test user starts with a limited set of roles
+        existing_roles = api.user.get_roles(
+            username=TEST_USER_ID, obj=self.portal.folder1
+        )
+        self.assertEqual(
+            sorted(["Member", "Authenticated", "Editor"]), sorted(existing_roles)
+        )
+
+        # Attempt to gain additional roles not already held
+        response = requests.post(
+            self.portal.folder1.absolute_url() + "/@sharing",
+            headers={"Accept": "application/json"},
+            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
+            json={
+                "entries": [
+                    {
+                        u"id": TEST_USER_ID,
+                        u"roles": {
+                            u"Contributor": True,
+                            u"Editor": True,
+                            u"Reader": True,
+                            u"Publisher": True,
+                            u"Reviewer": True,
+                            u"Manager": True,
+                        },
+                        u"type": u"user",
+                    }
+                ]
+            },
+        )
+
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        new_roles = api.user.get_roles(username=TEST_USER_ID, obj=self.portal.folder1)
+
+        # New roles should not contain any new roles that the user didn't
+        # have permission to delegate.
+        self.assertNotIn(u"Manager", new_roles)
+        self.assertNotIn(u"Publisher", new_roles)
+        self.assertNotIn(u"Reviewer", new_roles)
+        self.assertNotIn(u"Contributor", new_roles)
+
+        # 'Reader' gets added because the permission to delegate it is
+        # assigned to 'Editor' by default (see p.a.workflow.permissions)
+        self.assertEqual(
+            sorted(["Member", "Authenticated", "Editor", "Reader"]), sorted(new_roles)
+        )
+
+    def test_unmanaged_existing_roles_are_retained_on_update(self):
+        """Make sure that existing roles don't get dropped when a user that
+        doesn't manage that roles updates local roles for another user that
+        already holds that role.
+        """
+        # Create another user that holds the Reviewer role, which is not
+        # managed by our test user
+        api.user.create(
+            username="peter",
+            email="peter@example.org",
+            password="secret",
+            roles=("Member",),
+        )
+
+        api.user.grant_roles(
+            username="peter", obj=self.portal.folder1, roles=["Reviewer"]
+        )
+        transaction.commit()
+
+        peters_existing_roles = api.user.get_roles(
+            username="peter", obj=self.portal.folder1
+        )
+        self.assertEqual(
+            sorted(["Member", "Reviewer", "Authenticated"]),
+            sorted(peters_existing_roles),
+        )
+
+        # Grant Editor role to our test user (which gives them the required
+        # "plone.DelegateRoles" permission to manage local roles at all)
+        api.user.grant_roles(
+            username=TEST_USER_ID, obj=self.portal.folder1, roles=["Editor"]
+        )
+        transaction.commit()
+
+        # Guard assertion - our test user doesn't have/manage Reviewer
+        existing_roles = api.user.get_roles(
+            username=TEST_USER_ID, obj=self.portal.folder1
+        )
+        self.assertEqual(
+            sorted(["Member", "Authenticated", "Editor"]), sorted(existing_roles)
+        )
+
+        # Test user now gives Editor to peter. This should not lead to
+        # peter losing the Reviewer role.
+        response = requests.post(
+            self.portal.folder1.absolute_url() + "/@sharing",
+            headers={"Accept": "application/json"},
+            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
+            json={
+                "entries": [
+                    {
+                        u"id": "peter",
+                        u"roles": {
+                            u"Contributor": False,
+                            u"Editor": True,
+                            u"Reader": True,
+                            u"Publisher": False,
+                            u"Reviewer": True,
+                            u"Manager": False,
+                        },
+                        u"type": u"user",
+                    }
+                ]
+            },
+        )
+
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        new_roles = api.user.get_roles(username="peter", obj=self.portal.folder1)
+
+        self.assertIn(u"Reviewer", new_roles)
+        self.assertEqual(
+            sorted(["Member", "Authenticated", "Editor", "Reader", "Reviewer"]),
+            sorted(new_roles),
         )
 
     def test_unset_local_roles_for_user(self):

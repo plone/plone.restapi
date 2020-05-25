@@ -16,6 +16,14 @@
   <adapter factory=".dxfields.TimedeltaFieldDeserializer" />
   <adapter factory=".dxfields.NamedFieldDeserializer" />
   <adapter factory=".dxfields.RichTextFieldDeserializer" />
+  <adapter factory=".blocks.BlocksJSONFieldDeserializer" />
+
+  <subscriber factory=".blocks.TextBlockDeserializer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  <subscriber factory=".blocks.HTMLBlockDeserializer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  <subscriber factory=".blocks.ImageBlockDeserializer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
 
   <adapter factory=".local_roles.DeserializeFromJson"
            name="local_roles"/>
@@ -30,14 +38,16 @@
 
   <configure zcml:condition="installed Products.Archetypes">
     <adapter factory=".atcontent.DeserializeFromJson" />
-    <adapter factory=".atfields.BlobFieldDeserializer" />
+    <configure zcml:condition="installed plone.app.blob">
+        <adapter factory=".atfields.BlobFieldDeserializer" />
+    </configure>
     <adapter factory=".atfields.DefaultFieldDeserializer" />
     <adapter factory=".atfields.FileFieldDeserializer" />
     <adapter factory=".atfields.ReferenceFieldDeserializer" />
   </configure>
 
   <configure zcml:condition="have plone-5">
-    <adapter factory=".controlpanels.ControlpanelDeserializeFromJson" />
+    <include package=".controlpanels" />
   </configure>
 
 </configure>

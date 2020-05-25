@@ -64,6 +64,13 @@ except pkg_resources.DistributionNotFound:
 else:
     HAS_AT = True
 
+try:
+    pkg_resources.get_distribution("plone.dexterity")
+except pkg_resources.DistributionNotFound:
+    HAS_DX = False
+else:
+    HAS_DX = True
+
 ENABLED_LANGUAGES = ["de", "en", "es", "fr"]
 
 
@@ -106,29 +113,33 @@ def enable_request_language_negotiation(portal):
 class DateTimeFixture(Layer):
     def setUp(self):
         tz = "UTC"
-        os.environ['TZ'] = tz
+        os.environ["TZ"] = tz
         time.tzset()
 
         # Patch DateTime's timezone for deterministic behavior.
         from DateTime import DateTime
+
         self.DT_orig_localZone = DateTime.localZone
         DateTime.localZone = lambda cls=None, ltm=None: tz
 
         from plone.dexterity import content
+
         content.FLOOR_DATE = DateTime(1970, 0)
         content.CEILING_DATE = DateTime(2500, 0)
         self._orig_content_zone = content._zone
         content._zone = tz
 
     def tearDown(self):
-        if 'TZ' in os.environ:
-            del os.environ['TZ']
+        if "TZ" in os.environ:
+            del os.environ["TZ"]
         time.tzset()
 
         from DateTime import DateTime
+
         DateTime.localZone = self.DT_orig_localZone
 
         from plone.dexterity import content
+
         content._zone = self._orig_content_zone
         content.FLOOR_DATE = DateTime(1970, 0)
         content.CEILING_DATE = DateTime(2500, 0)
@@ -299,21 +310,21 @@ else:
     PLONE_RESTAPI_AT_FUNCTIONAL_TESTING = PLONE_FIXTURE
 
 
-class PloneRestApiTilesLayer(PloneSandboxLayer):
+class PloneRestApIBlocksLayer(PloneSandboxLayer):
 
     defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
 
     def setUpPloneSite(self, portal):
-        applyProfile(portal, "plone.restapi:tiles")
+        applyProfile(portal, "plone.restapi:blocks")
 
 
-PLONE_RESTAPI_TILES_FIXTURE = PloneRestApiTilesLayer()
-PLONE_RESTAPI_TILES_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_TILES_FIXTURE,), name="PloneRestApiTilesLayer:Integration"
+PLONE_RESTAPI_BLOCKS_FIXTURE = PloneRestApIBlocksLayer()
+PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING = IntegrationTesting(
+    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE,), name="PloneRestApIBlocksLayer:Integration"
 )
-PLONE_RESTAPI_TILES_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_RESTAPI_TILES_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="PloneRestApiTilesLayer:Functional",
+PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING = FunctionalTesting(
+    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE, z2.ZSERVER_FIXTURE),
+    name="PloneRestApIBlocksLayer:Functional",
 )
 
 

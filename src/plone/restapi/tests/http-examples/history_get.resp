@@ -22,9 +22,9 @@ Content-Type: application/json
     "action": "Create", 
     "actor": {
       "@id": "http://localhost:55001/plone/@users/test_user_1_", 
-      "fullname": "", 
+      "fullname": "test_user_1_", 
       "id": "test_user_1_", 
-      "username": "test-user"
+      "username": null
     }, 
     "comments": "", 
     "review_state": "private", 

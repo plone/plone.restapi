@@ -15,6 +15,7 @@
   <include package="plone.behavior" />
   <include package="plone.rest" />
   <include package="plone.schema" />
+  <include file="indexers.zcml" />
 
   <five:registerPackage package="." initialize=".initialize" />
 
@@ -46,10 +47,10 @@
       />
 
   <genericsetup:registerProfile
-      name="tiles"
-      title="plone.restapi tiles"
-      directory="profiles/tiles"
-      description="Enables tiles on the Document content type"
+      name="blocks"
+      title="Volto Blocks"
+      directory="profiles/blocks"
+      description="Enables blocks on the Document content type"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />
 
@@ -83,11 +84,10 @@
     <include package="plone.behavior" file="meta.zcml"/>
 
     <plone:behavior
-        name="plone.tiles"
-        title="Tiles"
-        description="Existing tiles on the object and their layout"
-        provides=".behaviors.ITiles"
-        for="plone.dexterity.interfaces.IDexterityContent"
+        name="volto.blocks"
+        title="Blocks"
+        description="Enables Volto Blocks support"
+        provides=".behaviors.IBlocks"
       />
 
   </configure>

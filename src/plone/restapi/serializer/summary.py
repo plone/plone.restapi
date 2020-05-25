@@ -3,6 +3,7 @@ from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from Products.CMFCore.utils import getToolByName
+from Products.CMFCore.WorkflowCore import WorkflowException
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.interface import implementer
@@ -59,8 +60,12 @@ class DefaultJSONSummarySerializer(object):
                 continue
             accessor = FIELD_ACCESSORS.get(field, field)
             value = getattr(obj, accessor, None)
-            if callable(value):
-                value = value()
+            try:
+                if callable(value):
+                    value = value()
+            except WorkflowException:
+                summary[field] = None
+                continue
             summary[field] = json_compatible(value)
         return summary
 
@@ -71,11 +76,11 @@ class DefaultJSONSummarySerializer(object):
         additional_metadata_fields = set(additional_metadata_fields)
 
         if "_all" in additional_metadata_fields:
-            fields_cache = self.request.get('_summary_fields_cache', None)
+            fields_cache = self.request.get("_summary_fields_cache", None)
             if fields_cache is None:
                 catalog = getToolByName(self.context, "portal_catalog")
                 fields_cache = set(catalog.schema()) | NON_METADATA_ATTRIBUTES
-                self.request.set('_summary_fields_cache', fields_cache)
+                self.request.set("_summary_fields_cache", fields_cache)
             additional_metadata_fields = fields_cache
 
         return DEFAULT_METADATA_FIELDS | additional_metadata_fields

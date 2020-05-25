@@ -148,8 +148,51 @@ def save_request_and_response_for_docs(name, response):
         resp.write(response.text)
 
 
-class TestDocumentationBase(unittest.TestCase):
+def save_request_for_docs(name, response):
+    if six.PY2:
+        open_kw = {}
+    else:
+        open_kw = {"newline": "\n"}
+    filename = "{}/{}".format(base_path, "%s.req" % name)
+    with open(filename, "w", **open_kw) as req:
+        req.write(
+            "{} {} HTTP/1.1\n".format(
+                response.request.method, response.request.path_url
+            )
+        )
+        ordered_request_headers = collections.OrderedDict(
+            sorted(response.request.headers.items())
+        )
+        for key, value in ordered_request_headers.items():
+            if key.lower() in REQUEST_HEADER_KEYS:
+                req.write("{}: {}\n".format(key.title(), value))
+        if response.request.body:
+            # If request has a body, make sure to set Content-Type header
+            if "content-type" not in REQUEST_HEADER_KEYS:
+                content_type = response.request.headers["Content-Type"]
+                req.write("Content-Type: %s\n" % content_type)
 
+            req.write("\n")
+
+            # Pretty print JSON request body
+            if content_type == "application/json":
+                json_body = json.loads(response.request.body)
+                body = pretty_json(json_body)
+                # Make sure Content-Length gets updated, just in case we
+                # ever decide to dump that header
+                response.request.prepare_body(data=body, files=None)
+
+            req.flush()
+            if isinstance(response.request.body, six.text_type) or not hasattr(
+                req, "buffer"
+            ):
+                req.write(response.request.body)
+            else:
+                req.buffer.seek(0, 2)
+                req.buffer.write(response.request.body)
+
+
+class TestDocumentationBase(unittest.TestCase):
     def setUp(self):
         self.statictime = self.setup_with_context_manager(StaticTime())
 
@@ -361,6 +404,25 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
         response = self.api_session.get(self.portal.collection.absolute_url())
         save_request_and_response_for_docs("collection", response)
+
+    def test_documentation_collection_fullobjects(self):
+        self.portal.invokeFactory("Collection", id="collection")
+        self.portal.collection.title = "My Collection"
+        self.portal.collection.description = u"This is a collection with two documents"
+        self.portal.collection.query = [
+            {
+                "i": "portal_type",
+                "o": "plone.app.querystring.operation.string.is",
+                "v": "Document",
+            }
+        ]
+        self.portal.invokeFactory("Document", id="doc1", title="Document 1")
+        self.portal.invokeFactory("Document", id="doc2", title="Document 2")
+        transaction.commit()
+        response = self.api_session.get(
+            self.portal.collection.absolute_url() + "?fullobjects"
+        )
+        save_request_and_response_for_docs("collection_fullobjects", response)
 
     def test_documentation_siteroot(self):
         response = self.api_session.get(self.portal.absolute_url())
@@ -768,10 +830,10 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_users_update_portrait(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
             }
         }
         api.user.create(email="noam.chomsky@example.com", username="noam")
@@ -787,10 +849,10 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_users_update_portrait_with_scale(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
                 "scale": True,
             }
         }
@@ -1053,9 +1115,7 @@ class TestDocumentation(TestDocumentationBase):
             container=self.portal, id="doc", type="DXTestDocument", title=u"DX Document"
         )
         transaction.commit()
-        response = self.api_session.get(
-            "/doc/@sources/test_choice_with_source"
-        )
+        response = self.api_session.get("/doc/@sources/test_choice_with_source")
         save_request_and_response_for_docs("sources_get", response)
 
     def test_documentation_sharing_folder_get(self):
@@ -1309,9 +1369,7 @@ class TestDocumentation(TestDocumentationBase):
     def test_querystringsearch_post(self):
         url = "/@querystring-search"
 
-        self.portal.invokeFactory("Document",
-                                  "testdocument",
-                                  title="Test Document")
+        self.portal.invokeFactory("Document", "testdocument", title="Test Document")
         transaction.commit()
 
         response = self.api_session.post(
@@ -1324,13 +1382,22 @@ class TestDocumentation(TestDocumentationBase):
                         "v": ["Document"],
                     }
                 ]
-            })
+            },
+        )
         save_request_and_response_for_docs("querystringsearch_post", response)
+
+    def test_system_get(self):
+        response = self.api_session.get("/@system")
+        save_request_for_docs("system_get", response)
+
+    def test_database_get(self):
+        response = self.api_session.get("/@database")
+        save_request_for_docs("database_get", response)
 
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
 
-    layer = layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         super(TestDocumentationMessageTranslations, self).setUp()
@@ -1455,7 +1522,9 @@ class TestCommenting(TestDocumentationBase):
 
         # and the response
         if response.content:
-            response._content = re.sub(pattern_bytes, repl.encode('utf-8'), response._content)
+            response._content = re.sub(
+                pattern_bytes, repl.encode("utf-8"), response._content
+            )
 
     @staticmethod
     def clean_comment_id_from_body(response):
@@ -1466,10 +1535,11 @@ class TestCommenting(TestDocumentationBase):
         comment_ids = re.findall(pattern_bytes, response._content)
 
         def new_cid(idx):
-            return str(idx + 1400000000000000).encode('ascii')
+            return str(idx + 1400000000000000).encode("ascii")
 
-        static_comment_ids = {old_cid: new_cid(idx)
-                              for idx, old_cid in enumerate(comment_ids)}
+        static_comment_ids = {
+            old_cid: new_cid(idx) for idx, old_cid in enumerate(comment_ids)
+        }
 
         for cid, idx in static_comment_ids.items():
             response._content = re.sub(cid, idx, response._content)
@@ -1518,15 +1588,59 @@ class TestCommenting(TestDocumentationBase):
         response = self.api_session.get("/front-page?expand=breadcrumbs,workflow")
         save_request_and_response_for_docs("expansion", response)
 
-    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
+
+@unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
+class TestControlPanelDocumentation(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
     def test_controlpanels_get_listing(self):
         response = self.api_session.get("/@controlpanels")
         save_request_and_response_for_docs("controlpanels_get", response)
 
-    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
     def test_controlpanels_get_item(self):
         response = self.api_session.get("/@controlpanels/editing")
         save_request_and_response_for_docs("controlpanels_get_item", response)
+
+    def test_controlpanels_get_dexterity(self):
+        response = self.api_session.get("/@controlpanels/dexterity-types")
+        save_request_and_response_for_docs("controlpanels_get_dexterity", response)
+
+    def test_controlpanels_crud_dexterity(self):
+        # POST
+        response = self.api_session.post(
+            "/@controlpanels/dexterity-types",
+            json={
+                "title": "My Custom Content Type",
+                "description": "A custom content-type",
+            },
+        )
+        save_request_and_response_for_docs(
+            "controlpanels_post_dexterity_item", response
+        )
+
+        # GET
+        response = self.api_session.get(
+            "/@controlpanels/dexterity-types/my_custom_content_type"
+        )
+        save_request_and_response_for_docs("controlpanels_get_dexterity_item", response)
+
+        # PATCH
+        response = self.api_session.patch(
+            "/@controlpanels/dexterity-types/my_custom_content_type",
+            json={"title": "My Content Type", "description": "A content-type"},
+        )
+        save_request_and_response_for_docs(
+            "controlpanels_patch_dexterity_item", response
+        )
+
+        # DELETE
+        response = self.api_session.delete(
+            "/@controlpanels/dexterity-types/my_custom_content_type"
+        )
+        save_request_and_response_for_docs(
+            "controlpanels_delete_dexterity_item", response
+        )
 
 
 class TestPortlets(unittest.TestCase):
@@ -1614,6 +1728,7 @@ class TestPAMDocumentation(TestDocumentationBase):
         language_tool = api.portal.get_tool("portal_languages")
         language_tool.addSupportedLanguage("en")
         language_tool.addSupportedLanguage("es")
+        language_tool.addSupportedLanguage("de")
         applyProfile(self.portal, "plone.app.multilingual:default")
 
         en_id = self.portal["en"].invokeFactory(
@@ -1636,6 +1751,20 @@ class TestPAMDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("translations_post", response)
 
+    def test_documentation_translations_post_by_id(self):
+        response = self.api_session.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            json={"id": self.es_content.absolute_url().replace(self.portal_url, "")},
+        )
+        save_request_and_response_for_docs("translations_post_by_id", response)
+
+    def test_documentation_translations_post_by_uid(self):
+        response = self.api_session.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            json={"id": self.es_content.UID()},
+        )
+        save_request_and_response_for_docs("translations_post_by_uid", response)
+
     def test_documentation_translations_get(self):
         ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()
@@ -1653,3 +1782,26 @@ class TestPAMDocumentation(TestDocumentationBase):
             json={"language": "es"},
         )
         save_request_and_response_for_docs("translations_delete", response)
+
+    def test_documentation_translations_link_on_post(self):
+        response = self.api_session.post(
+            "{}/de".format(self.portal.absolute_url()),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My German Document",
+                "translation_of": self.es_content.UID(),
+                "language": "de",
+            },
+        )
+        save_request_and_response_for_docs("translations_link_on_post", response)
+
+    def test_documentation_translation_locator(self):
+        response = self.api_session.get(
+            "{}/@translation-locator?target_language=de".format(
+                self.es_content.absolute_url()
+            ),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        save_request_and_response_for_docs("translation_locator", response)

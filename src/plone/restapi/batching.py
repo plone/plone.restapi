@@ -12,8 +12,12 @@ class HypermediaBatch(object):
     def __init__(self, request, results):
         self.request = request
 
-        self.b_start = int(json_body(self.request).get('b_start', False)) or int(self.request.form.get("b_start", 0))
-        self.b_size = int(json_body(self.request).get('b_size', False)) or int(self.request.form.get("b_size", DEFAULT_BATCH_SIZE))
+        self.b_start = int(json_body(self.request).get("b_start", False)) or int(
+            self.request.form.get("b_start", 0)
+        )
+        self.b_size = int(json_body(self.request).get("b_size", False)) or int(
+            self.request.form.get("b_size", DEFAULT_BATCH_SIZE)
+        )
 
         self.batch = Batch(results, self.b_size, self.b_start)
 
@@ -107,7 +111,7 @@ class HypermediaBatch(object):
         and add or update some query string parameters in it.
         """
         url = self.request["ACTUAL_URL"]
-        qs_params = parse_qsl(self.request["QUERY_STRING"])
+        qs_params = parse_qsl(self.request["QUERY_STRING"], keep_blank_values=1)
 
         # Take care to preserve list-like query string arguments (same QS
         # param repeated multiple times). In other words, don't turn the

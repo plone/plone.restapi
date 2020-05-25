@@ -29,6 +29,13 @@ import codecs
 import dateutil
 import six
 
+if six.PY2:
+    import HTMLParser
+
+    html_parser = HTMLParser.HTMLParser()
+else:
+    import html as html_parser
+
 
 @implementer(IFieldDeserializer)
 @adapter(IField, IDexterityContent, IBrowserRequest)
@@ -274,9 +281,8 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
                 data = f.read().decode("utf8")
         else:
             data = value
-
         value = RichTextValue(
-            raw=data,
+            raw=html_parser.unescape(data),
             mimeType=content_type,
             outputMimeType=self.field.output_mime_type,
             encoding=encoding,

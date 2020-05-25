@@ -1,8 +1,17 @@
 # -*- coding: utf-8 -*-
+from pkg_resources import get_distribution
+from pkg_resources import parse_version
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import getMultiAdapter
+
+zcatalog_version = get_distribution("Products.ZCatalog").version
+if parse_version(zcatalog_version) >= parse_version("5.1"):
+    SUPPORT_NOT_UUID_QUERIES = True
+else:
+    SUPPORT_NOT_UUID_QUERIES = False
 
 
 class QuerystringSearchPost(Service):
@@ -23,12 +32,13 @@ class QuerystringSearchPost(Service):
             raise Exception("No query supplied")
 
         if sort_order:
-            sort_order = 'descending' if sort_order else 'ascending'
+            sort_order = "descending" if sort_order else "ascending"
 
         querybuilder = getMultiAdapter(
             (self.context, self.request), name="querybuilderresults"
         )
-        results = querybuilder(
+
+        querybuilder_parameters = dict(
             query=query,
             brains=True,
             b_start=b_start,
@@ -37,6 +47,15 @@ class QuerystringSearchPost(Service):
             sort_order=sort_order,
             limit=limit,
         )
+
+        # Exclude "self" content item from the results when ZCatalog supports NOT UUID
+        # queries and it is called on a content object.
+        if not IPloneSiteRoot.providedBy(self.context) and SUPPORT_NOT_UUID_QUERIES:
+            querybuilder_parameters.update(
+                dict(custom_query={"UID": {"not": self.context.UID()}})
+            )
+
+        results = querybuilder(**querybuilder_parameters)
 
         results = getMultiAdapter((results, self.request), ISerializeToJson)(
             fullobjects=fullobjects

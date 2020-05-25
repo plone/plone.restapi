@@ -1,0 +1,12 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="plone">
+
+  <configure zcml:condition="installed plone.app.contenttypes">
+    <adapter name="SearchableText" factory=".indexers.SearchableText_blocks" />
+    <adapter name="text" factory=".indexers.TextBlockSearchableText" />
+  </configure>
+
+</configure>
+

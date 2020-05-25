@@ -195,6 +195,38 @@ class OrderingMixin:
             self.folder.contentIds(),
         )
 
+    def test_ordering_preserves_native_string_obj_id(self):
+        # sanity check, initial situation
+        for id_ in self.folder.objectIds():
+            self.assertIsInstance(id_, str)
+
+        # reorder
+        data = {"ordering": {"delta": "top", "obj_id": "doc9"}}
+        self.deserialize(body=json.dumps(data), context=self.folder)
+
+        # reordering should preserve bytestring ids in PY2 and unicode ids in PY3
+        for id_ in self.folder.objectIds():
+            self.assertIsInstance(id_, str)
+
+    def test_ordering_preserves_native_string_subset_ids(self):
+        # sanity check, initial situation
+        for id_ in self.folder.objectIds():
+            self.assertIsInstance(id_, str)
+
+        # reorder and also provide subset_ids
+        data = {
+            "ordering": {
+                "delta": "bottom",
+                "obj_id": "doc1",
+                "subset_ids": ["doc1", "doc2", "doc3"],
+            }
+        }  # noqa
+        self.deserialize(body=json.dumps(data), context=self.folder)
+
+        # reordering should preserve bytestring ids in PY2 and unicode ids in PY3
+        for id_ in self.folder.objectIds():
+            self.assertIsInstance(id_, str)
+
     def test_reorder_subsetids(self):
         # sanity check, initial situation
         self.assertEqual(

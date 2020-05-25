@@ -53,6 +53,10 @@ class DeserializeFromJson(OrderingMixin, object):
                 errors.append({"error": error, "message": str(error)})
 
         if errors:
+            # Drop Python specific error classes in order to be able to better handle
+            # errors on front-end
+            for error in errors:
+                error["error"] = "ValidationError"
             raise BadRequest(errors)
 
         # We'll set the layout after the validation and even if there
@@ -154,7 +158,7 @@ class DeserializeFromJson(OrderingMixin, object):
         z3c.form does so.
         """
 
-        prefixed_name = schema.__name__ + '.' + fieldname
+        prefixed_name = schema.__name__ + "." + fieldname
         self.modified.setdefault(schema, []).append(prefixed_name)
 
     def check_permission(self, permission_name):

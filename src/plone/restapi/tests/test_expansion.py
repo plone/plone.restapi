@@ -274,35 +274,56 @@ class TestExpansionFunctional(unittest.TestCase):
 
         base_url = self.portal.absolute_url()
 
-        self.assertEqual([
-            {u'@id': u'/'.join((base_url, '@types/Collection')),
-             u'addable': True,
-             u'title': u'Collection'},
-            {u'@id': u'/'.join((base_url, '@types/DXTestDocument')),
-             u'addable': True,
-             u'title': u'DX Test Document'},
-            {u'@id': u'/'.join((base_url, '@types/Event')),
-             u'addable': True,
-             u'title': u'Event'},
-            {u'@id': u'/'.join((base_url, '@types/File')),
-             u'addable': True,
-             u'title': u'File'},
-            {u'@id': u'/'.join((base_url, '@types/Folder')),
-             u'addable': True,
-             u'title': u'Folder'},
-            {u'@id': u'/'.join((base_url, '@types/Image')),
-             u'addable': True,
-             u'title': u'Image'},
-            {u'@id': u'/'.join((base_url, '@types/Link')),
-             u'addable': True,
-             u'title': u'Link'},
-            {u'@id': u'/'.join((base_url, '@types/News Item')),
-             u'addable': True,
-             u'title': u'News Item'},
-            {u'@id': u'/'.join((base_url, '@types/Document')),
-             u'addable': True,
-             u'title': u'Page'}],
-            response.json().get("@components").get("types"))
+        self.assertEqual(
+            [
+                {
+                    u"@id": u"/".join((base_url, "@types/Collection")),
+                    u"addable": True,
+                    u"title": u"Collection",
+                },
+                {
+                    u"@id": u"/".join((base_url, "@types/DXTestDocument")),
+                    u"addable": True,
+                    u"title": u"DX Test Document",
+                },
+                {
+                    u"@id": u"/".join((base_url, "@types/Event")),
+                    u"addable": True,
+                    u"title": u"Event",
+                },
+                {
+                    u"@id": u"/".join((base_url, "@types/File")),
+                    u"addable": True,
+                    u"title": u"File",
+                },
+                {
+                    u"@id": u"/".join((base_url, "@types/Folder")),
+                    u"addable": True,
+                    u"title": u"Folder",
+                },
+                {
+                    u"@id": u"/".join((base_url, "@types/Image")),
+                    u"addable": True,
+                    u"title": u"Image",
+                },
+                {
+                    u"@id": u"/".join((base_url, "@types/Link")),
+                    u"addable": True,
+                    u"title": u"Link",
+                },
+                {
+                    u"@id": u"/".join((base_url, "@types/News Item")),
+                    u"addable": True,
+                    u"title": u"News Item",
+                },
+                {
+                    u"@id": u"/".join((base_url, "@types/Document")),
+                    u"addable": True,
+                    u"title": u"Page",
+                },
+            ],
+            response.json().get("@components").get("types"),
+        )
 
 
 @unittest.skipUnless(

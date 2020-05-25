@@ -136,6 +136,26 @@ class TestVocabularyEndpoint(unittest.TestCase):
             },
         )
 
+    def test_get_vocabulary_filtered_by_non_ascii_title(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?title=t%C3%B6tle"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                u"@id": self.portal_url
+                + u"/@vocabularies/plone.restapi.tests.test_vocabulary?title=t%C3%B6tle",  # noqa
+                u"items": [
+                    {u"title": u"T\xf6tle 5", u"token": u"token5"},
+                    {u"title": u"T\xf6tle 6", u"token": u"token6"},
+                ],
+                u"items_total": 2,
+            },
+        )
+
     def test_get_vocabulary_filtered_by_token(self):
         response = self.api_session.get(
             "/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1"
@@ -208,10 +228,15 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(404, response.status_code)
         response = response.json()
 
-        self.assertEqual(response, {
-            u'error': {
-                u'type': u'Not Found',
-                u'message': u"The vocabulary 'unknown.vocabulary' does not exist"}})
+        self.assertEqual(
+            response,
+            {
+                u"error": {
+                    u"type": u"Not Found",
+                    u"message": u"The vocabulary 'unknown.vocabulary' does not exist",
+                }
+            },
+        )
 
     def test_get_all_vocabularies(self):
         response = self.api_session.get("/@vocabularies")

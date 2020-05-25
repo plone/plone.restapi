@@ -8,6 +8,7 @@ from plone.restapi.types.utils import get_querysource_url
 from plone.restapi.types.utils import get_source_url
 from plone.restapi.types.utils import get_vocabulary_url
 from plone.restapi.types.utils import get_widget_params
+from plone.schema import IEmail
 from plone.schema import IJSONField
 from z3c.formwidget.query.interfaces import IQuerySource
 from zope.component import adapter
@@ -31,6 +32,8 @@ from zope.schema.interfaces import IFloat
 from zope.schema.interfaces import IInt
 from zope.schema.interfaces import IList
 from zope.schema.interfaces import IObject
+from zope.schema.interfaces import IPassword
+from zope.schema.interfaces import IURI
 from zope.schema.interfaces import ISet
 from zope.schema.interfaces import IText
 from zope.schema.interfaces import ITextLine
@@ -110,6 +113,16 @@ class BytesLineJsonSchemaProvider(DefaultJsonSchemaProvider):
 @adapter(ITextLine, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class TextLineJsonSchemaProvider(DefaultJsonSchemaProvider):
+    def additional(self):
+        info = {}
+        if self.field.min_length:
+            info["minLength"] = self.field.min_length
+
+        if self.field.max_length:
+            info["maxLength"] = self.field.max_length
+
+        return info
+
     def get_type(self):
         return "string"
 
@@ -117,31 +130,40 @@ class TextLineJsonSchemaProvider(DefaultJsonSchemaProvider):
 @adapter(IText, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class TextJsonSchemaProvider(TextLineJsonSchemaProvider):
-    def additional(self):
-        info = {}
-        if self.field.min_length is not None:
-            info["minLength"] = self.field.min_length
-
-        if self.field.max_length is not None:
-            info["maxLength"] = self.field.max_length
-
-        return info
-
     def get_widget(self):
         return "textarea"
+
+
+@adapter(IEmail, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class EmailJsonSchemaProvider(TextLineJsonSchemaProvider):
+    def get_widget(self):
+        return "email"
+
+
+@adapter(IPassword, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class PasswordJsonSchemaProvider(TextLineJsonSchemaProvider):
+    def get_widget(self):
+        return "password"
+
+
+@adapter(IURI, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class URIJsonSchemaProvider(TextLineJsonSchemaProvider):
+    def get_widget(self):
+        return "url"
 
 
 @adapter(IASCII, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class ASCIIJsonSchemaProvider(TextLineJsonSchemaProvider):
-
     pass
 
 
 @adapter(IASCIILine, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class ASCIILineJsonSchemaProvider(TextLineJsonSchemaProvider):
-
     pass
 
 
@@ -294,15 +316,15 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
             enum_names = []
 
             for term in vocabulary:
-                title = translate(term.title, context=self.request)
+                if term.title:
+                    title = translate(term.title, context=self.request)
+                else:
+                    title = None
                 choices.append((term.token, title))
                 enum.append(term.token)
                 enum_names.append(title)
 
-            result.update(
-                {"enum": enum,
-                 "enumNames": enum_names,
-                 "choices": choices})
+            result.update({"enum": enum, "enumNames": enum_names, "choices": choices})
 
         return result
 

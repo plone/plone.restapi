@@ -1,0 +1,71 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: http://localhost:55001/plone/de/mydocument
+
+{
+  "@components": {
+    "actions": {
+      "@id": "http://localhost:55001/plone/de/mydocument/@actions"
+    }, 
+    "breadcrumbs": {
+      "@id": "http://localhost:55001/plone/de/mydocument/@breadcrumbs"
+    }, 
+    "navigation": {
+      "@id": "http://localhost:55001/plone/de/mydocument/@navigation"
+    }, 
+    "translations": {
+      "@id": "http://localhost:55001/plone/de/mydocument/@translations"
+    }, 
+    "types": {
+      "@id": "http://localhost:55001/plone/de/mydocument/@types"
+    }, 
+    "workflow": {
+      "@id": "http://localhost:55001/plone/de/mydocument/@workflow"
+    }
+  }, 
+  "@id": "http://localhost:55001/plone/de/mydocument", 
+  "@type": "Document", 
+  "UID": "SomeUUID000000000000000000000005", 
+  "allow_discussion": false, 
+  "changeNote": "", 
+  "contributors": [], 
+  "created": "1995-07-31T13:45:00", 
+  "creators": [
+    "admin"
+  ], 
+  "description": "", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "id": "mydocument", 
+  "is_folderish": false, 
+  "language": {
+    "title": "Deutsch", 
+    "token": "de"
+  }, 
+  "layout": "document_view", 
+  "modified": "1995-07-31T17:30:00", 
+  "next_item": {}, 
+  "parent": {
+    "@id": "http://localhost:55001/plone/de", 
+    "@type": "LRF", 
+    "description": "", 
+    "review_state": "published", 
+    "title": "Deutsch"
+  }, 
+  "previous_item": {
+    "@id": "http://localhost:55001/plone/de/Assets", 
+    "@type": "LIF", 
+    "description": "", 
+    "title": "Assets"
+  }, 
+  "relatedItems": [], 
+  "review_state": "private", 
+  "rights": "", 
+  "subjects": [], 
+  "table_of_contents": null, 
+  "text": null, 
+  "title": "My German Document", 
+  "version": "current", 
+  "versioning_enabled": true
+}

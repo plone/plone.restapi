@@ -10,6 +10,7 @@ from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from plone.restapi.types.utils import get_jsonschema_properties
+from plone.schema import Email
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
@@ -311,6 +312,81 @@ class TestJsonSchemaProviders(TestCase):
             adapter.get_schema(),
         )
 
+    def test_email(self):
+        field = Email(
+            title=u"Email",
+            description=u"Email field",
+            default="foo@bar.com",
+            min_length=10,
+            max_length=20,
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": "Email",
+                "description": "Email field",
+                "widget": "email",
+                "default": "foo@bar.com",
+                "minLength": 10,
+                "maxLength": 20,
+            },
+            adapter.get_schema(),
+        )
+
+    def test_password(self):
+        field = schema.Password(
+            title=u"Password",
+            description=u"Password field",
+            default=u"secret",
+            min_length=4,
+            max_length=8,
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": "Password",
+                "description": "Password field",
+                "widget": "password",
+                "default": "secret",
+                "minLength": 4,
+                "maxLength": 8,
+            },
+            adapter.get_schema(),
+        )
+
+    def test_uri(self):
+        field = schema.URI(
+            title=u"URI",
+            description=u"URI field",
+            default="http://foo.bar",
+            min_length=10,
+            max_length=100,
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": "URI",
+                "description": "URI field",
+                "widget": "url",
+                "default": "http://foo.bar",
+                "minLength": 10,
+                "maxLength": 100,
+            },
+            adapter.get_schema(),
+        )
+
     def test_decimal(self):
         field = schema.Decimal(
             title=u"My field",
@@ -374,7 +450,32 @@ class TestJsonSchemaProviders(TestCase):
                 "enum": ["foo", "bar"],
                 "enumNames": ["Foo", "Bar"],
                 "choices": [("foo", "Foo"), ("bar", "Bar")],
-                'vocabulary': {'@id': 'http://nohost/plone/@sources/myfield'},
+                "vocabulary": {"@id": "http://nohost/plone/@sources/myfield"},
+            },
+            adapter.get_schema(),
+        )
+
+    def test_choice_inline_array(self):
+        field = schema.Choice(
+            __name__="myfield",
+            title=u"My field",
+            description=u"My great field",
+            values=["foo", "bar"],
+        )
+
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                "type": "string",
+                "title": u"My field",
+                "description": u"My great field",
+                "enum": ["foo", "bar"],
+                "enumNames": [None, None],
+                "choices": [("foo", None), ("bar", None)],
+                "vocabulary": {"@id": "http://nohost/plone/@sources/myfield"},
             },
             adapter.get_schema(),
         )
@@ -420,7 +521,7 @@ class TestJsonSchemaProviders(TestCase):
                 "enum": ["foo", "bar"],
                 "enumNames": ["Foo", "Bar"],
                 "choices": [("foo", "Foo"), ("bar", "Bar")],
-                "vocabulary": {'@id': 'http://nohost/plone/@sources/myfield'},
+                "vocabulary": {"@id": "http://nohost/plone/@sources/myfield"},
             },
             adapter.get_schema(),
         )
@@ -519,7 +620,7 @@ class TestJsonSchemaProviders(TestCase):
                     "enum": ["foo", "bar"],
                     "enumNames": ["Foo", "Bar"],
                     "choices": [("foo", "Foo"), ("bar", "Bar")],
-                    'vocabulary': {'@id': 'http://nohost/plone/@sources/'},
+                    "vocabulary": {"@id": "http://nohost/plone/@sources/"},
                 },
             },
             adapter.get_schema(),

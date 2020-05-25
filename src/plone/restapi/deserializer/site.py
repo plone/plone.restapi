@@ -34,25 +34,25 @@ class DeserializeSiteRootFromJson(OrderingMixin, object):
             data["ordering"]["subset_ids"] = self.context.contentIds()
         self.handle_ordering(data)
 
-        # Volto Tiles on the Plone Site root faker
-        if "tiles" in data:
-            if not getattr(self.context, "tiles", False):
+        # Volto Blocks on the Plone Site root faker
+        if "blocks" in data:
+            if not getattr(self.context, "blocks", False):
                 self.context.manage_addProperty(
-                    "tiles", json.dumps(data["tiles"]), "string"
+                    "blocks", json.dumps(data["blocks"]), "string"
                 )  # noqa
             else:
                 self.context.manage_changeProperties(
-                    tiles=json.dumps(data["tiles"])
+                    blocks=json.dumps(data["blocks"])
                 )  # noqa
 
-        if "tiles_layout" in data:
-            if not getattr(self.context, "tiles_layout", False):
+        if "blocks_layout" in data:
+            if not getattr(self.context, "blocks_layout", False):
                 self.context.manage_addProperty(
-                    "tiles_layout", json.dumps(data["tiles_layout"]), "string"
+                    "blocks_layout", json.dumps(data["blocks_layout"]), "string"
                 )  # noqa
             else:
                 self.context.manage_changeProperties(
-                    tiles_layout=json.dumps(data["tiles_layout"])
+                    blocks_layout=json.dumps(data["blocks_layout"])
                 )  # noqa
 
         if "title" in data:

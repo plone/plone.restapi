@@ -13,11 +13,6 @@ class IPloneRestapiLayer(IDefaultBrowserLayer):
     """Marker interface that defines a browser layer."""
 
 
-class IAPIRequest(Interface):
-    """Marker for API requests.
-    """
-
-
 class ISerializeToJson(Interface):
     """Adapter to serialize a Dexterity object into a JSON object.
     """
@@ -57,6 +52,35 @@ class IFieldSerializer(Interface):
         """
 
 
+class IPrimaryFieldTarget(Interface):
+    """Return a URL to direct the user to if this is the primary field.
+    Useful e.g. if you want to redirect certain users to a download url
+    instead of the item's view.
+    """
+
+    def __init__(field, context, request):
+        """Adapts field, context and request.
+        """
+
+    def __call__():
+        """Returns a URL.
+        """
+
+
+class IObjectPrimaryFieldTarget(Interface):
+    """Return a URL to direct the user to if the object has a primary field
+    that provides an IPrimaryFieldTarget.
+    """
+
+    def __init__(field, context, request):
+        """Adapts field, context and request.
+        """
+
+    def __call__():
+        """Returns a URL.
+        """
+
+
 class IDeserializeFromJson(Interface):
     """An adapter to deserialize a JSON object into an object in Plone."""
 
@@ -71,6 +95,47 @@ class IFieldDeserializer(Interface):
 
     def __call__(value):
         """Convert the provided JSON value to a field value.
+        """
+
+
+class IBlockFieldDeserializationTransformer(Interface):
+    """Convert/adjust raw block deserialized value into block value.
+    """
+
+    block_type = Attribute(
+        "A string with the type of block, the @type from " "the block value"
+    )
+    order = Attribute(
+        "A number used in sorting value transformers. " "Smaller is executed first"
+    )
+
+    def __init__(field, context, request):
+        """Adapts context and the request.
+        """
+
+    def __call__(value):
+        """Convert the provided raw Python value to a block value.
+        """
+
+
+class IBlockFieldSerializationTransformer(Interface):
+    """Transform block value before final JSON serialization
+    """
+
+    block_type = Attribute(
+        "A string with the type of block, the @type from " "the block value"
+    )
+    order = Attribute(
+        "A number used in sorting value transformers for the "
+        "same block. Smaller is executed first"
+    )
+
+    def __init__(field, context, request):
+        """Adapts context and the request.
+        """
+
+    def __call__(value):
+        """Convert the provided raw Python value to a block value.
         """
 
 
@@ -152,4 +217,19 @@ class IIndexQueryParser(Interface):
         Returns a transformed `idx_query` whose query options and query values
         have been reconstructed to the proper data types that the adapted
         index expects.
+        """
+
+
+class IBlockSearchableText(Interface):
+    """ Allow blocks to provide text for the SearchableText index
+
+    Register as a named adapter, where the name is the block @type
+    """
+
+    def __init__(field, context, request):
+        """Adapts a context and the request.
+        """
+
+    def __call__(value):
+        """Extract text from the block value. Returns text
         """

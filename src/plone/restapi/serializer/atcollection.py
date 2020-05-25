@@ -17,8 +17,8 @@ class SerializeCollectionToJson(SerializeToJson):
         collection_metadata = super(SerializeCollectionToJson, self).__call__(
             version=version
         )
-        results = self.context.results(batch=False)
-        batch = HypermediaBatch(self.request, results)
+        brains = self.context.results(batch=False)
+        batch = HypermediaBatch(self.request, brains)
 
         results = collection_metadata
         if not self.request.form.get("fullobjects"):
@@ -27,8 +27,14 @@ class SerializeCollectionToJson(SerializeToJson):
         if batch.links:
             results["batching"] = batch.links
 
-        results["items"] = [
-            getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
-            for brain in batch
-        ]
+        if "fullobjects" in list(self.request.form):
+            results["items"] = [
+                getMultiAdapter((brain.getObject(), self.request), ISerializeToJson)()
+                for brain in batch
+            ]
+        else:
+            results["items"] = [
+                getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
+                for brain in batch
+            ]
         return results

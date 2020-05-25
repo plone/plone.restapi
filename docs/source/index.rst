@@ -21,8 +21,10 @@ Contents
    authentication
    exploring
    content
+   blocks
    history
    batching
+   addons
    comments
    copymove
    expansion
@@ -57,6 +59,8 @@ Contents
    email-notification
    upgrade-guide
    contributing
+   system
+   database
 
 .. include:: ../../README.rst
 

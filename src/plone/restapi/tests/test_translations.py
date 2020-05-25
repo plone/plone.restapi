@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from plone import api
 from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -81,12 +82,40 @@ class TestLinkContentsAsTranslations(unittest.TestCase):
         )
         transaction.commit()
 
-    def test_translation_linking_succeeds(self):
+    def test_translation_linking_by_url(self):
         response = requests.post(
             "{}/@translations".format(self.en_content.absolute_url()),
             headers={"Accept": "application/json"},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
             json={"id": self.es_content.absolute_url()},
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        manager = ITranslationManager(self.en_content)
+        for language, translation in manager.get_translations():
+            if language == ILanguage(self.es_content).get_language():
+                self.assertEqual(translation, self.es_content)
+
+    def test_translation_linking_by_path(self):
+        response = requests.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"id": "/es/test-document"},
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        manager = ITranslationManager(self.en_content)
+        for language, translation in manager.get_translations():
+            if language == ILanguage(self.es_content).get_language():
+                self.assertEqual(translation, self.es_content)
+
+    def test_translation_linking_by_uid(self):
+        response = requests.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"id": self.es_content.UID()},
         )
         self.assertEqual(201, response.status_code)
         transaction.begin()
@@ -123,6 +152,26 @@ class TestLinkContentsAsTranslations(unittest.TestCase):
             json={"id": "http://this-content-does-not-exist"},
         )
         self.assertEqual(400, response.status_code)
+
+    def test_get_translations_on_content_with_no_permissions(self):
+        response = requests.post(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"id": self.es_content.absolute_url()},
+        )
+        self.assertEqual(201, response.status_code)
+        api.content.transition(self.en_content, "publish")
+        transaction.commit()
+
+        response = requests.get(
+            "{}/@translations".format(self.en_content.absolute_url()),
+            headers={"Accept": "application/json"},
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertTrue(len(response["items"]) == 0)
 
 
 @unittest.skipUnless(
@@ -178,3 +227,75 @@ class TestUnLinkContentTranslations(unittest.TestCase):
             json={"language": "es"},
         )
         self.assertEqual(400, response.status_code)
+
+
+@unittest.skipUnless(
+    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
+)  # NOQA
+class TestCreateContentsAsTranslations(unittest.TestCase):
+    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
+        alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
+        login(self.portal, SITE_OWNER_NAME)
+        self.es_content = createContentInContainer(
+            self.portal["es"], "Document", title=u"Test document"
+        )
+        transaction.commit()
+
+    def test_post_to_folder_creates_document_translated(self):
+        response = requests.post(
+            "{}/de".format(self.portal.absolute_url()),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My Document DE",
+                "translation_of": self.es_content.UID(),
+                "language": "de",
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.commit()
+
+        manager = ITranslationManager(self.es_content)
+
+        self.assertTrue("de" in manager.get_translations())
+        self.assertEqual("My Document DE", manager.get_translations()["de"].title)
+
+        self.assertEqual("Document", response.json().get("@type"))
+        self.assertEqual("mydocument", response.json().get("id"))
+        self.assertEqual("My Document DE", response.json().get("title"))
+
+
+@unittest.skipUnless(
+    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
+)  # NOQA
+class TestTranslationLocator(unittest.TestCase):
+    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
+        self.request = self.layer["request"]
+        alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
+        login(self.portal, SITE_OWNER_NAME)
+        self.es_content = createContentInContainer(
+            self.portal["es"], "Document", title=u"Test document"
+        )
+        transaction.commit()
+
+    def test_translation_locator(self):
+        response = requests.get(
+            "{}/@translation-locator?target_language=de".format(
+                self.es_content.absolute_url()
+            ),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertEqual(200, response.status_code)
+
+        self.assertEqual(self.portal_url + "/de", response.json().get("@id"))

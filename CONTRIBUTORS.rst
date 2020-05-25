@@ -16,3 +16,8 @@
 - Yann Fouillat, alias Gagaro
 - Sune Brøndum Wøller
 - Philippe Gross
+- Andrea Cecchi
+- Luca Bellenghi
+- Giacomo Monari
+- Alin Voinea
+- Rodrigo Ferreira de Souza

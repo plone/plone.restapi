@@ -61,5 +61,5 @@ class TestUninstall(unittest.TestCase):
         self.assertFalse(self.installed)
 
     def test_addon_layer_removed(self):
-        layers = [l.getName() for l in registered_layers()]
+        layers = [layer.getName() for layer in registered_layers()]
         self.assertNotIn("IPloneRestapiLayer", layers)
