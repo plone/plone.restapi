@@ -233,3 +233,168 @@ def get_querysource_url(field, context, request):
 
 def get_source_url(field, context, request):
     return get_vocab_like_url("@sources", field.getName(), context, request)
+
+
+from plone.dexterity.interfaces import IDexterityFTI
+from plone.dexterity.schema import splitSchemaName
+from plone.dexterity.utils import iterSchemataForType
+from plone.supermodel import serializeModel
+from plone.supermodel import serializeSchema as sch
+from plone.supermodel.utils import syncSchema
+from zope.component import queryUtility
+import z3c.form
+
+def update_jsonschema_for_portal_type(portal_type, context, request, body, excluded_fields=None):
+    """Update the JSON schema for the given portal_type.
+    """
+    ttool = getToolByName(context, "portal_types")
+    fti = ttool[portal_type]
+    return update_jsonschema_for_fti(
+        fti, context, request, body, excluded_fields=excluded_fields
+    )
+
+
+def update_jsonschema_for_fti(fti, context, request, body, excluded_fields=None):
+    """Update the JSON schema for the given FTI.
+    """
+    if excluded_fields is None:
+        excluded_fields = []
+
+    # We try..except lookupSchema here, so we still get FTI information
+    # through /@types/{typeid} for non-DX type, notably the "Plone Site" type.
+    try:
+        schema = fti.lookupSchema()
+    except AttributeError:
+        schema = None
+        old_fieldsets = ()
+        old_additional_schemata = ()
+    else:
+        old_additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
+        old_fieldsets = get_fieldsets(context, request, schema, old_additional_schemata)
+    # in req we receive:
+    # fieldsets
+    # fields
+    # other ctype data
+    json_fields = body['properties']
+    json_fieldsets = body['fieldsets']
+    old_schemata = iterSchemataForType(fti.id)
+    # old_merged = old_additional_schemata + (schema, )
+
+    for iface in old_schemata:
+        fields = z3c.form.field.Fields(iface)
+        import pdb; pdb.set_trace()
+        for f in fields.values():
+            name = f.__name__
+            json_field = json_fields[name]
+            # Create copy of a schema field
+            schema_field = copy(f.field) # shallow copy of an instance
+
+            # do modifications
+            print(name)
+            print(json_field)
+            print(vars(schema_field))
+            for key in json_field.keys():
+                if hasattr(schema_field, key):
+                    setattr(schema_field, key, json_field[key])
+                else:
+                    print(key)
+            # save changes
+            f.field = schema_field
+    form = create_form(context, request, schema, old_additional_schemata)
+    import pdb; pdb.set_trace()
+    # serializeSchema(schema)
+    # Build JSON schema properties
+    # properties = get_jsonschema_properties(
+    #     context, request, fieldsets, excluded_fields=excluded_fields
+    # )
+    #
+    # # Determine required fields
+    # required = []
+    # for field in iter_fields(fieldsets):
+    #     if field.field.required:
+    #         required.append(field.field.getName())
+    #
+    # # Include field modes
+    # for field in iter_fields(fieldsets):
+    #     if field.mode:
+    #         properties[field.field.getName()]["mode"] = field.mode
+    #
+    # return {
+    #     "type": "object",
+    #     "title": translate(fti.Title(), context=getRequest()),
+    #     "properties": IJsonCompatible(properties),
+    #     "fieldsets": get_fieldset_infos(fieldsets),
+    #     "required": required,
+    #     "layouts": getattr(fti, "view_methods", []),
+    # }
+
+def serializeSchema(schema):
+    """ Taken from plone.app.dexterity.serialize
+        Finds the FTI and model associated with a schema, and synchronizes
+        the schema to the FTI model_source attribute.
+    """
+
+    # determine portal_type
+    try:
+        prefix, portal_type, schemaName = splitSchemaName(schema.__name__)
+    except ValueError:
+        # not a dexterity schema
+        return
+
+    # find the FTI and model
+    fti = queryUtility(IDexterityFTI, name=portal_type)
+    model = fti.lookupModel()
+
+    # synchronize changes to the model
+    syncSchema(schema, model.schemata[schemaName], overwrite=True)
+    fti.model_source = serializeModel(model)
+
+from plone.supermodel.interfaces import IFieldExportImportHandler
+from plone.supermodel.interfaces import IFieldNameExtractor
+from plone.supermodel.utils import prettyXML
+import zope.schema
+from zope.component import getUtility
+from plone.supermodel import loadString
+
+def create_fields(portal_type, context, request, body):
+    """Update the JSON schema for the given portal_type.
+    """
+    ttool = getToolByName(context, "portal_types")
+    fti = ttool[portal_type]
+    schema = fti.lookupSchema()
+
+    name = body['name'] or body['title']
+    klass = body['type']
+    field = getattr(zope.schema, klass)
+    created_field = field(__name__=name)
+
+    for attr in body.keys():
+        if hasattr(created_field, attr):
+            setattr(created_field, attr, body[attr])
+
+    fieldType = IFieldNameExtractor(created_field)()
+    handler = getUtility(IFieldExportImportHandler, name=fieldType)
+    element = handler.write(created_field, name, fieldType)
+
+    model = fti.lookupModel()
+    serialized_model = serializeModel(model)
+
+    # check if model_source is newly created or if there was something in it
+    index = serialized_model.find('<schema/>')
+    if index != -1:
+        fields_str = "<schema>"
+        fields_str += prettyXML(element)
+        fields_str += "</schema>"
+        serialized_model = serialized_model[0:index] + fields_str + serialized_model[index + len('<schema/>'):-1]
+    else:
+        # model_source exists, append field to existing ones
+        index = serialized_model.find('<field')
+        serialized_model[0:index] + prettyXML(element) + '\n' + serialized_model[index:-1]
+
+    if not serialized_model.endswith('>'):
+        serialized_model += '>'
+
+    # index = serialized_model.find('\n') + 2
+    # serialized_model = serialized_model[0:index] + prettyXML(element) + serialized_model[index: -1]
+    # print(prettyXML(element))
+    fti.model_source = serialized_model

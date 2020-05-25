@@ -11,6 +11,23 @@
     permission="zope2.View"
     />
 
+  <!-- accept="application/json,application/schema+json" -->
+  <plone:service
+    method="PATCH"
+    for="*"
+    factory=".update.TypesUpdate"
+    name="@types"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="POST"
+    for="*"
+    factory=".add.TypesPost"
+    name="@types"
+    permission="zope2.View"
+    />
+
   <adapter factory=".get.TypesInfo" name="types"/>
 
 </configure>
