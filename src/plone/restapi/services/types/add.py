@@ -15,15 +15,7 @@ import plone.protect.interfaces
 class TypesPost(Service):
     """ Creates a new field/fieldset
     """
-    params = []
-
     def reply(self):
         data = json_body(self.request)
 
-        portal_type = data.get('portal_type', None)
-        if portal_type:
-            # Disable CSRF protection
-            if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-                alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
-            import pdb; pdb.set_trace()
-            create_fields(portal_type, self.context, self.request, data)
+        return create_fields(self.context, self.request, data)

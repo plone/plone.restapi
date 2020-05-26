@@ -21,14 +21,19 @@ from plone.autoform.interfaces import WIDGETS_KEY
 from plone.dexterity.utils import getAdditionalSchemata
 from plone.restapi.serializer.converters import IJsonCompatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
-from plone.supermodel.utils import mergedTaggedValueDict
+from plone.supermodel.interfaces import IFieldExportImportHandler
+from plone.supermodel.interfaces import IFieldNameExtractor
+from plone.supermodel.utils import mergedTaggedValueDict, prettyXML
 from Products.CMFCore.utils import getToolByName
 from z3c.form import form as z3c_form
 from zope.component import getMultiAdapter
+from zope.component import getUtility
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.i18n import translate
+
+import zope.schema
 
 
 def create_form(context, request, base_schema, additional_schemata=None):
@@ -349,52 +354,58 @@ def serializeSchema(schema):
     syncSchema(schema, model.schemata[schemaName], overwrite=True)
     fti.model_source = serializeModel(model)
 
-from plone.supermodel.interfaces import IFieldExportImportHandler
-from plone.supermodel.interfaces import IFieldNameExtractor
-from plone.supermodel.utils import prettyXML
-import zope.schema
-from zope.component import getUtility
-from plone.supermodel import loadString
 
-def create_fields(portal_type, context, request, body):
-    """Update the JSON schema for the given portal_type.
+def create_fields(context, request, body):
+    """ Create fields for the given portal_type.
     """
     ttool = getToolByName(context, "portal_types")
-    fti = ttool[portal_type]
-    schema = fti.lookupSchema()
+    bad_fields = []
 
-    name = body['name'] or body['title']
-    klass = body['type']
-    field = getattr(zope.schema, klass)
-    created_field = field(__name__=name)
+    for key in body.keys():
+        name = key
+        klass = body[key].get('type', None)
+        portal_type = body[key].get('portal_type', None)
 
-    for attr in body.keys():
-        if hasattr(created_field, attr):
-            setattr(created_field, attr, body[attr])
+        if not klass or portal_type:
+            bad_fields.append(key)
+            continue
 
-    fieldType = IFieldNameExtractor(created_field)()
-    handler = getUtility(IFieldExportImportHandler, name=fieldType)
-    element = handler.write(created_field, name, fieldType)
+        fti = ttool[portal_type]
+        field = getattr(zope.schema, klass)
+        created_field = field(__name__=name)
 
-    model = fti.lookupModel()
-    serialized_model = serializeModel(model)
+        for attr in body[key].keys():
+            if hasattr(created_field, attr):
+                setattr(created_field, attr, body[key][attr])
 
-    # check if model_source is newly created or if there was something in it
-    index = serialized_model.find('<schema/>')
-    if index != -1:
-        fields_str = "<schema>"
-        fields_str += prettyXML(element)
-        fields_str += "</schema>"
-        serialized_model = serialized_model[0:index] + fields_str + serialized_model[index + len('<schema/>'):-1]
-    else:
-        # model_source exists, append field to existing ones
-        index = serialized_model.find('<field')
-        serialized_model[0:index] + prettyXML(element) + '\n' + serialized_model[index:-1]
+        fieldType = IFieldNameExtractor(created_field)()
+        handler = getUtility(IFieldExportImportHandler, name=fieldType)
+        element = handler.write(created_field, name, fieldType)
 
-    if not serialized_model.endswith('>'):
-        serialized_model += '>'
+        model = fti.lookupModel()
+        serialized_model = serializeModel(model)
 
-    # index = serialized_model.find('\n') + 2
-    # serialized_model = serialized_model[0:index] + prettyXML(element) + serialized_model[index: -1]
-    # print(prettyXML(element))
-    fti.model_source = serialized_model
+        # check if model_source is newly created or if there was something in it
+        index = serialized_model.find('<schema/>')
+        if index != -1:
+            fields_str = "<schema>"
+            fields_str += prettyXML(element)
+            fields_str += "</schema>"
+            serialized_model = serialized_model[0:index] + fields_str \
+                                + serialized_model[index + len('<schema/>'):-1]
+
+        else:
+            # model_source exists, append field to existing ones
+            index = serialized_model.find('<field')
+            serialized_model = serialized_model[0:index] + prettyXML(element) \
+                                + '\n' + serialized_model[index:-1]
+
+        if not serialized_model.endswith('>'):
+            serialized_model += '>'
+        fti.model_source = serialized_model
+
+    if len(bad_fields) > 0:
+        request.response.setStatus(400)
+        message = "Cannot add the following fields, missing ptype/type: " \
+                  "{}".format(' '.join(bad_fields))
+        return dict(error=dict(message=message))
