@@ -244,22 +244,23 @@ from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.schema import splitSchemaName
 from plone.dexterity.utils import iterSchemataForType
 from plone.supermodel import serializeModel
-from plone.supermodel import serializeSchema as sch
+# from plone.supermodel import serializeSchema as sch
 from plone.supermodel.utils import syncSchema
 from zope.component import queryUtility
 import z3c.form
+import transaction
 
-def update_jsonschema_for_portal_type(portal_type, context, request, body, excluded_fields=None):
+def update_defaults_for_portal_type(portal_type, context, request, body, excluded_fields=None):
     """Update the JSON schema for the given portal_type.
     """
     ttool = getToolByName(context, "portal_types")
     fti = ttool[portal_type]
-    return update_jsonschema_for_fti(
+    return update_defaults_for_fti(
         fti, context, request, body, excluded_fields=excluded_fields
     )
 
 
-def update_jsonschema_for_fti(fti, context, request, body, excluded_fields=None):
+def update_defaults_for_fti(fti, context, request, body, excluded_fields=None):
     """Update the JSON schema for the given FTI.
     """
     if excluded_fields is None:
@@ -276,62 +277,46 @@ def update_jsonschema_for_fti(fti, context, request, body, excluded_fields=None)
     else:
         old_additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
         old_fieldsets = get_fieldsets(context, request, schema, old_additional_schemata)
-    # in req we receive:
-    # fieldsets
-    # fields
-    # other ctype data
-    json_fields = body['properties']
-    json_fieldsets = body['fieldsets']
+
+    json_fields = body.pop('properties')
+    json_fieldsets = body.pop('fieldsets')
     old_schemata = iterSchemataForType(fti.id)
     # old_merged = old_additional_schemata + (schema, )
 
-    for iface in old_schemata:
-        fields = z3c.form.field.Fields(iface)
-        import pdb; pdb.set_trace()
-        for f in fields.values():
-            name = f.__name__
-            json_field = json_fields[name]
-            # Create copy of a schema field
-            schema_field = copy(f.field) # shallow copy of an instance
+    # set remaining data
+    for key in body.keys():
+        if hasattr(fti, key):
+            setattr(fti, key, body[key])
 
-            # do modifications
-            print(name)
-            print(json_field)
-            print(vars(schema_field))
-            for key in json_field.keys():
-                if hasattr(schema_field, key):
-                    setattr(schema_field, key, json_field[key])
-                else:
-                    print(key)
-            # save changes
-            f.field = schema_field
-    form = create_form(context, request, schema, old_additional_schemata)
-    import pdb; pdb.set_trace()
-    # serializeSchema(schema)
-    # Build JSON schema properties
-    # properties = get_jsonschema_properties(
-    #     context, request, fieldsets, excluded_fields=excluded_fields
-    # )
-    #
-    # # Determine required fields
-    # required = []
-    # for field in iter_fields(fieldsets):
-    #     if field.field.required:
-    #         required.append(field.field.getName())
-    #
-    # # Include field modes
-    # for field in iter_fields(fieldsets):
-    #     if field.mode:
-    #         properties[field.field.getName()]["mode"] = field.mode
-    #
-    # return {
-    #     "type": "object",
-    #     "title": translate(fti.Title(), context=getRequest()),
-    #     "properties": IJsonCompatible(properties),
-    #     "fieldsets": get_fieldset_infos(fieldsets),
-    #     "required": required,
-    #     "layouts": getattr(fti, "view_methods", []),
-    # }
+    from plone.supermodel.interfaces import FIELDSETS_KEY
+    from plone.supermodel.model import Fieldset
+    # >>> ISecondarySchema.setTaggedValue(FIELDSETS_KEY, [Fieldset('secondary', fields=['summary'])])
+
+
+    for iface in old_schemata:
+        if iface.__name__ == 'IDublinCore':
+            field_names = iface._v_attrs.keys()
+
+        # try:
+        #     fieldsets = iface.getTaggedValue(FIELDSETS_KEY)
+        #     print(fieldsets)
+        # except:
+        #     import pdb; pdb.set_trace()
+
+        field_names = iface.names()
+        for name in field_names:
+            field = iface.get(name, None)
+            if not json_fields.get(name, None):
+                continue
+
+            for key in json_fields[name]:
+                if key == 'vocabulary' or key == 'choices':
+                    # TODO: option to supply new vocabulary/modify current terms
+                    continue
+                if hasattr(field, key):
+                    print("Setting attr {} for {}".format(key, field))
+                    setattr(field, key, json_fields[name][key])
+
 
 def serializeSchema(schema):
     """ Taken from plone.app.dexterity.serialize

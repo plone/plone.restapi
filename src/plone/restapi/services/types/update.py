@@ -3,7 +3,7 @@ from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
-from plone.restapi.types.utils import update_jsonschema_for_portal_type
+from plone.restapi.types.utils import update_defaults_for_portal_type
 from plone.restapi.services.types.get import TypesInfo
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
@@ -30,11 +30,9 @@ def check_security(context):
 # @implementer(IExpandableElement)
 @implementer(IPublishTraverse)
 class TypesUpdate(Service):
-    params = []
-
     def __init__(self, context, request):
         super(TypesUpdate, self).__init__(context, request)
-        # self.params = []
+        self.params = []
 
     def publishTraverse(self, request, name):
         # Treat any path segments after /@types as parameters
@@ -58,17 +56,9 @@ class TypesUpdate(Service):
             self.content_type = "application/json+schema"
             try:
                 portal_type = self.params[0]
-                old_schema = get_jsonschema_for_portal_type(
-                    portal_type, self.context, self.request
-                )
-
                 body = json_body(self.request)
-                # compare previous json schema to the new schema, if changed
-                # proceed with modifications
-                # body ? old_schema
-                import pdb; pdb.set_trace()
 
-                update_jsonschema_for_portal_type(portal_type, self.context, self.request, body)
+                update_defaults_for_portal_type(portal_type, self.context, self.request, body)
             except KeyError:
                 self.content_type = "application/json"
                 self.request.response.setStatus(404)
@@ -76,8 +66,4 @@ class TypesUpdate(Service):
                     "type": "NotFound",
                     "message": 'Type "{}" could not be found.'.format(portal_type),
                 }
-
-        # List type info, including addable_types
-        # info = TypesInfo(self.context, self.request)
-        # return info(expand=True)["types"]
         return self.reply_no_content()
