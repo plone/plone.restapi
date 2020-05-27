@@ -114,6 +114,21 @@ class TestCommentsSerializers(TestCase):
             serializer().get("author_image"),
         )
 
+    def test_comment_with_no_author_image(self):
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        self.conversation = IConversation(self.doc)
+        self.replies = IReplies(self.conversation)
+        comment = createObject("plone.Comment")
+        comment.text = "Hey ho, let's go!"
+        comment.author_username = TEST_USER_ID
+        self.comment = self.replies[self.replies.addComment(comment)]
+
+        serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
+        self.assertEqual(
+            "{}/defaultUser.png".format(self.portal_url),
+            serializer().get("author_image"),
+        )
+
     def test_comment_with_mimetype_text_plain(self):
         self.conversation = IConversation(self.doc)
         self.replies = IReplies(self.conversation)
