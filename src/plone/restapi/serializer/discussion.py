@@ -93,9 +93,5 @@ class CommentSerializer(object):
     def get_commenter_portrait(self, username=None):
         if username is None:
             return None
-        portal_membership = getToolByName(self.context,
-                                            'portal_membership',
-                                            None)
-        return portal_membership\
-            .getPersonalPortrait(username)\
-            .absolute_url()
+        portal_membership = getToolByName(self.context, "portal_membership", None)
+        return portal_membership.getPersonalPortrait(username).absolute_url()

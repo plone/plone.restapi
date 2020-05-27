@@ -95,12 +95,11 @@ class TestCommentsSerializers(TestCase):
         self.assertEqual(set(output["text"]), set(["data", "mime-type"]))
 
     def test_comment_with_author_image(self):
-        setRoles(self.portal, TEST_USER_ID, ['Manager'])
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
         # set member portrait
         membertool = getToolByName(self, "portal_memberdata")
         membertool._setPortrait(
-            Image(id=TEST_USER_ID, file=dummy.File(), title=''),
-            TEST_USER_ID
+            Image(id=TEST_USER_ID, file=dummy.File(), title=""), TEST_USER_ID
         )
         self.conversation = IConversation(self.doc)
         self.replies = IReplies(self.conversation)
@@ -110,8 +109,10 @@ class TestCommentsSerializers(TestCase):
         self.comment = self.replies[self.replies.addComment(comment)]
 
         serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
-        self.assertEqual('{}/portal_memberdata/portraits/test_user_1_'.format(self.portal_url), serializer().get('author_image') )
-
+        self.assertEqual(
+            "{}/portal_memberdata/portraits/test_user_1_".format(self.portal_url),
+            serializer().get("author_image"),
+        )
 
     def test_comment_with_mimetype_text_plain(self):
         self.conversation = IConversation(self.doc)
