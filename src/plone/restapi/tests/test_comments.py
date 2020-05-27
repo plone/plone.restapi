@@ -97,7 +97,7 @@ class TestCommentsSerializers(TestCase):
     def test_comment_with_author_image(self):
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         # set member portrait
-        membertool = getToolByName(self, "portal_memberdata")
+        membertool = getToolByName(self.portal, "portal_memberdata")
         membertool._setPortrait(
             Image(id=TEST_USER_ID, file=dummy.File(), title=""), TEST_USER_ID
         )
