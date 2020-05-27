@@ -17,7 +17,7 @@
     for="*"
     factory=".update.TypesUpdate"
     name="@types"
-    permission="zope2.View"
+    permission="plone.app.controlpanel.Overview"
     />
 
   <plone:service
@@ -25,7 +25,7 @@
     for="*"
     factory=".add.TypesPost"
     name="@types"
-    permission="zope2.View"
+    permission="plone.app.controlpanel.Overview"
     />
 
   <adapter factory=".get.TypesInfo" name="types"/>
