@@ -355,22 +355,21 @@ def serializeSchema(schema):
     fti.model_source = serializeModel(model)
 
 
-def create_fields(context, request, body):
+def create_fields(context, request, body, portal_type):
     """ Create fields for the given portal_type.
     """
     ttool = getToolByName(context, "portal_types")
+    fti = ttool[portal_type]
     bad_fields = []
 
     for key in body.keys():
         name = key
         klass = body[key].get('type', None)
-        portal_type = body[key].get('portal_type', None)
 
-        if not klass or portal_type:
+        if not klass:
             bad_fields.append(key)
             continue
 
-        fti = ttool[portal_type]
         field = getattr(zope.schema, klass)
         created_field = field(__name__=name)
 
