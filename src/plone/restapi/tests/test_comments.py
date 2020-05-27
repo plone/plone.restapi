@@ -125,8 +125,7 @@ class TestCommentsSerializers(TestCase):
 
         serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
         self.assertEqual(
-            "{}/defaultUser.png".format(self.portal_url),
-            serializer().get("author_image"),
+            None, serializer().get("author_image"),
         )
 
     def test_comment_with_mimetype_text_plain(self):

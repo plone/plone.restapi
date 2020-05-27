@@ -81,7 +81,7 @@ class CommentSerializer(object):
             "user_notification": self.context.user_notification,
             "author_username": self.context.author_username,
             "author_name": self.context.author_name,
-            "author_image": self.get_commenter_portrait(self.context.author_username),
+            "author_image": self.get_author_image(self.context.author_username),
             "creation_date": IJsonCompatible(self.context.creation_date),
             "modification_date": IJsonCompatible(
                 self.context.modification_date
@@ -90,8 +90,11 @@ class CommentSerializer(object):
             "is_deletable": can_delete(self.context) or delete_own,
         }
 
-    def get_commenter_portrait(self, username=None):
+    def get_author_image(self, username=None):
         if username is None:
-            return "defaultUser.png"
+            return None
         portal_membership = getToolByName(self.context, "portal_membership", None)
-        return portal_membership.getPersonalPortrait(username).absolute_url()
+        image = portal_membership.getPersonalPortrait(username).absolute_url()
+        if image.endswith("defaultUser.png"):
+            return None
+        return image
