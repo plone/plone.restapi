@@ -18,14 +18,19 @@ from copy import copy
 from plone.autoform.form import AutoExtensibleForm
 from plone.autoform.interfaces import IParameterizedWidget
 from plone.autoform.interfaces import WIDGETS_KEY
+from plone.dexterity.interfaces import IDexterityFTI
+from plone.dexterity.schema import splitSchemaName
 from plone.dexterity.utils import getAdditionalSchemata
 from plone.restapi.serializer.converters import IJsonCompatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
+from plone.supermodel import serializeModel
 from plone.supermodel.utils import mergedTaggedValueDict
+from plone.supermodel.utils import syncSchema
 from Products.CMFCore.utils import getToolByName
 from z3c.form import form as z3c_form
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
+from zope.component import queryUtility
 from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.i18n import translate
@@ -177,7 +182,8 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
         additional_schemata = ()
     else:
         additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-        fieldsets = get_fieldsets(context, request, schema, additional_schemata)
+        fieldsets = get_fieldsets(context, request,
+                                  schema, additional_schemata)
 
     # Build JSON schema properties
     properties = get_jsonschema_properties(
@@ -205,7 +211,8 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     }
 
 
-def get_jsonschema_for_portal_type(portal_type, context, request, excluded_fields=None):
+def get_jsonschema_for_portal_type(portal_type, context,
+                                   request, excluded_fields=None):
     """Build a complete JSON schema for the given portal_type.
     """
     ttool = getToolByName(context, "portal_types")
@@ -229,8 +236,31 @@ def get_vocabulary_url(vocab_name, context, request):
 
 
 def get_querysource_url(field, context, request):
-    return get_vocab_like_url("@querysources", field.getName(), context, request)
+    return get_vocab_like_url("@querysources",
+                              field.getName(), context, request)
 
 
 def get_source_url(field, context, request):
     return get_vocab_like_url("@sources", field.getName(), context, request)
+
+
+def serializeSchema(schema):
+    """ Taken from plone.app.dexterity.serialize
+        Finds the FTI and model associated with a schema, and synchronizes
+        the schema to the FTI model_source attribute.
+    """
+
+    # determine portal_type
+    try:
+        prefix, portal_type, schemaName = splitSchemaName(schema.__name__)
+    except ValueError:
+        # not a dexterity schema
+        return
+
+    # find the FTI and model
+    fti = queryUtility(IDexterityFTI, name=portal_type)
+    model = fti.lookupModel()
+
+    # synchronize changes to the model
+    syncSchema(schema, model.schemata[schemaName], overwrite=True)
+    fti.model_source = serializeModel(model)
