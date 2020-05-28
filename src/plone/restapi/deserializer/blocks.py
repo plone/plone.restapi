@@ -16,20 +16,37 @@ from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 
-def path2uid(context, path):
+def path2uid(context, link):
     # unrestrictedTraverse requires a string on py3. see:
     # https://github.com/zopefoundation/Zope/issues/674
-    if not isinstance(path, str):
-        path = path.decode("utf-8")
-    obj = context.unrestrictedTraverse(path, None)
+    if not link:
+        return ""
+    portal = getMultiAdapter(
+        (context, context.REQUEST), name="plone_portal_state"
+    ).portal()
+    portal_url = portal.absolute_url()
+    portal_path = "/".join(portal.getPhysicalPath())
+    path = link
+    context_url = context.absolute_url()
+    relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
+    if path.startswith(portal_url):
+        path = path[len(portal_url) + 1 :]
+    if not path.startswith(portal_path):
+        path = "{portal_path}/{path}".format(
+            portal_path=portal_path, path=path.lstrip("/")
+        )
+    obj = portal.unrestrictedTraverse(path, None)
     if obj is None:
-        return None, None
+        return link
     segments = path.split("/")
     suffix = ""
     while not IUUIDAware.providedBy(obj):
         obj = aq_parent(obj)
         suffix += "/" + segments.pop()
-    return IUUID(obj), suffix
+    href = relative_up * "../" + "resolveuid/" + IUUID(obj)
+    if suffix:
+        href += suffix
+    return href
 
 
 @implementer(IFieldDeserializer)
@@ -43,14 +60,13 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
             for id, block_value in value.items():
                 block_type = block_value.get("@type", "")
 
-                handlers = [
-                    h
-                    for h in subscribers(
-                        (self.context, self.request),
-                        IBlockFieldDeserializationTransformer,
-                    )
-                    if h.block_type == block_type
-                ]
+                handlers = []
+                for h in subscribers(
+                    (self.context, self.request),
+                    IBlockFieldDeserializationTransformer,
+                ):
+                    if h.block_type == block_type or h.block_type is None:
+                        handlers.append(h)
 
                 for handler in sorted(handlers, key=lambda h: h.order):
                     block_value = handler(block_value)
@@ -58,6 +74,29 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
                 value[id] = block_value
 
         return value
+
+
+@adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class ResolveUIDDeserializer(object):
+    """
+    This is a general handler. It will be loaded for all blocks 
+    """
+
+    order = 1
+    block_type = None
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, block):
+        # Convert absolute links to resolveuid
+
+        for field in ["url", "href"]:
+            link = block.get(field, "")
+            if link:
+                block[field] = path2uid(context=self.context, link=link)
 
 
 @adapter(IBlocks, IBrowserRequest)
