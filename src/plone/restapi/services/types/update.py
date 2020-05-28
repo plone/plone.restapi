@@ -1,24 +1,13 @@
 # -*- coding: utf-8 -*-
-from plone.dexterity.interfaces import IDexterityContent
+from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
-from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from plone.restapi.types.utils import update_defaults_for_portal_type
-from plone.restapi.services.types.get import TypesInfo
-from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
-from zope.component import adapter
-from zope.component import getMultiAdapter
-from zope.component import getUtility
-from zope.i18n import translate
 from zope.interface import implementer
-from zope.interface import Interface
 from zope.publisher.interfaces import IPublishTraverse
-from zope.schema.interfaces import IVocabularyFactory
 
-from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.deserializer import json_body
 
 
 def check_security(context):
@@ -27,7 +16,6 @@ def check_security(context):
     if portal_membership.isAnonymousUser():
         raise Unauthorized
 
-# @implementer(IExpandableElement)
 @implementer(IPublishTraverse)
 class TypesUpdate(Service):
     def __init__(self, context, request):

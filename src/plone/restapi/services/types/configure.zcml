@@ -28,6 +28,14 @@
     permission="plone.app.controlpanel.Overview"
     />
 
+  <plone:service
+    method="DELETE"
+    for="*"
+    factory=".delete.TypesDelete"
+    name="@types"
+    permission="plone.app.controlpanel.Overview"
+    />
+
   <adapter factory=".get.TypesInfo" name="types"/>
 
 </configure>
