@@ -53,6 +53,12 @@ def SearchableText_blocks(obj):
 
     for block in blocks.values():
 
+        searchableText = block.get("searchableText", "")
+        if searchableText:
+            # TODO: should we evaluate in some way this value? maybe passing
+            # it into html/plain text transformer?
+            blocks_text.append(searchableText)
+
         block_type = block.get("@type", "")
         adapter = queryMultiAdapter(
             (obj, request), IBlockSearchableText, name=block_type
