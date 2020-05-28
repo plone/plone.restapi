@@ -14,7 +14,7 @@ Changelog
 New features:
 
 
-- - Expose author_image in comments endpoint [timo] (#948)
+- Expose author_image in comments endpoint [timo] (#948)
 
 
 6.12.0 (2020-05-11)
@@ -51,11 +51,11 @@ New features:
 Bug fixes:
 
 
-- - Fixed @translations endpoint to only retrieve the translations that the current user
-    can really access using ``get_restricted_translations`` instead. This fixes the use
-    case where an user with no permissions on a translation accessing the endpoint returned
-    a 401.
-    [sneridagh] (#937)
+- Fixed @translations endpoint to only retrieve the translations that the current user
+  can really access using ``get_restricted_translations`` instead. This fixes the use
+  case where an user with no permissions on a translation accessing the endpoint returned
+  a 401.
+  [sneridagh] (#937)
 
 
 6.9.0 (2020-05-06)
