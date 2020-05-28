@@ -122,6 +122,7 @@ def get_jsonschema_properties(
     for field in iter_fields(fieldsets):
         fieldname = field.field.getName()
         if fieldname not in excluded_fields:
+
             # We need to special case relatedItems not to render choices
             # so we try a named adapter first and fallback to unnamed ones.
             adapter = queryMultiAdapter(
@@ -233,100 +234,3 @@ def get_querysource_url(field, context, request):
 
 def get_source_url(field, context, request):
     return get_vocab_like_url("@sources", field.getName(), context, request)
-
-
-from plone.dexterity.interfaces import IDexterityFTI
-from plone.dexterity.schema import splitSchemaName
-from plone.dexterity.utils import iterSchemataForType
-from plone.supermodel import serializeModel
-from plone.supermodel.utils import syncSchema
-from zope.component import queryUtility
-
-def update_defaults_for_portal_type(portal_type, context, request, body, excluded_fields=None):
-    """Update the JSON schema for the given portal_type.
-    """
-    ttool = getToolByName(context, "portal_types")
-    fti = ttool[portal_type]
-    return update_defaults_for_fti(
-        fti, context, request, body, excluded_fields=excluded_fields
-    )
-
-
-def update_defaults_for_fti(fti, context, request, body, excluded_fields=None):
-    """Update the JSON schema for the given FTI.
-    """
-    if excluded_fields is None:
-        excluded_fields = []
-
-    # We try..except lookupSchema here, so we still get FTI information
-    # through /@types/{typeid} for non-DX type, notably the "Plone Site" type.
-    try:
-        schema = fti.lookupSchema()
-    except AttributeError:
-        schema = None
-        old_fieldsets = ()
-        old_additional_schemata = ()
-    else:
-        old_additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-        old_fieldsets = get_fieldsets(context, request, schema, old_additional_schemata)
-
-    json_fields = body.pop('properties')
-    json_fieldsets = body.pop('fieldsets')
-    old_schemata = iterSchemataForType(fti.id)
-    # old_merged = old_additional_schemata + (schema, )
-
-    # set remaining data
-    for key in body.keys():
-        if hasattr(fti, key):
-            setattr(fti, key, body[key])
-
-    from plone.supermodel.interfaces import FIELDSETS_KEY
-    from plone.supermodel.model import Fieldset
-    # >>> ISecondarySchema.setTaggedValue(FIELDSETS_KEY, [Fieldset('secondary', fields=['summary'])])
-
-
-    for iface in old_schemata:
-        if iface.__name__ == 'IDublinCore':
-            field_names = iface._v_attrs.keys()
-
-        # try:
-        #     fieldsets = iface.getTaggedValue(FIELDSETS_KEY)
-        #     print(fieldsets)
-        # except:
-        #     import pdb; pdb.set_trace()
-
-        field_names = iface.names()
-        for name in field_names:
-            field = iface.get(name, None)
-            if not json_fields.get(name, None):
-                continue
-
-            for key in json_fields[name]:
-                if key == 'vocabulary' or key == 'choices':
-                    # TODO: option to supply new vocabulary/modify current terms
-                    continue
-                if hasattr(field, key):
-                    print("Setting attr {} for {}".format(key, field))
-                    setattr(field, key, json_fields[name][key])
-
-
-def serializeSchema(schema):
-    """ Taken from plone.app.dexterity.serialize
-        Finds the FTI and model associated with a schema, and synchronizes
-        the schema to the FTI model_source attribute.
-    """
-
-    # determine portal_type
-    try:
-        prefix, portal_type, schemaName = splitSchemaName(schema.__name__)
-    except ValueError:
-        # not a dexterity schema
-        return
-
-    # find the FTI and model
-    fti = queryUtility(IDexterityFTI, name=portal_type)
-    model = fti.lookupModel()
-
-    # synchronize changes to the model
-    syncSchema(schema, model.schemata[schemaName], overwrite=True)
-    fti.model_source = serializeModel(model)
