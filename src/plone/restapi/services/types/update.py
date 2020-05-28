@@ -11,6 +11,7 @@ from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.deserializer import json_body
 from plone.restapi.types.utils import serializeSchema
 
+
 @implementer(IPublishTraverse)
 class TypesUpdate(Service):
     def __init__(self, context, request):

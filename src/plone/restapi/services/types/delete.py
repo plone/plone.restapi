@@ -5,7 +5,7 @@ from plone.restapi.interfaces import IPloneRestapiLayer
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import noLongerProvides
-from zope.component import queryMultiAdapter, queryUtility
+from zope.component import queryMultiAdapter
 from zope.publisher.interfaces import IPublishTraverse
 from zExceptions import BadRequest
 
@@ -42,22 +42,19 @@ class TypesDelete(Service):
         if IPloneRestapiLayer.providedBy(self.request):
             noLongerProvides(self.request, IPloneRestapiLayer)
 
-        try:
-            name = self.params[0]
-            field_name = self.params[1]
+        name = self.params[0]
+        field_name = self.params[1]
 
-            context = queryMultiAdapter(
-                (self.context, self.request), name="dexterity-types"
-            )
-            # get content type SchemaContext
-            context = context.publishTraverse(self.request, name)
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types"
+        )
+        # get content type SchemaContext
+        context = context.publishTraverse(self.request, name)
 
-            # get FieldContext
-            context = context.publishTraverse(self.request, field_name)
+        # get FieldContext
+        context = context.publishTraverse(self.request, field_name)
 
-            delete = context.publishTraverse(self.request, 'delete')
-            delete()
-        except:
-            pass
+        delete = context.publishTraverse(self.request, 'delete')
+        delete()
 
         return self.reply_no_content()
