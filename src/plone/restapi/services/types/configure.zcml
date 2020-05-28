@@ -11,6 +11,30 @@
     permission="zope2.View"
     />
 
+  <plone:service
+    method="PATCH"
+    for="*"
+    factory=".update.TypesUpdate"
+    name="@types"
+    permission="plone.app.controlpanel.Overview"
+    />
+
+  <plone:service
+    method="POST"
+    for="*"
+    factory=".add.TypesPost"
+    name="@types"
+    permission="plone.app.controlpanel.Overview"
+    />
+
+  <plone:service
+    method="DELETE"
+    for="*"
+    factory=".delete.TypesDelete"
+    name="@types"
+    permission="plone.app.controlpanel.Overview"
+    />
+
   <adapter factory=".get.TypesInfo" name="types"/>
 
 </configure>
