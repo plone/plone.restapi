@@ -1,20 +1,15 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.deserializer import json_body
-from plone.restapi.interfaces import IExpandableElement
-from plone.restapi.services import Service
-from plone.restapi.types.utils import update_defaults_for_portal_type
-from Products.CMFCore.utils import getToolByName
-from zExceptions import Unauthorized
-from zope.interface import implementer
+import plone.protect.interfaces
 from zope.publisher.interfaces import IPublishTraverse
-
-
-
-def check_security(context):
-    # Only expose type information to authenticated users
-    portal_membership = getToolByName(context, "portal_membership")
-    if portal_membership.isAnonymousUser():
-        raise Unauthorized
+from zope.interface import noLongerProvides
+from zope.interface import implementer
+from zope.interface import alsoProvides
+from zope.component import queryMultiAdapter
+from zExceptions import BadRequest
+from plone.restapi.services import Service
+from plone.restapi.interfaces import IPloneRestapiLayer
+from plone.restapi.deserializer import json_body
+from plone.restapi.types.utils import serializeSchema
 
 @implementer(IPublishTraverse)
 class TypesUpdate(Service):
@@ -27,31 +22,32 @@ class TypesUpdate(Service):
         self.params.append(name)
         return self
 
-    @property
-    def _get_record_name(self):
-        if len(self.params) != 1:
-            raise Exception(
-                "Must supply exactly one parameter (dotted name of"
-                "the record to be retrieved)"
+    def reply(self):
+        if not self.params:
+            raise BadRequest("Missing parameter typename")
+
+        data = json_body(self.request)
+
+        # Disable CSRF protection
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(
+                self.request,
+                plone.protect.interfaces.IDisableCSRFProtection
             )
 
-        return self.params[0]
+        # Make sure we get the right dexterity-types adapter
+        if IPloneRestapiLayer.providedBy(self.request):
+            noLongerProvides(self.request, IPloneRestapiLayer)
 
-    def reply(self):
-        if self.params and len(self.params) > 0:
-            # Modify schema for a specific type
-            check_security(self.context)
-            self.content_type = "application/json+schema"
-            try:
-                portal_type = self.params[0]
-                body = json_body(self.request)
+        name = self.params.pop()
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types"
+        )
 
-                update_defaults_for_portal_type(portal_type, self.context, self.request, body)
-            except KeyError:
-                self.content_type = "application/json"
-                self.request.response.setStatus(404)
-                return {
-                    "type": "NotFound",
-                    "message": 'Type "{}" could not be found.'.format(portal_type),
-                }
+        context = context.publishTraverse(self.request, name)
+        for key, value in data.items():
+            if key in context.schema:
+                context.schema[key].default = value
+        serializeSchema(context.schema)
+
         return self.reply_no_content()
