@@ -80,7 +80,7 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
 @implementer(IBlockFieldDeserializationTransformer)
 class ResolveUIDDeserializer(object):
     """
-    This is a general handler. It will be loaded for all blocks 
+    This is a general handler. It will be loaded for all blocks
     """
 
     order = 1
