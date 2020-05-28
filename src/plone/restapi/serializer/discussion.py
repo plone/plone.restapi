@@ -9,6 +9,7 @@ from plone.restapi.services.discussion.utils import can_delete_own
 from plone.restapi.services.discussion.utils import can_edit
 from plone.restapi.services.discussion.utils import delete_own_comment_allowed
 from plone.restapi.services.discussion.utils import edit_comment_allowed
+from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
@@ -80,6 +81,7 @@ class CommentSerializer(object):
             "user_notification": self.context.user_notification,
             "author_username": self.context.author_username,
             "author_name": self.context.author_name,
+            "author_image": self.get_author_image(self.context.author_username),
             "creation_date": IJsonCompatible(self.context.creation_date),
             "modification_date": IJsonCompatible(
                 self.context.modification_date
@@ -87,3 +89,12 @@ class CommentSerializer(object):
             "is_editable": edit_comment_allowed() and can_edit(self.context),
             "is_deletable": can_delete(self.context) or delete_own,
         }
+
+    def get_author_image(self, username=None):
+        if username is None:
+            return None
+        portal_membership = getToolByName(self.context, "portal_membership", None)
+        image = portal_membership.getPersonalPortrait(username).absolute_url()
+        if image.endswith("defaultUser.png"):
+            return None
+        return image
