@@ -26,10 +26,10 @@ class TypesDelete(Service):
     def reply(self):
         if not self.params:
             raise BadRequest("Missing parameter typename")
-        if len(self.params) > 2:
-            raise BadRequest("Too many parameters")
         if len(self.params) < 2:
             raise BadRequest("Missing parameter fieldname")
+        if len(self.params) > 2:
+            raise BadRequest("Too many parameters")
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
@@ -42,19 +42,19 @@ class TypesDelete(Service):
         if IPloneRestapiLayer.providedBy(self.request):
             noLongerProvides(self.request, IPloneRestapiLayer)
 
-        name = self.params[0]
-        field_name = self.params[1]
-
         context = queryMultiAdapter(
             (self.context, self.request), name="dexterity-types"
         )
-        # get content type SchemaContext
+
+        # Get content type SchemaContext
+        name = self.params.pop(0)
         context = context.publishTraverse(self.request, name)
 
-        # get FieldContext
-        context = context.publishTraverse(self.request, field_name)
+        # Get FieldContext
+        name = self.params.pop(0)
+        context = context.publishTraverse(self.request, name)
 
-        delete = context.publishTraverse(self.request, 'delete')
+        delete = queryMultiAdapter((context, self.request), name="delete")
         delete()
 
         return self.reply_no_content()
