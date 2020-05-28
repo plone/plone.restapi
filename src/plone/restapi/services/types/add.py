@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
-from plone.i18n.normalizer import idnormalizer
-from plone.restapi.deserializer import json_body
-from plone.restapi.services import Service
-from zExceptions import BadRequest
-from zope.component import queryMultiAdapter, queryUtility
-from zope.interface import alsoProvides
-from zope.interface import implementer
-from zope.publisher.interfaces import IPublishTraverse
-from zope.schema.interfaces import IVocabularyFactory
 import plone.protect.interfaces
+from zope.schema.interfaces import IVocabularyFactory
+from zope.publisher.interfaces import IPublishTraverse
+from zope.interface import noLongerProvides
+from zope.interface import implementer
+from zope.interface import alsoProvides
+from zope.component import queryMultiAdapter, queryUtility
+from zExceptions import BadRequest
+from plone.restapi.services import Service
+from plone.restapi.interfaces import IPloneRestapiLayer
+from plone.restapi.deserializer import json_body
+from plone.i18n.normalizer import idnormalizer
+
 
 @implementer(IPublishTraverse)
 class TypesPost(Service):
@@ -38,6 +41,17 @@ class TypesPost(Service):
 
             description = data.get("description", "")
 
+            # Disable CSRF protection
+            if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+                alsoProvides(
+                    self.request,
+                    plone.protect.interfaces.IDisableCSRFProtection
+                )
+
+            # Make sure we don't get the right dexterity-types adapter
+            if IPloneRestapiLayer.providedBy(self.request):
+                noLongerProvides(self.request, IPloneRestapiLayer)
+
             name = self.params.pop()
             context = queryMultiAdapter(
                 (self.context, self.request), name="dexterity-types"
@@ -50,7 +64,8 @@ class TypesPost(Service):
 
             if factory == "fieldset":
                 # Adding new fieldset
-                add = queryMultiAdapter((context, self.request), name="add-fieldset")
+                add = queryMultiAdapter((context, self.request),
+                                        name="add-fieldset")
                 properties = {
                     "label": title,
                     "__name__": tid,
@@ -67,7 +82,8 @@ class TypesPost(Service):
                     raise BadRequest("Invalid '@type' %s" % factory)
 
                 # Adding new field
-                add = queryMultiAdapter((context, self.request), name="add-field")
+                add = queryMultiAdapter((context, self.request),
+                                        name="add-field")
                 properties = {
                     "title": title,
                     "__name__": tid,
@@ -76,12 +92,8 @@ class TypesPost(Service):
                     "required": data.get("required", False)
                 }
 
-            # Disable CSRF protection
-            if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-                alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
-
             field = add.form_instance.create(data=properties)
             add.form_instance.add(field)
 
-        #TODO Return added field/fieldset
+        # TODO Return added field/fieldset
         return self.reply_no_content()
