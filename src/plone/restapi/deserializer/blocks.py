@@ -79,7 +79,7 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
 @implementer(IBlockFieldDeserializationTransformer)
 class ResolveUIDDeserializer(object):
     """
-    This is a general handler. It will be loaded for all blocks 
+    This is a general handler. It will be loaded for all blocks
     """
 
     order = 1
@@ -96,6 +96,7 @@ class ResolveUIDDeserializer(object):
             if link:
                 block[field] = path2uid(context=self.context, link=link)
         return block
+
 
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
