@@ -22,6 +22,31 @@ import re
 RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
 
 
+def uid_to_url(path):
+    if not path:
+        return ""
+    match = RESOLVEUID_RE.match(path)
+    if match is None:
+        return path
+
+    uid, suffix = match.groups()
+    href = uuidToURL(uid)
+    if href is None:
+        return path
+    if suffix:
+        href += "/" + suffix
+    else:
+        target_object = uuidToObject(uid)
+        if target_object:
+            adapter = queryMultiAdapter(
+                (target_object, target_object.REQUEST),
+                IObjectPrimaryFieldTarget,
+            )
+            if adapter and adapter():
+                href = adapter()
+    return href
+
+
 @adapter(IJSONField, IBlocks, Interface)
 @implementer(IFieldSerializer)
 class BlocksJSONFieldSerializer(DefaultFieldSerializer):
@@ -31,15 +56,13 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
         if self.field.getName() == "blocks":
             for id, block_value in value.items():
                 block_type = block_value.get("@type", "")
-
-                handlers = [
-                    h
-                    for h in subscribers(
-                        (self.context, self.request),
-                        IBlockFieldSerializationTransformer,
-                    )
-                    if h.block_type == block_type
-                ]
+                handlers = []
+                for h in subscribers(
+                    (self.context, self.request),
+                    IBlockFieldSerializationTransformer,
+                ):
+                    if h.block_type == block_type or h.block_type is None:
+                        handlers.append(h)
 
                 for handler in sorted(handlers, key=lambda h: h.order):
                     block_value = handler(block_value)
@@ -47,6 +70,23 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                 value[id] = block_value
 
         return json_compatible(value)
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IBlocks, IBrowserRequest)
+class ResolveUIDSerializer(object):
+    order = 1
+    block_type = None
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, value):
+        for field in ["url", "href"]:
+            if field in value.keys():
+                value[field] = uid_to_url(value.get(field, ""))
+        return value
 
 
 @implementer(IBlockFieldSerializationTransformer)
@@ -65,31 +105,6 @@ class TextBlockSerializer(object):
         for entity in entity_map.values():
             if entity.get("type") != "LINK":
                 continue
-            href = entity.get("data", {}).get("url", "")
-            before = href  # noqa
-            if href:
-                match = RESOLVEUID_RE.match(href)
-                if match is not None:
-                    uid, suffix = match.groups()
-                    href = uuidToURL(uid)
-                    if href is None:
-                        continue
-                    if suffix:
-                        href += "/" + suffix
-                    else:
-                        primary_field_url = self.get_primary_field_target_url(uid)
-                        href = primary_field_url if primary_field_url else href
-                    entity["data"]["href"] = href
-                    entity["data"]["url"] = href
-                    print("SERIALIZE " + before + " -> " + href)  # noqa
+            href = entity.get("data", {}).get("href", "")
+            entity["data"]["href"] = uid_to_url(href)
         return value
-
-    def get_primary_field_target_url(self, uid):
-        target_object = uuidToObject(uid)
-        if not target_object:
-            return
-        adapter = queryMultiAdapter(
-            (target_object, self.request), IObjectPrimaryFieldTarget
-        )
-        if adapter:
-            return adapter()

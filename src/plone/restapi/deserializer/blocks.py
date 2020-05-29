@@ -24,7 +24,7 @@ def path2uid(context, link):
     portal = getMultiAdapter(
         (context, context.REQUEST), name="plone_portal_state"
     ).portal()
-    portal_url = portal.absolute_url()
+    portal_url = portal.portal_url()
     portal_path = "/".join(portal.getPhysicalPath())
     path = link
     context_url = context.absolute_url()
@@ -67,7 +67,6 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
                 ):
                     if h.block_type == block_type or h.block_type is None:
                         handlers.append(h)
-
                 for handler in sorted(handlers, key=lambda h: h.order):
                     block_value = handler(block_value)
 
@@ -80,7 +79,7 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
 @implementer(IBlockFieldDeserializationTransformer)
 class ResolveUIDDeserializer(object):
     """
-    This is a general handler. It will be loaded for all blocks
+    This is a general handler. It will be loaded for all blocks 
     """
 
     order = 1
@@ -92,12 +91,11 @@ class ResolveUIDDeserializer(object):
 
     def __call__(self, block):
         # Convert absolute links to resolveuid
-
         for field in ["url", "href"]:
             link = block.get(field, "")
             if link:
                 block[field] = path2uid(context=self.context, link=link)
-
+        return block
 
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
@@ -113,28 +111,13 @@ class TextBlockDeserializer(object):
         # Convert absolute links to resolveuid
         # Assumes in-place mutations
 
-        portal = getMultiAdapter(
-            (self.context, self.request), name="plone_portal_state"
-        ).portal()
-        portal_url = portal.absolute_url()
-        context_url = self.context.absolute_url()
-        relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
         entity_map = block.get("text", {}).get("entityMap", {})
         for entity in entity_map.values():
             if entity.get("type") == "LINK":
-                href = entity.get("data", {}).get("url", "")
-                before = href  # noqa
-                if href and href.startswith(portal_url):
-                    path = href[len(portal_url) + 1 :].encode("utf8")
-                    uid, suffix = path2uid(portal, path)
-                    if uid:
-                        href = relative_up * "../" + "resolveuid/" + uid
-                        if suffix:
-                            href += suffix
-                        entity["data"]["href"] = href
-                        entity["data"]["url"] = href
-                    print("DESERIALIZE " + before + " -> " + href)  # noqa
-
+                href = entity.get("data", {}).get("href", "")
+                entity["data"]["href"] = path2uid(
+                    context=self.context, link=href
+                )
         return block
 
 
@@ -148,17 +131,17 @@ class HTMLBlockDeserializer(object):
         self.context = context
         self.request = request
 
-    def __call__(self, value):
+    def __call__(self, block):
 
         portal_transforms = api.portal.get_tool(name="portal_transforms")
-        raw_html = value.get("html", "")
+        raw_html = block.get("html", "")
         data = portal_transforms.convertTo(
             "text/x-html-safe", raw_html, mimetype="text/html"
         )
         html = data.getData()
-        value["html"] = html
+        block["html"] = html
 
-        return value
+        return block
 
 
 @adapter(IBlocks, IBrowserRequest)
@@ -171,23 +154,7 @@ class ImageBlockDeserializer(object):
         self.context = context
         self.request = request
 
-    def __call__(self, value):
-        portal = getMultiAdapter(
-            (self.context, self.request), name="plone_portal_state"
-        ).portal()
-        portal_url = portal.absolute_url()
-        context_url = self.context.absolute_url()
-        relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
-
-        href = value.get("url", "")
-
-        if href and href.startswith(portal_url):
-            path = href[len(portal_url) + 1 :].encode("utf8")
-            uid, suffix = path2uid(portal, path)
-            if uid:
-                href = relative_up * "../" + "resolveuid/" + uid
-                if suffix:
-                    href += suffix
-
-        value["url"] = href
-        return value
+    def __call__(self, block):
+        url = block.get("url", "")
+        block["url"] = path2uid(context=self.context, link=url)
+        return block

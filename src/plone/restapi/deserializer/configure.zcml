@@ -24,6 +24,8 @@
     provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
   <subscriber factory=".blocks.ImageBlockDeserializer"
     provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  <subscriber factory=".blocks.ResolveUIDDeserializer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
 
   <adapter factory=".local_roles.DeserializeFromJson"
            name="local_roles"/>
