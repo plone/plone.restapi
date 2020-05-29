@@ -50,11 +50,19 @@ class TypesDelete(Service):
         name = self.params.pop(0)
         context = context.publishTraverse(self.request, name)
 
-        # Get FieldContext
         name = self.params.pop(0)
-        context = context.publishTraverse(self.request, name)
+        try:
+            context = context.publishTraverse(self.request, name)
+        except Exception:
+            # Removing a fieldset
+            self.request.form['name'] = name
+            delete = queryMultiAdapter((context, self.request),
+                                       name="delete-fieldset")
+        else:
+            # Removing a field
+            delete = queryMultiAdapter((context, self.request),
+                                       name="delete")
 
-        delete = queryMultiAdapter((context, self.request), name="delete")
         delete()
 
         return self.reply_no_content()
