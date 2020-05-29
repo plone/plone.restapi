@@ -3,11 +3,13 @@ from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
+from plone.restapi.types.utils import get_info_for_field
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
 from zope.component import adapter
 from zope.component import getMultiAdapter
+from zope.component import queryMultiAdapter
 from zope.component import getUtility
 from zope.i18n import translate
 from zope.interface import implementer
@@ -71,7 +73,6 @@ class TypesInfo(object):
         return result
 
 
-# @implementer(IExpandableElement)
 @implementer(IPublishTraverse)
 class TypesGet(Service):
     def __init__(self, context, request):
@@ -94,6 +95,8 @@ class TypesGet(Service):
         return self.params[0]
 
     def reply(self):
+        if len(self.params) == 2:
+            return self.reply_for_field()
         if self.params and len(self.params) > 0:
             # Return schema for a specific type
             check_security(self.context)
@@ -114,3 +117,10 @@ class TypesGet(Service):
         # List type info, including addable_types
         info = TypesInfo(self.context, self.request)
         return info(expand=True)["types"]
+
+    def reply_for_field(self):
+        check_security(self.context)
+        name = self.params[0]
+        field_name = self.params[1]
+
+        return get_info_for_field(name, field_name, self.context, self.request)
