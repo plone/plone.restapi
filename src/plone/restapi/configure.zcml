@@ -97,5 +97,13 @@
       name="plone.restapi"
       provides="Products.CMFPlone.interfaces.INonInstallable"
       />
+  
+  <!-- blocks link integrity -->
+  <adapter factory=".blocks_linkintegrity.BlocksRetriever" />
+
+  <subscriber factory=".blocks_linkintegrity.TextBlockLinksRetriever"
+    provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"/>
+  <subscriber factory=".blocks_linkintegrity.GenericBlockLinksRetriever"
+    provides="plone.restapi.interfaces.IBlockFieldLinkIntegrityRetriever"/>
 
 </configure>

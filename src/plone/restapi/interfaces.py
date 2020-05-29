@@ -233,3 +233,20 @@ class IBlockSearchableText(Interface):
     def __call__(value):
         """Extract text from the block value. Returns text
         """
+
+
+class IBlockFieldLinkIntegrityRetriever(Interface):
+    """Retrieve internal links set in current block.
+    """
+
+    block_type = Attribute(
+        "A string with the type of block, the @type from " "the block value"
+    )
+
+    def __init__(field, context, request):
+        """Adapts context and the request.
+        """
+
+    def __call__(value):
+        """Return a list of internal links set in this block.
+        """
