@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from plone.app.linkintegrity.utils import linkintegrity_enabled
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from zope.interface import implementer
@@ -12,7 +13,8 @@ class LinkintegrityGet(Service):
     """
 
     def reply(self):
-
+        if not linkintegrity_enabled():
+            return json_compatible([])
         links_info = self.context.restrictedTraverse(
             "@@delete_confirmation_info"
         )

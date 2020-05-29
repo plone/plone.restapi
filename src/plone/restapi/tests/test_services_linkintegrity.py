@@ -4,14 +4,17 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
+from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from plone.uuid.interfaces import IUUID
+from Products.CMFPlone.interfaces import IEditingSchema
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
+from zope.event import notify
 from zope.intid.interfaces import IIntIds
 from zope.lifecycleevent import ObjectModifiedEvent
-from zope.event import notify
-from plone.uuid.interfaces import IUUID
+
 import transaction
 import unittest
 
@@ -67,6 +70,20 @@ class TestServicesNavigation(unittest.TestCase):
         self.assertEqual(
             breaches[0]["sources"][0]["@id"], self.doc1.absolute_url()
         )
+
+    def test_do_not_return_breaches_if_check_is_disabled(self):
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IEditingSchema, prefix="plone")
+        settings.enable_link_integrity_checks = False
+        intids = getUtility(IIntIds)
+        self.doc1.relatedItems = [RelationValue(intids.getId(self.doc2))]
+        notify(ObjectModifiedEvent(self.doc1))
+        transaction.commit()
+
+        response = self.api_session.get("/doc-2/@linkintegrity")
+        breaches = response.json()
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(breaches, [])
 
     def test_return_right_breaches_for_blocks(self):
         response = self.api_session.get("/doc-2/@linkintegrity")
