@@ -9,7 +9,6 @@ from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
 from zope.component import adapter
 from zope.component import getMultiAdapter
-from zope.component import queryMultiAdapter
 from zope.component import getUtility
 from zope.i18n import translate
 from zope.interface import implementer

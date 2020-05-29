@@ -318,24 +318,24 @@ def get_info_for_field(portal_type, field_name, context, request):
                     field = field.field
 
                     properties = get_jsonschema_properties(context, request,
-                            [fieldset], fname=field_name)
+                                                [fieldset], fname=field_name)
                     properties[field_name]['default'] = getattr(field,
-                            'default', None)
+                                                'default', None)
                     properties[field_name]['defaultFactory'] = getattr(field,
-                            'defaultFactory', None)
+                                                'defaultFactory', None)
                     properties[field_name]['interface'] = str(getattr(field,
-                            'interface', None))
+                                                'interface', None))
                     properties[field_name]['max_length'] = getattr(field,
-                            'max_length', None)
+                                                'max_length', None)
                     properties[field_name]['min_length'] = getattr(field,
-                            'min_length', None)
+                                                'min_length', None)
                     properties[field_name]['missing_value'] = getattr(field,
-                            'missing_value', None)
+                                                'missing_value', None)
                     properties[field_name]['order'] = getattr(field,
-                            'order', None)
+                                                'order', None)
                     properties[field_name]['readonly'] = getattr(field,
-                            'readonly', None)
+                                                'readonly', None)
                     properties[field_name]['required'] = getattr(field,
-                            'required', None)
+                                                'required', None)
                     return IJsonCompatible(properties)
     return {'message': 'No entry could be found for the supplied name.'}
