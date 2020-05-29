@@ -20,6 +20,7 @@
   <include package=".groups"/>
   <include package=".navigation"/>
   <include package=".history"/>
+  <include package=".linkintegrity" />
   <include package=".locking" />
   <include package=".principals"/>
   <include package=".querysources"/>

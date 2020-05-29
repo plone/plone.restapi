@@ -1,0 +1,16 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+    
+  <include package="Products.CMFEditions" />
+
+  <plone:service
+    method="GET"
+    name="@linkintegrity"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".get.LinkintegrityGet"
+    permission="CMFEditions.AccessPreviousVersions"
+    />
+
+</configure>
