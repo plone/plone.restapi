@@ -1,5 +1,4 @@
-"""Link Integrity - link retriever methods.
-"""
+# -*- coding: utf-8 -*-
 from plone.app.linkintegrity.interfaces import IRetriever
 from plone.app.linkintegrity.retriever import DXGeneral
 from plone.restapi.behaviors import IBlocks
