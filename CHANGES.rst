@@ -68,6 +68,15 @@ Bug fixes:
   [erral] (#932)
 
 
+6.13.0 (2020-05-28)
+-------------------
+
+New features:
+
+
+- Expose author_image in comments endpoint [timo] (#948)
+
+
 6.12.0 (2020-05-11)
 -------------------
 
