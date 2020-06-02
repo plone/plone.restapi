@@ -27,8 +27,6 @@ class TypesUpdate(Service):
         if not self.params:
             raise BadRequest("Missing parameter typename")
 
-        data = json_body(self.request)
-
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(
@@ -40,6 +38,10 @@ class TypesUpdate(Service):
         if IPloneRestapiLayer.providedBy(self.request):
             noLongerProvides(self.request, IPloneRestapiLayer)
 
+        if len(self.params) == 2:
+            return self.reply_for_field()
+
+        data = json_body(self.request)
         name = self.params.pop()
         context = queryMultiAdapter(
             (self.context, self.request), name="dexterity-types"
@@ -49,6 +51,28 @@ class TypesUpdate(Service):
         for key, value in data.items():
             if key in context.schema:
                 context.schema[key].default = value
+        serializeSchema(context.schema)
+
+        return self.reply_no_content()
+
+    def reply_for_field(self):
+        data = json_body(self.request)
+
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types"
+        )
+
+        # Get content type SchemaContext
+        name = self.params.pop(0)
+        context = context.publishTraverse(self.request, name)
+
+        # Get FieldContext
+        name = self.params.pop(0)
+        context = context.publishTraverse(self.request, name)
+
+        for key, value in data.items():
+            if hasattr(context.field, key):
+                setattr(context.field, key, value)
         serializeSchema(context.schema)
 
         return self.reply_no_content()
