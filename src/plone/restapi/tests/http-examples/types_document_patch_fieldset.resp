@@ -1,0 +1,41 @@
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{
+  "message": "__getitem__",
+  "traceback": [
+    "File \"/joint/backend/eea-dx-cpanel-metadata/eggs/Zope-4.1.3-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 156, in transaction_pubevents",
+    "    yield",
+    "",
+    "  File \"/joint/backend/eea-dx-cpanel-metadata/eggs/Zope-4.1.3-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 338, in publish_module",
+    "    response = _publish(request, new_mod_info)",
+    "",
+    "  File \"/joint/backend/eea-dx-cpanel-metadata/eggs/Zope-4.1.3-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 248, in publish",
+    "    result = mapply(obj,",
+    "",
+    "  File \"/joint/backend/eea-dx-cpanel-metadata/eggs/Zope-4.1.3-py3.8.egg/ZPublisher/mapply.py\", line 85, in mapply",
+    "    return debug(object, args, context)",
+    "",
+    "  File \"/joint/backend/eea-dx-cpanel-metadata/eggs/Zope-4.1.3-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 62, in call_object",
+    "    return obj(*args)",
+    "",
+    "  File \"/joint/backend/eea-dx-cpanel-metadata/eggs/plone.rest-1.6.0-py3.8.egg/plone/rest/service.py\", line 22, in __call__",
+    "    return self.render()",
+    "",
+    "  File \"/joint/backend/eea-dx-cpanel-metadata/src/plone/restapi/services/__init__.py\", line 21, in render",
+    "    content = self.reply()",
+    "",
+    "  File \"/joint/backend/eea-dx-cpanel-metadata/src/plone/restapi/services/types/update.py\", line 42, in reply",
+    "    return self.reply_for_field()",
+    "",
+    "  File \"/joint/backend/eea-dx-cpanel-metadata/src/plone/restapi/services/types/update.py\", line 71, in reply_for_field",
+    "    context = context.publishTraverse(self.request, name)",
+    "",
+    "  File \"/joint/backend/eea-dx-cpanel-metadata/eggs/plone.schemaeditor-2.1.0-py3.8.egg/plone/schemaeditor/browser/schema/traversal.py\", line 43, in publishTraverse",
+    "    return DefaultPublishTraverse(self, request).publishTraverse(",
+    "",
+    "  File \"/joint/backend/eea-dx-cpanel-metadata/eggs/Zope-4.1.3-py3.8.egg/ZPublisher/BaseRequest.py\", line 137, in publishTraverse",
+    "    subobject = object[name]"
+  ],
+  "type": "AttributeError"
+}

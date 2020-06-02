@@ -524,7 +524,10 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("types_document", response)
 
     def test_documentation_types_document_crud_fieldset(self):
+        #
         # POST
+        #
+
         response = self.api_session.post(
             "/@types/Document",
             json={
@@ -537,7 +540,59 @@ class TestDocumentation(TestDocumentationBase):
             "types_document_post_fieldset", response
         )
 
+        #
+        # GET
+        #
+
+        response = self.api_session.get(
+            "/@types/Document/contact_info"
+        )
+        save_request_and_response_for_docs(
+            "types_document_get_fieldset", response
+        )
+
+        #
+        # PATCH
+        #
+
+        # Add custom field to be used for fieldset patch
+        response = self.api_session.post(
+            "/@types/Document",
+            json={
+                "@type": "Email",
+                "title": "ABC",
+            }
+        )
+
+        response = self.api_session.patch(
+            "/@types/Document/contact_info",
+            json={
+                "title": "Contact Information",
+                "fields": [
+                    "abc"
+                ]
+            }
+        )
+        save_request_and_response_for_docs(
+            "types_document_patch_fieldset", response
+        )
+
+        #
         # DELETE
+        #
+
+        # Shouldn't be able to remove a fieldset with assigned fields
+        response = self.api_session.delete(
+            "/@types/Document/contact_info",
+        )
+        save_request_and_response_for_docs(
+            "types_document_delete_fieldset_error", response
+        )
+
+        # Cleanup fieldset fields
+        self.api_session.delete("/@types/Document/abc")
+
+        # Remove fieldset
         response = self.api_session.delete(
             "/@types/Document/contact_info",
         )
@@ -569,6 +624,29 @@ class TestDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs(
             "types_document_patch", response
+        )
+
+        # GET
+        response = self.api_session.get(
+            "/@types/Document/author_email",
+        )
+        save_request_and_response_for_docs(
+            "types_document_get_field", response
+        )
+
+        # PATCH
+        response = self.api_session.patch(
+            "/@types/Document/author_email",
+            json={
+                "title": "Author e-mail",
+                "description": "The e-mail address of the author",
+                "minLength": 10,
+                "maxLength": 20,
+                "required": True
+            }
+        )
+        save_request_and_response_for_docs(
+            "types_document_patch_field", response
         )
 
         # DELETE
