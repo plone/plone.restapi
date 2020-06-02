@@ -523,6 +523,62 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("@types/Document")
         save_request_and_response_for_docs("types_document", response)
 
+    def test_documentation_types_document_crud_fieldset(self):
+        # POST
+        response = self.api_session.post(
+            "/@types/Document",
+            json={
+                "@type": "fieldset",
+                "title": "Contact Info",
+                "description": "Contact information"
+            }
+        )
+        save_request_and_response_for_docs(
+            "types_document_post_fieldset", response
+        )
+
+        # DELETE
+        response = self.api_session.delete(
+            "/@types/Document/contact_info",
+        )
+        save_request_and_response_for_docs(
+            "types_document_delete_fieldset", response
+        )
+
+    def test_documentation_types_document_crud_field(self):
+        # POST
+        response = self.api_session.post(
+            "/@types/Document",
+            json={
+                "@type": "Email",
+                "title": "Author email",
+                "description": "Email of the author",
+                "required": True
+            }
+        )
+        save_request_and_response_for_docs(
+            "types_document_post_field", response
+        )
+
+        # DEFAULTS
+        response = self.api_session.patch(
+            "/@types/Document",
+            json={
+                "author_email": "foo@bar.com"
+            }
+        )
+        save_request_and_response_for_docs(
+            "types_document_patch", response
+        )
+
+        # DELETE
+        response = self.api_session.delete(
+            "/@types/Document/author_email",
+        )
+        save_request_and_response_for_docs(
+            "types_document_delete_field", response
+        )
+
     def test_documentation_jwt_login(self):
         self.portal.acl_users.jwt_auth._secret = "secret"
         self.portal.acl_users.jwt_auth.use_keyring = False
@@ -1092,6 +1148,12 @@ class TestDocumentation(TestDocumentationBase):
             "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes"
         )
         save_request_and_response_for_docs("vocabularies_get", response)
+
+    def test_documentation_vocabularies_get_fields(self):
+        response = self.api_session.get(
+            "/@vocabularies/Fields"
+        )
+        save_request_and_response_for_docs("vocabularies_get_fields", response)
 
     def test_documentation_vocabularies_get_filtered_by_title(self):
         response = self.api_session.get(
