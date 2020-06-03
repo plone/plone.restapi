@@ -8,6 +8,7 @@ Changelog
 
 .. towncrier release notes start
 
+
 7.0.0a4 (2020-05-15)
 --------------------
 
@@ -61,11 +62,13 @@ New features:
   [buchi,timo,cekk] (#808)
 
 
+6.13.1 (2020-06-03)
+-------------------
+
 Bug fixes:
 
-
-- Adapt tests to the new way of handling original image urls
-  [erral] (#932)
+- PATCH (editing) in @user endpoint now is able to remove existing values using null
+  [sneridagh] (#946)
 
 
 6.13.0 (2020-05-28)
