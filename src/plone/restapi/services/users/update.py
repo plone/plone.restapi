@@ -77,7 +77,7 @@ class UsersPatch(Service):
                     # no data on it, then we should not set it since it will fail
                     if key == "portrait" and isinstance(value, dict):
                         self.set_member_portrait(user, value)
-                    user.setMemberProperties(mapping={key: value})
+                    user.setMemberProperties(mapping={key: value}, force_empty=True)
 
             roles = user_settings_to_update.get("roles", {})
             if roles:
@@ -108,7 +108,7 @@ class UsersPatch(Service):
                     # no data on it, then we should not set it since it will fail
                     if key == "portrait" and isinstance(value, dict):
                         self.set_member_portrait(user, value)
-                    user.setMemberProperties(mapping={key: value})
+                    user.setMemberProperties(mapping={key: value}, force_empty=True)
 
         else:
             if self._is_anonymous:
