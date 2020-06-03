@@ -1,0 +1,2 @@
+PATCH (editing) in @user endpoint now is able to remove existing values using null
+[sneridagh]
