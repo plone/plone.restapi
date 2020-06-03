@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+6.13.1 (2020-06-03)
+-------------------
+
+Bug fixes:
+
+
+- PATCH (editing) in @user endpoint now is able to remove existing values using null
+  [sneridagh] (#946)
+
+
 6.13.0 (2020-05-28)
 -------------------
 
