@@ -213,16 +213,19 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
         context, request, fieldsets, excluded_fields=excluded_fields
     )
 
-    # Determine required fields
     required = []
     for field in iter_fields(fieldsets):
+        name = field.field.getName()
+        # Determine required fields
         if field.field.required:
-            required.append(field.field.getName())
+            required.append(name)
 
-    # Include field modes
-    for field in iter_fields(fieldsets):
+        # Include field modes
         if field.mode:
-            properties[field.field.getName()]["mode"] = field.mode
+            properties[name]["mode"] = field.mode
+
+        # Include behavior
+        properties[name]["behavior"] = field.interface.__identifier__
 
     return {
         "type": "object",
