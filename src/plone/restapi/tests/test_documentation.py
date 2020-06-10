@@ -608,7 +608,8 @@ class TestDocumentation(TestDocumentationBase):
                 "@type": "Email",
                 "title": "Author email",
                 "description": "Email of the author",
-                "required": True
+                "required": True,
+                "fieldset_id": 0
             }
         )
         save_request_and_response_for_docs(

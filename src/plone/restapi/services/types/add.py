@@ -83,6 +83,7 @@ class TypesPost(Service):
             if not klass:
                 raise BadRequest("Invalid '@type' %s" % factory)
 
+            self.request.form["fieldset_id"] = data.get("fieldset_id", 0)
             add = queryMultiAdapter((context, self.request),
                                     name="add-field")
             properties = {

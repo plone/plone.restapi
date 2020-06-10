@@ -6,6 +6,7 @@ Content-Type: application/json
 {
     "@type": "Email",
     "description": "Email of the author",
+    "fieldset_id": 0,
     "required": true,
     "title": "Author email"
 }
