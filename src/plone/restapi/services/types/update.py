@@ -70,6 +70,21 @@ class TypesUpdate(Service):
         name = self.params.pop(0)
         context = context.publishTraverse(self.request, name)
 
+        # Change tab
+        fieldset_id = data.pop("fieldset_id", data.pop("fieldset_index", None))
+        if fieldset_id is not None:
+            tab = queryMultiAdapter(
+                (context, self.request), name="changefieldset")
+            tab.change(fieldset_id)
+
+        # Re-order
+        pos = data.pop("pos", None)
+        if pos is not None:
+            order = queryMultiAdapter(
+                (context, self.request), name="order")
+            order.move(pos, fieldset_id or -1)
+
+        # Update field properties
         for key, value in data.items():
             if hasattr(context.field, key):
                 setattr(context.field, key, value)
