@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from plone.app.contenttypes.interfaces import ICollection
 from plone.restapi.batching import HypermediaBatch
+from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.deserializer import boolean_value
 from plone.restapi.serializer.dxcontent import SerializeToJson
 from zope.component import adapter
 from zope.component import getMultiAdapter
