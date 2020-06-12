@@ -115,7 +115,7 @@ def get_fieldset_infos(fieldsets):
 
 
 def get_jsonschema_properties(
-    context, request, fieldsets, prefix="", excluded_fields=None
+    context, request, fieldsets, prefix="", excluded_fields=None, fname=None,
 ):
     """Build a JSON schema 'properties' list, based on a list of fieldset
     dicts as returned by `get_fieldsets()`.
@@ -126,6 +126,29 @@ def get_jsonschema_properties(
 
     for field in iter_fields(fieldsets):
         fieldname = field.field.getName()
+
+        if fieldname == fname:
+            # if a fname is supplied, return info only for that field
+            properties = OrderedDict()
+            # We need to special case relatedItems not to render choices
+            # so we try a named adapter first and fallback to unnamed ones.
+            adapter = queryMultiAdapter(
+                (field.field, context, request),
+                interface=IJsonSchemaProvider,
+                name=field.__name__,
+            )
+
+            adapter = adapter or getMultiAdapter(
+                (field.field, context, request), interface=IJsonSchemaProvider
+            )
+
+            adapter.prefix = prefix
+            if prefix:
+                fieldname = ".".join([prefix, fieldname])
+
+            properties[fieldname] = adapter.get_schema()
+            return properties
+
         if fieldname not in excluded_fields:
 
             # We need to special case relatedItems not to render choices
@@ -267,3 +290,55 @@ def serializeSchema(schema):
     # synchronize changes to the model
     syncSchema(schema, model.schemata[schemaName], overwrite=True)
     fti.model_source = serializeModel(model)
+
+
+def get_info_for_field(portal_type, field_name, context, request):
+    """Build a complete JSON schema for the given portal_type.
+    """
+    ttool = getToolByName(context, "portal_types")
+    fti = ttool[portal_type]
+
+    try:
+        schema = fti.lookupSchema()
+    except AttributeError:
+        schema = None
+        fieldsets = ()
+        additional_schemata = ()
+    else:
+        additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
+        fieldsets = get_fieldsets(context, request,
+                                  schema, additional_schemata)
+
+    properties = {}
+    for fieldset in fieldsets:
+        if fieldset['id'] == field_name:
+            # return fieldset info
+            properties = get_fieldset_infos([fieldset])[0]
+            return properties
+        else:
+            for field in fieldset['fields']:
+                if field.field.getName() == field_name:
+                    field = field.field
+
+                    properties = get_jsonschema_properties(context, request,
+                                                [fieldset], fname=field_name)
+                    properties[field_name]['default'] = getattr(field,
+                                                'default', None)
+                    properties[field_name]['defaultFactory'] = getattr(field,
+                                                'defaultFactory', None)
+                    properties[field_name]['interface'] = str(getattr(field,
+                                                'interface', None))
+                    properties[field_name]['max_length'] = getattr(field,
+                                                'max_length', None)
+                    properties[field_name]['min_length'] = getattr(field,
+                                                'min_length', None)
+                    properties[field_name]['missing_value'] = getattr(field,
+                                                'missing_value', None)
+                    properties[field_name]['order'] = getattr(field,
+                                                'order', None)
+                    properties[field_name]['readonly'] = getattr(field,
+                                                'readonly', None)
+                    properties[field_name]['required'] = getattr(field,
+                                                'required', None)
+                    return IJsonCompatible(properties)
+    return {'message': 'No entry could be found for the supplied name.'}

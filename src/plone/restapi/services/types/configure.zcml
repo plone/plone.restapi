@@ -35,6 +35,15 @@
     permission="plone.app.controlpanel.Overview"
     />
 
+  <plone:service
+    method="PUT"
+    for="*"
+    factory=".put.TypesPut"
+    name="@types"
+    permission="plone.app.controlpanel.Overview"
+    />
+
+
   <adapter factory=".get.TypesInfo" name="types"/>
 
 </configure>

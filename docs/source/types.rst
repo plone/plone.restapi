@@ -74,7 +74,6 @@ Response:
    :language: http
 
 
-
 Reorder schema fields with PUT
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -130,6 +129,62 @@ You can use either `title` or `token`
 Response:
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/vocabularies_get_fields.resp
+   :language: http
+
+
+Get schema fieldset with GET
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To get an existing fieldset, send a GET request to the URL of an existing schema fieldset
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_get_fieldset.req
+
+Response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_get_fieldset.resp
+   :language: http
+
+
+Get schema field with GET
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To get an existing field, send a GET request to the URL of an existing schema field
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_get_field.req
+
+Response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_get_field.resp
+   :language: http
+
+
+Update schema fieldset settings with PATCH
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To update content type schema fieldset settings we send a PATCH request to the server.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch_fieldset.req
+
+Response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_patch_fieldset.resp
+   :language: http
+
+
+Update schema field settings with PATCH
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To update content type schema field settings we send a PATCH request to the server.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch_field.req
+
+Response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_patch_field.resp
    :language: http
 
 
