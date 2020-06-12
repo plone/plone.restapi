@@ -2,19 +2,9 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "author_email": {
-    "default": "foo@bar.com", 
-    "defaultFactory": null, 
-    "description": "Email of the author", 
-    "interface": "<InterfaceClass plone.dexterity.schema.generated.plone_0_Document>", 
-    "max_length": null, 
-    "min_length": 0, 
-    "missing_value": null, 
-    "order": 1762, 
-    "readonly": false, 
-    "required": true, 
-    "title": "Author email", 
-    "type": "string", 
-    "widget": "email"
-  }
+  "default": "foo@bar.com", 
+  "description": "Email of the author", 
+  "title": "Author email", 
+  "type": "string", 
+  "widget": "email"
 }

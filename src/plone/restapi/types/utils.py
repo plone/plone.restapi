@@ -314,31 +314,12 @@ def get_info_for_field(portal_type, field_name, context, request):
         if fieldset['id'] == field_name:
             # return fieldset info
             properties = get_fieldset_infos([fieldset])[0]
-            return properties
+            return IJsonCompatible(properties)
         else:
+            # return field info
             for field in fieldset['fields']:
                 if field.field.getName() == field_name:
-                    field = field.field
-
-                    properties = get_jsonschema_properties(context, request,
-                                                [fieldset], fname=field_name)
-                    properties[field_name]['default'] = getattr(field,
-                                                'default', None)
-                    properties[field_name]['defaultFactory'] = getattr(field,
-                                                'defaultFactory', None)
-                    properties[field_name]['interface'] = str(getattr(field,
-                                                'interface', None))
-                    properties[field_name]['max_length'] = getattr(field,
-                                                'max_length', None)
-                    properties[field_name]['min_length'] = getattr(field,
-                                                'min_length', None)
-                    properties[field_name]['missing_value'] = getattr(field,
-                                                'missing_value', None)
-                    properties[field_name]['order'] = getattr(field,
-                                                'order', None)
-                    properties[field_name]['readonly'] = getattr(field,
-                                                'readonly', None)
-                    properties[field_name]['required'] = getattr(field,
-                                                'required', None)
-                    return IJsonCompatible(properties)
-    return {'message': 'No entry could be found for the supplied name.'}
+                    properties = get_jsonschema_properties(
+                        context, request, [fieldset], fname=field_name)
+                    return IJsonCompatible(properties[field_name])
+    raise KeyError(field_name)
