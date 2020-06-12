@@ -56,6 +56,7 @@ Content-Type: application/json+schema
   ], 
   "properties": {
     "allow_discussion": {
+      "behavior": "plone.app.dexterity.behaviors.discussion.IAllowDiscussion", 
       "choices": [
         [
           "True", 
@@ -82,12 +83,14 @@ Content-Type: application/json+schema
       }
     }, 
     "changeNote": {
+      "behavior": "plone.app.versioningbehavior.behaviors.IVersionable", 
       "description": "Enter a comment that describes the changes you made.", 
       "title": "Change Note", 
       "type": "string"
     }, 
     "contributors": {
       "additionalItems": true, 
+      "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "The names of people that have contributed to this item. Each contributor should be on a separate line.", 
       "items": {
         "description": "", 
@@ -105,6 +108,7 @@ Content-Type: application/json+schema
     }, 
     "creators": {
       "additionalItems": true, 
+      "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "Persons responsible for creating the content of this item. Please enter a list of user names, one per line. The principal creator should come first.", 
       "items": {
         "description": "", 
@@ -121,35 +125,41 @@ Content-Type: application/json+schema
       }
     }, 
     "description": {
+      "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "Used in item listings and search results.", 
       "title": "Summary", 
       "type": "string", 
       "widget": "textarea"
     }, 
     "effective": {
+      "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "If this date is in the future, the content will not show up in listings and searches until this date.", 
       "title": "Publishing Date", 
       "type": "string", 
       "widget": "datetime"
     }, 
     "exclude_from_nav": {
+      "behavior": "plone.app.dexterity.behaviors.exclfromnav.IExcludeFromNavigation", 
       "default": false, 
       "description": "If selected, this item will not appear in the navigation tree", 
       "title": "Exclude from navigation", 
       "type": "boolean"
     }, 
     "expires": {
+      "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "When this date is reached, the content will no longer be visible in listings and searches.", 
       "title": "Expiration Date", 
       "type": "string", 
       "widget": "datetime"
     }, 
     "id": {
+      "behavior": "plone.app.dexterity.behaviors.id.IShortName", 
       "description": "This name will be displayed in the URL.", 
       "title": "Short name", 
       "type": "string"
     }, 
     "language": {
+      "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "default": "en", 
       "description": "", 
       "title": "Language", 
@@ -160,6 +170,7 @@ Content-Type: application/json+schema
     }, 
     "relatedItems": {
       "additionalItems": true, 
+      "behavior": "plone.app.relationfield.behavior.IRelatedItems", 
       "default": [], 
       "description": "", 
       "items": {
@@ -183,6 +194,7 @@ Content-Type: application/json+schema
       }
     }, 
     "rights": {
+      "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "Copyright statement or other rights information on this item.", 
       "title": "Rights", 
       "type": "string", 
@@ -190,6 +202,7 @@ Content-Type: application/json+schema
     }, 
     "subjects": {
       "additionalItems": true, 
+      "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "Tags are commonly used for ad-hoc organization of content.", 
       "items": {
         "description": "", 
@@ -206,22 +219,26 @@ Content-Type: application/json+schema
       }
     }, 
     "table_of_contents": {
+      "behavior": "plone.app.contenttypes.behaviors.tableofcontents.ITableOfContents", 
       "description": "If selected, this will show a table of contents at the top of the page.", 
       "title": "Table of contents", 
       "type": "boolean"
     }, 
     "text": {
+      "behavior": "plone.app.contenttypes.behaviors.richtext.IRichTextBehavior", 
       "description": "", 
       "title": "Text", 
       "type": "string", 
       "widget": "richtext"
     }, 
     "title": {
+      "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "", 
       "title": "Title", 
       "type": "string"
     }, 
     "versioning_enabled": {
+      "behavior": "plone.app.versioningbehavior.behaviors.IVersionable", 
       "default": true, 
       "description": "Enable/disable versioning for this document.", 
       "title": "Versioning enabled", 
