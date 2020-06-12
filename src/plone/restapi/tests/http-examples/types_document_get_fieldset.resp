@@ -1,6 +1,7 @@
-HTTP/1.1 200 OK
+HTTP/1.1 404 Not Found
 Content-Type: application/json
 
 {
-  "message": "No entry could be found for the supplied name."
+  "message": "Field(set) 'contact_info' could not be found.", 
+  "type": "NotFound"
 }

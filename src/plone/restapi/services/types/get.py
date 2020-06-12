@@ -110,7 +110,7 @@ class TypesGet(Service):
                 self.request.response.setStatus(404)
                 return {
                     "type": "NotFound",
-                    "message": 'Type "{}" could not be found.'.format(portal_type),
+                    "message": "Type '%s' could not be found." % portal_type,
                 }
 
         # List type info, including addable_types
@@ -122,4 +122,13 @@ class TypesGet(Service):
         name = self.params[0]
         field_name = self.params[1]
 
-        return get_info_for_field(name, field_name, self.context, self.request)
+        try:
+            return get_info_for_field(
+                name, field_name, self.context, self.request)
+        except KeyError:
+            self.content_type = "application/json"
+            self.request.response.setStatus(404)
+            return {
+                "type": "NotFound",
+                "message": "Field(set) '%s' could not be found." % field_name,
+            }
