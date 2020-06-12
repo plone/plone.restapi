@@ -523,11 +523,12 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("@types/Document")
         save_request_and_response_for_docs("types_document", response)
 
-    def test_documentation_types_document_crud_fieldset(self):
+    def test_documentation_types_document_crud(self):
         #
         # POST
         #
 
+        # Add fieldset
         response = self.api_session.post(
             "/@types/Document",
             json={
@@ -540,68 +541,7 @@ class TestDocumentation(TestDocumentationBase):
             "types_document_post_fieldset", response
         )
 
-        #
-        # GET
-        #
-
-        response = self.api_session.get(
-            "/@types/Document/contact_info"
-        )
-        save_request_and_response_for_docs(
-            "types_document_get_fieldset", response
-        )
-
-        #
-        # PATCH
-        #
-
-        # Add custom field to be used for fieldset patch
-        response = self.api_session.post(
-            "/@types/Document",
-            json={
-                "@type": "Email",
-                "title": "ABC",
-            }
-        )
-
-        response = self.api_session.patch(
-            "/@types/Document/contact_info",
-            json={
-                "title": "Contact Information",
-                "fields": [
-                    "abc"
-                ]
-            }
-        )
-        save_request_and_response_for_docs(
-            "types_document_patch_fieldset", response
-        )
-
-        #
-        # DELETE
-        #
-
-        # Shouldn't be able to remove a fieldset with assigned fields
-        response = self.api_session.delete(
-            "/@types/Document/contact_info",
-        )
-        save_request_and_response_for_docs(
-            "types_document_delete_fieldset_error", response
-        )
-
-        # Cleanup fieldset fields
-        self.api_session.delete("/@types/Document/abc")
-
-        # Remove fieldset
-        response = self.api_session.delete(
-            "/@types/Document/contact_info",
-        )
-        save_request_and_response_for_docs(
-            "types_document_delete_fieldset", response
-        )
-
-    def test_documentation_types_document_crud_field(self):
-        # POST
+        # Add field
         response = self.api_session.post(
             "/@types/Document",
             json={
@@ -616,7 +556,11 @@ class TestDocumentation(TestDocumentationBase):
             "types_document_post_field", response
         )
 
-        # DEFAULTS
+        #
+        # PATCH
+        #
+
+        # Update Document defaults
         response = self.api_session.patch(
             "/@types/Document",
             json={
@@ -627,15 +571,19 @@ class TestDocumentation(TestDocumentationBase):
             "types_document_patch", response
         )
 
-        # GET
-        response = self.api_session.get(
+        # Change field tab / order
+        response = self.api_session.patch(
             "/@types/Document/author_email",
+            json={
+                "fieldset_id": 1,
+                "pos": 0
+            }
         )
         save_request_and_response_for_docs(
-            "types_document_get_field", response
+            "types_document_patch_fieldset", response
         )
 
-        # PATCH
+        # Update field settings
         response = self.api_session.patch(
             "/@types/Document/author_email",
             json={
@@ -650,12 +598,44 @@ class TestDocumentation(TestDocumentationBase):
             "types_document_patch_field", response
         )
 
+        #
+        # GET
+        #
+
+        # Fieldset get
+        response = self.api_session.get(
+            "/@types/Document/contact_info"
+        )
+        save_request_and_response_for_docs(
+            "types_document_get_fieldset", response
+        )
+
+        # Field get
+        response = self.api_session.get(
+            "/@types/Document/author_email",
+        )
+        save_request_and_response_for_docs(
+            "types_document_get_field", response
+        )
+
+        #
         # DELETE
+        #
+
+        # Remove field
         response = self.api_session.delete(
             "/@types/Document/author_email",
         )
         save_request_and_response_for_docs(
             "types_document_delete_field", response
+        )
+
+        # Remove fieldset
+        response = self.api_session.delete(
+            "/@types/Document/contact_info",
+        )
+        save_request_and_response_for_docs(
+            "types_document_delete_fieldset", response
         )
 
     def test_documentation_jwt_login(self):
