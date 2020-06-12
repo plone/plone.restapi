@@ -380,12 +380,12 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             u"Collection", self.serialize(self.portal.collection1).get("@type")
         )
 
-        self.request.form['include_items'] = False
+        self.request.form["include_items"] = False
         without_items = self.serialize(self.portal.collection1)
         self.assertFalse("items" in without_items)
         self.assertFalse("items_total" in without_items)
 
-        self.request.form['include_items'] = True
+        self.request.form["include_items"] = True
         serialized = self.serialize(self.portal.collection1)
         items = serialized.get("items")
         self.assertEqual(items[0]["title"], self.portal.doc1.Title())
