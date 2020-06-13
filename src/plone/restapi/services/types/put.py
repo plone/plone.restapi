@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+min# -*- coding: utf-8 -*-
 import plone.protect.interfaces
 from zope.publisher.interfaces import IPublishTraverse
 from zope.interface import noLongerProvides
@@ -11,6 +11,13 @@ from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.deserializer import json_body
 from Products.CMFCore.utils import getToolByName
+from plone.restapi.types.utils import getAdditionalSchemata
+from plone.restapi.types.utils import get_fieldsets
+from plone.restapi.types.utils import iter_fields
+from plone.restapi.types.utils import get_fieldset_infos
+from zope.schema.interfaces import IVocabularyFactory
+from zope.component import queryUtility
+from plone.i18n.normalizer import idnormalizer
 
 
 @implementer(IPublishTraverse)
@@ -46,28 +53,138 @@ class TypesPut(Service):
         )
         context = context.publishTraverse(self.request, name)
 
-        for key, value in data.items():
-            for idx, field in enumerate(value['fields']):
+        required = data.get('required', [])
+        fieldsets = data.get('fieldsets', [])
+        fields = data.get('properties')
+        view_methods = data.get('layouts', [])
+        title = data['title']
+
+        ttool = getToolByName(context, "portal_types")
+        fti = ttool[name]
+
+        # set view methods
+        fti.view_methods = tuple(view_methods)
+
+        # set title
+        fti.title = title
+
+        try:
+            schema = fti.lookupSchema()
+        except AttributeError:
+            schema = None
+            fti_fieldsets = ()
+            additional_schemata = ()
+        else:
+            additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
+            # get_fieldsets doesnt get all the fieldsets
+            # TODO: get all fieldsets
+            fti_fieldsets = get_fieldsets(self.context, self.request,
+                                          schema, additional_schemata)
+
+        for fieldset in fti_fieldsets:
+            for field in fieldset['fields']:
+                if field.field.getName() not in iter_fields((fieldsets)):
+                    # remove fields
+                    delete_field(context, self.request, field.field.getName())
+
+        for fieldset in fieldsets:
+            fieldset_index = fieldsets.index(fieldset)
+
+            # check if any new fieldsets
+            if fieldset['id'] in [fti_fset['id'] for fti_fset in fti_fieldsets]:
+                # reorder fieldsets
+                pass
+            else:
+                #TODO: Better condition to verify if fieldset exists
+                # add new fieldset
+                # import pdb; pdb.set_trace()
+                # /plone/schemaeditor/browser/schema/delete_fieldset.py(13) CHECK THIS OUT FOR FIELDSETS
+                pass
+                # add_fieldset(context, self.request, fieldset)
+
+            for idx, field in enumerate(fieldset['fields']):
+                if field not in iter_fields(get_fieldset_infos(fti_fieldsets)):
+                    # add new fields
+                    fieldinfo = fields[field]
+                    fieldinfo['name'] = field
+                    add_field(context, self.request, fieldinfo, fieldset_index, required)
+
                 try:
                     fieldContext = context.publishTraverse(self.request, field)
                     order = fieldContext.publishTraverse(self.request, 'order')
                     changeFieldset = fieldContext.publishTraverse(self.request,
-                    'changefieldset')
-                except Exception:
+                                                            'changefieldset')
+                except:
                     continue
-
-                ttool = getToolByName(context, "portal_types")
-                fti = ttool[name]
-                schema = get_jsonschema_for_fti(fti, self.context, self.request)
-                fieldsets = schema['fieldsets']
-
-                # get fieldset index
-                for fieldset in fieldsets:
-                    if key == fieldset['id']:
-                        fieldset_index = fieldsets.index(fieldset)
 
                 # change fieldset
                 changeFieldset(fieldset_index)
+
                 # order
                 order.move(idx, fieldset_index)
+
+        fieldsets_to_remove = set([fti_fset['id'] for fti_fset in fti_fieldsets]) - set([fset['id'] for fset in fieldsets])
+        if len(fieldsets_to_remove) > 0:
+            # remove fieldsets
+            for fset in list(fieldsets_to_remove):
+                delete_fieldset(context, self.request, fset)
+
         return self.reply_no_content()
+
+
+def delete_field(context, request, field):
+    fieldContext = context.publishTraverse(request, field)
+    delete = queryMultiAdapter((fieldContext, request), name="delete")
+    delete()
+
+
+def delete_fieldset(context, request, fieldset):
+    request.form['name'] = fieldset
+    delete = queryMultiAdapter((context, request),
+                               name="delete-fieldset")
+    delete()
+
+
+def add_fieldset(context, request, fieldset):
+    tid = fieldset.get("id", None)
+    title = fieldset.get("title", None)
+    description = fieldset.get("description", None)
+
+    if not tid:
+        tid = idnormalizer.normalize(title).replace("-", "_")
+
+    add = queryMultiAdapter((context, request),
+                            name="add-fieldset")
+    properties = {
+        "label": title,
+        "__name__": tid,
+        "description": description
+    }
+    fieldset = add.form_instance.create(data=properties)
+    add.form_instance.add(fieldset)
+
+
+def add_field(context, request, field, fieldset_index, required):
+    factory = field.get('type')
+    name = field.get('name')
+
+    klass = None
+    vocabulary = queryUtility(IVocabularyFactory, name='Fields')
+    for term in vocabulary(context):
+        if factory in (term.title, term.token):
+            klass = term.value
+
+    if not klass:
+        raise BadRequest("Invalid '@type' %s" % factory)
+
+    request.form["fieldset_id"] = fieldset_index
+    add = queryMultiAdapter((context, request), name="add-field")
+    properties = {
+        "title": field.get('title'),
+        "__name__": name,
+        "description": field.get('description'),
+        "factory": klass,
+        "required": name in required
+    }
+    created_field = add.form_instance.create(data=properties)
+    add.form_instance.add(created_field)

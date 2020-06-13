@@ -17,6 +17,7 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
 
 
+
 def check_security(context):
     # Only expose type information to authenticated users
     portal_membership = getToolByName(context, "portal_membership")
