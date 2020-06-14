@@ -7,7 +7,6 @@ from zope.interface import alsoProvides
 from zope.component import queryMultiAdapter
 from zExceptions import BadRequest
 from plone.restapi.services import Service
-from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.deserializer import json_body
 from Products.CMFCore.utils import getToolByName
