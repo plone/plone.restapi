@@ -1,4 +1,4 @@
-min# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 import plone.protect.interfaces
 from zope.publisher.interfaces import IPublishTraverse
 from zope.interface import noLongerProvides
@@ -18,6 +18,10 @@ from plone.restapi.types.utils import get_fieldset_infos
 from zope.schema.interfaces import IVocabularyFactory
 from zope.component import queryUtility
 from plone.i18n.normalizer import idnormalizer
+from plone.supermodel.interfaces import FIELDSETS_KEY
+from plone.schemaeditor.utils import SchemaModifiedEvent
+from zope.container.contained import notifyContainerModified
+from zope.event import notify
 
 
 @implementer(IPublishTraverse)
@@ -76,10 +80,18 @@ class TypesPut(Service):
             additional_schemata = ()
         else:
             additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-            # get_fieldsets doesnt get all the fieldsets
-            # TODO: get all fieldsets
             fti_fieldsets = get_fieldsets(self.context, self.request,
                                           schema, additional_schemata)
+
+        # check for additional missed fieldsets
+        additional_fieldsets = schema.queryTaggedValue(FIELDSETS_KEY, [])
+        for idx, fieldset in enumerate(additional_fieldsets):
+            props = {
+                'title': fieldset.label,
+                'id': fieldset.__name__,
+                'fields': fieldset.fields
+            }
+            fti_fieldsets.insert(idx + 1, props)
 
         for fieldset in fti_fieldsets:
             for field in fieldset['fields']:
@@ -87,20 +99,18 @@ class TypesPut(Service):
                     # remove fields
                     delete_field(context, self.request, field.field.getName())
 
+        new_order = []
         for fieldset in fieldsets:
             fieldset_index = fieldsets.index(fieldset)
 
             # check if any new fieldsets
-            if fieldset['id'] in [fti_fset['id'] for fti_fset in fti_fieldsets]:
-                # reorder fieldsets
-                pass
-            else:
-                #TODO: Better condition to verify if fieldset exists
-                # add new fieldset
-                # import pdb; pdb.set_trace()
-                # /plone/schemaeditor/browser/schema/delete_fieldset.py(13) CHECK THIS OUT FOR FIELDSETS
-                pass
-                # add_fieldset(context, self.request, fieldset)
+            if fieldset['id'] not in [fti_fset['id'] for fti_fset in fti_fieldsets]:
+                add_fieldset(context, self.request, fieldset)
+
+            # currently can reorder only non behavioral fieldsets
+            for fset in additional_fieldsets:
+                if fieldset['id'] == fset.__name__:
+                    new_order.append(fset)
 
             for idx, field in enumerate(fieldset['fields']):
                 if field not in iter_fields(get_fieldset_infos(fti_fieldsets)):
@@ -114,9 +124,10 @@ class TypesPut(Service):
                     order = fieldContext.publishTraverse(self.request, 'order')
                     changeFieldset = fieldContext.publishTraverse(self.request,
                                                             'changefieldset')
-                except:
+                except Exception:
                     continue
 
+                # TODO: change fieldset/field order only when necessary?
                 # change fieldset
                 changeFieldset(fieldset_index)
 
@@ -128,6 +139,11 @@ class TypesPut(Service):
             # remove fieldsets
             for fset in list(fieldsets_to_remove):
                 delete_fieldset(context, self.request, fset)
+
+        # set the new fieldset order
+        context.schema.setTaggedValue(FIELDSETS_KEY, new_order)
+        notifyContainerModified(context.schema)
+        notify(SchemaModifiedEvent(self.context))
 
         return self.reply_no_content()
 
