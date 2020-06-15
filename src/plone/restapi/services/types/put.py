@@ -96,6 +96,10 @@ class TypesPut(Service):
 
         for fieldset in fti_fieldsets:
             for field in fieldset['fields']:
+                fieldinfo = fields[field.field.getName()]
+                if fieldinfo.get('behavior') != context.schema.__identifier__:
+                    continue
+
                 if field.field.getName() not in iter_fields((fieldsets)):
                     # remove fields
                     delete_field(context, self.request, field.field.getName())
@@ -103,7 +107,7 @@ class TypesPut(Service):
         new_order = []
         fti_fields = iter_fields(get_fieldset_infos(fti_fieldsets))
         for fieldset in fieldsets:
-            # TODO: if fieldset id repeats itself, use last occurrence for idx
+            # TODO: what to do if fieldset repeats itself
             fieldset_index = fieldsets.index(fieldset)
             # fieldset_index = get_last_index_for_fieldset(fieldset['id'], fieldsets)
 
@@ -203,6 +207,7 @@ def add_field(context, request, field, fieldset_index, required):
             klass = term.value
 
     if not klass:
+        # import pdb; pdb.set_trace()
         raise BadRequest("Missing parameter widget")
 
     request.form["fieldset_id"] = fieldset_index

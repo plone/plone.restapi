@@ -110,7 +110,7 @@ class BytesLineJsonSchemaProvider(DefaultJsonSchemaProvider):
         return "string"
 
     def get_widget(self):
-        return "Bytes line (String)"
+        return "Text line (String)"
 
 
 @adapter(ITextLine, Interface, Interface)
@@ -164,15 +164,13 @@ class URIJsonSchemaProvider(TextLineJsonSchemaProvider):
 @adapter(IASCII, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class ASCIIJsonSchemaProvider(TextLineJsonSchemaProvider):
-    def get_widget(self):
-        return "Ascii"
+    pass
 
 
 @adapter(IASCIILine, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class ASCIILineJsonSchemaProvider(TextLineJsonSchemaProvider):
-    def get_widget(self):
-        return "Ascii Line"
+    pass
 
 
 @adapter(IFloat, Interface, Interface)
@@ -198,8 +196,7 @@ class FloatJsonSchemaProvider(DefaultJsonSchemaProvider):
 @adapter(IDecimal, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DecimalJsonSchemaProvider(FloatJsonSchemaProvider):
-    def get_widget(self):
-        return "Decimal number"
+    pass
 
 
 @adapter(IInt, Interface, Interface)
@@ -229,6 +226,17 @@ class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
         return "array"
 
     def get_widget(self):
+        map = {
+            "RelationList": "Relation List",
+            "Set": "Multiple Choice",
+            "List": "List",
+            "Tuple": "Tuple"
+        }
+
+        for key, value in map.items():
+            if key in self.field.__repr__():
+                return value
+
         return "Collection"
 
     def get_items(self):
@@ -265,9 +273,6 @@ class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
 
         return info
 
-    def get_widget(self):
-        return "List"
-
 
 @adapter(ISet, Interface, Interface)
 @implementer(IJsonSchemaProvider)
@@ -277,15 +282,11 @@ class SetJsonSchemaProvider(CollectionJsonSchemaProvider):
         info["uniqueItems"] = True
         return info
 
-    def get_widget(self):
-        return "Set"
-
 
 @adapter(ITuple, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class TupleJsonSchemaProvider(SetJsonSchemaProvider):
-    def get_widget(self):
-        return "Tuple"
+    pass
 
 
 @adapter(IChoice, Interface, Interface)
@@ -300,6 +301,14 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
         return "string"
 
     def get_widget(self):
+        map = {
+            "RelationChoice": "Relation Choice",
+            "Choice": "Choice"
+        }
+
+        for key, value in map.items():
+            if key in self.field.__repr__():
+                return value
         return "Choice"
 
     def additional(self):
@@ -359,7 +368,6 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
         return result
 
 
-# TODO: diff between file/image fields
 @adapter(IObject, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
@@ -368,6 +376,12 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
 
     def get_type(self):
         return "object"
+
+    def get_widget(self):
+        if self.field.schema.__name__ == "INamedBlobImage":
+            return "Image"
+        else:
+            return "File"
 
     def get_properties(self):
         if self.prefix:
@@ -389,8 +403,6 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
 @adapter(IDict, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
-    def get_widget(self):
-        return "Dict"
 
     def get_type(self):
         return "dict"
@@ -457,8 +469,7 @@ class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
 @adapter(ITuple, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class SubjectsFieldJsonSchemaProvider(ChoiceJsonSchemaProvider):
-    def get_widget(self):
-        return "Subjects"
+    pass
 
 
 @adapter(IJSONField, Interface, Interface)
