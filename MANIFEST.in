@@ -17,6 +17,10 @@ exclude docs/make.bat
 recursive-exclude docs/doctrees *
 recursive-exclude docs/html *
 recursive-exclude performance *
+exclude docs/Makefile
+prune docs/Makefile
+prune src/plone/restapi/tests
+prune news
 global-exclude *.pyc
 include pyproject.toml
 recursive-exclude news *
