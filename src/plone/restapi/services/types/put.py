@@ -117,12 +117,12 @@ class TypesPut(Service):
                     new_order.append(fset)
 
             for idx, field in enumerate(fieldset['fields']):
+                fieldinfo = fields[field]
                 if fieldinfo.get('behavior') != context.schema.__identifier__:
                     continue
 
                 if field not in fti_fields and field not in context.schema:
                     # add new fields
-                    fieldinfo = fields[field]
                     fieldinfo['name'] = field
                     add_field(context, self.request, fieldinfo, fieldset_index, required)
 

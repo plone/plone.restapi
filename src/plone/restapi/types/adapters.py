@@ -358,6 +358,7 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
 
         return result
 
+
 # TODO: diff between file/image fields
 @adapter(IObject, Interface, Interface)
 @implementer(IJsonSchemaProvider)
