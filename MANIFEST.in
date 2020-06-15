@@ -15,6 +15,7 @@ exclude bootstrap-buildout.py
 exclude CODEOWNERS
 exclude docs/make.bat
 exclude docs/Makefile
+prune docs/Makefile
 prune docs/doctrees
 prune docs/html
 prune performance
