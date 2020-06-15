@@ -103,7 +103,7 @@ class TypesPut(Service):
         new_order = []
         fti_fields = iter_fields(get_fieldset_infos(fti_fieldsets))
         for fieldset in fieldsets:
-            #TODO: if fieldset id repeats itself, use last occurrence for idx
+            # TODO: if fieldset id repeats itself, use last occurrence for idx
             fieldset_index = fieldsets.index(fieldset)
             # fieldset_index = get_last_index_for_fieldset(fieldset['id'], fieldsets)
 
@@ -117,7 +117,10 @@ class TypesPut(Service):
                     new_order.append(fset)
 
             for idx, field in enumerate(fieldset['fields']):
-                if field not in fti_fields:
+                if fieldinfo.get('behavior') != context.schema.__identifier__:
+                    continue
+
+                if field not in fti_fields and field not in context.schema:
                     # add new fields
                     fieldinfo = fields[field]
                     fieldinfo['name'] = field
@@ -139,8 +142,7 @@ class TypesPut(Service):
                 order.move(idx, fieldset_index)
 
                 # set field default values
-                if field in context.schema:
-                    context.schema[field].default = fields[field].get('default')
+                context.schema[field].default = fields[field].get('default')
 
         fieldsets_to_remove = set([fti_fset['id'] for fti_fset in fti_fieldsets]) - set([fset['id'] for fset in fieldsets])
         if len(fieldsets_to_remove) > 0:
@@ -191,18 +193,17 @@ def add_fieldset(context, request, fieldset):
 
 
 def add_field(context, request, field, fieldset_index, required):
-    factory = field.get('type')
+    widget = field.get('widget', None)
     name = field.get('name')
 
     klass = None
     vocabulary = queryUtility(IVocabularyFactory, name='Fields')
     for term in vocabulary(context):
-        if factory in (term.title, term.token):
+        if widget in (term.title, term.token):
             klass = term.value
 
-    # TODO: alternative
-    # if not klass:
-    #     raise BadRequest("Invalid '@type' %s" % factory)
+    if not klass:
+        raise BadRequest("Missing parameter widget")
 
     request.form["fieldset_id"] = fieldset_index
     add = queryMultiAdapter((context, request), name="add-field")
@@ -222,6 +223,7 @@ def get_field_fieldset_index(fieldname, fieldsets):
         for field in fieldset['fields']:
             if field.field.getName() == fieldname:
                 return idx
+
 
 def get_last_index_for_fieldset(fieldsetname, fieldsets):
     ids = [fieldset['id'] for fieldset in fieldsets]
