@@ -3,8 +3,8 @@ Content-Type: application/json
 
 {
   "default": "foo@bar.com", 
-  "description": "Email of the author", 
-  "title": "Author email", 
+  "description": "The e-mail address of the author", 
+  "title": "Author e-mail", 
   "type": "string", 
   "widget": "email"
 }

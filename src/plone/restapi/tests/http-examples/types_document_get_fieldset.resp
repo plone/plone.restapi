@@ -1,7 +1,10 @@
-HTTP/1.1 404 Not Found
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "message": "Field(set) 'contact_info' could not be found.", 
-  "type": "NotFound"
+  "fields": [
+    "author_email"
+  ], 
+  "id": "contact_info", 
+  "title": "Contact Info"
 }
