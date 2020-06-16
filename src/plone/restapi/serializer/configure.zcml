@@ -48,6 +48,7 @@
     </configure>
 
     <adapter factory=".converters.date_converter" />
+    <adapter factory=".converters.decimal_converter" />
     <adapter factory=".converters.default_converter" />
     <adapter factory=".converters.dict_converter" />
     <adapter factory=".converters.frozenset_converter" />
