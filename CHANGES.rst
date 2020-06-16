@@ -8,7 +8,6 @@ Changelog
 
 .. towncrier release notes start
 
-
 7.0.0a4 (2020-05-15)
 --------------------
 
@@ -60,6 +59,14 @@ New features:
 - Resolve links in blocks to UIDs during deserialization and back to paths during
   serialization.
   [buchi,timo,cekk] (#808)
+
+
+6.13.2 (2020-06-15)
+-------------------
+
+Bug fixes:
+
+- Include plone.app.controlpanel permissions.zcml in database service to avoid ConfigurationExecutionError regarding 'plone.app.controlpanel.Overview' permission while starting Plone 4.3.x [gbastien] (#956)
 
 
 6.13.1 (2020-06-03)
