@@ -109,6 +109,9 @@ class BytesLineJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "string"
 
+    def get_widget(self):
+        return "Text line (String)"
+
 
 @adapter(ITextLine, Interface, Interface)
 @implementer(IJsonSchemaProvider)
@@ -126,33 +129,36 @@ class TextLineJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "string"
 
+    def get_widget(self):
+        return "Text line (String)"
+
 
 @adapter(IText, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class TextJsonSchemaProvider(TextLineJsonSchemaProvider):
     def get_widget(self):
-        return "textarea"
+        return "Text"
 
 
 @adapter(IEmail, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class EmailJsonSchemaProvider(TextLineJsonSchemaProvider):
     def get_widget(self):
-        return "email"
+        return "Email"
 
 
 @adapter(IPassword, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class PasswordJsonSchemaProvider(TextLineJsonSchemaProvider):
     def get_widget(self):
-        return "password"
+        return "Password"
 
 
 @adapter(IURI, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class URIJsonSchemaProvider(TextLineJsonSchemaProvider):
     def get_widget(self):
-        return "url"
+        return "URL"
 
 
 @adapter(IASCII, Interface, Interface)
@@ -183,11 +189,13 @@ class FloatJsonSchemaProvider(DefaultJsonSchemaProvider):
 
         return info
 
+    def get_widget(self):
+        return "Floating-point number"
+
 
 @adapter(IDecimal, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DecimalJsonSchemaProvider(FloatJsonSchemaProvider):
-
     pass
 
 
@@ -197,6 +205,9 @@ class IntegerJsonSchemaProvider(FloatJsonSchemaProvider):
     def get_type(self):
         return "integer"
 
+    def get_widget(self):
+        return "Integer"
+
 
 @adapter(IBool, Interface, Interface)
 @implementer(IJsonSchemaProvider)
@@ -204,12 +215,29 @@ class BoolJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "boolean"
 
+    def get_widget(self):
+        return "Yes/No"
+
 
 @adapter(ICollection, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "array"
+
+    def get_widget(self):
+        map = {
+            "RelationList": "Relation List",
+            "Set": "Multiple Choice",
+            "List": "List",
+            "Tuple": "Tuple"
+        }
+
+        for key, value in map.items():
+            if key in self.field.__repr__():
+                return value
+
+        return "Collection"
 
     def get_items(self):
         """Get items properties."""
@@ -271,6 +299,17 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
 
     def get_type(self):
         return "string"
+
+    def get_widget(self):
+        map = {
+            "RelationChoice": "Relation Choice",
+            "Choice": "Choice"
+        }
+
+        for key, value in map.items():
+            if key in self.field.__repr__():
+                return value
+        return "Choice"
 
     def additional(self):
         # Named global vocabulary
@@ -338,6 +377,12 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "object"
 
+    def get_widget(self):
+        if self.field.schema.__name__ == "INamedBlobImage":
+            return "Image"
+        else:
+            return "File"
+
     def get_properties(self):
         if self.prefix:
             prefix = ".".join([self.prefix, self.field.__name__])
@@ -358,6 +403,7 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
 @adapter(IDict, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
+
     def get_type(self):
         return "dict"
 
@@ -390,7 +436,7 @@ class RichTextJsonSchemaProvider(DefaultJsonSchemaProvider):
         return "string"
 
     def get_widget(self):
-        return "richtext"
+        return "Rich Text"
 
 
 @adapter(IDate, Interface, Interface)
@@ -410,14 +456,14 @@ class DateJsonSchemaProvider(DefaultJsonSchemaProvider):
         return info
 
     def get_widget(self):
-        return "date"
+        return "Date"
 
 
 @adapter(IDatetime, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
     def get_widget(self):
-        return "datetime"
+        return "Date/Time"
 
 
 @adapter(ITuple, Interface, Interface)
@@ -433,4 +479,4 @@ class JSONFieldSchemaProvider(DefaultJsonSchemaProvider):
         return "dict"
 
     def get_widget(self):
-        return "json"
+        return "JSONField"
