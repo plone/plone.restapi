@@ -76,6 +76,10 @@ class DefaultJsonSchemaProvider(object):
         if widget:
             schema["widget"] = widget
 
+        factory = self.get_factory()
+        if factory:
+            schema["factory"] = factory
+
         widget_options = self.get_widget_params()
         if widget_options:
             schema["widgetOptions"] = widget_options

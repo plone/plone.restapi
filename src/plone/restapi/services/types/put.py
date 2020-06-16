@@ -201,17 +201,17 @@ def add_fieldset(context, request, fieldset):
 
 
 def add_field(context, request, field, fieldset_index, required):
-    widget = field.get('widget', None)
+    factory = field.get('factory', None)
     name = field.get('name')
 
     klass = None
     vocabulary = queryUtility(IVocabularyFactory, name='Fields')
     for term in vocabulary(context):
-        if widget in (term.title, term.token):
+        if factory in (term.title, term.token):
             klass = term.value
 
     if not klass:
-        raise BadRequest("Missing parameter widget")
+        raise BadRequest("Missing parameter factory")
 
     request.form["fieldset_id"] = fieldset_index
     add = queryMultiAdapter((context, request), name="add-field")
