@@ -89,6 +89,9 @@ class DefaultJsonSchemaProvider(object):
     def get_type(self):
         raise NotImplementedError
 
+    def get_factory(self):
+        return None
+
     def get_widget(self):
         return None
 
@@ -109,7 +112,7 @@ class BytesLineJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "string"
 
-    def get_widget(self):
+    def get_factory(self):
         return "Text line (String)"
 
 
@@ -129,7 +132,7 @@ class TextLineJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "string"
 
-    def get_widget(self):
+    def get_factory(self):
         return "Text line (String)"
 
 
@@ -137,6 +140,9 @@ class TextLineJsonSchemaProvider(DefaultJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class TextJsonSchemaProvider(TextLineJsonSchemaProvider):
     def get_widget(self):
+        return "textarea"
+
+    def get_factory(self):
         return "Text"
 
 
@@ -144,6 +150,9 @@ class TextJsonSchemaProvider(TextLineJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class EmailJsonSchemaProvider(TextLineJsonSchemaProvider):
     def get_widget(self):
+        return "email"
+
+    def get_factory(self):
         return "Email"
 
 
@@ -151,6 +160,9 @@ class EmailJsonSchemaProvider(TextLineJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class PasswordJsonSchemaProvider(TextLineJsonSchemaProvider):
     def get_widget(self):
+        return "password"
+
+    def get_factory(self):
         return "Password"
 
 
@@ -158,6 +170,9 @@ class PasswordJsonSchemaProvider(TextLineJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class URIJsonSchemaProvider(TextLineJsonSchemaProvider):
     def get_widget(self):
+        return "url"
+
+    def get_factory(self):
         return "URL"
 
 
@@ -189,7 +204,7 @@ class FloatJsonSchemaProvider(DefaultJsonSchemaProvider):
 
         return info
 
-    def get_widget(self):
+    def get_factory(self):
         return "Floating-point number"
 
 
@@ -205,7 +220,7 @@ class IntegerJsonSchemaProvider(FloatJsonSchemaProvider):
     def get_type(self):
         return "integer"
 
-    def get_widget(self):
+    def get_factory(self):
         return "Integer"
 
 
@@ -215,7 +230,7 @@ class BoolJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "boolean"
 
-    def get_widget(self):
+    def get_factory(self):
         return "Yes/No"
 
 
@@ -225,7 +240,7 @@ class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "array"
 
-    def get_widget(self):
+    def get_factory(self):
         map = {
             "RelationList": "Relation List",
             "Set": "Multiple Choice",
@@ -300,7 +315,7 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "string"
 
-    def get_widget(self):
+    def get_factory(self):
         map = {
             "RelationChoice": "Relation Choice",
             "Choice": "Choice"
@@ -377,7 +392,7 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "object"
 
-    def get_widget(self):
+    def get_factory(self):
         if self.field.schema.__name__ == "INamedBlobImage":
             return "Image"
         else:
@@ -436,6 +451,9 @@ class RichTextJsonSchemaProvider(DefaultJsonSchemaProvider):
         return "string"
 
     def get_widget(self):
+        return "richtext"
+
+    def get_factory(self):
         return "Rich Text"
 
 
@@ -456,6 +474,9 @@ class DateJsonSchemaProvider(DefaultJsonSchemaProvider):
         return info
 
     def get_widget(self):
+        return "date"
+
+    def get_factory(self):
         return "Date"
 
 
@@ -463,6 +484,9 @@ class DateJsonSchemaProvider(DefaultJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
     def get_widget(self):
+        return "datetime"
+
+    def get_factory(self):
         return "Date/Time"
 
 
@@ -479,4 +503,7 @@ class JSONFieldSchemaProvider(DefaultJsonSchemaProvider):
         return "dict"
 
     def get_widget(self):
+        return "json"
+
+    def get_factory(self):
         return "JSONField"

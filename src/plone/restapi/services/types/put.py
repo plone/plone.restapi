@@ -21,6 +21,7 @@ from plone.restapi.types.utils import iter_fields
 from plone.restapi.types.utils import get_fieldset_infos
 from plone.restapi.types.utils import serializeSchema
 from plone.schemaeditor.utils import SchemaModifiedEvent
+from plone.schemaeditor.utils import sortedFields
 from plone.supermodel.interfaces import FIELDSETS_KEY
 
 
@@ -120,7 +121,8 @@ class TypesPut(Service):
                 if fieldset['id'] == fset.__name__:
                     new_order.append(fset)
 
-            for idx, field in enumerate(fieldset['fields']):
+            position = -1
+            for field in fieldset['fields']:
                 fieldinfo = fields[field]
                 if fieldinfo.get('behavior') != context.schema.__identifier__:
                     continue
@@ -129,7 +131,6 @@ class TypesPut(Service):
                     # add new fields
                     fieldinfo['name'] = field
                     add_field(context, self.request, fieldinfo, fieldset_index, required)
-
                 try:
                     fieldContext = context.publishTraverse(self.request, field)
                     order = fieldContext.publishTraverse(self.request, 'order')
@@ -138,12 +139,15 @@ class TypesPut(Service):
                 except Exception:
                     continue
 
+                if field in [finfo[0] for finfo in sortedFields(schema)]:
+                    position += 1
+
                 # change fieldset
                 if fieldset_index != get_field_fieldset_index(field, fti_fieldsets):
                     changeFieldset(fieldset_index)
 
                 # order
-                order.move(idx, fieldset_index)
+                order.move(position, fieldset_index)
 
                 # set field default values
                 context.schema[field].default = fields[field].get('default')
@@ -207,7 +211,6 @@ def add_field(context, request, field, fieldset_index, required):
             klass = term.value
 
     if not klass:
-        # import pdb; pdb.set_trace()
         raise BadRequest("Missing parameter widget")
 
     request.form["fieldset_id"] = fieldset_index
@@ -226,8 +229,11 @@ def add_field(context, request, field, fieldset_index, required):
 def get_field_fieldset_index(fieldname, fieldsets):
     for idx, fieldset in enumerate(fieldsets):
         for field in fieldset['fields']:
+            if str(field) and field == fieldname:
+                return idx
             if field.field.getName() == fieldname:
                 return idx
+    return 0
 
 
 def get_last_index_for_fieldset(fieldsetname, fieldsets):
