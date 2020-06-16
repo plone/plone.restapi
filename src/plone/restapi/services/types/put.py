@@ -211,7 +211,6 @@ def add_field(context, request, field, fieldset_index, required):
             klass = term.value
 
     if not klass:
-        # import pdb; pdb.set_trace()
         raise BadRequest("Missing parameter widget")
 
     request.form["fieldset_id"] = fieldset_index
@@ -230,6 +229,8 @@ def add_field(context, request, field, fieldset_index, required):
 def get_field_fieldset_index(fieldname, fieldsets):
     for idx, fieldset in enumerate(fieldsets):
         for field in fieldset['fields']:
+            if str(field) and field == fieldname:
+                return idx
             if field.field.getName() == fieldname:
                 return idx
     return 0
