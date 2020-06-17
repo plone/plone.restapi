@@ -24,7 +24,7 @@ plone.restapi is a RESTful hypermedia API for Plone.
 Documentation
 =============
 
-http://plonerestapi.readthedocs.org
+https://plonerestapi.readthedocs.org
 
 
 Getting started
@@ -32,17 +32,24 @@ Getting started
 
 A live demo of Plone 5 with the latest plone.restapi release is available at:
 
-http://plonedemo.kitconcept.com
+https://plonedemo.kitconcept.com
 
-Example GET request on the portal root::
+Example GET request on the portal root
 
-  $ curl -i https://plonedemo.kitconcept.com -H "Accept: application/json"
+.. code-block:: shell
 
-Example POST request to create a new document::
+   curl -i https://plonedemo.kitconcept.com -H "Accept: application/json"
 
-  $ curl -i -X POST https://plonedemo.kitconcept.com -H "Accept: application/json" -H "Content-Type: application/json" --data-raw '{"@type": "Document", "title": "My Document"}' --user admin:admin
+Example POST request to create a new document
 
-.. note:: You will need some kind of API browser application to explore the API. We recommend using `Postman <http://www.getpostman.com/>`_.
+.. code-block:: shell
+
+   curl -i -X POST https://plonedemo.kitconcept.com -H "Accept: application/json" -H "Content-Type: application/json" --data-raw '{"@type": "Document", "title": "My Document"}' --user admin:admin
+
+.. note::
+
+   You will need some kind of API browser application to explore the API.
+   We recommend using `Postman <http://www.getpostman.com/>`_.
 
 
 Installation
@@ -83,13 +90,13 @@ It can be seen in action at the following sites:
 Support
 =======
 
-If you are having issues, please let us know via the issue tracker.
+If you are having issues, please let us know via the `issue tracker <https://github.com/plone/plone.restapi/issues>`_.
 
 If you required professional support, here is a list of Plone solution providers that contributed significantly to plone.restapi in the past:
 
-- kitconcept GmbH (Germany) https://kitconcept.com
-- 4teamwork (Switzerland) https://www.4teamwork.ch
-- CodeSyntax (Spain) https://www.codesyntax.com/en
+- `kitconcept GmbH <https://kitconcept.com>`_ (Germany)
+- `4teamwork <https://www.4teamwork.ch>`_ (Switzerland)
+- `CodeSyntax <https://www.codesyntax.com/en>`_ (Spain)
 
 
 License
