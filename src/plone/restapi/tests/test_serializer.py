@@ -392,6 +392,40 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.assertEqual(items[1]["title"], self.portal.doc2.Title())
         self.assertEqual(serialized.get("items_total"), 2)
 
+    def test_serialize_to_json_collection_include_items(self):
+        self.portal.invokeFactory("Collection", id="collection1")
+        self.portal.collection1.title = "My Collection"
+        self.portal.collection1.description = u"This is a collection with two documents"
+        self.portal.collection1.query = [
+            {
+                "i": "portal_type",
+                "o": "plone.app.querystring.operation.string.is",
+                "v": "Document",
+            }
+        ]
+        self.portal.invokeFactory("Document", id="doc2", title="Document 2")
+        self.portal.doc1.reindexObject()
+        self.portal.doc2.reindexObject()
+
+        self.assertEqual(
+            u"Collection", self.serialize(self.portal.collection1).get("@type")
+        )
+        self.assertEqual(
+            u"Collection", self.serialize(self.portal.collection1).get("@type")
+        )
+
+        self.request.form["include_items"] = False
+        without_items = self.serialize(self.portal.collection1)
+        self.assertFalse("items" in without_items)
+        self.assertFalse("items_total" in without_items)
+
+        self.request.form["include_items"] = True
+        serialized = self.serialize(self.portal.collection1)
+        items = serialized.get("items")
+        self.assertEqual(items[0]["title"], self.portal.doc1.Title())
+        self.assertEqual(items[1]["title"], self.portal.doc2.Title())
+        self.assertEqual(serialized.get("items_total"), 2)
+
     def test_serialize_returns_site_root_common(self):
         self.assertIn("title", self.serialize(self.portal))
         self.assertIn("description", self.serialize(self.portal))
