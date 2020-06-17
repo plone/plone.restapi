@@ -98,7 +98,7 @@ class TypesPut(Service):
         for fieldset in fti_fieldsets:
             for field in fieldset['fields']:
                 fieldinfo = fields[field.field.getName()]
-                if fieldinfo.get('behavior') != context.schema.__identifier__:
+                if fieldinfo.get('behavior', context.schema.__identifier__) != context.schema.__identifier__:
                     continue
 
                 if field.field.getName() not in iter_fields((fieldsets)):
@@ -108,13 +108,12 @@ class TypesPut(Service):
         new_order = []
         fti_fields = iter_fields(get_fieldset_infos(fti_fieldsets))
         for fieldset in fieldsets:
-            # TODO: what to do if fieldset repeats itself
-            fieldset_index = fieldsets.index(fieldset)
-            # fieldset_index = get_last_index_for_fieldset(fieldset['id'], fieldsets)
-
             # check if any new fieldsets
             if fieldset['id'] not in [fti_fset['id'] for fti_fset in fti_fieldsets]:
                 add_fieldset(context, self.request, fieldset)
+
+            # TODO: what to do if fieldset repeats itself
+            fieldset_index = get_fieldset_index(fieldset['id'], schema)
 
             # currently can reorder only non behavioral fieldsets
             for fset in additional_fieldsets:
@@ -124,7 +123,8 @@ class TypesPut(Service):
             position = -1
             for field in fieldset['fields']:
                 fieldinfo = fields[field]
-                if fieldinfo.get('behavior') != context.schema.__identifier__:
+
+                if fieldinfo.get('behavior', context.schema.__identifier__) != context.schema.__identifier__:
                     continue
 
                 if field not in fti_fields and field not in context.schema:
@@ -236,14 +236,9 @@ def get_field_fieldset_index(fieldname, fieldsets):
     return 0
 
 
-def get_last_index_for_fieldset(fieldsetname, fieldsets):
-    ids = [fieldset['id'] for fieldset in fieldsets]
-    index = 0
-    repeated = False
-    for idx, id in enumerate(ids):
-        if fieldsetname == id:
-            index = idx
-            if repeated:
-                index -= 1
-            repeated = True
-    return index
+def get_fieldset_index(fieldsetname, schema):
+    for idx, fieldset in enumerate(schema.queryTaggedValue(FIELDSETS_KEY, [])):
+        if fieldsetname == fieldset.__name__:
+            # +1 because 0 is the default fieldset
+            return idx + 1
+    return 0
