@@ -138,13 +138,10 @@ class TypesPut(Service):
                     fieldinfo['name'] = field
                     add_field(context, self.request, fieldinfo, fieldset_index, required)
 
-                # try:
                 fieldContext = context.publishTraverse(self.request, field)
                 order = fieldContext.publishTraverse(self.request, 'order')
                 changeFieldset = fieldContext.publishTraverse(self.request,
-                                                             'changefieldset')
-                # except Exception:
-                    # continue
+                                                              'changefieldset')
 
                 if field in [finfo[0] for finfo in sortedFields(schema)]:
                     position += 1
