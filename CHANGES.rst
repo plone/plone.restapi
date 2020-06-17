@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+6.13.3 (2020-06-17)
+-------------------
+
+Bug fixes:
+
+
+- - Take the `include_items` parameter into account in `SerializeCollectionToJson`. [gbastien] (#957)
+
+
 6.13.2 (2020-06-15)
 -------------------
 
