@@ -1,2 +1,9 @@
-HTTP/1.1 204 No Content
+HTTP/1.1 201 Created
+Content-Type: application/json
 
+{
+  "description": "Contact information", 
+  "fields": [], 
+  "id": "contact_info", 
+  "title": "Contact Info"
+}

@@ -2,9 +2,8 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "fields": [
-    "author_email"
-  ], 
+  "description": "Contact information", 
+  "fields": [], 
   "id": "contact_info", 
   "title": "Contact Info"
 }

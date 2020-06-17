@@ -16,26 +16,65 @@ Available content types in a Plone site can be listed and queried by accessing t
    :language: http
 
 
-Type Schema
------------
+The API consumer can create, read, update, and delete a content-types schema.
 
 ======= =============================================== =====================================================================
 Verb    URL                                             Action
 ======= =============================================== =====================================================================
-GET     ``/@types/Document``                            Get the schema of a content type
-PATCH   ``/@types/Document``                            Update content type schema defaults
-PUT     ``/@types/Document``                            Re-order content types schema fields, move them to another fieldset
 POST    ``/@types/Document``                            Add field/fieldset to content type schema
-GET     ``/@types/Document/{field-id}``                 Get settings for one content type schema field
-PATCH   ``/@types/Document/{field-id}``                 Update settings for one content type schema field
-DELETE  ``/@type/Document/{field/fieldset-id}``         Remove content type schema field/fieldset
+GET     ``/@types/Document``                            Get the schema of a content type
+PATCH   ``/@types/Document``                            Update existing schema fields/fieldsets properties
+PUT     ``/@types/Document``                            Replace content-type schema
 ======= =============================================== =====================================================================
 
+In addition to the above methods we can also do:
+
+======= =============================================== =====================================================================
+Verb    URL                                             Action
+======= =============================================== =====================================================================
+GET     ``/@type/Document/{id}``                        Get field/fieldset properties
+PATCH   ``/@type/Document/{id}``                        Update field/fieldset properties
+DELETE  ``/@type/Document/{id}``                        Remove field/fieldset from schema
+======= =============================================== =====================================================================
+
+Add schema fieldset/field with POST
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+To create a new **fieldset**, send a POST request to the ``/@types/Document`` endpoint.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_post_fieldset.req
+
+Response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_post_fieldset.resp
+   :language: http
+
+
+To create a new **field**, send a POST request to the ``/@types/Document`` endpoint.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_post_field.req
+
+Response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_post_field.resp
+   :language: http
+
+For a complete list of available field **@types** you can access **/@vocabularies/Fields** endpoint.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/vocabularies_get_fields.req
+
+Response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/vocabularies_get_fields.resp
+   :language: http
 
 Get the schema with GET
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-To get the schema of a content type, access the ``/@types`` endpoint  with the name of the content type, e.g. '/plone/@types/Document':
+To get the schema of a content type, access the ``/@types`` endpoint  with the name of the content type, e.g. ``plone/@types/Document``:
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/types_document.req
@@ -58,30 +97,78 @@ See :ref:`vocabularies` for details on these endpoints.
 
 See :ref:`types-schema` for a detailed documentation about the available field types.
 
+To get one schema **fieldset** properties, access ``@types/Document/{fieldset}`` endpoint:
 
-Update schema defaults with PATCH
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_get_fieldset.req
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_get_fieldset.resp
+   :language: http
+
+To get one schema **field** properties, access ``@types/Document/{field}`` endpoint:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_get_field.req
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_get_field.resp
+   :language: http
+
+
+Update schema with PATCH
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 To update content type schema defaults we send a PATCH request to the server.
 PATCH allows to provide just a subset of the resource (the values you actually want to change).
 
+To update one or more schema **field** properties:
+
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch.req
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch_properites.req
 
 Response:
 
-.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_patch.resp
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_patch_properites.resp
+   :language: http
+
+To change one or more **fieldsets** properties:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch_fieldsets.req
+
+Response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_patch_fieldsets.resp
    :language: http
 
 
-Reorder schema fields with PUT
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+To update one **fieldset** settings, we can also send a PATCH request to ``@types/Document/{fieldset}`` endpoint:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch_fieldset.req
+
+Response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_patch_fieldset.resp
+   :language: http
+
+To update one **field** settings, we can also send a PATCH request to ``@types/Document/{field}`` endpoint:
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch_field.req
+
+Response:
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_patch_field.resp
+   :language: http
+
+Replace schema with PUT
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. note::
 
   PUT is not implemented yet.
 
-To reorder content type schema fields or move fields to another fieldset we send a PUT request to the server:
+To add, reorder, remove **fields** or move them to another fieldset we send a PUT request to the server:
 
 TODO: Add example.
 
@@ -93,104 +180,10 @@ This is usually not a problem since the consumer application requested the resou
 When the PUT request is accepted and processed by the service, the consumer will receive a :term:`204 No Content` response (:term:`200 OK` would be a valid alternative).
 
 
-Add schema fieldset with POST
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Removing schema field/fieldset with DELETE
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To create a new fieldset, send a POST request to the ``/@types/Document`` endpoint.
-
-..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_post_fieldset.req
-
-Response:
-
-.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_post_fieldset.resp
-   :language: http
-
-
-Add schema field with POST
-~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To create a new field, send a POST request to the ``/@types/Document`` endpoint.
-
-..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_post_field.req
-
-Response:
-
-.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_post_field.resp
-   :language: http
-
-For a complete list of available field **@types** you can access **/@vocabularies/Fields** endpoint.
-
-..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/vocabularies_get_fields.req
-
-Response:
-
-.. literalinclude:: ../../src/plone/restapi/tests/http-examples/vocabularies_get_fields.resp
-   :language: http
-
-
-Move field to another fieldset with PATCH
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To move field to another fieldset and re-order it within that fieldset we send a PATCH request to the server.
-
-..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch_fieldset.req
-
-Response:
-
-.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_patch_fieldset.resp
-   :language: http
-
-
-Update schema field settings with PATCH
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To update content type schema field settings we send a PATCH request to the server.
-
-..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch_field.req
-
-Response:
-
-.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_patch_field.resp
-   :language: http
-
-
-Get schema field with GET
-~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To get an existing field, send a GET request to the URL of an existing schema field
-
-..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_get_field.req
-
-Response:
-
-.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_get_field.resp
-   :language: http
-
-
-Get schema fieldset with GET
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To get an existing fieldset, send a GET request to the URL of an existing schema field
-
-..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_get_fieldset.req
-
-Response:
-
-.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_get_fieldset.resp
-   :language: http
-
-
-Removing schema field with DELETE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Delete an existing schema field by sending a DELETE request to the URL of an existing schema field:
+Delete an existing schema **field** by sending a DELETE request to the URL of an existing schema field:
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/types_document_delete_field.req
@@ -201,10 +194,7 @@ Response:
    :language: http
 
 
-Removing schema fieldset with DELETE
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Delete an existing schema fieldset by sending a DELETE request to the URL of an existing schema fieldset:
+Delete an existing schema **fieldset** by sending a DELETE request to the URL of an existing schema fieldset:
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/types_document_delete_fieldset.req

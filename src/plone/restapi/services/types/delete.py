@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-import plone.protect.interfaces
-from plone.restapi.services import Service
 from plone.restapi.interfaces import IPloneRestapiLayer
+from plone.restapi.services import Service
+from plone.restapi.types.utils import delete_field
+from plone.restapi.types.utils import delete_fieldset
+from zExceptions import BadRequest
+from zope.component import queryMultiAdapter
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import noLongerProvides
-from zope.component import queryMultiAdapter
 from zope.publisher.interfaces import IPublishTraverse
-from zExceptions import BadRequest
+import plone.protect.interfaces
 
 
 @implementer(IPublishTraverse)
@@ -52,17 +54,10 @@ class TypesDelete(Service):
 
         name = self.params.pop(0)
         try:
-            context = context.publishTraverse(self.request, name)
-        except Exception:
-            # Removing a fieldset
-            self.request.form['name'] = name
-            delete = queryMultiAdapter((context, self.request),
-                                       name="delete-fieldset")
+            context.publishTraverse(self.request, name)
+        except AttributeError:
+            delete_fieldset(context, self.request, name)
         else:
-            # Removing a field
-            delete = queryMultiAdapter((context, self.request),
-                                       name="delete")
-
-        delete()
+            delete_field(context, self.request, name)
 
         return self.reply_no_content()

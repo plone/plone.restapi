@@ -7,6 +7,7 @@ Content-Type: application/json+schema
       "fields": [
         "title", 
         "description", 
+        "author_email", 
         "text", 
         "changeNote"
       ], 
@@ -76,15 +77,25 @@ Content-Type: application/json+schema
         "Yes", 
         "No"
       ], 
+      "factory": "Choice", 
       "title": "Allow discussion", 
       "type": "string", 
       "vocabulary": {
         "@id": "http://localhost:55001/plone/@sources/allow_discussion"
       }
     }, 
+    "author_email": {
+      "behavior": "plone.dexterity.schema.generated.plone_0_Document", 
+      "description": "Email of the author", 
+      "factory": "Email", 
+      "title": "Author email", 
+      "type": "string", 
+      "widget": "email"
+    }, 
     "changeNote": {
       "behavior": "plone.app.versioningbehavior.behaviors.IVersionable", 
       "description": "Enter a comment that describes the changes you made.", 
+      "factory": "Text line (String)", 
       "title": "Change Note", 
       "type": "string"
     }, 
@@ -92,8 +103,10 @@ Content-Type: application/json+schema
       "additionalItems": true, 
       "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "The names of people that have contributed to this item. Each contributor should be on a separate line.", 
+      "factory": "Tuple", 
       "items": {
         "description": "", 
+        "factory": "Text line (String)", 
         "title": "", 
         "type": "string"
       }, 
@@ -110,8 +123,10 @@ Content-Type: application/json+schema
       "additionalItems": true, 
       "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "Persons responsible for creating the content of this item. Please enter a list of user names, one per line. The principal creator should come first.", 
+      "factory": "Tuple", 
       "items": {
         "description": "", 
+        "factory": "Text line (String)", 
         "title": "", 
         "type": "string"
       }, 
@@ -127,6 +142,7 @@ Content-Type: application/json+schema
     "description": {
       "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "Used in item listings and search results.", 
+      "factory": "Text", 
       "title": "Summary", 
       "type": "string", 
       "widget": "textarea"
@@ -134,6 +150,7 @@ Content-Type: application/json+schema
     "effective": {
       "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "If this date is in the future, the content will not show up in listings and searches until this date.", 
+      "factory": "Date/Time", 
       "title": "Publishing Date", 
       "type": "string", 
       "widget": "datetime"
@@ -142,12 +159,14 @@ Content-Type: application/json+schema
       "behavior": "plone.app.dexterity.behaviors.exclfromnav.IExcludeFromNavigation", 
       "default": false, 
       "description": "If selected, this item will not appear in the navigation tree", 
+      "factory": "Yes/No", 
       "title": "Exclude from navigation", 
       "type": "boolean"
     }, 
     "expires": {
       "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "When this date is reached, the content will no longer be visible in listings and searches.", 
+      "factory": "Date/Time", 
       "title": "Expiration Date", 
       "type": "string", 
       "widget": "datetime"
@@ -155,6 +174,7 @@ Content-Type: application/json+schema
     "id": {
       "behavior": "plone.app.dexterity.behaviors.id.IShortName", 
       "description": "This name will be displayed in the URL.", 
+      "factory": "Text line (String)", 
       "title": "Short name", 
       "type": "string"
     }, 
@@ -162,6 +182,7 @@ Content-Type: application/json+schema
       "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "default": "en", 
       "description": "", 
+      "factory": "Choice", 
       "title": "Language", 
       "type": "string", 
       "vocabulary": {
@@ -173,8 +194,10 @@ Content-Type: application/json+schema
       "behavior": "plone.app.relationfield.behavior.IRelatedItems", 
       "default": [], 
       "description": "", 
+      "factory": "Relation List", 
       "items": {
         "description": "", 
+        "factory": "Relation Choice", 
         "title": "Related", 
         "type": "string", 
         "vocabulary": {
@@ -196,6 +219,7 @@ Content-Type: application/json+schema
     "rights": {
       "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "Copyright statement or other rights information on this item.", 
+      "factory": "Text", 
       "title": "Rights", 
       "type": "string", 
       "widget": "textarea"
@@ -204,8 +228,10 @@ Content-Type: application/json+schema
       "additionalItems": true, 
       "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "Tags are commonly used for ad-hoc organization of content.", 
+      "factory": "Tuple", 
       "items": {
         "description": "", 
+        "factory": "Text line (String)", 
         "title": "", 
         "type": "string"
       }, 
@@ -221,12 +247,14 @@ Content-Type: application/json+schema
     "table_of_contents": {
       "behavior": "plone.app.contenttypes.behaviors.tableofcontents.ITableOfContents", 
       "description": "If selected, this will show a table of contents at the top of the page.", 
+      "factory": "Yes/No", 
       "title": "Table of contents", 
       "type": "boolean"
     }, 
     "text": {
       "behavior": "plone.app.contenttypes.behaviors.richtext.IRichTextBehavior", 
       "description": "", 
+      "factory": "Rich Text", 
       "title": "Text", 
       "type": "string", 
       "widget": "richtext"
@@ -234,6 +262,7 @@ Content-Type: application/json+schema
     "title": {
       "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore", 
       "description": "", 
+      "factory": "Text line (String)", 
       "title": "Title", 
       "type": "string"
     }, 
@@ -241,12 +270,14 @@ Content-Type: application/json+schema
       "behavior": "plone.app.versioningbehavior.behaviors.IVersionable", 
       "default": true, 
       "description": "Enable/disable versioning for this document.", 
+      "factory": "Yes/No", 
       "title": "Versioning enabled", 
       "type": "boolean"
     }
   }, 
   "required": [
-    "title"
+    "title", 
+    "author_email"
   ], 
   "title": "Page", 
   "type": "object"

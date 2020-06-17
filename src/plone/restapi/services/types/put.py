@@ -81,9 +81,10 @@ class TypesPut(Service):
             fti_fieldsets = ()
             additional_schemata = ()
         else:
-            additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-            fti_fieldsets = get_fieldsets(self.context, self.request,
-                                          schema, additional_schemata)
+            additional_schemata = tuple(
+                getAdditionalSchemata(portal_type=fti.id))
+            fti_fieldsets = get_fieldsets(
+                self.context, self.request, schema, additional_schemata)
 
         # check for additional missed fieldsets
         fti_fieldset_ids = [fti_fset['id'] for fti_fset in fti_fieldsets]
@@ -102,7 +103,8 @@ class TypesPut(Service):
                 fieldinfo = fields[field.field.getName()]
 
                 # skip over behavior fields
-                behavior = fieldinfo.get('behavior', context.schema.__identifier__)
+                behavior = fieldinfo.get(
+                    'behavior', context.schema.__identifier__)
                 if behavior != context.schema.__identifier__:
                     continue
 
@@ -129,14 +131,16 @@ class TypesPut(Service):
             position = -1
             for field in fieldset['fields']:
                 fieldinfo = fields[field]
-                behavior = fieldinfo.get('behavior', context.schema.__identifier__)
+                behavior = fieldinfo.get(
+                    'behavior', context.schema.__identifier__)
                 if behavior != context.schema.__identifier__:
                     continue
 
                 if field not in fti_fields and field not in context.schema:
                     # add new fields
                     fieldinfo['name'] = field
-                    add_field(context, self.request, fieldinfo, fieldset_index, required)
+                    add_field(context, self.request, fieldinfo,
+                              fieldset_index, required)
 
                 fieldContext = context.publishTraverse(self.request, field)
                 order = fieldContext.publishTraverse(self.request, 'order')
@@ -147,7 +151,7 @@ class TypesPut(Service):
                     position += 1
 
                 # change fieldset
-                if fieldset_index != get_field_fieldset_index(field, fti_fieldsets):
+                if fieldset_index != get_field_fieldset_index(field, fti_fieldsets): # noqa
                     changeFieldset(fieldset_index)
 
                 # order

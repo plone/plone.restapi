@@ -298,7 +298,7 @@ def serializeSchema(schema):
 
 
 def get_info_for_field(portal_type, field_name, context, request):
-    """Build a complete JSON schema for the given portal_type.
+    """ Get JSON info for the given field name.
     """
     ttool = getToolByName(context, "portal_types")
     fti = ttool[portal_type]
@@ -328,6 +328,23 @@ def get_info_for_field(portal_type, field_name, context, request):
                         context, request, [fieldset], fname=field_name)
                     return IJsonCompatible(properties[field_name])
     raise KeyError(field_name)
+
+
+def get_info_for_fieldset(portal_type, fieldset_name, context, request):
+    """ Get JSON info for the given fieldset name.
+    """
+    properties = {}
+    for fieldset in context.schema.queryTaggedValue(FIELDSETS_KEY, []):
+        if fieldset_name != fieldset.__name__:
+            continue
+
+        properties = {
+            "id": fieldset.__name__,
+            "title": fieldset.label,
+            "description": fieldset.description,
+            "fields": fieldset.fields
+        }
+    return IJsonCompatible(properties)
 
 
 def sortedFields(schema):
@@ -375,10 +392,18 @@ def add_fieldset(context, request, fieldset):
     fieldset = add.form_instance.create(data=properties)
     add.form_instance.add(fieldset)
 
+    return get_info_for_fieldset(context.getId(), tid, context, request)
 
-def add_field(context, request, field, fieldset_index, required):
+
+def add_field(context, request, field, fieldset_index=0, required=()):
     factory = field.get('factory', None)
+    title = field.get("title", None)
+    description = field.get("description", None)
     name = field.get('name')
+    if not name:
+        name = idnormalizer.normalize(title).replace("-", "_")
+
+    req = field.get("required", name in required)
 
     klass = None
     vocabulary = queryUtility(IVocabularyFactory, name='Fields')
@@ -387,19 +412,21 @@ def add_field(context, request, field, fieldset_index, required):
             klass = term.value
 
     if not klass:
-        raise BadRequest("Missing parameter factory")
+        raise BadRequest("Missing/Invalid parameter factory: %s" % factory)
 
     request.form["fieldset_id"] = fieldset_index
     add = queryMultiAdapter((context, request), name="add-field")
     properties = {
-        "title": field.get('title'),
+        "title": title,
         "__name__": name,
-        "description": field.get('description'),
+        "description": description,
         "factory": klass,
-        "required": name in required
+        "required": req
     }
     created_field = add.form_instance.create(data=properties)
     add.form_instance.add(created_field)
+
+    return get_info_for_field(context.getId(), name, context, request)
 
 
 def get_field_fieldset_index(fieldname, fieldsets):

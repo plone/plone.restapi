@@ -1,9 +1,12 @@
-PATCH /plone/@types/Document/author_email HTTP/1.1
+PATCH /plone/@types/Document/contact_info HTTP/1.1
 Accept: application/json
 Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    "fieldset_id": 1,
-    "pos": 0
+    "description": "Contact information",
+    "fields": [
+        "author_email"
+    ],
+    "title": "Contact information"
 }

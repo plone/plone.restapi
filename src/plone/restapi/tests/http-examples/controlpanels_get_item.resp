@@ -41,8 +41,10 @@ Content-Type: application/json
           "None"
         ], 
         "description": "Available editors in the portal.", 
+        "factory": "List", 
         "items": {
           "description": "", 
+          "factory": "Text line (String)", 
           "title": "", 
           "type": "string"
         }, 
@@ -53,6 +55,7 @@ Content-Type: application/json
       "default_editor": {
         "default": "TinyMCE", 
         "description": "Select the default wysiwyg editor. Users will be able to choose their own or select to use the site default.", 
+        "factory": "Choice", 
         "title": "Default editor", 
         "type": "string", 
         "vocabulary": {
@@ -62,24 +65,28 @@ Content-Type: application/json
       "enable_link_integrity_checks": {
         "default": true, 
         "description": "Determines if the users should get warnings when they delete or move content that is linked from inside the site.", 
+        "factory": "Yes/No", 
         "title": "Enable link integrity checks", 
         "type": "boolean"
       }, 
       "ext_editor": {
         "default": false, 
         "description": "Determines if the external editor feature is enabled. This feature requires a special client-side application installed. The users also have to enable this in their preferences.", 
+        "factory": "Yes/No", 
         "title": "Enable External Editor feature", 
         "type": "boolean"
       }, 
       "lock_on_ttw_edit": {
         "default": true, 
         "description": "Disabling locking here will only affect users editing content through the Plone web UI.  Content edited via WebDAV clients will still be subject to locking.", 
+        "factory": "Yes/No", 
         "title": "Enable locking for through-the-web edits", 
         "type": "boolean"
       }, 
       "subjects_of_navigation_root": {
         "default": false, 
         "description": "Limit tags aka keywords vocabulary used for Tags field and in searches to the terms used inside the subtree of the current navigation root. This can be used together with Plone's multilingual extension plone.app.multilingual to only offer keywords of the current selected language. Other addons may utilize this feature for its specific purposes.", 
+        "factory": "Yes/No", 
         "title": "Limit tags/keywords to the current navigation root", 
         "type": "boolean"
       }

@@ -1,15 +1,16 @@
 # -*- coding: utf-8 -*-
-import plone.protect.interfaces
-from zope.publisher.interfaces import IPublishTraverse
-from zope.interface import noLongerProvides
-from zope.interface import implementer
-from zope.interface import alsoProvides
-from zope.component import queryMultiAdapter
-from zExceptions import BadRequest
-from plone.restapi.services import Service
-from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.deserializer import json_body
+from plone.restapi.interfaces import IPloneRestapiLayer
+from plone.restapi.services import Service
 from plone.restapi.types.utils import serializeSchema
+from plone.supermodel.interfaces import FIELDSETS_KEY
+from zExceptions import BadRequest
+from zope.component import queryMultiAdapter
+from zope.interface import alsoProvides
+from zope.interface import implementer
+from zope.interface import noLongerProvides
+from zope.publisher.interfaces import IPublishTraverse
+import plone.protect.interfaces
 
 
 @implementer(IPublishTraverse)
@@ -38,56 +39,82 @@ class TypesUpdate(Service):
         if IPloneRestapiLayer.providedBy(self.request):
             noLongerProvides(self.request, IPloneRestapiLayer)
 
-        if len(self.params) == 2:
-            return self.reply_for_field()
-
         data = json_body(self.request)
-        name = self.params.pop()
-        context = queryMultiAdapter(
-            (self.context, self.request), name="dexterity-types"
-        )
-
-        context = context.publishTraverse(self.request, name)
-        for key, value in data.items():
-            if key in context.schema:
-                context.schema[key].default = value
-        serializeSchema(context.schema)
-
-        return self.reply_no_content()
-
-    def reply_for_field(self):
-        data = json_body(self.request)
+        if len(self.params) == 1:
+            name = self.params.pop(0)
+        elif len(self.params) == 2:
+            name = self.params.pop(0)
+            fname = self.params.pop(0)
+            if "fields" in data:
+                return self.reply_for_fieldset(name, fname, data)
+            return self.reply_for_field(name, fname, data)
+        else:
+            raise BadRequest("Too many parameters")
 
         context = queryMultiAdapter(
             (self.context, self.request), name="dexterity-types"
         )
 
         # Get content type SchemaContext
-        name = self.params.pop(0)
+        context = context.publishTraverse(self.request, name)
+
+        # Update Fieldset properties
+        fieldsets = data.get("fieldsets", [])
+        for fieldset in fieldsets:
+            fname = fieldset.get("id")
+            self.reply_for_fieldset(name, fname, fieldset)
+
+        # Update Field properties
+        properties = data.get("properties", {})
+        for key, value in properties.items():
+            self.reply_for_field(name, key, value)
+        return self.reply_no_content()
+
+    def reply_for_fieldset(self, name, fieldset_name, data):
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types"
+        )
+
+        # Get content type SchemaContext
+        context = context.publishTraverse(self.request, name)
+
+        fieldsets = context.schema.queryTaggedValue(FIELDSETS_KEY, [])
+        for idx, fieldset in enumerate(fieldsets):
+            if fieldset_name != fieldset.__name__:
+                continue
+
+            fieldset.label = data.get(
+                'title', fieldset.label)
+            fieldset.description = data.get(
+                'description', fieldset.description)
+
+            for field_name in data.get('fields', []):
+                if field_name not in context.schema:
+                    continue
+
+                field = context.publishTraverse(self.request, field_name)
+                order = queryMultiAdapter(
+                    (field, self.request), name='changefieldset')
+                order.change(idx + 1)
+
+        serializeSchema(context.schema)
+        return self.reply_no_content()
+
+    def reply_for_field(self, name, field_name, data):
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types"
+        )
+
+        # Get content type SchemaContext
         context = context.publishTraverse(self.request, name)
 
         # Get FieldContext
-        name = self.params.pop(0)
-        context = context.publishTraverse(self.request, name)
-
-        # Change tab
-        fieldset_id = data.pop("fieldset_id", data.pop("fieldset_index", None))
-        if fieldset_id is not None:
-            tab = queryMultiAdapter(
-                (context, self.request), name="changefieldset")
-            tab.change(fieldset_id)
-
-        # Re-order
-        pos = data.pop("pos", None)
-        if pos is not None:
-            order = queryMultiAdapter(
-                (context, self.request), name="order")
-            order.move(pos, fieldset_id or -1)
+        field = context.publishTraverse(self.request, field_name)
 
         # Update field properties
         for key, value in data.items():
-            if hasattr(context.field, key):
-                setattr(context.field, key, value)
-        serializeSchema(context.schema)
+            if hasattr(field.field, key):
+                setattr(field.field, key, value)
 
+        serializeSchema(context.schema)
         return self.reply_no_content()

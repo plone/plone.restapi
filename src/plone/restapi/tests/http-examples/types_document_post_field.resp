@@ -1,2 +1,10 @@
-HTTP/1.1 204 No Content
+HTTP/1.1 201 Created
+Content-Type: application/json
 
+{
+  "description": "Email of the author", 
+  "factory": "Email", 
+  "title": "Author email", 
+  "type": "string", 
+  "widget": "email"
+}

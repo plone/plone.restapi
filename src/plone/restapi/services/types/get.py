@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
-from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from plone.restapi.types.utils import get_info_for_field
+from plone.restapi.types.utils import get_info_for_fieldset
+from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
 from zope.component import adapter
-from zope.component import getMultiAdapter
+from zope.component import getMultiAdapter, queryMultiAdapter
 from zope.component import getUtility
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.interface import noLongerProvides
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
 
@@ -32,14 +35,16 @@ class TypesInfo(object):
         self.request = request
 
     def __call__(self, expand=False):
-        result = {"types": {"@id": "{}/@types".format(self.context.absolute_url())}}
+        result = {"types": {"@id": "{}/@types".format(
+            self.context.absolute_url())}}
         if not expand:
             return result
 
         check_security(self.context)
 
         vocab_factory = getUtility(
-            IVocabularyFactory, name="plone.app.vocabularies.ReallyUserFriendlyTypes"
+            IVocabularyFactory,
+            name="plone.app.vocabularies.ReallyUserFriendlyTypes"
         )
 
         portal_types = getToolByName(self.context, "portal_types")
@@ -123,8 +128,28 @@ class TypesGet(Service):
         field_name = self.params[1]
 
         try:
+            # Get field
             return get_info_for_field(
                 name, field_name, self.context, self.request)
+        except KeyError:
+            # Get fieldset
+            return self.reply_for_fieldset()
+
+    def reply_for_fieldset(self):
+        name = self.params[0]
+        field_name = self.params[1]
+
+        # Make sure we get the right dexterity-types adapter
+        if IPloneRestapiLayer.providedBy(self.request):
+            noLongerProvides(self.request, IPloneRestapiLayer)
+
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types")
+        context = context.publishTraverse(self.request, name)
+
+        try:
+            return get_info_for_fieldset(
+                name, field_name, context, self.request)
         except KeyError:
             self.content_type = "application/json"
             self.request.response.setStatus(404)
