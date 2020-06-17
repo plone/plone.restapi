@@ -21,19 +21,24 @@ from plone.autoform.interfaces import WIDGETS_KEY
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.schema import splitSchemaName
 from plone.dexterity.utils import getAdditionalSchemata
+from plone.i18n.normalizer import idnormalizer
 from plone.restapi.serializer.converters import IJsonCompatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.supermodel import serializeModel
+from plone.supermodel.interfaces import FIELDSETS_KEY
 from plone.supermodel.utils import mergedTaggedValueDict
 from plone.supermodel.utils import syncSchema
 from Products.CMFCore.utils import getToolByName
 from z3c.form import form as z3c_form
+from zExceptions import BadRequest
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
 from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.i18n import translate
+from zope.schema.interfaces import IField
+from zope.schema.interfaces import IVocabularyFactory
 
 
 def create_form(context, request, base_schema, additional_schemata=None):
@@ -293,7 +298,7 @@ def serializeSchema(schema):
 
 
 def get_info_for_field(portal_type, field_name, context, request):
-    """Build a complete JSON schema for the given portal_type.
+    """ Get JSON info for the given field name.
     """
     ttool = getToolByName(context, "portal_types")
     fti = ttool[portal_type]
@@ -323,3 +328,120 @@ def get_info_for_field(portal_type, field_name, context, request):
                         context, request, [fieldset], fname=field_name)
                     return IJsonCompatible(properties[field_name])
     raise KeyError(field_name)
+
+
+def get_info_for_fieldset(portal_type, fieldset_name, context, request):
+    """ Get JSON info for the given fieldset name.
+    """
+    properties = {}
+    for fieldset in context.schema.queryTaggedValue(FIELDSETS_KEY, []):
+        if fieldset_name != fieldset.__name__:
+            continue
+
+        properties = {
+            "id": fieldset.__name__,
+            "title": fieldset.label,
+            "description": fieldset.description,
+            "fields": fieldset.fields
+        }
+    return IJsonCompatible(properties)
+
+
+def sortedFields(schema):
+    """ Like getFieldsInOrder, but does not include fields from bases
+        This is verbatim from plone.supermodel's utils.py but I didn't
+        want to create a dependency.
+    """
+    fields = []
+    for name in schema.names(all=False):
+        field = schema[name]
+        if IField.providedBy(field):
+            fields.append((name, field,))
+    fields.sort(key=lambda item: item[1].order)
+    return fields
+
+
+def delete_field(context, request, field):
+    fieldContext = context.publishTraverse(request, field)
+    delete = queryMultiAdapter((fieldContext, request), name="delete")
+    delete()
+
+
+def delete_fieldset(context, request, fieldset):
+    request.form['name'] = fieldset
+    delete = queryMultiAdapter((context, request),
+                               name="delete-fieldset")
+    delete()
+
+
+def add_fieldset(context, request, fieldset):
+    tid = fieldset.get("id", None)
+    title = fieldset.get("title", None)
+    description = fieldset.get("description", None)
+
+    if not tid:
+        tid = idnormalizer.normalize(title).replace("-", "_")
+
+    add = queryMultiAdapter((context, request),
+                            name="add-fieldset")
+    properties = {
+        "label": title,
+        "__name__": tid,
+        "description": description
+    }
+    fieldset = add.form_instance.create(data=properties)
+    add.form_instance.add(fieldset)
+
+    return get_info_for_fieldset(context.getId(), tid, context, request)
+
+
+def add_field(context, request, field, fieldset_index=0, required=()):
+    factory = field.get('factory', None)
+    title = field.get("title", None)
+    description = field.get("description", None)
+    name = field.get('name')
+    if not name:
+        name = idnormalizer.normalize(title).replace("-", "_")
+
+    req = field.get("required", name in required)
+
+    klass = None
+    vocabulary = queryUtility(IVocabularyFactory, name='Fields')
+    for term in vocabulary(context):
+        if factory in (term.title, term.token):
+            klass = term.value
+
+    if not klass:
+        raise BadRequest("Missing/Invalid parameter factory: %s" % factory)
+
+    request.form["fieldset_id"] = fieldset_index
+    add = queryMultiAdapter((context, request), name="add-field")
+    properties = {
+        "title": title,
+        "__name__": name,
+        "description": description,
+        "factory": klass,
+        "required": req
+    }
+    created_field = add.form_instance.create(data=properties)
+    add.form_instance.add(created_field)
+
+    return get_info_for_field(context.getId(), name, context, request)
+
+
+def get_field_fieldset_index(fieldname, fieldsets):
+    for idx, fieldset in enumerate(fieldsets):
+        for field in fieldset['fields']:
+            if str(field) and field == fieldname:
+                return idx
+            if field.field.getName() == fieldname:
+                return idx
+    return 0
+
+
+def get_fieldset_index(fieldsetname, schema):
+    for idx, fieldset in enumerate(schema.queryTaggedValue(FIELDSETS_KEY, [])):
+        if fieldsetname == fieldset.__name__:
+            # +1 because 0 is the default fieldset
+            return idx + 1
+    return 0

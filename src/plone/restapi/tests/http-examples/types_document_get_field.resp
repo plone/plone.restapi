@@ -2,9 +2,9 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "default": "foo@bar.com", 
-  "description": "The e-mail address of the author", 
-  "title": "Author e-mail", 
+  "description": "Email of the author", 
+  "factory": "Email", 
+  "title": "Author email", 
   "type": "string", 
   "widget": "email"
 }

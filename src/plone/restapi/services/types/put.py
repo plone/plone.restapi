@@ -1,28 +1,29 @@
 # -*- coding: utf-8 -*-
-import plone.protect.interfaces
-from zope.component import queryMultiAdapter
-from zope.component import queryUtility
-from zope.container.contained import notifyContainerModified
-from zope.event import notify
-from zope.interface import noLongerProvides
-from zope.interface import implementer
-from zope.interface import alsoProvides
-from zope.publisher.interfaces import IPublishTraverse
-from zope.schema.interfaces import IVocabularyFactory
-from zExceptions import BadRequest
-from Products.CMFCore.utils import getToolByName
-from plone.i18n.normalizer import idnormalizer
-from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.deserializer import json_body
+from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
-from plone.restapi.types.utils import getAdditionalSchemata
-from plone.restapi.types.utils import get_fieldsets
-from plone.restapi.types.utils import iter_fields
+from plone.restapi.types.utils import add_field
+from plone.restapi.types.utils import add_fieldset
+from plone.restapi.types.utils import delete_field
+from plone.restapi.types.utils import delete_fieldset
+from plone.restapi.types.utils import get_field_fieldset_index
+from plone.restapi.types.utils import get_fieldset_index
 from plone.restapi.types.utils import get_fieldset_infos
+from plone.restapi.types.utils import get_fieldsets
+from plone.restapi.types.utils import getAdditionalSchemata
+from plone.restapi.types.utils import iter_fields
 from plone.restapi.types.utils import serializeSchema
-from plone.schemaeditor.utils import SchemaModifiedEvent
-from plone.schemaeditor.utils import sortedFields
+from plone.restapi.types.utils import sortedFields
 from plone.supermodel.interfaces import FIELDSETS_KEY
+from Products.CMFCore.utils import getToolByName
+from zExceptions import BadRequest
+from zope.component import queryMultiAdapter
+from zope.container.contained import notifyContainerModified
+from zope.interface import alsoProvides
+from zope.interface import implementer
+from zope.interface import noLongerProvides
+from zope.publisher.interfaces import IPublishTraverse
+import plone.protect.interfaces
 
 
 @implementer(IPublishTraverse)
@@ -80,14 +81,16 @@ class TypesPut(Service):
             fti_fieldsets = ()
             additional_schemata = ()
         else:
-            additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-            fti_fieldsets = get_fieldsets(self.context, self.request,
-                                          schema, additional_schemata)
+            additional_schemata = tuple(
+                getAdditionalSchemata(portal_type=fti.id))
+            fti_fieldsets = get_fieldsets(
+                self.context, self.request, schema, additional_schemata)
 
         # check for additional missed fieldsets
+        fti_fieldset_ids = [fti_fset['id'] for fti_fset in fti_fieldsets]
         additional_fieldsets = schema.queryTaggedValue(FIELDSETS_KEY, [])
         for idx, fieldset in enumerate(additional_fieldsets):
-            if fieldset.__name__ not in [fti_fset['id'] for fti_fset in fti_fieldsets]:
+            if fieldset.__name__ not in fti_fieldset_ids:
                 props = {
                     'title': fieldset.label,
                     'id': fieldset.__name__,
@@ -98,23 +101,27 @@ class TypesPut(Service):
         for fieldset in fti_fieldsets:
             for field in fieldset['fields']:
                 fieldinfo = fields[field.field.getName()]
-                if fieldinfo.get('behavior') != context.schema.__identifier__:
+
+                # skip over behavior fields
+                behavior = fieldinfo.get(
+                    'behavior', context.schema.__identifier__)
+                if behavior != context.schema.__identifier__:
                     continue
 
+                # remove fields
                 if field.field.getName() not in iter_fields((fieldsets)):
-                    # remove fields
                     delete_field(context, self.request, field.field.getName())
 
         new_order = []
         fti_fields = iter_fields(get_fieldset_infos(fti_fieldsets))
         for fieldset in fieldsets:
-            # TODO: what to do if fieldset repeats itself
-            fieldset_index = fieldsets.index(fieldset)
-            # fieldset_index = get_last_index_for_fieldset(fieldset['id'], fieldsets)
-
             # check if any new fieldsets
-            if fieldset['id'] not in [fti_fset['id'] for fti_fset in fti_fieldsets]:
+            fti_fieldset_ids = [fti_fset['id'] for fti_fset in fti_fieldsets]
+            if fieldset['id'] not in fti_fieldset_ids:
                 add_fieldset(context, self.request, fieldset)
+
+            # TODO: what to do if fieldset repeats itself
+            fieldset_index = get_fieldset_index(fieldset['id'], schema)
 
             # currently can reorder only non behavioral fieldsets
             for fset in additional_fieldsets:
@@ -124,26 +131,27 @@ class TypesPut(Service):
             position = -1
             for field in fieldset['fields']:
                 fieldinfo = fields[field]
-                if fieldinfo.get('behavior') != context.schema.__identifier__:
+                behavior = fieldinfo.get(
+                    'behavior', context.schema.__identifier__)
+                if behavior != context.schema.__identifier__:
                     continue
 
                 if field not in fti_fields and field not in context.schema:
                     # add new fields
                     fieldinfo['name'] = field
-                    add_field(context, self.request, fieldinfo, fieldset_index, required)
-                try:
-                    fieldContext = context.publishTraverse(self.request, field)
-                    order = fieldContext.publishTraverse(self.request, 'order')
-                    changeFieldset = fieldContext.publishTraverse(self.request,
-                                                            'changefieldset')
-                except Exception:
-                    continue
+                    add_field(context, self.request, fieldinfo,
+                              fieldset_index, required)
+
+                fieldContext = context.publishTraverse(self.request, field)
+                order = fieldContext.publishTraverse(self.request, 'order')
+                changeFieldset = fieldContext.publishTraverse(self.request,
+                                                              'changefieldset')
 
                 if field in [finfo[0] for finfo in sortedFields(schema)]:
                     position += 1
 
                 # change fieldset
-                if fieldset_index != get_field_fieldset_index(field, fti_fieldsets):
+                if fieldset_index != get_field_fieldset_index(field, fti_fieldsets): # noqa
                     changeFieldset(fieldset_index)
 
                 # order
@@ -152,98 +160,17 @@ class TypesPut(Service):
                 # set field default values
                 context.schema[field].default = fields[field].get('default')
 
-        fieldsets_to_remove = set([fti_fset['id'] for fti_fset in fti_fieldsets]) - set([fset['id'] for fset in fieldsets])
+        fti_fieldset_ids = [fti_fset['id'] for fti_fset in fti_fieldsets]
+        fieldset_ids = [fset['id'] for fset in fieldsets]
+        fieldsets_to_remove = set(fti_fieldset_ids) - set(fieldset_ids)
         if len(fieldsets_to_remove) > 0:
             # remove fieldsets
             for fset in list(fieldsets_to_remove):
                 delete_fieldset(context, self.request, fset)
 
-        serializeSchema(context.schema)
-
         # set the new fieldset order
         context.schema.setTaggedValue(FIELDSETS_KEY, new_order)
         notifyContainerModified(context.schema)
-        notify(SchemaModifiedEvent(self.context))
+        serializeSchema(context.schema)
 
         return self.reply_no_content()
-
-
-def delete_field(context, request, field):
-    fieldContext = context.publishTraverse(request, field)
-    delete = queryMultiAdapter((fieldContext, request), name="delete")
-    delete()
-
-
-def delete_fieldset(context, request, fieldset):
-    request.form['name'] = fieldset
-    delete = queryMultiAdapter((context, request),
-                               name="delete-fieldset")
-    delete()
-
-
-def add_fieldset(context, request, fieldset):
-    tid = fieldset.get("id", None)
-    title = fieldset.get("title", None)
-    description = fieldset.get("description", None)
-
-    if not tid:
-        tid = idnormalizer.normalize(title).replace("-", "_")
-
-    add = queryMultiAdapter((context, request),
-                            name="add-fieldset")
-    properties = {
-        "label": title,
-        "__name__": tid,
-        "description": description
-    }
-    fieldset = add.form_instance.create(data=properties)
-    add.form_instance.add(fieldset)
-
-
-def add_field(context, request, field, fieldset_index, required):
-    widget = field.get('widget', None)
-    name = field.get('name')
-
-    klass = None
-    vocabulary = queryUtility(IVocabularyFactory, name='Fields')
-    for term in vocabulary(context):
-        if widget in (term.title, term.token):
-            klass = term.value
-
-    if not klass:
-        raise BadRequest("Missing parameter widget")
-
-    request.form["fieldset_id"] = fieldset_index
-    add = queryMultiAdapter((context, request), name="add-field")
-    properties = {
-        "title": field.get('title'),
-        "__name__": name,
-        "description": field.get('description'),
-        "factory": klass,
-        "required": name in required
-    }
-    created_field = add.form_instance.create(data=properties)
-    add.form_instance.add(created_field)
-
-
-def get_field_fieldset_index(fieldname, fieldsets):
-    for idx, fieldset in enumerate(fieldsets):
-        for field in fieldset['fields']:
-            if str(field) and field == fieldname:
-                return idx
-            if field.field.getName() == fieldname:
-                return idx
-    return 0
-
-
-def get_last_index_for_fieldset(fieldsetname, fieldsets):
-    ids = [fieldset['id'] for fieldset in fieldsets]
-    index = 0
-    repeated = False
-    for idx, id in enumerate(ids):
-        if fieldsetname == id:
-            index = idx
-            if repeated:
-                index -= 1
-            repeated = True
-    return index

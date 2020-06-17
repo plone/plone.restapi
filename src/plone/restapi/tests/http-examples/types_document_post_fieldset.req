@@ -4,7 +4,7 @@ Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    "@type": "fieldset",
     "description": "Contact information",
+    "factory": "fieldset",
     "title": "Contact Info"
 }

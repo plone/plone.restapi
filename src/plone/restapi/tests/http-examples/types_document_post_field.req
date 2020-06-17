@@ -4,9 +4,8 @@ Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    "@type": "Email",
     "description": "Email of the author",
-    "fieldset_id": 0,
+    "factory": "Email",
     "required": true,
     "title": "Author email"
 }
