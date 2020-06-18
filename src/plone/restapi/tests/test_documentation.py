@@ -1791,7 +1791,7 @@ class TestControlPanelDocumentation(TestDocumentationBase):
                 "description": "A content-type",
                 "plone.richtext": True,
                 "plone.versioning": True,
-                },
+            },
         )
         save_request_and_response_for_docs(
             "controlpanels_patch_dexterity_item", response

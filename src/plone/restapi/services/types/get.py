@@ -127,11 +127,18 @@ class TypesGet(Service):
         name = self.params[0]
         field_name = self.params[1]
 
+        # Make sure we get the right dexterity-types adapter
+        if IPloneRestapiLayer.providedBy(self.request):
+            noLongerProvides(self.request, IPloneRestapiLayer)
+
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types")
+        context = context.publishTraverse(self.request, name)
+
         try:
             # Get field
-            return get_info_for_field(
-                name, field_name, self.context, self.request)
-        except KeyError:
+            return get_info_for_field(context, self.request, field_name)
+        except (KeyError, AttributeError):
             # Get fieldset
             return self.reply_for_fieldset()
 
@@ -148,8 +155,7 @@ class TypesGet(Service):
         context = context.publishTraverse(self.request, name)
 
         try:
-            return get_info_for_fieldset(
-                name, field_name, context, self.request)
+            return get_info_for_fieldset(context, self.request, field_name)
         except KeyError:
             self.content_type = "application/json"
             self.request.response.setStatus(404)

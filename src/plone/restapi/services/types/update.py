@@ -3,7 +3,8 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
 from plone.restapi.types.utils import serializeSchema
-from plone.supermodel.interfaces import FIELDSETS_KEY
+from plone.restapi.types.utils import update_field
+from plone.restapi.types.utils import update_fieldset
 from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
 from zope.interface import alsoProvides
@@ -78,24 +79,8 @@ class TypesUpdate(Service):
         # Get content type SchemaContext
         context = context.publishTraverse(self.request, name)
 
-        fieldsets = context.schema.queryTaggedValue(FIELDSETS_KEY, [])
-        for idx, fieldset in enumerate(fieldsets):
-            if fieldset_name != fieldset.__name__:
-                continue
-
-            fieldset.label = data.get(
-                'title', fieldset.label)
-            fieldset.description = data.get(
-                'description', fieldset.description)
-
-            for field_name in data.get('fields', []):
-                if field_name not in context.schema:
-                    continue
-
-                field = context.publishTraverse(self.request, field_name)
-                order = queryMultiAdapter(
-                    (field, self.request), name='changefieldset')
-                order.change(idx + 1)
+        data["id"] = fieldset_name
+        update_fieldset(context, self.request, data)
 
         serializeSchema(context.schema)
         return self.reply_no_content()
@@ -108,13 +93,8 @@ class TypesUpdate(Service):
         # Get content type SchemaContext
         context = context.publishTraverse(self.request, name)
 
-        # Get FieldContext
-        field = context.publishTraverse(self.request, field_name)
-
-        # Update field properties
-        for key, value in data.items():
-            if hasattr(field.field, key):
-                setattr(field.field, key, value)
+        data["id"] = field_name
+        update_field(context, self.request, data)
 
         serializeSchema(context.schema)
         return self.reply_no_content()
