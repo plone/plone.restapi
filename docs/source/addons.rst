@@ -60,7 +60,7 @@ An individual addon can be installed by issuing a ``POST`` to the given URL:
 
 
 Uninstalling an addon
--------------------
+---------------------
 
 An individual addon can be uninstalled by issuing a ``POST`` to the given URL:
 

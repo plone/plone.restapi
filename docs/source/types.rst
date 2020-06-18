@@ -37,6 +37,13 @@ PATCH   ``/@type/Document/{id}``                        Update field/fieldset pr
 DELETE  ``/@type/Document/{id}``                        Remove field/fieldset from schema
 ======= =============================================== =====================================================================
 
+.. note::
+
+  Schema fields/fieldsets defined by `behaviors <https://docs.plone.org/external/plone.app.dexterity/docs/behaviors/index.html>`_
+  are immutable and can NOT be changed via this RestAPI endpoint. See :ref:`dexterity-types` controlpanel RestAPI endpoint
+  for enabling/disabling behaviors.
+
+
 Add schema fieldset/field with POST
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -161,16 +168,8 @@ Response:
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_patch_field.resp
    :language: http
 
-Replace schema with PUT
-~~~~~~~~~~~~~~~~~~~~~~~
-
-.. note::
-
-  PUT is not implemented yet.
-
-To add, reorder, remove **fields** or move them to another fieldset we send a PUT request to the server:
-
-TODO: Add example.
+Update schema with PUT
+~~~~~~~~~~~~~~~~~~~~~~
 
 In accordance with the HTTP specification, a successful PUT will not create a new resource or produce a new URL.
 
@@ -179,6 +178,13 @@ This is usually not a problem since the consumer application requested the resou
 
 When the PUT request is accepted and processed by the service, the consumer will receive a :term:`204 No Content` response (:term:`200 OK` would be a valid alternative).
 
+Use PUT when more changes are needed in one call, like create new fields/fieldsets, move fields to fieldset, remove multiple fields, etc.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/types_document_put.req
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/types_document_put.resp
+   :language: http
 
 Removing schema field/fieldset with DELETE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
