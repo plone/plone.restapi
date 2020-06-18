@@ -61,6 +61,15 @@ New features:
   [buchi,timo,cekk] (#808)
 
 
+6.13.4 (2020-06-18)
+-------------------
+
+Bug fixes:
+
+
+- Re-add test folder to the release (ignore the tests/images folder though). [timo] (#968)
+
+
 6.13.3 (2020-06-17)
 -------------------
 
