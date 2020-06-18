@@ -647,6 +647,14 @@ class TestDocumentation(TestDocumentationBase):
             "types_document_patch_field", response
         )
 
+        response = self.api_session.put(
+            "/@types/Document",
+            json={}
+        )
+        save_request_and_response_for_docs(
+            "types_document_put", response
+        )
+
         #
         # DELETE
         #
@@ -1778,7 +1786,12 @@ class TestControlPanelDocumentation(TestDocumentationBase):
         # PATCH
         response = self.api_session.patch(
             "/@controlpanels/dexterity-types/my_custom_content_type",
-            json={"title": "My Content Type", "description": "A content-type"},
+            json={
+                "title": "My Content Type",
+                "description": "A content-type",
+                "plone.richtext": True,
+                "plone.versioning": True,
+            },
         )
         save_request_and_response_for_docs(
             "controlpanels_patch_dexterity_item", response

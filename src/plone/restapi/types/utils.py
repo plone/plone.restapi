@@ -37,7 +37,6 @@ from zope.component import queryUtility
 from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.i18n import translate
-from zope.schema.interfaces import IField
 from zope.schema.interfaces import IVocabularyFactory
 
 
@@ -297,45 +296,24 @@ def serializeSchema(schema):
     fti.model_source = serializeModel(model)
 
 
-def get_info_for_field(portal_type, field_name, context, request):
+def get_info_for_field(context, request, name):
     """ Get JSON info for the given field name.
     """
-    ttool = getToolByName(context, "portal_types")
-    fti = ttool[portal_type]
+    field = context.publishTraverse(request, name)
+    adapter = queryMultiAdapter(
+        (field.field, context, request), interface=IJsonSchemaProvider)
 
-    try:
-        schema = fti.lookupSchema()
-    except AttributeError:
-        schema = None
-        fieldsets = ()
-        additional_schemata = ()
-    else:
-        additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-        fieldsets = get_fieldsets(context, request,
-                                  schema, additional_schemata)
-
-    properties = {}
-    for fieldset in fieldsets:
-        if fieldset['id'] == field_name:
-            # return fieldset info
-            properties = get_fieldset_infos([fieldset])[0]
-            return IJsonCompatible(properties)
-        else:
-            # return field info
-            for field in fieldset['fields']:
-                if field.field.getName() == field_name:
-                    properties = get_jsonschema_properties(
-                        context, request, [fieldset], fname=field_name)
-                    return IJsonCompatible(properties[field_name])
-    raise KeyError(field_name)
+    schema = adapter.get_schema()
+    schema['behavior'] = context.schema.__identifier__
+    return IJsonCompatible(schema)
 
 
-def get_info_for_fieldset(portal_type, fieldset_name, context, request):
+def get_info_for_fieldset(context, request, name):
     """ Get JSON info for the given fieldset name.
     """
     properties = {}
     for fieldset in context.schema.queryTaggedValue(FIELDSETS_KEY, []):
-        if fieldset_name != fieldset.__name__:
+        if name != fieldset.__name__:
             continue
 
         properties = {
@@ -347,101 +325,110 @@ def get_info_for_fieldset(portal_type, fieldset_name, context, request):
     return IJsonCompatible(properties)
 
 
-def sortedFields(schema):
-    """ Like getFieldsInOrder, but does not include fields from bases
-        This is verbatim from plone.supermodel's utils.py but I didn't
-        want to create a dependency.
-    """
-    fields = []
-    for name in schema.names(all=False):
-        field = schema[name]
-        if IField.providedBy(field):
-            fields.append((name, field,))
-    fields.sort(key=lambda item: item[1].order)
-    return fields
-
-
-def delete_field(context, request, field):
-    fieldContext = context.publishTraverse(request, field)
-    delete = queryMultiAdapter((fieldContext, request), name="delete")
+def delete_field(context, request, name):
+    field = context.publishTraverse(request, name)
+    delete = queryMultiAdapter((field, request), name="delete")
     delete()
 
 
-def delete_fieldset(context, request, fieldset):
-    request.form['name'] = fieldset
-    delete = queryMultiAdapter((context, request),
-                               name="delete-fieldset")
+def delete_fieldset(context, request, name):
+    request.form['name'] = name
+    delete = queryMultiAdapter((context, request), name="delete-fieldset")
     delete()
 
 
-def add_fieldset(context, request, fieldset):
-    tid = fieldset.get("id", None)
-    title = fieldset.get("title", None)
-    description = fieldset.get("description", None)
+def add_fieldset(context, request, data):
+    name = data.get("id", None)
+    title = data.get("title", None)
+    description = data.get("description", None)
 
-    if not tid:
-        tid = idnormalizer.normalize(title).replace("-", "_")
+    if not name:
+        name = idnormalizer.normalize(title).replace("-", "_")
 
-    add = queryMultiAdapter((context, request),
-                            name="add-fieldset")
+    # Default is reserved
+    if name == 'default':
+        return {}
+
+    add = queryMultiAdapter((context, request), name="add-fieldset")
     properties = {
+        "__name__": name,
         "label": title,
-        "__name__": tid,
         "description": description
     }
     fieldset = add.form_instance.create(data=properties)
     add.form_instance.add(fieldset)
 
-    return get_info_for_fieldset(context.getId(), tid, context, request)
+    return get_info_for_fieldset(context, request, name)
 
 
-def add_field(context, request, field, fieldset_index=0, required=()):
-    factory = field.get('factory', None)
-    title = field.get("title", None)
-    description = field.get("description", None)
-    name = field.get('name')
+def add_field(context, request, data):
+    factory = data.get('factory', None)
+    title = data.get("title", None)
+    description = data.get("description", None)
+    required = data.get("required", False)
+    name = data.get('id', None)
     if not name:
         name = idnormalizer.normalize(title).replace("-", "_")
-
-    req = field.get("required", name in required)
 
     klass = None
     vocabulary = queryUtility(IVocabularyFactory, name='Fields')
     for term in vocabulary(context):
-        if factory in (term.title, term.token):
-            klass = term.value
+        if factory not in (term.title, term.token):
+            continue
+
+        klass = term.value
+        break
 
     if not klass:
         raise BadRequest("Missing/Invalid parameter factory: %s" % factory)
 
-    request.form["fieldset_id"] = fieldset_index
     add = queryMultiAdapter((context, request), name="add-field")
     properties = {
         "title": title,
         "__name__": name,
         "description": description,
         "factory": klass,
-        "required": req
+        "required": required
     }
-    created_field = add.form_instance.create(data=properties)
-    add.form_instance.add(created_field)
 
-    return get_info_for_field(context.getId(), name, context, request)
+    field = add.form_instance.create(data=properties)
+    add.form_instance.add(field)
+
+    return get_info_for_field(context, request, name)
 
 
-def get_field_fieldset_index(fieldname, fieldsets):
+def update_fieldset(context, request, data):
+    name = data.get("id", None)
+    title = data.get("title", None)
+    description = data.get("description", None)
+    fields = data.get("fields", None)
+
+    if not name:
+        name = idnormalizer.normalize(title).replace("-", "_")
+
+    fieldsets = context.schema.queryTaggedValue(FIELDSETS_KEY, [])
     for idx, fieldset in enumerate(fieldsets):
-        for field in fieldset['fields']:
-            if str(field) and field == fieldname:
-                return idx
-            if field.field.getName() == fieldname:
-                return idx
-    return 0
+        if name != fieldset.__name__:
+            continue
+
+        if title:
+            fieldset.label = title
+
+        if description:
+            fieldset.description = description
+
+        for field_name in fields:
+            if field_name not in context.schema:
+                continue
+
+            field = context.publishTraverse(request, field_name)
+            order = queryMultiAdapter(
+                (field, request), name='changefieldset')
+            order.change(idx + 1)
 
 
-def get_fieldset_index(fieldsetname, schema):
-    for idx, fieldset in enumerate(schema.queryTaggedValue(FIELDSETS_KEY, [])):
-        if fieldsetname == fieldset.__name__:
-            # +1 because 0 is the default fieldset
-            return idx + 1
-    return 0
+def update_field(context, request, data):
+    field = context.publishTraverse(request, data.pop("id"))
+    for key, value in data.items():
+        if hasattr(field.field, key):
+            setattr(field.field, key, value)
