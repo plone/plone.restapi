@@ -6,6 +6,7 @@ from plone.restapi.services import Service
 from plone.restapi.types.utils import get_info_for_field
 from plone.restapi.types.utils import get_info_for_fieldset
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
+from plone.supermodel.interfaces import FIELDSETS_KEY
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
@@ -99,28 +100,53 @@ class TypesGet(Service):
         return self.params[0]
 
     def reply(self):
+        if not self.params:
+            # List type info, including addable_types
+            info = TypesInfo(self.context, self.request)
+            return info(expand=True)["types"]
+
+        if len(self.params) == 1:
+            return self.reply_for_type()
+
         if len(self.params) == 2:
             return self.reply_for_field()
-        if self.params and len(self.params) > 0:
-            # Return schema for a specific type
-            check_security(self.context)
-            self.content_type = "application/json+schema"
-            try:
-                portal_type = self.params.pop()
-                return get_jsonschema_for_portal_type(
-                    portal_type, self.context, self.request
-                )
-            except KeyError:
-                self.content_type = "application/json"
-                self.request.response.setStatus(404)
-                return {
-                    "type": "NotFound",
-                    "message": "Type '%s' could not be found." % portal_type,
-                }
 
-        # List type info, including addable_types
-        info = TypesInfo(self.context, self.request)
-        return info(expand=True)["types"]
+    def reply_for_type(self):
+        # Return schema for a specific type
+        check_security(self.context)
+        self.content_type = "application/json+schema"
+        try:
+            portal_type = self.params.pop()
+            schema = get_jsonschema_for_portal_type(
+                portal_type, self.context, self.request
+            )
+        except KeyError:
+            self.content_type = "application/json"
+            self.request.response.setStatus(404)
+            return {
+                "type": "NotFound",
+                "message": "Type '%s' could not be found." % portal_type,
+            }
+
+        # Make sure we get the right dexterity-types adapter
+        if IPloneRestapiLayer.providedBy(self.request):
+            noLongerProvides(self.request, IPloneRestapiLayer)
+
+        try:
+            dtool = queryMultiAdapter(
+                (self.context, self.request), name="dexterity-types")
+            dtype = dtool.publishTraverse(self.request, portal_type)
+        except Exception:
+            return schema
+
+        # Get the empty fieldsets
+        existing = [f.get("id") for f in schema.get("fieldsets")]
+        for fieldset in dtype.schema.queryTaggedValue(FIELDSETS_KEY, []):
+            name = fieldset.__name__
+            if name not in existing:
+                info = get_info_for_fieldset(dtype, self.request, name)
+                schema['fieldsets'].append(info)
+        return schema
 
     def reply_for_field(self):
         check_security(self.context)

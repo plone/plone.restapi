@@ -50,6 +50,12 @@ Content-Type: application/json+schema
       ], 
       "id": "ownership", 
       "title": "Ownership"
+    }, 
+    {
+      "description": "Contact information", 
+      "fields": [], 
+      "id": "contact_info", 
+      "title": "Contact Info"
     }
   ], 
   "layouts": [

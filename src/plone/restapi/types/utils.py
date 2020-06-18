@@ -407,5 +407,9 @@ def update_fieldset(context, request, data):
 def update_field(context, request, data):
     field = context.publishTraverse(request, data.pop("id"))
     for key, value in data.items():
+        if key == "minLength":
+            key = "min_length"
+        if key == "maxLength":
+            key = "max_length"
         if hasattr(field.field, key):
             setattr(field.field, key, value)

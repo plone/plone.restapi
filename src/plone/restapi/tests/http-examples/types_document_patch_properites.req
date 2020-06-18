@@ -7,7 +7,7 @@ Content-Type: application/json
     "properties": {
         "author_email": {
             "default": "foo@bar.com",
-            "maxLength": 10,
+            "maxLength": 20,
             "minLength": 5
         }
     }

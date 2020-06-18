@@ -25,6 +25,43 @@ class TestServicesTypes(unittest.TestCase):
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
+        self.api_session.post(
+            "/@types/Document",
+            json={
+                "factory": "fieldset",
+                "title": "Contact Info",
+                "description": "Contact information"
+            }
+        )
+
+        self.api_session.post(
+            "/@types/Document",
+            json={
+                "factory": "fieldset",
+                "title": "Location",
+                "description": "Location"
+            }
+        )
+
+        self.api_session.post(
+            "/@types/Document",
+            json={
+                "factory": "Email",
+                "title": "Author email",
+                "description": "Email of the author",
+                "required": True
+            }
+        )
+
+        self.api_session.post(
+            "/@types/Document",
+            json={
+                "factory": "URL",
+                "title": "Author url",
+                "description": "Website of the author"
+            }
+        )
+
     def tearDown(self):
         self.api_session.close()
 
@@ -55,6 +92,236 @@ class TestServicesTypes(unittest.TestCase):
             + 'Content-Type: "application/json+schema", not '
             + '"{}"'.format(response.headers.get("Content-Type")),
         )
+
+    def test_get_types_document_edit(self):
+        response = self.api_session.get("/@types/Document")
+
+        self.assertEqual(response.status_code, 200)
+
+        # Fields are present
+        self.assertIn("author_email", response.json().get("properties"))
+        self.assertIn("author_url", response.json().get("properties"))
+
+        # All fieldsets are present even empty ones
+        self.assertIn("location", [f["id"] for f in response.json().get("fieldsets")]) # noqa
+        self.assertIn("contact_info", [f["id"] for f in response.json().get("fieldsets")]) # noqa
+
+    def test_types_document_get_fieldset(self):
+        response = self.api_session.get("/@types/Document/contact_info")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual("Contact Info", response.json().get("title"))
+        self.assertEqual("Contact information", response.json().get("description")) # noqa
+        self.assertEqual("contact_info", response.json().get("id"))
+        self.assertEqual([], response.json().get("fields"))
+
+    def test_types_document_get_field(self):
+        response = self.api_session.get("/@types/Document/author_email")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual("Author email", response.json().get("title")) # noqa
+        self.assertEqual("Email of the author", response.json().get("description")) # noqa
+        self.assertEqual("plone.dexterity.schema.generated.plone_0_Document", response.json().get("behavior")) # noqa
+        self.assertEqual("string", response.json().get("type"))
+        self.assertEqual("email", response.json().get("widget"))
+
+    def test_types_document_post_fieldset(self):
+        response = self.api_session.post(
+            "/@types/Document",
+            json={
+                "factory": "fieldset",
+                "title": "Foo bar",
+                "description": "Foo bar tab"
+            }
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual("Foo bar", response.json().get("title"))
+        self.assertEqual("Foo bar tab", response.json().get("description")) # noqa
+        self.assertEqual("foo_bar", response.json().get("id"))
+        self.assertEqual([], response.json().get("fields"))
+
+    def test_types_document_post_field(self):
+        response = self.api_session.post(
+            "/@types/Document",
+            json={
+                "factory": "Email",
+                "title": "Email",
+                "description": "Foo bar email",
+                "required": True
+            }
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual("Email", response.json().get("title"))
+        self.assertEqual("Foo bar email", response.json().get("description"))
+        self.assertEqual("plone.dexterity.schema.generated.plone_0_Document", response.json().get("behavior")) # noqa
+        self.assertEqual("string", response.json().get("type"))
+        self.assertEqual("email", response.json().get("widget"))
+
+    def test_types_document_patch_properties(self):
+        response = self.api_session.patch(
+            "/@types/Document",
+            json={
+                "properties": {
+                    "author_email": {
+                        "default": "foo@bar.com",
+                        "minLength": 5,
+                        "maxLength": 100
+                    }
+                }
+            }
+        )
+        # PATCH returns no content
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get("/@types/Document/author_email")
+        self.assertEqual(200, response.status_code)
+        self.assertEqual("foo@bar.com", response.json().get("default"))
+        self.assertEqual(5, response.json().get("minLength"))
+        self.assertEqual(100, response.json().get("maxLength"))
+
+    def test_types_document_patch_fieldsets(self):
+        response = self.api_session.patch(
+            "/@types/Document",
+            json={
+                "fieldsets": [{
+                    "id": "contact_info",
+                    "title": "Contact information",
+                    "fields": [
+                        "author_email"
+                    ]
+                }]
+            }
+        )
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get("/@types/Document/contact_info")
+        self.assertEqual(200, response.status_code)
+        self.assertEqual("Contact information", response.json().get("title"))
+        self.assertEqual(["author_email"], response.json().get("fields"))
+
+    def test_types_document_patch_one_fieldset(self):
+        response = self.api_session.patch(
+            "/@types/Document/contact_info",
+            json={
+                "title": "Contact the author",
+                "description": "Reach the author",
+                "fields": [
+                    "author_url",
+                    "author_email",
+                ]
+            }
+        )
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get("/@types/Document/contact_info")
+        self.assertEqual(200, response.status_code)
+        self.assertEqual("Contact the author", response.json().get("title"))
+        self.assertEqual("Reach the author", response.json().get("description"))
+        self.assertEqual(["author_url", "author_email"], response.json().get("fields")) # noqa
+
+    def test_types_document_patch_one_field(self):
+        response = self.api_session.patch(
+            "/@types/Document/author_email",
+            json={
+                "title": "Author e-mail",
+                "description": "The e-mail address of the author",
+                "minLength": 10,
+                "maxLength": 200,
+                "required": False
+            }
+        )
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get("/@types/Document/author_email")
+        self.assertEqual(200, response.status_code)
+        self.assertEqual("Author e-mail", response.json().get("title"))
+        self.assertEqual("The e-mail address of the author", response.json().get("description")) # noqa
+        self.assertEqual(10, response.json().get("minLength"))
+        self.assertEqual(200, response.json().get("maxLength"))
+
+    def test_types_document_put(self):
+        response = self.api_session.get("/@types/Document")
+        doc_json = response.json()
+        doc_json["layouts"] = ["thumbnail_view", "table_view"]
+        doc_json["fieldsets"] = [{
+            "id": "author",
+            "title": "Contact the author",
+            "fields": [
+                "author_email",
+                "author_name",
+            ],
+        }, {
+            "id": "contact_info",
+            "title": "Contact info",
+            "fields": []
+        }]
+
+        doc_json["properties"]["author_name"] = {
+            "description": "Name of the author",
+            "factory": "Text line (String)",
+            "title": "Author name",
+        }
+        doc_json["properties"].pop("author_url")
+
+        doc_json["properties"]["author_email"] = {
+            "minLength": 0,
+            "maxLength": 100,
+            "default": None
+        }
+
+        response = self.api_session.put(
+            "/@types/Document",
+            json=doc_json
+        )
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get("/@types/Document")
+        self.assertEqual(200, response.status_code)
+
+        # Layouts updated
+        self.assertEqual(["thumbnail_view", "table_view"], response.json().get("layouts")) # noqa
+
+        # Field added
+        self.assertIn("author_name", response.json().get("properties"))
+
+        # Field removed
+        self.assertTrue("author_url" not in response.json().get("properties"))
+
+        # Field updated
+        self.assertEqual(None, response.json().get("properties").get("author_email").get("default")) # noqa
+
+        # Fieldset added
+        self.assertIn("author", [f["id"] for f in response.json().get("fieldsets")]) # noqa
+
+        # Fieldset removed
+        self.assertTrue("location" not in [f["id"] for f in response.json().get("fieldsets")]) # noqa
+
+        # Fieldset updated
+        self.assertIn("contact_info", [f["id"] for f in response.json().get("fieldsets")]) # noqa
+
+    def test_types_document_remove_field(self):
+        response = self.api_session.delete(
+            "/@types/Document/author_email",
+        )
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get("/@types/Document")
+        self.assertEqual(200, response.status_code)
+
+        self.assertTrue("author_email" not in response.json().get("properties"))
+
+    def test_types_document_remove_fieldset(self):
+        response = self.api_session.delete(
+            "/@types/Document/contact_info",
+        )
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get("/@types/Document")
+        self.assertEqual(200, response.status_code)
+
+        self.assertTrue("contact_info" not in [f["id"] for f in response.json().get("fieldsets")]) # noqa
 
     def test_get_types_with_unknown_type(self):
         response = self.api_session.get(

@@ -592,7 +592,7 @@ class TestDocumentation(TestDocumentationBase):
                     "author_email": {
                         "default": "foo@bar.com",
                         "minLength": 5,
-                        "maxLength": 10
+                        "maxLength": 20
                     }
                 }
             }
@@ -674,7 +674,7 @@ class TestDocumentation(TestDocumentationBase):
             "factory": "URL",
             "title": "Author website",
             "minLength": 5,
-            "maxLength": 20,
+            "maxLength": 30,
         }
 
         response = self.api_session.put(
