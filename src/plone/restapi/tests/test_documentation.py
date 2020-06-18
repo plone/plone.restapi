@@ -562,6 +562,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs(
             "types_document", response
         )
+        doc_json = json.loads(response.content)
 
         # Get fieldset
         response = self.api_session.get(
@@ -647,9 +648,38 @@ class TestDocumentation(TestDocumentationBase):
             "types_document_patch_field", response
         )
 
+        doc_json["layouts"] = ["thumbnail_view", "table_view"]
+        doc_json["fieldsets"] = [{
+            "id": "author",
+            "title": "Contact the author",
+            "fields": [
+                "author_email",
+                "author_url",
+                "author_name",
+            ],
+        }, {
+            "id": "contact_info",
+            "title": "Contact info",
+            "fields": []
+        }]
+
+        doc_json["properties"]["author_name"] = {
+            "description": "Name of the author",
+            "factory": "Text line (String)",
+            "title": "Author name",
+        }
+
+        doc_json["properties"]["author_url"] = {
+            "description": "Author webpage",
+            "factory": "URL",
+            "title": "Author website",
+            "minLength": 5,
+            "maxLength": 20,
+        }
+
         response = self.api_session.put(
             "/@types/Document",
-            json={}
+            json=doc_json
         )
         save_request_and_response_for_docs(
             "types_document_put", response
