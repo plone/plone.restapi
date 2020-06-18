@@ -66,8 +66,18 @@ class TestJsonSchemaUtils(TestCase):
         fieldsets = get_fieldsets(self.portal, self.request, IDummySchema)
         info = get_jsonschema_properties(self.portal, self.request, fieldsets)
         expected = {
-            "field1": {"title": u"Foo", "description": u"", "type": "boolean"},
-            "field2": {"title": u"Bar", "description": u"", "type": "string"},
+            "field1": {
+                "title": u"Foo",
+                "description": u"",
+                "factory": "Yes/No",
+                "type": "boolean"
+            },
+            "field2": {
+                "title": u"Bar",
+                "description": u"",
+                "factory": "Text line (String)",
+                "type": "string"
+            },
         }
         self.assertEqual(info, expected)
 
@@ -223,6 +233,7 @@ class TestJsonSchemaProviders(TestCase):
             {
                 "type": "string",
                 "title": u"My field",
+                'factory': u'Text line (String)',
                 "description": u"My great field",
                 "default": u"MY FOLDER",
             },
@@ -241,6 +252,7 @@ class TestJsonSchemaProviders(TestCase):
             {
                 "type": "string",
                 "title": u"My field",
+                'factory': u'Text line (String)',
                 "description": u"My great field",
                 "default": u"foobar",
             },
@@ -263,6 +275,7 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "string",
                 "title": u"My field",
                 "description": u"My great field",
+                "factory": u"Text",
                 "widget": "textarea",
                 "default": u"Lorem ipsum dolor sit amet",
                 "minLength": 10,
@@ -283,6 +296,7 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "boolean",
                 "title": u"My field",
                 "description": u"My great field",
+                "factory": u"Yes/No",
                 "default": False,
             },
             adapter.get_schema(),
@@ -307,6 +321,7 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "number",
                 "title": u"My field",
                 "description": u"My great field",
+                "factory": u"Floating-point number",
                 "default": 0.5,
             },
             adapter.get_schema(),
@@ -329,6 +344,7 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "string",
                 "title": "Email",
                 "description": "Email field",
+                "factory": "Email",
                 "widget": "email",
                 "default": "foo@bar.com",
                 "minLength": 10,
@@ -354,6 +370,7 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "string",
                 "title": "Password",
                 "description": "Password field",
+                "factory": "Password",
                 "widget": "password",
                 "default": "secret",
                 "minLength": 4,
@@ -379,6 +396,7 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "string",
                 "title": "URI",
                 "description": "URI field",
+                "factory": "URL",
                 "widget": "url",
                 "default": "http://foo.bar",
                 "minLength": 10,
@@ -404,6 +422,7 @@ class TestJsonSchemaProviders(TestCase):
                 "minimum": 0.0,
                 "maximum": 1.0,
                 "type": "number",
+                "factory": "Floating-point number",
                 "title": u"My field",
                 "description": u"My great field",
                 "default": 0.5,
@@ -424,8 +443,9 @@ class TestJsonSchemaProviders(TestCase):
                 "minimum": 0,
                 "maximum": 100,
                 "type": "integer",
-                "title": u"My field",
-                "description": u"My great field",
+                "title": "My field",
+                "description": "My great field",
+                "factory": "Integer",
                 "default": 50,
             },
             adapter.get_schema(),
@@ -447,6 +467,7 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "string",
                 "title": u"My field",
                 "description": u"My great field",
+                "factory": "Choice",
                 "enum": ["foo", "bar"],
                 "enumNames": ["Foo", "Bar"],
                 "choices": [("foo", "Foo"), ("bar", "Bar")],
@@ -472,6 +493,7 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "string",
                 "title": u"My field",
                 "description": u"My great field",
+                "factory": "Choice",
                 "enum": ["foo", "bar"],
                 "enumNames": [None, None],
                 "choices": [("foo", None), ("bar", None)],
@@ -495,6 +517,7 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "string",
                 "title": u"My field",
                 "description": u"My great field",
+                "factory": "Choice",
                 "vocabulary": {
                     "@id": u"http://nohost/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes"
                 },  # noqa
@@ -518,6 +541,7 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "string",
                 "title": u"My field",
                 "description": u"My great field",
+                "factory": "Choice",
                 "enum": ["foo", "bar"],
                 "enumNames": ["Foo", "Bar"],
                 "choices": [("foo", "Foo"), ("bar", "Bar")],
@@ -545,6 +569,7 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "array",
                 "title": u"My field",
                 "description": u"My great field",
+                "factory": "List",
                 "default": ["foobar"],
                 "minItems": 1,
                 "uniqueItems": False,
@@ -553,6 +578,7 @@ class TestJsonSchemaProviders(TestCase):
                     "type": "string",
                     "title": u"Text",
                     "description": u"Text field",
+                    "factory": "Text line (String)",
                     "default": u"Default text",
                 },
             },
@@ -570,9 +596,15 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "array",
                 "title": u"My field",
                 "description": u"",
+                "factory": "Tuple",
                 "uniqueItems": True,
                 "additionalItems": True,
-                "items": {"title": u"", "description": u"", "type": "integer"},
+                "items": {
+                    "title": u"",
+                    "description": u"",
+                    "type": "integer",
+                    "factory": "Integer",
+                },
                 "default": (1, 2),
             },
             adapter.get_schema(),
@@ -589,9 +621,15 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "array",
                 "title": u"My field",
                 "description": u"",
+                "factory": "Multiple Choice",
                 "uniqueItems": True,
                 "additionalItems": True,
-                "items": {"title": u"", "description": u"", "type": "string"},
+                "items": {
+                    "title": u"",
+                    "description": u"",
+                    "factory": "Text line (String)",
+                    "type": "string",
+                },
             },
             adapter.get_schema(),
         )
@@ -611,11 +649,13 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "array",
                 "title": u"My field",
                 "description": u"",
+                "factory": "List",
                 "uniqueItems": True,
                 "additionalItems": True,
                 "items": {
                     "title": u"",
                     "description": u"",
+                    "factory": "Choice",
                     "type": "string",
                     "enum": ["foo", "bar"],
                     "enumNames": ["Foo", "Bar"],
@@ -639,9 +679,20 @@ class TestJsonSchemaProviders(TestCase):
                 "type": "object",
                 "title": u"My field",
                 "description": u"My great field",
+                "factory": "File",
                 "properties": {
-                    "field1": {"title": u"Foo", "description": u"", "type": "boolean"},
-                    "field2": {"title": u"Bar", "description": u"", "type": "string"},
+                    "field1": {
+                        "title": u"Foo",
+                        "description": u"",
+                        "factory": u"Yes/No",
+                        "type": "boolean"
+                    },
+                    "field2": {
+                        "title": u"Bar",
+                        "description": u"",
+                        "factory": u"Text line (String)",
+                        "type": "string"
+                    },
                 },
             },
             adapter.get_schema(),
@@ -657,6 +708,7 @@ class TestJsonSchemaProviders(TestCase):
             {
                 "type": "string",
                 "title": u"My field",
+                "factory": u"Rich Text",
                 "description": u"My great field",
                 "widget": "richtext",
             },
@@ -675,6 +727,7 @@ class TestJsonSchemaProviders(TestCase):
             {
                 "type": "string",
                 "title": u"My field",
+                "factory": u"Date",
                 "description": u"My great field",
                 "default": date(2016, 1, 1),
                 "widget": u"date",
@@ -692,6 +745,7 @@ class TestJsonSchemaProviders(TestCase):
             {
                 "type": "string",
                 "title": u"My field",
+                "factory": u"Date/Time",
                 "description": u"My great field",
                 "widget": u"datetime",
             },

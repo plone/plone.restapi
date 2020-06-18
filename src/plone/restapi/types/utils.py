@@ -119,7 +119,7 @@ def get_fieldset_infos(fieldsets):
 
 
 def get_jsonschema_properties(
-    context, request, fieldsets, prefix="", excluded_fields=None, fname=None,
+    context, request, fieldsets, prefix="", excluded_fields=None
 ):
     """Build a JSON schema 'properties' list, based on a list of fieldset
     dicts as returned by `get_fieldsets()`.
@@ -130,31 +130,7 @@ def get_jsonschema_properties(
 
     for field in iter_fields(fieldsets):
         fieldname = field.field.getName()
-
-        if fieldname == fname:
-            # if a fname is supplied, return info only for that field
-            properties = OrderedDict()
-            # We need to special case relatedItems not to render choices
-            # so we try a named adapter first and fallback to unnamed ones.
-            adapter = queryMultiAdapter(
-                (field.field, context, request),
-                interface=IJsonSchemaProvider,
-                name=field.__name__,
-            )
-
-            adapter = adapter or getMultiAdapter(
-                (field.field, context, request), interface=IJsonSchemaProvider
-            )
-
-            adapter.prefix = prefix
-            if prefix:
-                fieldname = ".".join([prefix, fieldname])
-
-            properties[fieldname] = adapter.get_schema()
-            return properties
-
         if fieldname not in excluded_fields:
-
             # We need to special case relatedItems not to render choices
             # so we try a named adapter first and fallback to unnamed ones.
             adapter = queryMultiAdapter(
@@ -229,7 +205,8 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
             properties[name]["mode"] = field.mode
 
         # Include behavior
-        properties[name]["behavior"] = field.interface.__identifier__
+        if name in properties:
+            properties[name]["behavior"] = field.interface.__identifier__
 
     return {
         "type": "object",
