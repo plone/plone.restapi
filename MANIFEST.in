@@ -19,7 +19,7 @@ recursive-exclude docs/html *
 recursive-exclude performance *
 exclude docs/Makefile
 prune docs/Makefile
-prune src/plone/restapi/tests
+prune src/plone/restapi/tests/images
 prune news
 global-exclude *.pyc
 include pyproject.toml
