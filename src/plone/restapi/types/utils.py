@@ -18,10 +18,12 @@ from copy import copy
 from plone.autoform.form import AutoExtensibleForm
 from plone.autoform.interfaces import IParameterizedWidget
 from plone.autoform.interfaces import WIDGETS_KEY
+from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.interfaces import IDexterityFTI
-from plone.dexterity.utils import splitSchemaName
 from plone.dexterity.utils import getAdditionalSchemata
+from plone.dexterity.utils import splitSchemaName
 from plone.i18n.normalizer import idnormalizer
+from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.serializer.converters import IJsonCompatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.supermodel import serializeModel
@@ -37,6 +39,7 @@ from zope.component import queryUtility
 from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.i18n import translate
+from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
 
 _marker = []  # Create a new marker object.
@@ -49,6 +52,12 @@ FIELD_PROPERTIES_MAPPING = {
     "minimum": "min",
     "maximum": "max",
 }
+
+
+@implementer(IDexterityContent)
+class FakeDXContext(object):
+    """Fake DX content class, so we can re-use the DX field deserializers
+    """
 
 
 def create_form(context, request, base_schema, additional_schemata=None):
@@ -338,9 +347,24 @@ def delete_field(context, request, name):
 
 
 def delete_fieldset(context, request, name):
-    request.form['name'] = name
-    delete = queryMultiAdapter((context, request), name="delete-fieldset")
-    delete()
+    """ Taken from plone.schemaeditor 2.x `DeleteFieldset`
+    """
+    new_fieldsets = []
+    fieldsets = context.schema.queryTaggedValue(FIELDSETS_KEY, [])
+    for fieldset in fieldsets:
+        if fieldset.__name__ == name:
+            # Can't delete fieldsets with fields
+            if fieldset.fields:
+                return
+            continue
+        new_fieldsets.append(fieldset)
+
+    # Nothing changed
+    if len(fieldsets) == len(new_fieldsets):
+        return
+
+    context.schema.setTaggedValue(FIELDSETS_KEY, new_fieldsets)
+    serializeSchema(context.schema)
 
 
 def add_fieldset(context, request, data):
@@ -451,5 +475,10 @@ def update_field(context, request, data):
 
     edit.form_instance.updateFields()
     edit.form_instance.applyChanges(properties)
+
     if default is not _marker:
-        setattr(field.field, "default", default)
+        fake_context = FakeDXContext()
+        deserializer = queryMultiAdapter(
+            (field.field, fake_context, request), IFieldDeserializer
+        )
+        setattr(field.field, "default", deserializer(default))
