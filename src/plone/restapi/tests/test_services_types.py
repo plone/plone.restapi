@@ -66,7 +66,7 @@ class TestServicesTypes(unittest.TestCase):
         self.api_session.close()
 
     def test_get_types(self):
-        response = self.api_session.get("{}/@types".format(self.portal.absolute_url()))
+        response = self.api_session.get("{}/@types".format(self.portal.absolute_url())) # noqa
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -218,7 +218,7 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.get("/@types/Document/contact_info")
         self.assertEqual(200, response.status_code)
         self.assertEqual("Contact the author", response.json().get("title"))
-        self.assertEqual("Reach the author", response.json().get("description"))
+        self.assertEqual("Reach the author", response.json().get("description")) # noqa
         self.assertEqual(["author_url", "author_email"], response.json().get("fields")) # noqa
 
     def test_types_document_patch_one_field(self):
@@ -240,6 +240,112 @@ class TestServicesTypes(unittest.TestCase):
         self.assertEqual("The e-mail address of the author", response.json().get("description")) # noqa
         self.assertEqual(10, response.json().get("minLength"))
         self.assertEqual(200, response.json().get("maxLength"))
+
+    def test_types_document_patch_create_missing(self):
+        response = self.api_session.patch(
+            "/@types/Document",
+            json={
+                "fieldsets": [{
+                    "title": "Layout",
+                    "fields": [
+                        "blocks",
+                        "blocks_layout"
+                    ]
+                }],
+                "properties": {
+                    "blocks": {
+                        "title": "Blocks",
+                        "type": "dict",
+                        "widget": "json",
+                        "factory": "JSONField",
+                        "default": {
+                            "230bdd04-6a0d-4cd2-ab60-4c09b315cc2c": {
+                                "@type": "title"
+                            },
+                            "338013ce-acca-454f-a6f4-14113c187dca": {
+                                "@type": "text",
+                                "text": {
+                                    "blocks": [
+                                        {
+                                            "data": {},
+                                            "depth": 0,
+                                            "entityRanges": [],
+                                            "inlineStyleRanges": [],
+                                            "key": "99pvk",
+                                            "text": "Book summary",
+                                            "type": "unstyled"
+                                        }
+                                    ],
+                                    "entityMap": {}
+                                }
+                            },
+                            "5060e030-727b-47bc-8023-b80b7cccd96f": {
+                                "@type": "image"
+                            },
+                            "e3d8f8e4-8fee-47e7-9451-28724bf74a90": {
+                                "@type": "text"
+                            }
+                        }
+                    },
+                    "blocks_layout": {
+                        "title": "Blocks Layout",
+                        "type": "dict",
+                        "widget": "json",
+                        "factory": "JSONField",
+                        "default": {
+                            "items": [
+                                "230bdd04-6a0d-4cd2-ab60-4c09b315cc2c",
+                                "338013ce-acca-454f-a6f4-14113c187dca",
+                                "5060e030-727b-47bc-8023-b80b7cccd96f",
+                                "e3d8f8e4-8fee-47e7-9451-28724bf74a90"
+                            ]
+                        }
+                    },
+                }
+            }
+        )
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get("/@types/Document")
+        self.assertEqual(200, response.status_code)
+
+        self.assertIn("blocks", response.json().get("properties"))
+        self.assertIn("blocks_layout", response.json().get("properties"))
+        fieldsets = [f for f in response.json().get("fieldsets") if f.get("id") == "layout"] # noqa
+        self.assertTrue(len(fieldsets) == 1)
+        self.assertTrue(["blocks", "blocks_layout"], fieldsets[0].get("fields")) # noqa
+
+    def test_types_document_update_min_max(self):
+        response = self.api_session.patch(
+            "/@types/Document",
+            json={
+                "properties": {
+                    "custom_text": {
+                        "factory": "Text line (String)",
+                        "minLength": 2,
+                        "maxLength": 20,
+                        "title": "Custom text",
+                    },
+                    "custom_float": {
+                        "title": "Custom float",
+                        "factory": "Floating-point number",
+                        "minimum": 2.0,
+                        "maximum": 14.0,
+                    },
+                }
+            }
+        )
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get("/@types/Document/custom_text")
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(2, response.json().get("minLength"))
+        self.assertEqual(20, response.json().get("maxLength"))
+
+        response = self.api_session.get("/@types/Document/custom_float")
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(2, response.json().get("minimum"))
+        self.assertEqual(14.0, response.json().get("maximum"))
 
     def test_types_document_put(self):
         response = self.api_session.get("/@types/Document")
@@ -310,7 +416,7 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.get("/@types/Document")
         self.assertEqual(200, response.status_code)
 
-        self.assertTrue("author_email" not in response.json().get("properties"))
+        self.assertTrue("author_email" not in response.json().get("properties")) # noqa
 
     def test_types_document_remove_fieldset(self):
         response = self.api_session.delete(
@@ -339,11 +445,11 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_types_endpoint_only_accessible_for_authenticated_users(self):
         self.api_session.auth = ()
-        response = self.api_session.get("{}/@types".format(self.portal.absolute_url()))
+        response = self.api_session.get("{}/@types".format(self.portal.absolute_url())) # noqa
         self.assertEqual(response.status_code, 401)
 
     def test_contextaware_addable(self):
-        response = self.api_session.get("{}/@types".format(self.portal.absolute_url()))
+        response = self.api_session.get("{}/@types".format(self.portal.absolute_url())) # noqa
 
         allowed_ids = [x.getId() for x in self.portal.allowedContentTypes()]
 
@@ -360,13 +466,13 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.get("/@types/Image")
         response = response.json()
         self.assertIn("fieldsets", response)
-        self.assertIn("image.data", response["properties"]["image"]["properties"])
+        self.assertIn("image.data", response["properties"]["image"]["properties"]) # noqa
 
     def test_file_type(self):
         response = self.api_session.get("/@types/File")
         response = response.json()
         self.assertIn("fieldsets", response)
-        self.assertIn("file.data", response["properties"]["file"]["properties"])
+        self.assertIn("file.data", response["properties"]["file"]["properties"]) # noqa
 
     def test_event_type(self):
         response = self.api_session.get("/@types/Event")
@@ -438,7 +544,7 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
         self.api_session.close()
 
     def test_get_types_translated(self):
-        response = self.api_session.get("{}/@types".format(self.portal.absolute_url()))
+        response = self.api_session.get("{}/@types".format(self.portal.absolute_url())) # noqa
 
         self.assertEqual(response.status_code, 200)
 

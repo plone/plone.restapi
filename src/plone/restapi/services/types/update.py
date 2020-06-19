@@ -3,6 +3,9 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
 from plone.restapi.types.utils import serializeSchema
+from plone.restapi.types.utils import add_field
+from plone.restapi.types.utils import add_fieldset
+from plone.restapi.types.utils import get_info_for_type
 from plone.restapi.types.utils import update_field
 from plone.restapi.types.utils import update_fieldset
 from zExceptions import BadRequest
@@ -59,19 +62,20 @@ class TypesUpdate(Service):
         # Get content type SchemaContext
         context = context.publishTraverse(self.request, name)
 
+        # Update Field properties
+        properties = data.get("properties", {})
+        for key, value in properties.items():
+            self.reply_for_field(name, key, value, create=True)
+
         # Update Fieldset properties
         fieldsets = data.get("fieldsets", [])
         for fieldset in fieldsets:
             fname = fieldset.get("id")
-            self.reply_for_fieldset(name, fname, fieldset)
+            self.reply_for_fieldset(name, fname, fieldset, create=True)
 
-        # Update Field properties
-        properties = data.get("properties", {})
-        for key, value in properties.items():
-            self.reply_for_field(name, key, value)
         return self.reply_no_content()
 
-    def reply_for_fieldset(self, name, fieldset_name, data):
+    def reply_for_fieldset(self, name, fieldset_name, data, create=False):
         context = queryMultiAdapter(
             (self.context, self.request), name="dexterity-types"
         )
@@ -80,12 +84,18 @@ class TypesUpdate(Service):
         context = context.publishTraverse(self.request, name)
 
         data["id"] = fieldset_name
+
+        if create:
+            info = get_info_for_type(context, self.request, name)
+            existing = [f.get("id") for f in info.get("fieldsets", [])]
+            if fieldset_name not in existing:
+                add_fieldset(context, self.request, data)
         update_fieldset(context, self.request, data)
 
         serializeSchema(context.schema)
         return self.reply_no_content()
 
-    def reply_for_field(self, name, field_name, data):
+    def reply_for_field(self, name, field_name, data, create=False):
         context = queryMultiAdapter(
             (self.context, self.request), name="dexterity-types"
         )
@@ -94,6 +104,12 @@ class TypesUpdate(Service):
         context = context.publishTraverse(self.request, name)
 
         data["id"] = field_name
+
+        if create:
+            info = get_info_for_type(context, self.request, name)
+            existing = info.get("properties", {})
+            if field_name not in existing:
+                add_field(context, self.request, data)
         update_field(context, self.request, data)
 
         serializeSchema(context.schema)

@@ -39,6 +39,17 @@ from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.schema.interfaces import IVocabularyFactory
 
+_marker = []  # Create a new marker object.
+
+FIELD_PROPERTIES_MAPPING = {
+    "minLength": "min_length",
+    "maxLength": "max_length",
+    "minItems": "min_length",
+    "maxItems": "max_length",
+    "minimum": "min",
+    "maximum": "max",
+}
+
 
 def create_form(context, request, base_schema, additional_schemata=None):
     """Create a minimal, standalone z3c form and run the field processing
@@ -273,6 +284,24 @@ def serializeSchema(schema):
     fti.model_source = serializeModel(model)
 
 
+def get_info_for_type(context, request, name):
+    """ Get JSON info for the given portal type
+    """
+    schema = get_jsonschema_for_portal_type(name, getSite(), request)
+
+    if not hasattr(context, "schema"):
+        return schema
+
+    # Get the empty fieldsets
+    existing = [f.get("id") for f in schema.get("fieldsets")]
+    for fieldset in context.schema.queryTaggedValue(FIELDSETS_KEY, []):
+        name = fieldset.__name__
+        if name not in existing:
+            info = get_info_for_fieldset(context, request, name)
+            schema['fieldsets'].append(info)
+    return schema
+
+
 def get_info_for_field(context, request, name):
     """ Get JSON info for the given field name.
     """
@@ -406,10 +435,21 @@ def update_fieldset(context, request, data):
 
 def update_field(context, request, data):
     field = context.publishTraverse(request, data.pop("id"))
+    edit = queryMultiAdapter((field, request), name="edit")
+    default = data.pop("default", _marker)
+
+    properties = {}
     for key, value in data.items():
-        if key == "minLength":
-            key = "min_length"
-        if key == "maxLength":
-            key = "max_length"
-        if hasattr(field.field, key):
-            setattr(field.field, key, value)
+        key = FIELD_PROPERTIES_MAPPING.get(key, key)
+        properties[key] = value
+
+    # clear current min/max to avoid range errors
+    if 'min' in properties:
+        edit.form_instance.field.min = None
+    if 'max' in properties:
+        edit.form_instance.field.max = None
+
+    edit.form_instance.updateFields()
+    edit.form_instance.applyChanges(properties)
+    if default is not _marker:
+        setattr(field.field, "default", default)

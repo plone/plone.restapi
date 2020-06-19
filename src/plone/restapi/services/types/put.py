@@ -7,6 +7,7 @@ from plone.restapi.types.utils import add_field
 from plone.restapi.types.utils import add_fieldset
 from plone.restapi.types.utils import delete_field
 from plone.restapi.types.utils import delete_fieldset
+from plone.restapi.types.utils import get_info_for_type
 from plone.restapi.types.utils import serializeSchema
 from plone.restapi.types.utils import update_field
 from plone.restapi.types.utils import update_fieldset
@@ -53,8 +54,8 @@ class TypesPut(Service):
         fieldsets = OrderedDict(
             (f.get('id'), f) for f in data.get("fieldsets", [])
         )
-        existing = [f.__name__ for f in
-                    ctype.schema.queryTaggedValue(FIELDSETS_KEY, [])]
+        info = get_info_for_type(ctype, self.request, ctype.getId())
+        existing = [f.get("id") for f in info.get("fieldsets", [])]
         for name, fieldset in fieldsets.items():
             if name not in existing:
                 add_fieldset(ctype, self.request, fieldset)

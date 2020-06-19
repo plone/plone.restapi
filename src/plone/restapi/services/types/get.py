@@ -3,10 +3,9 @@ from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
+from plone.restapi.types.utils import get_info_for_type
 from plone.restapi.types.utils import get_info_for_field
 from plone.restapi.types.utils import get_info_for_fieldset
-from plone.restapi.types.utils import get_jsonschema_for_portal_type
-from plone.supermodel.interfaces import FIELDSETS_KEY
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
@@ -112,21 +111,8 @@ class TypesGet(Service):
             return self.reply_for_field()
 
     def reply_for_type(self):
-        # Return schema for a specific type
         check_security(self.context)
-        self.content_type = "application/json+schema"
-        try:
-            portal_type = self.params.pop()
-            schema = get_jsonschema_for_portal_type(
-                portal_type, self.context, self.request
-            )
-        except KeyError:
-            self.content_type = "application/json"
-            self.request.response.setStatus(404)
-            return {
-                "type": "NotFound",
-                "message": "Type '%s' could not be found." % portal_type,
-            }
+        portal_type = self.params.pop()
 
         # Make sure we get the right dexterity-types adapter
         if IPloneRestapiLayer.providedBy(self.request):
@@ -137,15 +123,19 @@ class TypesGet(Service):
                 (self.context, self.request), name="dexterity-types")
             dtype = dtool.publishTraverse(self.request, portal_type)
         except Exception:
-            return schema
+            dtype = self.context
 
-        # Get the empty fieldsets
-        existing = [f.get("id") for f in schema.get("fieldsets")]
-        for fieldset in dtype.schema.queryTaggedValue(FIELDSETS_KEY, []):
-            name = fieldset.__name__
-            if name not in existing:
-                info = get_info_for_fieldset(dtype, self.request, name)
-                schema['fieldsets'].append(info)
+        try:
+            schema = get_info_for_type(dtype, self.request, portal_type)
+        except KeyError:
+            self.content_type = "application/json"
+            self.request.response.setStatus(404)
+            return {
+                "type": "NotFound",
+                "message": "Type '%s' could not be found." % portal_type,
+            }
+
+        self.content_type = "application/json+schema"
         return schema
 
     def reply_for_field(self):
