@@ -19,7 +19,7 @@ from plone.autoform.form import AutoExtensibleForm
 from plone.autoform.interfaces import IParameterizedWidget
 from plone.autoform.interfaces import WIDGETS_KEY
 from plone.dexterity.interfaces import IDexterityFTI
-from plone.dexterity.schema import splitSchemaName
+from plone.dexterity.utils import splitSchemaName
 from plone.dexterity.utils import getAdditionalSchemata
 from plone.i18n.normalizer import idnormalizer
 from plone.restapi.serializer.converters import IJsonCompatible
