@@ -34,10 +34,7 @@ class TypesUpdate(Service):
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-            alsoProvides(
-                self.request,
-                plone.protect.interfaces.IDisableCSRFProtection
-            )
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         # Make sure we get the right dexterity-types adapter
         if IPloneRestapiLayer.providedBy(self.request):

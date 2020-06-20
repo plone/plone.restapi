@@ -530,12 +530,10 @@ class TestDocumentation(TestDocumentationBase):
             json={
                 "factory": "fieldset",
                 "title": "Contact Info",
-                "description": "Contact information"
-            }
+                "description": "Contact information",
+            },
         )
-        save_request_and_response_for_docs(
-            "types_document_post_fieldset", response
-        )
+        save_request_and_response_for_docs("types_document_post_fieldset", response)
 
         # Add field
         response = self.api_session.post(
@@ -544,41 +542,27 @@ class TestDocumentation(TestDocumentationBase):
                 "factory": "Email",
                 "title": "Author email",
                 "description": "Email of the author",
-                "required": True
-            }
+                "required": True,
+            },
         )
-        save_request_and_response_for_docs(
-            "types_document_post_field", response
-        )
+        save_request_and_response_for_docs("types_document_post_field", response)
 
         #
         # GET
         #
 
         # Document
-        response = self.api_session.get(
-            "/@types/Document"
-        )
-        save_request_and_response_for_docs(
-            "types_document", response
-        )
+        response = self.api_session.get("/@types/Document")
+        save_request_and_response_for_docs("types_document", response)
         doc_json = json.loads(response.content)
 
         # Get fieldset
-        response = self.api_session.get(
-            "/@types/Document/contact_info"
-        )
-        save_request_and_response_for_docs(
-            "types_document_get_fieldset", response
-        )
+        response = self.api_session.get("/@types/Document/contact_info")
+        save_request_and_response_for_docs("types_document_get_fieldset", response)
 
         # Get field
-        response = self.api_session.get(
-            "/@types/Document/author_email"
-        )
-        save_request_and_response_for_docs(
-            "types_document_get_field", response
-        )
+        response = self.api_session.get("/@types/Document/author_email")
+        save_request_and_response_for_docs("types_document_get_field", response)
 
         #
         # PATCH
@@ -592,31 +576,27 @@ class TestDocumentation(TestDocumentationBase):
                     "author_email": {
                         "default": "foo@bar.com",
                         "minLength": 5,
-                        "maxLength": 20
+                        "maxLength": 20,
                     }
                 }
-            }
+            },
         )
-        save_request_and_response_for_docs(
-            "types_document_patch_properites", response
-        )
+        save_request_and_response_for_docs("types_document_patch_properites", response)
 
         # Change field tab / order
         response = self.api_session.patch(
             "/@types/Document",
             json={
-                "fieldsets": [{
-                    "id": "contact_info",
-                    "title": "Contact info",
-                    "fields": [
-                        "author_email"
-                    ]
-                }]
-            }
+                "fieldsets": [
+                    {
+                        "id": "contact_info",
+                        "title": "Contact info",
+                        "fields": ["author_email"],
+                    }
+                ]
+            },
         )
-        save_request_and_response_for_docs(
-            "types_document_patch_fieldsets", response
-        )
+        save_request_and_response_for_docs("types_document_patch_fieldsets", response)
 
         # Update fieldset settings
         response = self.api_session.patch(
@@ -624,14 +604,10 @@ class TestDocumentation(TestDocumentationBase):
             json={
                 "title": "Contact information",
                 "description": "Contact information",
-                "fields": [
-                    "author_email"
-                ]
-            }
+                "fields": ["author_email"],
+            },
         )
-        save_request_and_response_for_docs(
-            "types_document_patch_fieldset", response
-        )
+        save_request_and_response_for_docs("types_document_patch_fieldset", response)
 
         # Update field settings
         response = self.api_session.patch(
@@ -641,27 +617,20 @@ class TestDocumentation(TestDocumentationBase):
                 "description": "The e-mail address of the author",
                 "minLength": 10,
                 "maxLength": 20,
-                "required": True
-            }
+                "required": True,
+            },
         )
-        save_request_and_response_for_docs(
-            "types_document_patch_field", response
-        )
+        save_request_and_response_for_docs("types_document_patch_field", response)
 
         doc_json["layouts"] = ["thumbnail_view", "table_view"]
-        doc_json["fieldsets"] = [{
-            "id": "author",
-            "title": "Contact the author",
-            "fields": [
-                "author_email",
-                "author_url",
-                "author_name",
-            ],
-        }, {
-            "id": "contact_info",
-            "title": "Contact info",
-            "fields": []
-        }]
+        doc_json["fieldsets"] = [
+            {
+                "id": "author",
+                "title": "Contact the author",
+                "fields": ["author_email", "author_url", "author_name",],
+            },
+            {"id": "contact_info", "title": "Contact info", "fields": []},
+        ]
 
         doc_json["properties"]["author_name"] = {
             "description": "Name of the author",
@@ -677,33 +646,20 @@ class TestDocumentation(TestDocumentationBase):
             "maxLength": 30,
         }
 
-        response = self.api_session.put(
-            "/@types/Document",
-            json=doc_json
-        )
-        save_request_and_response_for_docs(
-            "types_document_put", response
-        )
+        response = self.api_session.put("/@types/Document", json=doc_json)
+        save_request_and_response_for_docs("types_document_put", response)
 
         #
         # DELETE
         #
 
         # Remove field
-        response = self.api_session.delete(
-            "/@types/Document/author_email",
-        )
-        save_request_and_response_for_docs(
-            "types_document_delete_field", response
-        )
+        response = self.api_session.delete("/@types/Document/author_email",)
+        save_request_and_response_for_docs("types_document_delete_field", response)
 
         # Remove fieldset
-        response = self.api_session.delete(
-            "/@types/Document/contact_info",
-        )
-        save_request_and_response_for_docs(
-            "types_document_delete_fieldset", response
-        )
+        response = self.api_session.delete("/@types/Document/contact_info",)
+        save_request_and_response_for_docs("types_document_delete_fieldset", response)
 
     def test_documentation_jwt_login(self):
         self.portal.acl_users.jwt_auth._secret = "secret"
@@ -1276,9 +1232,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("vocabularies_get", response)
 
     def test_documentation_vocabularies_get_fields(self):
-        response = self.api_session.get(
-            "/@vocabularies/Fields"
-        )
+        response = self.api_session.get("/@vocabularies/Fields")
         save_request_and_response_for_docs("vocabularies_get_fields", response)
 
     def test_documentation_vocabularies_get_filtered_by_title(self):

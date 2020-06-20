@@ -249,7 +249,7 @@ class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
             "RelationList": "Relation List",
             "Set": "Multiple Choice",
             "List": "List",
-            "Tuple": "Tuple"
+            "Tuple": "Tuple",
         }
 
         for key, value in map.items():
@@ -320,10 +320,7 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
         return "string"
 
     def get_factory(self):
-        map = {
-            "RelationChoice": "Relation Choice",
-            "Choice": "Choice"
-        }
+        map = {"RelationChoice": "Relation Choice", "Choice": "Choice"}
 
         for key, value in map.items():
             if key in self.field.__repr__():
@@ -422,7 +419,6 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
 @adapter(IDict, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
-
     def get_type(self):
         return "dict"
 

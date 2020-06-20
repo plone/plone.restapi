@@ -34,7 +34,7 @@ class TypesPut(Service):
         return self
 
     def update_layouts(self, name, data):
-        layouts = data.get('layouts', [])
+        layouts = data.get("layouts", [])
         if not layouts:
             return
 
@@ -42,18 +42,17 @@ class TypesPut(Service):
         ttool[name].view_methods = tuple(layouts)
 
     def remove_fieldsets(self, ctype, data):
-        fieldsets = [f.get('id') for f in data.get('fieldsets', [])]
-        existing = [f.__name__ for f in
-                    ctype.schema.queryTaggedValue(FIELDSETS_KEY, [])]
+        fieldsets = [f.get("id") for f in data.get("fieldsets", [])]
+        existing = [
+            f.__name__ for f in ctype.schema.queryTaggedValue(FIELDSETS_KEY, [])
+        ]
 
         for fieldset in existing:
             if fieldset not in fieldsets:
                 delete_fieldset(ctype, self.request, fieldset)
 
     def add_fieldsets(self, ctype, data):
-        fieldsets = OrderedDict(
-            (f.get('id'), f) for f in data.get("fieldsets", [])
-        )
+        fieldsets = OrderedDict((f.get("id"), f) for f in data.get("fieldsets", []))
         info = get_info_for_type(ctype, self.request, ctype.getId())
         existing = [f.get("id") for f in info.get("fieldsets", [])]
         for name, fieldset in fieldsets.items():
@@ -61,7 +60,7 @@ class TypesPut(Service):
                 add_fieldset(ctype, self.request, fieldset)
 
     def remove_fields(self, ctype, data):
-        fields = data.get('properties', {})
+        fields = data.get("properties", {})
         existing = [name for name in ctype.schema]
         for name in existing:
             if name not in fields:
@@ -69,8 +68,8 @@ class TypesPut(Service):
 
     def add_fields(self, ctype, data):
         allow = [ctype.schema.__identifier__, ""]
-        required = data.get('required', [])
-        for name, field in data.get('properties', {}).items():
+        required = data.get("required", [])
+        for name, field in data.get("properties", {}).items():
             if name in ctype.schema:
                 continue
 
@@ -79,20 +78,21 @@ class TypesPut(Service):
                 continue
 
             if name in required:
-                field['required'] = True
+                field["required"] = True
             field["id"] = name
             add_field(ctype, self.request, field)
 
     def update_fieldsets(self, ctype, data):
-        existing = [f.__name__ for f in
-                    ctype.schema.queryTaggedValue(FIELDSETS_KEY, [])]
+        existing = [
+            f.__name__ for f in ctype.schema.queryTaggedValue(FIELDSETS_KEY, [])
+        ]
         for fieldset in data.get("fieldsets", []):
             if fieldset.get("id") not in existing:
                 continue
             update_fieldset(ctype, self.request, fieldset)
 
     def update_fields(self, ctype, data):
-        for name, field in data.get('properties', {}).items():
+        for name, field in data.get("properties", {}).items():
             if name not in ctype.schema:
                 continue
 
@@ -105,10 +105,7 @@ class TypesPut(Service):
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-            alsoProvides(
-                self.request,
-                plone.protect.interfaces.IDisableCSRFProtection
-            )
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         # Make sure we get the right dexterity-types adapter
         if IPloneRestapiLayer.providedBy(self.request):
@@ -116,9 +113,7 @@ class TypesPut(Service):
 
         data = json_body(self.request)
         name = self.params.pop()
-        dtypes = queryMultiAdapter(
-            (self.context, self.request), name="dexterity-types"
-        )
+        dtypes = queryMultiAdapter((self.context, self.request), name="dexterity-types")
         ctype = dtypes.publishTraverse(self.request, name)
 
         self.update_layouts(name, data)

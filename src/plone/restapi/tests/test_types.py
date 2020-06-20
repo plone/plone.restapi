@@ -70,13 +70,13 @@ class TestJsonSchemaUtils(TestCase):
                 "title": u"Foo",
                 "description": u"",
                 "factory": "Yes/No",
-                "type": "boolean"
+                "type": "boolean",
             },
             "field2": {
                 "title": u"Bar",
                 "description": u"",
                 "factory": "Text line (String)",
-                "type": "string"
+                "type": "string",
             },
         }
         self.assertEqual(info, expected)
@@ -233,7 +233,7 @@ class TestJsonSchemaProviders(TestCase):
             {
                 "type": "string",
                 "title": u"My field",
-                'factory': u'Text line (String)',
+                "factory": u"Text line (String)",
                 "description": u"My great field",
                 "default": u"MY FOLDER",
             },
@@ -252,7 +252,7 @@ class TestJsonSchemaProviders(TestCase):
             {
                 "type": "string",
                 "title": u"My field",
-                'factory': u'Text line (String)',
+                "factory": u"Text line (String)",
                 "description": u"My great field",
                 "default": u"foobar",
             },
@@ -685,13 +685,13 @@ class TestJsonSchemaProviders(TestCase):
                         "title": u"Foo",
                         "description": u"",
                         "factory": u"Yes/No",
-                        "type": "boolean"
+                        "type": "boolean",
                     },
                     "field2": {
                         "title": u"Bar",
                         "description": u"",
                         "factory": u"Text line (String)",
-                        "type": "string"
+                        "type": "string",
                     },
                 },
             },

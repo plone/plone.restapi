@@ -30,8 +30,8 @@ class TestServicesTypes(unittest.TestCase):
             json={
                 "factory": "fieldset",
                 "title": "Contact Info",
-                "description": "Contact information"
-            }
+                "description": "Contact information",
+            },
         )
 
         self.api_session.post(
@@ -39,8 +39,8 @@ class TestServicesTypes(unittest.TestCase):
             json={
                 "factory": "fieldset",
                 "title": "Location",
-                "description": "Location"
-            }
+                "description": "Location",
+            },
         )
 
         self.api_session.post(
@@ -49,8 +49,8 @@ class TestServicesTypes(unittest.TestCase):
                 "factory": "Email",
                 "title": "Author email",
                 "description": "Email of the author",
-                "required": True
-            }
+                "required": True,
+            },
         )
 
         self.api_session.post(
@@ -58,15 +58,17 @@ class TestServicesTypes(unittest.TestCase):
             json={
                 "factory": "URL",
                 "title": "Author url",
-                "description": "Website of the author"
-            }
+                "description": "Website of the author",
+            },
         )
 
     def tearDown(self):
         self.api_session.close()
 
     def test_get_types(self):
-        response = self.api_session.get("{}/@types".format(self.portal.absolute_url())) # noqa
+        response = self.api_session.get(
+            "{}/@types".format(self.portal.absolute_url())
+        )  # noqa
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -103,15 +105,21 @@ class TestServicesTypes(unittest.TestCase):
         self.assertIn("author_url", response.json().get("properties"))
 
         # All fieldsets are present even empty ones
-        self.assertIn("location", [f["id"] for f in response.json().get("fieldsets")]) # noqa
-        self.assertIn("contact_info", [f["id"] for f in response.json().get("fieldsets")]) # noqa
+        self.assertIn(
+            "location", [f["id"] for f in response.json().get("fieldsets")]
+        )  # noqa
+        self.assertIn(
+            "contact_info", [f["id"] for f in response.json().get("fieldsets")]
+        )  # noqa
 
     def test_types_document_get_fieldset(self):
         response = self.api_session.get("/@types/Document/contact_info")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual("Contact Info", response.json().get("title"))
-        self.assertEqual("Contact information", response.json().get("description")) # noqa
+        self.assertEqual(
+            "Contact information", response.json().get("description")
+        )  # noqa
         self.assertEqual("contact_info", response.json().get("id"))
         self.assertEqual([], response.json().get("fields"))
 
@@ -119,9 +127,14 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.get("/@types/Document/author_email")
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual("Author email", response.json().get("title")) # noqa
-        self.assertEqual("Email of the author", response.json().get("description")) # noqa
-        self.assertEqual("plone.dexterity.schema.generated.plone_0_Document", response.json().get("behavior")) # noqa
+        self.assertEqual("Author email", response.json().get("title"))  # noqa
+        self.assertEqual(
+            "Email of the author", response.json().get("description")
+        )  # noqa
+        self.assertEqual(
+            "plone.dexterity.schema.generated.plone_0_Document",
+            response.json().get("behavior"),
+        )  # noqa
         self.assertEqual("string", response.json().get("type"))
         self.assertEqual("email", response.json().get("widget"))
 
@@ -131,13 +144,13 @@ class TestServicesTypes(unittest.TestCase):
             json={
                 "factory": "fieldset",
                 "title": "Foo bar",
-                "description": "Foo bar tab"
-            }
+                "description": "Foo bar tab",
+            },
         )
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual("Foo bar", response.json().get("title"))
-        self.assertEqual("Foo bar tab", response.json().get("description")) # noqa
+        self.assertEqual("Foo bar tab", response.json().get("description"))  # noqa
         self.assertEqual("foo_bar", response.json().get("id"))
         self.assertEqual([], response.json().get("fields"))
 
@@ -148,14 +161,17 @@ class TestServicesTypes(unittest.TestCase):
                 "factory": "Email",
                 "title": "Email",
                 "description": "Foo bar email",
-                "required": True
-            }
+                "required": True,
+            },
         )
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual("Email", response.json().get("title"))
         self.assertEqual("Foo bar email", response.json().get("description"))
-        self.assertEqual("plone.dexterity.schema.generated.plone_0_Document", response.json().get("behavior")) # noqa
+        self.assertEqual(
+            "plone.dexterity.schema.generated.plone_0_Document",
+            response.json().get("behavior"),
+        )  # noqa
         self.assertEqual("string", response.json().get("type"))
         self.assertEqual("email", response.json().get("widget"))
 
@@ -167,10 +183,10 @@ class TestServicesTypes(unittest.TestCase):
                     "author_email": {
                         "default": "foo@bar.com",
                         "minLength": 5,
-                        "maxLength": 100
+                        "maxLength": 100,
                     }
                 }
-            }
+            },
         )
         # PATCH returns no content
         self.assertEqual(response.status_code, 204)
@@ -185,14 +201,14 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.patch(
             "/@types/Document",
             json={
-                "fieldsets": [{
-                    "id": "contact_info",
-                    "title": "Contact information",
-                    "fields": [
-                        "author_email"
-                    ]
-                }]
-            }
+                "fieldsets": [
+                    {
+                        "id": "contact_info",
+                        "title": "Contact information",
+                        "fields": ["author_email"],
+                    }
+                ]
+            },
         )
         self.assertEqual(response.status_code, 204)
 
@@ -207,19 +223,18 @@ class TestServicesTypes(unittest.TestCase):
             json={
                 "title": "Contact the author",
                 "description": "Reach the author",
-                "fields": [
-                    "author_url",
-                    "author_email",
-                ]
-            }
+                "fields": ["author_url", "author_email",],
+            },
         )
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@types/Document/contact_info")
         self.assertEqual(200, response.status_code)
         self.assertEqual("Contact the author", response.json().get("title"))
-        self.assertEqual("Reach the author", response.json().get("description")) # noqa
-        self.assertEqual(["author_url", "author_email"], response.json().get("fields")) # noqa
+        self.assertEqual("Reach the author", response.json().get("description"))  # noqa
+        self.assertEqual(
+            ["author_url", "author_email"], response.json().get("fields")
+        )  # noqa
 
     def test_types_document_patch_one_field(self):
         response = self.api_session.patch(
@@ -229,15 +244,17 @@ class TestServicesTypes(unittest.TestCase):
                 "description": "The e-mail address of the author",
                 "minLength": 10,
                 "maxLength": 200,
-                "required": False
-            }
+                "required": False,
+            },
         )
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@types/Document/author_email")
         self.assertEqual(200, response.status_code)
         self.assertEqual("Author e-mail", response.json().get("title"))
-        self.assertEqual("The e-mail address of the author", response.json().get("description")) # noqa
+        self.assertEqual(
+            "The e-mail address of the author", response.json().get("description")
+        )  # noqa
         self.assertEqual(10, response.json().get("minLength"))
         self.assertEqual(200, response.json().get("maxLength"))
 
@@ -245,13 +262,9 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.patch(
             "/@types/Document",
             json={
-                "fieldsets": [{
-                    "title": "Layout",
-                    "fields": [
-                        "blocks",
-                        "blocks_layout"
-                    ]
-                }],
+                "fieldsets": [
+                    {"title": "Layout", "fields": ["blocks", "blocks_layout"]}
+                ],
                 "properties": {
                     "blocks": {
                         "title": "Blocks",
@@ -259,9 +272,7 @@ class TestServicesTypes(unittest.TestCase):
                         "widget": "json",
                         "factory": "JSONField",
                         "default": {
-                            "230bdd04-6a0d-4cd2-ab60-4c09b315cc2c": {
-                                "@type": "title"
-                            },
+                            "230bdd04-6a0d-4cd2-ab60-4c09b315cc2c": {"@type": "title"},
                             "338013ce-acca-454f-a6f4-14113c187dca": {
                                 "@type": "text",
                                 "text": {
@@ -273,19 +284,15 @@ class TestServicesTypes(unittest.TestCase):
                                             "inlineStyleRanges": [],
                                             "key": "99pvk",
                                             "text": "Book summary",
-                                            "type": "unstyled"
+                                            "type": "unstyled",
                                         }
                                     ],
-                                    "entityMap": {}
-                                }
+                                    "entityMap": {},
+                                },
                             },
-                            "5060e030-727b-47bc-8023-b80b7cccd96f": {
-                                "@type": "image"
-                            },
-                            "e3d8f8e4-8fee-47e7-9451-28724bf74a90": {
-                                "@type": "text"
-                            }
-                        }
+                            "5060e030-727b-47bc-8023-b80b7cccd96f": {"@type": "image"},
+                            "e3d8f8e4-8fee-47e7-9451-28724bf74a90": {"@type": "text"},
+                        },
                     },
                     "blocks_layout": {
                         "title": "Blocks Layout",
@@ -297,12 +304,12 @@ class TestServicesTypes(unittest.TestCase):
                                 "230bdd04-6a0d-4cd2-ab60-4c09b315cc2c",
                                 "338013ce-acca-454f-a6f4-14113c187dca",
                                 "5060e030-727b-47bc-8023-b80b7cccd96f",
-                                "e3d8f8e4-8fee-47e7-9451-28724bf74a90"
+                                "e3d8f8e4-8fee-47e7-9451-28724bf74a90",
                             ]
-                        }
+                        },
                     },
-                }
-            }
+                },
+            },
         )
         self.assertEqual(response.status_code, 204)
 
@@ -311,9 +318,11 @@ class TestServicesTypes(unittest.TestCase):
 
         self.assertIn("blocks", response.json().get("properties"))
         self.assertIn("blocks_layout", response.json().get("properties"))
-        fieldsets = [f for f in response.json().get("fieldsets") if f.get("id") == "layout"] # noqa
+        fieldsets = [
+            f for f in response.json().get("fieldsets") if f.get("id") == "layout"
+        ]  # noqa
         self.assertTrue(len(fieldsets) == 1)
-        self.assertTrue(["blocks", "blocks_layout"], fieldsets[0].get("fields")) # noqa
+        self.assertTrue(["blocks", "blocks_layout"], fieldsets[0].get("fields"))  # noqa
 
     def test_types_document_update_min_max(self):
         response = self.api_session.patch(
@@ -333,7 +342,7 @@ class TestServicesTypes(unittest.TestCase):
                         "maximum": 14.0,
                     },
                 }
-            }
+            },
         )
         self.assertEqual(response.status_code, 204)
 
@@ -351,18 +360,14 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.get("/@types/Document")
         doc_json = response.json()
         doc_json["layouts"] = ["thumbnail_view", "table_view"]
-        doc_json["fieldsets"] = [{
-            "id": "author",
-            "title": "Contact the author",
-            "fields": [
-                "author_email",
-                "author_name",
-            ],
-        }, {
-            "id": "contact_info",
-            "title": "Contact info",
-            "fields": []
-        }]
+        doc_json["fieldsets"] = [
+            {
+                "id": "author",
+                "title": "Contact the author",
+                "fields": ["author_email", "author_name",],
+            },
+            {"id": "contact_info", "title": "Contact info", "fields": []},
+        ]
 
         doc_json["properties"]["author_name"] = {
             "description": "Name of the author",
@@ -374,20 +379,19 @@ class TestServicesTypes(unittest.TestCase):
         doc_json["properties"]["author_email"] = {
             "minLength": 0,
             "maxLength": 100,
-            "default": None
+            "default": None,
         }
 
-        response = self.api_session.put(
-            "/@types/Document",
-            json=doc_json
-        )
+        response = self.api_session.put("/@types/Document", json=doc_json)
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@types/Document")
         self.assertEqual(200, response.status_code)
 
         # Layouts updated
-        self.assertEqual(["thumbnail_view", "table_view"], response.json().get("layouts")) # noqa
+        self.assertEqual(
+            ["thumbnail_view", "table_view"], response.json().get("layouts")
+        )  # noqa
 
         # Field added
         self.assertIn("author_name", response.json().get("properties"))
@@ -396,38 +400,44 @@ class TestServicesTypes(unittest.TestCase):
         self.assertTrue("author_url" not in response.json().get("properties"))
 
         # Field updated
-        self.assertEqual(None, response.json().get("properties").get("author_email").get("default")) # noqa
+        self.assertEqual(
+            None, response.json().get("properties").get("author_email").get("default")
+        )  # noqa
 
         # Fieldset added
-        self.assertIn("author", [f["id"] for f in response.json().get("fieldsets")]) # noqa
+        self.assertIn(
+            "author", [f["id"] for f in response.json().get("fieldsets")]
+        )  # noqa
 
         # Fieldset removed
-        self.assertTrue("location" not in [f["id"] for f in response.json().get("fieldsets")]) # noqa
+        self.assertTrue(
+            "location" not in [f["id"] for f in response.json().get("fieldsets")]
+        )  # noqa
 
         # Fieldset updated
-        self.assertIn("contact_info", [f["id"] for f in response.json().get("fieldsets")]) # noqa
+        self.assertIn(
+            "contact_info", [f["id"] for f in response.json().get("fieldsets")]
+        )  # noqa
 
     def test_types_document_remove_field(self):
-        response = self.api_session.delete(
-            "/@types/Document/author_email",
-        )
+        response = self.api_session.delete("/@types/Document/author_email",)
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@types/Document")
         self.assertEqual(200, response.status_code)
 
-        self.assertTrue("author_email" not in response.json().get("properties")) # noqa
+        self.assertTrue("author_email" not in response.json().get("properties"))  # noqa
 
     def test_types_document_remove_fieldset(self):
-        response = self.api_session.delete(
-            "/@types/Document/contact_info",
-        )
+        response = self.api_session.delete("/@types/Document/contact_info",)
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@types/Document")
         self.assertEqual(200, response.status_code)
 
-        self.assertTrue("contact_info" not in [f["id"] for f in response.json().get("fieldsets")]) # noqa
+        self.assertTrue(
+            "contact_info" not in [f["id"] for f in response.json().get("fieldsets")]
+        )  # noqa
 
     def test_get_types_with_unknown_type(self):
         response = self.api_session.get(
@@ -445,11 +455,15 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_types_endpoint_only_accessible_for_authenticated_users(self):
         self.api_session.auth = ()
-        response = self.api_session.get("{}/@types".format(self.portal.absolute_url())) # noqa
+        response = self.api_session.get(
+            "{}/@types".format(self.portal.absolute_url())
+        )  # noqa
         self.assertEqual(response.status_code, 401)
 
     def test_contextaware_addable(self):
-        response = self.api_session.get("{}/@types".format(self.portal.absolute_url())) # noqa
+        response = self.api_session.get(
+            "{}/@types".format(self.portal.absolute_url())
+        )  # noqa
 
         allowed_ids = [x.getId() for x in self.portal.allowedContentTypes()]
 
@@ -466,13 +480,15 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.get("/@types/Image")
         response = response.json()
         self.assertIn("fieldsets", response)
-        self.assertIn("image.data", response["properties"]["image"]["properties"]) # noqa
+        self.assertIn(
+            "image.data", response["properties"]["image"]["properties"]
+        )  # noqa
 
     def test_file_type(self):
         response = self.api_session.get("/@types/File")
         response = response.json()
         self.assertIn("fieldsets", response)
-        self.assertIn("file.data", response["properties"]["file"]["properties"]) # noqa
+        self.assertIn("file.data", response["properties"]["file"]["properties"])  # noqa
 
     def test_event_type(self):
         response = self.api_session.get("/@types/Event")
@@ -544,7 +560,9 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
         self.api_session.close()
 
     def test_get_types_translated(self):
-        response = self.api_session.get("{}/@types".format(self.portal.absolute_url())) # noqa
+        response = self.api_session.get(
+            "{}/@types".format(self.portal.absolute_url())
+        )  # noqa
 
         self.assertEqual(response.status_code, 200)
 

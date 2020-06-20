@@ -205,8 +205,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
         additional_schemata = ()
     else:
         additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-        fieldsets = get_fieldsets(context, request,
-                                  schema, additional_schemata)
+        fieldsets = get_fieldsets(context, request, schema, additional_schemata)
 
     # Build JSON schema properties
     properties = get_jsonschema_properties(
@@ -238,8 +237,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     }
 
 
-def get_jsonschema_for_portal_type(portal_type, context,
-                                   request, excluded_fields=None):
+def get_jsonschema_for_portal_type(portal_type, context, request, excluded_fields=None):
     """Build a complete JSON schema for the given portal_type.
     """
     ttool = getToolByName(context, "portal_types")
@@ -263,8 +261,7 @@ def get_vocabulary_url(vocab_name, context, request):
 
 
 def get_querysource_url(field, context, request):
-    return get_vocab_like_url("@querysources",
-                              field.getName(), context, request)
+    return get_vocab_like_url("@querysources", field.getName(), context, request)
 
 
 def get_source_url(field, context, request):
@@ -307,7 +304,7 @@ def get_info_for_type(context, request, name):
         name = fieldset.__name__
         if name not in existing:
             info = get_info_for_fieldset(context, request, name)
-            schema['fieldsets'].append(info)
+            schema["fieldsets"].append(info)
     return schema
 
 
@@ -316,10 +313,11 @@ def get_info_for_field(context, request, name):
     """
     field = context.publishTraverse(request, name)
     adapter = queryMultiAdapter(
-        (field.field, context, request), interface=IJsonSchemaProvider)
+        (field.field, context, request), interface=IJsonSchemaProvider
+    )
 
     schema = adapter.get_schema()
-    schema['behavior'] = context.schema.__identifier__
+    schema["behavior"] = context.schema.__identifier__
     return IJsonCompatible(schema)
 
 
@@ -335,7 +333,7 @@ def get_info_for_fieldset(context, request, name):
             "id": fieldset.__name__,
             "title": fieldset.label,
             "description": fieldset.description,
-            "fields": fieldset.fields
+            "fields": fieldset.fields,
         }
     return IJsonCompatible(properties)
 
@@ -376,15 +374,11 @@ def add_fieldset(context, request, data):
         name = idnormalizer.normalize(title).replace("-", "_")
 
     # Default is reserved
-    if name == 'default':
+    if name == "default":
         return {}
 
     add = queryMultiAdapter((context, request), name="add-fieldset")
-    properties = {
-        "__name__": name,
-        "label": title,
-        "description": description
-    }
+    properties = {"__name__": name, "label": title, "description": description}
     fieldset = add.form_instance.create(data=properties)
     add.form_instance.add(fieldset)
 
@@ -392,16 +386,16 @@ def add_fieldset(context, request, data):
 
 
 def add_field(context, request, data):
-    factory = data.get('factory', None)
+    factory = data.get("factory", None)
     title = data.get("title", None)
     description = data.get("description", None)
     required = data.get("required", False)
-    name = data.get('id', None)
+    name = data.get("id", None)
     if not name:
         name = idnormalizer.normalize(title).replace("-", "_")
 
     klass = None
-    vocabulary = queryUtility(IVocabularyFactory, name='Fields')
+    vocabulary = queryUtility(IVocabularyFactory, name="Fields")
     for term in vocabulary(context):
         if factory not in (term.title, term.token):
             continue
@@ -418,7 +412,7 @@ def add_field(context, request, data):
         "__name__": name,
         "description": description,
         "factory": klass,
-        "required": required
+        "required": required,
     }
 
     field = add.form_instance.create(data=properties)
@@ -452,8 +446,7 @@ def update_fieldset(context, request, data):
                 continue
 
             field = context.publishTraverse(request, field_name)
-            order = queryMultiAdapter(
-                (field, request), name='changefieldset')
+            order = queryMultiAdapter((field, request), name="changefieldset")
             order.change(idx + 1)
 
 
@@ -468,9 +461,9 @@ def update_field(context, request, data):
         properties[key] = value
 
     # clear current min/max to avoid range errors
-    if 'min' in properties:
+    if "min" in properties:
         edit.form_instance.field.min = None
-    if 'max' in properties:
+    if "max" in properties:
         edit.form_instance.field.max = None
 
     edit.form_instance.updateFields()

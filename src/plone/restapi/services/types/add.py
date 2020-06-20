@@ -17,6 +17,7 @@ import plone.protect.interfaces
 class TypesPost(Service):
     """ Creates a new field/fieldset
     """
+
     def __init__(self, context, request):
         super(TypesPost, self).__init__(context, request)
         self.params = []
@@ -34,10 +35,7 @@ class TypesPost(Service):
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-            alsoProvides(
-                self.request,
-                plone.protect.interfaces.IDisableCSRFProtection
-            )
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         # Make sure we get the right dexterity-types adapter
         if IPloneRestapiLayer.providedBy(self.request):
@@ -49,7 +47,7 @@ class TypesPost(Service):
         )
         context = context.publishTraverse(self.request, name)
 
-        factory = data.get('factory', '')
+        factory = data.get("factory", "")
         if not factory:
             raise BadRequest("Property 'factory' is required")
 

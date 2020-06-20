@@ -16,6 +16,7 @@ import plone.protect.interfaces
 class TypesDelete(Service):
     """ Deletes a field/fieldset from content type
     """
+
     def __init__(self, context, request):
         super(TypesDelete, self).__init__(context, request)
         self.params = []
@@ -35,10 +36,7 @@ class TypesDelete(Service):
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-            alsoProvides(
-                self.request,
-                plone.protect.interfaces.IDisableCSRFProtection
-            )
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         # Make sure we don't get the right dexterity-types adapter
         if IPloneRestapiLayer.providedBy(self.request):

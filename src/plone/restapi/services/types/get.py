@@ -35,16 +35,14 @@ class TypesInfo(object):
         self.request = request
 
     def __call__(self, expand=False):
-        result = {"types": {"@id": "{}/@types".format(
-            self.context.absolute_url())}}
+        result = {"types": {"@id": "{}/@types".format(self.context.absolute_url())}}
         if not expand:
             return result
 
         check_security(self.context)
 
         vocab_factory = getUtility(
-            IVocabularyFactory,
-            name="plone.app.vocabularies.ReallyUserFriendlyTypes"
+            IVocabularyFactory, name="plone.app.vocabularies.ReallyUserFriendlyTypes"
         )
 
         portal_types = getToolByName(self.context, "portal_types")
@@ -120,7 +118,8 @@ class TypesGet(Service):
 
         try:
             dtool = queryMultiAdapter(
-                (self.context, self.request), name="dexterity-types")
+                (self.context, self.request), name="dexterity-types"
+            )
             dtype = dtool.publishTraverse(self.request, portal_type)
         except Exception:
             dtype = self.context
@@ -148,7 +147,8 @@ class TypesGet(Service):
             noLongerProvides(self.request, IPloneRestapiLayer)
 
         context = queryMultiAdapter(
-            (self.context, self.request), name="dexterity-types")
+            (self.context, self.request), name="dexterity-types"
+        )
         context = context.publishTraverse(self.request, name)
 
         try:
@@ -167,7 +167,8 @@ class TypesGet(Service):
             noLongerProvides(self.request, IPloneRestapiLayer)
 
         context = queryMultiAdapter(
-            (self.context, self.request), name="dexterity-types")
+            (self.context, self.request), name="dexterity-types"
+        )
         context = context.publishTraverse(self.request, name)
 
         try:
