@@ -63,10 +63,7 @@ class TestServicesTypes(unittest.TestCase):
 
     def tearDown(self):
         # Remove all custom changed on Document
-        self.api_session.put(
-            "/@types/Document",
-            json={}
-        )
+        self.api_session.put("/@types/Document", json={})
         self.api_session.close()
 
     def test_get_types(self):
