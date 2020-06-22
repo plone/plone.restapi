@@ -49,7 +49,6 @@ class TestServicesTypes(unittest.TestCase):
                 "factory": "Email",
                 "title": "Author email",
                 "description": "Email of the author",
-                "required": True,
             },
         )
 
@@ -63,6 +62,11 @@ class TestServicesTypes(unittest.TestCase):
         )
 
     def tearDown(self):
+        # Remove all custom changed on Document
+        self.api_session.put(
+            "/@types/Document",
+            json={}
+        )
         self.api_session.close()
 
     def test_get_types(self):
@@ -364,7 +368,7 @@ class TestServicesTypes(unittest.TestCase):
             {
                 "id": "author",
                 "title": "Contact the author",
-                "fields": ["author_email", "author_name",],
+                "fields": ["author_email", "author_name"],
             },
             {"id": "contact_info", "title": "Contact info", "fields": []},
         ]
