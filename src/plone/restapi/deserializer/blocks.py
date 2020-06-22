@@ -62,8 +62,7 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
 
                 handlers = []
                 for h in subscribers(
-                    (self.context, self.request),
-                    IBlockFieldDeserializationTransformer,
+                    (self.context, self.request), IBlockFieldDeserializationTransformer
                 ):
                     if h.block_type == block_type or h.block_type is None:
                         handlers.append(h)
@@ -116,9 +115,7 @@ class TextBlockDeserializer(object):
         for entity in entity_map.values():
             if entity.get("type") == "LINK":
                 href = entity.get("data", {}).get("href", "")
-                entity["data"]["href"] = path2uid(
-                    context=self.context, link=href
-                )
+                entity["data"]["href"] = path2uid(context=self.context, link=href)
         return block
 
 

@@ -39,8 +39,7 @@ def uid_to_url(path):
         target_object = uuidToObject(uid)
         if target_object:
             adapter = queryMultiAdapter(
-                (target_object, target_object.REQUEST),
-                IObjectPrimaryFieldTarget,
+                (target_object, target_object.REQUEST), IObjectPrimaryFieldTarget
             )
             if adapter and adapter():
                 href = adapter()
@@ -58,8 +57,7 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                 block_type = block_value.get("@type", "")
                 handlers = []
                 for h in subscribers(
-                    (self.context, self.request),
-                    IBlockFieldSerializationTransformer,
+                    (self.context, self.request), IBlockFieldSerializationTransformer
                 ):
                     if h.block_type == block_type or h.block_type is None:
                         handlers.append(h)

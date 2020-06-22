@@ -143,43 +143,23 @@ class TestBlocksResolveUID(TestCase):
 
     def test_resolveuid_gets_serialized_for_standard_fields(self):
         uid = IUUID(self.doc2)
-        blocks = {
-            "aaa": {
-                "@type": "foo",
-                "url": "../resolveuid/{}/view".format(uid),
-            }
-        }
+        blocks = {"aaa": {"@type": "foo", "url": "../resolveuid/{}/view".format(uid)}}
         value = self.serialize("blocks", blocks)
-        self.assertEqual(
-            value["aaa"]["url"],
-            self.doc2.absolute_url() + "/view",
-        )
+        self.assertEqual(value["aaa"]["url"], self.doc2.absolute_url() + "/view")
 
-        blocks = {
-            "aaa": {
-                "@type": "foo",
-                "href": "../resolveuid/{}/view".format(uid),
-            }
-        }
+        blocks = {"aaa": {"@type": "foo", "href": "../resolveuid/{}/view".format(uid)}}
         value = self.serialize("blocks", blocks)
-        self.assertEqual(
-            value["aaa"]["href"],
-            self.doc2.absolute_url() + "/view",
-        )
+        self.assertEqual(value["aaa"]["href"], self.doc2.absolute_url() + "/view")
 
     def test_resolveuid_serialize_take_care_of_primary_fields(self):
         logout()
         uid = IUUID(self.doc_primary_field_url)
-        blocks = {
-            "aaa": {
-                "@type": "foo",
-                "url": "../resolveuid/{}".format(uid),
-            }
-        }
+        blocks = {"aaa": {"@type": "foo", "url": "../resolveuid/{}".format(uid)}}
         value = self.serialize("blocks", blocks)
         self.assertEqual(
             value["aaa"]["url"],
-            self.doc_primary_field_url.absolute_url() + "/@@download/test_primary_namedfile_field",
+            self.doc_primary_field_url.absolute_url()
+            + "/@@download/test_primary_namedfile_field",
         )
 
     def test_keeps_resolveuid_link_if_unknown_uid(self):
