@@ -107,7 +107,9 @@ class TypesUpdate(Service):
             existing = info.get("properties", {})
             if field_name not in existing:
                 add_field(context, self.request, data)
-        update_field(context, self.request, data)
+
+        if field_name in context.schema:
+            update_field(context, self.request, data)
 
         serializeSchema(context.schema)
         return self.reply_no_content()
