@@ -13,7 +13,7 @@
 
   <plone:service
     method="PATCH"
-    for="*"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".update.TypesUpdate"
     name="@types"
     permission="plone.app.controlpanel.Overview"
@@ -21,7 +21,7 @@
 
   <plone:service
     method="POST"
-    for="*"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".add.TypesPost"
     name="@types"
     permission="plone.app.controlpanel.Overview"
@@ -29,7 +29,7 @@
 
   <plone:service
     method="DELETE"
-    for="*"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".delete.TypesDelete"
     name="@types"
     permission="plone.app.controlpanel.Overview"
@@ -37,7 +37,7 @@
 
   <plone:service
     method="PUT"
-    for="*"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
     factory=".put.TypesPut"
     name="@types"
     permission="plone.app.controlpanel.Overview"

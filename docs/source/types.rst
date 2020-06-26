@@ -21,10 +21,10 @@ The API consumer can create, read, update, and delete a content-types schema.
 ======= =============================================== =====================================================================
 Verb    URL                                             Action
 ======= =============================================== =====================================================================
-POST    ``/@types/Document``                            Add field/fieldset to content type schema
-GET     ``/@types/Document``                            Get the schema of a content type
-PATCH   ``/@types/Document``                            Update existing schema fields/fieldsets properties
-PUT     ``/@types/Document``                            Replace content-type schema
+POST    ``/@types/{type}``                              Add field/fieldset to content type schema
+GET     ``/@types/{type}``                              Get the schema of a content type
+PATCH   ``/@types/{type}``                              Update existing schema fields/fieldsets properties
+PUT     ``/@types/{type}``                              Replace content-type schema
 ======= =============================================== =====================================================================
 
 In addition to the above methods we can also do:
@@ -32,9 +32,9 @@ In addition to the above methods we can also do:
 ======= =============================================== =====================================================================
 Verb    URL                                             Action
 ======= =============================================== =====================================================================
-GET     ``/@type/Document/{id}``                        Get field/fieldset properties
-PATCH   ``/@type/Document/{id}``                        Update field/fieldset properties
-DELETE  ``/@type/Document/{id}``                        Remove field/fieldset from schema
+GET     ``/@type/{type}/{field/fieldset}``              Get field/fieldset properties
+PATCH   ``/@type/{type}/{field/fieldset}``              Update field/fieldset properties
+DELETE  ``/@type/{type}/{field/fieldset}``              Remove field/fieldset from schema
 ======= =============================================== =====================================================================
 
 .. note::
