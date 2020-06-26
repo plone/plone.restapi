@@ -171,13 +171,6 @@ Response:
 Update schema with PUT
 ~~~~~~~~~~~~~~~~~~~~~~
 
-In accordance with the HTTP specification, a successful PUT will not create a new resource or produce a new URL.
-
-PUT expects the entire resource representation to be supplied to the server, rather than just changes to the resource state.
-This is usually not a problem since the consumer application requested the resource representation before a PUT anyways.
-
-When the PUT request is accepted and processed by the service, the consumer will receive a :term:`204 No Content` response (:term:`200 OK` would be a valid alternative).
-
 Use PUT when more changes are needed in one call, like create new fields/fieldsets, move fields to fieldset, remove multiple fields, etc.
 
 ..  http:example:: curl httpie python-requests
