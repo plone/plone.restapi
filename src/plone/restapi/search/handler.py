@@ -74,16 +74,12 @@ class SearchHandler(object):
         else:
             fullobjects = False
 
-        metadata_fields = query.pop("metadata_fields", [])
-        if not isinstance(metadata_fields, list):
-            metadata_fields = [metadata_fields]
-
         self._constrain_query_by_path(query)
         query = self._parse_query(query)
 
         lazy_resultset = self.catalog.searchResults(query)
         results = getMultiAdapter((lazy_resultset, self.request), ISerializeToJson)(
-            metadata_fields=metadata_fields, fullobjects=fullobjects
+            fullobjects=fullobjects
         )
 
         return results
