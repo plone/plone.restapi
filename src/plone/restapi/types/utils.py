@@ -18,6 +18,7 @@ from copy import copy
 from plone.autoform.form import AutoExtensibleForm
 from plone.autoform.interfaces import IParameterizedWidget
 from plone.autoform.interfaces import WIDGETS_KEY
+from plone.behavior.interfaces import IBehavior
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.utils import getAdditionalSchemata
@@ -205,7 +206,8 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
         additional_schemata = ()
     else:
         additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-        fieldsets = get_fieldsets(context, request, schema, additional_schemata)
+        fieldsets = get_fieldsets(
+            context, request, schema, additional_schemata)
 
     # Build JSON schema properties
     properties = get_jsonschema_properties(
@@ -225,7 +227,10 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
 
         # Include behavior
         if name in properties:
-            properties[name]["behavior"] = field.interface.__identifier__
+            behavior = queryUtility(
+                IBehavior, name=field.interface.__identifier__)
+            properties[name]["behavior"] = getattr(
+                behavior, "name", field.interface.__identifier__)
 
     return {
         "type": "object",
@@ -237,7 +242,8 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     }
 
 
-def get_jsonschema_for_portal_type(portal_type, context, request, excluded_fields=None):
+def get_jsonschema_for_portal_type(portal_type, context, request,
+                                   excluded_fields=None):
     """Build a complete JSON schema for the given portal_type.
     """
     ttool = getToolByName(context, "portal_types")
@@ -261,7 +267,8 @@ def get_vocabulary_url(vocab_name, context, request):
 
 
 def get_querysource_url(field, context, request):
-    return get_vocab_like_url("@querysources", field.getName(), context, request)
+    return get_vocab_like_url(
+        "@querysources", field.getName(), context, request)
 
 
 def get_source_url(field, context, request):

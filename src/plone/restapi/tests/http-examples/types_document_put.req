@@ -26,7 +26,7 @@ Content-Type: application/json
     ],
     "properties": {
         "allow_discussion": {
-            "behavior": "plone.app.dexterity.behaviors.discussion.IAllowDiscussion",
+            "behavior": "plone.allowdiscussion",
             "choices": [
                 [
                     "True",
@@ -74,7 +74,7 @@ Content-Type: application/json
             "title": "Author website"
         },
         "changeNote": {
-            "behavior": "plone.app.versioningbehavior.behaviors.IVersionable",
+            "behavior": "plone.versioning",
             "description": "Enter a comment that describes the changes you made.",
             "factory": "Text line (String)",
             "title": "Change Note",
@@ -82,7 +82,7 @@ Content-Type: application/json
         },
         "contributors": {
             "additionalItems": true,
-            "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore",
+            "behavior": "plone.dublincore",
             "description": "The names of people that have contributed to this item. Each contributor should be on a separate line.",
             "factory": "Tuple",
             "items": {
@@ -102,7 +102,7 @@ Content-Type: application/json
         },
         "creators": {
             "additionalItems": true,
-            "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore",
+            "behavior": "plone.dublincore",
             "description": "Persons responsible for creating the content of this item. Please enter a list of user names, one per line. The principal creator should come first.",
             "factory": "Tuple",
             "items": {
@@ -121,7 +121,7 @@ Content-Type: application/json
             }
         },
         "description": {
-            "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore",
+            "behavior": "plone.dublincore",
             "description": "Used in item listings and search results.",
             "factory": "Text",
             "title": "Summary",
@@ -129,7 +129,7 @@ Content-Type: application/json
             "widget": "textarea"
         },
         "effective": {
-            "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore",
+            "behavior": "plone.dublincore",
             "description": "If this date is in the future, the content will not show up in listings and searches until this date.",
             "factory": "Date/Time",
             "title": "Publishing Date",
@@ -137,7 +137,7 @@ Content-Type: application/json
             "widget": "datetime"
         },
         "exclude_from_nav": {
-            "behavior": "plone.app.dexterity.behaviors.exclfromnav.IExcludeFromNavigation",
+            "behavior": "plone.excludefromnavigation",
             "default": false,
             "description": "If selected, this item will not appear in the navigation tree",
             "factory": "Yes/No",
@@ -145,7 +145,7 @@ Content-Type: application/json
             "type": "boolean"
         },
         "expires": {
-            "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore",
+            "behavior": "plone.dublincore",
             "description": "When this date is reached, the content will no longer be visible in listings and searches.",
             "factory": "Date/Time",
             "title": "Expiration Date",
@@ -153,14 +153,14 @@ Content-Type: application/json
             "widget": "datetime"
         },
         "id": {
-            "behavior": "plone.app.dexterity.behaviors.id.IShortName",
+            "behavior": "plone.shortname",
             "description": "This name will be displayed in the URL.",
             "factory": "Text line (String)",
             "title": "Short name",
             "type": "string"
         },
         "language": {
-            "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore",
+            "behavior": "plone.dublincore",
             "default": "en",
             "description": "",
             "factory": "Choice",
@@ -172,7 +172,7 @@ Content-Type: application/json
         },
         "relatedItems": {
             "additionalItems": true,
-            "behavior": "plone.app.relationfield.behavior.IRelatedItems",
+            "behavior": "plone.relateditems",
             "default": [],
             "description": "",
             "factory": "Relation List",
@@ -198,7 +198,7 @@ Content-Type: application/json
             }
         },
         "rights": {
-            "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore",
+            "behavior": "plone.dublincore",
             "description": "Copyright statement or other rights information on this item.",
             "factory": "Text",
             "title": "Rights",
@@ -207,7 +207,7 @@ Content-Type: application/json
         },
         "subjects": {
             "additionalItems": true,
-            "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore",
+            "behavior": "plone.dublincore",
             "description": "Tags are commonly used for ad-hoc organization of content.",
             "factory": "Tuple",
             "items": {
@@ -226,14 +226,14 @@ Content-Type: application/json
             }
         },
         "table_of_contents": {
-            "behavior": "plone.app.contenttypes.behaviors.tableofcontents.ITableOfContents",
+            "behavior": "plone.tableofcontents",
             "description": "If selected, this will show a table of contents at the top of the page.",
             "factory": "Yes/No",
             "title": "Table of contents",
             "type": "boolean"
         },
         "text": {
-            "behavior": "plone.app.contenttypes.behaviors.richtext.IRichTextBehavior",
+            "behavior": "plone.richtext",
             "description": "",
             "factory": "Rich Text",
             "title": "Text",
@@ -241,14 +241,14 @@ Content-Type: application/json
             "widget": "richtext"
         },
         "title": {
-            "behavior": "plone.app.dexterity.behaviors.metadata.IDublinCore",
+            "behavior": "plone.dublincore",
             "description": "",
             "factory": "Text line (String)",
             "title": "Title",
             "type": "string"
         },
         "versioning_enabled": {
-            "behavior": "plone.app.versioningbehavior.behaviors.IVersionable",
+            "behavior": "plone.versioning",
             "default": true,
             "description": "Enable/disable versioning for this document.",
             "factory": "Yes/No",
