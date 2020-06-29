@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from persistent.list import PersistentList
-from plone import api
 from plone.folder.default import DefaultOrdering
+from Products.CMFCore.utils import getToolByName
 from Products.Five.browser import BrowserView
 from zope.annotation.interfaces import IAnnotatable
 from zope.annotation.interfaces import IAnnotations
@@ -64,7 +64,7 @@ class FixOrderingView(BrowserView):
         if six.PY3:
             return "Aborted, fixing ordering is only necessary on python 2."
 
-        catalog = api.portal.get_tool("portal_catalog")
+        catalog = getToolByName(self.context, "portal_catalog")
         for brain in catalog.unrestrictedSearchResults(QUERY):
             folderish = brain.getObject()
             ensure_child_ordering_object_ids_are_native_strings(folderish)
