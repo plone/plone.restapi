@@ -8,6 +8,7 @@ Changelog
 
 .. towncrier release notes start
 
+
 7.0.0a4 (2020-05-15)
 --------------------
 
@@ -59,6 +60,16 @@ New features:
 - Resolve links in blocks to UIDs during deserialization and back to paths during
   serialization.
   [buchi,timo,cekk] (#808)
+
+
+6.13.5 (2020-06-29)
+-------------------
+
+Bug fixes:
+
+
+- Remove the use of plone.api in upgrade code
+  [erral] (#917)
 
 
 6.13.4 (2020-06-18)
