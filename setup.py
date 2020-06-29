@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 import sys
 
-version = '6.13.8.dev0'
+version = "6.13.8.dev0"
 
 
 def read(filename):
@@ -17,6 +17,7 @@ def read(filename):
     with open(filename, "rb") as myfile:
         contents = myfile.read()
         return contents.decode("utf-8")
+
 
 long_description = (
     read("README.rst")
