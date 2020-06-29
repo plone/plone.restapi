@@ -3,7 +3,6 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces.controlpanel import IDateAndTimeSchema
 from Products.CMFPlone.interfaces.controlpanel import IEditingSchema
 from Products.CMFPlone.interfaces.controlpanel import IImagingSchema
-from Products.CMFPlone.interfaces.controlpanel import ILanguageSchema
 from Products.CMFPlone.interfaces.controlpanel import IMailSchema
 from Products.CMFPlone.interfaces.controlpanel import IMarkupSchema
 from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
@@ -16,6 +15,12 @@ from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces import NotFound
 from plone.restapi.controlpanels.interfaces import IControlpanel
+
+try:
+    from plone.i18n.interfaces ILanguageSchema
+except ImportError:  # pragma: no cover
+    from Products.CMFPlone.interfaces.controlpanel import ILanguageSchema
+
 
 
 @implementer(IControlpanel)
