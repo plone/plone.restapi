@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+6.13.5 (2020-06-29)
+-------------------
+
+Bug fixes:
+
+
+- Remove the use of plone.api in upgrade code
+  [erral] (#917)
+
+
 6.13.4 (2020-06-18)
 -------------------
 
