@@ -230,7 +230,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
             behavior = queryUtility(
                 IBehavior, name=field.interface.__identifier__)
             properties[name]["behavior"] = getattr(
-                behavior, "name", field.interface.__identifier__)
+                behavior, "name", None) or field.interface.__identifier__
 
     return {
         "type": "object",
