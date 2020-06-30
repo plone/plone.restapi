@@ -43,9 +43,9 @@ class TypesPut(Service):
 
     def remove_fieldsets(self, ctype, data):
         fieldsets = [f.get("id") for f in data.get("fieldsets", [])]
-        existing = [
+        existing = set(
             f.__name__ for f in ctype.schema.queryTaggedValue(FIELDSETS_KEY, [])
-        ]
+        )
 
         for fieldset in existing:
             if fieldset not in fieldsets:
@@ -54,14 +54,14 @@ class TypesPut(Service):
     def add_fieldsets(self, ctype, data):
         fieldsets = OrderedDict((f.get("id"), f) for f in data.get("fieldsets", []))
         info = get_info_for_type(ctype, self.request, ctype.getId())
-        existing = [f.get("id") for f in info.get("fieldsets", [])]
+        existing = set(f.get("id") for f in info.get("fieldsets", []))
         for name, fieldset in fieldsets.items():
             if name not in existing:
                 add_fieldset(ctype, self.request, fieldset)
 
     def remove_fields(self, ctype, data):
         fields = data.get("properties", {})
-        existing = [name for name in ctype.schema]
+        existing = set(name for name in ctype.schema)
         for name in existing:
             if name not in fields:
                 delete_field(ctype, self.request, name)
@@ -83,9 +83,10 @@ class TypesPut(Service):
             add_field(ctype, self.request, field)
 
     def update_fieldsets(self, ctype, data):
-        existing = [
+        existing = set(
             f.__name__ for f in ctype.schema.queryTaggedValue(FIELDSETS_KEY, [])
-        ]
+        )
+        existing.add("default")
         for fieldset in data.get("fieldsets", []):
             if fieldset.get("id") not in existing:
                 continue

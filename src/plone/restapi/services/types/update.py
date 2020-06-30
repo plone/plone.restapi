@@ -84,7 +84,7 @@ class TypesUpdate(Service):
 
         if create:
             info = get_info_for_type(context, self.request, name)
-            existing = [f.get("id") for f in info.get("fieldsets", [])]
+            existing = set(f.get("id") for f in info.get("fieldsets", []))
             if fieldset_name not in existing:
                 add_fieldset(context, self.request, data)
         update_fieldset(context, self.request, data)

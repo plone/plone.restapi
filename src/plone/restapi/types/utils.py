@@ -447,6 +447,20 @@ def update_fieldset(context, request, data):
     if not name:
         name = idnormalizer.normalize(title).replace("-", "_")
 
+    # We can only re-order fields within the default fieldset
+    if name == "default":
+        pos = 0
+        for field_name in fields:
+            if field_name not in context.schema:
+                continue
+
+            field = context.publishTraverse(request, field_name)
+            order = queryMultiAdapter((field, request), name="order")
+            order.move(pos, 0)
+            pos += 1
+        return
+
+    # Update fieldset
     fieldsets = context.schema.queryTaggedValue(FIELDSETS_KEY, [])
     for idx, fieldset in enumerate(fieldsets):
         if name != fieldset.__name__:
@@ -458,13 +472,15 @@ def update_fieldset(context, request, data):
         if description:
             fieldset.description = description
 
+        pos = 0
         for field_name in fields:
             if field_name not in context.schema:
                 continue
 
             field = context.publishTraverse(request, field_name)
-            order = queryMultiAdapter((field, request), name="changefieldset")
-            order.change(idx + 1)
+            order = queryMultiAdapter((field, request), name="order")
+            order.move(pos, idx + 1)
+            pos += 1
 
 
 def update_field(context, request, data):
