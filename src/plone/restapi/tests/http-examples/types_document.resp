@@ -4,6 +4,7 @@ Content-Type: application/json+schema
 {
   "fieldsets": [
     {
+      "behavior": "plone", 
       "fields": [
         "title", 
         "description", 
@@ -15,6 +16,7 @@ Content-Type: application/json+schema
       "title": "Default"
     }, 
     {
+      "behavior": "plone", 
       "fields": [
         "allow_discussion", 
         "exclude_from_nav", 
@@ -26,6 +28,7 @@ Content-Type: application/json+schema
       "title": "Settings"
     }, 
     {
+      "behavior": "plone", 
       "fields": [
         "subjects", 
         "language", 
@@ -35,6 +38,7 @@ Content-Type: application/json+schema
       "title": "Categorization"
     }, 
     {
+      "behavior": "plone", 
       "fields": [
         "effective", 
         "expires"
@@ -43,6 +47,7 @@ Content-Type: application/json+schema
       "title": "Dates"
     }, 
     {
+      "behavior": "plone", 
       "fields": [
         "creators", 
         "contributors", 
@@ -52,6 +57,7 @@ Content-Type: application/json+schema
       "title": "Ownership"
     }, 
     {
+      "behavior": "plone.dexterity.schema.generated", 
       "description": "Contact information", 
       "fields": [], 
       "id": "contact_info", 

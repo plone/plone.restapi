@@ -46,6 +46,7 @@ Content-Type: application/json
   "schema": {
     "fieldsets": [
       {
+        "behavior": "plone", 
         "fields": [
           "title", 
           "description", 
@@ -56,6 +57,7 @@ Content-Type: application/json
         "title": "Default"
       }, 
       {
+        "behavior": "plone", 
         "fields": [
           "plone.allowdiscussion", 
           "plone.basic", 

@@ -4,6 +4,7 @@ Content-Type: application/json+schema
 {
   "fieldsets": [
     {
+      "behavior": "plone", 
       "fields": [
         "title", 
         "description"
@@ -12,6 +13,7 @@ Content-Type: application/json+schema
       "title": "Por defecto"
     }, 
     {
+      "behavior": "plone", 
       "fields": [
         "subjects", 
         "language", 
@@ -21,6 +23,7 @@ Content-Type: application/json+schema
       "title": "Categorizaci\u00f3n"
     }, 
     {
+      "behavior": "plone", 
       "fields": [
         "effective", 
         "expires"
@@ -29,6 +32,7 @@ Content-Type: application/json+schema
       "title": "Fechas"
     }, 
     {
+      "behavior": "plone", 
       "fields": [
         "creators", 
         "contributors", 
@@ -38,6 +42,7 @@ Content-Type: application/json+schema
       "title": "Propiedad"
     }, 
     {
+      "behavior": "plone", 
       "fields": [
         "allow_discussion", 
         "exclude_from_nav", 

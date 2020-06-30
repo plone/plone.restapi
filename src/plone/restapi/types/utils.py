@@ -104,6 +104,7 @@ def get_form_fieldsets(form):
                     context=getRequest(),
                 ),
                 "fields": fields_values,
+                "behavior": "plone",
             }
         )
 
@@ -113,6 +114,7 @@ def get_form_fieldsets(form):
             "id": group.__name__,
             "title": translate(group.label, context=getRequest()),
             "fields": list(group.fields.values()),
+            "behavior": "plone",
         }
         fieldsets.append(fieldset)
     return fieldsets
@@ -303,12 +305,22 @@ def get_info_for_type(context, request, name):
         return schema
 
     # Get the empty fieldsets
-    existing = [f.get("id") for f in schema.get("fieldsets")]
+    existing = set(f.get("id") for f in schema.get("fieldsets", []))
+    generated = set()
     for fieldset in context.schema.queryTaggedValue(FIELDSETS_KEY, []):
         name = fieldset.__name__
+        generated.add(name)
+
         if name not in existing:
             info = get_info_for_fieldset(context, request, name)
             schema["fieldsets"].append(info)
+            continue
+
+    # Update fieldset behavior
+    for idx, tab in enumerate(schema.get("fieldsets", [])):
+        if tab.get("id") in generated:
+            schema["fieldsets"][idx]["behavior"] = "plone.dexterity.schema.generated"
+
     return schema
 
 
@@ -338,6 +350,7 @@ def get_info_for_fieldset(context, request, name):
             "title": fieldset.label,
             "description": fieldset.description,
             "fields": fieldset.fields,
+            "behavior": "plone.dexterity.schema.generated",
         }
     return IJsonCompatible(properties)
 

@@ -47,6 +47,7 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
   "schema": {
     "fieldsets": [
       {
+        "behavior": "plone", 
         "fields": [
           "title", 
           "description", 
@@ -57,6 +58,7 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
         "title": "Default"
       }, 
       {
+        "behavior": "plone", 
         "fields": [
           "plone.allowdiscussion", 
           "plone.basic", 
