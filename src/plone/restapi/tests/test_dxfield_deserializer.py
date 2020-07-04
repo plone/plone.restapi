@@ -177,10 +177,10 @@ class TestDXFieldDeserializer(unittest.TestCase):
             with self.assertRaises(RequiredMissing):
                 self.deserialize(field_name, None)
 
-    def test_decimal_deserialization_returns_decimal(self):
-        value = self.deserialize("test_decimal_field", u"1.1")
+    def test_text_deserialization_returns_decimal(self):
+        value = self.deserialize("test_decimal_field", u'1.1')
         self.assertTrue(isinstance(value, Decimal), "Not a <Decimal>")
-        self.assertEqual(Decimal("1.1"), value)
+        self.assertEqual(Decimal(u'1.1'), value)
 
     def test_dict_deserialization_returns_dict(self):
         value = self.deserialize("test_dict_field", {u"key": u"value"})
