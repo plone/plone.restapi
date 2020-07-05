@@ -90,7 +90,7 @@ def default_converter(value):
 @adapter(Decimal)
 @implementer(IJsonCompatible)
 def decimal_converter(value):
-    return safe_unicode('{0:f}'.format(value), "utf-8")
+    return safe_unicode(str(value))
 
 
 @adapter(bytes)
