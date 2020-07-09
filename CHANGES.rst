@@ -44,7 +44,7 @@ Bug fixes:
 Bug fixes:
 
 
-- - Take the `include_items` parameter into account in `SerializeCollectionToJson`. [gbastien] (#957)
+- Take the `include_items` parameter into account in `SerializeCollectionToJson`. [gbastien] (#957)
 
 
 6.13.2 (2020-06-15)
@@ -53,7 +53,7 @@ Bug fixes:
 Bug fixes:
 
 
-- - Include plone.app.controlpanel permissions.zcml in database service to avoid ConfigurationExecutionError regarding 'plone.app.controlpanel.Overview' permission while starting Plone 4.3.x [gbastien] (#956)
+- Include plone.app.controlpanel permissions.zcml in database service to avoid ConfigurationExecutionError regarding 'plone.app.controlpanel.Overview' permission while starting Plone 4.3.x [gbastien] (#956)
 
 
 6.13.1 (2020-06-03)
