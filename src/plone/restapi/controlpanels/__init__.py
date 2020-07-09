@@ -17,10 +17,9 @@ from zope.publisher.interfaces import NotFound
 from plone.restapi.controlpanels.interfaces import IControlpanel
 
 try:
-    from plone.i18n.interfaces ILanguageSchema
+    from plone.i18n.interfaces import ILanguageSchema
 except ImportError:  # pragma: no cover
     from Products.CMFPlone.interfaces.controlpanel import ILanguageSchema
-
 
 
 @implementer(IControlpanel)
