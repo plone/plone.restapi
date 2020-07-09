@@ -165,5 +165,5 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.json()["items_total"], 1)
         self.assertEqual(
             response.json()["items"][0]["@id"],
-            "http://localhost:55001/plone/testdocument2",
+            "{}/testdocument2".format(self.portal.absolute_url()),
         )
