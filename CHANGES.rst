@@ -62,6 +62,27 @@ New features:
   [buchi,timo,cekk] (#808)
 
 
+6.13.7 (2020-07-16)
+-------------------
+
+Bug fixes:
+
+
+- - Add a Decimal() converter
+    [fulv] (#963)
+
+
+6.13.6 (2020-07-09)
+-------------------
+
+Bug fixes:
+
+
+- Fix Plone 5.2.x deprecation message 'ILanguageSchema is deprecated'.
+  [timo] (#975)
+- Do not hardcode the port in tests because it may depend on environment variables [ale-rt] (#978)
+
+
 6.13.5 (2020-06-29)
 -------------------
 
@@ -95,6 +116,10 @@ Bug fixes:
 
 Bug fixes:
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 6.x.x
 - Include plone.app.controlpanel permissions.zcml in database service to avoid ConfigurationExecutionError regarding 'plone.app.controlpanel.Overview' permission while starting Plone 4.3.x [gbastien] (#956)
 
 
