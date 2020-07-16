@@ -3,6 +3,7 @@ from datetime import date
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
+from decimal import Decimal
 from mock import patch
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import iterSchemata
@@ -107,7 +108,7 @@ class TestDexterityFieldSerializing(TestCase):
         self.assertEqual(u"2015-06-20T13:22:04", value)
 
     def test_decimal_field_serialization_returns_unicode(self):
-        value = self.serialize("test_decimal_field", "1.1")
+        value = self.serialize("test_decimal_field", Decimal(u"1.1"))
         self.assertTrue(isinstance(value, six.text_type), "Not an <unicode>")
         self.assertEqual(u"1.1", value)
 

@@ -4,6 +4,7 @@ from datetime import datetime
 from datetime import time
 from datetime import timedelta
 from DateTime import DateTime
+from decimal import Decimal
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import logout
@@ -68,7 +69,7 @@ class TestDXContentSerializer(unittest.TestCase):
             test_choice_field=u"foo",
             test_date_field=date(2015, 7, 15),
             test_datetime_field=datetime(2015, 6, 20, 13, 22, 4),
-            test_decimal_field="1.1",
+            test_decimal_field=Decimal(1.1),
             test_dict_field={"foo": "bar", "spam": "eggs", "1": 1},
             test_float_field=1.5,
             test_frozenset_field=frozenset([1, 2, 3]),
