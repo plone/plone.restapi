@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+6.13.7 (2020-07-16)
+-------------------
+
+Bug fixes:
+
+
+- - Add a Decimal() converter
+    [fulv] (#963)
+
+
 6.13.6 (2020-07-09)
 -------------------
 
