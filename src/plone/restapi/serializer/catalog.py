@@ -28,7 +28,7 @@ class LazyCatalogResultSerializer(object):
         self.lazy_resultset = lazy_resultset
         self.request = request
 
-    def __call__(self, metadata_fields=(), fullobjects=False):
+    def __call__(self, fullobjects=False):
         batch = HypermediaBatch(self.request, self.lazy_resultset)
 
         results = {}

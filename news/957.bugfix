@@ -1,1 +1,0 @@
-- Take the `include_items` parameter into account in `SerializeCollectionToJson`. [gbastien]

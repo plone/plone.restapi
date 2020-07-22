@@ -4,6 +4,7 @@ from datetime import datetime
 from datetime import time
 from datetime import timedelta
 from DateTime import DateTime
+from decimal import Decimal
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
 from plone.app.textfield.interfaces import IRichTextValue
@@ -84,6 +85,12 @@ def default_converter(value):
         "No converter for making"
         " {0!r} ({1}) JSON compatible.".format(value, type(value))
     )
+
+
+@adapter(Decimal)
+@implementer(IJsonCompatible)
+def decimal_converter(value):
+    return safe_unicode(str(value))
 
 
 @adapter(bytes)
