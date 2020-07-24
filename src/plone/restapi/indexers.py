@@ -21,7 +21,7 @@ import six
 
 def _extract_text(block):
     result = ""
-    for paragraph in block.get("text").get("blocks"):
+    for paragraph in block.get("text", {}).get("blocks", {}):
         text = paragraph["text"]
         if six.PY2:
             if isinstance(text, six.text_type):
@@ -47,7 +47,6 @@ class TextBlockSearchableText(object):
 @indexer(IBlocks)
 def SearchableText_blocks(obj):
     request = getRequest()
-
     blocks = obj.blocks
     blocks_text = []
 
