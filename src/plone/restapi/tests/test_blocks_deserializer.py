@@ -163,8 +163,7 @@ class TestBlocksDeserializer(unittest.TestCase):
         doc_uid = IUUID(self.portal.doc1)
 
         self.assertEqual(
-            self.portal.doc1.blocks["123"]["url"],
-            "../resolveuid/{}".format(doc_uid)
+            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(doc_uid)
         )
 
         self.deserialize(
@@ -173,8 +172,7 @@ class TestBlocksDeserializer(unittest.TestCase):
         doc_uid = IUUID(self.portal.doc1)
 
         self.assertEqual(
-            self.portal.doc1.blocks["123"]["href"],
-            "../resolveuid/{}".format(doc_uid)
+            self.portal.doc1.blocks["123"]["href"], "../resolveuid/{}".format(doc_uid)
         )
 
     def test_blocks_custom_block_doesnt_resolve_non_standard_fields(self):
@@ -183,6 +181,5 @@ class TestBlocksDeserializer(unittest.TestCase):
         )
 
         self.assertEqual(
-            self.portal.doc1.blocks["123"]["link"],
-            self.portal.doc1.absolute_url()
+            self.portal.doc1.blocks["123"]["link"], self.portal.doc1.absolute_url()
         )
