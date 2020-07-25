@@ -98,4 +98,7 @@
       provides="Products.CMFPlone.interfaces.INonInstallable"
       />
 
+  <subscriber handler=".subscribers.onUserLogsIn" />
+
+
 </configure>
