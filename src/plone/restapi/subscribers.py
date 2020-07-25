@@ -25,4 +25,3 @@ def onUserLogsIn(event):
             token = plugin.create_token(user.getId(), data=payload)
             # TODO: take care of path and domain options ?
             req.response.setCookie('auth_token', token, path='/')
-
