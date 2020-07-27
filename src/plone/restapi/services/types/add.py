@@ -47,9 +47,9 @@ class TypesPost(Service):
         )
         context = context.publishTraverse(self.request, name)
 
-        factory = data.get("factory", "")
+        factory = data.get("factory", None)
         if not factory:
-            raise BadRequest("Property 'factory' is required")
+            raise BadRequest("Missing parameter: 'factory'")
 
         if factory == "fieldset":
             res = add_fieldset(context, self.request, data)
