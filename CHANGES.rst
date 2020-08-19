@@ -116,10 +116,7 @@ Bug fixes:
 
 Bug fixes:
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 6.x.x
 - Include plone.app.controlpanel permissions.zcml in database service to avoid ConfigurationExecutionError regarding 'plone.app.controlpanel.Overview' permission while starting Plone 4.3.x [gbastien] (#956)
 
 
