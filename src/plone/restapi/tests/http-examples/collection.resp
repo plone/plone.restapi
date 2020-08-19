@@ -42,7 +42,7 @@ Content-Type: application/json
       "token": "Type"
     }, 
     {
-      "title": "ModificationDate", 
+      "title": "Last modified", 
       "token": "ModificationDate"
     }
   ], 
