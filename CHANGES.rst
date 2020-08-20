@@ -14,9 +14,12 @@ Changelog
 New features:
 
 
-- - Improved blocks transformers: now we can handle generic transformers [cekk]
-  - Add generic block transformer for handle resolveuid in all blocks that have a *url* or *href* field [cekk]
-  - Add "smart fields" concept: if block has a *searchableText* field, this will be indexed in Plone [cekk, tiberiuichim] (#952)
+- Improved blocks transformers: now we can handle generic transformers 
+  [cekk]
+- Add generic block transformer for handle resolveuid in all blocks that have a *url* or *href* field 
+  [cekk]
+- Add "smart fields" concept: if block has a *searchableText* field, this will be indexed in Plone 
+  [cekk, tiberiuichim] (#952)
 
 
 7.0.0a4 (2020-05-15)
