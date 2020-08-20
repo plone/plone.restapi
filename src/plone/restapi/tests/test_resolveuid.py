@@ -103,7 +103,7 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["url"],
+            ]["href"],
             self.doc2.absolute_url(),
         )
 
@@ -137,8 +137,29 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["url"],
+            ]["href"],
             self.doc2.absolute_url() + "/view",
+        )
+
+    def test_resolveuid_gets_serialized_for_standard_fields(self):
+        uid = IUUID(self.doc2)
+        blocks = {"aaa": {"@type": "foo", "url": "../resolveuid/{}/view".format(uid)}}
+        value = self.serialize("blocks", blocks)
+        self.assertEqual(value["aaa"]["url"], self.doc2.absolute_url() + "/view")
+
+        blocks = {"aaa": {"@type": "foo", "href": "../resolveuid/{}/view".format(uid)}}
+        value = self.serialize("blocks", blocks)
+        self.assertEqual(value["aaa"]["href"], self.doc2.absolute_url() + "/view")
+
+    def test_resolveuid_serialize_take_care_of_primary_fields(self):
+        logout()
+        uid = IUUID(self.doc_primary_field_url)
+        blocks = {"aaa": {"@type": "foo", "url": "../resolveuid/{}".format(uid)}}
+        value = self.serialize("blocks", blocks)
+        self.assertEqual(
+            value["aaa"]["url"],
+            self.doc_primary_field_url.absolute_url()
+            + "/@@download/test_primary_namedfile_field",
         )
 
     def test_keeps_resolveuid_link_if_unknown_uid(self):
@@ -219,10 +240,10 @@ class TestBlocksResolveUID(TestCase):
         self.assertNotEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["url"],
+            ]["href"],
             blocks["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["url"],
+            ]["href"],
         )
 
     def test_blocks_field_deserialization_resolves_paths_to_uids(self):
@@ -267,7 +288,7 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["url"],
+            ]["href"],
             "../resolveuid/{}".format(uid),
         )
 
@@ -334,7 +355,7 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["url"],
+            ]["href"],
             "../resolveuid/{}/view".format(uid),
         )
 
@@ -382,7 +403,7 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["url"],
+            ]["href"],
             self.doc_primary_field_url.absolute_url()
             + "/@@download/test_primary_namedfile_field",
         )
@@ -431,7 +452,7 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["url"],
+            ]["href"],
             self.doc_primary_field_url.absolute_url(),
         )
 
@@ -465,6 +486,6 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["url"],
+            ]["href"],
             self.doc2.absolute_url() + "/view",
         )

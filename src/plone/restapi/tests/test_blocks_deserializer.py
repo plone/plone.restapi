@@ -155,3 +155,31 @@ class TestBlocksDeserializer(unittest.TestCase):
         self.assertEqual(
             self.portal.doc1.blocks["123"]["url"], "http://example.com/1.jpg"
         )
+
+    def test_blocks_custom_block_resolve_standard_fields(self):
+        self.deserialize(
+            blocks={"123": {"@type": "foo", "url": self.portal.doc1.absolute_url()}}
+        )
+        doc_uid = IUUID(self.portal.doc1)
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(doc_uid)
+        )
+
+        self.deserialize(
+            blocks={"123": {"@type": "foo", "href": self.portal.doc1.absolute_url()}}
+        )
+        doc_uid = IUUID(self.portal.doc1)
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["href"], "../resolveuid/{}".format(doc_uid)
+        )
+
+    def test_blocks_custom_block_doesnt_resolve_non_standard_fields(self):
+        self.deserialize(
+            blocks={"123": {"@type": "foo", "link": self.portal.doc1.absolute_url()}}
+        )
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["link"], self.portal.doc1.absolute_url()
+        )
