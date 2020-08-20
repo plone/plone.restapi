@@ -8,6 +8,17 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0a5 (2020-08-21)
+--------------------
+
+New features:
+
+
+- - Improved blocks transformers: now we can handle generic transformers [cekk]
+  - Add generic block transformer for handle resolveuid in all blocks that have a *url* or *href* field [cekk]
+  - Add "smart fields" concept: if block has a *searchableText* field, this will be indexed in Plone [cekk, tiberiuichim] (#952)
+
+
 7.0.0a4 (2020-05-15)
 --------------------
 
