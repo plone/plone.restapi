@@ -14,8 +14,8 @@ Changelog
 Bug fixes:
 
 
-- - Add a Decimal() converter
-    [fulv] (#963)
+- Add a Decimal() converter
+  [fulv] (#963)
 
 
 6.13.6 (2020-07-09)
