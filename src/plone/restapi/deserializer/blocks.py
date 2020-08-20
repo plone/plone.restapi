@@ -77,8 +77,10 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class ResolveUIDDeserializer(object):
-    """
-    This is a general handler. It will be loaded for all blocks
+    """ The "url" smart block field.
+    
+    This is a generic handler. In all blocks, it converts any "url"
+    field from using resolveuid to an "absolute" URL
     """
 
     order = 1
