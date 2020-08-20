@@ -30,7 +30,7 @@ def path2uid(context, link):
     context_url = context.absolute_url()
     relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
     if path.startswith(portal_url):
-        path = path[len(portal_url) + 1:]
+        path = path[len(portal_url) + 1 :]
     if not path.startswith(portal_path):
         path = "{portal_path}/{path}".format(
             portal_path=portal_path, path=path.lstrip("/")
@@ -117,8 +117,7 @@ class TextBlockDeserializer(object):
         for entity in entity_map.values():
             if entity.get("type") == "LINK":
                 href = entity.get("data", {}).get("href", "")
-                entity["data"]["href"] = path2uid(
-                    context=self.context, link=href)
+                entity["data"]["href"] = path2uid(context=self.context, link=href)
         return block
 
 
