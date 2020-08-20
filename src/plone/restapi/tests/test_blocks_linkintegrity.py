@@ -33,9 +33,7 @@ class TestBlocksLinkintegrity(TestCase):
             )
         ]
         self.doc2 = self.portal[
-            self.portal.invokeFactory(
-                "Document", id="doc2", title="Target Document"
-            )
+            self.portal.invokeFactory("Document", id="doc2", title="Target Document")
         ]
 
     def retrieve_links(self, value):
@@ -72,9 +70,7 @@ class TestBlocksLinkintegrity(TestCase):
 
     def test_links_retriever_return_internal_links_in_generic_block(self):
         uid = IUUID(self.doc2)
-        blocks = {
-            "111": {"@type": "foo", "href": "../resolveuid/{}".format(uid)}
-        }
+        blocks = {"111": {"@type": "foo", "href": "../resolveuid/{}".format(uid)}}
         self.portal.doc1.blocks = blocks
         value = self.retrieve_links(blocks)
 
@@ -179,9 +175,7 @@ class TestLinkintegrityForBlocks(TestCase):
                     "uuid1": {
                         "@type": "text",
                         "text": {
-                            "blocks": [
-                                {"text": "This is a link to second doc "}
-                            ],
+                            "blocks": [{"text": "This is a link to second doc "}],
                             "entityMap": {
                                 "0": {
                                     "data": {
@@ -213,9 +207,7 @@ class TestLinkintegrityForBlocks(TestCase):
                     "uuid1": {
                         "@type": "text",
                         "text": {
-                            "blocks": [
-                                {"text": "This is a link to second doc "}
-                            ],
+                            "blocks": [{"text": "This is a link to second doc "}],
                             "entityMap": {
                                 "0": {
                                     "data": {
@@ -244,9 +236,7 @@ class TestLinkintegrityForBlocks(TestCase):
                     "uuid1": {
                         "@type": "text",
                         "text": {
-                            "blocks": [
-                                {"text": "This is a link to plone.org "}
-                            ],
+                            "blocks": [{"text": "This is a link to plone.org "}],
                             "entityMap": {
                                 "0": {
                                     "data": {
@@ -275,10 +265,7 @@ class TestLinkintegrityForBlocks(TestCase):
             "/doc-1",
             json={
                 "blocks": {
-                    "uuid1": {
-                        "@type": "foo",
-                        "href": "../resolveuid/{}".format(uid),
-                    }
+                    "uuid1": {"@type": "foo", "href": "../resolveuid/{}".format(uid),}
                 }
             },
         )
@@ -294,10 +281,7 @@ class TestLinkintegrityForBlocks(TestCase):
             "/doc-1",
             json={
                 "blocks": {
-                    "uuid1": {
-                        "@type": "foo",
-                        "href": "../resolveuid/{}".format(uid),
-                    }
+                    "uuid1": {"@type": "foo", "href": "../resolveuid/{}".format(uid),}
                 }
             },
         )
@@ -309,9 +293,7 @@ class TestLinkintegrityForBlocks(TestCase):
         self.api_session.patch(
             "/doc-1",
             json={
-                "blocks": {
-                    "uuid1": {"@type": "foo", "href": "http://www.plone.org"}
-                }
+                "blocks": {"uuid1": {"@type": "foo", "href": "http://www.plone.org"}}
             },
         )
         transaction.commit()
@@ -326,10 +308,7 @@ class TestLinkintegrityForBlocks(TestCase):
             "/doc-1",
             json={
                 "blocks": {
-                    "uuid1": {
-                        "@type": "foo",
-                        "url": "../resolveuid/{}".format(uid),
-                    }
+                    "uuid1": {"@type": "foo", "url": "../resolveuid/{}".format(uid),}
                 }
             },
         )
@@ -345,10 +324,7 @@ class TestLinkintegrityForBlocks(TestCase):
             "/doc-1",
             json={
                 "blocks": {
-                    "uuid1": {
-                        "@type": "foo",
-                        "url": "../resolveuid/{}".format(uid),
-                    }
+                    "uuid1": {"@type": "foo", "url": "../resolveuid/{}".format(uid),}
                 }
             },
         )
@@ -360,9 +336,7 @@ class TestLinkintegrityForBlocks(TestCase):
         self.api_session.patch(
             "/doc-1",
             json={
-                "blocks": {
-                    "uuid1": {"@type": "foo", "href": "http://www.plone.org"}
-                }
+                "blocks": {"uuid1": {"@type": "foo", "href": "http://www.plone.org"}}
             },
         )
         transaction.commit()
@@ -378,9 +352,7 @@ class TestLinkintegrityForBlocks(TestCase):
                     "uuid1": {
                         "@type": "text",
                         "text": {
-                            "blocks": [
-                                {"text": "This is a link to second doc "}
-                            ],
+                            "blocks": [{"text": "This is a link to second doc "}],
                             "entityMap": {
                                 "0": {
                                     "data": {
@@ -413,9 +385,7 @@ class TestLinkintegrityForBlocks(TestCase):
                     "uuid1": {
                         "@type": "text",
                         "text": {
-                            "blocks": [
-                                {"text": "Now we set an external link"}
-                            ],
+                            "blocks": [{"text": "Now we set an external link"}],
                             "entityMap": {
                                 "0": {
                                     "data": {

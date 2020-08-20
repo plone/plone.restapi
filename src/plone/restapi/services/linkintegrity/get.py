@@ -15,9 +15,7 @@ class LinkintegrityGet(Service):
     def reply(self):
         if not linkintegrity_enabled():
             return json_compatible([])
-        links_info = self.context.restrictedTraverse(
-            "@@delete_confirmation_info"
-        )
+        links_info = self.context.restrictedTraverse("@@delete_confirmation_info")
         breaches = links_info.get_breaches()
 
         for breach in breaches:

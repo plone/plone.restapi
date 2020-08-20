@@ -62,14 +62,10 @@ class TestServicesNavigation(unittest.TestCase):
         self.assertNotEqual(breaches, [])
         self.assertEqual(len(breaches), 1)
         self.assertEqual(breaches[0]["target"]["uid"], IUUID(self.doc2))
-        self.assertEqual(
-            breaches[0]["target"]["@id"], self.doc2.absolute_url()
-        )
+        self.assertEqual(breaches[0]["target"]["@id"], self.doc2.absolute_url())
         self.assertEqual(len(breaches[0]["sources"]), 1)
         self.assertEqual(breaches[0]["sources"][0]["uid"], IUUID(self.doc1))
-        self.assertEqual(
-            breaches[0]["sources"][0]["@id"], self.doc1.absolute_url()
-        )
+        self.assertEqual(breaches[0]["sources"][0]["@id"], self.doc1.absolute_url())
 
     def test_do_not_return_breaches_if_check_is_disabled(self):
         registry = getUtility(IRegistry)
@@ -98,9 +94,7 @@ class TestServicesNavigation(unittest.TestCase):
                     "uuid1": {
                         "@type": "text",
                         "text": {
-                            "blocks": [
-                                {"text": "This is a link to second doc "}
-                            ],
+                            "blocks": [{"text": "This is a link to second doc "}],
                             "entityMap": {
                                 "0": {
                                     "data": {
@@ -125,11 +119,7 @@ class TestServicesNavigation(unittest.TestCase):
         self.assertNotEqual(breaches, [])
         self.assertEqual(len(breaches), 1)
         self.assertEqual(breaches[0]["target"]["uid"], IUUID(self.doc2))
-        self.assertEqual(
-            breaches[0]["target"]["@id"], self.doc2.absolute_url()
-        )
+        self.assertEqual(breaches[0]["target"]["@id"], self.doc2.absolute_url())
         self.assertEqual(len(breaches[0]["sources"]), 1)
         self.assertEqual(breaches[0]["sources"][0]["uid"], IUUID(self.doc1))
-        self.assertEqual(
-            breaches[0]["sources"][0]["@id"], self.doc1.absolute_url()
-        )
+        self.assertEqual(breaches[0]["sources"][0]["@id"], self.doc1.absolute_url())

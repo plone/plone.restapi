@@ -24,8 +24,7 @@ class BlocksRetriever(DXGeneral):
             block_type = block.get("@type", None)
             handlers = []
             for h in subscribers(
-                (self.context, self.context.REQUEST),
-                IBlockFieldLinkIntegrityRetriever,
+                (self.context, self.context.REQUEST), IBlockFieldLinkIntegrityRetriever,
             ):
                 if h.block_type == block_type or h.block_type is None:
                     handlers.append(h)
