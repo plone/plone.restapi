@@ -8,6 +8,7 @@ Changelog
 
 .. towncrier release notes start
 
+
 7.0.0a4 (2020-05-15)
 --------------------
 
@@ -61,11 +62,80 @@ New features:
   [buchi,timo,cekk] (#808)
 
 
+6.13.7 (2020-07-16)
+-------------------
+
 Bug fixes:
 
 
-- Adapt tests to the new way of handling original image urls
-  [erral] (#932)
+- - Add a Decimal() converter
+    [fulv] (#963)
+
+
+6.13.6 (2020-07-09)
+-------------------
+
+Bug fixes:
+
+
+- Fix Plone 5.2.x deprecation message 'ILanguageSchema is deprecated'.
+  [timo] (#975)
+- Do not hardcode the port in tests because it may depend on environment variables [ale-rt] (#978)
+
+
+6.13.5 (2020-06-29)
+-------------------
+
+Bug fixes:
+
+
+- Remove the use of plone.api in upgrade code
+  [erral] (#917)
+
+
+6.13.4 (2020-06-18)
+-------------------
+
+Bug fixes:
+
+
+- Re-add test folder to the release (ignore the tests/images folder though). [timo] (#968)
+
+
+6.13.3 (2020-06-17)
+-------------------
+
+Bug fixes:
+
+
+- Take the `include_items` parameter into account in `SerializeCollectionToJson`. [gbastien] (#957)
+
+
+6.13.2 (2020-06-15)
+-------------------
+
+Bug fixes:
+
+
+- Include plone.app.controlpanel permissions.zcml in database service to avoid ConfigurationExecutionError regarding 'plone.app.controlpanel.Overview' permission while starting Plone 4.3.x [gbastien] (#956)
+
+
+6.13.1 (2020-06-03)
+-------------------
+
+Bug fixes:
+
+- PATCH (editing) in @user endpoint now is able to remove existing values using null
+  [sneridagh] (#946)
+
+
+6.13.0 (2020-05-28)
+-------------------
+
+New features:
+
+
+- Expose author_image in comments endpoint [timo] (#948)
 
 
 6.12.0 (2020-05-11)

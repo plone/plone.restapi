@@ -14,11 +14,12 @@ exclude Makefile
 exclude bootstrap-buildout.py
 exclude CODEOWNERS
 exclude docs/make.bat
+recursive-exclude docs/doctrees *
+recursive-exclude docs/html *
+recursive-exclude performance *
 exclude docs/Makefile
-prune docs/doctrees
-prune docs/html
-prune performance
-prune src/plone/restapi/tests
+prune docs/Makefile
+prune src/plone/restapi/tests/images
 prune news
 global-exclude *.pyc
 include pyproject.toml

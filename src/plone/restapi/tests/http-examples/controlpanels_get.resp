@@ -23,19 +23,24 @@ Content-Type: application/json
     "title": "Navigation"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@controlpanels/site", 
-    "group": "General", 
-    "title": "Site"
-  }, 
-  {
     "@id": "http://localhost:55001/plone/@controlpanels/search", 
     "group": "General", 
     "title": "Search"
   }, 
   {
+    "@id": "http://localhost:55001/plone/@controlpanels/site", 
+    "group": "General", 
+    "title": "Site"
+  }, 
+  {
     "@id": "http://localhost:55001/plone/@controlpanels/socialmedia", 
     "group": "General", 
     "title": "Social Media"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types", 
+    "group": "Content", 
+    "title": "Dexterity Content Types"
   }, 
   {
     "@id": "http://localhost:55001/plone/@controlpanels/editing", 
@@ -51,11 +56,6 @@ Content-Type: application/json
     "@id": "http://localhost:55001/plone/@controlpanels/markup", 
     "group": "Content", 
     "title": "Markup"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types", 
-    "group": "Content", 
-    "title": "Dexterity Content Types"
   }, 
   {
     "@id": "http://localhost:55001/plone/@controlpanels/security", 

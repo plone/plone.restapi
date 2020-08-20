@@ -414,6 +414,23 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual("Noam A. Chomsky", noam.getProperty("fullname"))
         self.assertEqual("avram.chomsky@plone.org", noam.getProperty("email"))
 
+    def test_user_can_update_himself_remove_values(self):
+        payload = {
+            "fullname": "Noam A. Chomsky",
+            "username": "noam",
+            "email": "avram.chomsky@plone.org",
+            "home_page": None,
+        }
+        self.api_session.auth = ("noam", "password")
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        noam = api.user.get(userid="noam")
+
+        self.assertEqual(None, noam.getProperty("home_page"))
+
     def test_update_roles(self):
         self.assertNotIn("Contributor", api.user.get_roles(username="noam"))
 

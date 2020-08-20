@@ -28,12 +28,12 @@ In order to return specific metadata columns, see the documentation of the ``met
 .. note::
         A search invoked on a container will by default **include that container
         itself** as part of the search results. This is the same behavior as displayed by
-        ZCatalog, which is used internally.
+        `ZCatalog <https://zope.readthedocs.io/en/latest/zopebook/SearchingZCatalog.html>`_, which is used internally.
         If you add the query string
         parameter ``depth=1`` to your search, you will only get **immediate**
         children of the container, and the container itself also won't be part
         of the results. See the Plone docs on
-        `searching for content within a folder <https://docs.plone.org/develop/plone/searching_and_indexing/query.html#searching-for-content-within-a-folder>`_.
+        `searching for content within a folder <https://docs.plone.org/develop/plone/searching_and_indexing/query.html#searching-for-content-within-a-folder>`_
         for more details.
 
 .. note::
@@ -44,7 +44,7 @@ In order to return specific metadata columns, see the documentation of the ``met
 .. warning::
         The @@search view or the Plone LiveSearch widget are coded in a way that the SearchableText parameter is expanded by including a * wildcard at the end.
         This is done in order to match also the partial results of the beginning of a search term(s).
-        plone.restapi @search endpoint will not do that for you. You'll have to add it if you want to keep this feature.
+        The plone.restapi @search endpoint will not do that for you. You'll have to add it if you want to keep this feature.
 
 
 Query format
@@ -138,6 +138,14 @@ In order to specify multiple columns, simply repeat the query string parameter o
 
 In order to retrieve all metadata columns that the catalog knows about, use ``metadata_fields=_all``.
 
+.. note::
+        There is a difference between the full set of fields contained in an object and the set of all possible metadata columns that can be specified with ``metadata_fields``.
+        In other words, using ``metadata_fields=_all`` will produce objects with a set of fields that is generally smaller than the set of fields produced by ``fullobjects`` (see next section).
+        Briefly, the fields in ``metadata_fields=_all`` are a subset of ``fullobjects``.
+        A consequence of this is that certain fields can not be specifed with ``metadata_fields``.
+        Doing so will result in a TypeError ``"No converter for making <...> JSON compatible."``
+        In `ZCatalog <https://zope.readthedocs.io/en/latest/zopebook/SearchingZCatalog.html>`_ terms, this reflects the difference between *catalog brains* and objects that have been *woken up*.
+
 
 Retrieving full objects
 -----------------------
@@ -154,4 +162,4 @@ You do so by specifying the ``fullobjects`` parameter:
 
 .. warning::
 
-    Be aware that this might induce performance issues when retrieving a lot of resources. Normally the search just serializes catalog brains, but with full objects, we wake up all the returned objects.
+    Be aware that this might induce performance issues when retrieving a lot of resources. Normally the search just serializes catalog brains, but with ``fullobjects``, we wake up all the returned objects.
