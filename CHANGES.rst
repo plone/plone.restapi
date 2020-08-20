@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+6.13.8 (2020-08-20)
+-------------------
+
+Bug fixes:
+
+
+- Removed useless management of metadata_fields in SearchHandler/LazyCatalogResultSerializer since it is handled in DefaultJSONSummarySerializer. [gbastien] (#970)
+
+
 6.13.7 (2020-07-16)
 -------------------
 
