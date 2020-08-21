@@ -8,6 +8,19 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0a5 (2020-08-21)
+--------------------
+
+New features:
+
+
+- Improved blocks transformers: now we can handle generic transformers 
+  [cekk]
+- Add generic block transformer for handle resolveuid in all blocks that have a *url* or *href* field 
+  [cekk]
+- Add "smart fields" concept: if block has a *searchableText* field, this will be indexed in Plone 
+  [cekk, tiberiuichim] (#952)
+
 
 7.0.0a4 (2020-05-15)
 --------------------
@@ -62,14 +75,22 @@ New features:
   [buchi,timo,cekk] (#808)
 
 
+6.13.8 (2020-08-20)
+-------------------
+
+Bug fixes:
+
+- Removed useless management of metadata_fields in SearchHandler/LazyCatalogResultSerializer since it is handled in DefaultJSONSummarySerializer. [gbastien] (#970)
+
+
 6.13.7 (2020-07-16)
 -------------------
 
 Bug fixes:
 
 
-- - Add a Decimal() converter
-    [fulv] (#963)
+- Add a Decimal() converter
+  [fulv] (#963)
 
 
 6.13.6 (2020-07-09)

@@ -21,7 +21,7 @@ import six
 
 def _extract_text(block):
     result = ""
-    for paragraph in block.get("text").get("blocks"):
+    for paragraph in block.get("text", {}).get("blocks", {}):
         text = paragraph["text"]
         if six.PY2:
             if isinstance(text, six.text_type):
@@ -47,11 +47,16 @@ class TextBlockSearchableText(object):
 @indexer(IBlocks)
 def SearchableText_blocks(obj):
     request = getRequest()
-
     blocks = obj.blocks
     blocks_text = []
 
     for block in blocks.values():
+
+        searchableText = block.get("searchableText", "")
+        if searchableText:
+            # TODO: should we evaluate in some way this value? maybe passing
+            # it into html/plain text transformer?
+            blocks_text.append(searchableText)
 
         block_type = block.get("@type", "")
         adapter = queryMultiAdapter(
