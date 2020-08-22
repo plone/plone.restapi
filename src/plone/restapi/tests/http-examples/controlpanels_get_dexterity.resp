@@ -2,12 +2,21 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types", 
+  "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types", 
   "data": {}, 
   "group": "Content", 
   "items": [
     {
-      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Collection", 
+      "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types/Plone Site", 
+      "@type": "Plone Site", 
+      "count": 0, 
+      "description": "", 
+      "id": "Plone Site", 
+      "meta_type": "Dexterity FTI", 
+      "title": "Plone Site"
+    }, 
+    {
+      "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types/Collection", 
       "@type": "Collection", 
       "count": 0, 
       "description": "", 
@@ -16,7 +25,7 @@ Content-Type: application/json
       "title": "Collection"
     }, 
     {
-      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Document", 
+      "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types/Document", 
       "@type": "Document", 
       "count": 0, 
       "description": "", 
@@ -25,7 +34,7 @@ Content-Type: application/json
       "title": "Page"
     }, 
     {
-      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Folder", 
+      "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types/Folder", 
       "@type": "Folder", 
       "count": 0, 
       "description": "", 
@@ -34,7 +43,7 @@ Content-Type: application/json
       "title": "Folder"
     }, 
     {
-      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Link", 
+      "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types/Link", 
       "@type": "Link", 
       "count": 0, 
       "description": "", 
@@ -43,7 +52,7 @@ Content-Type: application/json
       "title": "Link"
     }, 
     {
-      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/File", 
+      "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types/File", 
       "@type": "File", 
       "count": 0, 
       "description": "Lets you upload a file to the site.", 
@@ -52,7 +61,7 @@ Content-Type: application/json
       "title": "File"
     }, 
     {
-      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Image", 
+      "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types/Image", 
       "@type": "Image", 
       "count": 0, 
       "description": "Images can be referenced in pages or displayed in an album.", 
@@ -61,7 +70,7 @@ Content-Type: application/json
       "title": "Image"
     }, 
     {
-      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/News Item", 
+      "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types/News Item", 
       "@type": "News Item", 
       "count": 0, 
       "description": "", 
@@ -70,7 +79,7 @@ Content-Type: application/json
       "title": "News Item"
     }, 
     {
-      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Event", 
+      "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types/Event", 
       "@type": "Event", 
       "count": 0, 
       "description": "Events can be shown in calendars.", 
@@ -79,7 +88,7 @@ Content-Type: application/json
       "title": "Event"
     }, 
     {
-      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/DXTestDocument", 
+      "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types/DXTestDocument", 
       "@type": "DXTestDocument", 
       "count": 0, 
       "description": "", 

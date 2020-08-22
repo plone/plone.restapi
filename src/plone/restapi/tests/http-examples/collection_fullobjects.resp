@@ -4,22 +4,22 @@ Content-Type: application/json
 {
   "@components": {
     "actions": {
-      "@id": "http://localhost:55001/plone/collection/@actions"
+      "@id": "http://localhost:57980/plone/collection/@actions"
     }, 
     "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/collection/@breadcrumbs"
+      "@id": "http://localhost:57980/plone/collection/@breadcrumbs"
     }, 
     "navigation": {
-      "@id": "http://localhost:55001/plone/collection/@navigation"
+      "@id": "http://localhost:57980/plone/collection/@navigation"
     }, 
     "types": {
-      "@id": "http://localhost:55001/plone/collection/@types"
+      "@id": "http://localhost:57980/plone/collection/@types"
     }, 
     "workflow": {
-      "@id": "http://localhost:55001/plone/collection/@workflow"
+      "@id": "http://localhost:57980/plone/collection/@workflow"
     }
   }, 
-  "@id": "http://localhost:55001/plone/collection", 
+  "@id": "http://localhost:57980/plone/collection", 
   "@type": "Collection", 
   "UID": "SomeUUID000000000000000000000002", 
   "allow_discussion": false, 
@@ -57,22 +57,22 @@ Content-Type: application/json
     {
       "@components": {
         "actions": {
-          "@id": "http://localhost:55001/plone/front-page/@actions"
+          "@id": "http://localhost:57980/plone/front-page/@actions"
         }, 
         "breadcrumbs": {
-          "@id": "http://localhost:55001/plone/front-page/@breadcrumbs"
+          "@id": "http://localhost:57980/plone/front-page/@breadcrumbs"
         }, 
         "navigation": {
-          "@id": "http://localhost:55001/plone/front-page/@navigation"
+          "@id": "http://localhost:57980/plone/front-page/@navigation"
         }, 
         "types": {
-          "@id": "http://localhost:55001/plone/front-page/@types"
+          "@id": "http://localhost:57980/plone/front-page/@types"
         }, 
         "workflow": {
-          "@id": "http://localhost:55001/plone/front-page/@workflow"
+          "@id": "http://localhost:57980/plone/front-page/@workflow"
         }
       }, 
-      "@id": "http://localhost:55001/plone/front-page", 
+      "@id": "http://localhost:57980/plone/front-page", 
       "@type": "Document", 
       "UID": "SomeUUID000000000000000000000001", 
       "allow_discussion": false, 
@@ -92,13 +92,13 @@ Content-Type: application/json
       "layout": "document_view", 
       "modified": "1995-07-31T17:30:00", 
       "next_item": {
-        "@id": "http://localhost:55001/plone/collection", 
+        "@id": "http://localhost:57980/plone/collection", 
         "@type": "Collection", 
         "description": "This is a collection with two documents", 
         "title": "My Collection"
       }, 
       "parent": {
-        "@id": "http://localhost:55001/plone", 
+        "@id": "http://localhost:57980/plone", 
         "@type": "Plone Site", 
         "description": "", 
         "title": "Plone site"
@@ -121,22 +121,22 @@ Content-Type: application/json
     {
       "@components": {
         "actions": {
-          "@id": "http://localhost:55001/plone/doc1/@actions"
+          "@id": "http://localhost:57980/plone/doc1/@actions"
         }, 
         "breadcrumbs": {
-          "@id": "http://localhost:55001/plone/doc1/@breadcrumbs"
+          "@id": "http://localhost:57980/plone/doc1/@breadcrumbs"
         }, 
         "navigation": {
-          "@id": "http://localhost:55001/plone/doc1/@navigation"
+          "@id": "http://localhost:57980/plone/doc1/@navigation"
         }, 
         "types": {
-          "@id": "http://localhost:55001/plone/doc1/@types"
+          "@id": "http://localhost:57980/plone/doc1/@types"
         }, 
         "workflow": {
-          "@id": "http://localhost:55001/plone/doc1/@workflow"
+          "@id": "http://localhost:57980/plone/doc1/@workflow"
         }
       }, 
-      "@id": "http://localhost:55001/plone/doc1", 
+      "@id": "http://localhost:57980/plone/doc1", 
       "@type": "Document", 
       "UID": "SomeUUID000000000000000000000003", 
       "allow_discussion": false, 
@@ -156,19 +156,19 @@ Content-Type: application/json
       "layout": "document_view", 
       "modified": "1995-07-31T17:30:00", 
       "next_item": {
-        "@id": "http://localhost:55001/plone/doc2", 
+        "@id": "http://localhost:57980/plone/doc2", 
         "@type": "Document", 
         "description": "", 
         "title": "Document 2"
       }, 
       "parent": {
-        "@id": "http://localhost:55001/plone", 
+        "@id": "http://localhost:57980/plone", 
         "@type": "Plone Site", 
         "description": "", 
         "title": "Plone site"
       }, 
       "previous_item": {
-        "@id": "http://localhost:55001/plone/collection", 
+        "@id": "http://localhost:57980/plone/collection", 
         "@type": "Collection", 
         "description": "This is a collection with two documents", 
         "title": "My Collection"
@@ -186,22 +186,22 @@ Content-Type: application/json
     {
       "@components": {
         "actions": {
-          "@id": "http://localhost:55001/plone/doc2/@actions"
+          "@id": "http://localhost:57980/plone/doc2/@actions"
         }, 
         "breadcrumbs": {
-          "@id": "http://localhost:55001/plone/doc2/@breadcrumbs"
+          "@id": "http://localhost:57980/plone/doc2/@breadcrumbs"
         }, 
         "navigation": {
-          "@id": "http://localhost:55001/plone/doc2/@navigation"
+          "@id": "http://localhost:57980/plone/doc2/@navigation"
         }, 
         "types": {
-          "@id": "http://localhost:55001/plone/doc2/@types"
+          "@id": "http://localhost:57980/plone/doc2/@types"
         }, 
         "workflow": {
-          "@id": "http://localhost:55001/plone/doc2/@workflow"
+          "@id": "http://localhost:57980/plone/doc2/@workflow"
         }
       }, 
-      "@id": "http://localhost:55001/plone/doc2", 
+      "@id": "http://localhost:57980/plone/doc2", 
       "@type": "Document", 
       "UID": "SomeUUID000000000000000000000004", 
       "allow_discussion": false, 
@@ -222,13 +222,13 @@ Content-Type: application/json
       "modified": "1995-07-31T17:30:00", 
       "next_item": {}, 
       "parent": {
-        "@id": "http://localhost:55001/plone", 
+        "@id": "http://localhost:57980/plone", 
         "@type": "Plone Site", 
         "description": "", 
         "title": "Plone site"
       }, 
       "previous_item": {
-        "@id": "http://localhost:55001/plone/doc1", 
+        "@id": "http://localhost:57980/plone/doc1", 
         "@type": "Document", 
         "description": "", 
         "title": "Document 1"
@@ -250,19 +250,19 @@ Content-Type: application/json
   "limit": 1000, 
   "modified": "1995-07-31T17:30:00", 
   "next_item": {
-    "@id": "http://localhost:55001/plone/doc1", 
+    "@id": "http://localhost:57980/plone/doc1", 
     "@type": "Document", 
     "description": "", 
     "title": "Document 1"
   }, 
   "parent": {
-    "@id": "http://localhost:55001/plone", 
+    "@id": "http://localhost:57980/plone", 
     "@type": "Plone Site", 
     "description": "", 
     "title": "Plone site"
   }, 
   "previous_item": {
-    "@id": "http://localhost:55001/plone/front-page", 
+    "@id": "http://localhost:57980/plone/front-page", 
     "@type": "Document", 
     "description": "Congratulations! You have successfully installed Plone.", 
     "title": "Welcome to Plone"

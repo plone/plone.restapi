@@ -4,22 +4,22 @@ Content-Type: application/json
 {
   "@components": {
     "actions": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@actions"
+      "@id": "http://localhost:57980/plone/folder/my-document/@actions"
     }, 
     "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@breadcrumbs"
+      "@id": "http://localhost:57980/plone/folder/my-document/@breadcrumbs"
     }, 
     "navigation": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@navigation"
+      "@id": "http://localhost:57980/plone/folder/my-document/@navigation"
     }, 
     "types": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@types"
+      "@id": "http://localhost:57980/plone/folder/my-document/@types"
     }, 
     "workflow": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@workflow"
+      "@id": "http://localhost:57980/plone/folder/my-document/@workflow"
     }
   }, 
-  "@id": "http://localhost:55001/plone/folder/my-document", 
+  "@id": "http://localhost:57980/plone/folder/my-document", 
   "@type": "Document", 
   "UID": "SomeUUID000000000000000000000005", 
   "allow_discussion": false, 
@@ -40,14 +40,14 @@ Content-Type: application/json
   "modified": "1995-07-31T17:30:00", 
   "next_item": {}, 
   "parent": {
-    "@id": "http://localhost:55001/plone/folder", 
+    "@id": "http://localhost:57980/plone/folder", 
     "@type": "Folder", 
     "description": "This is a folder with two documents", 
     "review_state": "private", 
     "title": "My Folder"
   }, 
   "previous_item": {
-    "@id": "http://localhost:55001/plone/folder/doc2", 
+    "@id": "http://localhost:57980/plone/folder/doc2", 
     "@type": "Document", 
     "description": "", 
     "title": "A document within a folder"

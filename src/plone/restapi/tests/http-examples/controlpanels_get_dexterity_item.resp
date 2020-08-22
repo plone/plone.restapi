@@ -2,7 +2,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_content_type", 
+  "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types/my_custom_content_type", 
   "data": {
     "allowed_content_types": [], 
     "description": "A custom content-type", 
@@ -102,7 +102,7 @@ Content-Type: application/json
           "title": "", 
           "type": "string", 
           "vocabulary": {
-            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes"
+            "@id": "http://localhost:57980/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes"
           }
         }, 
         "title": "Allowed Content Types", 
@@ -145,7 +145,7 @@ Content-Type: application/json
         "title": "Filter Contained Types", 
         "type": "string", 
         "vocabulary": {
-          "@id": "http://localhost:55001/plone/@sources/filter_content_types"
+          "@id": "http://localhost:57980/plone/@sources/filter_content_types"
         }
       }, 
       "plone.allowdiscussion": {

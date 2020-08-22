@@ -107,24 +107,24 @@ Content-Type: application/json
       ]
     }, 
     "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/front-page/@breadcrumbs", 
+      "@id": "http://localhost:57980/plone/front-page/@breadcrumbs", 
       "items": [
         {
-          "@id": "http://localhost:55001/plone/front-page", 
+          "@id": "http://localhost:57980/plone/front-page", 
           "title": "Welcome to Plone"
         }
       ]
     }, 
     "navigation": {
-      "@id": "http://localhost:55001/plone/front-page/@navigation", 
+      "@id": "http://localhost:57980/plone/front-page/@navigation", 
       "items": [
         {
-          "@id": "http://localhost:55001/plone", 
+          "@id": "http://localhost:57980/plone", 
           "description": "", 
           "title": "Home"
         }, 
         {
-          "@id": "http://localhost:55001/plone/front-page", 
+          "@id": "http://localhost:57980/plone/front-page", 
           "description": "Congratulations! You have successfully installed Plone.", 
           "title": "Welcome to Plone"
         }
@@ -132,53 +132,53 @@ Content-Type: application/json
     }, 
     "types": [
       {
-        "@id": "http://localhost:55001/plone/@types/Collection", 
+        "@id": "http://localhost:57980/plone/@types/Collection", 
         "addable": false, 
         "title": "Collection"
       }, 
       {
-        "@id": "http://localhost:55001/plone/@types/DXTestDocument", 
+        "@id": "http://localhost:57980/plone/@types/DXTestDocument", 
         "addable": false, 
         "title": "DX Test Document"
       }, 
       {
-        "@id": "http://localhost:55001/plone/@types/Event", 
+        "@id": "http://localhost:57980/plone/@types/Event", 
         "addable": false, 
         "title": "Event"
       }, 
       {
-        "@id": "http://localhost:55001/plone/@types/File", 
+        "@id": "http://localhost:57980/plone/@types/File", 
         "addable": false, 
         "title": "File"
       }, 
       {
-        "@id": "http://localhost:55001/plone/@types/Folder", 
+        "@id": "http://localhost:57980/plone/@types/Folder", 
         "addable": false, 
         "title": "Folder"
       }, 
       {
-        "@id": "http://localhost:55001/plone/@types/Image", 
+        "@id": "http://localhost:57980/plone/@types/Image", 
         "addable": false, 
         "title": "Image"
       }, 
       {
-        "@id": "http://localhost:55001/plone/@types/Link", 
+        "@id": "http://localhost:57980/plone/@types/Link", 
         "addable": false, 
         "title": "Link"
       }, 
       {
-        "@id": "http://localhost:55001/plone/@types/News Item", 
+        "@id": "http://localhost:57980/plone/@types/News Item", 
         "addable": false, 
         "title": "News Item"
       }, 
       {
-        "@id": "http://localhost:55001/plone/@types/Document", 
+        "@id": "http://localhost:57980/plone/@types/Document", 
         "addable": false, 
         "title": "Page"
       }
     ], 
     "workflow": {
-      "@id": "http://localhost:55001/plone/front-page/@workflow", 
+      "@id": "http://localhost:57980/plone/front-page/@workflow", 
       "history": [
         {
           "action": null, 
@@ -191,17 +191,17 @@ Content-Type: application/json
       ], 
       "transitions": [
         {
-          "@id": "http://localhost:55001/plone/front-page/@workflow/publish", 
+          "@id": "http://localhost:57980/plone/front-page/@workflow/publish", 
           "title": "Publish"
         }, 
         {
-          "@id": "http://localhost:55001/plone/front-page/@workflow/submit", 
+          "@id": "http://localhost:57980/plone/front-page/@workflow/submit", 
           "title": "Submit for publication"
         }
       ]
     }
   }, 
-  "@id": "http://localhost:55001/plone/front-page", 
+  "@id": "http://localhost:57980/plone/front-page", 
   "@type": "Document", 
   "UID": "SomeUUID000000000000000000000001", 
   "allow_discussion": false, 
@@ -222,7 +222,7 @@ Content-Type: application/json
   "modified": "1995-07-31T17:30:00", 
   "next_item": {}, 
   "parent": {
-    "@id": "http://localhost:55001/plone", 
+    "@id": "http://localhost:57980/plone", 
     "@type": "Plone Site", 
     "description": "", 
     "title": "Plone site"

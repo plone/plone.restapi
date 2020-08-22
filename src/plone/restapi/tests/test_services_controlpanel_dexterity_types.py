@@ -41,6 +41,7 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(
             [
+                'Plone Site',
                 "Collection",
                 "Document",
                 "Folder",
@@ -112,6 +113,7 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
         self.assertEqual(204, response.status_code)
         self.assertEqual(
             [
+                "Plone Site",
                 "Collection",
                 "Folder",
                 "Link",

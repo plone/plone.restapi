@@ -3,7 +3,7 @@ Content-Type: application/json
 
 [
   {
-    "source": "http://localhost:55001/plone/front-page", 
-    "target": "http://localhost:55001/plone/folder/front-page"
+    "source": "http://localhost:57980/plone/front-page", 
+    "target": "http://localhost:57980/plone/folder/front-page"
   }
 ]

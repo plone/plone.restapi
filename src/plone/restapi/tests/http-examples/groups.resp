@@ -3,7 +3,7 @@ Content-Type: application/json
 
 [
   {
-    "@id": "http://localhost:55001/plone/@groups/Administrators", 
+    "@id": "http://localhost:57980/plone/@groups/Administrators", 
     "description": "", 
     "email": "", 
     "groupname": "Administrators", 
@@ -15,7 +15,7 @@ Content-Type: application/json
     "title": "Administrators"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@groups/Reviewers", 
+    "@id": "http://localhost:57980/plone/@groups/Reviewers", 
     "description": "", 
     "email": "", 
     "groupname": "Reviewers", 
@@ -27,7 +27,7 @@ Content-Type: application/json
     "title": "Reviewers"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@groups/Site Administrators", 
+    "@id": "http://localhost:57980/plone/@groups/Site Administrators", 
     "description": "", 
     "email": "", 
     "groupname": "Site Administrators", 
@@ -39,7 +39,7 @@ Content-Type: application/json
     "title": "Site Administrators"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@groups/ploneteam", 
+    "@id": "http://localhost:57980/plone/@groups/ploneteam", 
     "description": "We are Plone", 
     "email": "ploneteam@plone.org", 
     "groupname": "ploneteam", 
@@ -50,7 +50,7 @@ Content-Type: application/json
     "title": "Plone Team"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@groups/AuthenticatedUsers", 
+    "@id": "http://localhost:57980/plone/@groups/AuthenticatedUsers", 
     "description": "Automatic Group Provider", 
     "email": "", 
     "groupname": "AuthenticatedUsers", 

@@ -1,9 +1,9 @@
 HTTP/1.1 201 Created
 Content-Type: application/json
-Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_content_type
+Location: http://localhost:57980/plone/@controlpanels/dexterity-types/my_custom_content_type
 
 {
-  "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_content_type", 
+  "@id": "http://localhost:57980/plone/@controlpanels/dexterity-types/my_custom_content_type", 
   "data": {
     "allowed_content_types": [], 
     "description": "A custom content-type", 
@@ -103,7 +103,7 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
           "title": "", 
           "type": "string", 
           "vocabulary": {
-            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes"
+            "@id": "http://localhost:57980/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes"
           }
         }, 
         "title": "Allowed Content Types", 
@@ -146,7 +146,7 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
         "title": "Filter Contained Types", 
         "type": "string", 
         "vocabulary": {
-          "@id": "http://localhost:55001/plone/@sources/filter_content_types"
+          "@id": "http://localhost:57980/plone/@sources/filter_content_types"
         }
       }, 
       "plone.allowdiscussion": {

@@ -2,12 +2,12 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "@id": "http://localhost:55001/plone/@registry", 
+  "@id": "http://localhost:57980/plone/@registry", 
   "batching": {
-    "@id": "http://localhost:55001/plone/@registry", 
-    "first": "http://localhost:55001/plone/@registry?b_start=0", 
-    "last": "http://localhost:55001/plone/@registry?b_start=1775", 
-    "next": "http://localhost:55001/plone/@registry?b_start=25"
+    "@id": "http://localhost:57980/plone/@registry", 
+    "first": "http://localhost:57980/plone/@registry?b_start=0", 
+    "last": "http://localhost:57980/plone/@registry?b_start=1775", 
+    "next": "http://localhost:57980/plone/@registry?b_start=25"
   }, 
   "items": [
     {
@@ -192,7 +192,7 @@ Content-Type: application/json
             "title": "", 
             "type": "string", 
             "vocabulary": {
-              "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicatableFeedItems"
+              "@id": "http://localhost:57980/plone/@vocabularies/plone.app.vocabularies.SyndicatableFeedItems"
             }
           }, 
           "title": "Site RSS", 
@@ -314,7 +314,7 @@ Content-Type: application/json
             "title": "", 
             "type": "string", 
             "vocabulary": {
-              "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AllowableContentTypes"
+              "@id": "http://localhost:57980/plone/@vocabularies/plone.app.vocabularies.AllowableContentTypes"
             }
           }, 
           "title": "Alternative formats", 
@@ -372,7 +372,7 @@ Content-Type: application/json
           "title": "Captcha", 
           "type": "string", 
           "vocabulary": {
-            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary"
+            "@id": "http://localhost:57980/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary"
           }
         }
       }, 
