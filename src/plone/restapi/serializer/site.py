@@ -57,6 +57,11 @@ class SerializeSiteRootToJson(object):
 
         # Insert expandable elements
         result.update(expandable_elements(self.context, self.request))
+        
+        # Insert default_page information
+        default_page = self.context.getDefaultPage()
+        if default_page is not None:
+            result.update({'default_page': {'@id': self.context.absolute_url() + '/' + default_page}})        
 
         result["items_total"] = batch.items_total
         if batch.links:
