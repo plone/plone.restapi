@@ -57,12 +57,12 @@ class SerializeToJson(object):
         result.update(
             {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
         )
-        
+
         # Insert default_page information
         default_page = self.context.getDefaultPage()
         if default_page is not None:
             result.update({'default_page': {'@id': obj.absolute_url() + '/' + default_page}})
-     
+
         # Insert expandable elements
         result.update(expandable_elements(self.context, self.request))
 
