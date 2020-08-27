@@ -6,7 +6,7 @@
     <adapter factory=".site.SerializeSiteRootToJson" />
     <adapter factory=".dxcontent.SerializeToJson" />
     <adapter factory=".dxcontent.SerializeFolderToJson" />
-    <adapter 
+    <adapter
         factory=".dxcontent.DexterityObjectPrimaryFieldTarget" />
 
     <configure zcml:condition="installed plone.app.contenttypes">
@@ -99,8 +99,6 @@
         <adapter factory=".tile.TileSerializeToJson" />
     </configure>
 
-    <configure zcml:condition="have plone-5">
-        <include package=".controlpanels" />
-    </configure>
+    <include package=".controlpanels" />
 
 </configure>
