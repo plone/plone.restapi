@@ -18,6 +18,7 @@ from Products.CMFPlone.utils import getFSVersionTuple
 
 PLONE5 = getFSVersionTuple()[0] >= 5
 
+
 @adapter(Interface, IPloneRestapiLayer)
 @implementer(IDexterityTypesControlpanel)
 class DexterityTypesControlpanel(RegistryConfigletPanel):

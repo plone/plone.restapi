@@ -19,10 +19,7 @@ except ImportError:  # pragma: no cover
     from Products.CMFPlone.interfaces.controlpanel import ILanguageSchema
 
 
-
 # General
-
-
 @adapter(Interface, Interface)
 class DateTimeControlpanel(RegistryConfigletPanel):
     schema = IDateAndTimeSchema
