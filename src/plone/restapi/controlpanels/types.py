@@ -24,7 +24,7 @@ PLONE5 = getFSVersionTuple()[0] >= 5
 class DexterityTypesControlpanel(RegistryConfigletPanel):
     schema = Interface
     configlet_id = "dexterity-types"
-    configlet_category_id = "plone-content" if PLONE5 else 'Plone'
+    configlet_category_id = "plone-content" if PLONE5 else "Plone"
 
     def add(self, names):
         data = json_body(self.request)
