@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+6.14.0 (2020-08-28)
+-------------------
+
+New features:
+
+
+- Add @types endpoint to be able to add/edit/delete CT schema [Petchesi-Iulian, avoinea] (#951)
+
+
 6.13.8 (2020-08-20)
 -------------------
 
