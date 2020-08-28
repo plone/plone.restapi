@@ -14,8 +14,7 @@ class IPloneRestapiLayer(IDefaultBrowserLayer):
 
 
 class ISerializeToJson(Interface):
-    """Adapter to serialize a Dexterity object into a JSON object.
-    """
+    """Adapter to serialize a Dexterity object into a JSON object."""
 
 
 class ISerializeToJsonSummary(Interface):
@@ -25,17 +24,14 @@ class ISerializeToJsonSummary(Interface):
 
 
 class IJsonCompatible(Interface):
-    """Convert a value to a JSON compatible data structure.
-    """
+    """Convert a value to a JSON compatible data structure."""
 
 
 class IContextawareJsonCompatible(IJsonCompatible):
-    """Convert a value to a JSON compatible data structure, using a context.
-    """
+    """Convert a value to a JSON compatible data structure, using a context."""
 
     def __init__(value, context):
-        """Adapts value and a context
-        """
+        """Adapts value and a context"""
 
 
 class IFieldSerializer(Interface):
@@ -44,12 +40,10 @@ class IFieldSerializer(Interface):
     """
 
     def __init__(field, context, request):
-        """Adapts field, context and request.
-        """
+        """Adapts field, context and request."""
 
     def __call__():
-        """Returns JSON compatible python data.
-        """
+        """Returns JSON compatible python data."""
 
 
 class IPrimaryFieldTarget(Interface):
@@ -59,12 +53,10 @@ class IPrimaryFieldTarget(Interface):
     """
 
     def __init__(field, context, request):
-        """Adapts field, context and request.
-        """
+        """Adapts field, context and request."""
 
     def __call__():
-        """Returns a URL.
-        """
+        """Returns a URL."""
 
 
 class IDeserializeFromJson(Interface):
@@ -72,26 +64,22 @@ class IDeserializeFromJson(Interface):
 
 
 class IFieldDeserializer(Interface):
-    """An adapter to deserialize a JSON value into a field value.
-    """
+    """An adapter to deserialize a JSON value into a field value."""
 
     def __init__(field, context, request):
-        """Adapts a field, it's context and the request.
-        """
+        """Adapts a field, it's context and the request."""
 
     def __call__(value):
-        """Convert the provided JSON value to a field value.
-        """
+        """Convert the provided JSON value to a field value."""
 
 
 class IExpandableElement(Interface):
     """A named adapter that deserializes an element in expanded or collapsed
-       form.
+    form.
     """
 
     def __call__(expand=False):
-        """
-        """
+        """"""
 
 
 class IZCatalogCompatibleQuery(Interface):
@@ -111,12 +99,10 @@ class IZCatalogCompatibleQuery(Interface):
     )
 
     def __init__(context, request):
-        """Adapts context and request.
-        """
+        """Adapts context and request."""
 
     def __call__(query):
-        """Returns a ZCatalog compatible query (Python dictionary).
-        """
+        """Returns a ZCatalog compatible query (Python dictionary)."""
 
 
 class IIndexQueryParser(Interface):
@@ -146,8 +132,7 @@ class IIndexQueryParser(Interface):
     )
 
     def __init__(index, context, request):
-        """Adapts a ZCatalog index, context and request.
-        """
+        """Adapts a ZCatalog index, context and request."""
 
     def parse(idx_query):
         """Takes a query against a single index (the value part of a

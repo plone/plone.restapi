@@ -5,8 +5,7 @@ from zope.component import queryMultiAdapter
 
 
 class ContentGet(Service):
-    """Returns a serialized content object.
-    """
+    """Returns a serialized content object."""
 
     def reply(self):
         serializer = queryMultiAdapter((self.context, self.request), ISerializeToJson)

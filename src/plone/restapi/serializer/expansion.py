@@ -6,8 +6,7 @@ import six
 
 
 def expandable_elements(context, request):
-    """Returns a dict containing all expandable elements.
-    """
+    """Returns a dict containing all expandable elements."""
     expands = request.form.get("expand", "").split(",")
     elements = getAdapters((context, request), IExpandableElement)
     res = {}

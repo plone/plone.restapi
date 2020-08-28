@@ -57,8 +57,7 @@ FIELD_PROPERTIES_MAPPING = {
 
 @implementer(IDexterityContent)
 class FakeDXContext(object):
-    """Fake DX content class, so we can re-use the DX field deserializers
-    """
+    """Fake DX content class, so we can re-use the DX field deserializers"""
 
 
 def create_form(context, request, base_schema, additional_schemata=None):
@@ -88,8 +87,7 @@ def iter_fields(fieldsets):
 
 
 def get_form_fieldsets(form):
-    """ Get fieldsets from form
-    """
+    """Get fieldsets from form"""
     fieldsets = []
     form_fields = getattr(form, "fields", {})
     fields_values = list(form_fields.values())
@@ -193,8 +191,7 @@ def get_widget_params(schemas):
 
 
 def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
-    """Build a complete JSON schema for the given FTI.
-    """
+    """Build a complete JSON schema for the given FTI."""
     if excluded_fields is None:
         excluded_fields = []
 
@@ -244,8 +241,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
 
 
 def get_jsonschema_for_portal_type(portal_type, context, request, excluded_fields=None):
-    """Build a complete JSON schema for the given portal_type.
-    """
+    """Build a complete JSON schema for the given portal_type."""
     ttool = getToolByName(context, "portal_types")
     fti = ttool[portal_type]
     return get_jsonschema_for_fti(
@@ -275,9 +271,9 @@ def get_source_url(field, context, request):
 
 
 def serializeSchema(schema):
-    """ Taken from plone.app.dexterity.serialize
-        Finds the FTI and model associated with a schema, and synchronizes
-        the schema to the FTI model_source attribute.
+    """Taken from plone.app.dexterity.serialize
+    Finds the FTI and model associated with a schema, and synchronizes
+    the schema to the FTI model_source attribute.
     """
 
     # determine portal_type
@@ -297,8 +293,7 @@ def serializeSchema(schema):
 
 
 def get_info_for_type(context, request, name):
-    """ Get JSON info for the given portal type
-    """
+    """Get JSON info for the given portal type"""
     schema = get_jsonschema_for_portal_type(name, getSite(), request)
 
     if not hasattr(context, "schema"):
@@ -325,8 +320,7 @@ def get_info_for_type(context, request, name):
 
 
 def get_info_for_field(context, request, name):
-    """ Get JSON info for the given field name.
-    """
+    """Get JSON info for the given field name."""
     field = context.publishTraverse(request, name)
     adapter = queryMultiAdapter(
         (field.field, context, request), interface=IJsonSchemaProvider
@@ -338,8 +332,7 @@ def get_info_for_field(context, request, name):
 
 
 def get_info_for_fieldset(context, request, name):
-    """ Get JSON info for the given fieldset name.
-    """
+    """Get JSON info for the given fieldset name."""
     properties = {}
     for fieldset in context.schema.queryTaggedValue(FIELDSETS_KEY, []):
         if name != fieldset.__name__:
@@ -362,8 +355,7 @@ def delete_field(context, request, name):
 
 
 def delete_fieldset(context, request, name):
-    """ Taken from plone.schemaeditor 2.x `DeleteFieldset`
-    """
+    """Taken from plone.schemaeditor 2.x `DeleteFieldset`"""
     new_fieldsets = []
     fieldsets = context.schema.queryTaggedValue(FIELDSETS_KEY, [])
     for fieldset in fieldsets:

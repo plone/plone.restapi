@@ -86,8 +86,7 @@ def set_available_languages():
 
 
 def set_supported_languages(portal):
-    """Set supported languages to the same predictable set for all test layers.
-    """
+    """Set supported languages to the same predictable set for all test layers."""
     language_tool = getToolByName(portal, "portal_languages")
     for lang in ENABLED_LANGUAGES:
         language_tool.addSupportedLanguage(lang)

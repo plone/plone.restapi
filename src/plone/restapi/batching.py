@@ -22,14 +22,12 @@ class HypermediaBatch(object):
         self.batch = Batch(results, self.b_size, self.b_start)
 
     def __iter__(self):
-        """Iterate over items in current batch.
-        """
+        """Iterate over items in current batch."""
         return iter(self.batch)
 
     @property
     def items_total(self):
-        """Return the number of total items in underlying sequence.
-        """
+        """Return the number of total items in underlying sequence."""
         return self.batch.sequence_length
 
     @property
@@ -63,8 +61,7 @@ class HypermediaBatch(object):
 
     @property
     def links(self):
-        """Get a dictionary with batching links.
-        """
+        """Get a dictionary with batching links."""
         # Don't provide batching links if resultset isn't batched
         if self.items_total <= self.b_size:
             return None
@@ -89,16 +86,14 @@ class HypermediaBatch(object):
         return links
 
     def _batch_for_page(self, pagenumber):
-        """Return a new Batch object for the given pagenumber.
-        """
+        """Return a new Batch object for the given pagenumber."""
         new_batch = Batch.fromPagenumber(
             self.batch._sequence, pagesize=self.b_size, pagenumber=pagenumber
         )
         return new_batch
 
     def _url_for_batch(self, batch):
-        """Return URL that points to the given batch.
-        """
+        """Return URL that points to the given batch."""
         # Calculate the start for the new batch page.
         # Make sure we account for plone.batching's one-based indexing and
         # that the start never drops below zero

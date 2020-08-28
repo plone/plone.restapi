@@ -12,8 +12,7 @@ import six
 
 
 class Login(Service):
-    """Handles login and returns a JSON web token (JWT).
-    """
+    """Handles login and returns a JSON web token (JWT)."""
 
     def reply(self):
         data = json_body(self.request)
@@ -73,7 +72,7 @@ class Login(Service):
 
     def _find_userfolder(self, userid):
         """Try to find a user folder that contains a user with the given
-           userid.
+        userid.
         """
         uf_parent = aq_inner(self.context)
         info = None

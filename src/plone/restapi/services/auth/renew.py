@@ -10,8 +10,7 @@ import plone.protect.interfaces
 
 
 class Renew(Service):
-    """Renew authentication token
-    """
+    """Renew authentication token"""
 
     def reply(self):
         plugin = None

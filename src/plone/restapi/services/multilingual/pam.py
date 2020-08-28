@@ -45,8 +45,7 @@ class Translations(object):
 
 
 class TranslationInfo(Service):
-    """ Get translation information
-    """
+    """Get translation information"""
 
     def reply(self):
         translations = Translations(self.context, self.request)
@@ -54,8 +53,7 @@ class TranslationInfo(Service):
 
 
 class LinkTranslations(Service):
-    """ Link two content objects as translations of each other
-    """
+    """Link two content objects as translations of each other"""
 
     def __init__(self, context, request):
         super(LinkTranslations, self).__init__(context, request)
@@ -123,8 +121,7 @@ class LinkTranslations(Service):
 
 
 class UnlinkTranslations(Service):
-    """ Unlink the translations for a content object
-    """
+    """Unlink the translations for a content object"""
 
     def reply(self):
         # Disable CSRF protection

@@ -113,7 +113,7 @@ def webdav_lock(obj):
 
 def is_locked(obj, request):
     """Returns true if the object is locked and the request doesn't contain
-       the lock token.
+    the lock token.
     """
     lockable = ILockable(obj, None)
     if lockable is None:

@@ -32,8 +32,7 @@ import unittest
 
 
 class AdapterCM(object):
-    """Context manager that will temporarily register an adapter
-    """
+    """Context manager that will temporarily register an adapter"""
 
     def __init__(self, adapter, from_, provides):
         self.adapter = adapter
@@ -411,13 +410,13 @@ class TestDXContentSerializer(unittest.TestCase):
     def test_richtext_serializer_context(self):
         """This checks if the context is passed in correctly.
 
-           We define a ITransformer, which returns the contexts portal_type.
-           This is then verfied.
+        We define a ITransformer, which returns the contexts portal_type.
+        This is then verfied.
         """
 
         class RichtextTransform(object):
             """RichttextValue to show that the context is correctly passed
-               in throughout the stack.
+            in throughout the stack.
             """
 
             def __init__(self, context):
@@ -592,7 +591,9 @@ class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
         )
 
         self.portal.invokeFactory(
-            "DXTestDocument", id=u"doc2", test_primary_namedfile_field=None,
+            "DXTestDocument",
+            id=u"doc2",
+            test_primary_namedfile_field=None,
         )
 
         self.portal.doc1.creation_date = DateTime("2015-04-27T10:14:48+00:00")
