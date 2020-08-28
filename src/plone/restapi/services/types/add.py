@@ -15,8 +15,7 @@ import plone.protect.interfaces
 
 @implementer(IPublishTraverse)
 class TypesPost(Service):
-    """ Creates a new field/fieldset
-    """
+    """Creates a new field/fieldset"""
 
     def __init__(self, context, request):
         super(TypesPost, self).__init__(context, request)

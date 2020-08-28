@@ -627,7 +627,11 @@ class TestDocumentation(TestDocumentationBase):
             {
                 "id": "author",
                 "title": "Contact the author",
-                "fields": ["author_email", "author_url", "author_name",],
+                "fields": [
+                    "author_email",
+                    "author_url",
+                    "author_name",
+                ],
             },
             {"id": "contact_info", "title": "Contact info", "fields": []},
         ]
@@ -654,11 +658,15 @@ class TestDocumentation(TestDocumentationBase):
         #
 
         # Remove field
-        response = self.api_session.delete("/@types/Document/author_email",)
+        response = self.api_session.delete(
+            "/@types/Document/author_email",
+        )
         save_request_and_response_for_docs("types_document_delete_field", response)
 
         # Remove fieldset
-        response = self.api_session.delete("/@types/Document/contact_info",)
+        response = self.api_session.delete(
+            "/@types/Document/contact_info",
+        )
         save_request_and_response_for_docs("types_document_delete_fieldset", response)
 
     def test_documentation_jwt_login(self):

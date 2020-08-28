@@ -14,8 +14,7 @@ import plone.protect.interfaces
 
 @implementer(IPublishTraverse)
 class TypesDelete(Service):
-    """ Deletes a field/fieldset from content type
-    """
+    """Deletes a field/fieldset from content type"""
 
     def __init__(self, context, request):
         super(TypesDelete, self).__init__(context, request)

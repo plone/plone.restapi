@@ -224,7 +224,10 @@ class TestServicesTypes(unittest.TestCase):
             json={
                 "title": "Contact the author",
                 "description": "Reach the author",
-                "fields": ["author_url", "author_email",],
+                "fields": [
+                    "author_url",
+                    "author_email",
+                ],
             },
         )
         self.assertEqual(response.status_code, 204)
@@ -421,7 +424,9 @@ class TestServicesTypes(unittest.TestCase):
         )  # noqa
 
     def test_types_document_remove_field(self):
-        response = self.api_session.delete("/@types/Document/author_email",)
+        response = self.api_session.delete(
+            "/@types/Document/author_email",
+        )
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@types/Document")
@@ -430,7 +435,9 @@ class TestServicesTypes(unittest.TestCase):
         self.assertTrue("author_email" not in response.json().get("properties"))  # noqa
 
     def test_types_document_remove_fieldset(self):
-        response = self.api_session.delete("/@types/Document/contact_info",)
+        response = self.api_session.delete(
+            "/@types/Document/contact_info",
+        )
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@types/Document")
