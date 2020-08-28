@@ -519,9 +519,147 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@types")
         save_request_and_response_for_docs("types", response)
 
-    def test_documentation_types_document(self):
-        response = self.api_session.get("@types/Document")
+    def test_documentation_types_document_crud(self):
+        #
+        # POST
+        #
+
+        # Add fieldset
+        response = self.api_session.post(
+            "/@types/Document",
+            json={
+                "factory": "fieldset",
+                "title": "Contact Info",
+                "description": "Contact information",
+            },
+        )
+        save_request_and_response_for_docs("types_document_post_fieldset", response)
+
+        # Add field
+        response = self.api_session.post(
+            "/@types/Document",
+            json={
+                "factory": "Email",
+                "title": "Author email",
+                "description": "Email of the author",
+                "required": True,
+            },
+        )
+        save_request_and_response_for_docs("types_document_post_field", response)
+
+        #
+        # GET
+        #
+
+        # Document
+        response = self.api_session.get("/@types/Document")
         save_request_and_response_for_docs("types_document", response)
+        doc_json = json.loads(response.content)
+
+        # Get fieldset
+        response = self.api_session.get("/@types/Document/contact_info")
+        save_request_and_response_for_docs("types_document_get_fieldset", response)
+
+        # Get field
+        response = self.api_session.get("/@types/Document/author_email")
+        save_request_and_response_for_docs("types_document_get_field", response)
+
+        #
+        # PATCH
+        #
+
+        # Update Document defaults
+        response = self.api_session.patch(
+            "/@types/Document",
+            json={
+                "properties": {
+                    "author_email": {
+                        "default": "foo@bar.com",
+                        "minLength": 5,
+                        "maxLength": 20,
+                    }
+                }
+            },
+        )
+        save_request_and_response_for_docs("types_document_patch_properites", response)
+
+        # Change field tab / order
+        response = self.api_session.patch(
+            "/@types/Document",
+            json={
+                "fieldsets": [
+                    {
+                        "id": "contact_info",
+                        "title": "Contact info",
+                        "fields": ["author_email"],
+                    }
+                ]
+            },
+        )
+        save_request_and_response_for_docs("types_document_patch_fieldsets", response)
+
+        # Update fieldset settings
+        response = self.api_session.patch(
+            "/@types/Document/contact_info",
+            json={
+                "title": "Contact information",
+                "description": "Contact information",
+                "fields": ["author_email"],
+            },
+        )
+        save_request_and_response_for_docs("types_document_patch_fieldset", response)
+
+        # Update field settings
+        response = self.api_session.patch(
+            "/@types/Document/author_email",
+            json={
+                "title": "Author e-mail",
+                "description": "The e-mail address of the author",
+                "minLength": 10,
+                "maxLength": 20,
+                "required": True,
+            },
+        )
+        save_request_and_response_for_docs("types_document_patch_field", response)
+
+        doc_json["layouts"] = ["thumbnail_view", "table_view"]
+        doc_json["fieldsets"] = [
+            {
+                "id": "author",
+                "title": "Contact the author",
+                "fields": ["author_email", "author_url", "author_name",],
+            },
+            {"id": "contact_info", "title": "Contact info", "fields": []},
+        ]
+
+        doc_json["properties"]["author_name"] = {
+            "description": "Name of the author",
+            "factory": "Text line (String)",
+            "title": "Author name",
+        }
+
+        doc_json["properties"]["author_url"] = {
+            "description": "Author webpage",
+            "factory": "URL",
+            "title": "Author website",
+            "minLength": 5,
+            "maxLength": 30,
+        }
+
+        response = self.api_session.put("/@types/Document", json=doc_json)
+        save_request_and_response_for_docs("types_document_put", response)
+
+        #
+        # DELETE
+        #
+
+        # Remove field
+        response = self.api_session.delete("/@types/Document/author_email",)
+        save_request_and_response_for_docs("types_document_delete_field", response)
+
+        # Remove fieldset
+        response = self.api_session.delete("/@types/Document/contact_info",)
+        save_request_and_response_for_docs("types_document_delete_fieldset", response)
 
     def test_documentation_jwt_login(self):
         self.portal.acl_users.jwt_auth._secret = "secret"
@@ -1093,6 +1231,10 @@ class TestDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("vocabularies_get", response)
 
+    def test_documentation_vocabularies_get_fields(self):
+        response = self.api_session.get("/@vocabularies/Fields")
+        save_request_and_response_for_docs("vocabularies_get_fields", response)
+
     def test_documentation_vocabularies_get_filtered_by_title(self):
         response = self.api_session.get(
             "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?" "title=doc"
@@ -1628,7 +1770,12 @@ class TestControlPanelDocumentation(TestDocumentationBase):
         # PATCH
         response = self.api_session.patch(
             "/@controlpanels/dexterity-types/my_custom_content_type",
-            json={"title": "My Content Type", "description": "A content-type"},
+            json={
+                "title": "My Content Type",
+                "description": "A content-type",
+                "plone.richtext": True,
+                "plone.versioning": True,
+            },
         )
         save_request_and_response_for_docs(
             "controlpanels_patch_dexterity_item", response
