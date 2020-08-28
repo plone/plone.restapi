@@ -92,8 +92,7 @@ class StaticTime(object):
         """
 
     def start(self):
-        """Patch the respective getters so that they return static times.
-        """
+        """Patch the respective getters so that they return static times."""
         # Patch created and modified times for DexterityContent.
         # creation_date and modification_date are instance-level attributes
         # on DX object that get initialized with datetime.now() during
@@ -128,8 +127,7 @@ class StaticTime(object):
         TTWLockable.lock_info = static_lock_info_factory(self.static_modified)
 
     def stop(self):
-        """Undo all the patches.
-        """
+        """Undo all the patches."""
         TTWLockable.lock_info = _originals["TTWLockable.lock_info"]
         ContentHistoryViewlet.fullHistory = _originals[
             "ContentHistoryViewlet.fullHistory"

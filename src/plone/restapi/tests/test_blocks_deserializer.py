@@ -33,7 +33,8 @@ class TestBlocksDeserializer(unittest.TestCase):
         fti.behaviors = tuple(behavior_list)
 
         self.portal.invokeFactory(
-            "Document", id=u"doc1",
+            "Document",
+            id=u"doc1",
         )
         self.image = self.portal[
             self.portal.invokeFactory("Image", id="image-1", title="Target image")
@@ -66,7 +67,8 @@ class TestBlocksDeserializer(unittest.TestCase):
                 return value
 
         provideSubscriptionAdapter(
-            TestAdapter, (IDexterityItem, IBrowserRequest),
+            TestAdapter,
+            (IDexterityItem, IBrowserRequest),
         )
 
         self.deserialize(blocks={"123": {"@type": "test", "value": u"text"}})
@@ -110,11 +112,13 @@ class TestBlocksDeserializer(unittest.TestCase):
                 return value
 
         provideSubscriptionAdapter(
-            TestAdapterB, (IDexterityItem, IBrowserRequest),
+            TestAdapterB,
+            (IDexterityItem, IBrowserRequest),
         )
 
         provideSubscriptionAdapter(
-            TestAdapterA, (IDexterityItem, IBrowserRequest),
+            TestAdapterA,
+            (IDexterityItem, IBrowserRequest),
         )
 
         self.deserialize(blocks={"123": {"@type": "test_multi", "value": u"a"}})

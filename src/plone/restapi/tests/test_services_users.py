@@ -247,7 +247,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_add_anon_no_roles(self):
         """Make sure anonymous users cannot set their own roles.
-           Allowing so would make them Manager.
+        Allowing so would make them Manager.
         """
         security_settings = getAdapter(self.portal, ISecuritySchema)
         security_settings.enable_self_reg = True

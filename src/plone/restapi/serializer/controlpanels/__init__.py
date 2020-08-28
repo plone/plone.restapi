@@ -39,8 +39,7 @@ class ControlpanelSummarySerializeToJson(object):
 
 
 def get_jsonschema_for_controlpanel(controlpanel, context, request, form=None):
-    """Build a complete JSON schema for the given controlpanel.
-    """
+    """Build a complete JSON schema for the given controlpanel."""
     if not form:
         schema = controlpanel.schema
         fieldsets = utils.get_fieldsets(context, request, schema)

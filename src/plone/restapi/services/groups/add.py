@@ -12,8 +12,7 @@ import plone.protect.interfaces
 
 
 class GroupsPost(Service):
-    """Creates a new group.
-    """
+    """Creates a new group."""
 
     def reply(self):
         portal = getSite()

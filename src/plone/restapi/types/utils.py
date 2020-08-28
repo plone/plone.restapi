@@ -58,8 +58,7 @@ def iter_fields(fieldsets):
 
 
 def get_form_fieldsets(form):
-    """ Get fieldsets from form
-    """
+    """Get fieldsets from form"""
     fieldsets = []
     form_fields = getattr(form, "fields", {})
     fields_values = list(form_fields.values())
@@ -161,8 +160,7 @@ def get_widget_params(schemas):
 
 
 def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
-    """Build a complete JSON schema for the given FTI.
-    """
+    """Build a complete JSON schema for the given FTI."""
     if excluded_fields is None:
         excluded_fields = []
 
@@ -205,8 +203,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
 
 
 def get_jsonschema_for_portal_type(portal_type, context, request, excluded_fields=None):
-    """Build a complete JSON schema for the given portal_type.
-    """
+    """Build a complete JSON schema for the given portal_type."""
     ttool = getToolByName(context, "portal_types")
     fti = ttool[portal_type]
     return get_jsonschema_for_fti(

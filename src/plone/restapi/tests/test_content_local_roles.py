@@ -69,8 +69,7 @@ class TestFolderCreate(unittest.TestCase):
         self.assertNotEqual(len(non_search_entries), len(search_entries))
 
     def test_sharing_search_roundtrip(self):
-        """Search for a user and use save roles
-        """
+        """Search for a user and use save roles"""
         # Make sure we don't already have admin
         response = requests.get(
             self.portal.folder1.absolute_url() + "/@sharing",

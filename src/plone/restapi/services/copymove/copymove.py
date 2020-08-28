@@ -13,8 +13,7 @@ import six
 
 
 class BaseCopyMove(Service):
-    """Base service for copy/move operations.
-    """
+    """Base service for copy/move operations."""
 
     def __init__(self, context, request):
         super(BaseCopyMove, self).__init__(context, request)
@@ -108,8 +107,7 @@ class BaseCopyMove(Service):
 
 
 class Copy(BaseCopyMove):
-    """Copies existing content objects.
-    """
+    """Copies existing content objects."""
 
     is_moving = False
 
@@ -118,8 +116,7 @@ class Copy(BaseCopyMove):
 
 
 class Move(BaseCopyMove):
-    """Moves existing content objects.
-    """
+    """Moves existing content objects."""
 
     is_moving = True
 

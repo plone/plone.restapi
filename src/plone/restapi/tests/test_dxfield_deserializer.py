@@ -22,8 +22,7 @@ import unittest
 
 
 class RequiredField(object):
-    """Context manager that will make a field required and back to old state.
-    """
+    """Context manager that will make a field required and back to old state."""
 
     def __init__(self, field):
         self.field = field

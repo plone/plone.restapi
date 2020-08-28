@@ -15,8 +15,7 @@ else:
 
 
 class QuerystringSearchPost(Service):
-    """Returns the querystring search results given a p.a.querystring data.
-    """
+    """Returns the querystring search results given a p.a.querystring data."""
 
     def reply(self):
         data = json_body(self.request)

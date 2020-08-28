@@ -5,8 +5,7 @@ from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlug
 
 
 class Logout(Service):
-    """Handles logout by invalidating the JWT
-    """
+    """Handles logout by invalidating the JWT"""
 
     def reply(self):
         plugin = None

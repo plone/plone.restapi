@@ -9,8 +9,7 @@ from zope.publisher.interfaces import IPublishTraverse
 
 @implementer(IPublishTraverse)
 class GroupsDelete(Service):
-    """Deletes a user.
-    """
+    """Deletes a user."""
 
     def __init__(self, context, request):
         super(GroupsDelete, self).__init__(context, request)
