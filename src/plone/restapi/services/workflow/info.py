@@ -75,8 +75,7 @@ class WorkflowInfo(object):
 
 
 class WorkflowInfoService(Service):
-    """Get workflow information
-    """
+    """Get workflow information"""
 
     def reply(self):
         info = WorkflowInfo(self.context, self.request)

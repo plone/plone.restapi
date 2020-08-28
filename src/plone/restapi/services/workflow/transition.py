@@ -22,8 +22,7 @@ import six
 
 @implementer(IPublishTraverse)
 class WorkflowTransition(Service):
-    """Trigger workflow transition
-    """
+    """Trigger workflow transition"""
 
     def __init__(self, context, request):
         super(WorkflowTransition, self).__init__(context, request)

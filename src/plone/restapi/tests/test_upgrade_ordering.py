@@ -36,7 +36,12 @@ class TestUpgradeOrdering(unittest.TestCase):
         ensure_child_ordering_object_ids_are_native_strings(self.folder)
 
         self.assertEqual(
-            ["doc2", "doc3", "doc1",], self.folder.objectIds(),  # noqa
+            [
+                "doc2",
+                "doc3",
+                "doc1",
+            ],
+            self.folder.objectIds(),  # noqa
         )
 
         # upgrade helper should ensure bytestring ids in python2 and do nothing
@@ -61,7 +66,12 @@ class TestUpgradeOrdering(unittest.TestCase):
         view()
 
         self.assertEqual(
-            ["doc2", "doc3", "doc1",], self.folder.objectIds(),  # noqa
+            [
+                "doc2",
+                "doc3",
+                "doc1",
+            ],
+            self.folder.objectIds(),  # noqa
         )
 
         # upgrade helper should ensure bytestring ids in python2 and do nothing

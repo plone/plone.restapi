@@ -4,8 +4,7 @@ from plone.app.multilingual.interfaces import ITranslationLocator
 
 
 class TranslationLocator(Service):
-    """ Get translation locator placements information
-    """
+    """Get translation locator placements information"""
 
     def reply(self):
         target_language = self.request.form["target_language"]

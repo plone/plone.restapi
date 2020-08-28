@@ -13,8 +13,7 @@ from zope.interface import Interface
 
 
 class NavigationTreeQueryBuilder(NavtreeQueryBuilder):
-    """Build a folder tree query
-    """
+    """Build a folder tree query"""
 
     def __init__(self, context, depth):
         NavtreeQueryBuilder.__init__(self, context)
@@ -26,8 +25,7 @@ class NavigationTreeQueryBuilder(NavtreeQueryBuilder):
 
 
 class CustomNavtreeStrategy(SitemapNavtreeStrategy):
-    """The navtree strategy used for the default navigation portlet
-    """
+    """The navtree strategy used for the default navigation portlet"""
 
     def __init__(self, context):
         SitemapNavtreeStrategy.__init__(self, context, None)

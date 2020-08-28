@@ -8,8 +8,7 @@ from zope.component import queryMultiAdapter
 
 
 class ContentPatch(Service):
-    """Updates an existing content object.
-    """
+    """Updates an existing content object."""
 
     def reply(self):
 
