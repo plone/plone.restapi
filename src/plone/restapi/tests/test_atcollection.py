@@ -96,8 +96,8 @@ class TestATContentSerializer(unittest.TestCase):
         )
 
     def test_serializer_includes_collection_fullobjects(self):
-        """ when using the fullobjects parameter, the collection needs to
-            serialize its contents with the standard object serializer"""
+        """when using the fullobjects parameter, the collection needs to
+        serialize its contents with the standard object serializer"""
         folder = self.portal[
             self.portal.invokeFactory("ATTestFolder", id="folder", title="Test Folder")
         ]

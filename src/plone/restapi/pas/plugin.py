@@ -27,8 +27,7 @@ manage_addJWTAuthenticationPlugin = PageTemplateFile(
 
 
 def addJWTAuthenticationPlugin(self, id_, title=None, REQUEST=None):
-    """Add a JWT authentication plugin
-    """
+    """Add a JWT authentication plugin"""
     plugin = JWTAuthenticationPlugin(id_, title)
     self._setObject(plugin.getId(), plugin)
 
@@ -42,8 +41,7 @@ def addJWTAuthenticationPlugin(self, id_, title=None, REQUEST=None):
 
 @implementer(IAuthenticationPlugin, IChallengePlugin, IExtractionPlugin)
 class JWTAuthenticationPlugin(BasePlugin):
-    """Plone PAS plugin for authentication with JSON web tokens (JWT).
-    """
+    """Plone PAS plugin for authentication with JSON web tokens (JWT)."""
 
     meta_type = "JWT Authentication Plugin"
     security = ClassSecurityInfo()
@@ -127,8 +125,7 @@ class JWTAuthenticationPlugin(BasePlugin):
 
     @postonly
     def manage_updateConfig(self, REQUEST):
-        """Update configuration of JWT Authentication Plugin.
-        """
+        """Update configuration of JWT Authentication Plugin."""
         response = REQUEST.response
 
         self.token_timeout = int(REQUEST.form.get("token_timeout", self.token_timeout))

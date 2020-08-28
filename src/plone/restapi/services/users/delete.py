@@ -8,8 +8,7 @@ from zope.publisher.interfaces import IPublishTraverse
 
 @implementer(IPublishTraverse)
 class UsersDelete(Service):
-    """Deletes a user.
-    """
+    """Deletes a user."""
 
     def __init__(self, context, request):
         super(UsersDelete, self).__init__(context, request)

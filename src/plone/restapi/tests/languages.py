@@ -21,8 +21,7 @@ class ModifiableLanguages(object):
     """
 
     def getLanguages(self, combined=False):
-        """Return a sequence of Language objects for available languages.
-        """
+        """Return a sequence of Language objects for available languages."""
         languages = _languagelist.copy()
         if combined:
             languages.update(_combinedlanguagelist.copy())
@@ -33,8 +32,7 @@ class ModifiableLanguages(object):
         return languages
 
     def getLanguageListing(self, combined=False):
-        """Return a sequence of language code and language name tuples.
-        """
+        """Return a sequence of language code and language name tuples."""
         languages = _languagelist.copy()
         if combined:
             languages.update(_combinedlanguagelist.copy())

@@ -28,8 +28,7 @@ except ImportError:  # pragma: no cover
 
 @implementer(IPublishTraverse)
 class UsersPatch(Service):
-    """Updates an existing user.
-    """
+    """Updates an existing user."""
 
     def __init__(self, context, request):
         super(UsersPatch, self).__init__(context, request)

@@ -74,14 +74,12 @@ class SerializeVocabLikeToJson(object):
 
 @adapter(IVocabulary, Interface)
 class SerializeVocabularyToJson(SerializeVocabLikeToJson):
-    """Serializes IVocabulary to JSON.
-    """
+    """Serializes IVocabulary to JSON."""
 
 
 @adapter(IIterableSource, Interface)
 class SerializeSourceToJson(SerializeVocabLikeToJson):
-    """Serializes IIterableSource to JSON.
-    """
+    """Serializes IIterableSource to JSON."""
 
 
 @implementer(ISerializeToJson)

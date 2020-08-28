@@ -125,7 +125,8 @@ class TestCommentsSerializers(TestCase):
 
         serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
         self.assertEqual(
-            None, serializer().get("author_image"),
+            None,
+            serializer().get("author_image"),
         )
 
     def test_comment_with_mimetype_text_plain(self):
@@ -140,7 +141,8 @@ class TestCommentsSerializers(TestCase):
 
         # serializer should return HTML with a clickable link
         self.assertEqual(
-            "Hey, I am plain text!", serializer()["text"]["data"],
+            "Hey, I am plain text!",
+            serializer()["text"]["data"],
         )
         # serializer should return mimetype = text/x-web-intelligent
         self.assertEqual("text/plain", serializer()["text"]["mime-type"])

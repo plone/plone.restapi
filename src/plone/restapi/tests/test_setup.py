@@ -25,8 +25,8 @@ class TestInstall(unittest.TestCase):
         self.portal = self.layer["portal"]
 
     def test_product_is_installed(self):
-        """ Validate that our products GS profile has been run and the product
-            installed
+        """Validate that our products GS profile has been run and the product
+        installed
         """
         if HAS_INSTALLER:
             qi = get_installer(self.portal)
