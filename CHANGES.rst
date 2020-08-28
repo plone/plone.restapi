@@ -13,12 +13,11 @@ Changelog
 
 New features:
 
-
-- Improved blocks transformers: now we can handle generic transformers 
+- Improved blocks transformers: now we can handle generic transformers
   [cekk]
-- Add generic block transformer for handle resolveuid in all blocks that have a *url* or *href* field 
+- Add generic block transformer for handle resolveuid in all blocks that have a *url* or *href* field
   [cekk]
-- Add "smart fields" concept: if block has a *searchableText* field, this will be indexed in Plone 
+- Add "smart fields" concept: if block has a *searchableText* field, this will be indexed in Plone
   [cekk, tiberiuichim] (#952)
 
 
@@ -73,6 +72,13 @@ New features:
 - Resolve links in blocks to UIDs during deserialization and back to paths during
   serialization.
   [buchi,timo,cekk] (#808)
+
+6.14.0 (2020-08-28)
+-------------------
+
+New features:
+
+- Add @types endpoint to be able to add/edit/delete CT schema [Petchesi-Iulian, avoinea] (#951)
 
 
 6.13.8 (2020-08-20)
