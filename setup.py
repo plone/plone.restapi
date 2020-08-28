@@ -88,7 +88,7 @@ setup(
         "python-dateutil",
         "plone.behavior>=1.1",  # adds name to behavior directive
         "plone.rest >= 1.0a6",  # json renderer moved to plone.restapi
-        "plone.schema >= 1.2.0",  # new json field
+        "plone.schema >= 1.2.1",  # new/fixed json field
         "PyJWT",
         "pytz",
     ],

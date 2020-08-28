@@ -1,0 +1,10 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+  "behavior": "plone.dexterity.schema.generated", 
+  "description": "Contact information", 
+  "fields": [], 
+  "id": "contact_info", 
+  "title": "Contact Info"
+}
