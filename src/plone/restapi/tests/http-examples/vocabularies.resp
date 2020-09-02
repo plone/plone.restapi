@@ -3,18 +3,6 @@ Content-Type: application/json
 
 [
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.content.ValidAddableTypes", 
-    "title": "plone.app.content.ValidAddableTypes"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.contentrules.events", 
-    "title": "plone.contentrules.events"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/Behaviors", 
-    "title": "Behaviors"
-  }, 
-  {
     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableContentLanguages", 
     "title": "plone.app.vocabularies.AvailableContentLanguages"
   }, 
@@ -141,6 +129,22 @@ Content-Type: application/json
   {
     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ImagesScales", 
     "title": "plone.app.vocabularies.ImagesScales"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.MetadataFields", 
+    "title": "plone.app.vocabularies.MetadataFields"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.content.ValidAddableTypes", 
+    "title": "plone.app.content.ValidAddableTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.contentrules.events", 
+    "title": "plone.contentrules.events"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/Behaviors", 
+    "title": "Behaviors"
   }, 
   {
     "@id": "http://localhost:55001/plone/@vocabularies/Fields", 
