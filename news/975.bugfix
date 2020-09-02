@@ -1,0 +1,2 @@
+Fixed deprecation warnings for ``zope.site.hooks`` and ``CMFPlone.interfaces.ILanguageSchema``.
+[maurits]

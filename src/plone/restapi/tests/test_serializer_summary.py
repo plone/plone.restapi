@@ -13,7 +13,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
-from zope.site.hooks import getSite
+from zope.component.hooks import getSite
 
 import Missing
 import unittest
