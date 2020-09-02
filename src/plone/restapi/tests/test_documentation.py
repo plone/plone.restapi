@@ -33,7 +33,7 @@ from six.moves import range
 from zope.component import createObject
 from zope.component import getUtility
 from zope.interface import alsoProvides
-from zope.site.hooks import getSite
+from zope.component.hooks import getSite
 
 import collections
 import json
