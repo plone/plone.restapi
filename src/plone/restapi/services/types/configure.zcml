@@ -11,6 +11,39 @@
     permission="zope2.View"
     />
 
+  <plone:service
+    method="PATCH"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".update.TypesUpdate"
+    name="@types"
+    permission="plone.app.controlpanel.Overview"
+    />
+
+  <plone:service
+    method="POST"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".add.TypesPost"
+    name="@types"
+    permission="plone.app.controlpanel.Overview"
+    />
+
+  <plone:service
+    method="DELETE"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".delete.TypesDelete"
+    name="@types"
+    permission="plone.app.controlpanel.Overview"
+    />
+
+  <plone:service
+    method="PUT"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".put.TypesPut"
+    name="@types"
+    permission="plone.app.controlpanel.Overview"
+    />
+
+
   <adapter factory=".get.TypesInfo" name="types"/>
 
 </configure>
