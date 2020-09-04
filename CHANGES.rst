@@ -8,11 +8,73 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0a5 (2020-08-21)
+--------------------
+
+New features:
+
+- Improved blocks transformers: now we can handle generic transformers
+  [cekk]
+- Add generic block transformer for handle resolveuid in all blocks that have a *url* or *href* field
+  [cekk]
+- Add "smart fields" concept: if block has a *searchableText* field, this will be indexed in Plone
+  [cekk, tiberiuichim] (#952)
+
+
+7.0.0a4 (2020-05-15)
+--------------------
+
+New features:
+
+
+- Replace internal links to files in blocks with a download url if the user has no edit permissions [csenger] (#930)
+
+
+7.0.0a3 (2020-05-13)
+--------------------
+
+New features:
+
+
+- In block text indexing, query for IBlockSearchableText named adapters to allow
+  extraction from any block type. This avoids hardcoding for the 'text' block type.
+  [tiberiuichim] (#917)
+
+
+7.0.0a2 (2020-05-12)
+--------------------
+
+New features:
+
+
+- Added ``IBlockFieldDeserializationTransformer`` and its counterpart,
+  ``IBlockFieldSerializationTransformer`` concepts, use subscribers to
+  convert/adjust value of blocks on serialization/deserialization, this enables
+  an extensible mechanism to transform block values when saving content.
+
+  Added an html block deserializer transformer, it will clean the
+  content of the "html" block according to portal_transform x-html-safe settings.
+
+  Added an image block deserializer transformer, it will use resolveuid mechanism
+  to transform the url field to a UID of content.
+
+  Move the resolveuid code from the dexterity field deserializer to a dedicated
+  block converter adapter, using the above mechanism.
+  [tiberiuichim] (#915)
+
+
+7.0.0a1 (2020-05-11)
+--------------------
+
+New features:
+
+
+- Add @types endpoint to be able to add/edit/delete CT schema [Petchesi-Iulian, avoinea] (#951)
+
 6.14.0 (2020-08-28)
 -------------------
 
 New features:
-
 
 - Add @types endpoint to be able to add/edit/delete CT schema [Petchesi-Iulian, avoinea] (#951)
 
