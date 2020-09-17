@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from AccessControl import getSecurityManager
+from AccessControl.SecurityManagement import newSecurityManager
+from AccessControl.SecurityManagement import setSecurityManager
+from AccessControl.User import UnrestrictedUser as BaseUnrestrictedUser
 from DateTime import DateTime
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -9,6 +13,7 @@ from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import WorkflowException
 from zExceptions import BadRequest
+from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.i18n import translate
 from zope.interface import alsoProvides
@@ -18,6 +23,14 @@ from zope.publisher.interfaces import NotFound
 
 import plone.protect.interfaces
 import six
+
+
+class UnrestrictedUser(BaseUnrestrictedUser):
+    """Unrestricted user that still has an id."""
+
+    def getId(self):
+        """Return the ID of the user."""
+        return self.getUserName()
 
 
 @implementer(IPublishTraverse)
@@ -77,20 +90,40 @@ class WorkflowTransition(Service):
             self.request.response.setStatus(400)
             return dict(error=dict(type="Bad Request", message=str(e)))
 
-        history = self.wftool.getInfoFor(self.context, "review_history")
-        action = history[-1]
-        if six.PY2:
-            action["title"] = self.context.translate(
-                self.wftool.getTitleForStateOnType(
-                    action["review_state"], self.context.portal_type
-                ).decode("utf8")
+        sm = getSecurityManager()
+        portal = getMultiAdapter(
+            (self.context, self.request), name="plone_portal_state"
+        ).portal()
+        try:
+            tmp_user = UnrestrictedUser(
+                sm.getUser().getId(), "", ("manage", "Manager"), ""
             )
-        else:
-            action["title"] = self.context.translate(
-                self.wftool.getTitleForStateOnType(
-                    action["review_state"], self.context.portal_type
+            tmp_user = tmp_user.__of__(portal.acl_users)
+            newSecurityManager(None, tmp_user)
+            history = self.wftool.getInfoFor(self.context, "review_history")
+            action = history[-1]
+            if six.PY2:
+                action["title"] = self.context.translate(
+                    self.wftool.getTitleForStateOnType(
+                        action["review_state"], self.context.portal_type
+                    ).decode("utf8")
+                )
+            else:
+                action["title"] = self.context.translate(
+                    self.wftool.getTitleForStateOnType(
+                        action["review_state"], self.context.portal_type
+                    )
+                )
+        except WorkflowException as e:
+            self.request.response.setStatus(400)
+            action = dict(
+                error=dict(
+                    type="WorkflowException",
+                    message=translate(str(e), context=self.request),
                 )
             )
+        finally:
+            setSecurityManager(sm)
 
         return json_compatible(action)
 
