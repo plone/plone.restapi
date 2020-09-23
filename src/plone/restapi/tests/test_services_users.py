@@ -208,7 +208,11 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(201, response.status_code)
-        self.assertTrue("To: howard.zinn@example.com" in self.mailhost.messages[0])
+        msg = self.mailhost.messages[0]
+        if isinstance(msg, bytes) and bytes is not str:
+            # Python 3 with Products.MailHost 4.10+
+            msg = msg.decode("utf-8")
+        self.assertTrue("To: howard.zinn@example.com" in msg)
 
     def test_add_user_send_properties(self):
         response = self.api_session.post(
@@ -822,7 +826,11 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(201, response.status_code)
-        self.assertTrue("To: avram.chomsky@example.com" in self.mailhost.messages[0])
+        msg = self.mailhost.messages[0]
+        if isinstance(msg, bytes) and bytes is not str:
+            # Python 3 with Products.MailHost 4.10+
+            msg = msg.decode("utf-8")
+        self.assertTrue("To: avram.chomsky@example.com" in msg)
 
     def test_anonymous_can_set_password_with_enable_user_pwd_choice(self):
         security_settings = getAdapter(self.portal, ISecuritySchema)
