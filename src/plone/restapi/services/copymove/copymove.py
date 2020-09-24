@@ -25,23 +25,22 @@ class BaseCopyMove(Service):
 
     def get_object(self, key):
         """Get an object by url, path or UID."""
-        if isinstance(key, six.string_types):
-            if key.startswith(self.portal_url):
-                # Resolve by URL
-                key = key[len(self.portal_url) + 1 :]
-                if six.PY2:
-                    key = key.encode("utf8")
-                return self.portal.restrictedTraverse(key, None)
-            elif key.startswith("/"):
-                if six.PY2:
-                    key = key.encode("utf8")
-                # Resolve by path
-                return self.portal.restrictedTraverse(key.lstrip("/"), None)
-            else:
-                # Resolve by UID
-                brain = self.catalog(UID=key)
-                if brain:
-                    return brain[0].getObject()
+        if key.startswith(self.portal_url):
+            # Resolve by URL
+            key = key[len(self.portal_url) + 1 :]
+            if six.PY2:
+                key = key.encode("utf8")
+            return self.portal.restrictedTraverse(key, None)
+        elif key.startswith("/"):
+            if six.PY2:
+                key = key.encode("utf8")
+            # Resolve by path
+            return self.portal.restrictedTraverse(key.lstrip("/"), None)
+        else:
+            # Resolve by UID
+            brain = self.catalog(UID=key)
+            if brain:
+                return brain[0].getObject()
 
     def reply(self):
         # return 401/403 Forbidden if the user has no permission
