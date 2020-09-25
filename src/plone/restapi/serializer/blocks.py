@@ -103,6 +103,6 @@ class TextBlockSerializer(object):
         for entity in entity_map.values():
             if entity.get("type") != "LINK":
                 continue
-            href = entity.get("data", {}).get("href", "")
-            entity["data"]["href"] = uid_to_url(href)
+            url = entity.get("data", {}).get("url", "")
+            entity["data"]["url"] = uid_to_url(url)
         return value
