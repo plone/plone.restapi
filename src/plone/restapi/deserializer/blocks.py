@@ -118,7 +118,7 @@ class TextBlockDeserializer(object):
             if entity.get("type") == "LINK":
                 href = entity.get("data", {}).get("url", "")
                 entity["data"]["url"] = path2uid(context=self.context, link=href)
-                print(
+                print(  # noqa
                     "SERIALIZE TEXT BLOCK: {} -> {}".format(href, entity["data"]["url"])
                 )
         return block
@@ -160,5 +160,5 @@ class ImageBlockDeserializer(object):
     def __call__(self, block):
         url = block.get("url", "")
         block["url"] = path2uid(context=self.context, link=url)
-        print("SERIALIZE IMAGE: {} -> {}".format(url, block["url"]))
+        print("SERIALIZE IMAGE: {} -> {}".format(url, block["url"]))  # noqa
         return block
