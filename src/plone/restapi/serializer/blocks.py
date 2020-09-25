@@ -98,11 +98,13 @@ class TextBlockSerializer(object):
         self.request = request
 
     def __call__(self, value):
-        # Resolve UID links
+        # Resolve UID links:
+        #   ../resolveuid/023c61b44e194652804d05a15dc126f4
+        #   ->
+        #   http://localhost:55001/plone/link-target
         entity_map = value.get("text", {}).get("entityMap", {})
         for entity in entity_map.values():
-            if entity.get("type") != "LINK":
-                continue
-            url = entity.get("data", {}).get("url", "")
-            entity["data"]["url"] = uid_to_url(url)
+            if entity.get("type") == "LINK":
+                url = entity.get("data", {}).get("url", "")
+                entity["data"]["url"] = uid_to_url(url)
         return value

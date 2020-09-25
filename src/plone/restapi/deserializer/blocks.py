@@ -111,8 +111,9 @@ class TextBlockDeserializer(object):
 
     def __call__(self, block):
         # Convert absolute links to resolveuid
-        # Assumes in-place mutations
-
+        #   http://localhost:55001/plone/link-target
+        #   ->
+        #   ../resolveuid/023c61b44e194652804d05a15dc126f4
         entity_map = block.get("text", {}).get("entityMap", {})
         for entity in entity_map.values():
             if entity.get("type") == "LINK":
