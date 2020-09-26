@@ -31,8 +31,7 @@ except pkg_resources.DistributionNotFound:
 
 
 class FolderPost(Service):
-    """Creates a new content object.
-    """
+    """Creates a new content object."""
 
     def reply(self):
         data = json_body(self.request)

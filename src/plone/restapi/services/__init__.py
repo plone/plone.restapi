@@ -11,8 +11,7 @@ _no_content_marker = object()
 
 
 class Service(RestService):
-    """Base class for Plone REST API services
-    """
+    """Base class for Plone REST API services"""
 
     content_type = "application/json"
 
@@ -32,7 +31,7 @@ class Service(RestService):
 
     def reply(self):
         """Process the request and return a JSON serializable data structure or
-           the no content marker if the response body should be empty.
+        the no content marker if the response body should be empty.
         """
         return _no_content_marker
 

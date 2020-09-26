@@ -12,8 +12,7 @@ SHORT_NEW_NAME = "volto.blocks"
 
 
 def rename_iface_to_name_in_blocks_behavior(setup_context):
-    """Rename iface name to the short name in blocks
-    """
+    """Rename iface name to the short name in blocks"""
     pt = api.portal.get_tool("portal_types")
 
     for _type in pt.objectIds():

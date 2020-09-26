@@ -1,17 +1,21 @@
 # -*- coding: utf-8 -*-
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
-from plone.restapi.types.utils import get_jsonschema_for_portal_type
+from plone.restapi.types.utils import get_info_for_type
+from plone.restapi.types.utils import get_info_for_field
+from plone.restapi.types.utils import get_info_for_fieldset
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
 from zExceptions import Unauthorized
 from zope.component import adapter
-from zope.component import getMultiAdapter
+from zope.component import getMultiAdapter, queryMultiAdapter
 from zope.component import getUtility
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.interface import noLongerProvides
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
 
@@ -71,7 +75,6 @@ class TypesInfo(object):
         return result
 
 
-# @implementer(IExpandableElement)
 @implementer(IPublishTraverse)
 class TypesGet(Service):
     def __init__(self, context, request):
@@ -94,23 +97,86 @@ class TypesGet(Service):
         return self.params[0]
 
     def reply(self):
-        if self.params and len(self.params) > 0:
-            # Return schema for a specific type
-            check_security(self.context)
-            self.content_type = "application/json+schema"
-            try:
-                portal_type = self.params.pop()
-                return get_jsonschema_for_portal_type(
-                    portal_type, self.context, self.request
-                )
-            except KeyError:
-                self.content_type = "application/json"
-                self.request.response.setStatus(404)
-                return {
-                    "type": "NotFound",
-                    "message": 'Type "{}" could not be found.'.format(portal_type),
-                }
+        if not self.params:
+            # List type info, including addable_types
+            info = TypesInfo(self.context, self.request)
+            return info(expand=True)["types"]
 
-        # List type info, including addable_types
-        info = TypesInfo(self.context, self.request)
-        return info(expand=True)["types"]
+        if len(self.params) == 1:
+            return self.reply_for_type()
+
+        if len(self.params) == 2:
+            return self.reply_for_field()
+
+    def reply_for_type(self):
+        check_security(self.context)
+        portal_type = self.params.pop()
+
+        # Make sure we get the right dexterity-types adapter
+        if IPloneRestapiLayer.providedBy(self.request):
+            noLongerProvides(self.request, IPloneRestapiLayer)
+
+        try:
+            dtool = queryMultiAdapter(
+                (self.context, self.request), name="dexterity-types"
+            )
+            dtype = dtool.publishTraverse(self.request, portal_type)
+        except Exception:
+            dtype = self.context
+
+        try:
+            schema = get_info_for_type(dtype, self.request, portal_type)
+        except KeyError:
+            self.content_type = "application/json"
+            self.request.response.setStatus(404)
+            return {
+                "type": "NotFound",
+                "message": "Type '%s' could not be found." % portal_type,
+            }
+
+        self.content_type = "application/json+schema"
+        return schema
+
+    def reply_for_field(self):
+        check_security(self.context)
+        name = self.params[0]
+        field_name = self.params[1]
+
+        # Make sure we get the right dexterity-types adapter
+        if IPloneRestapiLayer.providedBy(self.request):
+            noLongerProvides(self.request, IPloneRestapiLayer)
+
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types"
+        )
+        context = context.publishTraverse(self.request, name)
+
+        try:
+            # Get field
+            return get_info_for_field(context, self.request, field_name)
+        except (KeyError, AttributeError):
+            # Get fieldset
+            return self.reply_for_fieldset()
+
+    def reply_for_fieldset(self):
+        name = self.params[0]
+        field_name = self.params[1]
+
+        # Make sure we get the right dexterity-types adapter
+        if IPloneRestapiLayer.providedBy(self.request):
+            noLongerProvides(self.request, IPloneRestapiLayer)
+
+        context = queryMultiAdapter(
+            (self.context, self.request), name="dexterity-types"
+        )
+        context = context.publishTraverse(self.request, name)
+
+        try:
+            return get_info_for_fieldset(context, self.request, field_name)
+        except KeyError:
+            self.content_type = "application/json"
+            self.request.response.setStatus(404)
+            return {
+                "type": "NotFound",
+                "message": "Field(set) '%s' could not be found." % field_name,
+            }

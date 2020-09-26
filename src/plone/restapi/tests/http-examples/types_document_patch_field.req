@@ -1,0 +1,12 @@
+PATCH /plone/@types/Document/author_email HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "description": "The e-mail address of the author",
+    "maxLength": 20,
+    "minLength": 10,
+    "required": true,
+    "title": "Author e-mail"
+}

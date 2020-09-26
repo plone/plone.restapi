@@ -26,8 +26,7 @@ marker = object()
 @implementer(IDeserializeFromJson)
 @adapter(IRoleManager, Interface)
 class DeserializeFromJson(object):
-    """JSON deserializer for local roles
-    """
+    """JSON deserializer for local roles"""
 
     def __init__(self, context, request):
         self.context = context

@@ -89,8 +89,7 @@ class DefaultJSONSummarySerializer(object):
 @implementer(ISerializeToJsonSummary)
 @adapter(IPloneSiteRoot, Interface)
 class SiteRootJSONSummarySerializer(object):
-    """ISerializeToJsonSummary adapter for the Plone Site root.
-    """
+    """ISerializeToJsonSummary adapter for the Plone Site root."""
 
     def __init__(self, context, request):
         self.context = context

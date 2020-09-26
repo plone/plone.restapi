@@ -13,8 +13,7 @@ SHORT_NEW_NAME = "volto.blocks"
 
 
 def rename_tiles_to_blocks(setup_context):
-    """Rename tiles and tiles_layout fields from Tiles behavior to blocks and blocks_layout
-    """
+    """Rename tiles and tiles_layout fields from Tiles behavior to blocks and blocks_layout"""
     pt = api.portal.get_tool("portal_types")
 
     types_with_tiles_behavior = []
