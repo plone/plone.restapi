@@ -33,7 +33,7 @@ from six.moves import range
 from zope.component import createObject
 from zope.component import getUtility
 from zope.interface import alsoProvides
-from zope.site.hooks import getSite
+from zope.component.hooks import getSite
 
 import collections
 import json
@@ -146,6 +146,50 @@ def save_request_and_response_for_docs(name, response):
                 resp.write("{}: {}\n".format(key.title(), value))
         resp.write("\n")
         resp.write(response.text)
+
+
+def save_request_for_docs(name, response):
+    if six.PY2:
+        open_kw = {}
+    else:
+        open_kw = {"newline": "\n"}
+    filename = "{}/{}".format(base_path, "%s.req" % name)
+    with open(filename, "w", **open_kw) as req:
+        req.write(
+            "{} {} HTTP/1.1\n".format(
+                response.request.method, response.request.path_url
+            )
+        )
+        ordered_request_headers = collections.OrderedDict(
+            sorted(response.request.headers.items())
+        )
+        for key, value in ordered_request_headers.items():
+            if key.lower() in REQUEST_HEADER_KEYS:
+                req.write("{}: {}\n".format(key.title(), value))
+        if response.request.body:
+            # If request has a body, make sure to set Content-Type header
+            if "content-type" not in REQUEST_HEADER_KEYS:
+                content_type = response.request.headers["Content-Type"]
+                req.write("Content-Type: %s\n" % content_type)
+
+            req.write("\n")
+
+            # Pretty print JSON request body
+            if content_type == "application/json":
+                json_body = json.loads(response.request.body)
+                body = pretty_json(json_body)
+                # Make sure Content-Length gets updated, just in case we
+                # ever decide to dump that header
+                response.request.prepare_body(data=body, files=None)
+
+            req.flush()
+            if isinstance(response.request.body, six.text_type) or not hasattr(
+                req, "buffer"
+            ):
+                req.write(response.request.body)
+            else:
+                req.buffer.seek(0, 2)
+                req.buffer.write(response.request.body)
 
 
 class TestDocumentationBase(unittest.TestCase):
@@ -475,9 +519,155 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@types")
         save_request_and_response_for_docs("types", response)
 
-    def test_documentation_types_document(self):
-        response = self.api_session.get("@types/Document")
+    def test_documentation_types_document_crud(self):
+        #
+        # POST
+        #
+
+        # Add fieldset
+        response = self.api_session.post(
+            "/@types/Document",
+            json={
+                "factory": "fieldset",
+                "title": "Contact Info",
+                "description": "Contact information",
+            },
+        )
+        save_request_and_response_for_docs("types_document_post_fieldset", response)
+
+        # Add field
+        response = self.api_session.post(
+            "/@types/Document",
+            json={
+                "factory": "Email",
+                "title": "Author email",
+                "description": "Email of the author",
+                "required": True,
+            },
+        )
+        save_request_and_response_for_docs("types_document_post_field", response)
+
+        #
+        # GET
+        #
+
+        # Document
+        response = self.api_session.get("/@types/Document")
         save_request_and_response_for_docs("types_document", response)
+        doc_json = json.loads(response.content)
+
+        # Get fieldset
+        response = self.api_session.get("/@types/Document/contact_info")
+        save_request_and_response_for_docs("types_document_get_fieldset", response)
+
+        # Get field
+        response = self.api_session.get("/@types/Document/author_email")
+        save_request_and_response_for_docs("types_document_get_field", response)
+
+        #
+        # PATCH
+        #
+
+        # Update Document defaults
+        response = self.api_session.patch(
+            "/@types/Document",
+            json={
+                "properties": {
+                    "author_email": {
+                        "default": "foo@bar.com",
+                        "minLength": 5,
+                        "maxLength": 20,
+                    }
+                }
+            },
+        )
+        save_request_and_response_for_docs("types_document_patch_properites", response)
+
+        # Change field tab / order
+        response = self.api_session.patch(
+            "/@types/Document",
+            json={
+                "fieldsets": [
+                    {
+                        "id": "contact_info",
+                        "title": "Contact info",
+                        "fields": ["author_email"],
+                    }
+                ]
+            },
+        )
+        save_request_and_response_for_docs("types_document_patch_fieldsets", response)
+
+        # Update fieldset settings
+        response = self.api_session.patch(
+            "/@types/Document/contact_info",
+            json={
+                "title": "Contact information",
+                "description": "Contact information",
+                "fields": ["author_email"],
+            },
+        )
+        save_request_and_response_for_docs("types_document_patch_fieldset", response)
+
+        # Update field settings
+        response = self.api_session.patch(
+            "/@types/Document/author_email",
+            json={
+                "title": "Author e-mail",
+                "description": "The e-mail address of the author",
+                "minLength": 10,
+                "maxLength": 20,
+                "required": True,
+            },
+        )
+        save_request_and_response_for_docs("types_document_patch_field", response)
+
+        doc_json["layouts"] = ["thumbnail_view", "table_view"]
+        doc_json["fieldsets"] = [
+            {
+                "id": "author",
+                "title": "Contact the author",
+                "fields": [
+                    "author_email",
+                    "author_url",
+                    "author_name",
+                ],
+            },
+            {"id": "contact_info", "title": "Contact info", "fields": []},
+        ]
+
+        doc_json["properties"]["author_name"] = {
+            "description": "Name of the author",
+            "factory": "Text line (String)",
+            "title": "Author name",
+        }
+
+        doc_json["properties"]["author_url"] = {
+            "description": "Author webpage",
+            "factory": "URL",
+            "title": "Author website",
+            "minLength": 5,
+            "maxLength": 30,
+        }
+
+        response = self.api_session.put("/@types/Document", json=doc_json)
+        save_request_and_response_for_docs("types_document_put", response)
+
+        #
+        # DELETE
+        #
+
+        # Remove field
+        response = self.api_session.delete(
+            "/@types/Document/author_email",
+        )
+        save_request_and_response_for_docs("types_document_delete_field", response)
+
+        # Remove fieldset
+        response = self.api_session.delete(
+            "/@types/Document/contact_info",
+        )
+        save_request_and_response_for_docs("types_document_delete_fieldset", response)
 
     def test_documentation_jwt_login(self):
         self.portal.acl_users.jwt_auth._secret = "secret"
@@ -786,10 +976,10 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_users_update_portrait(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
             }
         }
         api.user.create(email="noam.chomsky@example.com", username="noam")
@@ -805,10 +995,10 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_users_update_portrait_with_scale(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
                 "scale": True,
             }
         }
@@ -1048,6 +1238,10 @@ class TestDocumentation(TestDocumentationBase):
             "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes"
         )
         save_request_and_response_for_docs("vocabularies_get", response)
+
+    def test_documentation_vocabularies_get_fields(self):
+        response = self.api_session.get("/@vocabularies/Fields")
+        save_request_and_response_for_docs("vocabularies_get_fields", response)
 
     def test_documentation_vocabularies_get_filtered_by_title(self):
         response = self.api_session.get(
@@ -1342,10 +1536,18 @@ class TestDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("querystringsearch_post", response)
 
+    def test_system_get(self):
+        response = self.api_session.get("/@system")
+        save_request_for_docs("system_get", response)
+
+    def test_database_get(self):
+        response = self.api_session.get("/@database")
+        save_request_for_docs("database_get", response)
+
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
 
-    layer = layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
         super(TestDocumentationMessageTranslations, self).setUp()
@@ -1536,15 +1738,64 @@ class TestCommenting(TestDocumentationBase):
         response = self.api_session.get("/front-page?expand=breadcrumbs,workflow")
         save_request_and_response_for_docs("expansion", response)
 
-    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
+
+@unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
+class TestControlPanelDocumentation(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
     def test_controlpanels_get_listing(self):
         response = self.api_session.get("/@controlpanels")
         save_request_and_response_for_docs("controlpanels_get", response)
 
-    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
     def test_controlpanels_get_item(self):
         response = self.api_session.get("/@controlpanels/editing")
         save_request_and_response_for_docs("controlpanels_get_item", response)
+
+    def test_controlpanels_get_dexterity(self):
+        response = self.api_session.get("/@controlpanels/dexterity-types")
+        save_request_and_response_for_docs("controlpanels_get_dexterity", response)
+
+    def test_controlpanels_crud_dexterity(self):
+        # POST
+        response = self.api_session.post(
+            "/@controlpanels/dexterity-types",
+            json={
+                "title": "My Custom Content Type",
+                "description": "A custom content-type",
+            },
+        )
+        save_request_and_response_for_docs(
+            "controlpanels_post_dexterity_item", response
+        )
+
+        # GET
+        response = self.api_session.get(
+            "/@controlpanels/dexterity-types/my_custom_content_type"
+        )
+        save_request_and_response_for_docs("controlpanels_get_dexterity_item", response)
+
+        # PATCH
+        response = self.api_session.patch(
+            "/@controlpanels/dexterity-types/my_custom_content_type",
+            json={
+                "title": "My Content Type",
+                "description": "A content-type",
+                "plone.richtext": True,
+                "plone.versioning": True,
+            },
+        )
+        save_request_and_response_for_docs(
+            "controlpanels_patch_dexterity_item", response
+        )
+
+        # DELETE
+        response = self.api_session.delete(
+            "/@controlpanels/dexterity-types/my_custom_content_type"
+        )
+        save_request_and_response_for_docs(
+            "controlpanels_delete_dexterity_item", response
+        )
 
 
 class TestPortlets(unittest.TestCase):
@@ -1632,6 +1883,7 @@ class TestPAMDocumentation(TestDocumentationBase):
         language_tool = api.portal.get_tool("portal_languages")
         language_tool.addSupportedLanguage("en")
         language_tool.addSupportedLanguage("es")
+        language_tool.addSupportedLanguage("de")
         applyProfile(self.portal, "plone.app.multilingual:default")
 
         en_id = self.portal["en"].invokeFactory(
@@ -1685,3 +1937,26 @@ class TestPAMDocumentation(TestDocumentationBase):
             json={"language": "es"},
         )
         save_request_and_response_for_docs("translations_delete", response)
+
+    def test_documentation_translations_link_on_post(self):
+        response = self.api_session.post(
+            "{}/de".format(self.portal.absolute_url()),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My German Document",
+                "translation_of": self.es_content.UID(),
+                "language": "de",
+            },
+        )
+        save_request_and_response_for_docs("translations_link_on_post", response)
+
+    def test_documentation_translation_locator(self):
+        response = self.api_session.get(
+            "{}/@translation-locator?target_language=de".format(
+                self.es_content.absolute_url()
+            ),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        save_request_and_response_for_docs("translation_locator", response)

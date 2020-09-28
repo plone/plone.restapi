@@ -31,8 +31,7 @@ class TileSummarySerializeToJson(object):
 
 
 def get_jsonschema_for_tile(tile, context, request):
-    """Build a complete JSON schema for the given tile.
-    """
+    """Build a complete JSON schema for the given tile."""
     schema = tile.schema
 
     fieldsets = utils.get_fieldsets(context, request, schema)

@@ -8,6 +8,333 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0a5 (2020-08-21)
+--------------------
+
+New features:
+
+- Improved blocks transformers: now we can handle generic transformers
+  [cekk]
+- Add generic block transformer for handle resolveuid in all blocks that have a *url* or *href* field
+  [cekk]
+- Add "smart fields" concept: if block has a *searchableText* field, this will be indexed in Plone
+  [cekk, tiberiuichim] (#952)
+
+
+7.0.0a4 (2020-05-15)
+--------------------
+
+New features:
+
+
+- Replace internal links to files in blocks with a download url if the user has no edit permissions [csenger] (#930)
+
+
+7.0.0a3 (2020-05-13)
+--------------------
+
+New features:
+
+
+- In block text indexing, query for IBlockSearchableText named adapters to allow
+  extraction from any block type. This avoids hardcoding for the 'text' block type.
+  [tiberiuichim] (#917)
+
+
+7.0.0a2 (2020-05-12)
+--------------------
+
+New features:
+
+
+- Added ``IBlockFieldDeserializationTransformer`` and its counterpart,
+  ``IBlockFieldSerializationTransformer`` concepts, use subscribers to
+  convert/adjust value of blocks on serialization/deserialization, this enables
+  an extensible mechanism to transform block values when saving content.
+
+  Added an html block deserializer transformer, it will clean the
+  content of the "html" block according to portal_transform x-html-safe settings.
+
+  Added an image block deserializer transformer, it will use resolveuid mechanism
+  to transform the url field to a UID of content.
+
+  Move the resolveuid code from the dexterity field deserializer to a dedicated
+  block converter adapter, using the above mechanism.
+  [tiberiuichim] (#915)
+
+
+7.0.0a1 (2020-05-11)
+--------------------
+
+New features:
+
+
+- Resolve links in blocks to UIDs during deserialization and back to paths during
+  serialization.
+  [buchi,timo,cekk] (#808)
+
+6.14.0 (2020-08-28)
+-------------------
+
+New features:
+
+- Add @types endpoint to be able to add/edit/delete CT schema [Petchesi-Iulian, avoinea] (#951)
+
+
+6.13.8 (2020-08-20)
+-------------------
+
+Bug fixes:
+
+- Removed useless management of metadata_fields in SearchHandler/LazyCatalogResultSerializer since it is handled in DefaultJSONSummarySerializer. [gbastien] (#970)
+
+
+6.13.7 (2020-07-16)
+-------------------
+
+Bug fixes:
+
+
+- Add a Decimal() converter
+  [fulv] (#963)
+
+
+6.13.6 (2020-07-09)
+-------------------
+
+Bug fixes:
+
+
+- Fix Plone 5.2.x deprecation message 'ILanguageSchema is deprecated'.
+  [timo] (#975)
+- Do not hardcode the port in tests because it may depend on environment variables [ale-rt] (#978)
+
+
+6.13.5 (2020-06-29)
+-------------------
+
+Bug fixes:
+
+
+- Remove the use of plone.api in upgrade code
+  [erral] (#917)
+
+
+6.13.4 (2020-06-18)
+-------------------
+
+Bug fixes:
+
+
+- Re-add test folder to the release (ignore the tests/images folder though). [timo] (#968)
+
+
+6.13.3 (2020-06-17)
+-------------------
+
+Bug fixes:
+
+
+- Take the `include_items` parameter into account in `SerializeCollectionToJson`. [gbastien] (#957)
+
+
+6.13.2 (2020-06-15)
+-------------------
+
+Bug fixes:
+
+
+- Include plone.app.controlpanel permissions.zcml in database service to avoid ConfigurationExecutionError regarding 'plone.app.controlpanel.Overview' permission while starting Plone 4.3.x [gbastien] (#956)
+
+
+6.13.1 (2020-06-03)
+-------------------
+
+Bug fixes:
+
+- PATCH (editing) in @user endpoint now is able to remove existing values using null
+  [sneridagh] (#946)
+
+
+6.13.0 (2020-05-28)
+-------------------
+
+New features:
+
+
+- Expose author_image in comments endpoint [timo] (#948)
+
+
+6.12.0 (2020-05-11)
+-------------------
+
+New features:
+
+
+- Add database endpoint [timo] (#941)
+
+
+6.11.0 (2020-05-08)
+-------------------
+
+New features:
+
+
+- Add type-schema adapters for: Email, URI and Password
+  [avoinea] (#926)
+
+
+6.10.0 (2020-05-07)
+-------------------
+
+New features:
+
+
+- Add system endpoint. [timo] (#736)
+
+
+6.9.1 (2020-05-07)
+------------------
+
+Bug fixes:
+
+
+- Fixed @translations endpoint to only retrieve the translations that the current user
+  can really access using ``get_restricted_translations`` instead. This fixes the use
+  case where an user with no permissions on a translation accessing the endpoint returned
+  a 401.
+  [sneridagh] (#937)
+
+
+6.9.0 (2020-05-06)
+------------------
+
+New features:
+
+
+- Add endpoints for managing addons. [esteele] (#733)
+
+
+6.8.1 (2020-05-04)
+------------------
+
+Bug fixes:
+
+
+- Treat next/prev items for unordered folders.
+  [rodfersou] (#928)
+
+
+6.8.0 (2020-04-23)
+------------------
+
+New features:
+
+
+- Managing Dexterity Type Creation (CRUD) via plone.restapi
+  [avoinea] (#534)
+
+
+6.7.0 (2020-04-21)
+------------------
+
+New features:
+
+
+- Make @querystring-search endpoint context aware
+  [sneridagh] (#911)
+
+
+Bug fixes:
+
+
+- Fix sphinxbuilder with Python 3.8
+  [avoinea] (#905)
+
+
+6.6.1 (2020-04-17)
+------------------
+
+Bug fixes:
+
+
+- call unescape method on received html for richtext before save it in Plone.
+  [cekk] (#913)
+- Small fix in IBlocks test, addedd a missing assert call
+  [tiberiuichim] (#914)
+
+
+6.6.0 (2020-04-07)
+------------------
+
+New features:
+
+
+- Add next_item and previous_item attributes to allow to navigate to the previous and next sibling in the container the document is located.
+  [rodfersou] (#900)
+
+
+6.5.2 (2020-04-01)
+------------------
+
+Bug fixes:
+
+
+- Fix for the use case while updating user properties in the @user endpoint, and the
+  portrait is already previously set but the request includes the (previously) serialized
+  value as a string because the user are not updating it
+  [sneridagh] (#896)
+
+
+6.5.1 (2020-04-01)
+------------------
+
+Bug fixes:
+
+
+- Fix deleting user portrait.
+  [buchi] (#751)
+
+
+6.5.0 (2020-03-30)
+------------------
+
+New features:
+
+
+- Link translation on content creation feature and new @translation-locator endpoint
+  [sneridagh] (#887)
+
+
+6.4.1 (2020-03-25)
+------------------
+
+Bug fixes:
+
+
+- Make discussion endpoint return content that is deserialized via portal transforms (e.g. 'text/x-web-intelligent') [timo] (#889)
+
+
+6.4.0 (2020-03-23)
+------------------
+
+New features:
+
+
+- Add targetUrl to the dxcontent serializer for primary file fields to be able to download a file directly.
+  [csenger] (#886)
+
+
+Bug fixes:
+
+
+- Fixed package install error with Python 3.6 without locale.
+  See `coredev issue 642 <https://github.com/plone/buildout.coredev/issues/642#issuecomment-597008272>`_.
+  [maurits] (#642)
+- plone.app.discussion extends the review workflow for moderation of comments. This change takes the additional workflow states into account.
+  [ksuess] (#842)
+
+
 6.3.0 (2020-03-03)
 ------------------
 

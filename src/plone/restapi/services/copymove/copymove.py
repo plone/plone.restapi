@@ -13,8 +13,7 @@ import six
 
 
 class BaseCopyMove(Service):
-    """Base service for copy/move operations.
-    """
+    """Base service for copy/move operations."""
 
     def __init__(self, context, request):
         super(BaseCopyMove, self).__init__(context, request)
@@ -26,23 +25,22 @@ class BaseCopyMove(Service):
 
     def get_object(self, key):
         """Get an object by url, path or UID."""
-        if isinstance(key, six.string_types):
-            if key.startswith(self.portal_url):
-                # Resolve by URL
-                key = key[len(self.portal_url) + 1 :]
-                if six.PY2:
-                    key = key.encode("utf8")
-                return self.portal.restrictedTraverse(key, None)
-            elif key.startswith("/"):
-                if six.PY2:
-                    key = key.encode("utf8")
-                # Resolve by path
-                return self.portal.restrictedTraverse(key.lstrip("/"), None)
-            else:
-                # Resolve by UID
-                brain = self.catalog(UID=key)
-                if brain:
-                    return brain[0].getObject()
+        if key.startswith(self.portal_url):
+            # Resolve by URL
+            key = key[len(self.portal_url) + 1 :]
+            if six.PY2:
+                key = key.encode("utf8")
+            return self.portal.restrictedTraverse(key, None)
+        elif key.startswith("/"):
+            if six.PY2:
+                key = key.encode("utf8")
+            # Resolve by path
+            return self.portal.restrictedTraverse(key.lstrip("/"), None)
+        else:
+            # Resolve by UID
+            brain = self.catalog(UID=key)
+            if brain:
+                return brain[0].getObject()
 
     def reply(self):
         # return 401/403 Forbidden if the user has no permission
@@ -108,8 +106,7 @@ class BaseCopyMove(Service):
 
 
 class Copy(BaseCopyMove):
-    """Copies existing content objects.
-    """
+    """Copies existing content objects."""
 
     is_moving = False
 
@@ -118,8 +115,7 @@ class Copy(BaseCopyMove):
 
 
 class Move(BaseCopyMove):
-    """Moves existing content objects.
-    """
+    """Moves existing content objects."""
 
     is_moving = True
 

@@ -46,8 +46,7 @@ def install_pas_plugin(context):
 
 
 def import_various(context):
-    """Miscellanous steps import handle
-    """
+    """Miscellanous steps import handle"""
     if context.readDataFile("plone.restapi_various.txt") is None:
         return
 

@@ -13,8 +13,7 @@ import plone
 
 @implementer(IPublishTraverse)
 class GroupsPatch(Service):
-    """Updates an existing group.
-    """
+    """Updates an existing group."""
 
     def __init__(self, context, request):
         super(GroupsPatch, self).__init__(context, request)

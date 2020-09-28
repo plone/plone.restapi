@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
+from Acquisition import aq_inner
 from OFS.Image import Image
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import set_own_login_name
+from Products.PlonePAS.tools.membership import default_portrait
 from Products.PlonePAS.utils import scale_image
 from zope.component import getAdapter
 from zope.component.hooks import getSite
@@ -26,8 +28,7 @@ except ImportError:  # pragma: no cover
 
 @implementer(IPublishTraverse)
 class UsersPatch(Service):
-    """Updates an existing user.
-    """
+    """Updates an existing user."""
 
     def __init__(self, context, request):
         super(UsersPatch, self).__init__(context, request)
@@ -70,9 +71,12 @@ class UsersPatch(Service):
                 elif key == "username":
                     set_own_login_name(user, value)
                 else:
-                    if key == "portrait" and value.get("data"):
+                    # If the portrait is already set but has not been changed change it,
+                    # then the serialized value comes again in the request as a string,
+                    # no data on it, then we should not set it since it will fail
+                    if key == "portrait" and isinstance(value, dict):
                         self.set_member_portrait(user, value)
-                    user.setMemberProperties(mapping={key: value})
+                    user.setMemberProperties(mapping={key: value}, force_empty=True)
 
             roles = user_settings_to_update.get("roles", {})
             if roles:
@@ -98,9 +102,12 @@ class UsersPatch(Service):
                 ):
                     self._change_user_password(user, value)
                 else:
-                    if key == "portrait" and value.get("data"):
+                    # If the portrait is already set but has not been changed change it,
+                    # then the serialized value comes again in the request as a string,
+                    # no data on it, then we should not set it since it will fail
+                    if key == "portrait" and isinstance(value, dict):
                         self.set_member_portrait(user, value)
-                    user.setMemberProperties(mapping={key: value})
+                    user.setMemberProperties(mapping={key: value}, force_empty=True)
 
         else:
             if self._is_anonymous:
@@ -146,6 +153,14 @@ class UsersPatch(Service):
         portal = getSite()
         portal_membership = getToolByName(portal, "portal_membership")
         safe_id = portal_membership._getSafeMemberId(user.getId())
+
+        if portrait is None:
+            previous = portal_membership.getPersonalPortrait(safe_id)
+            default_portrait_value = getattr(portal, default_portrait, None)
+            if aq_inner(previous) != aq_inner(default_portrait_value):
+                portal_membership.deletePersonalPortrait(str(safe_id))
+            return
+
         content_type = "application/octet-stream"
         filename = None
 
@@ -156,8 +171,6 @@ class UsersPatch(Service):
             data = data.encode("utf-8")
         if "encoding" in portrait:
             data = codecs.decode(data, portrait["encoding"])
-        if isinstance(data, six.text_type):
-            data = data.encode("utf-8")
 
         if portrait.get("scale", False):
             # Only scale if the scale (default Plone behavior) boolean is set

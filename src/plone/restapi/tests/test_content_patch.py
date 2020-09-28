@@ -17,6 +17,7 @@ from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
+import json
 import requests
 import transaction
 import unittest
@@ -181,6 +182,24 @@ class TestContentPatch(unittest.TestCase):
         sm.unregisterHandler(record_event, (IObjectWillBeAddedEvent,))
         sm.unregisterHandler(record_event, (IObjectAddedEvent,))
         sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
+
+    def test_patch_document_with_apostrophe_dont_return_500(self):
+        data = {
+            "text": {
+                "content-type": "text/html",
+                "encoding": "utf8",
+                "data": "<p>example with &#x27;</p>",
+            }
+        }
+        response = requests.patch(
+            self.portal.doc1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            data=json.dumps(data),
+        )
+        self.assertEqual(204, response.status_code)
+        transaction.begin()
+        self.assertEqual("<p>example with '</p>", self.portal.doc1.text.raw)
 
 
 class TestATContentPatch(unittest.TestCase):

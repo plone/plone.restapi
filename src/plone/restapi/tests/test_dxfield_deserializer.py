@@ -22,8 +22,7 @@ import unittest
 
 
 class RequiredField(object):
-    """Context manager that will make a field required and back to old state.
-    """
+    """Context manager that will make a field required and back to old state."""
 
     def __init__(self, field):
         self.field = field
@@ -177,10 +176,10 @@ class TestDXFieldDeserializer(unittest.TestCase):
             with self.assertRaises(RequiredMissing):
                 self.deserialize(field_name, None)
 
-    def test_decimal_deserialization_returns_decimal(self):
+    def test_text_deserialization_returns_decimal(self):
         value = self.deserialize("test_decimal_field", u"1.1")
         self.assertTrue(isinstance(value, Decimal), "Not a <Decimal>")
-        self.assertEqual(Decimal("1.1"), value)
+        self.assertEqual(Decimal(u"1.1"), value)
 
     def test_dict_deserialization_returns_dict(self):
         value = self.deserialize("test_dict_field", {u"key": u"value"})
@@ -300,6 +299,10 @@ class TestDXFieldDeserializer(unittest.TestCase):
             "test_richtext_field", {u"data": u"Some text", u"encoding": u"latin1"}
         )
         self.assertEqual("latin1", value.encoding)
+
+    def test_richtext_deserialization_fix_apostrophe(self):
+        value = self.deserialize("test_richtext_field", u"<p>char with &#x27;</p>")
+        self.assertEqual("<p>char with '</p>", value.raw)
 
     def test_namedfield_deserialization_decodes_value(self):
         value = self.deserialize(

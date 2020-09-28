@@ -419,8 +419,14 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/@search", params=query)
 
         self.assertEqual(
-            [u"/plone/folder", u"/plone/folder/doc", u"/plone/folder/other-document"],
-            result_paths(response.json()),
+            sorted(
+                [
+                    u"/plone/folder",
+                    u"/plone/folder/doc",
+                    u"/plone/folder/other-document",
+                ]
+            ),
+            sorted(result_paths(response.json())),
         )
 
     def test_extended_path_index_query_multiple(self):
@@ -434,14 +440,16 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/@search", params=query)
 
         self.assertEqual(
-            [
-                u"/plone/folder",
-                u"/plone/folder/doc",
-                u"/plone/folder/other-document",
-                u"/plone/folder2",
-                u"/plone/folder2/doc",
-            ],
-            result_paths(response.json()),
+            sorted(
+                [
+                    u"/plone/folder",
+                    u"/plone/folder/doc",
+                    u"/plone/folder/other-document",
+                    u"/plone/folder2",
+                    u"/plone/folder2/doc",
+                ]
+            ),
+            sorted(result_paths(response.json())),
         )
 
         # path as a dict with a query list
@@ -454,14 +462,16 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/@search", params=query)
 
         self.assertEqual(
-            [
-                u"/plone/folder",
-                u"/plone/folder/doc",
-                u"/plone/folder/other-document",
-                u"/plone/folder2",
-                u"/plone/folder2/doc",
-            ],
-            result_paths(response.json()),
+            sorted(
+                [
+                    u"/plone/folder",
+                    u"/plone/folder/doc",
+                    u"/plone/folder/other-document",
+                    u"/plone/folder2",
+                    u"/plone/folder2/doc",
+                ]
+            ),
+            sorted(result_paths(response.json())),
         )
 
     def test_extended_path_index_depth_limiting(self):

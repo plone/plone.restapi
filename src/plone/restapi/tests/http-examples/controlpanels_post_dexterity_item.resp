@@ -1,0 +1,358 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_content_type
+
+{
+  "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_content_type", 
+  "data": {
+    "allowed_content_types": [], 
+    "description": "A custom content-type", 
+    "filter_content_types": true, 
+    "plone.allowdiscussion": false, 
+    "plone.basic": false, 
+    "plone.categorization": false, 
+    "plone.collection": false, 
+    "plone.constraintypes": false, 
+    "plone.dublincore": true, 
+    "plone.eventattendees": false, 
+    "plone.eventbasic": false, 
+    "plone.eventcontact": false, 
+    "plone.eventlocation": false, 
+    "plone.eventrecurrence": false, 
+    "plone.excludefromnavigation": false, 
+    "plone.leadimage": false, 
+    "plone.locking": false, 
+    "plone.namefromfilename": false, 
+    "plone.namefromtitle": true, 
+    "plone.navigationroot": false, 
+    "plone.nextpreviousenabled": false, 
+    "plone.nextprevioustoggle": false, 
+    "plone.ownership": false, 
+    "plone.publication": false, 
+    "plone.relateditems": false, 
+    "plone.restapi.tests.dxtypes.ITestAnnotationsBehavior": false, 
+    "plone.restapi.tests.dxtypes.ITestBehavior": false, 
+    "plone.richtext": false, 
+    "plone.shortname": false, 
+    "plone.tableofcontents": false, 
+    "plone.thumb_icon": false, 
+    "plone.translatable": false, 
+    "plone.versioning": false, 
+    "title": "My Custom Content Type", 
+    "volto.blocks": false
+  }, 
+  "description": "A custom content-type", 
+  "group": "Content", 
+  "items": [], 
+  "schema": {
+    "fieldsets": [
+      {
+        "behavior": "plone", 
+        "fields": [
+          "title", 
+          "description", 
+          "allowed_content_types", 
+          "filter_content_types"
+        ], 
+        "id": "default", 
+        "title": "Default"
+      }, 
+      {
+        "behavior": "plone", 
+        "fields": [
+          "plone.allowdiscussion", 
+          "plone.basic", 
+          "volto.blocks", 
+          "plone.categorization", 
+          "plone.collection", 
+          "plone.publication", 
+          "plone.dublincore", 
+          "plone.eventattendees", 
+          "plone.eventbasic", 
+          "plone.eventcontact", 
+          "plone.eventlocation", 
+          "plone.eventrecurrence", 
+          "plone.excludefromnavigation", 
+          "plone.constraintypes", 
+          "plone.leadimage", 
+          "plone.locking", 
+          "plone.translatable", 
+          "plone.namefromfilename", 
+          "plone.namefromtitle", 
+          "plone.navigationroot", 
+          "plone.nextpreviousenabled", 
+          "plone.nextprevioustoggle", 
+          "plone.ownership", 
+          "plone.relateditems", 
+          "plone.richtext", 
+          "plone.shortname", 
+          "plone.tableofcontents", 
+          "plone.restapi.tests.dxtypes.ITestAnnotationsBehavior", 
+          "plone.restapi.tests.dxtypes.ITestBehavior", 
+          "plone.thumb_icon", 
+          "plone.versioning"
+        ], 
+        "id": "behaviors", 
+        "title": "Behaviors"
+      }
+    ], 
+    "properties": {
+      "allowed_content_types": {
+        "additionalItems": true, 
+        "description": "", 
+        "factory": "Multiple Choice", 
+        "items": {
+          "description": "", 
+          "factory": "Choice", 
+          "title": "", 
+          "type": "string", 
+          "vocabulary": {
+            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes"
+          }
+        }, 
+        "title": "Allowed Content Types", 
+        "type": "array", 
+        "uniqueItems": true
+      }, 
+      "description": {
+        "description": "", 
+        "factory": "Text", 
+        "title": "Description", 
+        "type": "string", 
+        "widget": "textarea"
+      }, 
+      "filter_content_types": {
+        "choices": [
+          [
+            "none", 
+            null
+          ], 
+          [
+            "all", 
+            null
+          ], 
+          [
+            "some", 
+            null
+          ]
+        ], 
+        "default": "none", 
+        "description": "Items of this type can act as a folder containing other  items. What content types should be allowed inside?", 
+        "enum": [
+          "none", 
+          "all", 
+          "some"
+        ], 
+        "enumNames": [
+          null, 
+          null, 
+          null
+        ], 
+        "factory": "Choice", 
+        "title": "Filter Contained Types", 
+        "type": "string", 
+        "vocabulary": {
+          "@id": "http://localhost:55001/plone/@sources/filter_content_types"
+        }
+      }, 
+      "plone.allowdiscussion": {
+        "description": "Allow discussion on this item", 
+        "factory": "Yes/No", 
+        "title": "Allow discussion", 
+        "type": "boolean"
+      }, 
+      "plone.basic": {
+        "description": "Adds title and description fields.", 
+        "factory": "Yes/No", 
+        "title": "Basic metadata", 
+        "type": "boolean"
+      }, 
+      "plone.categorization": {
+        "description": "Adds keywords and language fields.", 
+        "factory": "Yes/No", 
+        "title": "Categorization", 
+        "type": "boolean"
+      }, 
+      "plone.collection": {
+        "description": "Adds collection behavior", 
+        "factory": "Yes/No", 
+        "title": "Collection", 
+        "type": "boolean"
+      }, 
+      "plone.constraintypes": {
+        "description": "Restrict the content types that can be added to folderish content", 
+        "factory": "Yes/No", 
+        "title": "Folder Addable Constrains", 
+        "type": "boolean"
+      }, 
+      "plone.dublincore": {
+        "description": "Adds standard metadata fields (equals Basic metadata + Categorization + Effective range + Ownership)", 
+        "factory": "Yes/No", 
+        "title": "Dublin Core metadata", 
+        "type": "boolean"
+      }, 
+      "plone.eventattendees": {
+        "description": "Attendees extension for Events.", 
+        "factory": "Yes/No", 
+        "title": "Event Attendees", 
+        "type": "boolean"
+      }, 
+      "plone.eventbasic": {
+        "description": "Basic Event schema.", 
+        "factory": "Yes/No", 
+        "title": "Event Basic", 
+        "type": "boolean"
+      }, 
+      "plone.eventcontact": {
+        "description": "Contact extension for Events.", 
+        "factory": "Yes/No", 
+        "title": "Event Contact", 
+        "type": "boolean"
+      }, 
+      "plone.eventlocation": {
+        "description": "Location extension for Events.", 
+        "factory": "Yes/No", 
+        "title": "Event Location", 
+        "type": "boolean"
+      }, 
+      "plone.eventrecurrence": {
+        "description": "Recurrence extension for Events.", 
+        "factory": "Yes/No", 
+        "title": "Event Recurrence", 
+        "type": "boolean"
+      }, 
+      "plone.excludefromnavigation": {
+        "description": "Allow items to be excluded from navigation", 
+        "factory": "Yes/No", 
+        "title": "Exclude From navigation", 
+        "type": "boolean"
+      }, 
+      "plone.leadimage": {
+        "description": "Adds image and image caption fields", 
+        "factory": "Yes/No", 
+        "title": "Lead Image", 
+        "type": "boolean"
+      }, 
+      "plone.locking": {
+        "description": "Locking support for dexterity", 
+        "factory": "Yes/No", 
+        "title": "Locking", 
+        "type": "boolean"
+      }, 
+      "plone.namefromfilename": {
+        "description": "Automatically generate short URL name for content based on its primary field file name", 
+        "factory": "Yes/No", 
+        "title": "Name from file name", 
+        "type": "boolean"
+      }, 
+      "plone.namefromtitle": {
+        "description": "Automatically generate short URL name for content based on its initial title", 
+        "factory": "Yes/No", 
+        "title": "Name from title", 
+        "type": "boolean"
+      }, 
+      "plone.navigationroot": {
+        "description": "Make all items of this type a navigation root", 
+        "factory": "Yes/No", 
+        "title": "Navigation root", 
+        "type": "boolean"
+      }, 
+      "plone.nextpreviousenabled": {
+        "description": "Enable next previous navigation for all items of this type", 
+        "factory": "Yes/No", 
+        "title": "Next previous navigation", 
+        "type": "boolean"
+      }, 
+      "plone.nextprevioustoggle": {
+        "description": "Allow items to have next previous navigation enabled", 
+        "factory": "Yes/No", 
+        "title": "Next previous navigation toggle", 
+        "type": "boolean"
+      }, 
+      "plone.ownership": {
+        "description": "Adds creator, contributor, and rights fields.", 
+        "factory": "Yes/No", 
+        "title": "Ownership", 
+        "type": "boolean"
+      }, 
+      "plone.publication": {
+        "description": "Adds effective date and expiration date fields.", 
+        "factory": "Yes/No", 
+        "title": "Date range", 
+        "type": "boolean"
+      }, 
+      "plone.relateditems": {
+        "description": "Adds the ability to assign related items", 
+        "factory": "Yes/No", 
+        "title": "Related items", 
+        "type": "boolean"
+      }, 
+      "plone.restapi.tests.dxtypes.ITestAnnotationsBehavior": {
+        "description": "Schema-only behavior using annotations", 
+        "factory": "Yes/No", 
+        "title": "Test Annotations Behavior", 
+        "type": "boolean"
+      }, 
+      "plone.restapi.tests.dxtypes.ITestBehavior": {
+        "description": "Schema-only behavior using attributes", 
+        "factory": "Yes/No", 
+        "title": "Test Behavior", 
+        "type": "boolean"
+      }, 
+      "plone.richtext": {
+        "description": "Adds richtext behavior", 
+        "factory": "Yes/No", 
+        "title": "RichText", 
+        "type": "boolean"
+      }, 
+      "plone.shortname": {
+        "description": "Gives the ability to rename an item from its edit form.", 
+        "factory": "Yes/No", 
+        "title": "Short name", 
+        "type": "boolean"
+      }, 
+      "plone.tableofcontents": {
+        "description": "Adds a table of contents", 
+        "factory": "Yes/No", 
+        "title": "Table of contents", 
+        "type": "boolean"
+      }, 
+      "plone.thumb_icon": {
+        "description": "Options to suppress thumbs and/or icons and to override thumb size in listings, tables etc.", 
+        "factory": "Yes/No", 
+        "title": "Thumbs and icon handling", 
+        "type": "boolean"
+      }, 
+      "plone.translatable": {
+        "description": "Make this content type multilingual aware", 
+        "factory": "Yes/No", 
+        "title": "Multilingual Support", 
+        "type": "boolean"
+      }, 
+      "plone.versioning": {
+        "description": "Versioning support with CMFEditions", 
+        "factory": "Yes/No", 
+        "title": "Versioning", 
+        "type": "boolean"
+      }, 
+      "title": {
+        "description": "", 
+        "factory": "Text line (String)", 
+        "title": "Type Name", 
+        "type": "string"
+      }, 
+      "volto.blocks": {
+        "description": "Enables Volto Blocks support", 
+        "factory": "Yes/No", 
+        "title": "Blocks", 
+        "type": "boolean"
+      }
+    }, 
+    "required": [
+      "title", 
+      "filter_content_types"
+    ], 
+    "type": "object"
+  }, 
+  "title": "My Custom Content Type"
+}

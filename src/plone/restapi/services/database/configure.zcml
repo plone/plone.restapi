@@ -1,0 +1,24 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <include
+    zcml:condition="not-installed plone.app.controlpanel"
+    package="Products.CMFPlone.controlpanel"
+    file="permissions.zcml" />
+
+  <include
+    zcml:condition="installed plone.app.controlpanel"
+    package="plone.app.controlpanel"
+    file="permissions.zcml" />
+
+  <plone:service
+    method="GET"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".get.DatabaseGet"
+    name="@database"
+    permission="plone.app.controlpanel.Overview"
+    />
+
+</configure>

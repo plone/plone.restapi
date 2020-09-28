@@ -39,8 +39,7 @@ PLONE5 = getFSVersionTuple()[0] >= 5
 
 @implementer(IPublishTraverse)
 class UsersPost(Service):
-    """Creates a new user.
-    """
+    """Creates a new user."""
 
     def __init__(self, context, request):
         super(UsersPost, self).__init__(context, request)

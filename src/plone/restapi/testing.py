@@ -86,8 +86,7 @@ def set_available_languages():
 
 
 def set_supported_languages(portal):
-    """Set supported languages to the same predictable set for all test layers.
-    """
+    """Set supported languages to the same predictable set for all test layers."""
     language_tool = getToolByName(portal, "portal_languages")
     for lang in ENABLED_LANGUAGES:
         language_tool.addSupportedLanguage(lang)
@@ -100,7 +99,12 @@ def enable_request_language_negotiation(portal):
     pieces of content in different languages.
     """
     if PLONE_5:
-        from Products.CMFPlone.interfaces import ILanguageSchema
+        try:
+            # Plone 5.2+
+            from plone.i18n.interfaces import ILanguageSchema
+        except ImportError:  # pragma: no cover
+            # Plone 5.0/5.1
+            from Products.CMFPlone.interfaces import ILanguageSchema
 
         registry = getUtility(IRegistry)
         settings = registry.forInterface(ILanguageSchema, prefix="plone")

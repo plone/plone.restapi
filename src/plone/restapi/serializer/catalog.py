@@ -2,13 +2,17 @@
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from Products.ZCatalog.Lazy import Lazy
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.interface import Interface
 
 import logging
+
+try:
+    from ZTUtils.Lazy import Lazy
+except ImportError:
+    from Products.ZCatalog.Lazy import Lazy
 
 log = logging.getLogger(__name__)
 
@@ -24,7 +28,7 @@ class LazyCatalogResultSerializer(object):
         self.lazy_resultset = lazy_resultset
         self.request = request
 
-    def __call__(self, metadata_fields=(), fullobjects=False):
+    def __call__(self, fullobjects=False):
         batch = HypermediaBatch(self.request, self.lazy_resultset)
 
         results = {}
@@ -45,7 +49,7 @@ class LazyCatalogResultSerializer(object):
                     # Guard in case the brain returned refers to an object that doesn't
                     # exists because it failed to uncatalog itself or the catalog has
                     # stale cataloged objects for some reason
-                    log.warn(
+                    log.warning(
                         "Brain getObject error: {} doesn't exist anymore".format(
                             brain.getPath()
                         )

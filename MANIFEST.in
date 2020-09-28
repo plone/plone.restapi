@@ -13,10 +13,13 @@ exclude Dockerfile
 exclude Makefile
 exclude bootstrap-buildout.py
 exclude CODEOWNERS
+exclude docs/make.bat
 recursive-exclude docs/doctrees *
 recursive-exclude docs/html *
 recursive-exclude performance *
+exclude docs/Makefile
+prune docs/Makefile
+prune src/plone/restapi/tests/images
+prune news
 global-exclude *.pyc
 include pyproject.toml
-recursive-exclude news *
-exclude news

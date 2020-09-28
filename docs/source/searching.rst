@@ -28,23 +28,23 @@ In order to return specific metadata columns, see the documentation of the ``met
 .. note::
         A search invoked on a container will by default **include that container
         itself** as part of the search results. This is the same behavior as displayed by
-        ZCatalog, which is used internally.
+        `ZCatalog <https://zope.readthedocs.io/en/latest/zopebook/SearchingZCatalog.html>`_, which is used internally.
         If you add the query string
         parameter ``depth=1`` to your search, you will only get **immediate**
         children of the container, and the container itself also won't be part
         of the results. See the Plone docs on
-        `searching for content within a folder <https://docs.plone.org/develop/plone/searching_and_indexing/query.html#searching-for-content-within-a-folder>`_.
+        `searching for content within a folder <https://docs.plone.org/develop/plone/searching_and_indexing/query.html#searching-for-content-within-a-folder>`_
         for more details.
 
 .. note::
-        Search results results will be **batched** if the size of the
+        Search results will be **batched** if the size of the
         resultset exceeds the batch size. See :doc:`/batching` for more
         details on how to work with batched results.
 
 .. warning::
-        The @@search view or in Plone LiveSearch widget are coded in a way that the SearchableText parameter is expanded by including a * wildcard at the end.
+        The @@search view or the Plone LiveSearch widget are coded in a way that the SearchableText parameter is expanded by including a * wildcard at the end.
         This is done in order to match also the partial results of the beginning of a search term(s).
-        plone.restapi @search endpoint will not do that for you. You'll have to add it if you want to keep this feature.
+        The plone.restapi @search endpoint will not do that for you. You'll have to add it if you want to keep this feature.
 
 
 Query format
@@ -67,7 +67,7 @@ In case you want to supply query options to a query against a particular index, 
 
 For example, to specify the ``depth`` query option for a path query, the original query as a Python dictionary would look like this::
 
-    query = {'path': {'query': '/folder',
+    query = {'path': {'query': '/folder1',
                       'depth': 2}}
 
 This dictionary will need to be flattened in dotted notation in order to pass it in a query string:
@@ -102,14 +102,14 @@ This dictionary will need to be flattened in dotted notation in order to pass it
 Data types in queries
 ^^^^^^^^^^^^^^^^^^^^^
 
-Because HTTP query strings contain no information about data types, any query string parameter value ends up as a string in the Zope's request.
-This means, that for values types that aren't string, these data types need to be reconstructed on the server side in plone.restapi.
+Because HTTP query strings contain no information about data types, any query string parameter value ends up as a string in the Zope request.
+This means that for value types that aren't string these data types need to be reconstructed on the server side in plone.restapi.
 
-For most index types and their query values and query options, plone.restapi can handle this for you.
+For most index types and their query values and query options plone.restapi can handle this for you.
 If you pass it ``path.query=foo&path.depth=1``, it has the necessary knowledge about the ``ExtendedPathIndex``'s options to turn the string ``1`` for the ``depth`` argument back into an integer before passing the query on to the catalog.
 
 However, certain index types (a ``FieldIndex`` for example) may take arbitrary data types as query values.
-In that case, ``plone.restapi`` simply can't know what data type to cast your query value to, and you'll need to specify it using ZPublisher type hints:
+In that case, ``plone.restapi`` simply can't know what data type to cast your query value to and you'll need to specify it using ZPublisher type hints:
 
 .. code-block:: http
 
@@ -124,7 +124,7 @@ Please refer to the `Documentation on Argument Conversion in ZPublisher <http://
 Retrieving additional metadata
 ------------------------------
 
-By default the results are represented as summaries that only contain the most basic information about the items, like their URL and title.
+By default, the results are represented as summaries that only contain the most basic information about the items, like their URL and title.
 If you need to retrieve additional metadata columns, you can do so by specifying the additional column names in the ``metadata_fields`` parameter:
 
 ..  http:example:: curl httpie python-requests
@@ -133,10 +133,18 @@ If you need to retrieve additional metadata columns, you can do so by specifying
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/search_metadata_fields.resp
    :language: http
 
-The metadata from those columns then will be included in the results.
+The metadata from those columns will then be included in the results.
 In order to specify multiple columns, simply repeat the query string parameter once for every column name (the ``requests`` module will do this automatically for you if you pass it a list of values for a query string parameter).
 
 In order to retrieve all metadata columns that the catalog knows about, use ``metadata_fields=_all``.
+
+.. note::
+        There is a difference between the full set of fields contained in an object and the set of all possible metadata columns that can be specified with ``metadata_fields``.
+        In other words, using ``metadata_fields=_all`` will produce objects with a set of fields that is generally smaller than the set of fields produced by ``fullobjects`` (see next section).
+        Briefly, the fields in ``metadata_fields=_all`` are a subset of ``fullobjects``.
+        A consequence of this is that certain fields can not be specifed with ``metadata_fields``.
+        Doing so will result in a TypeError ``"No converter for making <...> JSON compatible."``
+        In `ZCatalog <https://zope.readthedocs.io/en/latest/zopebook/SearchingZCatalog.html>`_ terms, this reflects the difference between *catalog brains* and objects that have been *woken up*.
 
 
 Retrieving full objects
@@ -154,4 +162,4 @@ You do so by specifying the ``fullobjects`` parameter:
 
 .. warning::
 
-    Be aware that this might induce performance issues when retrieving a lot of resources. Normally the search just serializes catalog brains, but with full objects we wake up all the returned objects.
+    Be aware that this might induce performance issues when retrieving a lot of resources. Normally the search just serializes catalog brains, but with ``fullobjects``, we wake up all the returned objects.

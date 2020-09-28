@@ -11,8 +11,7 @@ import plone.protect.interfaces
 
 
 class SharingGet(Service):
-    """Returns a serialized content object.
-    """
+    """Returns a serialized content object."""
 
     def reply(self):
         # return 403 Forbidden if the user has no DelegateRoles permission

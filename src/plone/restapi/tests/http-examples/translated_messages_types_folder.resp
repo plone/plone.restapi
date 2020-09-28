@@ -4,14 +4,16 @@ Content-Type: application/json+schema
 {
   "fieldsets": [
     {
+      "behavior": "plone", 
       "fields": [
         "title", 
         "description"
       ], 
       "id": "default", 
-      "title": "Default"
+      "title": "Por defecto"
     }, 
     {
+      "behavior": "plone", 
       "fields": [
         "subjects", 
         "language", 
@@ -21,6 +23,7 @@ Content-Type: application/json+schema
       "title": "Categorizaci\u00f3n"
     }, 
     {
+      "behavior": "plone", 
       "fields": [
         "effective", 
         "expires"
@@ -29,6 +32,7 @@ Content-Type: application/json+schema
       "title": "Fechas"
     }, 
     {
+      "behavior": "plone", 
       "fields": [
         "creators", 
         "contributors", 
@@ -38,6 +42,7 @@ Content-Type: application/json+schema
       "title": "Propiedad"
     }, 
     {
+      "behavior": "plone", 
       "fields": [
         "allow_discussion", 
         "exclude_from_nav", 
@@ -58,6 +63,7 @@ Content-Type: application/json+schema
   ], 
   "properties": {
     "allow_discussion": {
+      "behavior": "plone.allowdiscussion", 
       "choices": [
         [
           "True", 
@@ -77,6 +83,7 @@ Content-Type: application/json+schema
         "S\u00ed", 
         "No"
       ], 
+      "factory": "Choice", 
       "title": "Permitir comentarios", 
       "type": "string", 
       "vocabulary": {
@@ -85,9 +92,12 @@ Content-Type: application/json+schema
     }, 
     "contributors": {
       "additionalItems": true, 
+      "behavior": "plone.dublincore", 
       "description": "Los nombres de las personas que han contribuido a este elemento. Cada colaborador deber\u00eda estar en una l\u00ednea independiente.", 
+      "factory": "Tuple", 
       "items": {
         "description": "", 
+        "factory": "Text line (String)", 
         "title": "", 
         "type": "string"
       }, 
@@ -102,9 +112,12 @@ Content-Type: application/json+schema
     }, 
     "creators": {
       "additionalItems": true, 
+      "behavior": "plone.dublincore", 
       "description": "Personas responsables de la creaci\u00f3n del contenido de este elemento. Por favor, introduzca una lista de nombres de usuario, uno por l\u00ednea. El autor principal deber\u00eda ser el primero.", 
+      "factory": "Tuple", 
       "items": {
         "description": "", 
+        "factory": "Text line (String)", 
         "title": "", 
         "type": "string"
       }, 
@@ -118,38 +131,49 @@ Content-Type: application/json+schema
       }
     }, 
     "description": {
+      "behavior": "plone.dublincore", 
       "description": "Usado en listados de elementos y resultados de b\u00fasquedas.", 
-      "minLength": 0, 
+      "factory": "Text", 
       "title": "Descripci\u00f3n", 
       "type": "string", 
       "widget": "textarea"
     }, 
     "effective": {
+      "behavior": "plone.dublincore", 
       "description": "La fecha en la que el documento ser\u00e1 publicado. Si no selecciona ninguna fecha, el documento ser\u00e1 publicado inmediatamente.", 
+      "factory": "Date/Time", 
       "title": "Fecha de Publicaci\u00f3n", 
       "type": "string", 
       "widget": "datetime"
     }, 
     "exclude_from_nav": {
+      "behavior": "plone.excludefromnavigation", 
       "default": false, 
       "description": "Si est\u00e1 marcado, este elemento no aparecer\u00e1 en el \u00e1rbol de navegaci\u00f3n", 
+      "factory": "Yes/No", 
       "title": "Excluir de la navegaci\u00f3n", 
       "type": "boolean"
     }, 
     "expires": {
+      "behavior": "plone.dublincore", 
       "description": "La fecha en la que expira el documento. Esto har\u00e1 autom\u00e1ticamente el documento invisible a otros a una fecha dada. Si no elije ninguna fecha, nunca expirar\u00e1.", 
+      "factory": "Date/Time", 
       "title": "Fecha de Terminaci\u00f3n", 
       "type": "string", 
       "widget": "datetime"
     }, 
     "id": {
+      "behavior": "plone.shortname", 
       "description": "Este nombre se mostrar\u00e1 en la URL.", 
+      "factory": "Text line (String)", 
       "title": "Nombre corto", 
       "type": "string"
     }, 
     "language": {
+      "behavior": "plone.dublincore", 
       "default": "en", 
       "description": "", 
+      "factory": "Choice", 
       "title": "Idioma", 
       "type": "string", 
       "vocabulary": {
@@ -157,17 +181,22 @@ Content-Type: application/json+schema
       }
     }, 
     "nextPreviousEnabled": {
+      "behavior": "plone.nextprevioustoggle", 
       "default": false, 
       "description": "Esto habilita el widget siguiente/pr\u00f3ximo en los elementos contenidos en esta carpeta.", 
+      "factory": "Yes/No", 
       "title": "Habilitar la navegaci\u00f3n siguiente/anterior", 
       "type": "boolean"
     }, 
     "relatedItems": {
       "additionalItems": true, 
+      "behavior": "plone.relateditems", 
       "default": [], 
       "description": "", 
+      "factory": "Relation List", 
       "items": {
         "description": "", 
+        "factory": "Relation Choice", 
         "title": "Related", 
         "type": "string", 
         "vocabulary": {
@@ -187,17 +216,21 @@ Content-Type: application/json+schema
       }
     }, 
     "rights": {
+      "behavior": "plone.dublincore", 
       "description": "Declaraci\u00f3n de copyright o informaci\u00f3n de otros derechos sobre este elemento.", 
-      "minLength": 0, 
+      "factory": "Text", 
       "title": "Derechos de Autor", 
       "type": "string", 
       "widget": "textarea"
     }, 
     "subjects": {
       "additionalItems": true, 
+      "behavior": "plone.dublincore", 
       "description": "Las etiquetas suelen utilizarse para la organizaci\u00f3n a medida del contenido.", 
+      "factory": "Tuple", 
       "items": {
         "description": "", 
+        "factory": "Text line (String)", 
         "title": "", 
         "type": "string"
       }, 
@@ -211,7 +244,9 @@ Content-Type: application/json+schema
       }
     }, 
     "title": {
+      "behavior": "plone.dublincore", 
       "description": "", 
+      "factory": "Text line (String)", 
       "title": "T\u00edtulo", 
       "type": "string"
     }

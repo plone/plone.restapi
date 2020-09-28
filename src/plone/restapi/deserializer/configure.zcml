@@ -16,6 +16,16 @@
   <adapter factory=".dxfields.TimedeltaFieldDeserializer" />
   <adapter factory=".dxfields.NamedFieldDeserializer" />
   <adapter factory=".dxfields.RichTextFieldDeserializer" />
+  <adapter factory=".blocks.BlocksJSONFieldDeserializer" />
+
+  <subscriber factory=".blocks.TextBlockDeserializer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  <subscriber factory=".blocks.HTMLBlockDeserializer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  <subscriber factory=".blocks.ImageBlockDeserializer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  <subscriber factory=".blocks.ResolveUIDDeserializer"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
 
   <adapter factory=".local_roles.DeserializeFromJson"
            name="local_roles"/>
@@ -38,8 +48,6 @@
     <adapter factory=".atfields.ReferenceFieldDeserializer" />
   </configure>
 
-  <configure zcml:condition="have plone-5">
-    <adapter factory=".controlpanels.ControlpanelDeserializeFromJson" />
-  </configure>
+  <include package=".controlpanels" />
 
 </configure>

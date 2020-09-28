@@ -208,7 +208,11 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(201, response.status_code)
-        self.assertTrue("To: howard.zinn@example.com" in self.mailhost.messages[0])
+        msg = self.mailhost.messages[0]
+        if isinstance(msg, bytes) and bytes is not str:
+            # Python 3 with Products.MailHost 4.10+
+            msg = msg.decode("utf-8")
+        self.assertTrue("To: howard.zinn@example.com" in msg)
 
     def test_add_user_send_properties(self):
         response = self.api_session.post(
@@ -247,7 +251,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_add_anon_no_roles(self):
         """Make sure anonymous users cannot set their own roles.
-           Allowing so would make them Manager.
+        Allowing so would make them Manager.
         """
         security_settings = getAdapter(self.portal, ISecuritySchema)
         security_settings.enable_self_reg = True
@@ -414,6 +418,23 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual("Noam A. Chomsky", noam.getProperty("fullname"))
         self.assertEqual("avram.chomsky@plone.org", noam.getProperty("email"))
 
+    def test_user_can_update_himself_remove_values(self):
+        payload = {
+            "fullname": "Noam A. Chomsky",
+            "username": "noam",
+            "email": "avram.chomsky@plone.org",
+            "home_page": None,
+        }
+        self.api_session.auth = ("noam", "password")
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        noam = api.user.get(userid="noam")
+
+        self.assertEqual(None, noam.getProperty("home_page"))
+
     def test_update_roles(self):
         self.assertNotIn("Contributor", api.user.get_roles(username="noam"))
 
@@ -439,10 +460,10 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_update_portrait(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
             }
         }
         self.api_session.auth = ("noam", "password")
@@ -459,10 +480,10 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_update_portrait_with_default_plone_scaling(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
                 "scale": True,
             }
         }
@@ -480,12 +501,71 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_update_portrait_by_manager(self):
         payload = {
             "portrait": {
-                "filename": "image.png",
+                "filename": "image.gif",
                 "encoding": "base64",
                 "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
-                "content-type": "image/png",
+                "content-type": "image/gif",
             }
         }
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get("/@users/noam").json()
+        self.assertTrue(
+            user.get("portrait").endswith("plone/portal_memberdata/portraits/noam")
+        )
+
+    def test_delete_portrait(self):
+        payload = {
+            "portrait": None,
+        }
+        self.api_session.auth = ("noam", "password")
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get("/@users/noam").json()
+
+        self.assertTrue(user.get("portrait") is None)
+
+    def test_delete_portrait_by_manager(self):
+        payload = {
+            "portrait": None,
+        }
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        user = self.api_session.get("/@users/noam").json()
+
+        self.assertTrue(user.get("portrait") is None)
+
+    def test_update_user_with_portrait_set_without_updating_portrait(self):
+        payload = {
+            "portrait": {
+                "filename": "image.gif",
+                "encoding": "base64",
+                "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
+                "content-type": "image/gif",
+            }
+        }
+        self.api_session.auth = ("noam", "password")
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        payload = {
+            "fullname": "Noam A. Chomsky",
+            "username": "noam",
+            "email": "avram.chomsky@plone.org",
+            "portrait": "http://localhost:55001/plone/portal_memberdata/portraits/noam",
+        }
+        self.api_session.auth = ("noam", "password")
         response = self.api_session.patch("/@users/noam", json=payload)
 
         self.assertEqual(response.status_code, 204)
@@ -746,7 +826,11 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(201, response.status_code)
-        self.assertTrue("To: avram.chomsky@example.com" in self.mailhost.messages[0])
+        msg = self.mailhost.messages[0]
+        if isinstance(msg, bytes) and bytes is not str:
+            # Python 3 with Products.MailHost 4.10+
+            msg = msg.decode("utf-8")
+        self.assertTrue("To: avram.chomsky@example.com" in msg)
 
     def test_anonymous_can_set_password_with_enable_user_pwd_choice(self):
         security_settings = getAdapter(self.portal, ISecuritySchema)

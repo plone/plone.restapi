@@ -8,6 +8,8 @@
     <adapter factory=".site.SerializeSiteRootToJson" />
     <adapter factory=".dxcontent.SerializeToJson" />
     <adapter factory=".dxcontent.SerializeFolderToJson" />
+    <adapter
+        factory=".dxcontent.DexterityObjectPrimaryFieldTarget" />
 
     <configure zcml:condition="installed plone.app.contenttypes">
         <adapter factory=".collection.SerializeCollectionToJson" />
@@ -22,6 +24,14 @@
     <adapter factory=".dxfields.FileFieldSerializer" />
     <adapter factory=".dxfields.ImageFieldSerializer" />
     <adapter factory=".dxfields.RichttextFieldSerializer" />
+    <adapter factory=".dxfields.DefaultPrimaryFieldTarget" />
+    <adapter factory=".dxfields.PrimaryFileFieldTarget" />
+
+    <adapter factory=".blocks.BlocksJSONFieldSerializer" />
+    <subscriber factory=".blocks.TextBlockSerializer"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
+    <subscriber factory=".blocks.ResolveUIDSerializer"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
 
     <configure zcml:condition="installed Products.Archetypes">
         <adapter factory=".atcontent.SerializeToJson" />
@@ -42,6 +52,7 @@
     </configure>
 
     <adapter factory=".converters.date_converter" />
+    <adapter factory=".converters.decimal_converter" />
     <adapter factory=".converters.default_converter" />
     <adapter factory=".converters.dict_converter" />
     <adapter factory=".converters.frozenset_converter" />
@@ -90,9 +101,6 @@
         <adapter factory=".tile.TileSerializeToJson" />
     </configure>
 
-    <configure zcml:condition="have plone-5">
-        <adapter factory=".controlpanels.ControlpanelSerializeToJson" />
-        <adapter factory=".controlpanels.ControlpanelSummarySerializeToJson" />
-    </configure>
+    <include package=".controlpanels" />
 
 </configure>

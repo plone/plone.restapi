@@ -43,4 +43,4 @@ def ascii_token(text):
     """Turn a text (unicode in Py2, str in Py3) into a ASCII-only
     bytestring that is safe to use in term tokens.
     """
-    return quopri.encodestring(text.encode('utf-8'))
+    return quopri.encodestring(text.encode("utf-8"))

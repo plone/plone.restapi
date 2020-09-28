@@ -34,7 +34,7 @@ class Translations(object):
 
         translations = []
         manager = ITranslationManager(self.context)
-        for language, translation in manager.get_translations().items():
+        for language, translation in manager.get_restricted_translations().items():
             if language != ILanguage(self.context).get_language():
                 translations.append(
                     {"@id": translation.absolute_url(), "language": language}
@@ -45,8 +45,7 @@ class Translations(object):
 
 
 class TranslationInfo(Service):
-    """ Get translation information
-    """
+    """Get translation information"""
 
     def reply(self):
         translations = Translations(self.context, self.request)
@@ -54,8 +53,7 @@ class TranslationInfo(Service):
 
 
 class LinkTranslations(Service):
-    """ Link two content objects as translations of each other
-    """
+    """Link two content objects as translations of each other"""
 
     def __init__(self, context, request):
         super(LinkTranslations, self).__init__(context, request)
@@ -103,28 +101,26 @@ class LinkTranslations(Service):
         return {}
 
     def get_object(self, key):
-        if isinstance(key, six.string_types):
-            if key.startswith(self.portal_url):
-                # Resolve by URL
-                key = key[len(self.portal_url) + 1 :]
-                if six.PY2:
-                    key = key.encode("utf8")
-                return self.portal.restrictedTraverse(key, None)
-            elif key.startswith("/"):
-                if six.PY2:
-                    key = key.encode("utf8")
-                # Resolve by path
-                return self.portal.restrictedTraverse(key.lstrip("/"), None)
-            else:
-                # Resolve by UID
-                brain = self.catalog(UID=key)
-                if brain:
-                    return brain[0].getObject()
+        if key.startswith(self.portal_url):
+            # Resolve by URL
+            key = key[len(self.portal_url) + 1 :]
+            if six.PY2:
+                key = key.encode("utf8")
+            return self.portal.restrictedTraverse(key, None)
+        elif key.startswith("/"):
+            if six.PY2:
+                key = key.encode("utf8")
+            # Resolve by path
+            return self.portal.restrictedTraverse(key.lstrip("/"), None)
+        else:
+            # Resolve by UID
+            brain = self.catalog(UID=key)
+            if brain:
+                return brain[0].getObject()
 
 
 class UnlinkTranslations(Service):
-    """ Unlink the translations for a content object
-    """
+    """Unlink the translations for a content object"""
 
     def reply(self):
         # Disable CSRF protection

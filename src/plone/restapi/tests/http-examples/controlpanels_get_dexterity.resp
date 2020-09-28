@@ -1,0 +1,98 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types", 
+  "data": {}, 
+  "group": "Content", 
+  "items": [
+    {
+      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Collection", 
+      "@type": "Collection", 
+      "count": 0, 
+      "description": "", 
+      "id": "Collection", 
+      "meta_type": "Dexterity FTI", 
+      "title": "Collection"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Document", 
+      "@type": "Document", 
+      "count": 0, 
+      "description": "", 
+      "id": "Document", 
+      "meta_type": "Dexterity FTI", 
+      "title": "Page"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Folder", 
+      "@type": "Folder", 
+      "count": 0, 
+      "description": "", 
+      "id": "Folder", 
+      "meta_type": "Dexterity FTI", 
+      "title": "Folder"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Link", 
+      "@type": "Link", 
+      "count": 0, 
+      "description": "", 
+      "id": "Link", 
+      "meta_type": "Dexterity FTI", 
+      "title": "Link"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/File", 
+      "@type": "File", 
+      "count": 0, 
+      "description": "Lets you upload a file to the site.", 
+      "id": "File", 
+      "meta_type": "Dexterity FTI", 
+      "title": "File"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Image", 
+      "@type": "Image", 
+      "count": 0, 
+      "description": "Images can be referenced in pages or displayed in an album.", 
+      "id": "Image", 
+      "meta_type": "Dexterity FTI", 
+      "title": "Image"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/News Item", 
+      "@type": "News Item", 
+      "count": 0, 
+      "description": "", 
+      "id": "News Item", 
+      "meta_type": "Dexterity FTI", 
+      "title": "News Item"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Event", 
+      "@type": "Event", 
+      "count": 0, 
+      "description": "Events can be shown in calendars.", 
+      "id": "Event", 
+      "meta_type": "Dexterity FTI", 
+      "title": "Event"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/DXTestDocument", 
+      "@type": "DXTestDocument", 
+      "count": 0, 
+      "description": "", 
+      "id": "DXTestDocument", 
+      "meta_type": "Dexterity FTI", 
+      "title": "DX Test Document"
+    }
+  ], 
+  "schema": {
+    "fieldsets": [], 
+    "properties": {}, 
+    "required": [], 
+    "type": "object"
+  }, 
+  "title": "Dexterity Content Types"
+}

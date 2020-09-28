@@ -20,8 +20,7 @@ from zope.interface import Interface
 @implementer(IDeserializeFromJson)
 @adapter(IBaseObject, Interface)
 class DeserializeFromJson(OrderingMixin, object):
-    """JSON deserializer for Archetypes content types
-    """
+    """JSON deserializer for Archetypes content types"""
 
     notifies_create = True
 
@@ -127,8 +126,7 @@ class DeserializeFromJson(OrderingMixin, object):
 
 
 class ValidationRequest(dict):
-    """A fake request for validation purposes.
-    """
+    """A fake request for validation purposes."""
 
     def __init__(self, request, context):
         self.request = request
@@ -151,8 +149,7 @@ class ValidationRequest(dict):
 
 
 class ValidationRequestForm(dict):
-    """A request form dict that returns values from the content object.
-    """
+    """A request form dict that returns values from the content object."""
 
     def __init__(self, request, context):
         self.request = request

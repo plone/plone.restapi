@@ -1,9 +1,7 @@
 from setuptools import find_packages
 from setuptools import setup
 
-
-version = '6.3.1.eea-dev0'
-
+version = "7.0.0a6.eea-dev0"
 
 def read(filename):
     with open(filename) as myfile:
@@ -64,6 +62,7 @@ setup(
         "Framework :: Plone :: 5.0",
         "Framework :: Plone :: 5.1",
         "Framework :: Plone :: 5.2",
+        "Framework :: Plone :: Core",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
@@ -88,7 +87,7 @@ setup(
         "python-dateutil",
         "plone.behavior>=1.1",  # adds name to behavior directive
         "plone.rest >= 1.0a6",  # json renderer moved to plone.restapi
-        "plone.schema >= 1.2.0",  # new json field
+        "plone.schema >= 1.2.1",  # new/fixed json field
         "PyJWT",
         "pytz",
     ],
