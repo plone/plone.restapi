@@ -9,6 +9,7 @@ from plone.restapi.services.portlets.utils import get_portletmanagers
 from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
 from zope.interface import alsoProvides
+
 import plone.protect.interfaces
 
 
@@ -21,7 +22,8 @@ class PortletPatch(Service):
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
+            alsoProvides(
+                self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         portletmanagers = dict(get_portletmanagers())
 
@@ -34,16 +36,19 @@ class PortletPatch(Service):
         if portlet_manager not in portletmanagers:
             self.request.response.setStatus(501)
             return dict(
-                error=dict(message="Invalid manager {}".format(portlet_manager))
+                error=dict(
+                    message="Invalid manager {}".format(portlet_manager))
             )
 
         pm = portletmanagers.get(portlet_manager)
 
-        deserializer = queryMultiAdapter((self.context, pm, self.request), IDeserializeFromJson)
+        deserializer = queryMultiAdapter(
+            (self.context, pm, self.request), IDeserializeFromJson)
         if deserializer is None:
             self.request.response.setStatus(501)
             return dict(
-                error=dict(message="Cannot deserialize configuration for manager {}".format(portlet_manager))
+                error=dict(message="Cannot deserialize configuration for manager {}".format(
+                    portlet_manager))
             )
 
         try:
