@@ -6,19 +6,21 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import iterSchemata
+from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.interfaces import IFieldSerializer
-from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
 from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
 
-import transaction
+import os
 import requests
+import transaction
 
 
 class TestBlocksResolveUIDFunctional(TestCase):
@@ -98,6 +100,107 @@ class TestBlocksResolveUIDFunctional(TestCase):
             .get("0")
             .get("data")
             .get("url"),
+        )
+
+    def test_create_document_with_image_block_stores_uuid(self):
+        self.portal.invokeFactory("Image", id="image", title="Image")
+        image_file = os.path.join(os.path.dirname(__file__), u"image.png")
+        with open(image_file, "rb") as f:
+            image_data = f.read()
+        self.portal.image.image = NamedBlobImage(
+            data=image_data, contentType="image/png", filename=u"image.png"
+        )
+        self.portal.image.image_caption = u"This is an image caption."
+        transaction.commit()
+
+        target_uuid = IUUID(self.portal.image)
+
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My Document",
+                "blocks": {
+                    "09e39ddf-a945-49f2-b609-ea427ac3430b": {
+                        "@type": "image",
+                        "url": "{}/image".format(self.portal_url),
+                    },
+                    "21270e22-3a61-4780-b164-d6be56d942f4": {"@type": "title"},
+                },
+                "blocks_layout": {
+                    "items": [
+                        "21270e22-3a61-4780-b164-d6be56d942f4",
+                        "09e39ddf-a945-49f2-b609-ea427ac3430b",
+                    ]
+                },
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+
+        self.assertEqual(
+            "../../resolveuid/{}".format(target_uuid),
+            self.portal.folder1.mydocument.blocks.get(
+                "09e39ddf-a945-49f2-b609-ea427ac3430b"
+            ).get("url"),
+        )
+
+    def test_create_document_with_image_block_and_href_stores_uuid(self):
+        self.portal.invokeFactory("Document", id="linked_document", title="Linked Doc")
+        self.portal.invokeFactory("Image", id="image", title="Image")
+        image_file = os.path.join(os.path.dirname(__file__), u"image.png")
+        with open(image_file, "rb") as f:
+            image_data = f.read()
+        self.portal.image.image = NamedBlobImage(
+            data=image_data, contentType="image/png", filename=u"image.png"
+        )
+        self.portal.image.image_caption = u"This is an image caption."
+        transaction.commit()
+
+        target_uuid = IUUID(self.portal.image)
+        liked_doc_uuid = IUUID(self.portal.linked_document)
+
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My Document",
+                "blocks": {
+                    "09e39ddf-a945-49f2-b609-ea427ac3430b": {
+                        "@type": "image",
+                        "url": "{}/image".format(self.portal_url),
+                        "href": "{}/linked_document".format(self.portal_url),
+                    },
+                    "21270e22-3a61-4780-b164-d6be56d942f4": {"@type": "title"},
+                },
+                "blocks_layout": {
+                    "items": [
+                        "21270e22-3a61-4780-b164-d6be56d942f4",
+                        "09e39ddf-a945-49f2-b609-ea427ac3430b",
+                    ]
+                },
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+
+        self.assertEqual(
+            "../../resolveuid/{}".format(target_uuid),
+            self.portal.folder1.mydocument.blocks.get(
+                "09e39ddf-a945-49f2-b609-ea427ac3430b"
+            ).get("url"),
+        )
+        self.assertEqual(
+            "../../resolveuid/{}".format(liked_doc_uuid),
+            self.portal.folder1.mydocument.blocks.get(
+                "09e39ddf-a945-49f2-b609-ea427ac3430b"
+            ).get("href"),
         )
 
 
