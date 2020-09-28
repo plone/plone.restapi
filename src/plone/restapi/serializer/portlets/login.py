@@ -7,8 +7,8 @@ class LoginPortletSerializer(PortletSerializer):
     """
 
     def __call__(self):
-        res = super(StaticTextPortletSerializer, self).__call__()
-        renderer = StaticTextPortletRenderer(
+        res = super(LoginPortletSerializer, self).__call__()
+        renderer = LoginPortletRenderer(
             self.context,
             self.request,
             None,

@@ -1,7 +1,5 @@
 from . import PortletSerializer
 from plone.app.portlets.portlets.rss import Renderer
-from plone.restapi.interfaces import ISerializeToJsonSummary
-from zope.component import getMultiAdapter
 
 
 class RssPortletSerializer(PortletSerializer):

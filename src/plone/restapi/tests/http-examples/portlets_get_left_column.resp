@@ -1,0 +1,33 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@portlets/plone.leftcolumn", 
+  "manager": "plone.leftcolumn", 
+  "portlets": [
+    {
+      "@id": "http://localhost:55001/plone/@portlets/plone.leftcolumn/navigation", 
+      "@type": "portlets.Navigation", 
+      "bottomLevel": 0, 
+      "currentFolderOnly": false, 
+      "includeTop": false, 
+      "name": "", 
+      "navigationportlet": {
+        "has_custom_name": false, 
+        "items": [], 
+        "title": "Navigation", 
+        "url": "http://localhost:55001/plone/sitemap"
+      }, 
+      "no_icons": false, 
+      "no_thumbs": false, 
+      "portlet_category": "context", 
+      "portlet_hash": "706c6f6e652e6c656674636f6c756d6e0a636f6e746578740a2f706c6f6e650a6e617669676174696f6e", 
+      "portlet_id": "navigation", 
+      "portlet_key": "/plone", 
+      "portlet_manager": "plone.leftcolumn", 
+      "root_uid": null, 
+      "thumb_scale": null, 
+      "topLevel": 1
+    }
+  ]
+}
