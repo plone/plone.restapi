@@ -96,8 +96,105 @@ class TestServicesPortlets(unittest.TestCase):
         assert '/plone/@portlets/plone.' in j[0]['@id']
 
     def test_default_portlets_left_column(self):
-        response = self.api_session.get(
-            "/folder/subfolder1/thirdlevelfolder/@portlets/plone.leftcolumn")
+        base = "/folder/subfolder1/thirdlevelfolder"
+        base_url = self.portal_url + base
+
+        response = self.api_session.get(base + "/@portlets/plone.leftcolumn")
         self.assertEqual(response.status_code, 200)
 
         j = response.json()
+
+        self.assertEqual(j['@id'],
+                         self.portal_url + base + '/@portlets/plone.leftcolumn'
+                         )
+        self.assertEqual(j['manager'], 'plone.leftcolumn')
+        portlets = j['portlets']
+
+        self.assertEqual(len(portlets), 1)
+
+        navportlet = portlets[0]
+        self.assertEqual(navportlet['@id'],
+                         base_url +
+                         '/@portlets/plone.leftcolumn/navigation')
+        self.assertEqual(navportlet['@type'], 'portlets.Navigation')
+        self.assertEqual(navportlet['portlet_category'], 'context')
+        self.assertEqual(navportlet['portlet_manager'], 'plone.leftcolumn')
+
+        tree = navportlet['navigationportlet']
+
+        self.assertEqual(tree['title'], 'Navigation')
+        self.assertEqual(tree['url'], self.portal_url + '/sitemap')
+
+        self.assertEqual(len(tree['items']), 3)
+
+        self.assertEqual(tree['items'][1],
+                         {'@id': self.portal_url + '/folder/subfolder2',
+                          'description': '',
+                          'href': self.portal_url + '/folder/subfolder2',
+                          'icon': '',
+                          'is_current': False,
+                          'is_folderish': True,
+                          'is_in_path': False,
+                          'items': [],
+                          'normalized_id': 'subfolder2',
+                          'review_state': 'private',
+                                          'thumb': '',
+                                          'title': 'SubFolder 2',
+                                          'type': 'folder'})
+
+        self.assertEqual(tree['items'][2],
+                         {'@id': self.portal_url + '/folder/doc1',
+                          'description': '',
+                          'href': self.portal_url + '/folder/doc1',
+                          'icon': '',
+                          'is_current': False,
+                          'is_folderish': False,
+                          'is_in_path': False,
+                          'items': [],
+                          'normalized_id': 'doc1',
+                          'review_state': 'private',
+                          'thumb': '',
+                          'title': 'A document',
+                          'type': 'document'})
+
+        self.assertEqual(tree['items'][0],
+
+                         {'@id': self.portal_url + '/folder/subfolder1',
+                          'description': '',
+                          'href': self.portal_url + '/folder/subfolder1',
+                          'icon': '',
+                          'is_current': False,
+                          'is_folderish': True,
+                          'is_in_path': True,
+                          'items': [{'@id': base_url,
+                                     'description': '',
+                                     'href': base_url,
+                                     'icon': '',
+                                     'is_current': True,
+                                     'is_folderish': True,
+                                     'is_in_path': False,
+                                     'items': [
+                                         {'@id': base_url + '/fourthlevelfolder',
+                                          'description': '',
+                                          'href': base_url + '/fourthlevelfolder',
+                                          'icon': '',
+                                          'is_current': False,
+                                          'is_folderish': True,
+                                          'is_in_path': False,
+                                          'items': [],
+                                          'normalized_id': 'fourthlevelfolder',
+                                          'review_state': 'private',
+                                          'thumb': '',
+                                          'title': 'Fourth Level Folder',
+                                          'type': 'folder'}],
+                                     'normalized_id': 'thirdlevelfolder',
+                                     'review_state': 'private',
+                                     'thumb': '',
+                                     'title': 'Third Level Folder',
+                                     'type': 'folder'}],
+                          'normalized_id': 'subfolder1',
+                          'review_state': 'private',
+                          'thumb': '',
+                          'title': 'SubFolder 1',
+                          'type': 'folder'}
+                         )
