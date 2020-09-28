@@ -1,0 +1,1 @@
+- Add expandable `@layout` endpoint to easily access content-type blocks layout [@avoinea]

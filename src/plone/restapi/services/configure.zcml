@@ -15,6 +15,7 @@
   <include package=".database"/>
   <include package=".discussion"/>
   <include package=".groups"/>
+  <include package=".layout"/>
   <include package=".navigation"/>
   <include package=".history"/>
   <include package=".locking" />

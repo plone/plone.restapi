@@ -1,0 +1,24 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <plone:service
+    method="GET"
+    name="@layout"
+    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+    factory=".get.Layout"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="GET"
+    name="@layout"
+    for="Products.CMFCore.interfaces.IContentish"
+    factory=".get.LayoutGet"
+    permission="zope2.View"
+    />
+
+  <adapter factory=".get.Layout" name="layout" />
+
+</configure>
