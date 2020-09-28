@@ -172,7 +172,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}".format(uid),
                                 "rel": "nofollow",
                                 "url": "../resolveuid/{}".format(uid),
                             },
@@ -187,13 +186,13 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc2.absolute_url(),
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc2.absolute_url(),
         )
 
@@ -206,7 +205,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}/view".format(uid),
                                 "rel": "nofollow",
                                 "url": "../resolveuid/{}/view".format(uid),
                             },
@@ -221,13 +219,13 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc2.absolute_url() + "/view",
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc2.absolute_url() + "/view",
         )
 
@@ -307,7 +305,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}".format(uid),
                                 "rel": "nofollow",
                                 "url": "../resolveuid/{}".format(uid),
                             },
@@ -322,18 +319,18 @@ class TestBlocksResolveUID(TestCase):
         self.assertNotEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             blocks["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
         )
         self.assertNotEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             blocks["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
         )
 
     def test_blocks_field_deserialization_resolves_paths_to_uids(self):
@@ -469,7 +466,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}".format(uid),
                                 "rel": "nofollow",
                                 "url": "../resolveuid/{}".format(uid),
                             },
@@ -484,14 +480,14 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc_primary_field_url.absolute_url()
             + "/@@download/test_primary_namedfile_field",
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc_primary_field_url.absolute_url()
             + "/@@download/test_primary_namedfile_field",
         )
@@ -519,7 +515,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}".format(uid),
                                 "rel": "nofollow",
                                 "url": "../resolveuid/{}".format(uid),
                             },
@@ -534,13 +529,13 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc_primary_field_url.absolute_url(),
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc_primary_field_url.absolute_url(),
         )
 
@@ -553,7 +548,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}/view".format(uid),
                                 "rel": "nofollow",
                                 "url": "../resolveuid/{}/view".format(uid),
                             },
@@ -568,12 +562,12 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc2.absolute_url() + "/view",
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc2.absolute_url() + "/view",
         )
