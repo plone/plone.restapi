@@ -68,17 +68,14 @@ class OrderingMixin(object):
             msg = "Content ordering is not supported by this resource"
             raise BadRequest(msg)
 
-        catalog = getToolByName(self.context, 'portal_catalog')
+        catalog = getToolByName(self.context, "portal_catalog")
         query = {
-            'path': {
-                'query': '/'.join(self.context.getPhysicalPath()),
-                'depth': 1
-            },
-            'sort_on': sort_on,
-            'show_inactive': True
+            "path": {"query": "/".join(self.context.getPhysicalPath()), "depth": 1},
+            "sort_on": sort_on,
+            "show_inactive": True,
         }
         brains = catalog(**query)
-        if sort_order in ('reverse', 'descending'):
+        if sort_order in ("reverse", "descending"):
             brains = [b for b in reversed(brains)]
         for idx, brain in enumerate(brains):
             ordering.moveObjectToPosition(brain.id, idx)
