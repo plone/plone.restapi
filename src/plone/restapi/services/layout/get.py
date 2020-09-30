@@ -17,9 +17,7 @@ class Layout(object):
         self.request = request
 
     def __call__(self, expand=False):
-        result = {
-            "layout": {"@id": "{}/@layout".format(self.context.absolute_url())}
-        }
+        result = {"layout": {"@id": "{}/@layout".format(self.context.absolute_url())}}
         if not expand:
             return result
 
@@ -27,14 +25,14 @@ class Layout(object):
             return result
 
         ttool = getToolByName(self.context, "portal_types")
-        ptype = getattr(self.context, 'portal_type')
+        ptype = getattr(self.context, "portal_type")
         if not ptype:
             return result
 
         fti = ttool[ptype]
         schema = fti.lookupSchema()
         for field in schema:
-            if field.endswith('blocks') or field.endswith('blocks_layout'):
+            if field.endswith("blocks") or field.endswith("blocks_layout"):
                 result["layout"][field] = json_compatible(schema[field].default)
         return result
 
