@@ -9,7 +9,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
 from zExceptions import NotFound
@@ -20,7 +20,7 @@ from ZPublisher.pubevents import PubStart
 
 class TestWorkflowInfo(TestCase):
 
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+    layer = PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer["portal"]
@@ -100,7 +100,7 @@ class TestWorkflowInfo(TestCase):
 
 class TestWorkflowTransition(TestCase):
 
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+    layer = PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer["portal"]

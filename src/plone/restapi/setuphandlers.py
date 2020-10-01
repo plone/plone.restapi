@@ -18,6 +18,7 @@ class HiddenProfiles(object):
             u"plone.restapi:blocks",
             u"plone.restapi:performance",
             u"plone.restapi:testing",
+            u"plone.restapi:testing-workflows",
             u"plone.restapi:uninstall",
         ]
 
