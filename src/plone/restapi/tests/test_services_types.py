@@ -132,9 +132,10 @@ class TestServicesTypes(unittest.TestCase):
         self.assertEqual(
             "Email of the author", response.json().get("description")
         )  # noqa
-        self.assertEqual(
-            "plone.dexterity.schema.generated.plone_0_Document",
-            response.json().get("behavior"),
+        self.assertTrue(
+            response.json()
+            .get("behavior")
+            .startswith("plone.dexterity.schema.generated.plone_")
         )  # noqa
         self.assertEqual("string", response.json().get("type"))
         self.assertEqual("email", response.json().get("widget"))
@@ -169,9 +170,10 @@ class TestServicesTypes(unittest.TestCase):
         self.assertEqual(response.status_code, 201)
         self.assertEqual("Email", response.json().get("title"))
         self.assertEqual("Foo bar email", response.json().get("description"))
-        self.assertEqual(
-            "plone.dexterity.schema.generated.plone_0_Document",
-            response.json().get("behavior"),
+        self.assertTrue(
+            response.json()
+            .get("behavior")
+            .startswith("plone.dexterity.schema.generated.plone_")
         )  # noqa
         self.assertEqual("string", response.json().get("type"))
         self.assertEqual("email", response.json().get("widget"))
