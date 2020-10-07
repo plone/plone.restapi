@@ -15,9 +15,9 @@ class HiddenProfiles(object):
     def getNonInstallableProfiles(self):  # pragma: no cover
         """Do not show on Plone's list of installable profiles."""
         return [
+            u"plone.restapi:blocks",
             u"plone.restapi:performance",
             u"plone.restapi:testing",
-            u"plone.restapi:blocks",
             u"plone.restapi:uninstall",
         ]
 
