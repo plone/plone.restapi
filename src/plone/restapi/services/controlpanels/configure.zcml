@@ -45,62 +45,57 @@
     permission="plone.app.controlpanel.Overview"
     />
 
-  <!-- Dexterity Types Controlpanel -->
+<!-- General -->
+  <adapter
+    factory="plone.restapi.controlpanels.DateTimeControlpanel"
+    name="date-and-time" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.LanguageControlpanel"
+    name="language" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.MailControlpanel"
+    name="mail" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.NavigationControlpanel"
+    name="navigation" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.SiteControlpanel"
+    name="site" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.SearchControlpanel"
+    name="search" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.SocialMediaControlpanel"
+    name="socialmedia" />
+
+
+<!-- Content -->
+  <adapter
+    factory="plone.restapi.controlpanels.EditingControlpanel"
+    name="editing" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.ImagingControlpanel"
+    name="imaging" />
+
+  <adapter
+    factory="plone.restapi.controlpanels.MarkupControlpanel"
+    name="markup" />
+
   <adapter
     factory="plone.restapi.controlpanels.types.DexterityTypesControlpanel"
     provides="plone.restapi.controlpanels.interfaces.IDexterityTypesControlpanel"
     name="dexterity-types" />
 
-  <configure zcml:condition="have plone-5">
-
-    <!-- General -->
-    <adapter
-      factory="plone.restapi.controlpanels.registry.DateTimeControlpanel"
-      name="date-and-time" />
-
-    <adapter
-      factory="plone.restapi.controlpanels.registry.LanguageControlpanel"
-      name="language" />
-
-    <adapter
-      factory="plone.restapi.controlpanels.registry.MailControlpanel"
-      name="mail" />
-
-    <adapter
-      factory="plone.restapi.controlpanels.registry.NavigationControlpanel"
-      name="navigation" />
-
-    <adapter
-      factory="plone.restapi.controlpanels.registry.SiteControlpanel"
-      name="site" />
-
-    <adapter
-      factory="plone.restapi.controlpanels.registry.SearchControlpanel"
-      name="search" />
-
-    <adapter
-      factory="plone.restapi.controlpanels.registry.SocialMediaControlpanel"
-      name="socialmedia" />
-
-
-    <!-- Content -->
-    <adapter
-      factory="plone.restapi.controlpanels.registry.EditingControlpanel"
-      name="editing" />
-
-    <adapter
-      factory="plone.restapi.controlpanels.registry.ImagingControlpanel"
-      name="imaging" />
-
-    <adapter
-      factory="plone.restapi.controlpanels.registry.MarkupControlpanel"
-      name="markup" />
-
-    <!-- Security -->
-    <adapter
-      factory="plone.restapi.controlpanels.registry.SecurityControlpanel"
-      name="security" />
-
-  </configure>
+<!-- Security -->
+  <adapter
+    factory="plone.restapi.controlpanels.SecurityControlpanel"
+    name="security" />
 
 </configure>

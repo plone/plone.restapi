@@ -7,10 +7,13 @@
 
   <include package=".auth" />
   <include package=".actions" />
-  <include package=".addons" />
+  <include package=".addons"
+      zcml:condition="have plone-5"/>
   <include package=".breadcrumbs"/>
   <include package=".content"/>
-  <include package=".controlpanels" />
+  <configure zcml:condition="have plone-5">
+    <include package=".controlpanels" />
+  </configure>
   <include package=".copymove"/>
   <include package=".database"/>
   <include package=".discussion"/>

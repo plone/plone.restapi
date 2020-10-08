@@ -34,6 +34,8 @@
     <adapter factory=".atfields.ReferenceFieldDeserializer" />
   </configure>
 
-  <include package=".controlpanels" />
+  <configure zcml:condition="have plone-5">
+    <include package=".controlpanels" />
+  </configure>
 
 </configure>
