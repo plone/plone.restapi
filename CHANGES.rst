@@ -13,9 +13,9 @@ Changelog
 
 New features:
 
+- Add `sort` feature to resort all folder items 
+  [petschki] (#812)
 
-- - add `sort` feature to resort all folder items
-    [petschki] (#812)
 - Remove unneeded stringtype checks
   [erral] (#875)
 
@@ -26,8 +26,10 @@ Bug fixes:
 - Fixed deprecation warnings for ``zope.site.hooks``, ``CMFPlone.interfaces.ILanguageSchema``
   and ``plone.dexterity.utils.splitSchemaName``.
   [maurits] (#975)
-- - Update tests to fix https://github.com/plone/plone.dexterity/pull/137
+
+- Update tests to fix https://github.com/plone/plone.dexterity/pull/137
   [@avoinea] (#1001)
+
 - Fix tests with Products.MailHost 4.10.
   [maurits] (#3178)
 
