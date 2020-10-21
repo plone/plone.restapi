@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
+from plone.app.contenttypes.interfaces import ILink
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
@@ -71,6 +72,22 @@ class TextLineFieldDeserializer(DefaultFieldDeserializer):
                 value = self.field.missing_value
 
         self.field.validate(value)
+        return value
+
+
+@implementer(IFieldDeserializer)
+@adapter(ITextLine, ILink, IBrowserRequest)
+class LinkTextLineFieldDeserializer(TextLineFieldDeserializer):
+    def __call__(self, value):
+        value = super(LinkTextLineFieldDeserializer, self).__call__(value)
+        if self.field.getName() == 'remoteUrl':
+            portal = getMultiAdapter(
+                (self.context, self.context.REQUEST), name="plone_portal_state"
+            ).portal()
+            portal_url = portal.portal_url()
+            if value.startswith(portal_url):
+                value = '${{portal_url}}{path}'.format(
+                    path=value.replace(portal_url, ''))
         return value
 
 
