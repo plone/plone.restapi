@@ -1,0 +1,1 @@
+- Add serializer/deserializer for remoteUrl Link's field [cekk]
