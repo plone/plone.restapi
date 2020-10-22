@@ -624,12 +624,12 @@ class TestDXFieldDeserializer(unittest.TestCase):
         )
         self.assertEqual(
             u'${portal_url}/doc1',
-            deserializer(value='http://nohost/plone/doc1'))
+            deserializer(value=u'http://nohost/plone/doc1'))
 
         # for other contents/fields does nothing
         value = self.deserialize("test_textline_field", u'http://www.plone.com')
         self.assertEqual(
             u'http://www.plone.com', value)
         value = self.deserialize(
-            "test_textline_field", 'http://nohost/plone/doc1')
+            "test_textline_field", u'http://nohost/plone/doc1')
         self.assertEqual(self.portal.doc1.absolute_url(), value)
