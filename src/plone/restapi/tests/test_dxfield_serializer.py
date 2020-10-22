@@ -340,6 +340,7 @@ class TestDexterityFieldSerializing(TestCase):
         dm.set('${portal_url}/doc1')
         self.assertEqual(serializer(), self.portal.doc1.absolute_url())
 
+
 @unittest.skipUnless(
     PLONE_VERSION.base_version < "5.1",
     "Plone < 5.1: original image url is a scaled image in JPEG format because we test with a GIF image",
