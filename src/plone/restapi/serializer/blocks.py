@@ -17,7 +17,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 
 import copy
 import re
-
+import os
 
 RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
 
@@ -63,7 +63,8 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                         handlers.append(h)
 
                 for handler in sorted(handlers, key=lambda h: h.order):
-                    block_value = handler(block_value)
+                    if not getattr(handler, "disabled", False):
+                        block_value = handler(block_value)
 
                 value[id] = block_value
 
@@ -75,6 +76,7 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
 class ResolveUIDSerializer(object):
     order = 1
     block_type = None
+    disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
         self.context = context
@@ -92,6 +94,7 @@ class ResolveUIDSerializer(object):
 class TextBlockSerializer(object):
     order = 100
     block_type = "text"
+    disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
         self.context = context

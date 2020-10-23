@@ -15,6 +15,8 @@ from zope.component import subscribers
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
+import os
+
 
 def path2uid(context, link):
     # unrestrictedTraverse requires a string on py3. see:
@@ -66,8 +68,10 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
                 ):
                     if h.block_type == block_type or h.block_type is None:
                         handlers.append(h)
+
                 for handler in sorted(handlers, key=lambda h: h.order):
-                    block_value = handler(block_value)
+                    if not getattr(handler, "disabled", False):
+                        block_value = handler(block_value)
 
                 value[id] = block_value
 
@@ -85,6 +89,7 @@ class ResolveUIDDeserializer(object):
 
     order = 1
     block_type = None
+    disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
         self.context = context
@@ -104,6 +109,7 @@ class ResolveUIDDeserializer(object):
 class TextBlockDeserializer(object):
     order = 100
     block_type = "text"
+    disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
         self.context = context
@@ -119,11 +125,6 @@ class TextBlockDeserializer(object):
             if entity.get("type") == "LINK":
                 href = entity.get("data", {}).get("url", "")
                 entity["data"]["url"] = path2uid(context=self.context, link=href)
-                print(  # noqa
-                    "DESERIALIZE TEXT BLOCK: {} -> {}".format(
-                        href, entity["data"]["url"]
-                    )
-                )
         return block
 
 
@@ -132,6 +133,7 @@ class TextBlockDeserializer(object):
 class HTMLBlockDeserializer(object):
     order = 100
     block_type = "html"
+    disabled = os.environ.get("disable_transform_html", False)
 
     def __init__(self, context, request):
         self.context = context
@@ -155,6 +157,7 @@ class HTMLBlockDeserializer(object):
 class ImageBlockDeserializer(object):
     order = 100
     block_type = "image"
+    disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
         self.context = context
@@ -163,5 +166,4 @@ class ImageBlockDeserializer(object):
     def __call__(self, block):
         url = block.get("url", "")
         block["url"] = path2uid(context=self.context, link=url)
-        print("DESERIALIZE IMAGE: {} -> {}".format(url, block["url"]))  # noqa
         return block
