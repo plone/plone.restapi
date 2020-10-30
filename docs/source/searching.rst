@@ -113,7 +113,7 @@ In that case, ``plone.restapi`` simply can't know what data type to cast your qu
 
 .. code-block:: http
 
-    GET /plone/@search?numeric_field=42:int HTTP/1.1
+    GET /plone/@search?numeric_field:int=42 HTTP/1.1
     Accept: application/json
 
 
