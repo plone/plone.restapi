@@ -319,7 +319,7 @@ class PloneRestApIBlocksLayer(PloneSandboxLayer):
     defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
 
     def setUpPloneSite(self, portal):
-        applyProfile(portal, "plone.restapi:blocks")
+        applyProfile(portal, "plone.restapi:volto-blocks")
 
 
 PLONE_RESTAPI_BLOCKS_FIXTURE = PloneRestApIBlocksLayer()

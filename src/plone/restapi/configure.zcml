@@ -47,9 +47,9 @@
       />
 
   <genericsetup:registerProfile
-      name="blocks"
+      name="volto-blocks"
       title="Volto Blocks"
-      directory="profiles/blocks"
+      directory="profiles/volto-blocks"
       description="Enables blocks on the Document content type"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       />

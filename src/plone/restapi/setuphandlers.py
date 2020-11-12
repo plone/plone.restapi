@@ -17,7 +17,7 @@ class HiddenProfiles(object):
         return [
             u"plone.restapi:performance",
             u"plone.restapi:testing",
-            u"plone.restapi:blocks",
+            u"plone.restapi:volto-blocks",
             u"plone.restapi:uninstall",
         ]
 

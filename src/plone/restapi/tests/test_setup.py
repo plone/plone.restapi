@@ -38,6 +38,21 @@ class TestInstall(unittest.TestCase):
             ]
         self.assertTrue(installed, "package appears not to have been installed")
 
+    # BBB: This test is only necessary as long as Plone 4.3 is supported.
+    def test_install_profile(self):
+        """Checks if the install profile is the default profile."""
+        if HAS_INSTALLER:
+            qi = get_installer(self.portal)
+            install_profile_id = qi.get_install_profile(PROJECT_NAME)["id"]
+        else:
+            qi_tool = api.portal.get_tool("portal_quickinstaller")
+            install_profile_id = qi_tool.getInstallProfile(PROJECT_NAME)["id"]
+        self.assertEqual(
+            install_profile_id,
+            "plone.restapi:default",
+            "In Plone 4.3, the default profile must be first in alphabetical order",
+        )
+
 
 class TestUninstall(unittest.TestCase):
 
