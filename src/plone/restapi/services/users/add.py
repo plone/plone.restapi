@@ -18,6 +18,7 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect.interfaces
+import six
 
 
 try:  # pragma: no cover
@@ -215,6 +216,10 @@ class UsersPost(Service):
         if send_password_reset:
             registration.registeredNotify(username)
         self.request.response.setStatus(201)
+        # Note: to please Zope 4.5.2+ we make sure the header is a string,
+        # and not unicode on Python 2.
+        if six.PY2 and not isinstance(username, str):
+            username = username.encode("utf-8")
         self.request.response.setHeader(
             "Location", portal.absolute_url() + "/@users/" + username
         )
