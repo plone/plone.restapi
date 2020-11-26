@@ -238,7 +238,7 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/@search", params=query)
 
         first_item = response.json()["items"][0]
-        self.assertDictContainsSubset(
+        self.assertLessEqual(
             {
                 u"@id": self.portal_url + u"/folder/doc",
                 u"Creator": u"test_user_1_",
@@ -267,15 +267,14 @@ class TestSearchFunctional(unittest.TestCase):
                 u"last_comment_date": None,
                 u"listCreators": [u"test_user_1_"],
                 u"location": None,
-                u"meta_type": u"Dexterity Item",
                 u"portal_type": u"DXTestDocument",
                 u"review_state": u"private",
                 u"start": u"1950-01-01T00:00:00+00:00",
                 u"sync_uid": None,
                 u"title": u"Lorem Ipsum",
                 u"total_comments": 0,
-            },
-            first_item,
+            }.items(),
+            first_item.items(),
         )
         # This value changed in Plone 5.2
         # (Dexterity gained support for getObjSize)
