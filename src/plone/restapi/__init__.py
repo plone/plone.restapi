@@ -2,8 +2,10 @@
 from AccessControl import allow_module
 from AccessControl.Permissions import add_user_folders
 from plone.restapi.pas import plugin
+from Products.CMFPlone.utils import getFSVersionTuple
 from Products.PluggableAuthService.PluggableAuthService import registerMultiPlugin
 from zope.i18nmessageid import MessageFactory
+
 
 import pkg_resources
 
@@ -32,6 +34,14 @@ except pkg_resources.DistributionNotFound:
     HAS_AT = False
 else:
     HAS_AT = True
+
+PLONE4 = getFSVersionTuple()[0] == 4
+
+# BBB: Fix install profile in Plone 4
+if PLONE4:
+    from plone.restapi.patch import apply_patch
+
+    apply_patch()
 
 
 def initialize(context):
