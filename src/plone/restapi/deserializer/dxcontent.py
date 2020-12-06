@@ -84,6 +84,7 @@ class DeserializeFromJson(OrderingMixin, object):
             write_permissions = mergedTaggedValueDict(schema, WRITE_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
+                __traceback_info__ = "field={}".format(field)
 
                 field_data = schema_data.setdefault(schema, {})
 
