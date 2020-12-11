@@ -142,7 +142,7 @@ class TestSummarySerializers(unittest.TestCase):
             summary["mime_type"] = u"text/plain"
 
         self.maxDiff = None
-        self.assertDictEqual(
+        self.assertLessEqual(
             {
                 "@id": u"http://nohost/plone/doc1",
                 "@type": u"DXTestDocument",
@@ -178,7 +178,6 @@ class TestSummarySerializers(unittest.TestCase):
                 "last_comment_date": None,
                 "listCreators": [u"test_user_1_"],
                 "location": None,
-                "meta_type": u"Dexterity Item",
                 "mime_type": u"text/plain",
                 "modified": u"2017-01-21T01:14:48+00:00",
                 "portal_type": u"DXTestDocument",
@@ -187,8 +186,8 @@ class TestSummarySerializers(unittest.TestCase):
                 "sync_uid": None,
                 "title": u"Lorem Ipsum",
                 "total_comments": 0,
-            },
-            summary,
+            }.items(),
+            summary.items(),
         )
 
     def test_dx_type_summary(self):
