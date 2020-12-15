@@ -8,10 +8,9 @@ jobs:
         python-version: [3.7]
         plone-version: [5.2, 5.1, 4.3]
     steps:
+
+      # git checkout
       - uses: actions/checkout@v2
-      - name: debug
-        working-directory: api
-        run: ls -al
 
       # python setup
       - name: Set up Python ${{ matrix.python-version }}
