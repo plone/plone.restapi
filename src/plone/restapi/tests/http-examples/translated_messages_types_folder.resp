@@ -252,8 +252,7 @@ Content-Type: application/json+schema
     }
   }, 
   "required": [
-    "title", 
-    "nextPreviousEnabled"
+    "title"
   ], 
   "title": "Carpeta", 
   "type": "object"
