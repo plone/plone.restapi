@@ -1,0 +1,41 @@
+name: Plone RESTAPI CI
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.7]
+        plone-version: [5.2, 5.1, 4.3]
+    steps:
+      - uses: actions/checkout@v2
+      - name: debug
+        working-directory: api
+        run: ls -al
+
+      # python setup
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # python cache
+      - uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      # python install
+      - run: pip install virtualenv
+      - name: pip install
+        working-directory: api
+        run: pip install -r requirements.txt
+      - name: choose Plone version
+        run: sed -ie "s#plone-x.x.x.cfg#plone-$plone-version.cfg#" travis.cfg
+
+      - name: buildout
+        run: buildout -t 10 -c travis.cfg
+        env:
+          CI: true
