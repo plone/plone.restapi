@@ -4,6 +4,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         python-version: [3.7]
         plone-version: [5.2, 5.1, 4.3]
@@ -33,7 +34,32 @@ jobs:
       - name: choose Plone version
         run: sed -ie "s#plone-x.x.x.cfg#plone-${{ matrix.plone-version }}.x.cfg#" travis.cfg
 
+      # buildout
       - name: buildout
         run: buildout -t 10 -c travis.cfg
         env:
           CI: true
+
+      # black
+      - name: black
+        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then pip install black && black src/ --check; fi
+
+      # code analysis
+      - name: black
+        run: bin/code-analysis
+
+      # build sphinx
+      - name: sphinx
+        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then bin/sphinxbuilder; fi
+
+      # test
+      - name: test
+        run: bin/test
+
+      # test no uncommited changes
+      - name: test no uncommited changes
+        run: bin/test-no-uncommitted-doc-changes
+
+      # test sphinx warnings
+      - name: sphinx
+        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then bin/test-no-sphinx-warnings; fi
