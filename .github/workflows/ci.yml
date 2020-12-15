@@ -29,7 +29,6 @@ jobs:
       # python install
       - run: pip install virtualenv
       - name: pip install
-        working-directory: api
         run: pip install -r requirements.txt
       - name: choose Plone version
         run: sed -ie "s#plone-x.x.x.cfg#plone-$plone-version.cfg#" travis.cfg
