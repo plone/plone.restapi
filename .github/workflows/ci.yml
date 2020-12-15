@@ -31,7 +31,7 @@ jobs:
       - name: pip install
         run: pip install -r requirements.txt
       - name: choose Plone version
-        run: sed -ie "s#plone-x.x.x.cfg#plone-$plone-version.cfg#" travis.cfg
+        run: sed -ie "s#plone-x.x.x.cfg#plone-${{ matrix.plone-version }}.cfg#" travis.cfg
 
       - name: buildout
         run: buildout -t 10 -c travis.cfg
