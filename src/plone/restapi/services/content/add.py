@@ -8,6 +8,7 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
+from Products.CMFPlone.utils import getFSVersionTuple
 from Products.CMFPlone.utils import safe_hasattr
 from zExceptions import BadRequest
 from zExceptions import Unauthorized
@@ -28,6 +29,8 @@ try:
     PAM_INSTALLED = True
 except pkg_resources.DistributionNotFound:
     PAM_INSTALLED = False
+
+PLONE5 = getFSVersionTuple()[0] >= 5
 
 
 class FolderPost(Service):
@@ -88,7 +91,7 @@ class FolderPost(Service):
         obj = add(self.context, obj, rename=not bool(id_))
 
         # Link translation given the translation_of property
-        if PAM_INSTALLED:
+        if PAM_INSTALLED and PLONE5:
             from plone.app.multilingual.interfaces import (
                 IPloneAppMultilingualInstalled,
             )  # noqa
