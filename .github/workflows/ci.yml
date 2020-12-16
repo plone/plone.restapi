@@ -61,7 +61,6 @@ jobs:
         env:
           PYTHON_VERSION: ${{ matrix.python-version }}
           PLONE_VERSION: ${{ matrix.plone-version }}
-        env:
           CI: true
 
       # black
