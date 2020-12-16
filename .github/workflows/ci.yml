@@ -59,6 +59,9 @@ jobs:
       - name: buildout
         run: buildout -t 10 -c travis.cfg
         env:
+          PYTHON_VERSION: ${{ matrix.python-version }}
+          PLONE_VERSION: ${{ matrix.plone-version }}
+        env:
           CI: true
 
       # black
