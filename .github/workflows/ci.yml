@@ -63,6 +63,10 @@ jobs:
           PLONE_VERSION: ${{ matrix.plone-version }}
           CI: true
 
+      - run: cat bin/test-no-uncommitted-doc-changes
+      - run: echo $PLONE_VERSION
+      - run: echo $PYTHON_VERSION
+
       # black
       - name: black
         run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then pip install black && black src/ --check; fi
