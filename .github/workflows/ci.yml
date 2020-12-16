@@ -58,14 +58,7 @@ jobs:
       # buildout
       - name: buildout
         run: buildout -t 10 -c travis.cfg
-        env:
-          PYTHON_VERSION: ${{ matrix.python-version }}
-          PLONE_VERSION: ${{ matrix.plone-version }}
           CI: true
-
-      - run: cat bin/test-no-uncommitted-doc-changes
-      - run: echo $PLONE_VERSION
-      - run: echo $PYTHON_VERSION
 
       # black
       - name: black
@@ -86,6 +79,9 @@ jobs:
       # test no uncommited changes
       - name: test no uncommited changes
         run: bin/test-no-uncommitted-doc-changes
+        env:
+          PYTHON_VERSION: ${{ matrix.python-version }}
+          PLONE_VERSION: ${{ matrix.plone-version }}
 
       # test sphinx warnings
       - name: sphinx
