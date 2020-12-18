@@ -1,3 +1,0 @@
-Fixed deprecation warnings for ``zope.site.hooks``, ``CMFPlone.interfaces.ILanguageSchema``
-and ``plone.dexterity.utils.splitSchemaName``.
-[maurits]

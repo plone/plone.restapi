@@ -8,6 +8,44 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0a6 (2020-12-18)
+--------------------
+
+New features:
+
+
+- - add `sort` feature to resort all folder items
+    [petschki] (#812)
+- Remove unneeded stringtype checks
+  [erral] (#875)
+- - Enable Plone 4 Control Panels: Add-ons, Dexterity Content Types [avoinea] (#984)
+- Enhance traceback with ``__traceback_info__`` on import to detect the field causing the problem.
+  [jensens] (#1009)
+
+
+Bug fixes:
+
+
+- Fixed deprecation warnings for ``zope.site.hooks``, ``CMFPlone.interfaces.ILanguageSchema``
+  and ``plone.dexterity.utils.splitSchemaName``.
+  [maurits] (#975)
+- - Update tests to fix https://github.com/plone/plone.dexterity/pull/137
+  [@avoinea] (#1001)
+- - Fix resolveuid blocks transforms
+    [tisto, sneridagh] (#1006)
+- Fix type hint example in searching documentation.
+  [jensens] (#1008)
+- Fixed compatibility with Zope 4.5.2 by making sure Location header is string.
+  On Python 2 it could be unicode for the users and groups end points.
+  Fixes `issue 1019 <https://github.com/plone/plone.restapi/issues/1019>`_.
+  [maurits] (#1019)
+- Check for Plone 5 in content-adding endpoint if plone.app.multilingual is installed [erral] (#1029)
+- Do not test if there is a `meta_type` index. It is unused ballast.
+  [jensens] (#2024)
+- Fix tests with Products.MailHost 4.10.
+  [maurits] (#3178)
+
+
 7.0.0a5 (2020-08-21)
 --------------------
 
