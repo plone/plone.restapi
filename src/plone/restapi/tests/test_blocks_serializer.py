@@ -90,3 +90,34 @@ class TestBlocksSerializer(unittest.TestCase):
             blocks={"123": {"@type": "test_multi", "value": u"a"}},
         )
         self.assertEqual(value["123"]["value"], u"c")
+
+    def test_disabled_serializer(self):
+        @implementer(IBlockFieldSerializationTransformer)
+        @adapter(IBlocks, IBrowserRequest)
+        class TestAdapter(object):
+            order = 10
+            block_type = "test"
+            disabled = True
+
+            def __init__(self, context, request):
+                self.context = context
+                self.request = request
+
+            def __call__(self, value):
+                self.context._handler_called = True
+
+                value["value"] = u"changed: {}".format(value["value"])
+
+                return value
+
+        provideSubscriptionAdapter(
+            TestAdapter,
+            (IDexterityItem, IBrowserRequest),
+        )
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={"123": {"@type": "test", "value": u"text"}},
+        )
+
+        assert not getattr(self.portal.doc1, "_handler_called", False)
+        self.assertEqual(value["123"]["value"], u"text")
