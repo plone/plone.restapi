@@ -348,8 +348,8 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
 
     def test_namedimage_field_serialization_returns_dict(self):
         """In Plone < 5.1 the image returned when requesting an image
-           scale with the same width and height of the original image is
-           a Pillow-generated image scale in JPEG format"""
+        scale with the same width and height of the original image is
+        a Pillow-generated image scale in JPEG format"""
         image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
@@ -418,8 +418,8 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
             )
 
     def test_namedimage_field_serialization_doesnt_choke_on_corrupt_image(self):
-        """ Original image url will be None because the original image is corrupted
-            and the created url should be an image scale """
+        """Original image url will be None because the original image is corrupted
+        and the created url should be an image scale"""
         image_data = b"INVALID IMAGE DATA"
         fn = "test_namedimage_field"
         with patch.object(storage, "uuid4", return_value="uuid_1"):
@@ -445,8 +445,8 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
 
     def test_namedblobimage_field_serialization_returns_dict(self):
         """In Plone < 5.1 the image returned when requesting an image
-           scale with the same width and height of the original image is
-           a Pillow-generated image scale in JPEG format"""
+        scale with the same width and height of the original image is
+        a Pillow-generated image scale in JPEG format"""
         image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
@@ -515,8 +515,8 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
             )
 
     def test_namedblobimage_field_serialization_doesnt_choke_on_corrupt_image(self):
-        """ Original image url will be None because the original image is corrupted
-            and the created url should be an image scale """
+        """Original image url will be None because the original image is corrupted
+        and the created url should be an image scale"""
         image_data = b"INVALID IMAGE DATA"
         fn = "test_namedblobimage_field"
         with patch.object(storage, "uuid4", return_value="uuid_1"):
@@ -571,8 +571,8 @@ class TestDexterityImageFieldSerializingOriginalScaledInPNG(TestCase):
 
     def test_namedimage_field_serialization_returns_dict(self):
         """In Plone == 5.1 the image returned when requesting an image
-           scale with the same width and height of the original image is
-           a Pillow-generated image scale in PNG format"""
+        scale with the same width and height of the original image is
+        a Pillow-generated image scale in PNG format"""
         image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
@@ -641,8 +641,8 @@ class TestDexterityImageFieldSerializingOriginalScaledInPNG(TestCase):
             )
 
     def test_namedimage_field_serialization_doesnt_choke_on_corrupt_image(self):
-        """ Original image url will be None because the original image is corrupted
-            and the created url should be an image scale """
+        """Original image url will be None because the original image is corrupted
+        and the created url should be an image scale"""
         image_data = b"INVALID IMAGE DATA"
         fn = "test_namedimage_field"
         with patch.object(storage, "uuid4", return_value="uuid_1"):
@@ -668,8 +668,8 @@ class TestDexterityImageFieldSerializingOriginalScaledInPNG(TestCase):
 
     def test_namedblobimage_field_serialization_returns_dict(self):
         """In Plone = 5.1 the image returned when requesting an image
-           scale with the same width and height of the original image is
-           a Pillow-generated image scale in PNG format"""
+        scale with the same width and height of the original image is
+        a Pillow-generated image scale in PNG format"""
         image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
@@ -738,8 +738,8 @@ class TestDexterityImageFieldSerializingOriginalScaledInPNG(TestCase):
             )
 
     def test_namedblobimage_field_serialization_doesnt_choke_on_corrupt_image(self):
-        """ Original image url will be None because the original image is corrupted
-            and the created url should be an image scale """
+        """Original image url will be None because the original image is corrupted
+        and the created url should be an image scale"""
         image_data = b"INVALID IMAGE DATA"
         fn = "test_namedblobimage_field"
         with patch.object(storage, "uuid4", return_value="uuid_1"):
@@ -794,8 +794,8 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
 
     def test_namedimage_field_serialization_returns_dict_with_original_scale(self):
         """In Plone >= 5.2 the image returned when requesting an image
-           scale with the same width and height of the original image is
-           the actual original image in its original format """
+        scale with the same width and height of the original image is
+        the actual original image in its original format"""
         image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
@@ -864,8 +864,8 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             )
 
     def test_namedimage_field_serialization_doesnt_choke_on_corrupt_image(self):
-        """ In Plone >= 5.2 the original image file is not a "scale", so its url
-            is returned as is and we need to check it, but the scales should be empty"""
+        """In Plone >= 5.2 the original image file is not a "scale", so its url
+        is returned as is and we need to check it, but the scales should be empty"""
         image_data = b"INVALID IMAGE DATA"
         fn = "test_namedimage_field"
         with patch.object(storage, "uuid4", return_value="uuid_1"):
@@ -895,8 +895,8 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
 
     def test_namedblobimage_field_serialization_returns_dict_with_original_scale(self):
         """In Plone >= 5.2 the image returned when requesting an image
-           scale with the same width and height of the original image is
-           the actual original image in its original format"""
+        scale with the same width and height of the original image is
+        the actual original image in its original format"""
         image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
@@ -965,8 +965,8 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             )
 
     def test_namedblobimage_field_serialization_doesnt_choke_on_corrupt_image(self):
-        """ In Plone >= 5.2 the original image file is not a "scale", so its url
-            is returned as is and we need to check it, but the scales should be empty"""
+        """In Plone >= 5.2 the original image file is not a "scale", so its url
+        is returned as is and we need to check it, but the scales should be empty"""
         image_data = b"INVALID IMAGE DATA"
         fn = "test_namedblobimage_field"
         with patch.object(storage, "uuid4", return_value="uuid_1"):
