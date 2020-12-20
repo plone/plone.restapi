@@ -4,20 +4,44 @@
 """
 
 from Acquisition import aq_base
+from Acquisition import aq_inner
+from Acquisition import aq_parent
 from plone import api
-from plone.app.portlets.portlets.navigation import Renderer as BaseRenderer
+from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
+from plone.app.layout.navigation.interfaces import INavigationRoot
+from plone.app.layout.navigation.interfaces import INavtreeStrategy
+from plone.app.layout.navigation.navtree import buildFolderTree
+from plone.app.layout.navigation.root import getNavigationRoot
+from plone.app.uuid.utils import uuidToObject
+from plone.i18n.normalizer.interfaces import IIDNormalizer
+from plone.memoize.instance import memoize
 from plone.registry.interfaces import IRegistry
-from Products.CMFPlone import utils
-from zope.component import getUtility
-from plone.restapi.services import Service
 from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.services import Service
+from Products.CMFCore.interfaces import ISiteRoot
+from Products.CMFCore.utils import getToolByName
+from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
+from Products.CMFPlone import utils
+from Products.CMFPlone.defaultpage import is_default_page
+from Products.CMFPlone.interfaces import INonStructuralFolder
+from Products.CMFPlone.interfaces import ISiteSchema
+from Products.MimetypesRegistry.MimeTypeItem import guess_icon_path
+from zExceptions import NotFound
 from zope.component import adapter
+from zope.component import getMultiAdapter
+from zope.component import getUtility
+from zope.component import queryUtility
 from zope.interface import implementer
 from zope.interface import Interface
 
+import os
 
-class NavigationGet(Service):
+
+class NavPortletGet(Service):
     def reply(self):
+        # import pdb
+        #
+        # pdb.set_trace()
         navigation = NavigationPortlet(self.context, self.request)
         return navigation(expand=True)["navportlet"]
 
@@ -36,8 +60,181 @@ class NavigationPortlet(object):
         if not expand:
             return result
 
+        # 'context', 'request', 'view', 'manager', and 'data'
+        data = {}
+        renderer = NavigationPortletRenderer(self.context, self.request, data)
+        return renderer.render()
 
-class NavigationPortletRenderer(BaseRenderer):
+
+class NavigationPortletRenderer(object):
+    def __init__(self, context, request, data):
+
+        self.urltool = getToolByName(context, "portal_url")
+
+    def title(self):
+        return self.data.name or self.data.title
+
+    def hasName(self):
+        return self.data.name
+
+    @property
+    def available(self):
+        rootpath = self.getNavRootPath()
+        if rootpath is None:
+            return False
+
+        if self.data.bottomLevel < 0:
+            return True
+
+        tree = self.getNavTree()
+        return len(tree["children"]) > 0
+
+    def include_top(self):
+        return getattr(self.data, "includeTop", True)
+
+    def navigation_root(self):
+        return self.getNavRoot()
+
+    def heading_link_target(self):
+        """
+        Get the href target where clicking the portlet header will take you.
+
+        If this is a customized portlet with a custom root item set,
+        we probably want to take the user to the custom root item instead
+        of the sitemap of the navigation root.
+
+        Plone does not have subsection sitemaps so there is no point of
+        displaying /sitemap links for anything besides nav root.
+        """
+
+        if not self.data.root_uid and not self.data.currentFolderOnly:
+            # No particular root item assigned -> should get link to the
+            # navigation root sitemap of the current context acquisition chain
+            portal_state = getMultiAdapter(
+                (self.context, self.request), name="plone_portal_state"
+            )
+            return portal_state.navigation_root_url() + "/sitemap"
+
+        nav_root = self.getNavRoot()
+
+        # Root content item gone away or similar issue
+        if not nav_root:
+            return None
+
+        if INavigationRoot.providedBy(nav_root) or ISiteRoot.providedBy(nav_root):
+            # For top level folders go to the sitemap
+            return nav_root.absolute_url() + "/sitemap"
+        else:
+            # Go to the item /view we have chosen as root item
+            return nav_root.absolute_url()
+
+    def root_type_name(self):
+        root = self.getNavRoot()
+        return queryUtility(IIDNormalizer).normalize(root.portal_type)
+
+    def root_item_class(self):
+        context = aq_inner(self.context)
+        root = self.getNavRoot()
+        container = aq_parent(context)
+        if aq_base(root) is aq_base(context) or (
+            aq_base(root) is aq_base(container) and is_default_page(container, context)
+        ):
+            return "navTreeCurrentItem"
+        return ""
+
+    def root_is_portal(self):
+        root = self.getNavRoot()
+        return aq_base(root) is aq_base(self.urltool.getPortalObject())
+
+    def createNavTree(self):
+        data = self.getNavTree()
+
+        bottomLevel = self.data.bottomLevel or 0
+
+        if bottomLevel < 0:
+            # Special case where navigation tree depth is negative
+            # meaning that the admin does not want the listing to be displayed
+            return self.recurse([], level=1, bottomLevel=bottomLevel)
+        else:
+            return self.recurse(
+                children=data.get("children", []), level=1, bottomLevel=bottomLevel
+            )
+
+    # Cached lookups
+
+    @memoize
+    def getNavRootPath(self):
+        return getRootPath(
+            self.context,
+            self.data.currentFolderOnly,
+            self.data.topLevel,
+            self.data.root_uid,
+        )
+
+    @memoize
+    def getNavRoot(self, _marker=None):
+        if _marker is None:
+            _marker = []
+        portal = self.urltool.getPortalObject()
+        rootPath = self.getNavRootPath()
+        if rootPath is None:
+            return None
+
+        if rootPath == self.urltool.getPortalPath():
+            return portal
+        else:
+            try:
+                return portal.unrestrictedTraverse(rootPath)
+            except (AttributeError, KeyError, TypeError, NotFound):
+                # TypeError: object is unsubscribtable might be
+                # risen in some cases
+                return portal
+
+    @memoize
+    def getNavTree(self, _marker=None):
+        if _marker is None:
+            _marker = []
+        context = aq_inner(self.context)
+        queryBuilder = getMultiAdapter((context, self.data), INavigationQueryBuilder)
+        strategy = getMultiAdapter((context, self.data), INavtreeStrategy)
+
+        return buildFolderTree(
+            context, obj=context, query=queryBuilder(), strategy=strategy
+        )
+
+    @memoize
+    def thumb_scale(self):
+        """Use override value or read thumb_scale from registry.
+        Image sizes must fit to value in allowed image sizes.
+        None will suppress thumb.
+        """
+        if getattr(self.data, "no_thumbs", False):
+            # Individual setting overrides
+            return None
+        thsize = getattr(self.data, "thumb_scale", None)
+        if thsize:
+            return thsize
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(ISiteSchema, prefix="plone", check=False)
+        if settings.no_thumbs_portlet:
+            return "none"
+        thumb_scale_portlet = settings.thumb_scale_portlet
+        return thumb_scale_portlet
+
+    def getMimeTypeIcon(self, node):
+        try:
+            if not node["normalized_portal_type"] == "file":
+                return None
+            fileo = node["item"].getObject().file
+            portal_url = getNavigationRoot(self.context)
+            mtt = getToolByName(self.context, "mimetypes_registry")
+            if fileo.contentType:
+                ctype = mtt.lookup(fileo.contentType)
+                return os.path.join(portal_url, guess_icon_path(ctype[0]))
+        except AttributeError:
+            return None
+        return None
+
     def render(self):
         res = {
             "title": self.title(),
@@ -195,3 +392,64 @@ def get_view_url(context):
         name += "/view"
 
     return name, item_url
+
+
+def getRootPath(context, currentFolderOnly, topLevel, root):
+    """Helper function to calculate the real root path"""
+    context = aq_inner(context)
+    if currentFolderOnly:
+        folderish = getattr(
+            aq_base(context), "isPrincipiaFolderish", False
+        ) and not INonStructuralFolder.providedBy(context)
+        parent = aq_parent(context)
+
+        is_default_page = False
+        browser_default = IBrowserDefault(parent, None)
+        if browser_default is not None:
+            is_default_page = browser_default.getDefaultPage() == context.getId()
+
+        if not folderish or is_default_page:
+            return "/".join(parent.getPhysicalPath())
+        else:
+            return "/".join(context.getPhysicalPath())
+
+    root = uuidToObject(root)
+    if root is not None:
+        rootPath = "/".join(root.getPhysicalPath())
+    else:
+        rootPath = getNavigationRoot(context)
+
+    # Adjust for topLevel
+    if topLevel > 0:
+        contextPath = "/".join(context.getPhysicalPath())
+        if not contextPath.startswith(rootPath):
+            return None
+        contextSubPathElements = contextPath[len(rootPath) + 1 :]
+        if contextSubPathElements:
+            contextSubPathElements = contextSubPathElements.split("/")
+            if len(contextSubPathElements) < topLevel:
+                return None
+            rootPath = rootPath + "/" + "/".join(contextSubPathElements[:topLevel])
+        else:
+            return None
+
+    return rootPath
+
+
+# from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
+# from Products.CMFPlone.interfaces import INavigationSchema
+# from zope import schema
+# from zope.component import adapts
+# from Acquisition import aq_base
+# from ComputedAttribute import ComputedAttribute
+# from plone.app.layout.navigation.root import getNavigationRootObject
+# from plone.app.portlets import PloneMessageFactory as _
+# from plone.app.portlets.portlets import base
+# from plone.app.vocabularies.catalog import CatalogSource
+# from plone.portlets.interfaces import IPortletDataProvider
+# from plone.registry.interfaces import IRegistry
+# from Products.CMFPlone import utils
+# from zope.component import getUtility
+# from zope.interface import implementer
+# from zope.interface import Interface
+# from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile

@@ -57,14 +57,15 @@ class TestServicesNavigation(unittest.TestCase):
     def tearDown(self):
         self.api_session.close()
 
-    def test_navigation_with_no_params_gets_only_top_level(self):
-        response = self.api_session.get("/folder/@navigation")
+    def test_navportlet_with_no_params_gets_only_top_level(self):
+        response = self.api_session.get("/folder/@navportlet")
 
         self.assertEqual(response.status_code, 200)
+
         self.assertEqual(
             response.json(),
             {
-                "@id": self.portal_url + u"/folder/@navigation",
+                "@id": self.portal_url + u"/folder/@navportlet",
                 "items": [
                     {u"title": u"Home", u"@id": self.portal_url, u"description": u""},
                     {
@@ -81,38 +82,38 @@ class TestServicesNavigation(unittest.TestCase):
             },
         )
 
-    def test_navigation_service(self):
-        response = self.api_session.get(
-            "/folder/@navigation", params={"expand.navigation.depth": 2}
-        )
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.json()["items"]), 3)
-        self.assertEqual(response.json()["items"][1]["title"], u"Some Folder")
-        self.assertEqual(len(response.json()["items"][1]["items"]), 3)
-        self.assertEqual(len(response.json()["items"][2]["items"]), 0)
-
-        response = self.api_session.get(
-            "/folder/@navigation", params={"expand.navigation.depth": 3}
-        )
-
-        self.assertEqual(len(response.json()["items"][1]["items"][0]["items"]), 1)
-        self.assertEqual(
-            response.json()["items"][1]["items"][0]["items"][0]["title"],
-            u"Third Level Folder",
-        )
-        self.assertNotIn("items", response.json()["items"][1]["items"][0]["items"][0])
-
-        response = self.api_session.get(
-            "/folder/@navigation", params={"expand.navigation.depth": 4}
-        )
-
-        self.assertEqual(
-            len(response.json()["items"][1]["items"][0]["items"][0]["items"]), 1
-        )
-        self.assertEqual(
-            response.json()["items"][1]["items"][0]["items"][0]["items"][0][
-                "title"
-            ],  # noqa
-            u"Fourth Level Folder",
-        )
+    # def test_navigation_service(self):
+    #     response = self.api_session.get(
+    #         "/folder/@navigation", params={"expand.navigation.depth": 2}
+    #     )
+    #
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertEqual(len(response.json()["items"]), 3)
+    #     self.assertEqual(response.json()["items"][1]["title"], u"Some Folder")
+    #     self.assertEqual(len(response.json()["items"][1]["items"]), 3)
+    #     self.assertEqual(len(response.json()["items"][2]["items"]), 0)
+    #
+    #     response = self.api_session.get(
+    #         "/folder/@navigation", params={"expand.navigation.depth": 3}
+    #     )
+    #
+    #     self.assertEqual(len(response.json()["items"][1]["items"][0]["items"]), 1)
+    #     self.assertEqual(
+    #         response.json()["items"][1]["items"][0]["items"][0]["title"],
+    #         u"Third Level Folder",
+    #     )
+    #     self.assertNotIn("items", response.json()["items"][1]["items"][0]["items"][0])
+    #
+    #     response = self.api_session.get(
+    #         "/folder/@navigation", params={"expand.navigation.depth": 4}
+    #     )
+    #
+    #     self.assertEqual(
+    #         len(response.json()["items"][1]["items"][0]["items"][0]["items"]), 1
+    #     )
+    #     self.assertEqual(
+    #         response.json()["items"][1]["items"][0]["items"][0]["items"][0][
+    #             "title"
+    #         ],  # noqa
+    #         u"Fourth Level Folder",
+    #     )
