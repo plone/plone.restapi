@@ -6,6 +6,7 @@
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from collections import namedtuple
 from plone import api
 from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
 from plone.app.layout.navigation.interfaces import INavigationRoot
@@ -27,23 +28,132 @@ from Products.CMFPlone.interfaces import INonStructuralFolder
 from Products.CMFPlone.interfaces import ISiteSchema
 from Products.MimetypesRegistry.MimeTypeItem import guess_icon_path
 from zExceptions import NotFound
+from zope import schema
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component import queryUtility
+from zope.i18nmessageid import MessageFactory
 from zope.interface import implementer
 from zope.interface import Interface
 
 import os
 
 
+_ = MessageFactory("plone.restapi")
+
+
+class INavigationPortlet(Interface):
+    """A portlet which can render the navigation tree"""
+
+    name = schema.TextLine(
+        title=_(u"label_navigation_title", default=u"Title"),
+        description=_(
+            u"help_navigation_title", default=u"The title of the navigation tree."
+        ),
+        default=u"",
+        required=False,
+    )
+
+    root_path = schema.TextLine(
+        title=_(u"label_navigation_root_path", default=u"Root node"),
+        description=_(
+            u"help_navigation_root",
+            default=u"You may search for and choose a folder "
+            "to act as the root of the navigation tree. "
+            "Leave blank to use the Plone site root.",
+        ),
+        required=False,
+    )
+
+    includeTop = schema.Bool(
+        title=_(u"label_include_top_node", default=u"Include top node"),
+        description=_(
+            u"help_include_top_node",
+            default=u"Whether or not to show the top, or 'root', "
+            "node in the navigation tree. This is affected "
+            "by the 'Start level' setting.",
+        ),
+        default=False,
+        required=False,
+    )
+
+    currentFolderOnly = schema.Bool(
+        title=_(
+            u"label_current_folder_only",
+            default=u"Only show the contents of the current folder.",
+        ),
+        description=_(
+            u"help_current_folder_only",
+            default=u"If selected, the navigation tree will "
+            "only show the current folder and its "
+            "children at all times.",
+        ),
+        default=False,
+        required=False,
+    )
+
+    topLevel = schema.Int(
+        title=_(u"label_navigation_startlevel", default=u"Start level"),
+        description=_(
+            u"help_navigation_start_level",
+            default=u"An integer value that specifies the number of folder "
+            "levels below the site root that must be exceeded "
+            "before the navigation tree will display. 0 means "
+            "that the navigation tree should be displayed "
+            "everywhere including pages in the root of the site. "
+            "1 means the tree only shows up inside folders "
+            "located in the root and downwards, never showing "
+            "at the top level.",
+        ),
+        default=1,
+        required=False,
+    )
+
+    bottomLevel = schema.Int(
+        title=_(u"label_navigation_tree_depth", default=u"Navigation tree depth"),
+        description=_(
+            u"help_navigation_tree_depth",
+            default=u"How many folders should be included "
+            "before the navigation tree stops. 0 "
+            "means no limit. 1 only includes the "
+            "root folder.",
+        ),
+        default=0,
+        required=False,
+    )
+
+    no_icons = schema.Bool(
+        title=_(u"Suppress Icons"),
+        description=_(u"If enabled, the portlet will not show document type icons."),
+        required=True,
+        default=False,
+    )
+
+    thumb_scale = schema.TextLine(
+        title=_(u"Override thumb scale"),
+        description=_(
+            u"Enter a valid scale name"
+            u" (see 'Image Handling' control panel) to override"
+            u" (e.g. icon, tile, thumb, mini, preview, ... )."
+            u" Leave empty to use default (see 'Site' control panel)."
+        ),
+        required=False,
+        default=u"",
+    )
+
+    no_thumbs = schema.Bool(
+        title=_(u"Suppress thumbs"),
+        description=_(u"If enabled, the portlet will not show thumbs."),
+        required=True,
+        default=False,
+    )
+
+
 class NavPortletGet(Service):
     def reply(self):
-        # import pdb
-        #
-        # pdb.set_trace()
         navigation = NavigationPortlet(self.context, self.request)
-        return navigation(expand=True)["navportlet"]
+        return navigation(expand=True, prefix="")["navportlet"]
 
 
 @implementer(IExpandableElement)
@@ -53,7 +163,7 @@ class NavigationPortlet(object):
         self.context = context
         self.request = request
 
-    def __call__(self, expand=False):
+    def __call__(self, expand=False, prefix="expand.navportlet."):
         result = {
             "navportlet": {"@id": "{}/@navportlet".format(self.context.absolute_url())}
         }
@@ -61,8 +171,11 @@ class NavigationPortlet(object):
             return result
 
         # 'context', 'request', 'view', 'manager', and 'data'
-        data = {}
-        renderer = NavigationPortletRenderer(self.context, self.request, data)
+        # import pdb
+        #
+        # pdb.set_trace()
+        data = extract_data(INavigationPortlet, self.request.form, prefix)
+        renderer = NavigationPortletRenderer(self.context, self.request.form, data)
         return renderer.render()
 
 
@@ -254,7 +367,9 @@ class NavigationPortletRenderer(object):
             if utils.safe_hasattr(self.context, "getRemoteUrl"):
                 root_url = root.getRemoteUrl()
             else:
-                cid, root_url = get_view_url(root)
+                # cid, root_url = get_view_url(root)
+                # cid = get_id(root)
+                root_url = get_url(root)
 
             root_title = "Home" if root_is_portal else root.pretty_title_or_id()
             root_type = (
@@ -436,6 +551,14 @@ def getRootPath(context, currentFolderOnly, topLevel, root):
     return rootPath
 
 
+def extract_data(schema, raw_data, prefix):
+    data = namedtuple("Data", schema.names())
+    for name in schema.names():
+        setattr(data, name, raw_data.get(prefix + name, schema[name].default))
+
+    return data
+
+
 # from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
 # from Products.CMFPlone.interfaces import INavigationSchema
 # from zope import schema
@@ -453,3 +576,4 @@ def getRootPath(context, currentFolderOnly, topLevel, root):
 # from zope.interface import implementer
 # from zope.interface import Interface
 # from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
+# from plone.restapi.deserializer import json_body
