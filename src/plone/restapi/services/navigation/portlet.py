@@ -6,14 +6,12 @@
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from collections import namedtuple
+from collections import UserDict
 from plone import api
-from plone.app.layout.navigation.interfaces import INavigationQueryBuilder
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
 from plone.app.layout.navigation.root import getNavigationRoot
-from plone.app.uuid.utils import uuidToObject
 from plone.i18n.normalizer.interfaces import IIDNormalizer
 from plone.memoize.instance import memoize
 from plone.registry.interfaces import IRegistry
@@ -23,7 +21,9 @@ from Products.CMFCore.interfaces import ISiteRoot
 from Products.CMFCore.utils import getToolByName
 from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
 from Products.CMFPlone import utils
+from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
 from Products.CMFPlone.defaultpage import is_default_page
+from Products.CMFPlone.interfaces import INavigationSchema
 from Products.CMFPlone.interfaces import INonStructuralFolder
 from Products.CMFPlone.interfaces import ISiteSchema
 from Products.MimetypesRegistry.MimeTypeItem import guess_icon_path
@@ -170,18 +170,19 @@ class NavigationPortlet(object):
         if not expand:
             return result
 
-        # 'context', 'request', 'view', 'manager', and 'data'
-        # import pdb
-        #
-        # pdb.set_trace()
         data = extract_data(INavigationPortlet, self.request.form, prefix)
-        renderer = NavigationPortletRenderer(self.context, self.request.form, data)
-        return renderer.render()
+        renderer = NavigationPortletRenderer(self.context, self.request, data)
+        res = renderer.render()
+        result["navportlet"].update(res)
+        return result
 
 
 class NavigationPortletRenderer(object):
     def __init__(self, context, request, data):
 
+        self.context = context
+        self.request = request
+        self.data = data
         self.urltool = getToolByName(context, "portal_url")
 
     def title(self):
@@ -220,7 +221,7 @@ class NavigationPortletRenderer(object):
         displaying /sitemap links for anything besides nav root.
         """
 
-        if not self.data.root_uid and not self.data.currentFolderOnly:
+        if not self.data.root_path and not self.data.currentFolderOnly:
             # No particular root item assigned -> should get link to the
             # navigation root sitemap of the current context acquisition chain
             portal_state = getMultiAdapter(
@@ -281,7 +282,7 @@ class NavigationPortletRenderer(object):
             self.context,
             self.data.currentFolderOnly,
             self.data.topLevel,
-            self.data.root_uid,
+            self.data.root_path,
         )
 
     @memoize
@@ -308,8 +309,11 @@ class NavigationPortletRenderer(object):
         if _marker is None:
             _marker = []
         context = aq_inner(self.context)
-        queryBuilder = getMultiAdapter((context, self.data), INavigationQueryBuilder)
-        strategy = getMultiAdapter((context, self.data), INavtreeStrategy)
+        # queryBuilder = getMultiAdapter((context, self.data), INavigationQueryBuilder)
+        # strategy = getMultiAdapter((context, self.data), INavtreeStrategy)
+        # TODO: bring back the adapters
+        queryBuilder = QueryBuilder(context, self.data)
+        strategy = NavtreeStrategy(context, self.data)
 
         return buildFolderTree(
             context, obj=context, query=queryBuilder(), strategy=strategy
@@ -509,7 +513,7 @@ def get_view_url(context):
     return name, item_url
 
 
-def getRootPath(context, currentFolderOnly, topLevel, root):
+def getRootPath(context, currentFolderOnly, topLevel, root_path):
     """Helper function to calculate the real root path"""
     context = aq_inner(context)
     if currentFolderOnly:
@@ -528,7 +532,9 @@ def getRootPath(context, currentFolderOnly, topLevel, root):
         else:
             return "/".join(context.getPhysicalPath())
 
-    root = uuidToObject(root)
+    # root = uuidToObject(root)
+    root = get_root(context, root_path)
+
     if root is not None:
         rootPath = "/".join(root.getPhysicalPath())
     else:
@@ -551,29 +557,115 @@ def getRootPath(context, currentFolderOnly, topLevel, root):
     return rootPath
 
 
+class Data(UserDict):
+    def __getattr__(self, name):
+        return self.data.get(name, None)
+
+
 def extract_data(schema, raw_data, prefix):
-    data = namedtuple("Data", schema.names())
+    data = {}
     for name in schema.names():
-        setattr(data, name, raw_data.get(prefix + name, schema[name].default))
+        data[name] = raw_data.get(prefix + name, schema[name].default)
 
-    return data
+    return Data(data)
 
 
-# from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
-# from Products.CMFPlone.interfaces import INavigationSchema
-# from zope import schema
-# from zope.component import adapts
-# from Acquisition import aq_base
-# from ComputedAttribute import ComputedAttribute
-# from plone.app.layout.navigation.root import getNavigationRootObject
-# from plone.app.portlets import PloneMessageFactory as _
-# from plone.app.portlets.portlets import base
-# from plone.app.vocabularies.catalog import CatalogSource
-# from plone.portlets.interfaces import IPortletDataProvider
-# from plone.registry.interfaces import IRegistry
-# from Products.CMFPlone import utils
-# from zope.component import getUtility
-# from zope.interface import implementer
-# from zope.interface import Interface
-# from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
-# from plone.restapi.deserializer import json_body
+def get_root(context, root_path):
+    if root_path is None:
+        return None
+
+    urltool = getToolByName(context, "portal_url")
+    portal = urltool.getPortalObject()
+    root = context.restrictedTraverse(portal.getPhysicalPath() + root_path)
+    return root
+
+
+class QueryBuilder(object):
+    """Build a navtree query based on the settings in INavigationSchema
+    and those set on the portlet.
+    """
+
+    def __init__(self, context, data):
+        self.context = context
+        self.data = data
+
+        portal_properties = getToolByName(context, "portal_properties")
+        navtree_properties = getattr(portal_properties, "navtree_properties")
+
+        # Acquire a custom nav query if available
+        customQuery = getattr(context, "getCustomNavQuery", None)
+        if customQuery is not None and utils.safe_callable(customQuery):
+            query = customQuery()
+        else:
+            query = {}
+
+        # Construct the path query
+        root = get_root(context, data.root_path)
+        if root is not None:
+            rootPath = "/".join(root.getPhysicalPath())
+        else:
+            rootPath = getNavigationRoot(context)
+
+        currentPath = "/".join(context.getPhysicalPath())
+
+        # If we are above the navigation root, a navtree query would return
+        # nothing (since we explicitly start from the root always). Hence,
+        # use a regular depth-1 query in this case.
+
+        if currentPath != rootPath and not currentPath.startswith(rootPath + "/"):
+            query["path"] = {"query": rootPath, "depth": 1}
+        else:
+            query["path"] = {"query": currentPath, "navtree": 1}
+
+        topLevel = data.topLevel
+        if topLevel and topLevel > 0:
+            query["path"]["navtree_start"] = topLevel + 1
+
+        # XXX: It'd make sense to use 'depth' for bottomLevel, but it doesn't
+        # seem to work with EPI.
+
+        # Only list the applicable types
+        query["portal_type"] = utils.typesToList(context)
+
+        # Apply the desired sort
+        sortAttribute = navtree_properties.getProperty("sortAttribute", None)
+        if sortAttribute is not None:
+            query["sort_on"] = sortAttribute
+            sortOrder = navtree_properties.getProperty("sortOrder", None)
+            if sortOrder is not None:
+                query["sort_order"] = sortOrder
+
+        # Filter on workflow states, if enabled
+        registry = getUtility(IRegistry)
+        navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
+        if navigation_settings.filter_on_workflow:
+            query["review_state"] = navigation_settings.workflow_states_to_show
+
+        self.query = query
+
+    def __call__(self):
+        return self.query
+
+
+class NavtreeStrategy(SitemapNavtreeStrategy):
+    """The navtree strategy used for the default navigation portlet"""
+
+    def __init__(self, context, portlet):
+        SitemapNavtreeStrategy.__init__(self, context, portlet)
+
+        # XXX: We can't do this with a 'depth' query to EPI...
+        self.bottomLevel = portlet.bottomLevel or 0
+
+        self.rootPath = getRootPath(
+            context, portlet.currentFolderOnly, portlet.topLevel, portlet.root_uid
+        )
+
+    def subtreeFilter(self, node):
+        sitemapDecision = SitemapNavtreeStrategy.subtreeFilter(self, node)
+        if sitemapDecision is False:
+            return False
+        depth = node.get("depth", 0)
+        if depth > 0 and self.bottomLevel > 0 and depth >= self.bottomLevel:
+            return False
+        else:
+            return True
