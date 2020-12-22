@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -6,6 +7,8 @@ from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from urllib.parse import urlencode
+from zope.interface import directlyProvides
+from zope.interface import noLongerProvides
 
 import transaction
 import unittest
@@ -280,6 +283,45 @@ class TestServicesNavigation(unittest.TestCase):
         res = response.json()
         # Points to the site root if the item is gone
         self.assertEqual(res["url"], "http://localhost:55001/plone/sitemap")
+
+    def testHeadingLinkRootless(self):
+        """
+        See that heading link points to a global sitemap if no root item is set.
+        """
+
+        directlyProvides(self.portal.folder2, INavigationRoot)
+        transaction.commit()
+        response = self.api_session.get(
+            "/folder2/@navportlet",
+            params={"topLevel": 0},
+        )
+        link = response.json()["url"]
+        # The root is not given -> should render the sitemap in the navigation root
+        self.assertEqual(link, "http://localhost:55001/plone/folder2/sitemap")
+
+        # # Even if the assignment contains no topLevel options and no self.root
+        # # one should get link to the navigation root sitemap
+        # view = self.renderer(
+        #     self.portal.folder2.doc21, assignment=navigation.Assignment()
+        # )
+        response = self.api_session.get(
+            "/folder2/doc21/@navportlet",
+            params={},
+        )
+        link = response.json()["url"]
+        # # The root is not given -> should render the sitemap in the navigation root
+        self.assertEqual(link, "http://localhost:55001/plone/folder2/sitemap")
+
+        response = self.api_session.get(
+            "/folder1/@navportlet",
+            params={"topLevel": 0},
+        )
+        link = response.json()["url"]
+        # The root is not given -> should render the sitemap in the navigation root
+        self.assertEqual(link, "http://localhost:55001/plone/sitemap")
+
+        noLongerProvides(self.portal.folder2, INavigationRoot)
+        transaction.commit()
 
     def testNavTreeExcludesItemsWithExcludeProperty(self):
         # Make sure that items with the exclude_from_nav property set get
@@ -818,31 +860,3 @@ class TestServicesNavigation(unittest.TestCase):
 #     self.assertEqual(view.title(), "New navigation title")
 #     self.assertTrue(view.hasName())
 #
-# def testHeadingLinkRootless(self):
-#     """
-#     See that heading link points to a global sitemap if no root item is set.
-#     """
-#
-#     directlyProvides(self.portal.folder2, INavigationRoot)
-#     view = self.renderer(
-#         self.portal.folder2, assignment=navigation.Assignment(topLevel=0)
-#     )
-#     link = view.heading_link_target()
-#     # The root is not given -> should render the sitemap in the navigation root
-#     self.assertEqual(link, "http://nohost/plone/folder2/sitemap")
-#
-#     # Even if the assignment contains no topLevel options and no self.root
-#     # one should get link to the navigation root sitemap
-#     view = self.renderer(
-#         self.portal.folder2.doc21, assignment=navigation.Assignment()
-#     )
-#     link = view.heading_link_target()
-#     # The root is not given -> should render the sitemap in the navigation root
-#     self.assertEqual(link, "http://nohost/plone/folder2/sitemap")
-#
-#     view = self.renderer(
-#         self.portal.folder1, assignment=navigation.Assignment(topLevel=0)
-#     )
-#     link = view.heading_link_target()
-#     # The root is not given -> should render the sitemap in the navigation root
-#     self.assertEqual(link, "http://nohost/plone/sitemap")
