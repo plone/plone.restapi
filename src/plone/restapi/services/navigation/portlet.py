@@ -35,6 +35,7 @@ from zope.component import queryUtility
 from zope.i18nmessageid import MessageFactory
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.schema.interfaces import IFromUnicode
 
 import os
 
@@ -170,6 +171,9 @@ class NavigationPortlet(object):
             return result
 
         data = extract_data(INavigationPortlet, self.request.form, prefix)
+        import pdb
+
+        pdb.set_trace()
         renderer = NavigationPortletRenderer(self.context, self.request, data)
         res = renderer.render()
         result["navportlet"].update(res)
@@ -556,17 +560,40 @@ def getRootPath(context, currentFolderOnly, topLevel, root_path):
     return rootPath
 
 
+# def convert(value, field):
+#     # a really simple and dumb value converter
+#     if IBool.providedBy(field):
+#         if isinstance(value, bool):
+#             return value
+#         if value in ["on", "true"]:
+#             return True
+#         return False
+#
+#     if IInt.providedBy(field):
+#         if isinstance(value, int):
+#             return value
+#         return int(value)
+#
+#     if ITextLine.providedBy(field):
+#         value = IFromUnicode(field).fromUnicode(value)
+#         return value
+
+
 class Data(UserDict):
     def __getattr__(self, name):
         return self.data.get(name, None)
 
 
 def extract_data(schema, raw_data, prefix):
-    data = {}
-    for name in schema.names():
-        data[name] = raw_data.get(prefix + name, schema[name].default)
+    data = Data({})
 
-    return Data(data)
+    for name in schema.names():
+        field = schema[name]
+        raw_value = raw_data.get(prefix + name, field.default)
+        value = IFromUnicode(field).fromUnicode(raw_value)
+        data[name] = value  # convert(raw_value, field)
+
+    return data
 
 
 def get_root(context, root_path):
@@ -575,7 +602,9 @@ def get_root(context, root_path):
 
     urltool = getToolByName(context, "portal_url")
     portal = urltool.getPortalObject()
-    root = context.restrictedTraverse(portal.getPhysicalPath() + root_path)
+    root = context.restrictedTraverse(
+        portal.getPhysicalPath() + tuple(root_path.split("/"))
+    )
     return root
 
 

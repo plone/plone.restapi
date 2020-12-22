@@ -5,6 +5,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from urllib.parse import urlencode
 
 import transaction
 import unittest
@@ -159,8 +160,8 @@ class TestServicesNavigation(unittest.TestCase):
         # With the context set to folder2 it should return a dict with
         # currentItem set to True
         response = self.api_session.get("/folder2/@navportlet")
-
         self.assertEqual(response.status_code, 200)
+
         res = {
             "@id": "http://localhost:55001/plone/folder2/@navportlet",
             "has_custom_name": False,
@@ -251,6 +252,27 @@ class TestServicesNavigation(unittest.TestCase):
 
         # self.assertTrue(tree)
         # self.assertEqual(tree["children"][-1]["currentItem"], True)
+
+    def testHeadingLinkRooted(self):
+        """
+        See that heading link points to a content item if root selected, otherwise sitemap.
+        """
+
+        q = {
+            "topLevel": 0,
+            "root_path": "/".join(self.portal.folder2.getPhysicalPath()[2:]),
+        }
+        qs = urlencode(q)
+
+        response = self.api_session.get("/folder2/@navportlet?{}".format(qs))
+        self.assertEqual(response.status_code, 200)
+        res = response.json()
+        import pdb
+
+        pdb.set_trace()
+
+        link = view.heading_link_target()
+        self.assertEqual(link, "http://nohost/plone/folder2")
 
 
 # def test_navigation_service(self):
@@ -802,18 +824,6 @@ class TestServicesNavigation(unittest.TestCase):
 #     # The root is not given -> should render the sitemap in the navigation root
 #     self.assertEqual(link, "http://nohost/plone/sitemap")
 #
-# def testHeadingLinkRooted(self):
-#     """
-#     See that heading link points to a content item if root selected, otherwise sitemap.
-#     """
-#     view = self.renderer(
-#         self.portal.folder2,
-#         assignment=navigation.Assignment(
-#             topLevel=0, root_uid=self.portal.folder2.UID()
-#         ),
-#     )
-#     link = view.heading_link_target()
-#     self.assertEqual(link, "http://nohost/plone/folder2")
 #
 # def testHeadingLinkRootedItemGone(self):
 #     """
@@ -826,33 +836,3 @@ class TestServicesNavigation(unittest.TestCase):
 #     link = view.heading_link_target()
 #     # Points to the site root if the item is gone
 #     self.assertEqual(link, "http://nohost/plone/sitemap")
-
-
-# from plone.dexterity.utils import createContentInContainer
-# self.folder = createContentInContainer(
-#     self.portal, u"Folder", id=u"folder", title=u"Some Folder"
-# )
-# self.folder2 = createContentInContainer(
-#     self.portal, u"Folder", id=u"folder2", title=u"Some Folder 2"
-# )
-# self.subfolder1 = createContentInContainer(
-#     self.folder, u"Folder", id=u"subfolder1", title=u"SubFolder 1"
-# )
-# self.subfolder2 = createContentInContainer(
-#     self.folder, u"Folder", id=u"subfolder2", title=u"SubFolder 2"
-# )
-# self.thirdlevelfolder = createContentInContainer(
-#     self.subfolder1,
-#     u"Folder",
-#     id=u"thirdlevelfolder",
-#     title=u"Third Level Folder",
-# )
-# self.fourthlevelfolder = createContentInContainer(
-#     self.thirdlevelfolder,
-#     u"Folder",
-#     id=u"fourthlevelfolder",
-#     title=u"Fourth Level Folder",
-# )
-# createContentInContainer(
-#     self.folder, u"Document", id=u"doc1", title=u"A document"
-# )
