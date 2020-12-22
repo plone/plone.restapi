@@ -14,6 +14,7 @@ import unittest
 class TestServicesNavigation(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+    maxDiff = None
 
     def setUp(self):
         self.app = self.layer["app"]
@@ -62,24 +63,63 @@ class TestServicesNavigation(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+        res = {
+            "@id": "http://localhost:55001/plone/folder/@navportlet",
+            "has_custom_name": False,
+            "items": [
+                {
+                    "@id": "http://localhost:55001/plone/folder/subfolder1",
+                    "description": "",
+                    "href": "http://localhost:55001/plone/folder/subfolder1",
+                    "icon": "",
+                    "is_current": False,
+                    "is_folderish": True,
+                    "is_in_path": False,
+                    "items": [],
+                    "normalized_id": "subfolder1",
+                    "review_state": "private",
+                    "thumb": "",
+                    "title": "SubFolder 1",
+                    "type": "folder",
+                },
+                {
+                    "@id": "http://localhost:55001/plone/folder/subfolder2",
+                    "description": "",
+                    "href": "http://localhost:55001/plone/folder/subfolder2",
+                    "icon": "",
+                    "is_current": False,
+                    "is_folderish": True,
+                    "is_in_path": False,
+                    "items": [],
+                    "normalized_id": "subfolder2",
+                    "review_state": "private",
+                    "thumb": "",
+                    "title": "SubFolder 2",
+                    "type": "folder",
+                },
+                {
+                    "@id": "http://localhost:55001/plone/folder/doc1",
+                    "description": "",
+                    "href": "http://localhost:55001/plone/folder/doc1",
+                    "icon": "",
+                    "is_current": False,
+                    "is_folderish": False,
+                    "is_in_path": False,
+                    "items": [],
+                    "normalized_id": "doc1",
+                    "review_state": "private",
+                    "thumb": "",
+                    "title": "A document",
+                    "type": "document",
+                },
+            ],
+            "title": None,
+            "url": "http://localhost:55001/plone/sitemap",
+        }
+
         self.assertEqual(
             response.json(),
-            {
-                "@id": self.portal_url + u"/folder/@navportlet",
-                "items": [
-                    {u"title": u"Home", u"@id": self.portal_url, u"description": u""},
-                    {
-                        u"title": u"Some Folder",
-                        u"@id": self.portal_url + u"/folder",
-                        u"description": u"",
-                    },
-                    {
-                        u"@id": self.portal_url + u"/folder2",
-                        u"description": u"",
-                        u"title": u"Some Folder 2",
-                    },
-                ],
-            },
+            res,
         )
 
     # def test_navigation_service(self):
