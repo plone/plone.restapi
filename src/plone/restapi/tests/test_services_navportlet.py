@@ -267,12 +267,7 @@ class TestServicesNavigation(unittest.TestCase):
         response = self.api_session.get("/folder2/@navportlet?{}".format(qs))
         self.assertEqual(response.status_code, 200)
         res = response.json()
-        import pdb
-
-        pdb.set_trace()
-
-        link = view.heading_link_target()
-        self.assertEqual(link, "http://nohost/plone/folder2")
+        self.assertEqual(res["url"], "http://localhost:55001/plone/folder2")
 
 
 # def test_navigation_service(self):

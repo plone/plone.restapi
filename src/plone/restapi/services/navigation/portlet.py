@@ -171,9 +171,6 @@ class NavigationPortlet(object):
             return result
 
         data = extract_data(INavigationPortlet, self.request.form, prefix)
-        import pdb
-
-        pdb.set_trace()
         renderer = NavigationPortletRenderer(self.context, self.request, data)
         res = renderer.render()
         result["navportlet"].update(res)
@@ -510,7 +507,7 @@ def get_view_url(context):
     name = get_id(context)
 
     if getattr(context, "portal_type", {}) in view_action_types:
-        item_url += "/view"
+        item_url += "/view"  # TODO: don't need this
         name += "/view"
 
     return name, item_url
@@ -558,25 +555,6 @@ def getRootPath(context, currentFolderOnly, topLevel, root_path):
             return None
 
     return rootPath
-
-
-# def convert(value, field):
-#     # a really simple and dumb value converter
-#     if IBool.providedBy(field):
-#         if isinstance(value, bool):
-#             return value
-#         if value in ["on", "true"]:
-#             return True
-#         return False
-#
-#     if IInt.providedBy(field):
-#         if isinstance(value, int):
-#             return value
-#         return int(value)
-#
-#     if ITextLine.providedBy(field):
-#         value = IFromUnicode(field).fromUnicode(value)
-#         return value
 
 
 class Data(UserDict):
