@@ -4,6 +4,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.restapi.services.navigation.portlet import NavigationPortlet
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from urllib.parse import urlencode
@@ -94,6 +95,12 @@ class TestServicesNavigation(unittest.TestCase):
         folder21.invokeFactory("Document", "doc212")
 
         setRoles(self.portal, TEST_USER_ID, ["Member"])
+
+    def renderer(self, context=None, data=None):
+        context = context or self.portal
+        request = self.layer["request"]
+        request.form.update(data)
+        return NavigationPortlet(context, request)
 
     def test_navportlet_with_no_params_gets_only_top_level(self):
         response = self.api_session.get("/folder1/@navportlet")
@@ -397,6 +404,13 @@ class TestServicesNavigation(unittest.TestCase):
         tree = response.json()
         self.assertEqual(tree["title"], "New navigation title")
 
+    def testTopLevelTooDeep(self):
+
+        view = self.renderer(self.portal, dict(topLevel=5))
+        tree = view(expand=True)
+
+        self.assertEqual(len(tree["navportlet"]["items"]), 0)
+
 
 # def testShowAllParentsOverridesNavTreeExcludesItemsWithExcludeProperty(self):
 #     # Make sure that items whose ids are in the idsNotToList navTree
@@ -476,12 +490,6 @@ class TestServicesNavigation(unittest.TestCase):
 #
 # def testTopLevelWithContextAboveLevel(self):
 #     view = self.renderer(self.portal, assignment=navigation.Assignment(topLevel=1))
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(len(tree["children"]), 0)
-#
-# def testTopLevelTooDeep(self):
-#     view = self.renderer(self.portal, assignment=navigation.Assignment(topLevel=5))
 #     tree = view.getNavTree()
 #     self.assertTrue(tree)
 #     self.assertEqual(len(tree["children"]), 0)
