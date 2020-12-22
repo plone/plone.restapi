@@ -150,7 +150,7 @@ class TestServicesNavigation(unittest.TestCase):
                     "type": "document",
                 },
             ],
-            "title": None,
+            "title": "Navigation",
             "url": "http://localhost:55001/plone/sitemap",
         }
 
@@ -245,7 +245,7 @@ class TestServicesNavigation(unittest.TestCase):
                     "type": "folder",
                 },
             ],
-            "title": None,
+            "title": "Navigation",
             "url": "http://localhost:55001/plone/sitemap",
         }
         self.assertEqual(
@@ -378,6 +378,24 @@ class TestServicesNavigation(unittest.TestCase):
 
         self.portal.folder2.setDefaultPage(None)
         transaction.commit()
+
+    def testPortletsTitle(self):
+        """If portlet's name is not explicitely specified we show
+        default fallback 'Navigation', translate it and hide it
+        with CSS."""
+        response = self.api_session.get(
+            "/@navportlet",
+            params={},
+        )
+        tree = response.json()
+        self.assertEqual(tree["title"], "Navigation")
+
+        response = self.api_session.get(
+            "/@navportlet",
+            params={"name": "New navigation title"},
+        )
+        tree = response.json()
+        self.assertEqual(tree["title"], "New navigation title")
 
 
 # def testShowAllParentsOverridesNavTreeExcludesItemsWithExcludeProperty(self):
@@ -847,16 +865,4 @@ class TestServicesNavigation(unittest.TestCase):
 #         tree["children"][0]["item"].getPath(),
 #         "/plone/folder1/folder1_1/folder1_1_1",
 #     )
-#
-# def testPortletsTitle(self):
-#     """If portlet's name is not explicitely specified we show
-#     default fallback 'Navigation', translate it and hide it
-#     with CSS."""
-#     view = self.renderer(self.portal)
-#     view.getNavTree()
-#     self.assertEqual(view.title(), "Navigation")
-#     self.assertFalse(view.hasName())
-#     view.data.name = "New navigation title"
-#     self.assertEqual(view.title(), "New navigation title")
-#     self.assertTrue(view.hasName())
 #

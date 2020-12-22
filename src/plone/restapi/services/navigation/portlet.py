@@ -186,7 +186,7 @@ class NavigationPortletRenderer(object):
         self.urltool = getToolByName(context, "portal_url")
 
     def title(self):
-        return self.data.name or self.data.title
+        return self.data.name or self.data.title or _("Navigation")
 
     def hasName(self):
         return self.data.name
