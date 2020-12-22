@@ -9,7 +9,6 @@ from Acquisition import aq_parent
 from collections import UserDict
 from plone import api
 from plone.app.layout.navigation.interfaces import INavigationRoot
-from plone.app.layout.navigation.interfaces import INavtreeStrategy
 from plone.app.layout.navigation.navtree import buildFolderTree
 from plone.app.layout.navigation.root import getNavigationRoot
 from plone.i18n.normalizer.interfaces import IIDNormalizer
