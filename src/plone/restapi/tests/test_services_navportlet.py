@@ -269,32 +269,75 @@ class TestServicesNavigation(unittest.TestCase):
         res = response.json()
         self.assertEqual(res["url"], "http://localhost:55001/plone/folder2")
 
+    def testHeadingLinkRootedItemGone(self):
+        """
+        See that heading link points to a content item which do not exist
+        """
+        response = self.api_session.get(
+            "/folder2/@navportlet",
+            params={"topLevel": 0, "root_path": "/does/not/exist"},
+        )
+        res = response.json()
+        # Points to the site root if the item is gone
+        self.assertEqual(res["url"], "http://localhost:55001/plone/sitemap")
 
-# def test_navigation_service(self):
-#     response = self.api_session.get(
-#         "/folder/@navigation", params={"expand.navigation.depth": 2}
-#     )
-#
+    def testNavTreeExcludesItemsWithExcludeProperty(self):
+        # Make sure that items with the exclude_from_nav property set get
+        # no_display set to True
 
-# def testCreateNavTree(self):
-#     view = self.renderer(self.portal)
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertTrue("children" in tree)
-#
-#
-# def testNavTreeExcludesItemsWithExcludeProperty(self):
-#     # Make sure that items with the exclude_from_nav property set get
-#     # no_display set to True
-#     self.portal.folder2.exclude_from_nav = True
-#     self.portal.folder2.reindexObject()
-#     view = self.renderer(self.portal.folder1.doc11)
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     for c in tree["children"]:
-#         if c["item"].getPath() == "/plone/folder2":
-#             self.fail()
-#
+        self.portal.folder2.exclude_from_nav = True
+        self.portal.folder2.reindexObject()
+
+        transaction.commit()
+
+        response = self.api_session.get(
+            "@navportlet", params={"includeTop": True, "topLevel": 0, "bottomLevel": 0}
+        )
+        tree = response.json()
+
+        for c in tree["items"]:
+            if c["href"] == "http://localhost:55001/plone/folder2":
+                self.fail()
+
+        self.portal.folder2.exclude_from_nav = False
+        self.portal.folder2.reindexObject()
+        transaction.commit()
+
+    def testNavTreeExcludesDefaultPage(self):
+        # Make sure that items which are the default page are excluded
+        response = self.api_session.get(
+            "/folder2/@navportlet",
+            params={},
+        )
+        tree = response.json()
+        self.assertTrue(
+            [
+                item
+                for item in tree["items"]
+                if item["href"] == "http://localhost:55001/plone/folder2/doc21"
+            ]
+        )
+
+        self.portal.folder2.setDefaultPage("doc21")
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/folder2/@navportlet",
+            params={},
+        )
+        tree = response.json()
+        self.assertFalse(
+            [
+                item
+                for item in tree["items"]
+                if item["href"] == "http://localhost:55001/plone/folder2/doc21"
+            ]
+        )
+
+        self.portal.folder2.setDefaultPage(None)
+        transaction.commit()
+
+
 # def testShowAllParentsOverridesNavTreeExcludesItemsWithExcludeProperty(self):
 #     # Make sure that items whose ids are in the idsNotToList navTree
 #     # property are not included
@@ -310,21 +353,6 @@ class TestServicesNavigation(unittest.TestCase):
 #             break
 #     self.assertTrue(found)
 #
-# def testNavTreeExcludesDefaultPage(self):
-#     # Make sure that items which are the default page are excluded
-#     self.portal.folder2.setDefaultPage("doc21")
-#     view = self.renderer(self.portal.folder1.doc11)
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     # Ensure that our 'doc21' default page is not in the tree.
-#     self.assertEqual(
-#         [
-#             c
-#             for c in tree["children"][-1]["children"]
-#             if c["item"].getPath()[-5:] == "doc21"
-#         ],
-#         [],
-#     )
 #
 # def testNavTreeMarksParentMetaTypesNotToQuery(self):
 #     # Make sure that items whose ids are in the idsNotToList navTree
@@ -817,17 +845,4 @@ class TestServicesNavigation(unittest.TestCase):
 #     )
 #     link = view.heading_link_target()
 #     # The root is not given -> should render the sitemap in the navigation root
-#     self.assertEqual(link, "http://nohost/plone/sitemap")
-#
-#
-# def testHeadingLinkRootedItemGone(self):
-#     """
-#     See that heading link points to a content item which do not exist
-#     """
-#     view = self.renderer(
-#         self.portal.folder2,
-#         assignment=navigation.Assignment(topLevel=0, root_uid="DOESNT_EXIST"),
-#     )
-#     link = view.heading_link_target()
-#     # Points to the site root if the item is gone
 #     self.assertEqual(link, "http://nohost/plone/sitemap")

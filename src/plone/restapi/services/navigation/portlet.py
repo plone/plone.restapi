@@ -580,9 +580,12 @@ def get_root(context, root_path):
 
     urltool = getToolByName(context, "portal_url")
     portal = urltool.getPortalObject()
-    root = context.restrictedTraverse(
-        portal.getPhysicalPath() + tuple(root_path.split("/"))
-    )
+    try:
+        root = context.restrictedTraverse(
+            portal.getPhysicalPath() + tuple(root_path.split("/"))
+        )
+    except IndexError:
+        return portal
     return root
 
 
@@ -663,7 +666,7 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
         self.bottomLevel = portlet.bottomLevel or 0
 
         self.rootPath = getRootPath(
-            context, portlet.currentFolderOnly, portlet.topLevel, portlet.root_uid
+            context, portlet.currentFolderOnly, portlet.topLevel, portlet.root_path
         )
 
     def subtreeFilter(self, node):
@@ -675,3 +678,7 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
             return False
         else:
             return True
+
+    # def nodeFilter(self, node):
+    #     exclude = getattr(node["item"], "exclude_from_nav", False)
+    #     return not exclude
