@@ -950,6 +950,6 @@ class TestServicesNavPortlet(unittest.TestCase):
         response = self.api_session.get("/folder1?expand=navportlet")
         res = response.json()
         self.assertEqual(
-            res["@components"]["@navportlet"]["items"][0]["@id"],
+            res["@components"]["navportlet"]["items"][0]["@id"],
             "http://localhost:55001/plone/folder1/doc11",
         )
