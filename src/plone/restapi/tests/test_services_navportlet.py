@@ -627,34 +627,35 @@ class TestServicesNavPortlet(unittest.TestCase):
         )
         self.assertEqual(len(tree["items"][-1]["items"]), 0)
 
+    def testBottomLevelZeroNoLimit(self):
+        """Test that bottomLevel=0 means no limit for bottomLevel."""
 
-#
-# def testBottomLevelZeroNoLimit(self):
-#     """Test that bottomLevel=0 means no limit for bottomLevel."""
-#
-#     # first we set a high integer as bottomLevel to simulate "no limit"
-#     view = self.renderer(
-#         self.portal.folder2,
-#         assignment=navigation.Assignment(bottomLevel=99, topLevel=0),
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(
-#         tree["children"][-1]["children"][0]["item"].getPath(),
-#         "/plone/folder2/doc21",
-#     )
-#
-#     # now set bottomLevel to 0 -> outcome should be the same
-#     view = self.renderer(
-#         self.portal.folder2,
-#         assignment=navigation.Assignment(bottomLevel=0, topLevel=0),
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(
-#         tree["children"][-1]["children"][0]["item"].getPath(),
-#         "/plone/folder2/doc21",
-#     )
+        # first we set a high integer as bottomLevel to simulate "no limit"
+        view = self.renderer(
+            self.portal.folder2,
+            opts(bottomLevel=99, topLevel=0),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+
+        self.assertEqual(
+            tree["items"][-1]["items"][0]["href"],
+            "http://localhost:55001/plone/folder2/doc21",
+        )
+
+        # now set bottomLevel to 0 -> outcome should be the same
+        view = self.renderer(
+            self.portal.folder2,
+            opts(bottomLevel=0, topLevel=0),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(
+            tree["items"][-1]["items"][0]["href"],
+            "http://localhost:55001/plone/folder2/doc21",
+        )
+
+
 #
 # def testBottomLevelZeroNoLimitRendering(self):
 #     """Test that bottomLevel=0 means no limit for bottomLevel."""

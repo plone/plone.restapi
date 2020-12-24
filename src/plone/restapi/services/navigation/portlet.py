@@ -195,17 +195,18 @@ class NavigationPortletRenderer(object):
     def hasName(self):
         return self.data.name
 
-    @property
-    def available(self):
-        rootpath = self.getNavRootPath()
-        if rootpath is None:
-            return False
-
-        if self.data.bottomLevel < 0:
-            return True
-
-        tree = self.getNavTree()
-        return len(tree["children"]) > 0
+    # not used
+    # @property
+    # def available(self):
+    #     rootpath = self.getNavRootPath()
+    #     if rootpath is None:
+    #         return False
+    #
+    #     if self.data.bottomLevel < 0:
+    #         return True
+    #
+    #     tree = self.getNavTree()
+    #     return len(tree["children"]) > 0
 
     def include_top(self):
         return getattr(self.data, "includeTop", True)
@@ -468,7 +469,7 @@ class NavigationPortletRenderer(object):
             if (
                 nodechildren
                 and show_children
-                and ((bottomLevel < level) or (bottomLevel == 0))
+                and ((level < bottomLevel) or (bottomLevel == 0))
             ):
                 item["items"] = self.recurse(
                     nodechildren, level=level + 1, bottomLevel=bottomLevel
@@ -665,7 +666,7 @@ class QueryBuilder(object):
 class NavtreeStrategy(SitemapNavtreeStrategy):
     """The navtree strategy used for the default navigation portlet"""
 
-    viewActionTypes = []
+    viewActionTypes = []  # different from Plone
 
     def __init__(self, context, portlet):
         SitemapNavtreeStrategy.__init__(self, context, portlet)
