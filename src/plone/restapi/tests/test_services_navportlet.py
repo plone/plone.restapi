@@ -696,7 +696,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     def testNoRootSet(self):
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_uid="", topLevel=0),
+            opts(root_path="", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -930,4 +930,26 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.assertEqual(
             tree["items"][0]["href"],
             "http://localhost:55001/plone/folder1/folder1_1/folder1_1_1",
+        )
+
+    def testServiceId(self):
+        view = self.renderer(
+            self.portal.folder2.file21,
+            opts(root_path="", topLevel=0),
+        )
+        portlet = view(expand=True)
+
+        self.assertEqual(
+            portlet["navportlet"]["@id"],
+            "http://localhost:55001/plone/folder2/file21/@navportlet",
+        )
+        portlet = view(expand=False)
+        self.assertEqual(len(portlet["navportlet"]), 1)
+
+    def testNavPortletExpand(self):
+        response = self.api_session.get("/folder1?expand=navportlet")
+        res = response.json()
+        self.assertEqual(
+            res["@components"]["@navportlet"]["items"][0]["@id"],
+            "http://localhost:55001/plone/folder1/doc11",
         )
