@@ -9,6 +9,7 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.services.navigation.portlet import NavigationPortlet
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from Products.CMFPlone.interfaces import INavigationSchema
 from Products.CMFPlone.tests import dummy
 from urllib.parse import urlencode
 from zope.component import getUtility
@@ -767,105 +768,115 @@ class TestServicesNavPortlet(unittest.TestCase):
             tree["items"][0]["href"], "http://localhost:55001/plone/folder2/doc21"
         )
 
+    def testCustomQuery(self):
+        # Try a custom query script for the navtree that returns only published
+        # objects
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        workflow = self.portal.portal_workflow
+        factory = self.portal.manage_addProduct["PythonScripts"]
+        factory.manage_addPythonScript("getCustomNavQuery")
+        script = self.portal.getCustomNavQuery
+        script.ZPythonScript_edit("", 'return {"review_state": "published"}')
 
-# def testCustomQuery(self):
-#     # Try a custom query script for the navtree that returns only published
-#     # objects
-#     setRoles(self.portal, TEST_USER_ID, ["Manager"])
-#     workflow = self.portal.portal_workflow
-#     factory = self.portal.manage_addProduct["PythonScripts"]
-#     factory.manage_addPythonScript("getCustomNavQuery")
-#     script = self.portal.getCustomNavQuery
-#     script.ZPythonScript_edit("", 'return {"review_state": "published"}')
-#     self.assertEqual(self.portal.getCustomNavQuery(), {"review_state": "published"})
-#     view = self.renderer(self.portal.folder2)
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertTrue("children" in tree)
-#     # Should only contain current object
-#     self.assertEqual(len(tree["children"]), 1)
-#     # change workflow for folder1
-#     workflow.doActionFor(self.portal.folder1, "publish")
-#     self.portal.folder1.reindexObject()
-#     view = self.renderer(self.portal.folder2)
-#     tree = view.getNavTree()
-#     # Should only contain current object and published folder
-#     self.assertEqual(len(tree["children"]), 2)
-#
-# def testStateFiltering(self):
-#     # Test Navtree workflow state filtering
-#     setRoles(self.portal, TEST_USER_ID, ["Manager"])
-#     registry = getUtility(IRegistry)
-#     navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
-#     workflow = self.portal.portal_workflow
-#     navigation_settings.workflow_states_to_show = ("published",)
-#     navigation_settings.filter_on_workflow = True
-#     view = self.renderer(self.portal.folder2)
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertTrue("children" in tree)
-#     # Should only contain current object
-#     self.assertEqual(len(tree["children"]), 1)
-#     # change workflow for folder1
-#     workflow.doActionFor(self.portal.folder1, "publish")
-#     self.portal.folder1.reindexObject()
-#     view = self.renderer(self.portal.folder2)
-#     tree = view.getNavTree()
-#     # Should only contain current object and published folder
-#     self.assertEqual(len(tree["children"]), 2)
-#
-# def testPrunedRootNode(self):
-#     registry = self.portal.portal_registry
-#     registry["plone.parent_types_not_to_query"] = [u"Folder"]
-#
-#     assignment = navigation.Assignment(topLevel=0)
-#     assignment.topLevel = 1
-#     view = self.renderer(self.portal.folder1, assignment=assignment)
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(len(tree["children"]), 0)
-#
-# def testPrunedRootNodeShowsAllParents(self):
-#     registry = self.portal.portal_registry
-#     registry["plone.parent_types_not_to_query"] = [u"Folder"]
-#
-#     assignment = navigation.Assignment(topLevel=0)
-#     assignment.topLevel = 1
-#     view = self.renderer(self.portal.folder1.doc11, assignment=assignment)
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(len(tree["children"]), 1)
-#     self.assertEqual(tree["children"][0]["item"].getPath(), "/plone/folder1/doc11")
-#
-# def testIsCurrentParentWithOverlapingNames(self):
-#     setRoles(
-#         self.portal,
-#         TEST_USER_ID,
-#         [
-#             "Manager",
-#         ],
-#     )
-#     self.portal.invokeFactory("Folder", "folder2x")
-#     self.portal.folder2x.invokeFactory("Document", "doc2x1")
-#     setRoles(
-#         self.portal,
-#         TEST_USER_ID,
-#         [
-#             "Member",
-#         ],
-#     )
-#     view = self.renderer(self.portal.folder2x.doc2x1)
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#
-#     folder2x_node = [n for n in tree["children"] if n["path"] == "/plone/folder2x"][
-#         0
-#     ]
-#     self.assertTrue(folder2x_node["currentParent"])
-#
-#     folder2_node = [n for n in tree["children"] if n["path"] == "/plone/folder2"][0]
-#     self.assertFalse(folder2_node["currentParent"])
-#
+        self.assertEqual(self.portal.getCustomNavQuery(), {"review_state": "published"})
+
+        view = self.renderer(self.portal.folder2, opts(topLevel=0))
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertTrue("items" in tree)
+
+        # Should only contain current object
+        self.assertEqual(len(tree["items"]), 1)  # different
+
+        # change workflow for folder1
+        workflow.doActionFor(self.portal.folder1, "publish")
+        self.portal.folder1.reindexObject()
+
+        view = self.renderer(self.portal.folder2, opts(topLevel=0))
+        tree = view.getNavTree()
+        # Should only contain current object and published folder
+        self.assertEqual(len(tree["items"]), 2)
+
+    def testStateFiltering(self):
+        # Test Navtree workflow state filtering
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        registry = getUtility(IRegistry)
+        navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
+        workflow = self.portal.portal_workflow
+        navigation_settings.workflow_states_to_show = ("published",)
+        navigation_settings.filter_on_workflow = True
+
+        view = self.renderer(self.portal.folder2, opts(topLevel=0))
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertTrue("items" in tree)
+
+        # Should only contain current object
+        self.assertEqual(len(tree["items"]), 1)
+
+        # change workflow for folder1
+        workflow.doActionFor(self.portal.folder1, "publish")
+        self.portal.folder1.reindexObject()
+        view = self.renderer(self.portal.folder2, opts(topLevel=0))
+        tree = view.getNavTree()
+
+        # Should only contain current object and published folder
+        self.assertEqual(len(tree["items"]), 2)
+
+    def testPrunedRootNode(self):
+        # This test has been changed to conform to reality
+        registry = self.portal.portal_registry
+        registry["plone.parent_types_not_to_query"] = [u"Folder"]
+
+        view = self.renderer(self.portal.folder1, opts(topLevel=0))
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(len(tree["items"][4]["items"]), 0)
+
+    def testPrunedRootNodeShowsAllParents(self):
+        registry = self.portal.portal_registry
+        registry["plone.parent_types_not_to_query"] = [u"Folder"]
+
+        view = self.renderer(self.portal.folder1.doc11, opts(topLevel=1))
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(len(tree["items"]), 1)
+        self.assertEqual(
+            tree["items"][0]["href"], "http://localhost:55001/plone/folder1/doc11"
+        )
+
+    def testIsCurrentParentWithOverlapingNames(self):
+        setRoles(
+            self.portal,
+            TEST_USER_ID,
+            [
+                "Manager",
+            ],
+        )
+        self.portal.invokeFactory("Folder", "folder2x")
+        self.portal.folder2x.invokeFactory("Document", "doc2x1")
+        setRoles(
+            self.portal,
+            TEST_USER_ID,
+            [
+                "Member",
+            ],
+        )
+        view = self.renderer(self.portal.folder2x.doc2x1, opts(topLevel=0))
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+
+        folder2x_node = [
+            n for n in tree["items"] if n["href"].endswith("/plone/folder2x")
+        ][0]
+        self.assertTrue(folder2x_node["is_in_path"])
+
+        folder2_node = [
+            n for n in tree["items"] if n["href"].endswith("/plone/folder2")
+        ][0]
+        self.assertFalse(folder2_node["is_in_path"])
+
+
 # def testPortletNotDisplayedOnINavigationRoot(self):
 #     """test that navigation portlet does not show on INavigationRoot
 #     folder
