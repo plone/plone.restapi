@@ -15,6 +15,14 @@ import transaction
 import unittest
 
 
+def opts(**kw):
+    res = {}
+    for k, v in kw.items():
+        res["expand.navportlet." + k] = v
+
+    return res
+
+
 class TestServicesNavPortlet(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -99,7 +107,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     def renderer(self, context=None, data=None):
         context = context or self.portal
         request = self.layer["request"]
-        request.form.update(data)
+        request.form.update(data or {})
         return NavigationPortlet(context, request)
 
     def test_navportlet_with_no_params_gets_only_top_level(self):
@@ -417,28 +425,31 @@ class TestServicesNavPortlet(unittest.TestCase):
 
     def testTopLevelTooDeep(self):
 
-        view = self.renderer(self.portal, dict(topLevel=5))
+        view = self.renderer(self.portal, opts(topLevel=5))
         tree = view(expand=True)
 
         self.assertEqual(len(tree["navportlet"]["items"]), 0)
 
+    def testShowAllParentsOverridesNavTreeExcludesItemsWithExcludeProperty(self):
+        # Make sure that items whose ids are in the idsNotToList navTree
+        # property are not included
+        # self.portal.folder2.exclude_from_nav = True
+        self.portal.folder2.reindexObject()
+        view = self.renderer(
+            self.portal.folder2.doc21, opts(includeTop=True, topLevel=0)
+        )
+        tree = view(expand=True)
 
-# def testShowAllParentsOverridesNavTreeExcludesItemsWithExcludeProperty(self):
-#     # Make sure that items whose ids are in the idsNotToList navTree
-#     # property are not included
-#     self.portal.folder2.exclude_from_nav = True
-#     self.portal.folder2.reindexObject()
-#     view = self.renderer(self.portal.folder2.doc21)
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     found = False
-#     for c in tree["children"]:
-#         if c["item"].getPath() == "/plone/folder2":
-#             found = True
-#             break
-#     self.assertTrue(found)
-#
-#
+        found = False
+
+        for c in tree["navportlet"]["items"]:
+            if c["href"] == "http://localhost:55001/plone/folder2":
+                found = True
+                break
+
+        self.assertTrue(found)
+
+
 # def testNavTreeMarksParentMetaTypesNotToQuery(self):
 #     # Make sure that items whose ids are in the idsNotToList navTree
 #     # property get no_display set to True
