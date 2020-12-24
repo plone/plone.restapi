@@ -176,6 +176,10 @@ class NavigationPortlet(object):
         result["navportlet"].update(res)
         return result
 
+    def getNavTree(self):
+        # compatibility method with NavigationPortletRenderer, only for tests
+        return self.__call__(expand=True)["navportlet"]
+
 
 class NavigationPortletRenderer(object):
     def __init__(self, context, request, data):

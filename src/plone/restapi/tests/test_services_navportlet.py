@@ -7,6 +7,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.restapi.services.navigation.portlet import NavigationPortlet
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from Products.CMFPlone.tests import dummy
 from urllib.parse import urlencode
 from zope.interface import directlyProvides
 from zope.interface import noLongerProvides
@@ -433,7 +434,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     def testShowAllParentsOverridesNavTreeExcludesItemsWithExcludeProperty(self):
         # Make sure that items whose ids are in the idsNotToList navTree
         # property are not included
-        # self.portal.folder2.exclude_from_nav = True
+        self.portal.folder2.exclude_from_nav = True
         self.portal.folder2.reindexObject()
         view = self.renderer(
             self.portal.folder2.doc21, opts(includeTop=True, topLevel=0)
@@ -449,57 +450,67 @@ class TestServicesNavPortlet(unittest.TestCase):
 
         self.assertTrue(found)
 
+    # # this test is not needed, we don't expose show_children
+    # def testNavTreeMarksParentMetaTypesNotToQuery(self):
+    #     # Make sure that items whose ids are in the idsNotToList navTree
+    #     # property get no_display set to True
+    #     view = self.renderer(self.portal.folder2.file21)
+    #     tree = view(expand=True)
+    #
+    #     self.assertEqual(tree["navportlet"]["items"][-1]["show_children"], True)
+    #
+    #     registry = self.portal.portal_registry
+    #     registry["plone.parent_types_not_to_query"] = [u"Folder"]
+    #
+    #     view = self.renderer(self.portal.folder2.file21)
+    #     tree = view(expand=True)
+    #
+    #     self.assertEqual(tree["navportlet"]["items"][-1]["show_children"], False)
 
-# def testNavTreeMarksParentMetaTypesNotToQuery(self):
-#     # Make sure that items whose ids are in the idsNotToList navTree
-#     # property get no_display set to True
-#     view = self.renderer(self.portal.folder2.file21)
-#     tree = view.getNavTree()
-#     self.assertEqual(tree["children"][-1]["show_children"], True)
-#     registry = self.portal.portal_registry
-#     registry["plone.parent_types_not_to_query"] = [u"Folder"]
-#     view = self.renderer(self.portal.folder2.file21)
-#     tree = view.getNavTree()
-#     self.assertEqual(tree["children"][-1]["show_children"], False)
-#
-# def testCreateNavTreeWithLink(self):
-#     view = self.renderer(self.portal)
-#     tree = view.getNavTree()
-#     for child in tree["children"]:
-#         if child["portal_type"] != "Link":
-#             self.assertFalse(child["getRemoteUrl"])
-#         if child["Title"] == "link1":
-#             self.assertEqual(child["getRemoteUrl"], "http://plone.org")
-#             # as Creator, link1 should not use the remote Url
-#             self.assertFalse(child["useRemoteUrl"])
-#
-#     self.portal.link1.setCreators(["some_other_user"])
-#     self.portal.link1.reindexObject()
-#     view = self.renderer(self.portal)
-#     tree = view.getNavTree()
-#     for child in tree["children"]:
-#         if child["portal_type"] != "Link":
-#             self.assertFalse(child["getRemoteUrl"])
-#         if child["Title"] == "link1":
-#             self.assertEqual(child["getRemoteUrl"], "http://plone.org")
-#             # as non-Creator user, link1 should use the remote Url
-#             self.assertTrue(child["useRemoteUrl"])
-#
-# def testNonStructuralFolderHidesChildren(self):
-#     # Make sure NonStructuralFolders act as if parent_types_not_to_query
-#     # is set.
-#     f = dummy.NonStructuralFolder("ns_folder")
-#     self.portal.folder1._setObject("ns_folder", f)
-#     self.portal.portal_catalog.reindexObject(self.portal.folder1.ns_folder)
-#     self.portal.portal_catalog.reindexObject(self.portal.folder1)
-#     view = self.renderer(self.portal.folder1.ns_folder)
-#     tree = view.getNavTree()
-#     self.assertEqual(
-#         tree["children"][3]["children"][3]["item"].getPath(),
-#         "/plone/folder1/ns_folder",
-#     )
-#     self.assertEqual(len(tree["children"][3]["children"][3]["children"]), 0)
-#
+    def testCreateNavTreeWithLink(self):
+        view = self.renderer(self.portal)
+        tree = view(expand=True)["navportlet"]
+
+        for child in tree["items"]:
+            if child["portal_type"] != "Link":
+                self.assertFalse(child["getRemoteUrl"])
+
+            if child["Title"] == "link1":
+                self.assertEqual(child["getRemoteUrl"], "http://plone.org")
+                # as Creator, link1 should not use the remote Url
+                self.assertFalse(child["useRemoteUrl"])
+
+        self.portal.link1.setCreators(["some_other_user"])
+        self.portal.link1.reindexObject()
+        view = self.renderer(self.portal)
+        tree = view(expand=True)["navportlet"]
+
+        for child in tree["items"]:
+            if child["portal_type"] != "Link":
+                self.assertFalse(child["getRemoteUrl"])
+            if child["Title"] == "link1":
+                self.assertEqual(child["getRemoteUrl"], "http://plone.org")
+                # as non-Creator user, link1 should use the remote Url
+                self.assertTrue(child["useRemoteUrl"])
+
+    def testNonStructuralFolderHidesChildren(self):
+        # Make sure NonStructuralFolders act as if parent_types_not_to_query
+        # is set.
+        f = dummy.NonStructuralFolder("ns_folder")
+        self.portal.folder1._setObject("ns_folder", f)
+        self.portal.portal_catalog.reindexObject(self.portal.folder1.ns_folder)
+        self.portal.portal_catalog.reindexObject(self.portal.folder1)
+        view = self.renderer(
+            self.portal.folder1.ns_folder, opts(includeTop=True, topLevel=0)
+        )
+        tree = view.getNavTree()
+        self.assertEqual(
+            tree["items"][3]["items"][3]["href"],
+            "http://localhost:55001/plone/folder1/ns_folder",
+        )
+        self.assertEqual(len(tree["items"][3]["items"][3]["items"]), 0)
+
+
 # def testTopLevel(self):
 #     view = self.renderer(
 #         self.portal.folder2.file21, assignment=navigation.Assignment(topLevel=1)
