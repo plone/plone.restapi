@@ -584,11 +584,13 @@ def get_root(context, root_path):
 
     urltool = getToolByName(context, "portal_url")
     portal = urltool.getPortalObject()
+    if root_path.startswith("/"):
+        root_path = root_path[1:]
     try:
         root = context.restrictedTraverse(
             portal.getPhysicalPath() + tuple(root_path.split("/"))
         )
-    except IndexError:
+    except (IndexError, KeyError):
         return portal
     return root
 

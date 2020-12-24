@@ -510,54 +510,54 @@ class TestServicesNavPortlet(unittest.TestCase):
         )
         self.assertEqual(len(tree["items"][3]["items"][3]["items"]), 0)
 
+    def testTopLevel(self):
+        view = self.renderer(self.portal.folder2.file21, opts(topLevel=1))
+        tree = view.getNavTree()
+        self.assertTrue(tree)
 
-# def testTopLevel(self):
-#     view = self.renderer(
-#         self.portal.folder2.file21, assignment=navigation.Assignment(topLevel=1)
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(
-#         tree["children"][-1]["item"].getPath(), "/plone/folder2/file21"
-#     )
-#
-# def testTopLevelWithContextAboveLevel(self):
-#     view = self.renderer(self.portal, assignment=navigation.Assignment(topLevel=1))
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(len(tree["children"]), 0)
-#
-# def testIncludeTopWithoutNavigationRoot(self):
-#     self.portal.folder2.invokeFactory("Folder", "folder21")
-#     self.portal.folder2.folder21.invokeFactory("Document", "doc211")
-#     view = self.renderer(
-#         self.portal.folder2.folder21,
-#         assignment=navigation.Assignment(
-#             topLevel=0, root_uid=None, includeTop=True
-#         ),
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertTrue(view.root_is_portal())
-#     self.assertEqual(len(tree["children"]), 6)
-#     self.assertEqual(view.getNavRootPath(), "/plone")
-#
-# def testTopLevelWithNavigationRoot(self):
-#     self.portal.folder2.invokeFactory("Folder", "folder21")
-#     self.portal.folder2.folder21.invokeFactory("Document", "doc211")
-#     view = self.renderer(
-#         self.portal.folder2.folder21,
-#         assignment=navigation.Assignment(
-#             topLevel=1, root_uid=self.portal.folder2.UID()
-#         ),
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(len(tree["children"]), 1)
-#     self.assertEqual(
-#         tree["children"][0]["item"].getPath(), "/plone/folder2/folder21/doc211"
-#     )
-#
+        self.assertEqual(
+            tree["items"][-1]["href"],
+            "http://localhost:55001/plone/folder2/folder21",
+        )
+
+    def testTopLevelWithContextAboveLevel(self):
+        view = self.renderer(self.portal, opts(topLevel=1))
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(len(tree["items"]), 0)
+
+    def testIncludeTopWithoutNavigationRoot(self):
+        view = self.renderer(
+            self.portal.folder2.folder21,
+            opts(topLevel=0, root_path=None, includeTop=True),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(len(tree["items"]), 6)
+
+        # self.assertTrue(view.root_is_portal())
+        self.assertEqual(tree["url"], "http://localhost:55001/plone/sitemap")
+
+    def testTopLevelWithNavigationRoot(self):
+        # self.portal.folder2.invokeFactory("Folder", "folder21")
+        # self.portal.folder2.folder21.invokeFactory("Document", "doc211")
+        view = self.renderer(
+            self.portal.folder2.folder21,
+            opts(
+                topLevel=1,
+                root_path="/folder2"
+                # self.portal.folder2.UID()
+            ),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(len(tree["items"]), 2)
+        self.assertEqual(
+            tree["items"][0]["href"],
+            "http://localhost:55001/plone/folder2/folder21/doc211",
+        )
+
+
 # def testMultipleTopLevelWithNavigationRoot(self):
 #     # See bug 9405
 #     # http://dev.plone.org/plone/ticket/9405
