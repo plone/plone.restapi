@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
+
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.registry.interfaces import IRegistry
 from plone.restapi.services.navigation.portlet import NavigationPortlet
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFPlone.tests import dummy
 from urllib.parse import urlencode
+from zope.component import getUtility
 from zope.interface import directlyProvides
 from zope.interface import noLongerProvides
 
@@ -655,109 +658,116 @@ class TestServicesNavPortlet(unittest.TestCase):
             "http://localhost:55001/plone/folder2/doc21",
         )
 
+    def testBottomLevelZeroNoLimitRendering(self):
+        """Test that bottomLevel=0 means no limit for bottomLevel."""
 
-#
-# def testBottomLevelZeroNoLimitRendering(self):
-#     """Test that bottomLevel=0 means no limit for bottomLevel."""
-#
-#     # first we set a high integer as bottomLevel to simulate "no limit"
-#     view = self.renderer(
-#         self.portal.folder2,
-#         assignment=navigation.Assignment(bottomLevel=99, topLevel=0),
-#     )
-#     a = view.render()
-#
-#     # now set bottomLevel to 0 -> outcome should be the same
-#     view = self.renderer(
-#         self.portal.folder2,
-#         assignment=navigation.Assignment(bottomLevel=0, topLevel=0),
-#     )
-#     b = view.render()
-#
-#     self.assertEqual(a, b)
-#
-# def testNavRootWithUnicodeNavigationRoot(self):
-#     self.portal.folder2.invokeFactory("Folder", "folder21")
-#     self.portal.folder2.folder21.invokeFactory("Document", "doc211")
-#     view = self.renderer(
-#         self.portal.folder2.folder21,
-#         assignment=navigation.Assignment(
-#             topLevel=1, root_uid=self.portal.folder2.UID()
-#         ),
-#     )
-#     self.assertEqual(view.getNavRootPath(), "/plone/folder2/folder21")
-#     self.assertEqual(
-#         view.getNavRoot().absolute_url(),
-#         self.portal.folder2.folder21.absolute_url(),
-#     )
-#
-# def testNoRootSet(self):
-#     view = self.renderer(
-#         self.portal.folder2.file21,
-#         assignment=navigation.Assignment(root_uid="", topLevel=0),
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(tree["children"][-1]["item"].getPath(), "/plone/folder2")
-#
-# def testRootIsNotPortal(self):
-#     view = self.renderer(
-#         self.portal.folder2.file21,
-#         assignment=navigation.Assignment(
-#             root_uid=self.portal.folder2.UID(), topLevel=0
-#         ),
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(tree["children"][0]["item"].getPath(), "/plone/folder2/doc21")
-#
-# def testRootDoesNotExist(self):
-#     view = self.renderer(
-#         self.portal.folder2.file21,
-#         assignment=navigation.Assignment(root_uid="DOESNT_EXIST", topLevel=0),
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(len(tree["children"]), 6)
-#
-# def testAboveRoot(self):
-#     registry = getUtility(IRegistry)
-#     registry["plone.root"] = u"/folder2"
-#     view = self.renderer(self.portal)
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(tree["children"][0]["item"].getPath(), "/plone/folder2/doc21")
-#
-# def testOutsideRoot(self):
-#     view = self.renderer(
-#         self.portal.folder1,
-#         assignment=navigation.Assignment(root_uid=self.portal.folder2.UID()),
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(tree["children"][0]["item"].getPath(), "/plone/folder2/doc21")
-#
-# def testRootIsCurrent(self):
-#     view = self.renderer(
-#         self.portal.folder2,
-#         assignment=navigation.Assignment(currentFolderOnly=True),
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(tree["children"][0]["item"].getPath(), "/plone/folder2/doc21")
-#
-# def testRootIsCurrentWithFolderishDefaultPage(self):
-#     self.portal.folder2.invokeFactory("Folder", "folder21")
-#     self.portal.folder2.setDefaultPage("folder21")
-#
-#     view = self.renderer(
-#         self.portal.folder2.folder21,
-#         assignment=navigation.Assignment(currentFolderOnly=True),
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(tree["children"][0]["item"].getPath(), "/plone/folder2/doc21")
-#
+        # first we set a high integer as bottomLevel to simulate "no limit"
+        view = self.renderer(
+            self.portal.folder2,
+            opts(bottomLevel=99, topLevel=0),
+        )
+        a = view(expand=True)
+
+        # now set bottomLevel to 0 -> outcome should be the same
+        view = self.renderer(
+            self.portal.folder2,
+            opts(bottomLevel=0, topLevel=0),
+        )
+        b = view(expand=True)
+
+        self.assertEqual(a, b)
+
+    def testNavRootWithUnicodeNavigationRoot(self):
+        # self.portal.folder2.invokeFactory("Folder", "folder21")
+        # self.portal.folder2.folder21.invokeFactory("Document", "doc211")
+        view = self.renderer(
+            self.portal.folder2.folder21,
+            opts(
+                topLevel=1,
+                root_path="/folder2",
+            ),
+        )
+        tree = view.getNavTree()
+        self.assertEqual(tree["url"], "http://localhost:55001/plone/folder2/folder21")
+
+    def testNoRootSet(self):
+        view = self.renderer(
+            self.portal.folder2.file21,
+            opts(root_uid="", topLevel=0),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(
+            tree["items"][-1]["href"], "http://localhost:55001/plone/folder2"
+        )
+
+    def testRootIsNotPortal(self):
+        view = self.renderer(
+            self.portal.folder2.file21,
+            opts(root_path="/folder2", topLevel=0),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(
+            tree["items"][0]["href"], "http://localhost:55001/plone/folder2/doc21"
+        )
+
+    def testRootDoesNotExist(self):
+        view = self.renderer(
+            self.portal.folder2.file21,
+            opts(root_path="DOESNT_EXIST", topLevel=0),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(len(tree["items"]), 6)
+
+    def testAboveRoot(self):
+        registry = getUtility(IRegistry)
+        registry["plone.root"] = u"/folder2"
+        view = self.renderer(self.portal)
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(
+            tree["items"][0]["href"], "http://localhost:55001/plone/folder2/doc21"
+        )
+
+    def testOutsideRoot(self):
+        view = self.renderer(
+            self.portal.folder1,
+            opts(root_path="/folder2"),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(
+            tree["items"][0]["href"], "http://localhost:55001/plone/folder2/doc21"
+        )
+
+    def testRootIsCurrent(self):
+        view = self.renderer(
+            self.portal.folder2,
+            opts(currentFolderOnly=True),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(
+            tree["items"][0]["href"], "http://localhost:55001/plone/folder2/doc21"
+        )
+
+    def testRootIsCurrentWithFolderishDefaultPage(self):
+        # self.portal.folder2.invokeFactory("Folder", "folder21")
+        self.portal.folder2.setDefaultPage("folder21")
+
+        view = self.renderer(
+            self.portal.folder2.folder21,
+            opts(currentFolderOnly=True),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(
+            tree["items"][0]["href"], "http://localhost:55001/plone/folder2/doc21"
+        )
+
+
 # def testCustomQuery(self):
 #     # Try a custom query script for the navtree that returns only published
 #     # objects
