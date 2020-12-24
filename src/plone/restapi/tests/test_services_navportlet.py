@@ -557,74 +557,77 @@ class TestServicesNavPortlet(unittest.TestCase):
             "http://localhost:55001/plone/folder2/folder21/doc211",
         )
 
+    def testMultipleTopLevelWithNavigationRoot(self):
+        # See bug 9405
+        # http://dev.plone.org/plone/ticket/9405
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        self.portal.invokeFactory("Folder", "abc")
+        self.portal.invokeFactory("Folder", "abcde")
+        self.portal.abc.invokeFactory("Folder", "down_abc")
+        self.portal.abcde.invokeFactory("Folder", "down_abcde")
 
-# def testMultipleTopLevelWithNavigationRoot(self):
-#     # See bug 9405
-#     # http://dev.plone.org/plone/ticket/9405
-#     setRoles(self.portal, TEST_USER_ID, ["Manager"])
-#     self.portal.invokeFactory("Folder", "abc")
-#     self.portal.invokeFactory("Folder", "abcde")
-#     self.portal.abc.invokeFactory("Folder", "down_abc")
-#     self.portal.abcde.invokeFactory("Folder", "down_abcde")
-#     view1 = self.renderer(
-#         self.portal.abc,
-#         assignment=navigation.Assignment(
-#             topLevel=0, root_uid=self.portal.abc.UID()
-#         ),
-#     )
-#     view2 = self.renderer(
-#         self.portal.abc,
-#         assignment=navigation.Assignment(
-#             topLevel=0, root_uid=self.portal.abcde.UID()
-#         ),
-#     )
-#     tree1 = view1.getNavTree()
-#     tree2 = view2.getNavTree()
-#     self.assertEqual(len(tree1["children"]), 1)
-#     self.assertEqual(len(tree2["children"]), 1)
-#     view1 = self.renderer(
-#         self.portal.abcde,
-#         assignment=navigation.Assignment(
-#             topLevel=0, root_uid=self.portal.abc.UID()
-#         ),
-#     )
-#     view2 = self.renderer(
-#         self.portal.abcde,
-#         assignment=navigation.Assignment(
-#             topLevel=0, root_uid=self.portal.abcde.UID()
-#         ),
-#     )
-#     tree1 = view1.getNavTree()
-#     tree2 = view2.getNavTree()
-#     self.assertEqual(len(tree2["children"]), 1)
-#     self.assertEqual(len(tree1["children"]), 1)
-#
-# def testShowAllParentsOverridesBottomLevel(self):
-#     view = self.renderer(
-#         self.portal.folder2.file21,
-#         assignment=navigation.Assignment(bottomLevel=1, topLevel=0),
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     # Note: showAllParents makes sure we actually return items on the,
-#     # path to the context, but the portlet will not display anything
-#     # below bottomLevel.
-#     self.assertEqual(tree["children"][-1]["item"].getPath(), "/plone/folder2")
-#     self.assertEqual(len(tree["children"][-1]["children"]), 1)
-#     self.assertEqual(
-#         tree["children"][-1]["children"][0]["item"].getPath(),
-#         "/plone/folder2/file21",
-#     )
-#
-# def testBottomLevelStopsAtFolder(self):
-#     view = self.renderer(
-#         self.portal.folder2,
-#         assignment=navigation.Assignment(bottomLevel=1, topLevel=0),
-#     )
-#     tree = view.getNavTree()
-#     self.assertTrue(tree)
-#     self.assertEqual(tree["children"][-1]["item"].getPath(), "/plone/folder2")
-#     self.assertEqual(len(tree["children"][-1]["children"]), 0)
+        view1 = self.renderer(
+            self.portal.abc,
+            opts(topLevel=0, root_path="/abc"),
+        )
+        view2 = self.renderer(
+            self.portal.abc,
+            opts(topLevel=0, root_path="/abcde"),
+        )
+
+        tree1 = view1.getNavTree()
+        tree2 = view2.getNavTree()
+        self.assertEqual(len(tree1["items"]), 1)
+        self.assertEqual(len(tree2["items"]), 1)
+
+        view1 = self.renderer(
+            self.portal.abcde,
+            opts(topLevel=0, root_path="/abc"),
+        )
+
+        view2 = self.renderer(
+            self.portal.abcde,
+            opts(topLevel=0, root_path="/abcde"),
+        )
+
+        tree1 = view1.getNavTree()
+        tree2 = view2.getNavTree()
+
+        self.assertEqual(len(tree2["items"]), 1)
+        self.assertEqual(len(tree1["items"]), 1)
+
+    def testShowAllParentsOverridesBottomLevel(self):
+        view = self.renderer(
+            self.portal.folder2.file21,
+            opts(bottomLevel=1, topLevel=0),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        # Note: showAllParents makes sure we actually return items on the,
+        # path to the context, but the portlet will not display anything
+        # below bottomLevel.
+        self.assertEqual(
+            tree["items"][-1]["href"], "http://localhost:55001/plone/folder2"
+        )
+        # self.assertEqual(len(tree["items"][-1]["items"]), 1)
+        # self.assertEqual(
+        #     tree["items"][-1]["items"][0]["href"],
+        #     "http://localhost:55001/plone/folder2/file21",
+        # )
+
+    def testBottomLevelStopsAtFolder(self):
+        view = self.renderer(
+            self.portal.folder2,
+            opts(bottomLevel=1, topLevel=0),
+        )
+        tree = view.getNavTree()
+        self.assertTrue(tree)
+        self.assertEqual(
+            tree["items"][-1]["href"], "http://localhost:55001/plone/folder2"
+        )
+        self.assertEqual(len(tree["items"][-1]["items"]), 0)
+
+
 #
 # def testBottomLevelZeroNoLimit(self):
 #     """Test that bottomLevel=0 means no limit for bottomLevel."""

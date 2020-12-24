@@ -665,6 +665,8 @@ class QueryBuilder(object):
 class NavtreeStrategy(SitemapNavtreeStrategy):
     """The navtree strategy used for the default navigation portlet"""
 
+    viewActionTypes = []
+
     def __init__(self, context, portlet):
         SitemapNavtreeStrategy.__init__(self, context, portlet)
 
