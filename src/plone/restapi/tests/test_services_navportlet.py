@@ -123,6 +123,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         res = {
             "@id": "http://localhost:55001/plone/folder1/@navportlet",
             "has_custom_name": False,
+            "available": True,
             "items": [
                 {
                     "@id": "http://localhost:55001/plone/folder1/doc11",
@@ -188,6 +189,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         res = {
             "@id": "http://localhost:55001/plone/folder2/@navportlet",
             "has_custom_name": False,
+            "available": True,
             "items": [
                 {
                     "@id": "http://localhost:55001/plone/folder2/doc21",
@@ -725,7 +727,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     def testAboveRoot(self):
         registry = getUtility(IRegistry)
         registry["plone.root"] = u"/folder2"
-        view = self.renderer(self.portal)
+        view = self.renderer(self.portal, opts(topLevel=0))
         tree = view.getNavTree()
         self.assertTrue(tree)
         self.assertEqual(
@@ -735,7 +737,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     def testOutsideRoot(self):
         view = self.renderer(
             self.portal.folder1,
-            opts(root_path="/folder2"),
+            opts(root_path="/folder2", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -893,10 +895,8 @@ class TestServicesNavPortlet(unittest.TestCase):
         view = self.renderer(self.portal.folder1, opts(bottomLevel=0, topLevel=1))
         tree = view(expand=True)
         self.assertTrue(tree)
-
-        # TODO: this test fails
         # check there is no portlet
-        # self.assertFalse(tree['items'])
+        self.assertFalse(tree["navportlet"]["items"])
 
     def testINavigationRootWithRelativeRootSet(self):
         """test that navigation portlet uses relative root set by user

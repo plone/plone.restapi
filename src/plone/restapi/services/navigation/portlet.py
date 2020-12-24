@@ -195,18 +195,17 @@ class NavigationPortletRenderer(object):
     def hasName(self):
         return self.data.name
 
-    # not exposed
-    # @property
-    # def available(self):
-    #     rootpath = self.getNavRootPath()
-    #     if rootpath is None:
-    #         return False
-    #
-    #     if self.data.bottomLevel < 0:
-    #         return True
-    #
-    #     tree = self.getNavTree()
-    #     return len(tree["children"]) > 0
+    @property
+    def available(self):
+        rootpath = self.getNavRootPath()
+        if rootpath is None:
+            return False
+
+        if self.data.bottomLevel < 0:
+            return True
+
+        tree = self.getNavTree()
+        return len(tree["children"]) > 0
 
     def include_top(self):
         return getattr(self.data, "includeTop", True)
@@ -363,7 +362,10 @@ class NavigationPortletRenderer(object):
             "url": self.heading_link_target(),
             "has_custom_name": bool(self.hasName()),
             "items": [],
+            "available": self.available,
         }
+        if not res["available"]:
+            return res
 
         if self.include_top():
             root = self.navigation_root()
