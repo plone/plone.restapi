@@ -195,7 +195,7 @@ class NavigationPortletRenderer(object):
     def hasName(self):
         return self.data.name
 
-    # not used
+    # not exposed
     # @property
     # def available(self):
     #     rootpath = self.getNavRootPath()
