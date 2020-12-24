@@ -15,7 +15,7 @@ import transaction
 import unittest
 
 
-class TestServicesNavigation(unittest.TestCase):
+class TestServicesNavPortlet(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
     maxDiff = None
@@ -265,12 +265,15 @@ class TestServicesNavigation(unittest.TestCase):
 
     def testHeadingLinkRooted(self):
         """
-        See that heading link points to a content item if root selected, otherwise sitemap.
+        See that heading link points to a content item if root selected,
+        otherwise sitemap.
         """
 
         q = {
-            "topLevel": 0,
-            "root_path": "/".join(self.portal.folder2.getPhysicalPath()[2:]),
+            "expand.navportlet.topLevel": 0,
+            "expand.navportlet.root_path": "/".join(
+                self.portal.folder2.getPhysicalPath()[2:]
+            ),
         }
         qs = urlencode(q)
 
@@ -285,7 +288,10 @@ class TestServicesNavigation(unittest.TestCase):
         """
         response = self.api_session.get(
             "/folder2/@navportlet",
-            params={"topLevel": 0, "root_path": "/does/not/exist"},
+            params={
+                "expand.navportlet.topLevel": 0,
+                "expand.navportlet.root_path": "/does/not/exist",
+            },
         )
         res = response.json()
         # Points to the site root if the item is gone
@@ -300,7 +306,7 @@ class TestServicesNavigation(unittest.TestCase):
         transaction.commit()
         response = self.api_session.get(
             "/folder2/@navportlet",
-            params={"topLevel": 0},
+            params={"expand.navportlet.topLevel": 0},
         )
         link = response.json()["url"]
         # The root is not given -> should render the sitemap in the navigation root
@@ -321,7 +327,7 @@ class TestServicesNavigation(unittest.TestCase):
 
         response = self.api_session.get(
             "/folder1/@navportlet",
-            params={"topLevel": 0},
+            params={"expand.navportlet.topLevel": 0},
         )
         link = response.json()["url"]
         # The root is not given -> should render the sitemap in the navigation root
@@ -340,7 +346,12 @@ class TestServicesNavigation(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.get(
-            "@navportlet", params={"includeTop": True, "topLevel": 0, "bottomLevel": 0}
+            "@navportlet",
+            params={
+                "expand.navportlet.includeTop": True,
+                "expand.navportlet.topLevel": 0,
+                "expand.navportlet.bottomLevel": 0,
+            },
         )
         tree = response.json()
 
@@ -399,7 +410,7 @@ class TestServicesNavigation(unittest.TestCase):
 
         response = self.api_session.get(
             "/@navportlet",
-            params={"name": "New navigation title"},
+            params={"expand.navportlet.name": "New navigation title"},
         )
         tree = response.json()
         self.assertEqual(tree["title"], "New navigation title")
@@ -873,4 +884,3 @@ class TestServicesNavigation(unittest.TestCase):
 #         tree["children"][0]["item"].getPath(),
 #         "/plone/folder1/folder1_1/folder1_1_1",
 #     )
-#

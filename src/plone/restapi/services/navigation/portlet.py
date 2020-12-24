@@ -153,7 +153,7 @@ class INavigationPortlet(Interface):
 class NavPortletGet(Service):
     def reply(self):
         navigation = NavigationPortlet(self.context, self.request)
-        return navigation(expand=True, prefix="")["navportlet"]
+        return navigation(expand=True, prefix="expand.navportlet.")["navportlet"]
 
 
 @implementer(IExpandableElement)
