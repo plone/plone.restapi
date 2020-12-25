@@ -130,6 +130,9 @@ Content-Type: application/json
         }
       ]
     }, 
+    "navportlet": {
+      "@id": "http://localhost:55001/plone/front-page/@navportlet"
+    }, 
     "types": [
       {
         "@id": "http://localhost:55001/plone/@types/Collection", 
