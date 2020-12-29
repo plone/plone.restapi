@@ -39,7 +39,7 @@ def path2uid(context, link):
             portal_path=portal_path, path=path.lstrip("/")
         )
     obj = portal.unrestrictedTraverse(path, None)
-    if obj is None:
+    if obj is None or obj == portal:
         return link
     segments = path.split("/")
     suffix = ""
@@ -64,7 +64,8 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
 
                 handlers = []
                 for h in subscribers(
-                    (self.context, self.request), IBlockFieldDeserializationTransformer
+                    (self.context, self.request),
+                    IBlockFieldDeserializationTransformer,
                 ):
                     if h.block_type == block_type or h.block_type is None:
                         handlers.append(h)
@@ -120,7 +121,9 @@ class TextBlockDeserializerBase(object):
         for entity in entity_map.values():
             if entity.get("type") == "LINK":
                 href = entity.get("data", {}).get("url", "")
-                entity["data"]["url"] = path2uid(context=self.context, link=href)
+                entity["data"]["url"] = path2uid(
+                    context=self.context, link=href
+                )
         return block
 
 
