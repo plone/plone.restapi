@@ -121,9 +121,7 @@ class TextBlockDeserializerBase(object):
         for entity in entity_map.values():
             if entity.get("type") == "LINK":
                 href = entity.get("data", {}).get("url", "")
-                entity["data"]["url"] = path2uid(
-                    context=self.context, link=href
-                )
+                entity["data"]["url"] = path2uid(context=self.context, link=href)
         return block
 
 
