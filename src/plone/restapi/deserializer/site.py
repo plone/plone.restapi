@@ -37,13 +37,12 @@ class DeserializeSiteRootFromJson(OrderingMixin, object):
 
         # Volto Blocks on the Plone Site root faker
         if "blocks" in data:
-            value = data['blocks']
+            value = data["blocks"]
             for id, block_value in value.items():
                 block_type = block_value.get("@type", "")
                 handlers = []
                 for h in subscribers(
-                    (self.context, self.request),
-                    IBlockFieldDeserializationTransformer,
+                    (self.context, self.request), IBlockFieldDeserializationTransformer,
                 ):
                     if h.block_type == block_type or h.block_type is None:
                         handlers.append(h)
@@ -55,9 +54,7 @@ class DeserializeSiteRootFromJson(OrderingMixin, object):
                     "blocks", json.dumps(value), "string"
                 )  # noqa
             else:
-                self.context.manage_changeProperties(
-                    blocks=json.dumps(value)
-                )  # noqa
+                self.context.manage_changeProperties(blocks=json.dumps(value))  # noqa
 
         if "blocks_layout" in data:
             if not getattr(self.context, "blocks_layout", False):

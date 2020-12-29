@@ -16,8 +16,7 @@ class TestSiteSerializer(unittest.TestCase):
         self.request = self.layer["request"]
 
         self.portal.invokeFactory(
-            "Document",
-            id=u"doc1",
+            "Document", id=u"doc1",
         )
 
     def serialize(self):
@@ -42,13 +41,13 @@ class TestSiteSerializer(unittest.TestCase):
         blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {
                 "@type": "foo",
-                "url": 'resolveuid/{}'.format(self.portal.doc1.UID())
+                "url": "resolveuid/{}".format(self.portal.doc1.UID()),
             },
             "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
         }
         self.portal.blocks = json.dumps(blocks)
         obj = self.serialize()
         self.assertEqual(
-            obj['blocks']["0358abe2-b4f1-463d-a279-a63ea80daf19"]['url'],
-            self.portal.doc1.absolute_url()
+            obj["blocks"]["0358abe2-b4f1-463d-a279-a63ea80daf19"]["url"],
+            self.portal.doc1.absolute_url(),
         )
