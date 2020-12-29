@@ -59,7 +59,6 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
         value = super(BlocksJSONFieldDeserializer, self).__call__(value)
 
         if self.field.getName() == "blocks":
-            import pdb;pdb.set_trace()
             for id, block_value in value.items():
                 block_type = block_value.get("@type", "")
 

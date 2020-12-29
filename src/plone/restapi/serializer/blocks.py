@@ -46,6 +46,7 @@ def uid_to_url(path):
                 href = adapter()
     return href
 
+
 @adapter(IJSONField, IBlocks, Interface)
 @implementer(IFieldSerializer)
 class BlocksJSONFieldSerializer(DefaultFieldSerializer):
@@ -107,7 +108,6 @@ class TextBlockSerializerBase(object):
                 url = entity.get("data", {}).get("url", "")
                 entity["data"]["url"] = uid_to_url(url)
         return value
-
 
 
 @implementer(IBlockFieldSerializationTransformer)
