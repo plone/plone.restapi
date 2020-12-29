@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from plone.restapi.deserializer import json_body
 from plone.restapi.deserializer.mixins import OrderingMixin
+from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IDeserializeFromJson
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
+from zope.component import subscribers
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
 
@@ -35,13 +37,26 @@ class DeserializeSiteRootFromJson(OrderingMixin, object):
 
         # Volto Blocks on the Plone Site root faker
         if "blocks" in data:
+            value = data['blocks']
+            for id, block_value in value.items():
+                block_type = block_value.get("@type", "")
+                handlers = []
+                for h in subscribers(
+                    (self.context, self.request),
+                    IBlockFieldDeserializationTransformer,
+                ):
+                    if h.block_type == block_type or h.block_type is None:
+                        handlers.append(h)
+                for handler in sorted(handlers, key=lambda h: h.order):
+                    block_value = handler(block_value)
+                value[id] = block_value
             if not getattr(self.context, "blocks", False):
                 self.context.manage_addProperty(
-                    "blocks", json.dumps(data["blocks"]), "string"
+                    "blocks", json.dumps(value), "string"
                 )  # noqa
             else:
                 self.context.manage_changeProperties(
-                    blocks=json.dumps(data["blocks"])
+                    blocks=json.dumps(value)
                 )  # noqa
 
         if "blocks_layout" in data:
