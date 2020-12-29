@@ -16,7 +16,8 @@ class TestSiteSerializer(unittest.TestCase):
         self.request = self.layer["request"]
 
         self.portal.invokeFactory(
-            "Document", id=u"doc1",
+            "Document",
+            id=u"doc1",
         )
 
     def serialize(self):

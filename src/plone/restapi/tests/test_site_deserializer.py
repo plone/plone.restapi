@@ -47,7 +47,8 @@ class TestSiteRootDeserializer(unittest.TestCase):
         self.request = self.layer["request"]
 
         self.portal.invokeFactory(
-            "Document", id=u"doc1",
+            "Document",
+            id=u"doc1",
         )
 
     def deserialize(self, body="{}", validate_all=False, context=None):

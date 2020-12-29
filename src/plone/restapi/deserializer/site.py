@@ -42,7 +42,8 @@ class DeserializeSiteRootFromJson(OrderingMixin, object):
                 block_type = block_value.get("@type", "")
                 handlers = []
                 for h in subscribers(
-                    (self.context, self.request), IBlockFieldDeserializationTransformer,
+                    (self.context, self.request),
+                    IBlockFieldDeserializationTransformer,
                 ):
                     if h.block_type == block_type or h.block_type is None:
                         handlers.append(h)
