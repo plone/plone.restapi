@@ -551,7 +551,7 @@ class TestServicesNavPortlet(unittest.TestCase):
             self.portal.folder2.folder21,
             opts(
                 topLevel=1,
-                root_path="/folder2"
+                root_path=u"/folder2"
                 # self.portal.folder2.UID()
             ),
         )
@@ -574,11 +574,11 @@ class TestServicesNavPortlet(unittest.TestCase):
 
         view1 = self.renderer(
             self.portal.abc,
-            opts(topLevel=0, root_path="/abc"),
+            opts(topLevel=0, root_path=u"/abc"),
         )
         view2 = self.renderer(
             self.portal.abc,
-            opts(topLevel=0, root_path="/abcde"),
+            opts(topLevel=0, root_path=u"/abcde"),
         )
 
         tree1 = view1.getNavTree()
@@ -588,12 +588,12 @@ class TestServicesNavPortlet(unittest.TestCase):
 
         view1 = self.renderer(
             self.portal.abcde,
-            opts(topLevel=0, root_path="/abc"),
+            opts(topLevel=0, root_path=u"/abc"),
         )
 
         view2 = self.renderer(
             self.portal.abcde,
-            opts(topLevel=0, root_path="/abcde"),
+            opts(topLevel=0, root_path=u"/abcde"),
         )
 
         tree1 = view1.getNavTree()
@@ -687,7 +687,7 @@ class TestServicesNavPortlet(unittest.TestCase):
             self.portal.folder2.folder21,
             opts(
                 topLevel=1,
-                root_path="/folder2",
+                root_path=u"/folder2",
             ),
         )
         tree = view.getNavTree()
@@ -696,7 +696,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     def testNoRootSet(self):
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_path="", topLevel=0),
+            opts(root_path=u"", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -707,7 +707,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     def testRootIsNotPortal(self):
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_path="/folder2", topLevel=0),
+            opts(root_path=u"/folder2", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -718,7 +718,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     def testRootDoesNotExist(self):
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_path="DOESNT_EXIST", topLevel=0),
+            opts(root_path=u"DOESNT_EXIST", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -737,7 +737,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     def testOutsideRoot(self):
         view = self.renderer(
             self.portal.folder1,
-            opts(root_path="/folder2", topLevel=0),
+            opts(root_path=u"/folder2", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -915,7 +915,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         # make a navigation portlet with navigation root set
         view = self.renderer(
             self.portal.folder1.folder1_1,
-            opts(bottomLevel=0, topLevel=0, root_path="/folder1/folder1_1"),
+            opts(bottomLevel=0, topLevel=0, root_path=u"/folder1/folder1_1"),
         )
         tree = view(expand=True)["navportlet"]
 
@@ -935,7 +935,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     def testServiceId(self):
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_path="", topLevel=0),
+            opts(root_path=u"", topLevel=0),
         )
         portlet = view(expand=True)
 
