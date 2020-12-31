@@ -11,7 +11,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFPlone.interfaces import INavigationSchema
 from Products.CMFPlone.tests import dummy
-from urllib.parse import urlencode
+from six.moves.urllib.parse import urlencode
 from zope.component import getUtility
 from zope.interface import directlyProvides
 from zope.interface import noLongerProvides
