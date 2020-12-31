@@ -6,7 +6,6 @@
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from collections import UserDict
 from plone import api
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.layout.navigation.navtree import buildFolderTree
@@ -26,6 +25,7 @@ from Products.CMFPlone.interfaces import INavigationSchema
 from Products.CMFPlone.interfaces import INonStructuralFolder
 from Products.CMFPlone.interfaces import ISiteSchema
 from Products.MimetypesRegistry.MimeTypeItem import guess_icon_path
+from six.moves import UserDict
 from zExceptions import NotFound
 from zope import schema
 from zope.component import adapter
