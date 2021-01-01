@@ -38,6 +38,7 @@ from zope.interface import Interface
 from zope.schema.interfaces import IFromUnicode
 
 import os
+import six
 
 
 _ = MessageFactory("plone.restapi")
@@ -575,6 +576,10 @@ def extract_data(schema, raw_data, prefix):
     for name in schema.names():
         field = schema[name]
         raw_value = raw_data.get(prefix + name, field.default)
+
+        if isinstance(raw_value, six.string_types):
+            raw_value = six.ensure_text(raw_value)
+
         value = IFromUnicode(field).fromUnicode(raw_value)
         data[name] = value  # convert(raw_value, field)
 
