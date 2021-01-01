@@ -20,7 +20,6 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
 from Products.CMFPlone import utils
 from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
-from Products.CMFPlone.defaultpage import is_default_page
 from Products.CMFPlone.interfaces import INavigationSchema
 from Products.CMFPlone.interfaces import INonStructuralFolder
 from Products.CMFPlone.interfaces import ISiteSchema
@@ -39,6 +38,12 @@ from zope.schema.interfaces import IFromUnicode
 
 import os
 import six
+
+
+try:
+    from Products.CMFPlone.defaultpage import is_default_page
+except ImportError:  # Plone 4 compatibility
+    from plone.app.layout.navigation.defaultpage import is_default_page
 
 
 _ = MessageFactory("plone.restapi")
