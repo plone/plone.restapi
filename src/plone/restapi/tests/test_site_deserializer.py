@@ -46,6 +46,11 @@ class TestSiteRootDeserializer(unittest.TestCase):
         self.portal = self.layer["portal"]
         self.request = self.layer["request"]
 
+        self.portal.invokeFactory(
+            "Document",
+            id=u"doc1",
+        )
+
     def deserialize(self, body="{}", validate_all=False, context=None):
         context = context or self.portal
         self.request["BODY"] = body
@@ -72,3 +77,30 @@ class TestSiteRootDeserializer(unittest.TestCase):
 
         self.assertEqual(blocks, json.loads(self.portal.blocks))
         self.assertEqual(blocks_layout, json.loads(self.portal.blocks_layout))
+
+    def test_resolveuids_blocks_deserializer(self):
+        blocks = {
+            "0358abe2-b4f1-463d-a279-a63ea80daf19": {
+                "@type": "foo",
+                "url": self.portal.doc1.absolute_url(),
+            },
+            "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
+        }
+        blocks_layout = {
+            "items": [
+                "07c273fc-8bfc-4e7d-a327-d513e5a945bb",
+                "0358abe2-b4f1-463d-a279-a63ea80daf19",
+            ]
+        }
+
+        self.deserialize(
+            body='{{"blocks": {}, "blocks_layout": {}}}'.format(
+                json.dumps(blocks), json.dumps(blocks_layout)
+            )
+        )
+
+        values = json.loads(self.portal.blocks)
+        self.assertEqual(
+            values["0358abe2-b4f1-463d-a279-a63ea80daf19"]["url"],
+            "resolveuid/{}".format(self.portal.doc1.UID()),
+        )

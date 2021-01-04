@@ -29,7 +29,6 @@ jobs:
             plone-version: 5.1
 
     steps:
-
       # git checkout
       - uses: actions/checkout@v2
 
@@ -63,7 +62,7 @@ jobs:
 
       # black
       - name: black
-        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then pip install black && black src/ --check; fi
+        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then pip install black && black src/ --check --diff; fi
 
       # code analysis
       - name: black
