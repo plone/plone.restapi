@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0b1 (2021-01-08)
+--------------------
+
+New features:
+
+
+- Register blocks transformers also for Site Root
+  [cekk] (#1043)
+
 
 7.0.0a6 (2020-12-18)
 --------------------
