@@ -20,7 +20,6 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
 from Products.CMFPlone import utils
 from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
-from Products.CMFPlone.interfaces import INavigationSchema
 from Products.CMFPlone.interfaces import INonStructuralFolder
 from Products.CMFPlone.interfaces import ISiteSchema
 from Products.MimetypesRegistry.MimeTypeItem import guess_icon_path
@@ -38,6 +37,14 @@ from zope.schema.interfaces import IFromUnicode
 
 import os
 import six
+
+
+IS_PLONE4 = False
+
+try:
+    from Products.CMFPlone.interfaces import INavigationSchema
+except ImportError:
+    IS_PLONE4 = True
 
 
 try:
@@ -664,10 +671,19 @@ class QueryBuilder(object):
                 query["sort_order"] = sortOrder
 
         # Filter on workflow states, if enabled
-        registry = getUtility(IRegistry)
-        navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
-        if navigation_settings.filter_on_workflow:
-            query["review_state"] = navigation_settings.workflow_states_to_show
+        if IS_PLONE4:
+            # code copied from plone.app.portlets 2.5.2
+            if navtree_properties.getProperty("enable_wf_state_filtering", False):
+                query["review_state"] = navtree_properties.getProperty(
+                    "wf_states_to_show", ()
+                )
+        else:
+            registry = getUtility(IRegistry)
+            navigation_settings = registry.forInterface(
+                INavigationSchema, prefix="plone"
+            )
+            if navigation_settings.filter_on_workflow:
+                query["review_state"] = navigation_settings.workflow_states_to_show
 
         self.query = query
 
