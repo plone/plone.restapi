@@ -9,7 +9,6 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.services.navigation.portlet import NavigationPortlet
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from Products.CMFPlone.interfaces import INavigationSchema
 from Products.CMFPlone.tests import dummy
 from six.moves.urllib.parse import urlencode
 from zope.component import getUtility
@@ -801,6 +800,12 @@ class TestServicesNavPortlet(unittest.TestCase):
 
     def testStateFiltering(self):
         # Test Navtree workflow state filtering
+
+        try:
+            from Products.CMFPlone.interfaces import INavigationSchema
+        except ImportError:
+            return  # skip test in Plone 4
+
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         registry = getUtility(IRegistry)
         navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
