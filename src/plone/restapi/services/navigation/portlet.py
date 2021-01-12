@@ -41,17 +41,11 @@ import six
 IS_PLONE4 = False
 
 try:
+    from Products.CMFPlone.defaultpage import is_default_page
     from Products.CMFPlone.interfaces import INavigationSchema
     from Products.CMFPlone.interfaces import ISiteSchema
 except ImportError:
     IS_PLONE4 = True
-
-
-try:
-    from Products.CMFPlone.defaultpage import is_default_page
-except ImportError:  # Plone 4 compatibility
-    from plone.app.layout.navigation.defaultpage import is_default_page
-
 
 _ = MessageFactory("plone.restapi")
 
@@ -267,8 +261,13 @@ class NavigationPortletRenderer(object):
         context = aq_inner(self.context)
         root = self.getNavRoot()
         container = aq_parent(context)
+        is_default = False
+        if IS_PLONE4:
+            is_default = _is_default_page(container, context)
+        else:
+            is_default = is_default_page(container, context)
         if aq_base(root) is aq_base(context) or (
-            aq_base(root) is aq_base(container) and is_default_page(container, context)
+            aq_base(root) is aq_base(container) and is_default
         ):
             return "navTreeCurrentItem"
         return ""
@@ -535,6 +534,15 @@ def get_view_url(context):
         name += "/view"
 
     return name, item_url
+
+
+def _is_default_page(container, context):
+    is_default_page = False
+    browser_default = IBrowserDefault(container, None)
+    if browser_default is not None:
+        is_default_page = browser_default.getDefaultPage() == context.getId()
+
+    return is_default_page
 
 
 def getRootPath(context, currentFolderOnly, topLevel, root_path):
