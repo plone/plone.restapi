@@ -725,9 +725,9 @@ class TestServicesNavPortlet(unittest.TestCase):
 
     def testAboveRoot(self):
         try:
-            from Products.CMFPlone.interfaces import INavigationSchema
+            from Products.CMFPlone.interfaces import INavigationSchema  # noqa
         except ImportError:
-            return INavigationSchema  # skip test in Plone 4
+            return  # skip test in Plone 4
 
         registry = getUtility(IRegistry)
         registry["plone.root"] = u"/folder2"
@@ -807,7 +807,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         # Test Navtree workflow state filtering
 
         try:
-            from Products.CMFPlone.interfaces import INavigationSchema
+            from Products.CMFPlone.interfaces import INavigationSchema  # noqa
         except ImportError:
             return  # skip test in Plone 4
 
@@ -837,9 +837,9 @@ class TestServicesNavPortlet(unittest.TestCase):
 
     def testPrunedRootNode(self):
         try:
-            from Products.CMFPlone.interfaces import INavigationSchema
+            from Products.CMFPlone.interfaces import INavigationSchema  # noqa
         except ImportError:
-            return INavigationSchema  # skip test in Plone 4
+            return  # skip test in Plone 4
 
         # This test has been changed to conform to reality
         registry = self.portal.portal_registry
@@ -852,9 +852,9 @@ class TestServicesNavPortlet(unittest.TestCase):
 
     def testPrunedRootNodeShowsAllParents(self):
         try:
-            from Products.CMFPlone.interfaces import INavigationSchema
+            from Products.CMFPlone.interfaces import INavigationSchema  # noqa
         except ImportError:
-            return INavigationSchema  # skip test in Plone 4
+            return  # skip test in Plone 4
 
         registry = self.portal.portal_registry
         registry["plone.parent_types_not_to_query"] = [u"Folder"]
