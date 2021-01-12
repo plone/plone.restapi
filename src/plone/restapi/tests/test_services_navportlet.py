@@ -724,6 +724,11 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.assertEqual(len(tree["items"]), 6)
 
     def testAboveRoot(self):
+        try:
+            from Products.CMFPlone.interfaces import INavigationSchema
+        except ImportError:
+            return INavigationSchema  # skip test in Plone 4
+
         registry = getUtility(IRegistry)
         registry["plone.root"] = u"/folder2"
         view = self.renderer(self.portal, opts(topLevel=0))
@@ -831,6 +836,11 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.assertEqual(len(tree["items"]), 2)
 
     def testPrunedRootNode(self):
+        try:
+            from Products.CMFPlone.interfaces import INavigationSchema
+        except ImportError:
+            return INavigationSchema  # skip test in Plone 4
+
         # This test has been changed to conform to reality
         registry = self.portal.portal_registry
         registry["plone.parent_types_not_to_query"] = [u"Folder"]
@@ -841,6 +851,11 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.assertEqual(len(tree["items"][4]["items"]), 0)
 
     def testPrunedRootNodeShowsAllParents(self):
+        try:
+            from Products.CMFPlone.interfaces import INavigationSchema
+        except ImportError:
+            return INavigationSchema  # skip test in Plone 4
+
         registry = self.portal.portal_registry
         registry["plone.parent_types_not_to_query"] = [u"Folder"]
 
