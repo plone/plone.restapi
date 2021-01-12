@@ -21,7 +21,6 @@ from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
 from Products.CMFPlone import utils
 from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
 from Products.CMFPlone.interfaces import INonStructuralFolder
-from Products.CMFPlone.interfaces import ISiteSchema
 from Products.MimetypesRegistry.MimeTypeItem import guess_icon_path
 from six.moves import UserDict
 from zExceptions import NotFound
@@ -43,6 +42,7 @@ IS_PLONE4 = False
 
 try:
     from Products.CMFPlone.interfaces import INavigationSchema
+    from Products.CMFPlone.interfaces import ISiteSchema
 except ImportError:
     IS_PLONE4 = True
 
@@ -348,12 +348,16 @@ class NavigationPortletRenderer(object):
         thsize = getattr(self.data, "thumb_scale", None)
         if thsize:
             return thsize
-        registry = getUtility(IRegistry)
-        settings = registry.forInterface(ISiteSchema, prefix="plone", check=False)
-        if settings.no_thumbs_portlet:
-            return "none"
-        thumb_scale_portlet = settings.thumb_scale_portlet
-        return thumb_scale_portlet
+
+        if IS_PLONE4:
+            return None  # no support in Plone 4 to override the thumb scale
+        else:
+            registry = getUtility(IRegistry)
+            settings = registry.forInterface(ISiteSchema, prefix="plone", check=False)
+            if settings.no_thumbs_portlet:
+                return "none"
+            thumb_scale_portlet = settings.thumb_scale_portlet
+            return thumb_scale_portlet
 
     def getMimeTypeIcon(self, node):
         try:
