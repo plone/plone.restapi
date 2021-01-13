@@ -118,16 +118,17 @@ class TestServicesNavPortlet(unittest.TestCase):
         response = self.api_session.get("/folder1/@navportlet")
 
         self.assertEqual(response.status_code, 200)
+        base = self.portal.absolute_url()
 
         res = {
-            "@id": "http://localhost:55001/plone/folder1/@navportlet",
+            "@id": "%s/folder1/@navportlet" % base,
             "has_custom_name": False,
             "available": True,
             "items": [
                 {
-                    "@id": "http://localhost:55001/plone/folder1/doc11",
+                    "@id": "%s/folder1/doc11" % base,
                     "description": "",
-                    "href": "http://localhost:55001/plone/folder1/doc11",
+                    "href": "%s/folder1/doc11" % base,
                     "icon": "",
                     "is_current": False,
                     "is_folderish": False,
@@ -140,9 +141,9 @@ class TestServicesNavPortlet(unittest.TestCase):
                     "type": "document",
                 },
                 {
-                    "@id": "http://localhost:55001/plone/folder1/doc12",
+                    "@id": "%s/folder1/doc12" % base,
                     "description": "",
-                    "href": "http://localhost:55001/plone/folder1/doc12",
+                    "href": "%s/folder1/doc12" % base,
                     "icon": "",
                     "is_current": False,
                     "is_folderish": False,
@@ -155,9 +156,9 @@ class TestServicesNavPortlet(unittest.TestCase):
                     "type": "document",
                 },
                 {
-                    "@id": "http://localhost:55001/plone/folder1/doc13",
+                    "@id": "%s/folder1/doc13" % base,
                     "description": "",
-                    "href": "http://localhost:55001/plone/folder1/doc13",
+                    "href": "%s/folder1/doc13" % base,
                     "icon": "",
                     "is_current": False,
                     "is_folderish": False,
@@ -171,7 +172,7 @@ class TestServicesNavPortlet(unittest.TestCase):
                 },
             ],
             "title": "Navigation",
-            "url": "http://localhost:55001/plone/sitemap",
+            "url": "%s/sitemap" % base,
         }
 
         self.assertEqual(
@@ -184,16 +185,17 @@ class TestServicesNavPortlet(unittest.TestCase):
         # currentItem set to True
         response = self.api_session.get("/folder2/@navportlet")
         self.assertEqual(response.status_code, 200)
+        base = self.portal.absolute_url()
 
         res = {
-            "@id": "http://localhost:55001/plone/folder2/@navportlet",
+            "@id": "%s/folder2/@navportlet" % base,
             "has_custom_name": False,
             "available": True,
             "items": [
                 {
-                    "@id": "http://localhost:55001/plone/folder2/doc21",
+                    "@id": "%s/folder2/doc21" % base,
                     "description": "",
-                    "href": "http://localhost:55001/plone/folder2/doc21",
+                    "href": "%s/folder2/doc21" % base,
                     "icon": "",
                     "is_current": False,
                     "is_folderish": False,
@@ -206,9 +208,9 @@ class TestServicesNavPortlet(unittest.TestCase):
                     "type": "document",
                 },
                 {
-                    "@id": "http://localhost:55001/plone/folder2/doc22",
+                    "@id": "%s/folder2/doc22" % base,
                     "description": "",
-                    "href": "http://localhost:55001/plone/folder2/doc22",
+                    "href": "%s/folder2/doc22" % base,
                     "icon": "",
                     "is_current": False,
                     "is_folderish": False,
@@ -221,9 +223,9 @@ class TestServicesNavPortlet(unittest.TestCase):
                     "type": "document",
                 },
                 {
-                    "@id": "http://localhost:55001/plone/folder2/doc23",
+                    "@id": "%s/folder2/doc23" % base,
                     "description": "",
-                    "href": "http://localhost:55001/plone/folder2/doc23",
+                    "href": "%s/folder2/doc23" % base,
                     "icon": "",
                     "is_current": False,
                     "is_folderish": False,
@@ -236,9 +238,9 @@ class TestServicesNavPortlet(unittest.TestCase):
                     "type": "document",
                 },
                 {
-                    "@id": "http://localhost:55001/plone/folder2/file21/view",
+                    "@id": "%s/folder2/file21/view" % base,
                     "description": "",
-                    "href": "http://localhost:55001/plone/folder2/file21/view",
+                    "href": "%s/folder2/file21/view" % base,
                     "icon": None,
                     "is_current": False,
                     "is_folderish": False,
@@ -251,9 +253,9 @@ class TestServicesNavPortlet(unittest.TestCase):
                     "type": "file",
                 },
                 {
-                    "@id": "http://localhost:55001/plone/folder2/folder21",
+                    "@id": "%s/folder2/folder21" % base,
                     "description": "",
-                    "href": "http://localhost:55001/plone/folder2/folder21",
+                    "href": "%s/folder2/folder21" % base,
                     "icon": "",
                     "is_current": False,
                     "is_folderish": True,
@@ -267,7 +269,7 @@ class TestServicesNavPortlet(unittest.TestCase):
                 },
             ],
             "title": "Navigation",
-            "url": "http://localhost:55001/plone/sitemap",
+            "url": "%s/sitemap" % base,
         }
         self.assertEqual(
             response.json(),
@@ -294,7 +296,8 @@ class TestServicesNavPortlet(unittest.TestCase):
         response = self.api_session.get("/folder2/@navportlet?{}".format(qs))
         self.assertEqual(response.status_code, 200)
         res = response.json()
-        self.assertEqual(res["url"], "http://localhost:55001/plone/folder2")
+        base = self.portal.absolute_url()
+        self.assertEqual(res["url"], "%s/folder2" % base)
 
     def testHeadingLinkRootedItemGone(self):
         """
@@ -309,12 +312,14 @@ class TestServicesNavPortlet(unittest.TestCase):
         )
         res = response.json()
         # Points to the site root if the item is gone
-        self.assertEqual(res["url"], "http://localhost:55001/plone/sitemap")
+        base = self.portal.absolute_url()
+        self.assertEqual(res["url"], "%s/sitemap" % base)
 
     def testHeadingLinkRootless(self):
         """
         See that heading link points to a global sitemap if no root item is set.
         """
+        base = self.portal.absolute_url()
 
         directlyProvides(self.portal.folder2, INavigationRoot)
         transaction.commit()
@@ -324,7 +329,8 @@ class TestServicesNavPortlet(unittest.TestCase):
         )
         link = response.json()["url"]
         # The root is not given -> should render the sitemap in the navigation root
-        self.assertEqual(link, "http://localhost:55001/plone/folder2/sitemap")
+        base = self.portal.absolute_url()
+        self.assertEqual(link, "%s/folder2/sitemap" % base)
 
         # # Even if the assignment contains no topLevel options and no self.root
         # # one should get link to the navigation root sitemap
@@ -337,7 +343,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         )
         link = response.json()["url"]
         # # The root is not given -> should render the sitemap in the navigation root
-        self.assertEqual(link, "http://localhost:55001/plone/folder2/sitemap")
+        self.assertEqual(link, "%s/folder2/sitemap" % base)
 
         response = self.api_session.get(
             "/folder1/@navportlet",
@@ -345,7 +351,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         )
         link = response.json()["url"]
         # The root is not given -> should render the sitemap in the navigation root
-        self.assertEqual(link, "http://localhost:55001/plone/sitemap")
+        self.assertEqual(link, "%s/sitemap" % base)
 
         noLongerProvides(self.portal.folder2, INavigationRoot)
         transaction.commit()
@@ -353,6 +359,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     def testNavTreeExcludesItemsWithExcludeProperty(self):
         # Make sure that items with the exclude_from_nav property set get
         # no_display set to True
+        base = self.portal.absolute_url()
 
         self.portal.folder2.exclude_from_nav = True
         self.portal.folder2.reindexObject()
@@ -370,7 +377,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         tree = response.json()
 
         for c in tree["items"]:
-            if c["href"] == "http://localhost:55001/plone/folder2":
+            if c["href"] == "%s/folder2" % base:
                 self.fail()
 
         self.portal.folder2.exclude_from_nav = False
@@ -379,6 +386,7 @@ class TestServicesNavPortlet(unittest.TestCase):
 
     def testNavTreeExcludesDefaultPage(self):
         # Make sure that items which are the default page are excluded
+        base = self.portal.absolute_url()
         response = self.api_session.get(
             "/folder2/@navportlet",
             params={},
@@ -388,7 +396,7 @@ class TestServicesNavPortlet(unittest.TestCase):
             [
                 item
                 for item in tree["items"]
-                if item["href"] == "http://localhost:55001/plone/folder2/doc21"
+                if item["href"] == "%s/folder2/doc21" % base
             ]
         )
 
@@ -404,7 +412,7 @@ class TestServicesNavPortlet(unittest.TestCase):
             [
                 item
                 for item in tree["items"]
-                if item["href"] == "http://localhost:55001/plone/folder2/doc21"
+                if item["href"] == "%s/folder2/doc21" % base
             ]
         )
 
@@ -447,9 +455,10 @@ class TestServicesNavPortlet(unittest.TestCase):
         tree = view(expand=True)
 
         found = False
+        base = self.portal.absolute_url()
 
         for c in tree["navportlet"]["items"]:
-            if c["href"] == "http://localhost:55001/plone/folder2":
+            if c["href"] == "%s/folder2" % base:
                 found = True
                 break
 
@@ -499,6 +508,7 @@ class TestServicesNavPortlet(unittest.TestCase):
                 self.assertTrue(child["useRemoteUrl"])
 
     def testNonStructuralFolderHidesChildren(self):
+        base = self.portal.absolute_url()
         # Make sure NonStructuralFolders act as if parent_types_not_to_query
         # is set.
         f = dummy.NonStructuralFolder("ns_folder")
@@ -511,18 +521,19 @@ class TestServicesNavPortlet(unittest.TestCase):
         tree = view.getNavTree()
         self.assertEqual(
             tree["items"][3]["items"][3]["href"],
-            "http://localhost:55001/plone/folder1/ns_folder",
+            "%s/folder1/ns_folder" % base,
         )
         self.assertEqual(len(tree["items"][3]["items"][3]["items"]), 0)
 
     def testTopLevel(self):
+        base = self.portal.absolute_url()
         view = self.renderer(self.portal.folder2.file21, opts(topLevel=1))
         tree = view.getNavTree()
         self.assertTrue(tree)
 
         self.assertEqual(
             tree["items"][-1]["href"],
-            "http://localhost:55001/plone/folder2/folder21",
+            "%s/folder2/folder21" % base,
         )
 
     def testTopLevelWithContextAboveLevel(self):
@@ -532,6 +543,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.assertEqual(len(tree["items"]), 0)
 
     def testIncludeTopWithoutNavigationRoot(self):
+        base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder2.folder21,
             opts(topLevel=0, root_path=None, includeTop=True),
@@ -541,9 +553,10 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.assertEqual(len(tree["items"]), 6)
 
         # self.assertTrue(view.root_is_portal())
-        self.assertEqual(tree["url"], "http://localhost:55001/plone/sitemap")
+        self.assertEqual(tree["url"], "%s/sitemap" % base)
 
     def testTopLevelWithNavigationRoot(self):
+        base = self.portal.absolute_url()
         # self.portal.folder2.invokeFactory("Folder", "folder21")
         # self.portal.folder2.folder21.invokeFactory("Document", "doc211")
         view = self.renderer(
@@ -559,7 +572,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.assertEqual(len(tree["items"]), 2)
         self.assertEqual(
             tree["items"][0]["href"],
-            "http://localhost:55001/plone/folder2/folder21/doc211",
+            "%s/folder2/folder21/doc211" % base,
         )
 
     def testMultipleTopLevelWithNavigationRoot(self):
@@ -602,6 +615,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.assertEqual(len(tree1["items"]), 1)
 
     def testShowAllParentsOverridesBottomLevel(self):
+        base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder2.file21,
             opts(bottomLevel=1, topLevel=0),
@@ -611,9 +625,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         # Note: showAllParents makes sure we actually return items on the,
         # path to the context, but the portlet will not display anything
         # below bottomLevel.
-        self.assertEqual(
-            tree["items"][-1]["href"], "http://localhost:55001/plone/folder2"
-        )
+        self.assertEqual(tree["items"][-1]["href"], "%s/folder2" % base)
         # self.assertEqual(len(tree["items"][-1]["items"]), 1)
         # self.assertEqual(
         #     tree["items"][-1]["items"][0]["href"],
@@ -621,19 +633,19 @@ class TestServicesNavPortlet(unittest.TestCase):
         # )
 
     def testBottomLevelStopsAtFolder(self):
+        base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder2,
             opts(bottomLevel=1, topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
-        self.assertEqual(
-            tree["items"][-1]["href"], "http://localhost:55001/plone/folder2"
-        )
+        self.assertEqual(tree["items"][-1]["href"], "%s/folder2" % base)
         self.assertEqual(len(tree["items"][-1]["items"]), 0)
 
     def testBottomLevelZeroNoLimit(self):
         """Test that bottomLevel=0 means no limit for bottomLevel."""
+        base = self.portal.absolute_url()
 
         # first we set a high integer as bottomLevel to simulate "no limit"
         view = self.renderer(
@@ -645,7 +657,7 @@ class TestServicesNavPortlet(unittest.TestCase):
 
         self.assertEqual(
             tree["items"][-1]["items"][0]["href"],
-            "http://localhost:55001/plone/folder2/doc21",
+            "%s/folder2/doc21" % base,
         )
 
         # now set bottomLevel to 0 -> outcome should be the same
@@ -657,7 +669,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.assertTrue(tree)
         self.assertEqual(
             tree["items"][-1]["items"][0]["href"],
-            "http://localhost:55001/plone/folder2/doc21",
+            "%s/folder2/doc21" % base,
         )
 
     def testBottomLevelZeroNoLimitRendering(self):
@@ -682,6 +694,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     def testNavRootWithUnicodeNavigationRoot(self):
         # self.portal.folder2.invokeFactory("Folder", "folder21")
         # self.portal.folder2.folder21.invokeFactory("Document", "doc211")
+        base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder2.folder21,
             opts(
@@ -690,29 +703,27 @@ class TestServicesNavPortlet(unittest.TestCase):
             ),
         )
         tree = view.getNavTree()
-        self.assertEqual(tree["url"], "http://localhost:55001/plone/folder2/folder21")
+        self.assertEqual(tree["url"], "%s/folder2/folder21" % base)
 
     def testNoRootSet(self):
+        base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder2.file21,
             opts(root_path=u"", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
-        self.assertEqual(
-            tree["items"][-1]["href"], "http://localhost:55001/plone/folder2"
-        )
+        self.assertEqual(tree["items"][-1]["href"], "%s/folder2" % base)
 
     def testRootIsNotPortal(self):
+        base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder2.file21,
             opts(root_path=u"/folder2", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
-        self.assertEqual(
-            tree["items"][0]["href"], "http://localhost:55001/plone/folder2/doc21"
-        )
+        self.assertEqual(tree["items"][0]["href"], "%s/folder2/doc21" % base)
 
     def testRootDoesNotExist(self):
         view = self.renderer(
@@ -724,6 +735,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.assertEqual(len(tree["items"]), 6)
 
     def testAboveRoot(self):
+        base = self.portal.absolute_url()
         try:
             from Products.CMFPlone.interfaces import INavigationSchema  # noqa
         except ImportError:
@@ -734,34 +746,31 @@ class TestServicesNavPortlet(unittest.TestCase):
         view = self.renderer(self.portal, opts(topLevel=0))
         tree = view.getNavTree()
         self.assertTrue(tree)
-        self.assertEqual(
-            tree["items"][0]["href"], "http://localhost:55001/plone/folder2/doc21"
-        )
+        self.assertEqual(tree["items"][0]["href"], "%s/folder2/doc21" % base)
 
     def testOutsideRoot(self):
+        base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder1,
             opts(root_path=u"/folder2", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
-        self.assertEqual(
-            tree["items"][0]["href"], "http://localhost:55001/plone/folder2/doc21"
-        )
+        self.assertEqual(tree["items"][0]["href"], "%s/folder2/doc21" % base)
 
     def testRootIsCurrent(self):
+        base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder2,
             opts(currentFolderOnly=True),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
-        self.assertEqual(
-            tree["items"][0]["href"], "http://localhost:55001/plone/folder2/doc21"
-        )
+        self.assertEqual(tree["items"][0]["href"], "%s/folder2/doc21" % base)
 
     def testRootIsCurrentWithFolderishDefaultPage(self):
         # self.portal.folder2.invokeFactory("Folder", "folder21")
+        base = self.portal.absolute_url()
         self.portal.folder2.setDefaultPage("folder21")
 
         view = self.renderer(
@@ -770,9 +779,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
-        self.assertEqual(
-            tree["items"][0]["href"], "http://localhost:55001/plone/folder2/doc21"
-        )
+        self.assertEqual(tree["items"][0]["href"], "%s/folder2/doc21" % base)
 
     def testCustomQuery(self):
         # Try a custom query script for the navtree that returns only published
@@ -863,9 +870,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         tree = view.getNavTree()
         self.assertTrue(tree)
         self.assertEqual(len(tree["items"]), 1)
-        self.assertEqual(
-            tree["items"][0]["href"], "http://localhost:55001/plone/folder1/doc11"
-        )
+        self.assertTrue(tree["items"][0]["href"].endswith("/plone/folder1/doc11"))
 
     def testIsCurrentParentWithOverlapingNames(self):
         setRoles(
@@ -943,13 +948,14 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.assertTrue(tree["items"])
 
         # check that portlet root is actually the one specified
-        self.assertEqual(tree["url"], "http://localhost:55001/plone/folder1/folder1_1")
+        self.assertTrue(tree["url"].endswith("/plone/folder1/folder1_1"))
 
         # check that portlet tree actually includes children
         self.assertEqual(len(tree["items"]), 1)
-        self.assertEqual(
-            tree["items"][0]["href"],
-            "http://localhost:55001/plone/folder1/folder1_1/folder1_1_1",
+        self.assertTrue(
+            tree["items"][0]["href"].endswith(
+                "/plone/folder1/folder1_1/folder1_1_1",
+            )
         )
 
     def testServiceId(self):
@@ -959,9 +965,10 @@ class TestServicesNavPortlet(unittest.TestCase):
         )
         portlet = view(expand=True)
 
-        self.assertEqual(
-            portlet["navportlet"]["@id"],
-            "http://localhost:55001/plone/folder2/file21/@navportlet",
+        self.assertTrue(
+            portlet["navportlet"]["@id"].endswith(
+                "/plone/folder2/file21/@navportlet",
+            )
         )
         portlet = view(expand=False)
         self.assertEqual(len(portlet["navportlet"]), 1)
@@ -969,7 +976,8 @@ class TestServicesNavPortlet(unittest.TestCase):
     def testNavPortletExpand(self):
         response = self.api_session.get("/folder1?expand=navportlet")
         res = response.json()
-        self.assertEqual(
-            res["@components"]["navportlet"]["items"][0]["@id"],
-            "http://localhost:55001/plone/folder1/doc11",
+        self.assertTrue(
+            res["@components"]["navportlet"]["items"][0]["@id"].endswith(
+                "/plone/folder1/doc11",
+            )
         )
