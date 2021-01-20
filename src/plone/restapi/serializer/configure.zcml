@@ -31,6 +31,10 @@
       provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
     <subscriber factory=".blocks.ResolveUIDSerializer"
       provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
+    <subscriber factory=".blocks.TextBlockSerializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
+    <subscriber factory=".blocks.ResolveUIDSerializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
 
     <configure zcml:condition="installed Products.Archetypes">
         <adapter factory=".atcontent.SerializeToJson" />

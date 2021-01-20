@@ -27,7 +27,15 @@
     provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
   <subscriber factory=".blocks.ResolveUIDDeserializer"
     provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-
+  <subscriber factory=".blocks.TextBlockDeserializerRoot"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  <subscriber factory=".blocks.HTMLBlockDeserializerRoot"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  <subscriber factory=".blocks.ImageBlockDeserializerRoot"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  <subscriber factory=".blocks.ResolveUIDDeserializerRoot"
+    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  
   <adapter factory=".local_roles.DeserializeFromJson"
            name="local_roles"/>
 

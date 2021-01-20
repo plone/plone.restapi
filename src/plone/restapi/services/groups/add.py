@@ -9,6 +9,7 @@ from zope.component.hooks import getSite
 from zope.interface import alsoProvides
 
 import plone.protect.interfaces
+import six
 
 
 class GroupsPost(Service):
@@ -65,6 +66,10 @@ class GroupsPost(Service):
             group.addMember(userid)
 
         self.request.response.setStatus(201)
+        # Note: to please Zope 4.5.2+ we make sure the header is a string,
+        # and not unicode on Python 2.
+        if six.PY2 and not isinstance(groupname, str):
+            groupname = groupname.encode("utf-8")
         self.request.response.setHeader(
             "Location", portal.absolute_url() + "/@groups/" + groupname
         )
