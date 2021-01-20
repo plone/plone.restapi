@@ -14,10 +14,15 @@ from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
 from Acquisition import aq_inner
 from collections import defaultdict
 from plone.memoize.view import memoize
-from plone.i18n.interfaces import ILanguageSchema
 from zope.i18n import translate
 from Products.CMFPlone.utils import safe_unicode
 from Products.CMFCore.utils import getToolByName
+
+try:
+    from plone.i18n.interfaces import ILanguageSchema
+except ImportError:
+    # BBB for Plone 5.1, remove with Plone 6
+    from Products.CMFPlone.interfaces import ILanguageSchema
 
 try:
     from html import escape
