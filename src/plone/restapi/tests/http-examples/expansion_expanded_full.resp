@@ -111,6 +111,7 @@ Content-Type: application/json
       "items": [
         {
           "@id": "http://localhost:55001/plone/front-page", 
+          "nav_title": null, 
           "title": "Welcome to Plone"
         }
       ]

@@ -45,10 +45,15 @@ class TestServicesBreadcrumbs(unittest.TestCase):
             {
                 "@id": self.portal_url + u"/folder/doc1/@breadcrumbs",
                 "items": [
-                    {u"@id": self.portal_url + u"/folder", u"title": u"Some Folder"},
+                    {
+                        u"@id": self.portal_url + u"/folder",
+                        u"title": u"Some Folder",
+                        u"nav_title": None,
+                    },
                     {
                         u"@id": self.portal_url + u"/folder/doc1",
                         u"title": u"A document",
+                        u"nav_title": None,
                     },
                 ],
             },
