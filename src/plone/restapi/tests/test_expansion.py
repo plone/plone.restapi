@@ -149,14 +149,23 @@ class TestExpansionFunctional(unittest.TestCase):
 
     def test_navigation_expanded(self):
         response = self.api_session.get("/folder", params={"expand": "navigation"})
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             [
-                {u"title": u"Home", u"@id": self.portal_url + u"", u"description": u""},
+                {
+                    u"title": u"Home",
+                    u"@id": self.portal_url + u"",
+                    u"description": u"",
+                    u"review_state": None,
+                    u"items": [],
+                },
                 {
                     u"title": u"Some Folder",
                     u"@id": self.portal_url + u"/folder",
                     u"description": u"",
+                    u"review_state": "private",
+                    u"items": [],
                 },
             ],
             response.json()["@components"]["navigation"]["items"],

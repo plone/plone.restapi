@@ -66,15 +66,25 @@ class TestServicesNavigation(unittest.TestCase):
             {
                 "@id": self.portal_url + u"/folder/@navigation",
                 "items": [
-                    {u"title": u"Home", u"@id": self.portal_url, u"description": u""},
                     {
-                        u"title": u"Some Folder",
+                        u"@id": self.portal_url,
+                        u"description": u"",
+                        u"items": [],
+                        u"review_state": None,
+                        u"title": u"Home",
+                    },
+                    {
                         u"@id": self.portal_url + u"/folder",
                         u"description": u"",
+                        u"items": [],
+                        u"review_state": "private",
+                        u"title": u"Some Folder",
                     },
                     {
                         u"@id": self.portal_url + u"/folder2",
                         u"description": u"",
+                        u"items": [],
+                        u"review_state": "private",
                         u"title": u"Some Folder 2",
                     },
                 ],
@@ -101,7 +111,9 @@ class TestServicesNavigation(unittest.TestCase):
             response.json()["items"][1]["items"][0]["items"][0]["title"],
             u"Third Level Folder",
         )
-        self.assertNotIn("items", response.json()["items"][1]["items"][0]["items"][0])
+        self.assertEqual(
+            len(response.json()["items"][1]["items"][0]["items"][0]["items"]), 0
+        )
 
         response = self.api_session.get(
             "/folder/@navigation", params={"expand.navigation.depth": 4}
