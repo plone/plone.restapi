@@ -21,6 +21,12 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 import transaction
 import unittest
 
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    PLONE5 = False
+else:
+    PLONE5 = True
 
 if PAM_INSTALLED:
     from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled  # noqa
@@ -147,6 +153,7 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("navigation", list(response.json().get("@components")))
 
+    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
     def test_navigation_expanded(self):
         response = self.api_session.get("/folder", params={"expand": "navigation"})
 
