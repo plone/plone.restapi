@@ -1,21 +1,24 @@
 # -*- coding: utf-8 -*-
-from plone.app.layout.navigation.root import getNavigationRoot
-from plone.restapi.interfaces import IExpandableElement
-from plone.restapi.services import Service
-from zope.component import adapter
-from zope.component import getMultiAdapter
-from zope.component.hooks import getSite
-from zope.interface import implementer
-from zope.interface import Interface
-from plone.memoize.view import memoize_contextless
-from zope.component import getUtility
-from plone.registry.interfaces import IRegistry
 from Acquisition import aq_inner
 from collections import defaultdict
+from plone.app.layout.navigation.root import getNavigationRoot
 from plone.memoize.view import memoize
-from zope.i18n import translate
-from Products.CMFPlone.utils import safe_unicode
+from plone.memoize.view import memoize_contextless
+from plone.registry.interfaces import IRegistry
+from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import getFSVersionTuple
+from Products.CMFPlone.utils import safe_unicode
+from zope.component import adapter
+from zope.component import getMultiAdapter
+from zope.component import getUtility
+from zope.component.hooks import getSite
+from zope.i18n import translate
+from zope.interface import implementer
+from zope.interface import Interface
+
+PLONE5 = getFSVersionTuple()[0] >= 5
 
 try:
     from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
@@ -55,9 +58,37 @@ class Navigation(object):
     @property
     @memoize_contextless
     def settings(self):
-        registry = getUtility(IRegistry)
-        settings = registry.forInterface(INavigationSchema, prefix="plone")
-        return settings
+        if PLONE5:
+            # TODO: Simplify this when Plone 4.3 is deprecated
+            registry = getUtility(IRegistry)
+            settings = registry.forInterface(INavigationSchema, prefix="plone")
+            return {
+                "displayed_types": settings.displayed_types,
+                "nonfolderish_tabs": settings.nonfolderish_tabs,
+                "filter_on_workflow": settings.filter_on_workflow,
+                "workflow_states_to_show": settings.workflow_states_to_show,
+                "show_excluded_items": settings.show_excluded_items,
+            }
+        else:
+            pprop = getToolByName(self.context, "portal_properties")
+            self.ttool = getToolByName(self.context, "portal_types")
+            self.navProps = pprop.navtree_properties
+            allTypes = self.ttool.listContentTypes()
+            blacklist = self.navProps.metaTypesNotToList
+
+            return {
+                "displayed_types": [t for t in allTypes if t not in blacklist],
+                "nonfolderish_tabs": not self.siteProps.getProperty(
+                    "disable_nonfolderish_sections"
+                ),
+                "filter_on_workflow": self.navProps.getProperty(
+                    "enable_wf_state_filtering"
+                ),
+                "workflow_states_to_show": self.navProps.getProperty(
+                    "wf_states_to_show"
+                ),
+                "show_excluded_items": self.navProps.getProperty("showAllParents"),
+            }
 
     @property
     def default_language(self):
@@ -69,10 +100,6 @@ class Navigation(object):
     @property
     def navtree_path(self):
         return getNavigationRoot(self.context)
-
-    @property
-    def navtree_depth(self):
-        return self.settings.navigation_depth
 
     @property
     def current_language(self):
@@ -112,27 +139,23 @@ class Navigation(object):
             entry["title"] = safe_unicode(entry["title"])
             ret[navtree_path].append(entry)
 
-        if not self.settings.generate_tabs:
-            return ret
-
         query = {
             "path": {
                 "query": self.navtree_path,
                 "depth": self.depth,
             },
-            "portal_type": {"query": self.settings.displayed_types},
+            "portal_type": {"query": self.settings["displayed_types"]},
             "Language": self.current_language,
-            "sort_on": self.settings.sort_tabs_on,
             "is_default_page": False,
         }
 
-        if not self.settings.nonfolderish_tabs:
+        if not self.settings["nonfolderish_tabs"]:
             query["is_folderish"] = True
 
-        if self.settings.filter_on_workflow:
-            query["review_state"] = list(self.settings.workflow_states_to_show or ())
+        if self.settings["filter_on_workflow"]:
+            query["review_state"] = list(self.settings["workflow_states_to_show"] or ())
 
-        if not self.settings.show_excluded_items:
+        if not self.settings["show_excluded_items"]:
             query["exclude_from_nav"] = False
 
         context_path = "/".join(self.context.getPhysicalPath())
