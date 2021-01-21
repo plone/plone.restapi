@@ -10,6 +10,13 @@ from plone.restapi.testing import RelativeSession
 import transaction
 import unittest
 
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    PLONE5 = False
+else:
+    PLONE5 = True
+
 
 class TestServicesNavigation(unittest.TestCase):
 
@@ -57,6 +64,7 @@ class TestServicesNavigation(unittest.TestCase):
     def tearDown(self):
         self.api_session.close()
 
+    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
     def test_navigation_with_no_params_gets_only_top_level(self):
         response = self.api_session.get("/folder/@navigation")
 
