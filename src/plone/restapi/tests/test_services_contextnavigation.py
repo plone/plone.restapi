@@ -6,7 +6,7 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.registry.interfaces import IRegistry
-from plone.restapi.services.navigation.portlet import NavigationPortlet
+from plone.restapi.services.contextnavigation.get import ContextNavigation
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFPlone.tests import dummy
@@ -22,12 +22,12 @@ import unittest
 def opts(**kw):
     res = {}
     for k, v in kw.items():
-        res["expand.navportlet." + k] = v
+        res["expand.contextnavigation." + k] = v
 
     return res
 
 
-class TestServicesNavPortlet(unittest.TestCase):
+class TestServicesContextNavigation(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
     maxDiff = None
@@ -112,16 +112,16 @@ class TestServicesNavPortlet(unittest.TestCase):
         context = context or self.portal
         request = self.layer["request"]
         request.form.update(data or {})
-        return NavigationPortlet(context, request)
+        return ContextNavigation(context, request)
 
-    def test_navportlet_with_no_params_gets_only_top_level(self):
-        response = self.api_session.get("/folder1/@navportlet")
+    def test_contextnavigation_with_no_params_gets_only_top_level(self):
+        response = self.api_session.get("/folder1/@contextnavigation")
 
         self.assertEqual(response.status_code, 200)
         base = self.portal.absolute_url()
 
         res = {
-            "@id": "%s/folder1/@navportlet" % base,
+            "@id": "%s/folder1/@contextnavigation" % base,
             "has_custom_name": False,
             "available": True,
             "items": [
@@ -180,15 +180,15 @@ class TestServicesNavPortlet(unittest.TestCase):
             res,
         )
 
-    def test_navportlet_with_no_params_gets_only_top_level_mixed_content(self):
+    def test_contextnavigation_with_no_params_gets_only_top_level_mixed_content(self):
         # With the context set to folder2 it should return a dict with
         # currentItem set to True
-        response = self.api_session.get("/folder2/@navportlet")
+        response = self.api_session.get("/folder2/@contextnavigation")
         self.assertEqual(response.status_code, 200)
         base = self.portal.absolute_url()
 
         res = {
-            "@id": "%s/folder2/@navportlet" % base,
+            "@id": "%s/folder2/@contextnavigation" % base,
             "has_custom_name": False,
             "available": True,
             "items": [
@@ -286,14 +286,14 @@ class TestServicesNavPortlet(unittest.TestCase):
         """
 
         q = {
-            "expand.navportlet.topLevel": 0,
-            "expand.navportlet.root_path": "/".join(
+            "expand.contextnavigation.topLevel": 0,
+            "expand.contextnavigation.root_path": "/".join(
                 self.portal.folder2.getPhysicalPath()[2:]
             ),
         }
         qs = urlencode(q)
 
-        response = self.api_session.get("/folder2/@navportlet?{}".format(qs))
+        response = self.api_session.get("/folder2/@contextnavigation?{}".format(qs))
         self.assertEqual(response.status_code, 200)
         res = response.json()
         base = self.portal.absolute_url()
@@ -304,10 +304,10 @@ class TestServicesNavPortlet(unittest.TestCase):
         See that heading link points to a content item which do not exist
         """
         response = self.api_session.get(
-            "/folder2/@navportlet",
+            "/folder2/@contextnavigation",
             params={
-                "expand.navportlet.topLevel": 0,
-                "expand.navportlet.root_path": "/does/not/exist",
+                "expand.contextnavigation.topLevel": 0,
+                "expand.contextnavigation.root_path": "/does/not/exist",
             },
         )
         res = response.json()
@@ -324,8 +324,8 @@ class TestServicesNavPortlet(unittest.TestCase):
         directlyProvides(self.portal.folder2, INavigationRoot)
         transaction.commit()
         response = self.api_session.get(
-            "/folder2/@navportlet",
-            params={"expand.navportlet.topLevel": 0},
+            "/folder2/@contextnavigation",
+            params={"expand.contextnavigation.topLevel": 0},
         )
         link = response.json()["url"]
         # The root is not given -> should render the sitemap in the navigation root
@@ -338,7 +338,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         #     self.portal.folder2.doc21, assignment=navigation.Assignment()
         # )
         response = self.api_session.get(
-            "/folder2/doc21/@navportlet",
+            "/folder2/doc21/@contextnavigation",
             params={},
         )
         link = response.json()["url"]
@@ -346,8 +346,8 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.assertEqual(link, "%s/folder2/sitemap" % base)
 
         response = self.api_session.get(
-            "/folder1/@navportlet",
-            params={"expand.navportlet.topLevel": 0},
+            "/folder1/@contextnavigation",
+            params={"expand.contextnavigation.topLevel": 0},
         )
         link = response.json()["url"]
         # The root is not given -> should render the sitemap in the navigation root
@@ -367,11 +367,11 @@ class TestServicesNavPortlet(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.get(
-            "@navportlet",
+            "@contextnavigation",
             params={
-                "expand.navportlet.includeTop": True,
-                "expand.navportlet.topLevel": 0,
-                "expand.navportlet.bottomLevel": 0,
+                "expand.contextnavigation.includeTop": True,
+                "expand.contextnavigation.topLevel": 0,
+                "expand.contextnavigation.bottomLevel": 0,
             },
         )
         tree = response.json()
@@ -388,7 +388,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         # Make sure that items which are the default page are excluded
         base = self.portal.absolute_url()
         response = self.api_session.get(
-            "/folder2/@navportlet",
+            "/folder2/@contextnavigation",
             params={},
         )
         tree = response.json()
@@ -404,7 +404,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.get(
-            "/folder2/@navportlet",
+            "/folder2/@contextnavigation",
             params={},
         )
         tree = response.json()
@@ -424,15 +424,15 @@ class TestServicesNavPortlet(unittest.TestCase):
         default fallback 'Navigation', translate it and hide it
         with CSS."""
         response = self.api_session.get(
-            "/@navportlet",
+            "/@contextnavigation",
             params={},
         )
         tree = response.json()
         self.assertEqual(tree["title"], "Navigation")
 
         response = self.api_session.get(
-            "/@navportlet",
-            params={"expand.navportlet.name": "New navigation title"},
+            "/@contextnavigation",
+            params={"expand.contextnavigation.name": "New navigation title"},
         )
         tree = response.json()
         self.assertEqual(tree["title"], "New navigation title")
@@ -442,7 +442,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         view = self.renderer(self.portal, opts(topLevel=5))
         tree = view(expand=True)
 
-        self.assertEqual(len(tree["navportlet"]["items"]), 0)
+        self.assertEqual(len(tree["contextnavigation"]["items"]), 0)
 
     def testShowAllParentsOverridesNavTreeExcludesItemsWithExcludeProperty(self):
         # Make sure that items whose ids are in the idsNotToList navTree
@@ -457,7 +457,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         found = False
         base = self.portal.absolute_url()
 
-        for c in tree["navportlet"]["items"]:
+        for c in tree["contextnavigation"]["items"]:
             if c["href"] == "%s/folder2" % base:
                 found = True
                 break
@@ -471,7 +471,7 @@ class TestServicesNavPortlet(unittest.TestCase):
     #     view = self.renderer(self.portal.folder2.file21)
     #     tree = view(expand=True)
     #
-    #     self.assertEqual(tree["navportlet"]["items"][-1]["show_children"], True)
+    #     self.assertEqual(tree["contextnavigation"]["items"][-1]["show_children"], True)
     #
     #     registry = self.portal.portal_registry
     #     registry["plone.parent_types_not_to_query"] = [u"Folder"]
@@ -479,11 +479,11 @@ class TestServicesNavPortlet(unittest.TestCase):
     #     view = self.renderer(self.portal.folder2.file21)
     #     tree = view(expand=True)
     #
-    #     self.assertEqual(tree["navportlet"]["items"][-1]["show_children"], False)
+    #     self.assertEqual(tree["contextnavigation"]["items"][-1]["show_children"], False)
 
     def testCreateNavTreeWithLink(self):
         view = self.renderer(self.portal)
-        tree = view(expand=True)["navportlet"]
+        tree = view(expand=True)["contextnavigation"]
 
         for child in tree["items"]:
             if child["portal_type"] != "Link":
@@ -497,7 +497,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         self.portal.link1.setCreators(["some_other_user"])
         self.portal.link1.reindexObject()
         view = self.renderer(self.portal)
-        tree = view(expand=True)["navportlet"]
+        tree = view(expand=True)["contextnavigation"]
 
         for child in tree["items"]:
             if child["portal_type"] != "Link":
@@ -921,7 +921,7 @@ class TestServicesNavPortlet(unittest.TestCase):
         tree = view(expand=True)
         self.assertTrue(tree)
         # check there is no portlet
-        self.assertFalse(tree["navportlet"]["items"])
+        self.assertFalse(tree["contextnavigation"]["items"])
 
     def testINavigationRootWithRelativeRootSet(self):
         """test that navigation portlet uses relative root set by user
@@ -942,7 +942,7 @@ class TestServicesNavPortlet(unittest.TestCase):
             self.portal.folder1.folder1_1,
             opts(bottomLevel=0, topLevel=0, root_path=u"/folder1/folder1_1"),
         )
-        tree = view(expand=True)["navportlet"]
+        tree = view(expand=True)["contextnavigation"]
 
         # check there is a portlet
         self.assertTrue(tree["items"])
@@ -966,18 +966,18 @@ class TestServicesNavPortlet(unittest.TestCase):
         portlet = view(expand=True)
 
         self.assertTrue(
-            portlet["navportlet"]["@id"].endswith(
-                "/plone/folder2/file21/@navportlet",
+            portlet["contextnavigation"]["@id"].endswith(
+                "/plone/folder2/file21/@contextnavigation",
             )
         )
         portlet = view(expand=False)
-        self.assertEqual(len(portlet["navportlet"]), 1)
+        self.assertEqual(len(portlet["contextnavigation"]), 1)
 
-    def testNavPortletExpand(self):
-        response = self.api_session.get("/folder1?expand=navportlet")
+    def testContextNavigation(self):
+        response = self.api_session.get("/folder1?expand=contextnavigation")
         res = response.json()
         self.assertTrue(
-            res["@components"]["navportlet"]["items"][0]["@id"].endswith(
+            res["@components"]["contextnavigation"]["items"][0]["@id"].endswith(
                 "/plone/folder1/doc11",
             )
         )

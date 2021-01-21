@@ -157,22 +157,26 @@ class INavigationPortlet(Interface):
     )
 
 
-class NavPortletGet(Service):
+class ContextNavigationGet(Service):
     def reply(self):
-        navigation = NavigationPortlet(self.context, self.request)
-        return navigation(expand=True, prefix="expand.navportlet.")["navportlet"]
+        navigation = ContextNavigation(self.context, self.request)
+        return navigation(expand=True, prefix="expand.contextnavigation.")[
+            "contextnavigation"
+        ]
 
 
 @implementer(IExpandableElement)
 @adapter(Interface, Interface)
-class NavigationPortlet(object):
+class ContextNavigation(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
-    def __call__(self, expand=False, prefix="expand.navportlet."):
+    def __call__(self, expand=False, prefix="expand.contextnavigation."):
         result = {
-            "navportlet": {"@id": "{}/@navportlet".format(self.context.absolute_url())}
+            "contextnavigation": {
+                "@id": "{}/@contextnavigation".format(self.context.absolute_url())
+            }
         }
         if not expand:
             return result
@@ -180,12 +184,12 @@ class NavigationPortlet(object):
         data = extract_data(INavigationPortlet, self.request.form, prefix)
         renderer = NavigationPortletRenderer(self.context, self.request, data)
         res = renderer.render()
-        result["navportlet"].update(res)
+        result["contextnavigation"].update(res)
         return result
 
     def getNavTree(self):
         # compatibility method with NavigationPortletRenderer, only for tests
-        return self.__call__(expand=True)["navportlet"]
+        return self.__call__(expand=True)["contextnavigation"]
 
 
 class NavigationPortletRenderer(object):
