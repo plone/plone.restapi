@@ -153,7 +153,9 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("navigation", list(response.json().get("@components")))
 
-    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
+    @unittest.skipIf(
+        not PLONE5, "Just Plone 5 currently, tabs in plone 4 does not have review_state"
+    )
     def test_navigation_expanded(self):
         response = self.api_session.get("/folder", params={"expand": "navigation"})
 

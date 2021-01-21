@@ -64,7 +64,9 @@ class TestServicesNavigation(unittest.TestCase):
     def tearDown(self):
         self.api_session.close()
 
-    @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
+    @unittest.skipIf(
+        not PLONE5, "Just Plone 5 currently, tabs in plone 4 does not have review_state"
+    )
     def test_navigation_with_no_params_gets_only_top_level(self):
         response = self.api_session.get("/folder/@navigation")
 
