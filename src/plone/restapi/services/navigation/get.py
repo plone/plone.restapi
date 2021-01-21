@@ -21,7 +21,7 @@ try:
     from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
 except ImportError:
     # BBB for Plone 4.x, remove with plone.restapi 8 / Plone 6
-    from Products.CMFPlone.interfaces import INavigationSchema
+    from plone.app.controlpanel.navigation import INavigationSchema
 
 try:
     from html import escape
