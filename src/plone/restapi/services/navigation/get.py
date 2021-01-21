@@ -18,12 +18,6 @@ from Products.CMFPlone.utils import safe_unicode
 from Products.CMFCore.utils import getToolByName
 
 try:
-    from plone.i18n.interfaces import ILanguageSchema
-except ImportError:
-    # BBB for Plone 5.1, remove with Plone 6
-    from Products.CMFPlone.interfaces import ILanguageSchema
-
-try:
     from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
 except ImportError:
     # BBB for Plone 4.x, remove with plone.restapi 8 / Plone 6
@@ -66,10 +60,11 @@ class Navigation(object):
         return settings
 
     @property
-    def language_settings(self):
-        registry = getUtility(IRegistry)
-        settings = registry.forInterface(ILanguageSchema, prefix="plone")
-        return settings
+    def default_language(self):
+        portal_state = getMultiAdapter(
+            (self.context, self.request), name=u"plone_portal_state"
+        )
+        return portal_state.default_language()
 
     @property
     def navtree_path(self):
@@ -84,7 +79,7 @@ class Navigation(object):
         return (
             self.request.get("LANGUAGE", None)
             or (self.context and aq_inner(self.context).Language())
-            or self.language_settings.default_language
+            or self.default_language
         )
 
     @property
