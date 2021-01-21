@@ -153,8 +153,7 @@ class TestDexterityFieldSerializing(TestCase):
         )
         self.assertTrue(isinstance(value, list), "Not a <list>")
         self.assertEqual(
-            [{u"token": u"token3", u"title": u"title3"}],
-            value,
+            [{u"token": u"token3", u"title": u"title3"}], value,
         )
 
     def test_set_field_serialization_returns_list(self):
@@ -319,25 +318,20 @@ class TestDexterityFieldSerializing(TestCase):
 
     def test_remoteurl_field_in_links_get_converted(self):
         link = self.portal[
-            self.portal.invokeFactory(
-                "Link",
-                id="link",
-                title="Test Link",
-            )
+            self.portal.invokeFactory("Link", id="link", title="Test Link",)
         ]
         field = None
         for schema in iterSchemata(link):
-            if 'remoteUrl' in schema:
-                field = schema.get('remoteUrl')
+            if "remoteUrl" in schema:
+                field = schema.get("remoteUrl")
                 break
         dm = getMultiAdapter((link, field), IDataManager)
-        serializer = getMultiAdapter(
-            (field, link, self.request), IFieldSerializer)
+        serializer = getMultiAdapter((field, link, self.request), IFieldSerializer)
 
-        dm.set('http://www.plone.com')
-        self.assertEqual(serializer(), 'http://www.plone.com')
+        dm.set("http://www.plone.com")
+        self.assertEqual(serializer(), "http://www.plone.com")
 
-        dm.set('${portal_url}/doc1')
+        dm.set("${portal_url}/doc1")
         self.assertEqual(serializer(), self.portal.doc1.absolute_url())
 
 

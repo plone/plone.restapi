@@ -138,7 +138,7 @@ class RichttextFieldSerializer(DefaultFieldSerializer):
 @adapter(ITextLine, ILink, Interface)
 class TextLineFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
-        if self.field.getName() != 'remoteUrl':
+        if self.field.getName() != "remoteUrl":
             return super(TextLineFieldSerializer, self).__call__()
         value = self.get_value()
         path = replace_link_variables_by_paths(context=self.context, url=value)

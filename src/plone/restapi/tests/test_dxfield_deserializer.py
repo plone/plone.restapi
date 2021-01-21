@@ -611,25 +611,20 @@ class TestDXFieldDeserializer(unittest.TestCase):
         link = self.portal.link
         field = None
         for schema in iterSchemata(link):
-            if 'remoteUrl' in schema:
-                field = schema.get('remoteUrl')
+            if "remoteUrl" in schema:
+                field = schema.get("remoteUrl")
                 break
-        deserializer = getMultiAdapter(
-            (field, link, self.request), IFieldDeserializer
-        )
+        deserializer = getMultiAdapter((field, link, self.request), IFieldDeserializer)
 
         self.assertEqual(
-            u'http://www.plone.com',
-            deserializer(value=u'http://www.plone.com')
+            u"http://www.plone.com", deserializer(value=u"http://www.plone.com")
         )
         self.assertEqual(
-            u'${portal_url}/doc1',
-            deserializer(value=u'http://nohost/plone/doc1'))
+            u"${portal_url}/doc1", deserializer(value=u"http://nohost/plone/doc1")
+        )
 
         # for other contents/fields does nothing
-        value = self.deserialize("test_textline_field", u'http://www.plone.com')
-        self.assertEqual(
-            u'http://www.plone.com', value)
-        value = self.deserialize(
-            "test_textline_field", u'http://nohost/plone/doc1')
+        value = self.deserialize("test_textline_field", u"http://www.plone.com")
+        self.assertEqual(u"http://www.plone.com", value)
+        value = self.deserialize("test_textline_field", u"http://nohost/plone/doc1")
         self.assertEqual(self.portal.doc1.absolute_url(), value)
