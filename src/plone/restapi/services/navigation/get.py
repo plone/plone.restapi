@@ -10,7 +10,6 @@ from zope.interface import Interface
 from plone.memoize.view import memoize_contextless
 from zope.component import getUtility
 from plone.registry.interfaces import IRegistry
-from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
 from Acquisition import aq_inner
 from collections import defaultdict
 from plone.memoize.view import memoize
@@ -23,6 +22,12 @@ try:
 except ImportError:
     # BBB for Plone 5.1, remove with Plone 6
     from Products.CMFPlone.interfaces import ILanguageSchema
+
+try:
+    from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
+except ImportError:
+    # BBB for Plone 4.x, remove with plone.restapi 8 / Plone 6
+    from Products.CMFPlone.interfaces import INavigationSchema
 
 try:
     from html import escape
