@@ -71,23 +71,20 @@ class Navigation(object):
             }
         else:
             pprop = getToolByName(self.context, "portal_properties")
-            self.ttool = getToolByName(self.context, "portal_types")
-            self.navProps = pprop.navtree_properties
-            allTypes = self.ttool.listContentTypes()
-            blacklist = self.navProps.metaTypesNotToList
+            ttool = getToolByName(self.context, "portal_types")
+            siteProps = pprop.site_properties
+            navProps = pprop.navtree_properties
+            allTypes = ttool.listContentTypes()
+            blacklist = navProps.metaTypesNotToList
 
             return {
                 "displayed_types": [t for t in allTypes if t not in blacklist],
-                "nonfolderish_tabs": not self.siteProps.getProperty(
+                "nonfolderish_tabs": not siteProps.getProperty(
                     "disable_nonfolderish_sections"
                 ),
-                "filter_on_workflow": self.navProps.getProperty(
-                    "enable_wf_state_filtering"
-                ),
-                "workflow_states_to_show": self.navProps.getProperty(
-                    "wf_states_to_show"
-                ),
-                "show_excluded_items": self.navProps.getProperty("showAllParents"),
+                "filter_on_workflow": navProps.getProperty("enable_wf_state_filtering"),
+                "workflow_states_to_show": navProps.getProperty("wf_states_to_show"),
+                "show_excluded_items": navProps.getProperty("showAllParents"),
             }
 
     @property
