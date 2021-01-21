@@ -9,11 +9,11 @@ Content-Type: application/json
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/collection/@breadcrumbs"
     }, 
+    "contextnavigation": {
+      "@id": "http://localhost:55001/plone/collection/@contextnavigation"
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/collection/@navigation"
-    }, 
-    "navportlet": {
-      "@id": "http://localhost:55001/plone/collection/@navportlet"
     }, 
     "types": {
       "@id": "http://localhost:55001/plone/collection/@types"
@@ -65,11 +65,11 @@ Content-Type: application/json
         "breadcrumbs": {
           "@id": "http://localhost:55001/plone/front-page/@breadcrumbs"
         }, 
+        "contextnavigation": {
+          "@id": "http://localhost:55001/plone/front-page/@contextnavigation"
+        }, 
         "navigation": {
           "@id": "http://localhost:55001/plone/front-page/@navigation"
-        }, 
-        "navportlet": {
-          "@id": "http://localhost:55001/plone/front-page/@navportlet"
         }, 
         "types": {
           "@id": "http://localhost:55001/plone/front-page/@types"
@@ -132,11 +132,11 @@ Content-Type: application/json
         "breadcrumbs": {
           "@id": "http://localhost:55001/plone/doc1/@breadcrumbs"
         }, 
+        "contextnavigation": {
+          "@id": "http://localhost:55001/plone/doc1/@contextnavigation"
+        }, 
         "navigation": {
           "@id": "http://localhost:55001/plone/doc1/@navigation"
-        }, 
-        "navportlet": {
-          "@id": "http://localhost:55001/plone/doc1/@navportlet"
         }, 
         "types": {
           "@id": "http://localhost:55001/plone/doc1/@types"
@@ -200,11 +200,11 @@ Content-Type: application/json
         "breadcrumbs": {
           "@id": "http://localhost:55001/plone/doc2/@breadcrumbs"
         }, 
+        "contextnavigation": {
+          "@id": "http://localhost:55001/plone/doc2/@contextnavigation"
+        }, 
         "navigation": {
           "@id": "http://localhost:55001/plone/doc2/@navigation"
-        }, 
-        "navportlet": {
-          "@id": "http://localhost:55001/plone/doc2/@navportlet"
         }, 
         "types": {
           "@id": "http://localhost:55001/plone/doc2/@types"

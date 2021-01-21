@@ -1,3 +1,3 @@
-GET /plone/@search?sort_on=path&path.query=%2Fplone%2Ffolder1&path.depth=1 HTTP/1.1
+GET /plone/@search?path.query=%2Fplone%2Ffolder1&sort_on=path&path.depth=1 HTTP/1.1
 Accept: application/json
 Authorization: Basic YWRtaW46c2VjcmV0

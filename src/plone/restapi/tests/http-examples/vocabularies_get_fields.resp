@@ -18,11 +18,11 @@ Content-Type: application/json
     }, 
     {
       "title": "Email", 
-      "token": "Email"
+      "token": "label_email"
     }, 
     {
       "title": "Email", 
-      "token": "label_email"
+      "token": "Email"
     }, 
     {
       "title": "File Upload", 
