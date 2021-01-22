@@ -8,6 +8,7 @@ from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.schema import IJSONField
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.component import subscribers
@@ -71,9 +72,7 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
         return json_compatible(value)
 
 
-@implementer(IBlockFieldSerializationTransformer)
-@adapter(IBlocks, IBrowserRequest)
-class ResolveUIDSerializer(object):
+class ResolveUIDSerializerBase(object):
     order = 1
     block_type = None
     disabled = os.environ.get("disable_transform_resolveuid", False)
@@ -89,9 +88,7 @@ class ResolveUIDSerializer(object):
         return value
 
 
-@implementer(IBlockFieldSerializationTransformer)
-@adapter(IBlocks, IBrowserRequest)
-class TextBlockSerializer(object):
+class TextBlockSerializerBase(object):
     order = 100
     block_type = "text"
     disabled = os.environ.get("disable_transform_resolveuid", False)
@@ -111,3 +108,27 @@ class TextBlockSerializer(object):
                 url = entity.get("data", {}).get("url", "")
                 entity["data"]["url"] = uid_to_url(url)
         return value
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IBlocks, IBrowserRequest)
+class ResolveUIDSerializer(ResolveUIDSerializerBase):
+    """ Serializer for content-types with IBlocks behavior """
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IPloneSiteRoot, IBrowserRequest)
+class ResolveUIDSerializerRoot(ResolveUIDSerializerBase):
+    """ Serializer for site root """
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IBlocks, IBrowserRequest)
+class TextBlockSerializer(TextBlockSerializerBase):
+    """ Serializer for content-types with IBlocks behavior """
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IPloneSiteRoot, IBrowserRequest)
+class TextBlockSerializerRoot(TextBlockSerializerBase):
+    """ Serializer for site root """
