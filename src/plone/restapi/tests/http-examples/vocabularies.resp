@@ -3,56 +3,136 @@ Content-Type: application/json
 
 [
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes", 
-    "title": "plone.app.vocabularies.ReallyUserFriendlyTypes"
-  }, 
-  {
     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableContentLanguages", 
     "title": "plone.app.vocabularies.AvailableContentLanguages"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.MetadataFields", 
-    "title": "plone.app.vocabularies.MetadataFields"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SupportedContentLanguages", 
+    "title": "plone.app.vocabularies.SupportedContentLanguages"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.schemaeditor.VocabulariesVocabulary", 
-    "title": "plone.schemaeditor.VocabulariesVocabulary"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.users.group_ids", 
-    "title": "plone.app.users.group_ids"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Roles", 
+    "title": "plone.app.vocabularies.Roles"
   }, 
   {
     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Permissions", 
     "title": "plone.app.vocabularies.Permissions"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary", 
-    "title": "plone.app.discussion.vocabularies.CaptchaVocabulary"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AllowedContentTypes", 
+    "title": "plone.app.vocabularies.AllowedContentTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AllowableContentTypes", 
+    "title": "plone.app.vocabularies.AllowableContentTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes", 
+    "title": "plone.app.vocabularies.PortalTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes", 
+    "title": "plone.app.vocabularies.ReallyUserFriendlyTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.UserFriendlyTypes", 
+    "title": "plone.app.vocabularies.UserFriendlyTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Skins", 
+    "title": "plone.app.vocabularies.Skins"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Workflows", 
+    "title": "plone.app.vocabularies.Workflows"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WorkflowStates", 
+    "title": "plone.app.vocabularies.WorkflowStates"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WorkflowTransitions", 
+    "title": "plone.app.vocabularies.WorkflowTransitions"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableEditors", 
+    "title": "plone.app.vocabularies.AvailableEditors"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords", 
+    "title": "plone.app.vocabularies.Keywords"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicationFeedTypes", 
+    "title": "plone.app.vocabularies.SyndicationFeedTypes"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicatableFeedItems", 
+    "title": "plone.app.vocabularies.SyndicatableFeedItems"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users", 
+    "title": "plone.app.vocabularies.Users"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Groups", 
+    "title": "plone.app.vocabularies.Groups"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Principals", 
+    "title": "plone.app.vocabularies.Principals"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog", 
+    "title": "plone.app.vocabularies.Catalog"
   }, 
   {
     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Actions", 
     "title": "plone.app.vocabularies.Actions"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ImagesScales", 
-    "title": "plone.app.vocabularies.ImagesScales"
-  }, 
-  {
     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalActionCategories", 
     "title": "plone.app.vocabularies.PortalActionCategories"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.multilingual.vocabularies.AllAvailableLanguageVocabulary", 
-    "title": "plone.app.multilingual.vocabularies.AllAvailableLanguageVocabulary"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.multilingual.RootCatalog", 
-    "title": "plone.app.multilingual.RootCatalog"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Timezones", 
+    "title": "plone.app.vocabularies.Timezones"
   }, 
   {
     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.CommonTimezones", 
     "title": "plone.app.vocabularies.CommonTimezones"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableTimezones", 
+    "title": "plone.app.vocabularies.AvailableTimezones"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Weekdays", 
+    "title": "plone.app.vocabularies.Weekdays"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WeekdaysAbbr", 
+    "title": "plone.app.vocabularies.WeekdaysAbbr"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WeekdaysShort", 
+    "title": "plone.app.vocabularies.WeekdaysShort"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Month", 
+    "title": "plone.app.vocabularies.Month"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.MonthAbbr", 
+    "title": "plone.app.vocabularies.MonthAbbr"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ImagesScales", 
+    "title": "plone.app.vocabularies.ImagesScales"
+  }, 
+  {
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.MetadataFields", 
+    "title": "plone.app.vocabularies.MetadataFields"
   }, 
   {
     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.content.ValidAddableTypes", 
@@ -63,60 +143,24 @@ Content-Type: application/json
     "title": "plone.contentrules.events"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Principals", 
-    "title": "plone.app.vocabularies.Principals"
+    "@id": "http://localhost:55001/plone/@vocabularies/Behaviors", 
+    "title": "Behaviors"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.testing.context_vocabulary", 
-    "title": "plone.restapi.testing.context_vocabulary"
+    "@id": "http://localhost:55001/plone/@vocabularies/Fields", 
+    "title": "Fields"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableEditors", 
-    "title": "plone.app.vocabularies.AvailableEditors"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.schemaeditor.VocabulariesVocabulary", 
+    "title": "plone.schemaeditor.VocabulariesVocabulary"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Roles", 
-    "title": "plone.app.vocabularies.Roles"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.formwidget.relations.cmfcontentsearch", 
+    "title": "plone.formwidget.relations.cmfcontentsearch"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SupportedContentLanguages", 
-    "title": "plone.app.vocabularies.SupportedContentLanguages"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords", 
-    "title": "plone.app.vocabularies.Keywords"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Groups", 
-    "title": "plone.app.vocabularies.Groups"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableTimezones", 
-    "title": "plone.app.vocabularies.AvailableTimezones"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog", 
-    "title": "plone.app.vocabularies.Catalog"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.TextTransformVocabulary", 
-    "title": "plone.app.discussion.vocabularies.TextTransformVocabulary"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Month", 
-    "title": "plone.app.vocabularies.Month"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Weekdays", 
-    "title": "plone.app.vocabularies.Weekdays"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WorkflowTransitions", 
-    "title": "plone.app.vocabularies.WorkflowTransitions"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WeekdaysShort", 
-    "title": "plone.app.vocabularies.WeekdaysShort"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.event.SynchronizationStrategies", 
+    "title": "plone.app.event.SynchronizationStrategies"
   }, 
   {
     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.contenttypes.metadatafields", 
@@ -127,91 +171,35 @@ Content-Type: application/json
     "title": "Interfaces"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WorkflowStates", 
-    "title": "plone.app.vocabularies.WorkflowStates"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary", 
+    "title": "plone.app.discussion.vocabularies.CaptchaVocabulary"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/Fields", 
-    "title": "Fields"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.contenttypes.migration.atctypes", 
-    "title": "plone.app.contenttypes.migration.atctypes"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.multilingual.vocabularies.AllContentLanguageVocabulary", 
-    "title": "plone.app.multilingual.vocabularies.AllContentLanguageVocabulary"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicatableFeedItems", 
-    "title": "plone.app.vocabularies.SyndicatableFeedItems"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AllowedContentTypes", 
-    "title": "plone.app.vocabularies.AllowedContentTypes"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.TextTransformVocabulary", 
+    "title": "plone.app.discussion.vocabularies.TextTransformVocabulary"
   }, 
   {
     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.users.user_registration_fields", 
     "title": "plone.app.users.user_registration_fields"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WeekdaysAbbr", 
-    "title": "plone.app.vocabularies.WeekdaysAbbr"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.users.group_ids", 
+    "title": "plone.app.users.group_ids"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.UserFriendlyTypes", 
-    "title": "plone.app.vocabularies.UserFriendlyTypes"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.multilingual.vocabularies.AllContentLanguageVocabulary", 
+    "title": "plone.app.multilingual.vocabularies.AllContentLanguageVocabulary"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.PortalTypes", 
-    "title": "plone.app.vocabularies.PortalTypes"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.multilingual.vocabularies.AllAvailableLanguageVocabulary", 
+    "title": "plone.app.multilingual.vocabularies.AllAvailableLanguageVocabulary"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/Behaviors", 
-    "title": "Behaviors"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.multilingual.RootCatalog", 
+    "title": "plone.app.multilingual.RootCatalog"
   }, 
   {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicationFeedTypes", 
-    "title": "plone.app.vocabularies.SyndicationFeedTypes"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Timezones", 
-    "title": "plone.app.vocabularies.Timezones"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.formwidget.relations.cmfcontentsearch", 
-    "title": "plone.formwidget.relations.cmfcontentsearch"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Skins", 
-    "title": "plone.app.vocabularies.Skins"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AllowableContentTypes", 
-    "title": "plone.app.vocabularies.AllowableContentTypes"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.contenttypes.migration.extendedtypes", 
-    "title": "plone.app.contenttypes.migration.extendedtypes"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.MonthAbbr", 
-    "title": "plone.app.vocabularies.MonthAbbr"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Workflows", 
-    "title": "plone.app.vocabularies.Workflows"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.contenttypes.migration.changed_base_classes", 
-    "title": "plone.app.contenttypes.migration.changed_base_classes"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users", 
-    "title": "plone.app.vocabularies.Users"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.event.SynchronizationStrategies", 
-    "title": "plone.app.event.SynchronizationStrategies"
+    "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.testing.context_vocabulary", 
+    "title": "plone.restapi.testing.context_vocabulary"
   }
 ]
