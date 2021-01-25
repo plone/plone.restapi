@@ -182,9 +182,7 @@ class Navigation(object):
             }
 
             if brain.get("nav_title", False):
-                entry.update({"nav_title": brain["nav_title"]})
-            else:
-                entry.update({"nav_title": None})
+                entry.update({"title": brain["nav_title"]})
 
             self.customize_entry(entry, brain)
             ret[brain_parent_path].append(entry)
