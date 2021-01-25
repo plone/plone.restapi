@@ -14,7 +14,7 @@ Changelog
 New features:
 
 
-- - Add serializer/deserializer for remoteUrl Link's field [cekk] (#1005)
+- Add serializer/deserializer for remoteUrl Link's field [cekk] (#1005)
 
 
 7.0.0b1 (2021-01-08)
