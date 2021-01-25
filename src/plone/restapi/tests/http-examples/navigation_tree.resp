@@ -7,13 +7,15 @@ Content-Type: application/json
     {
       "@id": "http://localhost:55001/plone", 
       "description": "", 
-      "items": "", 
+      "items": [], 
+      "review_state": null, 
       "title": "Home"
     }, 
     {
       "@id": "http://localhost:55001/plone/front-page", 
       "description": "Congratulations! You have successfully installed Plone.", 
       "items": [], 
+      "review_state": "private", 
       "title": "Welcome to Plone"
     }, 
     {
@@ -31,31 +33,51 @@ Content-Type: application/json
                 {
                   "@id": "http://localhost:55001/plone/folder/subfolder1/thirdlevelfolder/fourthlevelfolder", 
                   "description": "", 
-                  "title": "Fourth Level Folder"
+                  "items": [], 
+                  "nav_title": null, 
+                  "review_state": "private", 
+                  "title": "Fourth Level Folder", 
+                  "use_view_action_in_listings": false
                 }
               ], 
-              "title": "Third Level Folder"
+              "nav_title": null, 
+              "review_state": "private", 
+              "title": "Third Level Folder", 
+              "use_view_action_in_listings": false
             }
           ], 
-          "title": "SubFolder 1"
+          "nav_title": null, 
+          "review_state": "private", 
+          "title": "SubFolder 1", 
+          "use_view_action_in_listings": false
         }, 
         {
           "@id": "http://localhost:55001/plone/folder/subfolder2", 
           "description": "", 
-          "title": "SubFolder 2"
+          "items": [], 
+          "nav_title": null, 
+          "review_state": "private", 
+          "title": "SubFolder 2", 
+          "use_view_action_in_listings": false
         }, 
         {
           "@id": "http://localhost:55001/plone/folder/doc1", 
           "description": "", 
-          "title": "A document"
+          "items": [], 
+          "nav_title": null, 
+          "review_state": "private", 
+          "title": "A document", 
+          "use_view_action_in_listings": false
         }
       ], 
+      "review_state": "private", 
       "title": "Some Folder"
     }, 
     {
       "@id": "http://localhost:55001/plone/folder2", 
       "description": "", 
       "items": [], 
+      "review_state": "private", 
       "title": "Some Folder 2"
     }
   ]
