@@ -237,7 +237,6 @@ class TestExpansionFunctional(unittest.TestCase):
                 {
                     u"title": u"Some Folder",
                     u"@id": self.portal_url + u"/folder",
-                    u"nav_title": None,
                 }
             ],
             response.json()["@components"]["breadcrumbs"]["items"],
