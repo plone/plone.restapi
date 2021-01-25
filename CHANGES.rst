@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0b2 (2021-01-25)
+--------------------
+
+New features:
+
+
+- - Add serializer/deserializer for remoteUrl Link's field [cekk] (#1005)
+
+
 7.0.0b1 (2021-01-08)
 --------------------
 
