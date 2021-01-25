@@ -39,3 +39,4 @@ pip-selfcheck.json
 /.mypy_cache/
 .*project
 .settings/
+*~

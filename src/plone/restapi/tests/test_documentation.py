@@ -32,8 +32,8 @@ from plone.testing.z2 import Browser
 from six.moves import range
 from zope.component import createObject
 from zope.component import getUtility
-from zope.interface import alsoProvides
 from zope.component.hooks import getSite
+from zope.interface import alsoProvides
 
 import collections
 import json
@@ -1184,6 +1184,35 @@ class TestDocumentation(TestDocumentationBase):
             params={"expand.navigation.depth": 4},
         )
         save_request_and_response_for_docs("navigation_tree", response)
+
+    def test_documentation_contextnavigation(self):
+        folder = createContentInContainer(
+            self.portal, u"Folder", id=u"folder", title=u"Some Folder"
+        )
+        createContentInContainer(
+            self.portal, u"Folder", id=u"folder2", title=u"Some Folder 2"
+        )
+        subfolder1 = createContentInContainer(
+            folder, u"Folder", id=u"subfolder1", title=u"SubFolder 1"
+        )
+        createContentInContainer(
+            folder, u"Folder", id=u"subfolder2", title=u"SubFolder 2"
+        )
+        thirdlevelfolder = createContentInContainer(
+            subfolder1, u"Folder", id=u"thirdlevelfolder", title=u"Third Level Folder"
+        )
+        createContentInContainer(
+            thirdlevelfolder,
+            u"Folder",
+            id=u"fourthlevelfolder",
+            title=u"Fourth Level Folder",
+        )
+        createContentInContainer(folder, u"Document", id=u"doc1", title=u"A document")
+        transaction.commit()
+        response = self.api_session.get(
+            "{}/folder/@contextnavigation".format(self.portal.absolute_url())
+        )
+        save_request_and_response_for_docs("contextnavigation", response)
 
     def test_documentation_principals(self):
         gtool = api.portal.get_tool("portal_groups")
