@@ -215,7 +215,13 @@ class TestExpansionFunctional(unittest.TestCase):
         response = self.api_session.get("/folder", params={"expand": "breadcrumbs"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            [{u"title": u"Some Folder", u"@id": self.portal_url + u"/folder"}],
+            [
+                {
+                    u"title": u"Some Folder",
+                    u"@id": self.portal_url + u"/folder",
+                    u"nav_title": None,
+                }
+            ],
             response.json()["@components"]["breadcrumbs"]["items"],
         )
 
