@@ -115,17 +115,24 @@ Content-Type: application/json
         }
       ]
     }, 
+    "contextnavigation": {
+      "@id": "http://localhost:55001/plone/front-page/@contextnavigation"
+    }, 
     "navigation": {
       "@id": "http://localhost:57980/plone/front-page/@navigation", 
       "items": [
         {
           "@id": "http://localhost:57980/plone", 
           "description": "", 
+          "items": [], 
+          "review_state": null, 
           "title": "Home"
         }, 
         {
           "@id": "http://localhost:57980/plone/front-page", 
           "description": "Congratulations! You have successfully installed Plone.", 
+          "items": [], 
+          "review_state": "private", 
           "title": "Welcome to Plone"
         }
       ]

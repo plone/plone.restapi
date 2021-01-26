@@ -42,6 +42,7 @@ plone.restapi: A RESTful hypermedia API for Plone.
    components
    breadcrumbs
    navigation
+   contextnavigation
    serialization
    searching
    tusupload

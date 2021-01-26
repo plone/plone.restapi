@@ -317,6 +317,28 @@ class TestDexterityFieldSerializing(TestCase):
             value,
         )
 
+    def test_remoteurl_field_in_links_get_converted(self):
+        link = self.portal[
+            self.portal.invokeFactory(
+                "Link",
+                id="link",
+                title="Test Link",
+            )
+        ]
+        field = None
+        for schema in iterSchemata(link):
+            if "remoteUrl" in schema:
+                field = schema.get("remoteUrl")
+                break
+        dm = getMultiAdapter((link, field), IDataManager)
+        serializer = getMultiAdapter((field, link, self.request), IFieldSerializer)
+
+        dm.set("http://www.plone.com")
+        self.assertEqual(serializer(), "http://www.plone.com")
+
+        dm.set("${portal_url}/doc1")
+        self.assertEqual(serializer(), self.portal.doc1.absolute_url())
+
 
 @unittest.skipUnless(
     PLONE_VERSION.base_version < "5.1",

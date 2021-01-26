@@ -3,6 +3,12 @@ Upgrade Guide
 
 This upgrade guide lists all breaking changes in plone.restapi and explains the necessary steps that are needed to upgrade to the lastest version.
 
+Upgrading to plone.restapi 7.x
+------------------------------
+
+Navigation endpoint has been refactored, and now its behavior is consistent regarding the ``items`` attribute.
+Now the ``items`` attribute is present even if the element of the tree does not have children elements.
+This might effect to some login in JavaScript specially, if the condition is checking for the existance of the attribute and expect to be ``undefined``, since this change it will be an empty array.
 
 Upgrading to plone.restapi 6.x
 ------------------------------

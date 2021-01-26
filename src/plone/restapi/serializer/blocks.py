@@ -8,6 +8,7 @@ from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.schema import IJSONField
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.component import subscribers
@@ -17,7 +18,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 
 import copy
 import re
-
+import os
 
 RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
 
@@ -63,18 +64,18 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
                         handlers.append(h)
 
                 for handler in sorted(handlers, key=lambda h: h.order):
-                    block_value = handler(block_value)
+                    if not getattr(handler, "disabled", False):
+                        block_value = handler(block_value)
 
                 value[id] = block_value
 
         return json_compatible(value)
 
 
-@implementer(IBlockFieldSerializationTransformer)
-@adapter(IBlocks, IBrowserRequest)
-class ResolveUIDSerializer(object):
+class ResolveUIDSerializerBase(object):
     order = 1
     block_type = None
+    disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
         self.context = context
@@ -87,22 +88,47 @@ class ResolveUIDSerializer(object):
         return value
 
 
-@implementer(IBlockFieldSerializationTransformer)
-@adapter(IBlocks, IBrowserRequest)
-class TextBlockSerializer(object):
+class TextBlockSerializerBase(object):
     order = 100
     block_type = "text"
+    disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, value):
-        # Resolve UID links
+        # Resolve UID links:
+        #   ../resolveuid/023c61b44e194652804d05a15dc126f4
+        #   ->
+        #   http://localhost:55001/plone/link-target
         entity_map = value.get("text", {}).get("entityMap", {})
         for entity in entity_map.values():
-            if entity.get("type") != "LINK":
-                continue
-            href = entity.get("data", {}).get("href", "")
-            entity["data"]["href"] = uid_to_url(href)
+            if entity.get("type") == "LINK":
+                url = entity.get("data", {}).get("url", "")
+                entity["data"]["url"] = uid_to_url(url)
         return value
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IBlocks, IBrowserRequest)
+class ResolveUIDSerializer(ResolveUIDSerializerBase):
+    """ Serializer for content-types with IBlocks behavior """
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IPloneSiteRoot, IBrowserRequest)
+class ResolveUIDSerializerRoot(ResolveUIDSerializerBase):
+    """ Serializer for site root """
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IBlocks, IBrowserRequest)
+class TextBlockSerializer(TextBlockSerializerBase):
+    """ Serializer for content-types with IBlocks behavior """
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IPloneSiteRoot, IBrowserRequest)
+class TextBlockSerializerRoot(TextBlockSerializerBase):
+    """ Serializer for site root """

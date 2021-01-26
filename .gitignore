@@ -38,3 +38,5 @@ pip-selfcheck.json
 /.ipython
 /.mypy_cache/
 .*project
+.settings/
+*~

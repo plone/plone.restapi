@@ -24,11 +24,16 @@
     <adapter factory=".dxfields.RichttextFieldSerializer" />
     <adapter factory=".dxfields.DefaultPrimaryFieldTarget" />
     <adapter factory=".dxfields.PrimaryFileFieldTarget" />
+    <adapter factory=".dxfields.TextLineFieldSerializer" />
 
     <adapter factory=".blocks.BlocksJSONFieldSerializer" />
     <subscriber factory=".blocks.TextBlockSerializer"
       provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
     <subscriber factory=".blocks.ResolveUIDSerializer"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
+    <subscriber factory=".blocks.TextBlockSerializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
+    <subscriber factory=".blocks.ResolveUIDSerializerRoot"
       provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
 
     <configure zcml:condition="installed Products.Archetypes">

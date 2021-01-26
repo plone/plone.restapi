@@ -1,0 +1,57 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/folder/@contextnavigation", 
+  "available": true, 
+  "has_custom_name": false, 
+  "items": [
+    {
+      "@id": "http://localhost:55001/plone/folder/subfolder1", 
+      "description": "", 
+      "href": "http://localhost:55001/plone/folder/subfolder1", 
+      "icon": "", 
+      "is_current": false, 
+      "is_folderish": true, 
+      "is_in_path": false, 
+      "items": [], 
+      "normalized_id": "subfolder1", 
+      "review_state": "private", 
+      "thumb": "", 
+      "title": "SubFolder 1", 
+      "type": "folder"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/folder/subfolder2", 
+      "description": "", 
+      "href": "http://localhost:55001/plone/folder/subfolder2", 
+      "icon": "", 
+      "is_current": false, 
+      "is_folderish": true, 
+      "is_in_path": false, 
+      "items": [], 
+      "normalized_id": "subfolder2", 
+      "review_state": "private", 
+      "thumb": "", 
+      "title": "SubFolder 2", 
+      "type": "folder"
+    }, 
+    {
+      "@id": "http://localhost:55001/plone/folder/doc1", 
+      "description": "", 
+      "href": "http://localhost:55001/plone/folder/doc1", 
+      "icon": "", 
+      "is_current": false, 
+      "is_folderish": false, 
+      "is_in_path": false, 
+      "items": [], 
+      "normalized_id": "doc1", 
+      "review_state": "private", 
+      "thumb": "", 
+      "title": "A document", 
+      "type": "document"
+    }
+  ], 
+  "title": "Navigation", 
+  "url": "http://localhost:55001/plone/sitemap"
+}
