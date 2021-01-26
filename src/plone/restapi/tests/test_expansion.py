@@ -408,6 +408,4 @@ class TestTranslationExpansionFunctional(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json()["@id"], "http://localhost:55001/plone/en/test-folder"
-        )
+        self.assertEqual(response.json()["@id"], self.en_folder.absolute_url())
