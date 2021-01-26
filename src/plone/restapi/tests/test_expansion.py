@@ -372,6 +372,9 @@ class TestTranslationExpansionFunctional(unittest.TestCase):
         self.en_content = createContentInContainer(
             self.portal["en"], "Document", title=u"Test document"
         )
+        self.en_folder = createContentInContainer(
+            self.portal["en"], "Folder", title=u"Test folder"
+        )
         self.es_content = createContentInContainer(
             self.portal["es"], "Document", title=u"Test document"
         )
@@ -397,4 +400,14 @@ class TestTranslationExpansionFunctional(unittest.TestCase):
         translation_dict = {"@id": self.es_content.absolute_url(), "language": "es"}
         self.assertIn(
             translation_dict, response.json()["@components"]["translations"]["items"]
+        )
+
+    def test_expansions_no_fullobjects_do_not_modify_id(self):
+        response = self.api_session.get(
+            "/en/test-folder", params={"expand": "translations"}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json()["@id"], "http://localhost:55001/plone/en/test-folder"
         )
