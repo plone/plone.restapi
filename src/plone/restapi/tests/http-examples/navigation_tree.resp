@@ -34,19 +34,16 @@ Content-Type: application/json
                   "@id": "http://localhost:55001/plone/folder/subfolder1/thirdlevelfolder/fourthlevelfolder", 
                   "description": "", 
                   "items": [], 
-                  "nav_title": null, 
                   "review_state": "private", 
                   "title": "Fourth Level Folder", 
                   "use_view_action_in_listings": false
                 }
               ], 
-              "nav_title": null, 
               "review_state": "private", 
               "title": "Third Level Folder", 
               "use_view_action_in_listings": false
             }
           ], 
-          "nav_title": null, 
           "review_state": "private", 
           "title": "SubFolder 1", 
           "use_view_action_in_listings": false
@@ -55,7 +52,6 @@ Content-Type: application/json
           "@id": "http://localhost:55001/plone/folder/subfolder2", 
           "description": "", 
           "items": [], 
-          "nav_title": null, 
           "review_state": "private", 
           "title": "SubFolder 2", 
           "use_view_action_in_listings": false
@@ -64,7 +60,6 @@ Content-Type: application/json
           "@id": "http://localhost:55001/plone/folder/doc1", 
           "description": "", 
           "items": [], 
-          "nav_title": null, 
           "review_state": "private", 
           "title": "A document", 
           "use_view_action_in_listings": false
