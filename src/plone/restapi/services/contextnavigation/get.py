@@ -486,6 +486,9 @@ class NavigationPortletRenderer(object):
                 "type": node["normalized_portal_type"],
             }
 
+            if node.get("nav_title", False):
+                item.update({"title": node["nav_title"]})
+
             nodechildren = node["children"]
 
             if (
