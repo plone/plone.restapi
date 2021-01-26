@@ -8,6 +8,29 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0b3 (2021-01-26)
+--------------------
+
+New features:
+
+
+- Add new @contextnavigation endpoint.
+  [tiberiuichim] (#1042)
+- Refactor navigation endpoint, add new ``nav_title`` attribute
+  [sneridagh] (#1047)
+- Add nav_title attribute to breadcrumbs endpoint
+  [sneridagh] (#1049)
+- Unify nav_title and title in navs
+  [sneridagh] (#1051)
+
+
+Bug fixes:
+
+
+- Fix ``@id`` when content query has no ``fullbojects``
+  [sneridagh] (#837)
+
+
 7.0.0b2 (2021-01-25)
 --------------------
 
