@@ -9,11 +9,14 @@ from plone.restapi.interfaces import IFieldDeserializer
 from plone.schema import IJSONField
 from plone.uuid.interfaces import IUUID
 from plone.uuid.interfaces import IUUIDAware
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import subscribers
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
+
+import os
 
 
 def path2uid(context, link):
@@ -36,7 +39,7 @@ def path2uid(context, link):
             portal_path=portal_path, path=path.lstrip("/")
         )
     obj = portal.unrestrictedTraverse(path, None)
-    if obj is None:
+    if obj is None or obj == portal:
         return link
     segments = path.split("/")
     suffix = ""
@@ -56,27 +59,27 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
         value = super(BlocksJSONFieldDeserializer, self).__call__(value)
 
         if self.field.getName() == "blocks":
-
             for id, block_value in value.items():
                 block_type = block_value.get("@type", "")
 
                 handlers = []
                 for h in subscribers(
-                    (self.context, self.request), IBlockFieldDeserializationTransformer
+                    (self.context, self.request),
+                    IBlockFieldDeserializationTransformer,
                 ):
                     if h.block_type == block_type or h.block_type is None:
                         handlers.append(h)
+
                 for handler in sorted(handlers, key=lambda h: h.order):
-                    block_value = handler(block_value)
+                    if not getattr(handler, "disabled", False):
+                        block_value = handler(block_value)
 
                 value[id] = block_value
 
         return value
 
 
-@adapter(IBlocks, IBrowserRequest)
-@implementer(IBlockFieldDeserializationTransformer)
-class ResolveUIDDeserializer(object):
+class ResolveUIDDeserializerBase(object):
     """The "url" smart block field.
 
     This is a generic handler. In all blocks, it converts any "url"
@@ -85,6 +88,7 @@ class ResolveUIDDeserializer(object):
 
     order = 1
     block_type = None
+    disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
         self.context = context
@@ -99,11 +103,10 @@ class ResolveUIDDeserializer(object):
         return block
 
 
-@adapter(IBlocks, IBrowserRequest)
-@implementer(IBlockFieldDeserializationTransformer)
-class TextBlockDeserializer(object):
+class TextBlockDeserializerBase(object):
     order = 100
     block_type = "text"
+    disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
         self.context = context
@@ -111,21 +114,21 @@ class TextBlockDeserializer(object):
 
     def __call__(self, block):
         # Convert absolute links to resolveuid
-        # Assumes in-place mutations
-
+        #   http://localhost:55001/plone/link-target
+        #   ->
+        #   ../resolveuid/023c61b44e194652804d05a15dc126f4
         entity_map = block.get("text", {}).get("entityMap", {})
         for entity in entity_map.values():
             if entity.get("type") == "LINK":
-                href = entity.get("data", {}).get("href", "")
-                entity["data"]["href"] = path2uid(context=self.context, link=href)
+                href = entity.get("data", {}).get("url", "")
+                entity["data"]["url"] = path2uid(context=self.context, link=href)
         return block
 
 
-@adapter(IBlocks, IBrowserRequest)
-@implementer(IBlockFieldDeserializationTransformer)
-class HTMLBlockDeserializer(object):
+class HTMLBlockDeserializerBase(object):
     order = 100
     block_type = "html"
+    disabled = os.environ.get("disable_transform_html", False)
 
     def __init__(self, context, request):
         self.context = context
@@ -144,11 +147,10 @@ class HTMLBlockDeserializer(object):
         return block
 
 
-@adapter(IBlocks, IBrowserRequest)
-@implementer(IBlockFieldDeserializationTransformer)
-class ImageBlockDeserializer(object):
+class ImageBlockDeserializerBase(object):
     order = 100
     block_type = "image"
+    disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
         self.context = context
@@ -158,3 +160,51 @@ class ImageBlockDeserializer(object):
         url = block.get("url", "")
         block["url"] = path2uid(context=self.context, link=url)
         return block
+
+
+@adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class ResolveUIDDeserializer(ResolveUIDDeserializerBase):
+    """ Deserializer for content-types that implements IBlocks behavior """
+
+
+@adapter(IPloneSiteRoot, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class ResolveUIDDeserializerRoot(ResolveUIDDeserializerBase):
+    """ Deserializer for site root """
+
+
+@adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class TextBlockDeserializer(TextBlockDeserializerBase):
+    """ Deserializer for content-types that implements IBlocks behavior """
+
+
+@adapter(IPloneSiteRoot, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class TextBlockDeserializerRoot(TextBlockDeserializerBase):
+    """ Deserializer for site root """
+
+
+@adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class HTMLBlockDeserializer(HTMLBlockDeserializerBase):
+    """ Deserializer for content-types that implements IBlocks behavior """
+
+
+@adapter(IPloneSiteRoot, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class HTMLBlockDeserializerRoot(HTMLBlockDeserializerBase):
+    """ Deserializer for site root """
+
+
+@adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class ImageBlockDeserializer(ImageBlockDeserializerBase):
+    """ Deserializer for content-types that implements IBlocks behavior """
+
+
+@adapter(IPloneSiteRoot, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class ImageBlockDeserializerRoot(ImageBlockDeserializerBase):
+    """ Deserializer for site root """

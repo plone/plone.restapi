@@ -1,2 +1,0 @@
-Do not test if there is a `meta_type` index. It is unused ballast.
-[jensens]

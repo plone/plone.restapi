@@ -10,8 +10,8 @@ Location: http://localhost:55001/plone/folder/my-document
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/folder/my-document/@breadcrumbs"
     }, 
-    "layout": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@layout"
+    "contextnavigation": {
+      "@id": "http://localhost:55001/plone/folder/my-document/@contextnavigation"
     }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/folder/my-document/@navigation"

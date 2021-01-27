@@ -9,8 +9,8 @@ Content-Type: application/json
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/collection/@breadcrumbs"
     }, 
-    "layout": {
-      "@id": "http://localhost:55001/plone/collection/@layout"
+    "contextnavigation": {
+      "@id": "http://localhost:55001/plone/collection/@contextnavigation"
     }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/collection/@navigation"
@@ -65,8 +65,8 @@ Content-Type: application/json
         "breadcrumbs": {
           "@id": "http://localhost:55001/plone/front-page/@breadcrumbs"
         }, 
-        "layout": {
-          "@id": "http://localhost:55001/plone/front-page/@layout"
+        "contextnavigation": {
+          "@id": "http://localhost:55001/plone/front-page/@contextnavigation"
         }, 
         "navigation": {
           "@id": "http://localhost:55001/plone/front-page/@navigation"
@@ -132,8 +132,8 @@ Content-Type: application/json
         "breadcrumbs": {
           "@id": "http://localhost:55001/plone/doc1/@breadcrumbs"
         }, 
-        "layout": {
-          "@id": "http://localhost:55001/plone/doc1/@layout"
+        "contextnavigation": {
+          "@id": "http://localhost:55001/plone/doc1/@contextnavigation"
         }, 
         "navigation": {
           "@id": "http://localhost:55001/plone/doc1/@navigation"
@@ -200,8 +200,8 @@ Content-Type: application/json
         "breadcrumbs": {
           "@id": "http://localhost:55001/plone/doc2/@breadcrumbs"
         }, 
-        "layout": {
-          "@id": "http://localhost:55001/plone/doc2/@layout"
+        "contextnavigation": {
+          "@id": "http://localhost:55001/plone/doc2/@contextnavigation"
         }, 
         "navigation": {
           "@id": "http://localhost:55001/plone/doc2/@navigation"

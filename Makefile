@@ -27,7 +27,7 @@ update: ## Update Make and Buildout
 	wget -O plone-4.3.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/plone-4.3.x.cfg
 	wget -O plone-5.1.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/plone-5.1.x.cfg
 	wget -O plone-5.2.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/plone-5.2.x.cfg
-	wget -O travis.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/travis.cfg
+	wget -O ci.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/ci.cfg
 	wget -O versions.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/versions.cfg
 
 .installed.cfg: bin/buildout *.cfg

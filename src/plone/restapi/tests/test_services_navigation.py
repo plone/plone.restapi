@@ -10,6 +10,13 @@ from plone.restapi.testing import RelativeSession
 import transaction
 import unittest
 
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    PLONE5 = False
+else:
+    PLONE5 = True
+
 
 class TestServicesNavigation(unittest.TestCase):
 
@@ -57,6 +64,9 @@ class TestServicesNavigation(unittest.TestCase):
     def tearDown(self):
         self.api_session.close()
 
+    @unittest.skipIf(
+        not PLONE5, "Just Plone 5 currently, tabs in plone 4 does not have review_state"
+    )
     def test_navigation_with_no_params_gets_only_top_level(self):
         response = self.api_session.get("/folder/@navigation")
 
@@ -66,15 +76,25 @@ class TestServicesNavigation(unittest.TestCase):
             {
                 "@id": self.portal_url + u"/folder/@navigation",
                 "items": [
-                    {u"title": u"Home", u"@id": self.portal_url, u"description": u""},
                     {
-                        u"title": u"Some Folder",
+                        u"@id": self.portal_url,
+                        u"description": u"",
+                        u"items": [],
+                        u"review_state": None,
+                        u"title": u"Home",
+                    },
+                    {
                         u"@id": self.portal_url + u"/folder",
                         u"description": u"",
+                        u"items": [],
+                        u"review_state": "private",
+                        u"title": u"Some Folder",
                     },
                     {
                         u"@id": self.portal_url + u"/folder2",
                         u"description": u"",
+                        u"items": [],
+                        u"review_state": "private",
                         u"title": u"Some Folder 2",
                     },
                 ],
@@ -101,7 +121,9 @@ class TestServicesNavigation(unittest.TestCase):
             response.json()["items"][1]["items"][0]["items"][0]["title"],
             u"Third Level Folder",
         )
-        self.assertNotIn("items", response.json()["items"][1]["items"][0]["items"][0])
+        self.assertEqual(
+            len(response.json()["items"][1]["items"][0]["items"][0]["items"]), 0
+        )
 
         response = self.api_session.get(
             "/folder/@navigation", params={"expand.navigation.depth": 4}

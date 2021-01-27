@@ -12,8 +12,8 @@ Content-Type: application/json
         "breadcrumbs": {
           "@id": "http://localhost:55001/plone/doc1/@breadcrumbs"
         }, 
-        "layout": {
-          "@id": "http://localhost:55001/plone/doc1/@layout"
+        "contextnavigation": {
+          "@id": "http://localhost:55001/plone/doc1/@contextnavigation"
         }, 
         "navigation": {
           "@id": "http://localhost:55001/plone/doc1/@navigation"

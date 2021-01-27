@@ -28,7 +28,14 @@ class Breadcrumbs(object):
         )
         items = []
         for crumb in breadcrumbs_view.breadcrumbs():
-            items.append({"title": crumb["Title"], "@id": crumb["absolute_url"]})
+            item = {
+                "title": crumb["Title"],
+                "@id": crumb["absolute_url"],
+            }
+            if crumb.get("nav_title", False):
+                item.update({"title": crumb["nav_title"]})
+
+            items.append(item)
 
         result["breadcrumbs"]["items"] = items
         return result

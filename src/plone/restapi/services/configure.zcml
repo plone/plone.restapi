@@ -17,6 +17,7 @@
   <include package=".groups"/>
   <include package=".layout"/>
   <include package=".navigation"/>
+  <include package=".contextnavigation"/>
   <include package=".history"/>
   <include package=".locking" />
   <include package=".principals"/>

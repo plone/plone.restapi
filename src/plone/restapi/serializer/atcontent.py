@@ -111,8 +111,6 @@ class SerializeFolderToJson(SerializeToJson):
 
             batch = HypermediaBatch(self.request, brains)
 
-            if not self.request.form.get("fullobjects"):
-                result["@id"] = batch.canonical_url
             result["items_total"] = batch.items_total
             if batch.links:
                 result["batching"] = batch.links
