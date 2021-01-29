@@ -84,7 +84,11 @@ class ResolveUIDSerializerBase(object):
     def __call__(self, value):
         for field in ["url", "href"]:
             if field in value.keys():
-                value[field] = uid_to_url(value.get(field, ""))
+                link = value.get(field, "")
+                if isinstance(link, str):
+                    value[field] = uid_to_url(link)
+                elif isinstance(link, list):
+                    value[field] = [uid_to_url(item) for item in link]
         return value
 
 

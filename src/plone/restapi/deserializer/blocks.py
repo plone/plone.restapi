@@ -98,8 +98,12 @@ class ResolveUIDDeserializerBase(object):
         # Convert absolute links to resolveuid
         for field in ["url", "href"]:
             link = block.get(field, "")
-            if link:
+            if link and isinstance(link, str):
                 block[field] = path2uid(context=self.context, link=link)
+            elif link and isinstance(link, list):
+                block[field] = [
+                    path2uid(context=self.context, link=item) for item in link
+                ]
         return block
 
 
