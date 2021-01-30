@@ -9,6 +9,7 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.schema import IJSONField
 from Products.CMFPlone.interfaces import IPloneSiteRoot
+from six import string_types
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.component import subscribers
@@ -17,8 +18,9 @@ from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import copy
-import re
 import os
+import re
+
 
 RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
 
@@ -85,7 +87,7 @@ class ResolveUIDSerializerBase(object):
         for field in ["url", "href"]:
             if field in value.keys():
                 link = value.get(field, "")
-                if isinstance(link, str):
+                if isinstance(link, string_types):
                     value[field] = uid_to_url(link)
                 elif isinstance(link, list):
                     value[field] = [uid_to_url(item) for item in link]
