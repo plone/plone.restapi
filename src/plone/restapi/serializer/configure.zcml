@@ -36,7 +36,7 @@
     <subscriber factory=".blocks.ResolveUIDSerializerRoot"
       provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
 
-    <configure zcml:condition="installed Products.Archetypes">
+    <configure zcml:condition="installed Products.Archetypes.atapi">
         <adapter factory=".atcontent.SerializeToJson" />
         <adapter factory=".atcontent.SerializeFolderToJson" />
         <configure zcml:condition="installed plone.app.blob">

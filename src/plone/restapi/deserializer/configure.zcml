@@ -43,7 +43,7 @@
     <adapter factory=".relationfield.RelationChoiceFieldDeserializer" />
   </configure>
 
-  <configure zcml:condition="installed Products.Archetypes">
+  <configure zcml:condition="installed Products.Archetypes.atapi">
     <adapter factory=".atcontent.DeserializeFromJson" />
     <configure zcml:condition="installed plone.app.blob">
         <adapter factory=".atfields.BlobFieldDeserializer" />
