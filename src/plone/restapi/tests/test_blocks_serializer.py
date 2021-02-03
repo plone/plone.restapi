@@ -128,6 +128,22 @@ class TestBlocksSerializer(unittest.TestCase):
         value = self.serialize(
             context=self.portal.doc1,
             blocks={
+                "123": {
+                    "@type": "foo",
+                    "href": [{"@id": "../resolveuid/{}".format(doc_uid)}],
+                }
+            },
+        )
+
+        self.assertEqual(
+            value["123"]["href"][0]["@id"], self.portal.doc1.absolute_url()
+        )
+
+    def test_serialize_blocks_smart_href_array(self):
+        doc_uid = IUUID(self.portal.doc1)
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={
                 "123": {"@type": "foo", "href": ["../resolveuid/{}".format(doc_uid)]}
             },
         )
