@@ -65,7 +65,8 @@ class TestServicesNavigation(unittest.TestCase):
         self.api_session.close()
 
     @unittest.skipIf(
-        not PLONE5, "Just Plone 5 currently, tabs in plone 4 does not have review_state"
+        not PLONE5,
+        "Just Plone 5 currently, tabs in plone 4 does not have review_state",
     )
     def test_navigation_with_no_params_gets_only_top_level(self):
         response = self.api_session.get("/folder/@navigation")
@@ -116,13 +117,16 @@ class TestServicesNavigation(unittest.TestCase):
             "/folder/@navigation", params={"expand.navigation.depth": 3}
         )
 
-        self.assertEqual(len(response.json()["items"][1]["items"][0]["items"]), 1)
+        self.assertEqual(
+            len(response.json()["items"][1]["items"][0]["items"]), 1
+        )
         self.assertEqual(
             response.json()["items"][1]["items"][0]["items"][0]["title"],
             u"Third Level Folder",
         )
         self.assertEqual(
-            len(response.json()["items"][1]["items"][0]["items"][0]["items"]), 0
+            len(response.json()["items"][1]["items"][0]["items"][0]["items"]),
+            0,
         )
 
         response = self.api_session.get(
@@ -130,7 +134,8 @@ class TestServicesNavigation(unittest.TestCase):
         )
 
         self.assertEqual(
-            len(response.json()["items"][1]["items"][0]["items"][0]["items"]), 1
+            len(response.json()["items"][1]["items"][0]["items"][0]["items"]),
+            1,
         )
         self.assertEqual(
             response.json()["items"][1]["items"][0]["items"][0]["items"][0][
@@ -138,3 +143,20 @@ class TestServicesNavigation(unittest.TestCase):
             ],  # noqa
             u"Fourth Level Folder",
         )
+
+    def test_dont_broke_with_contents_without_review_state(self):
+        createContentInContainer(
+            self.portal, u"File", id=u"example-file", title=u"Example file",
+        )
+        createContentInContainer(
+            self.folder, u"File", id=u"example-file-1", title=u"Example file 1",
+        )
+        transaction.commit()
+
+        response = self.api_session.get("/folder/@navigation")
+        self.assertIsNone(response.json()["items"][3]["review_state"])
+
+        response = self.api_session.get(
+            "/folder/@navigation", params={"expand.navigation.depth": 2}
+        )
+        self.assertIsNone(response.json()["items"][1]['items'][3]["review_state"])
