@@ -117,9 +117,7 @@ class TestServicesNavigation(unittest.TestCase):
             "/folder/@navigation", params={"expand.navigation.depth": 3}
         )
 
-        self.assertEqual(
-            len(response.json()["items"][1]["items"][0]["items"]), 1
-        )
+        self.assertEqual(len(response.json()["items"][1]["items"][0]["items"]), 1)
         self.assertEqual(
             response.json()["items"][1]["items"][0]["items"][0]["title"],
             u"Third Level Folder",
@@ -146,10 +144,16 @@ class TestServicesNavigation(unittest.TestCase):
 
     def test_dont_broke_with_contents_without_review_state(self):
         createContentInContainer(
-            self.portal, u"File", id=u"example-file", title=u"Example file",
+            self.portal,
+            u"File",
+            id=u"example-file",
+            title=u"Example file",
         )
         createContentInContainer(
-            self.folder, u"File", id=u"example-file-1", title=u"Example file 1",
+            self.folder,
+            u"File",
+            id=u"example-file-1",
+            title=u"Example file 1",
         )
         transaction.commit()
 
