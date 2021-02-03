@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0b5 (2021-02-03)
+--------------------
+
+Bug fixes:
+
+
+- Fix transform object_browser href smartfield not working as expected
+  [sneridagh] (#1058)
+
+
 7.0.0b4 (2021-02-01)
 --------------------
 
