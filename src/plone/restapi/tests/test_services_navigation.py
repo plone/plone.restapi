@@ -163,4 +163,4 @@ class TestServicesNavigation(unittest.TestCase):
         response = self.api_session.get(
             "/folder/@navigation", params={"expand.navigation.depth": 2}
         )
-        self.assertIsNone(response.json()["items"][1]['items'][3]["review_state"])
+        self.assertIsNone(response.json()["items"][1]["items"][3]["review_state"])
