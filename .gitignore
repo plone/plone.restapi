@@ -12,6 +12,7 @@
 /extras
 /pyvenv.cfg
 .coverage
+.flake8
 *.egg-info
 *.eggs
 /.installed.cfg
