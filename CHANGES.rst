@@ -14,8 +14,8 @@ Changelog
 Bug fixes:
 
 
-- - Fix href smart field in transformers do not cover the object_widget use case
-    [sneridagh] (#1054)
+- Fix href smart field in transformers do not cover the object_widget use case
+  [sneridagh] (#1054)
 
 
 7.0.0b3 (2021-01-26)
