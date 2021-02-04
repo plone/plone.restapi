@@ -1,6 +1,7 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    i18n_domain="plone.restapi">
+    i18n_domain="plone.restapi"
+    >
 
   <permission
       id="plone.restapi.UseRESTAPI"
@@ -15,6 +16,15 @@
   <permission
       id="plone.restapi.getusers"
       title="plone.restapi: Access Plone user information"
+      />
+  <permission
+      id="plone.restapi.getslots"
+      title="plone.restapi: Access slots information"
+      />
+
+  <permission
+      id="plone.restapi.manageslots"
+      title="plone.restapi: Manage (edit) slots information"
       />
 
 </configure>

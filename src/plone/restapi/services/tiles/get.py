@@ -24,12 +24,10 @@ class TilesGet(Service):
 
     def reply(self):
         if self.params and len(self.params) > 0:
-            self.content_type = "application/json+schema"
             try:
                 tile = getUtility(ITileType, name=self.params[0])
                 return getMultiAdapter((tile, self.request), ISerializeToJson)()
             except KeyError:
-                self.content_type = "application/json"
                 self.request.response.setStatus(404)
                 return {
                     "type": "NotFound",

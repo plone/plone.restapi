@@ -17,8 +17,9 @@ from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import copy
-import re
 import os
+import re
+
 
 RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
 
