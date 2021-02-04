@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISlots
 from plone.restapi.services import Service

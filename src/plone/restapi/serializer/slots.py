@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISlot

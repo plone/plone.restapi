@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from .interfaces import ISlot
 from .interfaces import ISlots
 from persistent import Persistent

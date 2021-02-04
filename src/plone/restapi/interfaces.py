@@ -219,9 +219,9 @@ class ISlots(Interface):
     """Slots are named container of sets of blocks"""
 
 
-BLOCKS_SCHEMA = json.dumps({"type": "object", "properties": {}})
+SLOT_BLOCKS_SCHEMA = json.dumps({"type": "object", "properties": {}})
 
-LAYOUT_SCHEMA = json.dumps(
+SLOT_LAYOUT_SCHEMA = json.dumps(
     {
         "type": "object",
         "properties": {"items": {"type": "array", "items": {"type": "string"}}},
@@ -235,7 +235,7 @@ class ISlot(Interface):
     slot_blocks = JSONField(
         title=u"Slot blocks",
         description=u"The JSON representation of the slot blocks information. Must be a JSON object.",  # noqa
-        schema=BLOCKS_SCHEMA,
+        schema=SLOT_BLOCKS_SCHEMA,
         default={},
         required=False,
     )
@@ -243,7 +243,7 @@ class ISlot(Interface):
     slot_blocks_layout = JSONField(
         title=u"Slot blocks Layout",
         description=u"The JSON representation of the slot blocks layout. Must be a JSON array.",  # noqa
-        schema=LAYOUT_SCHEMA,
+        schema=SLOT_LAYOUT_SCHEMA,
         default={"items": []},
         required=False,
     )
