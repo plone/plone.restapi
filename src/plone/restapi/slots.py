@@ -26,5 +26,5 @@ class Slot(Persistent):
     """A container for data pertaining to a single slot"""
 
     def __init__(self):
-        self.slot_blocks_layout = {}
+        self.slot_blocks_layout = {"items": []}
         self.slot_blocks = {}

@@ -10,6 +10,8 @@ from plone.restapi.interfaces import ISlots
 from plone.restapi.services import Service
 from plone.restapi.services.locking.locking import is_locked
 from zope.component import getMultiAdapter
+from zope.event import notify
+from zope.lifecycleevent import ObjectModifiedEvent
 
 
 class SlotsPatch(Service):
@@ -43,6 +45,8 @@ class SlotsPatch(Service):
             self.request.response.setStatus(400)
             return dict(error=dict(type="DeserializationError", message=str(e)))
 
+        notify(ObjectModifiedEvent(self.context))
+
         prefer = self.request.getHeader("Prefer")
         if prefer == "return=representation":
             self.request.response.setStatus(200)
@@ -69,6 +73,8 @@ class SlotsPatch(Service):
         except DeserializationError as e:
             self.request.response.setStatus(400)
             return dict(error=dict(type="DeserializationError", message=str(e)))
+
+        notify(ObjectModifiedEvent(self.context))
 
         prefer = self.request.getHeader("Prefer")
         if prefer == "return=representation":
