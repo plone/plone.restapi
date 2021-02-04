@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISlotRemovedEvent
 from zope.event import Event
 from zope.interface import implements
