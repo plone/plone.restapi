@@ -20,10 +20,13 @@
   <adapter factory=".dxfields.RichTextFieldDeserializer" />
   <adapter factory=".blocks.BlocksJSONFieldDeserializer" />
 
-  <adapter factory=".slot.SlotDeserializer" />
-  <adapter factory=".slot.SlotDeserializerRoot" />
-  <adapter factory=".slot.SlotsDeserializer" />
-  <adapter factory=".slot.SlotsDeserializerRoot" />
+  <adapter factory=".slots.SlotDeserializer" />
+  <adapter factory=".slots.SlotDeserializerRoot" />
+  <adapter factory=".slots.SlotsDeserializer" />
+  <adapter
+      factory=".slots.SlotsDeserializerRoot"
+      provides="plone.restapi.interfaces.IDeserializeFromJson"
+      />
 
   <subscriber
       factory=".blocks.TextBlockDeserializer"

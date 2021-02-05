@@ -126,4 +126,13 @@
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       />
 
+  <subscriber
+      for=".interfaces.IBlockRemovedEvent"
+      handler=".events.handle_blocks_removed_event"
+      />
+  <subscriber
+      for=".interfaces.IBlocksRemovedEvent"
+      handler=".events.handle_blocks_removed_event"
+      />
+
 </configure>

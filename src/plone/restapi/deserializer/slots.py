@@ -3,13 +3,13 @@
 """ Slots deserializers """
 
 from plone.restapi.deserializer import json_body
-from plone.restapi.events import SlotRemovedEvent
+from plone.restapi.events import BlocksRemovedEvent
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISlot
 from plone.restapi.interfaces import ISlots
 from plone.restapi.slots import Slot
-from Products.CMFPlone.interfaces import IContentish
+from Products.CMFCore.interfaces import IContentish
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -36,6 +36,13 @@ class SlotDeserializer(object):
             data = json_body(self.request)
 
         slot_blocks = copy.deepcopy(data['slot_blocks'])
+        existing_blocks = self.slot.slot_blocks
+
+        removed_blocks_ids = set(slot_blocks.keys()) - set(existing_blocks.keys())
+        removed_blocks = {block_id: existing_blocks[block_id] for block_id in
+                          removed_blocks_ids}
+
+        notify(BlocksRemovedEvent(dict(context=self.context, blocks=removed_blocks)))
 
         for id, block_value in slot_blocks.items():
             block_type = block_value.get("@type", "")
@@ -86,11 +93,11 @@ class SlotsDeserializer(object):
         for name, slot in self.storage.items():
             slotdata = data.get(name, None)
             if slotdata is None:
-                info = {
-                    'slot': slot,
-                    'obj': self.context
-                }
-                notify(SlotRemovedEvent(info))
+                notify(BlocksRemovedEvent(dict(
+                    context=self.context,
+                    blocks=slot.slot_blocks
+                )))
+
                 del self.storage[name]
 
         for name, slotdata in data.items():

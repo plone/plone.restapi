@@ -5,9 +5,9 @@
 # W0221: Arguments number differs from overridden '__call__' method
 
 from plone.schema import JSONField
-from zope.event.interfaces import IEvent
 from zope.interface import Attribute
 from zope.interface import Interface
+from zope.interface.interfaces import IObjectEvent
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
 
 import json
@@ -250,6 +250,11 @@ class ISlot(Interface):
     )
 
 
-class ISlotRemovedEvent(IEvent):
-    """ A slot has been removed
+class IBlocksRemovedEvent(IObjectEvent):
+    """ A bunch of blocks have been removed
+    """
+
+
+class IBlockRemovedEvent(IObjectEvent):
+    """ A block has been removed
     """
