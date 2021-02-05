@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0b5 (2021-02-05)
+--------------------
+
+Bug fixes:
+
+
+- Do not break if some custom code provides an alias for Products.Archetypes (#1004)
+- Handle missing review_state value in @navigation endpoint for items without a workflow [cekk] (#1060)
+
+
 7.0.0b5 (2021-02-03)
 --------------------
 
