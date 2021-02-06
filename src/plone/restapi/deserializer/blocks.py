@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from Acquisition import aq_parent
+from copy import deepcopy
 from plone import api
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
@@ -10,6 +11,7 @@ from plone.schema import IJSONField
 from plone.uuid.interfaces import IUUID
 from plone.uuid.interfaces import IUUIDAware
 from Products.CMFPlone.interfaces import IPloneSiteRoot
+from six import string_types
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import subscribers
@@ -98,8 +100,24 @@ class ResolveUIDDeserializerBase(object):
         # Convert absolute links to resolveuid
         for field in ["url", "href"]:
             link = block.get(field, "")
-            if link:
+            if link and isinstance(link, string_types):
                 block[field] = path2uid(context=self.context, link=link)
+            elif link and isinstance(link, list):
+                # Detect if it has an object inside with an "@id" key (object_widget)
+                if len(link) > 0 and isinstance(link[0], dict) and "@id" in link[0]:
+                    result = []
+                    for item in link:
+                        item_clone = deepcopy(item)
+                        item_clone["@id"] = path2uid(
+                            context=self.context, link=item_clone["@id"]
+                        )
+                        result.append(item_clone)
+
+                    block[field] = result
+                elif len(link) > 0 and isinstance(link[0], string_types):
+                    block[field] = [
+                        path2uid(context=self.context, link=item) for item in link
+                    ]
         return block
 
 

@@ -12,6 +12,8 @@
 /extras
 /pyvenv.cfg
 .coverage
+.flake8
+docs/.DS_Store
 *.egg-info
 *.eggs
 /.installed.cfg

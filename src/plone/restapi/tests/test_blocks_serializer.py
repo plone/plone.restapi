@@ -7,6 +7,7 @@ from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.uuid.interfaces import IUUID
 from z3c.form.interfaces import IDataManager
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -121,3 +122,30 @@ class TestBlocksSerializer(unittest.TestCase):
 
         assert not getattr(self.portal.doc1, "_handler_called", False)
         self.assertEqual(value["123"]["value"], u"text")
+
+    def test_serialize_blocks_smart_href_array_volto_object_browser(self):
+        doc_uid = IUUID(self.portal.doc1)
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={
+                "123": {
+                    "@type": "foo",
+                    "href": [{"@id": "../resolveuid/{}".format(doc_uid)}],
+                }
+            },
+        )
+
+        self.assertEqual(
+            value["123"]["href"][0]["@id"], self.portal.doc1.absolute_url()
+        )
+
+    def test_serialize_blocks_smart_href_array(self):
+        doc_uid = IUUID(self.portal.doc1)
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={
+                "123": {"@type": "foo", "href": ["../resolveuid/{}".format(doc_uid)]}
+            },
+        )
+
+        self.assertEqual(value["123"]["href"][0], self.portal.doc1.absolute_url())

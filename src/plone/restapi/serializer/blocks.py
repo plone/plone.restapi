@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from copy import deepcopy
 from plone.outputfilters.browser.resolveuid import uuidToObject
 from plone.outputfilters.browser.resolveuid import uuidToURL
 from plone.restapi.behaviors import IBlocks
@@ -9,6 +10,7 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.schema import IJSONField
 from Products.CMFPlone.interfaces import IPloneSiteRoot
+from six import string_types
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.component import subscribers
@@ -85,7 +87,20 @@ class ResolveUIDSerializerBase(object):
     def __call__(self, value):
         for field in ["url", "href"]:
             if field in value.keys():
-                value[field] = uid_to_url(value.get(field, ""))
+                link = value.get(field, "")
+                if isinstance(link, string_types):
+                    value[field] = uid_to_url(link)
+                elif isinstance(link, list):
+                    if len(link) > 0 and isinstance(link[0], dict) and "@id" in link[0]:
+                        result = []
+                        for item in link:
+                            item_clone = deepcopy(item)
+                            item_clone["@id"] = uid_to_url(item_clone["@id"])
+                            result.append(item_clone)
+
+                        value[field] = result
+                    elif len(link) > 0 and isinstance(link[0], string_types):
+                        value[field] = [uid_to_url(item) for item in link]
         return value
 
 

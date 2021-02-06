@@ -6,6 +6,7 @@ from plone.memoize.view import memoize
 from plone.memoize.view import memoize_contextless
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import getFSVersionTuple
@@ -121,7 +122,7 @@ class Navigation(object):
                 }
             )
             if "review_state" in tab:
-                entry["review_state"] = tab["review_state"]
+                entry["review_state"] = json_compatible(tab["review_state"])
             else:
                 entry["review_state"] = None
 
@@ -177,7 +178,7 @@ class Navigation(object):
                 "@id": url,
                 "title": safe_unicode(brain.Title),
                 "description": safe_unicode(brain.Description),
-                "review_state": brain.review_state,
+                "review_state": json_compatible(brain.review_state),
                 "use_view_action_in_listings": brain.portal_type in types_using_view,
             }
 
