@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from copy import deepcopy
 from six.moves import UserDict
 
@@ -76,17 +78,6 @@ class Content(object):
         child.__name__ = name
         child.__parent__ = self
         self.children[name] = child
-
-    def get(self, name, default=_missing):
-        if name in self.children:
-            return self.children[name]
-
-        if default != _missing:
-            return default
-
-    @property
-    def parent(self):
-        return self.__parent__
 
     def __repr__(self):
         stack = []
@@ -197,16 +188,16 @@ class TestSlots(unittest.TestCase):
         ])
 
     def test_slot_stack_deep_with_stack_collapse(self):
+        # get_slots collapses the stack and marks inherited slots with _v_inherit
+
         root = self.make_content()
-        root.slots['left'] = Slot({
-            'slot_blocks': {1: {}, 2: {}, 3: {}, },
-            'slot_blocks_layout': {'items': [1, 2, 3]}
-        })
+        obj = root['documents']['internal']['company-a']
+
+        root.slots['left'] = Slot.from_data({1: {}, 2: {}, 3: {}, }, [1, 2, 3])
 
         root['documents'].slots['left'] = Slot.from_data({4: {}, 5: {}, 6: {}},
                                                          [4, 5, 6])
 
-        obj = root['documents']['internal']['company-a']
         obj.slots['left'] = Slot.from_data({4: {}, 5: {}, 6: {}, 7: {}},
                                            [4, 5, 6, 7])
 
@@ -227,13 +218,11 @@ class TestSlots(unittest.TestCase):
         })
 
     def test_block_data_gets_inherited(self):
+        # blocks that are inherited from parents are marked with _v_inherit
         root = self.make_content()
-
-        root['documents'].slots['left'] = Slot.from_data({
-            1: {'title': 'First'}
-        }, [1])
-
         obj = root['documents']['internal']
+
+        root['documents'].slots['left'] = Slot.from_data({1: {'title': 'First'}}, [1])
         obj.slots['left'] = Slot.from_data({2: {}}, [2])
 
         engine = SlotsEngine(obj)
