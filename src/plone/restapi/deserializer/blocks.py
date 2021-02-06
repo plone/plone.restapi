@@ -35,7 +35,7 @@ def path2uid(context, link):
     context_url = context.absolute_url()
     relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
     if path.startswith(portal_url):
-        path = path[len(portal_url) + 1 :]
+        path = path[len(portal_url) + 1:]
     if not path.startswith(portal_path):
         path = "{portal_path}/{path}".format(
             portal_path=portal_path, path=path.lstrip("/")
@@ -177,6 +177,25 @@ class ImageBlockDeserializerBase(object):
     def __call__(self, block):
         url = block.get("url", "")
         block["url"] = path2uid(context=self.context, link=url)
+        return block
+
+
+class VolatileSmartField(object):
+    """ When deserializing block values, delete all block fields that start with `_v_`
+    """
+
+    order = float('inf')
+    block_type = None
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, block):
+        for k, v in block.items():
+            if k.startswith('_v_'):
+                del v[k]
+
         return block
 
 

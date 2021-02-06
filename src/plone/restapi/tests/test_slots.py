@@ -219,6 +219,7 @@ class TestSlots(unittest.TestCase):
 
     def test_block_data_gets_inherited(self):
         # blocks that are inherited from parents are marked with _v_inherit
+
         root = self.make_content()
         obj = root['documents']['internal']
 
