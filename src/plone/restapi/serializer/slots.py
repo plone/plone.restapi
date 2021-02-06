@@ -9,6 +9,7 @@ from zope.component import getMultiAdapter
 from zope.component import subscribers
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.publisher.interfaces.browser import IBrowserRequest
 
 import copy
 
@@ -16,7 +17,7 @@ import copy
 SERVICE_ID = "@slots"
 
 
-@adapter(Interface, ISlot, Interface)
+@adapter(Interface, ISlot, IBrowserRequest)
 @implementer(ISerializeToJson)
 class SlotSerializer(object):
     """Default serializer for a single persistent slot"""
@@ -52,19 +53,23 @@ class SlotSerializer(object):
         }
 
 
-@adapter(Interface, ISlots, Interface)
+@adapter(Interface, ISlots, IBrowserRequest)
 @implementer(ISerializeToJson)
 class SlotsSerializer(object):
     """Default slots storage serializer"""
 
     def __call__(self):
-        result = []
+        base_url = self.context.absolute_url()
+        result = {
+            '@id': '{}/{}'.format(base_url, SERVICE_ID),
+            "items": {}
+        }
         storage = ISlots(self.context)
 
         for name, slot in storage.items():
             serializer = getMultiAdapter(
                 (self.context, slot, self.request), ISerializeToJson
             )
-            result.append(serializer(name))
+            result['items'][name] = serializer(name)
 
         return result
