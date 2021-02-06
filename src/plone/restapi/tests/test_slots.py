@@ -103,10 +103,6 @@ class Content(object):
         return "<Content: /{}>" .format("/".join(reversed(stack)))
 
 
-class Slots(Content):
-    pass
-
-
 class Slot(UserDict):
 
     @classmethod
@@ -139,56 +135,54 @@ class TestSlots(unittest.TestCase):
 
         root['images'] = Content()
 
-        root.slots = Slots()
-        root.slots['left'] = Slot(
-            {
-                'slot_blocks': {
-                    1: {},
-                    2: {},
-                    3: {},
-                },
-                'slot_blocks_layout': {
-                    'items': [1, 2, 3]
-                }
-            }
-        )
-        root.slots['right'] = Slot()
-
         return root
 
     def test_slot_stack_on_root(self):
+        # simple test with one level stack of slots
         root = self.make_content()
+        root.slots['left'] = Slot({
+            'slot_blocks': {1: {}, 2: {}, 3: {}, },
+            'slot_blocks_layout': {'items': [1, 2, 3]}
+        })
+        root.slots['right'] = Slot()
         engine = SlotsEngine(root)
 
         self.assertEqual(engine.get_slots_stack('bottom'), [])
         self.assertEqual(engine.get_slots_stack('right'), [])
         self.assertEqual(engine.get_slots_stack('left'), [
-            {'slot_blocks_layout': {'items': [1, 2, 3]},
-                'slot_blocks': {
-                    1: {}, 2: {}, 3: {}
-            }}
+            {
+                'slot_blocks_layout': {'items': [1, 2, 3]},
+                'slot_blocks': {1: {}, 2: {}, 3: {}}
+            }
         ])
 
     def test_slot_stack_deep(self):
+        # the slot stack is inherited further down
         root = self.make_content()
+        root.slots['left'] = Slot({
+            'slot_blocks': {1: {}, 2: {}, 3: {}, },
+            'slot_blocks_layout': {'items': [1, 2, 3]}
+        })
         engine = SlotsEngine(root['documents']['internal']['company-a'])
 
         self.assertEqual(engine.get_slots_stack('bottom'), [])
         self.assertEqual(engine.get_slots_stack('right'), [])
         self.assertEqual(engine.get_slots_stack('left'), [
             {'slot_blocks_layout': {'items': [1, 2, 3]},
-                'slot_blocks': {
-                    1: {}, 2: {}, 3: {}
-            }}
+             'slot_blocks': {1: {}, 2: {}, 3: {}}}
         ])
 
     def test_slot_stack_deep_with_data_in_root(self):
+        # slots stacks up from deepest to shallow
         root = self.make_content()
+        root.slots['left'] = Slot({
+            'slot_blocks': {1: {}, 2: {}, 3: {}, },
+            'slot_blocks_layout': {'items': [1, 2, 3]}
+        })
         obj = root['documents']['internal']['company-a']
 
-        slot = Slot.from_data({
-            4: {}, 5: {}, 6: {}
-        }, [4, 5, 6])
+        slot = Slot.from_data({4: {}, 5: {}, 6: {}},
+                              [4, 5, 6])
 
         obj.slots['left'] = slot
         engine = SlotsEngine(obj)
@@ -204,15 +198,17 @@ class TestSlots(unittest.TestCase):
 
     def test_slot_stack_deep_with_stack_collapse(self):
         root = self.make_content()
+        root.slots['left'] = Slot({
+            'slot_blocks': {1: {}, 2: {}, 3: {}, },
+            'slot_blocks_layout': {'items': [1, 2, 3]}
+        })
 
-        root['documents'].slots['left'] = Slot.from_data({
-            4: {}, 5: {}, 6: {}
-        }, [4, 5, 6])
+        root['documents'].slots['left'] = Slot.from_data({4: {}, 5: {}, 6: {}},
+                                                         [4, 5, 6])
 
         obj = root['documents']['internal']['company-a']
-        obj.slots['left'] = Slot.from_data({
-            4: {}, 5: {}, 6: {}, 7: {}
-        }, [4, 5, 6, 7])
+        obj.slots['left'] = Slot.from_data({4: {}, 5: {}, 6: {}, 7: {}},
+                                           [4, 5, 6, 7])
 
         engine = SlotsEngine(obj)
 
@@ -232,7 +228,6 @@ class TestSlots(unittest.TestCase):
 
     def test_block_data_gets_inherited(self):
         root = self.make_content()
-        root.slots = {}
 
         root['documents'].slots['left'] = Slot.from_data({
             1: {'title': 'First'}
@@ -245,9 +240,7 @@ class TestSlots(unittest.TestCase):
         left = engine.get_slots('left')
 
         self.assertEqual(left, {
-            'slot_blocks_layout': {'items': [
-                2, 1
-            ]},
+            'slot_blocks_layout': {'items': [2, 1]},
             'slot_blocks': {
                 1: {'title': 'First', '_v_inherit': True},
                 2: {}
@@ -256,7 +249,6 @@ class TestSlots(unittest.TestCase):
 
     def test_block_data_gets_override(self):
         root = self.make_content()
-        root.slots = {}
 
         root['documents'].slots['left'] = Slot.from_data({
             1: {'title': 'First'},
@@ -264,20 +256,46 @@ class TestSlots(unittest.TestCase):
         }, [1, 3])
 
         obj = root['documents']['internal']
-        obj.slots['left'] = Slot.from_data({2: {
-            '_override': 1,
-            'title': 'Second'
-        }}, [2])
+        obj.slots['left'] = Slot.from_data({
+            2: {'_override': 1, 'title': 'Second'}},
+            [2])
 
         engine = SlotsEngine(obj)
         left = engine.get_slots('left')
 
         self.assertEqual(left, {
-            'slot_blocks_layout': {'items': [
-                2, 3
-            ]},
+            'slot_blocks_layout': {'items': [2, 3]},
             'slot_blocks': {
                 2: {'title': 'Second', '_override': 1},
                 3: {'title': 'Third', '_v_inherit': True},
             }
         })
+
+    # def test_block_data_gets_override_complex(self):
+    #     root = self.make_content()
+    #
+    #     root.slots['left'] = Slot.from_data({
+    #         1: {'title': 'First'},
+    #         3: {'title': 'Third'},
+    #     }, [1, 3])
+    #
+    #     root['documents'].slots['left'] = Slot.from_data({
+    #         2: {'title': 'Second'},
+    #         4: {'_override': 3},
+    #     }, [2, 4])
+    #
+    #     obj = root['documents']['internal']
+    #     obj.slots['left'] = Slot.from_data({
+    #         2: {'_override': 1, 'title': 'Second'}},
+    #         [2])
+    #
+    #     engine = SlotsEngine(obj)
+    #     left = engine.get_slots('left')
+    #
+    #     self.assertEqual(left, {
+    #         'slot_blocks_layout': {'items': [2, 3]},
+    #         'slot_blocks': {
+    #             2: {'title': 'Second', '_override': 1},
+    #             3: {'title': 'Third', '_v_inherit': True},
+    #         }
+    #     })
