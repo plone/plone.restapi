@@ -220,6 +220,10 @@ class ISlots(Interface):
     """Slots are named container of sets of blocks"""
 
 
+class ISlotsStorage(Interface):
+    """ A store of slots information """
+
+
 SLOT_BLOCKS_SCHEMA = json.dumps({"type": "object", "properties": {}})
 
 SLOT_LAYOUT_SCHEMA = json.dumps(

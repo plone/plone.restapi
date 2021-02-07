@@ -1,96 +1,13 @@
 # -*- coding: utf-8 -*-
 
-from copy import deepcopy
+from plone.restapi.interfaces import ISlotsStorage
+from plone.restapi.slots import Slots
 from six.moves import UserDict
+from zope.component import provideAdapter
+from zope.interface import implements
+from zope.interface import Interface
 
 import unittest
-
-
-_missing = object()
-
-
-class SlotsEngine(object):
-    def __init__(self, context):
-        self.context = context
-
-    def get_slots_stack(self, name):
-        slot_stack = []
-
-        current = self.context
-        while True:
-            slot = current.slots.get(name)
-            if slot:
-                slot_stack.append(slot)
-            if current.__parent__:
-                current = current.__parent__
-            else:
-                break
-
-        return slot_stack
-
-    def get_slots(self, name):
-        blocks = {}
-        blocks_layout = []
-
-        _replaced = set()
-        _blockmap = {}
-
-        stack = self.get_slots_stack(name)
-
-        level = 0
-        for slot in stack:
-            for uid, block in slot['slot_blocks'].items():
-                block = deepcopy(block)
-                _blockmap[uid] = block
-
-                if not (uid in blocks or uid in _replaced):
-                    other = block.get('s:isVariantOf') or block.get('s:sameAs')
-                    if other:
-                        _replaced.add(other)
-
-                    blocks[uid] = block
-                    if level > 0:
-                        block['_v_inherit'] = True
-
-            for uid in slot['slot_blocks_layout']['items']:
-                if not (uid in blocks_layout or uid in _replaced):
-                    blocks_layout.append(uid)
-
-            level += 1
-
-        for k, v in blocks.items():
-            if v.get('s:sameAs'):
-                v['_v_inherit'] = True
-                v.update(self._resolve_block(v, _blockmap))
-
-        return {
-            'slot_blocks': blocks,
-            'slot_blocks_layout': {'items': blocks_layout}
-        }
-
-    def _resolve_block(self, block, blocks):
-        sameAs = block.get('s:sameAs')
-
-        if sameAs:
-            return self._resolve_block(blocks[sameAs], blocks)
-
-        return block
-
-    def save_data_to_slot(self, store, data):
-        to_save = {}
-        for key in data['slot_blocks_layout']['items']:
-            block = data['slot_blocks'][key]
-            if not (block.get('s:sameOf') or block.get('_v_inherit')):
-                to_save[key] = block
-
-        for k, v in data.items():
-            if k not in ['slot_blocks_layout', 'slot_blocks']:
-                store[k] = v
-
-        store['slot_blocks_layout'] = data['slot_blocks_layout']
-        store['slot_blocks'] = to_save
-
-        return store
 
 
 class Content(object):
@@ -126,6 +43,16 @@ class Content(object):
         return "<Content: /{}>" .format("/".join(reversed(stack)))
 
 
+class SlotsStorage(object):
+    implements(ISlotsStorage)
+
+    def __init__(self, context):
+        self.context = context
+
+    def get(self, name):
+        return self.context.slots.get(name)
+
+
 class Slot(UserDict):
 
     @classmethod
@@ -139,6 +66,8 @@ class Slot(UserDict):
 
 
 class TestSlots(unittest.TestCase):
+    def setUp(self):
+        provideAdapter(SlotsStorage, [Interface], ISlotsStorage)
 
     def make_content(self):
 
@@ -162,11 +91,11 @@ class TestSlots(unittest.TestCase):
             'slot_blocks_layout': {'items': [1, 2, 3]}
         })
         root.slots['right'] = Slot()
-        engine = SlotsEngine(root)
+        engine = Slots(root, None)
 
-        self.assertEqual(engine.get_slots_stack('bottom'), [])
-        self.assertEqual(engine.get_slots_stack('right'), [])
-        self.assertEqual(engine.get_slots_stack('left'), [
+        self.assertEqual(engine.get_fills_stack('bottom'), [])
+        self.assertEqual(engine.get_fills_stack('right'), [])
+        self.assertEqual(engine.get_fills_stack('left'), [
             {
                 'slot_blocks_layout': {'items': [1, 2, 3]},
                 'slot_blocks': {1: {}, 2: {}, 3: {}}
@@ -180,11 +109,11 @@ class TestSlots(unittest.TestCase):
             'slot_blocks': {1: {}, 2: {}, 3: {}, },
             'slot_blocks_layout': {'items': [1, 2, 3]}
         })
-        engine = SlotsEngine(root['documents']['internal']['company-a'])
+        engine = Slots(root['documents']['internal']['company-a'], None)
 
-        self.assertEqual(engine.get_slots_stack('bottom'), [])
-        self.assertEqual(engine.get_slots_stack('right'), [])
-        self.assertEqual(engine.get_slots_stack('left'), [
+        self.assertEqual(engine.get_fills_stack('bottom'), [])
+        self.assertEqual(engine.get_fills_stack('right'), [])
+        self.assertEqual(engine.get_fills_stack('left'), [
             {'slot_blocks_layout': {'items': [1, 2, 3]},
              'slot_blocks': {1: {}, 2: {}, 3: {}}}
         ])
@@ -202,9 +131,9 @@ class TestSlots(unittest.TestCase):
                               [4, 5, 6])
 
         obj.slots['left'] = slot
-        engine = SlotsEngine(obj)
+        engine = Slots(obj, None)
 
-        self.assertEqual(engine.get_slots_stack('left'), [
+        self.assertEqual(engine.get_fills_stack('left'), [
             {
                 'slot_blocks_layout': {'items': [4, 5, 6]},
                 'slot_blocks': {4: {}, 5: {}, 6: {}}},
@@ -214,7 +143,7 @@ class TestSlots(unittest.TestCase):
         ])
 
     def test_slot_stack_deep_with_stack_collapse(self):
-        # get_slots collapses the stack and marks inherited slots with _v_inherit
+        # get_blocks collapses the stack and marks inherited slots with _v_inherit
 
         root = self.make_content()
         obj = root['documents']['internal']['company-a']
@@ -227,9 +156,9 @@ class TestSlots(unittest.TestCase):
         obj.slots['left'] = Slot.from_data({4: {}, 5: {}, 6: {}, 7: {}},
                                            [4, 5, 6, 7])
 
-        engine = SlotsEngine(obj)
+        engine = Slots(obj, None)
 
-        left = engine.get_slots('left')
+        left = engine.get_blocks('left')
         self.assertEqual(left, {
             'slot_blocks_layout': {'items': [4, 5, 6, 7, 1, 2, 3]},
             'slot_blocks': {
@@ -252,8 +181,8 @@ class TestSlots(unittest.TestCase):
         root['documents'].slots['left'] = Slot.from_data({1: {'title': 'First'}}, [1])
         obj.slots['left'] = Slot.from_data({2: {}}, [2])
 
-        engine = SlotsEngine(obj)
-        left = engine.get_slots('left')
+        engine = Slots(obj, None)
+        left = engine.get_blocks('left')
 
         self.assertEqual(left, {
             'slot_blocks_layout': {'items': [2, 1]},
@@ -278,8 +207,8 @@ class TestSlots(unittest.TestCase):
             2: {'s:isVariantOf': 1, 'title': 'Second'}},
             [2])
 
-        engine = SlotsEngine(obj)
-        left = engine.get_slots('left')
+        engine = Slots(obj, None)
+        left = engine.get_blocks('left')
 
         self.assertEqual(left, {
             'slot_blocks_layout': {'items': [2, 3]},
@@ -307,8 +236,8 @@ class TestSlots(unittest.TestCase):
             4: {'s:sameAs': 3}
         }, [4, 2])
 
-        engine = SlotsEngine(obj)
-        left = engine.get_slots('left')
+        engine = Slots(obj, None)
+        left = engine.get_blocks('left')
 
         self.assertEqual(left, {
             'slot_blocks_layout': {'items': [4, 2, 5]},
@@ -336,8 +265,8 @@ class TestSlots(unittest.TestCase):
             2: {'s:isVariantOf': 1, 'title': 'Second'},
         }, [3, 2])
 
-        engine = SlotsEngine(obj)
-        left = engine.get_slots('left')
+        engine = Slots(obj, None)
+        left = engine.get_blocks('left')
 
         self.assertEqual(left, {
             'slot_blocks_layout': {'items': [3, 2, 5]},
@@ -361,7 +290,7 @@ class TestSlots(unittest.TestCase):
 
         root = self.make_content()
         obj = root['documents']['internal']
-        engine = SlotsEngine(obj)
+        engine = Slots(obj, None)
 
         slot = {}
         engine.save_data_to_slot(slot, data)
