@@ -76,6 +76,22 @@ class SlotsEngine(object):
 
         return block
 
+    def save_data_to_slot(self, store, data):
+        to_save = {}
+        for key in data['slot_blocks_layout']['items']:
+            block = data['slot_blocks'][key]
+            if not (block.get('s:sameOf') or block.get('_v_inherit')):
+                to_save[key] = block
+
+        for k, v in data.items():
+            if k not in ['slot_blocks_layout', 'slot_blocks']:
+                store[k] = v
+
+        store['slot_blocks_layout'] = data['slot_blocks_layout']
+        store['slot_blocks'] = to_save
+
+        return store
+
 
 class Content(object):
     __name__ = None
@@ -331,3 +347,26 @@ class TestSlots(unittest.TestCase):
                 5: {'title': 'Fifth', '_v_inherit': True},
             }
         })
+
+    def test_save_slots(self):
+        data = {
+            'slot_blocks_layout': {'items': [3, 2, 5]},
+            'slot_blocks': {
+                2: {'title': 'Second', 's:isVariantOf': 1},
+                3: {'title': 'Third', '_v_inherit': True},
+                5: {'title': 'Fifth', '_v_inherit': True},
+            },
+            'extra': 'data',
+        }
+
+        root = self.make_content()
+        obj = root['documents']['internal']
+        engine = SlotsEngine(obj)
+
+        slot = {}
+        engine.save_data_to_slot(slot, data)
+
+        self.assertEqual(slot, {
+            'extra': 'data',
+            'slot_blocks': {2: {'s:isVariantOf': 1, 'title': 'Second'}},
+            'slot_blocks_layout': {'items': [3, 2, 5]}})
