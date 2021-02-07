@@ -134,12 +134,6 @@ class TestSlots(unittest.TestCase):
         root['documents']['internal']['company-a']['doc-2'] = Content()
         root['documents']['internal']['company-a']['doc-3'] = Content()
 
-        root['documents']['external'] = Content()
-        root['documents']['external']['company-a'] = Content()
-        root['documents']['external']['company-a']['doc-1'] = Content()
-        root['documents']['external']['company-a']['doc-2'] = Content()
-        root['documents']['external']['company-a']['doc-3'] = Content()
-
         root['images'] = Content()
 
         return root
@@ -279,7 +273,7 @@ class TestSlots(unittest.TestCase):
             }
         })
 
-    def test_can_change_order(self):
+    def test_can_change_order_with_sameOf(self):
         # a child can change the order inherited from its parents
         # to reposition a parent,
 
@@ -305,6 +299,35 @@ class TestSlots(unittest.TestCase):
             'slot_blocks': {
                 2: {'title': 'Second', 's:isVariantOf': 1},
                 4: {'title': 'Third', 's:sameAs': 3, '_v_inherit': True},
+                5: {'title': 'Fifth', '_v_inherit': True},
+            }
+        })
+
+    def test_can_change_order_from_layout(self):
+        # a child can change the order inherited from parents by simply repositioning
+        # the parent id in their layout
+
+        root = self.make_content()
+
+        root['documents'].slots['left'] = Slot.from_data({
+            1: {'title': 'First'},
+            3: {'title': 'Third'},
+            5: {'title': 'Fifth'},
+        }, [5, 1, 3])
+
+        obj = root['documents']['internal']
+        obj.slots['left'] = Slot.from_data({
+            2: {'s:isVariantOf': 1, 'title': 'Second'},
+        }, [3, 2])
+
+        engine = SlotsEngine(obj)
+        left = engine.get_slots('left')
+
+        self.assertEqual(left, {
+            'slot_blocks_layout': {'items': [3, 2, 5]},
+            'slot_blocks': {
+                2: {'title': 'Second', 's:isVariantOf': 1},
+                3: {'title': 'Third', '_v_inherit': True},
                 5: {'title': 'Fifth', '_v_inherit': True},
             }
         })
