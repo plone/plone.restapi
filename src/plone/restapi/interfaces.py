@@ -220,7 +220,7 @@ class ISlots(Interface):
     """Slots are named container of sets of blocks"""
 
 
-class ISlotsStorage(Interface):
+class ISlotStorage(Interface):
     """ A store of slots information """
 
 

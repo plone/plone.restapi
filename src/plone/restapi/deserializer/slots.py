@@ -7,7 +7,7 @@ from plone.restapi.events import BlocksRemovedEvent
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISlot
-from plone.restapi.interfaces import ISlots
+from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.slots import Slot
 from Products.CMFCore.interfaces import IContentish
 from Products.CMFPlone.interfaces import IPloneSiteRoot
@@ -36,6 +36,8 @@ class SlotDeserializer(object):
             data = json_body(self.request)
 
         slot_blocks = copy.deepcopy(data['slot_blocks'])
+
+        # TODO: use ISlotStorage
         existing_blocks = self.slot.slot_blocks
 
         removed_blocks_ids = set(slot_blocks.keys()) - set(existing_blocks.keys())
@@ -75,7 +77,7 @@ class SlotDeserializerRoot(SlotDeserializer):
     """ Deserializer of one slot for site root """
 
 
-@adapter(IContentish, ISlots, IBrowserRequest)
+@adapter(IContentish, ISlotStorage, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class SlotsDeserializer(object):
     """ Default deserializer of slots
@@ -113,7 +115,7 @@ class SlotsDeserializer(object):
             deserializer()
 
 
-@adapter(IPloneSiteRoot, ISlots, IBrowserRequest)
+@adapter(IPloneSiteRoot, ISlotStorage, IBrowserRequest)
 @implementer(IDeserializeFromJson)
 class SlotsDeserializerRoot(SlotsDeserializer):
     """ Deserializer of slots for site root """

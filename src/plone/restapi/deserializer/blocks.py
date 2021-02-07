@@ -180,6 +180,8 @@ class ImageBlockDeserializerBase(object):
         return block
 
 
+@adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
 class VolatileSmartField(object):
     """ When deserializing block values, delete all block fields that start with `_v_`
     """

@@ -116,13 +116,13 @@
 
   <adapter
       factory=".slots.SlotsStorage"
-      provides=".interfaces.ISlotsStorage"
+      provides=".interfaces.ISlotStorage"
       for="Products.CMFCore.interfaces.IContentish"
       />
 
   <adapter
       factory=".slots.SlotsStorage"
-      provides=".interfaces.ISlotsStorage"
+      provides=".interfaces.ISlotStorage"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       />
 

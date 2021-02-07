@@ -122,4 +122,5 @@
 
   <adapter factory=".slots.SlotSerializer" />
   <adapter factory=".slots.SlotsSerializer" />
+
 </configure>

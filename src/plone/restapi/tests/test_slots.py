@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from plone.restapi.interfaces import ISlotsStorage
+from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.slots import Slots
 from six.moves import UserDict
 from zope.component import provideAdapter
@@ -44,7 +44,7 @@ class Content(object):
 
 
 class SlotsStorage(object):
-    implements(ISlotsStorage)
+    implements(ISlotStorage)
 
     def __init__(self, context):
         self.context = context
@@ -67,7 +67,7 @@ class Slot(UserDict):
 
 class TestSlots(unittest.TestCase):
     def setUp(self):
-        provideAdapter(SlotsStorage, [Interface], ISlotsStorage)
+        provideAdapter(SlotsStorage, [Interface], ISlotStorage)
 
     def make_content(self):
 

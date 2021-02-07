@@ -2,7 +2,7 @@
 
 from .interfaces import ISlot
 from .interfaces import ISlots
-from .interfaces import ISlotsStorage
+from .interfaces import ISlotStorage
 from copy import deepcopy
 from persistent import Persistent
 from Products.CMFCore.interfaces import IContentish
@@ -23,7 +23,7 @@ DEFAULT_SLOT_DATA = {
 
 
 @adapter(IContentish)
-@implementer(ISlotsStorage)
+@implementer(ISlotStorage)
 class PersistentSlots(BTreeContainer):
     """ Slots container"""
 
@@ -45,6 +45,9 @@ class Slot(Contained, Persistent):
 @implementer(ISlots)
 @adapter(ITraversable, IBrowserRequest)
 class Slots(object):
+    """ The slots engine provides slots functionality for a content item
+    """
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -54,7 +57,7 @@ class Slots(object):
 
         current = self.context
         while True:
-            slot = ISlotsStorage(current).get(name)
+            slot = ISlotStorage(current).get(name)
             if slot:
                 slot_stack.append(slot)
             if current.__parent__:
