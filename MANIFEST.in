@@ -9,6 +9,7 @@ exclude *.jmx
 exclude *.yaml
 exclude .coveragerc
 exclude .editorconfig
+exclude .flake8
 exclude Dockerfile
 exclude Makefile
 exclude bootstrap-buildout.py

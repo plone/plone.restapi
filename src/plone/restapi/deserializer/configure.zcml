@@ -43,7 +43,12 @@
     <adapter factory=".relationfield.RelationChoiceFieldDeserializer" />
   </configure>
 
-  <configure zcml:condition="installed Products.Archetypes">
+  <!--
+    We check for Products.Archetypes.atapi to avoid false positive
+    due to code aliases in migration code,
+    see https://github.com/plone/plone.restapi/pull/1004
+  -->
+  <configure zcml:condition="installed Products.Archetypes.atapi">
     <adapter factory=".atcontent.DeserializeFromJson" />
     <configure zcml:condition="installed plone.app.blob">
         <adapter factory=".atfields.BlobFieldDeserializer" />
