@@ -35,10 +35,13 @@ SlotsStorage = factory(PersistentSlots, SLOTS_KEY)
 class Slot(Contained, Persistent):
     """A container for data pertaining to a single slot"""
 
-    def __init__(self):
+    def __init__(self, **data):
         super(Slot, self).__init__()
 
         for k, v in deepcopy(DEFAULT_SLOT_DATA).items():
+            setattr(self, k, v)
+
+        for k, v in data.items():
             setattr(self, k, v)
 
 
