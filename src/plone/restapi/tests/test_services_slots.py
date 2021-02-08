@@ -106,3 +106,11 @@ class TestServicesSlots(unittest.TestCase):
             "@id": "http://localhost:55001/plone/@slots",
             "items": {}
         })
+
+    def test_slot_endpoint(self):
+        response = self.api_session.get("/@slots/unregistered")
+        self.assertEqual(response.status_code, 404)
+
+    def test_slot_endpoint_empty(self):
+        response = self.api_session.get("/@slots/left")
+        self.assertEqual(response.status_code, 404)
