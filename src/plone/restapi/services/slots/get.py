@@ -58,4 +58,4 @@ class SlotsGet(Service):
         adapter = getMultiAdapter(
             (self.context, slot, self.request), ISerializeToJson
         )
-        return adapter(name)
+        return adapter()

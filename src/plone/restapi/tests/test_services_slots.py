@@ -4,6 +4,8 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.restapi.interfaces import ISlotStorage
+from plone.restapi.slots import Slot
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 
@@ -96,21 +98,61 @@ class TestServicesSlots(unittest.TestCase):
         folder21.invokeFactory("Document", "doc211")
         folder21.invokeFactory("Document", "doc212")
 
+        self.doc = self.portal['folder1']['doc11']
+
+        rootstore = ISlotStorage(self.portal)
+        rootstore['left'] = Slot(**({
+            'slot_blocks': {
+                1: {'title': 'First'},
+                3: {'title': 'Third'},
+                5: {'title': 'Fifth'},
+            },
+            'slot_blocks_layout': {'items': [5, 1, 3]}
+        }))
+        rootstore['right'] = Slot(**({
+            'slot_blocks': {
+                6: {'title': 'First'},
+                7: {'title': 'Third'},
+                8: {'title': 'Fifth'},
+            },
+            'slot_blocks_layout': {'items': [8, 6, 7]}
+        }))
+
+        storage = ISlotStorage(self.doc)
+        storage['left'] = Slot(
+            slot_blocks={2: {'s:isVariantOf': 1, 'title': 'Second'}},
+            slot_blocks_layout={'items': [3, 2]},
+        )
+
         setRoles(self.portal, TEST_USER_ID, ["Member"])
 
     def test_slots_endpoint(self):
         response = self.api_session.get("/@slots")
         self.assertEqual(response.status_code, 200)
-        response = response.json()
-        self.assertEqual(response, {
-            "@id": "http://localhost:55001/plone/@slots",
-            "items": {}
-        })
+        self.assertEqual(response.json(), {
+            u'@id': u'http://localhost:55001/plone/@slots',
+            u'items': {u'left': {u'@id': u'http://localhost:55001/plone/@slots/left',
+                                 u'slot_blocks': {u'1': {u'title': u'First'},
+                                                  u'3': {u'title': u'Third'},
+                                                  u'5': {u'title': u'Fifth'}},
+                                 u'slot_blocks_layout': {u'items': [5, 1, 3]}},
+                       u'right': {u'@id': u'http://localhost:55001/plone/@slots/right',
+                                  u'slot_blocks': {u'6': {u'title': u'First'},
+                                                   u'7': {u'title': u'Third'},
+                                                   u'8': {u'title': u'Fifth'}},
+                                  u'slot_blocks_layout': {u'items': [8, 6, 7]}}}}
+        )
 
     def test_slot_endpoint(self):
         response = self.api_session.get("/@slots/unregistered")
         self.assertEqual(response.status_code, 404)
 
-    def test_slot_endpoint_empty(self):
+    def test_slot_endpoint_on_root(self):
         response = self.api_session.get("/@slots/left")
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), {
+            u'@id': u'http://localhost:55001/plone/@slots/left',
+            u'slot_blocks': {u'1': {u'title': u'First'},
+                             u'3': {u'title': u'Third'},
+                             u'5': {u'title': u'Fifth'}},
+            u'slot_blocks_layout': {u'items': [5, 1, 3]}})
