@@ -150,10 +150,6 @@ class Slots(object):
             if not (block.get('s:sameOf') or block.get('_v_inherit')):
                 to_save[key] = block
 
-        # for k, v in data.items():
-        #     if k not in ['slot_blocks_layout', 'slot_blocks']:
-        #         slot[k] = v
-
         slot.slot_blocks_layout = data['slot_blocks_layout']
         slot.slot_blocks = to_save
         slot._p_changed = True
