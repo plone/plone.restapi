@@ -37,8 +37,7 @@ class SlotDeserializer(object):
 
         slot_blocks = copy.deepcopy(data['slot_blocks'])
 
-        # TODO: use ISlotStorage
-        existing_blocks = self.slot.slot_blocks
+        existing_blocks = self.slot['slot_blocks']
 
         removed_blocks_ids = set(slot_blocks.keys()) - set(existing_blocks.keys())
         removed_blocks = {block_id: existing_blocks[block_id] for block_id in

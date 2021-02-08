@@ -237,7 +237,7 @@ SLOT_LAYOUT_SCHEMA = json.dumps(
 class ISlot(Interface):
     """Slots follow the IBlocks model"""
 
-    slot_blocks = JSONField(
+    blocks = JSONField(
         title=u"Slot blocks",
         description=u"The JSON representation of the slot blocks information. Must be a JSON object.",  # noqa
         schema=SLOT_BLOCKS_SCHEMA,
@@ -245,7 +245,7 @@ class ISlot(Interface):
         required=False,
     )
 
-    slot_blocks_layout = JSONField(
+    blocks_layout = JSONField(
         title=u"Slot blocks Layout",
         description=u"The JSON representation of the slot blocks layout. Must be a JSON array.",  # noqa
         schema=SLOT_LAYOUT_SCHEMA,

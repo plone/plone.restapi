@@ -8,10 +8,10 @@ from persistent import Persistent
 from Products.CMFCore.interfaces import IContentish
 from zope.annotation.factory import factory
 from zope.component import adapter
+from zope.component import queryAdapter
 from zope.container.btree import BTreeContainer
 from zope.container.contained import Contained
 from zope.interface import implementer
-from zope.publisher.interfaces.browser import IBrowserRequest
 from zope.traversing.interfaces import ITraversable
 
 
@@ -43,21 +43,23 @@ class Slot(Contained, Persistent):
 
 
 @implementer(ISlots)
-@adapter(ITraversable, IBrowserRequest)
+@adapter(ITraversable)
 class Slots(object):
     """ The slots engine provides slots functionality for a content item
     """
 
-    def __init__(self, context, request):
+    def __init__(self, context):
         self.context = context
-        self.request = request
 
     def get_fills_stack(self, name):
         slot_stack = []
 
         current = self.context
         while True:
-            slot = ISlotStorage(current).get(name)
+            storage = queryAdapter(current, ISlotStorage)
+            if storage is None:
+                break
+            slot = storage.get(name)
             if slot:
                 slot_stack.append(slot)
             if current.__parent__:
@@ -78,7 +80,7 @@ class Slots(object):
 
         level = 0
         for slot in stack:
-            for uid, block in slot['slot_blocks'].items():
+            for uid, block in slot.slot_blocks.items():
                 block = deepcopy(block)
                 _blockmap[uid] = block
 
@@ -91,7 +93,7 @@ class Slots(object):
                     if level > 0:
                         block['_v_inherit'] = True
 
-            for uid in slot['slot_blocks_layout']['items']:
+            for uid in slot.slot_blocks_layout['items']:
                 if not (uid in blocks_layout or uid in _replaced):
                     blocks_layout.append(uid)
 
@@ -117,14 +119,16 @@ class Slots(object):
 
     def save_data_to_slot(self, slot, data):
         to_save = {}
+
         for key in data['slot_blocks_layout']['items']:
             block = data['slot_blocks'][key]
             if not (block.get('s:sameOf') or block.get('_v_inherit')):
                 to_save[key] = block
 
-        for k, v in data.items():
-            if k not in ['slot_blocks_layout', 'slot_blocks']:
-                slot[k] = v
+        # for k, v in data.items():
+        #     if k not in ['slot_blocks_layout', 'slot_blocks']:
+        #         slot[k] = v
 
-        slot['slot_blocks_layout'] = data['slot_blocks_layout']
-        slot['slot_blocks'] = to_save
+        slot.slot_blocks_layout = data['slot_blocks_layout']
+        slot.slot_blocks = to_save
+        slot._p_changed = True

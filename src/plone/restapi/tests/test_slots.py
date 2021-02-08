@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISlotStorage
+from plone.restapi.slots import Slot
 from plone.restapi.slots import Slots
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from six.moves import UserDict
 from zope.component import provideAdapter
 from zope.interface import implements
@@ -53,7 +56,7 @@ class SlotsStorage(object):
         return self.context.slots.get(name)
 
 
-class Slot(UserDict):
+class DummySlot(UserDict):
 
     @classmethod
     def from_data(cls, blocks, layout):
@@ -86,11 +89,11 @@ class TestSlots(unittest.TestCase):
     def test_slot_stack_on_root(self):
         # simple test with one level stack of slots
         root = self.make_content()
-        root.slots['left'] = Slot({
+        root.slots['left'] = DummySlot({
             'slot_blocks': {1: {}, 2: {}, 3: {}, },
             'slot_blocks_layout': {'items': [1, 2, 3]}
         })
-        root.slots['right'] = Slot()
+        root.slots['right'] = DummySlot()
         engine = Slots(root, None)
 
         self.assertEqual(engine.get_fills_stack('bottom'), [])
@@ -105,7 +108,7 @@ class TestSlots(unittest.TestCase):
     def test_slot_stack_deep(self):
         # the slot stack is inherited further down
         root = self.make_content()
-        root.slots['left'] = Slot({
+        root.slots['left'] = DummySlot({
             'slot_blocks': {1: {}, 2: {}, 3: {}, },
             'slot_blocks_layout': {'items': [1, 2, 3]}
         })
@@ -121,14 +124,14 @@ class TestSlots(unittest.TestCase):
     def test_slot_stack_deep_with_data_in_root(self):
         # slots stacks up from deepest to shallow
         root = self.make_content()
-        root.slots['left'] = Slot({
+        root.slots['left'] = DummySlot({
             'slot_blocks': {1: {}, 2: {}, 3: {}, },
             'slot_blocks_layout': {'items': [1, 2, 3]}
         })
         obj = root['documents']['internal']['company-a']
 
-        slot = Slot.from_data({4: {}, 5: {}, 6: {}},
-                              [4, 5, 6])
+        slot = DummySlot.from_data({4: {}, 5: {}, 6: {}},
+                                   [4, 5, 6])
 
         obj.slots['left'] = slot
         engine = Slots(obj, None)
@@ -148,13 +151,13 @@ class TestSlots(unittest.TestCase):
         root = self.make_content()
         obj = root['documents']['internal']['company-a']
 
-        root.slots['left'] = Slot.from_data({1: {}, 2: {}, 3: {}, }, [1, 2, 3])
+        root.slots['left'] = DummySlot.from_data({1: {}, 2: {}, 3: {}, }, [1, 2, 3])
 
-        root['documents'].slots['left'] = Slot.from_data({4: {}, 5: {}, 6: {}},
-                                                         [4, 5, 6])
+        root['documents'].slots['left'] = DummySlot.from_data({4: {}, 5: {}, 6: {}},
+                                                              [4, 5, 6])
 
-        obj.slots['left'] = Slot.from_data({4: {}, 5: {}, 6: {}, 7: {}},
-                                           [4, 5, 6, 7])
+        obj.slots['left'] = DummySlot.from_data({4: {}, 5: {}, 6: {}, 7: {}},
+                                                [4, 5, 6, 7])
 
         engine = Slots(obj, None)
 
@@ -178,8 +181,9 @@ class TestSlots(unittest.TestCase):
         root = self.make_content()
         obj = root['documents']['internal']
 
-        root['documents'].slots['left'] = Slot.from_data({1: {'title': 'First'}}, [1])
-        obj.slots['left'] = Slot.from_data({2: {}}, [2])
+        root['documents'].slots['left'] = DummySlot.from_data(
+            {1: {'title': 'First'}}, [1])
+        obj.slots['left'] = DummySlot.from_data({2: {}}, [2])
 
         engine = Slots(obj, None)
         left = engine.get_blocks('left')
@@ -197,13 +201,13 @@ class TestSlots(unittest.TestCase):
 
         root = self.make_content()
 
-        root['documents'].slots['left'] = Slot.from_data({
+        root['documents'].slots['left'] = DummySlot.from_data({
             1: {'title': 'First'},
             3: {'title': 'Third'},
         }, [1, 3])
 
         obj = root['documents']['internal']
-        obj.slots['left'] = Slot.from_data({
+        obj.slots['left'] = DummySlot.from_data({
             2: {'s:isVariantOf': 1, 'title': 'Second'}},
             [2])
 
@@ -224,14 +228,14 @@ class TestSlots(unittest.TestCase):
 
         root = self.make_content()
 
-        root['documents'].slots['left'] = Slot.from_data({
+        root['documents'].slots['left'] = DummySlot.from_data({
             1: {'title': 'First'},
             3: {'title': 'Third'},
             5: {'title': 'Fifth'},
         }, [5, 1, 3])
 
         obj = root['documents']['internal']
-        obj.slots['left'] = Slot.from_data({
+        obj.slots['left'] = DummySlot.from_data({
             2: {'s:isVariantOf': 1, 'title': 'Second'},
             4: {'s:sameAs': 3}
         }, [4, 2])
@@ -254,14 +258,14 @@ class TestSlots(unittest.TestCase):
 
         root = self.make_content()
 
-        root['documents'].slots['left'] = Slot.from_data({
+        root['documents'].slots['left'] = DummySlot.from_data({
             1: {'title': 'First'},
             3: {'title': 'Third'},
             5: {'title': 'Fifth'},
         }, [5, 1, 3])
 
         obj = root['documents']['internal']
-        obj.slots['left'] = Slot.from_data({
+        obj.slots['left'] = DummySlot.from_data({
             2: {'s:isVariantOf': 1, 'title': 'Second'},
         }, [3, 2])
 
@@ -299,3 +303,45 @@ class TestSlots(unittest.TestCase):
             'extra': 'data',
             'slot_blocks': {2: {'s:isVariantOf': 1, 'title': 'Second'}},
             'slot_blocks_layout': {'items': [3, 2, 5]}})
+
+
+class TestSlotsStorage(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
+
+        self.make_content()
+
+    def make_content(self):
+        self.documents = createContentInContainer(
+            self.portal, u"Folder", id=u"documents", title=u"Documents"
+        )
+        self.company = createContentInContainer(
+            self.documents, u"Folder", id=u"company-a", title=u"Documents"
+        )
+        self.doc = createContentInContainer(
+            self.company, u"Document", id=u"doc-1", title=u"Doc 1"
+        )
+
+    def test_serialize_slots_storage_portal(self):
+        storage = ISlotStorage(self.portal)
+
+        self.assertEqual(storage.__name__, 'plone.restapi.slots')
+
+    def test_serialize_slots_storage(self):
+        storage = ISlotStorage(self.doc)
+
+        self.assertEqual(storage.__name__, 'plone.restapi.slots')
+        self.assertTrue(storage.__parent__ is self.doc)
+        self.assertTrue(storage.__parent__ is self.doc)
+
+    def test_store_slots_in_storage(self):
+        storage = ISlotStorage(self.doc)
+        storage['left'] = Slot()
+
+        self.assertEqual(storage['left'].__name__, 'left')
+        self.assertTrue(storage['left'].__parent__ is storage)

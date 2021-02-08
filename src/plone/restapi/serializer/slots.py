@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-# from plone.restapi.interfaces import ISlots
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISlot
+from plone.restapi.interfaces import ISlots
 from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.serializer.converters import json_compatible
 from zope.component import adapter
@@ -28,11 +28,13 @@ class SlotSerializer(object):
         self.request = request
         self.slot = slot
 
-    def __call__(self, name):
+    def __call__(self):
+        name = self.slot.__name__
 
-        # TODO: use ISlots
-        slot_blocks = copy.deepcopy(self.slot_blocks)
-        slot_blocks_layout = copy.deepcopy(self.slot_blocks_layout)
+        # a dict with slot_blocks and slot_blocks_layout
+        data = ISlots(self.context).get_blocks(name)
+
+        slot_blocks = copy.deepcopy(data['slot_blocks'])
 
         for id, block_value in slot_blocks.items():
             block_type = block_value.get("@type", "")
@@ -50,9 +52,9 @@ class SlotSerializer(object):
             slot_blocks[id] = json_compatible(block_value)
 
         return {
-            "@id": "{0}/{1}/{2}".format(self.context.absolute_url, SERVICE_ID, name),
+            "@id": "{0}/{1}/{2}".format(self.context.absolute_url(), SERVICE_ID, name),
             "slot_blocks": slot_blocks,
-            "slot_blocks_layout": slot_blocks_layout,
+            "slot_blocks_layout": data['slot_blocks_layout']
         }
 
 
@@ -73,6 +75,6 @@ class SlotsSerializer(object):
             serializer = getMultiAdapter(
                 (self.context, slot, self.request), ISerializeToJson
             )
-            result['items'][name] = serializer(name)
+            result['items'][name] = serializer()
 
         return result

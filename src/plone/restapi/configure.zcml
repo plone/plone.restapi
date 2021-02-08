@@ -23,6 +23,7 @@
   <include package="plone.rest" />
   <include package="plone.schema" />
   <include file="indexers.zcml" />
+  <include file="slots.zcml" />
 
   <five:registerPackage
       package="."
@@ -112,27 +113,6 @@
       factory=".setuphandlers.HiddenProfiles"
       provides="Products.CMFPlone.interfaces.INonInstallable"
       name="plone.restapi"
-      />
-
-  <adapter
-      factory=".slots.SlotsStorage"
-      provides=".interfaces.ISlotStorage"
-      for="Products.CMFCore.interfaces.IContentish"
-      />
-
-  <adapter
-      factory=".slots.SlotsStorage"
-      provides=".interfaces.ISlotStorage"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      />
-
-  <subscriber
-      for=".interfaces.IBlockRemovedEvent"
-      handler=".events.handle_blocks_removed_event"
-      />
-  <subscriber
-      for=".interfaces.IBlocksRemovedEvent"
-      handler=".events.handle_blocks_removed_event"
       />
 
 </configure>
