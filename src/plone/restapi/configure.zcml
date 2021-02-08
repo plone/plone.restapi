@@ -23,7 +23,6 @@
   <include package="plone.rest" />
   <include package="plone.schema" />
   <include file="indexers.zcml" />
-  <include file="slots.zcml" />
 
   <five:registerPackage
       package="."
@@ -90,6 +89,7 @@
   <include package=".deserializer" />
   <include package=".types" />
   <include package=".search" />
+  <include package=".slots" />
 
   <include package=".upgrades" />
 

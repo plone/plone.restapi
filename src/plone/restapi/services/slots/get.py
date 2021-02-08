@@ -55,7 +55,10 @@ class SlotsGet(Service):
             slot.__parent__ = self.storage
             slot.__name__ = name
 
-        adapter = getMultiAdapter(
+        result = getMultiAdapter(
             (self.context, slot, self.request), ISerializeToJson
-        )
-        return adapter()
+        )()
+
+        result['can_edit'] = can_edit_slots(self.context)
+
+        return result

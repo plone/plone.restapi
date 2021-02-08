@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from .interfaces import ISlot
-from .interfaces import ISlots
-from .interfaces import ISlotStorage
 from copy import deepcopy
 from persistent import Persistent
+from plone.restapi.interfaces import ISlot
+from plone.restapi.interfaces import ISlots
+from plone.restapi.interfaces import ISlotStorage
 from Products.CMFCore.interfaces import IContentish
 from zope.annotation.factory import factory
 from zope.component import adapter
@@ -153,3 +153,7 @@ class Slots(object):
         slot.slot_blocks_layout = data['slot_blocks_layout']
         slot.slot_blocks = to_save
         slot._p_changed = True
+
+
+def can_edit_slots(context):
+    pass

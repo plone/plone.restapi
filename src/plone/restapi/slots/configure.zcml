@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:five="http://namespaces.zope.org/five"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:i18n="http://namespaces.zope.org/i18n"
@@ -9,33 +10,45 @@
     >
 
   <adapter
-      factory=".slots.SlotsStorage"
-      provides=".interfaces.ISlotStorage"
+      factory=".SlotsStorage"
+      provides="plone.restapi.interfaces.ISlotStorage"
       for="Products.CMFCore.interfaces.IContentish"
       />
 
   <adapter
-      factory=".slots.SlotsStorage"
-      provides=".interfaces.ISlotStorage"
+      factory=".SlotsStorage"
+      provides="plone.restapi.interfaces.ISlotStorage"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       />
 
   <adapter
-      factory=".slots.Slots"
+      factory=".Slots"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       />
   <adapter
-      factory=".slots.Slots"
+      factory=".Slots"
       for="Products.CMFCore.interfaces.IContentish"
       />
 
   <subscriber
-      for=".interfaces.IBlockRemovedEvent"
+      for="plone.restapi.interfaces.IBlockRemovedEvent"
       handler=".events.handle_blocks_removed_event"
       />
   <subscriber
-      for=".interfaces.IBlocksRemovedEvent"
+      for="plone.restapi.interfaces.IBlocksRemovedEvent"
       handler=".events.handle_blocks_removed_event"
+      />
+
+  <browser:page
+      name="slots-controlpanel"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".controlpanel.SlotsControlPanelView"
+      permission="cmf.ManagePortal"
+      />
+
+  <adapter
+      factory=".controlpanel.SlotsControlpanel"
+      name="slots"
       />
 
 </configure>

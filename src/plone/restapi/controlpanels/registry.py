@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from zope.component import adapter
-from zope.interface import Interface
+from plone.restapi.controlpanels import RegistryConfigletPanel
 from Products.CMFPlone.interfaces.controlpanel import IDateAndTimeSchema
 from Products.CMFPlone.interfaces.controlpanel import IEditingSchema
 from Products.CMFPlone.interfaces.controlpanel import IImagingSchema
@@ -11,7 +10,9 @@ from Products.CMFPlone.interfaces.controlpanel import ISearchSchema
 from Products.CMFPlone.interfaces.controlpanel import ISecuritySchema
 from Products.CMFPlone.interfaces.controlpanel import ISiteSchema
 from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
-from plone.restapi.controlpanels import RegistryConfigletPanel
+from zope.component import adapter
+from zope.interface import Interface
+
 
 try:
     from plone.i18n.interfaces import ILanguageSchema

@@ -13,12 +13,6 @@ import transaction
 import unittest
 
 
-# from Products.CMFPlone.tests import dummy
-# from zope.component import getUtility
-# from zope.interface import directlyProvides
-# from zope.interface import noLongerProvides
-
-
 class TestServicesSlots(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
