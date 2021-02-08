@@ -5,6 +5,7 @@ from plone.restapi.interfaces import ISlot
 from plone.restapi.interfaces import ISlots
 from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.slots import Slot
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import subscribers
@@ -63,15 +64,30 @@ class SlotSerializer(object):
 class SlotsSerializer(object):
     """Default slots storage serializer"""
 
+    def __init__(self, context, storage, request):
+        self.context = context
+        self.request = request
+        self.storage = storage
+
     def __call__(self):
         base_url = self.context.absolute_url()
         result = {
             '@id': '{}/{}'.format(base_url, SERVICE_ID),
             "items": {}
         }
-        storage = ISlotStorage(self.context)
 
-        for name, slot in storage.items():
+        engine = ISlots(self.context)
+        slot_names = engine.discover_slots()
+
+        marker = object()
+        for name in slot_names:
+            slot = self.storage.get(name, marker)
+
+            if slot is marker:      # if slot is not on this level, we create a fake one
+                slot = Slot()
+                slot.__parent__ = self.storage
+                slot.__name__ = name
+
             serializer = getMultiAdapter(
                 (self.context, slot, self.request), ISerializeToJson
             )

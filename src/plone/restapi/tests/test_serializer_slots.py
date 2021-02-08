@@ -22,8 +22,9 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
 
         self.make_content()
 
-    def serialize(self, context, slot):
-        serializer = getMultiAdapter((context, slot, self.request), ISerializeToJson)
+    def serialize(self, context, slot_or_storage):
+        serializer = getMultiAdapter(
+            (context, slot_or_storage, self.request), ISerializeToJson)
         return serializer()
 
     def make_content(self):
@@ -124,3 +125,49 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
                             3: {u'_v_inherit': True, u'title': u'Third'},
                             5: {u'_v_inherit': True, u'title': u'Fifth'}},
             'slot_blocks_layout': {'items': [3, 2, 5]}})
+
+    def test_serialize_storage(self):
+        rootstore = ISlotStorage(self.portal)
+        rootstore['left'] = Slot(**({
+            'slot_blocks': {
+                1: {'title': 'First'},
+                3: {'title': 'Third'},
+                5: {'title': 'Fifth'},
+            },
+            'slot_blocks_layout': {'items': [5, 1, 3]}
+        }))
+        rootstore['right'] = Slot(**({
+            'slot_blocks': {
+                6: {'title': 'First'},
+                7: {'title': 'Third'},
+                8: {'title': 'Fifth'},
+            },
+            'slot_blocks_layout': {'items': [8, 6, 7]}
+        }))
+
+        storage = ISlotStorage(self.doc)
+        storage['left'] = Slot(
+            slot_blocks={2: {'s:isVariantOf': 1, 'title': 'Second'}},
+            slot_blocks_layout={'items': [3, 2]},
+        )
+
+        res = self.serialize(self.doc, storage)
+        self.assertEqual(res, {
+            '@id': 'http://nohost/plone/documents/company-a/doc-1/@slots',
+            'items': {
+                u'left': {
+                    '@id': 'http://nohost/plone/documents/company-a/doc-1/@slots/left',
+                    'slot_blocks': {
+                        2: {u's:isVariantOf': 1, u'title': u'Second'},
+                        3: {u'_v_inherit': True, u'title': u'Third'},
+                        5: {u'_v_inherit': True, u'title': u'Fifth'}
+                    },
+                    'slot_blocks_layout': {'items': [3, 2, 5]}},
+                u'right': {
+                    '@id': 'http://nohost/plone/documents/company-a/doc-1/@slots/right',
+                           'slot_blocks': {
+                               6: {u'title': u'First', u'_v_inherit': True},
+                               7: {u'title': u'Third', u'_v_inherit': True},
+                               8: {u'title': u'Fifth', u'_v_inherit': True}
+                           },
+                    'slot_blocks_layout': {'items': [8, 6, 7]}}}})

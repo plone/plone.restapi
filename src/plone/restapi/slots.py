@@ -54,6 +54,22 @@ class Slots(object):
     def __init__(self, context):
         self.context = context
 
+    def discover_slots(self):
+        current = self.context
+        names = set()
+        while True:
+            storage = queryAdapter(current, ISlotStorage)
+            if storage is None:
+                break
+            for k in storage.keys():
+                names.add(k)
+            if current.__parent__:
+                current = current.__parent__
+            else:
+                break
+
+        return names
+
     def get_fills_stack(self, name):
         slot_stack = []
 
@@ -65,6 +81,8 @@ class Slots(object):
             slot = storage.get(name)
             if slot:
                 slot_stack.append(slot)
+            else:
+                slot_stack.append(None)
             if current.__parent__:
                 current = current.__parent__
             else:
@@ -83,6 +101,10 @@ class Slots(object):
 
         level = 0
         for slot in stack:
+            if slot is None:
+                level += 1
+                continue
+
             for uid, block in slot.slot_blocks.items():
                 block = deepcopy(block)
                 _blockmap[uid] = block
