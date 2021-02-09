@@ -8,7 +8,7 @@ Changelog
 
 .. towncrier release notes start
 
-7.0.0b5 (2021-02-05)
+7.0.0b5 (unreleased)
 --------------------
 
 Bug fixes:
