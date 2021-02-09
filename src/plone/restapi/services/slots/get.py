@@ -3,6 +3,7 @@
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISlots
 from plone.restapi.interfaces import ISlotStorage
+from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from plone.restapi.slots import Slot
 from zope.component import getMultiAdapter
@@ -35,8 +36,15 @@ class SlotsGet(Service):
         adapter = getMultiAdapter(
             (self.context, storage, self.request), ISerializeToJson
         )
+        result = adapter()
 
-        return adapter()
+        # update "edit:True" editable status in slots
+        result['edit_slots'] = json_compatible(self.editable_slots)
+
+        # for k, v in result['items'].items():
+        #     result['items'][k]['edit'] = k in self.editable_slots
+
+        return result
 
     def replySlot(self):
         name = self.params[0]
@@ -60,7 +68,7 @@ class SlotsGet(Service):
             (self.context, slot, self.request), ISerializeToJson
         )()
 
-        result['can_edit'] = name in self.editable_slots
+        result['edit'] = name in self.editable_slots
 
         # TODO: add transaction doom, to deal with annotations created by ISlotStorage ?
         return result
