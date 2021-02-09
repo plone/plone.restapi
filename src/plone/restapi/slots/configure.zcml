@@ -32,11 +32,11 @@
 
   <subscriber
       for="plone.restapi.interfaces.IBlockRemovedEvent"
-      handler=".events.handle_blocks_removed_event"
+      handler=".handlers.handle_blocks_removed_event"
       />
   <subscriber
       for="plone.restapi.interfaces.IBlocksRemovedEvent"
-      handler=".events.handle_blocks_removed_event"
+      handler=".handlers.handle_blocks_removed_event"
       />
 
   <browser:page
