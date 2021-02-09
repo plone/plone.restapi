@@ -5,7 +5,6 @@ from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.slots import Slot
 from plone.restapi.slots import Slots
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from six.moves import UserDict
 from zope.component import provideAdapter
 from zope.interface import implements
 from zope.interface import Interface
