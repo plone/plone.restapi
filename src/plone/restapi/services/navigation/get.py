@@ -27,11 +27,6 @@ except ImportError:
     # BBB for Plone 4.x, remove with plone.restapi 8 / Plone 6
     from plone.app.controlpanel.navigation import INavigationSchema
 
-try:
-    from html import escape
-except ImportError:
-    from cgi import escape
-
 
 @implementer(IExpandableElement)
 @adapter(Interface, Interface)
@@ -199,7 +194,7 @@ class Navigation(object):
         item.update({"items": sub})
 
         if "title" in item and item["title"]:
-            item["title"] = escape(item["title"])
+            item["title"] = item["title"]
         if "path" in item:
             del item["path"]
         return item
