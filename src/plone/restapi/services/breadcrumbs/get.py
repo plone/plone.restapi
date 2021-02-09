@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from plone.app.layout.navigation.root import getNavigationRoot
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
 from zope.component import adapter
