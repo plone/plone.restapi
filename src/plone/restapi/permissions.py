@@ -4,3 +4,5 @@
 # permissions. Granted to Anonymous (i.e. everyone) by default via rolemap.xml
 
 UseRESTAPI = "plone.restapi: Use REST API"
+
+ModifySlotsPermission = "plone.restapi: Modify slots information"

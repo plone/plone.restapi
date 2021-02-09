@@ -18,13 +18,13 @@
       title="plone.restapi: Access Plone user information"
       />
   <permission
-      id="plone.restapi.getslots"
+      id="plone.restapi.GetSlots"
       title="plone.restapi: Access slots information"
       />
 
   <permission
-      id="plone.restapi.manageslots"
-      title="plone.restapi: Manage (edit) slots information"
+      id="plone.restapi.ModifySlots"
+      title="plone.restapi: Modify slots information"
       />
 
 </configure>

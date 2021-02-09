@@ -1,13 +1,18 @@
 # -*- coding: utf-8 -*-
 
+from AccessControl.SecurityManagement import getSecurityManager
 from copy import deepcopy
 from persistent import Persistent
+from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import ISlot
 from plone.restapi.interfaces import ISlots
 from plone.restapi.interfaces import ISlotStorage
+from plone.restapi.permissions import ModifySlotsPermission
+from plone.restapi.slots.interfaces import ISlotSettings
 from Products.CMFCore.interfaces import IContentish
 from zope.annotation.factory import factory
 from zope.component import adapter
+from zope.component import getUtility
 from zope.component import queryAdapter
 from zope.container.btree import BTreeContainer
 from zope.container.contained import Contained
@@ -154,6 +159,19 @@ class Slots(object):
         slot.slot_blocks = to_save
         slot._p_changed = True
 
+    def get_editable_slots(self):
+        sm = getSecurityManager()
 
-def can_edit_slots(context):
-    pass
+        slot_names = self.discover_slots()
+
+        if sm.checkPermission(ModifySlotsPermission, self.context):
+            return slot_names
+
+        if not sm.checkPermission("Modify portal content", self.context):
+            return []
+
+        registry = getUtility(IRegistry)
+        records = registry.forInterface(ISlotSettings)
+
+        content_slots = filter(None, [b.strip() for b in records.content_slots])
+        return content_slots

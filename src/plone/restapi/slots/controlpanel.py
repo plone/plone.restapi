@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from .interfaces import ISlotSettings
 from plone.app.registry.browser.controlpanel import ControlPanelFormWrapper
 from plone.app.registry.browser.controlpanel import RegistryEditForm

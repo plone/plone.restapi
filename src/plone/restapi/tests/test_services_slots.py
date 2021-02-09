@@ -146,6 +146,7 @@ class TestServicesSlots(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), {
             u'@id': u'http://localhost:55001/plone/@slots/left',
+            u'can_edit': True,
             u'slot_blocks': {u'1': {u'title': u'First'},
                              u'3': {u'title': u'Third'},
                              u'5': {u'title': u'Fifth'}},

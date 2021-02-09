@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from plone.restapi.interfaces import IBlockRemovedEvent
 from plone.restapi.interfaces import IBlocksRemovedEvent
 from zope.interface import implements

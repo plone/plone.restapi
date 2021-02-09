@@ -23,6 +23,10 @@ class SlotsGet(Service):
         return self
 
     def reply(self):
+        self.engine = ISlots(self.context)
+        self.slot_names = self.engine.discover_slots()
+        self.editable_slots = self.engine.get_editable_slots()
+
         if self.params and len(self.params) > 0:
             return self.replySlot()
 
@@ -37,10 +41,7 @@ class SlotsGet(Service):
     def replySlot(self):
         name = self.params[0]
 
-        engine = ISlots(self.context)
-        slot_names = engine.discover_slots()
-
-        if name not in slot_names:
+        if name not in self.slot_names:
             self.request.response.setStatus(404)
             return {
                 "type": "NotFound",
@@ -51,7 +52,7 @@ class SlotsGet(Service):
         storage = ISlotStorage(self.context)
         slot = storage.get(name, marker)
         if slot is marker:      # if slot is not on this level, we create a fake one
-            slot = Slot()
+            slot = Slot()       # TODO: replace with a DummyProxySlot
             slot.__parent__ = self.storage
             slot.__name__ = name
 
@@ -59,6 +60,7 @@ class SlotsGet(Service):
             (self.context, slot, self.request), ISerializeToJson
         )()
 
-        result['can_edit'] = can_edit_slots(self.context)
+        result['can_edit'] = name in self.editable_slots
 
+        # TODO: add transaction doom, to deal with annotations created by ISlotStorage ?
         return result
