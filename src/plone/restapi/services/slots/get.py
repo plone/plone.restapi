@@ -38,9 +38,9 @@ class SlotsGet(Service):
         )
         result = adapter()
 
-        # update "edit:True" editable status in slots
         result['edit_slots'] = json_compatible(self.editable_slots)
 
+        # update "edit:True" editable status in slots
         # for k, v in result['items'].items():
         #     result['items'][k]['edit'] = k in self.editable_slots
 
