@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 
+from plone.api import portal
 from plone.dexterity.utils import createContentInContainer
+from plone.registry.interfaces import IRegistry
+from plone.restapi.interfaces import ISlots
 from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.slots import Slot
 from plone.restapi.slots import Slots
+from plone.restapi.slots.interfaces import ISlotSettings
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from Products.CMFPlone.tests.PloneTestCase import PloneTestCase
 from zope.component import provideAdapter
 from zope.interface import implements
 from zope.interface import Interface
@@ -352,3 +357,86 @@ class TestSlotsStorage(unittest.TestCase):
 
         self.assertEqual(storage['left'].__name__, 'left')
         self.assertTrue(storage['left'].__parent__ is storage)
+
+
+class TestSlotsEngineIntegration(PloneTestCase):
+
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
+        self.request = self.layer["request"]
+
+        self.portal.acl_users.userFolderAddUser(
+            'simple_member', 'slots_pw', ["Member"], []
+        )
+
+        self.portal.acl_users.userFolderAddUser(
+            'editor_member', 'slots_pw', ["Editor"], []
+        )
+
+        self.make_content()
+
+    def make_content(self):
+        self.documents = createContentInContainer(
+            self.portal, u"Folder", id=u"documents", title=u"Documents"
+        )
+        self.company = createContentInContainer(
+            self.documents, u"Folder", id=u"company-a", title=u"Documents"
+        )
+        self.doc = createContentInContainer(
+            self.company, u"Document", id=u"doc-1", title=u"Doc 1"
+        )
+
+    def test_editable_slots_as_manager(self):
+        engine = ISlots(self.doc)
+
+        empty = engine.get_editable_slots()
+        self.assertEqual(empty, [])
+
+        storage = ISlotStorage(self.doc)
+        storage['left'] = Slot()
+
+        left = engine.get_editable_slots()
+        self.assertEqual(left, ['left'])
+
+    def test_editable_slots_as_member(self):
+        self.login('simple_member')
+
+        engine = ISlots(self.doc)
+
+        empty = engine.get_editable_slots()
+        self.assertEqual(empty, [])
+
+        storage = ISlotStorage(self.doc)
+        storage['left'] = Slot()
+
+        left = engine.get_editable_slots()
+        self.assertEqual(left, [])
+
+        registry = portal.get_tool('portal_registry')
+        proxy = registry.forInterface(ISlotSettings)
+        proxy.content_slots = [u'left']
+
+        self.assertEqual(engine.get_editable_slots(), [])
+
+    def test_editable_slots_as_editor(self):
+        self.login('editor_member')
+
+        engine = ISlots(self.doc)
+
+        empty = engine.get_editable_slots()
+        self.assertEqual(empty, [])
+
+        storage = ISlotStorage(self.doc)
+        storage['left'] = Slot()
+
+        left = engine.get_editable_slots()
+        self.assertEqual(left, [])
+
+        registry = portal.get_tool('portal_registry')
+        proxy = registry.forInterface(ISlotSettings)
+        proxy.content_slots = [u'left']
+
+        self.assertEqual(engine.get_editable_slots(), [u'left'])

@@ -165,7 +165,7 @@ class Slots(object):
         slot_names = self.discover_slots()
 
         if sm.checkPermission(ModifySlotsPermission, self.context):
-            return slot_names
+            return list(slot_names)
 
         if not sm.checkPermission("Modify portal content", self.context):
             return []
@@ -173,5 +173,7 @@ class Slots(object):
         registry = getUtility(IRegistry)
         records = registry.forInterface(ISlotSettings)
 
-        content_slots = filter(None, [b.strip() for b in records.content_slots])
+        content_slots = [s for s in
+                         [line.strip() for line in (records.content_slots or [])]
+                         if s in slot_names]
         return content_slots
