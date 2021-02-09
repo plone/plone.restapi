@@ -2,7 +2,6 @@
 
 from plone.api import portal
 from plone.dexterity.utils import createContentInContainer
-from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import ISlots
 from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.slots import Slot
