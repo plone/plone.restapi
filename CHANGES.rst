@@ -8,6 +8,53 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0b7 (2021-02-10)
+--------------------
+
+New features:
+
+
+- Add ``root`` element to the @breadcrumbs endpoint
+  [sneridagh] (#1064)
+
+
+Bug fixes:
+
+
+- Remove ``escape``'d titles
+  [sneridagh] (#1061)
+
+
+7.0.0b6 (2021-02-09)
+--------------------
+
+Bug fixes:
+
+
+- Do not break if some custom code provides an alias for Products.Archetypes (#1004)
+- Handle missing review_state value in @navigation endpoint for items without a workflow [cekk] (#1060)
+
+
+7.0.0b5 (2021-02-03)
+--------------------
+
+Bug fixes:
+
+
+- Fix transform object_browser href smartfield not working as expected
+  [sneridagh] (#1058)
+
+
+7.0.0b4 (2021-02-01)
+--------------------
+
+Bug fixes:
+
+
+- Fix href smart field in transformers do not cover the object_widget use case
+  [sneridagh] (#1054)
+
+
 7.0.0b3 (2021-01-26)
 --------------------
 

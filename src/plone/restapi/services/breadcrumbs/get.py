@@ -23,6 +23,9 @@ class Breadcrumbs(object):
         if not expand:
             return result
 
+        portal_state = getMultiAdapter(
+            (self.context, self.request), name="plone_portal_state"
+        )
         breadcrumbs_view = getMultiAdapter(
             (self.context, self.request), name="breadcrumbs_view"
         )
@@ -38,6 +41,7 @@ class Breadcrumbs(object):
             items.append(item)
 
         result["breadcrumbs"]["items"] = items
+        result["breadcrumbs"]["root"] = portal_state.navigation_root().absolute_url()
         return result
 
 

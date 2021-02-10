@@ -6,6 +6,7 @@ from plone.memoize.view import memoize
 from plone.memoize.view import memoize_contextless
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import getFSVersionTuple
@@ -25,11 +26,6 @@ try:
 except ImportError:
     # BBB for Plone 4.x, remove with plone.restapi 8 / Plone 6
     from plone.app.controlpanel.navigation import INavigationSchema
-
-try:
-    from html import escape
-except ImportError:
-    from cgi import escape
 
 
 @implementer(IExpandableElement)
@@ -121,7 +117,7 @@ class Navigation(object):
                 }
             )
             if "review_state" in tab:
-                entry["review_state"] = tab["review_state"]
+                entry["review_state"] = json_compatible(tab["review_state"])
             else:
                 entry["review_state"] = None
 
@@ -177,7 +173,7 @@ class Navigation(object):
                 "@id": url,
                 "title": safe_unicode(brain.Title),
                 "description": safe_unicode(brain.Description),
-                "review_state": brain.review_state,
+                "review_state": json_compatible(brain.review_state),
                 "use_view_action_in_listings": brain.portal_type in types_using_view,
             }
 
@@ -198,7 +194,7 @@ class Navigation(object):
         item.update({"items": sub})
 
         if "title" in item and item["title"]:
-            item["title"] = escape(item["title"])
+            item["title"] = item["title"]
         if "path" in item:
             del item["path"]
         return item

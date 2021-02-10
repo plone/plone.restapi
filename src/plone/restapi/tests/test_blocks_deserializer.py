@@ -216,3 +216,30 @@ class TestBlocksDeserializer(unittest.TestCase):
         self.assertEqual(
             self.portal.doc1.blocks["123"]["link"], self.portal.doc1.absolute_url()
         )
+
+    def test_deserialize_blocks_smart_href_array_volto_object_browser(self):
+        self.deserialize(
+            blocks={
+                "123": {
+                    "@type": "foo",
+                    "href": [{"@id": self.portal.doc1.absolute_url()}],
+                }
+            }
+        )
+        doc_uid = IUUID(self.portal.doc1)
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["href"][0]["@id"],
+            "../resolveuid/{}".format(doc_uid),
+        )
+
+    def test_deserialize_blocks_smart_href_array(self):
+        self.deserialize(
+            blocks={"123": {"@type": "foo", "href": [self.portal.doc1.absolute_url()]}}
+        )
+        doc_uid = IUUID(self.portal.doc1)
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["href"][0],
+            "../resolveuid/{}".format(doc_uid),
+        )
