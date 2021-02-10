@@ -76,8 +76,8 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         self.assertEqual(res, {
             '@id': 'http://nohost/plone/documents/company-a/doc-1/@slots/left',
             'blocks': {1: {u'_v_inherit': True},
-                            2: {u'_v_inherit': True},
-                            3: {u'_v_inherit': True}},
+                       2: {u'_v_inherit': True},
+                       3: {u'_v_inherit': True}},
             'blocks_layout': {'items': [1, 2, 3]}})
 
     def test_data_override_with_isVariant(self):
@@ -99,7 +99,7 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         self.assertEqual(res, {
             '@id': 'http://nohost/plone/documents/company-a/doc-1/@slots/left',
             'blocks': {2: {u's:isVariantOf': 1, u'title': u'Second'},
-                            3: {u'_v_inherit': True, u'title': u'Third'}},
+                       3: {u'_v_inherit': True, u'title': u'Third'}},
             'blocks_layout': {'items': [2, 3]}})
 
     def test_change_order_from_layout(self):
@@ -122,8 +122,8 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         self.assertEqual(res, {
             '@id': 'http://nohost/plone/documents/company-a/doc-1/@slots/left',
             'blocks': {2: {u's:isVariantOf': 1, u'title': u'Second'},
-                            3: {u'_v_inherit': True, u'title': u'Third'},
-                            5: {u'_v_inherit': True, u'title': u'Fifth'}},
+                       3: {u'_v_inherit': True, u'title': u'Third'},
+                       5: {u'_v_inherit': True, u'title': u'Fifth'}},
             'blocks_layout': {'items': [3, 2, 5]}})
 
     def test_serialize_storage(self):
