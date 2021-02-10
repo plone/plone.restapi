@@ -82,26 +82,26 @@ class TestServicesSlots(unittest.TestCase):
 
         rootstore = ISlotStorage(self.portal)
         rootstore['left'] = Slot(**({
-            'slot_blocks': {
+            'blocks': {
                 1: {'title': 'First'},
                 3: {'title': 'Third'},
                 5: {'title': 'Fifth'},
             },
-            'slot_blocks_layout': {'items': [5, 1, 3]}
+            'blocks_layout': {'items': [5, 1, 3]}
         }))
         rootstore['right'] = Slot(**({
-            'slot_blocks': {
+            'blocks': {
                 6: {'title': 'First'},
                 7: {'title': 'Third'},
                 8: {'title': 'Fifth'},
             },
-            'slot_blocks_layout': {'items': [8, 6, 7]}
+            'blocks_layout': {'items': [8, 6, 7]}
         }))
 
         storage = ISlotStorage(self.doc)
         storage['left'] = Slot(
-            slot_blocks={2: {'s:isVariantOf': 1, 'title': 'Second'}},
-            slot_blocks_layout={'items': [3, 2]},
+            blocks={2: {'s:isVariantOf': 1, 'title': 'Second'}},
+            blocks_layout={'items': [3, 2]},
         )
 
         setRoles(self.portal, TEST_USER_ID, ["Member"])
@@ -113,15 +113,15 @@ class TestServicesSlots(unittest.TestCase):
             u'@id': u'http://localhost:55001/plone/@slots',
             u'edit_slots': [u'right', u'left'],
             u'items': {u'left': {u'@id': u'http://localhost:55001/plone/@slots/left',
-                                 u'slot_blocks': {u'1': {u'title': u'First'},
+                                 u'blocks': {u'1': {u'title': u'First'},
                                                   u'3': {u'title': u'Third'},
                                                   u'5': {u'title': u'Fifth'}},
-                                 u'slot_blocks_layout': {u'items': [5, 1, 3]}},
+                                 u'blocks_layout': {u'items': [5, 1, 3]}},
                        u'right': {u'@id': u'http://localhost:55001/plone/@slots/right',
-                                  u'slot_blocks': {u'6': {u'title': u'First'},
+                                  u'blocks': {u'6': {u'title': u'First'},
                                                    u'7': {u'title': u'Third'},
                                                    u'8': {u'title': u'Fifth'}},
-                                  u'slot_blocks_layout': {u'items': [8, 6, 7]}}}}
+                                  u'blocks_layout': {u'items': [8, 6, 7]}}}}
         )
 
     def test_slot_endpoint(self):
@@ -134,10 +134,10 @@ class TestServicesSlots(unittest.TestCase):
         self.assertEqual(response.json(), {
             u'@id': u'http://localhost:55001/plone/@slots/left',
             u'edit': True,
-            u'slot_blocks': {u'1': {u'title': u'First'},
+            u'blocks': {u'1': {u'title': u'First'},
                              u'3': {u'title': u'Third'},
                              u'5': {u'title': u'Fifth'}},
-            u'slot_blocks_layout': {u'items': [5, 1, 3]}})
+            u'blocks_layout': {u'items': [5, 1, 3]}})
 
     # def test_deserializer_slot_not_found(self):
     #     response = self.api_session.patch('/@slots/left', json={})

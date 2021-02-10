@@ -32,12 +32,12 @@ class SlotSerializer(object):
     def __call__(self):
         name = self.slot.__name__
 
-        # a dict with slot_blocks and slot_blocks_layout
+        # a dict with blocks and blocks_layout
         data = ISlots(self.context).get_blocks(name)
 
-        slot_blocks = copy.deepcopy(data['slot_blocks'])
+        blocks = copy.deepcopy(data['blocks'])
 
-        for id, block_value in slot_blocks.items():
+        for id, block_value in blocks.items():
             block_type = block_value.get("@type", "")
             handlers = []
             for h in subscribers(
@@ -50,12 +50,12 @@ class SlotSerializer(object):
                 if not getattr(handler, "disabled", False):
                     block_value = handler(block_value)
 
-            slot_blocks[id] = json_compatible(block_value)
+            blocks[id] = json_compatible(block_value)
 
         return {
             "@id": "{0}/{1}/{2}".format(self.context.absolute_url(), SERVICE_ID, name),
-            "slot_blocks": slot_blocks,
-            "slot_blocks_layout": data['slot_blocks_layout']
+            "blocks": blocks,
+            "blocks_layout": data['blocks_layout']
         }
 
 

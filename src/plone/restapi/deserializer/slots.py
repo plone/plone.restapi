@@ -35,17 +35,17 @@ class SlotDeserializer(object):
         if data is None:
             data = json_body(self.request)
 
-        slot_blocks = copy.deepcopy(data['slot_blocks'])
+        blocks = copy.deepcopy(data['blocks'])
 
-        existing_blocks = self.slot.slot_blocks
+        existing_blocks = self.slot.blocks
 
-        removed_blocks_ids = set(existing_blocks.keys()) - set(slot_blocks.keys())
+        removed_blocks_ids = set(existing_blocks.keys()) - set(blocks.keys())
         removed_blocks = {block_id: existing_blocks[block_id] for block_id in
                           removed_blocks_ids}
 
         notify(BlocksRemovedEvent(dict(context=self.context, blocks=removed_blocks)))
 
-        for id, block_value in slot_blocks.items():
+        for id, block_value in blocks.items():
             block_type = block_value.get("@type", "")
 
             handlers = []
@@ -60,10 +60,10 @@ class SlotDeserializer(object):
                 if not getattr(handler, "disabled", False):
                     block_value = handler(block_value)
 
-            slot_blocks[id] = block_value
+            blocks[id] = block_value
 
-        self.slot.slot_blocks = slot_blocks
-        self.slot.slot_blocks_layout = data['slot_blocks_layout']
+        self.slot.blocks = blocks
+        self.slot.blocks_layout = data['blocks_layout']
         self.slot._p_changed = True
 
 
@@ -93,7 +93,7 @@ class SlotsDeserializer(object):
             if slotdata is None:
                 notify(BlocksRemovedEvent(dict(
                     context=self.context,
-                    blocks=slot.slot_blocks
+                    blocks=slot.blocks
                 )))
 
                 del self.storage[name]

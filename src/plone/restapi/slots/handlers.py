@@ -16,9 +16,9 @@ def handle_block_removed_event(event):
 
         slots = ISlots(obj)
         for slot in slots.values():
-            if blockid in slot['slot_blocks_layout']['items']:
-                slot['slot_blocks_layout']['items'] = [
-                    bid for bid in slot['slot_blocks_layout']['items']
+            if blockid in slot['blocks_layout']['items']:
+                slot['blocks_layout']['items'] = [
+                    bid for bid in slot['blocks_layout']['items']
                     if bid != blockid
                 ]
                 slot._p_changed = True
@@ -42,9 +42,9 @@ def handle_blocks_removed_event(event):
 
         slots = ISlots(obj)
         for slot in slots.values():
-            if set_block_ids.intersection(slot['slot_blocks_layout']['items']):
-                slot['slot_blocks_layout']['items'] = [
-                    bid for bid in slot['slot_blocks_layout']['items']
+            if set_block_ids.intersection(slot['blocks_layout']['items']):
+                slot['blocks_layout']['items'] = [
+                    bid for bid in slot['blocks_layout']['items']
                     if bid not in blockids
                 ]
                 slot._p_changed = True

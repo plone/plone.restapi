@@ -45,29 +45,29 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         res = self.serialize(self.portal, storage['left'])
         self.assertEqual(res, {
             '@id': 'http://nohost/plone/@slots/left',
-            'slot_blocks': {},
-            'slot_blocks_layout': {'items': []}
+            'blocks': {},
+            'blocks_layout': {'items': []}
         })
 
     def test_slot(self):
         storage = ISlotStorage(self.portal)
         storage['left'] = Slot(**({
-            'slot_blocks': {1: {}, 2: {}, 3: {}, },
-            'slot_blocks_layout': {'items': [1, 2, 3]}
+            'blocks': {1: {}, 2: {}, 3: {}, },
+            'blocks_layout': {'items': [1, 2, 3]}
         }))
 
         res = self.serialize(self.portal, storage['left'])
         self.assertEqual(res, {
             '@id': 'http://nohost/plone/@slots/left',
-            'slot_blocks_layout': {'items': [1, 2, 3]},
-            'slot_blocks': {1: {}, 2: {}, 3: {}}
+            'blocks_layout': {'items': [1, 2, 3]},
+            'blocks': {1: {}, 2: {}, 3: {}}
         })
 
     def test_slot_deep(self):
         rootstore = ISlotStorage(self.portal)
         rootstore['left'] = Slot(**({
-            'slot_blocks': {1: {}, 2: {}, 3: {}, },
-            'slot_blocks_layout': {'items': [1, 2, 3]}
+            'blocks': {1: {}, 2: {}, 3: {}, },
+            'blocks_layout': {'items': [1, 2, 3]}
         }))
 
         storage = ISlotStorage(self.doc)
@@ -75,80 +75,80 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         res = self.serialize(self.doc, storage['left'])
         self.assertEqual(res, {
             '@id': 'http://nohost/plone/documents/company-a/doc-1/@slots/left',
-            'slot_blocks': {1: {u'_v_inherit': True},
+            'blocks': {1: {u'_v_inherit': True},
                             2: {u'_v_inherit': True},
                             3: {u'_v_inherit': True}},
-            'slot_blocks_layout': {'items': [1, 2, 3]}})
+            'blocks_layout': {'items': [1, 2, 3]}})
 
     def test_data_override_with_isVariant(self):
         rootstore = ISlotStorage(self.portal)
         rootstore['left'] = Slot(**({
-            'slot_blocks': {
+            'blocks': {
                 1: {'title': 'First'},
                 3: {'title': 'Third'},
             },
-            'slot_blocks_layout': {'items': [1, 3]}
+            'blocks_layout': {'items': [1, 3]}
         }))
 
         storage = ISlotStorage(self.doc)
         storage['left'] = Slot(
-            slot_blocks={2: {'s:isVariantOf': 1, 'title': 'Second'}},
-            slot_blocks_layout={'items': [2]},
+            blocks={2: {'s:isVariantOf': 1, 'title': 'Second'}},
+            blocks_layout={'items': [2]},
         )
         res = self.serialize(self.doc, storage['left'])
         self.assertEqual(res, {
             '@id': 'http://nohost/plone/documents/company-a/doc-1/@slots/left',
-            'slot_blocks': {2: {u's:isVariantOf': 1, u'title': u'Second'},
+            'blocks': {2: {u's:isVariantOf': 1, u'title': u'Second'},
                             3: {u'_v_inherit': True, u'title': u'Third'}},
-            'slot_blocks_layout': {'items': [2, 3]}})
+            'blocks_layout': {'items': [2, 3]}})
 
     def test_change_order_from_layout(self):
         rootstore = ISlotStorage(self.portal)
         rootstore['left'] = Slot(**({
-            'slot_blocks': {
+            'blocks': {
                 1: {'title': 'First'},
                 3: {'title': 'Third'},
                 5: {'title': 'Fifth'},
             },
-            'slot_blocks_layout': {'items': [5, 1, 3]}
+            'blocks_layout': {'items': [5, 1, 3]}
         }))
 
         storage = ISlotStorage(self.doc)
         storage['left'] = Slot(
-            slot_blocks={2: {'s:isVariantOf': 1, 'title': 'Second'}},
-            slot_blocks_layout={'items': [3, 2]},
+            blocks={2: {'s:isVariantOf': 1, 'title': 'Second'}},
+            blocks_layout={'items': [3, 2]},
         )
         res = self.serialize(self.doc, storage['left'])
         self.assertEqual(res, {
             '@id': 'http://nohost/plone/documents/company-a/doc-1/@slots/left',
-            'slot_blocks': {2: {u's:isVariantOf': 1, u'title': u'Second'},
+            'blocks': {2: {u's:isVariantOf': 1, u'title': u'Second'},
                             3: {u'_v_inherit': True, u'title': u'Third'},
                             5: {u'_v_inherit': True, u'title': u'Fifth'}},
-            'slot_blocks_layout': {'items': [3, 2, 5]}})
+            'blocks_layout': {'items': [3, 2, 5]}})
 
     def test_serialize_storage(self):
         rootstore = ISlotStorage(self.portal)
         rootstore['left'] = Slot(**({
-            'slot_blocks': {
+            'blocks': {
                 1: {'title': 'First'},
                 3: {'title': 'Third'},
                 5: {'title': 'Fifth'},
             },
-            'slot_blocks_layout': {'items': [5, 1, 3]}
+            'blocks_layout': {'items': [5, 1, 3]}
         }))
         rootstore['right'] = Slot(**({
-            'slot_blocks': {
+            'blocks': {
                 6: {'title': 'First'},
                 7: {'title': 'Third'},
                 8: {'title': 'Fifth'},
             },
-            'slot_blocks_layout': {'items': [8, 6, 7]}
+            'blocks_layout': {'items': [8, 6, 7]}
         }))
 
         storage = ISlotStorage(self.doc)
         storage['left'] = Slot(
-            slot_blocks={2: {'s:isVariantOf': 1, 'title': 'Second'}},
-            slot_blocks_layout={'items': [3, 2]},
+            blocks={2: {'s:isVariantOf': 1, 'title': 'Second'}},
+            blocks_layout={'items': [3, 2]},
         )
 
         res = self.serialize(self.doc, storage)
@@ -157,17 +157,17 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
             'items': {
                 u'left': {
                     '@id': 'http://nohost/plone/documents/company-a/doc-1/@slots/left',
-                    'slot_blocks': {
+                    'blocks': {
                         2: {u's:isVariantOf': 1, u'title': u'Second'},
                         3: {u'_v_inherit': True, u'title': u'Third'},
                         5: {u'_v_inherit': True, u'title': u'Fifth'}
                     },
-                    'slot_blocks_layout': {'items': [3, 2, 5]}},
+                    'blocks_layout': {'items': [3, 2, 5]}},
                 u'right': {
                     '@id': 'http://nohost/plone/documents/company-a/doc-1/@slots/right',
-                           'slot_blocks': {
+                           'blocks': {
                                6: {u'title': u'First', u'_v_inherit': True},
                                7: {u'title': u'Third', u'_v_inherit': True},
                                8: {u'title': u'Fifth', u'_v_inherit': True}
                            },
-                    'slot_blocks_layout': {'items': [8, 6, 7]}}}})
+                    'blocks_layout': {'items': [8, 6, 7]}}}})

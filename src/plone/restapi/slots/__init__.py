@@ -22,8 +22,8 @@ from zope.traversing.interfaces import ITraversable
 
 SLOTS_KEY = "plone.restapi.slots"
 DEFAULT_SLOT_DATA = {
-    "slot_blocks_layout": {"items": []},
-    "slot_blocks": {}
+    "blocks_layout": {"items": []},
+    "blocks": {}
 }
 
 
@@ -110,7 +110,7 @@ class Slots(object):
                 level += 1
                 continue
 
-            for uid, block in slot.slot_blocks.items():
+            for uid, block in slot.blocks.items():
                 block = deepcopy(block)
                 _blockmap[uid] = block
 
@@ -123,7 +123,7 @@ class Slots(object):
                     if level > 0:
                         block['_v_inherit'] = True
 
-            for uid in slot.slot_blocks_layout['items']:
+            for uid in slot.blocks_layout['items']:
                 if not (uid in blocks_layout or uid in _replaced):
                     blocks_layout.append(uid)
 
@@ -135,8 +135,8 @@ class Slots(object):
                 v.update(self._resolve_block(v, _blockmap))
 
         return {
-            'slot_blocks': blocks,
-            'slot_blocks_layout': {'items': blocks_layout}
+            'blocks': blocks,
+            'blocks_layout': {'items': blocks_layout}
         }
 
     def _resolve_block(self, block, blocks):
@@ -150,13 +150,13 @@ class Slots(object):
     def save_data_to_slot(self, slot, data):
         to_save = {}
 
-        for key in data['slot_blocks_layout']['items']:
-            block = data['slot_blocks'][key]
+        for key in data['blocks_layout']['items']:
+            block = data['blocks'][key]
             if not (block.get('s:sameOf') or block.get('_v_inherit')):
                 to_save[key] = block
 
-        slot.slot_blocks_layout = data['slot_blocks_layout']
-        slot.slot_blocks = to_save
+        slot.blocks_layout = data['blocks_layout']
+        slot.blocks = to_save
         slot._p_changed = True
 
     def get_editable_slots(self):
