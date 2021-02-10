@@ -6,9 +6,9 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.events import BlocksRemovedEvent
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.interfaces import ISlot
-from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.slots import Slot
+from plone.restapi.slots.interfaces import ISlot
+from plone.restapi.slots.interfaces import ISlotStorage
 from Products.CMFCore.interfaces import IContentish
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter

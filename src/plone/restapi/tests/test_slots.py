@@ -3,11 +3,11 @@
 from plone.api import portal
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.interfaces import ISlots
-from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.slots import Slot
 from plone.restapi.slots import Slots
+from plone.restapi.slots.interfaces import ISlots
 from plone.restapi.slots.interfaces import ISlotSettings
+from plone.restapi.slots.interfaces import ISlotStorage
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFPlone.tests.PloneTestCase import PloneTestCase
 from zope.component import getMultiAdapter
@@ -445,7 +445,7 @@ class TestSlotsEngineIntegration(PloneTestCase):
     def test_deserialize_empty(self):
         storage = ISlotStorage(self.doc)
         deserializer = getMultiAdapter(
-            (self.doc, storage,  self.request), IDeserializeFromJson)
+            (self.doc, storage, self.request), IDeserializeFromJson)
         deserializer()
 
         self.assertEqual(list(storage.keys()), [])
@@ -453,7 +453,7 @@ class TestSlotsEngineIntegration(PloneTestCase):
     def test_deserialize_put_one(self):
         storage = ISlotStorage(self.doc)
         deserializer = getMultiAdapter(
-            (self.doc, storage,  self.request), IDeserializeFromJson)
+            (self.doc, storage, self.request), IDeserializeFromJson)
         deserializer({"left": {
             'blocks_layout': {'items': [3, 2, 5]},
             'blocks': {

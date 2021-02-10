@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.interfaces import ISlots
-from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from plone.restapi.slots import Slot
+from plone.restapi.slots.interfaces import ISlots
+from plone.restapi.slots.interfaces import ISlotStorage
 from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse

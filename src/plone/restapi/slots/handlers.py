@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from plone.api import portal
-from plone.restapi.interfaces import ISlots
+from plone.restapi.slots.interfaces import ISlots
 
 
 def handle_block_removed_event(event):

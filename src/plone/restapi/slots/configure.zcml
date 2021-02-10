@@ -11,13 +11,13 @@
 
   <adapter
       factory=".SlotsStorage"
-      provides="plone.restapi.interfaces.ISlotStorage"
+      provides=".interfaces.ISlotStorage"
       for="Products.CMFCore.interfaces.IContentish"
       />
 
   <adapter
       factory=".SlotsStorage"
-      provides="plone.restapi.interfaces.ISlotStorage"
+      provides=".interfaces.ISlotStorage"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       />
 

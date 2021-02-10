@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 
+from .interfaces import ISlot
+from .interfaces import ISlots
+from .interfaces import ISlotStorage
 from AccessControl.SecurityManagement import getSecurityManager
 from copy import deepcopy
 from persistent import Persistent
 from plone.registry.interfaces import IRegistry
-from plone.restapi.interfaces import ISlot
-from plone.restapi.interfaces import ISlots
-from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.permissions import ModifySlotsPermission
 from plone.restapi.slots.interfaces import ISlotSettings
 from Products.CMFCore.interfaces import IContentish

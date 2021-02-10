@@ -3,8 +3,8 @@
 # from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.slots import Slot
+from plone.restapi.slots.interfaces import ISlotStorage
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
 

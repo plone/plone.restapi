@@ -10,8 +10,8 @@ from plone.app.contenttypes.indexers import SearchableText
 from plone.indexer.decorator import indexer
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IBlockSearchableText
-from plone.restapi.interfaces import ISlots
 from plone.restapi.slots import SLOTS_KEY
+from plone.restapi.slots.interfaces import ISlots
 from Products.CMFCore.interfaces import IContentish
 from zope.annotation.interfaces import IAnnotations
 from zope.component import adapter

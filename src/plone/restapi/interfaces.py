@@ -4,13 +4,10 @@
 # E0211: Method has no argument
 # W0221: Arguments number differs from overridden '__call__' method
 
-from plone.schema import JSONField
 from zope.interface import Attribute
 from zope.interface import Interface
 from zope.interface.interfaces import IObjectEvent
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
-
-import json
 
 
 class IPloneRestapiLayer(IDefaultBrowserLayer):
@@ -214,44 +211,6 @@ class IBlockSearchableText(Interface):
 
     def __call__(value):
         """Extract text from the block value. Returns text"""
-
-
-class ISlots(Interface):
-    """Slots are named container of sets of blocks"""
-
-
-class ISlotStorage(Interface):
-    """ A store of slots information """
-
-
-SLOT_BLOCKS_SCHEMA = json.dumps({"type": "object", "properties": {}})
-
-SLOT_LAYOUT_SCHEMA = json.dumps(
-    {
-        "type": "object",
-        "properties": {"items": {"type": "array", "items": {"type": "string"}}},
-    }
-)
-
-
-class ISlot(Interface):
-    """Slots follow the IBlocks model"""
-
-    blocks = JSONField(
-        title=u"Slot blocks",
-        description=u"The JSON representation of the slot blocks information. Must be a JSON object.",  # noqa
-        schema=SLOT_BLOCKS_SCHEMA,
-        default={},
-        required=False,
-    )
-
-    blocks_layout = JSONField(
-        title=u"Slot blocks Layout",
-        description=u"The JSON representation of the slot blocks layout. Must be a JSON array.",  # noqa
-        schema=SLOT_LAYOUT_SCHEMA,
-        default={"items": []},
-        required=False,
-    )
 
 
 class IBlocksRemovedEvent(IObjectEvent):
