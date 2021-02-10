@@ -35,6 +35,9 @@ class SlotDeserializer(object):
         if data is None:
             data = json_body(self.request)
 
+        if not data:
+            return
+
         blocks = copy.deepcopy(data['blocks'])
 
         existing_blocks = self.slot.blocks
@@ -95,13 +98,14 @@ class SlotsDeserializer(object):
 
         for name, slot in self.storage.items():
             slotdata = data.get(name, None)
-            if slotdata is None:
+            if not slotdata:
                 notify(BlocksRemovedEvent(dict(
                     context=self.context,
                     blocks=slot.blocks
                 )))
 
-                del self.storage[name]
+                self.storage[name].blocks = {}
+                self.storage[name].blocks_layout = {"items": []}
 
         for name, slotdata in data.items():
             if name not in self.storage:
