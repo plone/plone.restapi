@@ -79,8 +79,9 @@ class TestSlotsEngineIntegration(PloneTestCase):
                          {6: {'title': 'Sixth'}, })
         self.assertEqual(storage['right'].blocks_layout, {"items": [6, 7]})
 
-    def test_delete_all(self):
+    def test_delete_all_with_dict(self):
         storage = ISlotStorage(self.doc)
+
         storage['left'] = Slot(**({
             'blocks': {
                 1: {'title': 'First'},
@@ -97,9 +98,39 @@ class TestSlotsEngineIntegration(PloneTestCase):
             },
             'blocks_layout': {'items': [8, 6, 7]}
         }))
+
         deserializer = getMultiAdapter(
             (self.doc, storage, self.request), IDeserializeFromJson)
         deserializer({'left': {}, 'right': {}})
+
+        left = storage['left']
+        self.assertEqual(left.blocks, {})
+        self.assertEqual(left.blocks_layout, {"items": []})
+
+    def test_delete_all_with_empty(self):
+        storage = ISlotStorage(self.doc)
+
+        storage['left'] = Slot(**({
+            'blocks': {
+                1: {'title': 'First'},
+                3: {'title': 'Third'},
+                5: {'title': 'Fifth'},
+            },
+            'blocks_layout': {'items': [5, 1, 3]}
+        }))
+        storage['right'] = Slot(**({
+            'blocks': {
+                6: {'title': 'First'},
+                7: {'title': 'Third'},
+                8: {'title': 'Fifth'},
+            },
+            'blocks_layout': {'items': [8, 6, 7]}
+        }))
+
+        deserializer = getMultiAdapter(
+            (self.doc, storage, self.request), IDeserializeFromJson)
+
+        deserializer({})
 
         left = storage['left']
         self.assertEqual(left.blocks, {})
