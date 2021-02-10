@@ -56,20 +56,6 @@ class TestServicesSlots(unittest.TestCase):
         """
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        if "Members" in self.portal:
-            self.portal._delObject("Members")
-            self.folder = None
-        if "news" in self.portal:
-            self.portal._delObject("news")
-        if "events" in self.portal:
-            self.portal._delObject("events")
-        if "front-page" in self.portal:
-            self.portal._delObject("front-page")
-        if "folder" in self.portal:
-            self.portal._delObject("folder")
-        if "users" in self.portal:
-            self.portal._delObject("users")
-
         self.portal.invokeFactory("Document", "doc1")
         self.portal.invokeFactory("Document", "doc2")
         self.portal.invokeFactory("Document", "doc3")
@@ -152,3 +138,7 @@ class TestServicesSlots(unittest.TestCase):
                              u'3': {u'title': u'Third'},
                              u'5': {u'title': u'Fifth'}},
             u'slot_blocks_layout': {u'items': [5, 1, 3]}})
+
+    # def test_deserializer_slot_not_found(self):
+    #     response = self.api_session.patch('/@slots/left', json={})
+    #     self.assertEqual(response.status_code, 404)

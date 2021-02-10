@@ -2,6 +2,7 @@
 
 from plone.api import portal
 from plone.dexterity.utils import createContentInContainer
+from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISlots
 from plone.restapi.interfaces import ISlotStorage
 from plone.restapi.slots import Slot
@@ -9,6 +10,7 @@ from plone.restapi.slots import Slots
 from plone.restapi.slots.interfaces import ISlotSettings
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFPlone.tests.PloneTestCase import PloneTestCase
+from zope.component import getMultiAdapter
 from zope.component import provideAdapter
 from zope.interface import implements
 from zope.interface import Interface
@@ -439,3 +441,28 @@ class TestSlotsEngineIntegration(PloneTestCase):
         proxy.content_slots = [u'left']
 
         self.assertEqual(engine.get_editable_slots(), [u'left'])
+
+    def test_deserialize_empty(self):
+        storage = ISlotStorage(self.doc)
+        deserializer = getMultiAdapter(
+            (self.doc, storage,  self.request), IDeserializeFromJson)
+        deserializer()
+
+        self.assertEqual(list(storage.keys()), [])
+
+    def test_deserialize_put_one(self):
+        storage = ISlotStorage(self.doc)
+        deserializer = getMultiAdapter(
+            (self.doc, storage,  self.request), IDeserializeFromJson)
+        deserializer({"left": {
+            'slot_blocks_layout': {'items': [3, 2, 5]},
+            'slot_blocks': {
+                2: {'title': 'Second', 's:isVariantOf': 1},
+                3: {'title': 'Third', '_v_inherit': True},
+                5: {'title': 'Fifth', '_v_inherit': True},
+            }
+        }})
+
+        self.assertEqual(list(storage.keys()), ['left'])
+        import pdb
+        pdb.set_trace()

@@ -37,9 +37,9 @@ class SlotDeserializer(object):
 
         slot_blocks = copy.deepcopy(data['slot_blocks'])
 
-        existing_blocks = self.slot['slot_blocks']
+        existing_blocks = self.slot.slot_blocks
 
-        removed_blocks_ids = set(slot_blocks.keys()) - set(existing_blocks.keys())
+        removed_blocks_ids = set(existing_blocks.keys()) - set(slot_blocks.keys())
         removed_blocks = {block_id: existing_blocks[block_id] for block_id in
                           removed_blocks_ids}
 
@@ -62,11 +62,8 @@ class SlotDeserializer(object):
 
             slot_blocks[id] = block_value
 
-        data['slot_blocks'] = slot_blocks
-
-        for k, v in data.items():
-            self.slot[k] = v
-
+        self.slot.slot_blocks = slot_blocks
+        self.slot.slot_blocks_layout = data['slot_blocks_layout']
         self.slot._p_changed = True
 
 
@@ -77,7 +74,7 @@ class SlotDeserializerRoot(SlotDeserializer):
 
 
 @adapter(IContentish, ISlotStorage, IBrowserRequest)
-@implementer(IBlockFieldDeserializationTransformer)
+@implementer(IDeserializeFromJson)
 class SlotsDeserializer(object):
     """ Default deserializer of slots
     """
@@ -111,7 +108,7 @@ class SlotsDeserializer(object):
             deserializer = getMultiAdapter(
                 (self.context, slot, self.request), IDeserializeFromJson
             )
-            deserializer()
+            deserializer(slotdata)
 
 
 @adapter(IPloneSiteRoot, ISlotStorage, IBrowserRequest)
