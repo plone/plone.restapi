@@ -10,7 +10,7 @@ from plone.restapi.slots.interfaces import ISlotStorage
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFPlone.tests.PloneTestCase import PloneTestCase
 from zope.component import provideAdapter
-from zope.interface import implements
+from zope.interface import implementer
 from zope.interface import Interface
 
 import unittest
@@ -49,8 +49,8 @@ class Content(object):
         return "<Content: /{}>" .format("/".join(reversed(stack)))
 
 
+@implementer(ISlotStorage)
 class SlotsStorage(object):
-    implements(ISlotStorage)
 
     def __init__(self, context):
         self.context = context

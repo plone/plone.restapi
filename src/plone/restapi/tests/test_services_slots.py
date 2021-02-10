@@ -139,6 +139,22 @@ class TestServicesSlots(unittest.TestCase):
                         u'5': {u'title': u'Fifth'}},
             u'blocks_layout': {u'items': [5, 1, 3]}})
 
-    # def test_deserializer_slot_not_found(self):
-    #     response = self.api_session.patch('/@slots/left', json={})
-    #     self.assertEqual(response.status_code, 404)
+    def test_deserializer_on_slot(self):
+        response = self.api_session.patch('/@slots/left', json={})
+        self.assertEqual(response.status_code, 204)
+
+    def test_deserializer_on_slot_with_data(self):
+        response = self.api_session.patch('/@slots/left', json={
+            'blocks': {
+                1: {'title': 'First'},
+            },
+            'blocks_layout': {'items': [5, 1, 3]}
+        })
+        self.assertEqual(response.status_code, 204)
+        storage = ISlotStorage(self.portal)
+        self.assertEqual(storage['left'].blocks, {
+            1: {'title': 'First'},
+        })
+        self.assertEqual(storage['left'].blocks_layout, {
+            'items': [5, 1, 3]
+        })

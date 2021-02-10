@@ -194,7 +194,7 @@ class TestSlotsEngineIntegration(PloneTestCase):
                 3: {'title': 'Third'},
                 5: {'title': 'Fifth'},
             },
-            'blocks_layout': {'items': [5, 1, 3]}
+            'blocks_layout': {'items': [5, 3]}
         }))
 
         self.portal.portal_catalog.indexObject(self.doc)

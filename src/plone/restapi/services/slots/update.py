@@ -8,12 +8,15 @@ from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from plone.restapi.services.locking.locking import is_locked
-from plone.restapi.slots.interfaces import ISlots
+from plone.restapi.slots.interfaces import ISlotStorage
 from zope.component import getMultiAdapter
 from zope.event import notify
+from zope.interface import implementer
 from zope.lifecycleevent import ObjectModifiedEvent
+from zope.publisher.interfaces import IPublishTraverse
 
 
+@implementer(IPublishTraverse)
 class SlotsPatch(Service):
     """Update one or all the slots"""
 
@@ -33,7 +36,7 @@ class SlotsPatch(Service):
         if self.params and len(self.params) > 0:
             return self.replySlot()
 
-        storage = ISlots(self.context)
+        storage = ISlotStorage(self.context)
 
         deserializer = getMultiAdapter(
             (self.context, storage, self.request), IDeserializeFromJson
@@ -62,7 +65,7 @@ class SlotsPatch(Service):
 
     def replySlot(self):
         name = self.params[0]
-        storage = ISlots(self.context)
+        storage = ISlotStorage(self.context)
         slot = storage[name]
 
         deserializer = getMultiAdapter(
