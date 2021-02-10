@@ -15,9 +15,4 @@
         />
   </configure>
 
-  <adapter
-      factory=".indexers.slot_block_ids"
-      name="slot_block_ids"
-      />
-
 </configure>

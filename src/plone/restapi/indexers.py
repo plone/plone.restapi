@@ -10,10 +10,6 @@ from plone.app.contenttypes.indexers import SearchableText
 from plone.indexer.decorator import indexer
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IBlockSearchableText
-from plone.restapi.slots import SLOTS_KEY
-from plone.restapi.slots.interfaces import ISlots
-from Products.CMFCore.interfaces import IContentish
-from zope.annotation.interfaces import IAnnotations
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
@@ -77,16 +73,3 @@ def SearchableText_blocks(obj):
     blocks_text.append(std_text)
 
     return " ".join(blocks_text)
-
-
-@indexer(IContentish)
-def slot_block_ids(obj):
-    if SLOTS_KEY not in IAnnotations(obj):
-        return
-
-    blocks = []
-    storage = ISlots(obj)
-    for name, slot in storage.items():
-        blocks.extend(slot.blocks_layout['items'])
-
-    return blocks

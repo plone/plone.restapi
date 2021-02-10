@@ -135,3 +135,80 @@ class TestSlotsEngineIntegration(PloneTestCase):
         left = storage['left']
         self.assertEqual(left.blocks, {})
         self.assertEqual(left.blocks_layout, {"items": []})
+
+    def test_delete_and_save(self):
+        storage = ISlotStorage(self.doc)
+
+        storage['left'] = Slot(**({
+            'blocks': {
+                1: {'title': 'First'},
+                3: {'title': 'Third'},
+                5: {'title': 'Fifth'},
+            },
+            'blocks_layout': {'items': [5, 1, 3]}
+        }))
+        storage['right'] = Slot(**({
+            'blocks': {
+                6: {'title': 'First'},
+                7: {'title': 'Third'},
+                8: {'title': 'Fifth'},
+            },
+            'blocks_layout': {'items': [8, 6, 7]}
+        }))
+
+        deserializer = getMultiAdapter(
+            (self.doc, storage, self.request), IDeserializeFromJson)
+
+        deserializer({
+            "left": {
+                'blocks_layout': {'items': [3, 2, 5, 4]},
+                'blocks': {
+                    2: {'title': 'Second', 's:isVariantOf': 1},
+                    3: {'title': 'Third', '_v_inherit': True},
+                    5: {'title': 'Fifth', '_v_inherit': True},
+                },
+            },
+        })
+
+        right = storage['right']
+        self.assertEqual(right.blocks, {})
+        self.assertEqual(right.blocks_layout, {"items": []})
+
+        left = storage['left']
+        self.assertEqual(left.blocks, {2: {'s:isVariantOf': 1, 'title': 'Second'}})
+        self.assertEqual(left.blocks_layout, {'items': [3, 2, 5, 4]})
+
+    def test_delete_in_parent_affects_child(self):
+        docstorage = ISlotStorage(self.doc)
+
+        docstorage['left'] = Slot(**({
+            'blocks': {
+                1: {'title': 'First'},
+            },
+            'blocks_layout': {'items': [5, 1, 3]}
+        }))
+
+        rootstorage = ISlotStorage(self.portal)
+        rootstorage['left'] = Slot(**({
+            'blocks': {
+                3: {'title': 'Third'},
+                5: {'title': 'Fifth'},
+            },
+            'blocks_layout': {'items': [5, 1, 3]}
+        }))
+
+        self.portal.portal_catalog.indexObject(self.doc)
+
+        deserializer = getMultiAdapter(
+            (self.doc, rootstorage, self.request), IDeserializeFromJson)
+
+        deserializer({
+            "left": {
+                'blocks_layout': {'items': [3]},
+                'blocks': {
+                    3: {'title': 'Third', },
+                },
+            },
+        })
+
+        self.assertEqual(docstorage['left'].blocks_layout['items'], [1, 3])

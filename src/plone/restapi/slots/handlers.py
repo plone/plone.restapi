@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 from plone.api import portal
-from plone.restapi.slots.interfaces import ISlots
+from plone.restapi.slots.interfaces import ISlotStorage
 
 
 def handle_block_removed_event(event):
-    # TODO: needs rewrite
     info = event.object
     catalog = portal.get_tool('portal_catalog')
     blockid = info['blockid']
@@ -14,11 +13,11 @@ def handle_block_removed_event(event):
     for brain in brains:
         obj = brain.getObject()
 
-        slots = ISlots(obj)
+        slots = ISlotStorage(obj)
         for slot in slots.values():
-            if blockid in slot['blocks_layout']['items']:
-                slot['blocks_layout']['items'] = [
-                    bid for bid in slot['blocks_layout']['items']
+            if blockid in slot.blocks_layout['items']:
+                slot.blocks_layout['items'] = [
+                    bid for bid in slot.blocks_layout['items']
                     if bid != blockid
                 ]
                 slot._p_changed = True
@@ -40,11 +39,11 @@ def handle_blocks_removed_event(event):
     for brain in brains:
         obj = brain.getObject()
 
-        slots = ISlots(obj)
+        slots = ISlotStorage(obj)
         for slot in slots.values():
-            if set_block_ids.intersection(slot['blocks_layout']['items']):
-                slot['blocks_layout']['items'] = [
-                    bid for bid in slot['blocks_layout']['items']
+            if set_block_ids.intersection(slot.blocks_layout['items']):
+                slot.blocks_layout['items'] = [
+                    bid for bid in slot.blocks_layout['items']
                     if bid not in blockids
                 ]
                 slot._p_changed = True
