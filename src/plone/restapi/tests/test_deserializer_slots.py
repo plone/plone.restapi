@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.slots.interfaces import ISlotStorage
