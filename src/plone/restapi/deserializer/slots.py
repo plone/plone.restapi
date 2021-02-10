@@ -45,12 +45,17 @@ class SlotDeserializer(object):
 
         notify(BlocksRemovedEvent(dict(context=self.context, blocks=removed_blocks)))
 
+        # we don't want to store blocks that are inherited
+        for k, v in blocks.items():
+            if v.get('_v_inherit'):
+                del blocks[k]
+
         for id, block_value in blocks.items():
             block_type = block_value.get("@type", "")
 
             handlers = []
             for h in subscribers(
-                (self.context, self.request),
+                (self.slot, self.request),
                 IBlockFieldDeserializationTransformer,
             ):
                 if h.block_type == block_type or h.block_type is None:

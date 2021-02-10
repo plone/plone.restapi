@@ -196,7 +196,7 @@ class VolatileSmartField(object):
     def __call__(self, block):
         for k, v in block.items():
             if k.startswith('_v_'):
-                del v[k]
+                del block[k]
 
         return block
 
