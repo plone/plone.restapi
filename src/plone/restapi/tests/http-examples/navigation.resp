@@ -2,20 +2,20 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "@id": "http://localhost:57980/plone/front-page/@navigation", 
+  "@id": "http://localhost:55001/plone/front-page/@navigation",
   "items": [
     {
-      "@id": "http://localhost:57980/plone", 
-      "description": "", 
-      "items": [], 
-      "review_state": null, 
+      "@id": "http://localhost:55001/plone",
+      "description": "",
+      "items": [],
+      "review_state": null,
       "title": "Home"
-    }, 
+    },
     {
-      "@id": "http://localhost:57980/plone/front-page", 
-      "description": "Congratulations! You have successfully installed Plone.", 
-      "items": [], 
-      "review_state": "private", 
+      "@id": "http://localhost:55001/plone/front-page",
+      "description": "Congratulations! You have successfully installed Plone.",
+      "items": [],
+      "review_state": "private",
       "title": "Welcome to Plone"
     }
   ]
