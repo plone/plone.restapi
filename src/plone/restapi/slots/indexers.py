@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from plone.indexer.decorator import indexer
 from plone.restapi.slots import SLOTS_KEY
 from plone.restapi.slots.interfaces import ISlotStorage
