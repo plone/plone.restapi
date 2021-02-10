@@ -114,13 +114,13 @@ class TestServicesSlots(unittest.TestCase):
             u'edit_slots': [u'right', u'left'],
             u'items': {u'left': {u'@id': u'http://localhost:55001/plone/@slots/left',
                                  u'blocks': {u'1': {u'title': u'First'},
-                                                  u'3': {u'title': u'Third'},
-                                                  u'5': {u'title': u'Fifth'}},
+                                             u'3': {u'title': u'Third'},
+                                             u'5': {u'title': u'Fifth'}},
                                  u'blocks_layout': {u'items': [5, 1, 3]}},
                        u'right': {u'@id': u'http://localhost:55001/plone/@slots/right',
                                   u'blocks': {u'6': {u'title': u'First'},
-                                                   u'7': {u'title': u'Third'},
-                                                   u'8': {u'title': u'Fifth'}},
+                                              u'7': {u'title': u'Third'},
+                                              u'8': {u'title': u'Fifth'}},
                                   u'blocks_layout': {u'items': [8, 6, 7]}}}}
         )
 
@@ -135,8 +135,8 @@ class TestServicesSlots(unittest.TestCase):
             u'@id': u'http://localhost:55001/plone/@slots/left',
             u'edit': True,
             u'blocks': {u'1': {u'title': u'First'},
-                             u'3': {u'title': u'Third'},
-                             u'5': {u'title': u'Fifth'}},
+                        u'3': {u'title': u'Third'},
+                        u'5': {u'title': u'Fifth'}},
             u'blocks_layout': {u'items': [5, 1, 3]}})
 
     # def test_deserializer_slot_not_found(self):
