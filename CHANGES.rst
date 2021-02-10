@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0b7 (2021-02-10)
+--------------------
+
+New features:
+
+
+- Add ``root`` element to the @breadcrumbs endpoint
+  [sneridagh] (#1064)
+
+
+Bug fixes:
+
+
+- Remove ``escape``'d titles
+  [sneridagh] (#1061)
+
+
 7.0.0b6 (2021-02-09)
 --------------------
 
