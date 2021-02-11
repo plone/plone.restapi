@@ -653,6 +653,7 @@ class TestSearchFunctional(unittest.TestCase):
         ).json()
         self.assertEqual(response["items_total"], 1)
 
+
 class TestSearchATFunctional(unittest.TestCase):
     layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 
