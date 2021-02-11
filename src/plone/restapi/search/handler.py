@@ -76,10 +76,9 @@ class SearchHandler(object):
 
         self._constrain_query_by_path(query)
         query = self._parse_query(query)
-
-        lazy_resultset = self.catalog.searchResults(query)
-        results = getMultiAdapter((lazy_resultset, self.request), ISerializeToJson)(
-            fullobjects=fullobjects
-        )
+        lazy_resultset = self.catalog.searchResults(**query)
+        results = getMultiAdapter(
+            (lazy_resultset, self.request), ISerializeToJson
+        )(fullobjects=fullobjects)
 
         return results
