@@ -11,6 +11,9 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 
+# TODO: write expand
+
+
 @implementer(IPublishTraverse)
 class SlotsGet(Service):
     """Returns the available slots."""

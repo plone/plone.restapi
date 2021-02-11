@@ -73,7 +73,7 @@ class TestSlotsEngineIntegration(PloneTestCase):
         self.assertEqual(list(storage.keys()), ['left', 'right'])
         self.assertEqual(storage['left'].blocks,
                          {2: {'title': 'Second', 's:isVariantOf': 1}, })
-        self.assertEqual(storage['left'].blocks_layout, {"items": [3, 2, 5, 4]})
+        self.assertEqual(storage['left'].blocks_layout, {"items": [2]})
 
         self.assertEqual(storage['right'].blocks,
                          {6: {'title': 'Sixth'}, })

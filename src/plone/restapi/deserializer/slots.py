@@ -3,18 +3,19 @@
 """ Slots deserializers """
 
 from plone.restapi.deserializer import json_body
-from plone.restapi.events import BlocksRemovedEvent
+# from plone.restapi.events import BlocksRemovedEvent
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.slots import Slot
 from plone.restapi.slots.interfaces import ISlot
+from plone.restapi.slots.interfaces import ISlots
 from plone.restapi.slots.interfaces import ISlotStorage
 from Products.CMFCore.interfaces import IContentish
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import subscribers
-from zope.event import notify
+# from zope.event import notify
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
@@ -38,22 +39,23 @@ class SlotDeserializer(object):
         if not data:
             return
 
-        blocks = copy.deepcopy(data['blocks'])
+        incoming_blocks = copy.deepcopy(data['blocks'])
 
-        existing_blocks = self.slot.blocks
+        engine = ISlots(self.context)
+        all_blocks_ids = engine.get_blocks(self.slot.__name__)['blocks'].keys()
+        parent_block_ids = list(set(all_blocks_ids) - set(self.slot.blocks.keys()))
 
-        removed_blocks_ids = set(existing_blocks.keys()) - set(blocks.keys())
-        removed_blocks = {block_id: existing_blocks[block_id] for block_id in
-                          removed_blocks_ids}
+        # don't keep blocks that are not in incoming data
+        for k in self.slot.blocks.keys():
+            if not ((k in parent_block_ids) or (k in incoming_blocks.keys())):
+                del self.slot.blocks[k]
 
-        notify(BlocksRemovedEvent(dict(context=self.context, blocks=removed_blocks)))
-
-        # we don't want to store blocks that are inherited
-        for k, v in blocks.items():
+        # don't store blocks that are inherited
+        for k, v in incoming_blocks.items():
             if v.get('_v_inherit'):
-                del blocks[k]
+                del incoming_blocks[k]
 
-        for id, block_value in blocks.items():
+        for id, block_value in incoming_blocks.items():
             block_type = block_value.get("@type", "")
 
             handlers = []
@@ -68,10 +70,16 @@ class SlotDeserializer(object):
                 if not getattr(handler, "disabled", False):
                     block_value = handler(block_value)
 
-            blocks[id] = block_value
+            incoming_blocks[id] = block_value
 
-        self.slot.blocks = blocks
+        self.slot.blocks = incoming_blocks
+
+        # don't keep block ids in layout if they're nowhere in the inheritance tree
+        all_ids = parent_block_ids + list(self.slot.blocks.keys())
+        layout = [b for b in data['blocks_layout']['items'] if b in all_ids]
+        data['blocks_layout']['items'] = layout
         self.slot.blocks_layout = data['blocks_layout']
+
         self.slot._p_changed = True
 
 
@@ -97,27 +105,27 @@ class SlotsDeserializer(object):
             data = json_body(self.request)
 
         for name, slot in self.storage.items():
-            slotdata = data.get(name, None)
-            if not slotdata:
-                notify(BlocksRemovedEvent(dict(
-                    context=self.context,
-                    blocks=slot.blocks
-                )))
+            incoming_data = data.get(name, None)
+
+            # remove the existing slot data if the slot doesn't exist in new data
+            if not incoming_data:
+                # notify(BlocksRemovedEvent(dict(
+                #     context=self.context,
+                #     blocks=slot.blocks
+                # )))
 
                 self.storage[name].blocks = {}
                 self.storage[name].blocks_layout = {"items": []}
 
-        for name, slotdata in data.items():
+        for name, incoming_data in data.items():
             if name not in self.storage:
-                slot = Slot()
-                self.storage[name] = slot
-            else:
-                slot = self.storage[name]
+                # create new slots when found in incoming data
+                self.storage[name] = Slot()
 
             deserializer = getMultiAdapter(
-                (self.context, slot, self.request), IDeserializeFromJson
+                (self.context, self.storage[name], self.request), IDeserializeFromJson
             )
-            deserializer(slotdata)
+            deserializer(incoming_data)
 
 
 @adapter(IPloneSiteRoot, ISlotStorage, IBrowserRequest)
