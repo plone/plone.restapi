@@ -79,49 +79,62 @@ class TestServicesSlots(unittest.TestCase):
         folder21.invokeFactory("Document", "doc211")
         folder21.invokeFactory("Document", "doc212")
 
-        self.doc = self.portal['folder1']['doc11']
+        self.doc = self.portal["folder1"]["doc11"]
 
         setRoles(self.portal, TEST_USER_ID, ["Member"])
 
     def setup_slots(self):
         rootstore = ISlotStorage(self.portal)
-        rootstore[u'left'] = Slot()
-        rootstore[u'left'].blocks = {
-            u'1': {'title': 'First'},
-            u'3': {'title': 'Third'},
-            u'5': {'title': 'Fifth'},
+        rootstore[u"left"] = Slot()
+        rootstore[u"left"].blocks = {
+            u"1": {"title": "First"},
+            u"3": {"title": "Third"},
+            u"5": {"title": "Fifth"},
         }
-        rootstore[u'left'].blocks_layout = {'items': [u'5', u'1', u'3']}
+        rootstore[u"left"].blocks_layout = {"items": [u"5", u"1", u"3"]}
 
-        rootstore[u'right'] = Slot()
-        rootstore[u'right'].blocks = {
-            u'6': {'title': 'First'},
-            u'7': {'title': 'Third'},
-            u'8': {'title': 'Fifth'},
+        rootstore[u"right"] = Slot()
+        rootstore[u"right"].blocks = {
+            u"6": {"title": "First"},
+            u"7": {"title": "Third"},
+            u"8": {"title": "Fifth"},
         }
-        rootstore[u'right'].blocks_layout = {'items': [u'8', u'6', u'7']}
+        rootstore[u"right"].blocks_layout = {"items": [u"8", u"6", u"7"]}
 
         storage = ISlotStorage(self.doc)
-        storage[u'left'] = Slot()
-        storage[u'left'].blocks = {u'2': {'s:isVariantOf': u'1', 'title': 'Second'}}
-        storage[u'left'].blocks_layout = {'items': [u'3', u'2']}
+        storage[u"left"] = Slot()
+        storage[u"left"].blocks = {u"2": {"s:isVariantOf": u"1", "title": "Second"}}
+        storage[u"left"].blocks_layout = {"items": [u"3", u"2"]}
 
     def test_slots_endpoint(self):
         response = self.api_session.get("/@slots")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {
-            u'@id': u'http://localhost:55001/plone/@slots',
-            u'edit_slots': [u'right', u'left'],
-            u'items': {u'left': {u'@id': u'http://localhost:55001/plone/@slots/left',
-                                 u'blocks': {u'1': {u'title': u'First'},
-                                             u'3': {u'title': u'Third'},
-                                             u'5': {u'title': u'Fifth'}},
-                                 u'blocks_layout': {u'items': [u'5', u'1', u'3']}},
-                       u'right': {u'@id': u'http://localhost:55001/plone/@slots/right',
-                                  u'blocks': {u'6': {u'title': u'First'},
-                                              u'7': {u'title': u'Third'},
-                                              u'8': {u'title': u'Fifth'}},
-                                  u'blocks_layout': {u'items': [u'8', u'6', u'7']}}}}
+        self.assertEqual(
+            response.json(),
+            {
+                u"@id": u"http://localhost:55001/plone/@slots",
+                u"edit_slots": [u"right", u"left"],
+                u"items": {
+                    u"left": {
+                        u"@id": u"http://localhost:55001/plone/@slots/left",
+                        u"blocks": {
+                            u"1": {u"title": u"First"},
+                            u"3": {u"title": u"Third"},
+                            u"5": {u"title": u"Fifth"},
+                        },
+                        u"blocks_layout": {u"items": [u"5", u"1", u"3"]},
+                    },
+                    u"right": {
+                        u"@id": u"http://localhost:55001/plone/@slots/right",
+                        u"blocks": {
+                            u"6": {u"title": u"First"},
+                            u"7": {u"title": u"Third"},
+                            u"8": {u"title": u"Fifth"},
+                        },
+                        u"blocks_layout": {u"items": [u"8", u"6", u"7"]},
+                    },
+                },
+            },
         )
 
     def test_slot_endpoint(self):
@@ -131,34 +144,44 @@ class TestServicesSlots(unittest.TestCase):
     def test_slot_endpoint_on_root(self):
         response = self.api_session.get("/@slots/left")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), {
-            u'@id': u'http://localhost:55001/plone/@slots/left',
-            u'edit': True,
-            u'blocks': {u'1': {u'title': u'First'},
-                        u'3': {u'title': u'Third'},
-                        u'5': {u'title': u'Fifth'}},
-            u'blocks_layout': {u'items': [u'5', u'1', u'3']}})
+        self.assertEqual(
+            response.json(),
+            {
+                u"@id": u"http://localhost:55001/plone/@slots/left",
+                u"edit": True,
+                u"blocks": {
+                    u"1": {u"title": u"First"},
+                    u"3": {u"title": u"Third"},
+                    u"5": {u"title": u"Fifth"},
+                },
+                u"blocks_layout": {u"items": [u"5", u"1", u"3"]},
+            },
+        )
 
     def test_deserializer_on_slot(self):
-        response = self.api_session.patch('/@slots/left', json={})
+        response = self.api_session.patch("/@slots/left", json={})
         self.assertEqual(response.status_code, 204)
 
     def test_deserializer_on_slot_with_data_and_missing_slots(self):
-        response = self.api_session.patch('/@slots/left', json={
-            'blocks': {
-                u'1': {'title': 'First'},
+        response = self.api_session.patch(
+            "/@slots/left",
+            json={
+                "blocks": {
+                    u"1": {"title": "First"},
+                },
+                "blocks_layout": {"items": [u"5", u"1", u"3"]},
             },
-            'blocks_layout': {'items': [u'5', u'1', u'3']}
-        })
+        )
         transaction.commit()
         self.assertEqual(response.status_code, 204)
         storage = ISlotStorage(self.portal)
-        self.assertEqual(storage['left'].blocks, {
-            u'1': {'title': 'First'},
-        })
-        self.assertEqual(storage['left'].blocks_layout, {
-            'items': [u'1']
-        })
+        self.assertEqual(
+            storage["left"].blocks,
+            {
+                u"1": {"title": "First"},
+            },
+        )
+        self.assertEqual(storage["left"].blocks_layout, {"items": [u"1"]})
 
         # self.setup_slots()
         # transaction.commit()

@@ -15,6 +15,6 @@ def slot_block_ids(obj):
     blocks = []
     storage = ISlotStorage(obj)
     for name, slot in storage.items():
-        blocks.extend(slot.blocks_layout['items'])
+        blocks.extend(slot.blocks_layout["items"])
 
     return blocks

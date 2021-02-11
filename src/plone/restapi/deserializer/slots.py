@@ -3,6 +3,7 @@
 """ Slots deserializers """
 
 from plone.restapi.deserializer import json_body
+
 # from plone.restapi.events import BlocksRemovedEvent
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -15,6 +16,7 @@ from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import subscribers
+
 # from zope.event import notify
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -39,10 +41,10 @@ class SlotDeserializer(object):
         if not data:
             return
 
-        incoming_blocks = copy.deepcopy(data['blocks'])
+        incoming_blocks = copy.deepcopy(data["blocks"])
 
         engine = ISlots(self.context)
-        all_blocks_ids = engine.get_blocks(self.slot.__name__)['blocks'].keys()
+        all_blocks_ids = engine.get_blocks(self.slot.__name__)["blocks"].keys()
         parent_block_ids = list(set(all_blocks_ids) - set(self.slot.blocks.keys()))
 
         # don't keep blocks that are not in incoming data
@@ -53,7 +55,7 @@ class SlotDeserializer(object):
         inherited = []
         # don't store blocks that are inherited, keep only those that really exist
         for k, v in incoming_blocks.items():
-            if v.get('_v_inherit'):
+            if v.get("_v_inherit"):
                 del incoming_blocks[k]
                 if k in parent_block_ids:
                     inherited.append(k)
@@ -79,9 +81,9 @@ class SlotDeserializer(object):
 
         # don't keep block ids in layout if they're nowhere in the inheritance tree
         all_ids = parent_block_ids + list(self.slot.blocks.keys()) + inherited
-        layout = [b for b in data['blocks_layout']['items'] if b in all_ids]
-        data['blocks_layout']['items'] = layout
-        self.slot.blocks_layout = data['blocks_layout']
+        layout = [b for b in data["blocks_layout"]["items"] if b in all_ids]
+        data["blocks_layout"]["items"] = layout
+        self.slot.blocks_layout = data["blocks_layout"]
 
         self.slot._p_changed = True
 
@@ -95,8 +97,7 @@ class SlotDeserializerRoot(SlotDeserializer):
 @adapter(IContentish, ISlotStorage, IBrowserRequest)
 @implementer(IDeserializeFromJson)
 class SlotsDeserializer(object):
-    """ Default deserializer of slots
-    """
+    """Default deserializer of slots"""
 
     def __init__(self, context, storage, request):
         self.context = context

@@ -22,5 +22,5 @@ class ISlotSettings(Interface):
     content_slots = List(
         title=u"Content slots",
         description=u'Editable slots using "Modify portal content" permission',
-        value_type=TextLine(title=u"Slot name")
+        value_type=TextLine(title=u"Slot name"),
     )

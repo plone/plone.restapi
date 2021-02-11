@@ -214,10 +214,8 @@ class IBlockSearchableText(Interface):
 
 
 class IBlocksRemovedEvent(IObjectEvent):
-    """ A bunch of blocks have been removed
-    """
+    """A bunch of blocks have been removed"""
 
 
 class IBlockRemovedEvent(IObjectEvent):
-    """ A block has been removed
-    """
+    """A block has been removed"""

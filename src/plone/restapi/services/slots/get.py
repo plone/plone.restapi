@@ -41,7 +41,7 @@ class SlotsGet(Service):
         )
         result = adapter()
 
-        result['edit_slots'] = json_compatible(self.editable_slots)
+        result["edit_slots"] = json_compatible(self.editable_slots)
 
         # update "edit:True" editable status in slots
         # for k, v in result['items'].items():
@@ -62,16 +62,14 @@ class SlotsGet(Service):
         marker = object()
         storage = ISlotStorage(self.context)
         slot = storage.get(name, marker)
-        if slot is marker:      # if slot is not on this level, we create a fake one
-            slot = Slot()       # TODO: replace with a DummyProxySlot
+        if slot is marker:  # if slot is not on this level, we create a fake one
+            slot = Slot()  # TODO: replace with a DummyProxySlot
             slot.__parent__ = self.storage
             slot.__name__ = name
 
-        result = getMultiAdapter(
-            (self.context, slot, self.request), ISerializeToJson
-        )()
+        result = getMultiAdapter((self.context, slot, self.request), ISerializeToJson)()
 
-        result['edit'] = name in self.editable_slots
+        result["edit"] = name in self.editable_slots
 
         # TODO: add transaction doom, to deal with annotations created by ISlotStorage ?
         return result

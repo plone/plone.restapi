@@ -21,10 +21,7 @@ from zope.traversing.interfaces import ITraversable
 
 
 SLOTS_KEY = "plone.restapi.slots"
-DEFAULT_SLOT_DATA = {
-    "blocks_layout": {"items": []},
-    "blocks": {}
-}
+DEFAULT_SLOT_DATA = {"blocks_layout": {"items": []}, "blocks": {}}
 
 
 @adapter(IContentish)
@@ -53,8 +50,7 @@ class Slot(Contained, Persistent):
 @implementer(ISlots)
 @adapter(ITraversable)
 class Slots(object):
-    """ The slots engine provides slots functionality for a content item
-    """
+    """The slots engine provides slots functionality for a content item"""
 
     def __init__(self, context):
         self.context = context
@@ -115,33 +111,34 @@ class Slots(object):
                 _seen_blocks[uid] = block
 
                 if not (uid in blocks or uid in _replaced):
-                    other = block.get('s:isVariantOf') or block.get('s:sameAs')
+                    other = block.get("s:isVariantOf") or block.get("s:sameAs")
                     if other:
                         _replaced.add(other)
 
                     blocks[uid] = block
                     if level > 0:
-                        block['_v_inherit'] = True
+                        block["_v_inherit"] = True
 
-            for uid in slot.blocks_layout['items']:
+            for uid in slot.blocks_layout["items"]:
                 if not (uid in blocks_layout or uid in _replaced):
                     blocks_layout.append(uid)
 
             level += 1
 
         for k, v in blocks.items():
-            if v.get('s:sameAs'):
-                v['_v_inherit'] = True
+            if v.get("s:sameAs"):
+                v["_v_inherit"] = True
                 v.update(self._resolve_block(v, _seen_blocks))
 
         return {
-            'blocks': blocks,
-            'blocks_layout': {'items': [b for b in blocks_layout
-                                        if b in _seen_blocks.keys()]}
+            "blocks": blocks,
+            "blocks_layout": {
+                "items": [b for b in blocks_layout if b in _seen_blocks.keys()]
+            },
         }
 
     def _resolve_block(self, block, blocks):
-        sameAs = block.get('s:sameAs')
+        sameAs = block.get("s:sameAs")
 
         if sameAs:
             return self._resolve_block(blocks[sameAs], blocks)
@@ -151,12 +148,12 @@ class Slots(object):
     def save_data_to_slot(self, slot, data):
         to_save = {}
 
-        for key in data['blocks_layout']['items']:
-            block = data['blocks'][key]
-            if not (block.get('s:sameOf') or block.get('_v_inherit')):
+        for key in data["blocks_layout"]["items"]:
+            block = data["blocks"][key]
+            if not (block.get("s:sameOf") or block.get("_v_inherit")):
                 to_save[key] = block
 
-        slot.blocks_layout = data['blocks_layout']
+        slot.blocks_layout = data["blocks_layout"]
         slot.blocks = to_save
         slot._p_changed = True
 
@@ -174,7 +171,9 @@ class Slots(object):
         registry = getUtility(IRegistry)
         records = registry.forInterface(ISlotSettings)
 
-        content_slots = [s for s in
-                         [line.strip() for line in (records.content_slots or [])]
-                         if s in slot_names]
+        content_slots = [
+            s
+            for s in [line.strip() for line in (records.content_slots or [])]
+            if s in slot_names
+        ]
         return content_slots

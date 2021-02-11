@@ -35,7 +35,7 @@ class SlotSerializer(object):
         # a dict with blocks and blocks_layout
         data = ISlots(self.context).get_blocks(name)
 
-        blocks = copy.deepcopy(data['blocks'])
+        blocks = copy.deepcopy(data["blocks"])
 
         for id, block_value in blocks.items():
             block_type = block_value.get("@type", "")
@@ -55,7 +55,7 @@ class SlotSerializer(object):
         return {
             "@id": "{0}/{1}/{2}".format(self.context.absolute_url(), SERVICE_ID, name),
             "blocks": blocks,
-            "blocks_layout": data['blocks_layout']
+            "blocks_layout": data["blocks_layout"],
         }
 
 
@@ -71,10 +71,7 @@ class SlotsSerializer(object):
 
     def __call__(self):
         base_url = self.context.absolute_url()
-        result = {
-            '@id': '{}/{}'.format(base_url, SERVICE_ID),
-            "items": {}
-        }
+        result = {"@id": "{}/{}".format(base_url, SERVICE_ID), "items": {}}
 
         engine = ISlots(self.context)
         slot_names = engine.discover_slots()
@@ -83,7 +80,7 @@ class SlotsSerializer(object):
         for name in slot_names:
             slot = self.storage.get(name, marker)
 
-            if slot is marker:      # if slot is not on this level, we create a fake one
+            if slot is marker:  # if slot is not on this level, we create a fake one
                 slot = Slot()
                 slot.__parent__ = self.storage
                 slot.__name__ = name
@@ -91,6 +88,6 @@ class SlotsSerializer(object):
             serializer = getMultiAdapter(
                 (self.context, slot, self.request), ISerializeToJson
             )
-            result['items'][name] = serializer()
+            result["items"][name] = serializer()
 
         return result
