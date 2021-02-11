@@ -200,8 +200,6 @@ class TestSlotsEngineIntegration(PloneTestCase):
             'blocks_layout': {'items': [u'5', u'1', u'3']}
         }))
 
-        # self.portal.portal_catalog.indexObject(self.doc)
-
         deserializer = getMultiAdapter(
             (self.portal, rootstorage, self.request), IDeserializeFromJson)
 

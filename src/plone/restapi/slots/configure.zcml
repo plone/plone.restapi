@@ -30,15 +30,6 @@
       for="Products.CMFCore.interfaces.IContentish"
       />
 
-  <subscriber
-      for="plone.restapi.interfaces.IBlockRemovedEvent"
-      handler=".handlers.handle_blocks_removed_event"
-      />
-  <subscriber
-      for="plone.restapi.interfaces.IBlocksRemovedEvent"
-      handler=".handlers.handle_blocks_removed_event"
-      />
-
   <browser:page
       name="slots-controlpanel"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
@@ -50,10 +41,5 @@
       factory=".controlpanel.SlotsControlpanel"
       name="slots"
       />
-
-  <!-- <adapter -->
-  <!--     factory=".indexers.slot_block_ids" -->
-  <!--     name="slot_block_ids" -->
-  <!--     /> -->
 
 </configure>
