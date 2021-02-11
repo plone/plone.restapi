@@ -100,7 +100,7 @@ class Slots(object):
         blocks_layout = []
 
         _replaced = set()
-        _blockmap = {}
+        _seen_blocks = {}
 
         stack = self.get_fills_stack(name)
 
@@ -112,7 +112,7 @@ class Slots(object):
 
             for uid, block in slot.blocks.items():
                 block = deepcopy(block)
-                _blockmap[uid] = block
+                _seen_blocks[uid] = block
 
                 if not (uid in blocks or uid in _replaced):
                     other = block.get('s:isVariantOf') or block.get('s:sameAs')
@@ -132,11 +132,12 @@ class Slots(object):
         for k, v in blocks.items():
             if v.get('s:sameAs'):
                 v['_v_inherit'] = True
-                v.update(self._resolve_block(v, _blockmap))
+                v.update(self._resolve_block(v, _seen_blocks))
 
         return {
             'blocks': blocks,
-            'blocks_layout': {'items': blocks_layout}
+            'blocks_layout': {'items': [b for b in blocks_layout
+                                        if b in _seen_blocks.keys()]}
         }
 
     def _resolve_block(self, block, blocks):

@@ -3,6 +3,7 @@
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.slots import Slot
+from plone.restapi.slots.interfaces import ISlots
 from plone.restapi.slots.interfaces import ISlotStorage
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFPlone.tests.PloneTestCase import PloneTestCase
@@ -55,48 +56,48 @@ class TestSlotsEngineIntegration(PloneTestCase):
 
         deserializer({
             "left": {
-                'blocks_layout': {'items': [3, 2, 5, 4]},
+                'blocks_layout': {'items': [u'3', u'2', u'5', u'4']},
                 'blocks': {
-                    2: {'title': 'Second', 's:isVariantOf': 1},
-                    3: {'title': 'Third', '_v_inherit': True},
-                    5: {'title': 'Fifth', '_v_inherit': True},
+                    u'2': {'title': 'Second', 's:isVariantOf': u'1'},
+                    u'3': {'title': 'Third', '_v_inherit': True},
+                    u'5': {'title': 'Fifth', '_v_inherit': True},
                 },
             },
             "right": {
-                'blocks_layout': {'items': [6, 7]},
+                'blocks_layout': {'items': [u'6', u'7']},
                 'blocks': {
-                    6: {'title': 'Sixth'},
+                    u'6': {'title': 'Sixth'},
                 }
             }
         })
 
         self.assertEqual(list(storage.keys()), ['left', 'right'])
         self.assertEqual(storage['left'].blocks,
-                         {2: {'title': 'Second', 's:isVariantOf': 1}, })
-        self.assertEqual(storage['left'].blocks_layout, {"items": [2]})
+                         {u'2': {'title': 'Second', 's:isVariantOf': u'1'}, })
+        self.assertEqual(storage['left'].blocks_layout, {"items": [u'2']})
 
         self.assertEqual(storage['right'].blocks,
-                         {6: {'title': 'Sixth'}, })
-        self.assertEqual(storage['right'].blocks_layout, {"items": [6, 7]})
+                         {u'6': {'title': 'Sixth'}, })
+        self.assertEqual(storage['right'].blocks_layout, {"items": [u'6']})
 
     def test_delete_all_with_dict(self):
         storage = ISlotStorage(self.doc)
 
         storage['left'] = Slot(**({
             'blocks': {
-                1: {'title': 'First'},
-                3: {'title': 'Third'},
-                5: {'title': 'Fifth'},
+                u'1': {'title': 'First'},
+                u'3': {'title': 'Third'},
+                u'5': {'title': 'Fifth'},
             },
-            'blocks_layout': {'items': [5, 1, 3]}
+            'blocks_layout': {'items': [u'5', u'1', u'3']}
         }))
         storage['right'] = Slot(**({
             'blocks': {
-                6: {'title': 'First'},
-                7: {'title': 'Third'},
-                8: {'title': 'Fifth'},
+                u'6': {'title': 'First'},
+                u'7': {'title': 'Third'},
+                u'8': {'title': 'Fifth'},
             },
-            'blocks_layout': {'items': [8, 6, 7]}
+            'blocks_layout': {'items': [u'8', u'6', u'7']}
         }))
 
         deserializer = getMultiAdapter(
@@ -112,19 +113,19 @@ class TestSlotsEngineIntegration(PloneTestCase):
 
         storage['left'] = Slot(**({
             'blocks': {
-                1: {'title': 'First'},
-                3: {'title': 'Third'},
-                5: {'title': 'Fifth'},
+                u'1': {'title': 'First'},
+                u'3': {'title': 'Third'},
+                u'5': {'title': 'Fifth'},
             },
-            'blocks_layout': {'items': [5, 1, 3]}
+            'blocks_layout': {'items': [u'5', u'1', u'3']}
         }))
         storage['right'] = Slot(**({
             'blocks': {
-                6: {'title': 'First'},
-                7: {'title': 'Third'},
-                8: {'title': 'Fifth'},
+                u'6': {'title': 'First'},
+                u'7': {'title': 'Third'},
+                u'8': {'title': 'Fifth'},
             },
-            'blocks_layout': {'items': [8, 6, 7]}
+            'blocks_layout': {'items': [u'8', u'6', u'7']}
         }))
 
         deserializer = getMultiAdapter(
@@ -141,19 +142,19 @@ class TestSlotsEngineIntegration(PloneTestCase):
 
         storage['left'] = Slot(**({
             'blocks': {
-                1: {'title': 'First'},
-                3: {'title': 'Third'},
-                5: {'title': 'Fifth'},
+                u'1': {'title': 'First'},
+                u'3': {'title': 'Third'},
+                u'5': {'title': 'Fifth'},
             },
-            'blocks_layout': {'items': [5, 1, 3]}
+            'blocks_layout': {'items': [u'5', u'1', u'3']}
         }))
         storage['right'] = Slot(**({
             'blocks': {
-                6: {'title': 'First'},
-                7: {'title': 'Third'},
-                8: {'title': 'Fifth'},
+                u'6': {'title': 'First'},
+                u'7': {'title': 'Third'},
+                u'8': {'title': 'Fifth'},
             },
-            'blocks_layout': {'items': [8, 6, 7]}
+            'blocks_layout': {'items': [u'8', u'6', u'7']}
         }))
 
         deserializer = getMultiAdapter(
@@ -161,11 +162,11 @@ class TestSlotsEngineIntegration(PloneTestCase):
 
         deserializer({
             "left": {
-                'blocks_layout': {'items': [3, 2, 5, 4]},
+                'blocks_layout': {'items': [u'3', u'2', u'5', u'4']},
                 'blocks': {
-                    2: {'title': 'Second', 's:isVariantOf': 1},
-                    3: {'title': 'Third', '_v_inherit': True},
-                    5: {'title': 'Fifth', '_v_inherit': True},
+                    u'2': {'title': 'Second', 's:isVariantOf': u'1'},
+                    u'3': {'title': 'Third', '_v_inherit': True},
+                    u'5': {'title': 'Fifth', '_v_inherit': True},
                 },
             },
         })
@@ -175,40 +176,49 @@ class TestSlotsEngineIntegration(PloneTestCase):
         self.assertEqual(right.blocks_layout, {"items": []})
 
         left = storage['left']
-        self.assertEqual(left.blocks, {2: {'s:isVariantOf': 1, 'title': 'Second'}})
-        self.assertEqual(left.blocks_layout, {'items': [3, 2, 5, 4]})
+        self.assertEqual(
+            left.blocks, {u'2': {'s:isVariantOf': u'1', 'title': 'Second'}})
+        self.assertEqual(left.blocks_layout, {'items': [u'2']})
 
     def test_delete_in_parent_affects_child(self):
+        rootstorage = ISlotStorage(self.portal)
+        rootstorage['left'] = Slot(**({
+            'blocks': {
+                u'3': {'title': 'Third'},
+                u'5': {'title': 'Fifth'},
+            },
+            'blocks_layout': {'items': [u'5', u'3']}
+        }))
+
         docstorage = ISlotStorage(self.doc)
 
         docstorage['left'] = Slot(**({
             'blocks': {
-                1: {'title': 'First'},
+                u'1': {'title': 'First'},
+                # u'5': {'_v_inherit': True},
             },
-            'blocks_layout': {'items': [5, 1, 3]}
+            'blocks_layout': {'items': [u'5', u'1', u'3']}
         }))
 
-        rootstorage = ISlotStorage(self.portal)
-        rootstorage['left'] = Slot(**({
-            'blocks': {
-                3: {'title': 'Third'},
-                5: {'title': 'Fifth'},
-            },
-            'blocks_layout': {'items': [5, 3]}
-        }))
-
-        self.portal.portal_catalog.indexObject(self.doc)
+        # self.portal.portal_catalog.indexObject(self.doc)
 
         deserializer = getMultiAdapter(
-            (self.doc, rootstorage, self.request), IDeserializeFromJson)
+            (self.portal, rootstorage, self.request), IDeserializeFromJson)
 
         deserializer({
             "left": {
-                'blocks_layout': {'items': [3]},
+                'blocks_layout': {'items': [u'3']},
                 'blocks': {
-                    3: {'title': 'Third', },
+                    u'3': {'title': 'Third', },
                 },
             },
         })
 
-        self.assertEqual(docstorage['left'].blocks_layout['items'], [1, 3])
+        self.assertEqual(rootstorage['left'].blocks,
+                         {u'3': {'title': 'Third', }, })
+        self.assertEqual(rootstorage['left'].blocks_layout,
+                         {'items': [u'3']})
+
+        engine = ISlots(self.doc)
+        self.assertEqual(engine.get_blocks('left')['blocks_layout']['items'],
+                         [u'1', u'3'])

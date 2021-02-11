@@ -50,10 +50,13 @@ class SlotDeserializer(object):
             if not ((k in parent_block_ids) or (k in incoming_blocks.keys())):
                 del self.slot.blocks[k]
 
-        # don't store blocks that are inherited
+        inherited = []
+        # don't store blocks that are inherited, keep only those that really exist
         for k, v in incoming_blocks.items():
             if v.get('_v_inherit'):
                 del incoming_blocks[k]
+                if k in parent_block_ids:
+                    inherited.append(k)
 
         for id, block_value in incoming_blocks.items():
             block_type = block_value.get("@type", "")
@@ -75,7 +78,7 @@ class SlotDeserializer(object):
         self.slot.blocks = incoming_blocks
 
         # don't keep block ids in layout if they're nowhere in the inheritance tree
-        all_ids = parent_block_ids + list(self.slot.blocks.keys())
+        all_ids = parent_block_ids + list(self.slot.blocks.keys()) + inherited
         layout = [b for b in data['blocks_layout']['items'] if b in all_ids]
         data['blocks_layout']['items'] = layout
         self.slot.blocks_layout = data['blocks_layout']
