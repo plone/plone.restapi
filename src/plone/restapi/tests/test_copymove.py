@@ -27,7 +27,9 @@ class TestCopyMove(unittest.TestCase):
             self.portal.invokeFactory("Document", id="doc1", title="My Document")
         ]
         self.doc2 = self.portal[
-            self.portal.invokeFactory("Document", id="doc2-with spaces", title="My Document")
+            self.portal.invokeFactory(
+                "Document", id="doc2-with spaces", title="My Document"
+            )
         ]
         self.folder1 = self.portal[
             self.portal.invokeFactory("Folder", id="folder1", title="My Folder")
