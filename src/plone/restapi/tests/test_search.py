@@ -21,6 +21,13 @@ import six
 import transaction
 import unittest
 
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    PLONE5 = False
+else:
+    PLONE5 = True
+
 
 class TestSearchFunctional(unittest.TestCase):
 
@@ -602,6 +609,9 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/@search", params=query)
         self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
 
+    @unittest.skipIf(
+        not PLONE5, "searchResults in Plone 4 does not handle correctly that permission"
+    )
     def test_respect_access_inactive_permission(self):
         # admin can see everything
         response = self.api_session.get("/@search", params={}).json()
@@ -642,6 +652,7 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get(
             "/@search", params={"path": "/plone/folder"}
         ).json()
+
         self.assertEqual(response["items_total"], 3)
         response = self.api_session.get(
             "/@search", params={"Title": "Lorem Ipsum"}
