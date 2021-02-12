@@ -36,48 +36,11 @@ class TestServicesSlots(unittest.TestCase):
         self.api_session.close()
 
     def populateSite(self):
-        """
-        Portal
-        +-doc1
-        +-doc2
-        +-doc3
-        +-folder1
-          +-doc11
-          +-doc12
-          +-doc13
-        +-link1
-        +-folder2
-          +-doc21
-          +-doc22
-          +-doc23
-          +-file21
-          +-folder21
-            +-doc211
-            +-doc212
-        """
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.portal.invokeFactory("Document", "doc1")
-        self.portal.invokeFactory("Document", "doc2")
-        self.portal.invokeFactory("Document", "doc3")
         self.portal.invokeFactory("Folder", "folder1")
-        self.portal.invokeFactory("Link", "link1")
-        self.portal.link1.remoteUrl = "http://plone.org"
-        self.portal.link1.reindexObject()
         folder1 = getattr(self.portal, "folder1")
         folder1.invokeFactory("Document", "doc11")
-        folder1.invokeFactory("Document", "doc12")
-        folder1.invokeFactory("Document", "doc13")
-        self.portal.invokeFactory("Folder", "folder2")
-        folder2 = getattr(self.portal, "folder2")
-        folder2.invokeFactory("Document", "doc21")
-        folder2.invokeFactory("Document", "doc22")
-        folder2.invokeFactory("Document", "doc23")
-        folder2.invokeFactory("File", "file21")
-        folder2.invokeFactory("Folder", "folder21")
-        folder21 = getattr(folder2, "folder21")
-        folder21.invokeFactory("Document", "doc211")
-        folder21.invokeFactory("Document", "doc212")
 
         self.doc = self.portal["folder1"]["doc11"]
 
