@@ -113,7 +113,7 @@ class TestServicesSlots(unittest.TestCase):
             response.json(),
             {
                 u"@id": u"http://localhost:55001/plone/@slots",
-                u"edit_slots": [u"right", u"left"],
+                u"edit_slots": [u"left", u"right"],
                 u"items": {
                     u"left": {
                         u"@id": u"http://localhost:55001/plone/@slots/left",
@@ -182,6 +182,3 @@ class TestServicesSlots(unittest.TestCase):
             },
         )
         self.assertEqual(storage["left"].blocks_layout, {"items": [u"1"]})
-
-        # self.setup_slots()
-        # transaction.commit()
