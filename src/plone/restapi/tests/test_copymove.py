@@ -26,6 +26,9 @@ class TestCopyMove(unittest.TestCase):
         self.doc1 = self.portal[
             self.portal.invokeFactory("Document", id="doc1", title="My Document")
         ]
+        self.doc2 = self.portal[
+            self.portal.invokeFactory("Document", id="doc2-with spaces", title="My Document")
+        ]
         self.folder1 = self.portal[
             self.portal.invokeFactory("Folder", id="folder1", title="My Folder")
         ]
@@ -58,6 +61,20 @@ class TestCopyMove(unittest.TestCase):
         obj = service.get_object(self.doc1.UID())
 
         self.assertEqual(self.doc1, obj)
+
+    def test_get_object_with_quoted_chars_by_url(self):
+        service = self.traverse("/plone/@copy", method="POST")
+        obj = service.get_object(self.doc2.absolute_url())
+
+        self.assertEqual(self.doc2, obj)
+
+    def test_get_object_with_quoted_chars_by_path(self):
+        """
+        Volto returns paths like this
+        """
+        service = self.traverse("/plone/@copy", method="POST")
+        obj = service.get_object('/doc2-with%20spaces')
+        self.assertEqual(self.doc2, obj)
 
 
 class TestCopyMoveFunctional(unittest.TestCase):

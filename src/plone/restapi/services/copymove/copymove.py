@@ -11,6 +11,11 @@ from zope.security import checkPermission
 import plone
 import six
 
+if six.PY2:
+    from urllib2 import unquote
+else:
+    from urllib.parse import unquote
+
 
 class BaseCopyMove(Service):
     """Base service for copy/move operations."""
@@ -25,6 +30,7 @@ class BaseCopyMove(Service):
 
     def get_object(self, key):
         """Get an object by url, path or UID."""
+        key = unquote(key)
         if key.startswith(self.portal_url):
             # Resolve by URL
             key = key[len(self.portal_url) + 1 :]
