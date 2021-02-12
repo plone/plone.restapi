@@ -73,7 +73,7 @@ class TestCopyMove(unittest.TestCase):
         Volto returns paths like this
         """
         service = self.traverse("/plone/@copy", method="POST")
-        obj = service.get_object('/doc2-with%20spaces')
+        obj = service.get_object("/doc2-with%20spaces")
         self.assertEqual(self.doc2, obj)
 
 
