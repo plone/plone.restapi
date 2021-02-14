@@ -76,7 +76,6 @@ class TestServicesSlots(unittest.TestCase):
             response.json(),
             {
                 u"@id": u"http://localhost:55001/plone/@slots",
-                u"edit_slots": [u"left", u"right"],
                 u"items": {
                     u"left": {
                         u"@id": u"http://localhost:55001/plone/@slots/left",
@@ -86,6 +85,7 @@ class TestServicesSlots(unittest.TestCase):
                             u"5": {u"title": u"Fifth"},
                         },
                         u"blocks_layout": {u"items": [u"5", u"1", u"3"]},
+                        u"edit": True,
                     },
                     u"right": {
                         u"@id": u"http://localhost:55001/plone/@slots/right",
@@ -95,6 +95,7 @@ class TestServicesSlots(unittest.TestCase):
                             u"8": {u"title": u"Fifth"},
                         },
                         u"blocks_layout": {u"items": [u"8", u"6", u"7"]},
+                        u"edit": True,
                     },
                 },
             },
