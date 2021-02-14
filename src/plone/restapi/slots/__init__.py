@@ -34,7 +34,7 @@ SlotsStorage = factory(PersistentSlots, SLOTS_KEY)
 
 
 @implementer(ISlot)
-class Slot(Contained, Persistent):
+class Slot(Persistent, Contained):
     """A container for data pertaining to a single slot"""
 
     def __init__(self, **data):

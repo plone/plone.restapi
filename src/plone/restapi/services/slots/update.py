@@ -11,9 +11,12 @@ from plone.restapi.services.locking.locking import is_locked
 from plone.restapi.slots.interfaces import ISlotStorage
 from zope.component import getMultiAdapter
 from zope.event import notify
+from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.lifecycleevent import ObjectModifiedEvent
 from zope.publisher.interfaces import IPublishTraverse
+
+import plone.protect
 
 
 @implementer(IPublishTraverse)
@@ -29,6 +32,8 @@ class SlotsPatch(Service):
         return self
 
     def reply(self):
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
         if is_locked(self.context, self.request):
             self.request.response.setStatus(403)
             return dict(error=dict(type="Forbidden", message="Resource is locked."))

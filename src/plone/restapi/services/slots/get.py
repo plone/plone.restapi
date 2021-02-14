@@ -7,8 +7,11 @@ from plone.restapi.slots import Slot
 from plone.restapi.slots.interfaces import ISlots
 from plone.restapi.slots.interfaces import ISlotStorage
 from zope.component import getMultiAdapter
+from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
+
+import plone.protect
 
 
 # TODO: write expand
@@ -27,6 +30,10 @@ class SlotsGet(Service):
         return self
 
     def reply(self):
+
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
+
         self.engine = ISlots(self.context)
         self.slot_names = self.engine.discover_slots()
         self.editable_slots = self.engine.get_editable_slots()
