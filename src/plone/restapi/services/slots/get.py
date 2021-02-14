@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from plone.restapi.slots import Slot
 from plone.restapi.slots.interfaces import ISlots
@@ -48,6 +47,7 @@ class SlotsGet(Service):
         )
         result = adapter()
 
+        # from plone.restapi.serializer.converters import json_compatible
         # result["edit_slots"] = json_compatible(sorted(self.editable_slots))
 
         # update "edit:True" editable status in slots
