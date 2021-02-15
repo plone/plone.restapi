@@ -10,7 +10,7 @@
 
   <i18n:registerTranslations directory="locales" />
 
-  <meta:provides feature="plonerestapi7" />
+  <meta:provides feature="plonerestapi-7" />
 
   <include package="plone.behavior" file="meta.zcml"/>
   <include package="plone.rest" file="meta.zcml"/>
