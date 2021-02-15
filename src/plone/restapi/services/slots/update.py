@@ -8,15 +8,18 @@ from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from plone.restapi.services.locking.locking import is_locked
+from plone.restapi.slots import Slot
 from plone.restapi.slots.interfaces import ISlotStorage
 from zope.component import getMultiAdapter
-from zope.event import notify
 from zope.interface import alsoProvides
 from zope.interface import implementer
-from zope.lifecycleevent import ObjectModifiedEvent
 from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect
+
+
+# from zope.event import notify
+# from zope.lifecycleevent import ObjectModifiedEvent
 
 
 @implementer(IPublishTraverse)
@@ -53,7 +56,7 @@ class SlotsPatch(Service):
             self.request.response.setStatus(400)
             return dict(error=dict(type="DeserializationError", message=str(e)))
 
-        notify(ObjectModifiedEvent(self.context))
+        # notify(ObjectModifiedEvent(self.context))
 
         prefer = self.request.getHeader("Prefer")
         if prefer == "return=representation":
@@ -71,6 +74,8 @@ class SlotsPatch(Service):
     def replySlot(self):
         name = self.params[0]
         storage = ISlotStorage(self.context)
+        if name not in storage:
+            storage[name] = Slot()
         slot = storage[name]
 
         deserializer = getMultiAdapter(
@@ -82,7 +87,7 @@ class SlotsPatch(Service):
             self.request.response.setStatus(400)
             return dict(error=dict(type="DeserializationError", message=str(e)))
 
-        notify(ObjectModifiedEvent(self.context))
+        # notify(ObjectModifiedEvent(self.context))
 
         prefer = self.request.getHeader("Prefer")
         if prefer == "return=representation":
