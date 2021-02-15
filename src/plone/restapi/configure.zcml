@@ -97,6 +97,12 @@
         provides=".behaviors.ICustomBlocks"
       />
 
+    <subscriber
+        for="plone.app.dexterity.browser.behaviors.BehaviorConfigurationAdapter
+             zope.lifecycleevent.IObjectModifiedEvent"
+        handler=".events.handleCustomVoltoBlocks"
+      />
+
   </configure>
 
   <utility
