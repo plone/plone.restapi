@@ -90,6 +90,13 @@
         provides=".behaviors.IBlocks"
       />
 
+    <plone:behavior
+        name="volto.blocks.custom"
+        title="Blocks (custom)"
+        description="Enables Volto Blocks support: TTW customizable"
+        provides=".behaviors.ICustomBlocks"
+      />
+
   </configure>
 
   <utility

@@ -1,0 +1,1 @@
+- Add `volto.blocks.custom (ICustomBlocks)` behavior to mark items with TTW Custom Layout [@avoinea]

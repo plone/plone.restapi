@@ -38,3 +38,8 @@ class IBlocks(model.Schema):
         default={"items": []},
         required=False,
     )
+
+
+class ICustomBlocks(IBlocks):
+    """ Custom blocks (TTW, external, etc.)
+    """
