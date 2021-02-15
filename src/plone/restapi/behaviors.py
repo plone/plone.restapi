@@ -41,5 +41,4 @@ class IBlocks(model.Schema):
 
 
 class ICustomBlocks(IBlocks):
-    """ Custom blocks (TTW, external, etc.)
-    """
+    """Custom blocks (TTW, external, etc.)"""
