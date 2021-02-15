@@ -68,4 +68,13 @@
         profile="plone.restapi:default"
         />
 
+    <genericsetup:upgradeStep
+        title="Fix custom volto blocks behavior"
+        description=""
+        source="0006"
+        destination="0007"
+        handler="plone.restapi.upgrades.to0007.fix_custom_volto_blocks_behavior"
+        profile="plone.restapi:default"
+        />
+
 </configure>
