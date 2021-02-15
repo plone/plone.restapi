@@ -189,6 +189,22 @@ class TestBlocksDeserializer(unittest.TestCase):
             self.portal.doc1.blocks["123"]["url"], "http://example.com/1.jpg"
         )
 
+    def test_blocks_doc_relative(self):
+        doc_uid = IUUID(self.portal.doc1)
+        self.deserialize(blocks={"123": {"@type": "foo", "url": "/doc1"}})
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(doc_uid)
+        )
+
+    def test_blocks_image_relative(self):
+        image_uid = IUUID(self.image)
+        self.deserialize(blocks={"123": {"@type": "image", "url": "/image-1"}})
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(image_uid)
+        )
+
     def test_blocks_custom_block_resolve_standard_fields(self):
         self.deserialize(
             blocks={"123": {"@type": "foo", "url": self.portal.doc1.absolute_url()}}
