@@ -5,9 +5,12 @@
     xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:meta="http://namespaces.zope.org/meta"
     i18n_domain="plone.restapi">
 
   <i18n:registerTranslations directory="locales" />
+
+  <meta:provides feature="plonerestapi7" />
 
   <include package="plone.behavior" file="meta.zcml"/>
   <include package="plone.rest" file="meta.zcml"/>
