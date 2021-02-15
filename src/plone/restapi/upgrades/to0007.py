@@ -17,6 +17,9 @@ def fix_custom_volto_blocks_behavior(setup_context):
 
     for _type in pt.objectIds():
         fti = queryUtility(IDexterityFTI, name=_type)
+        if getattr(fti, "behaviors", None) is None:
+            continue
+
         if CUSTOM_BLOCKS_BEHAVIOR in fti.behaviors:
             # Already fixed
             continue
