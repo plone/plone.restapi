@@ -4,6 +4,7 @@ from .interfaces import ISlot
 from .interfaces import ISlots
 from .interfaces import ISlotStorage
 from AccessControl.SecurityManagement import getSecurityManager
+from Acquisition import Implicit
 from copy import deepcopy
 from persistent import Persistent
 from plone.registry.interfaces import IRegistry
@@ -34,7 +35,7 @@ SlotsStorage = factory(PersistentSlots, SLOTS_KEY)
 
 
 @implementer(ISlot)
-class Slot(Persistent, Contained):
+class Slot(Persistent, Contained, Implicit):
     """A container for data pertaining to a single slot"""
 
     def __init__(self, **data):
@@ -118,6 +119,7 @@ class Slots(object):
                     blocks[uid] = block
                     if level > 0:
                         block["_v_inherit"] = True
+                        block["readOnly"] = True
 
             for uid in slot.blocks_layout["items"]:
                 if not (uid in blocks_layout or uid in _replaced):
@@ -128,6 +130,7 @@ class Slots(object):
         for k, v in blocks.items():
             if v.get("s:sameAs"):
                 v["_v_inherit"] = True
+                block["readOnly"] = True
                 v.update(self._resolve_block(v, _seen_blocks))
 
         return {

@@ -3,7 +3,6 @@
 """ Slots deserializers """
 
 from plone.restapi.deserializer import json_body
-
 # from plone.restapi.events import BlocksRemovedEvent
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -16,7 +15,6 @@ from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import subscribers
-
 # from zope.event import notify
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -60,12 +58,14 @@ class SlotDeserializer(object):
                 if k in parent_block_ids:
                     inherited.append(k)
 
+        slot = self.slot.__of__(self.context)
+
         for id, block_value in incoming_blocks.items():
             block_type = block_value.get("@type", "")
 
             handlers = []
             for h in subscribers(
-                (self.slot, self.request),
+                (slot, self.request),
                 IBlockFieldDeserializationTransformer,
             ):
                 if h.block_type == block_type or h.block_type is None:

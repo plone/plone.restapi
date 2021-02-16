@@ -37,11 +37,13 @@ class SlotSerializer(object):
 
         blocks = copy.deepcopy(data["blocks"])
 
+        slot = self.slot.__of__(self.context)
+
         for id, block_value in blocks.items():
             block_type = block_value.get("@type", "")
             handlers = []
             for h in subscribers(
-                (self.context, self.request), IBlockFieldSerializationTransformer
+                (slot, self.request), IBlockFieldSerializationTransformer
             ):
                 if h.block_type == block_type or h.block_type is None:
                     handlers.append(h)
