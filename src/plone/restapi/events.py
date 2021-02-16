@@ -1,5 +1,4 @@
-""" Custom events handlers
-"""
+# -*- coding: utf-8 -*-
 from lxml import etree
 
 NAMESPACE = "{http://namespaces.plone.org/supermodel/schema}"
