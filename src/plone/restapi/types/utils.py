@@ -78,6 +78,7 @@ def create_form(context, request, base_schema, additional_schemata=None):
         schema = base_schema
         additionalSchemata = additional_schemata
         ignoreContext = True
+        ignorePrefix = True
 
     form = SchemaForm(context, request)
     form.updateFieldsFromSchemata()
