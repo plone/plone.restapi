@@ -8,6 +8,25 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0b8 (2021-02-19)
+--------------------
+
+New features:
+
+
+- Mark restapi 7 with a zcml feature flag: ``plonerestapi-7``
+  [sneridagh] (#1068)
+- Add a couple of additional tests for resolveuid feature reassurance
+  [sneridagh] (#1072)
+
+
+Bug fixes:
+
+
+- Avoid duplicate fields within DX RestAPI
+  [avoinea] (#1073)
+
+
 7.0.0b7 (2021-02-10)
 --------------------
 
