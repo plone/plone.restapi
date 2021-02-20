@@ -8,6 +8,12 @@ Changelog
 
 .. towncrier release notes start
 
+7.0.0 (2021-02-20)
+------------------
+
+- Re-release 7.0.0b8 as 7.0.0 final. [timo]
+
+
 7.0.0b8 (2021-02-19)
 --------------------
 
