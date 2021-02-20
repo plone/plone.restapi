@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+6.15.1 (2021-02-20)
+-------------------
+
+Bug fixes:
+
+
+- Fixed compatibility with Zope 4.5.2 by making sure Location header is string.
+  On Python 2 it could be unicode for the users and groups end points.
+  Fixes `issue 1019 <https://github.com/plone/plone.restapi/issues/1019>`_.
+  [maurits] (#1019)
+
+
 6.15.0 (2020-10-08)
 -------------------
 
