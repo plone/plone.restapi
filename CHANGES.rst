@@ -209,6 +209,45 @@ New features:
   serialization.
   [buchi,timo,cekk] (#808)
 
+
+6.15.1 (2021-02-20)
+-------------------
+
+Bug fixes:
+
+
+- Fixed compatibility with Zope 4.5.2 by making sure Location header is string.
+  On Python 2 it could be unicode for the users and groups end points.
+  Fixes `issue 1019 <https://github.com/plone/plone.restapi/issues/1019>`_.
+  [maurits] (#1019)
+
+
+6.15.0 (2020-10-08)
+-------------------
+
+New features:
+
+- Add `sort` feature to resort all folder items
+  [petschki] (#812)
+
+- Remove unneeded stringtype checks
+  [erral] (#875)
+
+
+Bug fixes:
+
+
+- Fixed deprecation warnings for ``zope.site.hooks``, ``CMFPlone.interfaces.ILanguageSchema``
+  and ``plone.dexterity.utils.splitSchemaName``.
+  [maurits] (#975)
+
+- Update tests to fix https://github.com/plone/plone.dexterity/pull/137
+  [@avoinea] (#1001)
+
+- Fix tests with Products.MailHost 4.10.
+  [maurits] (#3178)
+
+
 6.14.0 (2020-08-28)
 -------------------
 
@@ -221,6 +260,7 @@ New features:
 -------------------
 
 Bug fixes:
+
 
 - Removed useless management of metadata_fields in SearchHandler/LazyCatalogResultSerializer since it is handled in DefaultJSONSummarySerializer. [gbastien] (#970)
 
@@ -287,6 +327,7 @@ Bug fixes:
 -------------------
 
 Bug fixes:
+
 
 - PATCH (editing) in @user endpoint now is able to remove existing values using null
   [sneridagh] (#946)
