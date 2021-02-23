@@ -21,6 +21,13 @@ import six
 import transaction
 import unittest
 
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    PLONE5 = False
+else:
+    PLONE5 = True
+
 
 class TestSearchFunctional(unittest.TestCase):
 
@@ -37,9 +44,24 @@ class TestSearchFunctional(unittest.TestCase):
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
+        api.user.create(
+            email="editor@example.com",
+            username="editoruser",
+            password="secret",
+        )
+        api.user.create(
+            email="editor@example.com",
+            username="localeditor",
+            password="secret",
+        )
+
         # /plone/folder
         self.folder = createContentInContainer(
             self.portal, u"Folder", id=u"folder", title=u"Some Folder"
+        )
+        api.user.grant_roles(username="editoruser", roles=["Editor"])
+        api.user.grant_roles(
+            username="localeditor", obj=self.folder, roles=["Editor", "Reader"]
         )
 
         # /plone/folder/doc
@@ -586,6 +608,61 @@ class TestSearchFunctional(unittest.TestCase):
         query = {"UID": "7777a074cb4240d08c9a129e3a837777"}
         response = self.api_session.get("/@search", params=query)
         self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
+
+    @unittest.skipIf(
+        not PLONE5, "searchResults in Plone 4 does not handle correctly that permission"
+    )
+    def test_respect_access_inactive_permission(self):
+        # admin can see everything
+        response = self.api_session.get("/@search", params={}).json()
+        self.assertEqual(response["items_total"], 6)
+        response = self.api_session.get(
+            "/@search", params={"Title": "Lorem Ipsum"}
+        ).json()
+        self.assertEqual(response["items_total"], 1)
+
+        # not admin users can't see expired items
+        self.api_session.auth = ("editoruser", "secret")
+
+        response = self.api_session.get("/@search", params={}).json()
+        self.assertEqual(response["items_total"], 3)
+        response = self.api_session.get(
+            "/@search", params={"Title": "Lorem Ipsum"}
+        ).json()
+        self.assertEqual(response["items_total"], 0)
+
+        # now grant permission to Editor to access inactive content
+        self.portal.manage_permission(
+            "Access inactive portal content", roles=["Manager", "Editor"]
+        )
+        transaction.commit()
+
+        #  portal-enabled Editor can see expired contents
+        response = self.api_session.get("/@search", params={}).json()
+        self.assertEqual(response["items_total"], 6)
+        response = self.api_session.get(
+            "/@search", params={"Title": "Lorem Ipsum"}
+        ).json()
+        self.assertEqual(response["items_total"], 1)
+
+        # local-enabled Editor can only access expired contents inside folder
+        self.api_session.auth = ("localeditor", "secret")
+        response = self.api_session.get("/@search", params={}).json()
+        self.assertEqual(response["items_total"], 1)
+        response = self.api_session.get(
+            "/@search", params={"path": "/plone/folder"}
+        ).json()
+
+        self.assertEqual(response["items_total"], 3)
+        response = self.api_session.get(
+            "/@search", params={"Title": "Lorem Ipsum"}
+        ).json()
+        self.assertEqual(response["items_total"], 0)
+        response = self.api_session.get(
+            "/@search",
+            params={"Title": "Lorem Ipsum", "path": "/plone/folder"},
+        ).json()
+        self.assertEqual(response["items_total"], 1)
 
 
 class TestSearchATFunctional(unittest.TestCase):
