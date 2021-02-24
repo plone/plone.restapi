@@ -9,100 +9,118 @@ Content-Type: application/json
                 {
                     "icon": "",
                     "id": "view",
-                    "title": "View"
+                    "title": "View",
+                    "url": "http://localhost:55001/plone/front-page"
                 },
                 {
                     "icon": "",
                     "id": "edit",
-                    "title": "Edit"
+                    "title": "Edit",
+                    "url": "http://localhost:55001/plone/front-page/edit"
                 },
                 {
                     "icon": "",
                     "id": "folderContents",
-                    "title": "Contents"
+                    "title": "Contents",
+                    "url": "http://localhost:55001/plone/folder_contents"
                 },
                 {
                     "icon": "",
                     "id": "history",
-                    "title": "History"
+                    "title": "History",
+                    "url": "http://localhost:55001/plone/front-page/@@historyview"
                 },
                 {
                     "icon": "",
                     "id": "local_roles",
-                    "title": "Sharing"
+                    "title": "Sharing",
+                    "url": "http://localhost:55001/plone/front-page/@@sharing"
                 }
             ],
             "object_buttons": [
                 {
                     "icon": "",
                     "id": "cut",
-                    "title": "Cut"
+                    "title": "Cut",
+                    "url": "http://localhost:55001/plone/front-page/object_cut"
                 },
                 {
                     "icon": "",
                     "id": "copy",
-                    "title": "Copy"
+                    "title": "Copy",
+                    "url": "http://localhost:55001/plone/front-page/object_copy"
                 },
                 {
                     "icon": "",
                     "id": "delete",
-                    "title": "Delete"
+                    "title": "Delete",
+                    "url": "http://localhost:55001/plone/front-page/delete_confirmation"
                 },
                 {
                     "icon": "",
                     "id": "rename",
-                    "title": "Rename"
+                    "title": "Rename",
+                    "url": "http://localhost:55001/plone/front-page/object_rename"
                 },
                 {
                     "icon": "",
                     "id": "redirection",
-                    "title": "URL Management"
+                    "title": "URL Management",
+                    "url": " http://localhost:55001/plone/front-page/@@manage-aliases"
                 }
             ],
             "portal_tabs": [
                 {
                     "icon": "",
                     "id": "index_html",
-                    "title": "Home"
+                    "title": "Home",
+                    "url": "http://localhost:55001/plone"
                 }
             ],
             "site_actions": [
                 {
                     "icon": "",
                     "id": "sitemap",
-                    "title": "Site Map"
+                    "title": "Site Map",
+                    "url": "http://localhost:55001/plone/sitemap"
                 },
                 {
                     "icon": "",
                     "id": "accessibility",
-                    "title": "Accessibility"
+                    "title": "Accessibility",
+                    "url": "http://localhost:55001/plone/accessibility-info"
                 },
                 {
                     "icon": "",
                     "id": "contact",
-                    "title": "Contact"
+                    "title": "Contact",
+                    "url": "http://localhost:55001/plone/contact-info"
                 }
             ],
             "user": [
                 {
                     "icon": "",
                     "id": "preferences",
-                    "title": "Preferences"
+                    "title": "Preferences",
+                    "url": "http://localhost:55001/plone/@@personal-preferences"
                 },
                 {
                     "icon": "",
                     "id": "dashboard",
-                    "title": "Dashboard"
+                    "title": "Dashboard",
+                    "url": "http://localhost:55001/plone/dashboard"
                 },
                 {
                     "icon": "",
                     "id": "plone_setup",
-                    "title": "Site Setup"
+                    "title": "Site Setup",
+                    "url": "http://localhost:55001/plone/@@overview-controlpanel"
                 },
                 {
                     "icon": "",
                     "id": "logout",
-                    "title": "Log out"
+                    "title": "Log out",
+                    "url": "http://localhost:55001/plone/logout"
                 }
             ]
         },
