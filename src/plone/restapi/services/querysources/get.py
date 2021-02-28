@@ -24,6 +24,11 @@ class QuerySourcesGet(SourcesGet):
         bound_field = field.bind(self.context)
 
         source = bound_field.source
+        if not source and IQuerySource.providedBy(
+            getattr(bound_field, "vocabulary", None)
+        ):
+            source = bound_field.vocabulary
+
         if not IQuerySource.providedBy(source):
             return self._error(
                 404, "Not Found", "Field %r does not have an IQuerySource" % fieldname

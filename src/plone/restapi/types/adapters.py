@@ -10,6 +10,7 @@ from plone.restapi.types.utils import get_vocabulary_url
 from plone.restapi.types.utils import get_widget_params
 from plone.schema import IEmail
 from plone.schema import IJSONField
+import six
 from z3c.formwidget.query.interfaces import IQuerySource
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -102,11 +103,22 @@ class DefaultJsonSchemaProvider(object):
     def get_widget_params(self):
         all_params = get_widget_params([self.field.interface])
         params = all_params.get(self.field.getName(), {})
+
         if "vocabulary" in params:
-            vocab_name = params["vocabulary"]
-            params["vocabulary"] = {
-                "@id": get_vocabulary_url(vocab_name, self.context, self.request)
-            }
+            vocab = params["vocabulary"]
+            if isinstance(vocab, six.text_type):
+                params["vocabulary"] = {
+                    "@id": get_vocabulary_url(vocab, self.context, self.request)
+                }
+            elif IQuerySource.providedBy(vocab):
+                params["vocabulary"] = {
+                    "@id": get_querysource_url(self.field, self.context, self.request)
+                }
+            else:
+                params["vocabulary"] = {
+                    "@id": get_source_url(self.field, self.context, self.request)
+                }
+
         return params
 
 
