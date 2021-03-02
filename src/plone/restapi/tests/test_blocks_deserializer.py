@@ -76,6 +76,38 @@ class TestBlocksDeserializer(unittest.TestCase):
         assert self.portal.doc1._handler_called is True
         assert self.portal.doc1.blocks["123"]["value"] == u"changed: text"
 
+    def test_record_block_type(self):
+        @implementer(IBlockFieldDeserializationTransformer)
+        @adapter(IBlocks, IBrowserRequest)
+        class TestAdapter(object):
+            order = 10
+            block_type = None
+
+            def __init__(self, context, request):
+                self.context = context
+                self.request = request
+
+            def __call__(self, value):
+                self.context._handler_called = True
+
+                value["value"] = u"changed {} with type: {}".format(
+                    value["value"], self.block_type
+                )
+
+                return value
+
+        provideSubscriptionAdapter(
+            TestAdapter,
+            (IDexterityItem, IBrowserRequest),
+        )
+
+        self.deserialize(blocks={"123": {"@type": "test", "value": u"text"}})
+
+        assert self.portal.doc1._handler_called is True
+        assert (
+            self.portal.doc1.blocks["123"]["value"] == u"changed text with type: test"
+        )
+
     def test_disabled_deserializer(self):
         @implementer(IBlockFieldDeserializationTransformer)
         @adapter(IBlocks, IBrowserRequest)

@@ -68,6 +68,7 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
 
                 for handler in sorted(handlers, key=lambda h: h.order):
                     if not getattr(handler, "disabled", False):
+                        handler.block_type = block_type
                         block_value = handler(block_value)
 
                 value[id] = block_value

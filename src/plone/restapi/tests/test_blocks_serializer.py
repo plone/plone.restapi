@@ -123,6 +123,39 @@ class TestBlocksSerializer(unittest.TestCase):
         assert not getattr(self.portal.doc1, "_handler_called", False)
         self.assertEqual(value["123"]["value"], u"text")
 
+    def test_record_block_type(self):
+        @implementer(IBlockFieldSerializationTransformer)
+        @adapter(IBlocks, IBrowserRequest)
+        class TestAdapter(object):
+            order = 10
+            block_type = None
+            disabled = True
+
+            def __init__(self, context, request):
+                self.context = context
+                self.request = request
+
+            def __call__(self, value):
+                self.context._handler_called = True
+
+                value["value"] = u"changed {} with type: {}".format(
+                    value["value"], self.block_type
+                )
+
+                return value
+
+        provideSubscriptionAdapter(
+            TestAdapter,
+            (IDexterityItem, IBrowserRequest),
+        )
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={"123": {"@type": "test", "value": u"text"}},
+        )
+
+        assert not getattr(self.portal.doc1, "_handler_called", False)
+        assert value["123"]["value"] == u"changed text with type: test"
+
     def test_serialize_blocks_smart_href_array_volto_object_browser(self):
         doc_uid = IUUID(self.portal.doc1)
         value = self.serialize(
