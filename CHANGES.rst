@@ -8,7 +8,49 @@ Changelog
 
 .. towncrier release notes start
 
-7.0.0b5 (2021-02-05)
+7.0.0 (2021-02-20)
+------------------
+
+- Re-release 7.0.0b8 as 7.0.0 final. [timo]
+
+
+7.0.0b8 (2021-02-19)
+--------------------
+
+New features:
+
+
+- Mark restapi 7 with a zcml feature flag: ``plonerestapi-7``
+  [sneridagh] (#1068)
+- Add a couple of additional tests for resolveuid feature reassurance
+  [sneridagh] (#1072)
+
+
+Bug fixes:
+
+
+- Avoid duplicate fields within DX RestAPI
+  [avoinea] (#1073)
+
+
+7.0.0b7 (2021-02-10)
+--------------------
+
+New features:
+
+
+- Add ``root`` element to the @breadcrumbs endpoint
+  [sneridagh] (#1064)
+
+
+Bug fixes:
+
+
+- Remove ``escape``'d titles
+  [sneridagh] (#1061)
+
+
+7.0.0b6 (2021-02-09)
 --------------------
 
 Bug fixes:
@@ -173,6 +215,45 @@ New features:
   serialization.
   [buchi,timo,cekk] (#808)
 
+
+6.15.1 (2021-02-20)
+-------------------
+
+Bug fixes:
+
+
+- Fixed compatibility with Zope 4.5.2 by making sure Location header is string.
+  On Python 2 it could be unicode for the users and groups end points.
+  Fixes `issue 1019 <https://github.com/plone/plone.restapi/issues/1019>`_.
+  [maurits] (#1019)
+
+
+6.15.0 (2020-10-08)
+-------------------
+
+New features:
+
+- Add `sort` feature to resort all folder items
+  [petschki] (#812)
+
+- Remove unneeded stringtype checks
+  [erral] (#875)
+
+
+Bug fixes:
+
+
+- Fixed deprecation warnings for ``zope.site.hooks``, ``CMFPlone.interfaces.ILanguageSchema``
+  and ``plone.dexterity.utils.splitSchemaName``.
+  [maurits] (#975)
+
+- Update tests to fix https://github.com/plone/plone.dexterity/pull/137
+  [@avoinea] (#1001)
+
+- Fix tests with Products.MailHost 4.10.
+  [maurits] (#3178)
+
+
 6.14.0 (2020-08-28)
 -------------------
 
@@ -185,6 +266,7 @@ New features:
 -------------------
 
 Bug fixes:
+
 
 - Removed useless management of metadata_fields in SearchHandler/LazyCatalogResultSerializer since it is handled in DefaultJSONSummarySerializer. [gbastien] (#970)
 
@@ -251,6 +333,7 @@ Bug fixes:
 -------------------
 
 Bug fixes:
+
 
 - PATCH (editing) in @user endpoint now is able to remove existing values using null
   [sneridagh] (#946)
