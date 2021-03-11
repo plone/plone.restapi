@@ -259,3 +259,25 @@ class TestBlocksDeserializer(unittest.TestCase):
             self.portal.doc1.blocks["123"]["href"][0],
             "../resolveuid/{}".format(doc_uid),
         )
+
+    def test_deserialize_subblocks_transformers(self):
+        # use the html transformer to test subblocks transformers
+        subblock = {
+            "@type": "html",
+            "html": u"<script>nasty</script><div>This stays</div>",
+        }
+        self.deserialize(
+            blocks={
+                "1": {
+                    "@type": "columns_block",
+                    "data": {
+                        "blocks": {"2": {"@type": "tabs", "blocks": {"3": subblock}}}
+                    },
+                }
+            }
+        )
+
+        block = self.portal.doc1.blocks["1"]["data"]["blocks"]["2"]["blocks"]["3"][
+            "html"
+        ]
+        self.assertEqual(block, u"<div>This stays</div>")

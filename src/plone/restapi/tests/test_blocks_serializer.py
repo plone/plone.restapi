@@ -149,3 +149,23 @@ class TestBlocksSerializer(unittest.TestCase):
         )
 
         self.assertEqual(value["123"]["href"][0], self.portal.doc1.absolute_url())
+
+    def test_serialize_subblocks_transformers(self):
+        # use the href smart field transformer for testing subblocks transformers
+        doc_uid = IUUID(self.portal.doc1)
+        subblock = {"@type": "foo", "href": ["../resolveuid/{}".format(doc_uid)]}
+        value = self.serialize(
+            context=self.portal.doc1,
+            blocks={
+                "1": {
+                    "@type": "columns_block",
+                    "data": {
+                        "blocks": {"2": {"@type": "tabs", "blocks": {"3": subblock}}}
+                    },
+                }
+            },
+        )
+
+        href = value["1"]["data"]["blocks"]["2"]["blocks"]["3"]["href"]
+
+        self.assertEqual(href[0], self.portal.doc1.absolute_url())
