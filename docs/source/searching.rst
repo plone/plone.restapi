@@ -46,7 +46,6 @@ In order to return specific metadata columns, see the documentation of the ``met
         This is done in order to match also the partial results of the beginning of a search term(s).
         The plone.restapi @search endpoint will not do that for you. You'll have to add it if you want to keep this feature.
 
-
 Query format
 ------------
 
@@ -163,3 +162,8 @@ You do so by specifying the ``fullobjects`` parameter:
 .. warning::
 
     Be aware that this might induce performance issues when retrieving a lot of resources. Normally the search just serializes catalog brains, but with ``fullobjects``, we wake up all the returned objects.
+
+
+Restrict search results to Plone's search settings
+--------------------------------------------------
+By default the search endpoint is not excluding any types from its results. To allow the search to follow Plone's search settings schema, pass the ``use_site_search_settings`` to the ``@search`` endpoint request. By doing this, the search results will be filtered based on the defined types to be searched and will be sorted according to the default sorting order.
