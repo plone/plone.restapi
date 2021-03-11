@@ -16,12 +16,15 @@ from plone.restapi.tests.helpers import result_paths
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getUtility
+from zope.interface import alsoProvides
 
 import six
 import transaction
 import unittest
 
+
 try:
+    from plone.app.layout.navigation.interfaces import INavigationRoot
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
 except ImportError:
     PLONE5 = False
@@ -154,9 +157,7 @@ class TestSearchFunctional(unittest.TestCase):
         if "virtual_hosting" not in self.app.objectIds():
             # If ZopeLite was imported, we have no default virtual
             # host monster
-            from Products.SiteAccess.VirtualHostMonster import (
-                manage_addVirtualHostMonster,
-            )
+            from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
 
             manage_addVirtualHostMonster(self.app, "virtual_hosting")
         transaction.commit()
@@ -182,9 +183,7 @@ class TestSearchFunctional(unittest.TestCase):
         if "virtual_hosting" not in self.app.objectIds():
             # If ZopeLite was imported, we have no default virtual
             # host monster
-            from Products.SiteAccess.VirtualHostMonster import (
-                manage_addVirtualHostMonster,
-            )
+            from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
 
             manage_addVirtualHostMonster(self.app, "virtual_hosting")
         transaction.commit()
@@ -663,6 +662,81 @@ class TestSearchFunctional(unittest.TestCase):
             params={"Title": "Lorem Ipsum", "path": "/plone/folder"},
         ).json()
         self.assertEqual(response["items_total"], 1)
+
+    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
+    def test_search_use_site_search_settings_for_types(self):
+        response = self.api_session.get(
+            "/@search", params={"use_site_search_settings": 1}
+        ).json()
+        types = set([item["@type"] for item in response["items"]])
+
+        self.assertEqual(set(types), set(["Folder", "DXTestDocument"]))
+
+        registry = getUtility(IRegistry)
+        from Products.CMFPlone.interfaces import ISearchSchema
+
+        search_settings = registry.forInterface(ISearchSchema, prefix="plone")
+        old = search_settings.types_not_searched
+        search_settings.types_not_searched += ("DXTestDocument",)
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/@search", params={"use_site_search_settings": 1}
+        ).json()
+        types = set([item["@type"] for item in response["items"]])
+
+        self.assertEqual(set(types), set(["Folder"]))
+        search_settings.types_not_searched = old
+        transaction.commit()
+
+    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
+    def test_search_use_site_search_settings_for_default_sort_order(self):
+        response = self.api_session.get(
+            "/@search", params={"use_site_search_settings": 1}
+        ).json()
+        titles = [
+            u"Some Folder",
+            u"Lorem Ipsum",
+            u"Other Document",
+            u"Another Folder",
+            u"Document in second folder",
+            u"Doc outside folder",
+        ]
+        self.assertEqual([item["title"] for item in response["items"]], titles)
+
+        response = self.api_session.get(
+            "/@search", params={"use_site_search_settings": 1, "sort_on": "effective"}
+        ).json()
+        self.assertEqual(
+            [item["title"] for item in response["items"]][0],
+            u"Other Document",
+        )
+
+    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
+    def test_search_use_site_search_settings_with_navigation_root(self):
+
+        alsoProvides(self.folder, INavigationRoot)
+
+        response = self.api_session.get(
+            "/folder/@search", params={"use_site_search_settings": 1}
+        ).json()
+        titles = [
+            u"Some Folder",
+            u"Lorem Ipsum",
+            u"Other Document",
+            u"Another Folder",
+            u"Document in second folder",
+            u"Doc outside folder",
+        ]
+        self.assertEqual([item["title"] for item in response["items"]], titles)
+
+        response = self.api_session.get(
+            "/@search", params={"use_site_search_settings": 1, "sort_on": "effective"}
+        ).json()
+        self.assertEqual(
+            [item["title"] for item in response["items"]][0],
+            u"Other Document",
+        )
 
 
 class TestSearchATFunctional(unittest.TestCase):

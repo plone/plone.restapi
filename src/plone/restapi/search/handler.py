@@ -4,9 +4,17 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.browser.navtree import getNavigationRoot
-from Products.CMFPlone.interfaces import ISearchSchema
 from zope.component import getMultiAdapter
 from zope.component import getUtility
+
+
+try:
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+    from Products.CMFPlone.interfaces import ISearchSchema
+except ImportError:
+    PLONE5 = False
+else:
+    PLONE5 = True
 
 
 class SearchHandler(object):
@@ -84,11 +92,12 @@ class SearchHandler(object):
             use_site_search_settings = True
             del query["use_site_search_settings"]
 
-        if use_site_search_settings:
+        if PLONE5 and use_site_search_settings:
             query = self.filter_query(query)
 
         self._constrain_query_by_path(query)
         query = self._parse_query(query)
+
         lazy_resultset = self.catalog.searchResults(**query)
         results = getMultiAdapter((lazy_resultset, self.request), ISerializeToJson)(
             fullobjects=fullobjects
@@ -126,7 +135,10 @@ class SearchHandler(object):
         elif query["sort_on"] == "relevance":
             del query["sort_on"]
 
-        if query.get("sort_on", "") == "Date":
+        if not query.get("sort_order") and (
+            query.get("sort_on", "") == "Date"
+            or query.get("sort_on", "") == "effective"  # compatibility with Volto
+        ):
             query["sort_order"] = "reverse"
         elif "sort_order" in query:
             del query["sort_order"]
