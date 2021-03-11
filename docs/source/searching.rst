@@ -166,4 +166,4 @@ You do so by specifying the ``fullobjects`` parameter:
 
 Restrict search results to Plone's search settings
 --------------------------------------------------
-By default the search endpoint is not excluding any types from its results. To allow the search to follow Plone's search settings schema, pass the ``use_site_search_settings`` to the ``@search`` endpoint request. By doing this, the search results will be filtered based on the defined types to be searched and will be sorted according to the default sorting order.
+By default the search endpoint is not excluding any types from its results. To allow the search to follow Plone's search settings schema, pass the ``use_site_search_settings=1`` to the ``@search`` endpoint request. By doing this, the search results will be filtered based on the defined types to be searched and will be sorted according to the default sorting order.

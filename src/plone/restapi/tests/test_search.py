@@ -17,6 +17,7 @@ from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getUtility
 from zope.interface import alsoProvides
+from zope.interface import noLongerProvides
 
 import six
 import transaction
@@ -716,27 +717,16 @@ class TestSearchFunctional(unittest.TestCase):
     def test_search_use_site_search_settings_with_navigation_root(self):
 
         alsoProvides(self.folder, INavigationRoot)
+        transaction.commit()
 
         response = self.api_session.get(
             "/folder/@search", params={"use_site_search_settings": 1}
         ).json()
-        titles = [
-            u"Some Folder",
-            u"Lorem Ipsum",
-            u"Other Document",
-            u"Another Folder",
-            u"Document in second folder",
-            u"Doc outside folder",
-        ]
+        titles = [u"Some Folder", u"Lorem Ipsum", u"Other Document"]
         self.assertEqual([item["title"] for item in response["items"]], titles)
 
-        response = self.api_session.get(
-            "/@search", params={"use_site_search_settings": 1, "sort_on": "effective"}
-        ).json()
-        self.assertEqual(
-            [item["title"] for item in response["items"]][0],
-            u"Other Document",
-        )
+        noLongerProvides(self.folder, INavigationRoot)
+        transaction.commit()
 
 
 class TestSearchATFunctional(unittest.TestCase):
