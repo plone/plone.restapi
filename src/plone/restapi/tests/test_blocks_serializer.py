@@ -10,6 +10,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.uuid.interfaces import IUUID
 from z3c.form.interfaces import IDataManager
 from zope.component import adapter
+from zope.component import getGlobalSiteManager
 from zope.component import getMultiAdapter
 from zope.component import provideSubscriptionAdapter
 from zope.component import queryUtility
@@ -92,6 +93,18 @@ class TestBlocksSerializer(unittest.TestCase):
         )
         self.assertEqual(value["123"]["value"], u"c")
 
+        sm = getGlobalSiteManager()
+        sm.adapters.unsubscribe(
+            (IDexterityItem, IBrowserRequest),
+            IBlockFieldSerializationTransformer,
+            TestAdapterA,
+        )
+        sm.adapters.unsubscribe(
+            (IDexterityItem, IBrowserRequest),
+            IBlockFieldSerializationTransformer,
+            TestAdapterB,
+        )
+
     def test_disabled_serializer(self):
         @implementer(IBlockFieldSerializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
@@ -122,6 +135,13 @@ class TestBlocksSerializer(unittest.TestCase):
 
         assert not getattr(self.portal.doc1, "_handler_called", False)
         self.assertEqual(value["123"]["value"], u"text")
+
+        sm = getGlobalSiteManager()
+        sm.adapters.unsubscribe(
+            (IDexterityItem, IBrowserRequest),
+            IBlockFieldSerializationTransformer,
+            TestAdapter,
+        )
 
     def test_serialize_blocks_smart_href_array_volto_object_browser(self):
         doc_uid = IUUID(self.portal.doc1)
