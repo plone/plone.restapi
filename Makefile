@@ -40,10 +40,10 @@ bin/buildout: bin/pip
 	@touch -c $@
 
 bin/python bin/pip:
-	python$(version) -m venv . || virtualenv --clear --python=python$(version) .
+	python$(version) -m venv . || virtualenv --python=python$(version) .
 
 py2:
-	virtualenv --clear --python=python2 .
+	virtualenv --python=python2 .
 	bin/pip install --upgrade pip
 	bin/pip install -r requirements.txt
 
