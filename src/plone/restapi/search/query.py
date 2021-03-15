@@ -76,6 +76,8 @@ class ZCatalogCompatibleQueryAdapter(object):
         "b_size": int,
     }
 
+    ignore_query_params = ["metadata_fields"]
+
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -100,7 +102,8 @@ class ZCatalogCompatibleQueryAdapter(object):
             # that could not be serialized in a query string or JSON
             index = self.get_index(idx_name)
             if index is None:
-                log.warning("No such index: %r" % idx_name)
+                if idx_name not in self.ignore_query_params:
+                    log.warning("No such index: %r" % idx_name)
                 continue
 
             query_opts_parser = getMultiAdapter(
