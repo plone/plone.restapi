@@ -8,6 +8,24 @@ Changelog
 
 .. towncrier release notes start
 
+7.1.0 (2021-03-17)
+------------------
+
+New features:
+
+
+- Allow passing ``use_site_search_settings=1`` in the ``@search`` endpoint request, to follow Plone's ``ISearchSchema`` settings. (#1081)
+
+
+Bug fixes:
+
+
+- Do not log "No such index" warnings for knonw indexes like metadata_fields @cekk (#987)
+- Respect "Access inactive portal content" permission in @search endpoint [cekk] (#1066)
+- Add GSM unsubscribe for test registered adapters in block transformer tests @tiberiuichim (#1083)
+- Pin some package versions to fix buildout @tiberiuichim (#1086)
+
+
 7.0.0 (2021-02-20)
 ------------------
 
