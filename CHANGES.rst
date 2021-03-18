@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+7.2.0 (2021-03-18)
+------------------
+
+New features:
+
+
+- Allow block transforms to run in "subblocks", discovered as the ``blocks`` field (or alternatively, ``data.blocks``) in a block value. (#1085)
+
+
 7.1.0 (2021-03-17)
 ------------------
 
