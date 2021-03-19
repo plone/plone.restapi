@@ -3,6 +3,7 @@
 """ Slots deserializers """
 
 from plone.restapi.deserializer import json_body
+
 # from plone.restapi.events import BlocksRemovedEvent
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -15,6 +16,7 @@ from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import subscribers
+
 # from zope.event import notify
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
