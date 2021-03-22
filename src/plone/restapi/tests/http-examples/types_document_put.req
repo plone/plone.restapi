@@ -54,7 +54,7 @@ Content-Type: application/json
             }
         },
         "author_email": {
-            "behavior": "plone.dexterity.schema.generated.plone_5_1616430607_2_5093117_0_Document",
+            "behavior": "plone.dexterity.schema.generated.plone_5_1616431873_2_7401838_0_Document",
             "description": "Email of the author",
             "factory": "Email",
             "title": "Author email",
