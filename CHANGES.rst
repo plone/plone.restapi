@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+7.2.1 (2021-03-22)
+------------------
+
+Bug fixes:
+
+
+- @contextnavigation endpoint does not honor nav_title index
+  [sneridagh] (#1092)
+
+
 7.2.0 (2021-03-18)
 ------------------
 

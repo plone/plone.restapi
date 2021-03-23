@@ -1,2 +1,2 @@
-If used mr.developer, it ignores the develop=. buildout setting, then uses the released p.restapi
+Fixes build was using the released version
 [sneridagh]

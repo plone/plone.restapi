@@ -735,6 +735,12 @@ class NavtreeStrategy(SitemapNavtreeStrategy):
         else:
             return True
 
+    def decoratorFactory(self, node):
+        new_node = SitemapNavtreeStrategy.decoratorFactory(self, node)
+        if getattr(new_node["item"], "nav_title", False):
+            new_node["nav_title"] = new_node["item"].nav_title
+        return new_node
+
     # def nodeFilter(self, node):
     #     exclude = getattr(node["item"], "exclude_from_nav", False)
     #     return not exclude
