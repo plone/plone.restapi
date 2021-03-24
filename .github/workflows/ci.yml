@@ -78,7 +78,7 @@ jobs:
 
       # test no uncommited changes
       - name: test no uncommited changes
-        run: bin/test-no-uncommitted-doc-changes
+        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then bin/test-no-uncommitted-doc-changes; fi
         env:
           PYTHON_VERSION: ${{ matrix.python-version }}
           PLONE_VERSION: ${{ matrix.plone-version }}

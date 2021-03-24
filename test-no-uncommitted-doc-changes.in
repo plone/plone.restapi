@@ -13,14 +13,14 @@ function red {
     echo "$RED $1 $RESET"
 }
 
-if [ "$PLONE_VERSION" == "5.2" ] && [ "$PYTHON_VERSION" == '3.7' ]; then
-    echo "Running check for undocumented changes for Plone 5.2.x on Python 3.7"
-else
-    # request/response dumps have known differences for Plone 5
-    # => skip, we can't have the Plone 5 build fail because of those
-    echo "Skipping checks for undocumented changes for everything except Plone 5.2.x on Python 3.7"
-    exit 0
-fi
+# if [ "$PLONE_VERSION" == "5.2" ] && [ "$PYTHON_VERSION" == '3.7' ]; then
+#     echo "Running check for undocumented changes for Plone 5.2.x on Python 3.7"
+# else
+#     # request/response dumps have known differences for Plone 5
+#     # => skip, we can't have the Plone 5 build fail because of those
+#     echo "Skipping checks for undocumented changes for everything except Plone 5.2.x on Python 3.7"
+#     exit 0
+# fi
 
 changes=$(git diff --ignore-space-at-eol --exit-code $DUMPS_DIR)
 if [ $? -ne 0 ]; then
