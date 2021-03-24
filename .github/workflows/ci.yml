@@ -51,12 +51,10 @@ jobs:
       - run: pip install wheel
       - name: pip install
         run: pip install -r requirements.txt
-      - name: choose Plone version
-        run: sed -ie "s#plone-x.x.x.cfg#plone-${{ matrix.plone-version }}.x.cfg#" ci.cfg
 
       # buildout
       - name: buildout
-        run: buildout -t 10 -c ci.cfg
+        run: buildout -t 10 -c plone-${{ matrix.plone-version }}.x.cfg code-analysis:return-status-codes=True
         env:
           CI: true
 
@@ -65,7 +63,7 @@ jobs:
         run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then pip install black && black src/ --check --diff; fi
 
       # code analysis
-      - name: black
+      - name: code analysis
         run: bin/code-analysis
 
       # build sphinx
