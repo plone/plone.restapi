@@ -36,4 +36,6 @@ if [ $? -ne 0 ]; then
 
     git diff --exit-code $DUMPS_DIR
     exit 1
+else
+    echo "PASSED: No uncommitted changed detected."
 fi
