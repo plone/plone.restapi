@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+# pylint: disable=E1002
+# E1002: Use of super on an old style class
+
 from plone import api
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
