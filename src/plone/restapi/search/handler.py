@@ -94,8 +94,9 @@ class SearchHandler(object):
 
         if PLONE5 and use_site_search_settings:
             query = self.filter_query(query)
+        else:
+            self._constrain_query_by_path(query)
 
-        self._constrain_query_by_path(query)
         query = self._parse_query(query)
 
         lazy_resultset = self.catalog.searchResults(**query)
