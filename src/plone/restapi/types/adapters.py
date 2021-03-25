@@ -503,7 +503,7 @@ class JSONFieldSchemaProvider(DefaultJsonSchemaProvider):
         return "dict"
 
     def get_widget(self):
-        return "json"
+        return self.field.widget or "json"
 
     def get_factory(self):
         return "JSONField"
