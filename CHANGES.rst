@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+7.3.0 (2021-03-25)
+------------------
+
+New features:
+
+
+- Adjust JSONField adapter to include widget name to use in serialization
+  [sneridagh] (#1089)
+
+
+Bug fixes:
+
+
+- Fixes build was using the released version
+  [sneridagh] (#1090)
+
+
 7.2.1 (2021-03-22)
 ------------------
 
