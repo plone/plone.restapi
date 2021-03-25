@@ -57,7 +57,7 @@ Location: http://localhost:55001/plone/de/mydocument
     "title": "Deutsch"
   }, 
   "previous_item": {
-    "@id": "http://localhost:55001/plone/de/Assets", 
+    "@id": "http://localhost:55001/plone/de/assets", 
     "@type": "LIF", 
     "description": "", 
     "title": "Assets"
