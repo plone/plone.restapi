@@ -158,7 +158,9 @@ class TestSearchFunctional(unittest.TestCase):
         if "virtual_hosting" not in self.app.objectIds():
             # If ZopeLite was imported, we have no default virtual
             # host monster
-            from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
+            from Products.SiteAccess.VirtualHostMonster import (
+                manage_addVirtualHostMonster,
+            )
 
             manage_addVirtualHostMonster(self.app, "virtual_hosting")
         transaction.commit()
@@ -184,7 +186,9 @@ class TestSearchFunctional(unittest.TestCase):
         if "virtual_hosting" not in self.app.objectIds():
             # If ZopeLite was imported, we have no default virtual
             # host monster
-            from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
+            from Products.SiteAccess.VirtualHostMonster import (
+                manage_addVirtualHostMonster,
+            )
 
             manage_addVirtualHostMonster(self.app, "virtual_hosting")
         transaction.commit()
@@ -734,7 +738,9 @@ class TestSearchFunctional(unittest.TestCase):
         if "virtual_hosting" not in self.app.objectIds():
             # If ZopeLite was imported, we have no default virtual
             # host monster
-            from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
+            from Products.SiteAccess.VirtualHostMonster import (
+                manage_addVirtualHostMonster,
+            )
 
             manage_addVirtualHostMonster(self.app, "virtual_hosting")
         alsoProvides(self.folder, INavigationRoot)
@@ -759,7 +765,9 @@ class TestSearchFunctional(unittest.TestCase):
         if "virtual_hosting" not in self.app.objectIds():
             # If ZopeLite was imported, we have no default virtual
             # host monster
-            from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
+            from Products.SiteAccess.VirtualHostMonster import (
+                manage_addVirtualHostMonster,
+            )
 
             manage_addVirtualHostMonster(self.app, "virtual_hosting")
         transaction.commit()
