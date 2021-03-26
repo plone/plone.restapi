@@ -94,9 +94,8 @@ class SearchHandler(object):
 
         if PLONE5 and use_site_search_settings:
             query = self.filter_query(query)
-        else:
-            self._constrain_query_by_path(query)
 
+        self._constrain_query_by_path(query)
         query = self._parse_query(query)
 
         lazy_resultset = self.catalog.searchResults(**query)
@@ -127,6 +126,13 @@ class SearchHandler(object):
         # respect navigation root
         if "path" not in query:
             query["path"] = {"query": getNavigationRoot(self.context)}
+
+            vhm_physical_path = self.request.get("VirtualRootPhysicalPath")
+            # if vhm trick is applied, we should present a stripped path, as it will be
+            # processed again in _constrain_query_by_path
+            if vhm_physical_path:
+                bits = query["path"]["query"].split("/")[len(vhm_physical_path) :]
+                query["path"]["query"] = "/".join(bits) or "/"
 
         default_sort_on = search_settings.sort_on
 

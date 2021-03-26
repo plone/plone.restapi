@@ -158,9 +158,7 @@ class TestSearchFunctional(unittest.TestCase):
         if "virtual_hosting" not in self.app.objectIds():
             # If ZopeLite was imported, we have no default virtual
             # host monster
-            from Products.SiteAccess.VirtualHostMonster import (
-                manage_addVirtualHostMonster,
-            )
+            from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
 
             manage_addVirtualHostMonster(self.app, "virtual_hosting")
         transaction.commit()
@@ -186,9 +184,7 @@ class TestSearchFunctional(unittest.TestCase):
         if "virtual_hosting" not in self.app.objectIds():
             # If ZopeLite was imported, we have no default virtual
             # host monster
-            from Products.SiteAccess.VirtualHostMonster import (
-                manage_addVirtualHostMonster,
-            )
+            from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
 
             manage_addVirtualHostMonster(self.app, "virtual_hosting")
         transaction.commit()
@@ -727,6 +723,62 @@ class TestSearchFunctional(unittest.TestCase):
             "/folder/@search", params={"use_site_search_settings": 1}
         ).json()
         titles = [u"Some Folder", u"Lorem Ipsum", u"Other Document"]
+        self.assertEqual([item["title"] for item in response["items"]], titles)
+
+        noLongerProvides(self.folder, INavigationRoot)
+        transaction.commit()
+
+    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
+    def test_search_use_site_search_settings_with_navigation_root_and_vhm(self):
+
+        if "virtual_hosting" not in self.app.objectIds():
+            # If ZopeLite was imported, we have no default virtual
+            # host monster
+            from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
+
+            manage_addVirtualHostMonster(self.app, "virtual_hosting")
+        alsoProvides(self.folder, INavigationRoot)
+        transaction.commit()
+
+        vhm_url = "%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s" % (
+            self.app.absolute_url(),
+            "/folder/@search",
+        )
+        response = self.api_session.get(
+            vhm_url, params={"use_site_search_settings": 1, "path": "/folder"}
+        ).json()
+        titles = [u"Some Folder", u"Lorem Ipsum", u"Other Document"]
+        self.assertEqual([item["title"] for item in response["items"]], titles)
+
+        noLongerProvides(self.folder, INavigationRoot)
+        transaction.commit()
+
+    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
+    def test_search_use_site_search_settings_with_vhm(self):
+
+        if "virtual_hosting" not in self.app.objectIds():
+            # If ZopeLite was imported, we have no default virtual
+            # host monster
+            from Products.SiteAccess.VirtualHostMonster import manage_addVirtualHostMonster
+
+            manage_addVirtualHostMonster(self.app, "virtual_hosting")
+        transaction.commit()
+
+        vhm_url = "%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s" % (
+            self.app.absolute_url(),
+            "/@search",
+        )
+        response = self.api_session.get(
+            vhm_url, params={"use_site_search_settings": 1, "path": "/"}
+        ).json()
+        titles = [
+            "Some Folder",
+            "Lorem Ipsum",
+            "Other Document",
+            "Another Folder",
+            "Document in second folder",
+            "Doc outside folder",
+        ]
         self.assertEqual([item["title"] for item in response["items"]], titles)
 
         noLongerProvides(self.folder, INavigationRoot)
