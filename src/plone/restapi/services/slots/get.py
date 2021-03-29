@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from AccessControl.SecurityManagement import getSecurityManager
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.permissions import ModifySlotsPermission
 from plone.restapi.services import Service
 from plone.restapi.slots import Slot
 from plone.restapi.slots.interfaces import ISlots
@@ -53,6 +55,11 @@ class SlotsGet(Service):
         # update "edit:True" editable status in slots
         for k, v in result["items"].items():
             result["items"][k]["edit"] = k in self.editable_slots
+
+        sm = getSecurityManager()
+
+        if sm.checkPermission(ModifySlotsPermission, self.context):
+            result["can_manage_slots"] = True
 
         return result
 
