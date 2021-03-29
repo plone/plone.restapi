@@ -3,6 +3,8 @@
     xmlns:zcml="http://namespaces.zope.org/zcml"
     i18n_domain="plone.restapi">
 
+    <include package=".portlets" />
+
     <adapter factory=".site.SerializeSiteRootToJson" />
     <adapter factory=".dxcontent.SerializeToJson" />
     <adapter factory=".dxcontent.SerializeFolderToJson" />

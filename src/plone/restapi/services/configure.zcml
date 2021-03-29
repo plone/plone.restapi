@@ -32,6 +32,7 @@
   <include package=".users"/>
   <include package=".vocabularies"/>
   <include package=".workflow"/>
+  <include package=".portlets"/>
   <include package=".multilingual"
       zcml:condition="have plone-5"/>
   <include package=".email_notification"

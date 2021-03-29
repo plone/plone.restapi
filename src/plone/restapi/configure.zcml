@@ -19,6 +19,7 @@
 
   <five:registerPackage package="." initialize=".initialize" />
 
+  <include package="plone.app.portlets" file="permissions.zcml" />
   <include file="permissions.zcml" />
 
   <genericsetup:registerProfile

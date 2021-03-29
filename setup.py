@@ -2,8 +2,7 @@ from setuptools import setup, find_packages
 
 import sys
 
-version = "7.3.2.dev0"
-
+version = "7.3.2.eea-dev0"
 
 def read(filename):
     with open(filename) as myfile:
