@@ -54,7 +54,7 @@ class SlotDeserializer(object):
 
         inherited = []
         # don't store blocks that are inherited, keep only those that really exist
-        for k, v in incoming_blocks.items():
+        for k, v in list(incoming_blocks.items()):
             if v.get("_v_inherit"):
                 del incoming_blocks[k]
                 if k in parent_block_ids:
