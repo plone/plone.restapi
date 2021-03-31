@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+7.3.1 (2021-03-27)
+------------------
+
+Bug fixes:
+
+
+- Fixes if old p.schema is used
+  [sneridagh] (#1103)
+
+
 7.3.0 (2021-03-25)
 ------------------
 
