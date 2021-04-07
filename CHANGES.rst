@@ -8,6 +8,17 @@ Changelog
 
 .. towncrier release notes start
 
+7.3.2 (2021-04-07)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@search`` endpoint with use_site_search_settings flag, for VHM PhysicalRoot
+  scenarios
+  @tiberiuichim (#1105)
+
+
 7.3.1 (2021-03-27)
 ------------------
 
