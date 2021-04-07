@@ -127,6 +127,13 @@ class SearchHandler(object):
         if "path" not in query:
             query["path"] = {"query": getNavigationRoot(self.context)}
 
+            vhm_physical_path = self.request.get("VirtualRootPhysicalPath")
+            # if vhm trick is applied, we should present a stripped path, as it will be
+            # processed again in _constrain_query_by_path
+            if vhm_physical_path:
+                bits = query["path"]["query"].split("/")[len(vhm_physical_path) :]
+                query["path"]["query"] = "/".join(bits) or "/"
+
         default_sort_on = search_settings.sort_on
 
         if "sort_on" not in query:
