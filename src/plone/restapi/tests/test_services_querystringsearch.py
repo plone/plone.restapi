@@ -174,7 +174,8 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         # ...
         for a in range(1, 10):
             self.portal.invokeFactory(
-                "Document", "testdocument" + str(a),
+                "Document",
+                "testdocument" + str(a),
                 title=chr(ord('M') - a + 1) + " Test Document " + str(a)
             )
             self.doc = self.portal.testdocument
@@ -198,12 +199,12 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         )
         self.assertEqual(response.json()["items_total"], 9)
         self.assertEqual(
-            response.json()["items"][-1]["@id"],
-            "{}/testdocument1".format(self.portal.absolute_url()),
+            response.json()["items"][0]["title"],
+            "E Test Document 9",
         )
         self.assertEqual(
-            response.json()["items"][0]["@id"],
-            "{}/testdocument9".format(self.portal.absolute_url()),
+            response.json()["items"][-1]["title"],
+            "M Test Document 1",
         )
 
         # force order 'ascending'
@@ -217,12 +218,12 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         )
         self.assertEqual(response.json()["items_total"], 9)
         self.assertEqual(
-            response.json()["items"][-1]["@id"],
-            "{}/testdocument1".format(self.portal.absolute_url()),
+            response.json()["items"][0]["title"],
+            "E Test Document 9",
         )
         self.assertEqual(
-            response.json()["items"][0]["@id"],
-            "{}/testdocument9".format(self.portal.absolute_url()),
+            response.json()["items"][-1]["title"],
+            "M Test Document 1",
         )
 
         # force order 'descending'
@@ -236,12 +237,12 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         )
         self.assertEqual(response.json()["items_total"], 9)
         self.assertEqual(
-            response.json()["items"][0]["@id"],
-            "{}/testdocument1".format(self.portal.absolute_url()),
+            response.json()["items"][0]["title"],
+            "M Test Document 1",
         )
         self.assertEqual(
-            response.json()["items"][-1]["@id"],
-            "{}/testdocument9".format(self.portal.absolute_url()),
+            response.json()["items"][-1]["title"],
+            "E Test Document 9",
         )
 
         # sort by id, 'ascending'
