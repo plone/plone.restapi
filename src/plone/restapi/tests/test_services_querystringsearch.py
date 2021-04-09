@@ -169,17 +169,16 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         )
 
     def test_querystringsearch_sort(self):
-        # id: testdocument1, title: M Test Document 1
-        # id: testdocument2, title: L Test Document 2
+        # id: testdocument1, title: Test I Document 1
+        # id: testdocument2, title: Test H Document 2
         # ...
+        # id: testdocument9, title: Test A Document 9
         for a in range(1, 10):
             self.portal.invokeFactory(
                 "Document",
                 "testdocument" + str(a),
-                title=chr(ord('M') - a + 1) + " Test Document " + str(a)
+                title="Test " + "ABCDEFGHI"[-a] + " Document " + str(a),
             )
-            self.doc = self.portal.testdocument
-
         transaction.commit()
 
         query = [
@@ -191,73 +190,73 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         ]
         # default order 'ascending'
         response = self.api_session.post(
-            "/testdocument/@querystring-search",
+            "/@querystring-search",
             json={
                 "query": query,
                 "sort_on": "sortable_title",
             },
         )
-        self.assertEqual(response.json()["items_total"], 9)
+        self.assertEqual(response.json()["items_total"], 10)
         self.assertEqual(
             response.json()["items"][0]["title"],
-            "E Test Document 9",
+            "Test A Document 9",
         )
         self.assertEqual(
             response.json()["items"][-1]["title"],
-            "M Test Document 1",
+            "Test I Document 1",
         )
 
         # force order 'ascending'
         response = self.api_session.post(
-            "/testdocument/@querystring-search",
+            "/@querystring-search",
             json={
                 "query": query,
                 "sort_on": "sortable_title",
                 "sort_order": "ascending",
             },
         )
-        self.assertEqual(response.json()["items_total"], 9)
+        self.assertEqual(response.json()["items_total"], 10)
         self.assertEqual(
             response.json()["items"][0]["title"],
-            "E Test Document 9",
+            "Test A Document 9",
         )
         self.assertEqual(
             response.json()["items"][-1]["title"],
-            "M Test Document 1",
+            "Test I Document 1",
         )
 
         # force order 'descending'
         response = self.api_session.post(
-            "/testdocument/@querystring-search",
+            "/@querystring-search",
             json={
                 "query": query,
                 "sort_on": "sortable_title",
                 "sort_order": "descending",
             },
         )
-        self.assertEqual(response.json()["items_total"], 9)
+        self.assertEqual(response.json()["items_total"], 10)
         self.assertEqual(
             response.json()["items"][0]["title"],
-            "M Test Document 1",
+            "Test I Document 1",
         )
         self.assertEqual(
             response.json()["items"][-1]["title"],
-            "E Test Document 9",
+            "Test A Document 9",
         )
 
         # sort by id, 'ascending'
         response = self.api_session.post(
-            "/testdocument/@querystring-search",
+            "/@querystring-search",
             json={
                 "query": query,
                 "sort_on": "getId",
                 "sort_order": "ascending",
             },
         )
-        self.assertEqual(response.json()["items_total"], 9)
+        self.assertEqual(response.json()["items_total"], 10)
         self.assertEqual(
             response.json()["items"][0]["@id"],
-            "{}/testdocument1".format(self.portal.absolute_url()),
+            "{}/testdocument".format(self.portal.absolute_url()),
         )
         self.assertEqual(
             response.json()["items"][-1]["@id"],
