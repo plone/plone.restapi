@@ -8,6 +8,106 @@ Changelog
 
 .. towncrier release notes start
 
+7.3.2 (2021-04-07)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@search`` endpoint with use_site_search_settings flag, for VHM PhysicalRoot
+  scenarios
+  @tiberiuichim (#1105)
+
+
+7.3.1 (2021-03-27)
+------------------
+
+Bug fixes:
+
+
+- Fixes if old p.schema is used
+  [sneridagh] (#1103)
+
+
+7.3.0 (2021-03-25)
+------------------
+
+New features:
+
+
+- Adjust JSONField adapter to include widget name to use in serialization
+  [sneridagh] (#1089)
+
+
+Bug fixes:
+
+
+- Fixes build was using the released version
+  [sneridagh] (#1090)
+
+
+7.2.1 (2021-03-22)
+------------------
+
+Bug fixes:
+
+
+- @contextnavigation endpoint does not honor nav_title index
+  [sneridagh] (#1092)
+
+
+7.2.0 (2021-03-18)
+------------------
+
+New features:
+
+
+- Allow block transforms to run in "subblocks", discovered as the ``blocks`` field (or alternatively, ``data.blocks``) in a block value. (#1085)
+
+
+7.1.0 (2021-03-17)
+------------------
+
+New features:
+
+
+- Allow passing ``use_site_search_settings=1`` in the ``@search`` endpoint request, to follow Plone's ``ISearchSchema`` settings. (#1081)
+
+
+Bug fixes:
+
+
+- Do not log "No such index" warnings for knonw indexes like metadata_fields @cekk (#987)
+- Respect "Access inactive portal content" permission in @search endpoint [cekk] (#1066)
+- Add GSM unsubscribe for test registered adapters in block transformer tests @tiberiuichim (#1083)
+- Pin some package versions to fix buildout @tiberiuichim (#1086)
+
+
+7.0.0 (2021-02-20)
+------------------
+
+- Re-release 7.0.0b8 as 7.0.0 final. [timo]
+
+
+7.0.0b8 (2021-02-19)
+--------------------
+
+New features:
+
+
+- Mark restapi 7 with a zcml feature flag: ``plonerestapi-7``
+  [sneridagh] (#1068)
+- Add a couple of additional tests for resolveuid feature reassurance
+  [sneridagh] (#1072)
+
+
+Bug fixes:
+
+
+- Avoid duplicate fields within DX RestAPI
+  [avoinea] (#1073)
+
+
 7.0.0b7 (2021-02-10)
 --------------------
 
@@ -190,6 +290,45 @@ New features:
   serialization.
   [buchi,timo,cekk] (#808)
 
+
+6.15.1 (2021-02-20)
+-------------------
+
+Bug fixes:
+
+
+- Fixed compatibility with Zope 4.5.2 by making sure Location header is string.
+  On Python 2 it could be unicode for the users and groups end points.
+  Fixes `issue 1019 <https://github.com/plone/plone.restapi/issues/1019>`_.
+  [maurits] (#1019)
+
+
+6.15.0 (2020-10-08)
+-------------------
+
+New features:
+
+- Add `sort` feature to resort all folder items
+  [petschki] (#812)
+
+- Remove unneeded stringtype checks
+  [erral] (#875)
+
+
+Bug fixes:
+
+
+- Fixed deprecation warnings for ``zope.site.hooks``, ``CMFPlone.interfaces.ILanguageSchema``
+  and ``plone.dexterity.utils.splitSchemaName``.
+  [maurits] (#975)
+
+- Update tests to fix https://github.com/plone/plone.dexterity/pull/137
+  [@avoinea] (#1001)
+
+- Fix tests with Products.MailHost 4.10.
+  [maurits] (#3178)
+
+
 6.14.0 (2020-08-28)
 -------------------
 
@@ -202,6 +341,7 @@ New features:
 -------------------
 
 Bug fixes:
+
 
 - Removed useless management of metadata_fields in SearchHandler/LazyCatalogResultSerializer since it is handled in DefaultJSONSummarySerializer. [gbastien] (#970)
 
@@ -268,6 +408,7 @@ Bug fixes:
 -------------------
 
 Bug fixes:
+
 
 - PATCH (editing) in @user endpoint now is able to remove existing values using null
   [sneridagh] (#946)

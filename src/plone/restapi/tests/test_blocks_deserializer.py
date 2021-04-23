@@ -8,6 +8,7 @@ from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.uuid.interfaces import IUUID
 from zope.component import adapter
+from zope.component import getGlobalSiteManager
 from zope.component import getMultiAdapter
 from zope.component import provideSubscriptionAdapter
 from zope.component import queryUtility
@@ -76,6 +77,13 @@ class TestBlocksDeserializer(unittest.TestCase):
         assert self.portal.doc1._handler_called is True
         assert self.portal.doc1.blocks["123"]["value"] == u"changed: text"
 
+        sm = getGlobalSiteManager()
+        sm.adapters.unsubscribe(
+            (IDexterityItem, IBrowserRequest),
+            IBlockFieldDeserializationTransformer,
+            TestAdapter,
+        )
+
     def test_disabled_deserializer(self):
         @implementer(IBlockFieldDeserializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
@@ -104,6 +112,13 @@ class TestBlocksDeserializer(unittest.TestCase):
 
         assert not getattr(self.portal.doc1, "_handler_called", False)
         assert self.portal.doc1.blocks["123"]["value"] == u"text"
+
+        sm = getGlobalSiteManager()
+        sm.adapters.unsubscribe(
+            (IDexterityItem, IBrowserRequest),
+            IBlockFieldDeserializationTransformer,
+            TestAdapter,
+        )
 
     def test_register_multiple_transform(self):
         @implementer(IBlockFieldDeserializationTransformer)
@@ -156,6 +171,18 @@ class TestBlocksDeserializer(unittest.TestCase):
         self.assertTrue(self.portal.doc1._handler_called_b)
         self.assertEqual(self.portal.doc1.blocks["123"]["value"], u"c")
 
+        sm = getGlobalSiteManager()
+        sm.adapters.unsubscribe(
+            (IDexterityItem, IBrowserRequest),
+            IBlockFieldDeserializationTransformer,
+            TestAdapterA,
+        )
+        sm.adapters.unsubscribe(
+            (IDexterityItem, IBrowserRequest),
+            IBlockFieldDeserializationTransformer,
+            TestAdapterB,
+        )
+
     def test_blocks_html_cleanup(self):
         self.deserialize(
             blocks={
@@ -187,6 +214,22 @@ class TestBlocksDeserializer(unittest.TestCase):
 
         self.assertEqual(
             self.portal.doc1.blocks["123"]["url"], "http://example.com/1.jpg"
+        )
+
+    def test_blocks_doc_relative(self):
+        doc_uid = IUUID(self.portal.doc1)
+        self.deserialize(blocks={"123": {"@type": "foo", "url": "/doc1"}})
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(doc_uid)
+        )
+
+    def test_blocks_image_relative(self):
+        image_uid = IUUID(self.image)
+        self.deserialize(blocks={"123": {"@type": "image", "url": "/image-1"}})
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(image_uid)
         )
 
     def test_blocks_custom_block_resolve_standard_fields(self):
@@ -243,3 +286,25 @@ class TestBlocksDeserializer(unittest.TestCase):
             self.portal.doc1.blocks["123"]["href"][0],
             "../resolveuid/{}".format(doc_uid),
         )
+
+    def test_deserialize_subblocks_transformers(self):
+        # use the html transformer to test subblocks transformers
+        subblock = {
+            "@type": "html",
+            "html": u"<script>nasty</script><div>This stays</div>",
+        }
+        self.deserialize(
+            blocks={
+                "1": {
+                    "@type": "columns_block",
+                    "data": {
+                        "blocks": {"2": {"@type": "tabs", "blocks": {"3": subblock}}}
+                    },
+                }
+            }
+        )
+
+        block = self.portal.doc1.blocks["1"]["data"]["blocks"]["2"]["blocks"]["3"][
+            "html"
+        ]
+        self.assertEqual(block, u"<div>This stays</div>")

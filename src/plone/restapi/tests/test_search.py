@@ -16,10 +16,21 @@ from plone.restapi.tests.helpers import result_paths
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getUtility
+from zope.interface import alsoProvides
+from zope.interface import noLongerProvides
 
 import six
 import transaction
 import unittest
+
+
+try:
+    from plone.app.layout.navigation.interfaces import INavigationRoot
+    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
+except ImportError:
+    PLONE5 = False
+else:
+    PLONE5 = True
 
 
 class TestSearchFunctional(unittest.TestCase):
@@ -37,9 +48,24 @@ class TestSearchFunctional(unittest.TestCase):
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
+        api.user.create(
+            email="editor@example.com",
+            username="editoruser",
+            password="secret",
+        )
+        api.user.create(
+            email="editor@example.com",
+            username="localeditor",
+            password="secret",
+        )
+
         # /plone/folder
         self.folder = createContentInContainer(
             self.portal, u"Folder", id=u"folder", title=u"Some Folder"
+        )
+        api.user.grant_roles(username="editoruser", roles=["Editor"])
+        api.user.grant_roles(
+            username="localeditor", obj=self.folder, roles=["Editor", "Reader"]
         )
 
         # /plone/folder/doc
@@ -586,6 +612,185 @@ class TestSearchFunctional(unittest.TestCase):
         query = {"UID": "7777a074cb4240d08c9a129e3a837777"}
         response = self.api_session.get("/@search", params=query)
         self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
+
+    @unittest.skipIf(
+        not PLONE5, "searchResults in Plone 4 does not handle correctly that permission"
+    )
+    def test_respect_access_inactive_permission(self):
+        # admin can see everything
+        response = self.api_session.get("/@search", params={}).json()
+        self.assertEqual(response["items_total"], 6)
+        response = self.api_session.get(
+            "/@search", params={"Title": "Lorem Ipsum"}
+        ).json()
+        self.assertEqual(response["items_total"], 1)
+
+        # not admin users can't see expired items
+        self.api_session.auth = ("editoruser", "secret")
+
+        response = self.api_session.get("/@search", params={}).json()
+        self.assertEqual(response["items_total"], 3)
+        response = self.api_session.get(
+            "/@search", params={"Title": "Lorem Ipsum"}
+        ).json()
+        self.assertEqual(response["items_total"], 0)
+
+        # now grant permission to Editor to access inactive content
+        self.portal.manage_permission(
+            "Access inactive portal content", roles=["Manager", "Editor"]
+        )
+        transaction.commit()
+
+        #  portal-enabled Editor can see expired contents
+        response = self.api_session.get("/@search", params={}).json()
+        self.assertEqual(response["items_total"], 6)
+        response = self.api_session.get(
+            "/@search", params={"Title": "Lorem Ipsum"}
+        ).json()
+        self.assertEqual(response["items_total"], 1)
+
+        # local-enabled Editor can only access expired contents inside folder
+        self.api_session.auth = ("localeditor", "secret")
+        response = self.api_session.get("/@search", params={}).json()
+        self.assertEqual(response["items_total"], 1)
+        response = self.api_session.get(
+            "/@search", params={"path": "/plone/folder"}
+        ).json()
+
+        self.assertEqual(response["items_total"], 3)
+        response = self.api_session.get(
+            "/@search", params={"Title": "Lorem Ipsum"}
+        ).json()
+        self.assertEqual(response["items_total"], 0)
+        response = self.api_session.get(
+            "/@search",
+            params={"Title": "Lorem Ipsum", "path": "/plone/folder"},
+        ).json()
+        self.assertEqual(response["items_total"], 1)
+
+    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
+    def test_search_use_site_search_settings_for_types(self):
+        response = self.api_session.get(
+            "/@search", params={"use_site_search_settings": 1}
+        ).json()
+        types = set([item["@type"] for item in response["items"]])
+
+        self.assertEqual(set(types), set(["Folder", "DXTestDocument"]))
+
+        registry = getUtility(IRegistry)
+        from Products.CMFPlone.interfaces import ISearchSchema
+
+        search_settings = registry.forInterface(ISearchSchema, prefix="plone")
+        old = search_settings.types_not_searched
+        search_settings.types_not_searched += ("DXTestDocument",)
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/@search", params={"use_site_search_settings": 1}
+        ).json()
+        types = set([item["@type"] for item in response["items"]])
+
+        self.assertEqual(set(types), set(["Folder"]))
+        search_settings.types_not_searched = old
+        transaction.commit()
+
+    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
+    def test_search_use_site_search_settings_for_default_sort_order(self):
+        response = self.api_session.get(
+            "/@search", params={"use_site_search_settings": 1}
+        ).json()
+        titles = [
+            u"Some Folder",
+            u"Lorem Ipsum",
+            u"Other Document",
+            u"Another Folder",
+            u"Document in second folder",
+            u"Doc outside folder",
+        ]
+        self.assertEqual([item["title"] for item in response["items"]], titles)
+
+        response = self.api_session.get(
+            "/@search", params={"use_site_search_settings": 1, "sort_on": "effective"}
+        ).json()
+        self.assertEqual(
+            [item["title"] for item in response["items"]][0],
+            u"Other Document",
+        )
+
+    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
+    def test_search_use_site_search_settings_with_navigation_root(self):
+
+        alsoProvides(self.folder, INavigationRoot)
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/folder/@search", params={"use_site_search_settings": 1}
+        ).json()
+        titles = [u"Some Folder", u"Lorem Ipsum", u"Other Document"]
+        self.assertEqual([item["title"] for item in response["items"]], titles)
+
+        noLongerProvides(self.folder, INavigationRoot)
+        transaction.commit()
+
+    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
+    def test_search_use_site_search_settings_with_navigation_root_and_vhm(self):
+
+        if "virtual_hosting" not in self.app.objectIds():
+            # If ZopeLite was imported, we have no default virtual
+            # host monster
+            from Products.SiteAccess.VirtualHostMonster import (
+                manage_addVirtualHostMonster,
+            )
+
+            manage_addVirtualHostMonster(self.app, "virtual_hosting")
+        alsoProvides(self.folder, INavigationRoot)
+        transaction.commit()
+
+        vhm_url = "%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s" % (
+            self.app.absolute_url(),
+            "/folder/@search",
+        )
+        response = self.api_session.get(
+            vhm_url, params={"use_site_search_settings": 1, "path": "/folder"}
+        ).json()
+        titles = [u"Some Folder", u"Lorem Ipsum", u"Other Document"]
+        self.assertEqual([item["title"] for item in response["items"]], titles)
+
+        noLongerProvides(self.folder, INavigationRoot)
+        transaction.commit()
+
+    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
+    def test_search_use_site_search_settings_with_vhm(self):
+
+        if "virtual_hosting" not in self.app.objectIds():
+            # If ZopeLite was imported, we have no default virtual
+            # host monster
+            from Products.SiteAccess.VirtualHostMonster import (
+                manage_addVirtualHostMonster,
+            )
+
+            manage_addVirtualHostMonster(self.app, "virtual_hosting")
+        transaction.commit()
+
+        vhm_url = "%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s" % (
+            self.app.absolute_url(),
+            "/@search",
+        )
+        response = self.api_session.get(
+            vhm_url, params={"use_site_search_settings": 1, "path": "/"}
+        ).json()
+        titles = [
+            "Some Folder",
+            "Lorem Ipsum",
+            "Other Document",
+            "Another Folder",
+            "Document in second folder",
+            "Doc outside folder",
+        ]
+        self.assertEqual([item["title"] for item in response["items"]], titles)
+
+        noLongerProvides(self.folder, INavigationRoot)
+        transaction.commit()
 
 
 class TestSearchATFunctional(unittest.TestCase):
