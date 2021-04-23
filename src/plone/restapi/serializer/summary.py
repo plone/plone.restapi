@@ -16,6 +16,7 @@ DEFAULT_METADATA_FIELDS = set([
     'description',
     'review_state',
     'title',
+    'exclude_from_nav',
 ])
 
 FIELD_ACCESSORS = {

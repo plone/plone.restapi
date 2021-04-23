@@ -115,6 +115,7 @@ class TestCatalogSerializers(unittest.TestCase):
                 "title": "My Document",
                 "description": "",
                 "review_state": "private",
+                "exclude_from_nav": False,
             },
             result,
         )

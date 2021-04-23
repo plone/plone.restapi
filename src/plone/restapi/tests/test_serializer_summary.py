@@ -73,6 +73,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "title": "Lorem Ipsum",
                 "description": "Description",
                 "review_state": "private",
+                "exclude_from_nav": False,
             },
             summary,
         )
@@ -92,6 +93,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "title": "Lorem Ipsum",
                 "description": "Description",
                 "review_state": "private",
+                "exclude_from_nav": False,
             },
             summary,
         )
@@ -109,6 +111,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "title": "Lorem Ipsum",
                 "description": None,
                 "review_state": "private",
+                "exclude_from_nav": False,
             },
             summary,
         )
@@ -127,6 +130,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "title": "Lorem Ipsum",
                 "description": "Description",
                 "review_state": "private",
+                "exclude_from_nav": False,
             },
             summary,
         )
@@ -200,6 +204,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "title": "Lorem Ipsum",
                 "description": "Description",
                 "review_state": "private",
+                "exclude_from_nav": False,
             },
             summary,
         )
@@ -235,6 +240,7 @@ class TestSummarySerializersATTypes(unittest.TestCase):
                 "title": "Lorem Ipsum",
                 "description": "Description",
                 "review_state": "private",
+                "exclude_from_nav": False,
             },
             summary,
         )
