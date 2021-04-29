@@ -161,22 +161,22 @@ class TextBlockSerializerBase(object):
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IBlocks, IBrowserRequest)
 class ResolveUIDSerializer(ResolveUIDSerializerBase):
-    """ Serializer for content-types with IBlocks behavior """
+    """Serializer for content-types with IBlocks behavior"""
 
 
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IPloneSiteRoot, IBrowserRequest)
 class ResolveUIDSerializerRoot(ResolveUIDSerializerBase):
-    """ Serializer for site root """
+    """Serializer for site root"""
 
 
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IBlocks, IBrowserRequest)
 class TextBlockSerializer(TextBlockSerializerBase):
-    """ Serializer for content-types with IBlocks behavior """
+    """Serializer for content-types with IBlocks behavior"""
 
 
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IPloneSiteRoot, IBrowserRequest)
 class TextBlockSerializerRoot(TextBlockSerializerBase):
-    """ Serializer for site root """
+    """Serializer for site root"""

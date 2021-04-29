@@ -28,4 +28,4 @@ class IControlpanel(Interface):
 
 
 class IDexterityTypesControlpanel(IControlpanel):
-    """ Dexterity Types Control panel """
+    """Dexterity Types Control panel"""

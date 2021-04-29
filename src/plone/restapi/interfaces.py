@@ -128,7 +128,7 @@ class IExpandableElement(Interface):
     """
 
     def __call__(expand=False):
-        """"""
+        """ """
 
 
 class IZCatalogCompatibleQuery(Interface):
