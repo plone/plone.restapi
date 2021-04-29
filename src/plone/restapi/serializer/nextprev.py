@@ -31,7 +31,7 @@ class NextPrevious(object):
 
     @property
     def next(self):
-        """ return info about the next item in the container """
+        """return info about the next item in the container"""
         if getattr(self.parent, "_ordering", "") == "unordered":
             # Unordered folder
             return {}
@@ -47,7 +47,7 @@ class NextPrevious(object):
 
     @property
     def previous(self):
-        """ return info about the previous item in the container """
+        """return info about the previous item in the container"""
         if getattr(self.parent, "_ordering", "") == "unordered":
             # Unordered folder
             return {}
