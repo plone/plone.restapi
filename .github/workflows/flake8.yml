@@ -32,4 +32,4 @@ jobs:
 
       # run black
       - name: run flake8
-        run: flake8 src/
+        run: flake8 src/ setup.py

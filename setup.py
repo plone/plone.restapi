@@ -1,7 +1,5 @@
 from setuptools import setup, find_packages
 
-import sys
-
 version = "7.3.3.dev0"
 
 
