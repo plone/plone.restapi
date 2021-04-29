@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 import sys
 
-version = "7.3.3"
+version = "7.3.4.dev0"
 
 
 def read(filename):
