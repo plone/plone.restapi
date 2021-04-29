@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+7.3.3 (2021-04-29)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@querystring-search`` endpoint with correct sort_order
+  @mamico (#1108)
+
+
 7.3.2 (2021-04-07)
 ------------------
 
