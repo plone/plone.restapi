@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+7.3.4 (2021-04-30)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@history`` when full history is empty.
+  [deiferni] (#1113)
+
+
 7.3.3 (2021-04-29)
 ------------------
 
