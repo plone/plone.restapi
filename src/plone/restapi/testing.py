@@ -200,6 +200,21 @@ PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
 )
 
 
+class PloneRestApiTestWorkflowsLayer(PloneSandboxLayer):
+
+    defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
+
+    def setUpPloneSite(self, portal):
+        applyProfile(portal, "plone.restapi:testing-workflows")
+
+
+PLONE_RESTAPI_WORKFLOWS_FIXTURE = PloneRestApiTestWorkflowsLayer()
+PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING = IntegrationTesting(
+    bases=(PLONE_RESTAPI_WORKFLOWS_FIXTURE,),
+    name="PloneRestApiTestWorkflowsLayer:Integration",
+)
+
+
 class PloneRestApiDXPAMLayer(PloneSandboxLayer):
 
     defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE)
