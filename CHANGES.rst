@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+7.3.5 (2021-05-03)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@workflow`` when executing user has no permissions to access ``review_history`` in target state.
+  [deiferni] (#999)
+
+
 7.3.4 (2021-04-30)
 ------------------
 

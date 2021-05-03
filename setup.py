@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = "7.3.4"
+version = "7.3.5"
 
 
 def read(filename):
