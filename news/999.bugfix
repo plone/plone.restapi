@@ -1,0 +1,2 @@
+Fix ``@workflow`` when executing user has no permissions to access ``review_history`` in target state.
+[deiferni]
