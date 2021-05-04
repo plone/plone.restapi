@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from datetime import timedelta
-from plone.app.contenttypes.interfaces import ILink
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
@@ -36,6 +35,12 @@ if six.PY2:
     html_parser = HTMLParser.HTMLParser()
 else:
     import html as html_parser
+
+try:
+    from plone.app.contenttypes.interfaces import ILink
+except ImportError:
+    # We are in Plone 4 and plone.app.contenttypes is not installed
+    ILink = None
 
 
 @implementer(IFieldDeserializer)

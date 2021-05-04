@@ -12,7 +12,7 @@
   <adapter factory=".dxfields.CollectionFieldDeserializer" />
   <adapter factory=".dxfields.DictFieldDeserializer" />
   <adapter factory=".dxfields.TextLineFieldDeserializer" />
-  <adapter factory=".dxfields.LinkTextLineFieldDeserializer" />
+  <adapter factory=".dxfields.LinkTextLineFieldDeserializer" zcml:condition="installed plone.app.contenttypes"/>
   <adapter factory=".dxfields.TimeFieldDeserializer" />
   <adapter factory=".dxfields.TimedeltaFieldDeserializer" />
   <adapter factory=".dxfields.NamedFieldDeserializer" />

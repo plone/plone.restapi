@@ -2,7 +2,6 @@
 
 from AccessControl import getSecurityManager
 from Products.CMFCore.permissions import ModifyPortalContent
-from plone.app.contenttypes.interfaces import ILink
 from plone.app.contenttypes.utils import replace_link_variables_by_paths
 from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.interfaces import IDexterityContent
@@ -22,6 +21,12 @@ from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IField
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import IVocabularyTokenized
+
+try:
+    from plone.app.contenttypes.interfaces import ILink
+except ImportError:
+    # We are in Plone 4 and plone.app.contenttypes is not available
+    ILink = None
 
 import logging
 
