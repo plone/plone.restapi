@@ -2,13 +2,13 @@ Working Copy
 ============
 
 Plone has the "Working copy" feature provided by the core package ``plone.app.iterate``.
-It allows the user to create a working copy of a (published or live) content object and
+It allows the users to create a working copy of a (published or live) content object and
 work with it until it's ready to be published without having to edit the original object.
 
 This process has several steps of it's life cycle:
 
-Check-out
----------
+Create working Copy (aka Check-out)
+-----------------------------------
 
 The user initiates the process and creates a "working copy" by "checking out" the content::
 
