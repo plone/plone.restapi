@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
+from plone import api
 from plone.outputfilters.browser.resolveuid import uuidToObject
 from plone.outputfilters.browser.resolveuid import uuidToURL
 from plone.restapi.behaviors import IBlocks
+from plone.restapi.deserializer.blocks import SlateBlockTransformer
+from plone.restapi.deserializer.blocks import transform_links
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
@@ -180,3 +183,39 @@ class TextBlockSerializer(TextBlockSerializerBase):
 @adapter(IPloneSiteRoot, IBrowserRequest)
 class TextBlockSerializerRoot(TextBlockSerializerBase):
     """Serializer for site root"""
+
+
+class SlateBlockSerializerBase(SlateBlockTransformer):
+    """SlateBlockSerializerBase."""
+
+    order = 100
+    block_type = "slate"
+    disabled = os.environ.get("disable_transform_resolveuid", False)
+
+    def _uid_to_url(self, context, path):
+        """_uid_to_url.
+
+        :param context:
+        :param path:
+        """
+        portal = api.portal.get()
+        return uid_to_url(path).replace(portal.absolute_url(), "")
+
+    def handle_a(self, child):
+        """handle_a.
+
+        :param child:
+        """
+        transform_links(self.context, child, transformer=self._uid_to_url)
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IBlocks, IBrowserRequest)
+class SlateBlockSerializer(SlateBlockSerializerBase):
+    """ Serializer for content-types with IBlocks behavior """
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IPloneSiteRoot, IBrowserRequest)
+class SlateBlockSerializerRoot(SlateBlockSerializerBase):
+    """ Serializer for site root """

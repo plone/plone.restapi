@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from Acquisition import aq_parent
+from collections import deque
 from copy import deepcopy
 from plone import api
 from plone.restapi.behaviors import IBlocks
@@ -19,6 +20,19 @@ from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import os
+
+
+def iterate_children(value):
+    """iterate_children.
+
+    :param value:
+    """
+    queue = deque(value)
+    while queue:
+        child = queue.pop()
+        yield child
+        if child.get("children"):
+            queue.extend(child["children"] or [])
 
 
 def path2uid(context, link):
@@ -258,3 +272,64 @@ class ImageBlockDeserializer(ImageBlockDeserializerBase):
 @implementer(IBlockFieldDeserializationTransformer)
 class ImageBlockDeserializerRoot(ImageBlockDeserializerBase):
     """Deserializer for site root"""
+
+
+def transform_links(context, value, transformer):
+    """Convert absolute links to resolveuid
+    http://localhost:55001/plone/link-target
+    ->
+    ../resolveuid/023c61b44e194652804d05a15dc126f4"""
+    data = value.get("data", {})
+    if data.get("link", {}).get("internal", {}).get("internal_link"):
+        internal_link = data["link"]["internal"]["internal_link"]
+        for link in internal_link:
+            link["@id"] = transformer(context, link["@id"])
+
+
+class SlateBlockTransformer(object):
+    """SlateBlockTransformer."""
+
+    field = "value"
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, block):
+
+        value = getattr(block, self.field, [])
+        for child in iterate_children(value or []):
+            node_type = child.get("type")
+            if node_type:
+                handler = getattr(self, "handle_{}".format(node_type), None)
+                if handler:
+                    handler(child)
+
+        return block
+
+
+class SlateBlockDeserializerBase(SlateBlockTransformer):
+    """SlateBlockDeserializerBase."""
+
+    order = 100
+    block_type = "slate"
+    disabled = os.environ.get("disable_transform_resolveuid", False)
+
+    def handle_a(self, child):
+        """handle_a.
+
+        :param child:
+        """
+        transform_links(self.context, child, transformer=path2uid)
+
+
+@adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class SlateBlockDeserializer(SlateBlockDeserializerBase):
+    """ Deserializer for content-types that implements IBlocks behavior """
+
+
+@adapter(IPloneSiteRoot, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class SlateBlockDeserializerRoot(SlateBlockDeserializerBase):
+    """ Deserializer for site root """
