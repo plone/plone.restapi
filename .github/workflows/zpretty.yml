@@ -1,4 +1,4 @@
-name: Flake8
+name: zpretty
 on: [push]
 jobs:
   build:
