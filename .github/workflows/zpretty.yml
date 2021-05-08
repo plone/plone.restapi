@@ -32,5 +32,4 @@ jobs:
 
       # run zpretty
       - name: run zpretty
-        run: zpretty -i src/**/*.zcml
-
+        run: find src/ -name *.zcml | xargs zpretty -i
