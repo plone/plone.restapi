@@ -1,29 +1,34 @@
 <configure
-  xmlns="http://namespaces.zope.org/zope"
-  xmlns:browser="http://namespaces.zope.org/browser"
-  xmlns:plone="http://namespaces.plone.org/plone"
-  xmlns:zcml="http://namespaces.zope.org/zcml"
-  i18n_domain="plone.app.contenttypes">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="plone.app.contenttypes"
+    >
 
   <utility
       provides="zope.schema.interfaces.IVocabularyFactory"
+      name="plone.restapi.testing.context_vocabulary"
       component=".tests.dxtypes.vocabularyRequireingContextFactory"
-      name="plone.restapi.testing.context_vocabulary" />
+      />
 
-  <include package="plone.behavior" file="meta.zcml"/>
+  <include
+      package="plone.behavior"
+      file="meta.zcml"
+      />
   <include package="plone.rfc822" />
-	<plone:behavior
-	    title="Test Behavior"
-	    description="Schema-only behavior using attributes"
-	    provides=".tests.dxtypes.ITestBehavior"
-	    for="plone.dexterity.interfaces.IDexterityContent"
-	    />
+  <plone:behavior
+      title="Test Behavior"
+      description="Schema-only behavior using attributes"
+      provides=".tests.dxtypes.ITestBehavior"
+      for="plone.dexterity.interfaces.IDexterityContent"
+      />
 
-	<plone:behavior
-	    title="Test Annotations Behavior"
-	    description="Schema-only behavior using annotations"
-	    provides=".tests.dxtypes.ITestAnnotationsBehavior"
-	    factory="plone.behavior.AnnotationStorage"
-	    />
+  <plone:behavior
+      title="Test Annotations Behavior"
+      description="Schema-only behavior using annotations"
+      factory="plone.behavior.AnnotationStorage"
+      provides=".tests.dxtypes.ITestAnnotationsBehavior"
+      />
 
 </configure>
