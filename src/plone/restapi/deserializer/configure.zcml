@@ -36,11 +36,11 @@
   <subscriber factory=".blocks.ResolveUIDDeserializerRoot"
     provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
   <subscriber
-      factory=".block.SlateBlockDeserializer"
+      factory=".blocks.SlateBlockDeserializer"
       provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
       />
   <subscriber
-      factory=".block.SlateBlockDeserializerRoot"
+      factory=".blocks.SlateBlockDeserializerRoot"
       provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
       />
 

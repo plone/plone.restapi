@@ -308,3 +308,50 @@ class TestBlocksDeserializer(unittest.TestCase):
             "html"
         ]
         self.assertEqual(block, u"<div>This stays</div>")
+
+    def test_slate_internal_link_deserializer(self):
+        """test_internal_link_deserializer."""
+        blocks = {
+            "2caef9e6-93ff-4edf-896f-8c16654a9923": {
+                "@type": "slate",
+                "plaintext": "this is a slate link inside some text",
+                "value": [
+                    {
+                        "type": "p",
+                        "children": [
+                            {"text": "this is a "},
+                            {
+                                "children": [
+                                    {"text": ""},
+                                    {
+                                        "type": "a",
+                                        "children": [{"text": "slate link"}],
+                                        "data": {
+                                            "link": {
+                                                "internal": {
+                                                    "internal_link": [
+                                                        {
+                                                            "@id": "/front-page",
+                                                            "title": "Welcome to Plone",
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                    },
+                                    {"text": ""},
+                                ],
+                                "type": "strong",
+                            },
+                            {"text": " inside some text"},
+                        ],
+                    }
+                ],
+            },
+            "6b2be2e6-9857-4bcc-a21a-29c0449e1c68": {"@type": "title"},
+        }
+        res = self.deserialize(blocks=blocks)
+        value = res.blocks["2caef9e6-93ff-4edf-896f-8c16654a9923"]["value"]
+        link = value[0]["children"][1]["children"][1]
+        resolve_link = link["data"]["link"]["internal"]["internal_link"][0]["@id"]
+        self.assertTrue(resolve_link.startswith("../resolveuid/"))

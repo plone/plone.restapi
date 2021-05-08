@@ -44,12 +44,12 @@
       provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
       />
   <subscriber
-      factory=".block.SlateBlockSerializerRoot"
+      factory=".blocks.SlateBlockSerializerRoot"
       provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
       />
 
   <subscriber
-      factory=".block.SlateBlockSerializer"
+      factory=".blocks.SlateBlockSerializer"
       provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
       />
 

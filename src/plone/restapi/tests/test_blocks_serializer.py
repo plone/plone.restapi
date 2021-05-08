@@ -189,3 +189,61 @@ class TestBlocksSerializer(unittest.TestCase):
         href = value["1"]["data"]["blocks"]["2"]["blocks"]["3"]["href"]
 
         self.assertEqual(href[0], self.portal.doc1.absolute_url())
+
+    def test_internal_link_serializer(self):
+        """test_internal_link_serializer."""
+        doc_uid = IUUID(self.portal["front-page"])
+        resolve_uid_link = {
+            "@id": "../resolveuid/{}".format(doc_uid),
+            "title": "Welcome to Plone",
+        }
+        blocks = {
+            "2caef9e6-93ff-4edf-896f-8c16654a9923": {
+                "@type": "slate",
+                "plaintext": "this is a slate link inside some text",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "this is a "},
+                            {
+                                "children": [
+                                    {"text": ""},
+                                    {
+                                        "children": [{"text": "slate link"}],
+                                        "data": {
+                                            "link": {
+                                                "internal": {
+                                                    "internal_link": [resolve_uid_link]
+                                                }
+                                            }
+                                        },
+                                        "type": "a",
+                                    },
+                                    {"text": ""},
+                                ],
+                                "type": "strong",
+                            },
+                            {"text": " inside some text"},
+                        ],
+                        "type": "p",
+                    }
+                ],
+            },
+            "6b2be2e6-9857-4bcc-a21a-29c0449e1c68": {"@type": "title"},
+        }
+
+        res = self.serialize(
+            context=self.portal.doc,
+            blocks=blocks,
+        )
+
+        value = res["2caef9e6-93ff-4edf-896f-8c16654a9923"]["value"]
+        link = value[0]["children"][1]["children"][1]
+        resolve_link = link["data"]["link"]["internal"]["internal_link"][0]["@id"]
+
+        self.assertTrue(resolve_link == "/front-page")
+
+    def test_bogus(self):
+        """ Bogus test to avoid deleting the entire module """
+
+        self.assertTrue(1 > 0)
