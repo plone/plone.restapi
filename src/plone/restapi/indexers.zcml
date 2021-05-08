@@ -5,7 +5,7 @@
     >
 
   <configure zcml:condition="installed plone.app.contenttypes">
-<adapter
+  <adapter
   factory=".indexers.SearchableText_blocks"
   name="SearchableText"
   />

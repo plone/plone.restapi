@@ -33,3 +33,7 @@ jobs:
       # run zpretty
       - name: run zpretty
         run: find src/ -name *.zcml | xargs zpretty -i
+
+      # run git diff
+      - name: run git diff
+        run: git diff --exit-code
