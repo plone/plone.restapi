@@ -2,7 +2,6 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
-from Products.CMFPlone.utils import base_hasattr
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
@@ -10,16 +9,18 @@ from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.deserializer import boolean_value
 from plone.restapi.interfaces import IFieldSerializer
+from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.interfaces import IPrimaryFieldTarget
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
+from plone.restapi.serializer.working_copy import WorkingCopyInfo
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import base_hasattr
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
@@ -74,6 +75,10 @@ class SerializeToJson(object):
         result.update(
             {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
         )
+
+        # Insert working copy information
+        baseline, working_copy = WorkingCopyInfo(self.context).get_working_copy_info()
+        result.update({"working_copy": working_copy, "working_copy_of": baseline})
 
         # Insert expandable elements
         result.update(expandable_elements(self.context, self.request))
