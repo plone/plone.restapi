@@ -21,15 +21,15 @@
     permission="plone.app.iterate.CheckOutContent"
     />
 
-<!-- 
+
   <plone:service
     method="PATCH"
     name="@workingcopy"
     for="Products.CMFCore.interfaces.IContentish"
-    factory=".workingcopy.LinkTranslations"
-    permission="plone.app.multilingual.ManageTranslations"
+    factory=".update.UpdateWorkingCopy"
+    permission="plone.app.iterate.CheckInContent"
     />
--->
+
   <plone:service
     method="DELETE"
     name="@workingcopy"

@@ -172,3 +172,51 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
             "/copy_of_document",
         )
         self.assertEqual(response.status_code, 404)
+
+    def test_workingcopy_patch_on_the_baseline(self):
+        # We create the working copy
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+        self.assertEqual(response.status_code, 201)
+
+        # Modify the working copy
+        response = self.api_session.patch(
+            "/copy_of_document", json={"title": "I just changed the title"}
+        )
+
+        # Checking in
+        response = self.api_session.patch(
+            "/document/@workingcopy",
+        )
+
+        # Check if the change is there
+        response = self.api_session.get(
+            "/document",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEquals(response.json()["title"], "I just changed the title")
+
+    def test_workingcopy_patch_on_the_working_copy(self):
+        # We create the working copy
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+        self.assertEqual(response.status_code, 201)
+
+        # Modify the working copy
+        response = self.api_session.patch(
+            "/copy_of_document", json={"title": "I just changed the title"}
+        )
+
+        # Checking in
+        response = self.api_session.patch(
+            "/copy_of_document/@workingcopy",
+        )
+
+        # Check if the change is there
+        response = self.api_session.get(
+            "/document",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEquals(response.json()["title"], "I just changed the title")
