@@ -46,22 +46,53 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         )
 
     def test_workingcopy_get(self):
+        # We create the working copy
         response = self.api_session.post(
             "/document/@workingcopy",
         )
 
         self.assertEqual(response.status_code, 201)
 
+        # endpoint GET in the baseline object
         response = self.api_session.get(
             "/document/@workingcopy",
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("@id", response.json())
-
         self.assertEquals(
-            response.json()["@id"],
+            response.json()["working_copy"]["@id"],
             "{}/copy_of_document".format(self.portal_url),
+        )
+        self.assertEquals(
+            response.json()["working_copy"]["creator_name"],
+            "admin",
+        )
+        self.assertEquals(
+            response.json()["working_copy"]["creator_url"],
+            "{}/author/admin".format(self.portal_url),
+        )
+
+        # endpoint GET in the working_copy
+        response = self.api_session.get(
+            "/copy_of_document/@workingcopy",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEquals(
+            response.json()["working_copy_of"]["@id"],
+            "{}/document".format(self.portal_url),
+        )
+        self.assertEquals(
+            response.json()["working_copy"]["@id"],
+            "{}/copy_of_document".format(self.portal_url),
+        )
+        self.assertEquals(
+            response.json()["working_copy"]["creator_name"],
+            "admin",
+        )
+        self.assertEquals(
+            response.json()["working_copy"]["creator_url"],
+            "{}/author/admin".format(self.portal_url),
         )
 
         # Serialization on the baseline object
