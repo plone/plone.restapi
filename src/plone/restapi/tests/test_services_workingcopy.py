@@ -134,3 +134,41 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
             response.json()["working_copy"]["creator_url"],
             "{}/author/admin".format(self.portal_url),
         )
+
+    def test_workingcopy_delete_on_the_baseline(self):
+        # We create the working copy
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+        self.assertEqual(response.status_code, 201)
+
+        # Deleting in the baseline deletes the working copy
+        response = self.api_session.delete(
+            "/document/@workingcopy",
+        )
+
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get(
+            "/copy_of_document",
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_workingcopy_delete_on_the_working_copy(self):
+        # We create the working copy
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+        self.assertEqual(response.status_code, 201)
+
+        # Deleting in the working copy deletes it too
+        response = self.api_session.delete(
+            "/copy_of_document/@workingcopy",
+        )
+
+        self.assertEqual(response.status_code, 204)
+
+        response = self.api_session.get(
+            "/copy_of_document",
+        )
+        self.assertEqual(response.status_code, 404)

@@ -20,7 +20,7 @@
     factory=".create.CreateWorkingCopy"
     permission="plone.app.iterate.CheckOutContent"
     />
-    
+
 <!-- 
   <plone:service
     method="PATCH"
@@ -29,13 +29,13 @@
     factory=".workingcopy.LinkTranslations"
     permission="plone.app.multilingual.ManageTranslations"
     />
-
+-->
   <plone:service
     method="DELETE"
     name="@workingcopy"
     for="Products.CMFCore.interfaces.IContentish"
-    factory=".workingcopy.UnlinkTranslations"
-    permission="plone.app.multilingual.ManageTranslations"
-    /> -->
+    factory=".delete.DeleteWorkingCopy"
+    permission="zope2.DeleteObjects"
+    /> 
 
 </configure>
