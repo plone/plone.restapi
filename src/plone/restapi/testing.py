@@ -6,7 +6,6 @@ from plone import api
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
 from plone.app.i18n.locales.interfaces import IMetadataLanguages
-from plone.app.iterate.testing import PLONEAPPITERATEDEX_FIXTURE
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
@@ -50,6 +49,14 @@ try:
     PAM_INSTALLED = True
 except pkg_resources.DistributionNotFound:
     PAM_INSTALLED = False
+
+try:
+    # Plone 4.3 p.a.iterate has no sane testing infrastructure, so we ignore it
+    from plone.app.iterate.testing import PLONEAPPITERATEDEX_FIXTURE
+
+    HAS_ITERATE = True
+except ImportError:
+    HAS_ITERATE = False
 
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
