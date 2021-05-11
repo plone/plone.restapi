@@ -1,6 +1,9 @@
 Working Copy
 ============
 
+.. note::
+    This is only available on Plone 5.
+
 Plone has the "Working copy" feature provided by the core package ``plone.app.iterate``.
 It allows the users to create a working copy of a (published or live) content object and
 work with it until it's ready to be published without having to edit the original object.
