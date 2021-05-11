@@ -268,29 +268,31 @@ PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
     name="PloneRestApiDXPAMLayer:Functional",
 )
 
+if HAS_ITERATE:
 
-class PloneRestApiDXIterateLayer(PloneSandboxLayer):
+    class PloneRestApiDXIterateLayer(PloneSandboxLayer):
 
-    defaultBases = (PLONEAPPITERATEDEX_FIXTURE,)
+        defaultBases = (PLONEAPPITERATEDEX_FIXTURE,)
 
-    def setUpZope(self, app, configurationContext):
-        import plone.restapi
+        def setUpZope(self, app, configurationContext):
+            import plone.restapi
 
-        xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
-        xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
+            xmlconfig.file(
+                "configure.zcml", plone.restapi, context=configurationContext
+            )
+            xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
 
-        z2.installProduct(app, "plone.restapi")
+            z2.installProduct(app, "plone.restapi")
 
-
-PLONE_RESTAPI_ITERATE_FIXTURE = PloneRestApiDXIterateLayer()
-PLONE_RESTAPI_ITERATE_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_ITERATE_FIXTURE,),
-    name="PloneRestApiDXIterateLayer:Integration",
-)
-PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_RESTAPI_ITERATE_FIXTURE, z2.ZSERVER_FIXTURE),
-    name="PloneRestApiDXIterateLayer:Functional",
-)
+    PLONE_RESTAPI_ITERATE_FIXTURE = PloneRestApiDXIterateLayer()
+    PLONE_RESTAPI_ITERATE_INTEGRATION_TESTING = IntegrationTesting(
+        bases=(PLONE_RESTAPI_ITERATE_FIXTURE,),
+        name="PloneRestApiDXIterateLayer:Integration",
+    )
+    PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING = FunctionalTesting(
+        bases=(PLONE_RESTAPI_ITERATE_FIXTURE, z2.ZSERVER_FIXTURE),
+        name="PloneRestApiDXIterateLayer:Functional",
+    )
 
 if HAS_AT:
 
