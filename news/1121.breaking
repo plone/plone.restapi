@@ -1,0 +1,2 @@
+- Drop support for Python 2 and Plone 5.1 and 4.3. Plone RESTAPI >= 8 supports Python 3 and Plone 5.2/6.x only.
+ [timo]
