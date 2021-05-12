@@ -5,6 +5,7 @@ version = "7.3.6.dev0"
 
 assert sys.version_info >= (3, 6, 0), "plone.restapi requires Python 3.6.0+"
 
+
 def read(filename):
     with open(filename) as myfile:
         try:
@@ -79,6 +80,7 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     namespace_packages=["plone"],
+    python_requires=">=3.6.0",
     include_package_data=True,
     zip_safe=False,
     install_requires=[
