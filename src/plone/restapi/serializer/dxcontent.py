@@ -17,6 +17,7 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
 from plone.restapi.serializer.working_copy import WorkingCopyInfo
+from plone.restapi.testing import HAS_ITERATE
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
@@ -77,11 +78,14 @@ class SerializeToJson(object):
         )
 
         # Insert working copy information
-        baseline, working_copy = WorkingCopyInfo(self.context).get_working_copy_info()
-        result.update({"working_copy": working_copy, "working_copy_of": baseline})
+        if HAS_ITERATE:
+            baseline, working_copy = WorkingCopyInfo(
+                self.context
+            ).get_working_copy_info()
+            result.update({"working_copy": working_copy, "working_copy_of": baseline})
 
-        # Insert expandable elements
-        result.update(expandable_elements(self.context, self.request))
+            # Insert expandable elements
+            result.update(expandable_elements(self.context, self.request))
 
         # Insert field values
         for schema in iterSchemata(self.context):
