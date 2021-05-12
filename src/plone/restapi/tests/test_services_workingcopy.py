@@ -4,13 +4,11 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import HAS_ITERATE
+from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 
 import transaction
 import unittest
-
-if HAS_ITERATE:
-    from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 
 
 @unittest.skipUnless(
