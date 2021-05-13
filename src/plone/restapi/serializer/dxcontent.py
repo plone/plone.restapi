@@ -17,7 +17,6 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
 from plone.restapi.serializer.working_copy import WorkingCopyInfo
-from plone.restapi.testing import HAS_ITERATE
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
@@ -30,6 +29,14 @@ from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
+
+try:
+    # Plone 4.3 p.a.iterate has no sane testing infrastructure, so we ignore it
+    from plone.app.iterate.testing import PLONEAPPITERATEDEX_FIXTURE  # noqa
+
+    HAS_ITERATE = True
+except ImportError:
+    HAS_ITERATE = False
 
 
 @implementer(ISerializeToJson)
