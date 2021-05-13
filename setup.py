@@ -1,6 +1,9 @@
 from setuptools import setup, find_packages
+import sys
 
 version = "7.3.6.dev0"
+
+assert sys.version_info >= (3, 6, 0), "plone.restapi requires Python 3.6.0+"
 
 
 def read(filename):
@@ -57,18 +60,15 @@ setup(
         "Development Status :: 5 - Production/Stable",
         "Environment :: Web Environment",
         "Framework :: Plone",
-        "Framework :: Plone :: 4.3",
-        "Framework :: Plone :: 5.0",
-        "Framework :: Plone :: 5.1",
         "Framework :: Plone :: 5.2",
         "Framework :: Plone :: Core",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3 :: Only",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
     keywords="plone rest restful hypermedia api json",
@@ -79,6 +79,7 @@ setup(
     packages=find_packages("src"),
     package_dir={"": "src"},
     namespace_packages=["plone"],
+    python_requires=">=3.6.0",
     include_package_data=True,
     zip_safe=False,
     install_requires=[
