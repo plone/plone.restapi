@@ -15,8 +15,6 @@ from Products.CMFCore.permissions import ModifyPortalContent
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.log import logger
 from Products.Five.browser import BrowserView
-from zope.component import queryUtility
-from zope.security.interfaces import IPermission
 
 
 class WorkingCopyInfo(BrowserView):
@@ -135,18 +133,3 @@ class WorkingCopyInfo(BrowserView):
             return self.policy.getProperties(self.ref, default={})
         else:
             return {}
-
-    def check_permission(self, permission_name, obj):
-        if permission_name is None:
-            return True
-
-        if permission_name not in self.permission_cache:
-            permission = queryUtility(IPermission, name=permission_name)
-            if permission is None:
-                self.permission_cache[permission_name] = True
-            else:
-                sm = getSecurityManager()
-                self.permission_cache[permission_name] = bool(
-                    sm.checkPermission(permission.title, obj)
-                )
-        return self.permission_cache[permission_name]
