@@ -27,6 +27,14 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
+      # buildout cache
+      - uses: actions/cache@v1
+        with:
+          path: ~/eggs
+          key: ${{ runner.os }}-buildout-${{ hashFiles('**/bin/instance') }}
+          restore-keys: |
+            ${{ runner.os }}-buildout-
+
       # python install
       - run: pip install virtualenv
       - run: pip install wheel
@@ -38,6 +46,8 @@ jobs:
         run: buildout -t 10 -c plone-${{ matrix.plone-version }}.x.cfg code-analysis:return-status-codes=True
         env:
           CI: true
+
+      - run: ls -al
 
       # code analysis
       - name: code analysis
