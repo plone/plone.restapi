@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.0.0 (2021-05-14)
+------------------
+
+Breaking changes:
+
+
+- Drop support for Python 2 and Plone 5.1 and 4.3. Plone RESTAPI >= 8 supports Python 3 and Plone 5.2/6.x only.
+   [timo] (#1121)
+
+
 7.3.5 (2021-05-03)
 ------------------
 
