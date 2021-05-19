@@ -135,6 +135,18 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
             "{}/author/admin".format(self.portal_url),
         )
 
+    def test_workingcopy_notworkingcopy_get(self):
+        # endpoint GET in the working_copy
+        response = self.api_session.get(
+            "/document/",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEquals(
+            response.json()["working_copy_of"],
+            None,
+        )
+
     def test_workingcopy_delete_on_the_baseline(self):
         # We create the working copy
         response = self.api_session.post(

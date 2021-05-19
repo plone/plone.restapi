@@ -30,7 +30,7 @@ class WorkingCopyInfo(BrowserView):
 
         # No Working Copy exists
         if baseline is None and working_copy is None:
-            return {"baseline": None, "working_copy": None}
+            return (None, None)
 
         # Baseline is None (context is the baseline), and working copy exists
         if baseline is None and working_copy:
