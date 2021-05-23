@@ -205,10 +205,10 @@ class SlateBlockSerializerBase(SlateBlockTransformer):
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IBlocks, IBrowserRequest)
 class SlateBlockSerializer(SlateBlockSerializerBase):
-    """ Serializer for content-types with IBlocks behavior """
+    """Serializer for content-types with IBlocks behavior"""
 
 
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IPloneSiteRoot, IBrowserRequest)
 class SlateBlockSerializerRoot(SlateBlockSerializerBase):
-    """ Serializer for site root """
+    """Serializer for site root"""
