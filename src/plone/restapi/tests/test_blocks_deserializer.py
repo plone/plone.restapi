@@ -331,8 +331,8 @@ class TestBlocksDeserializer(unittest.TestCase):
                                                 "internal": {
                                                     "internal_link": [
                                                         {
-                                                            "@id": "/front-page",
-                                                            "title": "Welcome to Plone",
+                                                            "@id": "/image-1",
+                                                            "title": "Image 1",
                                                         }
                                                     ]
                                                 }
@@ -355,3 +355,34 @@ class TestBlocksDeserializer(unittest.TestCase):
         link = value[0]["children"][1]["children"][1]
         resolve_link = link["data"]["link"]["internal"]["internal_link"][0]["@id"]
         self.assertTrue(resolve_link.startswith("../resolveuid/"))
+
+    def test_slate_simple_link_deserializer(self):
+        """test_internal_link_deserializer."""
+
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": "%s/image-1" % self.portal.absolute_url()
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+
+        res = self.deserialize(blocks=blocks)
+        value = res.blocks["abc"]["value"]
+        link = value[0]["children"][1]["data"]["url"]
+        self.assertTrue(link.startswith("../resolveuid/"))

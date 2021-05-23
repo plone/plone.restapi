@@ -296,9 +296,10 @@ class SlateBlockTransformer(object):
         self.request = request
 
     def __call__(self, block):
+        value = (block or {}).get(self.field, [])
+        children = iterate_children(value or [])
 
-        value = getattr(block, self.field, [])
-        for child in iterate_children(value or []):
+        for child in children:
             node_type = child.get("type")
             if node_type:
                 handler = getattr(self, "handle_{}".format(node_type), None)
@@ -321,6 +322,10 @@ class SlateBlockDeserializerBase(SlateBlockTransformer):
         :param child:
         """
         transform_links(self.context, child, transformer=path2uid)
+
+    def handle_link(self, child):
+        if child.get("data", {}).get("url"):
+            child["data"]["url"] = path2uid(self.context, child["data"]["url"])
 
 
 @adapter(IBlocks, IBrowserRequest)
