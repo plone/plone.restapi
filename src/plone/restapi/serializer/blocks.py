@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from copy import deepcopy
-from plone import api
 from plone.outputfilters.browser.resolveuid import uuidToObject
 from plone.outputfilters.browser.resolveuid import uuidToURL
 from plone.restapi.behaviors import IBlocks
