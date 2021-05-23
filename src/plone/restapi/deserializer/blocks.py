@@ -317,10 +317,6 @@ class SlateBlockDeserializerBase(SlateBlockTransformer):
     disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def handle_a(self, child):
-        """handle_a.
-
-        :param child:
-        """
         transform_links(self.context, child, transformer=path2uid)
 
     def handle_link(self, child):

@@ -331,7 +331,8 @@ class TestBlocksDeserializer(unittest.TestCase):
                                                 "internal": {
                                                     "internal_link": [
                                                         {
-                                                            "@id": "/image-1",
+                                                            "@id": "%s/image-1"
+                                                            % self.portal.absolute_url(),
                                                             "title": "Image 1",
                                                         }
                                                     ]

@@ -41,10 +41,13 @@ class TestBlocksSerializer(unittest.TestCase):
 
     def serialize(self, context, blocks):
         fieldname = "blocks"
+        field = None
         for schema in iterSchemata(context):
             if fieldname in schema:
                 field = schema.get(fieldname)
                 break
+        if field is None:
+            raise ValueError("blocks field not in the schema of %s" % context)
         dm = getMultiAdapter((context, field), IDataManager)
         dm.set(blocks)
         serializer = getMultiAdapter((field, context, self.request), IFieldSerializer)
@@ -192,7 +195,7 @@ class TestBlocksSerializer(unittest.TestCase):
 
     def test_internal_link_serializer(self):
         """test_internal_link_serializer."""
-        doc_uid = IUUID(self.portal["front-page"])
+        doc_uid = IUUID(self.portal["doc1"])
         resolve_uid_link = {
             "@id": "../resolveuid/{}".format(doc_uid),
             "title": "Welcome to Plone",
@@ -233,7 +236,7 @@ class TestBlocksSerializer(unittest.TestCase):
         }
 
         res = self.serialize(
-            context=self.portal.doc,
+            context=self.portal["doc1"],
             blocks=blocks,
         )
 
@@ -241,7 +244,7 @@ class TestBlocksSerializer(unittest.TestCase):
         link = value[0]["children"][1]["children"][1]
         resolve_link = link["data"]["link"]["internal"]["internal_link"][0]["@id"]
 
-        self.assertTrue(resolve_link == "/front-page")
+        self.assertTrue(resolve_link == self.portal.absolute_url() + "/doc1")
 
     def test_bogus(self):
         """ Bogus test to avoid deleting the entire module """

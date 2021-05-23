@@ -193,19 +193,9 @@ class SlateBlockSerializerBase(SlateBlockTransformer):
     disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def _uid_to_url(self, context, path):
-        """_uid_to_url.
-
-        :param context:
-        :param path:
-        """
-        portal = api.portal.get()
-        return uid_to_url(path).replace(portal.absolute_url(), "")
+        return uid_to_url(path)
 
     def handle_a(self, child):
-        """handle_a.
-
-        :param child:
-        """
         transform_links(self.context, child, transformer=self._uid_to_url)
 
 
