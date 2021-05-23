@@ -3,7 +3,7 @@
 from AccessControl.SecurityManagement import getSecurityManager
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import setSecurityManager
-from AccessControl.User import UnrestrictedUser as BaseUnrestrictedUser
+from AccessControl.users import UnrestrictedUser as BaseUnrestrictedUser
 from contextlib import contextmanager
 from zope.component import getMultiAdapter
 
