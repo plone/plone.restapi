@@ -197,6 +197,10 @@ class SlateBlockSerializerBase(SlateBlockTransformer):
     def handle_a(self, child):
         transform_links(self.context, child, transformer=self._uid_to_url)
 
+    def handle_link(self, child):
+        if child.get("data", {}).get("url"):
+            child["data"]["url"] = uid_to_url(child["data"]["url"])
+
 
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IBlocks, IBrowserRequest)

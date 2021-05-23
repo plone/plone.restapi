@@ -246,6 +246,40 @@ class TestBlocksSerializer(unittest.TestCase):
 
         self.assertTrue(resolve_link == self.portal.absolute_url() + "/doc1")
 
+    def test_simple_link_serializer(self):
+        doc_uid = IUUID(self.portal["doc1"])
+        resolve_uid_link = "../resolveuid/{}".format(doc_uid)
+
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": resolve_uid_link,
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks=blocks,
+        )
+        value = res["abc"]["value"]
+        link = value[0]["children"][1]["data"]["url"]
+        self.assertTrue(link, self.portal.absolute_url() + "/doc1")
+
     def test_bogus(self):
         """ Bogus test to avoid deleting the entire module """
 
