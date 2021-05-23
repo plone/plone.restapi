@@ -281,6 +281,6 @@ class TestBlocksSerializer(unittest.TestCase):
         self.assertTrue(link, self.portal.absolute_url() + "/doc1")
 
     def test_bogus(self):
-        """ Bogus test to avoid deleting the entire module """
+        """Bogus test to avoid deleting the entire module"""
 
         self.assertTrue(1 > 0)

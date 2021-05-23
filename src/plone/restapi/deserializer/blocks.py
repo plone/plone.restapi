@@ -327,10 +327,10 @@ class SlateBlockDeserializerBase(SlateBlockTransformer):
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class SlateBlockDeserializer(SlateBlockDeserializerBase):
-    """ Deserializer for content-types that implements IBlocks behavior """
+    """Deserializer for content-types that implements IBlocks behavior"""
 
 
 @adapter(IPloneSiteRoot, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class SlateBlockDeserializerRoot(SlateBlockDeserializerBase):
-    """ Deserializer for site root """
+    """Deserializer for site root"""
