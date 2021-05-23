@@ -310,7 +310,6 @@ class TestBlocksDeserializer(unittest.TestCase):
         self.assertEqual(block, u"<div>This stays</div>")
 
     def test_slate_internal_link_deserializer(self):
-        """test_internal_link_deserializer."""
         blocks = {
             "2caef9e6-93ff-4edf-896f-8c16654a9923": {
                 "@type": "slate",
@@ -358,8 +357,6 @@ class TestBlocksDeserializer(unittest.TestCase):
         self.assertTrue(resolve_link.startswith("../resolveuid/"))
 
     def test_slate_simple_link_deserializer(self):
-        """test_internal_link_deserializer."""
-
         blocks = {
             "abc": {
                 "@type": "slate",

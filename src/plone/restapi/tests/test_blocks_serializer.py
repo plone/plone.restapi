@@ -194,7 +194,6 @@ class TestBlocksSerializer(unittest.TestCase):
         self.assertEqual(href[0], self.portal.doc1.absolute_url())
 
     def test_internal_link_serializer(self):
-        """test_internal_link_serializer."""
         doc_uid = IUUID(self.portal["doc1"])
         resolve_uid_link = {
             "@id": "../resolveuid/{}".format(doc_uid),
@@ -279,8 +278,3 @@ class TestBlocksSerializer(unittest.TestCase):
         value = res["abc"]["value"]
         link = value[0]["children"][1]["data"]["url"]
         self.assertTrue(link, self.portal.absolute_url() + "/doc1")
-
-    def test_bogus(self):
-        """Bogus test to avoid deleting the entire module"""
-
-        self.assertTrue(1 > 0)
