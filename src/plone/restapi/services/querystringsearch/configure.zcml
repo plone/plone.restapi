@@ -1,20 +1,21 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:plone="http://namespaces.plone.org/plone">
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
 
   <plone:service
-    method="POST"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".get.QuerystringSearchPost"
-    name="@querystring-search"
-    permission="zope2.View"
-    />
+      method="POST"
+      factory=".get.QuerystringSearchPost"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@querystring-search"
+      />
 
   <plone:service
-    method="POST"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".get.QuerystringSearchPost"
-    name="@querystring-search"
-    permission="zope2.View"
-    />
+      method="POST"
+      factory=".get.QuerystringSearchPost"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@querystring-search"
+      />
 </configure>
