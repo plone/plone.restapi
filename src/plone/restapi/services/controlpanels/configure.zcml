@@ -1,105 +1,120 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:plone="http://namespaces.plone.org/plone"
-    xmlns:zcml="http://namespaces.zope.org/zcml">
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
 
   <include
-    zcml:condition="not-installed plone.app.controlpanel"
-    package="Products.CMFPlone.controlpanel"
-    file="permissions.zcml" />
+      package="Products.CMFPlone.controlpanel"
+      file="permissions.zcml"
+      zcml:condition="not-installed plone.app.controlpanel"
+      />
 
   <include
-    zcml:condition="installed plone.app.controlpanel"
-    package="plone.app.controlpanel"
-    file="permissions.zcml" />
+      package="plone.app.controlpanel"
+      file="permissions.zcml"
+      zcml:condition="installed plone.app.controlpanel"
+      />
 
   <plone:service
-    method="POST"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".add.ControlpanelsAdd"
-    name="@controlpanels"
-    permission="plone.app.controlpanel.Overview"
-    />
+      method="POST"
+      factory=".add.ControlpanelsAdd"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="plone.app.controlpanel.Overview"
+      name="@controlpanels"
+      />
 
   <plone:service
-    method="GET"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".get.ControlpanelsGet"
-    name="@controlpanels"
-    permission="plone.app.controlpanel.Overview"
-    />
+      method="GET"
+      factory=".get.ControlpanelsGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="plone.app.controlpanel.Overview"
+      name="@controlpanels"
+      />
 
   <plone:service
-    method="PATCH"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".update.ControlpanelsUpdate"
-    name="@controlpanels"
-    permission="plone.app.controlpanel.Overview"
-    />
+      method="PATCH"
+      factory=".update.ControlpanelsUpdate"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="plone.app.controlpanel.Overview"
+      name="@controlpanels"
+      />
 
   <plone:service
-    method="DELETE"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".delete.ControlpanelsDelete"
-    name="@controlpanels"
-    permission="plone.app.controlpanel.Overview"
-    />
+      method="DELETE"
+      factory=".delete.ControlpanelsDelete"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="plone.app.controlpanel.Overview"
+      name="@controlpanels"
+      />
 
   <!-- Dexterity Types Controlpanel -->
   <adapter
-    factory="plone.restapi.controlpanels.types.DexterityTypesControlpanel"
-    provides="plone.restapi.controlpanels.interfaces.IDexterityTypesControlpanel"
-    name="dexterity-types" />
+      factory="plone.restapi.controlpanels.types.DexterityTypesControlpanel"
+      provides="plone.restapi.controlpanels.interfaces.IDexterityTypesControlpanel"
+      name="dexterity-types"
+      />
 
   <configure zcml:condition="have plone-5">
 
     <!-- General -->
     <adapter
-      factory="plone.restapi.controlpanels.registry.DateTimeControlpanel"
-      name="date-and-time" />
+        factory="plone.restapi.controlpanels.registry.DateTimeControlpanel"
+        name="date-and-time"
+        />
 
     <adapter
-      factory="plone.restapi.controlpanels.registry.LanguageControlpanel"
-      name="language" />
+        factory="plone.restapi.controlpanels.registry.LanguageControlpanel"
+        name="language"
+        />
 
     <adapter
-      factory="plone.restapi.controlpanels.registry.MailControlpanel"
-      name="mail" />
+        factory="plone.restapi.controlpanels.registry.MailControlpanel"
+        name="mail"
+        />
 
     <adapter
-      factory="plone.restapi.controlpanels.registry.NavigationControlpanel"
-      name="navigation" />
+        factory="plone.restapi.controlpanels.registry.NavigationControlpanel"
+        name="navigation"
+        />
 
     <adapter
-      factory="plone.restapi.controlpanels.registry.SiteControlpanel"
-      name="site" />
+        factory="plone.restapi.controlpanels.registry.SiteControlpanel"
+        name="site"
+        />
 
     <adapter
-      factory="plone.restapi.controlpanels.registry.SearchControlpanel"
-      name="search" />
+        factory="plone.restapi.controlpanels.registry.SearchControlpanel"
+        name="search"
+        />
 
     <adapter
-      factory="plone.restapi.controlpanels.registry.SocialMediaControlpanel"
-      name="socialmedia" />
+        factory="plone.restapi.controlpanels.registry.SocialMediaControlpanel"
+        name="socialmedia"
+        />
 
 
     <!-- Content -->
     <adapter
-      factory="plone.restapi.controlpanels.registry.EditingControlpanel"
-      name="editing" />
+        factory="plone.restapi.controlpanels.registry.EditingControlpanel"
+        name="editing"
+        />
 
     <adapter
-      factory="plone.restapi.controlpanels.registry.ImagingControlpanel"
-      name="imaging" />
+        factory="plone.restapi.controlpanels.registry.ImagingControlpanel"
+        name="imaging"
+        />
 
     <adapter
-      factory="plone.restapi.controlpanels.registry.MarkupControlpanel"
-      name="markup" />
+        factory="plone.restapi.controlpanels.registry.MarkupControlpanel"
+        name="markup"
+        />
 
     <!-- Security -->
     <adapter
-      factory="plone.restapi.controlpanels.registry.SecurityControlpanel"
-      name="security" />
+        factory="plone.restapi.controlpanels.registry.SecurityControlpanel"
+        name="security"
+        />
 
   </configure>
 
