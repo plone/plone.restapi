@@ -60,7 +60,10 @@ def create(container, type_, id_=None, title=None):
 
     else:
         factory = getUtility(IFactory, type_info.factory)
-        obj = factory(new_id, title=title)
+        if title:
+            obj = factory(new_id, title=title)
+        else:
+            obj = factory(new_id)
 
     if base_hasattr(obj, "_setPortalTypeName"):
         obj._setPortalTypeName(type_info.getId())
