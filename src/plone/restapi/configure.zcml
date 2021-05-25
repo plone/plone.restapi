@@ -49,6 +49,15 @@
       />
 
   <genericsetup:registerProfile
+      name="testing-workflows"
+      title="plone.restapi testing-workflows"
+      description="Adds sample workflows for testing"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
+      directory="profiles/testing-workflows"
+      />
+
+  <genericsetup:registerProfile
       name="performance"
       title="plone.restapi performance testing"
       description="Adds sample content for performance testing"

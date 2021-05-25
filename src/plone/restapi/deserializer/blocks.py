@@ -235,46 +235,46 @@ class VolatileSmartField(object):
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class ResolveUIDDeserializer(ResolveUIDDeserializerBase):
-    """ Deserializer for content-types that implements IBlocks behavior """
+    """Deserializer for content-types that implements IBlocks behavior"""
 
 
 @adapter(IPloneSiteRoot, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class ResolveUIDDeserializerRoot(ResolveUIDDeserializerBase):
-    """ Deserializer for site root """
+    """Deserializer for site root"""
 
 
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class TextBlockDeserializer(TextBlockDeserializerBase):
-    """ Deserializer for content-types that implements IBlocks behavior """
+    """Deserializer for content-types that implements IBlocks behavior"""
 
 
 @adapter(IPloneSiteRoot, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class TextBlockDeserializerRoot(TextBlockDeserializerBase):
-    """ Deserializer for site root """
+    """Deserializer for site root"""
 
 
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class HTMLBlockDeserializer(HTMLBlockDeserializerBase):
-    """ Deserializer for content-types that implements IBlocks behavior """
+    """Deserializer for content-types that implements IBlocks behavior"""
 
 
 @adapter(IPloneSiteRoot, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class HTMLBlockDeserializerRoot(HTMLBlockDeserializerBase):
-    """ Deserializer for site root """
+    """Deserializer for site root"""
 
 
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class ImageBlockDeserializer(ImageBlockDeserializerBase):
-    """ Deserializer for content-types that implements IBlocks behavior """
+    """Deserializer for content-types that implements IBlocks behavior"""
 
 
 @adapter(IPloneSiteRoot, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class ImageBlockDeserializerRoot(ImageBlockDeserializerBase):
-    """ Deserializer for site root """
+    """Deserializer for site root"""

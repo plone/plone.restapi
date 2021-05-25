@@ -50,7 +50,7 @@ class TestFolderCreate(unittest.TestCase):
         )
 
     def test_sharing_search(self):
-        """A request to @sharing should support the search parameter. """
+        """A request to @sharing should support the search parameter."""
         response = requests.get(
             self.portal.folder1.absolute_url() + "/@sharing",
             headers={"Accept": "application/json"},

@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 from plone import api
+from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 
@@ -122,6 +125,52 @@ class TestHistoryEndpoint(unittest.TestCase):
         url = self.doc.absolute_url() + "/@history/0"
         response = self.api_session.get(url)
         self.assertNotIn("sharing", response.json())
+
+
+class TestHistoryEndpointEmptyOrInacessibleHistory(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def _disable_auto_versioning(self, content_type):
+        portal_repository = self.portal.portal_repository
+        types = list(portal_repository.getVersionableContentTypes())
+        types.remove(content_type)
+        portal_repository.setVersionableContentTypes(types)
+        portal_repository.removePolicyFromContentType(
+            content_type, u"version_on_revert"
+        )
+
+    def setUp(self):
+        self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
+
+        login(self.portal, SITE_OWNER_NAME)
+
+        # disabling auto versioning is necessary to have an empty revision
+        # history
+        self._disable_auto_versioning("Document")
+
+        self.portal.invokeFactory(
+            "Document", id="doc_with_empty_history", title="My Document"
+        )
+        self.doc = self.portal.doc_with_empty_history
+        api.content.transition(self.doc, "publish")
+        self.endpoint_url = "{}/@history".format(self.doc.absolute_url())
+
+        self.api_session = RelativeSession(self.portal_url)
+        self.api_session.headers.update({"Accept": "application/json"})
+        self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
+        # forbid access to `workflowHistory`
+        setRoles(self.portal, TEST_USER_ID, ["Reader", "Contributor"])
+        transaction.commit()
+
+    def tearDown(self):
+        self.api_session.close()
+
+    def test_empty_or_inaccessible_full_history_returns_empty_list(self):
+        url = self.doc.absolute_url() + "/@history"
+        response = self.api_session.get(url)
+        self.assertEqual([], response.json())
 
 
 class TestHistoryEndpointTranslatedMessages(unittest.TestCase):

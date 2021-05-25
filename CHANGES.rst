@@ -8,6 +8,56 @@ Changelog
 
 .. towncrier release notes start
 
+8.0.0 (2021-05-14)
+------------------
+
+Breaking changes:
+
+
+- Drop support for Python 2 and Plone 5.1 and 4.3. Plone RESTAPI >= 8 supports Python 3 and Plone 5.2/6.x only. [timo] (#1121)
+
+
+7.3.5 (2021-05-03)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@workflow`` when executing user has no permissions to access ``review_history`` in target state.
+  [deiferni] (#999)
+
+
+7.3.4 (2021-04-30)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@history`` when full history is empty.
+  [deiferni] (#1113)
+
+
+7.3.3 (2021-04-29)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@querystring-search`` endpoint with correct sort_order
+  @mamico (#1108)
+
+
+7.3.2 (2021-04-07)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@search`` endpoint with use_site_search_settings flag, for VHM PhysicalRoot
+  scenarios
+  @tiberiuichim (#1105)
+
+
 7.3.1 (2021-03-27)
 ------------------
 

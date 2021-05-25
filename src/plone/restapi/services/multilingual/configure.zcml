@@ -1,42 +1,49 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:plone="http://namespaces.plone.org/plone"
-    xmlns:zcml="http://namespaces.zope.org/zcml">
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
 
-    <include package="plone.app.multilingual" file="permissions.zcml"/>
-
-    <adapter factory=".pam.Translations" name="translations"/>
-
-    <plone:service
-      method="GET"
-      name="@translations"
-      for="Products.CMFCore.interfaces.IContentish"
-      factory=".pam.TranslationInfo"
-      permission="zope2.View"
+  <include
+      package="plone.app.multilingual"
+      file="permissions.zcml"
       />
 
-    <plone:service
-      method="POST"
-      name="@translations"
-      for="Products.CMFCore.interfaces.IContentish"
-      factory=".pam.LinkTranslations"
-      permission="plone.app.multilingual.ManageTranslations"
-    />
-
-    <plone:service
-      method="DELETE"
-      name="@translations"
-      for="Products.CMFCore.interfaces.IContentish"
-      factory=".pam.UnlinkTranslations"
-      permission="plone.app.multilingual.ManageTranslations"
-    />
+  <adapter
+      factory=".pam.Translations"
+      name="translations"
+      />
 
   <plone:service
-    method="GET"
-    name="@translation-locator"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".locator.TranslationLocator"
-    permission="plone.app.multilingual.ManageTranslations"
-  />
+      method="GET"
+      factory=".pam.TranslationInfo"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@translations"
+      />
+
+  <plone:service
+      method="POST"
+      factory=".pam.LinkTranslations"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="plone.app.multilingual.ManageTranslations"
+      name="@translations"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".pam.UnlinkTranslations"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="plone.app.multilingual.ManageTranslations"
+      name="@translations"
+      />
+
+  <plone:service
+      method="GET"
+      factory=".locator.TranslationLocator"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="plone.app.multilingual.ManageTranslations"
+      name="@translation-locator"
+      />
 
 </configure>
