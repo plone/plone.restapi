@@ -13,7 +13,6 @@ from plone.app.testing import TEST_USER_PASSWORD
 from plone.rest.cors import CORSPolicy
 from plone.rest.interfaces import ICORSPolicy
 from plone.restapi.services.content.tus import TUSUpload
-from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from six import BytesIO

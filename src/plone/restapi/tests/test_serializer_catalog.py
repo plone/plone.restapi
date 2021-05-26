@@ -4,7 +4,6 @@ from plone import api
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName

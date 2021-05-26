@@ -253,10 +253,6 @@ PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
     name="PloneRestApiDXPAMLayer:Functional",
 )
 
-PLONE_RESTAPI_AT_INTEGRATION_TESTING = PLONE_FIXTURE
-PLONE_RESTAPI_AT_FUNCTIONAL_TESTING = PLONE_FIXTURE
-
-
 class PloneRestApIBlocksLayer(PloneSandboxLayer):
 
     defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
