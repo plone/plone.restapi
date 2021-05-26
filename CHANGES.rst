@@ -14,12 +14,7 @@ Changelog
 Bug fixes:
 
 
-- Fix error in Plone 4.3 that installed the blocks profile  when installing the package,
-  instead of the default profile.
-  Fix `#895 <https://github.com/plone/plone.restapi/issues/895>`
-    [wesleybl] (#895)
-- Pin Click to 7.1.2 in Plone 4 build since the latest major version (8.0.0) breaks
-  [sneridagh] (#1123)
+- Fix error in Plone 4.3 that installed the blocks profile  when installing the package, instead of the default profile. Fix `#895 <https://github.com/plone/plone.restapi/issues/895>` [wesleybl] (#895)
 - Fixed a deprecation warning when importing UnrestrictedUser from AccessControl (#1129)
 
 
@@ -59,8 +54,7 @@ Bug fixes:
 Bug fixes:
 
 
-- Fix ``@search`` endpoint with use_site_search_settings flag, for VHM PhysicalRoot
-  scenarios
+- Fix ``@search`` endpoint with use_site_search_settings flag, for VHM PhysicalRoot scenarios
   @tiberiuichim (#1105)
 
 
