@@ -11,7 +11,7 @@ Changelog
 7.3.6 (2021-05-26)
 ------------------
 
-No significant changes.
+- Re-release 7.3.6 since it was a brown bag release.
 
 
 7.3.6 (2021-05-26)
