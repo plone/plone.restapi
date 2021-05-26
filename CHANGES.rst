@@ -8,6 +8,12 @@ Changelog
 
 .. towncrier release notes start
 
+7.3.7 (2021-05-26)
+------------------
+
+No significant changes.
+
+
 7.3.6 (2021-05-26)
 ------------------
 
