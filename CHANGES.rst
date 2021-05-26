@@ -8,6 +8,21 @@ Changelog
 
 .. towncrier release notes start
 
+7.3.6 (2021-05-26)
+------------------
+
+Bug fixes:
+
+
+- Fix error in Plone 4.3 that installed the blocks profile  when installing the package,
+  instead of the default profile.
+  Fix `#895 <https://github.com/plone/plone.restapi/issues/895>`
+    [wesleybl] (#895)
+- Pin Click to 7.1.2 in Plone 4 build since the latest major version (8.0.0) breaks
+  [sneridagh] (#1123)
+- Fixed a deprecation warning when importing UnrestrictedUser from AccessControl (#1129)
+
+
 7.3.5 (2021-05-03)
 ------------------
 

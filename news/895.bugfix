@@ -1,4 +1,0 @@
-Fix error in Plone 4.3 that installed the blocks profile  when installing the package,
-instead of the default profile.
-Fix `#895 <https://github.com/plone/plone.restapi/issues/895>`
-  [wesleybl]
