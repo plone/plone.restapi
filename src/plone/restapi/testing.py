@@ -10,7 +10,6 @@ from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import login
-from plone.app.testing import PLONE_FIXTURE
 from plone.app.testing import PloneSandboxLayer
 from plone.app.testing import quickInstallProduct
 from plone.app.testing import setRoles
@@ -56,13 +55,6 @@ except ImportError:
     PLONE_5 = False  # pragma: no cover
 else:
     PLONE_5 = True  # pragma: no cover
-
-try:
-    pkg_resources.get_distribution("plone.dexterity")
-except pkg_resources.DistributionNotFound:
-    HAS_DX = False
-else:
-    HAS_DX = True
 
 ENABLED_LANGUAGES = ["de", "en", "es", "fr"]
 
@@ -252,6 +244,7 @@ PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApiDXPAMLayer:Functional",
 )
+
 
 class PloneRestApIBlocksLayer(PloneSandboxLayer):
 

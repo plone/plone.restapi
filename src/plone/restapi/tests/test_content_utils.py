@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from Acquisition import aq_parent
-from plone.app.testing import setRoles
-from plone.app.testing import TEST_USER_ID
 from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING

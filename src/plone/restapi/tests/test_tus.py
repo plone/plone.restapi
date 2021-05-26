@@ -4,12 +4,8 @@ from DateTime import DateTime
 from OFS.interfaces import IObjectWillBeAddedEvent
 from plone import api
 from plone.app.testing import login
-from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
-from plone.app.testing import TEST_USER_NAME
-from plone.app.testing import TEST_USER_PASSWORD
 from plone.rest.cors import CORSPolicy
 from plone.rest.interfaces import ICORSPolicy
 from plone.restapi.services.content.tus import TUSUpload

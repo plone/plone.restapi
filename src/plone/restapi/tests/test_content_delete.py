@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from base64 import b64encode
 from pkg_resources import get_distribution
 from pkg_resources import parse_version
 from plone.app.testing import login
@@ -10,8 +9,6 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from zope.event import notify
-from ZPublisher.pubevents import PubStart
 
 import requests
 import transaction

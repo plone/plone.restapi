@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from DateTime import DateTime
-from plone import api
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
