@@ -26,13 +26,6 @@ try:
 except pkg_resources.DistributionNotFound:  # pragma: no cover
     HAS_PLONE_APP_CONTENTTYPES = False
 
-try:
-    pkg_resources.get_distribution("Products.Archetypes")
-except pkg_resources.DistributionNotFound:
-    HAS_AT = False
-else:
-    HAS_AT = True
-
 
 def initialize(context):
     registerMultiPlugin(plugin.JWTAuthenticationPlugin.meta_type)
@@ -45,21 +38,3 @@ def initialize(context):
         ),
         visibility=None,
     )
-
-    if HAS_AT and REGISTER_TEST_TYPES:
-        from Products.Archetypes.ArchetypeTool import process_types, listTypes
-        from Products.CMFCore import permissions
-        from Products.CMFCore import utils
-        from plone.restapi.tests.attypes import PROJECTNAME
-
-        content_types, constructors, ftis = process_types(
-            listTypes(PROJECTNAME), PROJECTNAME
-        )
-
-        utils.ContentInit(
-            "%s Content" % PROJECTNAME,
-            content_types=content_types,
-            permission=permissions.AddPortalContent,
-            extra_constructors=constructors,
-            fti=ftis,
-        ).initialize(context)

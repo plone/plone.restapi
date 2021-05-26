@@ -7,7 +7,6 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
-from plone.restapi import HAS_AT
 from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from Products.CMFCore.utils import getToolByName
@@ -204,91 +203,3 @@ class TestFolderCreate(unittest.TestCase):
             "<p>example with '</p>", self.portal.folder1.mydocument2.text.raw
         )
         self.assertEqual("<p>example with '</p>", response.json()["text"]["data"])
-
-
-class TestATFolderCreate(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
-
-    def setUp(self):
-        if not HAS_AT:
-            raise unittest.SkipTest("Skip tests if Archetypes is not present")
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-        login(self.portal, TEST_USER_NAME)
-        self.portal.invokeFactory("Folder", id="folder1", title="My Folder")
-        # wftool = getToolByName(self.portal, 'portal_workflow')
-        # wftool.doActionFor(self.portal.folder1, 'publish')
-        transaction.commit()
-
-    def test_post_without_id_creates_id_from_title_for_archetypes(self):
-        response = requests.post(
-            self.portal.folder1.absolute_url(),
-            headers={"Accept": "application/json"},
-            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
-            json={
-                "@type": "ATTestDocument",
-                "title": "My Document",
-                "testRequiredField": "My Value",
-            },
-        )
-        self.assertEqual(201, response.status_code)
-        transaction.begin()
-        self.assertIn("my-document", self.portal.folder1)
-
-    def test_id_from_filename(self):
-        response = requests.post(
-            self.portal.folder1.absolute_url(),
-            headers={"Accept": "application/json"},
-            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
-            json={"@type": "File", "file": {"filename": "test.txt", "data": "Foo bar"}},
-        )
-        self.assertEqual(201, response.status_code)
-        transaction.begin()
-        self.assertIn("test.txt", self.portal.folder1)
-
-    def test_post_with_id_already_in_use_returns_400(self):
-        self.portal.folder1.invokeFactory("Document", "mydocument")
-        transaction.commit()
-        response = requests.post(
-            self.portal.folder1.absolute_url(),
-            headers={"Accept": "application/json"},
-            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
-            json={"@type": "Document", "id": "mydocument", "title": "My Document"},
-        )
-        self.assertEqual(400, response.status_code)
-
-    def test_post_to_folder_fires_proper_events(self):
-        sm = getGlobalSiteManager()
-        fired_events = []
-
-        def record_event(event):
-            fired_events.append(event.__class__.__name__)
-
-        sm.registerHandler(record_event, (IObjectCreatedEvent,))
-        sm.registerHandler(record_event, (IObjectWillBeAddedEvent,))
-        sm.registerHandler(record_event, (IObjectAddedEvent,))
-        sm.registerHandler(record_event, (IObjectModifiedEvent,))
-
-        requests.post(
-            self.portal.folder1.absolute_url(),
-            headers={"Accept": "application/json"},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-            json={
-                "@type": "Document",
-                "id": "mydocument",
-                "title": "My Document",
-                "description": "123",
-            },
-        )
-
-        self.assertEqual(
-            fired_events,
-            ["ObjectInitializedEvent", "ObjectAddedEvent", "ContainerModifiedEvent"],
-        )
-
-        sm.unregisterHandler(record_event, (IObjectCreatedEvent,))
-        sm.unregisterHandler(record_event, (IObjectWillBeAddedEvent,))
-        sm.unregisterHandler(record_event, (IObjectAddedEvent,))
-        sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
