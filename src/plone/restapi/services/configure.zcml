@@ -23,8 +23,10 @@
   <include package=".contextnavigation" />
   <include package=".history" />
   <include package=".locking" />
-  <include package=".workingcopy"
-      zcml:condition="have plone-5"/>
+  <include
+      package=".workingcopy"
+      zcml:condition="have plone-5"
+      />
   <include
       package=".multilingual"
       zcml:condition="have plone-5"
