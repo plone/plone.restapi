@@ -23,6 +23,19 @@
   <include package=".contextnavigation" />
   <include package=".history" />
   <include package=".locking" />
+  <include package=".principals"/>
+  <include package=".querysources"/>
+  <include package=".querystring"/>
+  <include package=".querystringsearch"/>
+  <include package=".registry"/>
+  <include package=".roles"/>
+  <include package=".search"/>
+  <include package=".system"/>
+  <include package=".sources"/>
+  <include package=".types"/>
+  <include package=".users"/>
+  <include package=".vocabularies"/>
+  <include package=".workflow"/>
   <include
       package=".workingcopy"
       zcml:condition="have plone-5"
