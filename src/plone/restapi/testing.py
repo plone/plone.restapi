@@ -16,6 +16,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.i18n.interfaces import ILanguageSchema
 from plone.registry.interfaces import IRegistry
 from plone.restapi.tests.dxtypes import INDEXES as DX_TYPES_INDEXES
 from plone.restapi.tests.helpers import add_catalog_indexes
@@ -49,13 +50,6 @@ try:
 except pkg_resources.DistributionNotFound:
     PAM_INSTALLED = False
 
-try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE_5 = False  # pragma: no cover
-else:
-    PLONE_5 = True  # pragma: no cover
-
 ENABLED_LANGUAGES = ["de", "en", "es", "fr"]
 
 
@@ -83,20 +77,9 @@ def enable_request_language_negotiation(portal):
     This is so we can use the Accept-Language header to request translated
     pieces of content in different languages.
     """
-    if PLONE_5:
-        try:
-            # Plone 5.2+
-            from plone.i18n.interfaces import ILanguageSchema
-        except ImportError:  # pragma: no cover
-            # Plone 5.0/5.1
-            from Products.CMFPlone.interfaces import ILanguageSchema
-
-        registry = getUtility(IRegistry)
-        settings = registry.forInterface(ILanguageSchema, prefix="plone")
-        settings.use_request_negotiation = True
-    else:
-        lang_tool = getToolByName(portal, "portal_languages")
-        lang_tool.use_request_negotiation = True
+    registry = getUtility(IRegistry)
+    settings = registry.forInterface(ILanguageSchema, prefix="plone")
+    settings.use_request_negotiation = True
 
 
 class DateTimeFixture(Layer):
