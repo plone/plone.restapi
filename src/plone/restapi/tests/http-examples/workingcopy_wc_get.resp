@@ -63,11 +63,13 @@ Content-Type: application/json
   "version": "current", 
   "working_copy": {
     "@id": "http://localhost:55001/plone/copy_of_document", 
-    "created": "2021-05-11T14:05:33+00:00", 
+    "created": "2021-05-27T15:49:51+00:00", 
     "creator_name": "admin", 
-    "creator_url": "http://localhost:55001/plone/author/admin"
+    "creator_url": "http://localhost:55001/plone/author/admin", 
+    "title": "Test document"
   }, 
   "working_copy_of": {
-    "@id": "http://localhost:55001/plone/document"
+    "@id": "http://localhost:55001/plone/document", 
+    "title": "Test document"
   }
 }

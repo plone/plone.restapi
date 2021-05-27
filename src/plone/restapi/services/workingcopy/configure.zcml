@@ -1,41 +1,42 @@
 <configure
-  xmlns="http://namespaces.zope.org/zope"
-  xmlns:plone="http://namespaces.plone.org/plone"
-  xmlns:zcml="http://namespaces.zope.org/zcml">
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
 
   <include package="plone.app.iterate" />
 
   <plone:service
-    method="GET"
-    name="@workingcopy"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".get.GetWorkingCopy"
-    permission="zope2.View"
-    />
+      method="GET"
+      factory=".get.GetWorkingCopy"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@workingcopy"
+      />
 
   <plone:service
-    method="POST"
-    name="@workingcopy"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".create.CreateWorkingCopy"
-    permission="plone.app.iterate.CheckOutContent"
-    />
+      method="POST"
+      factory=".create.CreateWorkingCopy"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="plone.app.iterate.CheckOutContent"
+      name="@workingcopy"
+      />
 
 
   <plone:service
-    method="PATCH"
-    name="@workingcopy"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".update.UpdateWorkingCopy"
-    permission="plone.app.iterate.CheckInContent"
-    />
+      method="PATCH"
+      factory=".update.UpdateWorkingCopy"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="plone.app.iterate.CheckInContent"
+      name="@workingcopy"
+      />
 
   <plone:service
-    method="DELETE"
-    name="@workingcopy"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".delete.DeleteWorkingCopy"
-    permission="zope2.DeleteObjects"
-    /> 
+      method="DELETE"
+      factory=".delete.DeleteWorkingCopy"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.DeleteObjects"
+      name="@workingcopy"
+      />
 
 </configure>
