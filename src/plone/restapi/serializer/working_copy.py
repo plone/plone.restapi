@@ -45,6 +45,7 @@ class WorkingCopyInfo(BrowserView):
                     None,
                     {
                         "@id": working_copy.absolute_url(),
+                        "title": working_copy.title,
                         "created": json_compatible(self.created()),
                         "creator_url": self.creator_url(),
                         "creator_name": self.creator_name(),
@@ -61,9 +62,10 @@ class WorkingCopyInfo(BrowserView):
                 ModifyPortalContent, self.context
             ) or sm.checkPermission(CheckoutPermission, baseline):
                 return (
-                    {"@id": baseline.absolute_url()},
+                    {"@id": baseline.absolute_url(), "title": baseline.title},
                     {
                         "@id": working_copy.absolute_url(),
+                        "title": working_copy.title,
                         "created": json_compatible(self.created()),
                         "creator_url": self.creator_url(),
                         "creator_name": self.creator_name(),
