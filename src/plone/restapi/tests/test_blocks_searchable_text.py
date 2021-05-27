@@ -144,8 +144,8 @@ class TestSearchTextInBlocks(unittest.TestCase):
         }
 
         self.doc.blocks = blocks
-        from zope.component import queryMultiAdapter
         from plone.indexer.interfaces import IIndexableObject
+        from zope.component import queryMultiAdapter
 
         wrapper = queryMultiAdapter(
             (self.doc, self.portal.portal_catalog), IIndexableObject
@@ -201,3 +201,37 @@ class TestSearchTextInBlocks(unittest.TestCase):
         json_response = response.json()
         self.assertEqual(json_response["items_total"], 1)
         self.assertEqual(json_response["items"][0]["Title"], "A document")
+
+    def test_search_slate_text(self):
+        """test_search_text."""
+        self.doc.blocks = {
+            "38541872-06c2-41c9-8709-37107e597b18": {
+                "@type": "slate",
+                "plaintext": "Under a new climatic regime, therefore",
+                "value": [],
+            },
+            "4fcfeb9b-f73e-427c-9e06-2e4d53b06865": {
+                "@type": "slate",
+                "searchableText": "EEA Climate Change data centre",
+                "value": [],
+            },
+        }
+        self.doc.blocks_layout = [
+            "38541872-06c2-41c9-8709-37107e597b18",
+            "4fcfeb9b-f73e-427c-9e06-2e4d53b06865",
+        ]
+        self.portal.portal_catalog.indexObject(self.doc)
+
+        query = {"SearchableText": "climatic"}
+        results = self.portal.portal_catalog.searchResults(**query)
+        self.assertEqual(len(results), 1)
+
+        brain = results[0]
+        self.assertEqual(brain.Title, "A document")
+
+        query = {"SearchableText": "EEA"}
+        results = self.portal.portal_catalog.searchResults(**query)
+        self.assertEqual(len(results), 1)
+
+        brain = results[0]
+        self.assertEqual(brain.Title, "A document")
