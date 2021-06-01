@@ -264,9 +264,11 @@ class UsersPost(Service):
         mt = getToolByName(self.context, "portal_membership")
         pwt = getToolByName(self.context, "portal_password_reset")
 
+        # TODO error type and error message depending on login per email or userid
         if target_user is None:
-            self.request.response.setStatus(404)
-            return
+            return self._error(
+                403, "Unknown identifier", "No user registration found for this identifier."
+            )
 
         # Send password reset mail
         if list(data) == []:
