@@ -6,6 +6,7 @@ from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
 from zope.interface import alsoProvides
+from zope import component
 
 import plone.protect.interfaces
 import six
@@ -65,6 +66,19 @@ class Login(Service):
                     type="Invalid credentials", message="Wrong login and/or password."
                 )
             )
+
+        # Perform the same post-login actions as would happen when logging in through
+        # the Plone classic HTML login form.  There is a trade-off here, we either
+        # violate DRY and duplicate the code from the classic HTML Plone view that will
+        # then become out of date all the time, or we re-use the code from the core
+        # Plone view and introduce a dependency we may have to update over time.  After
+        # [discussion](https://github.com/plone/plone.restapi/pull/1141#discussion_r648843942)
+        # we opt for the latter.
+        login_view = component.getMultiAdapter(
+            (self.context, self.request),
+            name="login",
+        )
+        login_view._post_login()
 
         payload = {}
         payload["fullname"] = user.getProperty("fullname")
