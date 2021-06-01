@@ -267,7 +267,9 @@ class UsersPost(Service):
         # TODO error type and error message depending on login per email or userid
         if target_user is None:
             return self._error(
-                403, "Unknown identifier", "No user registration found for this identifier."
+                403,
+                "Unknown identifier",
+                "No user registration found for this identifier.",
             )
 
         # Send password reset mail
