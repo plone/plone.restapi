@@ -266,9 +266,29 @@ class TestStaticTime(unittest.TestCase):
 @unittest.skipUnless(
     HAS_ITERATE, "plone.app.iterate has a sane testing infrastrucure only in Plone 5"
 )  # NOQA
-class TestWorkingCopyEndpoint(TestStaticTime):
+class TestStaticTimeWorkingCopy(unittest.TestCase):
 
     layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer["app"]
+        self.request = self.layer["request"]
+        self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
+
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+
+        transaction.commit()
+
+    def create_document(self, id_):
+        self.portal.invokeFactory("Document", id=id_)
+        document = self.portal[id_]
+        document.title = u"My title"
+        return document
 
     def test_statictime_wc_created(self):
         frozen_time = datetime(1950, 7, 31, 13, 45)
