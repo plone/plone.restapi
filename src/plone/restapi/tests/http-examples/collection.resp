@@ -117,5 +117,7 @@ Content-Type: application/json
   "subjects": [], 
   "text": null, 
   "title": "My Collection", 
-  "version": "current"
+  "version": "current", 
+  "working_copy": null, 
+  "working_copy_of": null
 }
