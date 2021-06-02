@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "working_copy": {
+    "@id": "http://localhost:55001/plone/copy_of_document", 
+    "created": "1995-07-31T13:45:00", 
+    "creator_name": "admin", 
+    "creator_url": "http://localhost:55001/plone/author/admin", 
+    "title": "Test document"
+  }, 
+  "working_copy_of": null
+}

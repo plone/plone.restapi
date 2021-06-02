@@ -51,6 +51,14 @@ except pkg_resources.DistributionNotFound:
     PAM_INSTALLED = False
 
 try:
+    # Plone 4.3 p.a.iterate has no sane testing infrastructure, so we ignore it
+    from plone.app.iterate.testing import PLONEAPPITERATEDEX_FIXTURE
+
+    HAS_ITERATE = True
+except ImportError:
+    HAS_ITERATE = False
+
+try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
 except ImportError:
     PLONE_5 = False  # pragma: no cover
@@ -259,6 +267,35 @@ PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
     name="PloneRestApiDXPAMLayer:Functional",
 )
+
+if HAS_ITERATE:
+
+    class PloneRestApiDXIterateLayer(PloneSandboxLayer):
+
+        defaultBases = (PLONEAPPITERATEDEX_FIXTURE,)
+
+        def setUpZope(self, app, configurationContext):
+            import plone.restapi
+
+            xmlconfig.file(
+                "configure.zcml", plone.restapi, context=configurationContext
+            )
+            xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
+
+            z2.installProduct(app, "plone.restapi")
+
+    PLONE_RESTAPI_ITERATE_FIXTURE = PloneRestApiDXIterateLayer()
+    PLONE_RESTAPI_ITERATE_INTEGRATION_TESTING = IntegrationTesting(
+        bases=(PLONE_RESTAPI_ITERATE_FIXTURE,),
+        name="PloneRestApiDXIterateLayer:Integration",
+    )
+    PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING = FunctionalTesting(
+        bases=(PLONE_RESTAPI_ITERATE_FIXTURE, z2.ZSERVER_FIXTURE),
+        name="PloneRestApiDXIterateLayer:Functional",
+    )
+else:
+    PLONE_RESTAPI_ITERATE_INTEGRATION_TESTING = PLONE_FIXTURE
+    PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING = PLONE_FIXTURE
 
 
 if HAS_AT:
