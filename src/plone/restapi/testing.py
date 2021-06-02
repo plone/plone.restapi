@@ -6,6 +6,7 @@ from plone import api
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
 from plone.app.i18n.locales.interfaces import IMetadataLanguages
+from plone.app.iterate.testing import PLONEAPPITERATEDEX_FIXTURE
 from plone.app.testing import applyProfile
 from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
@@ -243,6 +244,7 @@ class PloneRestApiDXIterateLayer(PloneSandboxLayer):
         xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
 
         z2.installProduct(app, "plone.restapi")
+
 
 PLONE_RESTAPI_ITERATE_FIXTURE = PloneRestApiDXIterateLayer()
 PLONE_RESTAPI_ITERATE_INTEGRATION_TESTING = IntegrationTesting(

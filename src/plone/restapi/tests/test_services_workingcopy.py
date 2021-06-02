@@ -3,7 +3,6 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
-from plone.restapi.testing import HAS_ITERATE
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 
@@ -11,9 +10,6 @@ import transaction
 import unittest
 
 
-@unittest.skipUnless(
-    HAS_ITERATE, "plone.app.iterate has a sane testing infrastrucure only in Plone 5"
-)  # NOQA
 class TestWorkingCopyEndpoint(unittest.TestCase):
 
     layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
