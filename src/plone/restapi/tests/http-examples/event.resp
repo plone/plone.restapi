@@ -73,5 +73,7 @@ Content-Type: application/json
   "title": "Event", 
   "version": "current", 
   "versioning_enabled": true, 
-  "whole_day": false
+  "whole_day": false, 
+  "working_copy": null, 
+  "working_copy_of": null
 }

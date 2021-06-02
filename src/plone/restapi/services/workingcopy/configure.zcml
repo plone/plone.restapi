@@ -1,0 +1,42 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <include package="plone.app.iterate" />
+
+  <plone:service
+      method="GET"
+      factory=".get.GetWorkingCopy"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@workingcopy"
+      />
+
+  <plone:service
+      method="POST"
+      factory=".create.CreateWorkingCopy"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="plone.app.iterate.CheckOutContent"
+      name="@workingcopy"
+      />
+
+
+  <plone:service
+      method="PATCH"
+      factory=".update.UpdateWorkingCopy"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="plone.app.iterate.CheckInContent"
+      name="@workingcopy"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".delete.DeleteWorkingCopy"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.DeleteObjects"
+      name="@workingcopy"
+      />
+
+</configure>

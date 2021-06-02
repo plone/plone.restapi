@@ -89,5 +89,7 @@ Content-Type: application/json
   "rights": "", 
   "subjects": [], 
   "title": "My Folder", 
-  "version": "current"
+  "version": "current", 
+  "working_copy": null, 
+  "working_copy_of": null
 }
