@@ -18,6 +18,11 @@ from plone.restapi.tests.statictime import StaticTime
 from zope.component import createObject
 from zope.component import getUtility
 from zope.interface import alsoProvides
+from plone.app.iterate.interfaces import ICheckinCheckoutPolicy
+from plone.restapi.serializer.working_copy import WorkingCopyInfo
+from plone.restapi.testing import HAS_ITERATE
+from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
+from plone.restapi.serializer.converters import json_compatible
 
 import transaction
 import unittest
@@ -256,3 +261,46 @@ class TestStaticTime(unittest.TestCase):
         real_datetimes = [lock_infos[0]["time"]]
 
         self.assert_of_same_type(fake_datetimes, real_datetimes)
+
+
+@unittest.skipUnless(
+    HAS_ITERATE, "plone.app.iterate has a sane testing infrastrucure only in Plone 5"
+)  # NOQA
+class TestStaticTimeWorkingCopy(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer["app"]
+        self.request = self.layer["request"]
+        self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
+
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(IDiscussionSettings, check=False)
+        settings.globally_enabled = True
+
+        transaction.commit()
+
+    def create_document(self, id_):
+        self.portal.invokeFactory("Document", id=id_)
+        document = self.portal[id_]
+        document.title = u"My title"
+        return document
+
+    def test_statictime_wc_created(self):
+        frozen_time = datetime(1950, 7, 31, 13, 45)
+        statictime = StaticTime(created=frozen_time)
+
+        statictime.start()
+        doc1 = self.create_document("doc1")
+
+        policy = ICheckinCheckoutPolicy(doc1)
+        policy.checkout(self.portal)
+        baseline, working_copy = WorkingCopyInfo(doc1).get_working_copy_info()
+
+        self.assertEqual(json_compatible(frozen_time), working_copy["created"])
+
+        statictime.stop()

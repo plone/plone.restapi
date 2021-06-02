@@ -60,5 +60,7 @@ Content-Type: application/json
   "subjects": [], 
   "title": "My Link", 
   "version": "current", 
-  "versioning_enabled": true
+  "versioning_enabled": true, 
+  "working_copy": null, 
+  "working_copy_of": null
 }

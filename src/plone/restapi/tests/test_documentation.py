@@ -22,8 +22,10 @@ from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PAM_INSTALLED  # noqa
+from plone.restapi.testing import HAS_ITERATE  # noqa
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.statictime import StaticTime
@@ -1917,3 +1919,78 @@ class TestPAMDocumentation(TestDocumentationBase):
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
         )
         save_request_and_response_for_docs("translation_locator", response)
+
+
+@unittest.skipUnless(
+    HAS_ITERATE, "plone.app.iterate has a sane testing infrastrucure only in Plone 5"
+)  # NOQA
+class TestIterateDocumentation(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super(TestIterateDocumentation, self).setUp()
+
+        self.doc = self.portal.invokeFactory(
+            "Document", id="document", title="Test document"
+        )
+        transaction.commit()
+
+    def tearDown(self):
+        super(TestIterateDocumentation, self).tearDown()
+
+    def test_documentation_workingcopy_post(self):
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+
+        save_request_and_response_for_docs("workingcopy_post", response)
+
+    def test_documentation_workingcopy_get(self):
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+
+        response = self.api_session.get(
+            "/document/@workingcopy",
+        )
+
+        save_request_and_response_for_docs("workingcopy_get", response)
+
+        response = self.api_session.get(
+            "/document",
+        )
+
+        save_request_and_response_for_docs("workingcopy_baseline_get", response)
+
+        response = self.api_session.get(
+            "/copy_of_document",
+        )
+
+        save_request_and_response_for_docs("workingcopy_wc_get", response)
+
+    def test_documentation_workingcopy_patch(self):
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+
+        response = self.api_session.patch(
+            "/copy_of_document", json={"title": "I just changed the title"}
+        )
+
+        response = self.api_session.patch(
+            "/copy_of_document/@workingcopy",
+        )
+
+        save_request_and_response_for_docs("workingcopy_patch", response)
+
+    def test_documentation_workingcopy_delete(self):
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+
+        response = self.api_session.delete(
+            "/copy_of_document/@workingcopy",
+        )
+
+        save_request_and_response_for_docs("workingcopy_delete", response)

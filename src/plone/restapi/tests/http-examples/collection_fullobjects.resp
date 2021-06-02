@@ -122,7 +122,9 @@ Content-Type: application/json
       }, 
       "title": "Welcome to Plone", 
       "version": "current", 
-      "versioning_enabled": true
+      "versioning_enabled": true, 
+      "working_copy": null, 
+      "working_copy_of": null
     }, 
     {
       "@components": {
@@ -190,7 +192,9 @@ Content-Type: application/json
       "text": null, 
       "title": "Document 1", 
       "version": "current", 
-      "versioning_enabled": true
+      "versioning_enabled": true, 
+      "working_copy": null, 
+      "working_copy_of": null
     }, 
     {
       "@components": {
@@ -253,7 +257,9 @@ Content-Type: application/json
       "text": null, 
       "title": "Document 2", 
       "version": "current", 
-      "versioning_enabled": true
+      "versioning_enabled": true, 
+      "working_copy": null, 
+      "working_copy_of": null
     }
   ], 
   "items_total": 3, 
@@ -294,5 +300,7 @@ Content-Type: application/json
   "subjects": [], 
   "text": null, 
   "title": "My Collection", 
-  "version": "current"
+  "version": "current", 
+  "working_copy": null, 
+  "working_copy_of": null
 }
