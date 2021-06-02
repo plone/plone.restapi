@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.2.0 (2021-06-02)
+------------------
+
+New features:
+
+
+- Add working copy (p.a.iterate) support
+  [sneridagh] (#1132)
+
+
 8.1.0 (2021-05-27)
 ------------------
 
