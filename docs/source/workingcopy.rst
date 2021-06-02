@@ -13,12 +13,12 @@ This process has several steps of it's life cycle:
 Create working Copy (aka Check-out)
 -----------------------------------
 
-The user initiates the process and creates a "working copy" by "checking out" the content::
+The user initiates the process and creates a "working copy" by "checking out" the content:
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/workingcopy_post.req
 
-and receives the response::
+and receives the response:
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/workingcopy_post.resp
    :language: http
@@ -26,13 +26,13 @@ and receives the response::
 Get the working copy
 --------------------
 
-A working copy has been created and can be accessed querying the content::
+A working copy has been created and can be accessed querying the content:
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/workingcopy_get.req
 
 
-and receives the response::
+and receives the response:
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/workingcopy_get.resp
    :language: http
@@ -46,7 +46,7 @@ the GET content of any object, also states the location of the working copy, if 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/workingcopy_baseline_get.resp
    :language: http
 
-the GET content of any a working copy also returns the original (``working_copy_of``)::
+the GET content of any a working copy also returns the original (``working_copy_of``):
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/workingcopy_wc_get.req
@@ -64,7 +64,7 @@ with the changes in there, or "check-in" the working copy.
     :request: ../../src/plone/restapi/tests/http-examples/workingcopy_patch.req
 
 
-and receives the response::
+and receives the response:
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/workingcopy_patch.resp
    :language: http
@@ -76,13 +76,13 @@ Delete the working copy (cancel check-out)
 ------------------------------------------
 
 If you want to cancel the checkout and delete the working copy (in both the original and
-the working copy)::
+the working copy):
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/workingcopy_delete.req
 
 
-and receives the response::
+and receives the response:
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/workingcopy_delete.resp
    :language: http
