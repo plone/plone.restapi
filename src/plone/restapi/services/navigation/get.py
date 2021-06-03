@@ -97,9 +97,9 @@ class Navigation(object):
     @property
     def current_language(self):
         return (
-            self.request.get("LANGUAGE", None) or
-            (self.context and aq_inner(self.context).Language()) or
-            self.default_language
+            self.request.get("LANGUAGE", None)
+            or (self.context and aq_inner(self.context).Language())
+            or self.default_language
         )
 
     @property
