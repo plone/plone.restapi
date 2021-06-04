@@ -33,6 +33,12 @@ Bug fixes:
 - Fixed a deprecation warning when importing UnrestrictedUser from AccessControl (#1129)
 
 
+
+Internal:
+
+- Format zcml files with collective.zpretty. Add zpretty Github workflow. @tiberiuichim
+
+
 8.0.0 (2021-05-14)
 ------------------
 
