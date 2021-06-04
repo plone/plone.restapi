@@ -4,17 +4,11 @@ from DateTime import DateTime
 from OFS.interfaces import IObjectWillBeAddedEvent
 from plone import api
 from plone.app.testing import login
-from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
-from plone.app.testing import TEST_USER_NAME
-from plone.app.testing import TEST_USER_PASSWORD
 from plone.rest.cors import CORSPolicy
 from plone.rest.interfaces import ICORSPolicy
-from plone.restapi import HAS_AT
 from plone.restapi.services.content.tus import TUSUpload
-from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from six import BytesIO
@@ -739,60 +733,3 @@ class TestTUSUpload(unittest.TestCase):
         tmp_dir = os.path.join(client_home, "tus-uploads")
         if os.path.isdir(tmp_dir):
             shutil.rmtree(tmp_dir)
-
-
-class TestTUSWithAT(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
-
-    def setUp(self):
-        if not HAS_AT:
-            raise unittest.SkipTest("Skip tests if Archetypes is not present")
-        self.portal = self.layer["portal"]
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-        login(self.portal, TEST_USER_NAME)
-
-        self.folder = api.content.create(
-            container=self.portal, type="Folder", id="testfolder", title="Testfolder"
-        )
-        self.upload_url = "{}/@tus-upload".format(self.folder.absolute_url())
-        transaction.commit()
-
-        self.api_session = RelativeSession(self.portal.absolute_url())
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
-
-    def tearDown(self):
-        self.api_session.close()
-
-    def test_tus_can_upload_pdf_file(self):
-        # initialize the upload with POST
-        pdf_file_path = os.path.join(os.path.dirname(__file__), UPLOAD_PDF_FILENAME)
-        pdf_file_size = os.path.getsize(pdf_file_path)
-        metadata = _prepare_metadata(UPLOAD_PDF_FILENAME, UPLOAD_PDF_MIMETYPE)
-        response = self.api_session.post(
-            self.upload_url,
-            headers={
-                "Tus-Resumable": "1.0.0",
-                "Upload-Length": str(pdf_file_size),
-                "Upload-Metadata": metadata,
-            },
-        )
-        self.assertEqual(response.status_code, 201)
-        location = response.headers["Location"]
-
-        # upload the data with PATCH
-        with open(pdf_file_path, "rb") as pdf_file:
-            response = self.api_session.patch(
-                location,
-                headers={
-                    "Content-Type": "application/offset+octet-stream",
-                    "Upload-Offset": "0",
-                    "Tus-Resumable": "1.0.0",
-                },
-                data=pdf_file,
-            )
-        self.assertEqual(response.status_code, 204)
-
-        transaction.commit()
-        self.assertEqual([UPLOAD_PDF_FILENAME], self.folder.contentIds())

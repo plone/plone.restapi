@@ -22,7 +22,6 @@ from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PAM_INSTALLED  # noqa
-from plone.restapi.testing import HAS_ITERATE  # noqa
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
@@ -1921,9 +1920,6 @@ class TestPAMDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("translation_locator", response)
 
 
-@unittest.skipUnless(
-    HAS_ITERATE, "plone.app.iterate has a sane testing infrastrucure only in Plone 5"
-)  # NOQA
 class TestIterateDocumentation(TestDocumentationBase):
 
     layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING

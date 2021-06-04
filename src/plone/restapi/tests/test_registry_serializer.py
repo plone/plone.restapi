@@ -2,9 +2,8 @@
 from plone.registry import field
 from plone.registry import Registry
 from plone.registry.record import Record
-from plone.restapi import HAS_AT
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from six.moves import range
 from zope.component import getMultiAdapter
 
@@ -13,11 +12,9 @@ import unittest
 
 class TestRegistrySerializer(unittest.TestCase):
 
-    layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
-        if not HAS_AT:
-            raise unittest.SkipTest("Skip tests if Archetypes is not present")
         self.portal = self.layer["portal"]
         self.request = self.layer["request"]
 

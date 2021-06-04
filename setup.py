@@ -41,12 +41,6 @@ TEST_REQUIRES = [
     "requests",
     "plone.tiles",
     "mock",
-    'archetypes.schemaextender ; python_version<"3"',
-    'Products.Archetypes ; python_version<"3"',
-    'Products.contentmigration ; python_version<"3"',
-    'Products.ATContentTypes ; python_version<"3"',
-    'plone.app.blob ; python_version<"3"',
-    'plone.app.collection ; python_version<"3"',
 ]
 
 setup(

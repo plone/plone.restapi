@@ -5,23 +5,11 @@ from Products.CMFCore.interfaces._tools import IMemberData
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
-from zope.component import getUtility
 from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
 from zope.schema import getFieldNames
-
-
-try:
-    # Plone 5
-    from plone.app.users.browser.userdatapanel import getUserDataSchema
-
-    HAS_TTW_SCHEMAS = True
-except ImportError:
-    # Plone 4.3
-    from plone.app.users.userdataschema import IUserDataSchemaProvider
-
-    HAS_TTW_SCHEMAS = False
+from plone.app.users.browser.userdatapanel import getUserDataSchema
 
 
 class BaseSerializer(object):
@@ -46,11 +34,7 @@ class BaseSerializer(object):
             "roles": roles,
         }
 
-        if HAS_TTW_SCHEMAS:
-            schema = getUserDataSchema()
-        else:
-            util = getUtility(IUserDataSchemaProvider)
-            schema = util.getSchema()
+        schema = getUserDataSchema()
 
         for name in getFieldNames(schema):
             if name == "portrait":

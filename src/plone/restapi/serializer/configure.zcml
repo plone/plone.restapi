@@ -54,29 +54,6 @@
       />
 
 
-  <!--
-      We check for Products.Archetypes.atapi to avoid false positive
-      due to code aliases in migration code,
-      see https://github.com/plone/plone.restapi/pull/1004
-    -->
-  <configure zcml:condition="installed Products.Archetypes.atapi">
-    <adapter factory=".atcontent.SerializeToJson" />
-    <adapter factory=".atcontent.SerializeFolderToJson" />
-    <configure zcml:condition="installed plone.app.blob">
-      <adapter factory=".atfields.BlobFieldSerializer" />
-      <adapter factory=".atfields.BlobImageFieldSerializer" />
-    </configure>
-    <adapter factory=".atfields.DefaultFieldSerializer" />
-    <adapter factory=".atfields.FileFieldSerializer" />
-    <adapter factory=".atfields.ImageFieldSerializer" />
-    <adapter factory=".atfields.ReferenceFieldSerializer" />
-    <adapter factory=".atfields.TextFieldSerializer" />
-    <configure zcml:condition="installed plone.app.collection">
-      <adapter factory=".atfields.QueryFieldSerializer" />
-      <adapter factory=".atcollection.SerializeCollectionToJson" />
-    </configure>
-  </configure>
-
   <adapter factory=".converters.date_converter" />
   <adapter factory=".converters.decimal_converter" />
   <adapter factory=".converters.default_converter" />

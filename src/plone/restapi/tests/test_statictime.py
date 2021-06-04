@@ -20,7 +20,6 @@ from zope.component import getUtility
 from zope.interface import alsoProvides
 from plone.app.iterate.interfaces import ICheckinCheckoutPolicy
 from plone.restapi.serializer.working_copy import WorkingCopyInfo
-from plone.restapi.testing import HAS_ITERATE
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.serializer.converters import json_compatible
 
@@ -263,9 +262,6 @@ class TestStaticTime(unittest.TestCase):
         self.assert_of_same_type(fake_datetimes, real_datetimes)
 
 
-@unittest.skipUnless(
-    HAS_ITERATE, "plone.app.iterate has a sane testing infrastrucure only in Plone 5"
-)  # NOQA
 class TestStaticTimeWorkingCopy(unittest.TestCase):
 
     layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
