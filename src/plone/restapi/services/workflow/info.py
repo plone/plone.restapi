@@ -69,6 +69,10 @@ class WorkflowInfo(object):
             history[item]["title"] = self.context.translate(title)
 
         current_state = wftool.getInfoFor(self.context, "review_state")
+        current_state_title = wftool.getTitleForStateOnType(
+            current_state,
+            self.context.portal_type,
+        )
 
         result["workflow"].update(
             {
@@ -76,10 +80,7 @@ class WorkflowInfo(object):
                 "transitions": transitions,
                 "state": {
                     "id": current_state,
-                    "title": wftool.getTitleForStateOnType(
-                        current_state,
-                        self.context.portal_type,
-                    ),
+                    "title": self.context.translate(current_state_title),
                 },
             }
         )
