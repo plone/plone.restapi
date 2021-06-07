@@ -8,6 +8,37 @@ Changelog
 
 .. towncrier release notes start
 
+8.2.0 (2021-06-02)
+------------------
+
+New features:
+
+
+- Add working copy (p.a.iterate) support
+  [sneridagh] (#1132)
+
+
+8.1.0 (2021-05-27)
+------------------
+
+New features:
+
+
+- Add support for volto-slate blocks: use resolveuid for internal links, index slate blocks in the catalog, support block transforms. @tiberiuichim (#1125)
+
+
+Bug fixes:
+
+
+- Fixed a deprecation warning when importing UnrestrictedUser from AccessControl (#1129)
+
+
+
+Internal:
+
+- Format zcml files with collective.zpretty. Add zpretty Github workflow. @tiberiuichim
+
+
 8.0.0 (2021-05-14)
 ------------------
 

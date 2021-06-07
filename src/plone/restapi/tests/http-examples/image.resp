@@ -103,5 +103,7 @@ Content-Type: application/json
   "rights": "", 
   "subjects": [], 
   "title": "My Image", 
-  "version": "current"
+  "version": "current", 
+  "working_copy": null, 
+  "working_copy_of": null
 }

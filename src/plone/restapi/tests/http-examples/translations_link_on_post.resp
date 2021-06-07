@@ -70,5 +70,7 @@ Location: http://localhost:55001/plone/de/mydocument
   "text": null, 
   "title": "My German Document", 
   "version": "current", 
-  "versioning_enabled": true
+  "versioning_enabled": true, 
+  "working_copy": null, 
+  "working_copy_of": null
 }

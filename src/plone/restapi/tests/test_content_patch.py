@@ -7,8 +7,6 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
-from plone.restapi import HAS_AT
-from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.utils import getToolByName
@@ -200,59 +198,3 @@ class TestContentPatch(unittest.TestCase):
         self.assertEqual(204, response.status_code)
         transaction.begin()
         self.assertEqual("<p>example with '</p>", self.portal.doc1.text.raw)
-
-
-class TestATContentPatch(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
-
-    def setUp(self):
-        if not HAS_AT:
-            raise unittest.SkipTest("Skip tests if Archetypes is not present")
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-        login(self.portal, TEST_USER_NAME)
-        self.portal.portal_repository._versionable_content_types = []
-        self.portal.invokeFactory(
-            "Document", id="doc1", title="My Document", description="Some Description"
-        )
-        self.portal.doc1.unmarkCreationFlag()
-        transaction.commit()
-
-    def test_patch_reindexes_document(self):
-        requests.patch(
-            self.portal.doc1.absolute_url(),
-            headers={"Accept": "application/json"},
-            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
-            json={"description": "Foo Bar"},
-        )
-        transaction.begin()
-        brain = self.portal.portal_catalog(UID=self.portal.doc1.UID())[0]
-        self.assertEqual(brain.Description, "Foo Bar")
-
-    def test_patch_document_fires_proper_events(self):
-        sm = getGlobalSiteManager()
-        fired_events = []
-
-        def record_event(event):
-            fired_events.append(event.__class__.__name__)
-
-        sm.registerHandler(record_event, (IObjectCreatedEvent,))
-        sm.registerHandler(record_event, (IObjectWillBeAddedEvent,))
-        sm.registerHandler(record_event, (IObjectAddedEvent,))
-        sm.registerHandler(record_event, (IObjectModifiedEvent,))
-
-        requests.patch(
-            self.portal.doc1.absolute_url(),
-            headers={"Accept": "application/json"},
-            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
-            json={"description": "123"},
-        )
-
-        self.assertEqual(fired_events, ["ObjectEditedEvent"])
-
-        sm.unregisterHandler(record_event, (IObjectCreatedEvent,))
-        sm.unregisterHandler(record_event, (IObjectWillBeAddedEvent,))
-        sm.unregisterHandler(record_event, (IObjectAddedEvent,))
-        sm.unregisterHandler(record_event, (IObjectModifiedEvent,))

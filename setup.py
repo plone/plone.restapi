@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys
 
-version = "8.0.1.dev0"
+version = "8.2.1.dev0"
 
 assert sys.version_info >= (3, 6, 0), "plone.restapi 8 requires Python 3.6.0+. Please downgrade to plone.restapi 7 for Python 2 and Plone 4.3/5.1."
 
@@ -41,12 +41,6 @@ TEST_REQUIRES = [
     "requests",
     "plone.tiles",
     "mock",
-    'archetypes.schemaextender ; python_version<"3"',
-    'Products.Archetypes ; python_version<"3"',
-    'Products.contentmigration ; python_version<"3"',
-    'Products.ATContentTypes ; python_version<"3"',
-    'plone.app.blob ; python_version<"3"',
-    'plone.app.collection ; python_version<"3"',
 ]
 
 setup(
