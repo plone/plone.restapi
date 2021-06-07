@@ -77,9 +77,7 @@ class SerializeToJson(object):
         )
 
         # Insert working copy information
-        baseline, working_copy = WorkingCopyInfo(
-            self.context
-        ).get_working_copy_info()
+        baseline, working_copy = WorkingCopyInfo(self.context).get_working_copy_info()
         result.update({"working_copy": working_copy, "working_copy_of": baseline})
 
         # Insert expandable elements
