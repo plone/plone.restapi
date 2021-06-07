@@ -197,6 +197,10 @@ Content-Type: application/json
           "title": "Private"
         }
       ], 
+      "state": {
+        "id": "private", 
+        "title": "Private"
+      }, 
       "transitions": [
         {
           "@id": "http://localhost:55001/plone/front-page/@workflow/publish", 
