@@ -21,6 +21,7 @@ docs/.DS_Store
 /.Python
 /include
 /lib
+/lib64
 /local
 /.mr.developer.cfg
 *.mo
