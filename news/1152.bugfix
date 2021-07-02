@@ -1,0 +1,8 @@
+Cleanup and Update of the of the JWT PAS plugin: 
+use Security decorators; 
+increase readability/simplify code;
+remove six in pas module;
+update ZMI-zpt to match Zope4/BS4;
+use f-strings;
+remove strange `return None`;
+do not require a coding magic line, UTF-8 is default in Python 3, so it does not need to be declared.
