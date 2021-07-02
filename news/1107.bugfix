@@ -1,1 +1,1 @@
-Fix navigation endpoint sort by adding `sort_on` to the query.
+Fix navigation endpoint sort by adding default `sort_on='getObjPositionInParent'` to the query.  @valipod @tiberiuichim
