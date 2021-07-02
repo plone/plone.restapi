@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.converters import json_compatible
@@ -12,11 +13,26 @@ from zope.component import subscribers
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
+from zope.schema import getFields
 
 import copy
 
 
 SERVICE_ID = "@slots"
+
+_MISSING = object()
+
+
+def serialize_data(slot, request, schema):
+    result = {}
+    for name, field in getFields(schema).items():
+        if name in ['blocks', 'blocks_layout']:
+            continue
+        value = getattr(slot, name, _MISSING)
+        if value is not _MISSING:
+            result[json_compatible(name)] = value       # assumes JSON-compatible values
+
+    return result
 
 
 @adapter(Interface, ISlot, IBrowserRequest)
@@ -33,7 +49,7 @@ class SlotSerializer(object):
         name = self.slot.__name__
 
         # a dict with blocks and blocks_layout
-        data = ISlots(self.context).get_blocks(name, full)
+        data = ISlots(self.context).get_data(name, full)
 
         blocks = copy.deepcopy(data["blocks"])
 
@@ -54,15 +70,19 @@ class SlotSerializer(object):
 
             blocks[id] = json_compatible(block_value)
 
-        return {
+        result = {
             "@id": "{0}/{1}/{2}".format(self.context.absolute_url(), SERVICE_ID, name),
             "blocks": blocks,
             "blocks_layout": data["blocks_layout"],
         }
 
+        result.update(**serialize_data(slot, self.request, schema=ISlot))
 
-@adapter(Interface, ISlotStorage, IBrowserRequest)
-@implementer(ISerializeToJson)
+        return result
+
+
+@ adapter(Interface, ISlotStorage, IBrowserRequest)
+@ implementer(ISerializeToJson)
 class SlotsSerializer(object):
     """Default slots storage serializer"""
 

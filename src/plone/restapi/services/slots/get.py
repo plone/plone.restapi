@@ -59,7 +59,8 @@ class SlotsGet(Service):
         adapter = getMultiAdapter(
             (self.context, storage, self.request), ISerializeToJson
         )
-        result = adapter(self.request.form.get('full', False))
+        is_full = self.request.form.get('full', False)
+        result = adapter(is_full)
 
         # from plone.restapi.serializer.converters import json_compatible
         # result["edit_slots"] = json_compatible(sorted(self.editable_slots))
