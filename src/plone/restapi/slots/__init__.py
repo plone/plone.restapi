@@ -92,7 +92,7 @@ class Slots(object):
 
         return slot_stack
 
-    def get_blocks(self, name, block_parent):
+    def get_blocks(self, name, full=True):
         blocks = {}
         blocks_layout = []
 
@@ -127,7 +127,7 @@ class Slots(object):
 
             level += 1
 
-            if slot.block_parent:
+            if getattr(slot, 'block_parent', False):
                 break
 
         for k, v in blocks.items():
