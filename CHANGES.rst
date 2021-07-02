@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+8.3.1 (2021-07-02)
+------------------
+
+Bug fixes:
+
+
+- Unify ZMI, HTML form, and API login. @rpatterson (#1141)
+
+
 8.3.0 (2021-06-07)
 ------------------
 
