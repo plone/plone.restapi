@@ -127,7 +127,7 @@ class Slots(object):
 
             level += 1
 
-            if getattr(slot, 'block_parent', False):
+            if getattr(slot, 'block_parent', False) and not full:
                 break
 
         for k, v in blocks.items():
