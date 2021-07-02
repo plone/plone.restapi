@@ -92,7 +92,7 @@ class Slots(object):
 
         return slot_stack
 
-    def get_blocks(self, name):
+    def get_blocks(self, name, block_parent):
         blocks = {}
         blocks_layout = []
 

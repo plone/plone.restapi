@@ -2,6 +2,7 @@
 
 from plone.restapi.behaviors import IBlocks
 from zope.interface import Interface
+from zope.schema import Bool
 from zope.schema import List
 from zope.schema import TextLine
 
@@ -16,6 +17,8 @@ class ISlotStorage(Interface):
 
 class ISlot(IBlocks):
     """Slots follow the IBlocks model"""
+
+    block_parent = Bool(title=u"Block inheritance of slot fills")
 
 
 class ISlotSettings(Interface):

@@ -29,11 +29,11 @@ class SlotSerializer(object):
         self.request = request
         self.slot = slot
 
-    def __call__(self):
+    def __call__(self, full=False):
         name = self.slot.__name__
 
         # a dict with blocks and blocks_layout
-        data = ISlots(self.context).get_blocks(name)
+        data = ISlots(self.context).get_blocks(name, full)
 
         blocks = copy.deepcopy(data["blocks"])
 
@@ -71,7 +71,7 @@ class SlotsSerializer(object):
         self.request = request
         self.storage = storage
 
-    def __call__(self):
+    def __call__(self, full=False):
         base_url = self.context.absolute_url()
         result = {"@id": "{}/{}".format(base_url, SERVICE_ID), "items": {}}
 
@@ -83,6 +83,7 @@ class SlotsSerializer(object):
             slot = self.storage.get(name, marker)
 
             if slot is marker:  # if slot is not on this level, we create a fake one
+                # TODO: deal with this better, no need for transaction.doom()
                 slot = Slot()
                 slot.__parent__ = self.storage
                 slot.__name__ = name
@@ -90,6 +91,6 @@ class SlotsSerializer(object):
             serializer = getMultiAdapter(
                 (self.context, slot, self.request), ISerializeToJson
             )
-            result["items"][name] = serializer()
+            result["items"][name] = serializer(full)
 
         return result

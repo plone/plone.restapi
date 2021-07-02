@@ -17,6 +17,16 @@ import transaction
 
 
 # TODO: write expand
+def is_true(val):
+    if isinstance(val, bool):
+        return val
+
+    if val in ['true', 'True', '1', 1]:
+        return True
+    elif val in ['false', 'False', '0', 0]:
+        return False
+
+    return False
 
 
 @implementer(IPublishTraverse)
@@ -43,24 +53,22 @@ class SlotsGet(Service):
         if self.params and len(self.params) > 0:
             return self.replySlot()
 
+        sm = getSecurityManager()
         storage = ISlotStorage(self.context)
 
         adapter = getMultiAdapter(
             (self.context, storage, self.request), ISerializeToJson
         )
-        result = adapter()
+        result = adapter(self.request.form.get('full', False))
 
         # from plone.restapi.serializer.converters import json_compatible
         # result["edit_slots"] = json_compatible(sorted(self.editable_slots))
 
-        # update "edit:True" editable status in slots
-        for k, v in result["items"].items():
-            result["items"][k]["edit"] = k in self.editable_slots
-
-        sm = getSecurityManager()
-
         if sm.checkPermission(ModifySlotsPermission, self.context):
             result["can_manage_slots"] = True
+
+        for k, v in result["items"].items():
+            result["items"][k]["edit"] = k in self.editable_slots
 
         return result
 
@@ -83,7 +91,8 @@ class SlotsGet(Service):
             slot.__parent__ = self.storage
             slot.__name__ = name
 
-        result = getMultiAdapter((self.context, slot, self.request), ISerializeToJson)()
+        result = getMultiAdapter((self.context, slot, self.request),
+                                 ISerializeToJson)(self.request.form.get('full', False))
 
         result["edit"] = name in self.editable_slots
 
