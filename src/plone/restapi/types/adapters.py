@@ -422,6 +422,9 @@ class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "dict"
 
+    def get_widget(self):
+        return getattr(self.field, "widget", None)
+
     def additional(self):
         info = {}
         key_type = getMultiAdapter(
