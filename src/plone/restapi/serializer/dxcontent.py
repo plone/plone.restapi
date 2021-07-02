@@ -30,14 +30,6 @@ from zope.interface import Interface
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
 
-try:
-    # Plone 4.3 p.a.iterate has no sane testing infrastructure, so we ignore it
-    from plone.app.iterate.testing import PLONEAPPITERATEDEX_FIXTURE  # noqa
-
-    HAS_ITERATE = True
-except ImportError:
-    HAS_ITERATE = False
-
 
 @implementer(ISerializeToJson)
 @adapter(IDexterityContent, Interface)
@@ -85,14 +77,11 @@ class SerializeToJson(object):
         )
 
         # Insert working copy information
-        if HAS_ITERATE:
-            baseline, working_copy = WorkingCopyInfo(
-                self.context
-            ).get_working_copy_info()
-            result.update({"working_copy": working_copy, "working_copy_of": baseline})
+        baseline, working_copy = WorkingCopyInfo(self.context).get_working_copy_info()
+        result.update({"working_copy": working_copy, "working_copy_of": baseline})
 
-            # Insert expandable elements
-            result.update(expandable_elements(self.context, self.request))
+        # Insert expandable elements
+        result.update(expandable_elements(self.context, self.request))
 
         # Insert field values
         for schema in iterSchemata(self.context):

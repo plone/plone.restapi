@@ -8,6 +8,32 @@ Changelog
 
 .. towncrier release notes start
 
+8.3.1 (2021-07-02)
+------------------
+
+Bug fixes:
+
+
+- Unify ZMI, HTML form, and API login. @rpatterson (#1141)
+
+
+8.3.0 (2021-06-07)
+------------------
+
+New features:
+
+
+- Add current state and translation to the @workflow endpoint
+  [sneridagh] (#1146)
+
+
+Bug fixes:
+
+
+- Remove code to support Python 2, Plone 4.3/5.0/5.1 [timo] (#1140)
+- Remove unecessary check for plone.app.iterate which breaks the @components attributes. [timo] (#1148)
+
+
 8.2.0 (2021-06-02)
 ------------------
 

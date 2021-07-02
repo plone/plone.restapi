@@ -45,6 +45,17 @@ class TestWorkflowInfo(TestCase):
         self.assertEqual("published", history[-1][u"review_state"])
         self.assertEqual(u"Published with accent é", history[-1][u"title"])
 
+    def test_workflow_info_includes_current_state(self):
+        wfinfo = getMultiAdapter(
+            (self.doc1, self.request), name=u"GET_application_json_@workflow"
+        )
+        info = wfinfo.reply()
+        self.assertIn("state", info)
+        state = info["state"]
+        self.assertEqual(2, len(state))
+        self.assertEqual("published", state["id"])
+        self.assertEqual(u"Published with accent é", state["title"])
+
     def test_workflow_info_unauthorized_history(self):
         login(self.portal, SITE_OWNER_NAME)
         doc2 = self.portal[
