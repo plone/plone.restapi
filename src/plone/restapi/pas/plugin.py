@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.requestmethod import postonly
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from BTrees.OIBTree import OIBTree
@@ -7,8 +6,8 @@ from datetime import datetime
 from datetime import timedelta
 from plone.keyring.interfaces import IKeyManager
 from plone.keyring.keyring import GenerateSecret
-from plone.restapi import exceptions
 from plone.restapi import deserializer
+from plone.restapi import exceptions
 from Products.CMFCore.permissions import ManagePortal
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
@@ -19,7 +18,6 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 import jwt
-import six
 import time
 
 
@@ -35,9 +33,8 @@ def addJWTAuthenticationPlugin(self, id_, title=None, REQUEST=None):
 
     if REQUEST is not None:
         REQUEST["RESPONSE"].redirect(
-            "%s/manage_workspace"
-            "?manage_tabs_message=JWT+authentication+plugin+added."
-            % self.absolute_url()
+            f"{self.absolute_url()}/manage_workspace?"
+            "manage_tabs_message=JWT+authentication+plugin+added."
         )
 
 
@@ -65,7 +62,6 @@ class JWTAuthenticationPlugin(BasePlugin):
         self._setId(id_)
         self.title = title
 
-
     # Initiate a challenge to the user to provide credentials.
     @security.private
     def challenge(self, request, response, **kw):
@@ -75,7 +71,6 @@ class JWTAuthenticationPlugin(BasePlugin):
         response.setBody("You are not authorized to access this resource.", is_error=1)
         response.setStatus(401)
         return True
-
 
     # IExtractionPlugin implementation
     # Extracts a JSON web token from the request.
@@ -95,17 +90,9 @@ class JWTAuthenticationPlugin(BasePlugin):
             if "login" in creds and "password" in creds:
                 return creds
 
-        creds = {}
         auth = request._auth
-        if auth is None:
-            return None
-        if auth[:7].lower() == "bearer ":
-            creds["token"] = auth.split()[-1]
-        else:
-            return None
-
-        return creds
-
+        if auth is not None and auth.lower.startswith("bearer "):
+            return {"token": auth.split()[-1]}
 
     # IAuthenticationPlugin implementation
     @security.private
@@ -113,27 +100,19 @@ class JWTAuthenticationPlugin(BasePlugin):
         # Ignore credentials that are not from our extractor
         extractor = credentials.get("extractor")
         if extractor != self.getId():
-            return None
+            return
 
-        payload = self._decode_token(credentials["token"])
-        if not payload:
-            return None
-
-        if "sub" not in payload:
-            return None
-
-        userid = payload["sub"]
-        if six.PY2:
-            userid = userid.encode("utf8")
+        payload = self._decode_token(credentials["token"]) or {}
+        userid = payload.get("sub", None)
+        if userid is None:
+            return
 
         if self.store_tokens:
-            if userid not in self._tokens:
-                return None
-            if credentials["token"] not in self._tokens[userid]:
-                return None
+            userids_tokens = self._tokens.get(userid, [])
+            if credentials["token"] not in userids_tokens:
+                return
 
         return (userid, userid)
-
 
     @security.protected(ManagePortal)
     @postonly
@@ -148,14 +127,13 @@ class JWTAuthenticationPlugin(BasePlugin):
             self._tokens = OOBTree()
 
         response.redirect(
-            "%s/manage_config?manage_tabs_message=%s"
-            % (self.absolute_url(), "Configuration+updated.")
+            f"{self.absolute_url()}/manage_config?manage_tabs_message=Configuration+updated."
         )
 
     def _decode_token(self, token, verify=True):
         if self.use_keyring:
             manager = getUtility(IKeyManager)
-            for secret in manager[u"_system"]:
+            for secret in manager["_system"]:
                 if secret is None:
                     continue
                 payload = self._jwt_decode(token, secret + self._path(), verify=verify)
@@ -165,12 +143,12 @@ class JWTAuthenticationPlugin(BasePlugin):
             return self._jwt_decode(token, self._secret + self._path(), verify=verify)
 
     def _jwt_decode(self, token, secret, verify=True):
-        if isinstance(token, six.text_type):
+        if isinstance(token, str):
             token = token.encode("utf-8")
         try:
             return jwt.decode(token, secret, verify=verify, algorithms=["HS256"])
         except jwt.InvalidTokenError:
-            return None
+            pass
 
     def _signing_secret(self):
         if self.use_keyring:
@@ -202,8 +180,7 @@ class JWTAuthenticationPlugin(BasePlugin):
         if data is not None:
             payload.update(data)
         token = jwt.encode(payload, self._signing_secret(), algorithm="HS256")
-        if not six.PY2:
-            token = token.decode("utf-8")
+        token = token.decode("utf-8")
         if self.store_tokens:
             if self._tokens is None:
                 self._tokens = OOBTree()
