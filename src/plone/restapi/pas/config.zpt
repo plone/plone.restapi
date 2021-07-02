@@ -1,13 +1,12 @@
 <h1 tal:replace="structure here/manage_page_header"> PAGE HEADER </h1>
-<h2 tal:replace="structure here/manage_tabs"> PAGE HEADER </h2>
+<h2 tal:define="global manage_tabs_message request/manage_tabs_message | nothing;
+                form_title string:JWT Authentication"
+    tal:replace="structure here/manage_tabs"> TABS </h2>
 
 <main class="container-fluid">
-  <h1>JWT Authentication</h1>
-
-  <p class="lead">
-    Plone PAS plugin for authentication with JSON web tokens (JWT).
+  <p class="form-help">
+    Choose the functionality this Plone JWT Authentication Plugin will perform.
   </p>
-
   <form action="manage_updateConfig" method="post">
     <div class="form-group">
       <label class="form-label" for="token_timeout">Token Validity Timeout (in seconds)</label>
@@ -41,7 +40,9 @@
         <small class="form-text text-muted">By default tokens are not stored on the server and thus can't be invalidated. If enabled, tokens that don't expire can be invalidated.</small>
       </div>
     </div>
-    <button class="btn btn-primary" type="submit">Update</button>
+    <div class="zmi-controls">
+      <button class="btn btn-primary" type="submit">Update</button>
+    </div>
   </form>
 
 </main>
