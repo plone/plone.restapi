@@ -44,7 +44,7 @@ class SlotDeserializer(object):
         incoming_blocks = copy.deepcopy(data["blocks"])
 
         engine = ISlots(self.context)
-        all_blocks_ids = engine.get_blocks(self.slot.__name__)["blocks"].keys()
+        all_blocks_ids = engine.get_blocks(self.slot.__name__, full=True)["blocks"].keys()
         parent_block_ids = list(set(all_blocks_ids) - set(self.slot.blocks.keys()))
 
         # don't keep blocks that are not in incoming data
