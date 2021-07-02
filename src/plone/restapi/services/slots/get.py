@@ -13,6 +13,7 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect
+import transaction
 
 
 # TODO: write expand
@@ -76,6 +77,7 @@ class SlotsGet(Service):
         marker = object()
         storage = ISlotStorage(self.context)
         slot = storage.get(name, marker)
+
         if slot is marker:  # if slot is not on this level, we create a fake one
             slot = Slot()  # TODO: replace with a DummyProxySlot
             slot.__parent__ = self.storage
@@ -85,5 +87,5 @@ class SlotsGet(Service):
 
         result["edit"] = name in self.editable_slots
 
-        # TODO: add transaction doom, to deal with annotations created by ISlotStorage ?
+        transaction.doom()      # avoid writing on read
         return result
