@@ -87,6 +87,7 @@ class SlotDeserializer(object):
         data["blocks_layout"]["items"] = layout
         self.slot.blocks_layout = data["blocks_layout"]
 
+        self.slot.block_parent = data.get('block_parent', False)
         self.slot._p_changed = True
 
 

@@ -127,6 +127,9 @@ class Slots(object):
 
             level += 1
 
+            if slot.block_parent:
+                break
+
         for k, v in blocks.items():
             if v.get("s:sameAs"):
                 v["_v_inherit"] = True
