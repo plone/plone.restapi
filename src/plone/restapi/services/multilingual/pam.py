@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.multilingual.interfaces import ITranslatable
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.restapi.deserializer import json_body

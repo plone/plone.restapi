@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from collections import OrderedDict
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IPloneRestapiLayer

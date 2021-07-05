@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Products.CMFCore.utils import getToolByName
 from six.moves.urllib.parse import urlparse
 

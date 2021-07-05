@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import ISerializeToJson

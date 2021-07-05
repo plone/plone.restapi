@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.restapi.pas.plugin import JWTAuthenticationPlugin

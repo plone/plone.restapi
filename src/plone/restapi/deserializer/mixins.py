@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.folder.interfaces import IExplicitOrdering
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot

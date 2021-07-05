@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from DateTime import DateTime
 from datetime import datetime
 from plone.app.discussion.comment import Comment

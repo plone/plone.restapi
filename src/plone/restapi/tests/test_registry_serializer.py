@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.registry import field
 from plone.registry import Registry
 from plone.registry.record import Record

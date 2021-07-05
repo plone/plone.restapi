@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from AccessControl import getSecurityManager
 from Products.CMFCore.permissions import ModifyPortalContent
 from plone.app.contenttypes.interfaces import ILink

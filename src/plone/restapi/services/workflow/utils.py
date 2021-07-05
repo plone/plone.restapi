@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from AccessControl.SecurityManagement import getSecurityManager
 from AccessControl.SecurityManagement import newSecurityManager
 from AccessControl.SecurityManagement import setSecurityManager

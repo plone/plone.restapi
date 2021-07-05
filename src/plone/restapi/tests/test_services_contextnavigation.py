@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME

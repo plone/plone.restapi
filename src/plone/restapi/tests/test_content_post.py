@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from OFS.interfaces import IObjectWillBeAddedEvent
 from plone.app.testing import login
 from plone.app.testing import setRoles

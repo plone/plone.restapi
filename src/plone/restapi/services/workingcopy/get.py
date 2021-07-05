@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.services import Service
 from plone.restapi.serializer.working_copy import WorkingCopyInfo
 

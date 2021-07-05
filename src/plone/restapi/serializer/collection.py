@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.contenttypes.interfaces import ICollection
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.deserializer import boolean_value

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.services import Service
 from zope.interface import alsoProvides
 from plone.app.iterate.interfaces import ICheckinCheckoutPolicy

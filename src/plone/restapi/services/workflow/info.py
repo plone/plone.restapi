@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service

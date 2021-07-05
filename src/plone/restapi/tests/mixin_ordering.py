@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from zExceptions import BadRequest
 
 import json

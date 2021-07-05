@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """JsonSchema providers."""
 from plone.app.textfield.interfaces import IRichText
 from plone.restapi.types.interfaces import IJsonSchemaProvider

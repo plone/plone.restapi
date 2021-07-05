@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Utils to translate FTIs / zope.schema interfaces to JSON schemas.
 
 The basic idea here is to instantiate a minimal z3c form, and then have

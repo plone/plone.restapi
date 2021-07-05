@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent

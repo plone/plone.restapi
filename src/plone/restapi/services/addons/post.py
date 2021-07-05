@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from plone.restapi.services import Service
 from plone.restapi.services.addons.addons import Addons
 from zope.component import getMultiAdapter

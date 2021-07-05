@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # XXX: EXPERIMENTAL!!!
 # This is an experimental feature meant for use in Volto only!
 # This code is likely to change in the future, even within minor releases.

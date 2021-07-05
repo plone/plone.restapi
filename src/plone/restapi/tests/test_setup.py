@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.browserlayer.utils import registered_layers
 from plone.restapi import PROJECT_NAME
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING

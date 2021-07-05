@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible

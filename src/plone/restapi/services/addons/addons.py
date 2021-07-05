@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from plone.memoize import view
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone import PloneMessageFactory as _

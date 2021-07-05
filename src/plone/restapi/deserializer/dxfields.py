@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import timedelta
 from plone.app.contenttypes.interfaces import ILink
 from plone.app.textfield.interfaces import IRichText

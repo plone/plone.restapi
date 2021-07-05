@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING

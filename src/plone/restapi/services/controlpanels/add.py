@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.controlpanels import IControlpanel
 from plone.restapi.services import Service
 from zExceptions import BadRequest

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
 from Acquisition.interfaces import IAcquirer

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.autoform.interfaces import IFormFieldProvider
 from plone.restapi import _
 from plone.schema import JSONField

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.batching.batch import Batch
 from plone.restapi.deserializer import json_body
 from six.moves.urllib.parse import parse_qsl

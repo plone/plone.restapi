@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from base64 import b64encode
 from datetime import datetime
 from mock import patch

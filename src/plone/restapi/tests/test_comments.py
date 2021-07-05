@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from OFS.Image import Image
 from plone import api
 from plone.app.discussion.interfaces import IConversation

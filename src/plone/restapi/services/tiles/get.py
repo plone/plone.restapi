@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.security import checkPermission
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary

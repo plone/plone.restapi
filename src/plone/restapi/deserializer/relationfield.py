@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
 from plone.restapi.interfaces import IFieldDeserializer

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from Acquisition.interfaces import IAcquirer
 from plone.restapi.deserializer import json_body

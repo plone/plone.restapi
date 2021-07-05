@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
