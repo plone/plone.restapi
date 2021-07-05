@@ -62,6 +62,4 @@ class AddonsPost(Service):
 
             self.request.response.setStatus(200)
             return result
-        else:
-            self.request.response.setStatus(204)
-            return None
+        self.request.response.setStatus(204)

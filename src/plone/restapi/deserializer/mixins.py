@@ -83,8 +83,7 @@ class OrderingMixin(object):
     def getOrdering(self):
         if IPloneSiteRoot.providedBy(self.context):
             return self.context
-        elif getattr(self.context, "getOrdering", None):
+        if getattr(self.context, "getOrdering", None):
             ordering = self.context.getOrdering()
-            if not IExplicitOrdering.providedBy(ordering):
-                return None
-            return ordering
+            if IExplicitOrdering.providedBy(ordering):
+                return ordering

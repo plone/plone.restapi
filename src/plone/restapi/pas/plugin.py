@@ -101,13 +101,10 @@ class JWTAuthenticationPlugin(BasePlugin):
         creds = {}
         auth = request._auth
         if auth is None:
-            return None
+            return
         if auth[:7].lower() == "bearer ":
             creds["token"] = auth.split()[-1]
-        else:
-            return None
-
-        return creds
+            return creds
 
     security.declarePrivate("authenticateCredentials")
 
@@ -116,14 +113,14 @@ class JWTAuthenticationPlugin(BasePlugin):
         # Ignore credentials that are not from our extractor
         extractor = credentials.get("extractor")
         if extractor != self.getId():
-            return None
+            return
 
         payload = self._decode_token(credentials["token"])
         if not payload:
-            return None
+            return
 
         if "sub" not in payload:
-            return None
+            return
 
         userid = payload["sub"]
         if six.PY2:
@@ -131,9 +128,9 @@ class JWTAuthenticationPlugin(BasePlugin):
 
         if self.store_tokens:
             if userid not in self._tokens:
-                return None
+                return
             if credentials["token"] not in self._tokens[userid]:
-                return None
+                return
 
         return (userid, userid)
 
@@ -173,7 +170,7 @@ class JWTAuthenticationPlugin(BasePlugin):
         try:
             return jwt.decode(token, secret, verify=verify, algorithms=["HS256"])
         except jwt.InvalidTokenError:
-            return None
+            pass
 
     def _signing_secret(self):
         if self.use_keyring:
