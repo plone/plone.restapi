@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service

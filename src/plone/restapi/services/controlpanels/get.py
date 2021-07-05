@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.controlpanels import IControlpanel
 from plone.restapi.interfaces import IJsonCompatible
 from plone.restapi.interfaces import ISerializeToJson

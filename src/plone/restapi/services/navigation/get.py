@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from collections import defaultdict
 from plone.app.layout.navigation.root import getNavigationRoot
@@ -140,6 +139,7 @@ class Navigation(object):
             "portal_type": {"query": self.settings["displayed_types"]},
             "Language": self.current_language,
             "is_default_page": False,
+            "sort_on": "getObjPositionInParent",
         }
 
         if not self.settings["nonfolderish_tabs"]:

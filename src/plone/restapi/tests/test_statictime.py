@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 from DateTime import DateTime
 from datetime import timedelta

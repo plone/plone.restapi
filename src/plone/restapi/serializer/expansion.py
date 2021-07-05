@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import IExpandableElement
 from zope.component import getAdapters
 

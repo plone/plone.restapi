@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime as dt
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.restapi.interfaces import ISerializeToJson

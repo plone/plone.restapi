@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from Acquisition import aq_parent
 from collections import deque
 from copy import deepcopy

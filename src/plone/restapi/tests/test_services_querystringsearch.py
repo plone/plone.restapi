@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from pkg_resources import get_distribution
 from pkg_resources import parse_version
 from plone.app.testing import setRoles

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from itertools import chain
 from plone.app.workflow.browser.sharing import merge_search_results
 from plone.restapi.interfaces import ISerializeToJsonSummary

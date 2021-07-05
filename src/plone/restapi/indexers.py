@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # XXX: EXPERIMENTAL!!!
 # This is an experimental feature meant for use in Volto only!
 # This code is likely to change in the future, even within minor releases.
@@ -96,7 +95,7 @@ class SlateTextIndexer(object):
         block = block or {}
 
         if block.get("searchableText"):
-            return None
+            return
 
         # BBB compatibility with slate blocks that used the "plaintext" field
         return (block or {}).get("plaintext", "")

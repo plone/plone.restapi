@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 from plone.app.discussion.browser.comment import EditCommentForm
 from plone.app.discussion.browser.comments import CommentForm

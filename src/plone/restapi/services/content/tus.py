@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import aq_base
 from Acquisition.interfaces import IAcquirer
@@ -142,12 +141,12 @@ class UploadFileBase(TUSBaseService):
 
     def tus_upload(self):
         if self.uid is None:
-            return None
+            return
 
         tus_upload = TUSUpload(self.uid)
         length = tus_upload.length()
         if length == 0:
-            return None
+            return
 
         return tus_upload
 

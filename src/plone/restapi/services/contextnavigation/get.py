@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """ A flexible navigation service that uses class navigation portlet semantics
 """
 
@@ -248,7 +246,7 @@ class NavigationPortletRenderer(object):
 
         # Root content item gone away or similar issue
         if not nav_root:
-            return None
+            return
 
         if INavigationRoot.providedBy(nav_root) or ISiteRoot.providedBy(nav_root):
             # For top level folders go to the sitemap
@@ -312,7 +310,7 @@ class NavigationPortletRenderer(object):
         portal = self.urltool.getPortalObject()
         rootPath = self.getNavRootPath()
         if rootPath is None:
-            return None
+            return
 
         if rootPath == self.urltool.getPortalPath():
             return portal
@@ -347,13 +345,13 @@ class NavigationPortletRenderer(object):
         """
         if getattr(self.data, "no_thumbs", False):
             # Individual setting overrides
-            return None
+            return
         thsize = getattr(self.data, "thumb_scale", None)
         if thsize:
             return thsize
 
         if IS_PLONE4:
-            return None  # no support in Plone 4 to override the thumb scale
+            return  # no support in Plone 4 to override the thumb scale
         else:
             registry = getUtility(IRegistry)
             settings = registry.forInterface(ISiteSchema, prefix="plone", check=False)
@@ -365,7 +363,7 @@ class NavigationPortletRenderer(object):
     def getMimeTypeIcon(self, node):
         try:
             if not node["normalized_portal_type"] == "file":
-                return None
+                return
             fileo = node["item"].getObject().file
             portal_url = getNavigationRoot(self.context)
             mtt = getToolByName(self.context, "mimetypes_registry")
@@ -373,8 +371,7 @@ class NavigationPortletRenderer(object):
                 ctype = mtt.lookup(fileo.contentType)
                 return os.path.join(portal_url, guess_icon_path(ctype[0]))
         except AttributeError:
-            return None
-        return None
+            pass
 
     def render(self):
         res = {
@@ -507,7 +504,7 @@ class NavigationPortletRenderer(object):
 
 def get_url(item):
     if not item:
-        return None
+        return
 
     if hasattr(aq_base(item), "getURL"):
         # Looks like a brain
@@ -519,7 +516,7 @@ def get_url(item):
 
 def get_id(item):
     if not item:
-        return None
+        return
     getId = getattr(item, "getId")
 
     if not utils.safe_callable(getId):
@@ -583,15 +580,15 @@ def getRootPath(context, currentFolderOnly, topLevel, root_path):
     if topLevel > 0:
         contextPath = "/".join(context.getPhysicalPath())
         if not contextPath.startswith(rootPath):
-            return None
+            return
         contextSubPathElements = contextPath[len(rootPath) + 1 :]
         if contextSubPathElements:
             contextSubPathElements = contextSubPathElements.split("/")
             if len(contextSubPathElements) < topLevel:
-                return None
+                return
             rootPath = rootPath + "/" + "/".join(contextSubPathElements[:topLevel])
         else:
-            return None
+            return
 
     return rootPath
 
@@ -619,7 +616,7 @@ def extract_data(schema, raw_data, prefix):
 
 def get_root(context, root_path):
     if root_path is None:
-        return None
+        return
 
     urltool = getToolByName(context, "portal_url")
     portal = urltool.getPortalObject()

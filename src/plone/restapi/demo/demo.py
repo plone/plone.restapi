@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Products.Five.browser import BrowserView  # pragma: no cover
 
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from mock import patch
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME

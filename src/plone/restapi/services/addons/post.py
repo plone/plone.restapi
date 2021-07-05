@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from plone.restapi.services import Service
 from plone.restapi.services.addons.addons import Addons
 from zope.component import getMultiAdapter
@@ -62,6 +60,4 @@ class AddonsPost(Service):
 
             self.request.response.setStatus(200)
             return result
-        else:
-            self.request.response.setStatus(204)
-            return None
+        self.request.response.setStatus(204)

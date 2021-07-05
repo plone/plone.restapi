@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.locking.interfaces import ILockable
 from plone.locking.interfaces import INonStealableLock
 from plone.locking.interfaces import IRefreshableLockable

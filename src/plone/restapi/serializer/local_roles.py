@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.interfaces import IRoleManager
 from Acquisition import aq_base
 from operator import itemgetter

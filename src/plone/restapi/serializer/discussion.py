@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.discussion.interfaces import IComment
 from plone.app.discussion.interfaces import IConversation
 from plone.restapi.batching import HypermediaBatch
@@ -92,9 +91,9 @@ class CommentSerializer(object):
 
     def get_author_image(self, username=None):
         if username is None:
-            return None
+            return
         portal_membership = getToolByName(self.context, "portal_membership", None)
         image = portal_membership.getPersonalPortrait(username).absolute_url()
         if image.endswith("defaultUser.png"):
-            return None
+            return
         return image

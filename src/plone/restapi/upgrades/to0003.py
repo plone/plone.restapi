@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.setuphandlers import install_pas_plugin
 from Products.CMFCore.utils import getToolByName
 

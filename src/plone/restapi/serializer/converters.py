@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import date
 from datetime import datetime
 from datetime import time
@@ -204,4 +203,4 @@ def i18n_message_converter(value):
 @adapter(Missing.Value.__class__)
 @implementer(IJsonCompatible)
 def missing_value_converter(value):
-    return None
+    pass

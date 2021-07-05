@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.interfaces import ISerializeToJson

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import date
 from decimal import Decimal
 from plone.app.textfield import RichText
