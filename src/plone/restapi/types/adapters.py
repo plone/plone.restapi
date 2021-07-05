@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """JsonSchema providers."""
 from plone.app.textfield.interfaces import IRichText
 from plone.restapi.types.interfaces import IJsonSchemaProvider
@@ -93,7 +94,7 @@ class DefaultJsonSchemaProvider(object):
         raise NotImplementedError
 
     def get_factory(self):
-        pass
+        return None
 
     def get_widget(self):
         return getattr(self.field, "widget", None)
@@ -420,9 +421,6 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
 class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "dict"
-
-    def get_widget(self):
-        return getattr(self.field, "widget", None)
 
     def additional(self):
         info = {}
