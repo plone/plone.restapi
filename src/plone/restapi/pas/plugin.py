@@ -65,9 +65,8 @@ class JWTAuthenticationPlugin(BasePlugin):
         self._setId(id_)
         self.title = title
 
-    security.declarePrivate("challenge")
-
     # Initiate a challenge to the user to provide credentials.
+    @security.private
     def challenge(self, request, response, **kw):
 
         realm = response.realm
@@ -79,10 +78,9 @@ class JWTAuthenticationPlugin(BasePlugin):
         response.setStatus(401)
         return True
 
-    security.declarePrivate("extractCredentials")
-
     # IExtractionPlugin implementation
     # Extracts a JSON web token from the request.
+    @security.private
     def extractCredentials(self, request):
         """
         Extract credentials either from a JSON POST request or an established JWT token.
@@ -109,9 +107,8 @@ class JWTAuthenticationPlugin(BasePlugin):
 
         return creds
 
-    security.declarePrivate("authenticateCredentials")
-
     # IAuthenticationPlugin implementation
+    @security.private
     def authenticateCredentials(self, credentials):
         # Ignore credentials that are not from our extractor
         extractor = credentials.get("extractor")
@@ -137,8 +134,7 @@ class JWTAuthenticationPlugin(BasePlugin):
 
         return (userid, userid)
 
-    security.declareProtected(ManagePortal, "manage_updateConfig")
-
+    @security.protected(ManagePortal)
     @postonly
     def manage_updateConfig(self, REQUEST):
         """Update configuration of JWT Authentication Plugin."""
