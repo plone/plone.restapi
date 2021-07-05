@@ -97,7 +97,7 @@ class DefaultJsonSchemaProvider(object):
         return None
 
     def get_widget(self):
-        return None
+        return getattr(self.field, "widget", None)
 
     def get_widget_params(self):
         all_params = get_widget_params([self.field.interface])
@@ -421,9 +421,6 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
 class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "dict"
-
-    def get_widget(self):
-        return getattr(self.field, "widget", None)
 
     def additional(self):
         info = {}
