@@ -1,5 +1,3 @@
-from __future__ import division
-from six.moves import map
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.globalrequest import getRequest
@@ -32,9 +30,9 @@ def get_scales(context, field, width, height):
         actual_height = scale.height
 
         scales[name] = {
-            u"download": url,
-            u"width": actual_width,
-            u"height": actual_height,
+            "download": url,
+            "width": actual_width,
+            "height": actual_height,
         }
 
     return scales

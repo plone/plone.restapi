@@ -28,7 +28,7 @@ def fix_location_header(context, request):
     location = request.response.headers.get("location")
     if location and "#" in location:
         comment_id = location.split("#")[-1]
-        url = "{}/@comments/{}".format(context.absolute_url(), comment_id)
+        url = f"{context.absolute_url()}/@comments/{comment_id}"
         request.response.headers["location"] = url
 
 

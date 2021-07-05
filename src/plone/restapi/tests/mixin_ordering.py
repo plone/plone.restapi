@@ -254,7 +254,7 @@ class OrderingMixin:
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body=json.dumps(data), context=self.folder)
 
-        self.assertEqual(u"Client/server ordering mismatch", str(cm.exception))
+        self.assertEqual("Client/server ordering mismatch", str(cm.exception))
 
     def test_resort_all_items(self):
         self.assertEqual(

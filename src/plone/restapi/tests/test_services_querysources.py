@@ -30,7 +30,7 @@ class TestQuerysourcesEndpoint(unittest.TestCase):
             container=self.portal,
             id="testdoc",
             type="DXTestDocument",
-            title=u"Document 1",
+            title="Document 1",
         )
         transaction.commit()
 
@@ -45,10 +45,10 @@ class TestQuerysourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.doc.absolute_url()
-                + u"/@querysources/test_choice_with_querysource?query=2",  # noqa
-                u"items": [{u"title": u"Title 2", u"token": u"token2"}],
-                u"items_total": 1,
+                "@id": self.doc.absolute_url()
+                + "/@querysources/test_choice_with_querysource?query=2",  # noqa
+                "items": [{"title": "Title 2", "token": "token2"}],
+                "items_total": 1,
             },
         )
 
@@ -63,20 +63,20 @@ class TestQuerysourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.doc.absolute_url()
-                + u"/@querysources/test_choice_with_querysource?query=token",  # noqa
-                u"batching": {
-                    u"@id": self.doc.absolute_url()
-                    + u"/@querysources/test_choice_with_querysource?query=token&b_size=1",  # noqa
-                    u"first": self.doc.absolute_url()
-                    + u"/@querysources/test_choice_with_querysource?b_start=0&query=token&b_size=1",  # noqa
-                    u"last": self.doc.absolute_url()
-                    + u"/@querysources/test_choice_with_querysource?b_start=2&query=token&b_size=1",  # noqa
-                    u"next": self.doc.absolute_url()
-                    + u"/@querysources/test_choice_with_querysource?b_start=1&query=token&b_size=1",  # noqa
+                "@id": self.doc.absolute_url()
+                + "/@querysources/test_choice_with_querysource?query=token",  # noqa
+                "batching": {
+                    "@id": self.doc.absolute_url()
+                    + "/@querysources/test_choice_with_querysource?query=token&b_size=1",  # noqa
+                    "first": self.doc.absolute_url()
+                    + "/@querysources/test_choice_with_querysource?b_start=0&query=token&b_size=1",  # noqa
+                    "last": self.doc.absolute_url()
+                    + "/@querysources/test_choice_with_querysource?b_start=2&query=token&b_size=1",  # noqa
+                    "next": self.doc.absolute_url()
+                    + "/@querysources/test_choice_with_querysource?b_start=1&query=token&b_size=1",  # noqa
                 },
-                u"items": [{u"title": u"Title 1", u"token": u"token1"}],
-                u"items_total": 3,
+                "items": [{"title": "Title 1", "token": "token1"}],
+                "items_total": 3,
             },
         )
 
@@ -91,9 +91,9 @@ class TestQuerysourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response.get("error"),
             {
-                u"type": u"Bad Request",
-                u"message": u"Enumerating querysources is not supported. "
-                u"Please search the source using the ?query= QS parameter",
+                "type": "Bad Request",
+                "message": "Enumerating querysources is not supported. "
+                "Please search the source using the ?query= QS parameter",
             },
         )
 
@@ -107,9 +107,9 @@ class TestQuerysourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"error": {
-                    u"type": u"Not Found",
-                    u"message": u"No such field: 'unknown_field'",
+                "error": {
+                    "type": "Not Found",
+                    "message": "No such field: 'unknown_field'",
                 }
             },
         )
@@ -127,10 +127,10 @@ class TestQuerysourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                u"@id": self.portal_url
-                + u"/testdoc/@querysources/test_choice_with_context_querysource?query=foo",  # noqa
-                u"items": [{u"token": u"foo", u"title": u"Foo"}],
-                u"items_total": 1,
+                "@id": self.portal_url
+                + "/testdoc/@querysources/test_choice_with_context_querysource?query=foo",  # noqa
+                "items": [{"token": "foo", "title": "Foo"}],
+                "items_total": 1,
             },
         )
 

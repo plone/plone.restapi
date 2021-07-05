@@ -8,7 +8,7 @@ from zope.interface import Interface
 
 @implementer(IExpandableElement)
 @adapter(Interface, Interface)
-class Breadcrumbs(object):
+class Breadcrumbs:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -16,7 +16,7 @@ class Breadcrumbs(object):
     def __call__(self, expand=False):
         result = {
             "breadcrumbs": {
-                "@id": "{}/@breadcrumbs".format(self.context.absolute_url())
+                "@id": f"{self.context.absolute_url()}/@breadcrumbs"
             }
         }
         if not expand:

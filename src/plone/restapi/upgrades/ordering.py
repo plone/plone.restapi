@@ -13,7 +13,7 @@ QUERY = {"is_folderish": True}
 
 
 def safe_utf8(to_utf8):
-    if isinstance(to_utf8, six.text_type):
+    if isinstance(to_utf8, str):
         to_utf8 = to_utf8.encode("utf-8")
     return to_utf8
 
@@ -33,8 +33,7 @@ def ensure_child_ordering_object_ids_are_native_strings(container):
     The problem only exists with python 2 so we do nothing when we are
     called on python 3 by mistake.
     """
-    if six.PY3:
-        return
+    return
 
     if not IAnnotatable.providedBy(container):
         return
@@ -60,8 +59,7 @@ class FixOrderingView(BrowserView):
     """
 
     def __call__(self):
-        if six.PY3:
-            return "Aborted, fixing ordering is only necessary on python 2."
+        return "Aborted, fixing ordering is only necessary on python 2."
 
         catalog = getToolByName(self.context, "portal_catalog")
         for brain in catalog.unrestrictedSearchResults(QUERY):

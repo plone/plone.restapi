@@ -7,7 +7,7 @@ from six.moves.urllib.parse import urlencode
 DEFAULT_BATCH_SIZE = 25
 
 
-class HypermediaBatch(object):
+class HypermediaBatch:
     def __init__(self, request, results):
         self.request = request
 

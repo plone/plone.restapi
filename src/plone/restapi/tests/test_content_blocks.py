@@ -33,7 +33,7 @@ class TestContentBlocks(unittest.TestCase):
         fti.behaviors = tuple(behavior_list)
 
         self.doc = createContentInContainer(
-            self.portal, u"Document", id=u"doc", title=u"A document"
+            self.portal, "Document", id="doc", title="A document"
         )
         transaction.commit()
 

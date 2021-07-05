@@ -108,7 +108,7 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
         return json_compatible(value)
 
 
-class ResolveUIDSerializerBase(object):
+class ResolveUIDSerializerBase:
     order = 1
     block_type = None
     disabled = os.environ.get("disable_transform_resolveuid", False)
@@ -121,7 +121,7 @@ class ResolveUIDSerializerBase(object):
         for field in ["url", "href"]:
             if field in value.keys():
                 link = value.get(field, "")
-                if isinstance(link, string_types):
+                if isinstance(link, str):
                     value[field] = uid_to_url(link)
                 elif isinstance(link, list):
                     if len(link) > 0 and isinstance(link[0], dict) and "@id" in link[0]:
@@ -132,12 +132,12 @@ class ResolveUIDSerializerBase(object):
                             result.append(item_clone)
 
                         value[field] = result
-                    elif len(link) > 0 and isinstance(link[0], string_types):
+                    elif len(link) > 0 and isinstance(link[0], str):
                         value[field] = [uid_to_url(item) for item in link]
         return value
 
 
-class TextBlockSerializerBase(object):
+class TextBlockSerializerBase:
     order = 100
     block_type = "text"
     disabled = os.environ.get("disable_transform_resolveuid", False)

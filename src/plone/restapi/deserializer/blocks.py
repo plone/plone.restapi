@@ -100,7 +100,7 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
             block_value["blocks"] = self._transform(block_value["blocks"])
 
     def __call__(self, value):
-        value = super(BlocksJSONFieldDeserializer, self).__call__(value)
+        value = super().__call__(value)
 
         if self.field.getName() == "blocks":
             for id, block_value in value.items():
@@ -125,7 +125,7 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
         return value
 
 
-class ResolveUIDDeserializerBase(object):
+class ResolveUIDDeserializerBase:
     """The "url" smart block field.
 
     This is a generic handler. In all blocks, it converts any "url"
@@ -144,7 +144,7 @@ class ResolveUIDDeserializerBase(object):
         # Convert absolute links to resolveuid
         for field in ["url", "href"]:
             link = block.get(field, "")
-            if link and isinstance(link, string_types):
+            if link and isinstance(link, str):
                 block[field] = path2uid(context=self.context, link=link)
             elif link and isinstance(link, list):
                 # Detect if it has an object inside with an "@id" key (object_widget)
@@ -158,14 +158,14 @@ class ResolveUIDDeserializerBase(object):
                         result.append(item_clone)
 
                     block[field] = result
-                elif len(link) > 0 and isinstance(link[0], string_types):
+                elif len(link) > 0 and isinstance(link[0], str):
                     block[field] = [
                         path2uid(context=self.context, link=item) for item in link
                     ]
         return block
 
 
-class TextBlockDeserializerBase(object):
+class TextBlockDeserializerBase:
     order = 100
     block_type = "text"
     disabled = os.environ.get("disable_transform_resolveuid", False)
@@ -187,7 +187,7 @@ class TextBlockDeserializerBase(object):
         return block
 
 
-class HTMLBlockDeserializerBase(object):
+class HTMLBlockDeserializerBase:
     order = 100
     block_type = "html"
     disabled = os.environ.get("disable_transform_html", False)
@@ -209,7 +209,7 @@ class HTMLBlockDeserializerBase(object):
         return block
 
 
-class ImageBlockDeserializerBase(object):
+class ImageBlockDeserializerBase:
     order = 100
     block_type = "image"
     disabled = os.environ.get("disable_transform_resolveuid", False)
@@ -284,7 +284,7 @@ def transform_links(context, value, transformer):
             link["@id"] = transformer(context, link["@id"])
 
 
-class SlateBlockTransformer(object):
+class SlateBlockTransformer:
     """SlateBlockTransformer."""
 
     field = "value"
@@ -300,7 +300,7 @@ class SlateBlockTransformer(object):
         for child in children:
             node_type = child.get("type")
             if node_type:
-                handler = getattr(self, "handle_{}".format(node_type), None)
+                handler = getattr(self, f"handle_{node_type}", None)
                 if handler:
                     handler(child)
 

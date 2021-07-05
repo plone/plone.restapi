@@ -10,7 +10,7 @@ from zope.publisher.interfaces import IPublishTraverse
 @implementer(IPublishTraverse)
 class RegistryGet(Service):
     def __init__(self, context, request):
-        super(RegistryGet, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):

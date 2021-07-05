@@ -13,7 +13,7 @@ SERVICE_ID = "@tiles"
 
 @implementer(ISerializeToJsonSummary)
 @adapter(ITileType, Interface)
-class TileSummarySerializeToJson(object):
+class TileSummarySerializeToJson:
     def __init__(self, tile, request):
         self.tile = tile
 
@@ -60,7 +60,7 @@ def get_jsonschema_for_tile(tile, context, request):
 
 @implementer(ISerializeToJson)
 @adapter(ITileType, Interface)
-class TileSerializeToJson(object):
+class TileSerializeToJson:
     def __init__(self, tile, request):
         self.tile = tile
         self.request = request

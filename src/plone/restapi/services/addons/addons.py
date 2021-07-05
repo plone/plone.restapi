@@ -16,7 +16,7 @@ import pkg_resources
 logger = logging.getLogger("Plone")
 
 
-class Addons(object):
+class Addons:
     """Performs install/upgrade/uninstall functions on an addon.
     Pulled, mostly intact, from Plone 5.1's products control panel.
     If we reach the point when plone.restapi isn't supporting releases
@@ -70,7 +70,7 @@ class Addons(object):
                 prof["product"]
                 in (
                     product_id,
-                    "Products.{0}".format(product_id),
+                    f"Products.{product_id}",
                 )
             )
         ]
@@ -224,13 +224,13 @@ class Addons(object):
                     return False
                 # A new error is found, register it
                 self.errors[product_id] = dict(
-                    type=_(u"dependency_missing", default=u"Missing dependency"),
+                    type=_("dependency_missing", default="Missing dependency"),
                     value=e.args[0],
                     product_id=product_id,
                 )
             else:
                 self.errors[product_id] = dict(
-                    type=_(u"dependency_missing", default=u"Missing dependency"),
+                    type=_("dependency_missing", default="Missing dependency"),
                     value=e.args[0],
                     product_id=product_id,
                 )

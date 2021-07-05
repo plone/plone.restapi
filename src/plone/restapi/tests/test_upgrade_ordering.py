@@ -30,7 +30,7 @@ class TestUpgradeOrdering(unittest.TestCase):
 
         # use incorrect type for ordering, results in mixed type ordering ids
         # on folder
-        ordering.moveObjectsToBottom([six.text_type("doc1")])
+        ordering.moveObjectsToBottom(["doc1"])
 
         ensure_child_ordering_object_ids_are_native_strings(self.folder)
 
@@ -58,7 +58,7 @@ class TestUpgradeOrdering(unittest.TestCase):
         ordering = self.folder.getOrdering()
         # use incorrect type for ordering, results in mixed type ordering ids
         # on folder
-        ordering.moveObjectsToBottom([six.text_type("doc1")])
+        ordering.moveObjectsToBottom(["doc1"])
 
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         view = self.portal.restrictedTraverse("@@plone-restapi-upgrade-fix-ordering")

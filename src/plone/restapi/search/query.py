@@ -59,7 +59,7 @@ ANY_TYPE = object()
 
 @implementer(IZCatalogCompatibleQuery)
 @adapter(Interface, Interface)
-class ZCatalogCompatibleQueryAdapter(object):
+class ZCatalogCompatibleQueryAdapter:
     """Converts a Python dictionary representing a catalog query, but with
     possibly wrong value types, to a ZCatalog compatible query dict suitable
     for passing to catalog.searchResults().
@@ -116,7 +116,7 @@ class ZCatalogCompatibleQueryAdapter(object):
         return query
 
 
-class BaseIndexQueryParser(object):
+class BaseIndexQueryParser:
     """Base class for IIndexQueryParser adapters.
 
     See the IIndexQueryParser interface documentation for details.
@@ -177,7 +177,7 @@ class BaseIndexQueryParser(object):
                     )
             else:
                 log.warning(
-                    "Unrecognized query option %r for index %r" % (opt_key, self.index)
+                    f"Unrecognized query option {opt_key!r} for index {self.index!r}"
                 )
                 # Pass along unknown option without modification
                 parsed_query[opt_key] = opt_value

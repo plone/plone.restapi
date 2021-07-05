@@ -47,7 +47,7 @@ class TestStaticTime(unittest.TestCase):
     def create_document(self, id_):
         self.portal.invokeFactory("Document", id=id_)
         document = self.portal[id_]
-        document.title = u"My title"
+        document.title = "My title"
         return document
 
     def create_comments(self, document):
@@ -282,7 +282,7 @@ class TestStaticTimeWorkingCopy(unittest.TestCase):
     def create_document(self, id_):
         self.portal.invokeFactory("Document", id=id_)
         document = self.portal[id_]
-        document.title = u"My title"
+        document.title = "My title"
         return document
 
     def test_statictime_wc_created(self):

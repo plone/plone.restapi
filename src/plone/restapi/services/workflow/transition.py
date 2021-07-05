@@ -24,7 +24,7 @@ class WorkflowTransition(Service):
     """Trigger workflow transition"""
 
     def __init__(self, context, request):
-        super(WorkflowTransition, self).__init__(context, request)
+        super().__init__(context, request)
         self.transition = None
         self.wftool = getToolByName(context, "portal_workflow")
 
@@ -80,18 +80,11 @@ class WorkflowTransition(Service):
             try:
                 history = self.wftool.getInfoFor(self.context, "review_history")
                 action = history[-1]
-                if six.PY2:
-                    action["title"] = self.context.translate(
-                        self.wftool.getTitleForStateOnType(
-                            action["review_state"], self.context.portal_type
-                        ).decode("utf8")
+                action["title"] = self.context.translate(
+                    self.wftool.getTitleForStateOnType(
+                        action["review_state"], self.context.portal_type
                     )
-                else:
-                    action["title"] = self.context.translate(
-                        self.wftool.getTitleForStateOnType(
-                            action["review_state"], self.context.portal_type
-                        )
-                    )
+                )
             except WorkflowException as e:
                 self.request.response.setStatus(400)
                 action = dict(

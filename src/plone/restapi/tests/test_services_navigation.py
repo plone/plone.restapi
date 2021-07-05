@@ -33,31 +33,31 @@ class TestServicesNavigation(unittest.TestCase):
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         self.folder = createContentInContainer(
-            self.portal, u"Folder", id=u"folder", title=u"Some Folder"
+            self.portal, "Folder", id="folder", title="Some Folder"
         )
         self.folder2 = createContentInContainer(
-            self.portal, u"Folder", id=u"folder2", title=u"Some Folder 2"
+            self.portal, "Folder", id="folder2", title="Some Folder 2"
         )
         self.subfolder1 = createContentInContainer(
-            self.folder, u"Folder", id=u"subfolder1", title=u"SubFolder 1"
+            self.folder, "Folder", id="subfolder1", title="SubFolder 1"
         )
         self.subfolder2 = createContentInContainer(
-            self.folder, u"Folder", id=u"subfolder2", title=u"SubFolder 2"
+            self.folder, "Folder", id="subfolder2", title="SubFolder 2"
         )
         self.thirdlevelfolder = createContentInContainer(
             self.subfolder1,
-            u"Folder",
-            id=u"thirdlevelfolder",
-            title=u"Third Level Folder",
+            "Folder",
+            id="thirdlevelfolder",
+            title="Third Level Folder",
         )
         self.fourthlevelfolder = createContentInContainer(
             self.thirdlevelfolder,
-            u"Folder",
-            id=u"fourthlevelfolder",
-            title=u"Fourth Level Folder",
+            "Folder",
+            id="fourthlevelfolder",
+            title="Fourth Level Folder",
         )
         createContentInContainer(
-            self.folder, u"Document", id=u"doc1", title=u"A document"
+            self.folder, "Document", id="doc1", title="A document"
         )
         transaction.commit()
 
@@ -75,28 +75,28 @@ class TestServicesNavigation(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                "@id": self.portal_url + u"/folder/@navigation",
+                "@id": self.portal_url + "/folder/@navigation",
                 "items": [
                     {
-                        u"@id": self.portal_url,
-                        u"description": u"",
-                        u"items": [],
-                        u"review_state": None,
-                        u"title": u"Home",
+                        "@id": self.portal_url,
+                        "description": "",
+                        "items": [],
+                        "review_state": None,
+                        "title": "Home",
                     },
                     {
-                        u"@id": self.portal_url + u"/folder",
-                        u"description": u"",
-                        u"items": [],
-                        u"review_state": "private",
-                        u"title": u"Some Folder",
+                        "@id": self.portal_url + "/folder",
+                        "description": "",
+                        "items": [],
+                        "review_state": "private",
+                        "title": "Some Folder",
                     },
                     {
-                        u"@id": self.portal_url + u"/folder2",
-                        u"description": u"",
-                        u"items": [],
-                        u"review_state": "private",
-                        u"title": u"Some Folder 2",
+                        "@id": self.portal_url + "/folder2",
+                        "description": "",
+                        "items": [],
+                        "review_state": "private",
+                        "title": "Some Folder 2",
                     },
                 ],
             },
@@ -109,7 +109,7 @@ class TestServicesNavigation(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["items"]), 3)
-        self.assertEqual(response.json()["items"][1]["title"], u"Some Folder")
+        self.assertEqual(response.json()["items"][1]["title"], "Some Folder")
         self.assertEqual(len(response.json()["items"][1]["items"]), 3)
         self.assertEqual(len(response.json()["items"][2]["items"]), 0)
 
@@ -120,7 +120,7 @@ class TestServicesNavigation(unittest.TestCase):
         self.assertEqual(len(response.json()["items"][1]["items"][0]["items"]), 1)
         self.assertEqual(
             response.json()["items"][1]["items"][0]["items"][0]["title"],
-            u"Third Level Folder",
+            "Third Level Folder",
         )
         self.assertEqual(
             len(response.json()["items"][1]["items"][0]["items"][0]["items"]),
@@ -139,21 +139,21 @@ class TestServicesNavigation(unittest.TestCase):
             response.json()["items"][1]["items"][0]["items"][0]["items"][0][
                 "title"
             ],  # noqa
-            u"Fourth Level Folder",
+            "Fourth Level Folder",
         )
 
     def test_dont_broke_with_contents_without_review_state(self):
         createContentInContainer(
             self.portal,
-            u"File",
-            id=u"example-file",
-            title=u"Example file",
+            "File",
+            id="example-file",
+            title="Example file",
         )
         createContentInContainer(
             self.folder,
-            u"File",
-            id=u"example-file-1",
-            title=u"Example file 1",
+            "File",
+            id="example-file-1",
+            title="Example file 1",
         )
         transaction.commit()
 
@@ -168,15 +168,15 @@ class TestServicesNavigation(unittest.TestCase):
     def test_navigation_sorting(self):
         createContentInContainer(
             self.portal,
-            u"File",
-            id=u"example-file",
-            title=u"Example file",
+            "File",
+            id="example-file",
+            title="Example file",
         )
         createContentInContainer(
             self.folder,
-            u"File",
-            id=u"example-file-1",
-            title=u"Example file 1",
+            "File",
+            id="example-file-1",
+            title="Example file 1",
         )
         transaction.commit()
         response = self.api_session.get(

@@ -29,7 +29,7 @@ except ImportError:
 
 @implementer(IExpandableElement)
 @adapter(Interface, Interface)
-class Navigation(object):
+class Navigation:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -42,7 +42,7 @@ class Navigation(object):
             self.depth = 1
 
         result = {
-            "navigation": {"@id": "{}/@navigation".format(self.context.absolute_url())}
+            "navigation": {"@id": f"{self.context.absolute_url()}/@navigation"}
         }
         if not expand:
             return result
@@ -85,7 +85,7 @@ class Navigation(object):
     @property
     def default_language(self):
         portal_state = getMultiAdapter(
-            (self.context, self.request), name=u"plone_portal_state"
+            (self.context, self.request), name="plone_portal_state"
         )
         return portal_state.default_language()
 

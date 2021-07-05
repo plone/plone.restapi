@@ -108,21 +108,21 @@ class TestActions(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"category1": [
-                    {u"title": u"Members only", u"id": u"member_action", u"icon": u""},
+                "category1": [
+                    {"title": "Members only", "id": "member_action", "icon": ""},
                     {
-                        u"title": u"Action with view permission",
-                        u"id": u"view_action",
-                        u"icon": u"",
+                        "title": "Action with view permission",
+                        "id": "view_action",
+                        "icon": "",
                     },
                     {
-                        u"title": u"Action with Manage Portal Content permission",
-                        u"id": u"manage_action",
-                        u"icon": u"",
+                        "title": "Action with Manage Portal Content permission",
+                        "id": "manage_action",
+                        "icon": "",
                     },
                 ],
-                u"category2": [],
-                u"category3": [],
+                "category2": [],
+                "category3": [],
             },
         )
 
@@ -134,15 +134,15 @@ class TestActions(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"category1": [
+                "category1": [
                     {
-                        u"title": u"Action with view permission",
-                        u"id": u"view_action",
-                        u"icon": u"",
+                        "title": "Action with view permission",
+                        "id": "view_action",
+                        "icon": "",
                     }
                 ],
-                u"category2": [],
-                u"category3": [],
+                "category2": [],
+                "category3": [],
             },
         )
 
@@ -156,9 +156,9 @@ class TestActions(unittest.TestCase):
         response = self.api_session.get(url)
         self.assertEqual(response.status_code, 200)
         response = response.json()
-        object_action_ids = [action[u"id"] for action in response["object"]]
-        self.assertTrue(u"view" in object_action_ids)
-        self.assertTrue(u"edit" in object_action_ids)
+        object_action_ids = [action["id"] for action in response["object"]]
+        self.assertTrue("view" in object_action_ids)
+        self.assertTrue("edit" in object_action_ids)
 
     def test_actions_on_content_object_anon(self):
         self.portal.invokeFactory("Document", id="doc1", title="My Document")
@@ -171,6 +171,6 @@ class TestActions(unittest.TestCase):
         response = self.anon_api_session.get(url)
         self.assertEqual(response.status_code, 200)
         response = response.json()
-        object_action_ids = [action[u"id"] for action in response["object"]]
-        self.assertTrue(u"view" in object_action_ids)
-        self.assertTrue(u"edit" not in object_action_ids)
+        object_action_ids = [action["id"] for action in response["object"]]
+        self.assertTrue("view" in object_action_ids)
+        self.assertTrue("edit" not in object_action_ids)

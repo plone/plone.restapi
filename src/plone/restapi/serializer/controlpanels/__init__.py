@@ -21,7 +21,7 @@ SERVICE_ID = "@controlpanels"
 
 @implementer(ISerializeToJsonSummary)
 @adapter(IControlpanel)
-class ControlpanelSummarySerializeToJson(object):
+class ControlpanelSummarySerializeToJson:
     def __init__(self, controlpanel):
         self.controlpanel = controlpanel
 
@@ -69,7 +69,7 @@ def get_jsonschema_for_controlpanel(controlpanel, context, request, form=None):
 
 @implementer(ISerializeToJson)
 @adapter(IControlpanel)
-class ControlpanelSerializeToJson(object):
+class ControlpanelSerializeToJson:
     def __init__(self, controlpanel):
         self.controlpanel = controlpanel
         self.schema = self.controlpanel.schema

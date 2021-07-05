@@ -32,8 +32,8 @@ class QuerySourcesGet(SourcesGet):
             return self._error(
                 400,
                 "Bad Request",
-                u"Enumerating querysources is not supported. Please search "
-                u"the source using the ?query= QS parameter",
+                "Enumerating querysources is not supported. Please search "
+                "the source using the ?query= QS parameter",
             )
 
         query = self.request.form["query"]

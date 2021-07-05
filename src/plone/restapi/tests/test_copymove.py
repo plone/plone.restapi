@@ -35,7 +35,7 @@ class TestCopyMove(unittest.TestCase):
         request.environ["PATH_TRANSLATED"] = path
         request.environ["HTTP_ACCEPT"] = accept
         request.environ["REQUEST_METHOD"] = method
-        auth = "%s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        auth = f"{SITE_OWNER_NAME}:{SITE_OWNER_PASSWORD}"
         request._auth = "Basic %s" % b64encode(auth.encode("utf8")).decode("utf8")
         notify(PubStart(request))
         return request.traverse(path)

@@ -17,7 +17,7 @@ _originals = {
 }
 
 
-class StaticTime(object):
+class StaticTime:
     """ContextManager to patch accessor methods that return dynamic timestamps,
     like creation and modification dates, with ones that return static
     timestamps.

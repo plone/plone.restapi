@@ -41,7 +41,7 @@ from zope.schema.interfaces import ITuple
 
 @adapter(IField, Interface, Interface)
 @implementer(IJsonSchemaProvider)
-class DefaultJsonSchemaProvider(object):
+class DefaultJsonSchemaProvider:
     def __init__(self, field, context, request):
         self.field = field.bind(context)
         self.context = context
@@ -56,7 +56,7 @@ class DefaultJsonSchemaProvider(object):
 
     def get_description(self):
         if self.field.description is None:
-            return u""
+            return ""
 
         return translate(self.field.description, context=self.request)
 
@@ -283,7 +283,7 @@ class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
     def additional(self):
-        info = super(ListJsonSchemaProvider, self).additional()
+        info = super().additional()
         if IChoice.providedBy(self.field.value_type):
             info["uniqueItems"] = True
         else:
@@ -296,7 +296,7 @@ class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class SetJsonSchemaProvider(CollectionJsonSchemaProvider):
     def additional(self):
-        info = super(SetJsonSchemaProvider, self).additional()
+        info = super().additional()
         info["uniqueItems"] = True
         return info
 
@@ -410,7 +410,7 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
         return get_jsonschema_properties(context, request, fieldsets, prefix)
 
     def additional(self):
-        info = super(ObjectJsonSchemaProvider, self).additional()
+        info = super().additional()
         info["properties"] = self.get_properties()
         return info
 

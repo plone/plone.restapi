@@ -56,7 +56,7 @@ class GroupsPost(Service):
         )
         if not success:
             raise BadRequest(
-                "Error occurred, could not add group {}.".format(groupname)
+                f"Error occurred, could not add group {groupname}."
             )
 
         # Add members

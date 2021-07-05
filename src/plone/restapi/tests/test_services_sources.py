@@ -30,7 +30,7 @@ class TestSourcesEndpoint(unittest.TestCase):
             container=self.portal,
             id="testdoc",
             type="DXTestDocument",
-            title=u"Document 1",
+            title="Document 1",
         )
         transaction.commit()
 
@@ -44,14 +44,14 @@ class TestSourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.doc.absolute_url()
-                + u"/@sources/test_choice_with_source",  # noqa
-                u"items": [
-                    {u"title": u"Title 1", u"token": u"token1"},
-                    {u"title": u"Title 2", u"token": u"token2"},
-                    {u"title": u"Title 3", u"token": u"token3"},
+                "@id": self.doc.absolute_url()
+                + "/@sources/test_choice_with_source",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                    {"title": "Title 2", "token": "token2"},
+                    {"title": "Title 3", "token": "token3"},
                 ],
-                u"items_total": 3,
+                "items_total": 3,
             },
         )
 
@@ -65,20 +65,20 @@ class TestSourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.doc.absolute_url()
-                + u"/@sources/test_choice_with_source",  # noqa
-                u"batching": {
-                    u"@id": self.doc.absolute_url()
-                    + u"/@sources/test_choice_with_source?b_size=1",  # noqa
-                    u"first": self.doc.absolute_url()
-                    + u"/@sources/test_choice_with_source?b_start=0&b_size=1",  # noqa
-                    u"last": self.doc.absolute_url()
-                    + u"/@sources/test_choice_with_source?b_start=2&b_size=1",  # noqa
-                    u"next": self.doc.absolute_url()
-                    + u"/@sources/test_choice_with_source?b_start=1&b_size=1",  # noqa
+                "@id": self.doc.absolute_url()
+                + "/@sources/test_choice_with_source",  # noqa
+                "batching": {
+                    "@id": self.doc.absolute_url()
+                    + "/@sources/test_choice_with_source?b_size=1",  # noqa
+                    "first": self.doc.absolute_url()
+                    + "/@sources/test_choice_with_source?b_start=0&b_size=1",  # noqa
+                    "last": self.doc.absolute_url()
+                    + "/@sources/test_choice_with_source?b_start=2&b_size=1",  # noqa
+                    "next": self.doc.absolute_url()
+                    + "/@sources/test_choice_with_source?b_start=1&b_size=1",  # noqa
                 },
-                u"items": [{u"title": u"Title 1", u"token": u"token1"}],
-                u"items_total": 3,
+                "items": [{"title": "Title 1", "token": "token1"}],
+                "items_total": 3,
             },
         )
 
@@ -92,10 +92,10 @@ class TestSourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.doc.absolute_url()
-                + u"/@sources/test_choice_with_source?title=2",  # noqa
-                u"items": [{u"title": u"Title 2", u"token": u"token2"}],
-                u"items_total": 1,
+                "@id": self.doc.absolute_url()
+                + "/@sources/test_choice_with_source?title=2",  # noqa
+                "items": [{"title": "Title 2", "token": "token2"}],
+                "items_total": 1,
             },
         )
 
@@ -109,10 +109,10 @@ class TestSourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.doc.absolute_url()
-                + u"/@sources/test_choice_with_source?token=token1",  # noqa
-                u"items": [{u"title": u"Title 1", u"token": u"token1"}],
-                u"items_total": 1,
+                "@id": self.doc.absolute_url()
+                + "/@sources/test_choice_with_source?token=token1",  # noqa
+                "items": [{"title": "Title 1", "token": "token1"}],
+                "items_total": 1,
             },
         )
 
@@ -126,10 +126,10 @@ class TestSourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.doc.absolute_url()
-                + u"/@sources/test_choice_with_source?token=token",  # noqa
-                u"items": [],
-                u"items_total": 0,
+                "@id": self.doc.absolute_url()
+                + "/@sources/test_choice_with_source?token=token",  # noqa
+                "items": [],
+                "items_total": 0,
             },
         )
 
@@ -144,8 +144,8 @@ class TestSourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response.get("error"),
             {
-                u"type": u"Invalid parameters",
-                u"message": u"You can not filter by title and token at the same time.",  # noqa
+                "type": "Invalid parameters",
+                "message": "You can not filter by title and token at the same time.",  # noqa
             },
         )
 
@@ -159,8 +159,8 @@ class TestSourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response.get("error"),
             {
-                u"type": u"Bad Request",
-                u"message": "Source for field 'test_choice_with_non_iterable_source' is not iterable. ",
+                "type": "Bad Request",
+                "message": "Source for field 'test_choice_with_non_iterable_source' is not iterable. ",
             },
         )
 
@@ -174,11 +174,11 @@ class TestSourcesEndpoint(unittest.TestCase):
 
         self.assertEqual(
             response.get("error"),
-            {u"type": u"Not Found", u"message": u"No such field: 'unknown_field'"},
+            {"type": "Not Found", "message": "No such field: 'unknown_field'"},
         )
 
     def test_context_source(self):
-        self.doc.title = u"Foo Bar Baz"
+        self.doc.title = "Foo Bar Baz"
         transaction.commit()
 
         response = self.api_session.get(
@@ -189,19 +189,19 @@ class TestSourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                u"@id": self.portal_url
-                + u"/testdoc/@sources/test_choice_with_context_source",  # noqa
-                u"items": [
-                    {u"token": u"foo", u"title": u"Foo"},
-                    {u"token": u"bar", u"title": u"Bar"},
-                    {u"token": u"baz", u"title": u"Baz"},
+                "@id": self.portal_url
+                + "/testdoc/@sources/test_choice_with_context_source",  # noqa
+                "items": [
+                    {"token": "foo", "title": "Foo"},
+                    {"token": "bar", "title": "Bar"},
+                    {"token": "baz", "title": "Baz"},
                 ],
-                u"items_total": 3,
+                "items_total": 3,
             },
         )
 
     def test_source_filtered_by_non_ascii_title(self):
-        self.doc.title = u"Bär"
+        self.doc.title = "Bär"
         transaction.commit()
 
         response = self.api_session.get(
@@ -213,10 +213,10 @@ class TestSourcesEndpoint(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                u"@id": self.portal_url
-                + u"/testdoc/@sources/test_choice_with_context_source?title=b%C3%A4r",  # noqa
-                u"items": [{u"token": u"b=C3=A4r", u"title": u"B\xe4r"}],
-                u"items_total": 1,
+                "@id": self.portal_url
+                + "/testdoc/@sources/test_choice_with_context_source?title=b%C3%A4r",  # noqa
+                "items": [{"token": "b=C3=A4r", "title": "B\xe4r"}],
+                "items_total": 1,
             },
         )
 

@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 
 @implementer(ISerializeToJson)
 @adapter(Lazy, Interface)
-class LazyCatalogResultSerializer(object):
+class LazyCatalogResultSerializer:
     """Serializes a ZCatalog resultset (one of the subclasses of `Lazy`) to
     a Python data structure that can in turn be serialized to JSON.
     """

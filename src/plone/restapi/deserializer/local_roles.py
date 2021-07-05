@@ -24,7 +24,7 @@ marker = object()
 
 @implementer(IDeserializeFromJson)
 @adapter(IRoleManager, Interface)
-class DeserializeFromJson(object):
+class DeserializeFromJson:
     """JSON deserializer for local roles"""
 
     def __init__(self, context, request):
@@ -45,7 +45,7 @@ class DeserializeFromJson(object):
         # roles
         roles_reindex = False
         new_roles = data.get("entries", None)
-        managed_roles = frozenset([r["id"] for r in sharing_view.roles()])
+        managed_roles = frozenset(r["id"] for r in sharing_view.roles())
 
         if new_roles is not None:
             # the roles are converted into a FrozenSet so we have to filter

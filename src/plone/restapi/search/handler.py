@@ -16,7 +16,7 @@ else:
     PLONE5 = True
 
 
-class SearchHandler(object):
+class SearchHandler:
     """Executes a catalog search based on a query dict, and returns
     JSON compatible results.
     """

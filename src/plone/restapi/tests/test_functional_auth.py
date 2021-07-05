@@ -33,10 +33,10 @@ class TestFunctionalAuth(unittest.TestCase):
         )
         self.assertEqual(400, response.status_code)
         self.assertEqual(
-            u"Missing credentials", response.json().get("error").get("type")
+            "Missing credentials", response.json().get("error").get("type")
         )
         self.assertEqual(
-            u"Login and password must be provided in body.",
+            "Login and password must be provided in body.",
             response.json().get("error").get("message"),
         )
 
@@ -48,10 +48,10 @@ class TestFunctionalAuth(unittest.TestCase):
         )
         self.assertEqual(401, response.status_code)
         self.assertEqual(
-            u"Invalid credentials", response.json().get("error").get("type")
+            "Invalid credentials", response.json().get("error").get("type")
         )
         self.assertEqual(
-            u"Wrong login and/or password.", response.json().get("error").get("message")
+            "Wrong login and/or password.", response.json().get("error").get("message")
         )
 
     def test_login_with_valid_credentials_returns_token(self):
@@ -103,7 +103,7 @@ class TestFunctionalAuth(unittest.TestCase):
             "Wrong ZMI view response status code",
         )
         self.assertTrue(
-            u'<a href="plone/manage_workspace">' in zmi_resp.text,
+            '<a href="plone/manage_workspace">' in zmi_resp.text,
             "Wrong ZMI view response content",
         )
 
@@ -115,7 +115,7 @@ class TestFunctionalAuth(unittest.TestCase):
         basic_auth_headers = {
             "Authorization": "Basic {}".format(
                 base64.b64encode(
-                    "{}:{}".format(SITE_OWNER_NAME, TEST_USER_PASSWORD).encode(),
+                    f"{SITE_OWNER_NAME}:{TEST_USER_PASSWORD}".encode(),
                 ).decode()
             )
         }
@@ -129,7 +129,7 @@ class TestFunctionalAuth(unittest.TestCase):
             "Wrong ZMI login response status code",
         )
         self.assertTrue(
-            u'<a href="plone/manage_workspace">' in zmi_resp.text,
+            '<a href="plone/manage_workspace">' in zmi_resp.text,
             "Wrong ZMI view response content",
         )
 
@@ -168,7 +168,7 @@ class TestFunctionalAuth(unittest.TestCase):
             "Wrong Plone login challenge status code",
         )
         self.assertTrue(
-            u'<input id="__ac_password" name="__ac_password"' in challenge_resp.text,
+            '<input id="__ac_password" name="__ac_password"' in challenge_resp.text,
             "Plone login challenge response content missing password field",
         )
         login_resp = session.post(
@@ -236,7 +236,7 @@ class TestFunctionalAuth(unittest.TestCase):
         )
 
         self.assertEqual(200, response.status_code)
-        self.assertTrue(u"@id" in response.json())
+        self.assertTrue("@id" in response.json())
 
     def test_accessing_private_document_with_invalid_token_fails(self):
         invalid_token = "abcd1234"
@@ -249,9 +249,9 @@ class TestFunctionalAuth(unittest.TestCase):
         )
 
         self.assertEqual(401, response.status_code)
-        self.assertEqual(u"Unauthorized", response.json().get("type"))
+        self.assertEqual("Unauthorized", response.json().get("type"))
         self.assertEqual(
-            u"You are not authorized to access this resource.",
+            "You are not authorized to access this resource.",
             response.json().get("message"),
         )
 
@@ -272,8 +272,8 @@ class TestFunctionalAuth(unittest.TestCase):
         )
 
         self.assertEqual(401, response.status_code)
-        self.assertEqual(u"Unauthorized", response.json().get("type"))
+        self.assertEqual("Unauthorized", response.json().get("type"))
         self.assertEqual(
-            u"You are not authorized to access this resource.",
+            "You are not authorized to access this resource.",
             response.json().get("message"),
         )

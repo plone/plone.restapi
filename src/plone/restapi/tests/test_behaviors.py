@@ -25,7 +25,7 @@ class TestBlocksBehavior(unittest.TestCase):
 
     def test_basic_fields(self):
         self.portal.invokeFactory(
-            "blocksfolder", id="blocksfolder", title=u"Folder with blocks"
+            "blocksfolder", id="blocksfolder", title="Folder with blocks"
         )
 
         self.portal["blocksfolder"].blocks = {
@@ -40,7 +40,7 @@ class TestBlocksBehavior(unittest.TestCase):
 
     def test_behavior_provides(self):
         self.portal.invokeFactory(
-            "blocksfolder", id="blocksfolder", title=u"Folder with blocks"
+            "blocksfolder", id="blocksfolder", title="Folder with blocks"
         )
 
         assert IBlocks.providedBy(self.portal["blocksfolder"])

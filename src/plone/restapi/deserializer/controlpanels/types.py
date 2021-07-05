@@ -19,4 +19,4 @@ class DexterityTypesControlpanelDeserializeFromJson(ControlpanelDeserializeFromJ
     def __call__(self, item=None):
         if item is not None:
             return self.deserialize_item(item)
-        return super(DexterityTypesControlpanelDeserializeFromJson, self).__call__()
+        return super().__call__()

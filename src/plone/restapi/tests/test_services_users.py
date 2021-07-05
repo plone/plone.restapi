@@ -51,7 +51,7 @@ class TestUsersEndpoint(unittest.TestCase):
             email="noam.chomsky@example.com",
             username="noam",
             properties=properties,
-            password=u"password",
+            password="password",
         )
         properties = {
             "email": "otheruser@example.com",
@@ -62,7 +62,7 @@ class TestUsersEndpoint(unittest.TestCase):
             email="otheruser@example.com",
             username="otheruser",
             properties=properties,
-            password=u"otherpassword",
+            password="otherpassword",
         )
         transaction.commit()
 
@@ -461,7 +461,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "portrait": {
                 "filename": "image.gif",
                 "encoding": "base64",
-                "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
+                "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
                 "content-type": "image/gif",
             }
         }
@@ -481,7 +481,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "portrait": {
                 "filename": "image.gif",
                 "encoding": "base64",
-                "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
+                "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
                 "content-type": "image/gif",
                 "scale": True,
             }
@@ -502,7 +502,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "portrait": {
                 "filename": "image.gif",
                 "encoding": "base64",
-                "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
+                "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
                 "content-type": "image/gif",
             }
         }
@@ -548,7 +548,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "portrait": {
                 "filename": "image.gif",
                 "encoding": "base64",
-                "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
+                "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
                 "content-type": "image/gif",
             }
         }
@@ -715,7 +715,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         payload = {"reset_token": token, "new_password": "new_password"}
         response = self.api_session.post(
-            "/@users/{}/reset-password".format(user.id), json=payload
+            f"/@users/{user.id}/reset-password", json=payload
         )
 
         self.assertEqual(response.status_code, 200)
@@ -744,7 +744,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         payload = {"reset_token": token, "new_password": "new_password"}
         response = self.api_session.post(
-            "/@users/{}/reset-password".format(user.getUserName()), json=payload
+            f"/@users/{user.getUserName()}/reset-password", json=payload
         )
 
         self.assertEqual(response.status_code, 200)
@@ -772,7 +772,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         payload = {"reset_token": token, "new_password": "new_password"}
         response = self.api_session.post(
-            "/@users/{}/reset-password".format(user.getUserName()), json=payload
+            f"/@users/{user.getUserName()}/reset-password", json=payload
         )
 
         self.assertEqual(response.status_code, 200)

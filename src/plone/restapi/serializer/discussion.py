@@ -17,7 +17,7 @@ from zope.publisher.interfaces import IRequest
 
 @implementer(ISerializeToJson)
 @adapter(IConversation, IRequest)
-class ConversationSerializer(object):
+class ConversationSerializer:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -44,18 +44,18 @@ class ConversationSerializer(object):
 
 @implementer(ISerializeToJson)
 @adapter(IComment, IRequest)
-class CommentSerializer(object):
+class CommentSerializer:
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, include_items=True):
         content_url = self.context.__parent__.__parent__.absolute_url()
-        comments_url = "{}/@comments".format(content_url)
-        url = "{}/{}".format(comments_url, self.context.id)
+        comments_url = f"{content_url}/@comments"
+        url = f"{comments_url}/{self.context.id}"
 
         if self.context.in_reply_to:
-            parent_url = "{}/{}".format(comments_url, self.context.in_reply_to)
+            parent_url = f"{comments_url}/{self.context.in_reply_to}"
             in_reply_to = str(self.context.in_reply_to)
         else:
             parent_url = None

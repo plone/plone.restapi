@@ -6,7 +6,7 @@ from zExceptions import BadRequest
 import six
 
 
-class OrderingMixin(object):
+class OrderingMixin:
     def handle_ordering(self, data):
         if "ordering" in data:
             obj_id = data["ordering"]["obj_id"]
@@ -43,11 +43,11 @@ class OrderingMixin(object):
 
         # Make sure we use bytestring ids for PY2.
         if six.PY2:
-            if isinstance(obj_id, six.text_type):
+            if isinstance(obj_id, str):
                 obj_id = obj_id.encode("utf-8")
             if subset_ids:
                 subset_ids = [
-                    id_.encode("utf-8") if isinstance(id_, six.text_type) else id_
+                    id_.encode("utf-8") if isinstance(id_, str) else id_
                     for id_ in subset_ids
                 ]
 

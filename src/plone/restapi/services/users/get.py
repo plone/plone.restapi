@@ -15,7 +15,7 @@ DEFAULT_SEARCH_RESULTS_LIMIT = 25
 @implementer(IPublishTraverse)
 class UsersGet(Service):
     def __init__(self, context, request):
-        super(UsersGet, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
         self.query = self.request.form.copy()
 

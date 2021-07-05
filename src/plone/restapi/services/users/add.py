@@ -41,7 +41,7 @@ class UsersPost(Service):
     """Creates a new user."""
 
     def __init__(self, context, request):
-        super(UsersPost, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):
@@ -79,12 +79,12 @@ class UsersPost(Service):
         for fieldname in required:
             if not data.get(fieldname, None):
                 self.add_field_error(
-                    fieldname, "Property '{}' is required.".format(fieldname)
+                    fieldname, f"Property '{fieldname}' is required."
                 )
         for fieldname in data:
             if fieldname not in allowed:
                 self.add_field_error(
-                    fieldname, "Property '{}' is not allowed.".format(fieldname)
+                    fieldname, f"Property '{fieldname}' is not allowed."
                 )
 
         password = data.get("password")
@@ -142,7 +142,7 @@ class UsersPost(Service):
             return dict(
                 error=dict(
                     type="WrongParameterError",
-                    message="Error in fields. {}".format(self.errors_to_string()),
+                    message=f"Error in fields. {self.errors_to_string()}",
                     errors=self.errors,
                 )
             )

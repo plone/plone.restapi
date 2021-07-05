@@ -11,7 +11,7 @@ class RolesGet(Service):
         return [
             {
                 "@type": "role",
-                "@id": "{}/@roles/{}".format(self.context.absolute_url(), r),
+                "@id": f"{self.context.absolute_url()}/@roles/{r}",
                 "id": r,
                 "title": translate(r, context=self.request, domain="plone"),
             }

@@ -24,7 +24,7 @@ import plone.protect.interfaces
 @implementer(IPublishTraverse)
 class TypesPut(Service):
     def __init__(self, context, request):
-        super(TypesPut, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):
@@ -42,9 +42,9 @@ class TypesPut(Service):
 
     def remove_fieldsets(self, ctype, data):
         fieldsets = [f.get("id") for f in data.get("fieldsets", [])]
-        existing = set(
+        existing = {
             f.__name__ for f in ctype.schema.queryTaggedValue(FIELDSETS_KEY, [])
-        )
+        }
 
         for fieldset in existing:
             if fieldset not in fieldsets:
@@ -53,14 +53,14 @@ class TypesPut(Service):
     def add_fieldsets(self, ctype, data):
         fieldsets = OrderedDict((f.get("id"), f) for f in data.get("fieldsets", []))
         info = get_info_for_type(ctype, self.request, ctype.getId())
-        existing = set(f.get("id") for f in info.get("fieldsets", []))
+        existing = {f.get("id") for f in info.get("fieldsets", [])}
         for name, fieldset in fieldsets.items():
             if name not in existing:
                 add_fieldset(ctype, self.request, fieldset)
 
     def remove_fields(self, ctype, data):
         fields = data.get("properties", {})
-        existing = set(name for name in ctype.schema)
+        existing = {name for name in ctype.schema}
         for name in existing:
             if name not in fields:
                 delete_field(ctype, self.request, name)
@@ -82,9 +82,9 @@ class TypesPut(Service):
             add_field(ctype, self.request, field)
 
     def update_fieldsets(self, ctype, data):
-        existing = set(
+        existing = {
             f.__name__ for f in ctype.schema.queryTaggedValue(FIELDSETS_KEY, [])
-        )
+        }
         existing.add("default")
         for fieldset in data.get("fieldsets", []):
             if fieldset.get("id") not in existing:

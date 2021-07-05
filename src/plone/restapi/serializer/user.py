@@ -11,7 +11,7 @@ from zope.schema import getFieldNames
 from plone.app.users.browser.userdatapanel import getUserDataSchema
 
 
-class BaseSerializer(object):
+class BaseSerializer:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -24,10 +24,10 @@ class BaseSerializer(object):
         roles = user.getRoles()
         # Anonymous and Authenticated are pseudo roles assign automatically
         # to logged-in or logged-out users. They should not be exposed here
-        roles = list(set(roles) - set(["Anonymous", "Authenticated"]))
+        roles = list(set(roles) - {"Anonymous", "Authenticated"})
 
         data = {
-            "@id": "{}/@users/{}".format(portal.absolute_url(), user.id),
+            "@id": f"{portal.absolute_url()}/@users/{user.id}",
             "id": user.id,
             "username": user.getUserName(),
             "roles": roles,

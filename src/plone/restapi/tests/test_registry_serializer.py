@@ -3,7 +3,6 @@ from plone.registry import Registry
 from plone.registry.record import Record
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from six.moves import range
 from zope.component import getMultiAdapter
 
 import unittest
@@ -32,7 +31,7 @@ class TestRegistrySerializer(unittest.TestCase):
         registry = Registry()
 
         for counter in range(1, 100):
-            record = Record(field.TextLine(title=u"Foo Bar"), u"Lorem Ipsum")
+            record = Record(field.TextLine(title="Foo Bar"), "Lorem Ipsum")
             registry.records["foo.bar" + str(counter)] = record
 
         obj = self.serialize(registry)
@@ -43,12 +42,12 @@ class TestRegistrySerializer(unittest.TestCase):
     def test_structure(self):
         registry = Registry()
 
-        record = Record(field.TextLine(title=u"Foo Bar"), u"Lorem Ipsum")
+        record = Record(field.TextLine(title="Foo Bar"), "Lorem Ipsum")
         registry.records["foo.bar"] = record
 
         obj = self.serialize(registry)
         item = obj["items"][0]
-        self.assertEqual(set(item), set(["name", "value", "schema"]))
-        self.assertEqual(set(item["schema"]), set(["properties"]))
+        self.assertEqual(set(item), {"name", "value", "schema"})
+        self.assertEqual(set(item["schema"]), {"properties"})
         self.assertEqual(item["name"], "foo.bar")
-        self.assertEqual(item["value"], u"Lorem Ipsum")
+        self.assertEqual(item["value"], "Lorem Ipsum")

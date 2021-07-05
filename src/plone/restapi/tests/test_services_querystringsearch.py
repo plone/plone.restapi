@@ -112,7 +112,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.json()["items_total"], 10)
         self.assertEqual(len(response.json()["items"]), 5)
         self.assertNotIn("effective", response.json()["items"][0])
-        self.assertEqual(response.json()["items"][4]["title"], u"Test Document 4")
+        self.assertEqual(response.json()["items"][4]["title"], "Test Document 4")
 
         response = self.api_session.post(
             "/@querystring-search",
@@ -135,7 +135,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.json()["items_total"], 10)
         self.assertEqual(len(response.json()["items"]), 5)
         self.assertNotIn("effective", response.json()["items"][0])
-        self.assertEqual(response.json()["items"][4]["title"], u"Test Document 9")
+        self.assertEqual(response.json()["items"][4]["title"], "Test Document 9")
 
     @unittest.skipIf(
         not SUPPORT_NOT_UUID_QUERIES,
@@ -164,7 +164,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.json()["items_total"], 1)
         self.assertEqual(
             response.json()["items"][0]["@id"],
-            "{}/testdocument2".format(self.portal.absolute_url()),
+            f"{self.portal.absolute_url()}/testdocument2",
         )
 
     def test_querystringsearch_sort(self):
@@ -255,9 +255,9 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.json()["items_total"], 10)
         self.assertEqual(
             response.json()["items"][0]["@id"],
-            "{}/testdocument".format(self.portal.absolute_url()),
+            f"{self.portal.absolute_url()}/testdocument",
         )
         self.assertEqual(
             response.json()["items"][-1]["@id"],
-            "{}/testdocument9".format(self.portal.absolute_url()),
+            f"{self.portal.absolute_url()}/testdocument9",
         )

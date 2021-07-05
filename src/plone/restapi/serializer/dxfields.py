@@ -28,7 +28,7 @@ log = logging.getLogger(__name__)
 
 @adapter(IField, IDexterityContent, Interface)
 @implementer(IFieldSerializer)
-class DefaultFieldSerializer(object):
+class DefaultFieldSerializer:
     def __init__(self, field, context, request):
         self.context = context
         self.request = request
@@ -78,7 +78,7 @@ class CollectionFieldSerializer(DefaultFieldSerializer):
             for v in value:
                 try:
                     term = value_type.vocabulary.getTerm(v)
-                    values.append({u"token": term.token, u"title": term.title})
+                    values.append({"token": term.token, "title": term.title})
                 except LookupError:
                     log.warning("Term lookup error: %r" % v)
             value = values
@@ -137,7 +137,7 @@ class RichttextFieldSerializer(DefaultFieldSerializer):
 class TextLineFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
         if self.field.getName() != "remoteUrl":
-            return super(TextLineFieldSerializer, self).__call__()
+            return super().__call__()
         value = self.get_value()
         path = replace_link_variables_by_paths(context=self.context, url=value)
         portal = getMultiAdapter(
@@ -151,7 +151,7 @@ class TextLineFieldSerializer(DefaultFieldSerializer):
 
 @adapter(IField, IDexterityContent, Interface)
 @implementer(IPrimaryFieldTarget)
-class DefaultPrimaryFieldTarget(object):
+class DefaultPrimaryFieldTarget:
     def __init__(self, field, context, request):
         self.context = context
         self.request = request

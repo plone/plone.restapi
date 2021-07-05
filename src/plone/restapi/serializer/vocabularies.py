@@ -15,7 +15,7 @@ import six
 
 
 @implementer(ISerializeToJson)
-class SerializeVocabLikeToJson(object):
+class SerializeVocabLikeToJson:
     """Base implementation to serialize vocabularies and sources to JSON.
 
     Implements server-side filtering as well as batching.
@@ -83,7 +83,7 @@ class SerializeSourceToJson(SerializeVocabLikeToJson):
 
 @implementer(ISerializeToJson)
 @adapter(ITokenizedTerm, Interface)
-class SerializeTermToJson(object):
+class SerializeTermToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -92,6 +92,6 @@ class SerializeTermToJson(object):
         term = self.context
         token = term.token
         title = term.title if ITitledTokenizedTerm.providedBy(term) else token
-        if isinstance(title, six.binary_type):
+        if isinstance(title, bytes):
             title = title.decode("UTF-8")
         return {"token": token, "title": translate(title, context=self.request)}

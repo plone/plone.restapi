@@ -32,7 +32,7 @@ class TestBlocksSerializer(unittest.TestCase):
         behavior_list.append("volto.blocks")
         fti.behaviors = tuple(behavior_list)
 
-        self.portal.invokeFactory("Document", id=u"doc1")
+        self.portal.invokeFactory("Document", id="doc1")
         self.image = self.portal[
             self.portal.invokeFactory("Image", id="image-1", title="Target image")
         ]
@@ -54,7 +54,7 @@ class TestBlocksSerializer(unittest.TestCase):
     def test_register_serializer(self):
         @adapter(IBlocks, IBrowserRequest)
         @implementer(IBlockFieldSerializationTransformer)
-        class TestAdapterA(object):
+        class TestAdapterA:
             order = 10
             block_type = "test_multi"
 
@@ -65,13 +65,13 @@ class TestBlocksSerializer(unittest.TestCase):
             def __call__(self, value):
                 self.context._handler_called_a = True
 
-                value["value"] = value["value"].replace(u"a", u"b")
+                value["value"] = value["value"].replace("a", "b")
 
                 return value
 
         @adapter(IBlocks, IBrowserRequest)
         @implementer(IBlockFieldSerializationTransformer)
-        class TestAdapterB(object):
+        class TestAdapterB:
             order = 11
             block_type = "test_multi"
 
@@ -82,7 +82,7 @@ class TestBlocksSerializer(unittest.TestCase):
             def __call__(self, value):
                 self.context._handler_called_b = True
 
-                value["value"] = value["value"].replace(u"b", u"c")
+                value["value"] = value["value"].replace("b", "c")
 
                 return value
 
@@ -90,9 +90,9 @@ class TestBlocksSerializer(unittest.TestCase):
         provideSubscriptionAdapter(TestAdapterB, (IDexterityItem, IBrowserRequest))
         value = self.serialize(
             context=self.portal.doc1,
-            blocks={"123": {"@type": "test_multi", "value": u"a"}},
+            blocks={"123": {"@type": "test_multi", "value": "a"}},
         )
-        self.assertEqual(value["123"]["value"], u"c")
+        self.assertEqual(value["123"]["value"], "c")
 
         sm = getGlobalSiteManager()
         sm.adapters.unsubscribe(
@@ -109,7 +109,7 @@ class TestBlocksSerializer(unittest.TestCase):
     def test_disabled_serializer(self):
         @implementer(IBlockFieldSerializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
-        class TestAdapter(object):
+        class TestAdapter:
             order = 10
             block_type = "test"
             disabled = True
@@ -121,7 +121,7 @@ class TestBlocksSerializer(unittest.TestCase):
             def __call__(self, value):
                 self.context._handler_called = True
 
-                value["value"] = u"changed: {}".format(value["value"])
+                value["value"] = "changed: {}".format(value["value"])
 
                 return value
 
@@ -131,11 +131,11 @@ class TestBlocksSerializer(unittest.TestCase):
         )
         value = self.serialize(
             context=self.portal.doc1,
-            blocks={"123": {"@type": "test", "value": u"text"}},
+            blocks={"123": {"@type": "test", "value": "text"}},
         )
 
         assert not getattr(self.portal.doc1, "_handler_called", False)
-        self.assertEqual(value["123"]["value"], u"text")
+        self.assertEqual(value["123"]["value"], "text")
 
         sm = getGlobalSiteManager()
         sm.adapters.unsubscribe(
@@ -151,7 +151,7 @@ class TestBlocksSerializer(unittest.TestCase):
             blocks={
                 "123": {
                     "@type": "foo",
-                    "href": [{"@id": "../resolveuid/{}".format(doc_uid)}],
+                    "href": [{"@id": f"../resolveuid/{doc_uid}"}],
                 }
             },
         )
@@ -165,7 +165,7 @@ class TestBlocksSerializer(unittest.TestCase):
         value = self.serialize(
             context=self.portal.doc1,
             blocks={
-                "123": {"@type": "foo", "href": ["../resolveuid/{}".format(doc_uid)]}
+                "123": {"@type": "foo", "href": [f"../resolveuid/{doc_uid}"]}
             },
         )
 
@@ -174,7 +174,7 @@ class TestBlocksSerializer(unittest.TestCase):
     def test_serialize_subblocks_transformers(self):
         # use the href smart field transformer for testing subblocks transformers
         doc_uid = IUUID(self.portal.doc1)
-        subblock = {"@type": "foo", "href": ["../resolveuid/{}".format(doc_uid)]}
+        subblock = {"@type": "foo", "href": [f"../resolveuid/{doc_uid}"]}
         value = self.serialize(
             context=self.portal.doc1,
             blocks={
@@ -194,7 +194,7 @@ class TestBlocksSerializer(unittest.TestCase):
     def test_internal_link_serializer(self):
         doc_uid = IUUID(self.portal["doc1"])
         resolve_uid_link = {
-            "@id": "../resolveuid/{}".format(doc_uid),
+            "@id": f"../resolveuid/{doc_uid}",
             "title": "Welcome to Plone",
         }
         blocks = {
@@ -245,7 +245,7 @@ class TestBlocksSerializer(unittest.TestCase):
 
     def test_simple_link_serializer(self):
         doc_uid = IUUID(self.portal["doc1"])
-        resolve_uid_link = "../resolveuid/{}".format(doc_uid)
+        resolve_uid_link = f"../resolveuid/{doc_uid}"
 
         blocks = {
             "abc": {

@@ -28,13 +28,13 @@ def check_security(context):
 
 @implementer(IExpandableElement)
 @adapter(IDexterityContent, Interface)
-class TypesInfo(object):
+class TypesInfo:
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, expand=False):
-        result = {"types": {"@id": "{}/@types".format(self.context.absolute_url())}}
+        result = {"types": {"@id": f"{self.context.absolute_url()}/@types"}}
         if not expand:
             return result
 
@@ -64,7 +64,7 @@ class TypesInfo(object):
 
         result["types"] = [
             {
-                "@id": "{}/@types/{}".format(portal_url, fti.getId()),
+                "@id": f"{portal_url}/@types/{fti.getId()}",
                 "title": translate(fti.Title(), context=self.request),
                 "addable": fti.getId() in allowed_types if can_add else False,
             }
@@ -77,7 +77,7 @@ class TypesInfo(object):
 @implementer(IPublishTraverse)
 class TypesGet(Service):
     def __init__(self, context, request):
-        super(TypesGet, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):

@@ -10,7 +10,7 @@ from zope.publisher.interfaces import IRequest
 
 @implementer(ISerializeToJson)
 @adapter(IRegistry, IRequest)
-class SerializeRegistryToJson(object):
+class SerializeRegistryToJson:
     def __init__(self, registry, request):
         self.registry = registry
         self.request = request

@@ -13,7 +13,7 @@ import json
 
 @implementer(IDeserializeFromJson)
 @adapter(IPloneSiteRoot, IRequest)
-class DeserializeSiteRootFromJson(OrderingMixin, object):
+class DeserializeSiteRootFromJson(OrderingMixin):
     """JSON deserializer for the Plone site root"""
 
     def __init__(self, context, request):

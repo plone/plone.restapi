@@ -3,7 +3,6 @@ from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.file import NamedBlobImage
 from Products.CMFCore.utils import getToolByName
-from six.moves import range
 from zope.component.hooks import getSite
 
 import os
@@ -35,10 +34,10 @@ def set_image(obj):
     if IDexterityContent.providedBy(obj):
         from plone.namedfile.file import NamedBlobImage
 
-        filename = os.path.join(os.path.dirname(__file__), u"image.png")
+        filename = os.path.join(os.path.dirname(__file__), "image.png")
         obj.image = NamedBlobImage(data=open(filename, "rb").read(), filename=filename)
     else:
-        filename = os.path.join(os.path.dirname(__file__), u"image.png")
+        filename = os.path.join(os.path.dirname(__file__), "image.png")
         obj.setImage(open(filename, "rb").read())
 
 
@@ -46,14 +45,14 @@ def set_file(obj):
     if IDexterityContent.providedBy(obj):
         from plone.namedfile.file import NamedBlobFile
 
-        filename = os.path.join(os.path.dirname(__file__), u"file.pdf")
+        filename = os.path.join(os.path.dirname(__file__), "file.pdf")
         obj.file = NamedBlobFile(
             data=open(filename, "rb").read(),
             filename=filename,
             contentType="application/pdf",
         )
     else:
-        filename = os.path.join(os.path.dirname(__file__), u"file.pdf")
+        filename = os.path.join(os.path.dirname(__file__), "file.pdf")
         obj.setFile(open(filename, "rb").read())
 
 
@@ -109,9 +108,9 @@ def step_setup_content(context):
     publish(folder10)
     for i in range(1, 11):
         folder10.invokeFactory(
-            "Document", id="doc{}".format(i), title="Doc {}".format(i)
+            "Document", id=f"doc{i}", title=f"Doc {i}"
         )
-        publish(folder10["doc{}".format(i)])
+        publish(folder10[f"doc{i}"])
 
     # Folder with 100 Items
     portal.invokeFactory("Folder", id="folder-with-100-items", title="Folder 100")
@@ -120,9 +119,9 @@ def step_setup_content(context):
     publish(folder100)
     for i in range(1, 101):
         folder100.invokeFactory(
-            "Document", id="doc{}".format(i), title="Doc {}".format(i)
+            "Document", id=f"doc{i}", title=f"Doc {i}"
         )
-        publish(folder100["doc{}".format(i)])
+        publish(folder100[f"doc{i}"])
 
     # Folder with 1000 Items
     portal.invokeFactory("Folder", id="folder-with-1000-items", title="Folder 1000")
@@ -131,9 +130,9 @@ def step_setup_content(context):
     publish(folder1000)
     for i in range(1, 1001):
         folder1000.invokeFactory(
-            "Document", id="doc{}".format(i), title="Doc {}".format(i)
+            "Document", id=f"doc{i}", title=f"Doc {i}"
         )
-        publish(folder1000["doc{}".format(i)])
+        publish(folder1000[f"doc{i}"])
 
     # Folder with 10 Items and next/previous enabled
     portal.invokeFactory(
@@ -147,9 +146,9 @@ def step_setup_content(context):
     publish(folder10np)
     for i in range(1, 11):
         folder10np.invokeFactory(
-            "Document", id="doc{}".format(i), title="Doc {}".format(i)
+            "Document", id=f"doc{i}", title=f"Doc {i}"
         )
-        publish(folder10np["doc{}".format(i)])
+        publish(folder10np[f"doc{i}"])
 
     # Collection
     portal.invokeFactory("Collection", id="collection", title="Collection")
@@ -203,28 +202,28 @@ def step_setup_content(context):
 
     # Image 1 MB
     portal.invokeFactory("Image", id="image-1mb", title="Image 1 MB")
-    filename = os.path.join(os.path.dirname(__file__), "images", u"image-1mb.jpg")
+    filename = os.path.join(os.path.dirname(__file__), "images", "image-1mb.jpg")
     portal.get("image-1mb").image = NamedBlobImage(
         data=open(filename, "rb").read(), filename=filename
     )
 
     # Image 2 MB
     portal.invokeFactory("Image", id="image-2mb", title="Image 2 MB")
-    filename = os.path.join(os.path.dirname(__file__), "images", u"image-2mb.jpg")
+    filename = os.path.join(os.path.dirname(__file__), "images", "image-2mb.jpg")
     portal.get("image-2mb").image = NamedBlobImage(
         data=open(filename, "rb").read(), filename=filename
     )
 
     # Image 3 MB
     portal.invokeFactory("Image", id="image-3mb", title="Image 3 MB")
-    filename = os.path.join(os.path.dirname(__file__), "images", u"image-3mb.jpg")
+    filename = os.path.join(os.path.dirname(__file__), "images", "image-3mb.jpg")
     portal.get("image-3mb").image = NamedBlobImage(
         data=open(filename, "rb").read(), filename=filename
     )
 
     # Image 10 MB
     portal.invokeFactory("Image", id="image-10mb", title="Image 10 MB")
-    filename = os.path.join(os.path.dirname(__file__), "images", u"image-10mb.jpg")
+    filename = os.path.join(os.path.dirname(__file__), "images", "image-10mb.jpg")
     portal.get("image-10mb").image = NamedBlobImage(
         data=open(filename, "rb").read(), filename=filename
     )
@@ -236,29 +235,29 @@ def step_setup_content(context):
 
     for i in range(1, 31):
         volto_page.invokeFactory(
-            "News Item", id="newsitem{}".format(i), title="NewsItem {}".format(i)
+            "News Item", id=f"newsitem{i}", title=f"NewsItem {i}"
         )
-        newsitem = volto_page.get("newsitem{}".format(i))
+        newsitem = volto_page.get(f"newsitem{i}")
         set_description(newsitem)
         set_text(newsitem)
-        image_file = os.path.join(os.path.dirname(__file__), u"image.jpeg")
+        image_file = os.path.join(os.path.dirname(__file__), "image.jpeg")
         with open(image_file, "rb") as f:
             image_data = f.read()
         newsitem.image = NamedBlobImage(
-            data=image_data, contentType="image/jpeg", filename=u"image.jpeg"
+            data=image_data, contentType="image/jpeg", filename="image.jpeg"
         )
         publish(newsitem)
         newsitem.reindexObject()
 
     for i in range(1, 31):
         volto_page.invokeFactory(
-            "Image", id="image{}".format(i), title="Image {}".format(i)
+            "Image", id=f"image{i}", title=f"Image {i}"
         )
-        image_file = os.path.join(os.path.dirname(__file__), u"image.jpeg")
+        image_file = os.path.join(os.path.dirname(__file__), "image.jpeg")
         with open(image_file, "rb") as f:
             image_data = f.read()
-        volto_page.get("image{}".format(i)).image = NamedBlobImage(
-            data=image_data, contentType="image/jpeg", filename=u"image.jpeg"
+        volto_page.get(f"image{i}").image = NamedBlobImage(
+            data=image_data, contentType="image/jpeg", filename="image.jpeg"
         )
 
     # Volto

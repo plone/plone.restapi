@@ -19,7 +19,7 @@ class UpdateWorkingCopy(Service):
             # We are in the baseline, get the working copy policy
             policy = ICheckinCheckoutPolicy(working_copy)
 
-        control = getMultiAdapter((working_copy, self.request), name=u"iterate_control")
+        control = getMultiAdapter((working_copy, self.request), name="iterate_control")
         if not control.checkin_allowed():
             pm = getToolByName(self.context, "portal_membership")
             if bool(pm.isAnonymousUser()):
