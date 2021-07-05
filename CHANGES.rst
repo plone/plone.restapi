@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+8.3.2 (2021-07-05)
+------------------
+
+Bug fixes:
+
+
+- Fix navigation endpoint sort by adding default `sort_on='getObjPositionInParent'` to the query.  @valipod @tiberiuichim (#1107)
+
+
 8.3.1 (2021-07-02)
 ------------------
 
