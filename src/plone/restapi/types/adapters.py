@@ -96,7 +96,7 @@ class DefaultJsonSchemaProvider(object):
         pass
 
     def get_widget(self):
-        pass
+        return getattr(self.field, "widget", None)
 
     def get_widget_params(self):
         all_params = get_widget_params([self.field.interface])
