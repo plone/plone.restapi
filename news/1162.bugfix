@@ -1,0 +1,3 @@
+In src run `find . -name "*.py"|xargs pyupgrade --py36-plus`.
+Then run black and remove six import leftovers. 
+[jensens]
