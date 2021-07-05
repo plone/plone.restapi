@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from DateTime import DateTime
 from plone.restapi.exceptions import QueryParsingError
 from plone.restapi.search.query import BaseIndexQueryParser

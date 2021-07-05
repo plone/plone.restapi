@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.requestmethod import postonly
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from BTrees.OIBTree import OIBTree

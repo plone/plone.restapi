@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.iterate.interfaces import ICheckinCheckoutPolicy
 from plone.restapi.services import Service
 from zope.component import getMultiAdapter

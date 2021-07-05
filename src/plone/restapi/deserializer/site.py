@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.deserializer import json_body
 from plone.restapi.deserializer.mixins import OrderingMixin
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer

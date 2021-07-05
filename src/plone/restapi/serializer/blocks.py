@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from copy import deepcopy
 from plone.outputfilters.browser.resolveuid import uuidToObject
 from plone.outputfilters.browser.resolveuid import uuidToURL

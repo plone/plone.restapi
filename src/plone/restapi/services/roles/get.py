@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName

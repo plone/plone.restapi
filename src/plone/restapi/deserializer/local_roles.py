@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.interfaces import IRoleManager
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson

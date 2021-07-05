@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from collections import defaultdict
 from plone.app.layout.navigation.root import getNavigationRoot

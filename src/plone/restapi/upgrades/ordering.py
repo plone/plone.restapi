@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from persistent.list import PersistentList
 from plone.folder.default import DefaultOrdering
 from Products.CMFCore.utils import getToolByName

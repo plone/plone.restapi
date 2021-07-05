@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """ A flexible navigation service that uses class navigation portlet semantics
 """
 

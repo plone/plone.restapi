@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import division
 from six.moves import map
 from zope.component import getMultiAdapter

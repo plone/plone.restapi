@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 The adapters in this module are responsible for turning back a catalog query
 that has been serialized (to a HTTP query string or JSON) into a query that is

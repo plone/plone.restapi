@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import IPloneRestapiLayer

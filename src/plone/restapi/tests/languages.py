@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from plone.app.i18n.locales.languages import ContentLanguages
 from plone.app.i18n.locales.languages import MetadataLanguages
 from plone.i18n.locales.languages import _combinedlanguagelist

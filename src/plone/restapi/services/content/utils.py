@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from DateTime import DateTime
 from plone.app.content.interfaces import INameFromTitle

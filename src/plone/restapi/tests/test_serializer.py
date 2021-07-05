@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from DateTime import DateTime
 from mock import patch
 from plone.app.testing import setRoles

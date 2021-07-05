@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from DateTime import DateTime
 from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.app.testing import popGlobalRegistry

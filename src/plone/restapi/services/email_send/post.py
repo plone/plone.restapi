@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from AccessControl.Permissions import use_mailhost_services
 from email.mime.text import MIMEText

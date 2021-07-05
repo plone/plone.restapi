@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from .mixins import OrderingMixin
 from AccessControl import getSecurityManager
 from plone.autoform.interfaces import WRITE_PERMISSIONS_KEY

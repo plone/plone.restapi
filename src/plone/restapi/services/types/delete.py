@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
 from plone.restapi.types.utils import delete_field
