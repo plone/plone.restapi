@@ -1,47 +1,50 @@
 <h1 tal:replace="structure here/manage_page_header"> PAGE HEADER </h1>
-<h2 tal:replace="structure here/manage_tabs"> PAGE HEADER </h2>
+<h2 tal:define="global manage_tabs_message request/manage_tabs_message | nothing;
+                form_title string:JWT Authentication"
+    tal:replace="structure here/manage_tabs"> TABS </h2>
 
-<h3>JWT Authentication</h3>
+<main class="container-fluid">
+  <p class="form-help">
+    Choose the functionality this Plone JWT Authentication Plugin will perform.
+  </p>
+  <form action="manage_updateConfig" method="post">
+    <div class="form-group">
+      <label class="form-label" for="token_timeout">Token Validity Timeout (in seconds)</label>
+      <input type="text"       
+             name="token_timeout"
+             class="form-control"
+             tal:attributes="value context/token_timeout|nothing"/>
+      <small class="form-text text-muted">After this, the token is invalid and the user must login again. Set to 0 for the token to remain valid indefinitely.</small>
+    </div>
+    
+    <div class="form-group">
+      <div class="form-check">
+        <input class="form-check-input" 
+               type="checkbox" value="" 
+               name="use_keyring" 
+               id="use_keyring" 
+               tal:attributes="checked python: context.use_keyring and 'checked'">
+        <label class="form-check-label" for="use_keyring">Use Keyring</label>
+        <small class="form-text text-muted">If enabled, tokens are signed with a secret from Plone's keyring. If you want tokens that remain valid indefinitely you should disable this.</small>
+      </div>
+    </div>
 
-    <p class="form-help">
-      Plone PAS plugin for authentication with JSON web tokens (JWT).
-    </p>
+    <div class="form-group">
+      <div class="form-check">
+        <input class="form-check-input" 
+               type="checkbox" value="" 
+               name="store_tokens" 
+               id="store_tokens" 
+               tal:attributes="checked python: context.store_tokens and 'checked'">
+        <label class="form-check-label" for="store_tokens">Store tokens</label>
+        <small class="form-text text-muted">By default tokens are not stored on the server and thus can't be invalidated. If enabled, tokens that don't expire can be invalidated.</small>
+      </div>
+    </div>
+    <div class="zmi-controls">
+      <button class="btn btn-primary" type="submit">Update</button>
+    </div>
+  </form>
 
-    <form action="manage_updateConfig" method="post">
-      <table>
-        <tr valign="top">
-          <td><div class="form-label">Token Validity Timeout (in seconds)</div>
-          <div class="form-help">After this, the token is invalid and the user
-          must login again. Set to 0 for the token to remain valid indefinitely.</div>
-          </td>
-          <td><input type="text" name="token_timeout"
-                     tal:attributes="value context/token_timeout|nothing"/></td>
-        </tr>
-        <tr>
-          <td align="left" valign="top">
-            <input type="checkbox" name="use_keyring" id="use-keyring"
-                   tal:attributes="checked python: context.use_keyring and 'checked'"/>&nbsp;<label class="form-label" for="use-keyring">Use Keyring</label>
-            <div class="form-help">If enabled, tokens are signed with a secret from
-            Plone's keyring. If you want tokens that remain valid indefinitely you should disable this.</div>
-          </td>
-        </tr>
-        <tr>
-          <td align="left" valign="top">
-            <input type="checkbox" name="store_tokens" id="store-tokens"
-                   tal:attributes="checked python: context.store_tokens and 'checked'"/>&nbsp;<label class="form-label" for="store-tokens">Store tokens</label>
-            <div class="form-help">By default tokens are not stored on the server and
-            thus can't be invalidated. If enabled, tokens that don't expire can be invalidated.</div>
-          </td>
-        </tr>
-        <tr>
-          <td colspan="2">
-            <div class="form-element">
-              <input type="submit" value="Update"/>
-            </div>
-          </td>
-        </tr>
-      </table>
-    </form>
+</main>
 
-
-<h1 tal:replace="structure here/manage_page_footer"> PAGE FOOTER </h1>
+<h2 tal:replace="structure here/manage_page_footer"> PAGE FOOTER </h2>
