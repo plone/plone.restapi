@@ -432,7 +432,7 @@ class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
             "additional": key_type.additional(),
         }
         value_type = getMultiAdapter(
-            (self.field.key_type, self.context, self.request), IJsonSchemaProvider
+            (self.field.value_type, self.context, self.request), IJsonSchemaProvider
         )
         info["value_type"] = {
             "schema": value_type.get_schema(),
