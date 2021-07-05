@@ -183,25 +183,29 @@ class TestServicesNavigation(unittest.TestCase):
             "/folder/@navigation", params={"expand.navigation.depth": 2}
         ).json()
 
-        contents = response['items'][1]['items']
-        self.assertEqual([p['@id'].replace(self.portal.absolute_url(), '') for p in contents],
-                         [
-            '/folder/subfolder1',
-            '/folder/subfolder2',
-            '/folder/doc1',
-            '/folder/example-file-1'
-        ])
+        contents = response["items"][1]["items"]
+        self.assertEqual(
+            [p["@id"].replace(self.portal.absolute_url(), "") for p in contents],
+            [
+                "/folder/subfolder1",
+                "/folder/subfolder2",
+                "/folder/doc1",
+                "/folder/example-file-1",
+            ],
+        )
 
-        self.portal['folder'].moveObjectsUp(['example-file-1'])
+        self.portal["folder"].moveObjectsUp(["example-file-1"])
         transaction.commit()
         response = self.api_session.get(
             "/folder/@navigation", params={"expand.navigation.depth": 2}
         ).json()
-        contents = response['items'][1]['items']
-        self.assertEqual([p['@id'].replace(self.portal.absolute_url(), '') for p in contents],
-                         [
-            '/folder/subfolder1',
-            '/folder/subfolder2',
-            '/folder/example-file-1',
-            '/folder/doc1',
-        ])
+        contents = response["items"][1]["items"]
+        self.assertEqual(
+            [p["@id"].replace(self.portal.absolute_url(), "") for p in contents],
+            [
+                "/folder/subfolder1",
+                "/folder/subfolder2",
+                "/folder/example-file-1",
+                "/folder/doc1",
+            ],
+        )
