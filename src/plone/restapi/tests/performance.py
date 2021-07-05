@@ -107,9 +107,7 @@ def step_setup_content(context):
     set_description(folder10)
     publish(folder10)
     for i in range(1, 11):
-        folder10.invokeFactory(
-            "Document", id=f"doc{i}", title=f"Doc {i}"
-        )
+        folder10.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
         publish(folder10[f"doc{i}"])
 
     # Folder with 100 Items
@@ -118,9 +116,7 @@ def step_setup_content(context):
     set_description(folder100)
     publish(folder100)
     for i in range(1, 101):
-        folder100.invokeFactory(
-            "Document", id=f"doc{i}", title=f"Doc {i}"
-        )
+        folder100.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
         publish(folder100[f"doc{i}"])
 
     # Folder with 1000 Items
@@ -129,9 +125,7 @@ def step_setup_content(context):
     set_description(folder1000)
     publish(folder1000)
     for i in range(1, 1001):
-        folder1000.invokeFactory(
-            "Document", id=f"doc{i}", title=f"Doc {i}"
-        )
+        folder1000.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
         publish(folder1000[f"doc{i}"])
 
     # Folder with 10 Items and next/previous enabled
@@ -145,9 +139,7 @@ def step_setup_content(context):
     set_description(folder10np)
     publish(folder10np)
     for i in range(1, 11):
-        folder10np.invokeFactory(
-            "Document", id=f"doc{i}", title=f"Doc {i}"
-        )
+        folder10np.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
         publish(folder10np[f"doc{i}"])
 
     # Collection
@@ -234,9 +226,7 @@ def step_setup_content(context):
     publish(volto_page)
 
     for i in range(1, 31):
-        volto_page.invokeFactory(
-            "News Item", id=f"newsitem{i}", title=f"NewsItem {i}"
-        )
+        volto_page.invokeFactory("News Item", id=f"newsitem{i}", title=f"NewsItem {i}")
         newsitem = volto_page.get(f"newsitem{i}")
         set_description(newsitem)
         set_text(newsitem)
@@ -250,9 +240,7 @@ def step_setup_content(context):
         newsitem.reindexObject()
 
     for i in range(1, 31):
-        volto_page.invokeFactory(
-            "Image", id=f"image{i}", title=f"Image {i}"
-        )
+        volto_page.invokeFactory("Image", id=f"image{i}", title=f"Image {i}")
         image_file = os.path.join(os.path.dirname(__file__), "image.jpeg")
         with open(image_file, "rb") as f:
             image_data = f.read()

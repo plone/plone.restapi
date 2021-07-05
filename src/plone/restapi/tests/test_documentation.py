@@ -124,9 +124,7 @@ def save_request_and_response_for_docs(name, response):
                 response.request.prepare_body(data=body, files=None)
 
             req.flush()
-            if isinstance(response.request.body, str) or not hasattr(
-                req, "buffer"
-            ):
+            if isinstance(response.request.body, str) or not hasattr(req, "buffer"):
                 req.write(response.request.body)
             else:
                 req.buffer.seek(0, 2)
@@ -176,9 +174,7 @@ def save_request_for_docs(name, response):
                 response.request.prepare_body(data=body, files=None)
 
             req.flush()
-            if isinstance(response.request.body, str) or not hasattr(
-                req, "buffer"
-            ):
+            if isinstance(response.request.body, str) or not hasattr(req, "buffer"):
                 req.write(response.request.body)
             else:
                 req.buffer.seek(0, 2)
@@ -246,9 +242,7 @@ class TestDocumentation(TestDocumentationBase):
         self.portal.invokeFactory("Document", id="front-page")
         document = self.portal["front-page"]
         document.title = "Welcome to Plone"
-        document.description = (
-            "Congratulations! You have successfully installed Plone."
-        )
+        document.description = "Congratulations! You have successfully installed Plone."
         document.text = RichTextValue(
             "If you're seeing this instead of the web site you were "
             + "expecting, the owner of this web site has just installed "
@@ -467,9 +461,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("search_fullobjects", response)
 
     def test_documentation_workflow(self):
-        response = self.api_session.get(
-            f"{self.document.absolute_url()}/@workflow"
-        )
+        response = self.api_session.get(f"{self.document.absolute_url()}/@workflow")
         save_request_and_response_for_docs("workflow_get", response)
 
     def test_documentation_workflow_transition(self):
@@ -1136,15 +1128,11 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("groups_delete", response)
 
     def test_documentation_breadcrumbs(self):
-        response = self.api_session.get(
-            f"{self.document.absolute_url()}/@breadcrumbs"
-        )
+        response = self.api_session.get(f"{self.document.absolute_url()}/@breadcrumbs")
         save_request_and_response_for_docs("breadcrumbs", response)
 
     def test_documentation_navigation(self):
-        response = self.api_session.get(
-            f"{self.document.absolute_url()}/@navigation"
-        )
+        response = self.api_session.get(f"{self.document.absolute_url()}/@navigation")
         save_request_and_response_for_docs("navigation", response)
 
     def test_documentation_navigation_tree(self):
@@ -1157,9 +1145,7 @@ class TestDocumentation(TestDocumentationBase):
         subfolder1 = createContentInContainer(
             folder, "Folder", id="subfolder1", title="SubFolder 1"
         )
-        createContentInContainer(
-            folder, "Folder", id="subfolder2", title="SubFolder 2"
-        )
+        createContentInContainer(folder, "Folder", id="subfolder2", title="SubFolder 2")
         thirdlevelfolder = createContentInContainer(
             subfolder1, "Folder", id="thirdlevelfolder", title="Third Level Folder"
         )
@@ -1188,9 +1174,7 @@ class TestDocumentation(TestDocumentationBase):
         subfolder1 = createContentInContainer(
             folder, "Folder", id="subfolder1", title="SubFolder 1"
         )
-        createContentInContainer(
-            folder, "Folder", id="subfolder2", title="SubFolder 2"
-        )
+        createContentInContainer(folder, "Folder", id="subfolder2", title="SubFolder 2")
         thirdlevelfolder = createContentInContainer(
             subfolder1, "Folder", id="thirdlevelfolder", title="Third Level Folder"
         )
@@ -1587,9 +1571,7 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
         self.portal.invokeFactory("Document", id="front-page")
         document = self.portal["front-page"]
         document.title = "Welcome to Plone"
-        document.description = (
-            "Congratulations! You have successfully installed Plone."
-        )
+        document.description = "Congratulations! You have successfully installed Plone."
         document.text = RichTextValue(
             "If you're seeing this instead of the web site you were "
             + "expecting, the owner of this web site has just installed "
@@ -1645,9 +1627,7 @@ class TestCommenting(TestDocumentationBase):
         document = self.portal["front-page"]
         document.allow_discussion = True
         document.title = "Welcome to Plone"
-        document.description = (
-            "Congratulations! You have successfully installed Plone."
-        )
+        document.description = "Congratulations! You have successfully installed Plone."
         document.text = RichTextValue(
             "If you're seeing this instead of the web site you were "
             + "expecting, the owner of this web site has just installed "

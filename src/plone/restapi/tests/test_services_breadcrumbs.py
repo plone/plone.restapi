@@ -36,9 +36,7 @@ class TestServicesBreadcrumbs(unittest.TestCase):
         self.folder = createContentInContainer(
             self.portal, "Folder", id="folder", title="Some Folder"
         )
-        createContentInContainer(
-            self.folder, "Document", id="doc1", title="A document"
-        )
+        createContentInContainer(self.folder, "Document", id="doc1", title="A document")
         transaction.commit()
 
     def tearDown(self):
@@ -95,9 +93,7 @@ class TestServicesMultilingualBreadcrumbs(unittest.TestCase):
         self.folder = createContentInContainer(
             self.portal["es"], "Folder", id="folder", title="Some Folder"
         )
-        createContentInContainer(
-            self.folder, "Document", id="doc1", title="A document"
-        )
+        createContentInContainer(self.folder, "Document", id="doc1", title="A document")
         transaction.commit()
 
     def tearDown(self):

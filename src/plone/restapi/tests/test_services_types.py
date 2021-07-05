@@ -66,9 +66,7 @@ class TestServicesTypes(unittest.TestCase):
         self.api_session.close()
 
     def test_get_types(self):
-        response = self.api_session.get(
-            f"{self.portal.absolute_url()}/@types"
-        )  # noqa
+        response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -82,9 +80,7 @@ class TestServicesTypes(unittest.TestCase):
             self.assertEqual(sorted(item), sorted(["@id", "title", "addable"]))
 
     def test_get_types_document(self):
-        response = self.api_session.get(
-            f"{self.portal.absolute_url()}/@types/Document"
-        )
+        response = self.api_session.get(f"{self.portal.absolute_url()}/@types/Document")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -464,15 +460,11 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_types_endpoint_only_accessible_for_authenticated_users(self):
         self.api_session.auth = ()
-        response = self.api_session.get(
-            f"{self.portal.absolute_url()}/@types"
-        )  # noqa
+        response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa
         self.assertEqual(response.status_code, 401)
 
     def test_contextaware_addable(self):
-        response = self.api_session.get(
-            f"{self.portal.absolute_url()}/@types"
-        )  # noqa
+        response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa
 
         allowed_ids = [x.getId() for x in self.portal.allowedContentTypes()]
 
@@ -569,9 +561,7 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
         self.api_session.close()
 
     def test_get_types_translated(self):
-        response = self.api_session.get(
-            f"{self.portal.absolute_url()}/@types"
-        )  # noqa
+        response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa
 
         self.assertEqual(response.status_code, 200)
 

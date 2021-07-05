@@ -120,9 +120,7 @@ class TestJsonCompatibleConverters(TestCase):
         )
 
     def test_set(self):
-        self.assertEqual(
-            [[1, 1], [2, 2]], sorted(json_compatible({(1, 1), (2, 2)}))
-        )
+        self.assertEqual([[1, 1], [2, 2]], sorted(json_compatible({(1, 1), (2, 2)})))
 
     def test_dict(self):
         self.assertEqual(

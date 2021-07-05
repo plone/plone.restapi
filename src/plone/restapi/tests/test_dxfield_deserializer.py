@@ -122,9 +122,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertEqual(datetime(2015, 12, 20, 9, 39, 54, 361000), value)
 
     def test_datetime_with_tz_deserialization_keeps_timezone(self):
-        value = self.deserialize(
-            "test_datetime_tz_field", "2015-12-20T10:39:54.361+01"
-        )
+        value = self.deserialize("test_datetime_tz_field", "2015-12-20T10:39:54.361+01")
         self.assertEqual(
             timezone("Europe/Zurich").localize(
                 datetime(2015, 12, 20, 10, 39, 54, 361000)
@@ -133,9 +131,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         )
 
     def test_datetime_with_tz_deserialization_converts_timezone(self):
-        value = self.deserialize(
-            "test_datetime_tz_field", "2015-12-20T10:39:54.361-04"
-        )
+        value = self.deserialize("test_datetime_tz_field", "2015-12-20T10:39:54.361-04")
         self.assertEqual(
             timezone("Europe/Zurich").localize(
                 datetime(2015, 12, 20, 15, 39, 54, 361000)
@@ -153,9 +149,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         )
 
     def test_datetime_with_tz_deserialization_handles_dst(self):
-        value = self.deserialize(
-            "test_datetime_tz_field", "2015-05-20T10:39:54.361+02"
-        )
+        value = self.deserialize("test_datetime_tz_field", "2015-05-20T10:39:54.361+02")
         self.assertEqual(
             timezone("Europe/Zurich").localize(
                 datetime(2015, 5, 20, 10, 39, 54, 361000)
@@ -342,9 +336,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertTrue(value.data.startswith(b"GIF89a"))
 
     def test_namedblobfile_deserialization_returns_namedblobfile(self):
-        value = self.deserialize(
-            "test_namedblobfile_field", {"data": "Spam and eggs!"}
-        )
+        value = self.deserialize("test_namedblobfile_field", {"data": "Spam and eggs!"})
         self.assertTrue(
             isinstance(value, namedfile.NamedBlobFile), "Not a <NamedBlobFile>"
         )
@@ -403,9 +395,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
                 "DXTestDocument", id="doc2", title="Referenceable Document"
             )
         ]
-        value = self.deserialize(
-            "test_relationchoice_field", str(doc2.absolute_url())
-        )
+        value = self.deserialize("test_relationchoice_field", str(doc2.absolute_url()))
         self.assertEqual(doc2, value)
 
     def test_relationchoice_deserialization_from_path_returns_document(self):
@@ -451,9 +441,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
 
     def test_relationchoice_deserialization_from_invalid_path_raises(self):
         with self.assertRaises(ValueError) as cm:
-            self.deserialize(
-                "test_relationchoice_field", "/doesnotexist"
-            )
+            self.deserialize("test_relationchoice_field", "/doesnotexist")
         self.assertEqual(
             str(cm.exception), "Could not resolve object for path=/doesnotexist"
         )

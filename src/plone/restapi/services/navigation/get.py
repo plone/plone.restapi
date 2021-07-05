@@ -41,9 +41,7 @@ class Navigation:
         else:
             self.depth = 1
 
-        result = {
-            "navigation": {"@id": f"{self.context.absolute_url()}/@navigation"}
-        }
+        result = {"navigation": {"@id": f"{self.context.absolute_url()}/@navigation"}}
         if not expand:
             return result
 

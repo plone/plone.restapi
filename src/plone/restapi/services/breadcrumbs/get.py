@@ -14,11 +14,7 @@ class Breadcrumbs:
         self.request = request
 
     def __call__(self, expand=False):
-        result = {
-            "breadcrumbs": {
-                "@id": f"{self.context.absolute_url()}/@breadcrumbs"
-            }
-        }
+        result = {"breadcrumbs": {"@id": f"{self.context.absolute_url()}/@breadcrumbs"}}
         if not expand:
             return result
 

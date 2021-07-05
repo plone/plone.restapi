@@ -21,9 +21,7 @@ class TestCatalogSerializers(unittest.TestCase):
         self.catalog = getToolByName(self.portal, "portal_catalog")
 
         # /plone/my-folder
-        self.folder = createContentInContainer(
-            self.portal, "Folder", title="My Folder"
-        )
+        self.folder = createContentInContainer(self.portal, "Folder", title="My Folder")
 
         # /plone/my-folder/my-document
         self.doc = createContentInContainer(

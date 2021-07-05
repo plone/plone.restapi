@@ -50,9 +50,7 @@ class AddonsPost(Service):
             )
             all_addons = control_panel.get_addons()
 
-            result = {
-                "items": {"@id": f"{self.context.absolute_url()}/@addons"}
-            }
+            result = {"items": {"@id": f"{self.context.absolute_url()}/@addons"}}
             addons_data = []
             for a in all_addons.values():
                 addons_data.append(self.addons.serializeAddon(a))

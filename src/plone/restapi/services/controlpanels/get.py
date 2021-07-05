@@ -27,9 +27,7 @@ class ControlpanelsGet(Service):
 
     def available_controlpanels(self):
         panels = dict(self.get_controlpanel_adapters())
-        panels_by_configlet = {
-            p.configlet_id: name for name, p in panels.items()
-        }
+        panels_by_configlet = {p.configlet_id: name for name, p in panels.items()}
 
         pctool = getToolByName(self.context, "portal_controlpanel")
         for group in pctool.getGroups():

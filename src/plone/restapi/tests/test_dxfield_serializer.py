@@ -902,9 +902,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
         self.assertEqual(
             {
                 "content-type": "image/gif",
-                "download": "{}/@@images/{}.{}".format(
-                    obj_url, scale_url_uuid, "gif"
-                ),
+                "download": "{}/@@images/{}.{}".format(obj_url, scale_url_uuid, "gif"),
                 "filename": "1024x768.gif",
                 "height": -1,
                 "scales": {},
@@ -1003,9 +1001,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
         self.assertEqual(
             {
                 "content-type": "image/gif",
-                "download": "{}/@@images/{}.{}".format(
-                    obj_url, scale_url_uuid, "gif"
-                ),
+                "download": "{}/@@images/{}.{}".format(obj_url, scale_url_uuid, "gif"),
                 "filename": "1024x768.gif",
                 "height": -1,
                 "scales": {},

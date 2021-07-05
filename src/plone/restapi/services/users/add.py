@@ -78,9 +78,7 @@ class UsersPost(Service):
         # check input data
         for fieldname in required:
             if not data.get(fieldname, None):
-                self.add_field_error(
-                    fieldname, f"Property '{fieldname}' is required."
-                )
+                self.add_field_error(fieldname, f"Property '{fieldname}' is required.")
         for fieldname in data:
             if fieldname not in allowed:
                 self.add_field_error(

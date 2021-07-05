@@ -135,9 +135,7 @@ class TestHistoryEndpointEmptyOrInacessibleHistory(unittest.TestCase):
         types = list(portal_repository.getVersionableContentTypes())
         types.remove(content_type)
         portal_repository.setVersionableContentTypes(types)
-        portal_repository.removePolicyFromContentType(
-            content_type, "version_on_revert"
-        )
+        portal_repository.removePolicyFromContentType(content_type, "version_on_revert")
 
     def setUp(self):
         self.portal = self.layer["portal"]

@@ -20,9 +20,7 @@ class WorkflowInfo:
         self.request = request
 
     def __call__(self, expand=False):
-        result = {
-            "workflow": {"@id": f"{self.context.absolute_url()}/@workflow"}
-        }
+        result = {"workflow": {"@id": f"{self.context.absolute_url()}/@workflow"}}
         if not expand:
             return result
 

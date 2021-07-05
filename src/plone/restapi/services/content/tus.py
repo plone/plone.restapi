@@ -175,12 +175,8 @@ class UploadHead(UploadFileBase):
         if not self.check_tus_version():
             return self.unsupported_version()
 
-        self.request.response.setHeader(
-            "Upload-Length", f"{tus_upload.length()}"
-        )
-        self.request.response.setHeader(
-            "Upload-Offset", f"{tus_upload.offset()}"
-        )
+        self.request.response.setHeader("Upload-Length", f"{tus_upload.length()}")
+        self.request.response.setHeader("Upload-Offset", f"{tus_upload.offset()}")
         self.request.response.setHeader("Tus-Resumable", "1.0.0")
         self.request.response.setHeader("Cache-Control", "no-store")
         self.request.response.setStatus(200, lock=1)

@@ -56,9 +56,7 @@ class TestServicesNavigation(unittest.TestCase):
             id="fourthlevelfolder",
             title="Fourth Level Folder",
         )
-        createContentInContainer(
-            self.folder, "Document", id="doc1", title="A document"
-        )
+        createContentInContainer(self.folder, "Document", id="doc1", title="A document")
         transaction.commit()
 
     def tearDown(self):

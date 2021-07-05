@@ -48,9 +48,7 @@ class SourcesGet(Service):
             )
 
         serializer = getMultiAdapter((source, self.request), interface=ISerializeToJson)
-        return serializer(
-            f"{self.context.absolute_url()}/@sources/{fieldname}"
-        )
+        return serializer(f"{self.context.absolute_url()}/@sources/{fieldname}")
 
 
 def get_field_by_name(fieldname, context):

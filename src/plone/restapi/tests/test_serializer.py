@@ -76,9 +76,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         )
 
     def test_serialize_returns_rich_text(self):
-        self.portal.doc1.text = RichTextValue(
-            "Lorem ipsum.", "text/plain", "text/html"
-        )
+        self.portal.doc1.text = RichTextValue("Lorem ipsum.", "text/plain", "text/html")
         self.assertEqual(
             self.serialize(self.portal.doc1).get("text"),
             {

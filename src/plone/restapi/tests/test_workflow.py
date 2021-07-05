@@ -174,9 +174,7 @@ class TestWorkflowTransition(TestCase):
         service.reply()
         self.assertEqual(200, self.request.response.getStatus())
         self.assertEqual("published", self.wftool.getInfoFor(folder, "review_state"))
-        self.assertEqual(
-            "published", self.wftool.getInfoFor(subfolder, "review_state")
-        )
+        self.assertEqual("published", self.wftool.getInfoFor(subfolder, "review_state"))
 
     def test_transition_with_effective_date(self):
         self.request["BODY"] = '{"effective": "2018-06-24T09:17:02"}'

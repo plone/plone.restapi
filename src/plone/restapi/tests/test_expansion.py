@@ -198,9 +198,7 @@ class TestExpansionFunctional(unittest.TestCase):
             id="fourthlevelfolder",
             title="Fourth Level Folder",
         )
-        createContentInContainer(
-            self.folder, "Document", id="doc1", title="A document"
-        )
+        createContentInContainer(self.folder, "Document", id="doc1", title="A document")
         transaction.commit()
 
         response = self.api_session.get(

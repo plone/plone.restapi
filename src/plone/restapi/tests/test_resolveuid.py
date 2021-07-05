@@ -66,9 +66,7 @@ class TestBlocksResolveUIDFunctional(TestCase):
                             ],
                             "entityMap": {
                                 "0": {
-                                    "data": {
-                                        "url": f"{self.portal_url}/target"
-                                    },
+                                    "data": {"url": f"{self.portal_url}/target"},
                                     "mutability": "MUTABLE",
                                     "type": "LINK",
                                 }

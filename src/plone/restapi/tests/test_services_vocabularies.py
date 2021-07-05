@@ -269,9 +269,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
             name=context_vocab_name,
         )
 
-        response = self.api_session.get(
-            f"testdoc/@vocabularies/{context_vocab_name}"
-        )
+        response = self.api_session.get(f"testdoc/@vocabularies/{context_vocab_name}")
 
         gsm = getGlobalSiteManager()
         gsm.unregisterUtility(provided=IVocabularyFactory, name=context_vocab_name)

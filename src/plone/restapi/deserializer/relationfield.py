@@ -54,9 +54,7 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
 
         if obj is None:
             self.request.response.setStatus(400)
-            raise ValueError(
-                f"Could not resolve object for {resolved_by}={value}"
-            )
+            raise ValueError(f"Could not resolve object for {resolved_by}={value}")
 
         self.field.validate(obj)
         return obj

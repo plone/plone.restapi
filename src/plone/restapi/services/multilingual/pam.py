@@ -24,9 +24,7 @@ class Translations:
 
     def __call__(self, expand=False):
         result = {
-            "translations": {
-                "@id": f"{self.context.absolute_url()}/@translations"
-            }
+            "translations": {"@id": f"{self.context.absolute_url()}/@translations"}
         }
         if not expand:
             return result
