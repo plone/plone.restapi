@@ -140,6 +140,7 @@ class Navigation(object):
             "portal_type": {"query": self.settings["displayed_types"]},
             "Language": self.current_language,
             "is_default_page": False,
+            "sort_on": "getObjPositionInParent",
         }
 
         if not self.settings["nonfolderish_tabs"]:
