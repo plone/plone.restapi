@@ -93,10 +93,10 @@ class DefaultJsonSchemaProvider(object):
         raise NotImplementedError
 
     def get_factory(self):
-        return None
+        pass
 
     def get_widget(self):
-        return None
+        pass
 
     def get_widget_params(self):
         all_params = get_widget_params([self.field.interface])

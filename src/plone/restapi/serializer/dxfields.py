@@ -90,7 +90,7 @@ class ImageFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
         image = self.field.get(self.context)
         if not image:
-            return None
+            return
 
         width, height = image.getImageSize()
 
@@ -114,7 +114,7 @@ class FileFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
         namedfile = self.field.get(self.context)
         if namedfile is None:
-            return None
+            return
 
         url = "/".join((self.context.absolute_url(), "@@download", self.field.__name__))
         result = {

@@ -46,11 +46,9 @@ def get_original_image_url(context, fieldname, width, height):
     scale = images_view.scale(
         fieldname, width=width, height=height, direction="thumbnail"
     )
-    if not scale:
-        # This might happen for corrupt images.
-        return None
-
-    return scale.url
+    if scale:
+        return scale.url
+    # Corrupt images may not have a scale.
 
 
 def get_actual_scale(dimensions, bbox):
