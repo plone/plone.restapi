@@ -13,7 +13,6 @@ from zope.component import provideHandler
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
 import json
-import six
 import unittest
 
 

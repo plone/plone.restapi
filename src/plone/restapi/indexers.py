@@ -15,8 +15,6 @@ from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-import six
-
 
 def _extract_text(block):
     result = ""

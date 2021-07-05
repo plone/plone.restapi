@@ -11,7 +11,6 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.schema import IJSONField
 from Products.CMFPlone.interfaces import IPloneSiteRoot
-from six import string_types
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.component import subscribers

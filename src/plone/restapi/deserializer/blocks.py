@@ -10,7 +10,6 @@ from plone.schema import IJSONField
 from plone.uuid.interfaces import IUUID
 from plone.uuid.interfaces import IUUIDAware
 from Products.CMFPlone.interfaces import IPloneSiteRoot
-from six import string_types
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import subscribers

@@ -21,7 +21,6 @@ from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
 
 import os
-import six
 import unittest
 
 

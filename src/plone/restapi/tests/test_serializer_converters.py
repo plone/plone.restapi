@@ -14,7 +14,6 @@ from zope.intid.interfaces import IIntIds
 
 import json
 import Missing
-import six
 
 
 class TestJsonCompatibleConverters(TestCase):

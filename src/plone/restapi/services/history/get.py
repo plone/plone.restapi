@@ -9,8 +9,6 @@ from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-import six
-
 
 @implementer(IPublishTraverse)
 class HistoryGet(Service):

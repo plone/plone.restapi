@@ -11,8 +11,6 @@ from zope.schema.interfaces import ITitledTokenizedTerm
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabulary
 
-import six
-
 
 @implementer(ISerializeToJson)
 class SerializeVocabLikeToJson:

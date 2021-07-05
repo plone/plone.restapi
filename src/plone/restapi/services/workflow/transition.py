@@ -16,7 +16,6 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
 
 import plone.protect.interfaces
-import six
 
 
 @implementer(IPublishTraverse)

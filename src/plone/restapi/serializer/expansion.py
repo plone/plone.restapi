@@ -1,8 +1,6 @@
 from plone.restapi.interfaces import IExpandableElement
 from zope.component import getAdapters
 
-import six
-
 
 def expandable_elements(context, request):
     """Returns a dict containing all expandable elements."""

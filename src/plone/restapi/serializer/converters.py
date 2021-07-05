@@ -21,7 +21,6 @@ from zope.interface import Interface
 
 import Missing
 import pytz
-import six
 
 
 # import re

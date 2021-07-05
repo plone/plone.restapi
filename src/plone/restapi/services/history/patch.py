@@ -6,8 +6,6 @@ from Products.CMFEditions import CMFEditionsMessageFactory as _
 from Products.CMFEditions.interfaces.IModifier import FileTooLargeToVersionError  # noqa
 from zExceptions import BadRequest
 
-import six
-
 
 class HistoryPatch(Service):
     def reply(self):

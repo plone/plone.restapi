@@ -16,7 +16,6 @@ from zope.schema._bootstrapinterfaces import RequiredMissing
 from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.schema.interfaces import ValidationError
 
-import six
 import unittest
 
 

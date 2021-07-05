@@ -38,7 +38,6 @@ import collections
 import json
 import os
 import re
-import six
 import transaction
 import unittest
 

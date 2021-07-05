@@ -6,7 +6,6 @@ from plone.restapi.upgrades.ordering import (
 )
 
 import unittest
-import six
 
 
 class TestUpgradeOrdering(unittest.TestCase):
