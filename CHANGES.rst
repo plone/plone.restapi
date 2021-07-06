@@ -8,6 +8,25 @@ Changelog
 
 .. towncrier release notes start
 
+8.4.0 (2021-07-06)
+------------------
+
+New features:
+
+
+- Pass through field attribute 'widget' for field Dict [ksuess] (#1153)
+
+
+Bug fixes:
+
+
+- Use security decorators in PAS plugin. [jensens] (#1155)
+- Drop coding magic first line. Coding magic is no longer needed in Python 3, except if different from utf-8. [jensens] (#1156)
+- Fix PAS plugin ZMI markup for Zope4+. [jensens] (#1157)
+- Eliminate non-pythonic 'return None' usage. [jensens] (#1158)
+- Provide value_type of plone.schema / zope.schema Dict field [ksuess] (#1159)
+
+
 8.3.2 (2021-07-05)
 ------------------
 
