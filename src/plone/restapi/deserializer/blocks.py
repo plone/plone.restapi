@@ -49,7 +49,7 @@ def path2uid(context, link):
     context_url = context.absolute_url()
     relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
     if path.startswith(portal_url):
-        path = path[len(portal_url) + 1 :]
+        path = path[len(portal_url) + 1:]
     if not path.startswith(portal_path):
         path = "{portal_path}/{path}".format(
             portal_path=portal_path, path=path.lstrip("/")
@@ -241,7 +241,8 @@ class VolatileSmartField(object):
     def __call__(self, block):
         for k, v in block.items():
             if k.startswith("_v_"):
-                del block[k]
+                block[k] = None
+                # del block[k]
 
         return block
 

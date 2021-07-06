@@ -135,6 +135,11 @@ class Slots(object):
                 v["_v_inherit"] = True
                 block["readOnly"] = True
                 v.update(self._resolve_block(v, _seen_blocks))
+                # v['_v_original'] = self._resolve_block(v, _seen_blocks)
+
+        for k, v in blocks.items():
+            if v.get("s:isVariantOf"):
+                v['_v_original'] = deepcopy(_seen_blocks[k])
 
         return {
             "blocks": blocks,
