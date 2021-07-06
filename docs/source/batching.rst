@@ -2,7 +2,7 @@ Batching
 ========
 
 Representations of collection-like resources are batched / paginated if the
-size of the resulset exceeds the batching size:
+size of the resultset exceeds the batching size:
 
 .. code-block:: json
 
