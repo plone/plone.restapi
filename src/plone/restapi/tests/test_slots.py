@@ -197,7 +197,7 @@ class TestSlots(unittest.TestCase):
 
         engine = Slots(obj)
 
-        left = engine.get_blocks("left")
+        left = engine.get_data("left")
         self.assertEqual(
             left,
             {
@@ -232,7 +232,7 @@ class TestSlots(unittest.TestCase):
         obj.slots["left"] = DummySlot.from_data({2: {}}, [2])
 
         engine = Slots(obj)
-        left = engine.get_blocks("left")
+        left = engine.get_data("left")
 
         self.assertEqual(
             left,
@@ -261,7 +261,7 @@ class TestSlots(unittest.TestCase):
         )
 
         engine = Slots(obj)
-        left = engine.get_blocks("left")
+        left = engine.get_data("left")
 
         self.assertEqual(
             left,
@@ -295,7 +295,7 @@ class TestSlots(unittest.TestCase):
         )
 
         engine = Slots(obj)
-        left = engine.get_blocks("left")
+        left = engine.get_data("left")
 
         self.assertEqual(
             left,
@@ -333,7 +333,7 @@ class TestSlots(unittest.TestCase):
         )
 
         engine = Slots(obj)
-        left = engine.get_blocks("left")
+        left = engine.get_data("left")
 
         self.assertEqual(
             left,

@@ -95,6 +95,7 @@ class Slots(object):
     def get_data(self, name, full=True):
         blocks = {}
         blocks_layout = []
+        hidden = []
 
         _replaced = set()
         _seen_blocks = {}
@@ -116,8 +117,13 @@ class Slots(object):
                     if other:
                         _replaced.add(other)
 
+                    if (not full) and block.get('v:hidden'):
+                        hidden.append(uid)
+                        continue
+
                     blocks[uid] = block
-                    if level > 0:
+
+                    if level > 0:   # anything deeper than "top" level is inherited
                         block["_v_inherit"] = True
                         block["readOnly"] = True
 
@@ -144,7 +150,8 @@ class Slots(object):
         return {
             "blocks": blocks,
             "blocks_layout": {
-                "items": [b for b in blocks_layout if b in _seen_blocks.keys()]
+                "items": [b for b in blocks_layout if b in _seen_blocks.keys()
+                          and b not in hidden]
             },
         }
 
