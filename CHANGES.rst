@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.4.1 (2021-07-07)
+------------------
+
+Bug fixes:
+
+
+- Fix interpolation variable present in response after serialization
+  [sneridagh] (#1164)
+
+
 8.4.0 (2021-07-06)
 ------------------
 
