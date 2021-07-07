@@ -146,7 +146,8 @@ class TextLineFieldSerializer(DefaultFieldSerializer):
         ref_obj = portal.restrictedTraverse(path, None)
         if ref_obj:
             value = ref_obj.absolute_url()
-        return json_compatible(value)
+            return json_compatible(value)
+        return json_compatible(path)
 
 
 @adapter(IField, IDexterityContent, Interface)

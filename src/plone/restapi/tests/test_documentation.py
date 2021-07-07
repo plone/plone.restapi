@@ -348,7 +348,7 @@ class TestDocumentation(TestDocumentationBase):
         self.portal.invokeFactory("Link", id="link")
         self.portal.link.title = "My Link"
         self.portal.link.description = u"This is a link"
-        self.portal.remoteUrl = "http://plone.org"
+        self.portal.link.remoteUrl = "http://plone.org"
         transaction.commit()
         response = self.api_session.get(self.portal.link.absolute_url())
         save_request_and_response_for_docs("link", response)
