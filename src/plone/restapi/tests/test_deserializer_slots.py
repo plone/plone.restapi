@@ -279,5 +279,5 @@ class TestSlotsEngineIntegration(PloneTestCase):
 
         engine = ISlots(self.doc)
         self.assertEqual(
-            engine.get_blocks("left")["blocks_layout"]["items"], [u"1", u"3"]
+            engine.get_data("left", full=True)["blocks_layout"]["items"], [u"1", u"3"]
         )
