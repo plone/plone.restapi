@@ -142,9 +142,7 @@ class UsersPost(Service):
             "fullname": data.get("fullname", ""),
         }
 
-        register_view = getMultiAdapter(
-            (self.context, self.request), name="register"
-        )
+        register_view = getMultiAdapter((self.context, self.request), name="register")
 
         register_view.generate_user_id(user_id_login_name_data)
         register_view.generate_login_name(user_id_login_name_data)

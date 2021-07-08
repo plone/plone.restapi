@@ -806,6 +806,7 @@ class TestServicesContextNavigation(unittest.TestCase):
     def testStateFiltering(self):
         # Test Navtree workflow state filtering
         from Products.CMFPlone.interfaces import INavigationSchema  # noqa
+
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         registry = getUtility(IRegistry)
         navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")

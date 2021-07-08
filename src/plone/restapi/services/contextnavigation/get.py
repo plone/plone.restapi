@@ -671,9 +671,7 @@ class QueryBuilder:
 
         # Filter on workflow states, if enabled
         registry = getUtility(IRegistry)
-        navigation_settings = registry.forInterface(
-            INavigationSchema, prefix="plone"
-        )
+        navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
         if navigation_settings.filter_on_workflow:
             query["review_state"] = navigation_settings.workflow_states_to_show
 
