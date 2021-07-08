@@ -96,7 +96,7 @@ class DefaultJsonSchemaProvider:
         pass
 
     def get_widget(self):
-        pass
+        return getattr(self.field, "widget", None)
 
     def get_widget_params(self):
         all_params = get_widget_params([self.field.interface])
@@ -431,7 +431,7 @@ class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
             "additional": key_type.additional(),
         }
         value_type = getMultiAdapter(
-            (self.field.key_type, self.context, self.request), IJsonSchemaProvider
+            (self.field.value_type, self.context, self.request), IJsonSchemaProvider
         )
         info["value_type"] = {
             "schema": value_type.get_schema(),
