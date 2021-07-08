@@ -101,9 +101,9 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/documents/company-a/doc-1/@slots/left",
                 "blocks": {
-                    1: {u"_v_inherit": True},
-                    2: {u"_v_inherit": True},
-                    3: {u"_v_inherit": True},
+                    1: {u"_v_inherit": True, "readOnly": True},
+                    2: {u"_v_inherit": True, "readOnly": True},
+                    3: {u"_v_inherit": True, "readOnly": True},
                 },
                 "blocks_layout": {"items": [1, 2, 3]},
             },
@@ -134,8 +134,12 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/documents/company-a/doc-1/@slots/left",
                 "blocks": {
-                    2: {u"s:isVariantOf": 1, u"title": u"Second"},
-                    3: {u"_v_inherit": True, u"title": u"Third"},
+                    2: {
+                        "_v_original": {"title": "First"},
+                        u"s:isVariantOf": 1,
+                        u"title": u"Second",
+                    },
+                    3: {"readOnly": True, u"_v_inherit": True, u"title": u"Third"},
                 },
                 "blocks_layout": {"items": [2, 3]},
             },
@@ -167,9 +171,13 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/documents/company-a/doc-1/@slots/left",
                 "blocks": {
-                    2: {u"s:isVariantOf": 1, u"title": u"Second"},
-                    3: {u"_v_inherit": True, u"title": u"Third"},
-                    5: {u"_v_inherit": True, u"title": u"Fifth"},
+                    2: {
+                        u"s:isVariantOf": 1,
+                        u"title": u"Second",
+                        "_v_original": {"title": "First"},
+                    },
+                    3: {u"_v_inherit": True, u"title": u"Third", "readOnly": True},
+                    5: {u"_v_inherit": True, u"title": u"Fifth", "readOnly": True},
                 },
                 "blocks_layout": {"items": [3, 2, 5]},
             },
@@ -217,18 +225,42 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
                     u"left": {
                         "@id": "http://nohost/plone/documents/company-a/doc-1/@slots/left",
                         "blocks": {
-                            2: {u"s:isVariantOf": 1, u"title": u"Second"},
-                            3: {u"_v_inherit": True, u"title": u"Third"},
-                            5: {u"_v_inherit": True, u"title": u"Fifth"},
+                            2: {
+                                u"s:isVariantOf": 1,
+                                u"title": u"Second",
+                                "_v_original": {"title": "First"},
+                            },
+                            3: {
+                                u"_v_inherit": True,
+                                u"title": u"Third",
+                                "readOnly": True,
+                            },
+                            5: {
+                                u"_v_inherit": True,
+                                u"title": u"Fifth",
+                                "readOnly": True,
+                            },
                         },
                         "blocks_layout": {"items": [3, 2, 5]},
                     },
                     u"right": {
                         "@id": "http://nohost/plone/documents/company-a/doc-1/@slots/right",
                         "blocks": {
-                            6: {u"title": u"First", u"_v_inherit": True},
-                            7: {u"title": u"Third", u"_v_inherit": True},
-                            8: {u"title": u"Fifth", u"_v_inherit": True},
+                            6: {
+                                u"title": u"First",
+                                u"_v_inherit": True,
+                                "readOnly": True,
+                            },
+                            7: {
+                                u"title": u"Third",
+                                u"_v_inherit": True,
+                                "readOnly": True,
+                            },
+                            8: {
+                                u"title": u"Fifth",
+                                u"_v_inherit": True,
+                                "readOnly": True,
+                            },
                         },
                         "blocks_layout": {"items": [8, 6, 7]},
                     },
