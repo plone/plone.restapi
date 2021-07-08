@@ -11,7 +11,7 @@ class DeleteWorkingCopy(Service):
             # We are in the baseline, get the working copy policy
             policy = ICheckinCheckoutPolicy(working_copy)
 
-        control = getMultiAdapter((working_copy, self.request), name=u"iterate_control")
+        control = getMultiAdapter((working_copy, self.request), name="iterate_control")
 
         if not control.cancel_allowed():
             return self._error(403, "Not authorized", "Cancel not allowed")

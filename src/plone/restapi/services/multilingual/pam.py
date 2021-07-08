@@ -17,16 +17,14 @@ import six
 
 @implementer(IExpandableElement)
 @adapter(ITranslatable, Interface)
-class Translations(object):
+class Translations:
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, expand=False):
         result = {
-            "translations": {
-                "@id": "{}/@translations".format(self.context.absolute_url())
-            }
+            "translations": {"@id": f"{self.context.absolute_url()}/@translations"}
         }
         if not expand:
             return result
@@ -55,7 +53,7 @@ class LinkTranslations(Service):
     """Link two content objects as translations of each other"""
 
     def __init__(self, context, request):
-        super(LinkTranslations, self).__init__(context, request)
+        super().__init__(context, request)
         self.portal = getMultiAdapter(
             (self.context, self.request), name="plone_portal_state"
         ).portal()
@@ -143,7 +141,7 @@ class UnlinkTranslations(Service):
             return dict(
                 error=dict(
                     type="BadRequest",
-                    message="This objects is not translated into {}".format(language),
+                    message=f"This objects is not translated into {language}",
                 )
             )
 

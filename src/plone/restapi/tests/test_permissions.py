@@ -57,8 +57,8 @@ class TestPermissions(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
         self.assertDictContainsSubset(
             {
-                u"type": u"Unauthorized",
-                u"message": u"Missing 'plone.restapi: Use REST API' permission",
+                "type": "Unauthorized",
+                "message": "Missing 'plone.restapi: Use REST API' permission",
             },
             response.json(),
         )

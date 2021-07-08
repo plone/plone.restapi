@@ -25,7 +25,7 @@ from zope.security.interfaces import IPermission
 
 @implementer(IDeserializeFromJson)
 @adapter(IDexterityContent, Interface)
-class DeserializeFromJson(OrderingMixin, object):
+class DeserializeFromJson(OrderingMixin):
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -83,7 +83,7 @@ class DeserializeFromJson(OrderingMixin, object):
             write_permissions = mergedTaggedValueDict(schema, WRITE_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
-                __traceback_info__ = "field={}".format(field)
+                __traceback_info__ = f"field={field}"
 
                 field_data = schema_data.setdefault(schema, {})
 

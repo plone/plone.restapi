@@ -5,7 +5,7 @@ from Products.CMFCore.utils import getToolByName
 
 
 @implementer(IControlpanel)
-class RegistryConfigletPanel(object):
+class RegistryConfigletPanel:
     configlet = None
     configlet_id = None
     configlet_category_id = None

@@ -26,46 +26,46 @@ class TestRolesGet(unittest.TestCase):
 
         expected = (
             {
-                u"@id": self.portal_url + u"/@roles/Contributor",
-                u"@type": u"role",
-                u"id": u"Contributor",
-                u"title": u"Contributor",
+                "@id": self.portal_url + "/@roles/Contributor",
+                "@type": "role",
+                "id": "Contributor",
+                "title": "Contributor",
             },
             {
-                u"@id": self.portal_url + u"/@roles/Editor",
-                u"@type": u"role",
-                u"id": u"Editor",
-                u"title": u"Editor",
+                "@id": self.portal_url + "/@roles/Editor",
+                "@type": "role",
+                "id": "Editor",
+                "title": "Editor",
             },
             {
-                u"@id": self.portal_url + u"/@roles/Member",
-                u"@type": u"role",
-                u"id": u"Member",
-                u"title": u"Member",
+                "@id": self.portal_url + "/@roles/Member",
+                "@type": "role",
+                "id": "Member",
+                "title": "Member",
             },
             {
-                u"@id": self.portal_url + u"/@roles/Reader",
-                u"@type": u"role",
-                u"id": u"Reader",
-                u"title": u"Reader",
+                "@id": self.portal_url + "/@roles/Reader",
+                "@type": "role",
+                "id": "Reader",
+                "title": "Reader",
             },
             {
-                u"@id": self.portal_url + u"/@roles/Reviewer",
-                u"@type": u"role",
-                u"id": u"Reviewer",
-                u"title": u"Reviewer",
+                "@id": self.portal_url + "/@roles/Reviewer",
+                "@type": "role",
+                "id": "Reviewer",
+                "title": "Reviewer",
             },
             {
-                u"@id": self.portal_url + u"/@roles/Site Administrator",
-                u"@type": u"role",
-                u"id": u"Site Administrator",
-                u"title": u"Site Administrator",
+                "@id": self.portal_url + "/@roles/Site Administrator",
+                "@type": "role",
+                "id": "Site Administrator",
+                "title": "Site Administrator",
             },
             {
-                u"@id": self.portal_url + u"/@roles/Manager",
-                u"@type": u"role",
-                u"id": u"Manager",
-                u"title": u"Manager",
+                "@id": self.portal_url + "/@roles/Manager",
+                "@type": "role",
+                "id": "Manager",
+                "title": "Manager",
             },
         )
         result = response.json()
@@ -79,19 +79,19 @@ class TestRolesGet(unittest.TestCase):
         # One of the roles has changed translation in German.
         # Reviewer used to be 'Ver\xf6ffentlichen', but is now simply Reviewer.
         titles = {item["title"] for item in response.json()}
-        options = {u"Ver\xf6ffentlichen", u"Reviewer"}
+        options = {"Ver\xf6ffentlichen", "Reviewer"}
         # One of the options must match:
         self.assertTrue(titles.intersection(options))
         # Discard them:
         titles = titles.difference(options)
         self.assertEqual(
             {
-                u"Hinzuf\xfcgen",
-                u"Bearbeiten",
-                u"Benutzer",
-                u"Ansehen",
-                u"Website-Administrator",
-                u"Verwalten",
+                "Hinzuf\xfcgen",
+                "Bearbeiten",
+                "Benutzer",
+                "Ansehen",
+                "Website-Administrator",
+                "Verwalten",
             },
             titles,
         )

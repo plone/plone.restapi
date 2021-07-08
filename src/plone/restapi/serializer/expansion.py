@@ -1,8 +1,6 @@
 from plone.restapi.interfaces import IExpandableElement
 from zope.component import getAdapters
 
-import six
-
 
 def expandable_elements(context, request):
     """Returns a dict containing all expandable elements."""
@@ -18,7 +16,7 @@ def expandable_elements(context, request):
 
 
 def update_dict_recursively(d, u):
-    for key, value in six.iteritems(u):
+    for key, value in u.items():
         if isinstance(value, dict):
             r = update_dict_recursively(d.get(key, {}), value)
             d[key] = r

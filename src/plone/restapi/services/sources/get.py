@@ -12,7 +12,7 @@ from zope.schema.interfaces import ISource
 @implementer(IPublishTraverse)
 class SourcesGet(Service):
     def __init__(self, context, request):
-        super(SourcesGet, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):
@@ -48,9 +48,7 @@ class SourcesGet(Service):
             )
 
         serializer = getMultiAdapter((source, self.request), interface=ISerializeToJson)
-        return serializer(
-            "{}/@sources/{}".format(self.context.absolute_url(), fieldname)
-        )
+        return serializer(f"{self.context.absolute_url()}/@sources/{fieldname}")
 
 
 def get_field_by_name(fieldname, context):

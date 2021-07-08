@@ -4,7 +4,7 @@ from plone.i18n.locales.languages import _combinedlanguagelist
 from plone.i18n.locales.languages import _languagelist
 
 
-class ModifiableLanguages(object):
+class ModifiableLanguages:
     """Mixin for the `IModifiableLanguageAvailability` based local utilities
     that makes the getLanguages and getLanguageListing methods
     (queried by portal_languages) also respect *modifiable* language
@@ -38,7 +38,7 @@ class ModifiableLanguages(object):
         available = self.getAvailableLanguages(combined=combined)
         languages = {k: v for k, v in languages.items() if k in available}
 
-        return [(code, languages[code][u"name"]) for code in languages]
+        return [(code, languages[code]["name"]) for code in languages]
 
 
 class ModifiableContentLanguages(ModifiableLanguages, ContentLanguages):

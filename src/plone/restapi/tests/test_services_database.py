@@ -32,7 +32,7 @@ class TestDatabaseServiceFunctional(unittest.TestCase):
         self.assertEqual(response.headers.get("Content-Type"), "application/json")
 
         results = response.json()
-        self.assertEqual(results[u"@id"], self.portal.absolute_url() + "/@database")
+        self.assertEqual(results["@id"], self.portal.absolute_url() + "/@database")
         self.assertTrue("cache_length" in results.keys())
         self.assertTrue("cache_length_bytes" in results.keys())
         self.assertTrue("cache_detail_length" in results.keys())

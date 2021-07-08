@@ -52,19 +52,19 @@ class INavigationPortlet(Interface):
     """A portlet which can render the navigation tree"""
 
     name = schema.TextLine(
-        title=_(u"label_navigation_title", default=u"Title"),
+        title=_("label_navigation_title", default="Title"),
         description=_(
-            u"help_navigation_title", default=u"The title of the navigation tree."
+            "help_navigation_title", default="The title of the navigation tree."
         ),
-        default=u"",
+        default="",
         required=False,
     )
 
     root_path = schema.TextLine(
-        title=_(u"label_navigation_root_path", default=u"Root node"),
+        title=_("label_navigation_root_path", default="Root node"),
         description=_(
-            u"help_navigation_root",
-            default=u"You may search for and choose a folder "
+            "help_navigation_root",
+            default="You may search for and choose a folder "
             "to act as the root of the navigation tree. "
             "Leave blank to use the Plone site root.",
         ),
@@ -72,10 +72,10 @@ class INavigationPortlet(Interface):
     )
 
     includeTop = schema.Bool(
-        title=_(u"label_include_top_node", default=u"Include top node"),
+        title=_("label_include_top_node", default="Include top node"),
         description=_(
-            u"help_include_top_node",
-            default=u"Whether or not to show the top, or 'root', "
+            "help_include_top_node",
+            default="Whether or not to show the top, or 'root', "
             "node in the navigation tree. This is affected "
             "by the 'Start level' setting.",
         ),
@@ -85,12 +85,12 @@ class INavigationPortlet(Interface):
 
     currentFolderOnly = schema.Bool(
         title=_(
-            u"label_current_folder_only",
-            default=u"Only show the contents of the current folder.",
+            "label_current_folder_only",
+            default="Only show the contents of the current folder.",
         ),
         description=_(
-            u"help_current_folder_only",
-            default=u"If selected, the navigation tree will "
+            "help_current_folder_only",
+            default="If selected, the navigation tree will "
             "only show the current folder and its "
             "children at all times.",
         ),
@@ -99,10 +99,10 @@ class INavigationPortlet(Interface):
     )
 
     topLevel = schema.Int(
-        title=_(u"label_navigation_startlevel", default=u"Start level"),
+        title=_("label_navigation_startlevel", default="Start level"),
         description=_(
-            u"help_navigation_start_level",
-            default=u"An integer value that specifies the number of folder "
+            "help_navigation_start_level",
+            default="An integer value that specifies the number of folder "
             "levels below the site root that must be exceeded "
             "before the navigation tree will display. 0 means "
             "that the navigation tree should be displayed "
@@ -116,10 +116,10 @@ class INavigationPortlet(Interface):
     )
 
     bottomLevel = schema.Int(
-        title=_(u"label_navigation_tree_depth", default=u"Navigation tree depth"),
+        title=_("label_navigation_tree_depth", default="Navigation tree depth"),
         description=_(
-            u"help_navigation_tree_depth",
-            default=u"How many folders should be included "
+            "help_navigation_tree_depth",
+            default="How many folders should be included "
             "before the navigation tree stops. 0 "
             "means no limit. 1 only includes the "
             "root folder.",
@@ -129,27 +129,27 @@ class INavigationPortlet(Interface):
     )
 
     no_icons = schema.Bool(
-        title=_(u"Suppress Icons"),
-        description=_(u"If enabled, the portlet will not show document type icons."),
+        title=_("Suppress Icons"),
+        description=_("If enabled, the portlet will not show document type icons."),
         required=True,
         default=False,
     )
 
     thumb_scale = schema.TextLine(
-        title=_(u"Override thumb scale"),
+        title=_("Override thumb scale"),
         description=_(
-            u"Enter a valid scale name"
-            u" (see 'Image Handling' control panel) to override"
-            u" (e.g. icon, tile, thumb, mini, preview, ... )."
-            u" Leave empty to use default (see 'Site' control panel)."
+            "Enter a valid scale name"
+            " (see 'Image Handling' control panel) to override"
+            " (e.g. icon, tile, thumb, mini, preview, ... )."
+            " Leave empty to use default (see 'Site' control panel)."
         ),
         required=False,
-        default=u"",
+        default="",
     )
 
     no_thumbs = schema.Bool(
-        title=_(u"Suppress thumbs"),
-        description=_(u"If enabled, the portlet will not show thumbs."),
+        title=_("Suppress thumbs"),
+        description=_("If enabled, the portlet will not show thumbs."),
         required=True,
         default=False,
     )
@@ -165,7 +165,7 @@ class ContextNavigationGet(Service):
 
 @implementer(IExpandableElement)
 @adapter(Interface, Interface)
-class ContextNavigation(object):
+class ContextNavigation:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -173,7 +173,7 @@ class ContextNavigation(object):
     def __call__(self, expand=False, prefix="expand.contextnavigation."):
         result = {
             "contextnavigation": {
-                "@id": "{}/@contextnavigation".format(self.context.absolute_url())
+                "@id": f"{self.context.absolute_url()}/@contextnavigation"
             }
         }
         if not expand:
@@ -190,7 +190,7 @@ class ContextNavigation(object):
         return self.__call__(expand=True)["contextnavigation"]
 
 
-class NavigationPortletRenderer(object):
+class NavigationPortletRenderer:
     def __init__(self, context, request, data):
 
         self.context = context
@@ -605,7 +605,7 @@ def extract_data(schema, raw_data, prefix):
         field = schema[name]
         raw_value = raw_data.get(prefix + name, field.default)
 
-        if isinstance(raw_value, six.string_types):
+        if isinstance(raw_value, str):
             raw_value = six.ensure_text(raw_value)
 
         value = IFromUnicode(field).fromUnicode(raw_value)
@@ -631,7 +631,7 @@ def get_root(context, root_path):
     return root
 
 
-class QueryBuilder(object):
+class QueryBuilder:
     """Build a navtree query based on the settings in INavigationSchema
     and those set on the portlet.
     """

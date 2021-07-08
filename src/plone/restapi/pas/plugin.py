@@ -150,7 +150,7 @@ class JWTAuthenticationPlugin(BasePlugin):
     def _decode_token(self, token, verify=True):
         if self.use_keyring:
             manager = getUtility(IKeyManager)
-            for secret in manager[u"_system"]:
+            for secret in manager["_system"]:
                 if secret is None:
                     continue
                 payload = self._jwt_decode(token, secret + self._path(), verify=verify)
@@ -160,7 +160,7 @@ class JWTAuthenticationPlugin(BasePlugin):
             return self._jwt_decode(token, self._secret + self._path(), verify=verify)
 
     def _jwt_decode(self, token, secret, verify=True):
-        if isinstance(token, six.text_type):
+        if isinstance(token, str):
             token = token.encode("utf-8")
         try:
             return jwt.decode(token, secret, verify=verify, algorithms=["HS256"])
@@ -197,8 +197,7 @@ class JWTAuthenticationPlugin(BasePlugin):
         if data is not None:
             payload.update(data)
         token = jwt.encode(payload, self._signing_secret(), algorithm="HS256")
-        if not six.PY2:
-            token = token.decode("utf-8")
+        token = token.decode("utf-8")
         if self.store_tokens:
             if self._tokens is None:
                 self._tokens = OOBTree()

@@ -9,20 +9,16 @@ from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
 
-import six
-
 
 @implementer(IExpandableElement)
 @adapter(IWorkflowAware, Interface)
-class WorkflowInfo(object):
+class WorkflowInfo:
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, expand=False):
-        result = {
-            "workflow": {"@id": "{}/@workflow".format(self.context.absolute_url())}
-        }
+        result = {"workflow": {"@id": f"{self.context.absolute_url()}/@workflow"}}
         if not expand:
             return result
 
@@ -47,7 +43,7 @@ class WorkflowInfo(object):
                 continue
 
             title = action["title"]
-            if isinstance(title, six.binary_type):
+            if isinstance(title, bytes):
                 title = title.decode("utf8")
 
             transitions.append(
@@ -63,7 +59,7 @@ class WorkflowInfo(object):
             title = wftool.getTitleForStateOnType(
                 action["review_state"], self.context.portal_type
             )
-            if isinstance(title, six.binary_type):
+            if isinstance(title, bytes):
                 title = title.decode("utf8")
             history[item]["title"] = self.context.translate(title)
 

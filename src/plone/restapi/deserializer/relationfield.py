@@ -29,8 +29,8 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
             intids = queryUtility(IIntIds)
             obj = intids.queryObject(value)
             resolved_by = "intid"
-        elif isinstance(value, six.string_types):
-            if six.PY2 and isinstance(value, six.text_type):
+        elif isinstance(value, str):
+            if six.PY2 and isinstance(value, str):
                 value = value.encode("utf8")
             portal = getMultiAdapter(
                 (self.context, self.request), name="plone_portal_state"
@@ -54,9 +54,7 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
 
         if obj is None:
             self.request.response.setStatus(400)
-            raise ValueError(
-                u"Could not resolve object for {}={}".format(resolved_by, value)
-            )
+            raise ValueError(f"Could not resolve object for {resolved_by}={value}")
 
         self.field.validate(obj)
         return obj

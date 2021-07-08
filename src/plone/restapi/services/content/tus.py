@@ -41,7 +41,7 @@ class UploadOptions(Service):
     def reply(self):
         for name, value in TUS_OPTIONS_RESPONSE_HEADERS.items():
             self.request.response.setHeader(name, value)
-        return super(UploadOptions, self).reply()
+        return super().reply()
 
 
 class TUSBaseService(Service):
@@ -119,17 +119,17 @@ class UploadPost(TUSBaseService):
         self.request.response.setStatus(201)
         self.request.response.setHeader(
             "Location",
-            "{}/@tus-upload/{}".format(self.context.absolute_url(), tus_upload.uid),
+            f"{self.context.absolute_url()}/@tus-upload/{tus_upload.uid}",
         )
         self.request.response.setHeader("Upload-Expires", tus_upload.expires())
         self.request.response.setHeader("Tus-Resumable", "1.0.0")
-        return super(UploadPost, self).reply()
+        return super().reply()
 
 
 @implementer(IPublishTraverse)
 class UploadFileBase(TUSBaseService):
     def __init__(self, context, request):
-        super(UploadFileBase, self).__init__(context, request)
+        super().__init__(context, request)
         self.uid = None
 
     def publishTraverse(self, request, name):
@@ -175,16 +175,12 @@ class UploadHead(UploadFileBase):
         if not self.check_tus_version():
             return self.unsupported_version()
 
-        self.request.response.setHeader(
-            "Upload-Length", "{}".format(tus_upload.length())
-        )
-        self.request.response.setHeader(
-            "Upload-Offset", "{}".format(tus_upload.offset())
-        )
+        self.request.response.setHeader("Upload-Length", f"{tus_upload.length()}")
+        self.request.response.setHeader("Upload-Offset", f"{tus_upload.offset()}")
         self.request.response.setHeader("Tus-Resumable", "1.0.0")
         self.request.response.setHeader("Cache-Control", "no-store")
         self.request.response.setStatus(200, lock=1)
-        return super(UploadHead, self).reply()
+        return super().reply()
 
 
 @implementer(IPublishTraverse)
@@ -225,7 +221,7 @@ class UploadPatch(UploadFileBase):
             self.request.response.setHeader("Upload-Expires", tus_upload.expires())
 
         self.request.response.setHeader("Tus-Resumable", "1.0.0")
-        self.request.response.setHeader("Upload-Offset", "{}".format(offset))
+        self.request.response.setHeader("Upload-Offset", f"{offset}")
         return self.reply_no_content()
 
     def create_or_modify_content(self, tus_upload):
@@ -267,7 +263,7 @@ class UploadPatch(UploadFileBase):
         if deserializer is None:
             return self.error(
                 "Not Implemented",
-                "Cannot deserialize type {}".format(obj.portal_type),
+                f"Cannot deserialize type {obj.portal_type}",
                 501,
             )
         try:
@@ -288,7 +284,7 @@ class UploadPatch(UploadFileBase):
         self.request.response.setHeader("Location", obj.absolute_url())
 
 
-class TUSUpload(object):
+class TUSUpload:
 
     file_prefix = "tus_upload_"
     expiration_period = 60 * 60

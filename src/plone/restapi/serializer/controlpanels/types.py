@@ -91,7 +91,7 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
         if item is not None:
             return self.serialize_item(item)
 
-        json = super(DexterityTypesControlpanelSerializeToJson, self).__call__()
+        json = super().__call__()
         json["items"] = []
 
         portal = getSite()

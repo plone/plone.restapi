@@ -9,13 +9,11 @@ from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-import six
-
 
 @implementer(IPublishTraverse)
 class HistoryGet(Service):
     def __init__(self, context, request):
-        super(HistoryGet, self).__init__(context, request)
+        super().__init__(context, request)
         self.version = None
 
     def publishTraverse(self, request, name):
@@ -72,7 +70,7 @@ class HistoryGet(Service):
 
             # Versioning entries use a timestamp,
             # workflow ISO formatted string
-            if not isinstance(item["time"], six.string_types):
+            if not isinstance(item["time"], str):
                 item["time"] = dt.fromtimestamp(item["time"]).isoformat()
 
             # The create event has an empty 'action', but we like it to say

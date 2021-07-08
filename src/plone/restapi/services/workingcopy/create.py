@@ -21,7 +21,7 @@ class CreateWorkingCopy(Service):
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
-        control = getMultiAdapter((self.context, self.request), name=u"iterate_control")
+        control = getMultiAdapter((self.context, self.request), name="iterate_control")
         if not control.checkout_allowed():
             pm = getToolByName(self.context, "portal_membership")
             if bool(pm.isAnonymousUser()):

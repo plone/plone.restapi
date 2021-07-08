@@ -29,17 +29,12 @@ import codecs
 import dateutil
 import six
 
-if six.PY2:
-    import HTMLParser
-
-    html_parser = HTMLParser.HTMLParser()
-else:
-    import html as html_parser
+import html as html_parser
 
 
 @implementer(IFieldDeserializer)
 @adapter(IField, IDexterityContent, IBrowserRequest)
-class DefaultFieldDeserializer(object):
+class DefaultFieldDeserializer:
     def __init__(self, field, context, request):
         self.field = field
         if IField.providedBy(self.field):
@@ -48,7 +43,7 @@ class DefaultFieldDeserializer(object):
         self.request = request
 
     def __call__(self, value):
-        if not isinstance(value, six.text_type):
+        if not isinstance(value, str):
             self.field.validate(value)
             return value
 
@@ -61,13 +56,13 @@ class DefaultFieldDeserializer(object):
 @adapter(ITextLine, IDexterityContent, IBrowserRequest)
 class TextLineFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
-        if isinstance(value, six.text_type):
+        if isinstance(value, str):
             value = IFromUnicode(self.field).fromUnicode(value)
 
         # Mimic what z3c.form does in it's BaseDataConverter.
-        if isinstance(value, six.text_type):
+        if isinstance(value, str):
             value = value.strip()
-            if value == u"":
+            if value == "":
                 value = self.field.missing_value
 
         self.field.validate(value)
@@ -78,7 +73,7 @@ class TextLineFieldDeserializer(DefaultFieldDeserializer):
 @adapter(ITextLine, ILink, IBrowserRequest)
 class LinkTextLineFieldDeserializer(TextLineFieldDeserializer):
     def __call__(self, value):
-        value = super(LinkTextLineFieldDeserializer, self).__call__(value)
+        value = super().__call__(value)
         if self.field.getName() == "remoteUrl":
             portal = getMultiAdapter(
                 (self.context, self.context.REQUEST), name="plone_portal_state"
@@ -119,7 +114,7 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
         try:
             dt = dateutil.parser.parse(value)
         except ValueError:
-            raise ValueError(u"Invalid date: {}".format(value))
+            raise ValueError(f"Invalid date: {value}")
 
         # Convert to TZ aware in UTC
         if dt.tzinfo is not None:
@@ -219,7 +214,7 @@ class TimeFieldDeserializer(DefaultFieldDeserializer):
             # using ``timetz()`` would be timezone aware.
             value = dateutil.parser.parse(value).time()
         except ValueError:
-            raise ValueError(u"Invalid time: {}".format(value))
+            raise ValueError(f"Invalid time: {value}")
 
         self.field.validate(value)
         return value
@@ -254,11 +249,11 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
             content_type = value.get("content-type", content_type)
             filename = value.get("filename", filename)
             data = value.get("data", "")
-            if isinstance(data, six.text_type):
+            if isinstance(data, str):
                 data = data.encode("utf-8")
             if "encoding" in value:
                 data = codecs.decode(data, value["encoding"])
-            if isinstance(data, six.text_type):
+            if isinstance(data, str):
                 data = data.encode("utf-8")
         elif isinstance(value, TUSUpload):
             content_type = value.metadata().get("content-type", content_type)
@@ -291,7 +286,7 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
         if isinstance(value, dict):
             content_type = value.get("content-type", content_type)
             encoding = value.get("encoding", encoding)
-            data = value.get("data", u"")
+            data = value.get("data", "")
         elif isinstance(value, TUSUpload):
             content_type = value.metadata().get("content-type", content_type)
             with open(value.filepath, "rb") as f:

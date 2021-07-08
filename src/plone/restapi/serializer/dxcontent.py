@@ -32,7 +32,7 @@ from zope.security.interfaces import IPermission
 
 @implementer(ISerializeToJson)
 @adapter(IDexterityContent, Interface)
-class SerializeToJson(object):
+class SerializeToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -143,7 +143,7 @@ class SerializeFolderToJson(SerializeToJson):
         return query
 
     def __call__(self, version=None, include_items=True):
-        folder_metadata = super(SerializeFolderToJson, self).__call__(version=version)
+        folder_metadata = super().__call__(version=version)
 
         folder_metadata.update({"is_folderish": True})
         result = folder_metadata
@@ -176,7 +176,7 @@ class SerializeFolderToJson(SerializeToJson):
 
 @adapter(IDexterityContent, Interface)
 @implementer(IObjectPrimaryFieldTarget)
-class DexterityObjectPrimaryFieldTarget(object):
+class DexterityObjectPrimaryFieldTarget:
     def __init__(self, context, request):
         self.context = context
         self.request = request

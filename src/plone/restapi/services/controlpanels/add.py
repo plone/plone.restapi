@@ -9,7 +9,7 @@ from zope.publisher.interfaces import IPublishTraverse
 @implementer(IPublishTraverse)
 class ControlpanelsAdd(Service):
     def __init__(self, context, request):
-        super(ControlpanelsAdd, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):

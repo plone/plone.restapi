@@ -55,9 +55,7 @@ class GroupsPost(Service):
             description=description,
         )
         if not success:
-            raise BadRequest(
-                "Error occurred, could not add group {}.".format(groupname)
-            )
+            raise BadRequest(f"Error occurred, could not add group {groupname}.")
 
         # Add members
         group = gtool.getGroupById(groupname)

@@ -11,13 +11,13 @@ from zope.interface import Interface
 
 @implementer(IExpandableElement)
 @adapter(Interface, Interface)
-class Actions(object):
+class Actions:
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, expand=False):
-        result = {"actions": {"@id": "{}/@actions".format(self.context.absolute_url())}}
+        result = {"actions": {"@id": f"{self.context.absolute_url()}/@actions"}}
         if not expand:
             return result
 

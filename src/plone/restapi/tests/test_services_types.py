@@ -66,9 +66,7 @@ class TestServicesTypes(unittest.TestCase):
         self.api_session.close()
 
     def test_get_types(self):
-        response = self.api_session.get(
-            "{}/@types".format(self.portal.absolute_url())
-        )  # noqa
+        response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -82,9 +80,7 @@ class TestServicesTypes(unittest.TestCase):
             self.assertEqual(sorted(item), sorted(["@id", "title", "addable"]))
 
     def test_get_types_document(self):
-        response = self.api_session.get(
-            "{}/@types/Document".format(self.portal.absolute_url())
-        )
+        response = self.api_session.get(f"{self.portal.absolute_url()}/@types/Document")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -450,7 +446,7 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_get_types_with_unknown_type(self):
         response = self.api_session.get(
-            "{}/@types/UnknownType".format(self.portal.absolute_url())
+            f"{self.portal.absolute_url()}/@types/UnknownType"
         )
 
         self.assertEqual(response.status_code, 404)
@@ -464,15 +460,11 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_types_endpoint_only_accessible_for_authenticated_users(self):
         self.api_session.auth = ()
-        response = self.api_session.get(
-            "{}/@types".format(self.portal.absolute_url())
-        )  # noqa
+        response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa
         self.assertEqual(response.status_code, 401)
 
     def test_contextaware_addable(self):
-        response = self.api_session.get(
-            "{}/@types".format(self.portal.absolute_url())
-        )  # noqa
+        response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa
 
         allowed_ids = [x.getId() for x in self.portal.allowedContentTypes()]
 
@@ -510,14 +502,14 @@ class TestServicesTypes(unittest.TestCase):
         )
 
         folder = api.content.create(
-            container=self.portal, id="folder", type="Folder", title=u"folder"
+            container=self.portal, id="folder", type="Folder", title="folder"
         )
 
         folder_cant_add = api.content.create(
             container=self.portal,
             id="folder_cant_add",
             type="Folder",
-            title=u"folder_cant_add",
+            title="folder_cant_add",
         )
 
         api.user.grant_roles(user=user, obj=folder, roles=["Contributor"])
@@ -569,23 +561,21 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
         self.api_session.close()
 
     def test_get_types_translated(self):
-        response = self.api_session.get(
-            "{}/@types".format(self.portal.absolute_url())
-        )  # noqa
+        response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa
 
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(
             {
-                u"Archivo",
-                u"Carpeta",
-                u"Colección",
-                u"DX Test Document",
-                u"Enlace",
-                u"Evento",
-                u"Imagen",
-                u"Noticia",
-                u"Página",
+                "Archivo",
+                "Carpeta",
+                "Colección",
+                "DX Test Document",
+                "Enlace",
+                "Evento",
+                "Imagen",
+                "Noticia",
+                "Página",
             },
-            set(item["title"] for item in response.json()),
+            {item["title"] for item in response.json()},
         )

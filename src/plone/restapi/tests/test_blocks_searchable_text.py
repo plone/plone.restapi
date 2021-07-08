@@ -39,7 +39,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
         fti.behaviors = tuple(behavior_list)
 
         self.doc = createContentInContainer(
-            self.portal, u"Document", id=u"doc", title=u"A document"
+            self.portal, "Document", id="doc", title="A document"
         )
         transaction.commit()
 
@@ -106,7 +106,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
     def test_register_block_searchabletext(self):
         @implementer(IBlockSearchableText)
         @adapter(IBlocks, IBrowserRequest)
-        class TestSearchableTextAdapter(object):
+        class TestSearchableTextAdapter:
             def __init__(self, context, request):
                 self.context = context
                 self.request = request

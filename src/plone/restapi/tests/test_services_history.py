@@ -9,7 +9,6 @@ from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 
-import six
 import transaction
 import unittest
 
@@ -36,7 +35,7 @@ class TestHistoryEndpoint(unittest.TestCase):
 
         api.content.transition(self.doc, "publish")
 
-        self.endpoint_url = "{}/@history".format(self.doc.absolute_url())
+        self.endpoint_url = f"{self.doc.absolute_url()}/@history"
 
         transaction.commit()
 
@@ -50,7 +49,7 @@ class TestHistoryEndpoint(unittest.TestCase):
 
         types = [item["type"] for item in data]
 
-        self.assertEqual(set(["versioning", "workflow"]), set(types))
+        self.assertEqual({"versioning", "workflow"}, set(types))
 
     def test_get_datastructure(self):
         response = self.api_session.get(self.endpoint_url)
@@ -78,22 +77,22 @@ class TestHistoryEndpoint(unittest.TestCase):
             self.assertIsNotNone(item["action"])
 
     def test_revert(self):
-        url = "{}/@history".format(self.doc.absolute_url())
+        url = f"{self.doc.absolute_url()}/@history"
         response = self.api_session.patch(url, json={"version": 0})
         self.assertEqual(response.status_code, 200)
 
         # My Document is the old title
         self.assertEqual(
             response.json(),
-            {u"message": u"My Document has been reverted to revision 0."},
+            {"message": "My Document has been reverted to revision 0."},
         )
 
     def test_time_field(self):
-        url = "{}/@history".format(self.doc.absolute_url())
+        url = f"{self.doc.absolute_url()}/@history"
         response = self.api_session.get(url)
 
         for item in response.json():
-            self.assertTrue(isinstance(item["time"], six.string_types))
+            self.assertTrue(isinstance(item["time"], str))
 
     def test_get_historical_link(self):
         # The @id field should link to @history/version.
@@ -135,9 +134,7 @@ class TestHistoryEndpointEmptyOrInacessibleHistory(unittest.TestCase):
         types = list(portal_repository.getVersionableContentTypes())
         types.remove(content_type)
         portal_repository.setVersionableContentTypes(types)
-        portal_repository.removePolicyFromContentType(
-            content_type, u"version_on_revert"
-        )
+        portal_repository.removePolicyFromContentType(content_type, "version_on_revert")
 
     def setUp(self):
         self.portal = self.layer["portal"]
@@ -154,7 +151,7 @@ class TestHistoryEndpointEmptyOrInacessibleHistory(unittest.TestCase):
         )
         self.doc = self.portal.doc_with_empty_history
         api.content.transition(self.doc, "publish")
-        self.endpoint_url = "{}/@history".format(self.doc.absolute_url())
+        self.endpoint_url = f"{self.doc.absolute_url()}/@history"
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({"Accept": "application/json"})
@@ -194,7 +191,7 @@ class TestHistoryEndpointTranslatedMessages(unittest.TestCase):
 
         api.content.transition(self.doc, "publish")
 
-        self.endpoint_url = "{}/@history".format(self.doc.absolute_url())
+        self.endpoint_url = f"{self.doc.absolute_url()}/@history"
 
         transaction.commit()
 
@@ -205,16 +202,16 @@ class TestHistoryEndpointTranslatedMessages(unittest.TestCase):
         url = self.doc.absolute_url() + "/@history"
         response = self.api_session.get(url)
         first_action = response.json()[-1]
-        self.assertEqual(u"Crear", first_action["action"])
+        self.assertEqual("Crear", first_action["action"])
 
     def test_state_titles_are_translated(self):
         url = self.doc.absolute_url() + "/@history"
         response = self.api_session.get(url)
         first_action = response.json()[-1]
-        self.assertEqual(u"Privado", first_action["state_title"])
+        self.assertEqual("Privado", first_action["state_title"])
 
     def test_transition_titles_are_translated(self):
         url = self.doc.absolute_url() + "/@history"
         response = self.api_session.get(url)
         first_action = response.json()[-1]
-        self.assertEqual(u"Crear", first_action["transition_title"])
+        self.assertEqual("Crear", first_action["transition_title"])

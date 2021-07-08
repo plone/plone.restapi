@@ -62,7 +62,7 @@ FIELD_PROPERTIES_MAPPING = {
 
 
 @implementer(IDexterityContent)
-class FakeDXContext(object):
+class FakeDXContext:
     """Fake DX content class, so we can re-use the DX field deserializers"""
 
 
@@ -89,8 +89,7 @@ def iter_fields(fieldsets):
     as returned by `get_fieldsets`.
     """
     for fieldset in fieldsets:
-        for field in fieldset["fields"]:
-            yield field
+        yield from fieldset["fields"]
 
 
 def get_form_fieldsets(form):
@@ -307,7 +306,7 @@ def get_info_for_type(context, request, name):
         return schema
 
     # Get the empty fieldsets
-    existing = set(f.get("id") for f in schema.get("fieldsets", []))
+    existing = {f.get("id") for f in schema.get("fieldsets", [])}
     generated = set()
     for fieldset in context.schema.queryTaggedValue(FIELDSETS_KEY, []):
         name = fieldset.__name__

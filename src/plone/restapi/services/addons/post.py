@@ -17,7 +17,7 @@ class AddonsPost(Service):
     """Performs install/upgrade/uninstall functions on an addon."""
 
     def __init__(self, context, request):
-        super(AddonsPost, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
         self.errors = {}
         self.addons = Addons(context, request)
@@ -41,7 +41,7 @@ class AddonsPost(Service):
         elif action == "upgrade":
             result = self.addons.upgrade_product(addon)
         else:
-            raise Exception("Unknown action {}".format(action))
+            raise Exception(f"Unknown action {action}")
 
         prefer = self.request.getHeader("Prefer")
         if prefer == "return=representation":
@@ -50,9 +50,7 @@ class AddonsPost(Service):
             )
             all_addons = control_panel.get_addons()
 
-            result = {
-                "items": {"@id": "{}/@addons".format(self.context.absolute_url())}
-            }
+            result = {"items": {"@id": f"{self.context.absolute_url()}/@addons"}}
             addons_data = []
             for a in all_addons.values():
                 addons_data.append(self.addons.serializeAddon(a))

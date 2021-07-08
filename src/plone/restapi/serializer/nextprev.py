@@ -20,7 +20,7 @@ class NextPreviousFixed(NextPreviousBase):
         self.order = self.context.objectIds()
 
 
-class NextPrevious(object):
+class NextPrevious:
     """Facade with more pythonic interface"""
 
     def __init__(self, context):

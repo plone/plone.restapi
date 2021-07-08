@@ -13,7 +13,7 @@ from zope.interface import Interface
 
 @adapter(IRoleManager, Interface)
 @implementer(ISerializeToJson)
-class SerializeLocalRolesToJson(object):
+class SerializeLocalRolesToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request

@@ -72,7 +72,7 @@ class FolderPost(Service):
         if deserializer is None:
             self.request.response.setStatus(501)
             return dict(
-                error=dict(message="Cannot deserialize type {}".format(obj.portal_type))
+                error=dict(message=f"Cannot deserialize type {obj.portal_type}")
             )
 
         try:

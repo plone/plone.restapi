@@ -35,7 +35,7 @@ class EmailSendEndpoint(unittest.TestCase):
 
         registry = getUtility(IRegistry)
         registry["plone.email_from_address"] = "info@plone.org"
-        registry["plone.email_from_name"] = u"Plone test site"
+        registry["plone.email_from_name"] = "Plone test site"
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({"Accept": "application/json"})

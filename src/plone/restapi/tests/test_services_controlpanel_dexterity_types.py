@@ -52,7 +52,7 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
         response = self.api_session.get("/@controlpanels/dexterity-types/Document")
         self.assertEqual(200, response.status_code)
         self.assertEqual(
-            "{}/@controlpanels/dexterity-types/Document".format(self.portal_url),
+            f"{self.portal_url}/@controlpanels/dexterity-types/Document",
             response.json().get("@id"),
         )
         self.assertEqual("Page", response.json().get("title"))
