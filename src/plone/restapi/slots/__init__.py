@@ -138,9 +138,9 @@ class Slots(object):
 
         for k, v in blocks.items():
             if v.get("s:sameAs"):
-                v["_v_inherit"] = True
-                block["readOnly"] = True        # TODO: should we set this here?
                 v.update(self._resolve_block(v, _seen_blocks))
+                v["_v_inherit"] = True
+                v["readOnly"] = True        # TODO: should we set this here?
                 # v['_v_original'] = self._resolve_block(v, _seen_blocks)
 
         # for k, v in blocks.items():

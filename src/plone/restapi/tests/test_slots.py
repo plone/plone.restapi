@@ -238,7 +238,7 @@ class TestSlots(unittest.TestCase):
             left,
             {
                 "blocks_layout": {"items": [2, 1]},
-                "blocks": {1: {"title": "First", "_v_inherit": True}, 2: {}},
+                "blocks": {1: {"title": "First", "readOnly": True, "_v_inherit": True}, 2: {}},
             },
         )
 
@@ -303,8 +303,8 @@ class TestSlots(unittest.TestCase):
                 "blocks_layout": {"items": [4, 2, 5]},
                 "blocks": {
                     2: {"title": "Second", "s:isVariantOf": 1},
-                    4: {"title": "Third", "s:sameAs": 3, "_v_inherit": True},
-                    5: {"title": "Fifth", "_v_inherit": True},
+                    4: {"title": "Third", "s:sameAs": 3, "readOnly": True, "_v_inherit": True},
+                    5: {"title": "Fifth", "readOnly": True, "_v_inherit": True},
                 },
             },
         )
