@@ -143,11 +143,16 @@ class TextLineFieldSerializer(DefaultFieldSerializer):
         portal = getMultiAdapter(
             (self.context, self.context.REQUEST), name="plone_portal_state"
         ).portal()
-        ref_obj = portal.restrictedTraverse(path, None)
+        # We should traverse unrestricted, just in case that the path to the object
+        # is not all public, we should be able to reach it by finger pointing
+        ref_obj = portal.unrestrictedTraverse(path, None)
         if ref_obj:
             value = ref_obj.absolute_url()
             return json_compatible(value)
-        return json_compatible(path)
+        else:
+            # The URL does not point to an existing object, so just return the value
+            # without value interpolation
+            return json_compatible(value.replace("${portal_url}", ""))
 
 
 @adapter(IField, IDexterityContent, Interface)
