@@ -1,6 +1,3 @@
-from plone import api
-
-
 def slots_configuration(setup_context):
     setup_context.runImportStepFromProfile(
         "profile-plone.restapi.upgrades:0007",
