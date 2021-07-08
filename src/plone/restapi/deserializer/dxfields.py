@@ -27,7 +27,6 @@ from zope.schema.interfaces import IVocabularyTokenized
 
 import codecs
 import dateutil
-import six
 
 import html as html_parser
 
@@ -264,8 +263,6 @@ class NamedFieldDeserializer(DefaultFieldDeserializer):
 
         # Convert if we have data
         if data:
-            if six.PY2:
-                content_type = content_type.encode("utf8")
             value = self.field._type(
                 data=data, contentType=content_type, filename=filename
             )

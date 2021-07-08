@@ -14,8 +14,6 @@ from zope.container.contained import ObjectAddedEvent
 from zope.container.interfaces import INameChooser
 from zope.event import notify
 
-import six
-
 
 def create(container, type_, id_=None, title=None):
     """Create a new content item."""
@@ -30,10 +28,7 @@ def create(container, type_, id_=None, title=None):
             randint(0, 9999),
         )
     else:
-        if six.PY2 and isinstance(id_, str):
-            new_id = id_.encode("utf8")
-        else:
-            new_id = id_
+        new_id = id_
 
     portal_types = getToolByName(container, "portal_types")
     type_info = portal_types.getTypeInfo(type_)

@@ -3,17 +3,9 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.browser.navtree import getNavigationRoot
+from Products.CMFPlone.interfaces import ISearchSchema
 from zope.component import getMultiAdapter
 from zope.component import getUtility
-
-
-try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-    from Products.CMFPlone.interfaces import ISearchSchema
-except ImportError:
-    PLONE5 = False
-else:
-    PLONE5 = True
 
 
 class SearchHandler:
@@ -91,7 +83,7 @@ class SearchHandler:
             use_site_search_settings = True
             del query["use_site_search_settings"]
 
-        if PLONE5 and use_site_search_settings:
+        if use_site_search_settings:
             query = self.filter_query(query)
 
         self._constrain_query_by_path(query)

@@ -8,7 +8,7 @@ from plone.restapi.services.contextnavigation.get import ContextNavigation
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFPlone.tests import dummy
-from six.moves.urllib.parse import urlencode
+from urllib.parse import urlencode
 from zope.component import getUtility
 from zope.interface import directlyProvides
 from zope.interface import noLongerProvides
@@ -734,11 +734,6 @@ class TestServicesContextNavigation(unittest.TestCase):
 
     def testAboveRoot(self):
         base = self.portal.absolute_url()
-        try:
-            from Products.CMFPlone.interfaces import INavigationSchema  # noqa
-        except ImportError:
-            return  # skip test in Plone 4
-
         registry = getUtility(IRegistry)
         registry["plone.root"] = "/folder2"
         view = self.renderer(self.portal, opts(topLevel=0))
@@ -810,12 +805,7 @@ class TestServicesContextNavigation(unittest.TestCase):
 
     def testStateFiltering(self):
         # Test Navtree workflow state filtering
-
-        try:
-            from Products.CMFPlone.interfaces import INavigationSchema  # noqa
-        except ImportError:
-            return  # skip test in Plone 4
-
+        from Products.CMFPlone.interfaces import INavigationSchema  # noqa
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         registry = getUtility(IRegistry)
         navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
@@ -841,11 +831,6 @@ class TestServicesContextNavigation(unittest.TestCase):
         self.assertEqual(len(tree["items"]), 2)
 
     def testPrunedRootNode(self):
-        try:
-            from Products.CMFPlone.interfaces import INavigationSchema  # noqa
-        except ImportError:
-            return  # skip test in Plone 4
-
         # This test has been changed to conform to reality
         registry = self.portal.portal_registry
         registry["plone.parent_types_not_to_query"] = ["Folder"]
@@ -856,11 +841,6 @@ class TestServicesContextNavigation(unittest.TestCase):
         self.assertEqual(len(tree["items"][4]["items"]), 0)
 
     def testPrunedRootNodeShowsAllParents(self):
-        try:
-            from Products.CMFPlone.interfaces import INavigationSchema  # noqa
-        except ImportError:
-            return  # skip test in Plone 4
-
         registry = self.portal.portal_registry
         registry["plone.parent_types_not_to_query"] = ["Folder"]
 

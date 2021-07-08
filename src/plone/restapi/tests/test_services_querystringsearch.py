@@ -1,5 +1,3 @@
-from pkg_resources import get_distribution
-from pkg_resources import parse_version
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -9,12 +7,6 @@ from plone.restapi.testing import RelativeSession
 
 import transaction
 import unittest
-
-zcatalog_version = get_distribution("Products.ZCatalog").version
-if parse_version(zcatalog_version) >= parse_version("5.1"):
-    SUPPORT_NOT_UUID_QUERIES = True
-else:
-    SUPPORT_NOT_UUID_QUERIES = False
 
 
 class TestQuerystringSearchEndpoint(unittest.TestCase):
@@ -137,10 +129,6 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertNotIn("effective", response.json()["items"][0])
         self.assertEqual(response.json()["items"][4]["title"], "Test Document 9")
 
-    @unittest.skipIf(
-        not SUPPORT_NOT_UUID_QUERIES,
-        "Skipping because ZCatalog allows not queries on UUIDIndex from >=5.1",
-    )
     def test_querystringsearch_do_not_return_context(self):
         self.portal.invokeFactory("Document", "testdocument2", title="Test Document 2")
         self.doc = self.portal.testdocument

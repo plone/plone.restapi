@@ -3,9 +3,12 @@ from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.dexterity.utils import createContentInContainer
-from plone.restapi.testing import PAM_INSTALLED
+from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
+from plone.app.multilingual.interfaces import ITranslationManager
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING
+from Products.CMFPlone.interfaces import ILanguage
+
 from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
 
@@ -14,15 +17,6 @@ import transaction
 import unittest
 
 
-if PAM_INSTALLED:
-    from Products.CMFPlone.interfaces import ILanguage
-    from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled  # noqa
-    from plone.app.multilingual.interfaces import ITranslationManager
-
-
-@unittest.skipUnless(
-    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
-)  # NOQA
 class TestTranslationInfo(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING
@@ -62,9 +56,6 @@ class TestTranslationInfo(unittest.TestCase):
         )
 
 
-@unittest.skipUnless(
-    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
-)  # NOQA
 class TestLinkContentsAsTranslations(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
@@ -173,9 +164,6 @@ class TestLinkContentsAsTranslations(unittest.TestCase):
         self.assertTrue(len(response["items"]) == 0)
 
 
-@unittest.skipUnless(
-    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
-)  # NOQA
 class TestUnLinkContentTranslations(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
@@ -228,9 +216,6 @@ class TestUnLinkContentTranslations(unittest.TestCase):
         self.assertEqual(400, response.status_code)
 
 
-@unittest.skipUnless(
-    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
-)  # NOQA
 class TestCreateContentsAsTranslations(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
@@ -270,9 +255,6 @@ class TestCreateContentsAsTranslations(unittest.TestCase):
         self.assertEqual("My Document DE", response.json().get("title"))
 
 
-@unittest.skipUnless(
-    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
-)  # NOQA
 class TestTranslationLocator(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
