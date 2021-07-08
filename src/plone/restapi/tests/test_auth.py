@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.restapi.permissions import UseRESTAPI
@@ -47,7 +46,7 @@ class TestLogin(TestCase):
         self.assertNotIn("token", res)
 
     def test_successful_login_returns_token(self):
-        self.request["BODY"] = '{"login": "%s", "password": "%s"}' % (
+        self.request["BODY"] = '{{"login": "{}", "password": "{}"}}'.format(
             SITE_OWNER_NAME,
             SITE_OWNER_PASSWORD,
         )
@@ -58,18 +57,18 @@ class TestLogin(TestCase):
 
     def test_invalid_token_returns_400(self):
         invalid_token = "abc123"
-        self.request._auth = "Bearer {}".format(invalid_token)
+        self.request._auth = f"Bearer {invalid_token}"
         self.assertRaises(Unauthorized, self.traverse, path="/plone")
 
     def test_expired_token_returns_400(self):
         self.portal.acl_users.jwt_auth.store_tokens = True
         token = self.portal.acl_users.jwt_auth.create_token("admin", timeout=-60)
-        self.request._auth = "Bearer {}".format(token)
+        self.request._auth = f"Bearer {token}"
         self.assertRaises(Unauthorized, self.traverse, path="/plone")
 
     def test_login_without_api_permission(self):
         self.portal.manage_permission(UseRESTAPI, roles=[])
-        self.request["BODY"] = '{"login": "%s", "password": "%s"}' % (
+        self.request["BODY"] = '{{"login": "{}", "password": "{}"}}'.format(
             SITE_OWNER_NAME,
             SITE_OWNER_PASSWORD,
         )
@@ -142,7 +141,7 @@ class TestLogout(TestCase):
     def test_logout_succeeds(self):
         self.portal.acl_users.jwt_auth.store_tokens = True
         token = self.portal.acl_users.jwt_auth.create_token("admin")
-        self.request._auth = "Bearer {}".format(token)
+        self.request._auth = f"Bearer {token}"
         service = self.traverse()
         service.reply()
         self.assertEqual(200, self.request.response.getStatus())
@@ -176,7 +175,7 @@ class TestRenew(TestCase):
     def test_renew_returns_token(self):
         self.portal.acl_users.jwt_auth.store_tokens = True
         token = self.portal.acl_users.jwt_auth.create_token("admin")
-        self.request._auth = "Bearer {}".format(token)
+        self.request._auth = f"Bearer {token}"
         service = self.traverse()
         res = service.reply()
         self.assertIn("token", res)
@@ -184,7 +183,7 @@ class TestRenew(TestCase):
     def test_renew_deletes_old_token(self):
         self.portal.acl_users.jwt_auth.store_tokens = True
         token = self.portal.acl_users.jwt_auth.create_token("admin")
-        self.request._auth = "Bearer {}".format(token)
+        self.request._auth = f"Bearer {token}"
         service = self.traverse()
         res = service.reply()
         self.assertIn("token", res)
@@ -192,7 +191,7 @@ class TestRenew(TestCase):
 
     def test_renew_fails_on_invalid_token(self):
         token = "this is an invalid token"
-        self.request._auth = "Bearer {}".format(token)
+        self.request._auth = f"Bearer {token}"
         service = self.traverse()
         res = service.reply()
         self.assertEqual(service.request.response.status, 401)

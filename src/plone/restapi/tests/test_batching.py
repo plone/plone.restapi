@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.dexterity.utils import createContentInContainer
@@ -8,7 +7,6 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import result_paths
-from six.moves import range
 from six.moves.urllib.parse import parse_qsl
 from six.moves.urllib.parse import urlparse
 
@@ -36,9 +34,9 @@ class TestBatchingDXBase(unittest.TestCase):
     def _create_doc(self, container, number):
         createContentInContainer(
             container,
-            u"DXTestDocument",
+            "DXTestDocument",
             id="doc-%s" % str(number + 1),
-            title=u"Document %s" % str(number + 1),
+            title="Document %s" % str(number + 1),
         )
 
 
@@ -47,9 +45,9 @@ class TestBatchingSearch(TestBatchingDXBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        super(TestBatchingSearch, self).setUp()
+        super().setUp()
 
-        folder = createContentInContainer(self.portal, u"Folder", id=u"folder")
+        folder = createContentInContainer(self.portal, "Folder", id="folder")
 
         for i in range(5):
             self._create_doc(folder, i)
@@ -74,7 +72,7 @@ class TestBatchingSearch(TestBatchingDXBase):
         canonicalized_qs = parse_qsl(urlparse(response.json()["@id"]).query)
 
         self.assertEqual(
-            set(original_qs) - set([("b_size", "2"), ("b_start", "2")]),
+            set(original_qs) - {("b_size", "2"), ("b_start", "2")},
             set(canonicalized_qs),
         )
 
@@ -87,11 +85,11 @@ class TestBatchingSearch(TestBatchingDXBase):
 
         self.assertDictEqual(
             {
-                u"@id": self.portal_url + "/folder/@search?b_start=2&b_size=2",
-                u"first": self.portal_url + "/folder/@search?b_start=0&b_size=2",
-                u"next": self.portal_url + "/folder/@search?b_start=4&b_size=2",
-                u"prev": self.portal_url + "/folder/@search?b_start=0&b_size=2",
-                u"last": self.portal_url + "/folder/@search?b_start=4&b_size=2",
+                "@id": self.portal_url + "/folder/@search?b_start=2&b_size=2",
+                "first": self.portal_url + "/folder/@search?b_start=0&b_size=2",
+                "next": self.portal_url + "/folder/@search?b_start=4&b_size=2",
+                "prev": self.portal_url + "/folder/@search?b_start=0&b_size=2",
+                "last": self.portal_url + "/folder/@search?b_start=4&b_size=2",
             },
             batch_info,
         )
@@ -104,7 +102,7 @@ class TestBatchingSearch(TestBatchingDXBase):
 
         # Response should contain second batch of items
         self.assertEqual(
-            [u"/plone/folder/doc-2", u"/plone/folder/doc-3"],
+            ["/plone/folder/doc-2", "/plone/folder/doc-3"],
             result_paths(response.json()),
         )
 
@@ -121,15 +119,15 @@ class TestBatchingCollections(TestBatchingDXBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        super(TestBatchingCollections, self).setUp()
+        super().setUp()
 
-        folder = createContentInContainer(self.portal, u"Folder", id=u"folder")
+        folder = createContentInContainer(self.portal, "Folder", id="folder")
 
         for i in range(5):
             self._create_doc(folder, i)
 
         collection = createContentInContainer(
-            self.portal, u"Collection", id="collection"
+            self.portal, "Collection", id="collection"
         )
         collection.query = [
             {
@@ -156,11 +154,11 @@ class TestBatchingCollections(TestBatchingDXBase):
 
         self.assertDictEqual(
             {
-                u"@id": self.portal_url + "/collection?b_start=2&b_size=2",
-                u"first": self.portal_url + "/collection?b_start=0&b_size=2",
-                u"next": self.portal_url + "/collection?b_start=4&b_size=2",
-                u"prev": self.portal_url + "/collection?b_start=0&b_size=2",
-                u"last": self.portal_url + "/collection?b_start=4&b_size=2",
+                "@id": self.portal_url + "/collection?b_start=2&b_size=2",
+                "first": self.portal_url + "/collection?b_start=0&b_size=2",
+                "next": self.portal_url + "/collection?b_start=4&b_size=2",
+                "prev": self.portal_url + "/collection?b_start=0&b_size=2",
+                "last": self.portal_url + "/collection?b_start=4&b_size=2",
             },
             batch_info,
         )
@@ -173,7 +171,7 @@ class TestBatchingCollections(TestBatchingDXBase):
         _result_paths = result_paths(response.json())
         self.assertEqual(2, len(_result_paths))
         self.assertTrue(
-            all(path.startswith(u"/plone/folder/doc-") for path in _result_paths)
+            all(path.startswith("/plone/folder/doc-") for path in _result_paths)
         )
 
     def test_total_item_count_is_correct(self):
@@ -193,9 +191,9 @@ class TestBatchingDXFolders(TestBatchingDXBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        super(TestBatchingDXFolders, self).setUp()
+        super().setUp()
 
-        folder = createContentInContainer(self.portal, u"Folder", id=u"folder")
+        folder = createContentInContainer(self.portal, "Folder", id="folder")
 
         for i in range(5):
             self._create_doc(folder, i)
@@ -217,11 +215,11 @@ class TestBatchingDXFolders(TestBatchingDXBase):
 
         self.assertDictEqual(
             {
-                u"@id": self.portal_url + "/folder?b_start=2&b_size=2",
-                u"first": self.portal_url + "/folder?b_start=0&b_size=2",
-                u"next": self.portal_url + "/folder?b_start=4&b_size=2",
-                u"prev": self.portal_url + "/folder?b_start=0&b_size=2",
-                u"last": self.portal_url + "/folder?b_start=4&b_size=2",
+                "@id": self.portal_url + "/folder?b_start=2&b_size=2",
+                "first": self.portal_url + "/folder?b_start=0&b_size=2",
+                "next": self.portal_url + "/folder?b_start=4&b_size=2",
+                "prev": self.portal_url + "/folder?b_start=0&b_size=2",
+                "last": self.portal_url + "/folder?b_start=4&b_size=2",
             },
             batch_info,
         )
@@ -234,7 +232,7 @@ class TestBatchingDXFolders(TestBatchingDXBase):
         _result_paths = result_paths(response.json())
         self.assertEqual(2, len(_result_paths))
         self.assertTrue(
-            all(path.startswith(u"/plone/folder/doc-") for path in _result_paths)
+            all(path.startswith("/plone/folder/doc-") for path in _result_paths)
         )
 
     def test_total_item_count_is_correct(self):
@@ -257,11 +255,11 @@ class TestBatchingDXFolders(TestBatchingDXBase):
 
         self.assertDictEqual(
             {
-                u"@id": self.portal_url + "/folder?b_start=2&b_size=2&fullobjects",
-                u"first": self.portal_url + "/folder?b_start=0&b_size=2&fullobjects=",
-                u"next": self.portal_url + "/folder?b_start=4&b_size=2&fullobjects=",
-                u"prev": self.portal_url + "/folder?b_start=0&b_size=2&fullobjects=",
-                u"last": self.portal_url + "/folder?b_start=4&b_size=2&fullobjects=",
+                "@id": self.portal_url + "/folder?b_start=2&b_size=2&fullobjects",
+                "first": self.portal_url + "/folder?b_start=0&b_size=2&fullobjects=",
+                "next": self.portal_url + "/folder?b_start=4&b_size=2&fullobjects=",
+                "prev": self.portal_url + "/folder?b_start=0&b_size=2&fullobjects=",
+                "last": self.portal_url + "/folder?b_start=4&b_size=2&fullobjects=",
             },
             batch_info,
         )
@@ -272,7 +270,7 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        super(TestBatchingSiteRoot, self).setUp()
+        super().setUp()
 
         for i in range(5):
             self._create_doc(self.portal, i)
@@ -283,7 +281,7 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
         response = self.api_session.get("/?b_start=2&b_size=2")
 
         # Response should contain canonical URL without batching params
-        self.assertEqual(response.json()["@id"], self.portal_url + u"/")
+        self.assertEqual(response.json()["@id"], self.portal_url + "/")
 
     def test_contains_batching_links(self):
         # Fetch the second page of the batch
@@ -294,11 +292,11 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
 
         self.assertDictEqual(
             {
-                u"@id": self.portal_url + "/?b_start=2&b_size=2",
-                u"first": self.portal_url + "/?b_start=0&b_size=2",
-                u"next": self.portal_url + "/?b_start=4&b_size=2",
-                u"prev": self.portal_url + "/?b_start=0&b_size=2",
-                u"last": self.portal_url + "/?b_start=4&b_size=2",
+                "@id": self.portal_url + "/?b_start=2&b_size=2",
+                "first": self.portal_url + "/?b_start=0&b_size=2",
+                "next": self.portal_url + "/?b_start=4&b_size=2",
+                "prev": self.portal_url + "/?b_start=0&b_size=2",
+                "last": self.portal_url + "/?b_start=4&b_size=2",
             },
             batch_info,
         )
@@ -310,7 +308,7 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
         # Response should contain second batch of items
         _result_paths = result_paths(response.json())
         self.assertEqual(2, len(_result_paths))
-        self.assertTrue(all(path.startswith(u"/plone/doc-") for path in _result_paths))
+        self.assertTrue(all(path.startswith("/plone/doc-") for path in _result_paths))
 
     def test_total_item_count_is_correct(self):
         # Fetch the second page of the batch
@@ -405,7 +403,7 @@ class TestHypermediaBatch(unittest.TestCase):
         # times) should be preserved.
 
         self.assertEqual(
-            set([("foolist", "1"), ("foolist", "2")]),
+            {("foolist", "1"), ("foolist", "2")},
             set(parse_qsl(urlparse(batch.canonical_url).query)),
         )
 
@@ -469,9 +467,9 @@ class TestHypermediaBatch(unittest.TestCase):
         # Argument lists (same query string parameter repeated multiple
         # times) should be preserved.
 
-        batch_params = set([("b_start", "0"), ("b_size", "10")])
+        batch_params = {("b_start", "0"), ("b_size", "10")}
         self.assertEqual(
-            set([("foolist", "1"), ("foolist", "2")]),
+            {("foolist", "1"), ("foolist", "2")},
             set(parse_qsl(urlparse(batch.links["first"]).query)) - batch_params,
         )
 
@@ -496,7 +494,7 @@ class TestHypermediaBatch(unittest.TestCase):
         self.request.form["b_size"] = 10
         self.request.form["b_start"] = 20
         batch = HypermediaBatch(self.request, items)
-        self.assertSetEqual(set(["@id", "first", "prev", "last"]), set(batch.links))
+        self.assertSetEqual({"@id", "first", "prev", "last"}, set(batch.links))
 
     def test_prev_link_contained_if_necessary(self):
         items = list(range(1, 26))
@@ -512,7 +510,7 @@ class TestHypermediaBatch(unittest.TestCase):
 
         self.request.form["b_size"] = 10
         batch = HypermediaBatch(self.request, items)
-        self.assertSetEqual(set(["@id", "first", "next", "last"]), set(batch.links))
+        self.assertSetEqual({"@id", "first", "next", "last"}, set(batch.links))
 
     def test_no_gaps_or_duplicates_between_pages(self):
         items = list(range(1, 26))

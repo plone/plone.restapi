@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -293,7 +291,7 @@ class TestServicesContextNavigation(unittest.TestCase):
         }
         qs = urlencode(q)
 
-        response = self.api_session.get("/folder2/@contextnavigation?{}".format(qs))
+        response = self.api_session.get(f"/folder2/@contextnavigation?{qs}")
         self.assertEqual(response.status_code, 200)
         res = response.json()
         base = self.portal.absolute_url()
@@ -563,7 +561,7 @@ class TestServicesContextNavigation(unittest.TestCase):
             self.portal.folder2.folder21,
             opts(
                 topLevel=1,
-                root_path=u"/folder2"
+                root_path="/folder2"
                 # self.portal.folder2.UID()
             ),
         )
@@ -586,11 +584,11 @@ class TestServicesContextNavigation(unittest.TestCase):
 
         view1 = self.renderer(
             self.portal.abc,
-            opts(topLevel=0, root_path=u"/abc"),
+            opts(topLevel=0, root_path="/abc"),
         )
         view2 = self.renderer(
             self.portal.abc,
-            opts(topLevel=0, root_path=u"/abcde"),
+            opts(topLevel=0, root_path="/abcde"),
         )
 
         tree1 = view1.getNavTree()
@@ -600,12 +598,12 @@ class TestServicesContextNavigation(unittest.TestCase):
 
         view1 = self.renderer(
             self.portal.abcde,
-            opts(topLevel=0, root_path=u"/abc"),
+            opts(topLevel=0, root_path="/abc"),
         )
 
         view2 = self.renderer(
             self.portal.abcde,
-            opts(topLevel=0, root_path=u"/abcde"),
+            opts(topLevel=0, root_path="/abcde"),
         )
 
         tree1 = view1.getNavTree()
@@ -699,7 +697,7 @@ class TestServicesContextNavigation(unittest.TestCase):
             self.portal.folder2.folder21,
             opts(
                 topLevel=1,
-                root_path=u"/folder2",
+                root_path="/folder2",
             ),
         )
         tree = view.getNavTree()
@@ -709,7 +707,7 @@ class TestServicesContextNavigation(unittest.TestCase):
         base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_path=u"", topLevel=0),
+            opts(root_path="", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -719,7 +717,7 @@ class TestServicesContextNavigation(unittest.TestCase):
         base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_path=u"/folder2", topLevel=0),
+            opts(root_path="/folder2", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -728,7 +726,7 @@ class TestServicesContextNavigation(unittest.TestCase):
     def testRootDoesNotExist(self):
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_path=u"DOESNT_EXIST", topLevel=0),
+            opts(root_path="DOESNT_EXIST", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -742,7 +740,7 @@ class TestServicesContextNavigation(unittest.TestCase):
             return  # skip test in Plone 4
 
         registry = getUtility(IRegistry)
-        registry["plone.root"] = u"/folder2"
+        registry["plone.root"] = "/folder2"
         view = self.renderer(self.portal, opts(topLevel=0))
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -752,7 +750,7 @@ class TestServicesContextNavigation(unittest.TestCase):
         base = self.portal.absolute_url()
         view = self.renderer(
             self.portal.folder1,
-            opts(root_path=u"/folder2", topLevel=0),
+            opts(root_path="/folder2", topLevel=0),
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
@@ -850,7 +848,7 @@ class TestServicesContextNavigation(unittest.TestCase):
 
         # This test has been changed to conform to reality
         registry = self.portal.portal_registry
-        registry["plone.parent_types_not_to_query"] = [u"Folder"]
+        registry["plone.parent_types_not_to_query"] = ["Folder"]
 
         view = self.renderer(self.portal.folder1, opts(topLevel=0))
         tree = view.getNavTree()
@@ -864,7 +862,7 @@ class TestServicesContextNavigation(unittest.TestCase):
             return  # skip test in Plone 4
 
         registry = self.portal.portal_registry
-        registry["plone.parent_types_not_to_query"] = [u"Folder"]
+        registry["plone.parent_types_not_to_query"] = ["Folder"]
 
         view = self.renderer(self.portal.folder1.doc11, opts(topLevel=1))
         tree = view.getNavTree()
@@ -940,7 +938,7 @@ class TestServicesContextNavigation(unittest.TestCase):
         # make a navigation portlet with navigation root set
         view = self.renderer(
             self.portal.folder1.folder1_1,
-            opts(bottomLevel=0, topLevel=0, root_path=u"/folder1/folder1_1"),
+            opts(bottomLevel=0, topLevel=0, root_path="/folder1/folder1_1"),
         )
         tree = view(expand=True)["contextnavigation"]
 
@@ -961,7 +959,7 @@ class TestServicesContextNavigation(unittest.TestCase):
     def testServiceId(self):
         view = self.renderer(
             self.portal.folder2.file21,
-            opts(root_path=u"", topLevel=0),
+            opts(root_path="", topLevel=0),
         )
         portlet = view(expand=True)
 

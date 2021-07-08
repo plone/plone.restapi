@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.deserializer import json_body
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
@@ -6,8 +5,6 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFEditions import CMFEditionsMessageFactory as _
 from Products.CMFEditions.interfaces.IModifier import FileTooLargeToVersionError  # noqa
 from zExceptions import BadRequest
-
-import six
 
 
 class HistoryPatch(Service):
@@ -22,13 +19,13 @@ def revert(context, version):
     pr.revert(context, version)
 
     title = context.title_or_id()
-    if not isinstance(title, six.text_type):
-        title = six.text_type(title, "utf-8", "ignore")
+    if not isinstance(title, str):
+        title = str(title, "utf-8", "ignore")
 
     if pr.supportsPolicy(context, "version_on_revert"):
         try:
             commit_msg = context.translate(
-                _(u"Reverted to revision ${version}", mapping={"version": version})
+                _("Reverted to revision ${version}", mapping={"version": version})
             )
             pr.save(obj=context, comment=commit_msg)
         except FileTooLargeToVersionError:
@@ -39,5 +36,5 @@ def revert(context, version):
             )
             raise BadRequest({"errors": error_msg})
 
-    msg = u"{} has been reverted to revision {}.".format(title, version)
+    msg = f"{title} has been reverted to revision {version}."
     return {"message": msg}

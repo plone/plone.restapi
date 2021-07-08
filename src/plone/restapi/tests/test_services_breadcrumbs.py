@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -35,11 +34,9 @@ class TestServicesBreadcrumbs(unittest.TestCase):
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         self.folder = createContentInContainer(
-            self.portal, u"Folder", id=u"folder", title=u"Some Folder"
+            self.portal, "Folder", id="folder", title="Some Folder"
         )
-        createContentInContainer(
-            self.folder, u"Document", id=u"doc1", title=u"A document"
-        )
+        createContentInContainer(self.folder, "Document", id="doc1", title="A document")
         transaction.commit()
 
     def tearDown(self):
@@ -52,16 +49,16 @@ class TestServicesBreadcrumbs(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                "@id": self.portal_url + u"/folder/doc1/@breadcrumbs",
+                "@id": self.portal_url + "/folder/doc1/@breadcrumbs",
                 "root": self.portal_url,
                 "items": [
                     {
-                        u"@id": self.portal_url + u"/folder",
-                        u"title": u"Some Folder",
+                        "@id": self.portal_url + "/folder",
+                        "title": "Some Folder",
                     },
                     {
-                        u"@id": self.portal_url + u"/folder/doc1",
-                        u"title": u"A document",
+                        "@id": self.portal_url + "/folder/doc1",
+                        "title": "A document",
                     },
                 ],
             },
@@ -87,18 +84,16 @@ class TestServicesMultilingualBreadcrumbs(unittest.TestCase):
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
         login(self.portal, SITE_OWNER_NAME)
         self.en_content = createContentInContainer(
-            self.portal["en"], "Document", title=u"Test document"
+            self.portal["en"], "Document", title="Test document"
         )
         self.es_content = createContentInContainer(
-            self.portal["es"], "Document", title=u"Test document"
+            self.portal["es"], "Document", title="Test document"
         )
         ITranslationManager(self.en_content).register_translation("es", self.es_content)
         self.folder = createContentInContainer(
-            self.portal["es"], u"Folder", id=u"folder", title=u"Some Folder"
+            self.portal["es"], "Folder", id="folder", title="Some Folder"
         )
-        createContentInContainer(
-            self.folder, u"Document", id=u"doc1", title=u"A document"
-        )
+        createContentInContainer(self.folder, "Document", id="doc1", title="A document")
         transaction.commit()
 
     def tearDown(self):
@@ -111,16 +106,16 @@ class TestServicesMultilingualBreadcrumbs(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                "@id": self.portal_url + u"/es/folder/doc1/@breadcrumbs",
+                "@id": self.portal_url + "/es/folder/doc1/@breadcrumbs",
                 "root": self.portal_url + "/es",
                 "items": [
                     {
-                        u"@id": self.portal_url + u"/es/folder",
-                        u"title": u"Some Folder",
+                        "@id": self.portal_url + "/es/folder",
+                        "title": "Some Folder",
                     },
                     {
-                        u"@id": self.portal_url + u"/es/folder/doc1",
-                        u"title": u"A document",
+                        "@id": self.portal_url + "/es/folder/doc1",
+                        "title": "A document",
                     },
                 ],
             },

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from zope.component import queryUtility
 from plone.dexterity.interfaces import IDexterityFTI
@@ -25,4 +24,4 @@ def rename_iface_to_name_in_blocks_behavior(setup_context):
             ]
             new_fti.append(SHORT_NEW_NAME)
             fti.behaviors = tuple(new_fti)
-            logger.info("Migrated behavior of {} type".format(_type))
+            logger.info(f"Migrated behavior of {_type} type")

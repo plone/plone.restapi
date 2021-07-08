@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -42,7 +41,7 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
 
         self.assertEquals(
             response.json()["@id"],
-            "{}/copy_of_document".format(self.portal_url),
+            f"{self.portal_url}/copy_of_document",
         )
 
     def test_workingcopy_get(self):
@@ -61,7 +60,7 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEquals(
             response.json()["working_copy"]["@id"],
-            "{}/copy_of_document".format(self.portal_url),
+            f"{self.portal_url}/copy_of_document",
         )
         self.assertEquals(
             response.json()["working_copy"]["creator_name"],
@@ -69,7 +68,7 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         )
         self.assertEquals(
             response.json()["working_copy"]["creator_url"],
-            "{}/author/admin".format(self.portal_url),
+            f"{self.portal_url}/author/admin",
         )
 
         # endpoint GET in the working_copy
@@ -80,11 +79,11 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEquals(
             response.json()["working_copy_of"]["@id"],
-            "{}/document".format(self.portal_url),
+            f"{self.portal_url}/document",
         )
         self.assertEquals(
             response.json()["working_copy"]["@id"],
-            "{}/copy_of_document".format(self.portal_url),
+            f"{self.portal_url}/copy_of_document",
         )
         self.assertEquals(
             response.json()["working_copy"]["creator_name"],
@@ -92,7 +91,7 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         )
         self.assertEquals(
             response.json()["working_copy"]["creator_url"],
-            "{}/author/admin".format(self.portal_url),
+            f"{self.portal_url}/author/admin",
         )
 
         # Serialization on the baseline object
@@ -102,7 +101,7 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
 
         self.assertEquals(
             response.json()["working_copy"]["@id"],
-            "{}/copy_of_document".format(self.portal_url),
+            f"{self.portal_url}/copy_of_document",
         )
         self.assertEquals(
             response.json()["working_copy"]["creator_name"],
@@ -110,7 +109,7 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         )
         self.assertEquals(
             response.json()["working_copy"]["creator_url"],
-            "{}/author/admin".format(self.portal_url),
+            f"{self.portal_url}/author/admin",
         )
         self.assertEquals(response.json()["working_copy_of"], None)
 
@@ -120,11 +119,11 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         )
         self.assertEquals(
             response.json()["working_copy_of"]["@id"],
-            "{}/document".format(self.portal_url),
+            f"{self.portal_url}/document",
         )
         self.assertEquals(
             response.json()["working_copy"]["@id"],
-            "{}/copy_of_document".format(self.portal_url),
+            f"{self.portal_url}/copy_of_document",
         )
         self.assertEquals(
             response.json()["working_copy"]["creator_name"],
@@ -132,7 +131,7 @@ class TestWorkingCopyEndpoint(unittest.TestCase):
         )
         self.assertEquals(
             response.json()["working_copy"]["creator_url"],
-            "{}/author/admin".format(self.portal_url),
+            f"{self.portal_url}/author/admin",
         )
 
     def test_workingcopy_notworkingcopy_get(self):

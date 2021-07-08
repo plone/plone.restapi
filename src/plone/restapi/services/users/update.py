@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from OFS.Image import Image
@@ -31,7 +30,7 @@ class UsersPatch(Service):
     """Updates an existing user."""
 
     def __init__(self, context, request):
-        super(UsersPatch, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):
@@ -167,7 +166,7 @@ class UsersPatch(Service):
         content_type = portrait.get("content-type", content_type)
         filename = portrait.get("filename", filename)
         data = portrait.get("data")
-        if isinstance(data, six.text_type):
+        if isinstance(data, str):
             data = data.encode("utf-8")
         if "encoding" in portrait:
             data = codecs.decode(data, portrait["encoding"])

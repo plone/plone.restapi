@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
@@ -17,7 +16,7 @@ class TestSiteSerializer(unittest.TestCase):
 
         self.portal.invokeFactory(
             "Document",
-            id=u"doc1",
+            id="doc1",
         )
 
     def serialize(self):
@@ -30,8 +29,8 @@ class TestSiteSerializer(unittest.TestCase):
 
     def test_serializer_includes_title(self):
         obj = self.serialize()
-        self.assertIn(u"title", obj)
-        self.assertEqual(u"Plone site", obj[u"title"])
+        self.assertIn("title", obj)
+        self.assertEqual("Plone site", obj["title"])
 
     def test_get_is_folderish(self):
         obj = self.serialize()
@@ -42,7 +41,7 @@ class TestSiteSerializer(unittest.TestCase):
         blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {
                 "@type": "foo",
-                "url": "resolveuid/{}".format(self.portal.doc1.UID()),
+                "url": f"resolveuid/{self.portal.doc1.UID()}",
             },
             "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
         }

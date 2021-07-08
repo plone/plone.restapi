@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -8,7 +7,6 @@ from plone.registry.interfaces import IRegistry
 from plone.registry.record import Record
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from six.moves import range
 from zope.component import getUtility
 
 import transaction
@@ -30,11 +28,11 @@ class TestRegistry(unittest.TestCase):
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         registry = getUtility(IRegistry)
-        record = Record(field.TextLine(title=u"Foo Bar"), u"Lorem Ipsum")
+        record = Record(field.TextLine(title="Foo Bar"), "Lorem Ipsum")
         registry.records["foo.bar"] = record
 
         for counter in range(1, 100):
-            record = Record(field.TextLine(title=u"Foo Bar"), u"Lorem Ipsum")
+            record = Record(field.TextLine(title="Foo Bar"), "Lorem Ipsum")
             registry.records["foo.bar" + str(counter)] = record
 
         transaction.commit()
@@ -59,7 +57,7 @@ class TestRegistry(unittest.TestCase):
 
     def test_update_several_registry_records(self):
         registry = getUtility(IRegistry)
-        record = Record(field.TextLine(title=u"Foo Bar Baz"), u"Lorem Ipsum Dolor")
+        record = Record(field.TextLine(title="Foo Bar Baz"), "Lorem Ipsum Dolor")
         registry.records["foo.bar.baz"] = record
         transaction.commit()
         payload = {"foo.bar": "lorem ipsum", "foo.bar.baz": "lorem ipsum dolor"}

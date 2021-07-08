@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-from mock import patch
+from unittest.mock import patch
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -38,8 +37,8 @@ class TestTraversal(unittest.TestCase):
 
     def test_get_document(self):
         self.portal.invokeFactory("Document", id="doc1", title="My Document")
-        self.portal.doc1.description = u"This is a document"
-        self.portal.doc1.text = RichTextValue(u"Lorem ipsum", "text/plain", "text/html")
+        self.portal.doc1.description = "This is a document"
+        self.portal.doc1.text = RichTextValue("Lorem ipsum", "text/plain", "text/html")
         transaction.commit()
 
         response = self.api_session.get(self.portal.doc1.absolute_url())
@@ -70,22 +69,22 @@ class TestTraversal(unittest.TestCase):
         self.assertEqual("This is a document", response.json().get("description"))
         self.assertEqual(
             {
-                u"data": u"<p>Lorem ipsum</p>",
-                u"content-type": u"text/plain",
-                u"encoding": u"utf-8",
+                "data": "<p>Lorem ipsum</p>",
+                "content-type": "text/plain",
+                "encoding": "utf-8",
             },
             response.json().get("text"),
         )
 
     def test_get_news_item(self):
         self.portal.invokeFactory("News Item", id="news1", title="News Item 1")
-        image_file = os.path.join(os.path.dirname(__file__), u"image.png")
+        image_file = os.path.join(os.path.dirname(__file__), "image.png")
         with open(image_file, "rb") as f:
             image_data = f.read()
         self.portal.news1.image = NamedBlobImage(
-            data=image_data, contentType="image/png", filename=u"image.png"
+            data=image_data, contentType="image/png", filename="image.png"
         )
-        self.portal.news1.image_caption = u"This is an image caption."
+        self.portal.news1.image_caption = "This is an image caption."
         transaction.commit()
 
         with patch.object(storage, "uuid4", return_value="uuid1"):
@@ -110,10 +109,10 @@ class TestTraversal(unittest.TestCase):
             )
             self.assertEqual("News Item 1", response.json().get("title"))
             self.assertEqual(
-                u"This is an image caption.", response.json()["image_caption"]
+                "This is an image caption.", response.json()["image_caption"]
             )
             self.assertDictContainsSubset(
-                {"download": self.portal_url + u"/news1/@@images/uuid1.png"},  # noqa
+                {"download": self.portal_url + "/news1/@@images/uuid1.png"},  # noqa
                 response.json()["image"],
             )
 
@@ -172,12 +171,12 @@ class TestTraversal(unittest.TestCase):
     def test_get_file(self):  # pragma: no cover
         self.portal.invokeFactory("File", id="file1")
         self.portal.file1.title = "File"
-        self.portal.file1.description = u"A file"
-        pdf_file = os.path.join(os.path.dirname(__file__), u"file.pdf")
+        self.portal.file1.description = "A file"
+        pdf_file = os.path.join(os.path.dirname(__file__), "file.pdf")
         with open(pdf_file, "rb") as f:
             pdf_data = f.read()
         self.portal.file1.file = NamedBlobFile(
-            data=pdf_data, contentType="application/pdf", filename=u"file.pdf"
+            data=pdf_data, contentType="application/pdf", filename="file.pdf"
         )
         intids = getUtility(IIntIds)
         file_id = intids.getId(self.portal.file1)
@@ -199,12 +198,12 @@ class TestTraversal(unittest.TestCase):
     def test_get_image(self):  # pragma: no cover
         self.portal.invokeFactory("Image", id="img1")
         self.portal.img1.title = "Image"
-        self.portal.img1.description = u"An image"
-        image_file = os.path.join(os.path.dirname(__file__), u"image.png")
+        self.portal.img1.description = "An image"
+        image_file = os.path.join(os.path.dirname(__file__), "image.png")
         with open(image_file, "rb") as f:
             image_data = f.read()
         self.portal.img1.image = NamedBlobImage(
-            data=image_data, contentType="image/png", filename=u"image.png"
+            data=image_data, contentType="image/png", filename="image.png"
         )
         transaction.commit()
 

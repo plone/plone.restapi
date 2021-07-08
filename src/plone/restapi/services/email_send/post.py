@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from AccessControl.Permissions import use_mailhost_services
 from email.mime.text import MIMEText
@@ -73,14 +72,14 @@ class EmailSendPost(Service):
             if not sender_fullname:
                 subject = self.context.translate(
                     _(
-                        u"A portal user via ${portal_title}",
+                        "A portal user via ${portal_title}",
                         mapping={"portal_title": portal_title},
                     )
                 )
             else:
                 subject = self.context.translate(
                     _(
-                        u"${sender_fullname} via ${portal_title}",
+                        "${sender_fullname} via ${portal_title}",
                         mapping={
                             "sender_fullname": sender_fullname,
                             "portal_title": portal_title,
@@ -90,7 +89,7 @@ class EmailSendPost(Service):
 
         message_intro = self.context.translate(
             _(
-                u"You are receiving this mail because ${sender_fullname} sent this message via the site ${portal_title}:",  # noqa
+                "You are receiving this mail because ${sender_fullname} sent this message via the site ${portal_title}:",  # noqa
                 mapping={
                     "sender_fullname": sender_fullname or "a portal user",
                     "portal_title": portal_title,
@@ -98,7 +97,7 @@ class EmailSendPost(Service):
             )
         )
 
-        message = u"{} \n {}".format(message_intro, message)
+        message = f"{message_intro} \n {message}"
 
         message = MIMEText(message, "plain", encoding)
         message["Reply-To"] = sender_from_address
@@ -114,7 +113,7 @@ class EmailSendPost(Service):
         except (SMTPException, RuntimeError):
             plone_utils = getToolByName(self.context, "plone_utils")
             exception = plone_utils.exceptionString()
-            message = "Unable to send mail: {}".format(exception)
+            message = f"Unable to send mail: {exception}"
 
             self.request.response.setStatus(500)
             return dict(error=dict(type="InternalServerError", message=message))

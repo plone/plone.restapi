@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from collections import defaultdict
 from plone.app.layout.navigation.root import getNavigationRoot
@@ -30,7 +29,7 @@ except ImportError:
 
 @implementer(IExpandableElement)
 @adapter(Interface, Interface)
-class Navigation(object):
+class Navigation:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -42,9 +41,7 @@ class Navigation(object):
         else:
             self.depth = 1
 
-        result = {
-            "navigation": {"@id": "{}/@navigation".format(self.context.absolute_url())}
-        }
+        result = {"navigation": {"@id": f"{self.context.absolute_url()}/@navigation"}}
         if not expand:
             return result
 
@@ -86,7 +83,7 @@ class Navigation(object):
     @property
     def default_language(self):
         portal_state = getMultiAdapter(
-            (self.context, self.request), name=u"plone_portal_state"
+            (self.context, self.request), name="plone_portal_state"
         )
         return portal_state.default_language()
 
@@ -140,6 +137,7 @@ class Navigation(object):
             "portal_type": {"query": self.settings["displayed_types"]},
             "Language": self.current_language,
             "is_default_page": False,
+            "sort_on": "getObjPositionInParent",
         }
 
         if not self.settings["nonfolderish_tabs"]:
@@ -176,9 +174,8 @@ class Navigation(object):
                 "review_state": json_compatible(brain.review_state),
                 "use_view_action_in_listings": brain.portal_type in types_using_view,
             }
-
-            if brain.get("nav_title", False):
-                entry.update({"title": brain["nav_title"]})
+            if "nav_title" in brain and brain.nav_title:
+                entry.update({"title": brain.nav_title})
 
             self.customize_entry(entry, brain)
             ret[brain_parent_path].append(entry)

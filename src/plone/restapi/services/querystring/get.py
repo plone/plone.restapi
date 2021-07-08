@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.querystring.interfaces import IQuerystringRegistryReader
 from plone.registry.interfaces import IRegistry
 from plone.restapi.services import Service

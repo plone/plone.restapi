@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
 from datetime import date
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
 from decimal import Decimal
-from mock import patch
+from unittest.mock import patch
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import iterSchemata
 from plone.namedfile.file import NamedBlobFile
@@ -22,7 +21,6 @@ from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
 
 import os
-import six
 import unittest
 
 
@@ -52,13 +50,13 @@ class TestDexterityFieldSerializing(TestCase):
 
     def test_ascii_field_serialization_returns_unicode(self):
         value = self.serialize("test_ascii_field", "foo")
-        self.assertTrue(isinstance(value, six.text_type), "Not an <unicode>")
-        self.assertEqual(u"foo", value)
+        self.assertTrue(isinstance(value, str), "Not an <unicode>")
+        self.assertEqual("foo", value)
 
     def test_asciiline_field_serialization_returns_unicode(self):
         value = self.serialize("test_asciiline_field", "foo")
-        self.assertTrue(isinstance(value, six.text_type), "Not an <unicode>")
-        self.assertEqual(u"foo", value)
+        self.assertTrue(isinstance(value, str), "Not an <unicode>")
+        self.assertEqual("foo", value)
 
     def test_bool_field_serialization_returns_true(self):
         value = self.serialize("test_bool_field", True)
@@ -72,47 +70,47 @@ class TestDexterityFieldSerializing(TestCase):
 
     def test_bytes_field_serialization_returns_unicode(self):
         value = self.serialize("test_bytes_field", b"\xc3\xa4\xc3\xb6\xc3\xbc")
-        self.assertTrue(isinstance(value, six.text_type), "Not an <unicode>")
-        self.assertEqual(u"\xe4\xf6\xfc", value)
+        self.assertTrue(isinstance(value, str), "Not an <unicode>")
+        self.assertEqual("\xe4\xf6\xfc", value)
 
     def test_bytesline_field_serialization_returns_unicode(self):
         value = self.serialize("test_bytesline_field", b"\xc3\xa4\xc3\xb6\xc3\xbc")
-        self.assertTrue(isinstance(value, six.text_type), "Not an <unicode>")
-        self.assertEqual(u"\xe4\xf6\xfc", value)
+        self.assertTrue(isinstance(value, str), "Not an <unicode>")
+        self.assertEqual("\xe4\xf6\xfc", value)
 
     def test_choice_field_serialization_returns_vocabulary_term(self):
-        value = self.serialize("test_choice_field", u"foo")
+        value = self.serialize("test_choice_field", "foo")
         self.assertTrue(isinstance(value, dict))
-        self.assertEqual({u"token": u"foo", u"title": None}, value)
+        self.assertEqual({"token": "foo", "title": None}, value)
 
     def test_choice_field_with_vocabulary_serialization_returns_vocabulary_term(
         self,
     ):  # noqa
-        value = self.serialize("test_choice_field_with_vocabulary", u"value1")
+        value = self.serialize("test_choice_field_with_vocabulary", "value1")
         self.assertTrue(isinstance(value, dict))
-        self.assertEqual({u"token": u"token1", u"title": u"title1"}, value)
+        self.assertEqual({"token": "token1", "title": "title1"}, value)
 
     def test_date_field_serialization_returns_unicode(self):
         value = self.serialize("test_date_field", date(2015, 7, 15))
-        self.assertTrue(isinstance(value, six.text_type), "Not an <unicode>")
-        self.assertEqual(u"2015-07-15", value)
+        self.assertTrue(isinstance(value, str), "Not an <unicode>")
+        self.assertEqual("2015-07-15", value)
 
     def test_datetime_field_serialization_returns_unicode(self):
         value = self.serialize("test_datetime_field", datetime(2015, 6, 20, 13, 22, 4))
-        self.assertTrue(isinstance(value, six.text_type), "Not an <unicode>")
-        self.assertEqual(u"2015-06-20T13:22:04", value)
+        self.assertTrue(isinstance(value, str), "Not an <unicode>")
+        self.assertEqual("2015-06-20T13:22:04", value)
 
     def test_decimal_field_serialization_returns_unicode(self):
-        value = self.serialize("test_decimal_field", Decimal(u"1.1"))
-        self.assertTrue(isinstance(value, six.text_type), "Not an <unicode>")
-        self.assertEqual(u"1.1", value)
+        value = self.serialize("test_decimal_field", Decimal("1.1"))
+        self.assertTrue(isinstance(value, str), "Not an <unicode>")
+        self.assertEqual("1.1", value)
 
     def test_dict_field_serialization_returns_dict(self):
         value = self.serialize(
             "test_dict_field", {"foo": "bar", "spam": "eggs", "1": 1}
         )
         self.assertTrue(isinstance(value, dict), "Not a <dict>")
-        self.assertEqual({u"foo": u"bar", u"spam": u"eggs", u"1": 1}, value)
+        self.assertEqual({"foo": "bar", "spam": "eggs", "1": 1}, value)
 
     def test_float_field_serialization_returns_float(self):
         value = self.serialize("test_float_field", 1.5)
@@ -132,63 +130,63 @@ class TestDexterityFieldSerializing(TestCase):
     def test_list_field_serialization_returns_list(self):
         value = self.serialize("test_list_field", [1, "two", 3])
         self.assertTrue(isinstance(value, list), "Not a <list>")
-        self.assertEqual([1, u"two", 3], value)
+        self.assertEqual([1, "two", 3], value)
 
     def test_list_field_with_vocabulary_choice_serialization_returns_terms(self):
         value = self.serialize(
-            "test_list_field_with_choice_with_vocabulary", [u"value1", u"value3"]
+            "test_list_field_with_choice_with_vocabulary", ["value1", "value3"]
         )
         self.assertTrue(isinstance(value, list), "Not a <list>")
         self.assertEqual(
             [
-                {u"token": u"token1", u"title": u"title1"},
-                {u"token": u"token3", u"title": u"title3"},
+                {"token": "token1", "title": "title1"},
+                {"token": "token3", "title": "title3"},
             ],
             value,
         )
 
     def test_list_field_with_vocabulary_choice_serialization_no_valid_term(self):
         value = self.serialize(
-            "test_list_field_with_choice_with_vocabulary", [u"value3", u"value4"]
+            "test_list_field_with_choice_with_vocabulary", ["value3", "value4"]
         )
         self.assertTrue(isinstance(value, list), "Not a <list>")
         self.assertEqual(
-            [{u"token": u"token3", u"title": u"title3"}],
+            [{"token": "token3", "title": "title3"}],
             value,
         )
 
     def test_set_field_serialization_returns_list(self):
-        value = self.serialize("test_set_field", set(["a", "b", "c"]))
+        value = self.serialize("test_set_field", {"a", "b", "c"})
         self.assertTrue(isinstance(value, list), "Not a <list>")
-        self.assertEqual([u"a", u"b", u"c"], sorted(value))
+        self.assertEqual(["a", "b", "c"], sorted(value))
 
     def test_set_field_with_vocabulary_choice_serialization_returns_terms(self):
         value = self.serialize(
-            "test_set_field_with_choice_with_vocabulary", set([u"value1", u"value3"])
+            "test_set_field_with_choice_with_vocabulary", {"value1", "value3"}
         )
         self.assertTrue(isinstance(value, list), "Not a <list>")
         self.assertEqual(
             [
-                {u"token": u"token1", u"title": u"title1"},
-                {u"token": u"token3", u"title": u"title3"},
+                {"token": "token1", "title": "title1"},
+                {"token": "token3", "title": "title3"},
             ],
-            sorted(value, key=lambda x: x[u"token"]),
+            sorted(value, key=lambda x: x["token"]),
         )
 
     def test_text_field_serialization_returns_unicode(self):
-        value = self.serialize("test_text_field", u"Käfer")
-        self.assertTrue(isinstance(value, six.text_type), "Not an <unicode>")
-        self.assertEqual(u"Käfer", value)
+        value = self.serialize("test_text_field", "Käfer")
+        self.assertTrue(isinstance(value, str), "Not an <unicode>")
+        self.assertEqual("Käfer", value)
 
     def test_textline_field_serialization_returns_unicode(self):
-        value = self.serialize("test_textline_field", u"Käfer")
-        self.assertTrue(isinstance(value, six.text_type), "Not an <unicode>")
-        self.assertEqual(u"Käfer", value)
+        value = self.serialize("test_textline_field", "Käfer")
+        self.assertTrue(isinstance(value, str), "Not an <unicode>")
+        self.assertEqual("Käfer", value)
 
     def test_time_field_serialization_returns_unicode(self):
         value = self.serialize("test_time_field", time(14, 15, 33))
-        self.assertTrue(isinstance(value, six.text_type), "Not an <unicode>")
-        self.assertEqual(u"14:15:33", value)
+        self.assertTrue(isinstance(value, str), "Not an <unicode>")
+        self.assertEqual("14:15:33", value)
 
     def test_timedelta_field_serialization_returns_float(self):
         value = self.serialize("test_timedelta_field", timedelta(0.01))
@@ -199,7 +197,7 @@ class TestDexterityFieldSerializing(TestCase):
         value = self.serialize(
             "test_richtext_field",
             RichTextValue(
-                raw=u"<p>Some Text</p>",
+                raw="<p>Some Text</p>",
                 mimeType="text/html",
                 outputMimeType="text/html",
             ),
@@ -207,9 +205,9 @@ class TestDexterityFieldSerializing(TestCase):
         self.assertTrue(isinstance(value, dict), "Not a <dict>")
         self.assertEqual(
             {
-                u"content-type": u"text/html",
-                u"data": u"<p>Some Text</p>",
-                u"encoding": u"utf-8",
+                "content-type": "text/html",
+                "data": "<p>Some Text</p>",
+                "encoding": "utf-8",
             },
             value,
         )
@@ -218,19 +216,19 @@ class TestDexterityFieldSerializing(TestCase):
         value = self.serialize(
             "test_namedfile_field",
             NamedFile(
-                data=u"Spam and eggs", contentType=u"text/plain", filename=u"test.txt"
+                data="Spam and eggs", contentType="text/plain", filename="test.txt"
             ),
         )
         self.assertTrue(isinstance(value, dict), "Not a <dict>")
-        download_url = u"/".join(
-            [self.doc1.absolute_url(), u"@@download/test_namedfile_field"]
+        download_url = "/".join(
+            [self.doc1.absolute_url(), "@@download/test_namedfile_field"]
         )
         self.assertEqual(
             {
-                u"filename": u"test.txt",
-                u"content-type": u"text/plain",
-                u"size": 13,
-                u"download": download_url,
+                "filename": "test.txt",
+                "content-type": "text/plain",
+                "size": 13,
+                "download": download_url,
             },
             value,
         )
@@ -239,20 +237,20 @@ class TestDexterityFieldSerializing(TestCase):
         value = self.serialize(
             "test_namedblobfile_field",
             NamedBlobFile(
-                data=u"Spam and eggs", contentType=u"text/plain", filename=u"test.txt"
+                data="Spam and eggs", contentType="text/plain", filename="test.txt"
             ),
         )
         self.assertTrue(isinstance(value, dict), "Not a <dict>")
 
-        download_url = u"/".join(
-            [self.doc1.absolute_url(), u"@@download/test_namedblobfile_field"]
+        download_url = "/".join(
+            [self.doc1.absolute_url(), "@@download/test_namedblobfile_field"]
         )
         self.assertEqual(
             {
-                u"filename": u"test.txt",
-                u"content-type": u"text/plain",
-                u"size": 13,
-                u"download": download_url,
+                "filename": "test.txt",
+                "content-type": "text/plain",
+                "size": 13,
+                "download": download_url,
             },
             value,
         )
@@ -339,6 +337,12 @@ class TestDexterityFieldSerializing(TestCase):
         dm.set("${portal_url}/doc1")
         self.assertEqual(serializer(), self.portal.doc1.absolute_url())
 
+        dm.set("${portal_url}/doc2")
+        self.assertEqual(serializer(), "/doc2")
+
+        dm.set("/doc2")
+        self.assertEqual(serializer(), "/doc2")
+
 
 @unittest.skipUnless(
     PLONE_VERSION.base_version < "5.1",
@@ -372,7 +376,7 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
         """In Plone < 5.1 the image returned when requesting an image
         scale with the same width and height of the original image is
         a Pillow-generated image scale in JPEG format"""
-        image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
+        image_file = os.path.join(os.path.dirname(__file__), "1024x768.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
         fn = "test_namedimage_field"
@@ -380,7 +384,7 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
             value = self.serialize(
                 fn,
                 NamedImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType="image/gif", filename="1024x768.gif"
                 ),
             )
             self.assertTrue(isinstance(value, dict), "Not a <dict>")
@@ -390,51 +394,51 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
 
             # Original image is still a "scale"
             # scaled images are converted to JPEG in Plone < 5.1
-            original_download_url = u"{}/@@images/{}.{}".format(
+            original_download_url = "{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "jpeg"
             )
 
-            scale_download_url = u"{}/@@images/{}.{}".format(
+            scale_download_url = "{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "jpeg"
             )
             scales = {
-                u"listing": {
-                    u"download": scale_download_url,
-                    u"width": 16,
-                    u"height": 12,
+                "listing": {
+                    "download": scale_download_url,
+                    "width": 16,
+                    "height": 12,
                 },
-                u"icon": {u"download": scale_download_url, u"width": 32, u"height": 24},
-                u"tile": {u"download": scale_download_url, u"width": 64, u"height": 48},
-                u"thumb": {
-                    u"download": scale_download_url,
-                    u"width": 128,
-                    u"height": 96,
+                "icon": {"download": scale_download_url, "width": 32, "height": 24},
+                "tile": {"download": scale_download_url, "width": 64, "height": 48},
+                "thumb": {
+                    "download": scale_download_url,
+                    "width": 128,
+                    "height": 96,
                 },
-                u"mini": {
-                    u"download": scale_download_url,
-                    u"width": 200,
-                    u"height": 150,
+                "mini": {
+                    "download": scale_download_url,
+                    "width": 200,
+                    "height": 150,
                 },
-                u"preview": {
-                    u"download": scale_download_url,
-                    u"width": 400,
-                    u"height": 300,
+                "preview": {
+                    "download": scale_download_url,
+                    "width": 400,
+                    "height": 300,
                 },
-                u"large": {
-                    u"download": scale_download_url,
-                    u"width": 768,
-                    u"height": 576,
+                "large": {
+                    "download": scale_download_url,
+                    "width": 768,
+                    "height": 576,
                 },
             }
             self.assertEqual(
                 {
-                    u"filename": u"1024x768.gif",
-                    u"content-type": u"image/gif",
-                    u"size": 1514,
-                    u"download": original_download_url,
-                    u"width": 1024,
-                    u"height": 768,
-                    u"scales": scales,
+                    "filename": "1024x768.gif",
+                    "content-type": "image/gif",
+                    "size": 1514,
+                    "download": original_download_url,
+                    "width": 1024,
+                    "height": 768,
+                    "scales": scales,
                 },
                 value,
             )
@@ -448,19 +452,19 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
             value = self.serialize(
                 fn,
                 NamedImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType="image/gif", filename="1024x768.gif"
                 ),
             )
 
         self.assertEqual(
             {
-                u"content-type": u"image/gif",
-                u"download": None,
-                u"filename": u"1024x768.gif",
-                u"height": -1,
-                u"scales": {},
-                u"size": 18,
-                u"width": -1,
+                "content-type": "image/gif",
+                "download": None,
+                "filename": "1024x768.gif",
+                "height": -1,
+                "scales": {},
+                "size": 18,
+                "width": -1,
             },
             value,
         )
@@ -469,7 +473,7 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
         """In Plone < 5.1 the image returned when requesting an image
         scale with the same width and height of the original image is
         a Pillow-generated image scale in JPEG format"""
-        image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
+        image_file = os.path.join(os.path.dirname(__file__), "1024x768.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
         fn = "test_namedblobimage_field"
@@ -477,7 +481,7 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
             value = self.serialize(
                 fn,
                 NamedBlobImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType="image/gif", filename="1024x768.gif"
                 ),
             )
             self.assertTrue(isinstance(value, dict), "Not a <dict>")
@@ -487,51 +491,51 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
 
             # Original image is still a "scale"
             # scaled images are converted to JPEG in Plone < 5.1
-            original_download_url = u"{}/@@images/{}.{}".format(
+            original_download_url = "{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "jpeg"
             )
 
-            scale_download_url = u"{}/@@images/{}.{}".format(
+            scale_download_url = "{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "jpeg"
             )
             scales = {
-                u"listing": {
-                    u"download": scale_download_url,
-                    u"width": 16,
-                    u"height": 12,
+                "listing": {
+                    "download": scale_download_url,
+                    "width": 16,
+                    "height": 12,
                 },
-                u"icon": {u"download": scale_download_url, u"width": 32, u"height": 24},
-                u"tile": {u"download": scale_download_url, u"width": 64, u"height": 48},
-                u"thumb": {
-                    u"download": scale_download_url,
-                    u"width": 128,
-                    u"height": 96,
+                "icon": {"download": scale_download_url, "width": 32, "height": 24},
+                "tile": {"download": scale_download_url, "width": 64, "height": 48},
+                "thumb": {
+                    "download": scale_download_url,
+                    "width": 128,
+                    "height": 96,
                 },
-                u"mini": {
-                    u"download": scale_download_url,
-                    u"width": 200,
-                    u"height": 150,
+                "mini": {
+                    "download": scale_download_url,
+                    "width": 200,
+                    "height": 150,
                 },
-                u"preview": {
-                    u"download": scale_download_url,
-                    u"width": 400,
-                    u"height": 300,
+                "preview": {
+                    "download": scale_download_url,
+                    "width": 400,
+                    "height": 300,
                 },
-                u"large": {
-                    u"download": scale_download_url,
-                    u"width": 768,
-                    u"height": 576,
+                "large": {
+                    "download": scale_download_url,
+                    "width": 768,
+                    "height": 576,
                 },
             }
             self.assertEqual(
                 {
-                    u"filename": u"1024x768.gif",
-                    u"content-type": u"image/gif",
-                    u"size": 1514,
-                    u"download": original_download_url,
-                    u"width": 1024,
-                    u"height": 768,
-                    u"scales": scales,
+                    "filename": "1024x768.gif",
+                    "content-type": "image/gif",
+                    "size": 1514,
+                    "download": original_download_url,
+                    "width": 1024,
+                    "height": 768,
+                    "scales": scales,
                 },
                 value,
             )
@@ -545,19 +549,19 @@ class TestDexterityImageFieldsSerializingOriginalScaledInJPEG(TestCase):
             value = self.serialize(
                 fn,
                 NamedBlobImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType="image/gif", filename="1024x768.gif"
                 ),
             )
 
         self.assertEqual(
             {
-                u"content-type": u"image/gif",
-                u"download": None,
-                u"filename": u"1024x768.gif",
-                u"height": -1,
-                u"scales": {},
-                u"size": 18,
-                u"width": -1,
+                "content-type": "image/gif",
+                "download": None,
+                "filename": "1024x768.gif",
+                "height": -1,
+                "scales": {},
+                "size": 18,
+                "width": -1,
             },
             value,
         )
@@ -595,7 +599,7 @@ class TestDexterityImageFieldSerializingOriginalScaledInPNG(TestCase):
         """In Plone == 5.1 the image returned when requesting an image
         scale with the same width and height of the original image is
         a Pillow-generated image scale in PNG format"""
-        image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
+        image_file = os.path.join(os.path.dirname(__file__), "1024x768.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
         fn = "test_namedimage_field"
@@ -603,7 +607,7 @@ class TestDexterityImageFieldSerializingOriginalScaledInPNG(TestCase):
             value = self.serialize(
                 fn,
                 NamedImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType="image/gif", filename="1024x768.gif"
                 ),
             )
             self.assertTrue(isinstance(value, dict), "Not a <dict>")
@@ -613,51 +617,51 @@ class TestDexterityImageFieldSerializingOriginalScaledInPNG(TestCase):
 
             # Original image is still a "scale"
             # scaled images are converted to PNG in Plone = 5.1
-            original_download_url = u"{}/@@images/{}.{}".format(
+            original_download_url = "{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "png"
             )
 
-            scale_download_url = u"{}/@@images/{}.{}".format(
+            scale_download_url = "{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "jpeg"
             )
             scales = {
-                u"listing": {
-                    u"download": scale_download_url,
-                    u"width": 16,
-                    u"height": 12,
+                "listing": {
+                    "download": scale_download_url,
+                    "width": 16,
+                    "height": 12,
                 },
-                u"icon": {u"download": scale_download_url, u"width": 32, u"height": 24},
-                u"tile": {u"download": scale_download_url, u"width": 64, u"height": 48},
-                u"thumb": {
-                    u"download": scale_download_url,
-                    u"width": 128,
-                    u"height": 96,
+                "icon": {"download": scale_download_url, "width": 32, "height": 24},
+                "tile": {"download": scale_download_url, "width": 64, "height": 48},
+                "thumb": {
+                    "download": scale_download_url,
+                    "width": 128,
+                    "height": 96,
                 },
-                u"mini": {
-                    u"download": scale_download_url,
-                    u"width": 200,
-                    u"height": 150,
+                "mini": {
+                    "download": scale_download_url,
+                    "width": 200,
+                    "height": 150,
                 },
-                u"preview": {
-                    u"download": scale_download_url,
-                    u"width": 400,
-                    u"height": 300,
+                "preview": {
+                    "download": scale_download_url,
+                    "width": 400,
+                    "height": 300,
                 },
-                u"large": {
-                    u"download": scale_download_url,
-                    u"width": 768,
-                    u"height": 576,
+                "large": {
+                    "download": scale_download_url,
+                    "width": 768,
+                    "height": 576,
                 },
             }
             self.assertEqual(
                 {
-                    u"filename": u"1024x768.gif",
-                    u"content-type": u"image/gif",
-                    u"size": 1514,
-                    u"download": original_download_url,
-                    u"width": 1024,
-                    u"height": 768,
-                    u"scales": scales,
+                    "filename": "1024x768.gif",
+                    "content-type": "image/gif",
+                    "size": 1514,
+                    "download": original_download_url,
+                    "width": 1024,
+                    "height": 768,
+                    "scales": scales,
                 },
                 value,
             )
@@ -671,19 +675,19 @@ class TestDexterityImageFieldSerializingOriginalScaledInPNG(TestCase):
             value = self.serialize(
                 fn,
                 NamedImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType="image/gif", filename="1024x768.gif"
                 ),
             )
 
         self.assertEqual(
             {
-                u"content-type": u"image/gif",
-                u"download": None,
-                u"filename": u"1024x768.gif",
-                u"height": -1,
-                u"scales": {},
-                u"size": 18,
-                u"width": -1,
+                "content-type": "image/gif",
+                "download": None,
+                "filename": "1024x768.gif",
+                "height": -1,
+                "scales": {},
+                "size": 18,
+                "width": -1,
             },
             value,
         )
@@ -692,7 +696,7 @@ class TestDexterityImageFieldSerializingOriginalScaledInPNG(TestCase):
         """In Plone = 5.1 the image returned when requesting an image
         scale with the same width and height of the original image is
         a Pillow-generated image scale in PNG format"""
-        image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
+        image_file = os.path.join(os.path.dirname(__file__), "1024x768.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
         fn = "test_namedblobimage_field"
@@ -700,7 +704,7 @@ class TestDexterityImageFieldSerializingOriginalScaledInPNG(TestCase):
             value = self.serialize(
                 fn,
                 NamedBlobImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType="image/gif", filename="1024x768.gif"
                 ),
             )
             self.assertTrue(isinstance(value, dict), "Not a <dict>")
@@ -710,51 +714,51 @@ class TestDexterityImageFieldSerializingOriginalScaledInPNG(TestCase):
 
             # Original image is still a "scale"
             # scaled images are converted to PNG in Plone = 5.1
-            original_download_url = u"{}/@@images/{}.{}".format(
+            original_download_url = "{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "png"
             )
 
-            scale_download_url = u"{}/@@images/{}.{}".format(
+            scale_download_url = "{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "jpeg"
             )
             scales = {
-                u"listing": {
-                    u"download": scale_download_url,
-                    u"width": 16,
-                    u"height": 12,
+                "listing": {
+                    "download": scale_download_url,
+                    "width": 16,
+                    "height": 12,
                 },
-                u"icon": {u"download": scale_download_url, u"width": 32, u"height": 24},
-                u"tile": {u"download": scale_download_url, u"width": 64, u"height": 48},
-                u"thumb": {
-                    u"download": scale_download_url,
-                    u"width": 128,
-                    u"height": 96,
+                "icon": {"download": scale_download_url, "width": 32, "height": 24},
+                "tile": {"download": scale_download_url, "width": 64, "height": 48},
+                "thumb": {
+                    "download": scale_download_url,
+                    "width": 128,
+                    "height": 96,
                 },
-                u"mini": {
-                    u"download": scale_download_url,
-                    u"width": 200,
-                    u"height": 150,
+                "mini": {
+                    "download": scale_download_url,
+                    "width": 200,
+                    "height": 150,
                 },
-                u"preview": {
-                    u"download": scale_download_url,
-                    u"width": 400,
-                    u"height": 300,
+                "preview": {
+                    "download": scale_download_url,
+                    "width": 400,
+                    "height": 300,
                 },
-                u"large": {
-                    u"download": scale_download_url,
-                    u"width": 768,
-                    u"height": 576,
+                "large": {
+                    "download": scale_download_url,
+                    "width": 768,
+                    "height": 576,
                 },
             }
             self.assertEqual(
                 {
-                    u"filename": u"1024x768.gif",
-                    u"content-type": u"image/gif",
-                    u"size": 1514,
-                    u"download": original_download_url,
-                    u"width": 1024,
-                    u"height": 768,
-                    u"scales": scales,
+                    "filename": "1024x768.gif",
+                    "content-type": "image/gif",
+                    "size": 1514,
+                    "download": original_download_url,
+                    "width": 1024,
+                    "height": 768,
+                    "scales": scales,
                 },
                 value,
             )
@@ -768,19 +772,19 @@ class TestDexterityImageFieldSerializingOriginalScaledInPNG(TestCase):
             value = self.serialize(
                 fn,
                 NamedBlobImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType="image/gif", filename="1024x768.gif"
                 ),
             )
 
         self.assertEqual(
             {
-                u"content-type": u"image/gif",
-                u"download": None,
-                u"filename": u"1024x768.gif",
-                u"height": -1,
-                u"scales": {},
-                u"size": 18,
-                u"width": -1,
+                "content-type": "image/gif",
+                "download": None,
+                "filename": "1024x768.gif",
+                "height": -1,
+                "scales": {},
+                "size": 18,
+                "width": -1,
             },
             value,
         )
@@ -818,7 +822,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
         """In Plone >= 5.2 the image returned when requesting an image
         scale with the same width and height of the original image is
         the actual original image in its original format"""
-        image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
+        image_file = os.path.join(os.path.dirname(__file__), "1024x768.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
         fn = "test_namedimage_field"
@@ -826,7 +830,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             value = self.serialize(
                 fn,
                 NamedImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType="image/gif", filename="1024x768.gif"
                 ),
             )
             self.assertTrue(isinstance(value, dict), "Not a <dict>")
@@ -836,51 +840,51 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
 
             # Original image is still a "scale"
             # scaled images are converted to PNG in Plone = 5.2
-            original_download_url = u"{}/@@images/{}.{}".format(
+            original_download_url = "{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "gif"
             )
 
-            scale_download_url = u"{}/@@images/{}.{}".format(
+            scale_download_url = "{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "png"
             )
             scales = {
-                u"listing": {
-                    u"download": scale_download_url,
-                    u"width": 16,
-                    u"height": 12,
+                "listing": {
+                    "download": scale_download_url,
+                    "width": 16,
+                    "height": 12,
                 },
-                u"icon": {u"download": scale_download_url, u"width": 32, u"height": 24},
-                u"tile": {u"download": scale_download_url, u"width": 64, u"height": 48},
-                u"thumb": {
-                    u"download": scale_download_url,
-                    u"width": 128,
-                    u"height": 96,
+                "icon": {"download": scale_download_url, "width": 32, "height": 24},
+                "tile": {"download": scale_download_url, "width": 64, "height": 48},
+                "thumb": {
+                    "download": scale_download_url,
+                    "width": 128,
+                    "height": 96,
                 },
-                u"mini": {
-                    u"download": scale_download_url,
-                    u"width": 200,
-                    u"height": 150,
+                "mini": {
+                    "download": scale_download_url,
+                    "width": 200,
+                    "height": 150,
                 },
-                u"preview": {
-                    u"download": scale_download_url,
-                    u"width": 400,
-                    u"height": 300,
+                "preview": {
+                    "download": scale_download_url,
+                    "width": 400,
+                    "height": 300,
                 },
-                u"large": {
-                    u"download": scale_download_url,
-                    u"width": 768,
-                    u"height": 576,
+                "large": {
+                    "download": scale_download_url,
+                    "width": 768,
+                    "height": 576,
                 },
             }
             self.assertEqual(
                 {
-                    u"filename": u"1024x768.gif",
-                    u"content-type": u"image/gif",
-                    u"size": 1514,
-                    u"download": original_download_url,
-                    u"width": 1024,
-                    u"height": 768,
-                    u"scales": scales,
+                    "filename": "1024x768.gif",
+                    "content-type": "image/gif",
+                    "size": 1514,
+                    "download": original_download_url,
+                    "width": 1024,
+                    "height": 768,
+                    "scales": scales,
                 },
                 value,
             )
@@ -894,7 +898,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             value = self.serialize(
                 fn,
                 NamedImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType="image/gif", filename="1024x768.gif"
                 ),
             )
 
@@ -902,15 +906,13 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
         scale_url_uuid = "uuid_1"
         self.assertEqual(
             {
-                u"content-type": u"image/gif",
-                u"download": u"{}/@@images/{}.{}".format(
-                    obj_url, scale_url_uuid, "gif"
-                ),
-                u"filename": u"1024x768.gif",
-                u"height": -1,
-                u"scales": {},
-                u"size": 18,
-                u"width": -1,
+                "content-type": "image/gif",
+                "download": "{}/@@images/{}.{}".format(obj_url, scale_url_uuid, "gif"),
+                "filename": "1024x768.gif",
+                "height": -1,
+                "scales": {},
+                "size": 18,
+                "width": -1,
             },
             value,
         )
@@ -919,7 +921,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
         """In Plone >= 5.2 the image returned when requesting an image
         scale with the same width and height of the original image is
         the actual original image in its original format"""
-        image_file = os.path.join(os.path.dirname(__file__), u"1024x768.gif")
+        image_file = os.path.join(os.path.dirname(__file__), "1024x768.gif")
         with open(image_file, "rb") as f:
             image_data = f.read()
         fn = "test_namedblobimage_field"
@@ -927,7 +929,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             value = self.serialize(
                 fn,
                 NamedBlobImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType="image/gif", filename="1024x768.gif"
                 ),
             )
             self.assertTrue(isinstance(value, dict), "Not a <dict>")
@@ -937,51 +939,51 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
 
             # Original image is still a "scale"
             # scaled images are converted to PNG in Plone = 5.2
-            original_download_url = u"{}/@@images/{}.{}".format(
+            original_download_url = "{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "gif"
             )
 
-            scale_download_url = u"{}/@@images/{}.{}".format(
+            scale_download_url = "{}/@@images/{}.{}".format(
                 obj_url, scale_url_uuid, "png"
             )
             scales = {
-                u"listing": {
-                    u"download": scale_download_url,
-                    u"width": 16,
-                    u"height": 12,
+                "listing": {
+                    "download": scale_download_url,
+                    "width": 16,
+                    "height": 12,
                 },
-                u"icon": {u"download": scale_download_url, u"width": 32, u"height": 24},
-                u"tile": {u"download": scale_download_url, u"width": 64, u"height": 48},
-                u"thumb": {
-                    u"download": scale_download_url,
-                    u"width": 128,
-                    u"height": 96,
+                "icon": {"download": scale_download_url, "width": 32, "height": 24},
+                "tile": {"download": scale_download_url, "width": 64, "height": 48},
+                "thumb": {
+                    "download": scale_download_url,
+                    "width": 128,
+                    "height": 96,
                 },
-                u"mini": {
-                    u"download": scale_download_url,
-                    u"width": 200,
-                    u"height": 150,
+                "mini": {
+                    "download": scale_download_url,
+                    "width": 200,
+                    "height": 150,
                 },
-                u"preview": {
-                    u"download": scale_download_url,
-                    u"width": 400,
-                    u"height": 300,
+                "preview": {
+                    "download": scale_download_url,
+                    "width": 400,
+                    "height": 300,
                 },
-                u"large": {
-                    u"download": scale_download_url,
-                    u"width": 768,
-                    u"height": 576,
+                "large": {
+                    "download": scale_download_url,
+                    "width": 768,
+                    "height": 576,
                 },
             }
             self.assertEqual(
                 {
-                    u"filename": u"1024x768.gif",
-                    u"content-type": u"image/gif",
-                    u"size": 1514,
-                    u"download": original_download_url,
-                    u"width": 1024,
-                    u"height": 768,
-                    u"scales": scales,
+                    "filename": "1024x768.gif",
+                    "content-type": "image/gif",
+                    "size": 1514,
+                    "download": original_download_url,
+                    "width": 1024,
+                    "height": 768,
+                    "scales": scales,
                 },
                 value,
             )
@@ -995,7 +997,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             value = self.serialize(
                 fn,
                 NamedBlobImage(
-                    data=image_data, contentType=u"image/gif", filename=u"1024x768.gif"
+                    data=image_data, contentType="image/gif", filename="1024x768.gif"
                 ),
             )
 
@@ -1003,15 +1005,13 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
         scale_url_uuid = "uuid_1"
         self.assertEqual(
             {
-                u"content-type": u"image/gif",
-                u"download": u"{}/@@images/{}.{}".format(
-                    obj_url, scale_url_uuid, "gif"
-                ),
-                u"filename": u"1024x768.gif",
-                u"height": -1,
-                u"scales": {},
-                u"size": 18,
-                u"width": -1,
+                "content-type": "image/gif",
+                "download": "{}/@@images/{}.{}".format(obj_url, scale_url_uuid, "gif"),
+                "filename": "1024x768.gif",
+                "height": -1,
+                "scales": {},
+                "size": 18,
+                "width": -1,
             },
             value,
         )

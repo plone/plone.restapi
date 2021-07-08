@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.folder.interfaces import IExplicitOrdering
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
@@ -7,7 +6,7 @@ from zExceptions import BadRequest
 import six
 
 
-class OrderingMixin(object):
+class OrderingMixin:
     def handle_ordering(self, data):
         if "ordering" in data:
             obj_id = data["ordering"]["obj_id"]
@@ -44,11 +43,11 @@ class OrderingMixin(object):
 
         # Make sure we use bytestring ids for PY2.
         if six.PY2:
-            if isinstance(obj_id, six.text_type):
+            if isinstance(obj_id, str):
                 obj_id = obj_id.encode("utf-8")
             if subset_ids:
                 subset_ids = [
-                    id_.encode("utf-8") if isinstance(id_, six.text_type) else id_
+                    id_.encode("utf-8") if isinstance(id_, str) else id_
                     for id_ in subset_ids
                 ]
 
@@ -83,8 +82,7 @@ class OrderingMixin(object):
     def getOrdering(self):
         if IPloneSiteRoot.providedBy(self.context):
             return self.context
-        elif getattr(self.context, "getOrdering", None):
+        if getattr(self.context, "getOrdering", None):
             ordering = self.context.getOrdering()
-            if not IExplicitOrdering.providedBy(ordering):
-                return None
-            return ordering
+            if IExplicitOrdering.providedBy(ordering):
+                return ordering

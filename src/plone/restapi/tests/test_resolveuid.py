@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import login
 from plone.app.testing import logout
 from plone.app.testing import setRoles
@@ -67,9 +66,7 @@ class TestBlocksResolveUIDFunctional(TestCase):
                             ],
                             "entityMap": {
                                 "0": {
-                                    "data": {
-                                        "url": "{}/target".format(self.portal_url)
-                                    },
+                                    "data": {"url": f"{self.portal_url}/target"},
                                     "mutability": "MUTABLE",
                                     "type": "LINK",
                                 }
@@ -91,7 +88,7 @@ class TestBlocksResolveUIDFunctional(TestCase):
 
         target_uuid = IUUID(self.portal.target)
         self.assertEqual(
-            "../../resolveuid/{}".format(target_uuid),
+            f"../../resolveuid/{target_uuid}",
             self.portal.folder1.mydocument.blocks.get(
                 "09e39ddf-a945-49f2-b609-ea427ac3430b"
             )
@@ -104,13 +101,13 @@ class TestBlocksResolveUIDFunctional(TestCase):
 
     def test_create_document_with_image_block_stores_uuid(self):
         self.portal.invokeFactory("Image", id="image", title="Image")
-        image_file = os.path.join(os.path.dirname(__file__), u"image.png")
+        image_file = os.path.join(os.path.dirname(__file__), "image.png")
         with open(image_file, "rb") as f:
             image_data = f.read()
         self.portal.image.image = NamedBlobImage(
-            data=image_data, contentType="image/png", filename=u"image.png"
+            data=image_data, contentType="image/png", filename="image.png"
         )
-        self.portal.image.image_caption = u"This is an image caption."
+        self.portal.image.image_caption = "This is an image caption."
         transaction.commit()
 
         target_uuid = IUUID(self.portal.image)
@@ -126,7 +123,7 @@ class TestBlocksResolveUIDFunctional(TestCase):
                 "blocks": {
                     "09e39ddf-a945-49f2-b609-ea427ac3430b": {
                         "@type": "image",
-                        "url": "{}/image".format(self.portal_url),
+                        "url": f"{self.portal_url}/image",
                     },
                     "21270e22-3a61-4780-b164-d6be56d942f4": {"@type": "title"},
                 },
@@ -142,7 +139,7 @@ class TestBlocksResolveUIDFunctional(TestCase):
         transaction.begin()
 
         self.assertEqual(
-            "../../resolveuid/{}".format(target_uuid),
+            f"../../resolveuid/{target_uuid}",
             self.portal.folder1.mydocument.blocks.get(
                 "09e39ddf-a945-49f2-b609-ea427ac3430b"
             ).get("url"),
@@ -151,13 +148,13 @@ class TestBlocksResolveUIDFunctional(TestCase):
     def test_create_document_with_image_block_and_href_stores_uuid(self):
         self.portal.invokeFactory("Document", id="linked_document", title="Linked Doc")
         self.portal.invokeFactory("Image", id="image", title="Image")
-        image_file = os.path.join(os.path.dirname(__file__), u"image.png")
+        image_file = os.path.join(os.path.dirname(__file__), "image.png")
         with open(image_file, "rb") as f:
             image_data = f.read()
         self.portal.image.image = NamedBlobImage(
-            data=image_data, contentType="image/png", filename=u"image.png"
+            data=image_data, contentType="image/png", filename="image.png"
         )
-        self.portal.image.image_caption = u"This is an image caption."
+        self.portal.image.image_caption = "This is an image caption."
         transaction.commit()
 
         target_uuid = IUUID(self.portal.image)
@@ -174,8 +171,8 @@ class TestBlocksResolveUIDFunctional(TestCase):
                 "blocks": {
                     "09e39ddf-a945-49f2-b609-ea427ac3430b": {
                         "@type": "image",
-                        "url": "{}/image".format(self.portal_url),
-                        "href": "{}/linked_document".format(self.portal_url),
+                        "url": f"{self.portal_url}/image",
+                        "href": f"{self.portal_url}/linked_document",
                     },
                     "21270e22-3a61-4780-b164-d6be56d942f4": {"@type": "title"},
                 },
@@ -191,13 +188,13 @@ class TestBlocksResolveUIDFunctional(TestCase):
         transaction.begin()
 
         self.assertEqual(
-            "../../resolveuid/{}".format(target_uuid),
+            f"../../resolveuid/{target_uuid}",
             self.portal.folder1.mydocument.blocks.get(
                 "09e39ddf-a945-49f2-b609-ea427ac3430b"
             ).get("url"),
         )
         self.assertEqual(
-            "../../resolveuid/{}".format(liked_doc_uuid),
+            f"../../resolveuid/{liked_doc_uuid}",
             self.portal.folder1.mydocument.blocks.get(
                 "09e39ddf-a945-49f2-b609-ea427ac3430b"
             ).get("href"),
@@ -227,9 +224,9 @@ class TestBlocksResolveUID(TestCase):
                 id="doc_primary_field_url",
                 title="Target Document with primary file field",
                 test_primary_namedfile_field=NamedFile(
-                    data=u"Spam and eggs",
-                    contentType=u"text/plain",
-                    filename=u"test.txt",
+                    data="Spam and eggs",
+                    contentType="text/plain",
+                    filename="test.txt",
                 ),
             )
         ]
@@ -276,7 +273,7 @@ class TestBlocksResolveUID(TestCase):
                         "0": {
                             "data": {
                                 "rel": "nofollow",
-                                "url": "../resolveuid/{}".format(uid),
+                                "url": f"../resolveuid/{uid}",
                             },
                             "mutability": "MUTABLE",
                             "type": "LINK",
@@ -309,7 +306,7 @@ class TestBlocksResolveUID(TestCase):
                         "0": {
                             "data": {
                                 "rel": "nofollow",
-                                "url": "../resolveuid/{}/view".format(uid),
+                                "url": f"../resolveuid/{uid}/view",
                             },
                             "mutability": "MUTABLE",
                             "type": "LINK",
@@ -334,18 +331,18 @@ class TestBlocksResolveUID(TestCase):
 
     def test_resolveuid_gets_serialized_for_standard_fields(self):
         uid = IUUID(self.doc2)
-        blocks = {"aaa": {"@type": "foo", "url": "../resolveuid/{}/view".format(uid)}}
+        blocks = {"aaa": {"@type": "foo", "url": f"../resolveuid/{uid}/view"}}
         value = self.serialize("blocks", blocks)
         self.assertEqual(value["aaa"]["url"], self.doc2.absolute_url() + "/view")
 
-        blocks = {"aaa": {"@type": "foo", "href": "../resolveuid/{}/view".format(uid)}}
+        blocks = {"aaa": {"@type": "foo", "href": f"../resolveuid/{uid}/view"}}
         value = self.serialize("blocks", blocks)
         self.assertEqual(value["aaa"]["href"], self.doc2.absolute_url() + "/view")
 
     def test_resolveuid_serialize_take_care_of_primary_fields(self):
         logout()
         uid = IUUID(self.doc_primary_field_url)
-        blocks = {"aaa": {"@type": "foo", "url": "../resolveuid/{}".format(uid)}}
+        blocks = {"aaa": {"@type": "foo", "url": f"../resolveuid/{uid}"}}
         value = self.serialize("blocks", blocks)
         self.assertEqual(
             value["aaa"]["url"],
@@ -362,9 +359,9 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}".format(uid),
+                                "href": f"../resolveuid/{uid}",
                                 "rel": "nofollow",
-                                "url": "../resolveuid/{}".format(uid),
+                                "url": f"../resolveuid/{uid}",
                             },
                             "mutability": "MUTABLE",
                             "type": "LINK",
@@ -378,13 +375,13 @@ class TestBlocksResolveUID(TestCase):
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["href"],
-            "../resolveuid/{}".format(uid),
+            f"../resolveuid/{uid}",
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["url"],
-            "../resolveuid/{}".format(uid),
+            f"../resolveuid/{uid}",
         )
 
     def test_blocks_field_serialization_doesnt_update_stored_values(self):
@@ -409,7 +406,7 @@ class TestBlocksResolveUID(TestCase):
                         "0": {
                             "data": {
                                 "rel": "nofollow",
-                                "url": "../resolveuid/{}".format(uid),
+                                "url": f"../resolveuid/{uid}",
                             },
                             "mutability": "MUTABLE",
                             "type": "LINK",
@@ -471,13 +468,13 @@ class TestBlocksResolveUID(TestCase):
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["url"],
-            "../resolveuid/{}".format(uid),
+            f"../resolveuid/{uid}",
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["url"],
-            "../resolveuid/{}".format(uid),
+            f"../resolveuid/{uid}",
         )
 
     def test_keeps_url_if_unknown_path(self):
@@ -538,13 +535,13 @@ class TestBlocksResolveUID(TestCase):
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["url"],
-            "../resolveuid/{}/view".format(uid),
+            f"../resolveuid/{uid}/view",
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
             ]["url"],
-            "../resolveuid/{}/view".format(uid),
+            f"../resolveuid/{uid}/view",
         )
 
     def test_blocks_field_serialization_resolves_uids_with_primary_field_url(self):
@@ -570,7 +567,7 @@ class TestBlocksResolveUID(TestCase):
                         "0": {
                             "data": {
                                 "rel": "nofollow",
-                                "url": "../resolveuid/{}".format(uid),
+                                "url": f"../resolveuid/{uid}",
                             },
                             "mutability": "MUTABLE",
                             "type": "LINK",
@@ -619,7 +616,7 @@ class TestBlocksResolveUID(TestCase):
                         "0": {
                             "data": {
                                 "rel": "nofollow",
-                                "url": "../resolveuid/{}".format(uid),
+                                "url": f"../resolveuid/{uid}",
                             },
                             "mutability": "MUTABLE",
                             "type": "LINK",
@@ -652,7 +649,7 @@ class TestBlocksResolveUID(TestCase):
                         "0": {
                             "data": {
                                 "rel": "nofollow",
-                                "url": "../resolveuid/{}/view".format(uid),
+                                "url": f"../resolveuid/{uid}/view",
                             },
                             "mutability": "MUTABLE",
                             "type": "LINK",

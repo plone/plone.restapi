@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
@@ -17,7 +16,7 @@ else:
     PLONE5 = True
 
 
-class SearchHandler(object):
+class SearchHandler:
     """Executes a catalog search based on a query dict, and returns
     JSON compatible results.
     """

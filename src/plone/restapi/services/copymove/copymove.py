@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_parent
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
@@ -16,7 +15,7 @@ class BaseCopyMove(Service):
     """Base service for copy/move operations."""
 
     def __init__(self, context, request):
-        super(BaseCopyMove, self).__init__(context, request)
+        super().__init__(context, request)
         self.portal = getMultiAdapter(
             (self.context, self.request), name="plone_portal_state"
         ).portal()

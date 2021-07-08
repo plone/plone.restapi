@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.restapi.deserializer import json_body
@@ -101,7 +100,6 @@ class Login(Service):
 
         if info:
             return uf
-        return None
 
     def check_permission(self):
-        return
+        pass

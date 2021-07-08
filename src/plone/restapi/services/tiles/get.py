@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.security import checkPermission
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -14,7 +13,7 @@ from zope.publisher.interfaces import IPublishTraverse
 @implementer(IPublishTraverse)
 class TilesGet(Service):
     def __init__(self, context, request):
-        super(TilesGet, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):
@@ -31,7 +30,7 @@ class TilesGet(Service):
                 self.request.response.setStatus(404)
                 return {
                     "type": "NotFound",
-                    "message": 'Tile "{}" could not be found.'.format(self.params[0]),
+                    "message": f'Tile "{self.params[0]}" could not be found.',
                 }
 
         result = []

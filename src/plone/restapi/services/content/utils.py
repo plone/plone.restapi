@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from DateTime import DateTime
 from plone.app.content.interfaces import INameFromTitle
@@ -31,7 +30,7 @@ def create(container, type_, id_=None, title=None):
             randint(0, 9999),
         )
     else:
-        if six.PY2 and isinstance(id_, six.text_type):
+        if six.PY2 and isinstance(id_, str):
             new_id = id_.encode("utf8")
         else:
             new_id = id_

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.batching.batch import Batch
 from plone.restapi.deserializer import json_body
 from six.moves.urllib.parse import parse_qsl
@@ -8,7 +7,7 @@ from six.moves.urllib.parse import urlencode
 DEFAULT_BATCH_SIZE = 25
 
 
-class HypermediaBatch(object):
+class HypermediaBatch:
     def __init__(self, request, results):
         self.request = request
 
@@ -64,7 +63,7 @@ class HypermediaBatch(object):
         """Get a dictionary with batching links."""
         # Don't provide batching links if resultset isn't batched
         if self.items_total <= self.b_size:
-            return None
+            return
 
         links = {}
 

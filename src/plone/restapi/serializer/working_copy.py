@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 $Id: base.py 1808 2007-02-06 11:39:11Z hazmat $
 """
@@ -104,7 +103,7 @@ class WorkingCopyInfo(BrowserView):
         creator = self.creator()
         if creator is not None:
             portal_url = getToolByName(self.context, "portal_url")
-            return "{0}/author/{1}".format(portal_url(), creator.getId())
+            return f"{portal_url()}/author/{creator.getId()}"
 
     @memoize
     def creator_name(self):

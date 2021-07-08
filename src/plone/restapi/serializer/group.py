@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -9,7 +8,7 @@ from zope.interface import implementer
 from zope.interface import Interface
 
 
-class BaseSerializer(object):
+class BaseSerializer:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -19,7 +18,7 @@ class BaseSerializer(object):
         portal = getSite()
 
         return {
-            "@id": "{}/@groups/{}".format(portal.absolute_url(), group.id),
+            "@id": f"{portal.absolute_url()}/@groups/{group.id}",
             "id": group.id,
             "groupname": group.getGroupName(),
             "email": group.getProperty("email"),
@@ -39,7 +38,7 @@ class SerializeGroupToJsonSummary(BaseSerializer):
 @adapter(IGroupData, Interface)
 class SerializeGroupToJson(BaseSerializer):
     def __call__(self):
-        data = super(SerializeGroupToJson, self).__call__()
+        data = super().__call__()
         group = self.context
         members = group.getGroupMemberIds()
         batch = HypermediaBatch(self.request, members)

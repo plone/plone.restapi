@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import ISerializeToJson
@@ -17,7 +16,7 @@ import json
 
 @implementer(ISerializeToJson)
 @adapter(IPloneSiteRoot, Interface)
-class SerializeSiteRootToJson(object):
+class SerializeSiteRootToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request

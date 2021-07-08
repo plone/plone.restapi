@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from OFS.interfaces import IObjectWillBeAddedEvent
 from plone.app.testing import login
 from plone.app.testing import setRoles
@@ -60,7 +59,7 @@ class TestContentPatch(unittest.TestCase):
 
         # null will set field.missing_value which is u'' for the field
         self.assertEqual(204, response.status_code)
-        self.assertEqual(u"", self.portal.doc1.description)
+        self.assertEqual("", self.portal.doc1.description)
 
     def test_patch_document_will_not_delete_value_with_null_if_required(self):
         response = requests.patch(
@@ -132,9 +131,9 @@ class TestContentPatch(unittest.TestCase):
             json={
                 "@type": "Image",
                 "image": {
-                    "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",  # noqa
-                    "encoding": u"base64",
-                    "content-type": u"image/gif",
+                    "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",  # noqa
+                    "encoding": "base64",
+                    "content-type": "image/gif",
                 },
             },
         )
