@@ -3,8 +3,11 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
+from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
+from zope.component import getUtility
 
 import transaction
 import unittest
@@ -207,3 +210,27 @@ class TestServicesNavigation(unittest.TestCase):
                 "/folder/doc1",
             ],
         )
+
+    def test_use_nav_title_when_available_and_set(self):
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(INavigationSchema, prefix="plone")
+        displayed_types = settings.displayed_types
+        settings.displayed_types = tuple(list(displayed_types) + ["DXTestDocument"])
+
+        title = "Example Document"
+        nav_title = "Fancy title"
+
+        createContentInContainer(
+            self.folder,
+            "DXTestDocument",
+            id="example-dx-document",
+            title=title,
+            nav_title=nav_title,
+        )
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/folder/@navigation", params={"expand.navigation.depth": 2}
+        )
+
+        self.assertEqual(response.json()["items"][1]["items"][-1]["title"], nav_title)

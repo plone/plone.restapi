@@ -174,9 +174,8 @@ class Navigation:
                 "review_state": json_compatible(brain.review_state),
                 "use_view_action_in_listings": brain.portal_type in types_using_view,
             }
-
-            if brain.get("nav_title", False):
-                entry.update({"title": brain["nav_title"]})
+            if "nav_title" in brain and brain.nav_title:
+                entry.update({"title": brain.nav_title})
 
             self.customize_entry(entry, brain)
             ret[brain_parent_path].append(entry)
