@@ -338,6 +338,12 @@ class TestDexterityFieldSerializing(TestCase):
         dm.set("${portal_url}/doc1")
         self.assertEqual(serializer(), self.portal.doc1.absolute_url())
 
+        dm.set("${portal_url}/doc2")
+        self.assertEqual(serializer(), "/doc2")
+
+        dm.set("/doc2")
+        self.assertEqual(serializer(), "/doc2")
+
 
 @unittest.skipUnless(
     PLONE_VERSION.base_version < "5.1",
