@@ -143,9 +143,11 @@ class Slots(object):
                 v["readOnly"] = True        # TODO: should we set this here?
                 # v['_v_original'] = self._resolve_block(v, _seen_blocks)
 
-        # for k, v in blocks.items():
-        #     if v.get("s:isVariantOf"):
-        #         v['_v_original'] = deepcopy(_seen_blocks[k])
+        for k, v in blocks.items():
+            if v.get("s:isVariantOf"):
+                # in the frontend, if we have a block that's hidden then we go and
+                # "unhide", we'll need the original data for best UX
+                v['_v_original'] = deepcopy(_seen_blocks[v.get("s:isVariantOf")])
 
         return {
             "blocks": blocks,

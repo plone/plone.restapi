@@ -72,10 +72,12 @@ class TestServicesSlots(unittest.TestCase):
     def test_slots_endpoint(self):
         response = self.api_session.get("/@slots")
         self.assertEqual(response.status_code, 200)
+        slots = response.json()
         self.assertEqual(
-            response.json(),
+            slots,
             {
                 u"@id": u"http://localhost:55001/plone/@slots",
+                u"can_manage_slots": True,
                 u"items": {
                     u"left": {
                         u"@id": u"http://localhost:55001/plone/@slots/left",
@@ -146,3 +148,88 @@ class TestServicesSlots(unittest.TestCase):
             },
         )
         self.assertEqual(storage["left"].blocks_layout, {"items": [u"1"]})
+
+    def test_slots_endpoint_hide(self):
+
+        storage = ISlotStorage(self.doc)
+        storage[u"left"].blocks = {u"2": {"s:isVariantOf": u"1", "v:hidden": True}}
+        transaction.commit()
+
+        response = self.api_session.get("/folder1/doc11/@slots")
+        self.assertEqual(response.status_code, 200)
+
+        slots = response.json()
+        self.assertEqual(
+            slots,
+            {
+                u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots",
+                u"can_manage_slots": True,
+                u"items": {
+                    u"left": {
+                        u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots/left",
+                        u"blocks": {
+                            # 1 is hidden because it's overridden by 2, which is hidden
+                            # u"1": {u"title": u"First"}
+                            u"3": {u"title": u"Third", '_v_inherit': True, 'readOnly': True},
+                            u"5": {u"title": u"Fifth", '_v_inherit': True, 'readOnly': True},
+                        },
+
+                        # in 'doc11' slots, layout is [3, 2], so inherited 5 is at end
+                        u"blocks_layout": {u"items": [u"3", u"5"]},
+                        u"edit": True,
+                    },
+                    u"right": {
+                        u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots/right",
+                        u"blocks": {
+                            u"6": {u"title": u"First", '_v_inherit': True, 'readOnly': True},
+                            u"7": {u"title": u"Third", '_v_inherit': True, 'readOnly': True},
+                            u"8": {u"title": u"Fifth", '_v_inherit': True, 'readOnly': True},
+                        },
+                        u"blocks_layout": {u"items": [u"8", u"6", u"7"]},
+                        u"edit": True,
+                    },
+                },
+            },
+        )
+
+    def test_slots_endpoint_hide_full(self):
+
+        storage = ISlotStorage(self.doc)
+        storage[u"left"].blocks = {u"2": {"s:isVariantOf": u"1", "v:hidden": True}}
+        transaction.commit()
+
+        response = self.api_session.get("/folder1/doc11/@slots?full=true")
+        self.assertEqual(response.status_code, 200)
+
+        slots = response.json()
+
+        self.assertEqual(
+            slots,
+            {
+                u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots",
+                u"can_manage_slots": True,
+                u"items": {
+                    u"left": {
+                        u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots/left",
+                        u"blocks": {
+                            u'2': {'s:isVariantOf': '1', 'v:hidden': True,
+                                   '_v_original': {'title': 'First'}},
+                            u"3": {u"title": u"Third", '_v_inherit': True, 'readOnly': True},
+                            u"5": {u"title": u"Fifth", '_v_inherit': True, 'readOnly': True},
+                        },
+                        u"blocks_layout": {u"items": [u"3", u"2", u"5"]},
+                        u"edit": True,
+                    },
+                    u"right": {
+                        u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots/right",
+                        u"blocks": {
+                            u"6": {u"title": u"First", '_v_inherit': True, 'readOnly': True},
+                            u"7": {u"title": u"Third", '_v_inherit': True, 'readOnly': True},
+                            u"8": {u"title": u"Fifth", '_v_inherit': True, 'readOnly': True},
+                        },
+                        u"blocks_layout": {u"items": [u"8", u"6", u"7"]},
+                        u"edit": True,
+                    },
+                },
+            },
+        )
