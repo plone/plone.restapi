@@ -92,7 +92,7 @@ class Slots(object):
 
         return slot_stack
 
-    def get_data(self, name, full=True):
+    def get_data(self, name, full=False):
         blocks = {}
         blocks_layout = []
         hidden = []
@@ -139,13 +139,13 @@ class Slots(object):
         for k, v in blocks.items():
             if v.get("s:sameAs"):
                 v["_v_inherit"] = True
-                block["readOnly"] = True
+                block["readOnly"] = True        # TODO: should we set this here?
                 v.update(self._resolve_block(v, _seen_blocks))
                 # v['_v_original'] = self._resolve_block(v, _seen_blocks)
 
-        for k, v in blocks.items():
-            if v.get("s:isVariantOf"):
-                v['_v_original'] = deepcopy(_seen_blocks[k])
+        # for k, v in blocks.items():
+        #     if v.get("s:isVariantOf"):
+        #         v['_v_original'] = deepcopy(_seen_blocks[k])
 
         return {
             "blocks": blocks,

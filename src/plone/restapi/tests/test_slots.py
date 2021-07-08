@@ -347,6 +347,73 @@ class TestSlots(unittest.TestCase):
             },
         )
 
+    def test_hide_block(self):
+        # Hidden blocks are not passed down
+        root = self.make_content()
+
+        root["documents"].slots["left"] = DummySlot.from_data(
+            {
+                1: {"title": "First"},
+                3: {"title": "Third"},
+                5: {"title": "Fifth"},
+            },
+            [5, 1, 3],
+        )
+
+        obj = root["documents"]["internal"]
+        obj.slots["left"] = DummySlot.from_data(
+            {
+                2: {"s:isVariantOf": 1, "title": "Second", "v:hidden": True},
+            },
+            [3, 2],
+        )
+        engine = Slots(obj)
+        left = engine.get_data("left")
+
+        self.assertEqual(
+            left,
+            {
+                "blocks_layout": {"items": [3, 5]},
+                "blocks": {
+                    3: {"title": "Third", "_v_inherit": True},
+                    5: {"title": "Fifth", "_v_inherit": True},
+                },
+            },
+        )
+
+    def test_hide_blocks_full(self):
+        # Hidden blocks are not passed down
+        root = self.make_content()
+
+        root["documents"].slots["left"] = DummySlot.from_data(
+            {
+                1: {"title": "First"},
+                3: {"title": "Third"},
+                5: {"title": "Fifth"},
+            },
+            [5, 1, 3],
+        )
+
+        obj = root["documents"]["internal"]
+        obj.slots["left"] = DummySlot.from_data(
+            {
+                2: {"s:isVariantOf": 1, "title": "Second", "v:hidden": True},
+            },
+            [3, 2],
+        )
+        engine = Slots(obj)
+        left = engine.get_data("left", full=True)
+
+        self.assertEqual(
+            left,
+            {'blocks': {2: {'s:isVariantOf': 1,
+                            'title': 'Second',
+                            'v:hidden': True},
+                        3: {'_v_inherit': True, 'readOnly': True, 'title': 'Third'},
+                        5: {'_v_inherit': True, 'readOnly': True, 'title': 'Fifth'}},
+                'blocks_layout': {'items': [3, 2, 5]}},
+        )
+
     def test_save_slots(self):
         data = {
             "blocks_layout": {"items": [3, 2, 5]},
