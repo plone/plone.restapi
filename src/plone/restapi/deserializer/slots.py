@@ -27,7 +27,7 @@ import copy
 @adapter(IContentish, ISlot, IBrowserRequest)
 @implementer(IDeserializeFromJson)
 class SlotDeserializer(object):
-    """ Deserializer of one slot for contentish objects """
+    """Deserializer of one slot for contentish objects"""
 
     def __init__(self, context, slot, request):
         self.context = context
@@ -87,14 +87,14 @@ class SlotDeserializer(object):
         data["blocks_layout"]["items"] = layout
         self.slot.blocks_layout = data["blocks_layout"]
 
-        self.slot.block_parent = data.get('block_parent', False)
+        self.slot.block_parent = data.get("block_parent", False)
         self.slot._p_changed = True
 
 
 @adapter(IPloneSiteRoot, ISlot, IBrowserRequest)
 @implementer(IDeserializeFromJson)
 class SlotDeserializerRoot(SlotDeserializer):
-    """ Deserializer of one slot for site root """
+    """Deserializer of one slot for site root"""
 
 
 @adapter(IContentish, ISlotStorage, IBrowserRequest)
@@ -138,4 +138,4 @@ class SlotsDeserializer(object):
 @adapter(IPloneSiteRoot, ISlotStorage, IBrowserRequest)
 @implementer(IDeserializeFromJson)
 class SlotsDeserializerRoot(SlotsDeserializer):
-    """ Deserializer of slots for site root """
+    """Deserializer of slots for site root"""

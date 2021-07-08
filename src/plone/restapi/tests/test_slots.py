@@ -208,15 +208,15 @@ class TestSlots(unittest.TestCase):
                     6: {},
                     1: {
                         "_v_inherit": True,
-                        'readOnly': True,
+                        "readOnly": True,
                     },
                     2: {
                         "_v_inherit": True,
-                        'readOnly': True,
+                        "readOnly": True,
                     },
                     3: {
                         "_v_inherit": True,
-                        'readOnly': True,
+                        "readOnly": True,
                     },
                     7: {},
                 },
@@ -241,7 +241,10 @@ class TestSlots(unittest.TestCase):
             left,
             {
                 "blocks_layout": {"items": [2, 1]},
-                "blocks": {1: {"title": "First", "readOnly": True, "_v_inherit": True}, 2: {}},
+                "blocks": {
+                    1: {"title": "First", "readOnly": True, "_v_inherit": True},
+                    2: {},
+                },
             },
         )
 
@@ -271,8 +274,12 @@ class TestSlots(unittest.TestCase):
             {
                 "blocks_layout": {"items": [2, 3]},
                 "blocks": {
-                    2: {"title": "Second", "s:isVariantOf": 1},
-                    3: {"title": "Third", "_v_inherit": True, 'readOnly': True},
+                    2: {
+                        "title": "Second",
+                        "s:isVariantOf": 1,
+                        "_v_original": {"title": "First"},
+                    },
+                    3: {"title": "Third", "_v_inherit": True, "readOnly": True},
                 },
             },
         )
@@ -305,8 +312,17 @@ class TestSlots(unittest.TestCase):
             {
                 "blocks_layout": {"items": [4, 2, 5]},
                 "blocks": {
-                    2: {"title": "Second", "s:isVariantOf": 1},
-                    4: {"title": "Third", "s:sameAs": 3, "readOnly": True, "_v_inherit": True},
+                    2: {
+                        "title": "Second",
+                        "s:isVariantOf": 1,
+                        "_v_original": {"title": "First"},
+                    },
+                    4: {
+                        "title": "Third",
+                        "s:sameAs": 3,
+                        "readOnly": True,
+                        "_v_inherit": True,
+                    },
                     5: {"title": "Fifth", "readOnly": True, "_v_inherit": True},
                 },
             },
@@ -343,9 +359,13 @@ class TestSlots(unittest.TestCase):
             {
                 "blocks_layout": {"items": [3, 2, 5]},
                 "blocks": {
-                    2: {"title": "Second", "s:isVariantOf": 1},
-                    3: {"title": "Third", "_v_inherit": True, 'readOnly': True},
-                    5: {"title": "Fifth", "_v_inherit": True, 'readOnly': True},
+                    2: {
+                        "title": "Second",
+                        "s:isVariantOf": 1,
+                        "_v_original": {"title": "First"},
+                    },
+                    3: {"title": "Third", "_v_inherit": True, "readOnly": True},
+                    5: {"title": "Fifth", "_v_inherit": True, "readOnly": True},
                 },
             },
         )
@@ -378,8 +398,8 @@ class TestSlots(unittest.TestCase):
             {
                 "blocks_layout": {"items": [3, 5]},
                 "blocks": {
-                    3: {"title": "Third", "_v_inherit": True, 'readOnly': True},
-                    5: {"title": "Fifth", "_v_inherit": True, 'readOnly': True},
+                    3: {"title": "Third", "_v_inherit": True, "readOnly": True},
+                    5: {"title": "Fifth", "_v_inherit": True, "readOnly": True},
                 },
             },
         )
@@ -409,12 +429,19 @@ class TestSlots(unittest.TestCase):
 
         self.assertEqual(
             left,
-            {'blocks': {2: {'s:isVariantOf': 1,
-                            'title': 'Second',
-                            'v:hidden': True},
-                        3: {'_v_inherit': True, 'readOnly': True, 'title': 'Third'},
-                        5: {'_v_inherit': True, 'readOnly': True, 'title': 'Fifth'}},
-                'blocks_layout': {'items': [3, 2, 5]}},
+            {
+                "blocks": {
+                    2: {
+                        "s:isVariantOf": 1,
+                        "title": "Second",
+                        "v:hidden": True,
+                        "_v_original": {"title": "First"},
+                    },
+                    3: {"_v_inherit": True, "readOnly": True, "title": "Third"},
+                    5: {"_v_inherit": True, "readOnly": True, "title": "Fifth"},
+                },
+                "blocks_layout": {"items": [3, 2, 5]},
+            },
         )
 
     def test_save_slots(self):

@@ -21,9 +21,9 @@ def is_true(val):
     if isinstance(val, bool):
         return val
 
-    if val in ['true', 'True', '1', 1]:
+    if val in ["true", "True", "1", 1]:
         return True
-    elif val in ['false', 'False', '0', 0]:
+    elif val in ["false", "False", "0", 0]:
         return False
 
     return False
@@ -59,7 +59,7 @@ class SlotsGet(Service):
         adapter = getMultiAdapter(
             (self.context, storage, self.request), ISerializeToJson
         )
-        is_full = self.request.form.get('full', False)
+        is_full = self.request.form.get("full", False)
         result = adapter(is_full)
 
         # from plone.restapi.serializer.converters import json_compatible
@@ -92,10 +92,11 @@ class SlotsGet(Service):
             slot.__parent__ = self.storage
             slot.__name__ = name
 
-        result = getMultiAdapter((self.context, slot, self.request),
-                                 ISerializeToJson)(self.request.form.get('full', False))
+        result = getMultiAdapter((self.context, slot, self.request), ISerializeToJson)(
+            self.request.form.get("full", False)
+        )
 
         result["edit"] = name in self.editable_slots
 
-        transaction.doom()      # avoid writing on read
+        transaction.doom()  # avoid writing on read
         return result

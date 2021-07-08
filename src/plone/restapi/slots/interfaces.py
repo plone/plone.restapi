@@ -11,25 +11,23 @@ class ISlots(Interface):
     """Slots are named container of sets of blocks"""
 
     def discover_slots():
-        """ Returns a list of all persistent slot names, across the hierarchy"""
+        """Returns a list of all persistent slot names, across the hierarchy"""
 
     def get_data(name):
-        """ Get the blocks + blocks_layout for a slot name """
+        """Get the blocks + blocks_layout for a slot name"""
 
     def get_editable_slots():
-        """ Returns a list of slot names that can be modified by the current principal
-        """
+        """Returns a list of slot names that can be modified by the current principal"""
 
     def save_data_to_slot(slot, data):
-        """ Persist the data for a slot
-        """
+        """Persist the data for a slot"""
 
     def get_fills_stack():
-        """ Returns a list of all discovered persistent slots across a hierarchy """
+        """Returns a list of all discovered persistent slots across a hierarchy"""
 
 
 class ISlotStorage(Interface):
-    """ A store of slots information """
+    """A store of slots information"""
 
 
 class ISlot(IBlocks):

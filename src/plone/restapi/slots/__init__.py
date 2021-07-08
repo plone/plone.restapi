@@ -28,7 +28,7 @@ DEFAULT_SLOT_DATA = {"blocks_layout": {"items": []}, "blocks": {}}
 @adapter(IContentish)
 @implementer(ISlotStorage)
 class PersistentSlots(BTreeContainer):
-    """ Slots container"""
+    """Slots container"""
 
 
 SlotsStorage = factory(PersistentSlots, SLOTS_KEY)
@@ -117,13 +117,13 @@ class Slots(object):
                     if other:
                         _replaced.add(other)
 
-                    if (not full) and block.get('v:hidden'):
+                    if (not full) and block.get("v:hidden"):
                         hidden.append(uid)
                         continue
 
                     blocks[uid] = block
 
-                    if level > 0:   # anything deeper than "top" level is inherited
+                    if level > 0:  # anything deeper than "top" level is inherited
                         block["_v_inherit"] = True
                         block["readOnly"] = True
 
@@ -133,27 +133,30 @@ class Slots(object):
 
             level += 1
 
-            if getattr(slot, 'block_parent', False) and not full:
+            if getattr(slot, "block_parent", False) and not full:
                 break
 
         for k, v in blocks.items():
             if v.get("s:sameAs"):
                 v.update(self._resolve_block(v, _seen_blocks))
                 v["_v_inherit"] = True
-                v["readOnly"] = True        # TODO: should we set this here?
+                v["readOnly"] = True  # TODO: should we set this here?
                 # v['_v_original'] = self._resolve_block(v, _seen_blocks)
 
         for k, v in blocks.items():
             if v.get("s:isVariantOf"):
                 # in the frontend, if we have a block that's hidden then we go and
                 # "unhide", we'll need the original data for best UX
-                v['_v_original'] = deepcopy(_seen_blocks[v.get("s:isVariantOf")])
+                v["_v_original"] = deepcopy(_seen_blocks[v.get("s:isVariantOf")])
 
         return {
             "blocks": blocks,
             "blocks_layout": {
-                "items": [b for b in blocks_layout if b in _seen_blocks.keys()
-                          and b not in hidden]
+                "items": [
+                    b
+                    for b in blocks_layout
+                    if b in _seen_blocks.keys() and b not in hidden
+                ]
             },
         }
 

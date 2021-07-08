@@ -26,11 +26,11 @@ _MISSING = object()
 def serialize_data(slot, request, schema):
     result = {}
     for name, field in getFields(schema).items():
-        if name in ['blocks', 'blocks_layout']:
+        if name in ["blocks", "blocks_layout"]:
             continue
         value = getattr(slot, name, _MISSING)
         if value is not _MISSING:
-            result[json_compatible(name)] = value       # assumes JSON-compatible values
+            result[json_compatible(name)] = value  # assumes JSON-compatible values
 
     return result
 
@@ -81,8 +81,8 @@ class SlotSerializer(object):
         return result
 
 
-@ adapter(Interface, ISlotStorage, IBrowserRequest)
-@ implementer(ISerializeToJson)
+@adapter(Interface, ISlotStorage, IBrowserRequest)
+@implementer(ISerializeToJson)
 class SlotsSerializer(object):
     """Default slots storage serializer"""
 

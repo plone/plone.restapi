@@ -170,10 +170,17 @@ class TestServicesSlots(unittest.TestCase):
                         u"blocks": {
                             # 1 is hidden because it's overridden by 2, which is hidden
                             # u"1": {u"title": u"First"}
-                            u"3": {u"title": u"Third", '_v_inherit': True, 'readOnly': True},
-                            u"5": {u"title": u"Fifth", '_v_inherit': True, 'readOnly': True},
+                            u"3": {
+                                u"title": u"Third",
+                                "_v_inherit": True,
+                                "readOnly": True,
+                            },
+                            u"5": {
+                                u"title": u"Fifth",
+                                "_v_inherit": True,
+                                "readOnly": True,
+                            },
                         },
-
                         # in 'doc11' slots, layout is [3, 2], so inherited 5 is at end
                         u"blocks_layout": {u"items": [u"3", u"5"]},
                         u"edit": True,
@@ -181,9 +188,21 @@ class TestServicesSlots(unittest.TestCase):
                     u"right": {
                         u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots/right",
                         u"blocks": {
-                            u"6": {u"title": u"First", '_v_inherit': True, 'readOnly': True},
-                            u"7": {u"title": u"Third", '_v_inherit': True, 'readOnly': True},
-                            u"8": {u"title": u"Fifth", '_v_inherit': True, 'readOnly': True},
+                            u"6": {
+                                u"title": u"First",
+                                "_v_inherit": True,
+                                "readOnly": True,
+                            },
+                            u"7": {
+                                u"title": u"Third",
+                                "_v_inherit": True,
+                                "readOnly": True,
+                            },
+                            u"8": {
+                                u"title": u"Fifth",
+                                "_v_inherit": True,
+                                "readOnly": True,
+                            },
                         },
                         u"blocks_layout": {u"items": [u"8", u"6", u"7"]},
                         u"edit": True,
@@ -212,10 +231,21 @@ class TestServicesSlots(unittest.TestCase):
                     u"left": {
                         u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots/left",
                         u"blocks": {
-                            u'2': {'s:isVariantOf': '1', 'v:hidden': True,
-                                   '_v_original': {'title': 'First'}},
-                            u"3": {u"title": u"Third", '_v_inherit': True, 'readOnly': True},
-                            u"5": {u"title": u"Fifth", '_v_inherit': True, 'readOnly': True},
+                            u"2": {
+                                "s:isVariantOf": "1",
+                                "v:hidden": True,
+                                "_v_original": {"title": "First"},
+                            },
+                            u"3": {
+                                u"title": u"Third",
+                                "_v_inherit": True,
+                                "readOnly": True,
+                            },
+                            u"5": {
+                                u"title": u"Fifth",
+                                "_v_inherit": True,
+                                "readOnly": True,
+                            },
                         },
                         u"blocks_layout": {u"items": [u"3", u"2", u"5"]},
                         u"edit": True,
@@ -223,9 +253,21 @@ class TestServicesSlots(unittest.TestCase):
                     u"right": {
                         u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots/right",
                         u"blocks": {
-                            u"6": {u"title": u"First", '_v_inherit': True, 'readOnly': True},
-                            u"7": {u"title": u"Third", '_v_inherit': True, 'readOnly': True},
-                            u"8": {u"title": u"Fifth", '_v_inherit': True, 'readOnly': True},
+                            u"6": {
+                                u"title": u"First",
+                                "_v_inherit": True,
+                                "readOnly": True,
+                            },
+                            u"7": {
+                                u"title": u"Third",
+                                "_v_inherit": True,
+                                "readOnly": True,
+                            },
+                            u"8": {
+                                u"title": u"Fifth",
+                                "_v_inherit": True,
+                                "readOnly": True,
+                            },
                         },
                         u"blocks_layout": {u"items": [u"8", u"6", u"7"]},
                         u"edit": True,
