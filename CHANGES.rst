@@ -8,6 +8,21 @@ Changelog
 
 .. towncrier release notes start
 
+8.4.2 (2021-07-08)
+------------------
+
+Bug fixes:
+
+
+- In src run `find . -name "*.py"|xargs pyupgrade --py36-plus`.
+  Then run black and remove six import leftovers. 
+  [jensens] (#1162)
+- Fix link content serialization when url points to local content but it does not exist
+  [sneridagh] (#1167)
+- Fix navigation service not using nav_title metadata.
+  [ericof] (#1169)
+
+
 8.4.1 (2021-07-07)
 ------------------
 
