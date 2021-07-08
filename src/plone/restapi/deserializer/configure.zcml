@@ -12,12 +12,15 @@
   <adapter factory=".dxfields.CollectionFieldDeserializer" />
   <adapter factory=".dxfields.DictFieldDeserializer" />
   <adapter factory=".dxfields.TextLineFieldDeserializer" />
-  <adapter factory=".dxfields.LinkTextLineFieldDeserializer" />
   <adapter factory=".dxfields.TimeFieldDeserializer" />
   <adapter factory=".dxfields.TimedeltaFieldDeserializer" />
   <adapter factory=".dxfields.NamedFieldDeserializer" />
   <adapter factory=".dxfields.RichTextFieldDeserializer" />
   <adapter factory=".blocks.BlocksJSONFieldDeserializer" />
+
+  <configure zcml:condition="installed plone.app.contenttypes">
+    <adapter factory=".dxfields.LinkTextLineFieldDeserializer" />
+  </configure>
 
   <subscriber factory=".blocks.TextBlockDeserializer"
     provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>

@@ -2,8 +2,6 @@
 
 from AccessControl import getSecurityManager
 from Products.CMFCore.permissions import ModifyPortalContent
-from plone.app.contenttypes.interfaces import ILink
-from plone.app.contenttypes.utils import replace_link_variables_by_paths
 from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedFileField
@@ -24,6 +22,13 @@ from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import IVocabularyTokenized
 
 import logging
+
+try:
+    from plone.app.contenttypes.interfaces import ILink
+    from plone.app.contenttypes.utils import replace_link_variables_by_paths
+except ImportError:
+    # Probably Plone 4.3 with dexterity but without plone.app.contenttypes.
+    ILink = None
 
 log = logging.getLogger(__name__)
 
@@ -135,20 +140,22 @@ class RichttextFieldSerializer(DefaultFieldSerializer):
         return json_compatible(value, self.context)
 
 
-@adapter(ITextLine, ILink, Interface)
-class TextLineFieldSerializer(DefaultFieldSerializer):
-    def __call__(self):
-        if self.field.getName() != "remoteUrl":
-            return super(TextLineFieldSerializer, self).__call__()
-        value = self.get_value()
-        path = replace_link_variables_by_paths(context=self.context, url=value)
-        portal = getMultiAdapter(
-            (self.context, self.context.REQUEST), name="plone_portal_state"
-        ).portal()
-        ref_obj = portal.restrictedTraverse(path, None)
-        if ref_obj:
-            value = ref_obj.absolute_url()
-        return json_compatible(value)
+if ILink is not None:
+
+    @adapter(ITextLine, ILink, Interface)
+    class TextLineFieldSerializer(DefaultFieldSerializer):
+        def __call__(self):
+            if self.field.getName() != "remoteUrl":
+                return super(TextLineFieldSerializer, self).__call__()
+            value = self.get_value()
+            path = replace_link_variables_by_paths(context=self.context, url=value)
+            portal = getMultiAdapter(
+                (self.context, self.context.REQUEST), name="plone_portal_state"
+            ).portal()
+            ref_obj = portal.restrictedTraverse(path, None)
+            if ref_obj:
+                value = ref_obj.absolute_url()
+            return json_compatible(value)
 
 
 @adapter(IField, IDexterityContent, Interface)
