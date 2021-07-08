@@ -84,7 +84,8 @@ class SerializeToJson(object):
 
         # Insert field values
         for schema in iterSchemata(self.context):
-            read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
+            read_permissions = mergedTaggedValueDict(
+                schema, READ_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
 
@@ -112,7 +113,8 @@ class SerializeToJson(object):
 
     def _get_workflow_state(self, obj):
         wftool = getToolByName(self.context, "portal_workflow")
-        review_state = wftool.getInfoFor(ob=obj, name="review_state", default=None)
+        review_state = wftool.getInfoFor(
+            ob=obj, name="review_state", default=None)
         return review_state
 
     def check_permission(self, permission_name, obj):
@@ -143,7 +145,8 @@ class SerializeFolderToJson(SerializeToJson):
         return query
 
     def __call__(self, version=None, include_items=True):
-        folder_metadata = super(SerializeFolderToJson, self).__call__(version=version)
+        folder_metadata = super(SerializeFolderToJson,
+                                self).__call__(version=version)
 
         folder_metadata.update({"is_folderish": True})
         result = folder_metadata
@@ -168,9 +171,17 @@ class SerializeFolderToJson(SerializeToJson):
                 )(fullobjects=True)["items"]
             else:
                 result["items"] = [
-                    getMultiAdapter((brain, self.request), ISerializeToJsonSummary)()
+                    getMultiAdapter((brain, self.request),
+                                    ISerializeToJsonSummary)()
                     for brain in batch
                 ]
+
+        page = self.context.getDefaultPage()
+        if page:
+            child = self.context._getOb(page)
+            result['default_page'] = getMultiAdapter(
+                (child, self.request), ISerializeToJson)()
+
         return result
 
 

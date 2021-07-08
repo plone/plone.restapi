@@ -38,7 +38,8 @@ class TestTraversal(unittest.TestCase):
     def test_get_document(self):
         self.portal.invokeFactory("Document", id="doc1", title="My Document")
         self.portal.doc1.description = u"This is a document"
-        self.portal.doc1.text = RichTextValue(u"Lorem ipsum", "text/plain", "text/html")
+        self.portal.doc1.text = RichTextValue(
+            u"Lorem ipsum", "text/plain", "text/html")
         transaction.commit()
 
         response = self.api_session.get(self.portal.doc1.absolute_url())
@@ -66,7 +67,8 @@ class TestTraversal(unittest.TestCase):
             ),
         )
         self.assertEqual("My Document", response.json().get("title"))
-        self.assertEqual("This is a document", response.json().get("description"))
+        self.assertEqual("This is a document",
+                         response.json().get("description"))
         self.assertEqual(
             {
                 u"data": u"<p>Lorem ipsum</p>",
@@ -136,7 +138,8 @@ class TestTraversal(unittest.TestCase):
                 response.json().get("@type")
             ),
         )
-        self.assertEqual(self.portal.folder1.absolute_url(), response.json().get("@id"))
+        self.assertEqual(self.portal.folder1.absolute_url(),
+                         response.json().get("@id"))
         self.assertEqual("My Folder", response.json().get("title"))
 
     def test_get_site_root(self):
@@ -192,7 +195,8 @@ class TestTraversal(unittest.TestCase):
             "When sending a GET request with Content-Type: application/json "
             + "the server should respond with sending back application/json.",
         )
-        self.assertEqual(response.json()["@id"], self.portal.file1.absolute_url())
+        self.assertEqual(response.json()["@id"],
+                         self.portal.file1.absolute_url())
 
     @unittest.skip("Not implemented yet.")
     def test_get_image(self):  # pragma: no cover
@@ -215,4 +219,5 @@ class TestTraversal(unittest.TestCase):
             "When sending a GET request with Content-Type: application/json "
             + "the server should respond with sending back application/json.",
         )
-        self.assertEqual(response.json()["@id"], self.portal.img1.absolute_url())
+        self.assertEqual(response.json()["@id"],
+                         self.portal.img1.absolute_url())
