@@ -8,7 +8,7 @@ from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import getFSVersionTuple
+from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
 from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -17,14 +17,6 @@ from zope.component.hooks import getSite
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
-
-PLONE5 = getFSVersionTuple()[0] >= 5
-
-try:
-    from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
-except ImportError:
-    # BBB for Plone 4.x, remove with plone.restapi 8 / Plone 6
-    from plone.app.controlpanel.navigation import INavigationSchema
 
 
 @implementer(IExpandableElement)
@@ -51,34 +43,15 @@ class Navigation:
     @property
     @memoize_contextless
     def settings(self):
-        if PLONE5:
-            # TODO: Simplify this when Plone 4.3 is deprecated
-            registry = getUtility(IRegistry)
-            settings = registry.forInterface(INavigationSchema, prefix="plone")
-            return {
-                "displayed_types": settings.displayed_types,
-                "nonfolderish_tabs": settings.nonfolderish_tabs,
-                "filter_on_workflow": settings.filter_on_workflow,
-                "workflow_states_to_show": settings.workflow_states_to_show,
-                "show_excluded_items": settings.show_excluded_items,
-            }
-        else:
-            pprop = getToolByName(self.context, "portal_properties")
-            ttool = getToolByName(self.context, "portal_types")
-            siteProps = pprop.site_properties
-            navProps = pprop.navtree_properties
-            allTypes = ttool.listContentTypes()
-            blacklist = navProps.metaTypesNotToList
-
-            return {
-                "displayed_types": [t for t in allTypes if t not in blacklist],
-                "nonfolderish_tabs": not siteProps.getProperty(
-                    "disable_nonfolderish_sections"
-                ),
-                "filter_on_workflow": navProps.getProperty("enable_wf_state_filtering"),
-                "workflow_states_to_show": navProps.getProperty("wf_states_to_show"),
-                "show_excluded_items": navProps.getProperty("showAllParents"),
-            }
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(INavigationSchema, prefix="plone")
+        return {
+            "displayed_types": settings.displayed_types,
+            "nonfolderish_tabs": settings.nonfolderish_tabs,
+            "filter_on_workflow": settings.filter_on_workflow,
+            "workflow_states_to_show": settings.workflow_states_to_show,
+            "show_excluded_items": settings.show_excluded_items,
+        }
 
     @property
     def default_language(self):

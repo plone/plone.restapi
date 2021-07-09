@@ -12,7 +12,6 @@ from zope.interface import implementer
 from zope.interface import Interface
 
 import plone.protect.interfaces
-import six
 
 
 @implementer(IExpandableElement)
@@ -101,12 +100,8 @@ class LinkTranslations(Service):
         if key.startswith(self.portal_url):
             # Resolve by URL
             key = key[len(self.portal_url) + 1 :]
-            if six.PY2:
-                key = key.encode("utf8")
             return self.portal.restrictedTraverse(key, None)
         elif key.startswith("/"):
-            if six.PY2:
-                key = key.encode("utf8")
             # Resolve by path
             return self.portal.restrictedTraverse(key.lstrip("/"), None)
         else:

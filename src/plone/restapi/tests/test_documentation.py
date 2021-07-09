@@ -1,12 +1,12 @@
 from base64 import b64encode
 from datetime import datetime
 from unittest.mock import patch
-from pkg_resources import parse_version
 from pkg_resources import resource_filename
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
+from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import applyProfile
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
@@ -20,7 +20,6 @@ from plone.locking.interfaces import ITTWLockable
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
-from plone.restapi.testing import PAM_INSTALLED  # noqa
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
@@ -40,10 +39,6 @@ import os
 import re
 import transaction
 import unittest
-
-
-if PAM_INSTALLED:
-    from plone.app.multilingual.interfaces import ITranslationManager
 
 
 TUS_HEADERS = [
@@ -76,15 +71,6 @@ UPLOAD_LENGTH = len(UPLOAD_DATA)
 
 UPLOAD_PDF_MIMETYPE = "application/pdf"
 UPLOAD_PDF_FILENAME = "file.pdf"
-
-PLONE_VERSION = parse_version(api.env.plone_version())
-
-try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE5 = False
-else:
-    PLONE5 = True
 
 
 def pretty_json(data):
@@ -1740,7 +1726,6 @@ class TestCommenting(TestDocumentationBase):
         save_request_and_response_for_docs("expansion", response)
 
 
-@unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
 class TestControlPanelDocumentation(TestDocumentationBase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -1799,9 +1784,6 @@ class TestControlPanelDocumentation(TestDocumentationBase):
         )
 
 
-@unittest.skipUnless(
-    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
-)  # NOQA
 class TestPAMDocumentation(TestDocumentationBase):
 
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING

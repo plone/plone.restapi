@@ -4,6 +4,7 @@
 from Acquisition import aq_base
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from collections import UserDict
 from plone import api
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.layout.navigation.navtree import buildFolderTree
@@ -18,9 +19,11 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
 from Products.CMFPlone import utils
 from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
+from Products.CMFPlone.defaultpage import is_default_page
+from Products.CMFPlone.interfaces import INavigationSchema
 from Products.CMFPlone.interfaces import INonStructuralFolder
+from Products.CMFPlone.interfaces import ISiteSchema
 from Products.MimetypesRegistry.MimeTypeItem import guess_icon_path
-from six.moves import UserDict
 from zExceptions import NotFound
 from zope import schema
 from zope.component import adapter
@@ -33,17 +36,7 @@ from zope.interface import Interface
 from zope.schema.interfaces import IFromUnicode
 
 import os
-import six
 
-
-IS_PLONE4 = False
-
-try:
-    from Products.CMFPlone.defaultpage import is_default_page
-    from Products.CMFPlone.interfaces import INavigationSchema
-    from Products.CMFPlone.interfaces import ISiteSchema
-except ImportError:
-    IS_PLONE4 = True
 
 _ = MessageFactory("plone.restapi")
 
@@ -263,11 +256,7 @@ class NavigationPortletRenderer:
         context = aq_inner(self.context)
         root = self.getNavRoot()
         container = aq_parent(context)
-        is_default = False
-        if IS_PLONE4:
-            is_default = _is_default_page(container, context)
-        else:
-            is_default = is_default_page(container, context)
+        is_default = is_default_page(container, context)
         if aq_base(root) is aq_base(context) or (
             aq_base(root) is aq_base(container) and is_default
         ):
@@ -350,15 +339,12 @@ class NavigationPortletRenderer:
         if thsize:
             return thsize
 
-        if IS_PLONE4:
-            return  # no support in Plone 4 to override the thumb scale
-        else:
-            registry = getUtility(IRegistry)
-            settings = registry.forInterface(ISiteSchema, prefix="plone", check=False)
-            if settings.no_thumbs_portlet:
-                return "none"
-            thumb_scale_portlet = settings.thumb_scale_portlet
-            return thumb_scale_portlet
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(ISiteSchema, prefix="plone", check=False)
+        if settings.no_thumbs_portlet:
+            return "none"
+        thumb_scale_portlet = settings.thumb_scale_portlet
+        return thumb_scale_portlet
 
     def getMimeTypeIcon(self, node):
         try:
@@ -605,9 +591,6 @@ def extract_data(schema, raw_data, prefix):
         field = schema[name]
         raw_value = raw_data.get(prefix + name, field.default)
 
-        if isinstance(raw_value, str):
-            raw_value = six.ensure_text(raw_value)
-
         value = IFromUnicode(field).fromUnicode(raw_value)
         data[name] = value  # convert(raw_value, field)
 
@@ -687,19 +670,10 @@ class QueryBuilder:
                 query["sort_order"] = sortOrder
 
         # Filter on workflow states, if enabled
-        if IS_PLONE4:
-            # code copied from plone.app.portlets 2.5.2
-            if navtree_properties.getProperty("enable_wf_state_filtering", False):
-                query["review_state"] = navtree_properties.getProperty(
-                    "wf_states_to_show", ()
-                )
-        else:
-            registry = getUtility(IRegistry)
-            navigation_settings = registry.forInterface(
-                INavigationSchema, prefix="plone"
-            )
-            if navigation_settings.filter_on_workflow:
-                query["review_state"] = navigation_settings.workflow_states_to_show
+        registry = getUtility(IRegistry)
+        navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
+        if navigation_settings.filter_on_workflow:
+            query["review_state"] = navigation_settings.workflow_states_to_show
 
         self.query = query
 

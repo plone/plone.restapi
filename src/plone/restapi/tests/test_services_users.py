@@ -7,18 +7,13 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getAdapter
 from zope.component import getUtility
 
 import transaction
 import unittest
-
-
-try:
-    from Products.CMFPlone.interfaces import ISecuritySchema
-except ImportError:
-    from plone.app.controlpanel.security import ISecuritySchema
 
 
 class TestUsersEndpoint(unittest.TestCase):

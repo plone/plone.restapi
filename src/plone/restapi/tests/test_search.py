@@ -2,6 +2,7 @@ from datetime import date
 from DateTime import DateTime
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
+from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.textfield.value import RichTextValue
@@ -16,18 +17,8 @@ from zope.component import getUtility
 from zope.interface import alsoProvides
 from zope.interface import noLongerProvides
 
-import six
 import transaction
 import unittest
-
-
-try:
-    from plone.app.layout.navigation.interfaces import INavigationRoot
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE5 = False
-else:
-    PLONE5 = True
 
 
 class TestSearchFunctional(unittest.TestCase):
@@ -392,17 +383,6 @@ class TestSearchFunctional(unittest.TestCase):
 
         self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
 
-    @unittest.skipIf(six.PY3, "Python 3 can't sort mixed types")
-    def test_keyword_index_int_query(self):
-        self.doc.test_list_field = [42, 23]
-        self.doc.reindexObject()
-        transaction.commit()
-
-        query = {"test_list_field:int": 42}
-        response = self.api_session.get("/@search", params=query)
-
-        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
-
     # BooleanIndex
 
     def test_boolean_index_query(self):
@@ -610,9 +590,6 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/@search", params=query)
         self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
 
-    @unittest.skipIf(
-        not PLONE5, "searchResults in Plone 4 does not handle correctly that permission"
-    )
     def test_respect_access_inactive_permission(self):
         # admin can see everything
         response = self.api_session.get("/@search", params={}).json()
@@ -665,7 +642,6 @@ class TestSearchFunctional(unittest.TestCase):
         ).json()
         self.assertEqual(response["items_total"], 1)
 
-    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
     def test_search_use_site_search_settings_for_types(self):
         response = self.api_session.get(
             "/@search", params={"use_site_search_settings": 1}
@@ -691,7 +667,6 @@ class TestSearchFunctional(unittest.TestCase):
         search_settings.types_not_searched = old
         transaction.commit()
 
-    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
     def test_search_use_site_search_settings_for_default_sort_order(self):
         response = self.api_session.get(
             "/@search", params={"use_site_search_settings": 1}
@@ -714,7 +689,6 @@ class TestSearchFunctional(unittest.TestCase):
             "Other Document",
         )
 
-    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
     def test_search_use_site_search_settings_with_navigation_root(self):
 
         alsoProvides(self.folder, INavigationRoot)
@@ -729,7 +703,6 @@ class TestSearchFunctional(unittest.TestCase):
         noLongerProvides(self.folder, INavigationRoot)
         transaction.commit()
 
-    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
     def test_search_use_site_search_settings_with_navigation_root_and_vhm(self):
 
         if "virtual_hosting" not in self.app.objectIds():
@@ -756,7 +729,6 @@ class TestSearchFunctional(unittest.TestCase):
         noLongerProvides(self.folder, INavigationRoot)
         transaction.commit()
 
-    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
     def test_search_use_site_search_settings_with_vhm(self):
 
         if "virtual_hosting" not in self.app.objectIds():

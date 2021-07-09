@@ -1,5 +1,7 @@
 from Acquisition import aq_base
 from Acquisition.interfaces import IAcquirer
+from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
+from plone.app.multilingual.interfaces import ITranslationManager
 from plone.restapi.deserializer import json_body
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -7,7 +9,6 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
-from Products.CMFPlone.utils import getFSVersionTuple
 from Products.CMFPlone.utils import safe_hasattr
 from zExceptions import BadRequest
 from zExceptions import Unauthorized
@@ -19,17 +20,6 @@ from zope.component import getMultiAdapter
 from Products.CMFCore.utils import getToolByName
 
 import plone.protect.interfaces
-import pkg_resources
-import six
-
-
-try:
-    pkg_resources.get_distribution("plone.app.multilingual")
-    PAM_INSTALLED = True
-except pkg_resources.DistributionNotFound:
-    PAM_INSTALLED = False
-
-PLONE5 = getFSVersionTuple()[0] >= 5
 
 
 class FolderPost(Service):
@@ -90,21 +80,15 @@ class FolderPost(Service):
         obj = add(self.context, obj, rename=not bool(id_))
 
         # Link translation given the translation_of property
-        if PAM_INSTALLED and PLONE5:
-            from plone.app.multilingual.interfaces import (
-                IPloneAppMultilingualInstalled,
-            )  # noqa
-            from plone.app.multilingual.interfaces import ITranslationManager
-
-            if (
-                IPloneAppMultilingualInstalled.providedBy(self.request)
-                and translation_of
-                and language
-            ):
-                source = self.get_object(translation_of)
-                if source:
-                    manager = ITranslationManager(source)
-                    manager.register_translation(language, obj)
+        if (
+            IPloneAppMultilingualInstalled.providedBy(self.request)
+            and translation_of
+            and language
+        ):
+            source = self.get_object(translation_of)
+            if source:
+                manager = ITranslationManager(source)
+                manager.register_translation(language, obj)
 
         self.request.response.setStatus(201)
         self.request.response.setHeader("Location", obj.absolute_url())
@@ -129,12 +113,8 @@ class FolderPost(Service):
         if key.startswith(portal.absolute_url()):
             # Resolve by URL
             key = key[len(portal.absolute_url()) + 1 :]
-            if six.PY2:
-                key = key.encode("utf8")
             return portal.restrictedTraverse(key, None)
         elif key.startswith("/"):
-            if six.PY2:
-                key = key.encode("utf8")
             # Resolve by path
             return portal.restrictedTraverse(key.lstrip("/"), None)
         else:
