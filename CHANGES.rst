@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.5.0 (2021-07-09)
+------------------
+
+New features:
+
+
+- Remove Python 2, Plone 4.3, and 5.1 code.
+  [ericof] (#1140)
+
+
 8.4.2 (2021-07-08)
 ------------------
 
