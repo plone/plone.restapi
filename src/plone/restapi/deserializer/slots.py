@@ -20,10 +20,6 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 import copy
 
 
-# from plone.restapi.events import BlocksRemovedEvent
-# from zope.event import notify
-
-
 @adapter(IContentish, ISlot, IBrowserRequest)
 @implementer(IDeserializeFromJson)
 class SlotDeserializer(object):
