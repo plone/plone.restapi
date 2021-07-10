@@ -93,11 +93,11 @@ class Slots(object):
         return slot_stack
 
     def get_data(self, name, full=False):
-        _blocks = {}            # the resulting blocks
-        _blocks_layout = []     # a tentative block_layout ordered list
-        _hidden = []            # list of block uids that are hidden
-        _seen_blocks = {}       # all blocks in this hierarchy
-        _replaced = set()       # original blocks that are overridden by variants. We
+        _blocks = {}  # the resulting blocks
+        _blocks_layout = []  # a tentative block_layout ordered list
+        _hidden = []  # list of block uids that are hidden
+        _seen_blocks = {}  # all blocks in this hierarchy
+        _replaced = set()  # original blocks that are overridden by variants. We
         # don't want to include these in the final output
 
         stack = self.get_fills_stack(name)

@@ -44,8 +44,9 @@ class SlotDeserializer(object):
         parent = ILocation(self.context).__parent__
         if parent is not None:
             engine = ISlots(parent)
-            parent_block_ids = list(engine.get_data(self.slot.__name__,
-                                                    full=True)['blocks'].keys())
+            parent_block_ids = list(
+                engine.get_data(self.slot.__name__, full=True)["blocks"].keys()
+            )
 
         # don't keep blocks that are not in incoming data
         for k in list(self.slot.blocks.keys()):

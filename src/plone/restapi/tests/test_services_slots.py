@@ -73,14 +73,18 @@ class TestServicesSlots(unittest.TestCase):
         response = self.api_session.get("/@slots")
         self.assertEqual(response.status_code, 200)
         slots = response.json()
+
+        def url(s):
+            return s.replace("http://localhost:55001/plone", self.portal.absolute_url())
+
         self.assertEqual(
             slots,
             {
-                u"@id": u"http://localhost:55001/plone/@slots",
+                u"@id": url(u"http://localhost:55001/plone/@slots"),
                 u"can_manage_slots": True,
                 u"items": {
                     u"left": {
-                        u"@id": u"http://localhost:55001/plone/@slots/left",
+                        u"@id": url(u"http://localhost:55001/plone/@slots/left"),
                         u"blocks": {
                             u"1": {u"title": u"First"},
                             u"3": {u"title": u"Third"},
@@ -90,7 +94,7 @@ class TestServicesSlots(unittest.TestCase):
                         u"edit": True,
                     },
                     u"right": {
-                        u"@id": u"http://localhost:55001/plone/@slots/right",
+                        u"@id": url(u"http://localhost:55001/plone/@slots/right"),
                         u"blocks": {
                             u"6": {u"title": u"First"},
                             u"7": {u"title": u"Third"},
@@ -110,10 +114,14 @@ class TestServicesSlots(unittest.TestCase):
     def test_slot_endpoint_on_root(self):
         response = self.api_session.get("/@slots/left")
         self.assertEqual(response.status_code, 200)
+
+        def url(s):
+            return s.replace("http://localhost:55001/plone", self.portal.absolute_url())
+
         self.assertEqual(
             response.json(),
             {
-                u"@id": u"http://localhost:55001/plone/@slots/left",
+                u"@id": url(u"http://localhost:55001/plone/@slots/left"),
                 u"edit": True,
                 u"blocks": {
                     u"1": {u"title": u"First"},
@@ -158,15 +166,20 @@ class TestServicesSlots(unittest.TestCase):
         response = self.api_session.get("/folder1/doc11/@slots")
         self.assertEqual(response.status_code, 200)
 
+        def url(s):
+            return s.replace("http://localhost:55001/plone", self.portal.absolute_url())
+
         slots = response.json()
         self.assertEqual(
             slots,
             {
-                u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots",
+                u"@id": url(u"http://localhost:55001/plone/folder1/doc11/@slots"),
                 u"can_manage_slots": True,
                 u"items": {
                     u"left": {
-                        u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots/left",
+                        u"@id": url(
+                            u"http://localhost:55001/plone/folder1/doc11/@slots/left"
+                        ),
                         u"blocks": {
                             # 1 is hidden because it's overridden by 2, which is hidden
                             # u"1": {u"title": u"First"}
@@ -186,7 +199,9 @@ class TestServicesSlots(unittest.TestCase):
                         u"edit": True,
                     },
                     u"right": {
-                        u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots/right",
+                        u"@id": url(
+                            u"http://localhost:55001/plone/folder1/doc11/@slots/right"
+                        ),
                         u"blocks": {
                             u"6": {
                                 u"title": u"First",
@@ -222,14 +237,19 @@ class TestServicesSlots(unittest.TestCase):
 
         slots = response.json()
 
+        def url(s):
+            return s.replace("http://localhost:55001/plone", self.portal.absolute_url())
+
         self.assertEqual(
             slots,
             {
-                u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots",
+                u"@id": url(u"http://localhost:55001/plone/folder1/doc11/@slots"),
                 u"can_manage_slots": True,
                 u"items": {
                     u"left": {
-                        u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots/left",
+                        u"@id": url(
+                            u"http://localhost:55001/plone/folder1/doc11/@slots/left"
+                        ),
                         u"blocks": {
                             u"2": {
                                 "s:isVariantOf": "1",
@@ -251,7 +271,9 @@ class TestServicesSlots(unittest.TestCase):
                         u"edit": True,
                     },
                     u"right": {
-                        u"@id": u"http://localhost:55001/plone/folder1/doc11/@slots/right",
+                        u"@id": url(
+                            u"http://localhost:55001/plone/folder1/doc11/@slots/right"
+                        ),
                         u"blocks": {
                             u"6": {
                                 u"title": u"First",
