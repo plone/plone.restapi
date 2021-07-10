@@ -1,5 +1,6 @@
 """JsonSchema providers."""
 from plone.app.textfield.interfaces import IRichText
+from plone.memoize.instance import memoize
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_properties
@@ -96,8 +97,12 @@ class DefaultJsonSchemaProvider:
         pass
 
     def get_widget(self):
-        return getattr(self.field, "widget", None)
+        # Get widget from directive
+        widget_options = self.get_widget_params()
+        # backward compatibility for field attribute 'widget'
+        return getattr(self.field, "widget", None) or widget_options.get('frontendwidget', None)
 
+    @memoize
     def get_widget_params(self):
         all_params = get_widget_params([self.field.interface])
         params = all_params.get(self.field.getName(), {})

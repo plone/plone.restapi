@@ -48,6 +48,13 @@ class ITaggedValuesSchema(model.Schema):
         "parametrized_widget_field", a_param="some_value", defaultFactory=lambda: "Foo"
     )
 
+    frontend_widget_field = schema.TextLine(title="Frontend widget field")
+    form.widget(
+        "frontend_widget_field",
+        frontendwidget="my_frontend_widget",
+        frontendwidgetversion="foo"
+    )
+
     not_parametrized_widget_field = schema.TextLine(
         title="No parametrized widget field"
     )
@@ -160,6 +167,10 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
             jsonschema["properties"]["parametrized_widget_field"]["widgetOptions"][
                 "a_param"
             ],
+        )
+        self.assertEqual(
+            "my_frontend_widget",
+            jsonschema["properties"]["frontend_widget_field"]["widget"],
         )
 
     def test_do_not_fail_with_non_parametrized_widget(self):
