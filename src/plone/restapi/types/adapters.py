@@ -100,7 +100,9 @@ class DefaultJsonSchemaProvider:
         # Get widget from directive
         widget_options = self.get_widget_params()
         # backward compatibility for field attribute 'widget'
-        return getattr(self.field, "widget", None) or widget_options.get('frontendwidget', None)
+        return getattr(self.field, "widget", None) or widget_options.get(
+            "frontendwidget", None
+        )
 
     @memoize
     def get_widget_params(self):

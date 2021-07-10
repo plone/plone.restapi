@@ -52,7 +52,7 @@ class ITaggedValuesSchema(model.Schema):
     form.widget(
         "frontend_widget_field",
         frontendwidget="my_frontend_widget",
-        frontendwidgetversion="foo"
+        frontendwidgetversion="foo",
     )
 
     not_parametrized_widget_field = schema.TextLine(
