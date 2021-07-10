@@ -201,3 +201,36 @@ class TestFolderCreate(unittest.TestCase):
             "<p>example with '</p>", self.portal.folder1.mydocument2.text.raw
         )
         self.assertEqual("<p>example with '</p>", response.json()["text"]["data"])
+
+    def test_post_with_uid_with_manage_portal_permission(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Document",
+                "title": "My Document",
+                "UID": "a9597fcb108c4985a713329311bdcca0"
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.json()["UID"], "a9597fcb108c4985a713329311bdcca0")
+
+    def test_post_with_uid_without_manage_portal_permission(self):
+        user = "test-user-2"
+        password = "secret"
+        self.portal.acl_users.userFolderAddUser(user, password, ["Contributor"], [])
+        transaction.commit()
+
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(user, password),
+            json={
+                "@type": "Document",
+                "title": "My Document",
+                "UID": "a9597fcb108c4985a713329311bdcca0"
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        self.assertNotEqual(response.json()["UID"], "a9597fcb108c4985a713329311bdcca0")

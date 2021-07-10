@@ -1,3 +1,4 @@
+from AccessControl import getSecurityManager
 from Acquisition import aq_base
 from Acquisition.interfaces import IAcquirer
 from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
@@ -9,6 +10,8 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
+from Products.CMFCore.permissions import ManagePortal
+from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_hasattr
 from zExceptions import BadRequest
 from zExceptions import Unauthorized
@@ -17,7 +20,6 @@ from zope.event import notify
 from zope.interface import alsoProvides
 from zope.lifecycleevent import ObjectCreatedEvent
 from zope.component import getMultiAdapter
-from Products.CMFCore.utils import getToolByName
 
 import plone.protect.interfaces
 
@@ -33,6 +35,7 @@ class FolderPost(Service):
         title = data.get("title", None)
         translation_of = data.get("translation_of", None)
         language = data.get("language", None)
+        uid = data.get("UID", None)
 
         if not type_:
             raise BadRequest("Property '@type' is required")
@@ -73,6 +76,11 @@ class FolderPost(Service):
 
         if temporarily_wrapped:
             obj = aq_base(obj)
+
+        # ManagePortal is required to set the uid of an object during creation
+        sm = getSecurityManager()
+        if uid and sm.checkPermission(ManagePortal, self.context):
+            setattr(obj, "_plone.uuid", uid)
 
         if not getattr(deserializer, "notifies_create", False):
             notify(ObjectCreatedEvent(obj))
