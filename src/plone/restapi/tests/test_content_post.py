@@ -210,7 +210,7 @@ class TestFolderCreate(unittest.TestCase):
             json={
                 "@type": "Document",
                 "title": "My Document",
-                "UID": "a9597fcb108c4985a713329311bdcca0"
+                "UID": "a9597fcb108c4985a713329311bdcca0",
             },
         )
         self.assertEqual(201, response.status_code)
@@ -229,7 +229,7 @@ class TestFolderCreate(unittest.TestCase):
             json={
                 "@type": "Document",
                 "title": "My Document",
-                "UID": "a9597fcb108c4985a713329311bdcca0"
+                "UID": "a9597fcb108c4985a713329311bdcca0",
             },
         )
         self.assertEqual(201, response.status_code)
