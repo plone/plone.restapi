@@ -15,6 +15,7 @@ from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import subscribers
 from zope.interface import implementer
+from zope.location.interfaces import ILocation
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import copy
@@ -39,9 +40,10 @@ class SlotDeserializer(object):
 
         incoming_blocks = copy.deepcopy(data["blocks"])
 
-        engine = ISlots(self.context)
-        all_blocks_ids = engine.get_data(self.slot.__name__, full=True)["blocks"].keys()
-        parent_block_ids = list(set(all_blocks_ids) - set(self.slot.blocks.keys()))
+        parent = ILocation(self.context).__parent__
+        engine = ISlots(parent)
+        parent_block_ids = list(engine.get_data(self.slot.__name__,
+                                                full=True)['blocks'].keys())
 
         # don't keep blocks that are not in incoming data
         for k in list(self.slot.blocks.keys()):

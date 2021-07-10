@@ -93,12 +93,12 @@ class Slots(object):
         return slot_stack
 
     def get_data(self, name, full=False):
-        blocks = {}
-        blocks_layout = []
-        hidden = []
-
-        _replaced = set()
-        _seen_blocks = {}
+        _blocks = {}            # the resulting blocks
+        _blocks_layout = []     # a tentative block_layout ordered list
+        _hidden = []            # list of block uids that are hidden
+        _seen_blocks = {}       # all blocks in this hierarchy
+        _replaced = set()       # original blocks that are overridden by variants. We
+        # don't want to include these in the final output
 
         stack = self.get_fills_stack(name)
 
@@ -112,50 +112,52 @@ class Slots(object):
                 block = deepcopy(block)
                 _seen_blocks[uid] = block
 
-                if not (uid in blocks or uid in _replaced):
+                if not (uid in _blocks or uid in _replaced):
                     other = block.get("s:isVariantOf") or block.get("s:sameAs")
                     if other:
                         _replaced.add(other)
 
                     if (not full) and block.get("v:hidden"):
-                        hidden.append(uid)
+                        _hidden.append(uid)
                         continue
 
-                    blocks[uid] = block
+                    _blocks[uid] = block
 
                     if level > 0:  # anything deeper than "top" level is inherited
                         block["_v_inherit"] = True
                         block["readOnly"] = True
 
             for uid in slot.blocks_layout["items"]:
-                if not (uid in blocks_layout or uid in _replaced):
-                    blocks_layout.append(uid)
+                if not (uid in _blocks_layout or uid in _replaced):
+                    _blocks_layout.append(uid)
 
             level += 1
 
             if getattr(slot, "block_parent", False) and not full:
                 break
 
-        for k, v in blocks.items():
+        for k, v in _blocks.items():
             if v.get("s:sameAs"):
                 v.update(self._resolve_block(v, _seen_blocks))
                 v["_v_inherit"] = True
                 v["readOnly"] = True  # TODO: should we set this here?
                 # v['_v_original'] = self._resolve_block(v, _seen_blocks)
 
-        for k, v in blocks.items():
+        for k, v in _blocks.items():
             if v.get("s:isVariantOf"):
                 # in the frontend, if we have a block that's hidden then we go and
                 # "unhide", we'll need the original data for best UX
+
+                # TODO: what do do when the inherited block has been deleted?
                 v["_v_original"] = deepcopy(_seen_blocks[v.get("s:isVariantOf")])
 
         return {
-            "blocks": blocks,
+            "blocks": _blocks,
             "blocks_layout": {
                 "items": [
                     b
-                    for b in blocks_layout
-                    if b in _seen_blocks.keys() and b not in hidden
+                    for b in _blocks_layout
+                    if b in _seen_blocks.keys() and b not in _hidden
                 ]
             },
         }
