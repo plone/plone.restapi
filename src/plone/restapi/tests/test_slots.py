@@ -448,31 +448,31 @@ class TestSlots(unittest.TestCase):
         s0 = [
             {"F": {"@type": "text", "text": "level 0"}},
             ["F"],
-        ]   # the original block
+        ]  # the original block
         s1 = [
             {
                 "D": {"@type": "text", "text": "local 2"},
                 "B": {"@type": "text", "text": "local 1"},
-                "E": {  # customizes the original
+                "F-E": {  # customizes the original
                     "@type": "text",
                     "s:isVariantOf": "F",
                     "text": "right customized",
                 },
             },
-            ["B", "E", "D"],
+            ["B", "F-E", "D"],
         ]
         s2 = [
             {
                 "A": {"@type": "text", "text": "local 3"},
-                "C": {  # customizes the customized version by hiding it
+                "F-E-C": {  # customizes the customized version by hiding it
                     "@type": "text",
                     "readOnly": True,
-                    "s:isVariantOf": "E",
+                    "s:isVariantOf": "F-E",
                     "text": "right customized",
                     "v:hidden": True,
                 },
             },
-            ["B", "A", "C", "D"],
+            ["B", "A", "F-E-C", "D"],
         ]
 
         root = self.make_content()
@@ -482,30 +482,46 @@ class TestSlots(unittest.TestCase):
 
         engine = Slots(root["documents"]["internal"])
         left = engine.get_data("left", full=True)
-        self.assertEqual(left.blocks,
-                         {'A': {'@type': 'text', 'text': 'local 3'},
-                          'B': {'@type': 'text',
-                                '_v_inherit': True,
-                                'readOnly': True,
-                                'text': 'local 1'},
-                             'C': {'@type': 'text',
-                                   '_v_original': {'@type': 'text',
-                                                   's:isVariantOf': 'F',
-                                                   'text': 'right customized'},
-                                   'readOnly': True,
-                                   's:isVariantOf': 'E',
-                                   'text': 'right customized',
-                                           'v:hidden': True},
-                          'D': {'@type': 'text',
-                                '_v_inherit': True,
-                                'readOnly': True,
-                                'text': 'local 2'},
-                          'F': {'@type': 'text',
-                                '_v_inherit': True,
-                                'readOnly': True,
-                                'text': 'level 0'}})
+        self.assertEqual(
+            left["blocks"],
+            {
+                "A": {"@type": "text", "text": "local 3"},
+                "B": {
+                    "@type": "text",
+                    "_v_inherit": True,
+                    "readOnly": True,
+                    "text": "local 1",
+                },
+                "F-E-C": {
+                    "@type": "text",
+                    "_v_original": {
+                        "@type": "text",
+                        "s:isVariantOf": "F",
+                        "text": "right customized",
+                    },
+                    "readOnly": True,
+                    "s:isVariantOf": "F-E",
+                    "text": "right customized",
+                    "v:hidden": True,
+                },
+                "D": {
+                    "@type": "text",
+                    "_v_inherit": True,
+                    "readOnly": True,
+                    "text": "local 2",
+                },
+                "F": {
+                    "@type": "text",
+                    "_v_inherit": True,
+                    "readOnly": True,
+                    "text": "level 0",
+                },
+            },
+        )
         # F should not be in layout, as it's "third-hand" inherited
-        self.assertEqual(left['blocks_layout'], {'items': ['B', 'A', 'C', 'D', 'F']})
+        self.assertEqual(
+            left["blocks_layout"], {"items": ["B", "A", "F-E-C", "D", "F"]}
+        )
 
     def test_save_slots(self):
         data = {
