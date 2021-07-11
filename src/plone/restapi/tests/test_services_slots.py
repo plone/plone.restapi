@@ -70,6 +70,7 @@ class TestServicesSlots(unittest.TestCase):
         storage[u"left"].blocks_layout = {"items": [u"3", u"2"]}
 
     def test_slots_endpoint(self):
+        # generic /@slots endpoint call
         response = self.api_session.get("/@slots")
         self.assertEqual(response.status_code, 200)
         slots = response.json()
@@ -107,11 +108,13 @@ class TestServicesSlots(unittest.TestCase):
             },
         )
 
-    def test_slot_endpoint(self):
+    def test_slot_endpoint_missing(self):
+        # @slot endpoint call on an slot name that's not found in the hierarchy
         response = self.api_session.get("/@slots/unregistered")
         self.assertEqual(response.status_code, 404)
 
     def test_slot_endpoint_on_root(self):
+        # @slot/<name> endpoint call to retrieve a specific slot
         response = self.api_session.get("/@slots/left")
         self.assertEqual(response.status_code, 200)
 
@@ -133,10 +136,13 @@ class TestServicesSlots(unittest.TestCase):
         )
 
     def test_deserializer_on_slot(self):
+        # Plone site can host slots
         response = self.api_session.patch("/@slots/left", json={})
         self.assertEqual(response.status_code, 204)
 
     def test_deserializer_on_slot_with_data_and_missing_slots(self):
+        # slot engine cleans up blocks with missing definition (not inherited, not
+        # defined at current level)
         response = self.api_session.patch(
             "/@slots/left",
             json={
@@ -158,6 +164,7 @@ class TestServicesSlots(unittest.TestCase):
         self.assertEqual(storage["left"].blocks_layout, {"items": [u"1"]})
 
     def test_slots_endpoint_hide(self):
+        # engine can omit some blocks from response if the inherited blocks are "hidden"
 
         storage = ISlotStorage(self.doc)
         storage[u"left"].blocks = {u"2": {"s:isVariantOf": u"1", "v:hidden": True}}
@@ -227,6 +234,7 @@ class TestServicesSlots(unittest.TestCase):
         )
 
     def test_slots_endpoint_hide_full(self):
+        # slots engine will include the hidden blocks if passed with full=true
 
         storage = ISlotStorage(self.doc)
         storage[u"left"].blocks = {u"2": {"s:isVariantOf": u"1", "v:hidden": True}}
