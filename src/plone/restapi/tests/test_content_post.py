@@ -232,5 +232,8 @@ class TestFolderCreate(unittest.TestCase):
                 "UID": "a9597fcb108c4985a713329311bdcca0",
             },
         )
-        self.assertEqual(201, response.status_code)
-        self.assertNotEqual(response.json()["UID"], "a9597fcb108c4985a713329311bdcca0")
+        self.assertEqual(403, response.status_code)
+        self.assertEqual(
+            response.json()["error"]["message"],
+            "Setting UID of an object requires Manage Portal permission",
+        )

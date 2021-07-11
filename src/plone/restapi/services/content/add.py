@@ -44,6 +44,13 @@ class FolderPost(Service):
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
+        sm = getSecurityManager()
+        # ManagePortal is required to set the uid of an object during creation
+        if uid and not sm.checkPermission(ManagePortal, self.context):
+            self.request.response.setStatus(403)
+            msg = "Setting UID of an object requires Manage Portal permission"
+            return dict(error=dict(type="Forbidden", message=msg))
+
         try:
             obj = create(self.context, type_, id_=id_, title=title)
         except Unauthorized as exc:
@@ -77,9 +84,7 @@ class FolderPost(Service):
         if temporarily_wrapped:
             obj = aq_base(obj)
 
-        # ManagePortal is required to set the uid of an object during creation
-        sm = getSecurityManager()
-        if uid and sm.checkPermission(ManagePortal, self.context):
+        if uid:
             setattr(obj, "_plone.uuid", uid)
 
         if not getattr(deserializer, "notifies_create", False):
