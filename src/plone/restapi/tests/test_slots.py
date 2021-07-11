@@ -444,6 +444,8 @@ class TestSlots(unittest.TestCase):
             },
         )
 
+    maxDiff = None
+
     def test_get_data_multiple_inherit(self):
         s0 = [
             {"F": {"@type": "text", "text": "level 0"}},
@@ -482,6 +484,7 @@ class TestSlots(unittest.TestCase):
 
         engine = Slots(root["documents"]["internal"])
         left = engine.get_data("left", full=True)
+
         self.assertEqual(
             left["blocks"],
             {
@@ -510,17 +513,11 @@ class TestSlots(unittest.TestCase):
                     "readOnly": True,
                     "text": "local 2",
                 },
-                "F": {
-                    "@type": "text",
-                    "_v_inherit": True,
-                    "readOnly": True,
-                    "text": "level 0",
-                },
             },
         )
         # F should not be in layout, as it's "third-hand" inherited
         self.assertEqual(
-            left["blocks_layout"], {"items": ["B", "A", "F-E-C", "D", "F"]}
+            left["blocks_layout"], {"items": ["B", "A", "F-E-C", "D"]}
         )
 
     def test_save_slots(self):
