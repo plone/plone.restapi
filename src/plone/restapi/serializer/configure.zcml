@@ -11,6 +11,7 @@
 
     <configure zcml:condition="installed plone.app.contenttypes">
         <adapter factory=".collection.SerializeCollectionToJson" />
+        <adapter factory=".dxfields.TextLineFieldSerializer" />
     </configure>
 
     <adapter factory=".summary.DefaultJSONSummarySerializer" />
@@ -24,7 +25,6 @@
     <adapter factory=".dxfields.RichttextFieldSerializer" />
     <adapter factory=".dxfields.DefaultPrimaryFieldTarget" />
     <adapter factory=".dxfields.PrimaryFileFieldTarget" />
-    <adapter factory=".dxfields.TextLineFieldSerializer" />
 
     <adapter factory=".blocks.BlocksJSONFieldSerializer" />
     <subscriber factory=".blocks.TextBlockSerializer"
