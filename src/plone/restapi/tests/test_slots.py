@@ -444,6 +444,69 @@ class TestSlots(unittest.TestCase):
             },
         )
 
+    def test_get_data_multiple_inherit(self):
+        s0 = [
+            {"F": {"@type": "text", "text": "level 0"}},
+            ["F"],
+        ]   # the original block
+        s1 = [
+            {
+                "D": {"@type": "text", "text": "local 2"},
+                "B": {"@type": "text", "text": "local 1"},
+                "E": {  # customizes the original
+                    "@type": "text",
+                    "s:isVariantOf": "F",
+                    "text": "right customized",
+                },
+            },
+            ["B", "E", "D"],
+        ]
+        s2 = [
+            {
+                "A": {"@type": "text", "text": "local 3"},
+                "C": {  # customizes the customized version by hiding it
+                    "@type": "text",
+                    "readOnly": True,
+                    "s:isVariantOf": "E",
+                    "text": "right customized",
+                    "v:hidden": True,
+                },
+            },
+            ["B", "A", "C", "D"],
+        ]
+
+        root = self.make_content()
+        root.slots["left"] = DummySlot.from_data(*s0)
+        root["documents"].slots["left"] = DummySlot.from_data(*s1)
+        root["documents"]["internal"].slots["left"] = DummySlot.from_data(*s2)
+
+        engine = Slots(root["documents"]["internal"])
+        left = engine.get_data("left", full=True)
+        self.assertEqual(left.blocks,
+                         {'A': {'@type': 'text', 'text': 'local 3'},
+                          'B': {'@type': 'text',
+                                '_v_inherit': True,
+                                'readOnly': True,
+                                'text': 'local 1'},
+                             'C': {'@type': 'text',
+                                   '_v_original': {'@type': 'text',
+                                                   's:isVariantOf': 'F',
+                                                   'text': 'right customized'},
+                                   'readOnly': True,
+                                   's:isVariantOf': 'E',
+                                   'text': 'right customized',
+                                           'v:hidden': True},
+                          'D': {'@type': 'text',
+                                '_v_inherit': True,
+                                'readOnly': True,
+                                'text': 'local 2'},
+                          'F': {'@type': 'text',
+                                '_v_inherit': True,
+                                'readOnly': True,
+                                'text': 'level 0'}})
+        # F should not be in layout, as it's "third-hand" inherited
+        self.assertEqual(left['blocks_layout'], {'items': ['B', 'A', 'C', 'D', 'F']})
+
     def test_save_slots(self):
         data = {
             "blocks_layout": {"items": [3, 2, 5]},
@@ -550,6 +613,7 @@ class TestSlotsEngineIntegration(PloneTestCase):
         self.assertEqual(left, ["left"])
 
     def test_editable_slots_as_member(self):
+        # simple member cannot edit slots
         self.login("simple_member")
 
         engine = ISlots(self.doc)
@@ -570,6 +634,7 @@ class TestSlotsEngineIntegration(PloneTestCase):
         self.assertEqual(engine.get_editable_slots(), [])
 
     def test_editable_slots_as_editor(self):
+        # a user with "Modify portal content" can edit "content" slots
         self.login("editor_member")
 
         engine = ISlots(self.doc)
