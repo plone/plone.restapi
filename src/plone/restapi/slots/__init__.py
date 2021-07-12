@@ -98,6 +98,7 @@ class Slots(object):
         _hidden = []  # list of block uids that are hidden
         _seen_blocks = {}  # all blocks in this hierarchy
         _replaced = set()  # original blocks that are overridden by variants. We
+        _inherited = set()  # block uids that are inherited
         # don't want to include these in the final output
 
         __to_include_originals = []  # these blocks need to reference their original
@@ -125,8 +126,7 @@ class Slots(object):
                         continue
 
                     if level > 0:  # anything deeper than "top" level is inherited
-                        block["_v_inherit"] = True
-                        block["readOnly"] = True
+                        _inherited.add(uid)
 
                     if uid not in _replaced:
                         _blocks[uid] = block
@@ -140,6 +140,11 @@ class Slots(object):
                 break
 
         for k, v in _blocks.items():
+
+            if k in _inherited:
+                v["_v_inherit"] = True
+                v["readOnly"] = True
+
             if v.get("s:sameAs"):
                 v.update(self._resolve_block(v, _seen_blocks))
                 v["_v_inherit"] = True
@@ -148,11 +153,14 @@ class Slots(object):
 
         # in the frontend, if we have a block that's hidden then we go and
         # "unhide", we'll need the original data for best UX
-        # TODO: what do do when the inherited block has been deleted?
+
         for v in __to_include_originals:
             # original = deepcopy(_seen_blocks[v.get("s:isVariantOf")])
-            original = _seen_blocks[v.get("s:isVariantOf")]
-            v["_v_original"] = original
+            original = _seen_blocks.get(v.get("s:isVariantOf"), None)
+
+            # TODO: what do do when the inherited block has been deleted?
+            if original is not None:
+                v["_v_original"] = original
 
         return {
             "blocks": _blocks,
@@ -166,10 +174,13 @@ class Slots(object):
         }
 
     def _resolve_block(self, block, blocks):
-        sameAs = block.get("s:sameAs")
+        sameAsUID = block.get("s:sameAs")
 
-        if sameAs:
-            return self._resolve_block(blocks[sameAs], blocks)
+        if sameAsUID:
+            if sameAsUID in blocks:
+                return self._resolve_block(blocks[sameAsUID], blocks)
+            else:
+                return None
 
         return block
 

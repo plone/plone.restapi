@@ -505,14 +505,10 @@ class TestSlots(unittest.TestCase):
                     "@type": "text",
                     "_v_original": {
                         "@type": "text",
-                        "_v_inherit": True,
                         "_v_original": {
                             "@type": "text",
-                            "_v_inherit": True,
-                            "readOnly": True,
                             "text": "level 0",
                         },
-                        "readOnly": True,
                         "s:isVariantOf": "F",
                         "text": "right customized",
                     },
