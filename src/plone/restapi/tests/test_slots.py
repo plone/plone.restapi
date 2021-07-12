@@ -495,10 +495,24 @@ class TestSlots(unittest.TestCase):
                     "readOnly": True,
                     "text": "local 1",
                 },
+                "D": {
+                    "@type": "text",
+                    "_v_inherit": True,
+                    "readOnly": True,
+                    "text": "local 2",
+                },
                 "F-E-C": {
                     "@type": "text",
                     "_v_original": {
                         "@type": "text",
+                        "_v_inherit": True,
+                        "_v_original": {
+                            "@type": "text",
+                            "_v_inherit": True,
+                            "readOnly": True,
+                            "text": "level 0",
+                        },
+                        "readOnly": True,
                         "s:isVariantOf": "F",
                         "text": "right customized",
                     },
@@ -507,18 +521,10 @@ class TestSlots(unittest.TestCase):
                     "text": "right customized",
                     "v:hidden": True,
                 },
-                "D": {
-                    "@type": "text",
-                    "_v_inherit": True,
-                    "readOnly": True,
-                    "text": "local 2",
-                },
             },
         )
         # F should not be in layout, as it's "third-hand" inherited
-        self.assertEqual(
-            left["blocks_layout"], {"items": ["B", "A", "F-E-C", "D"]}
-        )
+        self.assertEqual(left["blocks_layout"], {"items": ["B", "A", "F-E-C", "D"]})
 
     def test_save_slots(self):
         data = {

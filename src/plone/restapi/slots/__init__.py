@@ -100,9 +100,11 @@ class Slots(object):
         _replaced = set()  # original blocks that are overridden by variants. We
         # don't want to include these in the final output
 
-        __to_include_originals = []       # these blocks need to reference their original
+        __to_include_originals = []  # these blocks need to reference their original
 
         stack = self.get_fills_stack(name)
+
+        # TODO: I think the block data gets overridden when it's an inherited block
 
         for level, slot in enumerate(stack):
             if slot is None:
@@ -148,7 +150,9 @@ class Slots(object):
         # "unhide", we'll need the original data for best UX
         # TODO: what do do when the inherited block has been deleted?
         for v in __to_include_originals:
-            v["_v_original"] = deepcopy(_seen_blocks[v.get("s:isVariantOf")])
+            # original = deepcopy(_seen_blocks[v.get("s:isVariantOf")])
+            original = _seen_blocks[v.get("s:isVariantOf")]
+            v["_v_original"] = original
 
         return {
             "blocks": _blocks,
