@@ -31,6 +31,8 @@ The 'Content-Type' header indicates that the body uses the 'application/json' fo
 The request body contains the minimal necessary information needed to create a document (the type and the title).
 You could set other properties, like "description" here as well.
 
+A special property during content creation is "UID", as it requires the user to have the *Manage Portal* permission to set it. Without the permission, the request will fail as Unauthorized.
+
 
 Successful Response (201 Created)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
