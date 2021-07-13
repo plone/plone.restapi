@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.6.0 (2021-07-13)
+------------------
+
+New features:
+
+
+- Set UID of a content during creation if the user has Manage Portal permission.
+  [ericof] (#497)
+
+
 8.5.0 (2021-07-09)
 ------------------
 
