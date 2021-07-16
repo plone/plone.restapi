@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.6.1 (2021-07-16)
+------------------
+
+Bug fixes:
+
+
+- Wrong deserialization if the path does not exist but is matched via acquisition
+  [sneridagh] (#1176)
+
+
 8.6.0 (2021-07-13)
 ------------------
 
