@@ -382,3 +382,38 @@ class TestBlocksDeserializer(unittest.TestCase):
         value = res.blocks["abc"]["value"]
         link = value[0]["children"][1]["data"]["url"]
         self.assertTrue(link.startswith("../resolveuid/"))
+
+    def test_aquisition_messing_with_link_deserializer(self):
+        self.portal.invokeFactory(
+            "Folder",
+            id="aktuelles",
+        )
+        self.portal["aktuelles"].invokeFactory(
+            "Document",
+            id="meldungen",
+        )
+        self.portal.invokeFactory(
+            "Folder",
+            id="institut",
+        )
+
+        wrong_uid = IUUID(self.portal["aktuelles"]["meldungen"])
+
+        self.deserialize(
+            blocks={
+                "123": {
+                    "@type": "foo",
+                    "href": [
+                        {
+                            # Pointing to a not created yet object, but matches because acquisition
+                            # with another existing parent content with alike-ish path structure
+                            "@id": f"{self.portal.absolute_url()}/institut/aktuelles/meldungen"
+                        }
+                    ],
+                }
+            }
+        )
+        self.assertNotEqual(
+            self.portal.doc1.blocks["123"]["href"][0]["@id"],
+            f"../resolveuid/{wrong_uid}",
+        )

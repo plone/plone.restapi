@@ -52,7 +52,8 @@ def path2uid(context, link):
             portal_path=portal_path, path=path.lstrip("/")
         )
     obj = portal.unrestrictedTraverse(path, None)
-    if obj is None or obj == portal:
+    # check if there's obj or it's wrong because of acquisition or if it's portal
+    if obj is None or "/".join(obj.getPhysicalPath()) != path or obj == portal:
         return link
     segments = path.split("/")
     suffix = ""
