@@ -52,14 +52,16 @@ def path2uid(context, link):
             portal_path=portal_path, path=path.lstrip("/")
         )
     obj = portal.unrestrictedTraverse(path, None)
-    # check if there's obj or it's wrong because of acquisition or if it's portal
-    if obj is None or "/".join(obj.getPhysicalPath()) != path or obj == portal:
+    if obj is None or obj == portal:
         return link
     segments = path.split("/")
     suffix = ""
     while not IUUIDAware.providedBy(obj):
         obj = aq_parent(obj)
         suffix += "/" + segments.pop()
+    # check if obj is wrong because of acquisition
+    if "/".join(obj.getPhysicalPath()) != "/".join(segments):
+        return link
     href = relative_up * "../" + "resolveuid/" + IUUID(obj)
     if suffix:
         href += suffix
