@@ -10,6 +10,7 @@ from plone.restapi.testing import RelativeSession
 import transaction
 import unittest
 
+
 try:
     from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
 except ImportError:
@@ -164,3 +165,48 @@ class TestServicesNavigation(unittest.TestCase):
             "/folder/@navigation", params={"expand.navigation.depth": 2}
         )
         self.assertIsNone(response.json()["items"][1]["items"][3]["review_state"])
+
+    def test_navigation_sorting(self):
+        createContentInContainer(
+            self.portal,
+            u"File",
+            id=u"example-file",
+            title=u"Example file",
+        )
+        createContentInContainer(
+            self.folder,
+            u"File",
+            id=u"example-file-1",
+            title=u"Example file 1",
+        )
+        transaction.commit()
+        response = self.api_session.get(
+            "/folder/@navigation", params={"expand.navigation.depth": 2}
+        ).json()
+
+        contents = response["items"][1]["items"]
+        self.assertEqual(
+            [p["@id"].replace(self.portal.absolute_url(), "") for p in contents],
+            [
+                "/folder/subfolder1",
+                "/folder/subfolder2",
+                "/folder/doc1",
+                "/folder/example-file-1",
+            ],
+        )
+
+        self.portal["folder"].moveObjectsUp(["example-file-1"])
+        transaction.commit()
+        response = self.api_session.get(
+            "/folder/@navigation", params={"expand.navigation.depth": 2}
+        ).json()
+        contents = response["items"][1]["items"]
+        self.assertEqual(
+            [p["@id"].replace(self.portal.absolute_url(), "") for p in contents],
+            [
+                "/folder/subfolder1",
+                "/folder/subfolder2",
+                "/folder/example-file-1",
+                "/folder/doc1",
+            ],
+        )
