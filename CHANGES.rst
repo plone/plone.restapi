@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+7.3.8 (2021-07-17)
+------------------
+
+Bug fixes:
+
+
+- Fix navigation endpoint sort by adding default `sort_on='getObjPositionInParent'` to the query.  @valipod @tiberiuichim (#1107)
+- Fix startup on Plone 4 without plone.app.contenttypes.
+  [maurits] (#1166)
+
 
 7.3.7 (2021-05-26)
 ------------------
