@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.7.0 (2021-07-19)
+------------------
+
+New features:
+
+
+- Improve extensibility story for resolveUID field serializer/deserializer
+  [sneridagh] (#1179)
+
+
 8.6.1 (2021-07-16)
 ------------------
 
