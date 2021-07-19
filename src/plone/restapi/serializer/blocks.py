@@ -110,6 +110,7 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
 class ResolveUIDSerializerBase:
     order = 1
     block_type = None
+    smart_fields = ["url", "href"]
     disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
@@ -117,7 +118,7 @@ class ResolveUIDSerializerBase:
         self.request = request
 
     def __call__(self, value):
-        for field in ["url", "href"]:
+        for field in self.smart_fields:
             if field in value.keys():
                 link = value.get(field, "")
                 if isinstance(link, str):
