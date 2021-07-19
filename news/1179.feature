@@ -1,2 +1,2 @@
-Improve extensibility story in smart field serializer/deserializer
+Improve extensibility story for resolveUID field serializer/deserializer
 [sneridagh]
