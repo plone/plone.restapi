@@ -136,7 +136,7 @@ class ResolveUIDDeserializerBase:
 
     order = 1
     block_type = None
-    smart_fields = ["url", "href"]
+    fields = ["url", "href"]
     disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
@@ -145,7 +145,7 @@ class ResolveUIDDeserializerBase:
 
     def __call__(self, block):
         # Convert absolute links to resolveuid
-        for field in self.smart_fields:
+        for field in self.fields:
             link = block.get(field, "")
             if link and isinstance(link, str):
                 block[field] = path2uid(context=self.context, link=link)
