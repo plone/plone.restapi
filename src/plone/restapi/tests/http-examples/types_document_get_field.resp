@@ -2,7 +2,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "behavior": "plone.dexterity.schema.generated.plone_5_1626959789_2_0922327_0_Document", 
+  "behavior": "plone.dexterity.schema.generated.plone_5_1626964991_2_229126_0_Document", 
   "description": "Email of the author", 
   "factory": "Email", 
   "title": "Author email", 

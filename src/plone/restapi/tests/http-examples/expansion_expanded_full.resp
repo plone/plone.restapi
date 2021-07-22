@@ -119,6 +119,9 @@ Content-Type: application/json
     "contextnavigation": {
       "@id": "http://localhost:55001/plone/front-page/@contextnavigation"
     }, 
+    "lock": {
+      "@id": "http://localhost:55001/plone/front-page/@lock"
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/front-page/@navigation", 
       "items": [

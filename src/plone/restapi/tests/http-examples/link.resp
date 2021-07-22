@@ -12,6 +12,9 @@ Content-Type: application/json
     "contextnavigation": {
       "@id": "http://localhost:55001/plone/link/@contextnavigation"
     }, 
+    "lock": {
+      "@id": "http://localhost:55001/plone/link/@lock"
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/link/@navigation"
     }, 
