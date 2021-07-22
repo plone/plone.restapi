@@ -1466,15 +1466,14 @@ class TestDocumentation(TestDocumentationBase):
     def test_locking_unlock(self):
         url = f"{self.document.absolute_url()}/@lock"
         response = self.api_session.post(url)
-        url = f"{self.document.absolute_url()}/@unlock"
-        response = self.api_session.post(url)
+        url = f"{self.document.absolute_url()}/@lock"
+        response = self.api_session.delete(url)
         save_request_and_response_for_docs("unlock", response)
 
     def test_locking_refresh_lock(self):
         url = f"{self.document.absolute_url()}/@lock"
         response = self.api_session.post(url)
-        url = f"{self.document.absolute_url()}/@refresh-lock"
-        response = self.api_session.post(url)
+        response = self.api_session.patch(url)
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',

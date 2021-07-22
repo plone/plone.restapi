@@ -1,17 +1,42 @@
 <configure
-    xmlns="http://namespaces.zope.org/zope"
-    xmlns:plone="http://namespaces.plone.org/plone"
-    xmlns:zcml="http://namespaces.zope.org/zcml"
-    >
+  xmlns="http://namespaces.zope.org/zope"
+  xmlns:plone="http://namespaces.plone.org/plone"
+  xmlns:zcml="http://namespaces.zope.org/zcml"
+  >
+
+  <plone:service
+      method="GET"
+      factory=".get.Lock"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@lock"
+      />
 
   <plone:service
       method="POST"
-      factory=".locking.Lock"
+      factory=".add.Lock"
       for="Products.CMFCore.interfaces.IContentish"
       permission="cmf.ModifyPortalContent"
       name="@lock"
       />
 
+  <plone:service
+      method="PATCH"
+      factory=".update.Lock"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="cmf.ModifyPortalContent"
+      name="@lock"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".delete.Lock"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="cmf.ModifyPortalContent"
+      name="@lock"
+      />
+
+  <!-- DEPRECATED -->
   <plone:service
       method="POST"
       factory=".locking.Unlock"
@@ -26,14 +51,6 @@
       for="Products.CMFCore.interfaces.IContentish"
       permission="cmf.ModifyPortalContent"
       name="@refresh-lock"
-      />
-
-  <plone:service
-      method="GET"
-      factory=".locking.LockInfo"
-      for="Products.CMFCore.interfaces.IContentish"
-      permission="zope2.View"
-      name="@lock"
       />
 
 </configure>
