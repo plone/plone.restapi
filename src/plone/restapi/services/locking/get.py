@@ -18,14 +18,12 @@ class Locking:
         if not expand:
             return result
 
-        result["lock"].update(
-            lock_info(self.context)
-        )
+        result["lock"].update(lock_info(self.context))
         return result
 
 
 class Lock(Service):
-    """ Lock information about the current lock """
+    """Lock information about the current lock"""
 
     def reply(self):
         locking = Locking(self.context, self.request)
