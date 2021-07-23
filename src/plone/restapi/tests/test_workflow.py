@@ -121,6 +121,7 @@ class TestWorkflowInfo(TestCase):
         self.assertEqual(obj["history"], [])
         self.assertEqual(obj["state"], {"id": "", "title": ""})
 
+
 class TestWorkflowTransition(TestCase):
 
     layer = PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
