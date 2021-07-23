@@ -32,4 +32,4 @@ jobs:
 
       # run pyroma
       - name: run pyroma
-        run: bin/pyroma -n 10 -d .
+        run: pyroma -n 10 -d .
