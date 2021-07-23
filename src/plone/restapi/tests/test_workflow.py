@@ -107,6 +107,19 @@ class TestWorkflowInfo(TestCase):
         self.assertEqual(obj["transitions"], [])
         self.assertEqual(obj["history"], [])
 
+    def test_workflow_info_empty_on_content_without_workflow(self):
+        file_content = self.portal[
+            self.portal.invokeFactory("File", id="file", title="File")
+        ]
+
+        wfinfo = getMultiAdapter(
+            (file_content, self.request), name="GET_application_json_@workflow"
+        )
+        obj = wfinfo.reply()
+
+        self.assertEqual(obj["transitions"], [])
+        self.assertEqual(obj["history"], [])
+        self.assertEqual(obj["state"], {"id": "", "title": ""})
 
 class TestWorkflowTransition(TestCase):
 
