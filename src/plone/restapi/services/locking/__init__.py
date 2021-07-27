@@ -1,6 +1,22 @@
 """ Locking
 """
+from plone import api
+from datetime import datetime
 from plone.locking.interfaces import ILockable
+
+
+def creator_name(username):
+    user = api.user.get(username=username)
+    return user.getProperty("fullname") or username
+
+
+def creator_url(username):
+    url = api.portal.get().absolute_url()
+    return f"{url}/author/{username}"
+
+
+def creation_date(timestamp):
+    return datetime.fromtimestamp(timestamp).isoformat()
 
 
 def lock_info(obj):
@@ -10,8 +26,13 @@ def lock_info(obj):
         info = {"locked": lockable.locked(), "stealable": lockable.stealable()}
         lock_info = lockable.lock_info()
         if len(lock_info) > 0:
-            info["creator"] = lock_info[0]["creator"]
-            info["time"] = lock_info[0]["time"]
+            creator = lock_info[0]["creator"]
+            info["creator"] = creator
+            info["creator_name"] = creator_name(creator)
+            info["creator_url"] = creator_url(creator)
+            created = lock_info[0]["time"]
+            info["time"] = created
+            info["created"] = creation_date(created)
             info["token"] = lock_info[0]["token"]
             lock_type = lock_info[0]["type"]
             if lock_type:
@@ -20,6 +41,7 @@ def lock_info(obj):
             if lock_item:
                 info["timeout"] = lock_item.getTimeout()
         return info
+    return {}
 
 
 def webdav_lock(obj):
