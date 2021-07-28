@@ -42,4 +42,11 @@
       name="slots"
       />
 
+  <adapter
+      factory=".traversing.RestSlotsTraversing"
+      provides="zope.traversing.interfaces.ITraversable"
+      for="plone.rest.traverse.RESTWrapper zope.publisher.interfaces.IRequest"
+      name="slots"
+      />
+
 </configure>
