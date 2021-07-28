@@ -49,4 +49,11 @@
       name="slots"
       />
 
+  <adapter
+    name="slots"
+    for="* zope.publisher.interfaces.IRequest"
+    provides="zope.traversing.interfaces.ITraversable"
+    factory=".traversing.SlotsTraversing"
+    />
+
 </configure>

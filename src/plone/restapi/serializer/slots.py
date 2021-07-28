@@ -18,7 +18,7 @@ from zope.schema import getFields
 import copy
 
 
-SERVICE_ID = "@slots"
+TRAVERSER = "++slots++"
 
 _MISSING = object()
 
@@ -71,7 +71,7 @@ class SlotSerializer(object):
             blocks[id] = json_compatible(block_value)
 
         result = {
-            "@id": "{0}/{1}/{2}".format(self.context.absolute_url(), SERVICE_ID, name),
+            "@id": "{0}/{1}{2}".format(self.context.absolute_url(), TRAVERSER, name),
             "blocks": blocks,
             "blocks_layout": data["blocks_layout"],
         }
@@ -93,7 +93,7 @@ class SlotsSerializer(object):
 
     def __call__(self, full=False):
         base_url = self.context.absolute_url()
-        result = {"@id": "{}/{}".format(base_url, SERVICE_ID), "items": {}}
+        result = {"@id": "{}/{}".format(base_url, TRAVERSER), "items": {}}
 
         engine = ISlots(self.context)
         slot_names = engine.discover_slots()

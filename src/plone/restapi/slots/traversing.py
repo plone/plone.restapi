@@ -1,11 +1,46 @@
+from . import Slot
+from .interfaces import ISlotStorage
 from plone.rest.traverse import RESTWrapper
 from plone.restapi.slots.interfaces import ISlots
 from zExceptions import NotFound
 from zope.traversing.namespace import SimpleHandler
 
 
+def get_slot(context, name):
+    slots = ISlots(context)
+
+    if name not in slots:
+        raise NotFound
+
+    storage = ISlotStorage(context)
+    slot = storage.get(name, None)
+    if not slot:
+        slot = Slot()
+
+    slot = slot.__of__(context)
+
+    return slot
+
+
+class SlotsTraversing(SimpleHandler):
+    ''' REST attachment traversing '''
+
+    name = None
+
+    def __init__(self, context, request=None):
+        self.context = context
+        self.request = request
+
+    def traverse(self, name, remaining):
+        ''' traverse '''
+
+        slot = get_slot(self.context, name)
+        wrapper = RESTWrapper(slot, self.request)
+        return wrapper
+
+
 class RestSlotsTraversing(SimpleHandler):
-    ''' rest attachment traversing '''
+    ''' REST slots traversing '''
 
     name = None
 
@@ -15,12 +50,7 @@ class RestSlotsTraversing(SimpleHandler):
     def traverse(self, name, remaining):
         ''' traverse '''
 
-        slots = ISlots(self.context.context)
-
-        if name not in slots:
-            raise NotFound
-
         # self.context is a RESTWrapper
-        storage = slots.__of__(self.context.context)
+        slot = get_slot(self.context.context)
 
-        return RESTWrapper(storage[name], self.context.request)
+        return RESTWrapper(slot, self.context.request)
