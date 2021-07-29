@@ -47,7 +47,7 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         self.assertEqual(
             res,
             {
-                "@id": "http://nohost/plone/@slots/left",
+                "@id": "http://nohost/plone/++slot++left",
                 "blocks": {},
                 "blocks_layout": {"items": []},
             },
@@ -72,7 +72,7 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         self.assertEqual(
             res,
             {
-                "@id": "http://nohost/plone/@slots/left",
+                "@id": "http://nohost/plone/++slot++left",
                 "blocks_layout": {"items": [1, 2, 3]},
                 "blocks": {1: {}, 2: {}, 3: {}},
             },
@@ -99,7 +99,7 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         self.assertEqual(
             res,
             {
-                "@id": "http://nohost/plone/documents/company-a/doc-1/@slots/left",
+                "@id": "http://nohost/plone/documents/company-a/doc-1/++slot++left",
                 "blocks": {
                     1: {u"_v_inherit": True, "readOnly": True},
                     2: {u"_v_inherit": True, "readOnly": True},
@@ -132,7 +132,7 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         self.assertEqual(
             res,
             {
-                "@id": "http://nohost/plone/documents/company-a/doc-1/@slots/left",
+                "@id": "http://nohost/plone/documents/company-a/doc-1/++slot++left",
                 "blocks": {
                     2: {
                         "_v_original": {"title": "First"},
@@ -169,7 +169,7 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         self.assertEqual(
             res,
             {
-                "@id": "http://nohost/plone/documents/company-a/doc-1/@slots/left",
+                "@id": "http://nohost/plone/documents/company-a/doc-1/++slot++left",
                 "blocks": {
                     2: {
                         u"s:isVariantOf": 1,
@@ -223,7 +223,7 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
                 "@id": "http://nohost/plone/documents/company-a/doc-1/@slots",
                 "items": {
                     u"left": {
-                        "@id": "http://nohost/plone/documents/company-a/doc-1/@slots/left",
+                        "@id": "http://nohost/plone/documents/company-a/doc-1/++slot++left",
                         "blocks": {
                             2: {
                                 u"s:isVariantOf": 1,
@@ -244,7 +244,7 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
                         "blocks_layout": {"items": [3, 2, 5]},
                     },
                     u"right": {
-                        "@id": "http://nohost/plone/documents/company-a/doc-1/@slots/right",
+                        "@id": "http://nohost/plone/documents/company-a/doc-1/++slot++right",
                         "blocks": {
                             6: {
                                 u"title": u"First",
