@@ -23,7 +23,7 @@ def get_slot(context, name):
 
 
 class SlotsTraversing(SimpleHandler):
-    ''' REST attachment traversing '''
+    """ REST attachment traversing """
 
     name = None
 
@@ -32,7 +32,7 @@ class SlotsTraversing(SimpleHandler):
         self.request = request
 
     def traverse(self, name, remaining):
-        ''' traverse '''
+        """ traverse """
 
         slot = get_slot(self.context, name)
         wrapper = RESTWrapper(slot, self.request)
@@ -40,7 +40,7 @@ class SlotsTraversing(SimpleHandler):
 
 
 class RestSlotsTraversing(SimpleHandler):
-    ''' REST slots traversing '''
+    """ REST slots traversing """
 
     name = None
 
@@ -48,7 +48,7 @@ class RestSlotsTraversing(SimpleHandler):
         self.context = context
 
     def traverse(self, name, remaining):
-        ''' traverse '''
+        """ traverse """
 
         # self.context is a RESTWrapper
         slot = get_slot(self.context.context)

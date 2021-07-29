@@ -49,16 +49,16 @@ class Slot(Persistent, Contained, Implicit, Traversable):
             setattr(self, k, v)
 
     def getPhysicalPath(self):
-        """ Return physical path
+        """Return physical path
 
         Override, to be able to provide a fake name for the physical path
         """
-        path = super(Slot, self).getPhysicalPath()[:-1]     # last bit is RestWrapper
+        path = super(Slot, self).getPhysicalPath()[:-1]  # last bit is RestWrapper
 
-        res = tuple([''] + [bit for bit in path[1:] if bit])
-        path = () + res[:-1] + ('++slots++' + path[-1],)
+        res = tuple([""] + [bit for bit in path[1:] if bit])
+        path = () + res[:-1] + ("++slots++" + path[-1],)
 
-        print('path', path)
+        print("path", path)
         return path
 
 
