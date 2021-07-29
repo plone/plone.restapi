@@ -8,6 +8,46 @@ Changelog
 
 .. towncrier release notes start
 
+8.7.0 (2021-07-19)
+------------------
+
+New features:
+
+
+- Improve extensibility story for resolveUID field serializer/deserializer
+  [sneridagh] (#1179)
+
+
+8.6.1 (2021-07-16)
+------------------
+
+Bug fixes:
+
+
+- Wrong deserialization if the path does not exist but is matched via acquisition
+  [sneridagh] (#1176)
+
+
+8.6.0 (2021-07-13)
+------------------
+
+New features:
+
+
+- Set UID of a content during creation if the user has Manage Portal permission.
+  [ericof] (#497)
+
+
+8.5.0 (2021-07-09)
+------------------
+
+New features:
+
+
+- Remove Python 2, Plone 4.3, and 5.1 code.
+  [ericof] (#1140)
+
+
 8.4.2 (2021-07-08)
 ------------------
 

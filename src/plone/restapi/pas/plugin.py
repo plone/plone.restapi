@@ -18,7 +18,6 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 import jwt
-import six
 import time
 
 
@@ -119,8 +118,6 @@ class JWTAuthenticationPlugin(BasePlugin):
             return
 
         userid = payload["sub"]
-        if six.PY2:
-            userid = userid.encode("utf8")
 
         if self.store_tokens:
             if userid not in self._tokens:

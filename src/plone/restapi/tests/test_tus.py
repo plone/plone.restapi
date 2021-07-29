@@ -1,5 +1,6 @@
 from base64 import b64encode
 from DateTime import DateTime
+from io import BytesIO
 from OFS.interfaces import IObjectWillBeAddedEvent
 from plone import api
 from plone.app.testing import login
@@ -10,7 +11,6 @@ from plone.rest.interfaces import ICORSPolicy
 from plone.restapi.services.content.tus import TUSUpload
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from six import BytesIO
 from zope.component import getGlobalSiteManager
 from zope.component import provideAdapter
 from zope.interface import Interface

@@ -8,7 +8,6 @@ from zope.interface import alsoProvides
 from zope.security import checkPermission
 
 import plone
-import six
 
 
 class BaseCopyMove(Service):
@@ -27,12 +26,8 @@ class BaseCopyMove(Service):
         if key.startswith(self.portal_url):
             # Resolve by URL
             key = key[len(self.portal_url) + 1 :]
-            if six.PY2:
-                key = key.encode("utf8")
             return self.portal.restrictedTraverse(key, None)
         elif key.startswith("/"):
-            if six.PY2:
-                key = key.encode("utf8")
             # Resolve by path
             return self.portal.restrictedTraverse(key.lstrip("/"), None)
         else:

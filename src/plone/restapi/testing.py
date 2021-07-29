@@ -1,7 +1,5 @@
 # pylint: disable=E1002
 # E1002: Use of super on an old style class
-
-from plone import api
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
 from plone.app.i18n.locales.interfaces import IMetadataLanguages
@@ -25,8 +23,8 @@ from plone.testing.layer import Layer
 from plone.uuid.interfaces import IUUIDGenerator
 from Products.CMFCore.utils import getToolByName
 from requests.exceptions import ConnectionError
-from six.moves.urllib.parse import urljoin
-from six.moves.urllib.parse import urlparse
+from urllib.parse import urljoin
+from urllib.parse import urlparse
 from zope.component import getGlobalSiteManager
 from zope.component import getUtility
 from zope.configuration import xmlconfig
@@ -34,20 +32,9 @@ from zope.interface import implementer
 
 import collective.MockMailHost
 import os
-import pkg_resources
 import re
 import requests
 import time
-
-
-PLONE_VERSION = pkg_resources.parse_version(api.env.plone_version())
-
-
-try:
-    pkg_resources.get_distribution("plone.app.multilingual")
-    PAM_INSTALLED = True
-except pkg_resources.DistributionNotFound:
-    PAM_INSTALLED = False
 
 
 ENABLED_LANGUAGES = ["de", "en", "es", "fr"]

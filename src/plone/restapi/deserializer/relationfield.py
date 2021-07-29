@@ -10,8 +10,6 @@ from zope.interface import implementer
 from zope.intid.interfaces import IIntIds
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-import six
-
 
 @implementer(IFieldDeserializer)
 @adapter(IRelationChoice, IDexterityContent, IBrowserRequest)
@@ -30,8 +28,6 @@ class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
             obj = intids.queryObject(value)
             resolved_by = "intid"
         elif isinstance(value, str):
-            if six.PY2 and isinstance(value, str):
-                value = value.encode("utf8")
             portal = getMultiAdapter(
                 (self.context, self.request), name="plone_portal_state"
             ).portal()

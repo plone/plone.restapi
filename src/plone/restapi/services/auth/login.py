@@ -8,7 +8,6 @@ from zope.interface import alsoProvides
 from zope import component
 
 import plone.protect.interfaces
-import six
 
 
 class Login(Service):
@@ -31,9 +30,6 @@ class Login(Service):
 
         userid = data["login"]
         password = data["password"]
-        if six.PY2:
-            userid = userid.encode("utf8")
-            password = password.encode("utf8")
         uf = self._find_userfolder(userid)
 
         if uf is not None:

@@ -59,6 +59,9 @@ def path2uid(context, link):
     while not IUUIDAware.providedBy(obj):
         obj = aq_parent(obj)
         suffix += "/" + segments.pop()
+    # check if obj is wrong because of acquisition
+    if "/".join(obj.getPhysicalPath()) != "/".join(segments):
+        return link
     href = relative_up * "../" + "resolveuid/" + IUUID(obj)
     if suffix:
         href += suffix
@@ -133,6 +136,7 @@ class ResolveUIDDeserializerBase:
 
     order = 1
     block_type = None
+    fields = ["url", "href"]
     disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
@@ -141,7 +145,7 @@ class ResolveUIDDeserializerBase:
 
     def __call__(self, block):
         # Convert absolute links to resolveuid
-        for field in ["url", "href"]:
+        for field in self.fields:
             link = block.get(field, "")
             if link and isinstance(link, str):
                 block[field] = path2uid(context=self.context, link=link)

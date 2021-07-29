@@ -3,8 +3,6 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces.siteroot import IPloneSiteRoot
 from zExceptions import BadRequest
 
-import six
-
 
 class OrderingMixin:
     def handle_ordering(self, data):
@@ -40,16 +38,6 @@ class OrderingMixin:
             position_id.sort()
             if subset_ids != [i for position, i in position_id]:
                 raise BadRequest("Client/server ordering mismatch")
-
-        # Make sure we use bytestring ids for PY2.
-        if six.PY2:
-            if isinstance(obj_id, str):
-                obj_id = obj_id.encode("utf-8")
-            if subset_ids:
-                subset_ids = [
-                    id_.encode("utf-8") if isinstance(id_, str) else id_
-                    for id_ in subset_ids
-                ]
 
         # All movement is relative to the subset of ids, if passed in.
         if delta == "top":

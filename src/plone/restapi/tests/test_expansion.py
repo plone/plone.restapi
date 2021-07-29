@@ -1,3 +1,5 @@
+from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
+from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -6,7 +8,6 @@ from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.expansion import expandable_elements
-from plone.restapi.testing import PAM_INSTALLED
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -19,17 +20,6 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 
 import transaction
 import unittest
-
-try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE5 = False
-else:
-    PLONE5 = True
-
-if PAM_INSTALLED:
-    from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled  # noqa
-    from plone.app.multilingual.interfaces import ITranslationManager
 
 
 class ExpandableElementFoo:
@@ -152,9 +142,6 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("navigation", list(response.json().get("@components")))
 
-    @unittest.skipIf(
-        not PLONE5, "Just Plone 5 currently, tabs in plone 4 does not have review_state"
-    )
     def test_navigation_expanded(self):
         response = self.api_session.get("/folder", params={"expand": "navigation"})
 
@@ -346,9 +333,6 @@ class TestExpansionFunctional(unittest.TestCase):
         )
 
 
-@unittest.skipUnless(
-    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
-)  # NOQA
 class TestTranslationExpansionFunctional(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING

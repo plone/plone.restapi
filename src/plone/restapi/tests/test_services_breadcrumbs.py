@@ -1,3 +1,5 @@
+from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
+from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -7,16 +9,11 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.interface import alsoProvides
-from plone.restapi.testing import PAM_INSTALLED
 from plone.app.testing import login
 
 
 import transaction
 import unittest
-
-if PAM_INSTALLED:
-    from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled  # noqa
-    from plone.app.multilingual.interfaces import ITranslationManager
 
 
 class TestServicesBreadcrumbs(unittest.TestCase):
@@ -65,9 +62,6 @@ class TestServicesBreadcrumbs(unittest.TestCase):
         )
 
 
-@unittest.skipUnless(
-    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
-)  # NOQA
 class TestServicesMultilingualBreadcrumbs(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING

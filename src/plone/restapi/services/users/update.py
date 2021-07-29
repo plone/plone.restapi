@@ -1,9 +1,11 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
+from io import BytesIO
 from OFS.Image import Image
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.CMFPlone.utils import set_own_login_name
 from Products.PlonePAS.tools.membership import default_portrait
 from Products.PlonePAS.utils import scale_image
@@ -16,13 +18,6 @@ from zope.publisher.interfaces import IPublishTraverse
 import codecs
 import json
 import plone
-import six
-
-
-try:  # pragma: no cover
-    from Products.CMFPlone.interfaces import ISecuritySchema
-except ImportError:  # pragma: no cover
-    from plone.app.controlpanel.security import ISecuritySchema
 
 
 @implementer(IPublishTraverse)
@@ -174,7 +169,7 @@ class UsersPatch(Service):
         if portrait.get("scale", False):
             # Only scale if the scale (default Plone behavior) boolean is set
             # This should be handled by the core in the future
-            scaled, mimetype = scale_image(six.BytesIO(data))
+            scaled, mimetype = scale_image(BytesIO(data))
         else:
             # Normally, the scale and cropping is going to be handled in the
             # frontend

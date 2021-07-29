@@ -13,14 +13,6 @@ import transaction
 import unittest
 
 
-try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE5 = False
-else:
-    PLONE5 = True
-
-
 class TestServicesNavigation(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -64,44 +56,6 @@ class TestServicesNavigation(unittest.TestCase):
 
     def tearDown(self):
         self.api_session.close()
-
-    @unittest.skipIf(
-        not PLONE5,
-        "Just Plone 5 currently, tabs in plone 4 does not have review_state",
-    )
-    def test_navigation_with_no_params_gets_only_top_level(self):
-        response = self.api_session.get("/folder/@navigation")
-
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(
-            response.json(),
-            {
-                "@id": self.portal_url + "/folder/@navigation",
-                "items": [
-                    {
-                        "@id": self.portal_url,
-                        "description": "",
-                        "items": [],
-                        "review_state": None,
-                        "title": "Home",
-                    },
-                    {
-                        "@id": self.portal_url + "/folder",
-                        "description": "",
-                        "items": [],
-                        "review_state": "private",
-                        "title": "Some Folder",
-                    },
-                    {
-                        "@id": self.portal_url + "/folder2",
-                        "description": "",
-                        "items": [],
-                        "review_state": "private",
-                        "title": "Some Folder 2",
-                    },
-                ],
-            },
-        )
 
     def test_navigation_service(self):
         response = self.api_session.get(
