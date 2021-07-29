@@ -58,7 +58,6 @@ class Slot(Persistent, Contained, Implicit, Traversable):
         res = tuple([""] + [bit for bit in path[1:] if bit])
         path = () + res[:-1] + ("++slots++" + path[-1],)
 
-        print("path", path)
         return path
 
 
