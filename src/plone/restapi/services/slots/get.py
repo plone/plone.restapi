@@ -3,6 +3,7 @@
 from AccessControl.SecurityManagement import getSecurityManager
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.permissions import ModifySlotsPermission
+from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.services import Service
 from plone.restapi.slots import Slot
 from plone.restapi.slots.interfaces import ISlots
@@ -70,6 +71,10 @@ class SlotsGet(Service):
 
         for k, v in result["items"].items():
             result["items"][k]["edit"] = k in self.editable_slots
+
+        # support expandable elements for slots. For DX Content this is done in the
+        # serializer, we do it here to keep the API limited
+        result.update(expandable_elements(self.context, self.request))
 
         return result
 
