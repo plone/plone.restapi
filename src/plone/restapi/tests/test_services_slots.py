@@ -85,7 +85,7 @@ class TestServicesSlots(unittest.TestCase):
                 u"can_manage_slots": True,
                 u"items": {
                     u"left": {
-                        u"@id": url(u"http://localhost:55001/plone/@slots/left"),
+                        u"@id": url(u"http://localhost:55001/plone/++slot++left"),
                         u"blocks": {
                             u"1": {u"title": u"First"},
                             u"3": {u"title": u"Third"},
@@ -95,7 +95,7 @@ class TestServicesSlots(unittest.TestCase):
                         u"edit": True,
                     },
                     u"right": {
-                        u"@id": url(u"http://localhost:55001/plone/@slots/right"),
+                        u"@id": url(u"http://localhost:55001/plone/++slot++right"),
                         u"blocks": {
                             u"6": {u"title": u"First"},
                             u"7": {u"title": u"Third"},
@@ -124,7 +124,7 @@ class TestServicesSlots(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                u"@id": url(u"http://localhost:55001/plone/@slots/left"),
+                u"@id": url(u"http://localhost:55001/plone/++slot++left"),
                 u"edit": True,
                 u"blocks": {
                     u"1": {u"title": u"First"},
@@ -185,7 +185,7 @@ class TestServicesSlots(unittest.TestCase):
                 u"items": {
                     u"left": {
                         u"@id": url(
-                            u"http://localhost:55001/plone/folder1/doc11/@slots/left"
+                            u"http://localhost:55001/plone/folder1/doc11/++slot++left"
                         ),
                         u"blocks": {
                             # 1 is hidden because it's overridden by 2, which is hidden
@@ -207,7 +207,7 @@ class TestServicesSlots(unittest.TestCase):
                     },
                     u"right": {
                         u"@id": url(
-                            u"http://localhost:55001/plone/folder1/doc11/@slots/right"
+                            u"http://localhost:55001/plone/folder1/doc11/++slot++right"
                         ),
                         u"blocks": {
                             u"6": {
@@ -256,7 +256,7 @@ class TestServicesSlots(unittest.TestCase):
                 u"items": {
                     u"left": {
                         u"@id": url(
-                            u"http://localhost:55001/plone/folder1/doc11/@slots/left"
+                            u"http://localhost:55001/plone/folder1/doc11/++slot++left"
                         ),
                         u"blocks": {
                             u"2": {
@@ -280,7 +280,7 @@ class TestServicesSlots(unittest.TestCase):
                     },
                     u"right": {
                         u"@id": url(
-                            u"http://localhost:55001/plone/folder1/doc11/@slots/right"
+                            u"http://localhost:55001/plone/folder1/doc11/++slot++right"
                         ),
                         u"blocks": {
                             u"6": {

@@ -6,6 +6,7 @@ from .interfaces import ISlotStorage
 from AccessControl.SecurityManagement import getSecurityManager
 from Acquisition import Implicit
 from copy import deepcopy
+from OFS.Traversable import Traversable
 from persistent import Persistent
 from plone.registry.interfaces import IRegistry
 from plone.restapi.permissions import ModifySlotsPermission
@@ -35,7 +36,7 @@ SlotsStorage = factory(PersistentSlots, SLOTS_KEY)
 
 
 @implementer(ISlot)
-class Slot(Persistent, Contained, Implicit):
+class Slot(Persistent, Contained, Implicit, Traversable):
     """A container for data pertaining to a single slot"""
 
     def __init__(self, **data):
@@ -46,6 +47,18 @@ class Slot(Persistent, Contained, Implicit):
 
         for k, v in data.items():
             setattr(self, k, v)
+
+    def getPhysicalPath(self):
+        """Return physical path
+
+        Override, to be able to provide a fake name for the physical path
+        """
+        path = super(Slot, self).getPhysicalPath()[:-1]  # last bit is RestWrapper
+
+        res = tuple([""] + [bit for bit in path[1:] if bit])
+        path = () + res[:-1] + ("++slots++" + path[-1],)
+
+        return path
 
 
 @implementer(ISlots)
@@ -71,6 +84,12 @@ class Slots(object):
                 break
 
         return names
+
+    def keys(self):
+        return self.discover_slots()
+
+    def __contains__(self, name):
+        return name in self.keys()
 
     def get_fills_stack(self, name):
         slot_stack = []
