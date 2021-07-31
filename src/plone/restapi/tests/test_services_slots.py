@@ -78,6 +78,8 @@ class TestServicesSlots(unittest.TestCase):
         def url(s):
             return s.replace("http://localhost:55001/plone", self.portal.absolute_url())
 
+        self.assertTrue('@components' in slots)
+        del slots['@components']
         self.assertEqual(
             slots,
             {
@@ -177,6 +179,10 @@ class TestServicesSlots(unittest.TestCase):
             return s.replace("http://localhost:55001/plone", self.portal.absolute_url())
 
         slots = response.json()
+
+        self.assertTrue('@components' in slots)
+        del slots['@components']
+
         self.assertEqual(
             slots,
             {
@@ -247,6 +253,9 @@ class TestServicesSlots(unittest.TestCase):
 
         def url(s):
             return s.replace("http://localhost:55001/plone", self.portal.absolute_url())
+
+        self.assertTrue('@components' in slots)
+        del slots['@components']
 
         self.assertEqual(
             slots,
