@@ -108,7 +108,8 @@ class WorkflowTransition(Service):
             if obj.EffectiveDate() == "None":
                 obj.setEffectiveDate(DateTime())
                 obj.reindexObject()
-
+            if not self.wftool.getWorkflowsFor(obj):
+                continue
             self.wftool.doActionFor(obj, self.transition, comment=comment)
             if include_children and IFolderish.providedBy(obj):
                 self.recurse_transition(
