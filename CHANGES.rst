@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.7.1 (2021-08-03)
+------------------
+
+Bug fixes:
+
+
+- Do not break @workflow endpoint for contents without workflow [cekk] (#1184)
+- Do not break @workflow endpoint when trying to change the state of a content without workflow [cekk] (#1190)
+
+
 8.7.0 (2021-07-19)
 ------------------
 
