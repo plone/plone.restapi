@@ -63,6 +63,16 @@ The server responds with status :term:`200 OK` and returns the lock information.
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/unlock.resp
    :language: http
 
+To unlock an object locked by another user send a force DELETE request to the ``/@lock`` endpoint.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/unlock_force.req
+
+The server responds with status :term:`200 OK` and returns the lock information.
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/unlock_force.resp
+   :language: http
+
 
 Refreshing a lock
 -----------------

@@ -1470,6 +1470,13 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.delete(url)
         save_request_and_response_for_docs("unlock", response)
 
+    def test_locking_unlock_force(self):
+        url = f"{self.document.absolute_url()}/@lock"
+        response = self.api_session.post(url)
+        url = f"{self.document.absolute_url()}/@lock"
+        response = self.api_session.delete(url, json={"force": True})
+        save_request_and_response_for_docs("unlock_force", response)
+
     def test_locking_refresh_lock(self):
         url = f"{self.document.absolute_url()}/@lock"
         response = self.api_session.post(url)
