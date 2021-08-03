@@ -13,7 +13,10 @@ class Lock(Service):
     """Unlock an object"""
 
     def reply(self):
-        lockable = ILockable(self.context)
+        lockable = ILockable(self.context, None)
+        if lockable is None:
+            return lock_info(self.context)
+
         data = json_body(self.request)
 
         # Remove lock by the same user or steal it
