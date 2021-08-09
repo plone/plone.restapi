@@ -1,26 +1,15 @@
-from datetime import date
+# -*- coding: utf-8 -*-
 from datetime import datetime
-from datetime import timedelta
-from decimal import Decimal
-from plone import namedfile
-from plone.app.dexterity.behaviors.metadata import IPublication
-from plone.app.textfield.value import RichTextValue
-from plone.dexterity.utils import iterSchemata
-from plone.restapi.interfaces import IFieldDeserializer
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from plone.restapi.tests.dxtypes import IDXTestDocumentSchema
-from pytz import timezone
-from zope.component import getMultiAdapter
-from zope.schema import Field
-from zope.schema._bootstrapinterfaces import RequiredMissing
-from zope.schema.interfaces import ConstraintNotSatisfied
-from zope.schema.interfaces import ValidationError
-from transaction import commit
-from plone.registry.interfaces import IRegistry
-from zope.component import getUtility
 from DateTime import DateTime
-from z3c.form.interfaces import IDataManager
+from plone.app.dexterity.behaviors.metadata import IPublication
+from plone.registry.interfaces import IRegistry
+from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.interfaces import IFieldSerializer
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from transaction import commit
+from z3c.form.interfaces import IDataManager
+from zope.component import getMultiAdapter
+from zope.component import getUtility
 
 import unittest
 import os
