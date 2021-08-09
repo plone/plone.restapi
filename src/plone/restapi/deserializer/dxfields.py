@@ -1,6 +1,8 @@
 from datetime import timedelta
 from decimal import Decimal
 from plone.app.contenttypes.interfaces import ILink
+from plone.app.dexterity.behaviors.metadata import IPublication
+from plone.app.event.base import default_timezone
 from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
@@ -30,6 +32,7 @@ from zope.schema.interfaces import IVocabularyTokenized
 
 import codecs
 import dateutil
+
 import html as html_parser
 
 
@@ -97,12 +100,17 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
         # objects.
         # We try to guess the correct deserialization from the current field
         # value.
-        dm = queryMultiAdapter((self.context, self.field), IDataManager)
-        current = dm.get()
-        if current is not None:
-            tzinfo = current.tzinfo
+        is_publication_field = self.field.interface == IPublication
+        if is_publication_field:
+            # because IPublication datamanager strips timezones
+            tzinfo = timezone(default_timezone())
         else:
-            tzinfo = None
+            dm = queryMultiAdapter((self.context, self.field), IDataManager)
+            current = dm.get()
+            if current is not None:
+                tzinfo = current.tzinfo
+            else:
+                tzinfo = None
 
         # This happens when a 'null' is posted for a non-required field.
         if value is None:
@@ -127,6 +135,10 @@ class DatetimeFieldDeserializer(DefaultFieldDeserializer):
             value = tz.normalize(dt.astimezone(tz))
         else:
             value = utc.normalize(dt.astimezone(utc)).replace(tzinfo=None)
+
+        # if it's an IPublication field, remove timezone info to not break field validation
+        if is_publication_field:
+            value = value.replace(tzinfo=None)
 
         self.field.validate(value)
         return value
