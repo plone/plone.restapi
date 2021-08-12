@@ -160,7 +160,12 @@ class JWTAuthenticationPlugin(BasePlugin):
         if isinstance(token, str):
             token = token.encode("utf-8")
         try:
-            return jwt.decode(token, secret, verify=verify, algorithms=["HS256"])
+            return jwt.decode(
+                token,
+                secret,
+                options={"verify_signature": verify},
+                algorithms=["HS256"],
+            )
         except jwt.InvalidTokenError:
             pass
 
@@ -194,7 +199,6 @@ class JWTAuthenticationPlugin(BasePlugin):
         if data is not None:
             payload.update(data)
         token = jwt.encode(payload, self._signing_secret(), algorithm="HS256")
-        token = token.decode("utf-8")
         if self.store_tokens:
             if self._tokens is None:
                 self._tokens = OOBTree()

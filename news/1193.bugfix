@@ -1,0 +1,3 @@
+Fixes deprecated JWT `decode`usage.
+Uses and requires latest PyJWT 2.1.0 now. 
+[jensens] 

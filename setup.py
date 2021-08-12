@@ -55,6 +55,7 @@ setup(
         "Environment :: Web Environment",
         "Framework :: Plone",
         "Framework :: Plone :: 5.2",
+        "Framework :: Plone :: 6.0",
         "Framework :: Plone :: Core",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
@@ -62,6 +63,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3 :: Only",
         "Topic :: Software Development :: Libraries :: Python Modules",
     ],
@@ -82,7 +84,7 @@ setup(
         "plone.behavior>=1.1",  # adds name to behavior directive
         "plone.rest >= 1.0a6",  # json renderer moved to plone.restapi
         "plone.schema >= 1.2.1",  # new/fixed json field
-        "PyJWT",
+        "PyJWT>=2",
         "pytz",
     ],
     extras_require={"test": TEST_REQUIRES},
