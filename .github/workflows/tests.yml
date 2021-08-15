@@ -1,4 +1,4 @@
-name: Plone RESTAPI CI
+name: Tests
 on: [push]
 jobs:
   build:
