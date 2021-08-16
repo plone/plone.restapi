@@ -143,7 +143,7 @@ class TextLineFieldSerializer(DefaultFieldSerializer):
         value = self.get_value()
 
         # Expect that all internal links will have resolveuid
-        if "resolveuid" in value:
+        if value and "resolveuid" in value:
             return uid_to_url(value)
 
         # Fallback in case we still have a variable in there

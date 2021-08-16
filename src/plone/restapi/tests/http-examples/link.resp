@@ -1,38 +1,66 @@
-HTTP/1.1 500 Internal Server Error
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "message": "argument of type 'NoneType' is not iterable",
-  "traceback": [
-    "File \"/Users/sneridagh/Development/eggs/Zope-4.5.5-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 162, in transaction_pubevents",
-    "    yield",
-    "",
-    "  File \"/Users/sneridagh/Development/eggs/Zope-4.5.5-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 371, in publish_module",
-    "    response = _publish(request, new_mod_info)",
-    "",
-    "  File \"/Users/sneridagh/Development/eggs/Zope-4.5.5-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 266, in publish",
-    "    result = mapply(obj,",
-    "",
-    "  File \"/Users/sneridagh/Development/eggs/Zope-4.5.5-py3.8.egg/ZPublisher/mapply.py\", line 85, in mapply",
-    "    return debug(object, args, context)",
-    "",
-    "  File \"/Users/sneridagh/Development/eggs/Zope-4.5.5-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 63, in call_object",
-    "    return obj(*args)",
-    "",
-    "  File \"/Users/sneridagh/Development/eggs/plone.rest-1.6.2-py3.8.egg/plone/rest/service.py\", line 22, in __call__",
-    "    return self.render()",
-    "",
-    "  File \"/Users/sneridagh/Development/plone/plone.restapi/src/plone/restapi/services/__init__.py\", line 19, in render",
-    "    content = self.reply()",
-    "",
-    "  File \"/Users/sneridagh/Development/plone/plone.restapi/src/plone/restapi/services/content/get.py\", line 16, in reply",
-    "    return serializer(version=self.request.get(\"version\"))",
-    "",
-    "  File \"/Users/sneridagh/Development/plone/plone.restapi/src/plone/restapi/serializer/dxcontent.py\", line 98, in __call__",
-    "    value = serializer()",
-    "",
-    "  File \"/Users/sneridagh/Development/plone/plone.restapi/src/plone/restapi/serializer/dxfields.py\", line 145, in __call__",
-    "    if \"resolveuid\" in value:"
-  ],
-  "type": "TypeError"
+  "@components": {
+    "actions": {
+      "@id": "http://localhost:55001/plone/link/@actions"
+    }, 
+    "breadcrumbs": {
+      "@id": "http://localhost:55001/plone/link/@breadcrumbs"
+    }, 
+    "contextnavigation": {
+      "@id": "http://localhost:55001/plone/link/@contextnavigation"
+    }, 
+    "navigation": {
+      "@id": "http://localhost:55001/plone/link/@navigation"
+    }, 
+    "types": {
+      "@id": "http://localhost:55001/plone/link/@types"
+    }, 
+    "workflow": {
+      "@id": "http://localhost:55001/plone/link/@workflow"
+    }
+  }, 
+  "@id": "http://localhost:55001/plone/link", 
+  "@type": "Link", 
+  "UID": "SomeUUID000000000000000000000002", 
+  "allow_discussion": false, 
+  "changeNote": "", 
+  "contributors": [], 
+  "created": "1995-07-31T13:45:00", 
+  "creators": [
+    "test_user_1_"
+  ], 
+  "description": "This is a link", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "id": "link", 
+  "is_folderish": false, 
+  "language": "", 
+  "layout": "link_redirect_view", 
+  "modified": "1995-07-31T17:30:00", 
+  "next_item": {}, 
+  "parent": {
+    "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
+    "description": "", 
+    "title": "Plone site"
+  }, 
+  "previous_item": {
+    "@id": "http://localhost:55001/plone/front-page", 
+    "@type": "Document", 
+    "description": "Congratulations! You have successfully installed Plone.", 
+    "title": "Welcome to Plone"
+  }, 
+  "remoteUrl": "http://localhost:55001/plone", 
+  "review_state": "private", 
+  "rights": "", 
+  "subjects": [], 
+  "title": "My Link", 
+  "version": "current", 
+  "versioning_enabled": true, 
+  "working_copy": null, 
+  "working_copy_of": null
 }
