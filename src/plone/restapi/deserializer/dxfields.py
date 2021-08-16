@@ -24,6 +24,7 @@ from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
 from zope.schema.interfaces import IVocabularyTokenized
+from plone.restapi.deserializer.utils import path2uid
 
 import codecs
 import dateutil
@@ -78,10 +79,8 @@ class LinkTextLineFieldDeserializer(TextLineFieldDeserializer):
                 (self.context, self.context.REQUEST), name="plone_portal_state"
             ).portal()
             portal_url = portal.portal_url()
-            if value.startswith(portal_url):
-                value = "${{portal_url}}{path}".format(
-                    path=value.replace(portal_url, "")
-                )
+            if value.startswith(portal_url) or value.startswith("/"):
+                value = path2uid(context=self.context, link=value)
         return value
 
 

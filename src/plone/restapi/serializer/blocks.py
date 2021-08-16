@@ -1,53 +1,22 @@
 from copy import deepcopy
-from plone.outputfilters.browser.resolveuid import uuidToObject
-from plone.outputfilters.browser.resolveuid import uuidToURL
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.deserializer.blocks import SlateBlockTransformer
 from plone.restapi.deserializer.blocks import transform_links
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
-from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.schema import IJSONField
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
-from zope.component import queryMultiAdapter
 from zope.component import subscribers
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
+from plone.restapi.serializer.utils import uid_to_url
 
 import copy
 import os
-import re
-
-
-RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
-
-
-def uid_to_url(path):
-    if not path:
-        return ""
-    match = RESOLVEUID_RE.match(path)
-    if match is None:
-        return path
-
-    uid, suffix = match.groups()
-    href = uuidToURL(uid)
-    if href is None:
-        return path
-    if suffix:
-        href += "/" + suffix
-    else:
-        target_object = uuidToObject(uid)
-        if target_object:
-            adapter = queryMultiAdapter(
-                (target_object, target_object.REQUEST), IObjectPrimaryFieldTarget
-            )
-            if adapter and adapter():
-                href = adapter()
-    return href
 
 
 @adapter(IJSONField, IBlocks, Interface)

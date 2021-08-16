@@ -18,6 +18,7 @@ from unittest import TestCase
 from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
+from plone.uuid.interfaces import IUUID
 
 import os
 
@@ -332,11 +333,13 @@ class TestDexterityFieldSerializing(TestCase):
         dm.set("http://www.plone.com")
         self.assertEqual(serializer(), "http://www.plone.com")
 
-        dm.set("${portal_url}/doc1")
+        doc_uuid = IUUID(self.portal.doc1)
+
+        dm.set(f"../resolveuid/{doc_uuid}")
         self.assertEqual(serializer(), self.portal.doc1.absolute_url())
 
-        dm.set("${portal_url}/doc2")
-        self.assertEqual(serializer(), "/doc2")
+        dm.set("/doc1")
+        self.assertEqual(serializer(), "/doc1")
 
         dm.set("/doc2")
         self.assertEqual(serializer(), "/doc2")
