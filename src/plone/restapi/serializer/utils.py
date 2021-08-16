@@ -1,7 +1,8 @@
-from zope.component import queryMultiAdapter
-from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.outputfilters.browser.resolveuid import uuidToObject
 from plone.outputfilters.browser.resolveuid import uuidToURL
+from plone.restapi.interfaces import IObjectPrimaryFieldTarget
+from zope.component import queryMultiAdapter
+
 import re
 
 

@@ -4,6 +4,7 @@ from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedField
+from plone.restapi.deserializer.utils import path2uid
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.services.content.tus import TUSUpload
 from pytz import timezone
@@ -24,11 +25,9 @@ from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITime
 from zope.schema.interfaces import ITimedelta
 from zope.schema.interfaces import IVocabularyTokenized
-from plone.restapi.deserializer.utils import path2uid
 
 import codecs
 import dateutil
-
 import html as html_parser
 
 

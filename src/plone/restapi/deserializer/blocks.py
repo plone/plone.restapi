@@ -3,6 +3,7 @@ from copy import deepcopy
 from plone import api
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
+from plone.restapi.deserializer.utils import path2uid
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.schema import IJSONField
@@ -11,7 +12,6 @@ from zope.component import adapter
 from zope.component import subscribers
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
-from plone.restapi.deserializer.utils import path2uid
 
 import os
 

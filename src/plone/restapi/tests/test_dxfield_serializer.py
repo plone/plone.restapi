@@ -3,7 +3,6 @@ from datetime import datetime
 from datetime import time
 from datetime import timedelta
 from decimal import Decimal
-from unittest.mock import patch
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import iterSchemata
 from plone.namedfile.file import NamedBlobFile
@@ -14,11 +13,12 @@ from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.scale import storage
+from plone.uuid.interfaces import IUUID
 from unittest import TestCase
+from unittest.mock import patch
 from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
-from plone.uuid.interfaces import IUUID
 
 import os
 

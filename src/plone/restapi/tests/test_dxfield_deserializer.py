@@ -9,13 +9,13 @@ from plone.dexterity.utils import iterSchemata
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import IDXTestDocumentSchema
+from plone.uuid.interfaces import IUUID
 from pytz import timezone
 from zope.component import getMultiAdapter
 from zope.schema import Field
 from zope.schema._bootstrapinterfaces import RequiredMissing
 from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.schema.interfaces import ValidationError
-from plone.uuid.interfaces import IUUID
 
 import unittest
 

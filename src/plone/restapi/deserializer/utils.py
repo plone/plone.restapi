@@ -1,6 +1,6 @@
+from Acquisition import aq_parent
 from plone.uuid.interfaces import IUUID
 from plone.uuid.interfaces import IUUIDAware
-from Acquisition import aq_parent
 from zope.component import getMultiAdapter
 
 
