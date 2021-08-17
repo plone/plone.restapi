@@ -107,6 +107,20 @@ class TestWorkflowInfo(TestCase):
         self.assertEqual(obj["transitions"], [])
         self.assertEqual(obj["history"], [])
 
+    def test_workflow_info_empty_on_content_without_workflow(self):
+        file_content = self.portal[
+            self.portal.invokeFactory("File", id="file", title="File")
+        ]
+
+        wfinfo = getMultiAdapter(
+            (file_content, self.request), name="GET_application_json_@workflow"
+        )
+        obj = wfinfo.reply()
+
+        self.assertEqual(obj["transitions"], [])
+        self.assertEqual(obj["history"], [])
+        self.assertEqual(obj["state"], {"id": "", "title": ""})
+
 
 class TestWorkflowTransition(TestCase):
 
@@ -219,3 +233,17 @@ class TestWorkflowTransition(TestCase):
 
         self.assertEqual(200, self.request.response.getStatus(), res)
         self.assertEqual("restricted", res["review_state"], res)
+
+    def test_transition_including_children_without_wf(self):
+        folder = self.portal[self.portal.invokeFactory("Folder", id="folder")]
+        folder.invokeFactory("File", id="file", title="File")
+        document = folder[
+            folder.invokeFactory("Document", id="document", title="Document")
+        ]
+
+        self.request["BODY"] = '{"comment": "A comment", "include_children": true}'
+        service = self.traverse("/plone/folder/@workflow/publish")
+        service.reply()
+        self.assertEqual(200, self.request.response.getStatus())
+        self.assertEqual("published", self.wftool.getInfoFor(folder, "review_state"))
+        self.assertEqual("published", self.wftool.getInfoFor(document, "review_state"))

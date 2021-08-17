@@ -63,7 +63,10 @@ class WorkflowInfo:
                 title = title.decode("utf8")
             history[item]["title"] = self.context.translate(title)
 
-        current_state = wftool.getInfoFor(self.context, "review_state")
+        try:
+            current_state = wftool.getInfoFor(self.context, "review_state")
+        except WorkflowException:
+            current_state = ""
         current_state_title = wftool.getTitleForStateOnType(
             current_state,
             self.context.portal_type,
