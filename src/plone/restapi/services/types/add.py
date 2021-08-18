@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
@@ -18,7 +17,7 @@ class TypesPost(Service):
     """Creates a new field/fieldset"""
 
     def __init__(self, context, request):
-        super(TypesPost, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):

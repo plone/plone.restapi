@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import date
 from datetime import datetime
 from datetime import time
@@ -12,8 +11,6 @@ from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IContextawareJsonCompatible
 from plone.restapi.interfaces import IJsonCompatible
 from Products.CMFPlone.utils import safe_unicode
-from six.moves import map
-from six.moves import zip
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
@@ -24,7 +21,6 @@ from zope.interface import Interface
 
 import Missing
 import pytz
-import six
 
 
 # import re
@@ -78,12 +74,12 @@ def default_converter(value):
     if value is None:
         return value
 
-    if type(value) in (six.text_type, bool, int, float, int):
+    if type(value) in (str, bool, int, float, int):
         return value
 
     raise TypeError(
         "No converter for making"
-        " {0!r} ({1}) JSON compatible.".format(value, type(value))
+        " {!r} ({}) JSON compatible.".format(value, type(value))
     )
 
 
@@ -179,7 +175,7 @@ def timedelta_converter(value):
 
 @adapter(IRichTextValue, IDexterityContent)
 @implementer(IContextawareJsonCompatible)
-class RichtextDXContextConverter(object):
+class RichtextDXContextConverter:
     def __init__(self, value, context):
         self.value = value
         self.context = context
@@ -188,9 +184,9 @@ class RichtextDXContextConverter(object):
         value = self.value
         output = value.output_relative_to(self.context)
         return {
-            u"data": json_compatible(output),
-            u"content-type": json_compatible(value.mimeType),
-            u"encoding": json_compatible(value.encoding),
+            "data": json_compatible(output),
+            "content-type": json_compatible(value.mimeType),
+            "encoding": json_compatible(value.encoding),
         }
 
 
@@ -204,4 +200,4 @@ def i18n_message_converter(value):
 @adapter(Missing.Value.__class__)
 @implementer(IJsonCompatible)
 def missing_value_converter(value):
-    return None
+    pass

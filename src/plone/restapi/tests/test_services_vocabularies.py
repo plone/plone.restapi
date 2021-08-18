@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -13,21 +12,16 @@ from zope.schema.interfaces import IVocabularyFactory
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
-import six
 import transaction
 import unittest
 
 
-TEST_TERM_1 = SimpleTerm(42, token="token1", title=u"Title 1")
-TEST_TERM_2 = SimpleTerm(43, token="token2", title=u"Title 2")
+TEST_TERM_1 = SimpleTerm(42, token="token1", title="Title 1")
+TEST_TERM_2 = SimpleTerm(43, token="token2", title="Title 2")
 TEST_TERM_3 = SimpleTerm(44, token="token3")
 TEST_TERM_4 = UtilityTerm(45, "token4")
-if six.PY2:
-    TEST_TERM_5 = SimpleTerm(46, token="token5", title=u"T\xf6tle 5")
-    TEST_TERM_6 = SimpleTerm(47, token="token6", title="T\xc3\xb6tle 6")
-else:
-    TEST_TERM_5 = SimpleTerm(46, token="token5", title="Tötle 5")
-    TEST_TERM_6 = SimpleTerm(47, token="token6", title="Tötle 6")
+TEST_TERM_5 = SimpleTerm(46, token="token5", title="Tötle 5")
+TEST_TERM_6 = SimpleTerm(47, token="token6", title="Tötle 6")
 
 TEST_VOCABULARY = SimpleVocabulary(
     [TEST_TERM_1, TEST_TERM_2, TEST_TERM_3, TEST_TERM_4, TEST_TERM_5, TEST_TERM_6]
@@ -78,17 +72,17 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.portal_url
-                + u"/@vocabularies/plone.restapi.tests.test_vocabulary",  # noqa
-                u"items": [
-                    {u"title": u"Title 1", u"token": u"token1"},
-                    {u"title": u"Title 2", u"token": u"token2"},
-                    {u"title": u"token3", u"token": u"token3"},
-                    {u"title": u"token4", u"token": u"token4"},
-                    {u"title": u"T\xf6tle 5", u"token": u"token5"},
-                    {u"title": u"T\xf6tle 6", u"token": u"token6"},
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                    {"title": "Title 2", "token": "token2"},
+                    {"title": "token3", "token": "token3"},
+                    {"title": "token4", "token": "token4"},
+                    {"title": "T\xf6tle 5", "token": "token5"},
+                    {"title": "T\xf6tle 6", "token": "token6"},
                 ],
-                u"items_total": 6,
+                "items_total": 6,
             },
         )
 
@@ -102,20 +96,20 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.portal_url
-                + u"/@vocabularies/plone.restapi.tests.test_vocabulary",  # noqa
-                u"batching": {
-                    u"@id": self.portal_url
-                    + u"/@vocabularies/plone.restapi.tests.test_vocabulary?b_size=1",  # noqa
-                    u"first": self.portal_url
-                    + u"/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=0&b_size=1",  # noqa
-                    u"last": self.portal_url
-                    + u"/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=5&b_size=1",  # noqa
-                    u"next": self.portal_url
-                    + u"/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1",  # noqa
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary",  # noqa
+                "batching": {
+                    "@id": self.portal_url
+                    + "/@vocabularies/plone.restapi.tests.test_vocabulary?b_size=1",  # noqa
+                    "first": self.portal_url
+                    + "/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=0&b_size=1",  # noqa
+                    "last": self.portal_url
+                    + "/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=5&b_size=1",  # noqa
+                    "next": self.portal_url
+                    + "/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1",  # noqa
                 },
-                u"items": [{u"title": u"Title 1", u"token": u"token1"}],
-                u"items_total": 6,
+                "items": [{"title": "Title 1", "token": "token1"}],
+                "items_total": 6,
             },
         )
 
@@ -129,10 +123,10 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.portal_url
-                + u"/@vocabularies/plone.restapi.tests.test_vocabulary?title=2",  # noqa
-                u"items": [{u"title": u"Title 2", u"token": u"token2"}],
-                u"items_total": 1,
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?title=2",  # noqa
+                "items": [{"title": "Title 2", "token": "token2"}],
+                "items_total": 1,
             },
         )
 
@@ -146,13 +140,13 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.portal_url
-                + u"/@vocabularies/plone.restapi.tests.test_vocabulary?title=t%C3%B6tle",  # noqa
-                u"items": [
-                    {u"title": u"T\xf6tle 5", u"token": u"token5"},
-                    {u"title": u"T\xf6tle 6", u"token": u"token6"},
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?title=t%C3%B6tle",  # noqa
+                "items": [
+                    {"title": "T\xf6tle 5", "token": "token5"},
+                    {"title": "T\xf6tle 6", "token": "token6"},
                 ],
-                u"items_total": 2,
+                "items_total": 2,
             },
         )
 
@@ -166,10 +160,10 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.portal_url
-                + u"/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1",  # noqa
-                u"items": [{u"title": u"Title 1", u"token": u"token1"}],
-                u"items_total": 1,
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1",  # noqa
+                "items": [{"title": "Title 1", "token": "token1"}],
+                "items_total": 1,
             },
         )
 
@@ -183,10 +177,10 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.portal_url
-                + u"/@vocabularies/plone.restapi.tests.test_vocabulary?token=token",  # noqa
-                u"items": [],
-                u"items_total": 0,
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?token=token",  # noqa
+                "items": [],
+                "items_total": 0,
             },
         )
 
@@ -200,8 +194,8 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response.get("error"),
             {
-                u"message": u"You can not filter by title and token at the same time.",  # noqa
-                u"type": u"Invalid parameters",
+                "message": "You can not filter by title and token at the same time.",  # noqa
+                "type": "Invalid parameters",
             },
         )
 
@@ -215,10 +209,10 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"@id": self.portal_url
-                + u"/@vocabularies/plone.app.vocabularies.Weekdays?token=0",  # noqa
-                u"items": [{"title": "Monday", "token": "0"}],
-                u"items_total": 1,
+                "@id": self.portal_url
+                + "/@vocabularies/plone.app.vocabularies.Weekdays?token=0",  # noqa
+                "items": [{"title": "Monday", "token": "0"}],
+                "items_total": 1,
             },
         )
 
@@ -231,9 +225,9 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response,
             {
-                u"error": {
-                    u"type": u"Not Found",
-                    u"message": u"The vocabulary 'unknown.vocabulary' does not exist",
+                "error": {
+                    "type": "Not Found",
+                    "message": "The vocabulary 'unknown.vocabulary' does not exist",
                 }
             },
         )
@@ -249,9 +243,9 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             [
                 {
-                    u"@id": self.portal_url
-                    + u"/@vocabularies/plone.restapi.tests.test_vocabulary",  # noqa
-                    u"title": u"plone.restapi.tests.test_vocabulary",
+                    "@id": self.portal_url
+                    + "/@vocabularies/plone.restapi.tests.test_vocabulary",  # noqa
+                    "title": "plone.restapi.tests.test_vocabulary",
                 }
             ],
             [
@@ -263,7 +257,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
 
     def test_context_vocabulary(self):
         api.content.create(
-            container=self.portal, id="testdoc", type="Document", title=u"Document 1"
+            container=self.portal, id="testdoc", type="Document", title="Document 1"
         )
         transaction.commit()
 
@@ -274,9 +268,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
             name=context_vocab_name,
         )
 
-        response = self.api_session.get(
-            "testdoc/@vocabularies/{}".format(context_vocab_name)
-        )
+        response = self.api_session.get(f"testdoc/@vocabularies/{context_vocab_name}")
 
         gsm = getGlobalSiteManager()
         gsm.unregisterUtility(provided=IVocabularyFactory, name=context_vocab_name)
@@ -284,13 +276,13 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                u"@id": self.portal_url
-                + u"/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary",  # noqa
-                u"items": [
-                    {u"title": u"testdoc", u"token": u"id"},
-                    {u"title": u"Document 1", u"token": u"title"},
+                "@id": self.portal_url
+                + "/testdoc/@vocabularies/plone.restapi.tests.test_context_vocabulary",  # noqa
+                "items": [
+                    {"title": "testdoc", "token": "id"},
+                    {"title": "Document 1", "token": "title"},
                 ],
-                u"items_total": 2,
+                "items_total": 2,
             },
         )
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
 from plone.restapi.types.utils import delete_field
@@ -17,7 +16,7 @@ class TypesDelete(Service):
     """Deletes a field/fieldset from content type"""
 
     def __init__(self, context, request):
-        super(TypesDelete, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):

@@ -8,6 +8,205 @@ Changelog
 
 .. towncrier release notes start
 
+8.7.1 (2021-08-03)
+------------------
+
+Bug fixes:
+
+
+- Do not break @workflow endpoint for contents without workflow [cekk] (#1184)
+- Do not break @workflow endpoint when trying to change the state of a content without workflow [cekk] (#1190)
+
+
+8.7.0 (2021-07-19)
+------------------
+
+New features:
+
+
+- Improve extensibility story for resolveUID field serializer/deserializer
+  [sneridagh] (#1179)
+
+
+8.6.1 (2021-07-16)
+------------------
+
+Bug fixes:
+
+
+- Wrong deserialization if the path does not exist but is matched via acquisition
+  [sneridagh] (#1176)
+
+
+8.6.0 (2021-07-13)
+------------------
+
+New features:
+
+
+- Set UID of a content during creation if the user has Manage Portal permission.
+  [ericof] (#497)
+
+
+8.5.0 (2021-07-09)
+------------------
+
+New features:
+
+
+- Remove Python 2, Plone 4.3, and 5.1 code.
+  [ericof] (#1140)
+
+
+8.4.2 (2021-07-08)
+------------------
+
+Bug fixes:
+
+
+- In src run `find . -name "*.py"|xargs pyupgrade --py36-plus`.
+  Then run black and remove six import leftovers. 
+  [jensens] (#1162)
+- Fix link content serialization when url points to local content but it does not exist
+  [sneridagh] (#1167)
+- Fix navigation service not using nav_title metadata.
+  [ericof] (#1169)
+
+
+8.4.1 (2021-07-07)
+------------------
+
+Bug fixes:
+
+
+- Fix interpolation variable present in response after serialization
+  [sneridagh] (#1164)
+
+
+8.4.0 (2021-07-06)
+------------------
+
+New features:
+
+
+- Pass through field attribute 'widget' for field Dict [ksuess] (#1153)
+
+
+Bug fixes:
+
+
+- Use security decorators in PAS plugin. [jensens] (#1155)
+- Drop coding magic first line. Coding magic is no longer needed in Python 3, except if different from utf-8. [jensens] (#1156)
+- Fix PAS plugin ZMI markup for Zope4+. [jensens] (#1157)
+- Eliminate non-pythonic 'return None' usage. [jensens] (#1158)
+- Provide value_type of plone.schema / zope.schema Dict field [ksuess] (#1159)
+
+
+8.3.2 (2021-07-05)
+------------------
+
+Bug fixes:
+
+
+- Fix navigation endpoint sort by adding default `sort_on='getObjPositionInParent'` to the query.  @valipod @tiberiuichim (#1107)
+
+
+8.3.1 (2021-07-02)
+------------------
+
+Bug fixes:
+
+
+- Unify ZMI, HTML form, and API login. @rpatterson (#1141)
+
+
+8.3.0 (2021-06-07)
+------------------
+
+New features:
+
+
+- Add current state and translation to the @workflow endpoint
+  [sneridagh] (#1146)
+
+
+Bug fixes:
+
+
+- Remove code to support Python 2, Plone 4.3/5.0/5.1 [timo] (#1140)
+- Remove unecessary check for plone.app.iterate which breaks the @components attributes. [timo] (#1148)
+
+
+8.2.0 (2021-06-02)
+------------------
+
+New features:
+
+
+- Add working copy (p.a.iterate) support
+  [sneridagh] (#1132)
+
+
+8.1.0 (2021-05-27)
+------------------
+
+New features:
+
+
+- Add support for volto-slate blocks: use resolveuid for internal links, index slate blocks in the catalog, support block transforms. @tiberiuichim (#1125)
+
+
+Bug fixes:
+
+
+- Fixed a deprecation warning when importing UnrestrictedUser from AccessControl (#1129)
+
+
+
+Internal:
+
+- Format zcml files with collective.zpretty. Add zpretty Github workflow. @tiberiuichim
+
+
+8.0.0 (2021-05-14)
+------------------
+
+Breaking changes:
+
+
+- Drop support for Python 2 and Plone 5.1 and 4.3. Plone RESTAPI >= 8 supports Python 3 and Plone 5.2/6.x only. [timo] (#1121)
+
+
+7.3.5 (2021-05-03)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@workflow`` when executing user has no permissions to access ``review_history`` in target state.
+  [deiferni] (#999)
+
+
+7.3.4 (2021-04-30)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@history`` when full history is empty.
+  [deiferni] (#1113)
+
+
+7.3.3 (2021-04-29)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@querystring-search`` endpoint with correct sort_order
+  @mamico (#1108)
+
+
 7.3.2 (2021-04-07)
 ------------------
 

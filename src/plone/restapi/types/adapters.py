@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """JsonSchema providers."""
 from plone.app.textfield.interfaces import IRichText
 from plone.restapi.types.interfaces import IJsonSchemaProvider
@@ -42,7 +41,7 @@ from zope.schema.interfaces import ITuple
 
 @adapter(IField, Interface, Interface)
 @implementer(IJsonSchemaProvider)
-class DefaultJsonSchemaProvider(object):
+class DefaultJsonSchemaProvider:
     def __init__(self, field, context, request):
         self.field = field.bind(context)
         self.context = context
@@ -57,7 +56,7 @@ class DefaultJsonSchemaProvider(object):
 
     def get_description(self):
         if self.field.description is None:
-            return u""
+            return ""
 
         return translate(self.field.description, context=self.request)
 
@@ -94,10 +93,10 @@ class DefaultJsonSchemaProvider(object):
         raise NotImplementedError
 
     def get_factory(self):
-        return None
+        pass
 
     def get_widget(self):
-        return None
+        return getattr(self.field, "widget", None)
 
     def get_widget_params(self):
         all_params = get_widget_params([self.field.interface])
@@ -284,7 +283,7 @@ class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
     def additional(self):
-        info = super(ListJsonSchemaProvider, self).additional()
+        info = super().additional()
         if IChoice.providedBy(self.field.value_type):
             info["uniqueItems"] = True
         else:
@@ -297,7 +296,7 @@ class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class SetJsonSchemaProvider(CollectionJsonSchemaProvider):
     def additional(self):
-        info = super(SetJsonSchemaProvider, self).additional()
+        info = super().additional()
         info["uniqueItems"] = True
         return info
 
@@ -411,7 +410,7 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
         return get_jsonschema_properties(context, request, fieldsets, prefix)
 
     def additional(self):
-        info = super(ObjectJsonSchemaProvider, self).additional()
+        info = super().additional()
         info["properties"] = self.get_properties()
         return info
 
@@ -432,7 +431,7 @@ class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
             "additional": key_type.additional(),
         }
         value_type = getMultiAdapter(
-            (self.field.key_type, self.context, self.request), IJsonSchemaProvider
+            (self.field.value_type, self.context, self.request), IJsonSchemaProvider
         )
         info["value_type"] = {
             "schema": value_type.get_schema(),

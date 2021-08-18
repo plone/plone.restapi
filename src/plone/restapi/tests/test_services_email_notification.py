@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -13,17 +12,6 @@ import transaction
 import unittest
 
 
-try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE5 = False
-else:
-    PLONE5 = True
-
-
-@unittest.skipIf(
-    not PLONE5, "email notification not implemented for Plone < 5."
-)  # noqa
 class EmailNotificationEndpoint(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -38,7 +26,7 @@ class EmailNotificationEndpoint(unittest.TestCase):
 
         registry = getUtility(IRegistry)
         registry["plone.email_from_address"] = "info@plone.org"
-        registry["plone.email_from_name"] = u"Plone test site"
+        registry["plone.email_from_name"] = "Plone test site"
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({"Accept": "application/json"})

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
@@ -10,13 +9,13 @@ from zope.interface import implementer
 from zope.interface import Interface
 
 # fmt: off
-DEFAULT_METADATA_FIELDS = set([
+DEFAULT_METADATA_FIELDS = {
     '@id',
     '@type',
     'description',
     'review_state',
     'title',
-])
+}
 
 FIELD_ACCESSORS = {
     "@id": "getURL",
@@ -25,22 +24,22 @@ FIELD_ACCESSORS = {
     "title": "Title",
 }
 
-NON_METADATA_ATTRIBUTES = set([
+NON_METADATA_ATTRIBUTES = {
     "getPath",
     "getURL",
-])
+}
 
-BLACKLISTED_ATTRIBUTES = set([
+BLACKLISTED_ATTRIBUTES = {
     'getDataOrigin',
     'getObject',
     'getUserData',
-])
+}
 # fmt: on
 
 
 @implementer(ISerializeToJsonSummary)
 @adapter(Interface, Interface)
-class DefaultJSONSummarySerializer(object):
+class DefaultJSONSummarySerializer:
     """Default ISerializeToJsonSummary adapter.
 
     Requires context to be adaptable to IContentListingObject, which is
@@ -88,7 +87,7 @@ class DefaultJSONSummarySerializer(object):
 
 @implementer(ISerializeToJsonSummary)
 @adapter(IPloneSiteRoot, Interface)
-class SiteRootJSONSummarySerializer(object):
+class SiteRootJSONSummarySerializer:
     """ISerializeToJsonSummary adapter for the Plone Site root."""
 
     def __init__(self, context, request):

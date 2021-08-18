@@ -65,7 +65,9 @@ Content-Type: application/json
       "text": null, 
       "title": "Lorem Ipsum", 
       "version": "current", 
-      "versioning_enabled": true
+      "versioning_enabled": true, 
+      "working_copy": null, 
+      "working_copy_of": null
     }
   ], 
   "items_total": 1

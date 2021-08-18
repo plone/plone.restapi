@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -21,7 +20,7 @@ import zope.schema
 
 
 class ISampleTile(Interface):
-    title = zope.schema.TextLine(title=u"Title", required=False)
+    title = zope.schema.TextLine(title="Title", required=False)
 
 
 class SampleTile(Tile):
@@ -52,22 +51,22 @@ class TestServicesTiles(unittest.TestCase):
         fti.behaviors = tuple(behavior_list)
 
         self.doc = createContentInContainer(
-            self.portal, u"Document", id=u"doc", title=u"A document"
+            self.portal, "Document", id="doc", title="A document"
         )
         transaction.commit()
 
         sampleTileType = TileType(
-            u"sample.tile",
-            u"Sample tile",
+            "sample.tile",
+            "Sample tile",
             "cmf.ModifyPortalContent",
             "zope.Public",
-            description=u"A tile used for testing",
+            description="A tile used for testing",
             schema=ISampleTile,
             icon="testicon",
         )
-        provideUtility(sampleTileType, name=u"sample.tile")
+        provideUtility(sampleTileType, name="sample.tile")
         provideAdapter(
-            SampleTile, (Interface, Interface), IBasicTile, name=u"sample.tile"
+            SampleTile, (Interface, Interface), IBasicTile, name="sample.tile"
         )
 
     def tearDown(self):
@@ -79,9 +78,9 @@ class TestServicesTiles(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         response = response.json()
         self.assertEqual(len(response), 1)
-        self.assertEqual(response[0]["@id"], self.portal_url + u"/@tiles/sample.tile")
-        self.assertEqual(response[0]["title"], u"Sample tile")
-        self.assertEqual(response[0]["description"], u"A tile used for testing")
+        self.assertEqual(response[0]["@id"], self.portal_url + "/@tiles/sample.tile")
+        self.assertEqual(response[0]["title"], "Sample tile")
+        self.assertEqual(response[0]["description"], "A tile used for testing")
         self.assertEqual(response[0]["icon"], "testicon")
 
     def test_get_tile(self):
@@ -89,6 +88,6 @@ class TestServicesTiles(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         response = response.json()
-        self.assertEqual(response["title"], u"Sample tile")
-        self.assertEqual(response["properties"]["title"]["title"], u"Title")
-        self.assertEqual(response["properties"]["title"]["type"], u"string")
+        self.assertEqual(response["title"], "Sample tile")
+        self.assertEqual(response["properties"]["title"]["title"], "Title")
+        self.assertEqual(response["properties"]["title"]["type"], "string")

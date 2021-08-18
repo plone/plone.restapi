@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.deserializer import json_body
 from plone.restapi.deserializer.mixins import OrderingMixin
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
@@ -14,7 +13,7 @@ import json
 
 @implementer(IDeserializeFromJson)
 @adapter(IPloneSiteRoot, IRequest)
-class DeserializeSiteRootFromJson(OrderingMixin, object):
+class DeserializeSiteRootFromJson(OrderingMixin):
     """JSON deserializer for the Plone site root"""
 
     def __init__(self, context, request):

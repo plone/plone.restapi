@@ -1,24 +1,25 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:plone="http://namespaces.plone.org/plone"
-    xmlns:zcml="http://namespaces.zope.org/zcml">
-    
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
   <include package="Products.CMFEditions" />
 
   <plone:service
-    method="GET"
-    name="@history"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".get.HistoryGet"
-    permission="CMFEditions.AccessPreviousVersions"
-    />
+      method="GET"
+      factory=".get.HistoryGet"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="CMFEditions.AccessPreviousVersions"
+      name="@history"
+      />
 
   <plone:service
-    method="PATCH"
-    name="@history"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".patch.HistoryPatch"
-    permission="CMFEditions.RevertToPreviousVersions"
-    />
+      method="PATCH"
+      factory=".patch.HistoryPatch"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="CMFEditions.RevertToPreviousVersions"
+      name="@history"
+      />
 
 </configure>

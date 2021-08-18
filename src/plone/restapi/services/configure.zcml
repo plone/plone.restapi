@@ -1,23 +1,27 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:zcml="http://namespaces.zope.org/zcml">
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
 
   <!-- Service registrations below need permissions from CMFCore -->
-  <include package="Products.CMFCore" file="permissions.zcml" />
+  <include
+      package="Products.CMFCore"
+      file="permissions.zcml"
+      />
 
   <include package=".auth" />
   <include package=".actions" />
   <include package=".addons" />
-  <include package=".breadcrumbs"/>
-  <include package=".content"/>
+  <include package=".breadcrumbs" />
+  <include package=".content" />
   <include package=".controlpanels" />
-  <include package=".copymove"/>
-  <include package=".database"/>
-  <include package=".discussion"/>
-  <include package=".groups"/>
-  <include package=".navigation"/>
-  <include package=".contextnavigation"/>
-  <include package=".history"/>
+  <include package=".copymove" />
+  <include package=".database" />
+  <include package=".discussion" />
+  <include package=".groups" />
+  <include package=".navigation" />
+  <include package=".contextnavigation" />
+  <include package=".history" />
   <include package=".locking" />
   <include package=".principals"/>
   <include package=".querysources"/>
@@ -32,13 +36,24 @@
   <include package=".users"/>
   <include package=".vocabularies"/>
   <include package=".workflow"/>
-  <include package=".multilingual"
-      zcml:condition="have plone-5"/>
-  <include package=".email_notification"
-      zcml:condition="have plone-5"/>
-  <include package=".email_send"
-      zcml:condition="have plone-5"/>
-  <include package=".tiles"
-      zcml:condition="installed plone.tiles" />
-
+  <include
+      package=".workingcopy"
+      zcml:condition="have plone-5"
+      />
+  <include
+      package=".multilingual"
+      zcml:condition="have plone-5"
+      />
+  <include
+      package=".email_notification"
+      zcml:condition="have plone-5"
+      />
+  <include
+      package=".email_send"
+      zcml:condition="have plone-5"
+      />
+  <include
+      package=".tiles"
+      zcml:condition="installed plone.tiles"
+      />
 </configure>

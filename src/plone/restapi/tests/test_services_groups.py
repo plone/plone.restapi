@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -92,7 +91,7 @@ class TestGroupsEndpoint(unittest.TestCase):
         fwt = self.gtool.getGroupById("fwt")
         self.assertEqual("fwt@plone.org", fwt.getProperty("email"))
         self.assertTrue(
-            set([SITE_OWNER_NAME, TEST_USER_ID]).issubset(set(fwt.getGroupMemberIds())),
+            {SITE_OWNER_NAME, TEST_USER_ID}.issubset(set(fwt.getGroupMemberIds())),
             "Userids not found in group",
         )
 

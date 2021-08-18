@@ -1,0 +1,72 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@components": {
+    "actions": {
+      "@id": "http://localhost:55001/plone/document/@actions"
+    }, 
+    "breadcrumbs": {
+      "@id": "http://localhost:55001/plone/document/@breadcrumbs"
+    }, 
+    "contextnavigation": {
+      "@id": "http://localhost:55001/plone/document/@contextnavigation"
+    }, 
+    "navigation": {
+      "@id": "http://localhost:55001/plone/document/@navigation"
+    }, 
+    "types": {
+      "@id": "http://localhost:55001/plone/document/@types"
+    }, 
+    "workflow": {
+      "@id": "http://localhost:55001/plone/document/@workflow"
+    }
+  }, 
+  "@id": "http://localhost:55001/plone/document", 
+  "@type": "Document", 
+  "UID": "SomeUUID000000000000000000000001", 
+  "allow_discussion": false, 
+  "contributors": [], 
+  "created": "1995-07-31T13:45:00", 
+  "creators": [
+    "test_user_1_"
+  ], 
+  "description": "", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "id": "document", 
+  "is_folderish": false, 
+  "language": "", 
+  "layout": "document_view", 
+  "modified": "1995-07-31T17:30:00", 
+  "next_item": {
+    "@id": "http://localhost:55001/plone/copy_of_document", 
+    "@type": "Document", 
+    "description": "", 
+    "title": "Test document"
+  }, 
+  "parent": {
+    "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
+    "description": "", 
+    "title": "Plone site"
+  }, 
+  "previous_item": {}, 
+  "relatedItems": [], 
+  "review_state": "private", 
+  "rights": "", 
+  "subjects": [], 
+  "table_of_contents": null, 
+  "text": null, 
+  "title": "Test document", 
+  "version": "current", 
+  "working_copy": {
+    "@id": "http://localhost:55001/plone/copy_of_document", 
+    "created": "1995-07-31T13:45:00", 
+    "creator_name": "admin", 
+    "creator_url": "http://localhost:55001/plone/author/admin", 
+    "title": "Test document"
+  }, 
+  "working_copy_of": null
+}

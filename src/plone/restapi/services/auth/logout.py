@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
@@ -35,7 +34,7 @@ class Logout(Service):
         creds = plugin.extractCredentials(self.request)
         if creds and "token" in creds and plugin.delete_token(creds["token"]):
             self.request.response.setStatus(200)
-            return super(Logout, self).reply()
+            return super().reply()
 
         self.request.response.setStatus(400)
         return dict(error=dict(type="Logout failed", message="Unknown token"))

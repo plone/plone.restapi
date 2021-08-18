@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from collections import defaultdict
 from plone.app.layout.navigation.root import getNavigationRoot
@@ -9,7 +8,7 @@ from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import getFSVersionTuple
+from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
 from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -19,18 +18,10 @@ from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
 
-PLONE5 = getFSVersionTuple()[0] >= 5
-
-try:
-    from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
-except ImportError:
-    # BBB for Plone 4.x, remove with plone.restapi 8 / Plone 6
-    from plone.app.controlpanel.navigation import INavigationSchema
-
 
 @implementer(IExpandableElement)
 @adapter(Interface, Interface)
-class Navigation(object):
+class Navigation:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -42,9 +33,7 @@ class Navigation(object):
         else:
             self.depth = 1
 
-        result = {
-            "navigation": {"@id": "{}/@navigation".format(self.context.absolute_url())}
-        }
+        result = {"navigation": {"@id": f"{self.context.absolute_url()}/@navigation"}}
         if not expand:
             return result
 
@@ -54,39 +43,20 @@ class Navigation(object):
     @property
     @memoize_contextless
     def settings(self):
-        if PLONE5:
-            # TODO: Simplify this when Plone 4.3 is deprecated
-            registry = getUtility(IRegistry)
-            settings = registry.forInterface(INavigationSchema, prefix="plone")
-            return {
-                "displayed_types": settings.displayed_types,
-                "nonfolderish_tabs": settings.nonfolderish_tabs,
-                "filter_on_workflow": settings.filter_on_workflow,
-                "workflow_states_to_show": settings.workflow_states_to_show,
-                "show_excluded_items": settings.show_excluded_items,
-            }
-        else:
-            pprop = getToolByName(self.context, "portal_properties")
-            ttool = getToolByName(self.context, "portal_types")
-            siteProps = pprop.site_properties
-            navProps = pprop.navtree_properties
-            allTypes = ttool.listContentTypes()
-            blacklist = navProps.metaTypesNotToList
-
-            return {
-                "displayed_types": [t for t in allTypes if t not in blacklist],
-                "nonfolderish_tabs": not siteProps.getProperty(
-                    "disable_nonfolderish_sections"
-                ),
-                "filter_on_workflow": navProps.getProperty("enable_wf_state_filtering"),
-                "workflow_states_to_show": navProps.getProperty("wf_states_to_show"),
-                "show_excluded_items": navProps.getProperty("showAllParents"),
-            }
+        registry = getUtility(IRegistry)
+        settings = registry.forInterface(INavigationSchema, prefix="plone")
+        return {
+            "displayed_types": settings.displayed_types,
+            "nonfolderish_tabs": settings.nonfolderish_tabs,
+            "filter_on_workflow": settings.filter_on_workflow,
+            "workflow_states_to_show": settings.workflow_states_to_show,
+            "show_excluded_items": settings.show_excluded_items,
+        }
 
     @property
     def default_language(self):
         portal_state = getMultiAdapter(
-            (self.context, self.request), name=u"plone_portal_state"
+            (self.context, self.request), name="plone_portal_state"
         )
         return portal_state.default_language()
 
@@ -140,6 +110,7 @@ class Navigation(object):
             "portal_type": {"query": self.settings["displayed_types"]},
             "Language": self.current_language,
             "is_default_page": False,
+            "sort_on": "getObjPositionInParent",
         }
 
         if not self.settings["nonfolderish_tabs"]:
@@ -176,9 +147,8 @@ class Navigation(object):
                 "review_state": json_compatible(brain.review_state),
                 "use_view_action_in_listings": brain.portal_type in types_using_view,
             }
-
-            if brain.get("nav_title", False):
-                entry.update({"title": brain["nav_title"]})
+            if "nav_title" in brain and brain.nav_title:
+                entry.update({"title": brain.nav_title})
 
             self.customize_entry(entry, brain)
             ret[brain_parent_path].append(entry)

@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # pylint: disable=E0211, W0221
 # E0211: Method has no argument
 # W0221: Arguments number differs from overridden '__call__' method
@@ -128,7 +126,7 @@ class IExpandableElement(Interface):
     """
 
     def __call__(expand=False):
-        """"""
+        """ """
 
 
 class IZCatalogCompatibleQuery(Interface):

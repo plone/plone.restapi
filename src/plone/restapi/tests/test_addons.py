@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from pkg_resources import parse_version
-from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -14,17 +11,6 @@ import transaction
 import unittest
 
 
-PLONE_VERSION = parse_version(api.env.plone_version())
-
-try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE5 = False
-else:
-    PLONE5 = True
-
-
-@unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
 class TestAddons(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -46,16 +32,16 @@ class TestAddons(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         result = response.json()
 
-        self.assertEqual(result["@id"], self.portal_url + u"/@addons/plone.session")
-        self.assertEqual(result["id"], u"plone.session")
+        self.assertEqual(result["@id"], self.portal_url + "/@addons/plone.session")
+        self.assertEqual(result["id"], "plone.session")
         # self.assertEqual(result['is_installed'], False)
-        self.assertEqual(result["title"], u"Session refresh support")
+        self.assertEqual(result["title"], "Session refresh support")
         self.assertEqual(
-            result["description"], u"Optional plone.session refresh support."
+            result["description"], "Optional plone.session refresh support."
         )
-        self.assertEqual(result["profile_type"], u"default")
+        self.assertEqual(result["profile_type"], "default")
         self.assertEqual(result["upgrade_info"], {})
-        self.assertEqual(result["install_profile_id"], u"plone.session:default")
+        self.assertEqual(result["install_profile_id"], "plone.session:default")
 
     def test_get_addon_listing(self):
         response = self.api_session.get("/@addons")
@@ -104,7 +90,7 @@ class TestAddons(unittest.TestCase):
         result = response.json()
 
         # Check to make sure the addon is currently shown as installed
-        session = [a for a in result["items"] if a["id"] == u"plone.session"]
+        session = [a for a in result["items"] if a["id"] == "plone.session"]
         self.assertEqual(len(session), 1)
         self.assertTrue(session[0]["is_installed"])
 
@@ -117,7 +103,7 @@ class TestAddons(unittest.TestCase):
         result = response.json()
 
         # Check to make sure the addon is currently shown as not installed
-        session = [a for a in result["items"] if a["id"] == u"plone.session"]
+        session = [a for a in result["items"] if a["id"] == "plone.session"]
         self.assertEqual(len(session), 1)
         self.assertFalse(session[0]["is_installed"])
 
@@ -186,6 +172,6 @@ class TestAddons(unittest.TestCase):
         result = response.json()
 
         # Check to make sure the addon is at last version
-        session = [a for a in result["items"] if a["id"] == u"plone.restapi"]
+        session = [a for a in result["items"] if a["id"] == "plone.restapi"]
         self.assertEqual(len(session), 1)
         self.assertEqual(last_version, session[0]["upgrade_info"])

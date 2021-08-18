@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.services import Service
 
 try:
@@ -16,7 +15,7 @@ class SystemGet(Service):
         overview_control_panel = OverviewControlPanel(self.context, self.request)
         core_versions = overview_control_panel.core_versions()
         return {
-            "@id": "{}/@system".format(self.context.absolute_url()),
+            "@id": f"{self.context.absolute_url()}/@system",
             "zope_version": core_versions.get("Zope"),
             "plone_version": core_versions.get("Plone"),
             "plone_restapi_version": plone_restapi_version,
