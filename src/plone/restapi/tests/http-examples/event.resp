@@ -50,6 +50,10 @@ Content-Type: application/json
   "language": "", 
   "layout": "event_view", 
   "location": null, 
+  "lock": {
+    "locked": false, 
+    "stealable": true
+  }, 
   "modified": "1995-07-31T17:30:00", 
   "next_item": {}, 
   "open_end": false, 
