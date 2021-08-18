@@ -614,6 +614,9 @@ class TestDXFieldDeserializer(unittest.TestCase):
         # I want to save internal URLs as resolveuid
         self.assertEqual(f"../resolveuid/{doc_uuid}", deserializer(value="/doc1"))
 
+        # If ${portal_url} is present, leave it as it is
+        self.assertEqual("${portal_url}/doc1", deserializer(value="${portal_url}/doc1"))
+
         # for other contents/fields does nothing
         value = self.deserialize("test_textline_field", "http://www.plone.com")
         self.assertEqual("http://www.plone.com", value)
