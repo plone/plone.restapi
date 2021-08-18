@@ -5,117 +5,117 @@ Content-Type: application/json
   "@components": {
     "actions": {
       "@id": "http://localhost:55001/plone/collection/@actions"
-    },
+    }, 
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/collection/@breadcrumbs"
-    },
+    }, 
     "contextnavigation": {
       "@id": "http://localhost:55001/plone/collection/@contextnavigation"
-    },
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/collection/@navigation"
-    },
+    }, 
     "types": {
       "@id": "http://localhost:55001/plone/collection/@types"
-    },
+    }, 
     "workflow": {
       "@id": "http://localhost:55001/plone/collection/@workflow"
     }
-  },
-  "@id": "http://localhost:55001/plone/collection",
-  "@type": "Collection",
-  "UID": "SomeUUID000000000000000000000002",
-  "allow_discussion": false,
-  "contributors": [],
-  "created": "1995-07-31T13:45:00",
+  }, 
+  "@id": "http://localhost:55001/plone/collection", 
+  "@type": "Collection", 
+  "UID": "SomeUUID000000000000000000000002", 
+  "allow_discussion": false, 
+  "contributors": [], 
+  "created": "1995-07-31T13:45:00", 
   "creators": [
     "test_user_1_"
-  ],
+  ], 
   "customViewFields": [
     {
-      "title": "Title",
+      "title": "Title", 
       "token": "Title"
-    },
+    }, 
     {
-      "title": "Creator",
+      "title": "Creator", 
       "token": "Creator"
-    },
+    }, 
     {
-      "title": "Type",
+      "title": "Type", 
       "token": "Type"
-    },
+    }, 
     {
-      "title": "Last modified",
+      "title": "Last modified", 
       "token": "ModificationDate"
     }
-  ],
-  "description": "This is a collection with two documents",
-  "effective": null,
-  "exclude_from_nav": false,
-  "expires": null,
-  "id": "collection",
-  "is_folderish": false,
-  "item_count": 30,
+  ], 
+  "description": "This is a collection with two documents", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "id": "collection", 
+  "is_folderish": false, 
+  "item_count": 30, 
   "items": [
     {
-      "@id": "http://localhost:55001/plone/front-page",
-      "@type": "Document",
-      "description": "Congratulations! You have successfully installed Plone.",
-      "review_state": "private",
+      "@id": "http://localhost:55001/plone/front-page", 
+      "@type": "Document", 
+      "description": "Congratulations! You have successfully installed Plone.", 
+      "review_state": "private", 
       "title": "Welcome to Plone"
-    },
+    }, 
     {
-      "@id": "http://localhost:55001/plone/doc1",
-      "@type": "Document",
-      "description": "",
-      "review_state": "private",
+      "@id": "http://localhost:55001/plone/doc1", 
+      "@type": "Document", 
+      "description": "", 
+      "review_state": "private", 
       "title": "Document 1"
-    },
+    }, 
     {
-      "@id": "http://localhost:55001/plone/doc2",
-      "@type": "Document",
-      "description": "",
-      "review_state": "private",
+      "@id": "http://localhost:55001/plone/doc2", 
+      "@type": "Document", 
+      "description": "", 
+      "review_state": "private", 
       "title": "Document 2"
     }
-  ],
-  "items_total": 3,
-  "language": "",
-  "layout": "listing_view",
-  "limit": 1000,
-  "modified": "1995-07-31T17:30:00",
+  ], 
+  "items_total": 3, 
+  "language": "", 
+  "layout": "listing_view", 
+  "limit": 1000, 
+  "modified": "1995-07-31T17:30:00", 
   "next_item": {
-    "@id": "http://localhost:55001/plone/doc1",
-    "@type": "Document",
-    "description": "",
+    "@id": "http://localhost:55001/plone/doc1", 
+    "@type": "Document", 
+    "description": "", 
     "title": "Document 1"
-  },
+  }, 
   "parent": {
-    "@id": "http://localhost:55001/plone",
-    "@type": "Plone Site",
-    "description": "",
+    "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
+    "description": "", 
     "title": "Plone site"
-  },
+  }, 
   "previous_item": {
-    "@id": "http://localhost:55001/plone/front-page",
-    "@type": "Document",
-    "description": "Congratulations! You have successfully installed Plone.",
+    "@id": "http://localhost:55001/plone/front-page", 
+    "@type": "Document", 
+    "description": "Congratulations! You have successfully installed Plone.", 
     "title": "Welcome to Plone"
-  },
+  }, 
   "query": [
     {
-      "i": "portal_type",
-      "o": "plone.app.querystring.operation.string.is",
+      "i": "portal_type", 
+      "o": "plone.app.querystring.operation.string.is", 
       "v": "Document"
     }
-  ],
-  "relatedItems": [],
-  "review_state": "private",
-  "rights": "",
-  "sort_on": null,
-  "sort_reversed": null,
-  "subjects": [],
-  "text": null,
-  "title": "My Collection",
+  ], 
+  "relatedItems": [], 
+  "review_state": "private", 
+  "rights": "", 
+  "sort_on": null, 
+  "sort_reversed": null, 
+  "subjects": [], 
+  "text": null, 
+  "title": "My Collection", 
   "version": "current"
 }

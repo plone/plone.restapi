@@ -5,60 +5,60 @@ Content-Type: application/json
   "@components": {
     "actions": {
       "@id": "http://localhost:55001/plone/link/@actions"
-    },
+    }, 
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/link/@breadcrumbs"
-    },
+    }, 
     "contextnavigation": {
       "@id": "http://localhost:55001/plone/link/@contextnavigation"
-    },
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/link/@navigation"
-    },
+    }, 
     "types": {
       "@id": "http://localhost:55001/plone/link/@types"
-    },
+    }, 
     "workflow": {
       "@id": "http://localhost:55001/plone/link/@workflow"
     }
-  },
-  "@id": "http://localhost:55001/plone/link",
-  "@type": "Link",
-  "UID": "SomeUUID000000000000000000000002",
-  "allow_discussion": false,
-  "changeNote": "",
-  "contributors": [],
-  "created": "1995-07-31T13:45:00",
+  }, 
+  "@id": "http://localhost:55001/plone/link", 
+  "@type": "Link", 
+  "UID": "SomeUUID000000000000000000000002", 
+  "allow_discussion": false, 
+  "changeNote": "", 
+  "contributors": [], 
+  "created": "1995-07-31T13:45:00", 
   "creators": [
     "test_user_1_"
-  ],
-  "description": "This is a link",
-  "effective": null,
-  "exclude_from_nav": false,
-  "expires": null,
-  "id": "link",
-  "is_folderish": false,
-  "language": "",
-  "layout": "link_redirect_view",
-  "modified": "1995-07-31T17:30:00",
-  "next_item": {},
+  ], 
+  "description": "This is a link", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "id": "link", 
+  "is_folderish": false, 
+  "language": "", 
+  "layout": "link_redirect_view", 
+  "modified": "1995-07-31T17:30:00", 
+  "next_item": {}, 
   "parent": {
-    "@id": "http://localhost:55001/plone",
-    "@type": "Plone Site",
-    "description": "",
+    "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
+    "description": "", 
     "title": "Plone site"
-  },
+  }, 
   "previous_item": {
-    "@id": "http://localhost:55001/plone/front-page",
-    "@type": "Document",
-    "description": "Congratulations! You have successfully installed Plone.",
+    "@id": "http://localhost:55001/plone/front-page", 
+    "@type": "Document", 
+    "description": "Congratulations! You have successfully installed Plone.", 
     "title": "Welcome to Plone"
-  },
-  "remoteUrl": "http://localhost:55001/plone",
-  "review_state": "private",
-  "rights": "",
-  "subjects": [],
-  "title": "My Link",
-  "version": "current",
+  }, 
+  "remoteUrl": "http://localhost:55001/plone", 
+  "review_state": "private", 
+  "rights": "", 
+  "subjects": [], 
+  "title": "My Link", 
+  "version": "current", 
   "versioning_enabled": true
 }

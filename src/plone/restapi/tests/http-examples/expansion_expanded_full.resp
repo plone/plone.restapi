@@ -4,249 +4,249 @@ Content-Type: application/json
 {
   "@components": {
     "actions": {
-      "document_actions": [],
+      "document_actions": [], 
       "object": [
         {
-          "icon": "",
-          "id": "view",
+          "icon": "", 
+          "id": "view", 
           "title": "View"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "edit",
+          "icon": "", 
+          "id": "edit", 
           "title": "Edit"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "folderContents",
+          "icon": "", 
+          "id": "folderContents", 
           "title": "Contents"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "history",
+          "icon": "", 
+          "id": "history", 
           "title": "History"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "local_roles",
+          "icon": "", 
+          "id": "local_roles", 
           "title": "Sharing"
         }
-      ],
+      ], 
       "object_buttons": [
         {
-          "icon": "",
-          "id": "cut",
+          "icon": "", 
+          "id": "cut", 
           "title": "Cut"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "copy",
+          "icon": "", 
+          "id": "copy", 
           "title": "Copy"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "delete",
+          "icon": "", 
+          "id": "delete", 
           "title": "Delete"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "rename",
+          "icon": "", 
+          "id": "rename", 
           "title": "Rename"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "redirection",
+          "icon": "", 
+          "id": "redirection", 
           "title": "URL Management"
         }
-      ],
+      ], 
       "portal_tabs": [
         {
-          "icon": "",
-          "id": "index_html",
+          "icon": "", 
+          "id": "index_html", 
           "title": "Home"
         }
-      ],
+      ], 
       "site_actions": [
         {
-          "icon": "",
-          "id": "sitemap",
+          "icon": "", 
+          "id": "sitemap", 
           "title": "Site Map"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "accessibility",
+          "icon": "", 
+          "id": "accessibility", 
           "title": "Accessibility"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "contact",
+          "icon": "", 
+          "id": "contact", 
           "title": "Contact"
         }
-      ],
+      ], 
       "user": [
         {
-          "icon": "",
-          "id": "preferences",
+          "icon": "", 
+          "id": "preferences", 
           "title": "Preferences"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "dashboard",
+          "icon": "", 
+          "id": "dashboard", 
           "title": "Dashboard"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "plone_setup",
+          "icon": "", 
+          "id": "plone_setup", 
           "title": "Site Setup"
-        },
+        }, 
         {
-          "icon": "",
-          "id": "logout",
+          "icon": "", 
+          "id": "logout", 
           "title": "Log out"
         }
       ]
-    },
+    }, 
     "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/front-page/@breadcrumbs",
+      "@id": "http://localhost:55001/plone/front-page/@breadcrumbs", 
       "items": [
         {
-          "@id": "http://localhost:55001/plone/front-page",
+          "@id": "http://localhost:55001/plone/front-page", 
           "title": "Welcome to Plone"
         }
-      ],
+      ], 
       "root": "http://localhost:55001/plone"
-    },
+    }, 
     "contextnavigation": {
       "@id": "http://localhost:55001/plone/front-page/@contextnavigation"
-    },
+    }, 
     "navigation": {
-      "@id": "http://localhost:55001/plone/front-page/@navigation",
+      "@id": "http://localhost:55001/plone/front-page/@navigation", 
       "items": [
         {
-          "@id": "http://localhost:55001/plone",
-          "description": "",
-          "items": [],
-          "review_state": null,
+          "@id": "http://localhost:55001/plone", 
+          "description": "", 
+          "items": [], 
+          "review_state": null, 
           "title": "Home"
-        },
+        }, 
         {
-          "@id": "http://localhost:55001/plone/front-page",
-          "description": "Congratulations! You have successfully installed Plone.",
-          "items": [],
-          "review_state": "private",
+          "@id": "http://localhost:55001/plone/front-page", 
+          "description": "Congratulations! You have successfully installed Plone.", 
+          "items": [], 
+          "review_state": "private", 
           "title": "Welcome to Plone"
         }
       ]
-    },
+    }, 
     "types": [
       {
-        "@id": "http://localhost:55001/plone/@types/Collection",
-        "addable": false,
+        "@id": "http://localhost:55001/plone/@types/Collection", 
+        "addable": false, 
         "title": "Collection"
-      },
+      }, 
       {
-        "@id": "http://localhost:55001/plone/@types/DXTestDocument",
-        "addable": false,
+        "@id": "http://localhost:55001/plone/@types/DXTestDocument", 
+        "addable": false, 
         "title": "DX Test Document"
-      },
+      }, 
       {
-        "@id": "http://localhost:55001/plone/@types/Event",
-        "addable": false,
+        "@id": "http://localhost:55001/plone/@types/Event", 
+        "addable": false, 
         "title": "Event"
-      },
+      }, 
       {
-        "@id": "http://localhost:55001/plone/@types/File",
-        "addable": false,
+        "@id": "http://localhost:55001/plone/@types/File", 
+        "addable": false, 
         "title": "File"
-      },
+      }, 
       {
-        "@id": "http://localhost:55001/plone/@types/Folder",
-        "addable": false,
+        "@id": "http://localhost:55001/plone/@types/Folder", 
+        "addable": false, 
         "title": "Folder"
-      },
+      }, 
       {
-        "@id": "http://localhost:55001/plone/@types/Image",
-        "addable": false,
+        "@id": "http://localhost:55001/plone/@types/Image", 
+        "addable": false, 
         "title": "Image"
-      },
+      }, 
       {
-        "@id": "http://localhost:55001/plone/@types/Link",
-        "addable": false,
+        "@id": "http://localhost:55001/plone/@types/Link", 
+        "addable": false, 
         "title": "Link"
-      },
+      }, 
       {
-        "@id": "http://localhost:55001/plone/@types/News Item",
-        "addable": false,
+        "@id": "http://localhost:55001/plone/@types/News Item", 
+        "addable": false, 
         "title": "News Item"
-      },
+      }, 
       {
-        "@id": "http://localhost:55001/plone/@types/Document",
-        "addable": false,
+        "@id": "http://localhost:55001/plone/@types/Document", 
+        "addable": false, 
         "title": "Page"
       }
-    ],
+    ], 
     "workflow": {
-      "@id": "http://localhost:55001/plone/front-page/@workflow",
+      "@id": "http://localhost:55001/plone/front-page/@workflow", 
       "history": [
         {
-          "action": null,
-          "actor": "test_user_1_",
-          "comments": "",
-          "review_state": "private",
-          "time": "1995-07-31T17:30:00",
+          "action": null, 
+          "actor": "test_user_1_", 
+          "comments": "", 
+          "review_state": "private", 
+          "time": "1995-07-31T17:30:00", 
           "title": "Private"
         }
-      ],
+      ], 
       "transitions": [
         {
-          "@id": "http://localhost:55001/plone/front-page/@workflow/publish",
+          "@id": "http://localhost:55001/plone/front-page/@workflow/publish", 
           "title": "Publish"
-        },
+        }, 
         {
-          "@id": "http://localhost:55001/plone/front-page/@workflow/submit",
+          "@id": "http://localhost:55001/plone/front-page/@workflow/submit", 
           "title": "Submit for publication"
         }
       ]
     }
-  },
-  "@id": "http://localhost:55001/plone/front-page",
-  "@type": "Document",
-  "UID": "SomeUUID000000000000000000000001",
-  "allow_discussion": false,
-  "changeNote": "",
-  "contributors": [],
-  "created": "1995-07-31T13:45:00",
+  }, 
+  "@id": "http://localhost:55001/plone/front-page", 
+  "@type": "Document", 
+  "UID": "SomeUUID000000000000000000000001", 
+  "allow_discussion": false, 
+  "changeNote": "", 
+  "contributors": [], 
+  "created": "1995-07-31T13:45:00", 
   "creators": [
     "test_user_1_"
-  ],
-  "description": "Congratulations! You have successfully installed Plone.",
-  "effective": null,
-  "exclude_from_nav": false,
-  "expires": null,
-  "id": "front-page",
-  "is_folderish": false,
-  "language": "",
-  "layout": "document_view",
-  "modified": "1995-07-31T17:30:00",
-  "next_item": {},
+  ], 
+  "description": "Congratulations! You have successfully installed Plone.", 
+  "effective": null, 
+  "exclude_from_nav": false, 
+  "expires": null, 
+  "id": "front-page", 
+  "is_folderish": false, 
+  "language": "", 
+  "layout": "document_view", 
+  "modified": "1995-07-31T17:30:00", 
+  "next_item": {}, 
   "parent": {
-    "@id": "http://localhost:55001/plone",
-    "@type": "Plone Site",
-    "description": "",
+    "@id": "http://localhost:55001/plone", 
+    "@type": "Plone Site", 
+    "description": "", 
     "title": "Plone site"
-  },
-  "previous_item": {},
-  "relatedItems": [],
-  "review_state": "private",
-  "rights": "",
-  "subjects": [],
-  "table_of_contents": null,
+  }, 
+  "previous_item": {}, 
+  "relatedItems": [], 
+  "review_state": "private", 
+  "rights": "", 
+  "subjects": [], 
+  "table_of_contents": null, 
   "text": {
-    "content-type": "text/plain",
-    "data": "<p>If you&#x27;re seeing this instead of the web site you were expecting, the owner of this web site has just installed Plone. Do not contact the Plone Team or the Plone mailing lists about this.</p>",
+    "content-type": "text/plain", 
+    "data": "<p>If you&#x27;re seeing this instead of the web site you were expecting, the owner of this web site has just installed Plone. Do not contact the Plone Team or the Plone mailing lists about this.</p>", 
     "encoding": "utf-8"
-  },
-  "title": "Welcome to Plone",
-  "version": "current",
+  }, 
+  "title": "Welcome to Plone", 
+  "version": "current", 
   "versioning_enabled": true
 }
