@@ -73,6 +73,8 @@ The server responds with status :term:`200 OK` and returns the lock information.
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/unlock_force.resp
    :language: http
 
+.. warning::
+   The ``@unlock`` endpoint is deprecated and will be removed in plone.restapi 9.0.
 
 Refreshing a lock
 -----------------
@@ -87,6 +89,8 @@ The server responds with status :term:`200 OK` and returns the lock information 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/refresh_lock.resp
    :language: http
 
+.. warning::
+   The ``@refresh-lock`` endpoint is deprecated and will be removed in plone.restapi 9.0.
 
 Getting lock information
 ------------------------
