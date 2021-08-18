@@ -338,6 +338,10 @@ class TestDexterityFieldSerializing(TestCase):
         dm.set(f"../resolveuid/{doc_uuid}")
         self.assertEqual(serializer(), self.portal.doc1.absolute_url())
 
+        # Support for variable interpolation is still present
+        dm.set("${portal_url}/doc1")
+        self.assertEqual(serializer(), self.portal.doc1.absolute_url())
+
         dm.set("/doc1")
         self.assertEqual(serializer(), "/doc1")
 
