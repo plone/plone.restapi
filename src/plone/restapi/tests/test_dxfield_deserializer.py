@@ -9,6 +9,7 @@ from plone.dexterity.utils import iterSchemata
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import IDXTestDocumentSchema
+from plone.uuid.interfaces import IUUID
 from pytz import timezone
 from zope.component import getMultiAdapter
 from zope.schema import Field
@@ -601,13 +602,20 @@ class TestDXFieldDeserializer(unittest.TestCase):
                 field = schema.get("remoteUrl")
                 break
         deserializer = getMultiAdapter((field, link, self.request), IFieldDeserializer)
+        doc_uuid = IUUID(self.portal.doc1)
 
         self.assertEqual(
             "http://www.plone.com", deserializer(value="http://www.plone.com")
         )
         self.assertEqual(
-            "${portal_url}/doc1", deserializer(value="http://nohost/plone/doc1")
+            f"../resolveuid/{doc_uuid}", deserializer(value="http://nohost/plone/doc1")
         )
+
+        # I want to save internal URLs as resolveuid
+        self.assertEqual(f"../resolveuid/{doc_uuid}", deserializer(value="/doc1"))
+
+        # If ${portal_url} is present, leave it as it is
+        self.assertEqual("${portal_url}/doc1", deserializer(value="${portal_url}/doc1"))
 
         # for other contents/fields does nothing
         value = self.deserialize("test_textline_field", "http://www.plone.com")

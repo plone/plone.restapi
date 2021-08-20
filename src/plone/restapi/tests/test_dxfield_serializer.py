@@ -3,7 +3,6 @@ from datetime import datetime
 from datetime import time
 from datetime import timedelta
 from decimal import Decimal
-from unittest.mock import patch
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import iterSchemata
 from plone.namedfile.file import NamedBlobFile
@@ -14,7 +13,9 @@ from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.scale import storage
+from plone.uuid.interfaces import IUUID
 from unittest import TestCase
+from unittest.mock import patch
 from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
@@ -332,11 +333,17 @@ class TestDexterityFieldSerializing(TestCase):
         dm.set("http://www.plone.com")
         self.assertEqual(serializer(), "http://www.plone.com")
 
+        doc_uuid = IUUID(self.portal.doc1)
+
+        dm.set(f"../resolveuid/{doc_uuid}")
+        self.assertEqual(serializer(), self.portal.doc1.absolute_url())
+
+        # Support for variable interpolation is still present
         dm.set("${portal_url}/doc1")
         self.assertEqual(serializer(), self.portal.doc1.absolute_url())
 
-        dm.set("${portal_url}/doc2")
-        self.assertEqual(serializer(), "/doc2")
+        dm.set("/doc1")
+        self.assertEqual(serializer(), "/doc1")
 
         dm.set("/doc2")
         self.assertEqual(serializer(), "/doc2")
