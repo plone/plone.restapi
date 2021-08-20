@@ -45,7 +45,10 @@ class SerializeVocabLikeToJson:
                 terms.append(term)
             else:
                 term_title = safe_unicode(getattr(term, "title", None) or "")
-                if title.lower() not in term_title.lower():
+                if (
+                    title.lower()
+                    not in translate(term_title, context=self.request).lower()
+                ):
                     continue
                 terms.append(term)
 

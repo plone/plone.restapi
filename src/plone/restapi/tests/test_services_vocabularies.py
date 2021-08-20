@@ -22,9 +22,20 @@ TEST_TERM_3 = SimpleTerm(44, token="token3")
 TEST_TERM_4 = UtilityTerm(45, "token4")
 TEST_TERM_5 = SimpleTerm(46, token="token5", title="Tötle 5")
 TEST_TERM_6 = SimpleTerm(47, token="token6", title="Tötle 6")
+TEST_TERM_7 = SimpleTerm(
+    48, token="token7", title="This is a title for the seventh term"
+)
 
 TEST_VOCABULARY = SimpleVocabulary(
-    [TEST_TERM_1, TEST_TERM_2, TEST_TERM_3, TEST_TERM_4, TEST_TERM_5, TEST_TERM_6]
+    [
+        TEST_TERM_1,
+        TEST_TERM_2,
+        TEST_TERM_3,
+        TEST_TERM_4,
+        TEST_TERM_5,
+        TEST_TERM_6,
+        TEST_TERM_7,
+    ]
 )
 
 
@@ -81,8 +92,12 @@ class TestVocabularyEndpoint(unittest.TestCase):
                     {"title": "token4", "token": "token4"},
                     {"title": "T\xf6tle 5", "token": "token5"},
                     {"title": "T\xf6tle 6", "token": "token6"},
+                    {
+                        "title": "This is a title for the seventh term",
+                        "token": "token7",
+                    },
                 ],
-                "items_total": 6,
+                "items_total": 7,
             },
         )
 
@@ -104,30 +119,40 @@ class TestVocabularyEndpoint(unittest.TestCase):
                     "first": self.portal_url
                     + "/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=0&b_size=1",  # noqa
                     "last": self.portal_url
-                    + "/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=5&b_size=1",  # noqa
+                    + "/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=6&b_size=1",  # noqa
                     "next": self.portal_url
                     + "/@vocabularies/plone.restapi.tests.test_vocabulary?b_start=1&b_size=1",  # noqa
                 },
                 "items": [{"title": "Title 1", "token": "token1"}],
-                "items_total": 6,
+                "items_total": 7,
             },
         )
 
     def test_get_vocabulary_filtered_by_title(self):
         response = self.api_session.get(
-            "/@vocabularies/plone.restapi.tests.test_vocabulary?title=2"
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?title=This"
         )
 
         self.assertEqual(200, response.status_code)
         response = response.json()
         self.assertEqual(
-            response,
-            {
-                "@id": self.portal_url
-                + "/@vocabularies/plone.restapi.tests.test_vocabulary?title=2",  # noqa
-                "items": [{"title": "Title 2", "token": "token2"}],
-                "items_total": 1,
-            },
+            response["items"][0],
+            {"title": "This is a title for the seventh term", "token": "token7"},
+        )
+        self.assertEqual(
+            response["items_total"],
+            1,
+        )
+
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?title=is+a+title"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response["items"][0],
+            {"title": "This is a title for the seventh term", "token": "token7"},
         )
 
     def test_get_vocabulary_filtered_by_non_ascii_title(self):
