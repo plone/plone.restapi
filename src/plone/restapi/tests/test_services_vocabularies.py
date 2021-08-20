@@ -175,6 +175,26 @@ class TestVocabularyEndpoint(unittest.TestCase):
             },
         )
 
+    def test_get_vocabulary_filtered_by_non_ascii_title_as_plain_utf(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?title=tötle"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?title=t%C3%B6tle",  # noqa
+                "items": [
+                    {"title": "Tötle 5", "token": "token5"},
+                    {"title": "Tötle 6", "token": "token6"},
+                ],
+                "items_total": 2,
+            },
+        )
+
     def test_get_vocabulary_filtered_by_token(self):
         response = self.api_session.get(
             "/@vocabularies/plone.restapi.tests.test_vocabulary?token=token1"
