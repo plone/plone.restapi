@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.8.1 (2021-08-20)
+------------------
+
+Bug fixes:
+
+
+- Fix @vocabularies endpoint to search in translated term titles
+  [sneridagh] (#1204)
+
+
 8.8.0 (2021-08-20)
 ------------------
 
