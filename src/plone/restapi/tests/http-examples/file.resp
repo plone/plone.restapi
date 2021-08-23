@@ -48,6 +48,7 @@ Content-Type: application/json
   "is_folderish": false, 
   "language": "", 
   "layout": "file_view", 
+  "lock": {}, 
   "modified": "1995-07-31T17:30:00", 
   "next_item": {}, 
   "parent": {
