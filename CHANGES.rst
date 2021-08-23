@@ -8,6 +8,33 @@ Changelog
 
 .. towncrier release notes start
 
+8.8.1 (2021-08-20)
+------------------
+
+Bug fixes:
+
+
+- Fix @vocabularies endpoint to search in translated term titles
+  [sneridagh] (#1204)
+
+
+8.8.0 (2021-08-20)
+------------------
+
+New features:
+
+
+- Add resolveuid support to Link content type ``remoteUrl`` field.
+  [sneridagh] (#1197)
+
+
+Bug fixes:
+
+
+- Updated tests to not fail when the Plone Site root is dexterity.
+  [jaroel] (#2454)
+
+
 8.7.1 (2021-08-03)
 ------------------
 

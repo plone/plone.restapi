@@ -1,17 +1,14 @@
-from Acquisition import aq_parent
 from collections import deque
 from copy import deepcopy
 from plone import api
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
+from plone.restapi.deserializer.utils import path2uid
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.schema import IJSONField
-from plone.uuid.interfaces import IUUID
-from plone.uuid.interfaces import IUUIDAware
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
-from zope.component import getMultiAdapter
 from zope.component import subscribers
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -30,42 +27,6 @@ def iterate_children(value):
         yield child
         if child.get("children"):
             queue.extend(child["children"] or [])
-
-
-def path2uid(context, link):
-    # unrestrictedTraverse requires a string on py3. see:
-    # https://github.com/zopefoundation/Zope/issues/674
-    if not link:
-        return ""
-    portal = getMultiAdapter(
-        (context, context.REQUEST), name="plone_portal_state"
-    ).portal()
-    portal_url = portal.portal_url()
-    portal_path = "/".join(portal.getPhysicalPath())
-    path = link
-    context_url = context.absolute_url()
-    relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
-    if path.startswith(portal_url):
-        path = path[len(portal_url) + 1 :]
-    if not path.startswith(portal_path):
-        path = "{portal_path}/{path}".format(
-            portal_path=portal_path, path=path.lstrip("/")
-        )
-    obj = portal.unrestrictedTraverse(path, None)
-    if obj is None or obj == portal:
-        return link
-    segments = path.split("/")
-    suffix = ""
-    while not IUUIDAware.providedBy(obj):
-        obj = aq_parent(obj)
-        suffix += "/" + segments.pop()
-    # check if obj is wrong because of acquisition
-    if "/".join(obj.getPhysicalPath()) != "/".join(segments):
-        return link
-    href = relative_up * "../" + "resolveuid/" + IUUID(obj)
-    if suffix:
-        href += suffix
-    return href
 
 
 @implementer(IFieldDeserializer)
