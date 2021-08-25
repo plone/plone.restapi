@@ -12,9 +12,6 @@ Content-Type: application/json
     "contextnavigation": {
       "@id": "http://localhost:55001/plone/document/@contextnavigation"
     }, 
-    "lock": {
-      "@id": "http://localhost:55001/plone/document/@lock"
-    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/document/@navigation"
     }, 
@@ -52,7 +49,7 @@ Content-Type: application/json
     "stealable": false, 
     "time": 807201000.0, 
     "timeout": 4294967280, 
-    "token": "0.5239635061150545-0.606917525568332-00105A989226:1629793574.445"
+    "token": "0.3217605825198149-0.016714612599692202-00105A989226:1629895144.744"
   }, 
   "modified": "1995-07-31T17:30:00", 
   "next_item": {

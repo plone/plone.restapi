@@ -13,9 +13,6 @@ Location: http://localhost:55001/plone/folder/my-document
     "contextnavigation": {
       "@id": "http://localhost:55001/plone/folder/my-document/@contextnavigation"
     }, 
-    "lock": {
-      "@id": "http://localhost:55001/plone/folder/my-document/@lock"
-    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/folder/my-document/@navigation"
     }, 
