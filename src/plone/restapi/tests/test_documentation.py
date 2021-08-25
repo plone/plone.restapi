@@ -1504,15 +1504,21 @@ class TestDocumentation(TestDocumentationBase):
     def test_locking_unlock(self):
         url = "{}/@lock".format(self.document.absolute_url())
         response = self.api_session.post(url)
-        url = "{}/@unlock".format(self.document.absolute_url())
-        response = self.api_session.post(url)
+        url = "{}/@lock".format(self.document.absolute_url())
+        response = self.api_session.delete(url)
         save_request_and_response_for_docs("unlock", response)
+
+    def test_locking_unlock_force(self):
+        url = "{}/@lock".format(self.document.absolute_url())
+        response = self.api_session.post(url)
+        url = "{}/@lock".format(self.document.absolute_url())
+        response = self.api_session.delete(url, json={"force": True})
+        save_request_and_response_for_docs("unlock_force", response)
 
     def test_locking_refresh_lock(self):
         url = "{}/@lock".format(self.document.absolute_url())
         response = self.api_session.post(url)
-        url = "{}/@refresh-lock".format(self.document.absolute_url())
-        response = self.api_session.post(url)
+        response = self.api_session.patch(url)
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
