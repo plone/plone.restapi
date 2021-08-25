@@ -96,6 +96,10 @@ Content-Type: application/json
       "is_folderish": false, 
       "language": "", 
       "layout": "document_view", 
+      "lock": {
+        "locked": false, 
+        "stealable": true
+      }, 
       "modified": "1995-07-31T17:30:00", 
       "next_item": {
         "@id": "http://localhost:55001/plone/collection", 
@@ -165,6 +169,10 @@ Content-Type: application/json
       "is_folderish": false, 
       "language": "", 
       "layout": "document_view", 
+      "lock": {
+        "locked": false, 
+        "stealable": true
+      }, 
       "modified": "1995-07-31T17:30:00", 
       "next_item": {
         "@id": "http://localhost:55001/plone/doc2", 
@@ -235,6 +243,10 @@ Content-Type: application/json
       "is_folderish": false, 
       "language": "", 
       "layout": "document_view", 
+      "lock": {
+        "locked": false, 
+        "stealable": true
+      }, 
       "modified": "1995-07-31T17:30:00", 
       "next_item": {}, 
       "parent": {
@@ -266,6 +278,10 @@ Content-Type: application/json
   "language": "", 
   "layout": "listing_view", 
   "limit": 1000, 
+  "lock": {
+    "locked": false, 
+    "stealable": true
+  }, 
   "modified": "1995-07-31T17:30:00", 
   "next_item": {
     "@id": "http://localhost:55001/plone/doc1", 

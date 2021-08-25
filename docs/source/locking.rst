@@ -6,6 +6,17 @@ Locking is a mechanism to prevent users from accidentially overriding each other
 When a user edits a content object in Plone, the object is locked until the user hits the save or cancel button.
 If a second user tries to edit the object at the same time, she will see a message that this object is locked.
 
+The API consumer can create, read, update, and delete a content-type lock.
+
+======= =============================================== =====================================================================
+Verb    URL                                             Action
+======= =============================================== =====================================================================
+POST    ``/@lock``                                      Lock an object
+GET     ``/@lock``                                      Get information about the current lock
+PATCH   ``/@lock``                                      Refresh existing lock
+DELETE  ``/@lock``                                      Unlock an object
+======= =============================================== =====================================================================
+
 
 Locking an object
 -----------------
@@ -42,7 +53,7 @@ The server responds with status :term:`200 OK` and returns the lock information.
 Unlocking an object
 -------------------
 
-To unlock an object send a POST request to the ``/@unlock`` endpoint.
+To unlock an object send a DELETE request to the ``/@lock`` endpoint.
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/unlock.req
@@ -52,11 +63,23 @@ The server responds with status :term:`200 OK` and returns the lock information.
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/unlock.resp
    :language: http
 
+To unlock an object locked by another user send a force DELETE request to the ``/@lock`` endpoint.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/unlock_force.req
+
+The server responds with status :term:`200 OK` and returns the lock information.
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/unlock_force.resp
+   :language: http
+
+.. warning::
+   The ``@unlock`` endpoint is deprecated and will be removed in plone.restapi 9.0.
 
 Refreshing a lock
 -----------------
 
-An existing lock can be refreshed by sending a POST request to the ``@refresh-lock`` endpoint.
+An existing lock can be refreshed by sending a PATCH request to the ``@lock`` endpoint.
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/refresh_lock.req
@@ -66,6 +89,8 @@ The server responds with status :term:`200 OK` and returns the lock information 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/refresh_lock.resp
    :language: http
 
+.. warning::
+   The ``@refresh-lock`` endpoint is deprecated and will be removed in plone.restapi 9.0.
 
 Getting lock information
 ------------------------

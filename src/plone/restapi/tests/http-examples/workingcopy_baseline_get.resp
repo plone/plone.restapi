@@ -39,6 +39,18 @@ Content-Type: application/json
   "is_folderish": false, 
   "language": "", 
   "layout": "document_view", 
+  "lock": {
+    "created": "1995-07-31T17:30:00", 
+    "creator": "admin", 
+    "creator_name": "admin", 
+    "creator_url": "http://localhost:55001/plone/author/admin", 
+    "locked": true, 
+    "name": "iterate.lock", 
+    "stealable": false, 
+    "time": 807201000.0, 
+    "timeout": 4294967280, 
+    "token": "0.3217605825198149-0.016714612599692202-00105A989226:1629895144.744"
+  }, 
   "modified": "1995-07-31T17:30:00", 
   "next_item": {
     "@id": "http://localhost:55001/plone/copy_of_document", 
