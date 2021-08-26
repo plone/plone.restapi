@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """ Locking
 """
 from plone import api
@@ -12,7 +13,7 @@ def creator_name(username):
 
 def creator_url(username):
     url = api.portal.get().absolute_url()
-    return f"{url}/author/{username}"
+    return "{url}/author/{username}".format(url=url, username=username)
 
 
 def creation_date(timestamp):

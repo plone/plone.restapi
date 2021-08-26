@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.locking.interfaces import INonStealableLock
 from plone.locking.interfaces import IRefreshableLockable
 from plone.restapi.deserializer import json_body

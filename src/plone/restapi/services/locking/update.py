@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.locking.interfaces import IRefreshableLockable
 from plone.restapi.services import Service
 from plone.restapi.services.locking import lock_info

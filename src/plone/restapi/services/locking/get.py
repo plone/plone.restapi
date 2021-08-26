@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from plone.restapi.services import Service
 from plone.restapi.services.locking import lock_info
 
