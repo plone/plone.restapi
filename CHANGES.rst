@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.9.1 (2021-08-27)
+------------------
+
+Bug fixes:
+
+
+- Fixes values not being stored during content creation if value is equal to the one returned by defaultFactory.
+  [ericof] (#1207)
+
+
 8.9.0 (2021-08-25)
 ------------------
 

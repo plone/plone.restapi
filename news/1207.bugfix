@@ -1,2 +1,0 @@
-Fixes values not being stored during content creation if value is equal to the one returned by defaultFactory.
-[ericof]
