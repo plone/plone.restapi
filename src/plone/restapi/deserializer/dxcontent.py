@@ -41,7 +41,7 @@ class DeserializeFromJson(OrderingMixin):
         if data is None:
             data = json_body(self.request)
 
-        schema_data, errors = self.get_schema_data(data, validate_all)
+        schema_data, errors = self.get_schema_data(data, validate_all, create)
 
         # Validate schemata
         for schema, field_data in schema_data.items():
@@ -75,7 +75,7 @@ class DeserializeFromJson(OrderingMixin):
 
         return self.context
 
-    def get_schema_data(self, data, validate_all):
+    def get_schema_data(self, data, validate_all, create=False):
         schema_data = {}
         errors = []
 
@@ -133,7 +133,18 @@ class DeserializeFromJson(OrderingMixin):
                         errors.append({"message": e.doc(), "field": name, "error": e})
                     else:
                         field_data[name] = value
-                        if value != dm.get():
+                        current_value = dm.get()
+                        if value != current_value:
+                            should_change = True
+                        elif create and dm.field.defaultFactory:
+                            # During content creation we should set the value even if
+                            # it is the same from the dm if the current_value was
+                            # returned from a default_factory method
+                            should_change = dm.field.defaultFactory(self.context) == current_value
+                        else:
+                            should_change = False
+
+                        if should_change:
                             dm.set(value)
                             self.mark_field_as_changed(schema, name)
 
