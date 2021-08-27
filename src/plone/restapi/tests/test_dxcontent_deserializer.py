@@ -221,9 +221,7 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         )
         context = self.portal.doc_default_value
         default_value = "DefaultFactory"
-        body = {
-            "test_default_factory_field": default_value
-        }
+        body = {"test_default_factory_field": default_value}
         self.deserialize(body=json.dumps(body), context=context, create=True)
         self.assertIn(
             "test_default_factory_field",

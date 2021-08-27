@@ -140,7 +140,9 @@ class DeserializeFromJson(OrderingMixin):
                             # During content creation we should set the value even if
                             # it is the same from the dm if the current_value was
                             # returned from a default_factory method
-                            should_change = dm.field.defaultFactory(self.context) == current_value
+                            should_change = (
+                                dm.field.defaultFactory(self.context) == current_value
+                            )
                         else:
                             should_change = False
 
