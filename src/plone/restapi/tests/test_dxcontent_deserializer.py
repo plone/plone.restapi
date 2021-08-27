@@ -41,11 +41,11 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
                 "Document", id="doc" + str(x), title="Test doc " + str(x)
             )
 
-    def deserialize(self, body="{}", validate_all=False, context=None):
+    def deserialize(self, body="{}", validate_all=False, context=None, create=False):
         context = context or self.portal.doc1
         self.request["BODY"] = body
         deserializer = getMultiAdapter((context, self.request), IDeserializeFromJson)
-        return deserializer(validate_all=validate_all)
+        return deserializer(validate_all=validate_all, create=create)
 
     def test_deserializer_raises_with_invalid_body(self):
         with self.assertRaises(DeserializationError) as cm:
@@ -210,6 +210,24 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         self.assertNotEqual(current_layout, "my_new_layout")
         self.deserialize(body='{"layout": "my_new_layout"}')
         self.assertEqual("my_new_layout", self.portal.doc1.getLayout())
+
+    def test_deserializer_should_store_default_value_on_content_creation(self):
+        # Store default_factory values during content creation. This is specially
+        # important for content types like Event, where the default_factory returns
+        # a distinct value each time.
+        self.portal.invokeFactory(
+            "DXTestDocument",
+            id="doc_default_value",
+        )
+        context = self.portal.doc_default_value
+        default_value = "DefaultFactory"
+        body = {"test_default_factory_field": default_value}
+        self.deserialize(body=json.dumps(body), context=context, create=True)
+        self.assertIn(
+            "test_default_factory_field",
+            dir(context),
+            "Default value still available.",
+        )
 
 
 class TestDXContentSerializerDeserializer(unittest.TestCase):
