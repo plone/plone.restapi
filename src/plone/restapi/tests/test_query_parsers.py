@@ -42,6 +42,10 @@ class TestZCTextIndexQueryParser(unittest.TestCase):
         qp = ZCTextIndexQueryParser()
         self.assertEqual({"query": "42"}, qp.parse({"query": 42}))
 
+    def test_strip_parenthesis_from_value(self):
+        qp = ZCTextIndexQueryParser()
+        self.assertEqual("foo bar", qp.parse("foo (bar)"))
+
 
 class TestKeywordIndexQueryParser(unittest.TestCase):
     def test_returns_simple_query_unchanged(self):

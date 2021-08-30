@@ -49,7 +49,7 @@ from zope.interface import implementer
 from zope.interface import Interface
 
 import logging
-
+import re
 
 log = logging.getLogger(__name__)
 
@@ -191,6 +191,10 @@ class ZCTextIndexQueryParser(BaseIndexQueryParser):
 
     query_value_type = str
     query_options = {}
+
+    def parse_query_value(self, query_value):
+        value = super(ZCTextIndexQueryParser, self).parse_query_value(query_value)
+        return re.sub(r"[\([{})\]]", "", value)
 
 
 @implementer(IIndexQueryParser)
