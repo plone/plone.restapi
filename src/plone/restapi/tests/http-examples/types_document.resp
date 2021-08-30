@@ -4,293 +4,293 @@ Content-Type: application/json+schema
 {
   "fieldsets": [
     {
-      "behavior": "plone", 
+      "behavior": "plone",
       "fields": [
-        "title", 
-        "description", 
-        "author_email", 
-        "text", 
+        "title",
+        "description",
+        "author_email",
+        "text",
         "changeNote"
-      ], 
-      "id": "default", 
+      ],
+      "id": "default",
       "title": "Default"
-    }, 
+    },
     {
-      "behavior": "plone", 
+      "behavior": "plone",
       "fields": [
-        "allow_discussion", 
-        "exclude_from_nav", 
-        "id", 
-        "versioning_enabled", 
+        "allow_discussion",
+        "exclude_from_nav",
+        "id",
+        "versioning_enabled",
         "table_of_contents"
-      ], 
-      "id": "settings", 
+      ],
+      "id": "settings",
       "title": "Settings"
-    }, 
+    },
     {
-      "behavior": "plone", 
+      "behavior": "plone",
       "fields": [
-        "subjects", 
-        "language", 
+        "subjects",
+        "language",
         "relatedItems"
-      ], 
-      "id": "categorization", 
+      ],
+      "id": "categorization",
       "title": "Categorization"
-    }, 
+    },
     {
-      "behavior": "plone", 
+      "behavior": "plone",
       "fields": [
-        "effective", 
+        "effective",
         "expires"
-      ], 
-      "id": "dates", 
+      ],
+      "id": "dates",
       "title": "Dates"
-    }, 
+    },
     {
-      "behavior": "plone", 
+      "behavior": "plone",
       "fields": [
-        "creators", 
-        "contributors", 
+        "creators",
+        "contributors",
         "rights"
-      ], 
-      "id": "ownership", 
+      ],
+      "id": "ownership",
       "title": "Ownership"
-    }, 
+    },
     {
-      "behavior": "plone.dexterity.schema.generated", 
-      "description": "Contact information", 
-      "fields": [], 
-      "id": "contact_info", 
+      "behavior": "plone.dexterity.schema.generated",
+      "description": "Contact information",
+      "fields": [],
+      "id": "contact_info",
       "title": "Contact Info"
     }
-  ], 
+  ],
   "layouts": [
     "document_view"
-  ], 
+  ],
   "properties": {
     "allow_discussion": {
-      "behavior": "plone.allowdiscussion", 
+      "behavior": "plone.allowdiscussion",
       "choices": [
         [
-          "True", 
+          "True",
           "Yes"
-        ], 
+        ],
         [
-          "False", 
+          "False",
           "No"
         ]
-      ], 
-      "description": "Allow discussion for this content object.", 
+      ],
+      "description": "Allow discussion for this content object.",
       "enum": [
-        "True", 
+        "True",
         "False"
-      ], 
+      ],
       "enumNames": [
-        "Yes", 
+        "Yes",
         "No"
-      ], 
-      "factory": "Choice", 
-      "title": "Allow discussion", 
-      "type": "string", 
+      ],
+      "factory": "Choice",
+      "title": "Allow discussion",
+      "type": "string",
       "vocabulary": {
         "@id": "http://localhost:55001/plone/@sources/allow_discussion"
       }
-    }, 
+    },
     "author_email": {
-      "behavior": "plone.dexterity.schema.generated.plone_0_Document", 
-      "description": "Email of the author", 
-      "factory": "Email", 
-      "title": "Author email", 
-      "type": "string", 
+      "behavior": "plone.dexterity.schema.generated.plone_0_Document",
+      "description": "Email of the author",
+      "factory": "Email",
+      "title": "Author email",
+      "type": "string",
       "widget": "email"
-    }, 
+    },
     "changeNote": {
-      "behavior": "plone.versioning", 
-      "description": "Enter a comment that describes the changes you made.", 
-      "factory": "Text line (String)", 
-      "title": "Change Note", 
+      "behavior": "plone.versioning",
+      "description": "Enter a comment that describes the changes you made.",
+      "factory": "Text line (String)",
+      "title": "Change Note",
       "type": "string"
-    }, 
+    },
     "contributors": {
-      "additionalItems": true, 
-      "behavior": "plone.dublincore", 
-      "description": "The names of people that have contributed to this item. Each contributor should be on a separate line.", 
-      "factory": "Tuple", 
+      "additionalItems": true,
+      "behavior": "plone.dublincore",
+      "description": "The names of people that have contributed to this item. Each contributor should be on a separate line.",
+      "factory": "Tuple",
       "items": {
-        "description": "", 
-        "factory": "Text line (String)", 
-        "title": "", 
+        "description": "",
+        "factory": "Text line (String)",
+        "title": "",
         "type": "string"
-      }, 
-      "title": "Contributors", 
-      "type": "array", 
-      "uniqueItems": true, 
+      },
+      "title": "Contributors",
+      "type": "array",
+      "uniqueItems": true,
       "widgetOptions": {
         "vocabulary": {
           "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
         }
       }
-    }, 
+    },
     "creators": {
-      "additionalItems": true, 
-      "behavior": "plone.dublincore", 
-      "description": "Persons responsible for creating the content of this item. Please enter a list of user names, one per line. The principal creator should come first.", 
-      "factory": "Tuple", 
+      "additionalItems": true,
+      "behavior": "plone.dublincore",
+      "description": "Persons responsible for creating the content of this item. Please enter a list of user names, one per line. The principal creator should come first.",
+      "factory": "Tuple",
       "items": {
-        "description": "", 
-        "factory": "Text line (String)", 
-        "title": "", 
+        "description": "",
+        "factory": "Text line (String)",
+        "title": "",
         "type": "string"
-      }, 
-      "title": "Creators", 
-      "type": "array", 
-      "uniqueItems": true, 
+      },
+      "title": "Creators",
+      "type": "array",
+      "uniqueItems": true,
       "widgetOptions": {
         "vocabulary": {
           "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
         }
       }
-    }, 
+    },
     "description": {
-      "behavior": "plone.dublincore", 
-      "description": "Used in item listings and search results.", 
-      "factory": "Text", 
-      "title": "Summary", 
-      "type": "string", 
+      "behavior": "plone.dublincore",
+      "description": "Used in item listings and search results.",
+      "factory": "Text",
+      "title": "Summary",
+      "type": "string",
       "widget": "textarea"
-    }, 
+    },
     "effective": {
-      "behavior": "plone.dublincore", 
-      "description": "If this date is in the future, the content will not show up in listings and searches until this date.", 
-      "factory": "Date/Time", 
-      "title": "Publishing Date", 
-      "type": "string", 
+      "behavior": "plone.dublincore",
+      "description": "If this date is in the future, the content will not show up in listings and searches until this date.",
+      "factory": "Date/Time",
+      "title": "Publishing Date",
+      "type": "string",
       "widget": "datetime"
-    }, 
+    },
     "exclude_from_nav": {
-      "behavior": "plone.excludefromnavigation", 
-      "default": false, 
-      "description": "If selected, this item will not appear in the navigation tree", 
-      "factory": "Yes/No", 
-      "title": "Exclude from navigation", 
+      "behavior": "plone.excludefromnavigation",
+      "default": false,
+      "description": "If selected, this item will not appear in the navigation tree",
+      "factory": "Yes/No",
+      "title": "Exclude from navigation",
       "type": "boolean"
-    }, 
+    },
     "expires": {
-      "behavior": "plone.dublincore", 
-      "description": "When this date is reached, the content will no longer be visible in listings and searches.", 
-      "factory": "Date/Time", 
-      "title": "Expiration Date", 
-      "type": "string", 
+      "behavior": "plone.dublincore",
+      "description": "When this date is reached, the content will no longer be visible in listings and searches.",
+      "factory": "Date/Time",
+      "title": "Expiration Date",
+      "type": "string",
       "widget": "datetime"
-    }, 
+    },
     "id": {
-      "behavior": "plone.shortname", 
-      "description": "This name will be displayed in the URL.", 
-      "factory": "Text line (String)", 
-      "title": "Short name", 
+      "behavior": "plone.shortname",
+      "description": "This name will be displayed in the URL.",
+      "factory": "Text line (String)",
+      "title": "Short name",
       "type": "string"
-    }, 
+    },
     "language": {
-      "behavior": "plone.dublincore", 
-      "default": "en", 
-      "description": "", 
-      "factory": "Choice", 
-      "title": "Language", 
-      "type": "string", 
+      "behavior": "plone.dublincore",
+      "default": "en",
+      "description": "",
+      "factory": "Choice",
+      "title": "Language",
+      "type": "string",
       "vocabulary": {
         "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SupportedContentLanguages"
       }
-    }, 
+    },
     "relatedItems": {
-      "additionalItems": true, 
-      "behavior": "plone.relateditems", 
-      "default": [], 
-      "description": "", 
-      "factory": "Relation List", 
+      "additionalItems": true,
+      "behavior": "plone.relateditems",
+      "default": [],
+      "description": "",
+      "factory": "Relation List",
       "items": {
-        "description": "", 
-        "factory": "Relation Choice", 
-        "title": "Related", 
-        "type": "string", 
+        "description": "",
+        "factory": "Relation Choice",
+        "title": "Related",
+        "type": "string",
         "vocabulary": {
           "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
         }
-      }, 
-      "title": "Related Items", 
-      "type": "array", 
-      "uniqueItems": true, 
+      },
+      "title": "Related Items",
+      "type": "array",
+      "uniqueItems": true,
       "widgetOptions": {
         "pattern_options": {
           "recentlyUsed": true
-        }, 
+        },
         "vocabulary": {
           "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
         }
       }
-    }, 
+    },
     "rights": {
-      "behavior": "plone.dublincore", 
-      "description": "Copyright statement or other rights information on this item.", 
-      "factory": "Text", 
-      "title": "Rights", 
-      "type": "string", 
+      "behavior": "plone.dublincore",
+      "description": "Copyright statement or other rights information on this item.",
+      "factory": "Text",
+      "title": "Rights",
+      "type": "string",
       "widget": "textarea"
-    }, 
+    },
     "subjects": {
-      "additionalItems": true, 
-      "behavior": "plone.dublincore", 
-      "description": "Tags are commonly used for ad-hoc organization of content.", 
-      "factory": "Tuple", 
+      "additionalItems": true,
+      "behavior": "plone.dublincore",
+      "description": "Tags are commonly used for ad-hoc organization of content.",
+      "factory": "Tuple",
       "items": {
-        "description": "", 
-        "factory": "Text line (String)", 
-        "title": "", 
+        "description": "",
+        "factory": "Text line (String)",
+        "title": "",
         "type": "string"
-      }, 
-      "title": "Tags", 
-      "type": "array", 
-      "uniqueItems": true, 
+      },
+      "title": "Tags",
+      "type": "array",
+      "uniqueItems": true,
       "widgetOptions": {
         "vocabulary": {
           "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
         }
       }
-    }, 
+    },
     "table_of_contents": {
-      "behavior": "plone.tableofcontents", 
-      "description": "If selected, this will show a table of contents at the top of the page.", 
-      "factory": "Yes/No", 
-      "title": "Table of contents", 
+      "behavior": "plone.tableofcontents",
+      "description": "If selected, this will show a table of contents at the top of the page.",
+      "factory": "Yes/No",
+      "title": "Table of contents",
       "type": "boolean"
-    }, 
+    },
     "text": {
-      "behavior": "plone.richtext", 
-      "description": "", 
-      "factory": "Rich Text", 
-      "title": "Text", 
-      "type": "string", 
+      "behavior": "plone.richtext",
+      "description": "",
+      "factory": "Rich Text",
+      "title": "Text",
+      "type": "string",
       "widget": "richtext"
-    }, 
+    },
     "title": {
-      "behavior": "plone.dublincore", 
-      "description": "", 
-      "factory": "Text line (String)", 
-      "title": "Title", 
+      "behavior": "plone.dublincore",
+      "description": "",
+      "factory": "Text line (String)",
+      "title": "Title",
       "type": "string"
-    }, 
+    },
     "versioning_enabled": {
-      "behavior": "plone.versioning", 
-      "default": true, 
-      "description": "Enable/disable versioning for this document.", 
-      "factory": "Yes/No", 
-      "title": "Versioning enabled", 
+      "behavior": "plone.versioning",
+      "default": true,
+      "description": "Enable/disable versioning for this document.",
+      "factory": "Yes/No",
+      "title": "Versioning enabled",
       "type": "boolean"
     }
-  }, 
+  },
   "required": [
-    "title", 
+    "title",
     "author_email"
-  ], 
-  "title": "Page", 
+  ],
+  "title": "Page",
   "type": "object"
 }
