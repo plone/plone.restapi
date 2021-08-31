@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+7.4.0 (2021-08-31)
+------------------
+
+New features:
+
+
+- Refactor `@lock` endpoint based on CRUD operations [@avoinea] (#1181)
+
+
 7.3.8 (2021-07-17)
 ------------------
 
