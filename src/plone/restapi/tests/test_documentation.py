@@ -76,6 +76,12 @@ UPLOAD_PDF_FILENAME = "file.pdf"
 open_kw = {"newline": "\n"}
 
 
+def normalize_test_port(value):
+    # When you run these tests in the Plone core development buildout,
+    # the port number is random.  Normalize this to the default port.
+    return re.sub(r"localhost:\d{5}", "localhost:55001", value)
+
+
 def pretty_json(data):
     result = json.dumps(data, sort_keys=True, indent=4, separators=(",", ": "))
     # When generating the documentation examples on different machines,
@@ -86,7 +92,7 @@ def pretty_json(data):
     # If you manually edit a file, many editors will automatically add such a line,
     # and you will see as diff: 'No newline at end of file'.  We do not want this.
     stripped += "\n"
-    return stripped
+    return normalize_test_port(stripped)
 
 
 def save_request_and_response_for_docs(name, response, response_text_override="", request_text_override=""):
@@ -99,6 +105,8 @@ def save_request_and_response_for_docs(name, response, response_text_override=""
         content_type = None
         for key, value in response.headers.items():
             if key.lower() in RESPONSE_HEADER_KEYS:
+                if key.lower() == "location":
+                    value = normalize_test_port(value)
                 resp.write(f"{key.title()}: {value}\n")
                 if key.lower() == "content-type":
                     content_type = value
