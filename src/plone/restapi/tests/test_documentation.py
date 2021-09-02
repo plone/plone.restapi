@@ -77,7 +77,16 @@ open_kw = {"newline": "\n"}
 
 
 def pretty_json(data):
-    return json.dumps(data, sort_keys=True, indent=4, separators=(",", ": "))
+    result = json.dumps(data, sort_keys=True, indent=4, separators=(",", ": "))
+    # When generating the documentation examples on different machines,
+    # it is all too easy to have differences in white space at the end of the line.
+    # So strip space on the right.
+    stripped = "\n".join([line.rstrip() for line in result.splitlines()])
+    # Make sure there is an empty line at the end.
+    # If you manually edit a file, many editors will automatically add such a line,
+    # and you will see as diff: 'No newline at end of file'.  We do not want this.
+    stripped += "\n"
+    return stripped
 
 
 def save_request_and_response_for_docs(name, response, response_text_override="", request_text_override=""):
@@ -87,11 +96,24 @@ def save_request_and_response_for_docs(name, response, response_text_override=""
         status = response.status_code
         reason = response.reason
         resp.write(f"HTTP/1.1 {status} {reason}\n")
+        content_type = None
         for key, value in response.headers.items():
             if key.lower() in RESPONSE_HEADER_KEYS:
                 resp.write(f"{key.title()}: {value}\n")
+                if key.lower() == "content-type":
+                    content_type = value
         resp.write("\n")
-        resp.write(response_text_override or response.text)
+        if response_text_override:
+            resp.write(response_text_override)
+            return
+        if not response.text:
+            # Empty response.
+            return
+        if not (content_type and content_type.startswith("application/json")):
+            resp.write(response.text)
+            return
+        # Use pretty_json as a normalizer, especially for line endings.
+        resp.write(pretty_json(response.json()))
 
 
 def save_request_for_docs(name, response, request_text_override=""):
