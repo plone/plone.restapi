@@ -748,15 +748,17 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get(
             vhm_url, params={"use_site_search_settings": 1, "path": "/"}
         ).json()
-        titles = [
-            "Some Folder",
-            "Lorem Ipsum",
-            "Other Document",
-            "Another Folder",
-            "Document in second folder",
-            "Doc outside folder",
-        ]
-        self.assertEqual([item["title"] for item in response["items"]], titles)
+        titles = sorted(
+            [
+                "Another Folder",
+                "Doc outside folder",
+                "Document in second folder",
+                "Lorem Ipsum",
+                "Other Document",
+                "Some Folder",
+            ]
+        )
+        self.assertEqual(sorted([item["title"] for item in response["items"]]), titles)
 
         noLongerProvides(self.folder, INavigationRoot)
         transaction.commit()
