@@ -77,7 +77,7 @@ def pretty_json(data):
     return json.dumps(data, sort_keys=True, indent=4, separators=(",", ": "))
 
 
-def save_request_and_response_for_docs(name, response, text_override=""):
+def save_request_and_response_for_docs(name, response, response_text_override="", request_text_override=""):
     open_kw = {"newline": "\n"}
     filename = "{}/{}".format(base_path, "%s.req" % name)
     with open(filename, "w", **open_kw) as req:
@@ -101,7 +101,7 @@ def save_request_and_response_for_docs(name, response, text_override=""):
             req.write("\n")
 
             # Pretty print JSON request body
-            if content_type == "application/json":
+            if content_type == "application/json" and not request_text_override:
                 json_body = json.loads(response.request.body)
                 body = pretty_json(json_body)
                 # Make sure Content-Length gets updated, just in case we
@@ -109,11 +109,12 @@ def save_request_and_response_for_docs(name, response, text_override=""):
                 response.request.prepare_body(data=body, files=None)
 
             req.flush()
-            if isinstance(response.request.body, str) or not hasattr(req, "buffer"):
-                req.write(response.request.body)
+            body = request_text_override or response.request.body
+            if isinstance(body, str) or not hasattr(req, "buffer"):
+                req.write(body)
             else:
                 req.buffer.seek(0, 2)
-                req.buffer.write(response.request.body)
+                req.buffer.write(body)
 
     filename = "{}/{}".format(base_path, "%s.resp" % name)
     with open(filename, "w", **open_kw) as resp:
@@ -124,7 +125,7 @@ def save_request_and_response_for_docs(name, response, text_override=""):
             if key.lower() in RESPONSE_HEADER_KEYS:
                 resp.write(f"{key.title()}: {value}\n")
         resp.write("\n")
-        resp.write(text_override or response.text)
+        resp.write(response_text_override or response.text)
 
 
 def save_request_for_docs(name, response):
@@ -515,7 +516,18 @@ class TestDocumentation(TestDocumentationBase):
                 "required": True,
             },
         )
-        save_request_and_response_for_docs("types_document_post_field", response)
+        # With plone.dexterity 2.10+ we get an unstable behavior name like this:
+        # plone.dexterity.schema.generated.plone_5_1630611587_2_523689_0_Document
+        # Replace it.
+        document_schema_re = re.compile(r"^plone.dexterity.schema.generated.plone_.*_Document$")
+        stable_behavior = "plone.dexterity.schema.generated.plone_0_Document"
+        json_response = response.json()
+        response_text_override = ""
+        behavior = json_response.get("behavior")
+        if behavior and document_schema_re.match(behavior):
+            json_response["behavior"] = stable_behavior
+            response_text_override = pretty_json(json_response)
+        save_request_and_response_for_docs("types_document_post_field", response, response_text_override)
 
         #
         # GET
@@ -523,7 +535,16 @@ class TestDocumentation(TestDocumentationBase):
 
         # Document
         response = self.api_session.get("/@types/Document")
-        save_request_and_response_for_docs("types_document", response)
+        json_response = response.json()
+        response_text_override = ""
+        try:
+            author_email = json_response["properties"]["author_email"]
+            if document_schema_re.match(author_email["behavior"]):
+                author_email["behavior"] = stable_behavior
+                response_text_override = pretty_json(json_response)
+        except KeyError:
+            pass
+        save_request_and_response_for_docs("types_document", response, response_text_override)
         doc_json = json.loads(response.content)
 
         # Get fieldset
@@ -532,7 +553,13 @@ class TestDocumentation(TestDocumentationBase):
 
         # Get field
         response = self.api_session.get("/@types/Document/author_email")
-        save_request_and_response_for_docs("types_document_get_field", response)
+        json_response = response.json()
+        response_text_override = ""
+        behavior = json_response.get("behavior")
+        if behavior and document_schema_re.match(behavior):
+            json_response["behavior"] = stable_behavior
+            response_text_override = pretty_json(json_response)
+        save_request_and_response_for_docs("types_document_get_field", response, response_text_override)
 
         #
         # PATCH
@@ -621,7 +648,21 @@ class TestDocumentation(TestDocumentationBase):
         }
 
         response = self.api_session.put("/@types/Document", json=doc_json)
-        save_request_and_response_for_docs("types_document_put", response)
+        # In this case, not the response but the request has a non deterministic behavior.
+        # I don't want to change it in the request itself, only in the test output.
+        request_text_override = ""
+        try:
+            author_email = doc_json["properties"]["author_email"]
+            if document_schema_re.match(author_email["behavior"]):
+                author_email["behavior"] = stable_behavior
+                request_text_override = pretty_json(doc_json)
+        except KeyError:
+            pass
+        save_request_and_response_for_docs(
+            "types_document_put",
+            response,
+            request_text_override=request_text_override,
+        )
 
         #
         # DELETE
@@ -1921,7 +1962,7 @@ class TestIterateDocumentation(TestDocumentationBase):
         # So replace it.
         json_response = json.loads(response.text)
         lock = json_response.get("lock")
-        text_override = ""
+        response_text_override = ""
         if lock:
             token = lock.get("token")
             if token:
@@ -1931,9 +1972,9 @@ class TestIterateDocumentation(TestDocumentationBase):
                     "0.12345678901234567-0.98765432109876543-00105A989226:1630609830.249",
                     token)
                 lock["token"] = token
-                text_override = pretty_json(json_response)
+                response_text_override = pretty_json(json_response)
         save_request_and_response_for_docs(
-            "workingcopy_baseline_get", response, text_override
+            "workingcopy_baseline_get", response, response_text_override
         )
 
         response = self.api_session.get(
