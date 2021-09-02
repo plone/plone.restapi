@@ -2,109 +2,109 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "@components": {
-    "actions": {
-      "@id": "http://localhost:55001/plone/image/@actions"
-    }, 
-    "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/image/@breadcrumbs"
-    }, 
-    "contextnavigation": {
-      "@id": "http://localhost:55001/plone/image/@contextnavigation"
-    }, 
-    "navigation": {
-      "@id": "http://localhost:55001/plone/image/@navigation"
-    }, 
-    "types": {
-      "@id": "http://localhost:55001/plone/image/@types"
-    }, 
-    "workflow": {
-      "@id": "http://localhost:55001/plone/image/@workflow"
-    }
-  }, 
-  "@id": "http://localhost:55001/plone/image", 
-  "@type": "Image", 
-  "UID": "SomeUUID000000000000000000000002", 
-  "allow_discussion": false, 
-  "contributors": [], 
-  "created": "1995-07-31T13:45:00", 
-  "creators": [
-    "test_user_1_"
-  ], 
-  "description": "This is an image", 
-  "effective": null, 
-  "exclude_from_nav": false, 
-  "expires": null, 
-  "id": "image", 
-  "image": {
-    "content-type": "image/png", 
-    "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
-    "filename": "image.png", 
-    "height": 56, 
-    "scales": {
-      "icon": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
-        "height": 8, 
-        "width": 32
-      }, 
-      "large": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
-        "height": 56, 
+    "@components": {
+        "actions": {
+            "@id": "http://localhost:55001/plone/image/@actions"
+        },
+        "breadcrumbs": {
+            "@id": "http://localhost:55001/plone/image/@breadcrumbs"
+        },
+        "contextnavigation": {
+            "@id": "http://localhost:55001/plone/image/@contextnavigation"
+        },
+        "navigation": {
+            "@id": "http://localhost:55001/plone/image/@navigation"
+        },
+        "types": {
+            "@id": "http://localhost:55001/plone/image/@types"
+        },
+        "workflow": {
+            "@id": "http://localhost:55001/plone/image/@workflow"
+        }
+    },
+    "@id": "http://localhost:55001/plone/image",
+    "@type": "Image",
+    "UID": "SomeUUID000000000000000000000002",
+    "allow_discussion": false,
+    "contributors": [],
+    "created": "1995-07-31T13:45:00",
+    "creators": [
+        "test_user_1_"
+    ],
+    "description": "This is an image",
+    "effective": null,
+    "exclude_from_nav": false,
+    "expires": null,
+    "id": "image",
+    "image": {
+        "content-type": "image/png",
+        "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
+        "filename": "image.png",
+        "height": 56,
+        "scales": {
+            "icon": {
+                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
+                "height": 8,
+                "width": 32
+            },
+            "large": {
+                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
+                "height": 56,
+                "width": 215
+            },
+            "listing": {
+                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
+                "height": 4,
+                "width": 16
+            },
+            "mini": {
+                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
+                "height": 52,
+                "width": 200
+            },
+            "preview": {
+                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
+                "height": 56,
+                "width": 215
+            },
+            "thumb": {
+                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
+                "height": 33,
+                "width": 128
+            },
+            "tile": {
+                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
+                "height": 16,
+                "width": 64
+            }
+        },
+        "size": 1185,
         "width": 215
-      }, 
-      "listing": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
-        "height": 4, 
-        "width": 16
-      }, 
-      "mini": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
-        "height": 52, 
-        "width": 200
-      }, 
-      "preview": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
-        "height": 56, 
-        "width": 215
-      }, 
-      "thumb": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
-        "height": 33, 
-        "width": 128
-      }, 
-      "tile": {
-        "download": "http://localhost:55001/plone/image/@@images/uuid1.png", 
-        "height": 16, 
-        "width": 64
-      }
-    }, 
-    "size": 1185, 
-    "width": 215
-  }, 
-  "is_folderish": false, 
-  "language": "", 
-  "layout": "image_view", 
-  "lock": {}, 
-  "modified": "1995-07-31T17:30:00", 
-  "next_item": {}, 
-  "parent": {
-    "@id": "http://localhost:55001/plone", 
-    "@type": "Plone Site", 
-    "description": "", 
-    "title": "Plone site"
-  }, 
-  "previous_item": {
-    "@id": "http://localhost:55001/plone/front-page", 
-    "@type": "Document", 
-    "description": "Congratulations! You have successfully installed Plone.", 
-    "title": "Welcome to Plone"
-  }, 
-  "relatedItems": [], 
-  "review_state": null, 
-  "rights": "", 
-  "subjects": [], 
-  "title": "My Image", 
-  "version": "current", 
-  "working_copy": null, 
-  "working_copy_of": null
+    },
+    "is_folderish": false,
+    "language": "",
+    "layout": "image_view",
+    "lock": {},
+    "modified": "1995-07-31T17:30:00",
+    "next_item": {},
+    "parent": {
+        "@id": "http://localhost:55001/plone",
+        "@type": "Plone Site",
+        "description": "",
+        "title": "Plone site"
+    },
+    "previous_item": {
+        "@id": "http://localhost:55001/plone/front-page",
+        "@type": "Document",
+        "description": "Congratulations! You have successfully installed Plone.",
+        "title": "Welcome to Plone"
+    },
+    "relatedItems": [],
+    "review_state": null,
+    "rights": "",
+    "subjects": [],
+    "title": "My Image",
+    "version": "current",
+    "working_copy": null,
+    "working_copy_of": null
 }
