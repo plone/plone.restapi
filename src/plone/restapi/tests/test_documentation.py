@@ -77,7 +77,7 @@ def pretty_json(data):
     return json.dumps(data, sort_keys=True, indent=4, separators=(",", ": "))
 
 
-def save_request_and_response_for_docs(name, response):
+def save_request_and_response_for_docs(name, response, text_override=""):
     open_kw = {"newline": "\n"}
     filename = "{}/{}".format(base_path, "%s.req" % name)
     with open(filename, "w", **open_kw) as req:
@@ -124,7 +124,7 @@ def save_request_and_response_for_docs(name, response):
             if key.lower() in RESPONSE_HEADER_KEYS:
                 resp.write(f"{key.title()}: {value}\n")
         resp.write("\n")
-        resp.write(response.text)
+        resp.write(text_override or response.text)
 
 
 def save_request_for_docs(name, response):
@@ -1916,7 +1916,25 @@ class TestIterateDocumentation(TestDocumentationBase):
             "/document",
         )
 
-        save_request_and_response_for_docs("workingcopy_baseline_get", response)
+        # The response text contains an unpredictable token.
+        # This would make the documentation tests break.
+        # So replace it.
+        json_response = json.loads(response.text)
+        lock = json_response.get("lock")
+        text_override = ""
+        if lock:
+            token = lock.get("token")
+            if token:
+                # Only replace the token when it fits a pattern.
+                token = re.sub(
+                    r".*-.*:.*",
+                    "0.12345678901234567-0.98765432109876543-00105A989226:1630609830.249",
+                    token)
+                lock["token"] = token
+                text_override = pretty_json(json_response)
+        save_request_and_response_for_docs(
+            "workingcopy_baseline_get", response, text_override
+        )
 
         response = self.api_session.get(
             "/copy_of_document",
