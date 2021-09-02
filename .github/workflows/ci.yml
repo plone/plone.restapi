@@ -52,14 +52,11 @@ jobs:
         run: bin/test
 
       # test no uncommited changes
-      # TODO Temporarily commented out.
-      # See https://github.com/plone/plone.restapi/pull/1214#issuecomment-911902998
-      # Ping Maurits if you still see this within a few days.
-      # - name: test no uncommited changes
-      #   run: bin/test-no-uncommitted-doc-changes
-      #   env:
-      #     PYTHON_VERSION: ${{ matrix.python-version }}
-      #     PLONE_VERSION: ${{ matrix.plone-version }}
+      - name: test no uncommited changes
+        run: bin/test-no-uncommitted-doc-changes
+        env:
+          PYTHON_VERSION: ${{ matrix.python-version }}
+          PLONE_VERSION: ${{ matrix.plone-version }}
 
       # test sphinx warnings
       - name: sphinx
