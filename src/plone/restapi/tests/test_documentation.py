@@ -93,7 +93,7 @@ def pretty_json(data):
     return json.dumps(data, sort_keys=True, indent=4, separators=(",", ": "))
 
 
-def save_request_and_response_for_docs(name, response):
+def save_request_and_response_for_docs(name, response, response_text_override="", request_text_override=""):
     if six.PY2:
         open_kw = {}
     else:
@@ -120,7 +120,7 @@ def save_request_and_response_for_docs(name, response):
             req.write("\n")
 
             # Pretty print JSON request body
-            if content_type == "application/json":
+            if content_type == "application/json" and not request_text_override:
                 json_body = json.loads(response.request.body)
                 body = pretty_json(json_body)
                 # Make sure Content-Length gets updated, just in case we
@@ -128,13 +128,14 @@ def save_request_and_response_for_docs(name, response):
                 response.request.prepare_body(data=body, files=None)
 
             req.flush()
-            if isinstance(response.request.body, six.text_type) or not hasattr(
+            body = request_text_override or response.request.body
+            if isinstance(body, six.text_type) or not hasattr(
                 req, "buffer"
             ):
-                req.write(response.request.body)
+                req.write(body)
             else:
                 req.buffer.seek(0, 2)
-                req.buffer.write(response.request.body)
+                req.buffer.write(body)
 
     filename = "{}/{}".format(base_path, "%s.resp" % name)
     with open(filename, "w", **open_kw) as resp:
@@ -145,7 +146,7 @@ def save_request_and_response_for_docs(name, response):
             if key.lower() in RESPONSE_HEADER_KEYS:
                 resp.write("{}: {}\n".format(key.title(), value))
         resp.write("\n")
-        resp.write(response.text)
+        resp.write(response_text_override or response.text)
 
 
 def save_request_for_docs(name, response):
@@ -545,7 +546,18 @@ class TestDocumentation(TestDocumentationBase):
                 "required": True,
             },
         )
-        save_request_and_response_for_docs("types_document_post_field", response)
+        # With plone.dexterity 2.10+ we get an unstable behavior name like this:
+        # plone.dexterity.schema.generated.plone_5_1630611587_2_523689_0_Document
+        # Replace it.
+        document_schema_re = re.compile(r"^plone.dexterity.schema.generated.plone_.*_Document$")
+        stable_behavior = "plone.dexterity.schema.generated.plone_0_Document"
+        json_response = response.json()
+        response_text_override = ""
+        behavior = json_response.get("behavior")
+        if behavior and document_schema_re.match(behavior):
+            json_response["behavior"] = stable_behavior
+            response_text_override = pretty_json(json_response)
+        save_request_and_response_for_docs("types_document_post_field", response, response_text_override)
 
         #
         # GET
@@ -553,7 +565,16 @@ class TestDocumentation(TestDocumentationBase):
 
         # Document
         response = self.api_session.get("/@types/Document")
-        save_request_and_response_for_docs("types_document", response)
+        json_response = response.json()
+        response_text_override = ""
+        try:
+            author_email = json_response["properties"]["author_email"]
+            if document_schema_re.match(author_email["behavior"]):
+                author_email["behavior"] = stable_behavior
+                response_text_override = pretty_json(json_response)
+        except KeyError:
+            pass
+        save_request_and_response_for_docs("types_document", response, response_text_override)
         doc_json = json.loads(response.content)
 
         # Get fieldset
@@ -562,7 +583,13 @@ class TestDocumentation(TestDocumentationBase):
 
         # Get field
         response = self.api_session.get("/@types/Document/author_email")
-        save_request_and_response_for_docs("types_document_get_field", response)
+        json_response = response.json()
+        response_text_override = ""
+        behavior = json_response.get("behavior")
+        if behavior and document_schema_re.match(behavior):
+            json_response["behavior"] = stable_behavior
+            response_text_override = pretty_json(json_response)
+        save_request_and_response_for_docs("types_document_get_field", response, response_text_override)
 
         #
         # PATCH
@@ -651,7 +678,21 @@ class TestDocumentation(TestDocumentationBase):
         }
 
         response = self.api_session.put("/@types/Document", json=doc_json)
-        save_request_and_response_for_docs("types_document_put", response)
+        # In this case, not the response but the request has a non deterministic behavior.
+        # I don't want to change it in the request itself, only in the test output.
+        request_text_override = ""
+        try:
+            author_email = doc_json["properties"]["author_email"]
+            if document_schema_re.match(author_email["behavior"]):
+                author_email["behavior"] = stable_behavior
+                request_text_override = pretty_json(doc_json)
+        except KeyError:
+            pass
+        save_request_and_response_for_docs(
+            "types_document_put",
+            response,
+            request_text_override=request_text_override,
+        )
 
         #
         # DELETE
