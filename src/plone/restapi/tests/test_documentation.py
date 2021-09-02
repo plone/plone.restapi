@@ -95,7 +95,9 @@ def pretty_json(data):
     return normalize_test_port(stripped)
 
 
-def save_request_and_response_for_docs(name, response, response_text_override="", request_text_override=""):
+def save_request_and_response_for_docs(
+    name, response, response_text_override="", request_text_override=""
+):
     save_request_for_docs(name, response, request_text_override=request_text_override)
     filename = "{}/{}".format(base_path, "%s.resp" % name)
     with open(filename, "w", **open_kw) as resp:
@@ -515,7 +517,9 @@ class TestDocumentation(TestDocumentationBase):
         # With plone.dexterity 2.10+ we get an unstable behavior name like this:
         # plone.dexterity.schema.generated.plone_5_1630611587_2_523689_0_Document
         # Replace it.
-        document_schema_re = re.compile(r"^plone.dexterity.schema.generated.plone_.*_Document$")
+        document_schema_re = re.compile(
+            r"^plone.dexterity.schema.generated.plone_.*_Document$"
+        )
         stable_behavior = "plone.dexterity.schema.generated.plone_0_Document"
         json_response = response.json()
         response_text_override = ""
@@ -523,7 +527,9 @@ class TestDocumentation(TestDocumentationBase):
         if behavior and document_schema_re.match(behavior):
             json_response["behavior"] = stable_behavior
             response_text_override = pretty_json(json_response)
-        save_request_and_response_for_docs("types_document_post_field", response, response_text_override)
+        save_request_and_response_for_docs(
+            "types_document_post_field", response, response_text_override
+        )
 
         #
         # GET
@@ -540,7 +546,9 @@ class TestDocumentation(TestDocumentationBase):
                 response_text_override = pretty_json(json_response)
         except KeyError:
             pass
-        save_request_and_response_for_docs("types_document", response, response_text_override)
+        save_request_and_response_for_docs(
+            "types_document", response, response_text_override
+        )
         doc_json = json.loads(response.content)
 
         # Get fieldset
@@ -555,7 +563,9 @@ class TestDocumentation(TestDocumentationBase):
         if behavior and document_schema_re.match(behavior):
             json_response["behavior"] = stable_behavior
             response_text_override = pretty_json(json_response)
-        save_request_and_response_for_docs("types_document_get_field", response, response_text_override)
+        save_request_and_response_for_docs(
+            "types_document_get_field", response, response_text_override
+        )
 
         #
         # PATCH
@@ -1966,7 +1976,8 @@ class TestIterateDocumentation(TestDocumentationBase):
                 token = re.sub(
                     r".*-.*:.*",
                     "0.12345678901234567-0.98765432109876543-00105A989226:1630609830.249",
-                    token)
+                    token,
+                )
                 lock["token"] = token
                 response_text_override = pretty_json(json_response)
         save_request_and_response_for_docs(
