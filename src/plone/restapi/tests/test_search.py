@@ -765,14 +765,10 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get(
             "/@search", params={"SearchableText": "this(wont)break"}
         ).json()
-        self.assertEqual(
-            response['items'], []
-        )
+        self.assertEqual(response['items'], [])
 
     def test_search_do_not_break_if_there_is_not_in_searchabletext(self):
         response = self.api_session.get(
             "/@search", params={"SearchableText": "this not break"}
         ).json()
-        self.assertEqual(
-            response['items'], []
-        )
+        self.assertEqual(response['items'], [])
