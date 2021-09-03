@@ -56,6 +56,7 @@ class TestZCTextIndexQueryParser(unittest.TestCase):
         self.assertEqual(qp.parse("foo not"), "foo")
         self.assertEqual(qp.parse("foo not bar"), "foo bar")
 
+
 class TestKeywordIndexQueryParser(unittest.TestCase):
     def test_returns_simple_query_unchanged(self):
         qp = KeywordIndexQueryParser()
