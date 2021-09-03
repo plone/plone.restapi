@@ -40,16 +40,16 @@ Content-Type: application/json
   "language": "", 
   "layout": "document_view", 
   "lock": {
-    "created": "1995-07-31T17:30:00", 
+    "created": "1995-07-31T19:30:00", 
     "creator": "admin", 
     "creator_name": "admin", 
     "creator_url": "http://localhost:55001/plone/author/admin", 
     "locked": true, 
     "name": "iterate.lock", 
     "stealable": false, 
-    "time": 807201000.0, 
+    "time": 807211800.0, 
     "timeout": 4294967280, 
-    "token": "0.3217605825198149-0.016714612599692202-00105A989226:1629895144.744"
+    "token": "0.02908414879648813-0.47143578888264304-00105A989226:1630694822.276"
   }, 
   "modified": "1995-07-31T17:30:00", 
   "next_item": {
