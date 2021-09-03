@@ -194,7 +194,8 @@ class ZCTextIndexQueryParser(BaseIndexQueryParser):
 
     def parse_query_value(self, query_value):
         value = super(ZCTextIndexQueryParser, self).parse_query_value(query_value)
-        return re.sub(r"[\([{})\]]", "", value)
+        value = re.sub(r"[\([{})\]]|not", " ", value)
+        return " ".join(value.split())  # remove multiple whitespaces
 
 
 @implementer(IIndexQueryParser)

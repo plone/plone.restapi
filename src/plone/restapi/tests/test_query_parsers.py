@@ -44,8 +44,17 @@ class TestZCTextIndexQueryParser(unittest.TestCase):
 
     def test_strip_parenthesis_from_value(self):
         qp = ZCTextIndexQueryParser()
-        self.assertEqual("foo bar", qp.parse("foo (bar)"))
+        self.assertEqual(qp.parse("foo (bar)"), "foo bar")
+        self.assertEqual(qp.parse("foo(bar)"), "foo bar")
+        self.assertEqual(qp.parse("foo [bar]"), "foo bar")
+        self.assertEqual(qp.parse("foo[bar]"), "foo bar")
+        self.assertEqual(qp.parse("foo {{bar}}"), "foo bar")
+        self.assertEqual(qp.parse("foo{{bar}}"), "foo bar")
 
+    def test_remove_not_from_value(self):
+        qp = ZCTextIndexQueryParser()
+        self.assertEqual(qp.parse("foo not"), "foo")
+        self.assertEqual(qp.parse("foo not bar"), "foo bar")
 
 class TestKeywordIndexQueryParser(unittest.TestCase):
     def test_returns_simple_query_unchanged(self):
