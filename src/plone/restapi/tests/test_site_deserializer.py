@@ -1,10 +1,22 @@
+from plone.dexterity.interfaces import IDexterityFTI
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.mixin_ordering import OrderingMixin
 from zope.component import getMultiAdapter
+from zope.component import queryUtility
 
 import json
 import unittest
+
+
+try:
+    from Products.CMFPlone.factory import PLONE60MARKER
+
+    PLONE60MARKER  # pyflakes
+except ImportError:
+    PLONE_6 = False
+else:
+    PLONE_6 = True
 
 
 class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
@@ -49,12 +61,22 @@ class TestSiteRootDeserializer(unittest.TestCase):
             id="doc1",
         )
 
+        fti = queryUtility(IDexterityFTI, name="Plone Site")
+        if fti is not None:
+            behavior_list = [a for a in fti.behaviors]
+            behavior_list.append("volto.blocks")
+            fti.behaviors = tuple(behavior_list)
+
     def deserialize(self, body="{}", validate_all=False, context=None):
         context = context or self.portal
         self.request["BODY"] = body
         deserializer = getMultiAdapter((context, self.request), IDeserializeFromJson)
         return deserializer(validate_all=validate_all)
 
+    @unittest.skipIf(
+        not PLONE_6,
+        "This test is only intended to run for Plone 5 and the blocks behavior site root hack enabled",
+    )
     def test_opt_in_blocks_deserializer(self):
         blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {"@type": "description"},
@@ -76,6 +98,10 @@ class TestSiteRootDeserializer(unittest.TestCase):
         self.assertEqual(blocks, json.loads(self.portal.blocks))
         self.assertEqual(blocks_layout, json.loads(self.portal.blocks_layout))
 
+    @unittest.skipIf(
+        not PLONE_6,
+        "This test is only intended to run for Plone 5 and the blocks behavior site root hack enabled",
+    )
     def test_resolveuids_blocks_deserializer(self):
         blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {
@@ -98,6 +124,58 @@ class TestSiteRootDeserializer(unittest.TestCase):
         )
 
         values = json.loads(self.portal.blocks)
+        self.assertEqual(
+            values["0358abe2-b4f1-463d-a279-a63ea80daf19"]["url"],
+            f"resolveuid/{self.portal.doc1.UID()}",
+        )
+
+    @unittest.skipIf(
+        PLONE_6,
+        "This test is only intended to run for Plone 6 and DX site root enabled",
+    )
+    def test_opt_in_blocks_deserializer(self):
+        blocks = {
+            "0358abe2-b4f1-463d-a279-a63ea80daf19": {"@type": "description"},
+            "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
+        }
+        blocks_layout = {
+            "items": [
+                "07c273fc-8bfc-4e7d-a327-d513e5a945bb",
+                "0358abe2-b4f1-463d-a279-a63ea80daf19",
+            ]
+        }
+
+        self.deserialize(
+            body='{{"blocks": {}, "blocks_layout": {}}}'.format(blocks, blocks_layout)
+        )
+
+        self.assertEqual(blocks, self.portal.blocks)
+        self.assertEqual(blocks_layout, self.portal.blocks_layout)
+
+    @unittest.skipIf(
+        PLONE_6,
+        "This test is only intended to run for Plone 6 and DX site root enabled",
+    )
+    def test_resolveuids_blocks_deserializer(self):
+        blocks = {
+            "0358abe2-b4f1-463d-a279-a63ea80daf19": {
+                "@type": "foo",
+                "url": self.portal.doc1.absolute_url(),
+            },
+            "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
+        }
+        blocks_layout = {
+            "items": [
+                "07c273fc-8bfc-4e7d-a327-d513e5a945bb",
+                "0358abe2-b4f1-463d-a279-a63ea80daf19",
+            ]
+        }
+
+        self.deserialize(
+            body='{{"blocks": {}, "blocks_layout": {}}}'.format(blocks, blocks_layout)
+        )
+
+        values = self.portal.blocks
         self.assertEqual(
             values["0358abe2-b4f1-463d-a279-a63ea80daf19"]["url"],
             f"resolveuid/{self.portal.doc1.UID()}",

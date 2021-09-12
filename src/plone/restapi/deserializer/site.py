@@ -10,6 +10,15 @@ from zope.publisher.interfaces import IRequest
 
 import json
 
+try:
+    from Products.CMFPlone.factory import PLONE60MARKER
+
+    PLONE60MARKER  # pyflakes
+except ImportError:
+    PLONE_6 = False
+else:
+    PLONE_6 = True
+
 
 @implementer(IDeserializeFromJson)
 @adapter(IPloneSiteRoot, IRequest)
@@ -34,44 +43,47 @@ class DeserializeSiteRootFromJson(OrderingMixin):
             data["ordering"]["subset_ids"] = self.context.contentIds()
         self.handle_ordering(data)
 
-        # Volto Blocks on the Plone Site root faker
-        if "blocks" in data:
-            value = data["blocks"]
-            for id, block_value in value.items():
-                block_type = block_value.get("@type", "")
-                handlers = []
-                for h in subscribers(
-                    (self.context, self.request),
-                    IBlockFieldDeserializationTransformer,
-                ):
-                    if h.block_type == block_type or h.block_type is None:
-                        handlers.append(h)
-                for handler in sorted(handlers, key=lambda h: h.order):
-                    block_value = handler(block_value)
-                value[id] = block_value
-            if not getattr(self.context, "blocks", False):
-                self.context.manage_addProperty(
-                    "blocks", json.dumps(value), "string"
-                )  # noqa
-            else:
-                self.context.manage_changeProperties(blocks=json.dumps(value))  # noqa
+        # Volto Blocks on the Plone Site root faker for Plone 5
+        if not PLONE_6:
+            if "blocks" in data:
+                value = data["blocks"]
+                for id, block_value in value.items():
+                    block_type = block_value.get("@type", "")
+                    handlers = []
+                    for h in subscribers(
+                        (self.context, self.request),
+                        IBlockFieldDeserializationTransformer,
+                    ):
+                        if h.block_type == block_type or h.block_type is None:
+                            handlers.append(h)
+                    for handler in sorted(handlers, key=lambda h: h.order):
+                        block_value = handler(block_value)
+                    value[id] = block_value
+                if not getattr(self.context, "blocks", False):
+                    self.context.manage_addProperty(
+                        "blocks", json.dumps(value), "string"
+                    )  # noqa
+                else:
+                    self.context.manage_changeProperties(
+                        blocks=json.dumps(value)
+                    )  # noqa
 
-        if "blocks_layout" in data:
-            if not getattr(self.context, "blocks_layout", False):
-                self.context.manage_addProperty(
-                    "blocks_layout", json.dumps(data["blocks_layout"]), "string"
-                )  # noqa
-            else:
+            if "blocks_layout" in data:
+                if not getattr(self.context, "blocks_layout", False):
+                    self.context.manage_addProperty(
+                        "blocks_layout", json.dumps(data["blocks_layout"]), "string"
+                    )  # noqa
+                else:
+                    self.context.manage_changeProperties(
+                        blocks_layout=json.dumps(data["blocks_layout"])
+                    )  # noqa
+
+            if "title" in data:
+                self.context.setTitle(data["title"])
+
+            if "description" in data:
                 self.context.manage_changeProperties(
-                    blocks_layout=json.dumps(data["blocks_layout"])
+                    description=data["description"]
                 )  # noqa
-
-        if "title" in data:
-            self.context.setTitle(data["title"])
-
-        if "description" in data:
-            self.context.manage_changeProperties(
-                description=data["description"]
-            )  # noqa
 
         return self.context

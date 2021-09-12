@@ -13,6 +13,15 @@ from zope.interface import Interface
 
 import json
 
+try:
+    from Products.CMFPlone.factory import PLONE60MARKER
+
+    PLONE60MARKER  # pyflakes
+except ImportError:
+    PLONE_6 = False
+else:
+    PLONE_6 = True
+
 
 @implementer(ISerializeToJson)
 @adapter(IPloneSiteRoot, Interface)
@@ -50,11 +59,18 @@ class SerializeSiteRootToJson:
             "parent": {},
             "is_folderish": True,
             "description": self.context.description,
-            "blocks": self.serialize_blocks(),
-            "blocks_layout": json.loads(
-                getattr(self.context, "blocks_layout", "{}")
-            ),  # noqa
         }
+
+        if not PLONE_6:
+            # Apply the fake blocks behavior in site root hack using site root properties
+            result.update(
+                {
+                    "blocks": self.serialize_blocks(),
+                    "blocks_layout": json.loads(
+                        getattr(self.context, "blocks_layout", "{}")
+                    ),
+                }
+            )
 
         # Insert expandable elements
         result.update(expandable_elements(self.context, self.request))
