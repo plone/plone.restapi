@@ -58,7 +58,7 @@ class TestSiteSerializer(unittest.TestCase):
         not PLONE_6,
         "This test is only intended to run for Plone 5 and the blocks behavior site root hack enabled",
     )
-    def test_resolveuids_get_serialized_in_serializer(self):
+    def test_resolveuids_get_serialized_in_serializer_plone5(self):
         blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {
                 "@type": "foo",

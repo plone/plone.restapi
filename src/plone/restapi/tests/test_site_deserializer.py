@@ -77,7 +77,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
         not PLONE_6,
         "This test is only intended to run for Plone 5 and the blocks behavior site root hack enabled",
     )
-    def test_opt_in_blocks_deserializer(self):
+    def test_opt_in_blocks_deserializer_plone5(self):
         blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {"@type": "description"},
             "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
@@ -102,7 +102,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
         not PLONE_6,
         "This test is only intended to run for Plone 5 and the blocks behavior site root hack enabled",
     )
-    def test_resolveuids_blocks_deserializer(self):
+    def test_resolveuids_blocks_deserializer_plone5(self):
         blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {
                 "@type": "foo",
