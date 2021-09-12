@@ -55,7 +55,7 @@ class TestSiteSerializer(unittest.TestCase):
         self.assertEqual(True, obj["is_folderish"])
 
     @unittest.skipIf(
-        not PLONE_6,
+        PLONE_6,
         "This test is only intended to run for Plone 5 and the blocks behavior site root hack enabled",
     )
     def test_resolveuids_get_serialized_in_serializer_plone5(self):
@@ -74,7 +74,7 @@ class TestSiteSerializer(unittest.TestCase):
         )
 
     @unittest.skipIf(
-        PLONE_6,
+        not PLONE_6,
         "This test is only intended to run for Plone 6 and DX site root enabled",
     )
     def test_resolveuids_get_serialized_in_serializer(self):

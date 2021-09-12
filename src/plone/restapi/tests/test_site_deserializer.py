@@ -74,7 +74,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
         return deserializer(validate_all=validate_all)
 
     @unittest.skipIf(
-        not PLONE_6,
+        PLONE_6,
         "This test is only intended to run for Plone 5 and the blocks behavior site root hack enabled",
     )
     def test_opt_in_blocks_deserializer_plone5(self):
@@ -99,7 +99,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
         self.assertEqual(blocks_layout, json.loads(self.portal.blocks_layout))
 
     @unittest.skipIf(
-        not PLONE_6,
+        PLONE_6,
         "This test is only intended to run for Plone 5 and the blocks behavior site root hack enabled",
     )
     def test_resolveuids_blocks_deserializer_plone5(self):
@@ -130,7 +130,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
         )
 
     @unittest.skipIf(
-        PLONE_6,
+        not PLONE_6,
         "This test is only intended to run for Plone 6 and DX site root enabled",
     )
     def test_opt_in_blocks_deserializer(self):
@@ -153,7 +153,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
         self.assertEqual(blocks_layout, self.portal.blocks_layout)
 
     @unittest.skipIf(
-        PLONE_6,
+        not PLONE_6,
         "This test is only intended to run for Plone 6 and DX site root enabled",
     )
     def test_resolveuids_blocks_deserializer(self):
