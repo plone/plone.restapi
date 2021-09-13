@@ -1,0 +1,2 @@
+Fix @users endpoint to return list of users ordered by fullname property
+[ericof]
