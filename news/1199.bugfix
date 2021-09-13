@@ -1,0 +1,2 @@
+Fix @users endpoint to use acl_users.searchResults instead of portal_membership.listMembers
+[ericof]
