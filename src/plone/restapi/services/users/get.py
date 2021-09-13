@@ -42,7 +42,9 @@ class UsersGet(Service):
 
     def _get_filtered_users(self, query, limit):
         results = self.acl_users.searchUsers(id=query, max_results=limit)
-        return [self.portal_membership.getMemberById(user["userid"]) for user in results]
+        return [
+            self.portal_membership.getMemberById(user["userid"]) for user in results
+        ]
 
     def has_permission_to_query(self):
         sm = getSecurityManager()
