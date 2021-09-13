@@ -2,6 +2,7 @@ from AccessControl import getSecurityManager
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import normalizeString
 from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
@@ -36,15 +37,25 @@ class UsersGet(Service):
     def _get_user(self, user_id):
         return self.portal_membership.getMemberById(user_id)
 
+    @staticmethod
+    def _sort_users(users):
+        users.sort(
+            key=lambda x: x is not None
+            and normalizeString(x.getProperty("fullname", ""))
+        )
+        return users
+
     def _get_users(self):
         results = {user["userid"] for user in self.acl_users.searchUsers()}
-        return [self.portal_membership.getMemberById(userid) for userid in results]
+        users = [self.portal_membership.getMemberById(userid) for userid in results]
+        return self._sort_users(users)
 
     def _get_filtered_users(self, query, limit):
         results = self.acl_users.searchUsers(id=query, max_results=limit)
-        return [
+        users = [
             self.portal_membership.getMemberById(user["userid"]) for user in results
         ]
+        return self._sort_users(users)
 
     def has_permission_to_query(self):
         sm = getSecurityManager()
