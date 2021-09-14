@@ -544,7 +544,9 @@ class TestDocumentation(TestDocumentationBase):
         document_schema_re = re.compile(
             r"^plone.dexterity.schema.generated.plone_.*_Document$"
         )
-        stable_behavior = "plone.dexterity.schema.generated.plone_5_1234567890_2_123456_0_Document"
+        stable_behavior = (
+            "plone.dexterity.schema.generated.plone_5_1234567890_2_123456_0_Document"
+        )
         json_response = response.json()
         response_text_override = ""
         behavior = json_response.get("behavior")
