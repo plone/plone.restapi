@@ -64,6 +64,7 @@ class TestTUS(unittest.TestCase):
     def setUp(self):
         self.app = self.layer["app"]
         self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
         login(self.portal, SITE_OWNER_NAME)
 
         self.folder = api.content.create(
@@ -72,7 +73,7 @@ class TestTUS(unittest.TestCase):
         self.upload_url = "{}/@tus-upload".format(self.folder.absolute_url())
         transaction.commit()
 
-        self.api_session = RelativeSession(self.portal.absolute_url())
+        self.api_session = RelativeSession(self.portal_url, self.app)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -582,8 +583,10 @@ class TestTUSUploadWithCORS(unittest.TestCase):
         provideAdapter(
             CORSTestPolicy, adapts=(Interface, IBrowserRequest), provides=ICORSPolicy
         )
+        self.app = self.layer["app"]
         self.portal = self.layer["portal"]
-        self.api_session = RelativeSession(self.portal.absolute_url())
+        self.portal_url = self.portal.absolute_url()
+        self.api_session = RelativeSession(self.portal_url, self.app)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         self.upload_url = "{}/@tus-upload".format(self.portal.absolute_url())
@@ -748,7 +751,9 @@ class TestTUSWithAT(unittest.TestCase):
     def setUp(self):
         if not HAS_AT:
             raise unittest.SkipTest("Skip tests if Archetypes is not present")
+        self.app = self.layer["app"]
         self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         login(self.portal, TEST_USER_NAME)
 
@@ -758,7 +763,7 @@ class TestTUSWithAT(unittest.TestCase):
         self.upload_url = "{}/@tus-upload".format(self.folder.absolute_url())
         transaction.commit()
 
-        self.api_session = RelativeSession(self.portal.absolute_url())
+        self.api_session = RelativeSession(self.portal_url, self.app)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
 

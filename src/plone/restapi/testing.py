@@ -352,24 +352,31 @@ class RelativeSession(requests.Session):
     base if their URL is relative (doesn't begin with a HTTP[S] scheme).
     """
 
-    def __init__(self, base_url):
+    def __init__(self, base_url, app=None):
         super(RelativeSession, self).__init__()
         if not base_url.endswith("/"):
             base_url += "/"
         self.__base_url = base_url
+        self.__app = app
 
     def request(self, method, url, **kwargs):
         if urlparse(url).scheme not in ("http", "https"):
             url = url.lstrip("/")
             url = urljoin(self.__base_url, url)
         try:
-            return super(RelativeSession, self).request(method, url, **kwargs)
+            result = super(RelativeSession, self).request(method, url, **kwargs)
         except ConnectionError:
             # On Jenkins we often get one ConnectionError in a seemingly
             # random test, mostly in test_documentation.py.
             # The server is still listening: the port is open.  We retry once.
             time.sleep(1)
-            return super(RelativeSession, self).request(method, url, **kwargs)
+            result = super(RelativeSession, self).request(method, url, **kwargs)
+
+        # Sync transaction, just like the zope testbrowser integration does:
+        # https://github.com/plone/plone.testing/blob/8.0.3/src/plone/testing/_z2_testbrowser.py#L69
+        if self.__app is not None:
+            self.__app._p_jar.sync()
+        return result
 
 
 @implementer(IUUIDGenerator)

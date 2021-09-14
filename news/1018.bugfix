@@ -1,0 +1,3 @@
+Tests: make RelativeSession transaction aware.
+This should fix some random test failures.
+[maurits]

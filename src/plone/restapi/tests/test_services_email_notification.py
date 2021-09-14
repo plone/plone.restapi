@@ -40,10 +40,10 @@ class EmailNotificationEndpoint(unittest.TestCase):
         registry["plone.email_from_address"] = "info@plone.org"
         registry["plone.email_from_name"] = u"Plone test site"
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, self.app)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        self.anon_api_session = RelativeSession(self.portal_url)
+        self.anon_api_session = RelativeSession(self.portal_url, self.app)
         self.anon_api_session.headers.update({"Accept": "application/json"})
 
         transaction.commit()

@@ -19,7 +19,7 @@ class TestDatabaseServiceFunctional(unittest.TestCase):
         self.request = self.portal.REQUEST
         self.catalog = getToolByName(self.portal, "portal_catalog")
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, self.app)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 

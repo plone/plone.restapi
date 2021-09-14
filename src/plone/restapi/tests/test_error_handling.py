@@ -39,7 +39,7 @@ class TestErrorHandling(unittest.TestCase):
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, self.app)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 

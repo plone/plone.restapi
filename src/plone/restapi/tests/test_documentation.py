@@ -196,7 +196,7 @@ class TestDocumentationBase(unittest.TestCase):
         pushGlobalRegistry(getSite())
         register_static_uuid_utility(prefix="SomeUUID")
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, self.app)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -816,7 +816,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("users", response)
 
     def test_documentation_users_as_anonymous(self):
-        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session = RelativeSession(self.portal_url, self.app)
         logged_out_api_session.headers.update({"Accept": "application/json"})
 
         response = logged_out_api_session.get("@users")
@@ -841,7 +841,7 @@ class TestDocumentation(TestDocumentationBase):
         )
         transaction.commit()
 
-        standard_api_session = RelativeSession(self.portal_url)
+        standard_api_session = RelativeSession(self.portal_url, self.app)
         standard_api_session.headers.update({"Accept": "application/json"})
         standard_api_session.auth = ("noam", "password")
 
@@ -880,7 +880,7 @@ class TestDocumentation(TestDocumentationBase):
         )
         transaction.commit()
 
-        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session = RelativeSession(self.portal_url, self.app)
         logged_out_api_session.headers.update({"Accept": "application/json"})
 
         response = logged_out_api_session.get("@users/noam")
@@ -912,7 +912,7 @@ class TestDocumentation(TestDocumentationBase):
 
         transaction.commit()
 
-        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session = RelativeSession(self.portal_url, self.app)
         logged_out_api_session.headers.update({"Accept": "application/json"})
         logged_out_api_session.auth = ("noam-fake", "secret")
 
@@ -937,7 +937,7 @@ class TestDocumentation(TestDocumentationBase):
         )
         transaction.commit()
 
-        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session = RelativeSession(self.portal_url, self.app)
         logged_out_api_session.headers.update({"Accept": "application/json"})
         logged_out_api_session.auth = ("noam", "secret")
         response = logged_out_api_session.get("@users/noam")
