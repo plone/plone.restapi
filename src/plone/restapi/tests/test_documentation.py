@@ -516,11 +516,15 @@ class TestDocumentation(TestDocumentationBase):
         )
         # With plone.dexterity 2.10+ we get an unstable behavior name like this:
         # plone.dexterity.schema.generated.plone_5_1630611587_2_523689_0_Document
-        # Replace it.
+        # In older versions, we got this:
+        # plone.dexterity.schema.generated.plone_0_Document
+        # Normalize this to look like the new name
         document_schema_re = re.compile(
-            r"^plone.dexterity.schema.generated.plone_.*_Document$"
+            r"^plone.dexterity.schema.generated.plone_5_\d*_2_\d*_0_Document$"
         )
-        stable_behavior = "plone.dexterity.schema.generated.plone_0_Document"
+        stable_behavior = (
+            "plone.dexterity.schema.generated.plone_5_1234567890_2_123456_0_Document"
+        )
         json_response = response.json()
         response_text_override = ""
         behavior = json_response.get("behavior")
