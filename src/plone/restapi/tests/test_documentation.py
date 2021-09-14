@@ -542,7 +542,7 @@ class TestDocumentation(TestDocumentationBase):
         # plone.dexterity.schema.generated.plone_0_Document
         # Normalize this to look like the new name
         document_schema_re = re.compile(
-            r"^plone.dexterity.schema.generated.plone_.*_Document$"
+            r"^plone.dexterity.schema.generated.plone_5_\d*_2_\d*_0_Document$"
         )
         stable_behavior = (
             "plone.dexterity.schema.generated.plone_5_1234567890_2_123456_0_Document"
