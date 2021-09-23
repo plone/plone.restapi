@@ -5,15 +5,32 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_VERSION
 from plone.restapi.testing import RelativeSession
 
+import six
+import time
 import transaction
 import unittest
+
+
+PYTHON2_PLONE52 = PLONE_VERSION.base_version >= "5.2" and six.PY2
 
 
 class TestServicesTypes(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def sleep_python2_plone52(self, seconds=0.2):
+        """plone.dexterity 2.10+ now uses the _p_mtime variable in the schema names.
+        As this variable is related to date/time and the tests are executed very fast,
+        some schema had the same name, when they shouldn't be. This was causing
+        problems in the tests. So we introduce sleeps in Plone 5.2 with Python 2,
+        so that the schemas don't have the same names. In Python 3 we don't have this
+        problem because the precision of _p_mtime is higher in Python 3.
+        """
+        if PYTHON2_PLONE52:
+            time.sleep(seconds)
 
     def setUp(self):
         self.app = self.layer["app"]
@@ -60,6 +77,7 @@ class TestServicesTypes(unittest.TestCase):
                 "description": "Website of the author",
             },
         )
+        self.sleep_python2_plone52()
 
     def tearDown(self):
         # Remove all custom changed on Document
@@ -114,6 +132,7 @@ class TestServicesTypes(unittest.TestCase):
         )  # noqa
 
     def test_types_document_get_fieldset(self):
+        self.sleep_python2_plone52()
         response = self.api_session.get("/@types/Document/contact_info")
 
         self.assertEqual(response.status_code, 200)
@@ -253,6 +272,7 @@ class TestServicesTypes(unittest.TestCase):
                 "required": False,
             },
         )
+        self.sleep_python2_plone52()
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@types/Document/author_email")
@@ -317,6 +337,7 @@ class TestServicesTypes(unittest.TestCase):
                 },
             },
         )
+        self.sleep_python2_plone52(0.4)
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@types/Document")
@@ -389,6 +410,7 @@ class TestServicesTypes(unittest.TestCase):
         }
 
         response = self.api_session.put("/@types/Document", json=doc_json)
+        self.sleep_python2_plone52(0.4)
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@types/Document")
@@ -429,6 +451,7 @@ class TestServicesTypes(unittest.TestCase):
         response = self.api_session.delete(
             "/@types/Document/author_email",
         )
+        self.sleep_python2_plone52(0.4)
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@types/Document")
