@@ -8,6 +8,28 @@ Changelog
 
 .. towncrier release notes start
 
+8.10.0 (2021-09-24)
+-------------------
+
+New features:
+
+
+- Update default allow_headers CORS to include: Lock-Token [@avoinea] (#1181)
+- @types endpoint also returns if a content type is immediately addable in the given context
+  [ericof] (#1228)
+
+
+Bug fixes:
+
+
+- Fix @users endpoint to use acl_users.searchResults instead of portal_membership.listMembers
+  [ericof] (#1199)
+- Fix testing of a checkout instead of a released package.
+  [maurits] (#1213)
+- Fix @users endpoint to return list of users ordered by fullname property
+  [ericof] (#1222)
+
+
 8.9.1 (2021-08-27)
 ------------------
 
