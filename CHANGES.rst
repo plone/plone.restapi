@@ -8,6 +8,17 @@ Changelog
 
 .. towncrier release notes start
 
+7.4.1 (2021-09-24)
+------------------
+
+Bug fixes:
+
+
+- Fix testing of a checkout instead of a released package.
+  Normalize the http-examples.
+  [maurits] (#1213)
+
+
 7.4.0 (2021-08-31)
 ------------------
 
