@@ -355,17 +355,14 @@ class TestSearchFunctional(unittest.TestCase):
         transaction.commit()
 
         # query with fullobjects
-        query = {"portal_type": "DXTestDocument",
-                 "fullobjects": True,
-                 "UID": doc_uid}
+        query = {"portal_type": "DXTestDocument", "fullobjects": True, "UID": doc_uid}
         response = self.api_session.get("/@search", params=query)
         self.assertEqual(response.status_code, 200, response.content)
         results = response.json()
         self.assertEqual(len(results["items"]), 0)
 
         # query without fullobjects
-        query = {"portal_type": "DXTestDocument",
-                 "UID": doc_uid}
+        query = {"portal_type": "DXTestDocument", "UID": doc_uid}
         response = self.api_session.get("/@search", params=query)
         self.assertEqual(response.status_code, 200, response.content)
         results = response.json()

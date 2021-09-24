@@ -53,9 +53,9 @@ class LazyCatalogResultSerializer:
                     )
                     continue
 
-                result = getMultiAdapter(
-                    (obj, self.request), ISerializeToJson
-                )(include_items=False)
+                result = getMultiAdapter((obj, self.request), ISerializeToJson)(
+                    include_items=False
+                )
             else:
                 result = getMultiAdapter(
                     (brain, self.request), ISerializeToJsonSummary
