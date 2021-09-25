@@ -15,7 +15,7 @@ import warnings
 import sys
 
 
-sys.modules['plone.restapi.services.tiles'] = deprecated(
+sys.modules["plone.restapi.services.tiles"] = deprecated(
     zope.deprecation,
     "``plone.restapi.services.tiles`` is deprecated and will be removed in plone.restapi 9.",
 )
