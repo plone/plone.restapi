@@ -1,0 +1,2 @@
+Avoid `UnboundLocalError` or duplicates in results when using `@search` endpoint and a brain is orphan or a `KeyError` occurs during result serialization.
+[gbastien]
