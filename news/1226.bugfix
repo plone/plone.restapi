@@ -1,3 +1,0 @@
-Normalize unstable generated behavior names in http-examples output.
-No longer hardcode port 55001 for the tests.
-[maurits]

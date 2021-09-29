@@ -8,6 +8,25 @@ Changelog
 
 .. towncrier release notes start
 
+8.11.0 (2021-09-29)
+-------------------
+
+New features:
+
+
+- Make masking specific validation errors configurable in DX DeserializeFromJson. [fredvd] (#1211)
+
+
+Bug fixes:
+
+
+- Normalize unstable generated behavior names in http-examples output.
+  No longer hardcode port 55001 for the tests.
+  [maurits] (#1226)
+- Avoid `UnboundLocalError` or duplicates in results when using `@search` endpoint and a brain is orphan or a `KeyError` occurs during result serialization.
+  [gbastien] (#1231)
+
+
 8.10.0 (2021-09-24)
 -------------------
 
