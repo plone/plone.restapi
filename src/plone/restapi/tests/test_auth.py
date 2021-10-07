@@ -124,12 +124,9 @@ class TestLogout(TestCase):
         res = service.reply()
         self.assertIn("error", res)
 
-    def test_logout_with_not_stored_token_fails(self):
+    def test_logout_with_not_stored_token_just_logouts_user(self):
         self.portal.acl_users.jwt_auth.store_tokens = False
-        service = self.traverse()
-        res = service.reply()
-        self.assertEqual(501, self.request.response.getStatus())
-        self.assertEqual("Token can't be invalidated", res["error"]["message"])
+        self.assertEqual(200, self.request.response.getStatus())
 
     def test_logout_with_without_credentials_fails(self):
         self.portal.acl_users.jwt_auth.store_tokens = True

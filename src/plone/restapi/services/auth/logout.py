@@ -27,16 +27,20 @@ class Logout(Service):
             )
 
         if not plugin.store_tokens:
-            self.request.response.setStatus(501)
-            return dict(
-                error=dict(type="Logout failed", message="Token can't be invalidated")
-            )
-
-        # Logout properly from Plone
-        mt.logoutUser()
+            # Just logout properly from Plone
+            mt.logoutUser()
+            self.request.response.setStatus(200)
+            return super().reply()
 
         creds = plugin.extractCredentials(self.request)
-        if creds and "token" in creds and plugin.delete_token(creds["token"]):
+        if (
+            plugin.store_tokens
+            and creds
+            and "token" in creds
+            and plugin.delete_token(creds["token"])
+        ):
+            # Logout also properly from Plone
+            mt.logoutUser()
             self.request.response.setStatus(200)
             return super().reply()
 
