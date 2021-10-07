@@ -9,6 +9,7 @@ class Logout(Service):
     def reply(self):
         plugin = None
         acl_users = getToolByName(self, "acl_users")
+        mt = getToolByName(self.context, "portal_membership")
         plugins = acl_users._getOb("plugins")
         authenticators = plugins.listPlugins(IAuthenticationPlugin)
         for id_, authenticator in authenticators:
@@ -30,6 +31,9 @@ class Logout(Service):
             return dict(
                 error=dict(type="Logout failed", message="Token can't be invalidated")
             )
+
+        # Logout properly from Plone
+        mt.logoutUser()
 
         creds = plugin.extractCredentials(self.request)
         if creds and "token" in creds and plugin.delete_token(creds["token"]):
