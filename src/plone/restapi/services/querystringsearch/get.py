@@ -1,9 +1,9 @@
 from pkg_resources import get_distribution
 from pkg_resources import parse_version
+from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import getMultiAdapter
 
 zcatalog_version = get_distribution("Products.ZCatalog").version
@@ -25,6 +25,7 @@ class QuerystringSearchPost(Service):
         sort_order = data.get("sort_order", None)
         limit = int(data.get("limit", 1000))
         fullobjects = data.get("fullobjects", False)
+        exclude_context = data.get("exclude_context", False)
 
         if query is None:
             raise Exception("No query supplied")
@@ -46,9 +47,13 @@ class QuerystringSearchPost(Service):
             limit=limit,
         )
 
-        # Exclude "self" content item from the results when ZCatalog supports NOT UUID
-        # queries and it is called on a content object.
-        if not IPloneSiteRoot.providedBy(self.context) and SUPPORT_NOT_UUID_QUERIES:
+        # Exclude "self" content item from the results when passed in request,
+        # ZCatalog supports NOT UUID queries and it is called on a content object.
+        if (
+            not INavigationRoot.providedBy(self.context)  # noqa
+            and SUPPORT_NOT_UUID_QUERIES  # noqa
+            and exclude_context  # noqa
+        ):
             querybuilder_parameters.update(
                 dict(custom_query={"UID": {"not": self.context.UID()}})
             )
