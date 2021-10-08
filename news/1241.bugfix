@@ -1,0 +1,3 @@
+- Do not always remove current context from @querystringsearch calls because it slow down catalog queries.
+  Now there is a new parameter to exclude context from results (exclude_context) when needed
+  [cekk]
