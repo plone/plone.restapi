@@ -129,7 +129,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertNotIn("effective", response.json()["items"][0])
         self.assertEqual(response.json()["items"][4]["title"], "Test Document 9")
 
-    def test_querystringsearch_return_context_if_not_called_on_navigation_and_flag_is_set(self): # noqa
+    def test_querystringsearch_return_context_if_not_called_on_navigation_and_flag_is_not_set(self): # noqa
         self.portal.invokeFactory("Document", "testdocument2", title="Test Document 2")
         self.doc = self.portal.testdocument
 
@@ -138,7 +138,6 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         response = self.api_session.post(
             "/testdocument/@querystring-search",
             json={
-                "exclude_context": True,
                 "query": [
                     {
                         "i": "portal_type",
@@ -153,10 +152,41 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.json()["items_total"], 2)
         self.assertEqual(
             response.json()["items"][0]["@id"],
-            f"{self.portal.absolute_url()}/testdocument1",
+            f"{self.portal.absolute_url()}/testdocument",
         )
         self.assertEqual(
-            response.json()["items"][2]["@id"],
+            response.json()["items"][1]["@id"],
+            f"{self.portal.absolute_url()}/testdocument2",
+        )
+
+    def test_querystringsearch_return_context_if_not_called_on_navigation_and_flag_is_false(self): # noqa
+        self.portal.invokeFactory("Document", "testdocument2", title="Test Document 2")
+        self.doc = self.portal.testdocument
+
+        transaction.commit()
+
+        response = self.api_session.post(
+            "/testdocument/@querystring-search",
+            json={
+                "exclude_context": False,
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.is",
+                        "v": ["Document"],
+                    }
+                ],
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["items_total"], 2)
+        self.assertEqual(
+            response.json()["items"][0]["@id"],
+            f"{self.portal.absolute_url()}/testdocument",
+        )
+        self.assertEqual(
+            response.json()["items"][1]["@id"],
             f"{self.portal.absolute_url()}/testdocument2",
         )
 

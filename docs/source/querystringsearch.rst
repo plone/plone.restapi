@@ -21,4 +21,7 @@ The endpoint accepts the same parameters than the querystring search accept:
   - ``sort_order`` : ``"ascending"``, ``"descending"``
   - ``limit``
 
-and also the ``fullobjects`` parameter for return the whole objects instead of the summary serialization of them.
+and also some extra parameters:
+
+  - ``fullobjects`` (parameter for return the whole objects instead of the summary serialization of them)
+  - ``exclude_context`` (parameter to exclude current context from results. This parameter does not work with Products.ZCatalog < 5.1).

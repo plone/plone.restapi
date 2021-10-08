@@ -1,6 +1,5 @@
 from pkg_resources import get_distribution
 from pkg_resources import parse_version
-from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
@@ -49,11 +48,7 @@ class QuerystringSearchPost(Service):
 
         # Exclude "self" content item from the results when passed in request,
         # ZCatalog supports NOT UUID queries and it is called on a content object.
-        if (
-            not INavigationRoot.providedBy(self.context)  # noqa
-            and SUPPORT_NOT_UUID_QUERIES  # noqa
-            and exclude_context  # noqa
-        ):
+        if SUPPORT_NOT_UUID_QUERIES and exclude_context:
             querybuilder_parameters.update(
                 dict(custom_query={"UID": {"not": self.context.UID()}})
             )
