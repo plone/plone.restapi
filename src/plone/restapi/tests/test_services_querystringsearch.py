@@ -130,7 +130,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.json()["items"][4]["title"], "Test Document 9")
 
     def test_querystringsearch_return_context_if_not_called_on_navigation_and_flag_is_not_set(
-        self
+        self,
     ):
         self.portal.invokeFactory("Document", "testdocument2", title="Test Document 2")
         self.doc = self.portal.testdocument
@@ -162,7 +162,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         )
 
     def test_querystringsearch_return_context_if_not_called_on_navigation_and_flag_is_false(
-        self
+        self,
     ):
         self.portal.invokeFactory("Document", "testdocument2", title="Test Document 2")
         self.doc = self.portal.testdocument
