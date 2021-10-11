@@ -177,7 +177,7 @@ class JWTAuthenticationPlugin(BasePlugin):
 
     def delete_token(self, token):
         payload = self._decode_token(token, verify=False)
-        if "sub" not in payload:
+        if not payload or "sub" not in payload:
             return False
         userid = payload["sub"]
         if userid in self._tokens and token in self._tokens[userid]:
