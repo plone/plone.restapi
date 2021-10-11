@@ -139,7 +139,7 @@ class TestLogout(TestCase):
     def test_logout_with_invalid_token_fails(self):
         self.portal.acl_users.jwt_auth.store_tokens = True
         token = "my_invalid_token"
-        self.request._auth = f"Bearer {token}"
+        self.request._auth = "Bearer {}".format(token)
         service = self.traverse()
         service.reply()
         self.assertEqual(400, self.request.response.getStatus())
