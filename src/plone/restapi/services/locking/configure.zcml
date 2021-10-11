@@ -23,8 +23,8 @@
       method="PATCH"
       factory=".update.Lock"
       for="Products.CMFCore.interfaces.IContentish"
-    permission="cmf.ModifyPortalContent"
-    />
+      permission="cmf.ModifyPortalContent"
+      />
 
   <plone:service
       method="DELETE"

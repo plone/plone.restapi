@@ -23,22 +23,38 @@
     <adapter factory=".dxfields.LinkTextLineFieldDeserializer" />
   </configure>
 
-  <subscriber factory=".blocks.TextBlockDeserializer"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.HTMLBlockDeserializer"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.ImageBlockDeserializer"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.ResolveUIDDeserializer"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.TextBlockDeserializerRoot"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.HTMLBlockDeserializerRoot"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.ImageBlockDeserializerRoot"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.ResolveUIDDeserializerRoot"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
+  <subscriber
+      factory=".blocks.TextBlockDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.HTMLBlockDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ImageBlockDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ResolveUIDDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.TextBlockDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.HTMLBlockDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ImageBlockDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ResolveUIDDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
   <subscriber
       factory=".blocks.TextBlockDeserializer"
       provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
