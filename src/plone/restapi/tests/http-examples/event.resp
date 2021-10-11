@@ -2,80 +2,80 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "@components": {
-    "actions": {
-      "@id": "http://localhost:55001/plone/event/@actions"
-    }, 
-    "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/event/@breadcrumbs"
-    }, 
-    "contextnavigation": {
-      "@id": "http://localhost:55001/plone/event/@contextnavigation"
-    }, 
-    "navigation": {
-      "@id": "http://localhost:55001/plone/event/@navigation"
-    }, 
-    "types": {
-      "@id": "http://localhost:55001/plone/event/@types"
-    }, 
-    "workflow": {
-      "@id": "http://localhost:55001/plone/event/@workflow"
-    }
-  }, 
-  "@id": "http://localhost:55001/plone/event", 
-  "@type": "Event", 
-  "UID": "SomeUUID000000000000000000000002", 
-  "allow_discussion": false, 
-  "attendees": [], 
-  "changeNote": "", 
-  "contact_email": null, 
-  "contact_name": null, 
-  "contact_phone": null, 
-  "contributors": [], 
-  "created": "1995-07-31T13:45:00", 
-  "creators": [
-    "test_user_1_"
-  ], 
-  "description": "This is an event", 
-  "effective": null, 
-  "end": "2013-01-01T12:00:00", 
-  "event_url": null, 
-  "exclude_from_nav": false, 
-  "expires": null, 
-  "id": "event", 
-  "is_folderish": false, 
-  "language": "", 
-  "layout": "event_view", 
-  "location": null, 
-  "lock": {
-    "locked": false, 
-    "stealable": true
-  }, 
-  "modified": "1995-07-31T17:30:00", 
-  "next_item": {}, 
-  "open_end": false, 
-  "parent": {
-    "@id": "http://localhost:55001/plone", 
-    "@type": "Plone Site", 
-    "description": "", 
-    "title": "Plone site"
-  }, 
-  "previous_item": {
-    "@id": "http://localhost:55001/plone/front-page", 
-    "@type": "Document", 
-    "description": "Congratulations! You have successfully installed Plone.", 
-    "title": "Welcome to Plone"
-  }, 
-  "recurrence": null, 
-  "relatedItems": [], 
-  "review_state": "private", 
-  "rights": "", 
-  "start": "2013-01-01T10:00:00", 
-  "subjects": [], 
-  "sync_uid": null, 
-  "text": null, 
-  "title": "Event", 
-  "version": "current", 
-  "versioning_enabled": true, 
-  "whole_day": false
+    "@components": {
+        "actions": {
+            "@id": "http://localhost:55001/plone/event/@actions"
+        },
+        "breadcrumbs": {
+            "@id": "http://localhost:55001/plone/event/@breadcrumbs"
+        },
+        "contextnavigation": {
+            "@id": "http://localhost:55001/plone/event/@contextnavigation"
+        },
+        "navigation": {
+            "@id": "http://localhost:55001/plone/event/@navigation"
+        },
+        "types": {
+            "@id": "http://localhost:55001/plone/event/@types"
+        },
+        "workflow": {
+            "@id": "http://localhost:55001/plone/event/@workflow"
+        }
+    },
+    "@id": "http://localhost:55001/plone/event",
+    "@type": "Event",
+    "UID": "SomeUUID000000000000000000000002",
+    "allow_discussion": false,
+    "attendees": [],
+    "changeNote": "",
+    "contact_email": null,
+    "contact_name": null,
+    "contact_phone": null,
+    "contributors": [],
+    "created": "1995-07-31T13:45:00",
+    "creators": [
+        "test_user_1_"
+    ],
+    "description": "This is an event",
+    "effective": null,
+    "end": "2013-01-01T12:00:00",
+    "event_url": null,
+    "exclude_from_nav": false,
+    "expires": null,
+    "id": "event",
+    "is_folderish": false,
+    "language": "",
+    "layout": "event_view",
+    "location": null,
+    "lock": {
+        "locked": false,
+        "stealable": true
+    },
+    "modified": "1995-07-31T17:30:00",
+    "next_item": {},
+    "open_end": false,
+    "parent": {
+        "@id": "http://localhost:55001/plone",
+        "@type": "Plone Site",
+        "description": "",
+        "title": "Plone site"
+    },
+    "previous_item": {
+        "@id": "http://localhost:55001/plone/front-page",
+        "@type": "Document",
+        "description": "Congratulations! You have successfully installed Plone.",
+        "title": "Welcome to Plone"
+    },
+    "recurrence": null,
+    "relatedItems": [],
+    "review_state": "private",
+    "rights": "",
+    "start": "2013-01-01T10:00:00",
+    "subjects": [],
+    "sync_uid": null,
+    "text": null,
+    "title": "Event",
+    "version": "current",
+    "versioning_enabled": true,
+    "whole_day": false
 }
