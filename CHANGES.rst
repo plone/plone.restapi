@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.12.0 (2021-10-11)
+-------------------
+
+New features:
+
+
+- Add missing backend logout actions for the @logout endpoint (delete cookie, etc)
+  [sneridagh] (#1239)
+
+
 8.11.0 (2021-09-29)
 -------------------
 
