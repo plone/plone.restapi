@@ -44,6 +44,15 @@
       factory=".blocks.ResolveUIDSerializerRoot"
       provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
       />
+  <subscriber
+      factory=".blocks.SlateBlockSerializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
+
+  <subscriber
+      factory=".blocks.SlateBlockSerializer"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
 
   <!--
       We check for Products.Archetypes.atapi to avoid false positive
