@@ -54,7 +54,6 @@
       provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
       />
 
-
   <!--
       We check for Products.Archetypes.atapi to avoid false positive
       due to code aliases in migration code,
