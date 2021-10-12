@@ -210,6 +210,7 @@ class TestServicesTypes(unittest.TestCase):
                 }
             },
         )
+        self.sleep_python2_plone52(0.5)
         # PATCH returns no content
         self.assertEqual(response.status_code, 204)
 
@@ -272,7 +273,7 @@ class TestServicesTypes(unittest.TestCase):
                 "required": False,
             },
         )
-        self.sleep_python2_plone52()
+        self.sleep_python2_plone52(0.5)
         self.assertEqual(response.status_code, 204)
 
         response = self.api_session.get("/@types/Document/author_email")
