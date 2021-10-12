@@ -8,6 +8,22 @@ Changelog
 
 .. towncrier release notes start
 
+7.5.0 (2021-10-12)
+------------------
+
+New features:
+
+
+- Add support for volto-slate blocks: resolveuid for links, transformer support @tiberiuichim (#1125)
+
+
+Bug fixes:
+
+
+- - Add missing backend logout actions for the @logout endpoint (delete cookie, etc)
+    [sneridagh] (#1239)
+
+
 7.4.1 (2021-09-24)
 ------------------
 
