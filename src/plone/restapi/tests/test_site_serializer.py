@@ -76,6 +76,6 @@ class TestSiteSerializationFunctional(unittest.TestCase):
         self.api_session.close()
 
     def test_site_root_get_request(self):
-        response = self.api_session.get("/")
+        response = self.api_session.get("")
 
-        self.assertEquals(response.json()["@id"], f"{self.portal.absolute_url()}")
+        self.assertEqual(response.json()["@id"], self.portal.absolute_url())
