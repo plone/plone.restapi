@@ -19,7 +19,7 @@ pipeline {
     // Performance Tests
     stage('Performance Tests') {
       agent {
-        label 'node'
+        label 'jmeter'
       }
       steps {
         deleteDir()
