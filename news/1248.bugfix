@@ -1,0 +1,2 @@
+Fix wrong id on the serialization of the Plone site using the new traversal ++api++
+[sneridagh]
