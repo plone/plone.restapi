@@ -281,7 +281,7 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
         response = self.api_session.get("/?b_start=2&b_size=2")
 
         # Response should contain canonical URL without batching params
-        self.assertEqual(response.json()["@id"], self.portal_url + "/")
+        self.assertEqual(response.json()["@id"], self.portal_url)
 
     def test_contains_batching_links(self):
         # Fetch the second page of the batch
