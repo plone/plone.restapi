@@ -144,15 +144,15 @@ def step_setup_content(context):
         folder10k.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
         publish(folder10k[f"doc{i}"])
 
-    # Folder with 100k Items
-    logger.info("Creating folder with 100k items")
-    portal.invokeFactory("Folder", id="folder-with-100k-items", title="Folder 100k")
-    folder100k = portal["folder-with-100k-items"]
-    set_description(folder100k)
-    publish(folder100k)
-    for i in range(1, 100001):
-        folder100k.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
-        publish(folder100k[f"doc{i}"])
+    # # Folder with 100k Items
+    # logger.info("Creating folder with 100k items")
+    # portal.invokeFactory("Folder", id="folder-with-100k-items", title="Folder 100k")
+    # folder100k = portal["folder-with-100k-items"]
+    # set_description(folder100k)
+    # publish(folder100k)
+    # for i in range(1, 100001):
+    #     folder100k.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
+    #     publish(folder100k[f"doc{i}"])
 
     # Folder with 10 Items and next/previous enabled
     portal.invokeFactory(
