@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.12.1 (2021-10-14)
+-------------------
+
+Bug fixes:
+
+
+- Fix wrong @id attribute on the Plone root serialization when using the new ++api++ traversal (introduced in plone.rest 2.0.0)
+  [sneridagh] (#1248)
+
+
 8.12.0 (2021-10-11)
 -------------------
 
