@@ -2,32 +2,32 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 [
-  {
-    "@id": "http://localhost:55001/plone/@users/admin", 
-    "description": "This is an admin user", 
-    "email": "admin@example.com", 
-    "fullname": "Administrator", 
-    "home_page": "http://www.example.com", 
-    "id": "admin", 
-    "location": "Berlin", 
-    "portrait": null, 
-    "roles": [
-      "Manager"
-    ], 
-    "username": "admin"
-  }, 
-  {
-    "@id": "http://localhost:55001/plone/@users/test_user_1_", 
-    "description": "This is a test user", 
-    "email": "test@example.com", 
-    "fullname": "Test User", 
-    "home_page": "http://www.example.com", 
-    "id": "test_user_1_", 
-    "location": "Bonn", 
-    "portrait": null, 
-    "roles": [
-      "Manager"
-    ], 
-    "username": "test-user"
-  }
+    {
+        "@id": "http://localhost:55001/plone/@users/admin",
+        "description": "This is an admin user",
+        "email": "admin@example.com",
+        "fullname": "Administrator",
+        "home_page": "http://www.example.com",
+        "id": "admin",
+        "location": "Berlin",
+        "portrait": null,
+        "roles": [
+            "Manager"
+        ],
+        "username": "admin"
+    },
+    {
+        "@id": "http://localhost:55001/plone/@users/test_user_1_",
+        "description": "This is a test user",
+        "email": "test@example.com",
+        "fullname": "Test User",
+        "home_page": "http://www.example.com",
+        "id": "test_user_1_",
+        "location": "Bonn",
+        "portrait": null,
+        "roles": [
+            "Manager"
+        ],
+        "username": "test-user"
+    }
 ]

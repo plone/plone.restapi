@@ -59,7 +59,7 @@ class TestLocking(unittest.TestCase):
         lockable = ILockable(self.doc)
         lockable.lock()
         transaction.commit()
-        response = self.api_session.post("/@unlock")
+        response = self.api_session.delete("/@lock")
         transaction.commit()
 
         self.assertEqual(response.status_code, 200)
@@ -70,7 +70,7 @@ class TestLocking(unittest.TestCase):
         lockable.lock()
         modified = self.doc.wl_lockValues()[0].getModifiedTime()
         transaction.commit()
-        response = self.api_session.post("/@refresh-lock")
+        response = self.api_session.patch("/@lock")
         transaction.commit()
 
         self.assertEqual(response.status_code, 200)

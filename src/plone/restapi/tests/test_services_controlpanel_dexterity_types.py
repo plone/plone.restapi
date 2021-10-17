@@ -45,6 +45,7 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
                 for x in self.api_session.get("/@controlpanels/dexterity-types")
                 .json()
                 .get("items")
+                if x.get("id") != "Plone Site"
             ],
         )
 
@@ -115,5 +116,6 @@ class TestDexterityTypesControlpanel(unittest.TestCase):
                 for x in self.api_session.get("/@controlpanels/dexterity-types")
                 .json()
                 .get("items")
+                if x.get("id") != "Plone Site"
             ],
         )

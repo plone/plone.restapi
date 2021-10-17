@@ -8,6 +8,123 @@ Changelog
 
 .. towncrier release notes start
 
+8.12.1 (2021-10-14)
+-------------------
+
+Bug fixes:
+
+
+- Fix wrong @id attribute on the Plone root serialization when using the new ++api++ traversal (introduced in plone.rest 2.0.0)
+  [sneridagh] (#1248)
+
+
+8.12.0 (2021-10-11)
+-------------------
+
+New features:
+
+
+- Add missing backend logout actions for the @logout endpoint (delete cookie, etc)
+  [sneridagh] (#1239)
+
+
+8.11.0 (2021-09-29)
+-------------------
+
+New features:
+
+
+- Make masking specific validation errors configurable in DX DeserializeFromJson. [fredvd] (#1211)
+
+
+Bug fixes:
+
+
+- Normalize unstable generated behavior names in http-examples output.
+  No longer hardcode port 55001 for the tests.
+  [maurits] (#1226)
+- Avoid `UnboundLocalError` or duplicates in results when using `@search` endpoint and a brain is orphan or a `KeyError` occurs during result serialization.
+  [gbastien] (#1231)
+
+
+8.10.0 (2021-09-24)
+-------------------
+
+New features:
+
+
+- Update default allow_headers CORS to include: Lock-Token [@avoinea] (#1181)
+- @types endpoint also returns if a content type is immediately addable in the given context
+  [ericof] (#1228)
+
+
+Bug fixes:
+
+
+- Fix @users endpoint to use acl_users.searchResults instead of portal_membership.listMembers
+  [ericof] (#1199)
+- Fix testing of a checkout instead of a released package.
+  [maurits] (#1213)
+- Fix @users endpoint to return list of users ordered by fullname property
+  [ericof] (#1222)
+
+
+8.9.1 (2021-08-27)
+------------------
+
+Bug fixes:
+
+
+- Fixes values not being stored during content creation if value is equal to the one returned by defaultFactory.
+  [ericof] (#1207)
+
+
+8.9.0 (2021-08-25)
+------------------
+
+New features:
+
+
+- Refactor `@lock` endpoint based on CRUD operations [@avoinea] (#1181)
+
+
+8.8.1 (2021-08-20)
+------------------
+
+Bug fixes:
+
+
+- Fix @vocabularies endpoint to search in translated term titles
+  [sneridagh] (#1204)
+
+
+8.8.0 (2021-08-20)
+------------------
+
+New features:
+
+
+- Add resolveuid support to Link content type ``remoteUrl`` field.
+  [sneridagh] (#1197)
+
+
+Bug fixes:
+
+
+- Updated tests to not fail when the Plone Site root is dexterity.
+  [jaroel] (#2454)
+
+
+8.7.1 (2021-08-03)
+------------------
+
+Bug fixes:
+
+
+- Do not break @workflow endpoint for contents without workflow [cekk] (#1184)
+- Do not break @workflow endpoint when trying to change the state of a content without workflow [cekk] (#1190)
+
+
 8.7.0 (2021-07-19)
 ------------------
 

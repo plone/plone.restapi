@@ -22,11 +22,11 @@ help: ## This help message
 
 .PHONY: Update Makefile and Buildout
 update: ## Update Make and Buildout
-	wget -O Makefile https://raw.githubusercontent.com/kitconcept/buildout/master/Makefile
-	wget -O requirements.txt https://raw.githubusercontent.com/kitconcept/buildout/master/requirements.txt
-	wget -O plone-5.2.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/plone-5.2.x.cfg
-	wget -O ci.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/ci.cfg
-	wget -O versions.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/versions.cfg
+	wget -O Makefile https://raw.githubusercontent.com/kitconcept/buildout/5.2/Makefile
+	wget -O requirements.txt https://raw.githubusercontent.com/kitconcept/buildout/5.2/requirements.txt
+	wget -O plone-5.2.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/5.2/plone-5.2.x.cfg
+	wget -O ci.cfg https://raw.githubusercontent.com/kitconcept/buildout/5.2/ci.cfg
+	wget -O versions.cfg https://raw.githubusercontent.com/kitconcept/buildout/5.2/versions.cfg
 
 .installed.cfg: bin/buildout *.cfg
 	bin/buildout
@@ -52,6 +52,18 @@ build-plone-5.2-performance: .installed.cfg  ## Build Plone 5.2
 	bin/pip install -r requirements.txt
 	bin/buildout -c plone-5.2.x-performance.cfg
 
+.PHONY: Build Plone 6.0
+build-plone-6.0: .installed.cfg  ## Build Plone 6.0
+	bin/pip install --upgrade pip
+	bin/pip install -r requirements.txt
+	bin/buildout -c plone-6.0.x.cfg
+
+.PHONY: Build Plone 6.0 Performance
+build-plone-6.0-performance: .installed.cfg  ## Build Plone 6.0
+	bin/pip install --upgrade pip
+	bin/pip install -r requirements.txt
+	bin/buildout -c plone-6.0.x-performance.cfg
+
 .PHONY: Test
 test:  ## Test
 	bin/test
@@ -71,7 +83,7 @@ black:  ## Black
 	if [ -f "bin/black" ]; then bin/black src/ ; fi
 
 .PHONY: zpretty
-zpretty:	##
+zpretty:  ## zpretty
 	if [ -f "bin/zpretty" ]; then zpretty -i ./**/*.zcml; fi
 
 .PHONY: Build Docs

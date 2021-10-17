@@ -72,63 +72,61 @@ UPLOAD_LENGTH = len(UPLOAD_DATA)
 UPLOAD_PDF_MIMETYPE = "application/pdf"
 UPLOAD_PDF_FILENAME = "file.pdf"
 
+# How do we open files?
+open_kw = {"newline": "\n"}
+
+
+def normalize_test_port(value):
+    # When you run these tests in the Plone core development buildout,
+    # the port number is random.  Normalize this to the default port.
+    return re.sub(r"localhost:\d{5}", "localhost:55001", value)
+
 
 def pretty_json(data):
-    return json.dumps(data, sort_keys=True, indent=4, separators=(",", ": "))
+    result = json.dumps(data, sort_keys=True, indent=4, separators=(",", ": "))
+    # When generating the documentation examples on different machines,
+    # it is all too easy to have differences in white space at the end of the line.
+    # So strip space on the right.
+    stripped = "\n".join([line.rstrip() for line in result.splitlines()])
+    # Make sure there is an empty line at the end.
+    # If you manually edit a file, many editors will automatically add such a line,
+    # and you will see as diff: 'No newline at end of file'.  We do not want this.
+    stripped += "\n"
+    return normalize_test_port(stripped)
 
 
-def save_request_and_response_for_docs(name, response):
-    open_kw = {"newline": "\n"}
-    filename = "{}/{}".format(base_path, "%s.req" % name)
-    with open(filename, "w", **open_kw) as req:
-        req.write(
-            "{} {} HTTP/1.1\n".format(
-                response.request.method, response.request.path_url
-            )
-        )
-        ordered_request_headers = collections.OrderedDict(
-            sorted(response.request.headers.items())
-        )
-        for key, value in ordered_request_headers.items():
-            if key.lower() in REQUEST_HEADER_KEYS:
-                req.write(f"{key.title()}: {value}\n")
-        if response.request.body:
-            # If request has a body, make sure to set Content-Type header
-            if "content-type" not in REQUEST_HEADER_KEYS:
-                content_type = response.request.headers["Content-Type"]
-                req.write("Content-Type: %s\n" % content_type)
-
-            req.write("\n")
-
-            # Pretty print JSON request body
-            if content_type == "application/json":
-                json_body = json.loads(response.request.body)
-                body = pretty_json(json_body)
-                # Make sure Content-Length gets updated, just in case we
-                # ever decide to dump that header
-                response.request.prepare_body(data=body, files=None)
-
-            req.flush()
-            if isinstance(response.request.body, str) or not hasattr(req, "buffer"):
-                req.write(response.request.body)
-            else:
-                req.buffer.seek(0, 2)
-                req.buffer.write(response.request.body)
-
+def save_request_and_response_for_docs(
+    name, response, response_text_override="", request_text_override=""
+):
+    save_request_for_docs(name, response, request_text_override=request_text_override)
     filename = "{}/{}".format(base_path, "%s.resp" % name)
     with open(filename, "w", **open_kw) as resp:
         status = response.status_code
         reason = response.reason
         resp.write(f"HTTP/1.1 {status} {reason}\n")
+        content_type = None
         for key, value in response.headers.items():
             if key.lower() in RESPONSE_HEADER_KEYS:
+                if key.lower() == "location":
+                    value = normalize_test_port(value)
                 resp.write(f"{key.title()}: {value}\n")
+                if key.lower() == "content-type":
+                    content_type = value
         resp.write("\n")
-        resp.write(response.text)
+        if response_text_override:
+            resp.write(response_text_override)
+            return
+        if not response.text:
+            # Empty response.
+            return
+        if not (content_type and content_type.startswith("application/json")):
+            resp.write(response.text)
+            return
+        # Use pretty_json as a normalizer, especially for line endings.
+        resp.write(pretty_json(response.json()))
 
 
-def save_request_for_docs(name, response):
-    open_kw = {"newline": "\n"}
+def save_request_for_docs(name, response, request_text_override=""):
     filename = "{}/{}".format(base_path, "%s.req" % name)
     with open(filename, "w", **open_kw) as req:
         req.write(
@@ -151,7 +149,7 @@ def save_request_for_docs(name, response):
             req.write("\n")
 
             # Pretty print JSON request body
-            if content_type == "application/json":
+            if content_type == "application/json" and not request_text_override:
                 json_body = json.loads(response.request.body)
                 body = pretty_json(json_body)
                 # Make sure Content-Length gets updated, just in case we
@@ -159,11 +157,12 @@ def save_request_for_docs(name, response):
                 response.request.prepare_body(data=body, files=None)
 
             req.flush()
-            if isinstance(response.request.body, str) or not hasattr(req, "buffer"):
-                req.write(response.request.body)
+            body = request_text_override or response.request.body
+            if isinstance(body, str) or not hasattr(req, "buffer"):
+                req.write(body)
             else:
                 req.buffer.seek(0, 2)
-                req.buffer.write(response.request.body)
+                req.buffer.write(body)
 
 
 class TestDocumentationBase(unittest.TestCase):
@@ -515,7 +514,26 @@ class TestDocumentation(TestDocumentationBase):
                 "required": True,
             },
         )
-        save_request_and_response_for_docs("types_document_post_field", response)
+        # With plone.dexterity 2.10+ we get an unstable behavior name like this:
+        # plone.dexterity.schema.generated.plone_5_1630611587_2_523689_0_Document
+        # In older versions, we got this:
+        # plone.dexterity.schema.generated.plone_0_Document
+        # Normalize this to look like the new name
+        document_schema_re = re.compile(
+            r"^plone.dexterity.schema.generated.plone_5_\d*_2_\d*_0_Document$"
+        )
+        stable_behavior = (
+            "plone.dexterity.schema.generated.plone_5_1234567890_2_123456_0_Document"
+        )
+        json_response = response.json()
+        response_text_override = ""
+        behavior = json_response.get("behavior")
+        if behavior and document_schema_re.match(behavior):
+            json_response["behavior"] = stable_behavior
+            response_text_override = pretty_json(json_response)
+        save_request_and_response_for_docs(
+            "types_document_post_field", response, response_text_override
+        )
 
         #
         # GET
@@ -523,7 +541,18 @@ class TestDocumentation(TestDocumentationBase):
 
         # Document
         response = self.api_session.get("/@types/Document")
-        save_request_and_response_for_docs("types_document", response)
+        json_response = response.json()
+        response_text_override = ""
+        try:
+            author_email = json_response["properties"]["author_email"]
+            if document_schema_re.match(author_email["behavior"]):
+                author_email["behavior"] = stable_behavior
+                response_text_override = pretty_json(json_response)
+        except KeyError:
+            pass
+        save_request_and_response_for_docs(
+            "types_document", response, response_text_override
+        )
         doc_json = json.loads(response.content)
 
         # Get fieldset
@@ -532,7 +561,15 @@ class TestDocumentation(TestDocumentationBase):
 
         # Get field
         response = self.api_session.get("/@types/Document/author_email")
-        save_request_and_response_for_docs("types_document_get_field", response)
+        json_response = response.json()
+        response_text_override = ""
+        behavior = json_response.get("behavior")
+        if behavior and document_schema_re.match(behavior):
+            json_response["behavior"] = stable_behavior
+            response_text_override = pretty_json(json_response)
+        save_request_and_response_for_docs(
+            "types_document_get_field", response, response_text_override
+        )
 
         #
         # PATCH
@@ -621,7 +658,21 @@ class TestDocumentation(TestDocumentationBase):
         }
 
         response = self.api_session.put("/@types/Document", json=doc_json)
-        save_request_and_response_for_docs("types_document_put", response)
+        # In this case, not the response but the request has a non deterministic behavior.
+        # I don't want to change it in the request itself, only in the test output.
+        request_text_override = ""
+        try:
+            author_email = doc_json["properties"]["author_email"]
+            if document_schema_re.match(author_email["behavior"]):
+                author_email["behavior"] = stable_behavior
+                request_text_override = pretty_json(doc_json)
+        except KeyError:
+            pass
+        save_request_and_response_for_docs(
+            "types_document_put",
+            response,
+            request_text_override=request_text_override,
+        )
 
         #
         # DELETE
@@ -1466,15 +1517,21 @@ class TestDocumentation(TestDocumentationBase):
     def test_locking_unlock(self):
         url = f"{self.document.absolute_url()}/@lock"
         response = self.api_session.post(url)
-        url = f"{self.document.absolute_url()}/@unlock"
-        response = self.api_session.post(url)
+        url = f"{self.document.absolute_url()}/@lock"
+        response = self.api_session.delete(url)
         save_request_and_response_for_docs("unlock", response)
+
+    def test_locking_unlock_force(self):
+        url = f"{self.document.absolute_url()}/@lock"
+        response = self.api_session.post(url)
+        url = f"{self.document.absolute_url()}/@lock"
+        response = self.api_session.delete(url, json={"force": True})
+        save_request_and_response_for_docs("unlock_force", response)
 
     def test_locking_refresh_lock(self):
         url = f"{self.document.absolute_url()}/@lock"
         response = self.api_session.post(url)
-        url = f"{self.document.absolute_url()}/@refresh-lock"
-        response = self.api_session.post(url)
+        response = self.api_session.patch(url)
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
@@ -1910,7 +1967,26 @@ class TestIterateDocumentation(TestDocumentationBase):
             "/document",
         )
 
-        save_request_and_response_for_docs("workingcopy_baseline_get", response)
+        # The response text contains an unpredictable token.
+        # This would make the documentation tests break.
+        # So replace it.
+        json_response = json.loads(response.text)
+        lock = json_response.get("lock")
+        response_text_override = ""
+        if lock:
+            token = lock.get("token")
+            if token:
+                # Only replace the token when it fits a pattern.
+                token = re.sub(
+                    r".*-.*:.*",
+                    "0.12345678901234567-0.98765432109876543-00105A989226:1630609830.249",
+                    token,
+                )
+                lock["token"] = token
+                response_text_override = pretty_json(json_response)
+        save_request_and_response_for_docs(
+            "workingcopy_baseline_get", response, response_text_override
+        )
 
         response = self.api_session.get(
             "/copy_of_document",

@@ -341,6 +341,33 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["items"]), 1)
 
+    def test_search_orphan_brain(self):
+
+        # prevent unindex when deleting self.doc
+        old__unindexObject = self.doc.__class__.unindexObject
+        self.doc.__class__.unindexObject = lambda *args: None
+        self.doc.aq_parent.manage_delObjects([self.doc.getId()])
+        self.doc.__class__.unindexObject = old__unindexObject
+        # doc deleted but still in portal_catalog
+        doc_uid = self.doc.UID()
+        self.assertFalse(self.doc in self.doc.aq_parent)
+        self.assertTrue(self.portal.portal_catalog(UID=doc_uid))
+        transaction.commit()
+
+        # query with fullobjects
+        query = {"portal_type": "DXTestDocument", "fullobjects": True, "UID": doc_uid}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200, response.content)
+        results = response.json()
+        self.assertEqual(len(results["items"]), 0)
+
+        # query without fullobjects
+        query = {"portal_type": "DXTestDocument", "UID": doc_uid}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200, response.content)
+        results = response.json()
+        self.assertEqual(len(results["items"]), 1)
+
     # ZCTextIndex
 
     def test_fulltext_search(self):
@@ -748,15 +775,17 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get(
             vhm_url, params={"use_site_search_settings": 1, "path": "/"}
         ).json()
-        titles = [
-            "Some Folder",
-            "Lorem Ipsum",
-            "Other Document",
-            "Another Folder",
-            "Document in second folder",
-            "Doc outside folder",
-        ]
-        self.assertEqual([item["title"] for item in response["items"]], titles)
+        titles = sorted(
+            [
+                "Another Folder",
+                "Doc outside folder",
+                "Document in second folder",
+                "Lorem Ipsum",
+                "Other Document",
+                "Some Folder",
+            ]
+        )
+        self.assertEqual(sorted([item["title"] for item in response["items"]]), titles)
 
         noLongerProvides(self.folder, INavigationRoot)
         transaction.commit()

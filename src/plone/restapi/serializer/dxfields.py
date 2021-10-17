@@ -1,5 +1,4 @@
 from AccessControl import getSecurityManager
-from Products.CMFCore.permissions import ModifyPortalContent
 from plone.app.contenttypes.interfaces import ILink
 from plone.app.contenttypes.utils import replace_link_variables_by_paths
 from plone.app.textfield.interfaces import IRichText
@@ -11,8 +10,10 @@ from plone.restapi.imaging import get_scales
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import IPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
-from zope.component import getMultiAdapter
+from plone.restapi.serializer.utils import uid_to_url
+from Products.CMFCore.permissions import ModifyPortalContent
 from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema.interfaces import IChoice
@@ -22,6 +23,7 @@ from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import IVocabularyTokenized
 
 import logging
+
 
 log = logging.getLogger(__name__)
 
@@ -139,6 +141,12 @@ class TextLineFieldSerializer(DefaultFieldSerializer):
         if self.field.getName() != "remoteUrl":
             return super().__call__()
         value = self.get_value()
+
+        # Expect that all internal links will have resolveuid
+        if value and "resolveuid" in value:
+            return uid_to_url(value)
+
+        # Fallback in case we still have a variable in there
         path = replace_link_variables_by_paths(context=self.context, url=value)
         portal = getMultiAdapter(
             (self.context, self.context.REQUEST), name="plone_portal_state"

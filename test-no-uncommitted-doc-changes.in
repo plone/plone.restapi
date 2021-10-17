@@ -34,7 +34,7 @@ if [ $? -ne 0 ]; then
     red "2) if they are, add and commit them using git and include them with your changeset"
     red
 
-    git diff --exit-code $DUMPS_DIR
+    git diff --ignore-space-at-eol --exit-code $DUMPS_DIR
     exit 1
 else
     echo "PASSED: No uncommitted changed detected."

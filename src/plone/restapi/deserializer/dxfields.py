@@ -4,6 +4,7 @@ from plone.app.textfield.interfaces import IRichText
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedField
+from plone.restapi.deserializer.utils import path2uid
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.services.content.tus import TUSUpload
 from pytz import timezone
@@ -27,7 +28,6 @@ from zope.schema.interfaces import IVocabularyTokenized
 
 import codecs
 import dateutil
-
 import html as html_parser
 
 
@@ -78,10 +78,8 @@ class LinkTextLineFieldDeserializer(TextLineFieldDeserializer):
                 (self.context, self.context.REQUEST), name="plone_portal_state"
             ).portal()
             portal_url = portal.portal_url()
-            if value.startswith(portal_url):
-                value = "${{portal_url}}{path}".format(
-                    path=value.replace(portal_url, "")
-                )
+            if value.startswith(portal_url) or value.startswith("/"):
+                value = path2uid(context=self.context, link=value)
         return value
 
 

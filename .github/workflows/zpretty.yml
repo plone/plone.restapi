@@ -34,7 +34,6 @@ jobs:
       - name: run zpretty
         run: find src/ -name *.zcml | xargs zpretty -i
 
-      # XXX: this doesn't work on gh actions (https://github.com/plone/plone.restapi/pull/1119/checks?check_run_id=2686474411)
-      # # run git diff
-      # - name: run git diff
-      #   run: git diff --exit-code
+      # run git diff
+      - name: run git diff
+        run: git diff --exit-code

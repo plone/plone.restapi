@@ -35,13 +35,13 @@ class DeserializeFromJson(OrderingMixin):
         self.modified = {}
 
     def __call__(
-        self, validate_all=False, data=None, create=False
+        self, validate_all=False, data=None, create=False, mask_validation_errors=True
     ):  # noqa: ignore=C901
 
         if data is None:
             data = json_body(self.request)
 
-        schema_data, errors = self.get_schema_data(data, validate_all)
+        schema_data, errors = self.get_schema_data(data, validate_all, create)
 
         # Validate schemata
         for schema, field_data in schema_data.items():
@@ -52,10 +52,11 @@ class DeserializeFromJson(OrderingMixin):
                 errors.append({"error": error, "message": str(error)})
 
         if errors:
-            # Drop Python specific error classes in order to be able to better handle
-            # errors on front-end
-            for error in errors:
-                error["error"] = "ValidationError"
+            if mask_validation_errors:
+                # Drop Python specific error classes in order to be able to better handle
+                # errors on front-end
+                for error in errors:
+                    error["error"] = "ValidationError"
             raise BadRequest(errors)
 
         # We'll set the layout after the validation and even if there
@@ -75,7 +76,7 @@ class DeserializeFromJson(OrderingMixin):
 
         return self.context
 
-    def get_schema_data(self, data, validate_all):
+    def get_schema_data(self, data, validate_all, create=False):
         schema_data = {}
         errors = []
 
@@ -133,7 +134,20 @@ class DeserializeFromJson(OrderingMixin):
                         errors.append({"message": e.doc(), "field": name, "error": e})
                     else:
                         field_data[name] = value
-                        if value != dm.get():
+                        current_value = dm.get()
+                        if value != current_value:
+                            should_change = True
+                        elif create and dm.field.defaultFactory:
+                            # During content creation we should set the value even if
+                            # it is the same from the dm if the current_value was
+                            # returned from a default_factory method
+                            should_change = (
+                                dm.field.defaultFactory(self.context) == current_value
+                            )
+                        else:
+                            should_change = False
+
+                        if should_change:
                             dm.set(value)
                             self.mark_field_as_changed(schema, name)
 

@@ -10,7 +10,7 @@ pipeline {
 
   options {
     buildDiscarder(logRotator(numToKeepStr:'100'))
-    timeout(time: 60, unit: 'MINUTES')
+    // timeout(time: 60, unit: 'MINUTES')
     disableConcurrentBuilds()
   }
 
@@ -19,7 +19,7 @@ pipeline {
     // Performance Tests
     stage('Performance Tests') {
       agent {
-        label 'node'
+        label 'jmeter'
       }
       steps {
         deleteDir()

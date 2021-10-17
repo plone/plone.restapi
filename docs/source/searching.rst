@@ -30,7 +30,7 @@ In order to return specific metadata columns, see the documentation of the ``met
         itself** as part of the search results. This is the same behavior as displayed by
         `ZCatalog <https://zope.readthedocs.io/en/latest/zopebook/SearchingZCatalog.html>`_, which is used internally.
         If you add the query string
-        parameter ``depth=1`` to your search, you will only get **immediate**
+        parameter ``path.depth=1`` to your search, you will only get **immediate**
         children of the container, and the container itself also won't be part
         of the results. See the Plone docs on
         `searching for content within a folder <https://docs.plone.org/develop/plone/searching_and_indexing/query.html#searching-for-content-within-a-folder>`_
