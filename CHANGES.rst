@@ -8,6 +8,69 @@ Changelog
 
 .. towncrier release notes start
 
+7.5.0 (2021-10-12)
+------------------
+
+New features:
+
+
+- Add support for volto-slate blocks: resolveuid for links, transformer support @tiberiuichim (#1125)
+
+
+Bug fixes:
+
+
+- - Add missing backend logout actions for the @logout endpoint (delete cookie, etc)
+    [sneridagh] (#1239)
+
+
+7.4.1 (2021-09-24)
+------------------
+
+Bug fixes:
+
+
+- Fix testing of a checkout instead of a released package.
+  Normalize the http-examples.
+  [maurits] (#1213)
+
+
+7.4.0 (2021-08-31)
+------------------
+
+New features:
+
+
+- Refactor `@lock` endpoint based on CRUD operations [@avoinea] (#1181)
+
+
+7.3.8 (2021-07-17)
+------------------
+
+Bug fixes:
+
+
+- Fix navigation endpoint sort by adding default `sort_on='getObjPositionInParent'` to the query.  @valipod @tiberiuichim (#1107)
+- Fix startup on Plone 4 without plone.app.contenttypes.
+  [maurits] (#1166)
+
+
+7.3.7 (2021-05-26)
+------------------
+
+- Re-release 7.3.6 since it was a brown bag release.
+
+
+7.3.6 (unreleased)
+------------------
+
+Bug fixes:
+
+
+- Fix error in Plone 4.3 that installed the blocks profile  when installing the package, instead of the default profile. Fix `#895 <https://github.com/plone/plone.restapi/issues/895>` [wesleybl] (#895)
+- Fixed a deprecation warning when importing UnrestrictedUser from AccessControl (#1129)
+
+
 7.3.5 (2021-05-03)
 ------------------
 
@@ -44,8 +107,7 @@ Bug fixes:
 Bug fixes:
 
 
-- Fix ``@search`` endpoint with use_site_search_settings flag, for VHM PhysicalRoot
-  scenarios
+- Fix ``@search`` endpoint with use_site_search_settings flag, for VHM PhysicalRoot scenarios
   @tiberiuichim (#1105)
 
 

@@ -2,437 +2,437 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "@id": "http://localhost:55001/plone/@registry", 
-  "batching": {
-    "@id": "http://localhost:55001/plone/@registry", 
-    "first": "http://localhost:55001/plone/@registry?b_start=0", 
-    "last": "http://localhost:55001/plone/@registry?b_start=1775", 
-    "next": "http://localhost:55001/plone/@registry?b_start=25"
-  }, 
-  "items": [
-    {
-      "name": "Products.CMFPlone.i18nl10n.override_dateformat.Enabled", 
-      "schema": {
-        "properties": {
-          "description": "Override the translation machinery", 
-          "factory": "Yes/No", 
-          "title": "Enabled", 
-          "type": "boolean"
+    "@id": "http://localhost:55001/plone/@registry",
+    "batching": {
+        "@id": "http://localhost:55001/plone/@registry",
+        "first": "http://localhost:55001/plone/@registry?b_start=0",
+        "last": "http://localhost:55001/plone/@registry?b_start=1800",
+        "next": "http://localhost:55001/plone/@registry?b_start=25"
+    },
+    "items": [
+        {
+            "name": "Products.CMFPlone.i18nl10n.override_dateformat.Enabled",
+            "schema": {
+                "properties": {
+                    "description": "Override the translation machinery",
+                    "factory": "Yes/No",
+                    "title": "Enabled",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_long",
+            "schema": {
+                "properties": {
+                    "description": "Default value: %Y-%m-%d %H:%M (2038-01-19 03:14)",
+                    "factory": "Text line (String)",
+                    "title": "old ZMI property: localLongTimeFormat",
+                    "type": "string"
+                }
+            },
+            "value": "%Y-%m-%d %H:%M"
+        },
+        {
+            "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_short",
+            "schema": {
+                "properties": {
+                    "description": "Default value: %Y-%m-%d (2038-01-19)",
+                    "factory": "Text line (String)",
+                    "title": "old ZMI property: localTimeFormat",
+                    "type": "string"
+                }
+            },
+            "value": "%Y-%m-%d"
+        },
+        {
+            "name": "Products.CMFPlone.i18nl10n.override_dateformat.time_format",
+            "schema": {
+                "properties": {
+                    "description": "Default value: %H:%M (03:14)",
+                    "factory": "Text line (String)",
+                    "title": "old ZMI property: localTimeOnlyFormat",
+                    "type": "string"
+                }
+            },
+            "value": "%H:%M"
+        },
+        {
+            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed",
+            "schema": {
+                "properties": {
+                    "default": true,
+                    "description": "Allow syndication for collections and folders on site.",
+                    "factory": "Yes/No",
+                    "title": "Allowed",
+                    "type": "boolean"
+                }
+            },
+            "value": true
+        },
+        {
+            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed_feed_types",
+            "schema": {
+                "properties": {
+                    "additionalItems": true,
+                    "default": [
+                        "RSS|RSS 1.0",
+                        "rss.xml|RSS 2.0",
+                        "atom.xml|Atom",
+                        "itunes.xml|iTunes"
+                    ],
+                    "description": "Separate view name and title by '|'",
+                    "factory": "Tuple",
+                    "items": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "title": "",
+                        "type": "string"
+                    },
+                    "title": "Allowed Feed Types",
+                    "type": "array",
+                    "uniqueItems": true
+                }
+            },
+            "value": [
+                "RSS|RSS 1.0",
+                "rss.xml|RSS 2.0",
+                "atom.xml|Atom",
+                "itunes.xml|iTunes"
+            ]
+        },
+        {
+            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.default_enabled",
+            "schema": {
+                "properties": {
+                    "default": false,
+                    "description": "If syndication should be enabled by default for all folders and collections.",
+                    "factory": "Yes/No",
+                    "title": "Enabled by default",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.max_items",
+            "schema": {
+                "properties": {
+                    "default": 15,
+                    "description": "Maximum number of items that will be syndicated.",
+                    "factory": "Integer",
+                    "minimum": 1,
+                    "title": "Maximum items",
+                    "type": "integer"
+                }
+            },
+            "value": 15
+        },
+        {
+            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.render_body",
+            "schema": {
+                "properties": {
+                    "default": false,
+                    "description": "If body text available for item, render it, otherwise use description.",
+                    "factory": "Yes/No",
+                    "title": "Render Body",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.search_rss_enabled",
+            "schema": {
+                "properties": {
+                    "default": true,
+                    "description": "Allows users to subscribe to feeds of search results",
+                    "factory": "Yes/No",
+                    "title": "Search RSS enabled",
+                    "type": "boolean"
+                }
+            },
+            "value": true
+        },
+        {
+            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_author_info",
+            "schema": {
+                "properties": {
+                    "default": true,
+                    "description": "Should feeds include author information",
+                    "factory": "Yes/No",
+                    "title": "Show author info",
+                    "type": "boolean"
+                }
+            },
+            "value": true
+        },
+        {
+            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_button",
+            "schema": {
+                "properties": {
+                    "description": "Makes it possible to customize syndication settings for particular folders and collections ",
+                    "factory": "Yes/No",
+                    "title": "Show settings button",
+                    "type": "boolean"
+                }
+            },
+            "value": null
+        },
+        {
+            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_link",
+            "schema": {
+                "properties": {
+                    "description": "Enable RSS link document action on the syndication content item.",
+                    "factory": "Yes/No",
+                    "title": "Show feed link",
+                    "type": "boolean"
+                }
+            },
+            "value": null
+        },
+        {
+            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.site_rss_items",
+            "schema": {
+                "properties": {
+                    "additionalItems": true,
+                    "default": [
+                        "/news/aggregator"
+                    ],
+                    "description": "Paths to folders and collections to link to at the portal root.",
+                    "factory": "Tuple",
+                    "items": {
+                        "description": "",
+                        "factory": "Choice",
+                        "title": "",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicatableFeedItems"
+                        }
+                    },
+                    "title": "Site RSS",
+                    "type": "array",
+                    "uniqueItems": true
+                }
+            },
+            "value": [
+                "/news/aggregator"
+            ]
+        },
+        {
+            "name": "plone.alignment_styles",
+            "schema": {
+                "properties": {
+                    "additionalItems": true,
+                    "default": [
+                        "Left|alignleft|alignleft",
+                        "Center|aligncenter|aligncenter",
+                        "Right|alignright|alignright",
+                        "Justify|alignjustify|alignjustify"
+                    ],
+                    "description": "Name|format|icon",
+                    "factory": "List",
+                    "items": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "title": "",
+                        "type": "string"
+                    },
+                    "title": "Alignment styles",
+                    "type": "array",
+                    "uniqueItems": false
+                }
+            },
+            "value": [
+                "Left|alignleft|alignleft",
+                "Center|aligncenter|aligncenter",
+                "Right|alignright|alignright",
+                "Justify|alignjustify|alignjustify"
+            ]
+        },
+        {
+            "name": "plone.allow_anon_views_about",
+            "schema": {
+                "properties": {
+                    "default": false,
+                    "description": "If not selected only logged-in users will be able to view information about who created an item and when it was modified.",
+                    "factory": "Yes/No",
+                    "title": "Allow anyone to view 'about' information",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "plone.allow_external_login_sites",
+            "schema": {
+                "properties": {
+                    "additionalItems": true,
+                    "default": [],
+                    "description": "",
+                    "factory": "Tuple",
+                    "items": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "title": "",
+                        "type": "string"
+                    },
+                    "title": "Allow external login sites",
+                    "type": "array",
+                    "uniqueItems": true
+                }
+            },
+            "value": []
+        },
+        {
+            "name": "plone.allowed_sizes",
+            "schema": {
+                "properties": {
+                    "additionalItems": true,
+                    "default": [
+                        "large 768:768",
+                        "preview 400:400",
+                        "mini 200:200",
+                        "thumb 128:128",
+                        "tile 64:64",
+                        "icon 32:32",
+                        "listing 16:16"
+                    ],
+                    "description": "Specify all allowed maximum image dimensions, one per line. The required format is &lt;name&gt; &lt;width&gt;:&lt;height&gt;.",
+                    "factory": "List",
+                    "items": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "title": "",
+                        "type": "string"
+                    },
+                    "title": "Allowed image sizes",
+                    "type": "array",
+                    "uniqueItems": false
+                }
+            },
+            "value": [
+                "large 768:768",
+                "preview 400:400",
+                "mini 200:200",
+                "thumb 128:128",
+                "tile 64:64",
+                "icon 32:32",
+                "listing 16:16"
+            ]
+        },
+        {
+            "name": "plone.allowed_types",
+            "schema": {
+                "properties": {
+                    "additionalItems": true,
+                    "default": [
+                        "text/html",
+                        "text/x-web-textile"
+                    ],
+                    "description": "Select which formats are available for users as alternative to the default format. Note that if new formats are installed, they will be enabled for text fields by default unless explicitly turned off here or by the relevant installer.",
+                    "factory": "Tuple",
+                    "items": {
+                        "description": "",
+                        "factory": "Choice",
+                        "title": "",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AllowableContentTypes"
+                        }
+                    },
+                    "title": "Alternative formats",
+                    "type": "array",
+                    "uniqueItems": true
+                }
+            },
+            "value": [
+                "text/html",
+                "text/x-web-textile"
+            ]
+        },
+        {
+            "name": "plone.always_show_selector",
+            "schema": {
+                "properties": {
+                    "default": false,
+                    "description": "",
+                    "factory": "Yes/No",
+                    "title": "Always show language selector",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "plone.app.discussion.interfaces.IDiscussionSettings.anonymous_comments",
+            "schema": {
+                "properties": {
+                    "default": false,
+                    "description": "If selected, anonymous users are able to post comments without logging in. It is highly recommended to use a captcha solution to prevent spam if this setting is enabled.",
+                    "factory": "Yes/No",
+                    "title": "Enable anonymous comments",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "plone.app.discussion.interfaces.IDiscussionSettings.anonymous_email_enabled",
+            "schema": {
+                "properties": {
+                    "default": false,
+                    "description": "If selected, anonymous user will have to give their email.",
+                    "factory": "Yes/No",
+                    "title": "Enable anonymous email field",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "plone.app.discussion.interfaces.IDiscussionSettings.captcha",
+            "schema": {
+                "properties": {
+                    "default": "disabled",
+                    "description": "Use this setting to enable or disable Captcha validation for comments. Install plone.formwidget.captcha, plone.formwidget.recaptcha, collective.akismet, or collective.z3cform.norobots if there are no options available.",
+                    "factory": "Choice",
+                    "title": "Captcha",
+                    "type": "string",
+                    "vocabulary": {
+                        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary"
+                    }
+                }
+            },
+            "value": "disabled"
+        },
+        {
+            "name": "plone.app.discussion.interfaces.IDiscussionSettings.delete_own_comment_enabled",
+            "schema": {
+                "properties": {
+                    "default": false,
+                    "description": "If selected, supports deleting of own comments for users with the \"Delete own comments\" permission.",
+                    "factory": "Yes/No",
+                    "title": "Enable deleting own comments",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "plone.app.discussion.interfaces.IDiscussionSettings.edit_comment_enabled",
+            "schema": {
+                "properties": {
+                    "default": false,
+                    "description": "If selected, supports editing of comments for users with the \"Edit comments\" permission.",
+                    "factory": "Yes/No",
+                    "title": "Enable editing of comments",
+                    "type": "boolean"
+                }
+            },
+            "value": false
         }
-      }, 
-      "value": false
-    }, 
-    {
-      "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_long", 
-      "schema": {
-        "properties": {
-          "description": "Default value: %Y-%m-%d %H:%M (2038-01-19 03:14)", 
-          "factory": "Text line (String)", 
-          "title": "old ZMI property: localLongTimeFormat", 
-          "type": "string"
-        }
-      }, 
-      "value": "%Y-%m-%d %H:%M"
-    }, 
-    {
-      "name": "Products.CMFPlone.i18nl10n.override_dateformat.date_format_short", 
-      "schema": {
-        "properties": {
-          "description": "Default value: %Y-%m-%d (2038-01-19)", 
-          "factory": "Text line (String)", 
-          "title": "old ZMI property: localTimeFormat", 
-          "type": "string"
-        }
-      }, 
-      "value": "%Y-%m-%d"
-    }, 
-    {
-      "name": "Products.CMFPlone.i18nl10n.override_dateformat.time_format", 
-      "schema": {
-        "properties": {
-          "description": "Default value: %H:%M (03:14)", 
-          "factory": "Text line (String)", 
-          "title": "old ZMI property: localTimeOnlyFormat", 
-          "type": "string"
-        }
-      }, 
-      "value": "%H:%M"
-    }, 
-    {
-      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed", 
-      "schema": {
-        "properties": {
-          "default": true, 
-          "description": "Allow syndication for collections and folders on site.", 
-          "factory": "Yes/No", 
-          "title": "Allowed", 
-          "type": "boolean"
-        }
-      }, 
-      "value": true
-    }, 
-    {
-      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed_feed_types", 
-      "schema": {
-        "properties": {
-          "additionalItems": true, 
-          "default": [
-            "RSS|RSS 1.0", 
-            "rss.xml|RSS 2.0", 
-            "atom.xml|Atom", 
-            "itunes.xml|iTunes"
-          ], 
-          "description": "Separate view name and title by '|'", 
-          "factory": "Tuple", 
-          "items": {
-            "description": "", 
-            "factory": "Text line (String)", 
-            "title": "", 
-            "type": "string"
-          }, 
-          "title": "Allowed Feed Types", 
-          "type": "array", 
-          "uniqueItems": true
-        }
-      }, 
-      "value": [
-        "RSS|RSS 1.0", 
-        "rss.xml|RSS 2.0", 
-        "atom.xml|Atom", 
-        "itunes.xml|iTunes"
-      ]
-    }, 
-    {
-      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.default_enabled", 
-      "schema": {
-        "properties": {
-          "default": false, 
-          "description": "If syndication should be enabled by default for all folders and collections.", 
-          "factory": "Yes/No", 
-          "title": "Enabled by default", 
-          "type": "boolean"
-        }
-      }, 
-      "value": false
-    }, 
-    {
-      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.max_items", 
-      "schema": {
-        "properties": {
-          "default": 15, 
-          "description": "Maximum number of items that will be syndicated.", 
-          "factory": "Integer", 
-          "minimum": 1, 
-          "title": "Maximum items", 
-          "type": "integer"
-        }
-      }, 
-      "value": 15
-    }, 
-    {
-      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.render_body", 
-      "schema": {
-        "properties": {
-          "default": false, 
-          "description": "If body text available for item, render it, otherwise use description.", 
-          "factory": "Yes/No", 
-          "title": "Render Body", 
-          "type": "boolean"
-        }
-      }, 
-      "value": false
-    }, 
-    {
-      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.search_rss_enabled", 
-      "schema": {
-        "properties": {
-          "default": true, 
-          "description": "Allows users to subscribe to feeds of search results", 
-          "factory": "Yes/No", 
-          "title": "Search RSS enabled", 
-          "type": "boolean"
-        }
-      }, 
-      "value": true
-    }, 
-    {
-      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_author_info", 
-      "schema": {
-        "properties": {
-          "default": true, 
-          "description": "Should feeds include author information", 
-          "factory": "Yes/No", 
-          "title": "Show author info", 
-          "type": "boolean"
-        }
-      }, 
-      "value": true
-    }, 
-    {
-      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_button", 
-      "schema": {
-        "properties": {
-          "description": "Makes it possible to customize syndication settings for particular folders and collections ", 
-          "factory": "Yes/No", 
-          "title": "Show settings button", 
-          "type": "boolean"
-        }
-      }, 
-      "value": null
-    }, 
-    {
-      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_link", 
-      "schema": {
-        "properties": {
-          "description": "Enable RSS link document action on the syndication content item.", 
-          "factory": "Yes/No", 
-          "title": "Show feed link", 
-          "type": "boolean"
-        }
-      }, 
-      "value": null
-    }, 
-    {
-      "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.site_rss_items", 
-      "schema": {
-        "properties": {
-          "additionalItems": true, 
-          "default": [
-            "/news/aggregator"
-          ], 
-          "description": "Paths to folders and collections to link to at the portal root.", 
-          "factory": "Tuple", 
-          "items": {
-            "description": "", 
-            "factory": "Choice", 
-            "title": "", 
-            "type": "string", 
-            "vocabulary": {
-              "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicatableFeedItems"
-            }
-          }, 
-          "title": "Site RSS", 
-          "type": "array", 
-          "uniqueItems": true
-        }
-      }, 
-      "value": [
-        "/news/aggregator"
-      ]
-    }, 
-    {
-      "name": "plone.alignment_styles", 
-      "schema": {
-        "properties": {
-          "additionalItems": true, 
-          "default": [
-            "Left|alignleft|alignleft", 
-            "Center|aligncenter|aligncenter", 
-            "Right|alignright|alignright", 
-            "Justify|alignjustify|alignjustify"
-          ], 
-          "description": "Name|format|icon", 
-          "factory": "List", 
-          "items": {
-            "description": "", 
-            "factory": "Text line (String)", 
-            "title": "", 
-            "type": "string"
-          }, 
-          "title": "Alignment styles", 
-          "type": "array", 
-          "uniqueItems": false
-        }
-      }, 
-      "value": [
-        "Left|alignleft|alignleft", 
-        "Center|aligncenter|aligncenter", 
-        "Right|alignright|alignright", 
-        "Justify|alignjustify|alignjustify"
-      ]
-    }, 
-    {
-      "name": "plone.allow_anon_views_about", 
-      "schema": {
-        "properties": {
-          "default": false, 
-          "description": "If not selected only logged-in users will be able to view information about who created an item and when it was modified.", 
-          "factory": "Yes/No", 
-          "title": "Allow anyone to view 'about' information", 
-          "type": "boolean"
-        }
-      }, 
-      "value": false
-    }, 
-    {
-      "name": "plone.allow_external_login_sites", 
-      "schema": {
-        "properties": {
-          "additionalItems": true, 
-          "default": [], 
-          "description": "", 
-          "factory": "Tuple", 
-          "items": {
-            "description": "", 
-            "factory": "Text line (String)", 
-            "title": "", 
-            "type": "string"
-          }, 
-          "title": "Allow external login sites", 
-          "type": "array", 
-          "uniqueItems": true
-        }
-      }, 
-      "value": []
-    }, 
-    {
-      "name": "plone.allowed_sizes", 
-      "schema": {
-        "properties": {
-          "additionalItems": true, 
-          "default": [
-            "large 768:768", 
-            "preview 400:400", 
-            "mini 200:200", 
-            "thumb 128:128", 
-            "tile 64:64", 
-            "icon 32:32", 
-            "listing 16:16"
-          ], 
-          "description": "Specify all allowed maximum image dimensions, one per line. The required format is &lt;name&gt; &lt;width&gt;:&lt;height&gt;.", 
-          "factory": "List", 
-          "items": {
-            "description": "", 
-            "factory": "Text line (String)", 
-            "title": "", 
-            "type": "string"
-          }, 
-          "title": "Allowed image sizes", 
-          "type": "array", 
-          "uniqueItems": false
-        }
-      }, 
-      "value": [
-        "large 768:768", 
-        "preview 400:400", 
-        "mini 200:200", 
-        "thumb 128:128", 
-        "tile 64:64", 
-        "icon 32:32", 
-        "listing 16:16"
-      ]
-    }, 
-    {
-      "name": "plone.allowed_types", 
-      "schema": {
-        "properties": {
-          "additionalItems": true, 
-          "default": [
-            "text/html", 
-            "text/x-web-textile"
-          ], 
-          "description": "Select which formats are available for users as alternative to the default format. Note that if new formats are installed, they will be enabled for text fields by default unless explicitly turned off here or by the relevant installer.", 
-          "factory": "Tuple", 
-          "items": {
-            "description": "", 
-            "factory": "Choice", 
-            "title": "", 
-            "type": "string", 
-            "vocabulary": {
-              "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AllowableContentTypes"
-            }
-          }, 
-          "title": "Alternative formats", 
-          "type": "array", 
-          "uniqueItems": true
-        }
-      }, 
-      "value": [
-        "text/html", 
-        "text/x-web-textile"
-      ]
-    }, 
-    {
-      "name": "plone.always_show_selector", 
-      "schema": {
-        "properties": {
-          "default": false, 
-          "description": "", 
-          "factory": "Yes/No", 
-          "title": "Always show language selector", 
-          "type": "boolean"
-        }
-      }, 
-      "value": false
-    }, 
-    {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.anonymous_comments", 
-      "schema": {
-        "properties": {
-          "default": false, 
-          "description": "If selected, anonymous users are able to post comments without logging in. It is highly recommended to use a captcha solution to prevent spam if this setting is enabled.", 
-          "factory": "Yes/No", 
-          "title": "Enable anonymous comments", 
-          "type": "boolean"
-        }
-      }, 
-      "value": false
-    }, 
-    {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.anonymous_email_enabled", 
-      "schema": {
-        "properties": {
-          "default": false, 
-          "description": "If selected, anonymous user will have to give their email.", 
-          "factory": "Yes/No", 
-          "title": "Enable anonymous email field", 
-          "type": "boolean"
-        }
-      }, 
-      "value": false
-    }, 
-    {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.captcha", 
-      "schema": {
-        "properties": {
-          "default": "disabled", 
-          "description": "Use this setting to enable or disable Captcha validation for comments. Install plone.formwidget.captcha, plone.formwidget.recaptcha, collective.akismet, or collective.z3cform.norobots if there are no options available.", 
-          "factory": "Choice", 
-          "title": "Captcha", 
-          "type": "string", 
-          "vocabulary": {
-            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.CaptchaVocabulary"
-          }
-        }
-      }, 
-      "value": "disabled"
-    }, 
-    {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.delete_own_comment_enabled", 
-      "schema": {
-        "properties": {
-          "default": false, 
-          "description": "If selected, supports deleting of own comments for users with the \"Delete own comments\" permission.", 
-          "factory": "Yes/No", 
-          "title": "Enable deleting own comments", 
-          "type": "boolean"
-        }
-      }, 
-      "value": false
-    }, 
-    {
-      "name": "plone.app.discussion.interfaces.IDiscussionSettings.edit_comment_enabled", 
-      "schema": {
-        "properties": {
-          "default": false, 
-          "description": "If selected, supports editing of comments for users with the \"Edit comments\" permission.", 
-          "factory": "Yes/No", 
-          "title": "Enable editing of comments", 
-          "type": "boolean"
-        }
-      }, 
-      "value": false
-    }
-  ], 
-  "items_total": 1779
+    ],
+    "items_total": 1823
 }

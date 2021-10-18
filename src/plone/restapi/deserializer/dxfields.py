@@ -29,6 +29,12 @@ import codecs
 import dateutil
 import six
 
+try:
+    from plone.app.contenttypes.interfaces import ILink
+except ImportError:
+    # Probably Plone 4.3 with dexterity but without plone.app.contenttypes.
+    ILink = None
+
 if six.PY2:
     import HTMLParser
 
@@ -80,21 +86,23 @@ class TextLineFieldDeserializer(DefaultFieldDeserializer):
         return value
 
 
-@implementer(IFieldDeserializer)
-@adapter(ITextLine, ILink, IBrowserRequest)
-class LinkTextLineFieldDeserializer(TextLineFieldDeserializer):
-    def __call__(self, value):
-        value = super(LinkTextLineFieldDeserializer, self).__call__(value)
-        if self.field.getName() == "remoteUrl":
-            portal = getMultiAdapter(
-                (self.context, self.context.REQUEST), name="plone_portal_state"
-            ).portal()
-            portal_url = portal.portal_url()
-            if value.startswith(portal_url):
-                value = "${{portal_url}}{path}".format(
-                    path=value.replace(portal_url, "")
-                )
-        return value
+if ILink is not None:
+
+    @implementer(IFieldDeserializer)
+    @adapter(ITextLine, ILink, IBrowserRequest)
+    class LinkTextLineFieldDeserializer(TextLineFieldDeserializer):
+        def __call__(self, value):
+            value = super(LinkTextLineFieldDeserializer, self).__call__(value)
+            if self.field.getName() == "remoteUrl":
+                portal = getMultiAdapter(
+                    (self.context, self.context.REQUEST), name="plone_portal_state"
+                ).portal()
+                portal_url = portal.portal_url()
+                if value.startswith(portal_url):
+                    value = "${{portal_url}}{path}".format(
+                        path=value.replace(portal_url, "")
+                    )
+            return value
 
 
 @implementer(IFieldDeserializer)

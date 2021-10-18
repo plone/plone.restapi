@@ -2,67 +2,68 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "@components": {
-    "actions": {
-      "@id": "http://localhost:55001/plone/file/@actions"
-    }, 
-    "breadcrumbs": {
-      "@id": "http://localhost:55001/plone/file/@breadcrumbs"
-    }, 
-    "contextnavigation": {
-      "@id": "http://localhost:55001/plone/file/@contextnavigation"
-    }, 
-    "navigation": {
-      "@id": "http://localhost:55001/plone/file/@navigation"
-    }, 
-    "types": {
-      "@id": "http://localhost:55001/plone/file/@types"
-    }, 
-    "workflow": {
-      "@id": "http://localhost:55001/plone/file/@workflow"
-    }
-  }, 
-  "@id": "http://localhost:55001/plone/file", 
-  "@type": "File", 
-  "UID": "SomeUUID000000000000000000000002", 
-  "allow_discussion": false, 
-  "contributors": [], 
-  "created": "1995-07-31T13:45:00", 
-  "creators": [
-    "test_user_1_"
-  ], 
-  "description": "This is a file", 
-  "effective": null, 
-  "exclude_from_nav": false, 
-  "expires": null, 
-  "file": {
-    "content-type": "application/pdf", 
-    "download": "http://localhost:55001/plone/file/@@download/file", 
-    "filename": "file.pdf", 
-    "size": 74429
-  }, 
-  "id": "file", 
-  "is_folderish": false, 
-  "language": "", 
-  "layout": "file_view", 
-  "modified": "1995-07-31T17:30:00", 
-  "next_item": {}, 
-  "parent": {
-    "@id": "http://localhost:55001/plone", 
-    "@type": "Plone Site", 
-    "description": "", 
-    "title": "Plone site"
-  }, 
-  "previous_item": {
-    "@id": "http://localhost:55001/plone/front-page", 
-    "@type": "Document", 
-    "description": "Congratulations! You have successfully installed Plone.", 
-    "title": "Welcome to Plone"
-  }, 
-  "relatedItems": [], 
-  "review_state": null, 
-  "rights": "", 
-  "subjects": [], 
-  "title": "My File", 
-  "version": "current"
+    "@components": {
+        "actions": {
+            "@id": "http://localhost:55001/plone/file/@actions"
+        },
+        "breadcrumbs": {
+            "@id": "http://localhost:55001/plone/file/@breadcrumbs"
+        },
+        "contextnavigation": {
+            "@id": "http://localhost:55001/plone/file/@contextnavigation"
+        },
+        "navigation": {
+            "@id": "http://localhost:55001/plone/file/@navigation"
+        },
+        "types": {
+            "@id": "http://localhost:55001/plone/file/@types"
+        },
+        "workflow": {
+            "@id": "http://localhost:55001/plone/file/@workflow"
+        }
+    },
+    "@id": "http://localhost:55001/plone/file",
+    "@type": "File",
+    "UID": "SomeUUID000000000000000000000002",
+    "allow_discussion": false,
+    "contributors": [],
+    "created": "1995-07-31T13:45:00",
+    "creators": [
+        "test_user_1_"
+    ],
+    "description": "This is a file",
+    "effective": null,
+    "exclude_from_nav": false,
+    "expires": null,
+    "file": {
+        "content-type": "application/pdf",
+        "download": "http://localhost:55001/plone/file/@@download/file",
+        "filename": "file.pdf",
+        "size": 74429
+    },
+    "id": "file",
+    "is_folderish": false,
+    "language": "",
+    "layout": "file_view",
+    "lock": {},
+    "modified": "1995-07-31T17:30:00",
+    "next_item": {},
+    "parent": {
+        "@id": "http://localhost:55001/plone",
+        "@type": "Plone Site",
+        "description": "",
+        "title": "Plone site"
+    },
+    "previous_item": {
+        "@id": "http://localhost:55001/plone/front-page",
+        "@type": "Document",
+        "description": "Congratulations! You have successfully installed Plone.",
+        "title": "Welcome to Plone"
+    },
+    "relatedItems": [],
+    "review_state": null,
+    "rights": "",
+    "subjects": [],
+    "title": "My File",
+    "version": "current"
 }

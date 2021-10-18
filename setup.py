@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-version = "7.3.6.dev0"
+version = "7.5.1.dev0"
 
 
 def read(filename):
@@ -87,6 +87,7 @@ setup(
         "plone.behavior>=1.1",  # adds name to behavior directive
         "plone.rest >= 1.0a6",  # json renderer moved to plone.restapi
         "plone.schema >= 1.2.1",  # new/fixed json field
+        "Products.CMFPlone",
         "PyJWT",
         "pytz",
     ],

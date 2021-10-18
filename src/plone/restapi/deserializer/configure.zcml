@@ -1,7 +1,8 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:zcml="http://namespaces.zope.org/zcml"
-    i18n_domain="plone.restapi">
+    i18n_domain="plone.restapi"
+    >
 
   <adapter factory=".site.DeserializeSiteRootFromJson" />
   <adapter factory=".dxcontent.DeserializeFromJson" />
@@ -19,25 +20,88 @@
   <adapter factory=".dxfields.RichTextFieldDeserializer" />
   <adapter factory=".blocks.BlocksJSONFieldDeserializer" />
 
-  <subscriber factory=".blocks.TextBlockDeserializer"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.HTMLBlockDeserializer"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.ImageBlockDeserializer"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.ResolveUIDDeserializer"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.TextBlockDeserializerRoot"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.HTMLBlockDeserializerRoot"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.ImageBlockDeserializerRoot"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  <subscriber factory=".blocks.ResolveUIDDeserializerRoot"
-    provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
-  
-  <adapter factory=".local_roles.DeserializeFromJson"
-           name="local_roles"/>
+  <configure zcml:condition="installed plone.app.contenttypes">
+    <adapter factory=".dxfields.LinkTextLineFieldDeserializer" />
+  </configure>
+
+  <subscriber
+      factory=".blocks.TextBlockDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.HTMLBlockDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ImageBlockDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ResolveUIDDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.TextBlockDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.HTMLBlockDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ImageBlockDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ResolveUIDDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.TextBlockDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.HTMLBlockDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ImageBlockDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ResolveUIDDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.TextBlockDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.HTMLBlockDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ImageBlockDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ResolveUIDDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+
+  <subscriber
+      factory=".blocks.SlateBlockDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.SlateBlockDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+
+  <adapter
+      factory=".local_roles.DeserializeFromJson"
+      name="local_roles"
+      />
 
   <configure zcml:condition="installed z3c.relationfield">
     <adapter factory=".relationfield.RelationChoiceFieldDeserializer" />
@@ -51,7 +115,7 @@
   <configure zcml:condition="installed Products.Archetypes.atapi">
     <adapter factory=".atcontent.DeserializeFromJson" />
     <configure zcml:condition="installed plone.app.blob">
-        <adapter factory=".atfields.BlobFieldDeserializer" />
+      <adapter factory=".atfields.BlobFieldDeserializer" />
     </configure>
     <adapter factory=".atfields.DefaultFieldDeserializer" />
     <adapter factory=".atfields.FileFieldDeserializer" />
