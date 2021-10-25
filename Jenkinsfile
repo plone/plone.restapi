@@ -10,7 +10,7 @@ pipeline {
 
   options {
     buildDiscarder(logRotator(numToKeepStr:'100'))
-    timeout(time: 60, unit: 'MINUTES')
+    // timeout(time: 60, unit: 'MINUTES')
     disableConcurrentBuilds()
   }
 
@@ -19,12 +19,12 @@ pipeline {
     // Performance Tests
     stage('Performance Tests') {
       agent {
-        label 'node'
+        label 'jmeter'
       }
       steps {
         deleteDir()
         checkout scm
-        sh "virtualenv ."
+        sh "python3 -m venv ."
         sh "bin/pip install -r requirements.txt"
         sh "bin/buildout -c plone-5.2.x-performance.cfg"
         sh "bin/instance start"

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
-
 from AccessControl import getSecurityManager
-from Products.CMFCore.permissions import ModifyPortalContent
-
+from plone.app.contenttypes.interfaces import ILink
+from plone.app.contenttypes.utils import replace_link_variables_by_paths
 from plone.app.textfield.interfaces import IRichText
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.interfaces import INamedFileField
@@ -12,22 +10,27 @@ from plone.restapi.imaging import get_scales
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import IPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.serializer.utils import uid_to_url
+from Products.CMFCore.permissions import ModifyPortalContent
 from zope.component import adapter
+from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema.interfaces import IChoice
 from zope.schema.interfaces import ICollection
 from zope.schema.interfaces import IField
+from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import IVocabularyTokenized
 
 import logging
+
 
 log = logging.getLogger(__name__)
 
 
 @adapter(IField, IDexterityContent, Interface)
 @implementer(IFieldSerializer)
-class DefaultFieldSerializer(object):
+class DefaultFieldSerializer:
     def __init__(self, field, context, request):
         self.context = context
         self.request = request
@@ -77,7 +80,7 @@ class CollectionFieldSerializer(DefaultFieldSerializer):
             for v in value:
                 try:
                     term = value_type.vocabulary.getTerm(v)
-                    values.append({u"token": term.token, u"title": term.title})
+                    values.append({"token": term.token, "title": term.title})
                 except LookupError:
                     log.warning("Term lookup error: %r" % v)
             value = values
@@ -89,7 +92,7 @@ class ImageFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
         image = self.field.get(self.context)
         if not image:
-            return None
+            return
 
         width, height = image.getImageSize()
 
@@ -113,7 +116,7 @@ class FileFieldSerializer(DefaultFieldSerializer):
     def __call__(self):
         namedfile = self.field.get(self.context)
         if namedfile is None:
-            return None
+            return
 
         url = "/".join((self.context.absolute_url(), "@@download", self.field.__name__))
         result = {
@@ -132,9 +135,37 @@ class RichttextFieldSerializer(DefaultFieldSerializer):
         return json_compatible(value, self.context)
 
 
+@adapter(ITextLine, ILink, Interface)
+class TextLineFieldSerializer(DefaultFieldSerializer):
+    def __call__(self):
+        if self.field.getName() != "remoteUrl":
+            return super().__call__()
+        value = self.get_value()
+
+        # Expect that all internal links will have resolveuid
+        if value and "resolveuid" in value:
+            return uid_to_url(value)
+
+        # Fallback in case we still have a variable in there
+        path = replace_link_variables_by_paths(context=self.context, url=value)
+        portal = getMultiAdapter(
+            (self.context, self.context.REQUEST), name="plone_portal_state"
+        ).portal()
+        # We should traverse unrestricted, just in case that the path to the object
+        # is not all public, we should be able to reach it by finger pointing
+        ref_obj = portal.unrestrictedTraverse(path, None)
+        if ref_obj:
+            value = ref_obj.absolute_url()
+            return json_compatible(value)
+        else:
+            # The URL does not point to an existing object, so just return the value
+            # without value interpolation
+            return json_compatible(value.replace("${portal_url}", ""))
+
+
 @adapter(IField, IDexterityContent, Interface)
 @implementer(IPrimaryFieldTarget)
-class DefaultPrimaryFieldTarget(object):
+class DefaultPrimaryFieldTarget:
     def __init__(self, field, context, request):
         self.context = context
         self.request = request

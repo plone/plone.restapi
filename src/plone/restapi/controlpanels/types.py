@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import queryMultiAdapter

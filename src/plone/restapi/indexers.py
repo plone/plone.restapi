@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # XXX: EXPERIMENTAL!!!
 # This is an experimental feature meant for use in Volto only!
 # This code is likely to change in the future, even within minor releases.
@@ -16,26 +15,18 @@ from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-import six
-
 
 def _extract_text(block):
     result = ""
-    for paragraph in block.get("text").get("blocks"):
+    for paragraph in block.get("text", {}).get("blocks", {}):
         text = paragraph["text"]
-        if six.PY2:
-            if isinstance(text, six.text_type):
-                text = text.encode("utf-8", "replace")
-            if text:
-                result = " ".join((result, text))
-        else:
-            result = " ".join((result, text))
+        result = " ".join((result, text))
     return result
 
 
 @implementer(IBlockSearchableText)
 @adapter(IBlocks, IBrowserRequest)
-class TextBlockSearchableText(object):
+class TextBlockSearchableText:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -47,11 +38,16 @@ class TextBlockSearchableText(object):
 @indexer(IBlocks)
 def SearchableText_blocks(obj):
     request = getRequest()
-
     blocks = obj.blocks
     blocks_text = []
 
     for block in blocks.values():
+
+        searchableText = block.get("searchableText", "")
+        if searchableText:
+            # TODO: should we evaluate in some way this value? maybe passing
+            # it into html/plain text transformer?
+            blocks_text.append(searchableText)
 
         block_type = block.get("@type", "")
         adapter = queryMultiAdapter(
@@ -68,3 +64,30 @@ def SearchableText_blocks(obj):
     blocks_text.append(std_text)
 
     return " ".join(blocks_text)
+
+
+class SlateTextIndexer:
+    """SlateTextIndexer."""
+
+    def __init__(self, context, request):
+        """__init__.
+
+        :param context:
+        :param request:
+        """
+        self.context = context
+        self.request = request
+
+    def __call__(self, block):
+        """__call__.
+
+        :param block:
+        """
+        # text indexer for slate blocks. Relies on the slate field
+        block = block or {}
+
+        if block.get("searchableText"):
+            return
+
+        # BBB compatibility with slate blocks that used the "plaintext" field
+        return (block or {}).get("plaintext", "")

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.restapi.deserializer import json_body
@@ -6,14 +5,13 @@ from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
 from zope.interface import alsoProvides
+from zope import component
 
 import plone.protect.interfaces
-import six
 
 
 class Login(Service):
-    """Handles login and returns a JSON web token (JWT).
-    """
+    """Handles login and returns a JSON web token (JWT)."""
 
     def reply(self):
         data = json_body(self.request)
@@ -32,9 +30,6 @@ class Login(Service):
 
         userid = data["login"]
         password = data["password"]
-        if six.PY2:
-            userid = userid.encode("utf8")
-            password = password.encode("utf8")
         uf = self._find_userfolder(userid)
 
         if uf is not None:
@@ -67,13 +62,26 @@ class Login(Service):
                 )
             )
 
+        # Perform the same post-login actions as would happen when logging in through
+        # the Plone classic HTML login form.  There is a trade-off here, we either
+        # violate DRY and duplicate the code from the classic HTML Plone view that will
+        # then become out of date all the time, or we re-use the code from the core
+        # Plone view and introduce a dependency we may have to update over time.  After
+        # [discussion](https://github.com/plone/plone.restapi/pull/1141#discussion_r648843942)
+        # we opt for the latter.
+        login_view = component.getMultiAdapter(
+            (self.context, self.request),
+            name="login",
+        )
+        login_view._post_login()
+
         payload = {}
         payload["fullname"] = user.getProperty("fullname")
         return {"token": plugin.create_token(user.getId(), data=payload)}
 
     def _find_userfolder(self, userid):
         """Try to find a user folder that contains a user with the given
-           userid.
+        userid.
         """
         uf_parent = aq_inner(self.context)
         info = None
@@ -88,7 +96,6 @@ class Login(Service):
 
         if info:
             return uf
-        return None
 
     def check_permission(self):
-        return
+        pass

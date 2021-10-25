@@ -22,13 +22,11 @@ help: ## This help message
 
 .PHONY: Update Makefile and Buildout
 update: ## Update Make and Buildout
-	wget -O Makefile https://raw.githubusercontent.com/kitconcept/buildout/master/Makefile
-	wget -O requirements.txt https://raw.githubusercontent.com/kitconcept/buildout/master/requirements.txt
-	wget -O plone-4.3.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/plone-4.3.x.cfg
-	wget -O plone-5.1.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/plone-5.1.x.cfg
-	wget -O plone-5.2.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/plone-5.2.x.cfg
-	wget -O travis.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/travis.cfg
-	wget -O versions.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/versions.cfg
+	wget -O Makefile https://raw.githubusercontent.com/kitconcept/buildout/5.2/Makefile
+	wget -O requirements.txt https://raw.githubusercontent.com/kitconcept/buildout/5.2/requirements.txt
+	wget -O plone-5.2.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/5.2/plone-5.2.x.cfg
+	wget -O ci.cfg https://raw.githubusercontent.com/kitconcept/buildout/5.2/ci.cfg
+	wget -O versions.cfg https://raw.githubusercontent.com/kitconcept/buildout/5.2/versions.cfg
 
 .installed.cfg: bin/buildout *.cfg
 	bin/buildout
@@ -40,30 +38,7 @@ bin/buildout: bin/pip
 	@touch -c $@
 
 bin/python bin/pip:
-	python$(version) -m venv . || virtualenv --clear --python=python$(version) .
-
-py2:
-	virtualenv --clear --python=python2 .
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
-
-.PHONY: Build Plone 4.3
-build-plone-4.3: py2 ## Build Plone 4.3
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
-	bin/buildout -c plone-4.3.x.cfg
-
-.PHONY: Build Plone 5.0
-build-plone-5.0: py2 ## Build Plone 5.0
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
-	bin/buildout -c plone-5.0.x.cfg
-
-.PHONY: Build Plone 5.1
-build-plone-5.1: py2  ## Build Plone 5.1
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
-	bin/buildout -c plone-5.1.x.cfg
+	python$(version) -m venv . || virtualenv --python=python$(version) .
 
 .PHONY: Build Plone 5.2
 build-plone-5.2: .installed.cfg  ## Build Plone 5.2
@@ -77,6 +52,18 @@ build-plone-5.2-performance: .installed.cfg  ## Build Plone 5.2
 	bin/pip install -r requirements.txt
 	bin/buildout -c plone-5.2.x-performance.cfg
 
+.PHONY: Build Plone 6.0
+build-plone-6.0: .installed.cfg  ## Build Plone 6.0
+	bin/pip install --upgrade pip
+	bin/pip install -r requirements.txt
+	bin/buildout -c plone-6.0.x.cfg
+
+.PHONY: Build Plone 6.0 Performance
+build-plone-6.0-performance: .installed.cfg  ## Build Plone 6.0
+	bin/pip install --upgrade pip
+	bin/pip install -r requirements.txt
+	bin/buildout -c plone-6.0.x-performance.cfg
+
 .PHONY: Test
 test:  ## Test
 	bin/test
@@ -84,9 +71,6 @@ test:  ## Test
 .PHONY: Test Performance
 test-performance:
 	jmeter -n -t performance.jmx -l jmeter.jtl
-
-start-locust:
-	bin/locust -f performance/images.py --no-web -c 1000 -r 100 --run-time 1m --host http://localhost:12345/Plone
 
 .PHONY: Code Analysis
 code-analysis:  ## Code Analysis
@@ -97,6 +81,10 @@ code-analysis:  ## Code Analysis
 black:  ## Black
 	bin/code-analysis
 	if [ -f "bin/black" ]; then bin/black src/ ; fi
+
+.PHONY: zpretty
+zpretty:  ## zpretty
+	if [ -f "bin/zpretty" ]; then zpretty -i ./**/*.zcml; fi
 
 .PHONY: Build Docs
 docs:  ## Build Docs

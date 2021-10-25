@@ -2,5 +2,5 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImZ1bGxuYW1lIjoiIn0.krI8ep0NQHyYYObtXl1ygI4NM2UbHUlZqF7kKnx9JFo"
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsImZ1bGxuYW1lIjoiIn0.krI8ep0NQHyYYObtXl1ygI4NM2UbHUlZqF7kKnx9JFo"
 }

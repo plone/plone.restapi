@@ -5,5 +5,7 @@ Content-Type: application/json
 
 {
     "description": "A content-type",
+    "plone.richtext": true,
+    "plone.versioning": true,
     "title": "My Content Type"
 }

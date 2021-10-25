@@ -146,6 +146,24 @@ Then register as a subscription adapter::
   <subscriber factory=".blocks.DatabaseQueryDeserializeTransformer"
     provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"/>
 
+Generic block transformers and smart fields
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+You can create a block transformer that applies to all blocks, by using ``None``
+as the value for ``block_type``. The ``order`` field still applies, though. Using
+the generic block transfomers enables us to create **smart block fields**,
+which are handled differently. For example, any internal link stored as ``url``
+or ``href`` in a block value is converted (and stored) as a resolveuid-based URL,
+then resolved back to a full URL on block serialization.
+
+Another **smart field** is the ``searchableText`` field in a block value. It
+needs to be a plain text value and it will be used in the ``SearchableText``
+value for the context item.
+
+If you need to store "subblocks" in a block value, you should use the
+``blocks`` smart field (or ``data.blocks``), doing so integrates those blocks
+with the transfomers.
+
 SearchableText indexing for blocks
 ----------------------------------
 

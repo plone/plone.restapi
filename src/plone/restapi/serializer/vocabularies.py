@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from Products.CMFPlone.utils import safe_unicode
@@ -12,11 +11,9 @@ from zope.schema.interfaces import ITitledTokenizedTerm
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabulary
 
-import six
-
 
 @implementer(ISerializeToJson)
-class SerializeVocabLikeToJson(object):
+class SerializeVocabLikeToJson:
     """Base implementation to serialize vocabularies and sources to JSON.
 
     Implements server-side filtering as well as batching.
@@ -48,7 +45,10 @@ class SerializeVocabLikeToJson(object):
                 terms.append(term)
             else:
                 term_title = safe_unicode(getattr(term, "title", None) or "")
-                if title.lower() not in term_title.lower():
+                if (
+                    title.lower()
+                    not in translate(term_title, context=self.request).lower()
+                ):
                     continue
                 terms.append(term)
 
@@ -74,19 +74,17 @@ class SerializeVocabLikeToJson(object):
 
 @adapter(IVocabulary, Interface)
 class SerializeVocabularyToJson(SerializeVocabLikeToJson):
-    """Serializes IVocabulary to JSON.
-    """
+    """Serializes IVocabulary to JSON."""
 
 
 @adapter(IIterableSource, Interface)
 class SerializeSourceToJson(SerializeVocabLikeToJson):
-    """Serializes IIterableSource to JSON.
-    """
+    """Serializes IIterableSource to JSON."""
 
 
 @implementer(ISerializeToJson)
 @adapter(ITokenizedTerm, Interface)
-class SerializeTermToJson(object):
+class SerializeTermToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -95,6 +93,6 @@ class SerializeTermToJson(object):
         term = self.context
         token = term.token
         title = term.title if ITitledTokenizedTerm.providedBy(term) else token
-        if isinstance(title, six.binary_type):
+        if isinstance(title, bytes):
             title = title.decode("UTF-8")
         return {"token": token, "title": translate(title, context=self.request)}

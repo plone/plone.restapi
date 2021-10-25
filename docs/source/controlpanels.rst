@@ -82,6 +82,8 @@ Control Panels not based on plone.registry
 
 Control panel which are not based on plone.registry have a custom ``@controlpanels/:panel`` endpoint implementation.
 
+.. _dexterity-types:
+
 Dexterity Types
 ^^^^^^^^^^^^^^^
 

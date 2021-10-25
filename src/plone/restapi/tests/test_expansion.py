@@ -1,4 +1,5 @@
-# -*- coding: utf-8 -*-
+from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
+from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -7,7 +8,6 @@ from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.expansion import expandable_elements
-from plone.restapi.testing import PAM_INSTALLED
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -22,12 +22,7 @@ import transaction
 import unittest
 
 
-if PAM_INSTALLED:
-    from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled  # noqa
-    from plone.app.multilingual.interfaces import ITranslationManager
-
-
-class ExpandableElementFoo(object):
+class ExpandableElementFoo:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -39,7 +34,7 @@ class ExpandableElementFoo(object):
             return {"foo": "collapsed"}
 
 
-class ExpandableElementBar(object):
+class ExpandableElementBar:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -118,7 +113,7 @@ class TestExpansionFunctional(unittest.TestCase):
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         self.folder = createContentInContainer(
-            self.portal, u"Folder", id=u"folder", title=u"Some Folder"
+            self.portal, "Folder", id="folder", title="Some Folder"
         )
         transaction.commit()
 
@@ -149,14 +144,23 @@ class TestExpansionFunctional(unittest.TestCase):
 
     def test_navigation_expanded(self):
         response = self.api_session.get("/folder", params={"expand": "navigation"})
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             [
-                {u"title": u"Home", u"@id": self.portal_url + u"", u"description": u""},
                 {
-                    u"title": u"Some Folder",
-                    u"@id": self.portal_url + u"/folder",
-                    u"description": u"",
+                    "title": "Home",
+                    "@id": self.portal_url + "",
+                    "description": "",
+                    "review_state": None,
+                    "items": [],
+                },
+                {
+                    "title": "Some Folder",
+                    "@id": self.portal_url + "/folder",
+                    "description": "",
+                    "review_state": "private",
+                    "items": [],
                 },
             ],
             response.json()["@components"]["navigation"]["items"],
@@ -164,26 +168,24 @@ class TestExpansionFunctional(unittest.TestCase):
 
     def test_navigation_expanded_with_depth(self):
         createContentInContainer(
-            self.portal, u"Folder", id=u"folder2", title=u"Some Folder 2"
+            self.portal, "Folder", id="folder2", title="Some Folder 2"
         )
         subfolder1 = createContentInContainer(
-            self.folder, u"Folder", id=u"subfolder1", title=u"SubFolder 1"
+            self.folder, "Folder", id="subfolder1", title="SubFolder 1"
         )
         createContentInContainer(
-            self.folder, u"Folder", id=u"subfolder2", title=u"SubFolder 2"
+            self.folder, "Folder", id="subfolder2", title="SubFolder 2"
         )
         thirdlevelfolder = createContentInContainer(
-            subfolder1, u"Folder", id=u"thirdlevelfolder", title=u"Third Level Folder"
+            subfolder1, "Folder", id="thirdlevelfolder", title="Third Level Folder"
         )
         createContentInContainer(
             thirdlevelfolder,
-            u"Folder",
-            id=u"fourthlevelfolder",
-            title=u"Fourth Level Folder",
+            "Folder",
+            id="fourthlevelfolder",
+            title="Fourth Level Folder",
         )
-        createContentInContainer(
-            self.folder, u"Document", id=u"doc1", title=u"A document"
-        )
+        createContentInContainer(self.folder, "Document", id="doc1", title="A document")
         transaction.commit()
 
         response = self.api_session.get(
@@ -215,7 +217,12 @@ class TestExpansionFunctional(unittest.TestCase):
         response = self.api_session.get("/folder", params={"expand": "breadcrumbs"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            [{u"title": u"Some Folder", u"@id": self.portal_url + u"/folder"}],
+            [
+                {
+                    "title": "Some Folder",
+                    "@id": self.portal_url + "/folder",
+                }
+            ],
             response.json()["@components"]["breadcrumbs"]["items"],
         )
 
@@ -230,28 +237,28 @@ class TestExpansionFunctional(unittest.TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            self.portal_url + u"/folder/@workflow",
+            self.portal_url + "/folder/@workflow",
             response.json().get("@components").get("workflow").get("@id"),
         )
         self.assertEqual(
-            u"private",
+            "private",
             response.json()["@components"]["workflow"]["history"][0][
                 "review_state"
             ],  # noqa
         )
         self.assertEqual(
-            u"Private",
+            "Private",
             response.json()["@components"]["workflow"]["history"][0]["title"],
         )
         self.assertEqual(
             [
                 {
-                    u"@id": self.portal_url + u"/folder/@workflow/publish",  # noqa
-                    u"title": u"Publish",
+                    "@id": self.portal_url + "/folder/@workflow/publish",  # noqa
+                    "title": "Publish",
                 },
                 {
-                    u"@id": self.portal_url + u"/folder/@workflow/submit",  # noqa
-                    u"title": u"Submit for publication",
+                    "@id": self.portal_url + "/folder/@workflow/submit",  # noqa
+                    "title": "Submit for publication",
                 },
             ],
             response.json()["@components"]["workflow"]["transitions"],
@@ -277,58 +284,64 @@ class TestExpansionFunctional(unittest.TestCase):
         self.assertEqual(
             [
                 {
-                    u"@id": u"/".join((base_url, "@types/Collection")),
-                    u"addable": True,
-                    u"title": u"Collection",
+                    "@id": "/".join((base_url, "@types/Collection")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Collection",
                 },
                 {
-                    u"@id": u"/".join((base_url, "@types/DXTestDocument")),
-                    u"addable": True,
-                    u"title": u"DX Test Document",
+                    "@id": "/".join((base_url, "@types/DXTestDocument")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "DX Test Document",
                 },
                 {
-                    u"@id": u"/".join((base_url, "@types/Event")),
-                    u"addable": True,
-                    u"title": u"Event",
+                    "@id": "/".join((base_url, "@types/Event")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Event",
                 },
                 {
-                    u"@id": u"/".join((base_url, "@types/File")),
-                    u"addable": True,
-                    u"title": u"File",
+                    "@id": "/".join((base_url, "@types/File")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "File",
                 },
                 {
-                    u"@id": u"/".join((base_url, "@types/Folder")),
-                    u"addable": True,
-                    u"title": u"Folder",
+                    "@id": "/".join((base_url, "@types/Folder")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Folder",
                 },
                 {
-                    u"@id": u"/".join((base_url, "@types/Image")),
-                    u"addable": True,
-                    u"title": u"Image",
+                    "@id": "/".join((base_url, "@types/Image")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Image",
                 },
                 {
-                    u"@id": u"/".join((base_url, "@types/Link")),
-                    u"addable": True,
-                    u"title": u"Link",
+                    "@id": "/".join((base_url, "@types/Link")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Link",
                 },
                 {
-                    u"@id": u"/".join((base_url, "@types/News Item")),
-                    u"addable": True,
-                    u"title": u"News Item",
+                    "@id": "/".join((base_url, "@types/News Item")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "News Item",
                 },
                 {
-                    u"@id": u"/".join((base_url, "@types/Document")),
-                    u"addable": True,
-                    u"title": u"Page",
+                    "@id": "/".join((base_url, "@types/Document")),
+                    "addable": True,
+                    "immediately_addable": True,
+                    "title": "Page",
                 },
             ],
             response.json().get("@components").get("types"),
         )
 
 
-@unittest.skipUnless(
-    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
-)  # NOQA
 class TestTranslationExpansionFunctional(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
@@ -346,10 +359,13 @@ class TestTranslationExpansionFunctional(unittest.TestCase):
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
         login(self.portal, SITE_OWNER_NAME)
         self.en_content = createContentInContainer(
-            self.portal["en"], "Document", title=u"Test document"
+            self.portal["en"], "Document", title="Test document"
+        )
+        self.en_folder = createContentInContainer(
+            self.portal["en"], "Folder", title="Test folder"
         )
         self.es_content = createContentInContainer(
-            self.portal["es"], "Document", title=u"Test document"
+            self.portal["es"], "Document", title="Test document"
         )
         ITranslationManager(self.en_content).register_translation("es", self.es_content)
 
@@ -374,3 +390,11 @@ class TestTranslationExpansionFunctional(unittest.TestCase):
         self.assertIn(
             translation_dict, response.json()["@components"]["translations"]["items"]
         )
+
+    def test_expansions_no_fullobjects_do_not_modify_id(self):
+        response = self.api_session.get(
+            "/en/test-folder", params={"expand": "translations"}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["@id"], self.en_folder.absolute_url())

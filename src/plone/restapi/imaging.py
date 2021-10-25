@@ -1,18 +1,6 @@
-# -*- coding: utf-8 -*-
-from __future__ import division
-from Products.CMFCore.interfaces import IPropertiesTool
-from six.moves import map
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.globalrequest import getRequest
-
-
-try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE_5 = False  # pragma: no cover
-else:
-    PLONE_5 = True  # pragma: no cover
 
 
 def get_scales(context, field, width, height):
@@ -42,9 +30,9 @@ def get_scales(context, field, width, height):
         actual_height = scale.height
 
         scales[name] = {
-            u"download": url,
-            u"width": actual_width,
-            u"height": actual_height,
+            "download": url,
+            "width": actual_width,
+            "height": actual_height,
         }
 
     return scales
@@ -56,11 +44,9 @@ def get_original_image_url(context, fieldname, width, height):
     scale = images_view.scale(
         fieldname, width=width, height=height, direction="thumbnail"
     )
-    if not scale:
-        # This might happen for corrupt images.
-        return None
-
-    return scale.url
+    if scale:
+        return scale.url
+    # Corrupt images may not have a scale.
 
 
 def get_actual_scale(dimensions, bbox):
@@ -90,19 +76,13 @@ def get_scale_infos():
     """Returns a list of (name, width, height) 3-tuples of the
     available image scales.
     """
-    if PLONE_5:
-        from plone.registry.interfaces import IRegistry
+    from plone.registry.interfaces import IRegistry
 
-        registry = getUtility(IRegistry)
-        from Products.CMFPlone.interfaces import IImagingSchema
+    registry = getUtility(IRegistry)
+    from Products.CMFPlone.interfaces import IImagingSchema
 
-        imaging_settings = registry.forInterface(IImagingSchema, prefix="plone")
-        allowed_sizes = imaging_settings.allowed_sizes
-
-    else:
-        ptool = getUtility(IPropertiesTool)
-        image_properties = ptool.imaging_properties
-        allowed_sizes = image_properties.getProperty("allowed_sizes")
+    imaging_settings = registry.forInterface(IImagingSchema, prefix="plone")
+    allowed_sizes = imaging_settings.allowed_sizes
 
     def split_scale_info(allowed_size):
         name, dims = allowed_size.split(" ")

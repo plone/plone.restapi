@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -13,15 +12,6 @@ import transaction
 import unittest
 
 
-try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE5 = False
-else:
-    PLONE5 = True
-
-
-@unittest.skipIf(not PLONE5, "email send not implemented for Plone < 5.")  # noqa
 class EmailSendEndpoint(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -36,7 +26,7 @@ class EmailSendEndpoint(unittest.TestCase):
 
         registry = getUtility(IRegistry)
         registry["plone.email_from_address"] = "info@plone.org"
-        registry["plone.email_from_name"] = u"Plone test site"
+        registry["plone.email_from_name"] = "Plone test site"
 
         self.api_session = RelativeSession(self.portal_url)
         self.api_session.headers.update({"Accept": "application/json"})
@@ -62,13 +52,14 @@ class EmailSendEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(response.status_code, 204)
-        self.assertTrue(
-            "Subject: =?utf-8?q?A_portal_user_via_Plone_site?="
-            in self.mailhost.messages[0]
-        )
-        self.assertTrue("From: info@plone.org" in self.mailhost.messages[0])
-        self.assertTrue("Reply-To: john@doe.com" in self.mailhost.messages[0])
-        self.assertTrue("Just want to say hi." in self.mailhost.messages[0])
+        msg = self.mailhost.messages[0]
+        if isinstance(msg, bytes) and bytes is not str:
+            # Python 3 with Products.MailHost 4.10+
+            msg = msg.decode("utf-8")
+        self.assertTrue("Subject: =?utf-8?q?A_portal_user_via_Plone_site?=" in msg)
+        self.assertTrue("From: info@plone.org" in msg)
+        self.assertTrue("Reply-To: john@doe.com" in msg)
+        self.assertTrue("Just want to say hi." in msg)
 
     def test_email_send_all_parameters(self):
         response = self.api_session.post(
@@ -84,11 +75,15 @@ class EmailSendEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(response.status_code, 204)
-        self.assertTrue("=?utf-8?q?This_is_the_subject" in self.mailhost.messages[0])
-        self.assertTrue("From: info@plone.org" in self.mailhost.messages[0])
-        self.assertTrue("John Doe" in self.mailhost.messages[0])
-        self.assertTrue("Reply-To: john@doe.com" in self.mailhost.messages[0])
-        self.assertTrue("Just want to say hi." in self.mailhost.messages[0])
+        msg = self.mailhost.messages[0]
+        if isinstance(msg, bytes) and bytes is not str:
+            # Python 3 with Products.MailHost 4.10+
+            msg = msg.decode("utf-8")
+        self.assertTrue("=?utf-8?q?This_is_the_subject" in msg)
+        self.assertTrue("From: info@plone.org" in msg)
+        self.assertTrue("John Doe" in msg)
+        self.assertTrue("Reply-To: john@doe.com" in msg)
+        self.assertTrue("Just want to say hi." in msg)
 
     def test_email_send_anonymous(self):
         response = self.anon_api_session.post(

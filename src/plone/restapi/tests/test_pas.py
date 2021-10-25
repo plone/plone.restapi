@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.keyring.interfaces import IKeyManager
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName

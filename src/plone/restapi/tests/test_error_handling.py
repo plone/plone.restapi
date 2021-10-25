@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -17,7 +16,7 @@ import unittest
 
 class InternalServerErrorView(BrowserView):
     def __call__(self):  # pragma: no cover
-        from six.moves.urllib.error import HTTPError
+        from urllib.error import HTTPError
 
         raise HTTPError(
             "http://nohost/plone/internal_server_error",
@@ -26,7 +25,6 @@ class InternalServerErrorView(BrowserView):
             {},
             None,
         )
-        raise HTTPError
 
 
 class TestErrorHandling(unittest.TestCase):

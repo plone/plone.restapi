@@ -2,70 +2,71 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:browser="http://namespaces.zope.org/browser"
     xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
-    i18n_domain="plone.restapi">
+    i18n_domain="plone.restapi"
+    >
 
-    <!-- Upgrade to fix ordering, call manually via this browser-view if necessary -->
-    <browser:page
-        for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-        name="plone-restapi-upgrade-fix-ordering"
-        class=".ordering.FixOrderingView"
-        permission="cmf.ManagePortal"
-        />
+  <!-- Upgrade to fix ordering, call manually via this browser-view if necessary -->
+  <browser:page
+      name="plone-restapi-upgrade-fix-ordering"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      class=".ordering.FixOrderingView"
+      permission="cmf.ManagePortal"
+      />
 
-    <!-- 0001 -> 0002 -->
-    <genericsetup:upgradeStep
-        title="Assign 'plone.restapi: Use REST API' permission to Anonymous"
-        description=""
-        source="0001"
-        destination="0002"
-        handler="plone.restapi.upgrades.to0002.assign_use_api_permission"
-        profile="plone.restapi:default"
-        />
+  <!-- 0001 -> 0002 -->
+  <genericsetup:upgradeStep
+      title="Assign 'plone.restapi: Use REST API' permission to Anonymous"
+      description=""
+      profile="plone.restapi:default"
+      source="0001"
+      destination="0002"
+      handler="plone.restapi.upgrades.to0002.assign_use_api_permission"
+      />
 
-    <genericsetup:registerProfile
-        name="0002"
-        title="plone.restapi.upgrades.0002"
-        description=""
-        directory="profiles/0002"
-        for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
-        provides="Products.GenericSetup.interfaces.EXTENSION"
-        />
+  <genericsetup:registerProfile
+      name="0002"
+      title="plone.restapi.upgrades.0002"
+      description=""
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+      directory="profiles/0002"
+      />
 
-    <!-- 0002 -> 0003 -->
-    <genericsetup:upgradeStep
-        title="Install PAS plugin in Zope root"
-        description=""
-        source="0002"
-        destination="0003"
-        handler="plone.restapi.upgrades.to0003.install_pas_plugin_in_zope_root"
-        profile="plone.restapi:default"
-        />
+  <!-- 0002 -> 0003 -->
+  <genericsetup:upgradeStep
+      title="Install PAS plugin in Zope root"
+      description=""
+      profile="plone.restapi:default"
+      source="0002"
+      destination="0003"
+      handler="plone.restapi.upgrades.to0003.install_pas_plugin_in_zope_root"
+      />
 
-    <genericsetup:registerProfile
-        name="0004"
-        title="plone.restapi.upgrades.0004"
-        description=""
-        directory="profiles/0004"
-        for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
-        provides="Products.GenericSetup.interfaces.EXTENSION"
-        />
+  <genericsetup:registerProfile
+      name="0004"
+      title="plone.restapi.upgrades.0004"
+      description=""
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      for="Products.CMFPlone.interfaces.IMigratingPloneSiteRoot"
+      directory="profiles/0004"
+      />
 
-    <genericsetup:upgradeStep
-        title="Rename tiles and tiles_layout fields from Tiles behavior to blocks"
-        description=""
-        source="0004"
-        destination="0005"
-        handler="plone.restapi.upgrades.to0005.rename_tiles_to_blocks"
-        profile="plone.restapi:default"
-        />
+  <genericsetup:upgradeStep
+      title="Rename tiles and tiles_layout fields from Tiles behavior to blocks"
+      description=""
+      profile="plone.restapi:default"
+      source="0004"
+      destination="0005"
+      handler="plone.restapi.upgrades.to0005.rename_tiles_to_blocks"
+      />
 
-    <genericsetup:upgradeStep
-        title="Rename iface name to the short name in blocks"
-        description=""
-        source="0005"
-        destination="0006"
-        handler="plone.restapi.upgrades.to0006.rename_iface_to_name_in_blocks_behavior"
-        profile="plone.restapi:default"
-        />
+  <genericsetup:upgradeStep
+      title="Rename iface name to the short name in blocks"
+      description=""
+      profile="plone.restapi:default"
+      source="0005"
+      destination="0006"
+      handler="plone.restapi.upgrades.to0006.rename_iface_to_name_in_blocks_behavior"
+      />
 
 </configure>

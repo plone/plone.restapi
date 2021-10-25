@@ -1,11 +1,14 @@
-# -*- coding: utf-8 -*-
+from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.browser.navtree import getNavigationRoot
+from Products.CMFPlone.interfaces import ISearchSchema
 from zope.component import getMultiAdapter
+from zope.component import getUtility
 
 
-class SearchHandler(object):
+class SearchHandler:
     """Executes a catalog search based on a query dict, and returns
     JSON compatible results.
     """
@@ -74,16 +77,71 @@ class SearchHandler(object):
         else:
             fullobjects = False
 
-        metadata_fields = query.pop("metadata_fields", [])
-        if not isinstance(metadata_fields, list):
-            metadata_fields = [metadata_fields]
+        use_site_search_settings = False
+
+        if "use_site_search_settings" in query:
+            use_site_search_settings = True
+            del query["use_site_search_settings"]
+
+        if use_site_search_settings:
+            query = self.filter_query(query)
 
         self._constrain_query_by_path(query)
         query = self._parse_query(query)
 
-        lazy_resultset = self.catalog.searchResults(query)
+        lazy_resultset = self.catalog.searchResults(**query)
         results = getMultiAdapter((lazy_resultset, self.request), ISerializeToJson)(
-            metadata_fields=metadata_fields, fullobjects=fullobjects
+            fullobjects=fullobjects
         )
 
         return results
+
+    def filter_types(self, types):
+        plone_utils = getToolByName(self.context, "plone_utils")
+        if not isinstance(types, list):
+            types = [types]
+        return plone_utils.getUserFriendlyTypes(types)
+
+    def filter_query(self, query):
+        registry = getUtility(IRegistry)
+        search_settings = registry.forInterface(ISearchSchema, prefix="plone")
+
+        types = query.get("portal_type", [])
+        if "query" in types:
+            types = types["query"]
+        query["portal_type"] = self.filter_types(types)
+
+        # respect effective/expiration date
+        query["show_inactive"] = False
+
+        # respect navigation root
+        if "path" not in query:
+            query["path"] = {"query": getNavigationRoot(self.context)}
+
+            vhm_physical_path = self.request.get("VirtualRootPhysicalPath")
+            # if vhm trick is applied, we should present a stripped path, as it will be
+            # processed again in _constrain_query_by_path
+            if vhm_physical_path:
+                bits = query["path"]["query"].split("/")[len(vhm_physical_path) :]
+                query["path"]["query"] = "/".join(bits) or "/"
+
+        default_sort_on = search_settings.sort_on
+
+        if "sort_on" not in query:
+            if default_sort_on != "relevance":
+                query["sort_on"] = self.default_sort_on
+        elif query["sort_on"] == "relevance":
+            del query["sort_on"]
+
+        if not query.get("sort_order") and (
+            query.get("sort_on", "") == "Date"
+            or query.get("sort_on", "") == "effective"  # compatibility with Volto
+        ):
+            query["sort_order"] = "reverse"
+        elif "sort_order" in query:
+            del query["sort_order"]
+
+        if "sort_order" in query and not query["sort_order"]:
+            del query["sort_order"]
+
+        return query

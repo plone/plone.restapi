@@ -31,6 +31,8 @@ The 'Content-Type' header indicates that the body uses the 'application/json' fo
 The request body contains the minimal necessary information needed to create a document (the type and the title).
 You could set other properties, like "description" here as well.
 
+A special property during content creation is "UID", as it requires the user to have the *Manage Portal* permission to set it. Without the permission, the request will fail as Unauthorized.
+
 
 Successful Response (201 Created)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -374,3 +376,14 @@ A response 400 BadRequest with a message 'Content ordering is not supported by t
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/content_reorder.req
+
+To rearrange all items in a folderish context use the `sort` key.
+
+The `on` subkey defines the catalog index to be sorted on. The `order` subkey indicates 'ascending' or 'descending' order of items.
+
+A response 400 BadRequest with a message 'Content ordering is not supported by this resource' will be returned if the container does not support ordering.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/content_resort.req
+
+

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from OFS.Image import Image
 from plone import api
 from plone.app.discussion.interfaces import IConversation
@@ -58,7 +57,7 @@ class TestCommentsSerializers(TestCase):
         )
 
         output = serializer()
-        self.assertEqual(set(output), set(["@id", "items_total", "items"]))
+        self.assertEqual(set(output), {"@id", "items_total", "items"})
 
     def test_conversation_batched(self):
         self.request.form["b_size"] = 1
@@ -92,7 +91,7 @@ class TestCommentsSerializers(TestCase):
         ]
         self.assertEqual(set(output), set(expected))
 
-        self.assertEqual(set(output["text"]), set(["data", "mime-type"]))
+        self.assertEqual(set(output["text"]), {"data", "mime-type"})
 
     def test_comment_with_author_image(self):
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
@@ -110,7 +109,7 @@ class TestCommentsSerializers(TestCase):
 
         serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
         self.assertEqual(
-            "{}/portal_memberdata/portraits/test_user_1_".format(self.portal_url),
+            f"{self.portal_url}/portal_memberdata/portraits/test_user_1_",
             serializer().get("author_image"),
         )
 
@@ -125,7 +124,8 @@ class TestCommentsSerializers(TestCase):
 
         serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
         self.assertEqual(
-            None, serializer().get("author_image"),
+            None,
+            serializer().get("author_image"),
         )
 
     def test_comment_with_mimetype_text_plain(self):
@@ -140,7 +140,8 @@ class TestCommentsSerializers(TestCase):
 
         # serializer should return HTML with a clickable link
         self.assertEqual(
-            "Hey, I am plain text!", serializer()["text"]["data"],
+            "Hey, I am plain text!",
+            serializer()["text"]["data"],
         )
         # serializer should return mimetype = text/x-web-intelligent
         self.assertEqual("text/plain", serializer()["text"]["mime-type"])

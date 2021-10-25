@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.types import utils
@@ -14,7 +13,7 @@ SERVICE_ID = "@tiles"
 
 @implementer(ISerializeToJsonSummary)
 @adapter(ITileType, Interface)
-class TileSummarySerializeToJson(object):
+class TileSummarySerializeToJson:
     def __init__(self, tile, request):
         self.tile = tile
 
@@ -31,8 +30,7 @@ class TileSummarySerializeToJson(object):
 
 
 def get_jsonschema_for_tile(tile, context, request):
-    """Build a complete JSON schema for the given tile.
-    """
+    """Build a complete JSON schema for the given tile."""
     schema = tile.schema
 
     fieldsets = utils.get_fieldsets(context, request, schema)
@@ -62,7 +60,7 @@ def get_jsonschema_for_tile(tile, context, request):
 
 @implementer(ISerializeToJson)
 @adapter(ITileType, Interface)
-class TileSerializeToJson(object):
+class TileSerializeToJson:
     def __init__(self, tile, request):
         self.tile = tile
         self.request = request

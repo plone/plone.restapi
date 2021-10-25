@@ -1,10 +1,9 @@
-# -*- coding: utf-8 -*-
-
 from DateTime import DateTime
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
+from plone.restapi.services.workflow.utils import elevated_privileges
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import WorkflowException
@@ -17,16 +16,14 @@ from zope.publisher.interfaces import IPublishTraverse
 from zope.publisher.interfaces import NotFound
 
 import plone.protect.interfaces
-import six
 
 
 @implementer(IPublishTraverse)
 class WorkflowTransition(Service):
-    """Trigger workflow transition
-    """
+    """Trigger workflow transition"""
 
     def __init__(self, context, request):
-        super(WorkflowTransition, self).__init__(context, request)
+        super().__init__(context, request)
         self.transition = None
         self.wftool = getToolByName(context, "portal_workflow")
 
@@ -78,20 +75,23 @@ class WorkflowTransition(Service):
             self.request.response.setStatus(400)
             return dict(error=dict(type="Bad Request", message=str(e)))
 
-        history = self.wftool.getInfoFor(self.context, "review_history")
-        action = history[-1]
-        if six.PY2:
-            action["title"] = self.context.translate(
-                self.wftool.getTitleForStateOnType(
-                    action["review_state"], self.context.portal_type
-                ).decode("utf8")
-            )
-        else:
-            action["title"] = self.context.translate(
-                self.wftool.getTitleForStateOnType(
-                    action["review_state"], self.context.portal_type
+        with elevated_privileges(self.context):
+            try:
+                history = self.wftool.getInfoFor(self.context, "review_history")
+                action = history[-1]
+                action["title"] = self.context.translate(
+                    self.wftool.getTitleForStateOnType(
+                        action["review_state"], self.context.portal_type
+                    )
                 )
-            )
+            except WorkflowException as e:
+                self.request.response.setStatus(400)
+                action = dict(
+                    error=dict(
+                        type="WorkflowException",
+                        message=translate(str(e), context=self.request),
+                    )
+                )
 
         return json_compatible(action)
 
@@ -108,7 +108,8 @@ class WorkflowTransition(Service):
             if obj.EffectiveDate() == "None":
                 obj.setEffectiveDate(DateTime())
                 obj.reindexObject()
-
+            if not self.wftool.getWorkflowsFor(obj):
+                continue
             self.wftool.doActionFor(obj, self.transition, comment=comment)
             if include_children and IFolderish.providedBy(obj):
                 self.recurse_transition(

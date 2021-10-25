@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
@@ -12,8 +11,7 @@ import plone.protect.interfaces
 
 
 class GroupsPost(Service):
-    """Creates a new group.
-    """
+    """Creates a new group."""
 
     def reply(self):
         portal = getSite()
@@ -56,9 +54,7 @@ class GroupsPost(Service):
             description=description,
         )
         if not success:
-            raise BadRequest(
-                "Error occurred, could not add group {}.".format(groupname)
-            )
+            raise BadRequest(f"Error occurred, could not add group {groupname}.")
 
         # Add members
         group = gtool.getGroupById(groupname)

@@ -1,13 +1,12 @@
-# -*- coding: utf-8 -*-
 from base64 import b64encode
 from datetime import datetime
-from mock import patch
-from pkg_resources import parse_version
+from unittest.mock import patch
 from pkg_resources import resource_filename
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
+from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.testing import applyProfile
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
@@ -21,31 +20,25 @@ from plone.locking.interfaces import ITTWLockable
 from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.registry.interfaces import IRegistry
-from plone.restapi.testing import PAM_INSTALLED  # noqa
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.statictime import StaticTime
 from plone.scale import storage
 from plone.testing.z2 import Browser
-from six.moves import range
 from zope.component import createObject
 from zope.component import getUtility
+from zope.component.hooks import getSite
 from zope.interface import alsoProvides
-from zope.site.hooks import getSite
 
 import collections
 import json
 import os
 import re
-import six
 import transaction
 import unittest
-
-
-if PAM_INSTALLED:
-    from plone.app.multilingual.interfaces import ITranslationManager
 
 
 TUS_HEADERS = [
@@ -79,80 +72,61 @@ UPLOAD_LENGTH = len(UPLOAD_DATA)
 UPLOAD_PDF_MIMETYPE = "application/pdf"
 UPLOAD_PDF_FILENAME = "file.pdf"
 
-PLONE_VERSION = parse_version(api.env.plone_version())
+# How do we open files?
+open_kw = {"newline": "\n"}
 
-try:
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE5 = False
-else:
-    PLONE5 = True
+
+def normalize_test_port(value):
+    # When you run these tests in the Plone core development buildout,
+    # the port number is random.  Normalize this to the default port.
+    return re.sub(r"localhost:\d{5}", "localhost:55001", value)
 
 
 def pretty_json(data):
-    return json.dumps(data, sort_keys=True, indent=4, separators=(",", ": "))
+    result = json.dumps(data, sort_keys=True, indent=4, separators=(",", ": "))
+    # When generating the documentation examples on different machines,
+    # it is all too easy to have differences in white space at the end of the line.
+    # So strip space on the right.
+    stripped = "\n".join([line.rstrip() for line in result.splitlines()])
+    # Make sure there is an empty line at the end.
+    # If you manually edit a file, many editors will automatically add such a line,
+    # and you will see as diff: 'No newline at end of file'.  We do not want this.
+    stripped += "\n"
+    return normalize_test_port(stripped)
 
 
-def save_request_and_response_for_docs(name, response):
-    if six.PY2:
-        open_kw = {}
-    else:
-        open_kw = {"newline": "\n"}
-    filename = "{}/{}".format(base_path, "%s.req" % name)
-    with open(filename, "w", **open_kw) as req:
-        req.write(
-            "{} {} HTTP/1.1\n".format(
-                response.request.method, response.request.path_url
-            )
-        )
-        ordered_request_headers = collections.OrderedDict(
-            sorted(response.request.headers.items())
-        )
-        for key, value in ordered_request_headers.items():
-            if key.lower() in REQUEST_HEADER_KEYS:
-                req.write("{}: {}\n".format(key.title(), value))
-        if response.request.body:
-            # If request has a body, make sure to set Content-Type header
-            if "content-type" not in REQUEST_HEADER_KEYS:
-                content_type = response.request.headers["Content-Type"]
-                req.write("Content-Type: %s\n" % content_type)
-
-            req.write("\n")
-
-            # Pretty print JSON request body
-            if content_type == "application/json":
-                json_body = json.loads(response.request.body)
-                body = pretty_json(json_body)
-                # Make sure Content-Length gets updated, just in case we
-                # ever decide to dump that header
-                response.request.prepare_body(data=body, files=None)
-
-            req.flush()
-            if isinstance(response.request.body, six.text_type) or not hasattr(
-                req, "buffer"
-            ):
-                req.write(response.request.body)
-            else:
-                req.buffer.seek(0, 2)
-                req.buffer.write(response.request.body)
-
+def save_request_and_response_for_docs(
+    name, response, response_text_override="", request_text_override=""
+):
+    save_request_for_docs(name, response, request_text_override=request_text_override)
     filename = "{}/{}".format(base_path, "%s.resp" % name)
     with open(filename, "w", **open_kw) as resp:
         status = response.status_code
         reason = response.reason
-        resp.write("HTTP/1.1 {} {}\n".format(status, reason))
+        resp.write(f"HTTP/1.1 {status} {reason}\n")
+        content_type = None
         for key, value in response.headers.items():
             if key.lower() in RESPONSE_HEADER_KEYS:
-                resp.write("{}: {}\n".format(key.title(), value))
+                if key.lower() == "location":
+                    value = normalize_test_port(value)
+                resp.write(f"{key.title()}: {value}\n")
+                if key.lower() == "content-type":
+                    content_type = value
         resp.write("\n")
-        resp.write(response.text)
+        if response_text_override:
+            resp.write(response_text_override)
+            return
+        if not response.text:
+            # Empty response.
+            return
+        if not (content_type and content_type.startswith("application/json")):
+            resp.write(response.text)
+            return
+        # Use pretty_json as a normalizer, especially for line endings.
+        resp.write(pretty_json(response.json()))
 
 
-def save_request_for_docs(name, response):
-    if six.PY2:
-        open_kw = {}
-    else:
-        open_kw = {"newline": "\n"}
+def save_request_for_docs(name, response, request_text_override=""):
     filename = "{}/{}".format(base_path, "%s.req" % name)
     with open(filename, "w", **open_kw) as req:
         req.write(
@@ -165,7 +139,7 @@ def save_request_for_docs(name, response):
         )
         for key, value in ordered_request_headers.items():
             if key.lower() in REQUEST_HEADER_KEYS:
-                req.write("{}: {}\n".format(key.title(), value))
+                req.write(f"{key.title()}: {value}\n")
         if response.request.body:
             # If request has a body, make sure to set Content-Type header
             if "content-type" not in REQUEST_HEADER_KEYS:
@@ -175,7 +149,7 @@ def save_request_for_docs(name, response):
             req.write("\n")
 
             # Pretty print JSON request body
-            if content_type == "application/json":
+            if content_type == "application/json" and not request_text_override:
                 json_body = json.loads(response.request.body)
                 body = pretty_json(json_body)
                 # Make sure Content-Length gets updated, just in case we
@@ -183,13 +157,12 @@ def save_request_for_docs(name, response):
                 response.request.prepare_body(data=body, files=None)
 
             req.flush()
-            if isinstance(response.request.body, six.text_type) or not hasattr(
-                req, "buffer"
-            ):
-                req.write(response.request.body)
+            body = request_text_override or response.request.body
+            if isinstance(body, str) or not hasattr(req, "buffer"):
+                req.write(body)
             else:
                 req.buffer.seek(0, 2)
-                req.buffer.write(response.request.body)
+                req.buffer.write(body)
 
 
 class TestDocumentationBase(unittest.TestCase):
@@ -212,7 +185,7 @@ class TestDocumentationBase(unittest.TestCase):
         self.browser = Browser(self.app)
         self.browser.handleErrors = False
         self.browser.addHeader(
-            "Authorization", "Basic %s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+            "Authorization", f"Basic {SITE_OWNER_NAME}:{SITE_OWNER_PASSWORD}"
         )
 
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
@@ -240,27 +213,25 @@ class TestDocumentation(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        super(TestDocumentation, self).setUp()
+        super().setUp()
         self.document = self.create_document()
         alsoProvides(self.document, ITTWLockable)
 
         transaction.commit()
 
     def tearDown(self):
-        super(TestDocumentation, self).tearDown()
+        super().tearDown()
 
     def create_document(self):
         self.portal.invokeFactory("Document", id="front-page")
         document = self.portal["front-page"]
-        document.title = u"Welcome to Plone"
-        document.description = (
-            u"Congratulations! You have successfully installed Plone."
-        )
+        document.title = "Welcome to Plone"
+        document.description = "Congratulations! You have successfully installed Plone."
         document.text = RichTextValue(
-            u"If you're seeing this instead of the web site you were "
-            + u"expecting, the owner of this web site has just installed "
-            + u"Plone. Do not contact the Plone Team or the Plone mailing "
-            + u"lists about this.",
+            "If you're seeing this instead of the web site you were "
+            + "expecting, the owner of this web site has just installed "
+            + "Plone. Do not contact the Plone Team or the Plone mailing "
+            + "lists about this.",
             "text/plain",
             "text/html",
         )
@@ -270,7 +241,7 @@ class TestDocumentation(TestDocumentationBase):
         self.portal.invokeFactory("Folder", id="folder")
         folder = self.portal["folder"]
         folder.title = "My Folder"
-        folder.description = u"This is a folder with two documents"
+        folder.description = "This is a folder with two documents"
         folder.invokeFactory("Document", id="doc1", title="A document within a folder")
         folder.invokeFactory("Document", id="doc2", title="A document within a folder")
         return folder
@@ -317,17 +288,17 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_news_item(self):
         self.portal.invokeFactory("News Item", id="newsitem")
         self.portal.newsitem.title = "My News Item"
-        self.portal.newsitem.description = u"This is a news item"
+        self.portal.newsitem.description = "This is a news item"
         self.portal.newsitem.text = RichTextValue(
-            u"Lorem ipsum", "text/plain", "text/html"
+            "Lorem ipsum", "text/plain", "text/html"
         )
-        image_file = os.path.join(os.path.dirname(__file__), u"image.png")
+        image_file = os.path.join(os.path.dirname(__file__), "image.png")
         with open(image_file, "rb") as f:
             image_data = f.read()
         self.portal.newsitem.image = NamedBlobImage(
-            data=image_data, contentType="image/png", filename=u"image.png"
+            data=image_data, contentType="image/png", filename="image.png"
         )
-        self.portal.newsitem.image_caption = u"This is an image caption."
+        self.portal.newsitem.image_caption = "This is an image caption."
         transaction.commit()
 
         with patch.object(storage, "uuid4", return_value="uuid1"):
@@ -337,7 +308,7 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_event(self):
         self.portal.invokeFactory("Event", id="event")
         self.portal.event.title = "Event"
-        self.portal.event.description = u"This is an event"
+        self.portal.event.description = "This is an event"
         self.portal.event.start = datetime(2013, 1, 1, 10, 0)
         self.portal.event.end = datetime(2013, 1, 1, 12, 0)
         transaction.commit()
@@ -347,7 +318,7 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_link(self):
         self.portal.invokeFactory("Link", id="link")
         self.portal.link.title = "My Link"
-        self.portal.link.description = u"This is a link"
+        self.portal.link.description = "This is a link"
         self.portal.remoteUrl = "http://plone.org"
         transaction.commit()
         response = self.api_session.get(self.portal.link.absolute_url())
@@ -356,12 +327,12 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_file(self):
         self.portal.invokeFactory("File", id="file")
         self.portal.file.title = "My File"
-        self.portal.file.description = u"This is a file"
-        pdf_file = os.path.join(os.path.dirname(__file__), u"file.pdf")
+        self.portal.file.description = "This is a file"
+        pdf_file = os.path.join(os.path.dirname(__file__), "file.pdf")
         with open(pdf_file, "rb") as f:
             pdf_data = f.read()
         self.portal.file.file = NamedBlobFile(
-            data=pdf_data, contentType="application/pdf", filename=u"file.pdf"
+            data=pdf_data, contentType="application/pdf", filename="file.pdf"
         )
         transaction.commit()
         response = self.api_session.get(self.portal.file.absolute_url())
@@ -370,12 +341,12 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_image(self):
         self.portal.invokeFactory("Image", id="image")
         self.portal.image.title = "My Image"
-        self.portal.image.description = u"This is an image"
-        image_file = os.path.join(os.path.dirname(__file__), u"image.png")
+        self.portal.image.description = "This is an image"
+        image_file = os.path.join(os.path.dirname(__file__), "image.png")
         with open(image_file, "rb") as f:
             image_data = f.read()
         self.portal.image.image = NamedBlobImage(
-            data=image_data, contentType="image/png", filename=u"image.png"
+            data=image_data, contentType="image/png", filename="image.png"
         )
         transaction.commit()
         with patch.object(storage, "uuid4", return_value="uuid1"):
@@ -391,7 +362,7 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_collection(self):
         self.portal.invokeFactory("Collection", id="collection")
         self.portal.collection.title = "My Collection"
-        self.portal.collection.description = u"This is a collection with two documents"
+        self.portal.collection.description = "This is a collection with two documents"
         self.portal.collection.query = [
             {
                 "i": "portal_type",
@@ -408,7 +379,7 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_collection_fullobjects(self):
         self.portal.invokeFactory("Collection", id="collection")
         self.portal.collection.title = "My Collection"
-        self.portal.collection.description = u"This is a collection with two documents"
+        self.portal.collection.description = "This is a collection with two documents"
         self.portal.collection.query = [
             {
                 "i": "portal_type",
@@ -474,14 +445,12 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("search_fullobjects", response)
 
     def test_documentation_workflow(self):
-        response = self.api_session.get(
-            "{}/@workflow".format(self.document.absolute_url())
-        )
+        response = self.api_session.get(f"{self.document.absolute_url()}/@workflow")
         save_request_and_response_for_docs("workflow_get", response)
 
     def test_documentation_workflow_transition(self):
         response = self.api_session.post(
-            "{}/@workflow/publish".format(self.document.absolute_url())
+            f"{self.document.absolute_url()}/@workflow/publish"
         )
         save_request_and_response_for_docs("workflow_post", response)
 
@@ -489,7 +458,7 @@ class TestDocumentation(TestDocumentationBase):
         folder = self.portal[self.portal.invokeFactory("Folder", id="folder")]
         transaction.commit()
         response = self.api_session.post(
-            "{}/@workflow/publish".format(folder.absolute_url()),
+            f"{folder.absolute_url()}/@workflow/publish",
             json={
                 "comment": "Publishing my folder...",
                 "include_children": True,
@@ -519,9 +488,207 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@types")
         save_request_and_response_for_docs("types", response)
 
-    def test_documentation_types_document(self):
-        response = self.api_session.get("@types/Document")
-        save_request_and_response_for_docs("types_document", response)
+    def test_documentation_types_document_crud(self):
+        #
+        # POST
+        #
+
+        # Add fieldset
+        response = self.api_session.post(
+            "/@types/Document",
+            json={
+                "factory": "fieldset",
+                "title": "Contact Info",
+                "description": "Contact information",
+            },
+        )
+        save_request_and_response_for_docs("types_document_post_fieldset", response)
+
+        # Add field
+        response = self.api_session.post(
+            "/@types/Document",
+            json={
+                "factory": "Email",
+                "title": "Author email",
+                "description": "Email of the author",
+                "required": True,
+            },
+        )
+        # With plone.dexterity 2.10+ we get an unstable behavior name like this:
+        # plone.dexterity.schema.generated.plone_5_1630611587_2_523689_0_Document
+        # In older versions, we got this:
+        # plone.dexterity.schema.generated.plone_0_Document
+        # Normalize this to look like the new name
+        document_schema_re = re.compile(
+            r"^plone.dexterity.schema.generated.plone_5_\d*_2_\d*_0_Document$"
+        )
+        stable_behavior = (
+            "plone.dexterity.schema.generated.plone_5_1234567890_2_123456_0_Document"
+        )
+        json_response = response.json()
+        response_text_override = ""
+        behavior = json_response.get("behavior")
+        if behavior and document_schema_re.match(behavior):
+            json_response["behavior"] = stable_behavior
+            response_text_override = pretty_json(json_response)
+        save_request_and_response_for_docs(
+            "types_document_post_field", response, response_text_override
+        )
+
+        #
+        # GET
+        #
+
+        # Document
+        response = self.api_session.get("/@types/Document")
+        json_response = response.json()
+        response_text_override = ""
+        try:
+            author_email = json_response["properties"]["author_email"]
+            if document_schema_re.match(author_email["behavior"]):
+                author_email["behavior"] = stable_behavior
+                response_text_override = pretty_json(json_response)
+        except KeyError:
+            pass
+        save_request_and_response_for_docs(
+            "types_document", response, response_text_override
+        )
+        doc_json = json.loads(response.content)
+
+        # Get fieldset
+        response = self.api_session.get("/@types/Document/contact_info")
+        save_request_and_response_for_docs("types_document_get_fieldset", response)
+
+        # Get field
+        response = self.api_session.get("/@types/Document/author_email")
+        json_response = response.json()
+        response_text_override = ""
+        behavior = json_response.get("behavior")
+        if behavior and document_schema_re.match(behavior):
+            json_response["behavior"] = stable_behavior
+            response_text_override = pretty_json(json_response)
+        save_request_and_response_for_docs(
+            "types_document_get_field", response, response_text_override
+        )
+
+        #
+        # PATCH
+        #
+
+        # Update Document defaults
+        response = self.api_session.patch(
+            "/@types/Document",
+            json={
+                "properties": {
+                    "author_email": {
+                        "default": "foo@bar.com",
+                        "minLength": 5,
+                        "maxLength": 20,
+                    }
+                }
+            },
+        )
+        save_request_and_response_for_docs("types_document_patch_properites", response)
+
+        # Change field tab / order
+        response = self.api_session.patch(
+            "/@types/Document",
+            json={
+                "fieldsets": [
+                    {
+                        "id": "contact_info",
+                        "title": "Contact info",
+                        "fields": ["author_email"],
+                    }
+                ]
+            },
+        )
+        save_request_and_response_for_docs("types_document_patch_fieldsets", response)
+
+        # Update fieldset settings
+        response = self.api_session.patch(
+            "/@types/Document/contact_info",
+            json={
+                "title": "Contact information",
+                "description": "Contact information",
+                "fields": ["author_email"],
+            },
+        )
+        save_request_and_response_for_docs("types_document_patch_fieldset", response)
+
+        # Update field settings
+        response = self.api_session.patch(
+            "/@types/Document/author_email",
+            json={
+                "title": "Author e-mail",
+                "description": "The e-mail address of the author",
+                "minLength": 10,
+                "maxLength": 20,
+                "required": True,
+            },
+        )
+        save_request_and_response_for_docs("types_document_patch_field", response)
+
+        doc_json["layouts"] = ["thumbnail_view", "table_view"]
+        doc_json["fieldsets"] = [
+            {
+                "id": "author",
+                "title": "Contact the author",
+                "fields": [
+                    "author_email",
+                    "author_url",
+                    "author_name",
+                ],
+            },
+            {"id": "contact_info", "title": "Contact info", "fields": []},
+        ]
+
+        doc_json["properties"]["author_name"] = {
+            "description": "Name of the author",
+            "factory": "Text line (String)",
+            "title": "Author name",
+        }
+
+        doc_json["properties"]["author_url"] = {
+            "description": "Author webpage",
+            "factory": "URL",
+            "title": "Author website",
+            "minLength": 5,
+            "maxLength": 30,
+        }
+
+        response = self.api_session.put("/@types/Document", json=doc_json)
+        # In this case, not the response but the request has a non deterministic behavior.
+        # I don't want to change it in the request itself, only in the test output.
+        request_text_override = ""
+        try:
+            author_email = doc_json["properties"]["author_email"]
+            if document_schema_re.match(author_email["behavior"]):
+                author_email["behavior"] = stable_behavior
+                request_text_override = pretty_json(doc_json)
+        except KeyError:
+            pass
+        save_request_and_response_for_docs(
+            "types_document_put",
+            response,
+            request_text_override=request_text_override,
+        )
+
+        #
+        # DELETE
+        #
+
+        # Remove field
+        response = self.api_session.delete(
+            "/@types/Document/author_email",
+        )
+        save_request_and_response_for_docs("types_document_delete_field", response)
+
+        # Remove fieldset
+        response = self.api_session.delete(
+            "/@types/Document/contact_info",
+        )
+        save_request_and_response_for_docs("types_document_delete_fieldset", response)
 
     def test_documentation_jwt_login(self):
         self.portal.acl_users.jwt_auth._secret = "secret"
@@ -530,7 +697,7 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
         self.api_session.auth = None
         response = self.api_session.post(
-            "{}/@login".format(self.portal.absolute_url()),
+            f"{self.portal.absolute_url()}/@login",
             json={"login": SITE_OWNER_NAME, "password": SITE_OWNER_PASSWORD},
         )
         save_request_and_response_for_docs("jwt_login", response)
@@ -543,12 +710,12 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
         self.api_session.auth = None
         response = self.api_session.post(
-            "{}/@login".format(self.portal.absolute_url()),
+            f"{self.portal.absolute_url()}/@login",
             json={"login": SITE_OWNER_NAME, "password": SITE_OWNER_PASSWORD},
         )
         token = json.loads(response.content)["token"]
         response = self.api_session.get(
-            "/", headers={"Authorization": "Bearer {}".format(token)}
+            "/", headers={"Authorization": f"Bearer {token}"}
         )
         save_request_and_response_for_docs("jwt_logged_in", response)
 
@@ -559,13 +726,13 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
         self.api_session.auth = None
         response = self.api_session.post(
-            "{}/@login".format(self.portal.absolute_url()),
+            f"{self.portal.absolute_url()}/@login",
             json={"login": SITE_OWNER_NAME, "password": SITE_OWNER_PASSWORD},
         )
         token = json.loads(response.content)["token"]
         response = self.api_session.post(
-            "{}/@login-renew".format(self.portal.absolute_url()),
-            headers={"Authorization": "Bearer {}".format(token)},
+            f"{self.portal.absolute_url()}/@login-renew",
+            headers={"Authorization": f"Bearer {token}"},
         )
         save_request_and_response_for_docs("jwt_login_renew", response)
 
@@ -577,13 +744,13 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
         self.api_session.auth = None
         response = self.api_session.post(
-            "{}/@login".format(self.portal.absolute_url()),
+            f"{self.portal.absolute_url()}/@login",
             json={"login": SITE_OWNER_NAME, "password": SITE_OWNER_PASSWORD},
         )
         token = json.loads(response.content)["token"]
         response = self.api_session.post(
-            "{}/@logout".format(self.portal.absolute_url()),
-            headers={"Authorization": "Bearer {}".format(token)},
+            f"{self.portal.absolute_url()}/@logout",
+            headers={"Authorization": f"Bearer {token}"},
         )
         save_request_and_response_for_docs("jwt_logout", response)
 
@@ -997,47 +1164,68 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("groups_delete", response)
 
     def test_documentation_breadcrumbs(self):
-        response = self.api_session.get(
-            "{}/@breadcrumbs".format(self.document.absolute_url())
-        )
+        response = self.api_session.get(f"{self.document.absolute_url()}/@breadcrumbs")
         save_request_and_response_for_docs("breadcrumbs", response)
 
     def test_documentation_navigation(self):
-        response = self.api_session.get(
-            "{}/@navigation".format(self.document.absolute_url())
-        )
+        response = self.api_session.get(f"{self.document.absolute_url()}/@navigation")
         save_request_and_response_for_docs("navigation", response)
 
     def test_documentation_navigation_tree(self):
         folder = createContentInContainer(
-            self.portal, u"Folder", id=u"folder", title=u"Some Folder"
+            self.portal, "Folder", id="folder", title="Some Folder"
         )
         createContentInContainer(
-            self.portal, u"Folder", id=u"folder2", title=u"Some Folder 2"
+            self.portal, "Folder", id="folder2", title="Some Folder 2"
         )
         subfolder1 = createContentInContainer(
-            folder, u"Folder", id=u"subfolder1", title=u"SubFolder 1"
+            folder, "Folder", id="subfolder1", title="SubFolder 1"
         )
-        createContentInContainer(
-            folder, u"Folder", id=u"subfolder2", title=u"SubFolder 2"
-        )
+        createContentInContainer(folder, "Folder", id="subfolder2", title="SubFolder 2")
         thirdlevelfolder = createContentInContainer(
-            subfolder1, u"Folder", id=u"thirdlevelfolder", title=u"Third Level Folder"
+            subfolder1, "Folder", id="thirdlevelfolder", title="Third Level Folder"
         )
         createContentInContainer(
             thirdlevelfolder,
-            u"Folder",
-            id=u"fourthlevelfolder",
-            title=u"Fourth Level Folder",
+            "Folder",
+            id="fourthlevelfolder",
+            title="Fourth Level Folder",
         )
-        createContentInContainer(folder, u"Document", id=u"doc1", title=u"A document")
+        createContentInContainer(folder, "Document", id="doc1", title="A document")
         transaction.commit()
 
         response = self.api_session.get(
-            "{}/@navigation".format(self.document.absolute_url()),
+            f"{self.document.absolute_url()}/@navigation",
             params={"expand.navigation.depth": 4},
         )
         save_request_and_response_for_docs("navigation_tree", response)
+
+    def test_documentation_contextnavigation(self):
+        folder = createContentInContainer(
+            self.portal, "Folder", id="folder", title="Some Folder"
+        )
+        createContentInContainer(
+            self.portal, "Folder", id="folder2", title="Some Folder 2"
+        )
+        subfolder1 = createContentInContainer(
+            folder, "Folder", id="subfolder1", title="SubFolder 1"
+        )
+        createContentInContainer(folder, "Folder", id="subfolder2", title="SubFolder 2")
+        thirdlevelfolder = createContentInContainer(
+            subfolder1, "Folder", id="thirdlevelfolder", title="Third Level Folder"
+        )
+        createContentInContainer(
+            thirdlevelfolder,
+            "Folder",
+            id="fourthlevelfolder",
+            title="Fourth Level Folder",
+        )
+        createContentInContainer(folder, "Document", id="doc1", title="A document")
+        transaction.commit()
+        response = self.api_session.get(
+            f"{self.portal.absolute_url()}/folder/@contextnavigation"
+        )
+        save_request_and_response_for_docs("contextnavigation", response)
 
     def test_documentation_principals(self):
         gtool = api.portal.get_tool("portal_groups")
@@ -1093,6 +1281,10 @@ class TestDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("vocabularies_get", response)
 
+    def test_documentation_vocabularies_get_fields(self):
+        response = self.api_session.get("/@vocabularies/Fields")
+        save_request_and_response_for_docs("vocabularies_get_fields", response)
+
     def test_documentation_vocabularies_get_filtered_by_title(self):
         response = self.api_session.get(
             "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?" "title=doc"
@@ -1112,7 +1304,7 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_sources_get(self):
         api.content.create(
-            container=self.portal, id="doc", type="DXTestDocument", title=u"DX Document"
+            container=self.portal, id="doc", type="DXTestDocument", title="DX Document"
         )
         transaction.commit()
         response = self.api_session.get("/doc/@sources/test_choice_with_source")
@@ -1170,12 +1362,12 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_history_get(self):
         self.document.setTitle("My new title")
-        url = "{}/@history".format(self.document.absolute_url())
+        url = f"{self.document.absolute_url()}/@history"
         response = self.api_session.get(url)
         save_request_and_response_for_docs("history_get", response)
 
     def test_history_revert(self):
-        url = "{}/@history".format(self.document.absolute_url())
+        url = f"{self.document.absolute_url()}/@history"
         response = self.api_session.patch(url, json={"version": 0})
         save_request_and_response_for_docs("history_revert", response)
 
@@ -1299,7 +1491,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("tusreplace_patch", response)
 
     def test_locking_lock(self):
-        url = "{}/@lock".format(self.document.absolute_url())
+        url = f"{self.document.absolute_url()}/@lock"
         response = self.api_session.post(url)
         # Replace dynamic lock token with a static one
         response._content = re.sub(
@@ -1310,7 +1502,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("lock", response)
 
     def test_locking_lock_nonstealable_and_timeout(self):
-        url = "{}/@lock".format(self.document.absolute_url())
+        url = f"{self.document.absolute_url()}/@lock"
         response = self.api_session.post(
             url, json={"stealable": False, "timeout": 3600}
         )
@@ -1323,17 +1515,23 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("lock_nonstealable_timeout", response)
 
     def test_locking_unlock(self):
-        url = "{}/@lock".format(self.document.absolute_url())
+        url = f"{self.document.absolute_url()}/@lock"
         response = self.api_session.post(url)
-        url = "{}/@unlock".format(self.document.absolute_url())
-        response = self.api_session.post(url)
+        url = f"{self.document.absolute_url()}/@lock"
+        response = self.api_session.delete(url)
         save_request_and_response_for_docs("unlock", response)
 
+    def test_locking_unlock_force(self):
+        url = f"{self.document.absolute_url()}/@lock"
+        response = self.api_session.post(url)
+        url = f"{self.document.absolute_url()}/@lock"
+        response = self.api_session.delete(url, json={"force": True})
+        save_request_and_response_for_docs("unlock_force", response)
+
     def test_locking_refresh_lock(self):
-        url = "{}/@lock".format(self.document.absolute_url())
+        url = f"{self.document.absolute_url()}/@lock"
         response = self.api_session.post(url)
-        url = "{}/@refresh-lock".format(self.document.absolute_url())
-        response = self.api_session.post(url)
+        response = self.api_session.patch(url)
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
@@ -1343,12 +1541,12 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("refresh_lock", response)
 
     def test_locking_lockinfo(self):
-        url = "{}/@lock".format(self.document.absolute_url())
+        url = f"{self.document.absolute_url()}/@lock"
         response = self.api_session.get(url)
         save_request_and_response_for_docs("lock_get", response)
 
     def test_update_with_lock(self):
-        url = "{}/@lock".format(self.document.absolute_url())
+        url = f"{self.document.absolute_url()}/@lock"
         response = self.api_session.post(url)
         token = response.json()["token"]
         response = self.api_session.patch(
@@ -1358,7 +1556,7 @@ class TestDocumentation(TestDocumentationBase):
         )
         response.request.headers[
             "Lock-Token"
-        ] = u"0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
+        ] = "0.684672730996-0.25195226375-00105A989226:1477076400.000"  # noqa
         save_request_and_response_for_docs("lock_update", response)
 
     def test_querystring_get(self):
@@ -1400,7 +1598,7 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        super(TestDocumentationMessageTranslations, self).setUp()
+        super().setUp()
 
         self.api_session.headers.update({"Accept-Language": "es"})
 
@@ -1409,20 +1607,18 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
         transaction.commit()
 
     def tearDown(self):
-        super(TestDocumentationMessageTranslations, self).tearDown()
+        super().tearDown()
 
     def create_document(self):
         self.portal.invokeFactory("Document", id="front-page")
         document = self.portal["front-page"]
-        document.title = u"Welcome to Plone"
-        document.description = (
-            u"Congratulations! You have successfully installed Plone."
-        )
+        document.title = "Welcome to Plone"
+        document.description = "Congratulations! You have successfully installed Plone."
         document.text = RichTextValue(
-            u"If you're seeing this instead of the web site you were "
-            + u"expecting, the owner of this web site has just installed "
-            + u"Plone. Do not contact the Plone Team or the Plone mailing "
-            + u"lists about this.",
+            "If you're seeing this instead of the web site you were "
+            + "expecting, the owner of this web site has just installed "
+            + "Plone. Do not contact the Plone Team or the Plone mailing "
+            + "lists about this.",
             "text/plain",
             "text/html",
         )
@@ -1437,13 +1633,13 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
         save_request_and_response_for_docs("translated_messages_types_folder", response)
 
     def test_translate_messages_object_workflow(self):
-        response = self.api_session.get("{}/@workflow".format(self.document.id))
+        response = self.api_session.get(f"{self.document.id}/@workflow")
         save_request_and_response_for_docs(
             "translated_messages_object_workflow", response
         )
 
     def test_translate_messages_object_history(self):
-        response = self.api_session.get("{}/@history".format(self.document.id))
+        response = self.api_session.get(f"{self.document.id}/@history")
         save_request_and_response_for_docs(
             "translated_messages_object_history", response
         )
@@ -1454,7 +1650,7 @@ class TestCommenting(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
-        super(TestCommenting, self).setUp()
+        super().setUp()
 
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IDiscussionSettings, check=False)
@@ -1466,21 +1662,19 @@ class TestCommenting(TestDocumentationBase):
         transaction.commit()
 
     def tearDown(self):
-        super(TestCommenting, self).tearDown()
+        super().tearDown()
 
     def create_document_with_comments(self):
         self.portal.invokeFactory("Document", id="front-page")
         document = self.portal["front-page"]
         document.allow_discussion = True
-        document.title = u"Welcome to Plone"
-        document.description = (
-            u"Congratulations! You have successfully installed Plone."
-        )
+        document.title = "Welcome to Plone"
+        document.description = "Congratulations! You have successfully installed Plone."
         document.text = RichTextValue(
-            u"If you're seeing this instead of the web site you were "
-            + u"expecting, the owner of this web site has just installed "
-            + u"Plone. Do not contact the Plone Team or the Plone mailing "
-            + u"lists about this.",
+            "If you're seeing this instead of the web site you were "
+            + "expecting, the owner of this web site has just installed "
+            + "Plone. Do not contact the Plone Team or the Plone mailing "
+            + "lists about this.",
             "text/plain",
             "text/html",
         )
@@ -1545,13 +1739,13 @@ class TestCommenting(TestDocumentationBase):
             response._content = re.sub(cid, idx, response._content)
 
     def test_comments_get(self):
-        url = "{}/@comments".format(self.document.absolute_url())
+        url = f"{self.document.absolute_url()}/@comments"
         response = self.api_session.get(url)
         self.clean_comment_id_from_body(response)
         save_request_and_response_for_docs("comments_get", response)
 
     def test_comments_add_root(self):
-        url = "{}/@comments/".format(self.document.absolute_url())
+        url = f"{self.document.absolute_url()}/@comments/"
         payload = {"text": "My comment"}
         response = self.api_session.post(url, json=payload)
         self.clean_comment_id_from_urls(response)
@@ -1559,7 +1753,7 @@ class TestCommenting(TestDocumentationBase):
 
     def test_comments_add_sub(self):
         # Add a reply
-        url = "{}/@comments/{}".format(self.document.absolute_url(), self.comment_id)
+        url = f"{self.document.absolute_url()}/@comments/{self.comment_id}"
         payload = {"text": "My reply"}
         response = self.api_session.post(url, json=payload)
 
@@ -1567,20 +1761,20 @@ class TestCommenting(TestDocumentationBase):
         save_request_and_response_for_docs("comments_add_sub", response)
 
     def test_comments_update(self):
-        url = "{}/@comments/{}".format(self.document.absolute_url(), self.comment_id)
+        url = f"{self.document.absolute_url()}/@comments/{self.comment_id}"
         payload = {"text": "My NEW comment"}
         response = self.api_session.patch(url, json=payload)
         self.clean_comment_id_from_urls(response)
         save_request_and_response_for_docs("comments_update", response)
 
     def test_comments_delete(self):
-        url = "{}/@comments/{}".format(self.document.absolute_url(), self.comment_id)
+        url = f"{self.document.absolute_url()}/@comments/{self.comment_id}"
         response = self.api_session.delete(url)
         self.clean_comment_id_from_urls(response)
         save_request_and_response_for_docs("comments_delete", response)
 
     def test_roles_get(self):
-        url = "{}/@roles".format(self.portal_url)
+        url = f"{self.portal_url}/@roles"
         response = self.api_session.get(url)
         save_request_and_response_for_docs("roles", response)
 
@@ -1589,7 +1783,6 @@ class TestCommenting(TestDocumentationBase):
         save_request_and_response_for_docs("expansion", response)
 
 
-@unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
 class TestControlPanelDocumentation(TestDocumentationBase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -1628,7 +1821,12 @@ class TestControlPanelDocumentation(TestDocumentationBase):
         # PATCH
         response = self.api_session.patch(
             "/@controlpanels/dexterity-types/my_custom_content_type",
-            json={"title": "My Content Type", "description": "A content-type"},
+            json={
+                "title": "My Content Type",
+                "description": "A content-type",
+                "plone.richtext": True,
+                "plone.versioning": True,
+            },
         )
         save_request_and_response_for_docs(
             "controlpanels_patch_dexterity_item", response
@@ -1643,15 +1841,12 @@ class TestControlPanelDocumentation(TestDocumentationBase):
         )
 
 
-@unittest.skipUnless(
-    PAM_INSTALLED, "plone.app.multilingual is installed by default only in Plone 5"
-)  # NOQA
 class TestPAMDocumentation(TestDocumentationBase):
 
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
-        super(TestPAMDocumentation, self).setUp()
+        super().setUp()
 
         language_tool = api.portal.get_tool("portal_languages")
         language_tool.addSupportedLanguage("en")
@@ -1670,25 +1865,25 @@ class TestPAMDocumentation(TestDocumentationBase):
         transaction.commit()
 
     def tearDown(self):
-        super(TestPAMDocumentation, self).tearDown()
+        super().tearDown()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(
-            "{}/@translations".format(self.en_content.absolute_url()),
+            f"{self.en_content.absolute_url()}/@translations",
             json={"id": self.es_content.absolute_url()},
         )
         save_request_and_response_for_docs("translations_post", response)
 
     def test_documentation_translations_post_by_id(self):
         response = self.api_session.post(
-            "{}/@translations".format(self.en_content.absolute_url()),
+            f"{self.en_content.absolute_url()}/@translations",
             json={"id": self.es_content.absolute_url().replace(self.portal_url, "")},
         )
         save_request_and_response_for_docs("translations_post_by_id", response)
 
     def test_documentation_translations_post_by_uid(self):
         response = self.api_session.post(
-            "{}/@translations".format(self.en_content.absolute_url()),
+            f"{self.en_content.absolute_url()}/@translations",
             json={"id": self.es_content.UID()},
         )
         save_request_and_response_for_docs("translations_post_by_uid", response)
@@ -1697,7 +1892,7 @@ class TestPAMDocumentation(TestDocumentationBase):
         ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()
         response = self.api_session.get(
-            "{}/@translations".format(self.en_content.absolute_url())
+            f"{self.en_content.absolute_url()}/@translations"
         )
 
         save_request_and_response_for_docs("translations_get", response)
@@ -1706,14 +1901,14 @@ class TestPAMDocumentation(TestDocumentationBase):
         ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()
         response = self.api_session.delete(
-            "{}/@translations".format(self.en_content.absolute_url()),
+            f"{self.en_content.absolute_url()}/@translations",
             json={"language": "es"},
         )
         save_request_and_response_for_docs("translations_delete", response)
 
     def test_documentation_translations_link_on_post(self):
         response = self.api_session.post(
-            "{}/de".format(self.portal.absolute_url()),
+            f"{self.portal.absolute_url()}/de",
             json={
                 "@type": "Document",
                 "id": "mydocument",
@@ -1733,3 +1928,94 @@ class TestPAMDocumentation(TestDocumentationBase):
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
         )
         save_request_and_response_for_docs("translation_locator", response)
+
+
+class TestIterateDocumentation(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super().setUp()
+
+        self.doc = self.portal.invokeFactory(
+            "Document", id="document", title="Test document"
+        )
+        transaction.commit()
+
+    def tearDown(self):
+        super().tearDown()
+
+    def test_documentation_workingcopy_post(self):
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+
+        save_request_and_response_for_docs("workingcopy_post", response)
+
+    def test_documentation_workingcopy_get(self):
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+
+        response = self.api_session.get(
+            "/document/@workingcopy",
+        )
+
+        save_request_and_response_for_docs("workingcopy_get", response)
+
+        response = self.api_session.get(
+            "/document",
+        )
+
+        # The response text contains an unpredictable token.
+        # This would make the documentation tests break.
+        # So replace it.
+        json_response = json.loads(response.text)
+        lock = json_response.get("lock")
+        response_text_override = ""
+        if lock:
+            token = lock.get("token")
+            if token:
+                # Only replace the token when it fits a pattern.
+                token = re.sub(
+                    r".*-.*:.*",
+                    "0.12345678901234567-0.98765432109876543-00105A989226:1630609830.249",
+                    token,
+                )
+                lock["token"] = token
+                response_text_override = pretty_json(json_response)
+        save_request_and_response_for_docs(
+            "workingcopy_baseline_get", response, response_text_override
+        )
+
+        response = self.api_session.get(
+            "/copy_of_document",
+        )
+
+        save_request_and_response_for_docs("workingcopy_wc_get", response)
+
+    def test_documentation_workingcopy_patch(self):
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+
+        response = self.api_session.patch(
+            "/copy_of_document", json={"title": "I just changed the title"}
+        )
+
+        response = self.api_session.patch(
+            "/copy_of_document/@workingcopy",
+        )
+
+        save_request_and_response_for_docs("workingcopy_patch", response)
+
+    def test_documentation_workingcopy_delete(self):
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+
+        response = self.api_session.delete(
+            "/copy_of_document/@workingcopy",
+        )
+
+        save_request_and_response_for_docs("workingcopy_delete", response)

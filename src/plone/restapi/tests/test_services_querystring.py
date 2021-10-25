@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -48,22 +47,22 @@ class TestQuerystringEndpoint(unittest.TestCase):
         idx = indexes["Title"]
 
         expected_field_config = {
-            u"description": u"Text search of an item's title",
-            u"enabled": True,
-            u"group": u"Text",
-            u"operations": [u"plone.app.querystring.operation.string.contains"],
-            u"operators": {
-                u"plone.app.querystring.operation.string.contains": {
-                    u"description": None,
-                    u"operation": u"plone.app.querystring.queryparser._contains",
-                    u"title": u"Contains",
-                    u"widget": u"StringWidget",
+            "description": "Text search of an item's title",
+            "enabled": True,
+            "group": "Text",
+            "operations": ["plone.app.querystring.operation.string.contains"],
+            "operators": {
+                "plone.app.querystring.operation.string.contains": {
+                    "description": None,
+                    "operation": "plone.app.querystring.queryparser._contains",
+                    "title": "Contains",
+                    "widget": "StringWidget",
                 }
             },
-            u"sortable": False,
-            u"title": u"Title",
-            u"values": {},
-            u"vocabulary": None,
+            "sortable": False,
+            "title": "Title",
+            "values": {},
+            "vocabulary": None,
         }
         self.assertEqual(expected_field_config, idx)
 
@@ -76,22 +75,22 @@ class TestQuerystringEndpoint(unittest.TestCase):
 
         self.assertDictContainsSubset(
             {
-                "title": u"Review state",
-                "vocabulary": u"plone.app.vocabularies.WorkflowStates",
+                "title": "Review state",
+                "vocabulary": "plone.app.vocabularies.WorkflowStates",
             },
             idx,
         )
 
         expected_vocab_values = {
-            u"external": {u"title": u"Externally visible [external]"},
-            u"internal": {u"title": u"Internal draft [internal]"},
-            u"internally_published": {
-                u"title": u"Internally published [internally_published]"
+            "external": {"title": "Externally visible [external]"},
+            "internal": {"title": "Internal draft [internal]"},
+            "internally_published": {
+                "title": "Internally published [internally_published]"
             },
-            u"pending": {u"title": u"Pending [pending]"},
-            u"private": {u"title": u"Private [private]"},
-            u"published": {u"title": u"Published with accent \xe9 [published]"},
-            u"visible": {u"title": u"Public draft [visible]"},
+            "pending": {"title": "Pending [pending]"},
+            "private": {"title": "Private [private]"},
+            "published": {"title": "Published with accent \xe9 [published]"},
+            "visible": {"title": "Public draft [visible]"},
         }
         self.assertTrue(
             all(elem in idx["values"].items() for elem in expected_vocab_values.items())
@@ -106,27 +105,27 @@ class TestQuerystringEndpoint(unittest.TestCase):
 
         self.assertDictContainsSubset(
             {
-                "title": u"Default Page",
+                "title": "Default Page",
                 "operations": [
-                    u"plone.app.querystring.operation.boolean.isTrue",
-                    u"plone.app.querystring.operation.boolean.isFalse",
+                    "plone.app.querystring.operation.boolean.isTrue",
+                    "plone.app.querystring.operation.boolean.isFalse",
                 ],
             },
             idx,
         )
 
         expected_operators = {
-            u"plone.app.querystring.operation.boolean.isFalse": {
-                u"description": None,
-                u"operation": u"plone.app.querystring.queryparser._isFalse",
-                u"title": u"No",
-                u"widget": None,
+            "plone.app.querystring.operation.boolean.isFalse": {
+                "description": None,
+                "operation": "plone.app.querystring.queryparser._isFalse",
+                "title": "No",
+                "widget": None,
             },
-            u"plone.app.querystring.operation.boolean.isTrue": {
-                u"description": None,
-                u"operation": u"plone.app.querystring.queryparser._isTrue",
-                u"title": u"Yes",
-                u"widget": None,
+            "plone.app.querystring.operation.boolean.isTrue": {
+                "description": None,
+                "operation": "plone.app.querystring.queryparser._isTrue",
+                "title": "Yes",
+                "widget": None,
             },
         }
         self.assertEqual(expected_operators, idx["operators"])
@@ -140,7 +139,7 @@ class TestQuerystringEndpoint(unittest.TestCase):
 
         self.assertDictContainsSubset(
             {
-                "title": u"Order in folder",
+                "title": "Order in folder",
                 "operations": [
                     "plone.app.querystring.operation.int.is",
                     "plone.app.querystring.operation.int.lessThan",

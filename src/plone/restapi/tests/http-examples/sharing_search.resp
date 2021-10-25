@@ -2,74 +2,74 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "available_roles": [
-    {
-      "id": "Contributor", 
-      "title": "Can add"
-    }, 
-    {
-      "id": "Editor", 
-      "title": "Can edit"
-    }, 
-    {
-      "id": "Reader", 
-      "title": "Can view"
-    }, 
-    {
-      "id": "Reviewer", 
-      "title": "Can review"
-    }
-  ], 
-  "entries": [
-    {
-      "id": "Administrators", 
-      "login": null, 
-      "roles": {
-        "Contributor": false, 
-        "Editor": false, 
-        "Reader": false, 
-        "Reviewer": false
-      }, 
-      "title": "Administrators", 
-      "type": "group"
-    }, 
-    {
-      "disabled": false, 
-      "id": "AuthenticatedUsers", 
-      "login": null, 
-      "roles": {
-        "Contributor": false, 
-        "Editor": false, 
-        "Reader": false, 
-        "Reviewer": false
-      }, 
-      "title": "Logged-in users", 
-      "type": "group"
-    }, 
-    {
-      "id": "Site Administrators", 
-      "login": null, 
-      "roles": {
-        "Contributor": false, 
-        "Editor": false, 
-        "Reader": false, 
-        "Reviewer": false
-      }, 
-      "title": "Site Administrators", 
-      "type": "group"
-    }, 
-    {
-      "disabled": true, 
-      "id": "admin", 
-      "roles": {
-        "Contributor": "global", 
-        "Editor": "acquired", 
-        "Reader": false, 
-        "Reviewer": false
-      }, 
-      "title": "admin", 
-      "type": "user"
-    }
-  ], 
-  "inherit": true
+    "available_roles": [
+        {
+            "id": "Contributor",
+            "title": "Can add"
+        },
+        {
+            "id": "Editor",
+            "title": "Can edit"
+        },
+        {
+            "id": "Reader",
+            "title": "Can view"
+        },
+        {
+            "id": "Reviewer",
+            "title": "Can review"
+        }
+    ],
+    "entries": [
+        {
+            "id": "Administrators",
+            "login": null,
+            "roles": {
+                "Contributor": false,
+                "Editor": false,
+                "Reader": false,
+                "Reviewer": false
+            },
+            "title": "Administrators",
+            "type": "group"
+        },
+        {
+            "disabled": false,
+            "id": "AuthenticatedUsers",
+            "login": null,
+            "roles": {
+                "Contributor": false,
+                "Editor": false,
+                "Reader": false,
+                "Reviewer": false
+            },
+            "title": "Logged-in users",
+            "type": "group"
+        },
+        {
+            "id": "Site Administrators",
+            "login": null,
+            "roles": {
+                "Contributor": false,
+                "Editor": false,
+                "Reader": false,
+                "Reviewer": false
+            },
+            "title": "Site Administrators",
+            "type": "group"
+        },
+        {
+            "disabled": true,
+            "id": "admin",
+            "roles": {
+                "Contributor": "global",
+                "Editor": "acquired",
+                "Reader": false,
+                "Reviewer": false
+            },
+            "title": "admin",
+            "type": "user"
+        }
+    ],
+    "inherit": true
 }

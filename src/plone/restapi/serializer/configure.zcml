@@ -1,103 +1,110 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:zcml="http://namespaces.zope.org/zcml"
-    i18n_domain="plone.restapi">
+    i18n_domain="plone.restapi"
+    >
 
-    <adapter factory=".site.SerializeSiteRootToJson" />
-    <adapter factory=".dxcontent.SerializeToJson" />
-    <adapter factory=".dxcontent.SerializeFolderToJson" />
-    <adapter 
-        factory=".dxcontent.DexterityObjectPrimaryFieldTarget" />
+  <adapter factory=".site.SerializeSiteRootToJson" />
+  <adapter factory=".dxcontent.SerializeToJson" />
+  <adapter factory=".dxcontent.SerializeFolderToJson" />
+  <adapter factory=".dxcontent.DexterityObjectPrimaryFieldTarget" />
 
-    <configure zcml:condition="installed plone.app.contenttypes">
-        <adapter factory=".collection.SerializeCollectionToJson" />
-    </configure>
+  <configure zcml:condition="installed plone.app.contenttypes">
+    <adapter factory=".collection.SerializeCollectionToJson" />
+  </configure>
 
-    <adapter factory=".summary.DefaultJSONSummarySerializer" />
-    <adapter factory=".summary.SiteRootJSONSummarySerializer" />
+  <adapter factory=".summary.DefaultJSONSummarySerializer" />
+  <adapter factory=".summary.SiteRootJSONSummarySerializer" />
 
-    <adapter factory=".dxfields.DefaultFieldSerializer" />
-    <adapter factory=".dxfields.ChoiceFieldSerializer" />
-    <adapter factory=".dxfields.CollectionFieldSerializer" />
-    <adapter factory=".dxfields.FileFieldSerializer" />
-    <adapter factory=".dxfields.ImageFieldSerializer" />
-    <adapter factory=".dxfields.RichttextFieldSerializer" />
-    <adapter factory=".dxfields.DefaultPrimaryFieldTarget" />
-    <adapter factory=".dxfields.PrimaryFileFieldTarget" />
+  <adapter factory=".dxfields.DefaultFieldSerializer" />
+  <adapter factory=".dxfields.ChoiceFieldSerializer" />
+  <adapter factory=".dxfields.CollectionFieldSerializer" />
+  <adapter factory=".dxfields.FileFieldSerializer" />
+  <adapter factory=".dxfields.ImageFieldSerializer" />
+  <adapter factory=".dxfields.RichttextFieldSerializer" />
+  <adapter factory=".dxfields.DefaultPrimaryFieldTarget" />
+  <adapter factory=".dxfields.PrimaryFileFieldTarget" />
+  <adapter factory=".dxfields.TextLineFieldSerializer" />
 
-    <adapter factory=".blocks.BlocksJSONFieldSerializer" />
-    <subscriber factory=".blocks.TextBlockSerializer"
-      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"/>
+  <adapter factory=".blocks.BlocksJSONFieldSerializer" />
+  <subscriber
+      factory=".blocks.TextBlockSerializer"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ResolveUIDSerializer"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.TextBlockSerializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.ResolveUIDSerializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.SlateBlockSerializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
 
-    <configure zcml:condition="installed Products.Archetypes">
-        <adapter factory=".atcontent.SerializeToJson" />
-        <adapter factory=".atcontent.SerializeFolderToJson" />
-        <configure zcml:condition="installed plone.app.blob">
-            <adapter factory=".atfields.BlobFieldSerializer" />
-            <adapter factory=".atfields.BlobImageFieldSerializer" />
-        </configure>
-        <adapter factory=".atfields.DefaultFieldSerializer" />
-        <adapter factory=".atfields.FileFieldSerializer" />
-        <adapter factory=".atfields.ImageFieldSerializer" />
-        <adapter factory=".atfields.ReferenceFieldSerializer" />
-        <adapter factory=".atfields.TextFieldSerializer" />
-        <configure zcml:condition="installed plone.app.collection">
-            <adapter factory=".atfields.QueryFieldSerializer" />
-            <adapter factory=".atcollection.SerializeCollectionToJson" />
-        </configure>
-    </configure>
+  <subscriber
+      factory=".blocks.SlateBlockSerializer"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
 
-    <adapter factory=".converters.date_converter" />
-    <adapter factory=".converters.default_converter" />
-    <adapter factory=".converters.dict_converter" />
-    <adapter factory=".converters.frozenset_converter" />
-    <adapter factory=".converters.i18n_message_converter" />
-    <adapter factory=".converters.list_converter" />
-    <adapter factory=".converters.missing_value_converter" />
-    <adapter factory=".converters.persistent_list_converter" />
-    <adapter factory=".converters.persistent_mapping_converter" />
-    <adapter factory=".converters.python_datetime_converter" />
-    <adapter factory=".converters.RichtextDXContextConverter" />
-    <adapter factory=".converters.set_converter" />
-    <adapter factory=".converters.bytes_converter" />
-    <adapter factory=".converters.time_converter" />
-    <adapter factory=".converters.timedelta_converter" />
-    <adapter factory=".converters.tuple_converter" />
-    <adapter factory=".converters.zope_DateTime_converter" />
 
-    <configure zcml:condition="installed z3c.relationfield">
-        <adapter factory=".relationfield.RelationChoiceFieldSerializer" />
-        <adapter factory=".relationfield.RelationListFieldSerializer" />
-        <adapter factory=".relationfield.relationvalue_converter" />
-    </configure>
+  <adapter factory=".converters.date_converter" />
+  <adapter factory=".converters.decimal_converter" />
+  <adapter factory=".converters.default_converter" />
+  <adapter factory=".converters.dict_converter" />
+  <adapter factory=".converters.frozenset_converter" />
+  <adapter factory=".converters.i18n_message_converter" />
+  <adapter factory=".converters.list_converter" />
+  <adapter factory=".converters.missing_value_converter" />
+  <adapter factory=".converters.persistent_list_converter" />
+  <adapter factory=".converters.persistent_mapping_converter" />
+  <adapter factory=".converters.python_datetime_converter" />
+  <adapter factory=".converters.RichtextDXContextConverter" />
+  <adapter factory=".converters.set_converter" />
+  <adapter factory=".converters.bytes_converter" />
+  <adapter factory=".converters.time_converter" />
+  <adapter factory=".converters.timedelta_converter" />
+  <adapter factory=".converters.tuple_converter" />
+  <adapter factory=".converters.zope_DateTime_converter" />
 
-    <adapter factory=".catalog.LazyCatalogResultSerializer" />
+  <configure zcml:condition="installed z3c.relationfield">
+    <adapter factory=".relationfield.RelationChoiceFieldSerializer" />
+    <adapter factory=".relationfield.RelationListFieldSerializer" />
+    <adapter factory=".relationfield.relationvalue_converter" />
+  </configure>
 
-    <adapter factory=".user.SerializeUserToJson" />
-    <adapter factory=".user.SerializeUserToJsonSummary" />
-    <adapter factory=".group.SerializeGroupToJson" />
-    <adapter factory=".group.SerializeGroupToJsonSummary" />
+  <adapter factory=".catalog.LazyCatalogResultSerializer" />
 
-    <adapter factory=".local_roles.SerializeLocalRolesToJson"
-             name="local_roles"
-             />
+  <adapter factory=".user.SerializeUserToJson" />
+  <adapter factory=".user.SerializeUserToJsonSummary" />
+  <adapter factory=".group.SerializeGroupToJson" />
+  <adapter factory=".group.SerializeGroupToJsonSummary" />
 
-    <adapter factory=".vocabularies.SerializeVocabularyToJson" />
-    <adapter factory=".vocabularies.SerializeSourceToJson" />
-    <adapter factory=".vocabularies.SerializeTermToJson" />
+  <adapter
+      factory=".local_roles.SerializeLocalRolesToJson"
+      name="local_roles"
+      />
 
-    <adapter factory=".registry.SerializeRegistryToJson" />
+  <adapter factory=".vocabularies.SerializeVocabularyToJson" />
+  <adapter factory=".vocabularies.SerializeSourceToJson" />
+  <adapter factory=".vocabularies.SerializeTermToJson" />
 
-    <adapter factory=".discussion.ConversationSerializer" />
-    <adapter factory=".discussion.CommentSerializer" />
+  <adapter factory=".registry.SerializeRegistryToJson" />
 
-    <configure zcml:condition="installed plone.tiles">
-        <adapter factory=".tile.TileSummarySerializeToJson" />
-        <adapter factory=".tile.TileSerializeToJson" />
-    </configure>
+  <adapter factory=".discussion.ConversationSerializer" />
+  <adapter factory=".discussion.CommentSerializer" />
 
-    <configure zcml:condition="have plone-5">
-        <include package=".controlpanels" />
-    </configure>
+  <configure zcml:condition="installed plone.tiles">
+    <adapter factory=".tile.TileSummarySerializeToJson" />
+    <adapter factory=".tile.TileSerializeToJson" />
+  </configure>
+
+  <include package=".controlpanels" />
 
 </configure>

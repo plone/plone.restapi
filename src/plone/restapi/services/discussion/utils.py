@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from plone.app.discussion.interfaces import IDiscussionSettings
@@ -30,8 +29,7 @@ def permission_exists(permission_id):
 
 
 def can_review(comment):
-    """Returns true if current user has the 'Review comments' permission.
-    """
+    """Returns true if current user has the 'Review comments' permission."""
     return bool(
         getSecurityManager().checkPermission("Review comments", aq_inner(comment))
     )

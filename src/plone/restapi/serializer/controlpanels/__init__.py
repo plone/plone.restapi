@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.dexterity.interfaces import IDexterityContent
 from plone.registry.interfaces import IRegistry
 from plone.restapi.controlpanels import IControlpanel
@@ -22,7 +21,7 @@ SERVICE_ID = "@controlpanels"
 
 @implementer(ISerializeToJsonSummary)
 @adapter(IControlpanel)
-class ControlpanelSummarySerializeToJson(object):
+class ControlpanelSummarySerializeToJson:
     def __init__(self, controlpanel):
         self.controlpanel = controlpanel
 
@@ -39,8 +38,7 @@ class ControlpanelSummarySerializeToJson(object):
 
 
 def get_jsonschema_for_controlpanel(controlpanel, context, request, form=None):
-    """Build a complete JSON schema for the given controlpanel.
-    """
+    """Build a complete JSON schema for the given controlpanel."""
     if not form:
         schema = controlpanel.schema
         fieldsets = utils.get_fieldsets(context, request, schema)
@@ -71,7 +69,7 @@ def get_jsonschema_for_controlpanel(controlpanel, context, request, form=None):
 
 @implementer(ISerializeToJson)
 @adapter(IControlpanel)
-class ControlpanelSerializeToJson(object):
+class ControlpanelSerializeToJson:
     def __init__(self, controlpanel):
         self.controlpanel = controlpanel
         self.schema = self.controlpanel.schema

@@ -12,6 +12,8 @@
 /extras
 /pyvenv.cfg
 .coverage
+.flake8
+docs/.DS_Store
 *.egg-info
 *.eggs
 /.installed.cfg
@@ -19,6 +21,7 @@
 /.Python
 /include
 /lib
+/lib64
 /local
 /.mr.developer.cfg
 *.mo
@@ -37,3 +40,6 @@ pip-selfcheck.json
 /.vscode
 /.ipython
 /.mypy_cache/
+.*project
+.settings/
+*~

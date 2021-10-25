@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
@@ -10,20 +9,16 @@ from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
 
-import six
-
 
 @implementer(IExpandableElement)
 @adapter(IWorkflowAware, Interface)
-class WorkflowInfo(object):
+class WorkflowInfo:
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, expand=False):
-        result = {
-            "workflow": {"@id": "{}/@workflow".format(self.context.absolute_url())}
-        }
+        result = {"workflow": {"@id": f"{self.context.absolute_url()}/@workflow"}}
         if not expand:
             return result
 
@@ -48,7 +43,7 @@ class WorkflowInfo(object):
                 continue
 
             title = action["title"]
-            if isinstance(title, six.binary_type):
+            if isinstance(title, bytes):
                 title = title.decode("utf8")
 
             transitions.append(
@@ -64,19 +59,34 @@ class WorkflowInfo(object):
             title = wftool.getTitleForStateOnType(
                 action["review_state"], self.context.portal_type
             )
-            if isinstance(title, six.binary_type):
+            if isinstance(title, bytes):
                 title = title.decode("utf8")
             history[item]["title"] = self.context.translate(title)
 
+        try:
+            current_state = wftool.getInfoFor(self.context, "review_state")
+        except WorkflowException:
+            current_state = ""
+        current_state_title = wftool.getTitleForStateOnType(
+            current_state,
+            self.context.portal_type,
+        )
+
         result["workflow"].update(
-            {"history": json_compatible(history), "transitions": transitions}
+            {
+                "history": json_compatible(history),
+                "transitions": transitions,
+                "state": {
+                    "id": current_state,
+                    "title": self.context.translate(current_state_title),
+                },
+            }
         )
         return result
 
 
 class WorkflowInfoService(Service):
-    """Get workflow information
-    """
+    """Get workflow information"""
 
     def reply(self):
         info = WorkflowInfo(self.context, self.request)

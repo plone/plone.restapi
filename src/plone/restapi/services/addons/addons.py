@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from plone.memoize import view
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone import PloneMessageFactory as _
@@ -18,11 +16,11 @@ import pkg_resources
 logger = logging.getLogger("Plone")
 
 
-class Addons(object):
+class Addons:
     """Performs install/upgrade/uninstall functions on an addon.
-       Pulled, mostly intact, from Plone 5.1's products control panel.
-       If we reach the point when plone.restapi isn't supporting releases
-       prior to 5.1, we might be able to remove this as duplicate code.
+    Pulled, mostly intact, from Plone 5.1's products control panel.
+    If we reach the point when plone.restapi isn't supporting releases
+    prior to 5.1, we might be able to remove this as duplicate code.
     """
 
     def __init__(self, context, request):
@@ -68,7 +66,13 @@ class Addons(object):
             prof
             for prof in profiles
             if prof["type"] == EXTENSION
-            and (prof["product"] in (product_id, "Products.{0}".format(product_id),))
+            and (
+                prof["product"]
+                in (
+                    product_id,
+                    f"Products.{product_id}",
+                )
+            )
         ]
         return profiles
 
@@ -220,13 +224,13 @@ class Addons(object):
                     return False
                 # A new error is found, register it
                 self.errors[product_id] = dict(
-                    type=_(u"dependency_missing", default=u"Missing dependency"),
+                    type=_("dependency_missing", default="Missing dependency"),
                     value=e.args[0],
                     product_id=product_id,
                 )
             else:
                 self.errors[product_id] = dict(
-                    type=_(u"dependency_missing", default=u"Missing dependency"),
+                    type=_("dependency_missing", default="Missing dependency"),
                     value=e.args[0],
                     product_id=product_id,
                 )

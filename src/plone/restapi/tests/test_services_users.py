@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -8,18 +7,13 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getAdapter
 from zope.component import getUtility
 
 import transaction
 import unittest
-
-
-try:
-    from Products.CMFPlone.interfaces import ISecuritySchema
-except ImportError:
-    from plone.app.controlpanel.security import ISecuritySchema
 
 
 class TestUsersEndpoint(unittest.TestCase):
@@ -52,7 +46,7 @@ class TestUsersEndpoint(unittest.TestCase):
             email="noam.chomsky@example.com",
             username="noam",
             properties=properties,
-            password=u"password",
+            password="password",
         )
         properties = {
             "email": "otheruser@example.com",
@@ -63,7 +57,7 @@ class TestUsersEndpoint(unittest.TestCase):
             email="otheruser@example.com",
             username="otheruser",
             properties=properties,
-            password=u"otherpassword",
+            password="otherpassword",
         )
         transaction.commit()
 
@@ -208,7 +202,11 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(201, response.status_code)
-        self.assertTrue("To: howard.zinn@example.com" in self.mailhost.messages[0])
+        msg = self.mailhost.messages[0]
+        if isinstance(msg, bytes) and bytes is not str:
+            # Python 3 with Products.MailHost 4.10+
+            msg = msg.decode("utf-8")
+        self.assertTrue("To: howard.zinn@example.com" in msg)
 
     def test_add_user_send_properties(self):
         response = self.api_session.post(
@@ -247,7 +245,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_add_anon_no_roles(self):
         """Make sure anonymous users cannot set their own roles.
-           Allowing so would make them Manager.
+        Allowing so would make them Manager.
         """
         security_settings = getAdapter(self.portal, ISecuritySchema)
         security_settings.enable_self_reg = True
@@ -414,6 +412,23 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual("Noam A. Chomsky", noam.getProperty("fullname"))
         self.assertEqual("avram.chomsky@plone.org", noam.getProperty("email"))
 
+    def test_user_can_update_himself_remove_values(self):
+        payload = {
+            "fullname": "Noam A. Chomsky",
+            "username": "noam",
+            "email": "avram.chomsky@plone.org",
+            "home_page": None,
+        }
+        self.api_session.auth = ("noam", "password")
+        response = self.api_session.patch("/@users/noam", json=payload)
+
+        self.assertEqual(response.status_code, 204)
+        transaction.commit()
+
+        noam = api.user.get(userid="noam")
+
+        self.assertEqual(None, noam.getProperty("home_page"))
+
     def test_update_roles(self):
         self.assertNotIn("Contributor", api.user.get_roles(username="noam"))
 
@@ -441,7 +456,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "portrait": {
                 "filename": "image.gif",
                 "encoding": "base64",
-                "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
+                "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
                 "content-type": "image/gif",
             }
         }
@@ -461,7 +476,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "portrait": {
                 "filename": "image.gif",
                 "encoding": "base64",
-                "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
+                "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
                 "content-type": "image/gif",
                 "scale": True,
             }
@@ -482,7 +497,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "portrait": {
                 "filename": "image.gif",
                 "encoding": "base64",
-                "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
+                "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
                 "content-type": "image/gif",
             }
         }
@@ -528,7 +543,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "portrait": {
                 "filename": "image.gif",
                 "encoding": "base64",
-                "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
+                "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",
                 "content-type": "image/gif",
             }
         }
@@ -695,7 +710,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         payload = {"reset_token": token, "new_password": "new_password"}
         response = self.api_session.post(
-            "/@users/{}/reset-password".format(user.id), json=payload
+            f"/@users/{user.id}/reset-password", json=payload
         )
 
         self.assertEqual(response.status_code, 200)
@@ -724,7 +739,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         payload = {"reset_token": token, "new_password": "new_password"}
         response = self.api_session.post(
-            "/@users/{}/reset-password".format(user.getUserName()), json=payload
+            f"/@users/{user.getUserName()}/reset-password", json=payload
         )
 
         self.assertEqual(response.status_code, 200)
@@ -752,7 +767,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
         payload = {"reset_token": token, "new_password": "new_password"}
         response = self.api_session.post(
-            "/@users/{}/reset-password".format(user.getUserName()), json=payload
+            f"/@users/{user.getUserName()}/reset-password", json=payload
         )
 
         self.assertEqual(response.status_code, 200)
@@ -805,7 +820,11 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(201, response.status_code)
-        self.assertTrue("To: avram.chomsky@example.com" in self.mailhost.messages[0])
+        msg = self.mailhost.messages[0]
+        if isinstance(msg, bytes) and bytes is not str:
+            # Python 3 with Products.MailHost 4.10+
+            msg = msg.decode("utf-8")
+        self.assertTrue("To: avram.chomsky@example.com" in msg)
 
     def test_anonymous_can_set_password_with_enable_user_pwd_choice(self):
         security_settings = getAdapter(self.portal, ISecuritySchema)

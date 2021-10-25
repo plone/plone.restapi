@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.requestmethod import postonly
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from BTrees.OIBTree import OIBTree
@@ -7,6 +6,8 @@ from datetime import datetime
 from datetime import timedelta
 from plone.keyring.interfaces import IKeyManager
 from plone.keyring.keyring import GenerateSecret
+from plone.restapi import exceptions
+from plone.restapi import deserializer
 from Products.CMFCore.permissions import ManagePortal
 from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
@@ -17,7 +18,6 @@ from zope.component import getUtility
 from zope.interface import implementer
 
 import jwt
-import six
 import time
 
 
@@ -27,8 +27,7 @@ manage_addJWTAuthenticationPlugin = PageTemplateFile(
 
 
 def addJWTAuthenticationPlugin(self, id_, title=None, REQUEST=None):
-    """Add a JWT authentication plugin
-    """
+    """Add a JWT authentication plugin"""
     plugin = JWTAuthenticationPlugin(id_, title)
     self._setObject(plugin.getId(), plugin)
 
@@ -42,8 +41,7 @@ def addJWTAuthenticationPlugin(self, id_, title=None, REQUEST=None):
 
 @implementer(IAuthenticationPlugin, IChallengePlugin, IExtractionPlugin)
 class JWTAuthenticationPlugin(BasePlugin):
-    """Plone PAS plugin for authentication with JSON web tokens (JWT).
-    """
+    """Plone PAS plugin for authentication with JSON web tokens (JWT)."""
 
     meta_type = "JWT Authentication Plugin"
     security = ClassSecurityInfo()
@@ -65,9 +63,8 @@ class JWTAuthenticationPlugin(BasePlugin):
         self._setId(id_)
         self.title = title
 
-    security.declarePrivate("challenge")
-
     # Initiate a challenge to the user to provide credentials.
+    @security.private
     def challenge(self, request, response, **kw):
 
         realm = response.realm
@@ -79,56 +76,61 @@ class JWTAuthenticationPlugin(BasePlugin):
         response.setStatus(401)
         return True
 
-    security.declarePrivate("extractCredentials")
-
     # IExtractionPlugin implementation
     # Extracts a JSON web token from the request.
+    @security.private
     def extractCredentials(self, request):
+        """
+        Extract credentials either from a JSON POST request or an established JWT token.
+        """
+        # Prefer any credentials in a JSON POST request under the assumption that any
+        # such requested sent when a JWT token is already in the `Authorization` header
+        # is intended to change or update the logged in user.
+        try:
+            creds = deserializer.json_body(request)
+        except exceptions.DeserializationError:
+            pass
+        else:
+            if "login" in creds and "password" in creds:
+                return creds
+
         creds = {}
         auth = request._auth
         if auth is None:
-            return None
+            return
         if auth[:7].lower() == "bearer ":
             creds["token"] = auth.split()[-1]
-        else:
-            return None
-
-        return creds
-
-    security.declarePrivate("authenticateCredentials")
+            return creds
 
     # IAuthenticationPlugin implementation
+    @security.private
     def authenticateCredentials(self, credentials):
         # Ignore credentials that are not from our extractor
         extractor = credentials.get("extractor")
         if extractor != self.getId():
-            return None
+            return
 
         payload = self._decode_token(credentials["token"])
         if not payload:
-            return None
+            return
 
         if "sub" not in payload:
-            return None
+            return
 
         userid = payload["sub"]
-        if six.PY2:
-            userid = userid.encode("utf8")
 
         if self.store_tokens:
             if userid not in self._tokens:
-                return None
+                return
             if credentials["token"] not in self._tokens[userid]:
-                return None
+                return
 
         return (userid, userid)
 
-    security.declareProtected(ManagePortal, "manage_updateConfig")
-
+    @security.protected(ManagePortal)
     @postonly
     def manage_updateConfig(self, REQUEST):
-        """Update configuration of JWT Authentication Plugin.
-        """
+        """Update configuration of JWT Authentication Plugin."""
         response = REQUEST.response
 
         self.token_timeout = int(REQUEST.form.get("token_timeout", self.token_timeout))
@@ -145,7 +147,7 @@ class JWTAuthenticationPlugin(BasePlugin):
     def _decode_token(self, token, verify=True):
         if self.use_keyring:
             manager = getUtility(IKeyManager)
-            for secret in manager[u"_system"]:
+            for secret in manager["_system"]:
                 if secret is None:
                     continue
                 payload = self._jwt_decode(token, secret + self._path(), verify=verify)
@@ -155,12 +157,12 @@ class JWTAuthenticationPlugin(BasePlugin):
             return self._jwt_decode(token, self._secret + self._path(), verify=verify)
 
     def _jwt_decode(self, token, secret, verify=True):
-        if isinstance(token, six.text_type):
+        if isinstance(token, str):
             token = token.encode("utf-8")
         try:
             return jwt.decode(token, secret, verify=verify, algorithms=["HS256"])
         except jwt.InvalidTokenError:
-            return None
+            pass
 
     def _signing_secret(self):
         if self.use_keyring:
@@ -175,7 +177,7 @@ class JWTAuthenticationPlugin(BasePlugin):
 
     def delete_token(self, token):
         payload = self._decode_token(token, verify=False)
-        if "sub" not in payload:
+        if not payload or "sub" not in payload:
             return False
         userid = payload["sub"]
         if userid in self._tokens and token in self._tokens[userid]:
@@ -192,8 +194,7 @@ class JWTAuthenticationPlugin(BasePlugin):
         if data is not None:
             payload.update(data)
         token = jwt.encode(payload, self._signing_secret(), algorithm="HS256")
-        if not six.PY2:
-            token = token.decode("utf-8")
+        token = token.decode("utf-8")
         if self.store_tokens:
             if self._tokens is None:
                 self._tokens = OOBTree()

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from zope.component import queryUtility
 from plone.dexterity.interfaces import IDexterityFTI
@@ -13,8 +12,7 @@ SHORT_NEW_NAME = "volto.blocks"
 
 
 def rename_tiles_to_blocks(setup_context):
-    """Rename tiles and tiles_layout fields from Tiles behavior to blocks and blocks_layout
-    """
+    """Rename tiles and tiles_layout fields from Tiles behavior to blocks and blocks_layout"""
     pt = api.portal.get_tool("portal_types")
 
     types_with_tiles_behavior = []
@@ -30,7 +28,7 @@ def rename_tiles_to_blocks(setup_context):
             ]
             new_fti.append(SHORT_NEW_NAME)
             fti.behaviors = tuple(new_fti)
-            logger.info("Migrated behavior of {} type".format(_type))
+            logger.info(f"Migrated behavior of {_type} type")
 
         # In case we used the short behavior name
         if fti and SHORT_OLD_BEHAVIOR_NAME in fti.behaviors:
@@ -42,10 +40,10 @@ def rename_tiles_to_blocks(setup_context):
             ]
             new_fti.append(SHORT_NEW_NAME)
             fti.behaviors = tuple(new_fti)
-            logger.info("Migrated behavior of {} type".format(_type))
+            logger.info(f"Migrated behavior of {_type} type")
 
     for brain in api.content.find(portal_type=types_with_tiles_behavior):
         obj = brain.getObject()
         obj.blocks = getattr(obj, "tiles", {})
         obj.blocks_layout = getattr(obj, "tiles_layout", {"items": []})
-        logger.info("Migrated fields of content object: {}".format(obj.absolute_url()))
+        logger.info(f"Migrated fields of content object: {obj.absolute_url()}")

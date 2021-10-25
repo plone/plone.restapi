@@ -2,222 +2,258 @@ HTTP/1.1 200 OK
 Content-Type: application/json+schema
 
 {
-  "fieldsets": [
-    {
-      "fields": [
-        "title", 
-        "description"
-      ], 
-      "id": "default", 
-      "title": "Por defecto"
-    }, 
-    {
-      "fields": [
-        "subjects", 
-        "language", 
-        "relatedItems"
-      ], 
-      "id": "categorization", 
-      "title": "Categorizaci\u00f3n"
-    }, 
-    {
-      "fields": [
-        "effective", 
-        "expires"
-      ], 
-      "id": "dates", 
-      "title": "Fechas"
-    }, 
-    {
-      "fields": [
-        "creators", 
-        "contributors", 
-        "rights"
-      ], 
-      "id": "ownership", 
-      "title": "Propiedad"
-    }, 
-    {
-      "fields": [
-        "allow_discussion", 
-        "exclude_from_nav", 
-        "id", 
-        "nextPreviousEnabled"
-      ], 
-      "id": "settings", 
-      "title": "Configuraci\u00f3n"
-    }
-  ], 
-  "layouts": [
-    "album_view", 
-    "event_listing", 
-    "full_view", 
-    "listing_view", 
-    "summary_view", 
-    "tabular_view"
-  ], 
-  "properties": {
-    "allow_discussion": {
-      "choices": [
-        [
-          "True", 
-          "S\u00ed"
-        ], 
-        [
-          "False", 
-          "No"
-        ]
-      ], 
-      "description": "Permitir comentarios para este tipo de contenido", 
-      "enum": [
-        "True", 
-        "False"
-      ], 
-      "enumNames": [
-        "S\u00ed", 
-        "No"
-      ], 
-      "title": "Permitir comentarios", 
-      "type": "string", 
-      "vocabulary": {
-        "@id": "http://localhost:55001/plone/@sources/allow_discussion"
-      }
-    }, 
-    "contributors": {
-      "additionalItems": true, 
-      "description": "Los nombres de las personas que han contribuido a este elemento. Cada colaborador deber\u00eda estar en una l\u00ednea independiente.", 
-      "items": {
-        "description": "", 
-        "title": "", 
-        "type": "string"
-      }, 
-      "title": "Colaboradores", 
-      "type": "array", 
-      "uniqueItems": true, 
-      "widgetOptions": {
-        "vocabulary": {
-          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+    "fieldsets": [
+        {
+            "behavior": "plone",
+            "fields": [
+                "title",
+                "description"
+            ],
+            "id": "default",
+            "title": "Por defecto"
+        },
+        {
+            "behavior": "plone",
+            "fields": [
+                "subjects",
+                "language",
+                "relatedItems"
+            ],
+            "id": "categorization",
+            "title": "Categorizaci\u00f3n"
+        },
+        {
+            "behavior": "plone",
+            "fields": [
+                "effective",
+                "expires"
+            ],
+            "id": "dates",
+            "title": "Fechas"
+        },
+        {
+            "behavior": "plone",
+            "fields": [
+                "creators",
+                "contributors",
+                "rights"
+            ],
+            "id": "ownership",
+            "title": "Propiedad"
+        },
+        {
+            "behavior": "plone",
+            "fields": [
+                "allow_discussion",
+                "exclude_from_nav",
+                "id",
+                "nextPreviousEnabled"
+            ],
+            "id": "settings",
+            "title": "Configuraci\u00f3n"
         }
-      }
-    }, 
-    "creators": {
-      "additionalItems": true, 
-      "description": "Personas responsables de la creaci\u00f3n del contenido de este elemento. Por favor, introduzca una lista de nombres de usuario, uno por l\u00ednea. El autor principal deber\u00eda ser el primero.", 
-      "items": {
-        "description": "", 
-        "title": "", 
-        "type": "string"
-      }, 
-      "title": "Creadores", 
-      "type": "array", 
-      "uniqueItems": true, 
-      "widgetOptions": {
-        "vocabulary": {
-          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+    ],
+    "layouts": [
+        "album_view",
+        "event_listing",
+        "full_view",
+        "listing_view",
+        "summary_view",
+        "tabular_view"
+    ],
+    "properties": {
+        "allow_discussion": {
+            "behavior": "plone.allowdiscussion",
+            "choices": [
+                [
+                    "True",
+                    "S\u00ed"
+                ],
+                [
+                    "False",
+                    "No"
+                ]
+            ],
+            "description": "Permitir comentarios para este tipo de contenido",
+            "enum": [
+                "True",
+                "False"
+            ],
+            "enumNames": [
+                "S\u00ed",
+                "No"
+            ],
+            "factory": "Choice",
+            "title": "Permitir comentarios",
+            "type": "string",
+            "vocabulary": {
+                "@id": "http://localhost:55001/plone/@sources/allow_discussion"
+            }
+        },
+        "contributors": {
+            "additionalItems": true,
+            "behavior": "plone.dublincore",
+            "description": "Los nombres de las personas que han contribuido a este elemento. Cada colaborador deber\u00eda estar en una l\u00ednea independiente.",
+            "factory": "Tuple",
+            "items": {
+                "description": "",
+                "factory": "Text line (String)",
+                "title": "",
+                "type": "string"
+            },
+            "title": "Colaboradores",
+            "type": "array",
+            "uniqueItems": true,
+            "widgetOptions": {
+                "vocabulary": {
+                    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+                }
+            }
+        },
+        "creators": {
+            "additionalItems": true,
+            "behavior": "plone.dublincore",
+            "description": "Personas responsables de la creaci\u00f3n del contenido de este elemento. Por favor, introduzca una lista de nombres de usuario, uno por l\u00ednea. El autor principal deber\u00eda ser el primero.",
+            "factory": "Tuple",
+            "items": {
+                "description": "",
+                "factory": "Text line (String)",
+                "title": "",
+                "type": "string"
+            },
+            "title": "Creadores",
+            "type": "array",
+            "uniqueItems": true,
+            "widgetOptions": {
+                "vocabulary": {
+                    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
+                }
+            }
+        },
+        "description": {
+            "behavior": "plone.dublincore",
+            "description": "Usado en listados de elementos y resultados de b\u00fasquedas.",
+            "factory": "Text",
+            "title": "Descripci\u00f3n",
+            "type": "string",
+            "widget": "textarea"
+        },
+        "effective": {
+            "behavior": "plone.dublincore",
+            "description": "La fecha en la que el documento ser\u00e1 publicado. Si no selecciona ninguna fecha, el documento ser\u00e1 publicado inmediatamente.",
+            "factory": "Date/Time",
+            "title": "Fecha de Publicaci\u00f3n",
+            "type": "string",
+            "widget": "datetime"
+        },
+        "exclude_from_nav": {
+            "behavior": "plone.excludefromnavigation",
+            "default": false,
+            "description": "Si est\u00e1 marcado, este elemento no aparecer\u00e1 en el \u00e1rbol de navegaci\u00f3n",
+            "factory": "Yes/No",
+            "title": "Excluir de la navegaci\u00f3n",
+            "type": "boolean"
+        },
+        "expires": {
+            "behavior": "plone.dublincore",
+            "description": "La fecha en la que expira el documento. Esto har\u00e1 autom\u00e1ticamente el documento invisible a otros a una fecha dada. Si no elije ninguna fecha, nunca expirar\u00e1.",
+            "factory": "Date/Time",
+            "title": "Fecha de Terminaci\u00f3n",
+            "type": "string",
+            "widget": "datetime"
+        },
+        "id": {
+            "behavior": "plone.shortname",
+            "description": "Este nombre se mostrar\u00e1 en la URL.",
+            "factory": "Text line (String)",
+            "title": "Nombre corto",
+            "type": "string"
+        },
+        "language": {
+            "behavior": "plone.dublincore",
+            "default": "en",
+            "description": "",
+            "factory": "Choice",
+            "title": "Idioma",
+            "type": "string",
+            "vocabulary": {
+                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SupportedContentLanguages"
+            }
+        },
+        "nextPreviousEnabled": {
+            "behavior": "plone.nextprevioustoggle",
+            "default": false,
+            "description": "Esto habilita el widget siguiente/pr\u00f3ximo en los elementos contenidos en esta carpeta.",
+            "factory": "Yes/No",
+            "title": "Habilitar la navegaci\u00f3n siguiente/anterior",
+            "type": "boolean"
+        },
+        "relatedItems": {
+            "additionalItems": true,
+            "behavior": "plone.relateditems",
+            "default": [],
+            "description": "",
+            "factory": "Relation List",
+            "items": {
+                "description": "",
+                "factory": "Relation Choice",
+                "title": "Related",
+                "type": "string",
+                "vocabulary": {
+                    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
+                }
+            },
+            "title": "Contenido relacionado",
+            "type": "array",
+            "uniqueItems": true,
+            "widgetOptions": {
+                "pattern_options": {
+                    "recentlyUsed": true
+                },
+                "vocabulary": {
+                    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
+                }
+            }
+        },
+        "rights": {
+            "behavior": "plone.dublincore",
+            "description": "Declaraci\u00f3n de copyright o informaci\u00f3n de otros derechos sobre este elemento.",
+            "factory": "Text",
+            "title": "Derechos de Autor",
+            "type": "string",
+            "widget": "textarea"
+        },
+        "subjects": {
+            "additionalItems": true,
+            "behavior": "plone.dublincore",
+            "description": "Las etiquetas suelen utilizarse para la organizaci\u00f3n a medida del contenido.",
+            "factory": "Tuple",
+            "items": {
+                "description": "",
+                "factory": "Text line (String)",
+                "title": "",
+                "type": "string"
+            },
+            "title": "Etiquetas",
+            "type": "array",
+            "uniqueItems": true,
+            "widgetOptions": {
+                "vocabulary": {
+                    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
+                }
+            }
+        },
+        "title": {
+            "behavior": "plone.dublincore",
+            "description": "",
+            "factory": "Text line (String)",
+            "title": "T\u00edtulo",
+            "type": "string"
         }
-      }
-    }, 
-    "description": {
-      "description": "Usado en listados de elementos y resultados de b\u00fasquedas.", 
-      "title": "Descripci\u00f3n", 
-      "type": "string", 
-      "widget": "textarea"
-    }, 
-    "effective": {
-      "description": "La fecha en la que el documento ser\u00e1 publicado. Si no selecciona ninguna fecha, el documento ser\u00e1 publicado inmediatamente.", 
-      "title": "Fecha de Publicaci\u00f3n", 
-      "type": "string", 
-      "widget": "datetime"
-    }, 
-    "exclude_from_nav": {
-      "default": false, 
-      "description": "Si est\u00e1 marcado, este elemento no aparecer\u00e1 en el \u00e1rbol de navegaci\u00f3n", 
-      "title": "Excluir de la navegaci\u00f3n", 
-      "type": "boolean"
-    }, 
-    "expires": {
-      "description": "La fecha en la que expira el documento. Esto har\u00e1 autom\u00e1ticamente el documento invisible a otros a una fecha dada. Si no elije ninguna fecha, nunca expirar\u00e1.", 
-      "title": "Fecha de Terminaci\u00f3n", 
-      "type": "string", 
-      "widget": "datetime"
-    }, 
-    "id": {
-      "description": "Este nombre se mostrar\u00e1 en la URL.", 
-      "title": "Nombre corto", 
-      "type": "string"
-    }, 
-    "language": {
-      "default": "en", 
-      "description": "", 
-      "title": "Idioma", 
-      "type": "string", 
-      "vocabulary": {
-        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SupportedContentLanguages"
-      }
-    }, 
-    "nextPreviousEnabled": {
-      "default": false, 
-      "description": "Esto habilita el widget siguiente/pr\u00f3ximo en los elementos contenidos en esta carpeta.", 
-      "title": "Habilitar la navegaci\u00f3n siguiente/anterior", 
-      "type": "boolean"
-    }, 
-    "relatedItems": {
-      "additionalItems": true, 
-      "default": [], 
-      "description": "", 
-      "items": {
-        "description": "", 
-        "title": "Related", 
-        "type": "string", 
-        "vocabulary": {
-          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
-        }
-      }, 
-      "title": "Contenido relacionado", 
-      "type": "array", 
-      "uniqueItems": true, 
-      "widgetOptions": {
-        "pattern_options": {
-          "recentlyUsed": true
-        }, 
-        "vocabulary": {
-          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
-        }
-      }
-    }, 
-    "rights": {
-      "description": "Declaraci\u00f3n de copyright o informaci\u00f3n de otros derechos sobre este elemento.", 
-      "title": "Derechos de Autor", 
-      "type": "string", 
-      "widget": "textarea"
-    }, 
-    "subjects": {
-      "additionalItems": true, 
-      "description": "Las etiquetas suelen utilizarse para la organizaci\u00f3n a medida del contenido.", 
-      "items": {
-        "description": "", 
-        "title": "", 
-        "type": "string"
-      }, 
-      "title": "Etiquetas", 
-      "type": "array", 
-      "uniqueItems": true, 
-      "widgetOptions": {
-        "vocabulary": {
-          "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
-        }
-      }
-    }, 
-    "title": {
-      "description": "", 
-      "title": "T\u00edtulo", 
-      "type": "string"
-    }
-  }, 
-  "required": [
-    "title", 
-    "nextPreviousEnabled"
-  ], 
-  "title": "Carpeta", 
-  "type": "object"
+    },
+    "required": [
+        "title"
+    ],
+    "title": "Carpeta",
+    "type": "object"
 }

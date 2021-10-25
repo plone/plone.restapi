@@ -8,6 +8,542 @@ Changelog
 
 .. towncrier release notes start
 
+8.12.1 (2021-10-14)
+-------------------
+
+Bug fixes:
+
+
+- Fix wrong @id attribute on the Plone root serialization when using the new ++api++ traversal (introduced in plone.rest 2.0.0)
+  [sneridagh] (#1248)
+
+
+8.12.0 (2021-10-11)
+-------------------
+
+New features:
+
+
+- Add missing backend logout actions for the @logout endpoint (delete cookie, etc)
+  [sneridagh] (#1239)
+
+
+8.11.0 (2021-09-29)
+-------------------
+
+New features:
+
+
+- Make masking specific validation errors configurable in DX DeserializeFromJson. [fredvd] (#1211)
+
+
+Bug fixes:
+
+
+- Normalize unstable generated behavior names in http-examples output.
+  No longer hardcode port 55001 for the tests.
+  [maurits] (#1226)
+- Avoid `UnboundLocalError` or duplicates in results when using `@search` endpoint and a brain is orphan or a `KeyError` occurs during result serialization.
+  [gbastien] (#1231)
+
+
+8.10.0 (2021-09-24)
+-------------------
+
+New features:
+
+
+- Update default allow_headers CORS to include: Lock-Token [@avoinea] (#1181)
+- @types endpoint also returns if a content type is immediately addable in the given context
+  [ericof] (#1228)
+
+
+Bug fixes:
+
+
+- Fix @users endpoint to use acl_users.searchResults instead of portal_membership.listMembers
+  [ericof] (#1199)
+- Fix testing of a checkout instead of a released package.
+  [maurits] (#1213)
+- Fix @users endpoint to return list of users ordered by fullname property
+  [ericof] (#1222)
+
+
+8.9.1 (2021-08-27)
+------------------
+
+Bug fixes:
+
+
+- Fixes values not being stored during content creation if value is equal to the one returned by defaultFactory.
+  [ericof] (#1207)
+
+
+8.9.0 (2021-08-25)
+------------------
+
+New features:
+
+
+- Refactor `@lock` endpoint based on CRUD operations [@avoinea] (#1181)
+
+
+8.8.1 (2021-08-20)
+------------------
+
+Bug fixes:
+
+
+- Fix @vocabularies endpoint to search in translated term titles
+  [sneridagh] (#1204)
+
+
+8.8.0 (2021-08-20)
+------------------
+
+New features:
+
+
+- Add resolveuid support to Link content type ``remoteUrl`` field.
+  [sneridagh] (#1197)
+
+
+Bug fixes:
+
+
+- Updated tests to not fail when the Plone Site root is dexterity.
+  [jaroel] (#2454)
+
+
+8.7.1 (2021-08-03)
+------------------
+
+Bug fixes:
+
+
+- Do not break @workflow endpoint for contents without workflow [cekk] (#1184)
+- Do not break @workflow endpoint when trying to change the state of a content without workflow [cekk] (#1190)
+
+
+8.7.0 (2021-07-19)
+------------------
+
+New features:
+
+
+- Improve extensibility story for resolveUID field serializer/deserializer
+  [sneridagh] (#1179)
+
+
+8.6.1 (2021-07-16)
+------------------
+
+Bug fixes:
+
+
+- Wrong deserialization if the path does not exist but is matched via acquisition
+  [sneridagh] (#1176)
+
+
+8.6.0 (2021-07-13)
+------------------
+
+New features:
+
+
+- Set UID of a content during creation if the user has Manage Portal permission.
+  [ericof] (#497)
+
+
+8.5.0 (2021-07-09)
+------------------
+
+New features:
+
+
+- Remove Python 2, Plone 4.3, and 5.1 code.
+  [ericof] (#1140)
+
+
+8.4.2 (2021-07-08)
+------------------
+
+Bug fixes:
+
+
+- In src run `find . -name "*.py"|xargs pyupgrade --py36-plus`.
+  Then run black and remove six import leftovers. 
+  [jensens] (#1162)
+- Fix link content serialization when url points to local content but it does not exist
+  [sneridagh] (#1167)
+- Fix navigation service not using nav_title metadata.
+  [ericof] (#1169)
+
+
+8.4.1 (2021-07-07)
+------------------
+
+Bug fixes:
+
+
+- Fix interpolation variable present in response after serialization
+  [sneridagh] (#1164)
+
+
+8.4.0 (2021-07-06)
+------------------
+
+New features:
+
+
+- Pass through field attribute 'widget' for field Dict [ksuess] (#1153)
+
+
+Bug fixes:
+
+
+- Use security decorators in PAS plugin. [jensens] (#1155)
+- Drop coding magic first line. Coding magic is no longer needed in Python 3, except if different from utf-8. [jensens] (#1156)
+- Fix PAS plugin ZMI markup for Zope4+. [jensens] (#1157)
+- Eliminate non-pythonic 'return None' usage. [jensens] (#1158)
+- Provide value_type of plone.schema / zope.schema Dict field [ksuess] (#1159)
+
+
+8.3.2 (2021-07-05)
+------------------
+
+Bug fixes:
+
+
+- Fix navigation endpoint sort by adding default `sort_on='getObjPositionInParent'` to the query.  @valipod @tiberiuichim (#1107)
+
+
+8.3.1 (2021-07-02)
+------------------
+
+Bug fixes:
+
+
+- Unify ZMI, HTML form, and API login. @rpatterson (#1141)
+
+
+8.3.0 (2021-06-07)
+------------------
+
+New features:
+
+
+- Add current state and translation to the @workflow endpoint
+  [sneridagh] (#1146)
+
+
+Bug fixes:
+
+
+- Remove code to support Python 2, Plone 4.3/5.0/5.1 [timo] (#1140)
+- Remove unecessary check for plone.app.iterate which breaks the @components attributes. [timo] (#1148)
+
+
+8.2.0 (2021-06-02)
+------------------
+
+New features:
+
+
+- Add working copy (p.a.iterate) support
+  [sneridagh] (#1132)
+
+
+8.1.0 (2021-05-27)
+------------------
+
+New features:
+
+
+- Add support for volto-slate blocks: use resolveuid for internal links, index slate blocks in the catalog, support block transforms. @tiberiuichim (#1125)
+
+
+Bug fixes:
+
+
+- Fixed a deprecation warning when importing UnrestrictedUser from AccessControl (#1129)
+
+
+
+Internal:
+
+- Format zcml files with collective.zpretty. Add zpretty Github workflow. @tiberiuichim
+
+
+8.0.0 (2021-05-14)
+------------------
+
+Breaking changes:
+
+
+- Drop support for Python 2 and Plone 5.1 and 4.3. Plone RESTAPI >= 8 supports Python 3 and Plone 5.2/6.x only. [timo] (#1121)
+
+
+7.3.5 (2021-05-03)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@workflow`` when executing user has no permissions to access ``review_history`` in target state.
+  [deiferni] (#999)
+
+
+7.3.4 (2021-04-30)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@history`` when full history is empty.
+  [deiferni] (#1113)
+
+
+7.3.3 (2021-04-29)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@querystring-search`` endpoint with correct sort_order
+  @mamico (#1108)
+
+
+7.3.2 (2021-04-07)
+------------------
+
+Bug fixes:
+
+
+- Fix ``@search`` endpoint with use_site_search_settings flag, for VHM PhysicalRoot
+  scenarios
+  @tiberiuichim (#1105)
+
+
+7.3.1 (2021-03-27)
+------------------
+
+Bug fixes:
+
+
+- Fixes if old p.schema is used
+  [sneridagh] (#1103)
+
+
+7.3.0 (2021-03-25)
+------------------
+
+New features:
+
+
+- Adjust JSONField adapter to include widget name to use in serialization
+  [sneridagh] (#1089)
+
+
+Bug fixes:
+
+
+- Fixes build was using the released version
+  [sneridagh] (#1090)
+
+
+7.2.1 (2021-03-22)
+------------------
+
+Bug fixes:
+
+
+- @contextnavigation endpoint does not honor nav_title index
+  [sneridagh] (#1092)
+
+
+7.2.0 (2021-03-18)
+------------------
+
+New features:
+
+
+- Allow block transforms to run in "subblocks", discovered as the ``blocks`` field (or alternatively, ``data.blocks``) in a block value. (#1085)
+
+
+7.1.0 (2021-03-17)
+------------------
+
+New features:
+
+
+- Allow passing ``use_site_search_settings=1`` in the ``@search`` endpoint request, to follow Plone's ``ISearchSchema`` settings. (#1081)
+
+
+Bug fixes:
+
+
+- Do not log "No such index" warnings for knonw indexes like metadata_fields @cekk (#987)
+- Respect "Access inactive portal content" permission in @search endpoint [cekk] (#1066)
+- Add GSM unsubscribe for test registered adapters in block transformer tests @tiberiuichim (#1083)
+- Pin some package versions to fix buildout @tiberiuichim (#1086)
+
+
+7.0.0 (2021-02-20)
+------------------
+
+- Re-release 7.0.0b8 as 7.0.0 final. [timo]
+
+
+7.0.0b8 (2021-02-19)
+--------------------
+
+New features:
+
+
+- Mark restapi 7 with a zcml feature flag: ``plonerestapi-7``
+  [sneridagh] (#1068)
+- Add a couple of additional tests for resolveuid feature reassurance
+  [sneridagh] (#1072)
+
+
+Bug fixes:
+
+
+- Avoid duplicate fields within DX RestAPI
+  [avoinea] (#1073)
+
+
+7.0.0b7 (2021-02-10)
+--------------------
+
+New features:
+
+
+- Add ``root`` element to the @breadcrumbs endpoint
+  [sneridagh] (#1064)
+
+
+Bug fixes:
+
+
+- Remove ``escape``'d titles
+  [sneridagh] (#1061)
+
+
+7.0.0b6 (2021-02-09)
+--------------------
+
+Bug fixes:
+
+
+- Do not break if some custom code provides an alias for Products.Archetypes (#1004)
+- Handle missing review_state value in @navigation endpoint for items without a workflow [cekk] (#1060)
+
+
+7.0.0b5 (2021-02-03)
+--------------------
+
+Bug fixes:
+
+
+- Fix transform object_browser href smartfield not working as expected
+  [sneridagh] (#1058)
+
+
+7.0.0b4 (2021-02-01)
+--------------------
+
+Bug fixes:
+
+
+- Fix href smart field in transformers do not cover the object_widget use case
+  [sneridagh] (#1054)
+
+
+7.0.0b3 (2021-01-26)
+--------------------
+
+New features:
+
+
+- Add new @contextnavigation endpoint.
+  [tiberiuichim] (#1042)
+- Refactor navigation endpoint, add new ``nav_title`` attribute
+  [sneridagh] (#1047)
+- Add nav_title attribute to breadcrumbs endpoint
+  [sneridagh] (#1049)
+- Unify nav_title and title in navs
+  [sneridagh] (#1051)
+
+
+Bug fixes:
+
+
+- Fix ``@id`` when content query has no ``fullbojects``
+  [sneridagh] (#837)
+
+
+7.0.0b2 (2021-01-25)
+--------------------
+
+New features:
+
+
+- Add serializer/deserializer for remoteUrl Link's field [cekk] (#1005)
+
+
+7.0.0b1 (2021-01-08)
+--------------------
+
+New features:
+
+
+- Register blocks transformers also for Site Root
+  [cekk] (#1043)
+
+
+7.0.0a6 (2020-12-18)
+--------------------
+
+New features:
+
+
+- Add `sort` feature to resort all folder items [petschki] (#812)
+- Remove unneeded stringtype checks [erral] (#875)
+- Enable Plone 4 Control Panels: Add-ons, Dexterity Content Types [avoinea] (#984)
+- Enhance traceback with ``__traceback_info__`` on import to detect the field causing the problem. [jensens] (#1009)
+
+
+Bug fixes:
+
+
+- Fixed deprecation warnings for ``zope.site.hooks``, ``CMFPlone.interfaces.ILanguageSchema``
+  and ``plone.dexterity.utils.splitSchemaName``. [maurits] (#975)
+- Update tests to fix https://github.com/plone/plone.dexterity/pull/137 [@avoinea] (#1001)
+- Fix resolveuid blocks transforms [tisto, sneridagh] (#1006)
+- Fix type hint example in searching documentation. [jensens] (#1008)
+- Fixed compatibility with Zope 4.5.2 by making sure Location header is string.
+  On Python 2 it could be unicode for the users and groups end points.
+  Fixes `issue 1019 <https://github.com/plone/plone.restapi/issues/1019>`_. [maurits] (#1019)
+- Check for Plone 5 in content-adding endpoint if plone.app.multilingual is installed [erral] (#1029)
+- Do not test if there is a `meta_type` index. It is unused ballast. [jensens] (#2024)
+- Fix tests with Products.MailHost 4.10. [maurits] (#3178)
+
+
+7.0.0a5 (2020-08-21)
+--------------------
+
+New features:
+
+- Improved blocks transformers: now we can handle generic transformers
+  [cekk]
+- Add generic block transformer for handle resolveuid in all blocks that have a *url* or *href* field
+  [cekk]
+- Add "smart fields" concept: if block has a *searchableText* field, this will be indexed in Plone
+  [cekk, tiberiuichim] (#952)
+
+
 7.0.0a4 (2020-05-15)
 --------------------
 
@@ -61,11 +597,136 @@ New features:
   [buchi,timo,cekk] (#808)
 
 
+6.15.1 (2021-02-20)
+-------------------
+
 Bug fixes:
 
 
-- Adapt tests to the new way of handling original image urls
-  [erral] (#932)
+- Fixed compatibility with Zope 4.5.2 by making sure Location header is string.
+  On Python 2 it could be unicode for the users and groups end points.
+  Fixes `issue 1019 <https://github.com/plone/plone.restapi/issues/1019>`_.
+  [maurits] (#1019)
+
+
+6.15.0 (2020-10-08)
+-------------------
+
+New features:
+
+- Add `sort` feature to resort all folder items
+  [petschki] (#812)
+
+- Remove unneeded stringtype checks
+  [erral] (#875)
+
+
+Bug fixes:
+
+
+- Fixed deprecation warnings for ``zope.site.hooks``, ``CMFPlone.interfaces.ILanguageSchema``
+  and ``plone.dexterity.utils.splitSchemaName``.
+  [maurits] (#975)
+
+- Update tests to fix https://github.com/plone/plone.dexterity/pull/137
+  [@avoinea] (#1001)
+
+- Fix tests with Products.MailHost 4.10.
+  [maurits] (#3178)
+
+
+6.14.0 (2020-08-28)
+-------------------
+
+New features:
+
+- Add @types endpoint to be able to add/edit/delete CT schema [Petchesi-Iulian, avoinea] (#951)
+
+
+6.13.8 (2020-08-20)
+-------------------
+
+Bug fixes:
+
+
+- Removed useless management of metadata_fields in SearchHandler/LazyCatalogResultSerializer since it is handled in DefaultJSONSummarySerializer. [gbastien] (#970)
+
+
+6.13.7 (2020-07-16)
+-------------------
+
+Bug fixes:
+
+
+- Add a Decimal() converter
+  [fulv] (#963)
+
+
+6.13.6 (2020-07-09)
+-------------------
+
+Bug fixes:
+
+
+- Fix Plone 5.2.x deprecation message 'ILanguageSchema is deprecated'.
+  [timo] (#975)
+- Do not hardcode the port in tests because it may depend on environment variables [ale-rt] (#978)
+
+
+6.13.5 (2020-06-29)
+-------------------
+
+Bug fixes:
+
+
+- Remove the use of plone.api in upgrade code
+  [erral] (#917)
+
+
+6.13.4 (2020-06-18)
+-------------------
+
+Bug fixes:
+
+
+- Re-add test folder to the release (ignore the tests/images folder though). [timo] (#968)
+
+
+6.13.3 (2020-06-17)
+-------------------
+
+Bug fixes:
+
+
+- Take the `include_items` parameter into account in `SerializeCollectionToJson`. [gbastien] (#957)
+
+
+6.13.2 (2020-06-15)
+-------------------
+
+Bug fixes:
+
+
+- Include plone.app.controlpanel permissions.zcml in database service to avoid ConfigurationExecutionError regarding 'plone.app.controlpanel.Overview' permission while starting Plone 4.3.x [gbastien] (#956)
+
+
+6.13.1 (2020-06-03)
+-------------------
+
+Bug fixes:
+
+
+- PATCH (editing) in @user endpoint now is able to remove existing values using null
+  [sneridagh] (#946)
+
+
+6.13.0 (2020-05-28)
+-------------------
+
+New features:
+
+
+- Expose author_image in comments endpoint [timo] (#948)
 
 
 6.12.0 (2020-05-11)

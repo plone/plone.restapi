@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from pkg_resources import get_distribution
 from pkg_resources import parse_version
 from plone.restapi.deserializer import json_body
@@ -15,8 +14,7 @@ else:
 
 
 class QuerystringSearchPost(Service):
-    """Returns the querystring search results given a p.a.querystring data.
-    """
+    """Returns the querystring search results given a p.a.querystring data."""
 
     def reply(self):
         data = json_body(self.request)
@@ -32,7 +30,7 @@ class QuerystringSearchPost(Service):
             raise Exception("No query supplied")
 
         if sort_order:
-            sort_order = "descending" if sort_order else "ascending"
+            sort_order = "descending" if sort_order == "descending" else "ascending"
 
         querybuilder = getMultiAdapter(
             (self.context, self.request), name="querybuilderresults"
