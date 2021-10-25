@@ -265,7 +265,10 @@ class TestLinkintegrityForBlocks(TestCase):
             "/doc-1",
             json={
                 "blocks": {
-                    "uuid1": {"@type": "foo", "href": "../resolveuid/{}".format(uid),}
+                    "uuid1": {
+                        "@type": "foo",
+                        "href": "../resolveuid/{}".format(uid),
+                    }
                 }
             },
         )
@@ -281,7 +284,10 @@ class TestLinkintegrityForBlocks(TestCase):
             "/doc-1",
             json={
                 "blocks": {
-                    "uuid1": {"@type": "foo", "href": "../resolveuid/{}".format(uid),}
+                    "uuid1": {
+                        "@type": "foo",
+                        "href": "../resolveuid/{}".format(uid),
+                    }
                 }
             },
         )
@@ -308,7 +314,10 @@ class TestLinkintegrityForBlocks(TestCase):
             "/doc-1",
             json={
                 "blocks": {
-                    "uuid1": {"@type": "foo", "url": "../resolveuid/{}".format(uid),}
+                    "uuid1": {
+                        "@type": "foo",
+                        "url": "../resolveuid/{}".format(uid),
+                    }
                 }
             },
         )
@@ -324,7 +333,10 @@ class TestLinkintegrityForBlocks(TestCase):
             "/doc-1",
             json={
                 "blocks": {
-                    "uuid1": {"@type": "foo", "url": "../resolveuid/{}".format(uid),}
+                    "uuid1": {
+                        "@type": "foo",
+                        "url": "../resolveuid/{}".format(uid),
+                    }
                 }
             },
         )

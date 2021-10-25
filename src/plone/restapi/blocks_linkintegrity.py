@@ -12,19 +12,18 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 @implementer(IRetriever)
 @adapter(IBlocks)
 class BlocksRetriever(DXGeneral):
-    """General retriever for Blocks enabled contents.
-    """
+    """General retriever for Blocks enabled contents."""
 
     def retrieveLinks(self):
-        """Finds all links from the object and return them.
-        """
+        """Finds all links from the object and return them."""
         links = set()
         blocks = getattr(self.context, "blocks", {})
         for block in blocks.values():
             block_type = block.get("@type", None)
             handlers = []
             for h in subscribers(
-                (self.context, self.context.REQUEST), IBlockFieldLinkIntegrityRetriever,
+                (self.context, self.context.REQUEST),
+                IBlockFieldLinkIntegrityRetriever,
             ):
                 if h.block_type == block_type or h.block_type is None:
                     handlers.append(h)
