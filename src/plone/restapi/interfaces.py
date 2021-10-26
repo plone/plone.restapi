@@ -94,6 +94,7 @@ class IBlockFieldDeserializationTransformer(Interface):
     order = Attribute(
         "A number used in sorting value transformers. " "Smaller is executed first"
     )
+    disabled = Attribute("Boolean that disables the transformer if required")
 
     def __init__(field, context, request):
         """Adapts context and the request."""
@@ -112,6 +113,7 @@ class IBlockFieldSerializationTransformer(Interface):
         "A number used in sorting value transformers for the "
         "same block. Smaller is executed first"
     )
+    disabled = Attribute("Boolean that disables the transformer if required")
 
     def __init__(field, context, request):
         """Adapts context and the request."""
@@ -126,7 +128,7 @@ class IExpandableElement(Interface):
     """
 
     def __call__(expand=False):
-        """"""
+        """ """
 
 
 class IZCatalogCompatibleQuery(Interface):

@@ -40,6 +40,8 @@ class HistoryGet(Service):
         content_history_viewlet.navigation_root_url = site_url
         content_history_viewlet.site_url = site_url
         history = content_history_viewlet.fullHistory()
+        if history is None:
+            history = []
 
         unwanted_keys = [
             "diff_current_url",

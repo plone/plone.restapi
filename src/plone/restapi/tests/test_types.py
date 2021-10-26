@@ -11,6 +11,7 @@ from plone.restapi.types.utils import get_jsonschema_for_fti
 from plone.restapi.types.utils import get_jsonschema_for_portal_type
 from plone.restapi.types.utils import get_jsonschema_properties
 from plone.schema import Email
+from plone.schema import JSONField
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
@@ -747,6 +748,25 @@ class TestJsonSchemaProviders(TestCase):
                 "factory": u"Date/Time",
                 "description": u"My great field",
                 "widget": u"datetime",
+            },
+            adapter.get_schema(),
+        )
+
+    def test_jsonfield(self):
+        field = JSONField(
+            title=u"My field", description=u"My great field", widget="my_widget_name"
+        )
+        adapter = getMultiAdapter(
+            (field, self.portal, self.request), IJsonSchemaProvider
+        )
+
+        self.assertEqual(
+            {
+                "type": "dict",
+                "title": u"My field",
+                "factory": "JSONField",
+                "description": u"My great field",
+                "widget": u"my_widget_name",
             },
             adapter.get_schema(),
         )

@@ -68,8 +68,21 @@ class WorkflowInfo(object):
                 title = title.decode("utf8")
             history[item]["title"] = self.context.translate(title)
 
+        current_state = wftool.getInfoFor(self.context, "review_state")
+        current_state_title = wftool.getTitleForStateOnType(
+            current_state,
+            self.context.portal_type,
+        )
+
         result["workflow"].update(
-            {"history": json_compatible(history), "transitions": transitions}
+            {
+                "history": json_compatible(history),
+                "transitions": transitions,
+                "state": {
+                    "id": current_state,
+                    "title": self.context.translate(current_state_title),
+                },
+            }
         )
         return result
 

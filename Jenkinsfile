@@ -24,7 +24,7 @@ pipeline {
       steps {
         deleteDir()
         checkout scm
-        sh "virtualenv ."
+        sh "python3 -m venv ."
         sh "bin/pip install -r requirements.txt"
         sh "bin/buildout -c plone-5.2.x-performance.cfg"
         sh "bin/instance start"

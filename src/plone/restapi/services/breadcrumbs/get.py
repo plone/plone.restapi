@@ -23,14 +23,25 @@ class Breadcrumbs(object):
         if not expand:
             return result
 
+        portal_state = getMultiAdapter(
+            (self.context, self.request), name="plone_portal_state"
+        )
         breadcrumbs_view = getMultiAdapter(
             (self.context, self.request), name="breadcrumbs_view"
         )
         items = []
         for crumb in breadcrumbs_view.breadcrumbs():
-            items.append({"title": crumb["Title"], "@id": crumb["absolute_url"]})
+            item = {
+                "title": crumb["Title"],
+                "@id": crumb["absolute_url"],
+            }
+            if crumb.get("nav_title", False):
+                item.update({"title": crumb["nav_title"]})
+
+            items.append(item)
 
         result["breadcrumbs"]["items"] = items
+        result["breadcrumbs"]["root"] = portal_state.navigation_root().absolute_url()
         return result
 
 

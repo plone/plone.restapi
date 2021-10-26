@@ -9,6 +9,9 @@ Content-Type: application/json
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/front-page/@breadcrumbs"
     }, 
+    "contextnavigation": {
+      "@id": "http://localhost:55001/plone/front-page/@contextnavigation"
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/front-page/@navigation"
     }, 
@@ -58,5 +61,7 @@ Content-Type: application/json
   }, 
   "title": "Welcome to Plone", 
   "version": "current", 
-  "versioning_enabled": true
+  "versioning_enabled": true, 
+  "working_copy": null, 
+  "working_copy_of": null
 }

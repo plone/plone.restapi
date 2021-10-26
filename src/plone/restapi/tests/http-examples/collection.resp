@@ -9,6 +9,9 @@ Content-Type: application/json
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/collection/@breadcrumbs"
     }, 
+    "contextnavigation": {
+      "@id": "http://localhost:55001/plone/collection/@contextnavigation"
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/collection/@navigation"
     }, 
@@ -114,5 +117,7 @@ Content-Type: application/json
   "subjects": [], 
   "text": null, 
   "title": "My Collection", 
-  "version": "current"
+  "version": "current", 
+  "working_copy": null, 
+  "working_copy_of": null
 }

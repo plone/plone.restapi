@@ -1,14 +1,207 @@
 # -*- coding: utf-8 -*-
+from plone.app.testing import login
 from plone.app.testing import logout
+from plone.app.testing import setRoles
+from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import iterSchemata
+from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.interfaces import IFieldSerializer
+from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
 from plone.uuid.interfaces import IUUID
+from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
 from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
+
+import os
+import requests
+import transaction
+
+
+class TestBlocksResolveUIDFunctional(TestCase):
+
+    layer = PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
+        setRoles(self.portal, TEST_USER_ID, ["Member"])
+        login(self.portal, SITE_OWNER_NAME)
+        self.portal.invokeFactory("Folder", id="folder1", title="My Folder")
+        self.portal.invokeFactory("Document", id="target", title="Link Target")
+        wftool = getToolByName(self.portal, "portal_workflow")
+        wftool.doActionFor(self.portal.folder1, "publish")
+        transaction.commit()
+
+    def test_create_document_with_link_stores_uuid(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My Document",
+                "blocks": {
+                    "09e39ddf-a945-49f2-b609-ea427ac3430b": {
+                        "@type": "text",
+                        "text": {
+                            "blocks": [
+                                {
+                                    "data": {},
+                                    "depth": 0,
+                                    "entityRanges": [
+                                        {"key": 0, "length": 4, "offset": 0}
+                                    ],
+                                    "inlineStyleRanges": [],
+                                    "key": "ark35",
+                                    "text": "Link",
+                                    "type": "unstyled",
+                                }
+                            ],
+                            "entityMap": {
+                                "0": {
+                                    "data": {
+                                        "url": "{}/target".format(self.portal_url)
+                                    },
+                                    "mutability": "MUTABLE",
+                                    "type": "LINK",
+                                }
+                            },
+                        },
+                    },
+                    "21270e22-3a61-4780-b164-d6be56d942f4": {"@type": "title"},
+                },
+                "blocks_layout": {
+                    "items": [
+                        "21270e22-3a61-4780-b164-d6be56d942f4",
+                        "09e39ddf-a945-49f2-b609-ea427ac3430b",
+                    ]
+                },
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+
+        target_uuid = IUUID(self.portal.target)
+        self.assertEqual(
+            "../../resolveuid/{}".format(target_uuid),
+            self.portal.folder1.mydocument.blocks.get(
+                "09e39ddf-a945-49f2-b609-ea427ac3430b"
+            )
+            .get("text")
+            .get("entityMap")
+            .get("0")
+            .get("data")
+            .get("url"),
+        )
+
+    def test_create_document_with_image_block_stores_uuid(self):
+        self.portal.invokeFactory("Image", id="image", title="Image")
+        image_file = os.path.join(os.path.dirname(__file__), u"image.png")
+        with open(image_file, "rb") as f:
+            image_data = f.read()
+        self.portal.image.image = NamedBlobImage(
+            data=image_data, contentType="image/png", filename=u"image.png"
+        )
+        self.portal.image.image_caption = u"This is an image caption."
+        transaction.commit()
+
+        target_uuid = IUUID(self.portal.image)
+
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My Document",
+                "blocks": {
+                    "09e39ddf-a945-49f2-b609-ea427ac3430b": {
+                        "@type": "image",
+                        "url": "{}/image".format(self.portal_url),
+                    },
+                    "21270e22-3a61-4780-b164-d6be56d942f4": {"@type": "title"},
+                },
+                "blocks_layout": {
+                    "items": [
+                        "21270e22-3a61-4780-b164-d6be56d942f4",
+                        "09e39ddf-a945-49f2-b609-ea427ac3430b",
+                    ]
+                },
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+
+        self.assertEqual(
+            "../../resolveuid/{}".format(target_uuid),
+            self.portal.folder1.mydocument.blocks.get(
+                "09e39ddf-a945-49f2-b609-ea427ac3430b"
+            ).get("url"),
+        )
+
+    def test_create_document_with_image_block_and_href_stores_uuid(self):
+        self.portal.invokeFactory("Document", id="linked_document", title="Linked Doc")
+        self.portal.invokeFactory("Image", id="image", title="Image")
+        image_file = os.path.join(os.path.dirname(__file__), u"image.png")
+        with open(image_file, "rb") as f:
+            image_data = f.read()
+        self.portal.image.image = NamedBlobImage(
+            data=image_data, contentType="image/png", filename=u"image.png"
+        )
+        self.portal.image.image_caption = u"This is an image caption."
+        transaction.commit()
+
+        target_uuid = IUUID(self.portal.image)
+        liked_doc_uuid = IUUID(self.portal.linked_document)
+
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Document",
+                "id": "mydocument",
+                "title": "My Document",
+                "blocks": {
+                    "09e39ddf-a945-49f2-b609-ea427ac3430b": {
+                        "@type": "image",
+                        "url": "{}/image".format(self.portal_url),
+                        "href": "{}/linked_document".format(self.portal_url),
+                    },
+                    "21270e22-3a61-4780-b164-d6be56d942f4": {"@type": "title"},
+                },
+                "blocks_layout": {
+                    "items": [
+                        "21270e22-3a61-4780-b164-d6be56d942f4",
+                        "09e39ddf-a945-49f2-b609-ea427ac3430b",
+                    ]
+                },
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+
+        self.assertEqual(
+            "../../resolveuid/{}".format(target_uuid),
+            self.portal.folder1.mydocument.blocks.get(
+                "09e39ddf-a945-49f2-b609-ea427ac3430b"
+            ).get("url"),
+        )
+        self.assertEqual(
+            "../../resolveuid/{}".format(liked_doc_uuid),
+            self.portal.folder1.mydocument.blocks.get(
+                "09e39ddf-a945-49f2-b609-ea427ac3430b"
+            ).get("href"),
+        )
 
 
 class TestBlocksResolveUID(TestCase):
@@ -82,7 +275,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}".format(uid),
                                 "rel": "nofollow",
                                 "url": "../resolveuid/{}".format(uid),
                             },
@@ -97,13 +289,13 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc2.absolute_url(),
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc2.absolute_url(),
         )
 
@@ -116,7 +308,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}/view".format(uid),
                                 "rel": "nofollow",
                                 "url": "../resolveuid/{}/view".format(uid),
                             },
@@ -131,13 +322,13 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc2.absolute_url() + "/view",
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc2.absolute_url() + "/view",
         )
 
@@ -217,7 +408,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}".format(uid),
                                 "rel": "nofollow",
                                 "url": "../resolveuid/{}".format(uid),
                             },
@@ -232,18 +422,18 @@ class TestBlocksResolveUID(TestCase):
         self.assertNotEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             blocks["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
         )
         self.assertNotEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             blocks["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
         )
 
     def test_blocks_field_deserialization_resolves_paths_to_uids(self):
@@ -267,8 +457,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": self.doc2.absolute_url(),
-                                "rel": "nofollow",
                                 "url": self.doc2.absolute_url(),
                             },
                             "mutability": "MUTABLE",
@@ -282,13 +470,13 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             "../resolveuid/{}".format(uid),
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             "../resolveuid/{}".format(uid),
         )
 
@@ -349,13 +537,13 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             "../resolveuid/{}/view".format(uid),
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             "../resolveuid/{}/view".format(uid),
         )
 
@@ -381,7 +569,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}".format(uid),
                                 "rel": "nofollow",
                                 "url": "../resolveuid/{}".format(uid),
                             },
@@ -396,14 +583,14 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc_primary_field_url.absolute_url()
             + "/@@download/test_primary_namedfile_field",
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc_primary_field_url.absolute_url()
             + "/@@download/test_primary_namedfile_field",
         )
@@ -431,7 +618,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}".format(uid),
                                 "rel": "nofollow",
                                 "url": "../resolveuid/{}".format(uid),
                             },
@@ -446,13 +632,13 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc_primary_field_url.absolute_url(),
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc_primary_field_url.absolute_url(),
         )
 
@@ -465,7 +651,6 @@ class TestBlocksResolveUID(TestCase):
                     "entityMap": {
                         "0": {
                             "data": {
-                                "href": "../resolveuid/{}/view".format(uid),
                                 "rel": "nofollow",
                                 "url": "../resolveuid/{}/view".format(uid),
                             },
@@ -480,12 +665,12 @@ class TestBlocksResolveUID(TestCase):
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc2.absolute_url() + "/view",
         )
         self.assertEqual(
             value["effbdcdc-253c-41a7-841e-5edb3b56ce32"]["text"]["entityMap"]["0"][
                 "data"
-            ]["href"],
+            ]["url"],
             self.doc2.absolute_url() + "/view",
         )

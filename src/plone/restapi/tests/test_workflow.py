@@ -7,8 +7,9 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
 from zExceptions import NotFound
@@ -19,7 +20,7 @@ from ZPublisher.pubevents import PubStart
 
 class TestWorkflowInfo(TestCase):
 
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+    layer = PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer["portal"]
@@ -43,6 +44,17 @@ class TestWorkflowInfo(TestCase):
         self.assertEqual(3, len(history))
         self.assertEqual("published", history[-1][u"review_state"])
         self.assertEqual(u"Published with accent é", history[-1][u"title"])
+
+    def test_workflow_info_includes_current_state(self):
+        wfinfo = getMultiAdapter(
+            (self.doc1, self.request), name=u"GET_application_json_@workflow"
+        )
+        info = wfinfo.reply()
+        self.assertIn("state", info)
+        state = info["state"]
+        self.assertEqual(2, len(state))
+        self.assertEqual("published", state["id"])
+        self.assertEqual(u"Published with accent é", state["title"])
 
     def test_workflow_info_unauthorized_history(self):
         login(self.portal, SITE_OWNER_NAME)
@@ -99,7 +111,7 @@ class TestWorkflowInfo(TestCase):
 
 class TestWorkflowTransition(TestCase):
 
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+    layer = PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
 
     def setUp(self):
         self.portal = self.layer["portal"]
@@ -108,13 +120,16 @@ class TestWorkflowTransition(TestCase):
         login(self.portal, SITE_OWNER_NAME)
         self.portal.invokeFactory("Document", id="doc1")
 
-    def traverse(self, path="/plone", accept="application/json", method="POST"):
+    def traverse(
+        self, path="/plone", accept="application/json", method="POST", auth=None
+    ):
         request = self.layer["request"]
         request.environ["PATH_INFO"] = path
         request.environ["PATH_TRANSLATED"] = path
         request.environ["HTTP_ACCEPT"] = accept
         request.environ["REQUEST_METHOD"] = method
-        auth = "%s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        if auth is None:
+            auth = "%s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         request._auth = "Basic %s" % b64encode(auth.encode("utf8")).decode("utf8")
         notify(PubStart(request))
         return request.traverse(path)
@@ -192,3 +207,18 @@ class TestWorkflowTransition(TestCase):
         res = service.reply()
         self.assertEqual(400, self.request.response.getStatus())
         self.assertEqual("Bad Request", res["error"]["type"])
+
+    def test_transition_with_no_access_to_review_history_in_target_state(self):
+        self.wftool.setChainForPortalTypes(["Folder"], "restriction_workflow")
+        self.portal[self.portal.invokeFactory("Folder", id="folder", title="Test")]
+        setRoles(
+            self.portal, TEST_USER_ID, ["Contributor", "Editor", "Member", "Reviewer"]
+        )
+        login(self.portal, TEST_USER_NAME)
+
+        auth = "%s:%s" % (TEST_USER_NAME, TEST_USER_PASSWORD)
+        service = self.traverse("/plone/folder/@workflow/restrict", auth=auth)
+        res = service.reply()
+
+        self.assertEqual(200, self.request.response.getStatus(), res)
+        self.assertEqual(u"restricted", res[u"review_state"], res)

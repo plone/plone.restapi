@@ -9,6 +9,9 @@ Content-Type: application/json
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/image/@breadcrumbs"
     }, 
+    "contextnavigation": {
+      "@id": "http://localhost:55001/plone/image/@contextnavigation"
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/image/@navigation"
     }, 
@@ -100,5 +103,7 @@ Content-Type: application/json
   "rights": "", 
   "subjects": [], 
   "title": "My Image", 
-  "version": "current"
+  "version": "current", 
+  "working_copy": null, 
+  "working_copy_of": null
 }

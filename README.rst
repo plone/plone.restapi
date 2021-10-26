@@ -1,12 +1,8 @@
-.. image:: https://secure.travis-ci.org/plone/plone.restapi.png?branch=master
-  :target: http://travis-ci.org/plone/plone.restapi
+.. image:: https://github.com/plone/plone.restapi/workflows/Plone%20RESTAPI%20CI/badge.svg
+  :target: https://github.com/plone/plone.restapi/actions?query=workflow%3A%22Plone+RESTAPI+CI%22
 
 .. image:: https://coveralls.io/repos/github/plone/plone.restapi/badge.svg?branch=master
   :target: https://coveralls.io/github/plone/plone.restapi?branch=master
-
-.. image:: https://landscape.io/github/plone/plone.restapi/master/landscape.svg?style=flat
-   :target: https://landscape.io/github/plone/plone.restapi/master
-   :alt: Code Health
 
 .. image:: https://readthedocs.org/projects/pip/badge
   :target: https://plonerestapi.readthedocs.org

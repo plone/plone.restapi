@@ -8,6 +8,7 @@ from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.uuid.interfaces import IUUID
 from zope.component import adapter
+from zope.component import getGlobalSiteManager
 from zope.component import getMultiAdapter
 from zope.component import provideSubscriptionAdapter
 from zope.component import queryUtility
@@ -76,6 +77,49 @@ class TestBlocksDeserializer(unittest.TestCase):
         assert self.portal.doc1._handler_called is True
         assert self.portal.doc1.blocks["123"]["value"] == u"changed: text"
 
+        sm = getGlobalSiteManager()
+        sm.adapters.unsubscribe(
+            (IDexterityItem, IBrowserRequest),
+            IBlockFieldDeserializationTransformer,
+            TestAdapter,
+        )
+
+    def test_disabled_deserializer(self):
+        @implementer(IBlockFieldDeserializationTransformer)
+        @adapter(IBlocks, IBrowserRequest)
+        class TestAdapter(object):
+            order = 10
+            block_type = "test"
+            disabled = True
+
+            def __init__(self, context, request):
+                self.context = context
+                self.request = request
+
+            def __call__(self, value):
+                self.context._handler_called = True
+
+                value["value"] = u"changed: {}".format(value["value"])
+
+                return value
+
+        provideSubscriptionAdapter(
+            TestAdapter,
+            (IDexterityItem, IBrowserRequest),
+        )
+
+        self.deserialize(blocks={"123": {"@type": "test", "value": u"text"}})
+
+        assert not getattr(self.portal.doc1, "_handler_called", False)
+        assert self.portal.doc1.blocks["123"]["value"] == u"text"
+
+        sm = getGlobalSiteManager()
+        sm.adapters.unsubscribe(
+            (IDexterityItem, IBrowserRequest),
+            IBlockFieldDeserializationTransformer,
+            TestAdapter,
+        )
+
     def test_register_multiple_transform(self):
         @implementer(IBlockFieldDeserializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
@@ -127,6 +171,18 @@ class TestBlocksDeserializer(unittest.TestCase):
         self.assertTrue(self.portal.doc1._handler_called_b)
         self.assertEqual(self.portal.doc1.blocks["123"]["value"], u"c")
 
+        sm = getGlobalSiteManager()
+        sm.adapters.unsubscribe(
+            (IDexterityItem, IBrowserRequest),
+            IBlockFieldDeserializationTransformer,
+            TestAdapterA,
+        )
+        sm.adapters.unsubscribe(
+            (IDexterityItem, IBrowserRequest),
+            IBlockFieldDeserializationTransformer,
+            TestAdapterB,
+        )
+
     def test_blocks_html_cleanup(self):
         self.deserialize(
             blocks={
@@ -160,6 +216,22 @@ class TestBlocksDeserializer(unittest.TestCase):
             self.portal.doc1.blocks["123"]["url"], "http://example.com/1.jpg"
         )
 
+    def test_blocks_doc_relative(self):
+        doc_uid = IUUID(self.portal.doc1)
+        self.deserialize(blocks={"123": {"@type": "foo", "url": "/doc1"}})
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(doc_uid)
+        )
+
+    def test_blocks_image_relative(self):
+        image_uid = IUUID(self.image)
+        self.deserialize(blocks={"123": {"@type": "image", "url": "/image-1"}})
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(image_uid)
+        )
+
     def test_blocks_custom_block_resolve_standard_fields(self):
         self.deserialize(
             blocks={"123": {"@type": "foo", "url": self.portal.doc1.absolute_url()}}
@@ -187,3 +259,128 @@ class TestBlocksDeserializer(unittest.TestCase):
         self.assertEqual(
             self.portal.doc1.blocks["123"]["link"], self.portal.doc1.absolute_url()
         )
+
+    def test_deserialize_blocks_smart_href_array_volto_object_browser(self):
+        self.deserialize(
+            blocks={
+                "123": {
+                    "@type": "foo",
+                    "href": [{"@id": self.portal.doc1.absolute_url()}],
+                }
+            }
+        )
+        doc_uid = IUUID(self.portal.doc1)
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["href"][0]["@id"],
+            "../resolveuid/{}".format(doc_uid),
+        )
+
+    def test_deserialize_blocks_smart_href_array(self):
+        self.deserialize(
+            blocks={"123": {"@type": "foo", "href": [self.portal.doc1.absolute_url()]}}
+        )
+        doc_uid = IUUID(self.portal.doc1)
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["href"][0],
+            "../resolveuid/{}".format(doc_uid),
+        )
+
+    def test_deserialize_subblocks_transformers(self):
+        # use the html transformer to test subblocks transformers
+        subblock = {
+            "@type": "html",
+            "html": u"<script>nasty</script><div>This stays</div>",
+        }
+        self.deserialize(
+            blocks={
+                "1": {
+                    "@type": "columns_block",
+                    "data": {
+                        "blocks": {"2": {"@type": "tabs", "blocks": {"3": subblock}}}
+                    },
+                }
+            }
+        )
+
+        block = self.portal.doc1.blocks["1"]["data"]["blocks"]["2"]["blocks"]["3"][
+            "html"
+        ]
+        self.assertEqual(block, u"<div>This stays</div>")
+
+    def test_slate_internal_link_deserializer(self):
+        blocks = {
+            "2caef9e6-93ff-4edf-896f-8c16654a9923": {
+                "@type": "slate",
+                "plaintext": "this is a slate link inside some text",
+                "value": [
+                    {
+                        "type": "p",
+                        "children": [
+                            {"text": "this is a "},
+                            {
+                                "children": [
+                                    {"text": ""},
+                                    {
+                                        "type": "a",
+                                        "children": [{"text": "slate link"}],
+                                        "data": {
+                                            "link": {
+                                                "internal": {
+                                                    "internal_link": [
+                                                        {
+                                                            "@id": "%s/image-1"
+                                                            % self.portal.absolute_url(),
+                                                            "title": "Image 1",
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        },
+                                    },
+                                    {"text": ""},
+                                ],
+                                "type": "strong",
+                            },
+                            {"text": " inside some text"},
+                        ],
+                    }
+                ],
+            },
+            "6b2be2e6-9857-4bcc-a21a-29c0449e1c68": {"@type": "title"},
+        }
+        res = self.deserialize(blocks=blocks)
+        value = res.blocks["2caef9e6-93ff-4edf-896f-8c16654a9923"]["value"]
+        link = value[0]["children"][1]["children"][1]
+        resolve_link = link["data"]["link"]["internal"]["internal_link"][0]["@id"]
+        self.assertTrue(resolve_link.startswith("../resolveuid/"))
+
+    def test_slate_simple_link_deserializer(self):
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": "%s/image-1" % self.portal.absolute_url()
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+
+        res = self.deserialize(blocks=blocks)
+        value = res.blocks["abc"]["value"]
+        link = value[0]["children"][1]["data"]["url"]
+        self.assertTrue(link.startswith("../resolveuid/"))

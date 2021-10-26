@@ -9,6 +9,9 @@ Content-Type: application/json
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/newsitem/@breadcrumbs"
     }, 
+    "contextnavigation": {
+      "@id": "http://localhost:55001/plone/newsitem/@contextnavigation"
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/newsitem/@navigation"
     }, 
@@ -108,5 +111,7 @@ Content-Type: application/json
   }, 
   "title": "My News Item", 
   "version": "current", 
-  "versioning_enabled": true
+  "versioning_enabled": true, 
+  "working_copy": null, 
+  "working_copy_of": null
 }

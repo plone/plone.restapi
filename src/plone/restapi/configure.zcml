@@ -1,23 +1,33 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:i18n="http://namespaces.zope.org/i18n"
     xmlns:plone="http://namespaces.plone.org/plone"
-    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
     xmlns:zcml="http://namespaces.zope.org/zcml"
-    i18n_domain="plone.restapi">
+    i18n_domain="plone.restapi"
+    >
 
   <i18n:registerTranslations directory="locales" />
 
-  <include package="plone.behavior" file="meta.zcml"/>
-  <include package="plone.rest" file="meta.zcml"/>
+  <include
+      package="plone.behavior"
+      file="meta.zcml"
+      />
+  <include
+      package="plone.rest"
+      file="meta.zcml"
+      />
 
   <include package="plone.behavior" />
   <include package="plone.rest" />
   <include package="plone.schema" />
   <include file="indexers.zcml" />
 
-  <five:registerPackage package="." initialize=".initialize" />
+  <five:registerPackage
+      package="."
+      initialize=".initialize"
+      />
 
   <include package="plone.app.portlets" file="permissions.zcml" />
   <include file="permissions.zcml" />
@@ -25,53 +35,65 @@
   <genericsetup:registerProfile
       name="default"
       title="plone.restapi"
-      directory="profiles/default"
       description="RESTful hypermedia API for Plone."
       provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/default"
       />
 
   <genericsetup:registerProfile
       name="testing"
       title="plone.restapi testing"
-      directory="profiles/testing"
       description="Adds sample content types for testing"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
+      directory="profiles/testing"
+      />
+
+  <genericsetup:registerProfile
+      name="testing-workflows"
+      title="plone.restapi testing-workflows"
+      description="Adds sample workflows for testing"
+      provides="Products.GenericSetup.interfaces.EXTENSION"
+      for="Products.CMFPlone.interfaces.ITestCasePloneSiteRoot"
+      directory="profiles/testing-workflows"
       />
 
   <genericsetup:registerProfile
       name="performance"
       title="plone.restapi performance testing"
-      directory="profiles/performance"
       description="Adds sample content for performance testing"
       provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/performance"
       />
 
   <genericsetup:registerProfile
       name="blocks"
       title="Volto Blocks"
-      directory="profiles/blocks"
       description="Enables blocks on the Document content type"
       provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/blocks"
       />
 
   <!-- Register "various" import step -->
   <genericsetup:importStep
-    name="plone.restapi"
-    title="plone.restapi special import handlers"
-    description=""
-    handler="plone.restapi.setuphandlers.import_various"
-    />
+      name="plone.restapi"
+      title="plone.restapi special import handlers"
+      description=""
+      handler="plone.restapi.setuphandlers.import_various"
+      />
 
   <genericsetup:registerProfile
       name="uninstall"
       title="plone.restapi"
-      directory="profiles/uninstall"
       description="RESTful hypermedia API for Plone - Uninstall"
       provides="Products.GenericSetup.interfaces.EXTENSION"
+      directory="profiles/uninstall"
       />
 
-  <include package="plone.rest" file="configure.zcml" />
+  <include
+      package="plone.rest"
+      file="configure.zcml"
+      />
   <include package=".services" />
   <include package=".serializer" />
   <include package=".deserializer" />
@@ -82,21 +104,24 @@
 
   <configure zcml:condition="installed plone.app.dexterity">
 
-    <include package="plone.behavior" file="meta.zcml"/>
+    <include
+        package="plone.behavior"
+        file="meta.zcml"
+        />
 
     <plone:behavior
         name="volto.blocks"
         title="Blocks"
         description="Enables Volto Blocks support"
         provides=".behaviors.IBlocks"
-      />
+        />
 
   </configure>
 
   <utility
       factory=".setuphandlers.HiddenProfiles"
-      name="plone.restapi"
       provides="Products.CMFPlone.interfaces.INonInstallable"
+      name="plone.restapi"
       />
 
 </configure>

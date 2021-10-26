@@ -12,6 +12,9 @@ Content-Type: application/json
         "breadcrumbs": {
           "@id": "http://localhost:55001/plone/doc1/@breadcrumbs"
         }, 
+        "contextnavigation": {
+          "@id": "http://localhost:55001/plone/doc1/@contextnavigation"
+        }, 
         "navigation": {
           "@id": "http://localhost:55001/plone/doc1/@navigation"
         }, 
@@ -62,7 +65,9 @@ Content-Type: application/json
       "text": null, 
       "title": "Lorem Ipsum", 
       "version": "current", 
-      "versioning_enabled": true
+      "versioning_enabled": true, 
+      "working_copy": null, 
+      "working_copy_of": null
     }
   ], 
   "items_total": 1

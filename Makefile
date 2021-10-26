@@ -27,7 +27,7 @@ update: ## Update Make and Buildout
 	wget -O plone-4.3.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/plone-4.3.x.cfg
 	wget -O plone-5.1.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/plone-5.1.x.cfg
 	wget -O plone-5.2.x.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/plone-5.2.x.cfg
-	wget -O travis.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/travis.cfg
+	wget -O ci.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/ci.cfg
 	wget -O versions.cfg https://raw.githubusercontent.com/kitconcept/buildout/master/versions.cfg
 
 .installed.cfg: bin/buildout *.cfg
@@ -40,10 +40,10 @@ bin/buildout: bin/pip
 	@touch -c $@
 
 bin/python bin/pip:
-	python$(version) -m venv . || virtualenv --clear --python=python$(version) .
+	python$(version) -m venv . || virtualenv --python=python$(version) .
 
 py2:
-	virtualenv --clear --python=python2 .
+	virtualenv --python=python2 .
 	bin/pip install --upgrade pip
 	bin/pip install -r requirements.txt
 
@@ -65,6 +65,12 @@ build-plone-5.1: py2  ## Build Plone 5.1
 	bin/pip install -r requirements.txt
 	bin/buildout -c plone-5.1.x.cfg
 
+.PHONY: Build Plone 5.2 with Python 2
+build-plone-5.2-py: py2  ## Build Plone 5.2 with Python 2
+	bin/pip install --upgrade pip
+	bin/pip install -r requirements.txt
+	bin/buildout -c plone-5.2.x.cfg
+
 .PHONY: Build Plone 5.2
 build-plone-5.2: .installed.cfg  ## Build Plone 5.2
 	bin/pip install --upgrade pip
@@ -85,9 +91,6 @@ test:  ## Test
 test-performance:
 	jmeter -n -t performance.jmx -l jmeter.jtl
 
-start-locust:
-	bin/locust -f performance/images.py --no-web -c 1000 -r 100 --run-time 1m --host http://localhost:12345/Plone
-
 .PHONY: Code Analysis
 code-analysis:  ## Code Analysis
 	bin/code-analysis
@@ -97,6 +100,10 @@ code-analysis:  ## Code Analysis
 black:  ## Black
 	bin/code-analysis
 	if [ -f "bin/black" ]; then bin/black src/ ; fi
+
+.PHONY: zpretty
+zpretty:	##
+	if [ -f "bin/zpretty" ]; then zpretty -i ./**/*.zcml; fi
 
 .PHONY: Build Docs
 docs:  ## Build Docs

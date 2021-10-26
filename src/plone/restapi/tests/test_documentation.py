@@ -24,6 +24,7 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PAM_INSTALLED  # noqa
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.statictime import StaticTime
@@ -32,8 +33,8 @@ from plone.testing.z2 import Browser
 from six.moves import range
 from zope.component import createObject
 from zope.component import getUtility
-from zope.interface import alsoProvides
 from zope.component.hooks import getSite
+from zope.interface import alsoProvides
 
 import collections
 import json
@@ -1185,6 +1186,35 @@ class TestDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("navigation_tree", response)
 
+    def test_documentation_contextnavigation(self):
+        folder = createContentInContainer(
+            self.portal, u"Folder", id=u"folder", title=u"Some Folder"
+        )
+        createContentInContainer(
+            self.portal, u"Folder", id=u"folder2", title=u"Some Folder 2"
+        )
+        subfolder1 = createContentInContainer(
+            folder, u"Folder", id=u"subfolder1", title=u"SubFolder 1"
+        )
+        createContentInContainer(
+            folder, u"Folder", id=u"subfolder2", title=u"SubFolder 2"
+        )
+        thirdlevelfolder = createContentInContainer(
+            subfolder1, u"Folder", id=u"thirdlevelfolder", title=u"Third Level Folder"
+        )
+        createContentInContainer(
+            thirdlevelfolder,
+            u"Folder",
+            id=u"fourthlevelfolder",
+            title=u"Fourth Level Folder",
+        )
+        createContentInContainer(folder, u"Document", id=u"doc1", title=u"A document")
+        transaction.commit()
+        response = self.api_session.get(
+            "{}/folder/@contextnavigation".format(self.portal.absolute_url())
+        )
+        save_request_and_response_for_docs("contextnavigation", response)
+
     def test_documentation_principals(self):
         gtool = api.portal.get_tool("portal_groups")
         properties = {
@@ -1960,3 +1990,75 @@ class TestPAMDocumentation(TestDocumentationBase):
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
         )
         save_request_and_response_for_docs("translation_locator", response)
+
+
+class TestIterateDocumentation(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super(TestIterateDocumentation, self).setUp()
+
+        self.doc = self.portal.invokeFactory(
+            "Document", id="document", title="Test document"
+        )
+        transaction.commit()
+
+    def tearDown(self):
+        super(TestIterateDocumentation, self).tearDown()
+
+    def test_documentation_workingcopy_post(self):
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+
+        save_request_and_response_for_docs("workingcopy_post", response)
+
+    def test_documentation_workingcopy_get(self):
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+
+        response = self.api_session.get(
+            "/document/@workingcopy",
+        )
+
+        save_request_and_response_for_docs("workingcopy_get", response)
+
+        response = self.api_session.get(
+            "/document",
+        )
+
+        save_request_and_response_for_docs("workingcopy_baseline_get", response)
+
+        response = self.api_session.get(
+            "/copy_of_document",
+        )
+
+        save_request_and_response_for_docs("workingcopy_wc_get", response)
+
+    def test_documentation_workingcopy_patch(self):
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+
+        response = self.api_session.patch(
+            "/copy_of_document", json={"title": "I just changed the title"}
+        )
+
+        response = self.api_session.patch(
+            "/copy_of_document/@workingcopy",
+        )
+
+        save_request_and_response_for_docs("workingcopy_patch", response)
+
+    def test_documentation_workingcopy_delete(self):
+        response = self.api_session.post(
+            "/document/@workingcopy",
+        )
+
+        response = self.api_session.delete(
+            "/copy_of_document/@workingcopy",
+        )
+
+        save_request_and_response_for_docs("workingcopy_delete", response)

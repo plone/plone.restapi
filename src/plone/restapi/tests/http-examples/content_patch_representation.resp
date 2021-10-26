@@ -9,6 +9,9 @@ Content-Type: application/json
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/folder/my-document/@breadcrumbs"
     }, 
+    "contextnavigation": {
+      "@id": "http://localhost:55001/plone/folder/my-document/@contextnavigation"
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/folder/my-document/@navigation"
     }, 
@@ -60,5 +63,7 @@ Content-Type: application/json
   "text": null, 
   "title": "My New Document Title", 
   "version": "current", 
-  "versioning_enabled": true
+  "versioning_enabled": true, 
+  "working_copy": null, 
+  "working_copy_of": null
 }

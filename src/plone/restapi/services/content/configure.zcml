@@ -1,136 +1,137 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:plone="http://namespaces.plone.org/plone"
-    xmlns:zcml="http://namespaces.zope.org/zcml">
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
 
   <plone:service
-    method="GET"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".get.ContentGet"
-    permission="zope2.View"
-    />
+      method="GET"
+      factory=".get.ContentGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      />
 
   <plone:service
-    method="GET"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".get.ContentGet"
-    permission="zope2.View"
-    />
+      method="GET"
+      factory=".get.ContentGet"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      />
 
   <plone:service
-    method="PATCH"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".update.ContentPatch"
-    permission="cmf.ModifyPortalContent"
-    />
+      method="PATCH"
+      factory=".update.ContentPatch"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ModifyPortalContent"
+      />
 
   <plone:service
-    method="PATCH"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".update.ContentPatch"
-    permission="cmf.ModifyPortalContent"
-    />
+      method="PATCH"
+      factory=".update.ContentPatch"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="cmf.ModifyPortalContent"
+      />
 
   <plone:service
-    method="POST"
-    for="Products.CMFCore.interfaces.IFolderish"
-    factory=".add.FolderPost"
-    permission="cmf.AddPortalContent"
-    />
+      method="POST"
+      factory=".add.FolderPost"
+      for="Products.CMFCore.interfaces.IFolderish"
+      permission="cmf.AddPortalContent"
+      />
 
   <plone:service
-    method="DELETE"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".delete.ContentDelete"
-    permission="zope2.DeleteObjects"
-    />
+      method="DELETE"
+      factory=".delete.ContentDelete"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.DeleteObjects"
+      />
 
   <plone:service
-    method="GET"
-    name="@sharing"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".sharing.SharingGet"
-    permission="zope2.View"
-    />
+      method="GET"
+      factory=".sharing.SharingGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@sharing"
+      />
 
   <plone:service
-    method="GET"
-    name="@sharing"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".sharing.SharingGet"
-    permission="zope2.View"
-    />
+      method="GET"
+      factory=".sharing.SharingGet"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@sharing"
+      />
 
   <plone:service
-    method="POST"
-    name="@sharing"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".sharing.SharingPost"
-    permission="zope2.View"
-    />
+      method="POST"
+      factory=".sharing.SharingPost"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@sharing"
+      />
 
   <plone:service
-    method="POST"
-    name="@sharing"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".sharing.SharingPost"
-    permission="zope2.View"
-    />
+      method="POST"
+      factory=".sharing.SharingPost"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@sharing"
+      />
 
   <plone:service
-    method="OPTIONS"
-    name="@tus-upload"
-    for="Products.CMFCore.interfaces.IFolderish"
-    factory=".tus.UploadOptions"
-    permission="cmf.AddPortalContent"
-    />
+      method="OPTIONS"
+      factory=".tus.UploadOptions"
+      for="Products.CMFCore.interfaces.IFolderish"
+      permission="cmf.AddPortalContent"
+      name="@tus-upload"
+      />
 
   <plone:service
-    method="POST"
-    name="@tus-upload"
-    for="Products.CMFCore.interfaces.IFolderish"
-    factory=".tus.UploadPost"
-    permission="cmf.AddPortalContent"
-    />
+      method="POST"
+      factory=".tus.UploadPost"
+      for="Products.CMFCore.interfaces.IFolderish"
+      permission="cmf.AddPortalContent"
+      name="@tus-upload"
+      />
 
   <plone:service
-    method="POST"
-    name="@tus-replace"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".tus.UploadPost"
-    permission="cmf.ModifyPortalContent"
-    />
+      method="POST"
+      factory=".tus.UploadPost"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="cmf.ModifyPortalContent"
+      name="@tus-replace"
+      />
 
   <plone:service
-    method="HEAD"
-    name="@tus-upload"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".tus.UploadHead"
-    permission="zope2.View"
-    />
+      method="HEAD"
+      factory=".tus.UploadHead"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@tus-upload"
+      />
 
   <plone:service
-    method="HEAD"
-    name="@tus-upload"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".tus.UploadHead"
-    permission="cmf.AddPortalContent"
-    />
+      method="HEAD"
+      factory=".tus.UploadHead"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.AddPortalContent"
+      name="@tus-upload"
+      />
 
   <plone:service
-    method="PATCH"
-    name="@tus-upload"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".tus.UploadPatch"
-    permission="zope2.View"
-    />
+      method="PATCH"
+      factory=".tus.UploadPatch"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@tus-upload"
+      />
 
   <plone:service
-    method="PATCH"
-    name="@tus-upload"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".tus.UploadPatch"
-    permission="cmf.AddPortalContent"
-    />
+      method="PATCH"
+      factory=".tus.UploadPatch"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.AddPortalContent"
+      name="@tus-upload"
+      />
 
 </configure>

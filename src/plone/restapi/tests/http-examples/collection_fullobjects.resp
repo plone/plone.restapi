@@ -9,6 +9,9 @@ Content-Type: application/json
     "breadcrumbs": {
       "@id": "http://localhost:55001/plone/collection/@breadcrumbs"
     }, 
+    "contextnavigation": {
+      "@id": "http://localhost:55001/plone/collection/@contextnavigation"
+    }, 
     "navigation": {
       "@id": "http://localhost:55001/plone/collection/@navigation"
     }, 
@@ -61,6 +64,9 @@ Content-Type: application/json
         }, 
         "breadcrumbs": {
           "@id": "http://localhost:55001/plone/front-page/@breadcrumbs"
+        }, 
+        "contextnavigation": {
+          "@id": "http://localhost:55001/plone/front-page/@contextnavigation"
         }, 
         "navigation": {
           "@id": "http://localhost:55001/plone/front-page/@navigation"
@@ -116,7 +122,9 @@ Content-Type: application/json
       }, 
       "title": "Welcome to Plone", 
       "version": "current", 
-      "versioning_enabled": true
+      "versioning_enabled": true, 
+      "working_copy": null, 
+      "working_copy_of": null
     }, 
     {
       "@components": {
@@ -125,6 +133,9 @@ Content-Type: application/json
         }, 
         "breadcrumbs": {
           "@id": "http://localhost:55001/plone/doc1/@breadcrumbs"
+        }, 
+        "contextnavigation": {
+          "@id": "http://localhost:55001/plone/doc1/@contextnavigation"
         }, 
         "navigation": {
           "@id": "http://localhost:55001/plone/doc1/@navigation"
@@ -181,7 +192,9 @@ Content-Type: application/json
       "text": null, 
       "title": "Document 1", 
       "version": "current", 
-      "versioning_enabled": true
+      "versioning_enabled": true, 
+      "working_copy": null, 
+      "working_copy_of": null
     }, 
     {
       "@components": {
@@ -190,6 +203,9 @@ Content-Type: application/json
         }, 
         "breadcrumbs": {
           "@id": "http://localhost:55001/plone/doc2/@breadcrumbs"
+        }, 
+        "contextnavigation": {
+          "@id": "http://localhost:55001/plone/doc2/@contextnavigation"
         }, 
         "navigation": {
           "@id": "http://localhost:55001/plone/doc2/@navigation"
@@ -241,7 +257,9 @@ Content-Type: application/json
       "text": null, 
       "title": "Document 2", 
       "version": "current", 
-      "versioning_enabled": true
+      "versioning_enabled": true, 
+      "working_copy": null, 
+      "working_copy_of": null
     }
   ], 
   "items_total": 3, 
@@ -282,5 +300,7 @@ Content-Type: application/json
   "subjects": [], 
   "text": null, 
   "title": "My Collection", 
-  "version": "current"
+  "version": "current", 
+  "working_copy": null, 
+  "working_copy_of": null
 }

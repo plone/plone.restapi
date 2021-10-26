@@ -13,7 +13,7 @@ function red {
     echo "$RED $1 $RESET"
 }
 
-if [ "$PLONE_VERSION" == "5.2.x" ] && [ $TRAVIS_PYTHON_VERSION == '3.7' ]; then
+if [ "$PLONE_VERSION" == "5.2" ] && [ "$PYTHON_VERSION" == '3.7' ]; then
     echo "Running check for undocumented changes for Plone 5.2.x on Python 3.7"
 else
     # request/response dumps have known differences for Plone 5
@@ -36,4 +36,6 @@ if [ $? -ne 0 ]; then
 
     git diff --exit-code $DUMPS_DIR
     exit 1
+else
+    echo "PASSED: No uncommitted changed detected."
 fi

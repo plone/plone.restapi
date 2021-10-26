@@ -3,12 +3,8 @@ from DateTime import DateTime
 from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
-from plone.app.testing import setRoles
-from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
-from plone.restapi import HAS_AT
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.testing import PLONE_RESTAPI_AT_INTEGRATION_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from Products.CMFCore.utils import getToolByName
@@ -142,7 +138,7 @@ class TestSummarySerializers(unittest.TestCase):
             summary["mime_type"] = u"text/plain"
 
         self.maxDiff = None
-        self.assertDictEqual(
+        self.assertLessEqual(
             {
                 "@id": u"http://nohost/plone/doc1",
                 "@type": u"DXTestDocument",
@@ -178,7 +174,6 @@ class TestSummarySerializers(unittest.TestCase):
                 "last_comment_date": None,
                 "listCreators": [u"test_user_1_"],
                 "location": None,
-                "meta_type": u"Dexterity Item",
                 "mime_type": u"text/plain",
                 "modified": u"2017-01-21T01:14:48+00:00",
                 "portal_type": u"DXTestDocument",
@@ -187,8 +182,8 @@ class TestSummarySerializers(unittest.TestCase):
                 "sync_uid": None,
                 "title": u"Lorem Ipsum",
                 "total_comments": 0,
-            },
-            summary,
+            }.items(),
+            summary.items(),
         )
 
     def test_dx_type_summary(self):
@@ -198,41 +193,6 @@ class TestSummarySerializers(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
-                "title": "Lorem Ipsum",
-                "description": "Description",
-                "review_state": "private",
-            },
-            summary,
-        )
-
-
-class TestSummarySerializersATTypes(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_AT_INTEGRATION_TESTING
-
-    def setUp(self):
-        if not HAS_AT:
-            raise unittest.SkipTest("Skip tests if Archetypes is not present")
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
-        setRoles(self.portal, TEST_USER_ID, ["Contributor"])
-
-        self.doc1 = self.portal[
-            self.portal.invokeFactory(
-                "ATTestDocument",
-                id="doc1",
-                title="Lorem Ipsum",
-                description="Description",
-            )
-        ]
-
-    def test_at_type_summary(self):
-        summary = getMultiAdapter((self.doc1, self.request), ISerializeToJsonSummary)()
-
-        self.assertDictEqual(
-            {
-                "@id": "http://nohost/plone/doc1",
-                "@type": "ATTestDocument",
                 "title": "Lorem Ipsum",
                 "description": "Description",
                 "review_state": "private",

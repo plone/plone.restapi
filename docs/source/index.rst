@@ -30,6 +30,7 @@ plone.restapi: A RESTful hypermedia API for Plone.
    expansion
    actions
    workflow
+   workingcopy
    locking
    sharing
    registry
@@ -43,6 +44,7 @@ plone.restapi: A RESTful hypermedia API for Plone.
    breadcrumbs
    navigation
    portlets
+   contextnavigation
    serialization
    searching
    tusupload
