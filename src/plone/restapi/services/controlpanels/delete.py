@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.controlpanels import IControlpanel
 from plone.restapi.services import Service
 from zExceptions import BadRequest
@@ -10,7 +9,7 @@ from zope.publisher.interfaces import IPublishTraverse
 @implementer(IPublishTraverse)
 class ControlpanelsDelete(Service):
     def __init__(self, context, request):
-        super(ControlpanelsDelete, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):

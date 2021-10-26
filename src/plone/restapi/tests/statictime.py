@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from DateTime import DateTime
 from datetime import datetime
 from plone.app.discussion.comment import Comment
@@ -18,7 +17,7 @@ _originals = {
 }
 
 
-class StaticTime(object):
+class StaticTime:
     """ContextManager to patch accessor methods that return dynamic timestamps,
     like creation and modification dates, with ones that return static
     timestamps.

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
@@ -39,7 +38,7 @@ INDEXES = (
 
 
 @implementer(ISource)
-class MyNonIterableSource(object):
+class MyNonIterableSource:
     divisor = 2
 
     def __contains__(self, value):
@@ -47,7 +46,7 @@ class MyNonIterableSource(object):
 
 
 @implementer(IIterableSource)
-class MyIterableSource(object):
+class MyIterableSource:
     values = [1, 2, 3]
 
     def __contains__(self, value):
@@ -62,7 +61,7 @@ class MyIterableSource(object):
 
 
 @implementer(IQuerySource)
-class MyIterableQuerySource(object):
+class MyIterableQuerySource:
     values = [1, 2, 3]
 
     def __contains__(self, value):
@@ -81,7 +80,7 @@ class MyIterableQuerySource(object):
 
 
 @implementer(IIterableSource)
-class MyIterableContextSource(object):
+class MyIterableContextSource:
     def __init__(self, context):
         self.context = context
 
@@ -99,7 +98,7 @@ class MyIterableContextSource(object):
 
 
 @implementer(IQuerySource)
-class MyContextQuerySource(object):
+class MyContextQuerySource:
     def __init__(self, context):
         self.context = context
 
@@ -152,12 +151,12 @@ class IDXTestDocumentSchema(model.Schema):
     test_bool_field = schema.Bool(required=False)
     test_bytes_field = schema.Bytes(required=False)
     test_bytesline_field = schema.BytesLine(required=False)
-    test_choice_field = schema.Choice(values=[u"foo", u"bar"], required=False)
+    test_choice_field = schema.Choice(values=["foo", "bar"], required=False)
     test_choice_field_with_vocabulary = schema.Choice(
         vocabulary=SimpleVocabulary(
             [
-                SimpleTerm(u"value1", "token1", u"title1"),
-                SimpleTerm(u"value2", "token2", u"title2"),
+                SimpleTerm("value1", "token1", "title1"),
+                SimpleTerm("value2", "token2", "title2"),
             ]
         ),
         required=False,
@@ -193,9 +192,9 @@ class IDXTestDocumentSchema(model.Schema):
         value_type=schema.Choice(
             vocabulary=SimpleVocabulary(
                 [
-                    SimpleTerm(u"value1", "token1", u"title1"),
-                    SimpleTerm(u"value2", "token2", u"title2"),
-                    SimpleTerm(u"value3", "token3", u"title3"),
+                    SimpleTerm("value1", "token1", "title1"),
+                    SimpleTerm("value2", "token2", "title2"),
+                    SimpleTerm("value3", "token3", "title3"),
                 ]
             )
         ),
@@ -206,9 +205,9 @@ class IDXTestDocumentSchema(model.Schema):
         value_type=schema.Choice(
             vocabulary=SimpleVocabulary(
                 [
-                    SimpleTerm(u"value1", "token1", u"title1"),
-                    SimpleTerm(u"value2", "token2", u"title2"),
-                    SimpleTerm(u"value3", "token3", u"title3"),
+                    SimpleTerm("value1", "token1", "title1"),
+                    SimpleTerm("value2", "token2", "title2"),
+                    SimpleTerm("value3", "token3", "title3"),
                 ]
             )
         ),
@@ -224,7 +223,7 @@ class IDXTestDocumentSchema(model.Schema):
         required=False, key_type=schema.ASCIILine(), value_type=schema.Tuple()
     )
     test_list_choice_with_context_vocabulary_field = schema.List(
-        title=u"Field",
+        title="Field",
         value_type=schema.Choice(vocabulary="plone.restapi.testing.context_vocabulary"),
         required=False,
     )
@@ -257,7 +256,7 @@ class IDXTestDocumentSchema(model.Schema):
     test_readonly_field = schema.TextLine(required=False, readonly=True)
     test_maxlength_field = schema.TextLine(required=False, max_length=10)
     test_constraint_field = schema.TextLine(
-        required=False, constraint=lambda x: u"00" in x
+        required=False, constraint=lambda x: "00" in x
     )
     test_datetime_min_field = schema.Datetime(required=False, min=datetime(2000, 1, 1))
     test_time_min_field = schema.Time(required=False, min=time(1))
@@ -277,24 +276,24 @@ class IDXTestDocumentSchema(model.Schema):
     test_invariant_field2 = schema.TextLine(required=False)
 
     test_missing_value_field = schema.TextLine(
-        required=False, missing_value=u"missing", default=u"default"
+        required=False, missing_value="missing", default="default"
     )
 
     test_missing_value_required_field = schema.TextLine(
-        required=True, missing_value=u"missing", default=u"some value"
+        required=True, missing_value="missing", default="some value"
     )
 
     @invariant
     def validate_same_value(data):
         if data.test_invariant_field1 != data.test_invariant_field2:
-            raise Invalid(u"Must have same values")
+            raise Invalid("Must have same values")
 
     # Test fields with default values
-    test_default_value_field = schema.TextLine(required=True, default=u"Default")
+    test_default_value_field = schema.TextLine(required=True, default="Default")
 
     @provider(IContextAwareDefaultFactory)
     def default_factory(context):
-        return u"DefaultFactory"
+        return "DefaultFactory"
 
     test_default_factory_field = schema.TextLine(
         required=True, defaultFactory=default_factory
@@ -313,6 +312,8 @@ class DXTestDocument(Item):
 class ITestBehavior(model.Schema):
 
     test_behavior_field = schema.TextLine(required=False)
+    # Add nav_title to test if it gets substituted in Navigation service
+    nav_title = schema.TextLine(required=False)
 
 
 @provider(IFormFieldProvider)

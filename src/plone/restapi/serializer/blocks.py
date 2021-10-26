@@ -1,20 +1,15 @@
-# -*- coding: utf-8 -*-
 from copy import deepcopy
-from plone.outputfilters.browser.resolveuid import uuidToObject
-from plone.outputfilters.browser.resolveuid import uuidToURL
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.deserializer.blocks import SlateBlockTransformer
 from plone.restapi.deserializer.blocks import transform_links
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
-from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
+from plone.restapi.serializer.utils import uid_to_url
 from plone.schema import IJSONField
 from Products.CMFPlone.interfaces import IPloneSiteRoot
-from six import string_types
 from zope.component import adapter
-from zope.component import queryMultiAdapter
 from zope.component import subscribers
 from zope.interface import implementer
 from zope.interface import Interface
@@ -22,34 +17,6 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 
 import copy
 import os
-import re
-
-
-RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
-
-
-def uid_to_url(path):
-    if not path:
-        return ""
-    match = RESOLVEUID_RE.match(path)
-    if match is None:
-        return path
-
-    uid, suffix = match.groups()
-    href = uuidToURL(uid)
-    if href is None:
-        return path
-    if suffix:
-        href += "/" + suffix
-    else:
-        target_object = uuidToObject(uid)
-        if target_object:
-            adapter = queryMultiAdapter(
-                (target_object, target_object.REQUEST), IObjectPrimaryFieldTarget
-            )
-            if adapter and adapter():
-                href = adapter()
-    return href
 
 
 @adapter(IJSONField, IBlocks, Interface)
@@ -109,9 +76,10 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
         return json_compatible(value)
 
 
-class ResolveUIDSerializerBase(object):
+class ResolveUIDSerializerBase:
     order = 1
     block_type = None
+    fields = ["url", "href"]
     disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
@@ -119,10 +87,10 @@ class ResolveUIDSerializerBase(object):
         self.request = request
 
     def __call__(self, value):
-        for field in ["url", "href"]:
+        for field in self.fields:
             if field in value.keys():
                 link = value.get(field, "")
-                if isinstance(link, string_types):
+                if isinstance(link, str):
                     value[field] = uid_to_url(link)
                 elif isinstance(link, list):
                     if len(link) > 0 and isinstance(link[0], dict) and "@id" in link[0]:
@@ -133,12 +101,12 @@ class ResolveUIDSerializerBase(object):
                             result.append(item_clone)
 
                         value[field] = result
-                    elif len(link) > 0 and isinstance(link[0], string_types):
+                    elif len(link) > 0 and isinstance(link[0], str):
                         value[field] = [uid_to_url(item) for item in link]
         return value
 
 
-class TextBlockSerializerBase(object):
+class TextBlockSerializerBase:
     order = 100
     block_type = "text"
     disabled = os.environ.get("disable_transform_resolveuid", False)

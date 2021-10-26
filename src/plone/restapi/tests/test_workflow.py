@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from base64 import b64encode
 from DateTime import DateTime
 from plone.app.testing import login
@@ -36,25 +35,25 @@ class TestWorkflowInfo(TestCase):
 
     def test_workflow_info_includes_history(self):
         wfinfo = getMultiAdapter(
-            (self.doc1, self.request), name=u"GET_application_json_@workflow"
+            (self.doc1, self.request), name="GET_application_json_@workflow"
         )
         info = wfinfo.reply()
         self.assertIn("history", info)
         history = info["history"]
         self.assertEqual(3, len(history))
-        self.assertEqual("published", history[-1][u"review_state"])
-        self.assertEqual(u"Published with accent é", history[-1][u"title"])
+        self.assertEqual("published", history[-1]["review_state"])
+        self.assertEqual("Published with accent é", history[-1]["title"])
 
     def test_workflow_info_includes_current_state(self):
         wfinfo = getMultiAdapter(
-            (self.doc1, self.request), name=u"GET_application_json_@workflow"
+            (self.doc1, self.request), name="GET_application_json_@workflow"
         )
         info = wfinfo.reply()
         self.assertIn("state", info)
         state = info["state"]
         self.assertEqual(2, len(state))
         self.assertEqual("published", state["id"])
-        self.assertEqual(u"Published with accent é", state["title"])
+        self.assertEqual("Published with accent é", state["title"])
 
     def test_workflow_info_unauthorized_history(self):
         login(self.portal, SITE_OWNER_NAME)
@@ -69,7 +68,7 @@ class TestWorkflowInfo(TestCase):
         setRoles(self.portal, TEST_USER_ID, ["Member"])
         login(self.portal, TEST_USER_NAME)
         wfinfo = getMultiAdapter(
-            (doc2, self.request), name=u"GET_application_json_@workflow"
+            (doc2, self.request), name="GET_application_json_@workflow"
         )
         info = wfinfo.reply()
         self.assertIn("history", info)
@@ -78,7 +77,7 @@ class TestWorkflowInfo(TestCase):
 
     def test_workflow_info_includes_transitions(self):
         wfinfo = getMultiAdapter(
-            (self.doc1, self.request), name=u"GET_application_json_@workflow"
+            (self.doc1, self.request), name="GET_application_json_@workflow"
         )
         info = wfinfo.reply()
         self.assertIn("transitions", info)
@@ -101,12 +100,26 @@ class TestWorkflowInfo(TestCase):
 
     def test_workflow_info_empty_on_siteroot(self):
         wfinfo = getMultiAdapter(
-            (self.portal, self.request), name=u"GET_application_json_@workflow"
+            (self.portal, self.request), name="GET_application_json_@workflow"
         )
         obj = wfinfo.reply()
 
         self.assertEqual(obj["transitions"], [])
         self.assertEqual(obj["history"], [])
+
+    def test_workflow_info_empty_on_content_without_workflow(self):
+        file_content = self.portal[
+            self.portal.invokeFactory("File", id="file", title="File")
+        ]
+
+        wfinfo = getMultiAdapter(
+            (file_content, self.request), name="GET_application_json_@workflow"
+        )
+        obj = wfinfo.reply()
+
+        self.assertEqual(obj["transitions"], [])
+        self.assertEqual(obj["history"], [])
+        self.assertEqual(obj["state"], {"id": "", "title": ""})
 
 
 class TestWorkflowTransition(TestCase):
@@ -129,7 +142,7 @@ class TestWorkflowTransition(TestCase):
         request.environ["HTTP_ACCEPT"] = accept
         request.environ["REQUEST_METHOD"] = method
         if auth is None:
-            auth = "%s:%s" % (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+            auth = f"{SITE_OWNER_NAME}:{SITE_OWNER_PASSWORD}"
         request._auth = "Basic %s" % b64encode(auth.encode("utf8")).decode("utf8")
         notify(PubStart(request))
         return request.traverse(path)
@@ -137,9 +150,9 @@ class TestWorkflowTransition(TestCase):
     def test_transition_action_succeeds(self):
         service = self.traverse("/plone/doc1/@workflow/publish")
         res = service.reply()
-        self.assertEqual(u"published", res[u"review_state"])
+        self.assertEqual("published", res["review_state"])
         self.assertEqual(
-            u"published", self.wftool.getInfoFor(self.portal.doc1, u"review_state")
+            "published", self.wftool.getInfoFor(self.portal.doc1, "review_state")
         )
 
     def test_transition_action_succeeds_changes_effective(self):
@@ -165,7 +178,7 @@ class TestWorkflowTransition(TestCase):
         self.request["BODY"] = '{"comment": "A comment"}'
         service = self.traverse("/plone/doc1/@workflow/publish")
         res = service.reply()
-        self.assertEqual(u"A comment", res[u"comments"])
+        self.assertEqual("A comment", res["comments"])
 
     def test_transition_including_children(self):
         folder = self.portal[self.portal.invokeFactory("Folder", id="folder")]
@@ -174,10 +187,8 @@ class TestWorkflowTransition(TestCase):
         service = self.traverse("/plone/folder/@workflow/publish")
         service.reply()
         self.assertEqual(200, self.request.response.getStatus())
-        self.assertEqual(u"published", self.wftool.getInfoFor(folder, u"review_state"))
-        self.assertEqual(
-            u"published", self.wftool.getInfoFor(subfolder, u"review_state")
-        )
+        self.assertEqual("published", self.wftool.getInfoFor(folder, "review_state"))
+        self.assertEqual("published", self.wftool.getInfoFor(subfolder, "review_state"))
 
     def test_transition_with_effective_date(self):
         self.request["BODY"] = '{"effective": "2018-06-24T09:17:02"}'
@@ -216,9 +227,23 @@ class TestWorkflowTransition(TestCase):
         )
         login(self.portal, TEST_USER_NAME)
 
-        auth = "%s:%s" % (TEST_USER_NAME, TEST_USER_PASSWORD)
+        auth = f"{TEST_USER_NAME}:{TEST_USER_PASSWORD}"
         service = self.traverse("/plone/folder/@workflow/restrict", auth=auth)
         res = service.reply()
 
         self.assertEqual(200, self.request.response.getStatus(), res)
-        self.assertEqual(u"restricted", res[u"review_state"], res)
+        self.assertEqual("restricted", res["review_state"], res)
+
+    def test_transition_including_children_without_wf(self):
+        folder = self.portal[self.portal.invokeFactory("Folder", id="folder")]
+        folder.invokeFactory("File", id="file", title="File")
+        document = folder[
+            folder.invokeFactory("Document", id="document", title="Document")
+        ]
+
+        self.request["BODY"] = '{"comment": "A comment", "include_children": true}'
+        service = self.traverse("/plone/folder/@workflow/publish")
+        service.reply()
+        self.assertEqual(200, self.request.response.getStatus())
+        self.assertEqual("published", self.wftool.getInfoFor(folder, "review_state"))
+        self.assertEqual("published", self.wftool.getInfoFor(document, "review_state"))

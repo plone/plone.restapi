@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl import allow_module
 from AccessControl.Permissions import add_user_folders
 from plone.restapi.pas import plugin

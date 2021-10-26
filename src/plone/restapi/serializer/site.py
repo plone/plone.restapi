@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import ISerializeToJson
@@ -17,7 +16,7 @@ import json
 
 @implementer(ISerializeToJson)
 @adapter(IPloneSiteRoot, Interface)
-class SerializeSiteRootToJson(object):
+class SerializeSiteRootToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -44,7 +43,7 @@ class SerializeSiteRootToJson(object):
 
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
-            "@id": batch.canonical_url,
+            "@id": self.context.absolute_url(),
             "id": self.context.id,
             "@type": "Plone Site",
             "title": self.context.Title(),

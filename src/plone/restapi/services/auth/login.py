@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.restapi.deserializer import json_body
@@ -9,7 +8,6 @@ from zope.interface import alsoProvides
 from zope import component
 
 import plone.protect.interfaces
-import six
 
 
 class Login(Service):
@@ -32,9 +30,6 @@ class Login(Service):
 
         userid = data["login"]
         password = data["password"]
-        if six.PY2:
-            userid = userid.encode("utf8")
-            password = password.encode("utf8")
         uf = self._find_userfolder(userid)
 
         if uf is not None:
@@ -101,7 +96,6 @@ class Login(Service):
 
         if info:
             return uf
-        return None
 
     def check_permission(self):
-        return
+        pass

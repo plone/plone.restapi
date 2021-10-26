@@ -1,7 +1,12 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import RelativeSession
 from zope.component import getMultiAdapter
+from plone.app.testing import setRoles
+from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_ID
 
 import json
 import unittest
@@ -17,7 +22,7 @@ class TestSiteSerializer(unittest.TestCase):
 
         self.portal.invokeFactory(
             "Document",
-            id=u"doc1",
+            id="doc1",
         )
 
     def serialize(self):
@@ -30,8 +35,8 @@ class TestSiteSerializer(unittest.TestCase):
 
     def test_serializer_includes_title(self):
         obj = self.serialize()
-        self.assertIn(u"title", obj)
-        self.assertEqual(u"Plone site", obj[u"title"])
+        self.assertIn("title", obj)
+        self.assertEqual("Plone site", obj["title"])
 
     def test_get_is_folderish(self):
         obj = self.serialize()
@@ -42,7 +47,7 @@ class TestSiteSerializer(unittest.TestCase):
         blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {
                 "@type": "foo",
-                "url": "resolveuid/{}".format(self.portal.doc1.UID()),
+                "url": f"resolveuid/{self.portal.doc1.UID()}",
             },
             "07c273fc-8bfc-4e7d-a327-d513e5a945bb": {"@type": "title"},
         }
@@ -52,3 +57,25 @@ class TestSiteSerializer(unittest.TestCase):
             obj["blocks"]["0358abe2-b4f1-463d-a279-a63ea80daf19"]["url"],
             self.portal.doc1.absolute_url(),
         )
+
+
+class TestSiteSerializationFunctional(unittest.TestCase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.app = self.layer["app"]
+        self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+
+        self.api_session = RelativeSession(f"{self.portal_url}/++api++")
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+    def tearDown(self):
+        self.api_session.close()
+
+    def test_site_root_get_request(self):
+        response = self.api_session.get("")
+
+        self.assertEqual(response.json()["@id"], self.portal.absolute_url())

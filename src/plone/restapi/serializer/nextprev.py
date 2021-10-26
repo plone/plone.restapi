@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
@@ -21,7 +20,7 @@ class NextPreviousFixed(NextPreviousBase):
         self.order = self.context.objectIds()
 
 
-class NextPrevious(object):
+class NextPrevious:
     """Facade with more pythonic interface"""
 
     def __init__(self, context):

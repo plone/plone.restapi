@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.interfaces import IRoleManager
 from Acquisition import aq_base
 from operator import itemgetter
@@ -14,7 +13,7 @@ from zope.interface import Interface
 
 @adapter(IRoleManager, Interface)
 @implementer(ISerializeToJson)
-class SerializeLocalRolesToJson(object):
+class SerializeLocalRolesToJson:
     def __init__(self, context, request):
         self.context = context
         self.request = request

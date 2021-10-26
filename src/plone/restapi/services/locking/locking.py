@@ -1,127 +1,68 @@
-# -*- coding: utf-8 -*-
-from plone.locking.interfaces import ILockable
-from plone.locking.interfaces import INonStealableLock
-from plone.locking.interfaces import IRefreshableLockable
-from plone.restapi.deserializer import json_body
-from plone.restapi.services import Service
-from zope.interface import alsoProvides
-from zope.interface import noLongerProvides
+import warnings
+from zope.deprecation import deprecated
+from plone.restapi.services.locking import lock_info
+from plone.restapi.services.locking import webdav_lock
+from plone.restapi.services.locking import is_locked
 
-import plone.protect.interfaces
+from plone.restapi.services.locking.add import Lock as AddLock
+from plone.restapi.services.locking.get import Lock as GetLock
+from plone.restapi.services.locking.delete import Lock as DeleteLock
+from plone.restapi.services.locking.update import Lock as UpdateLock
 
 
-class Lock(Service):
+lock_info = deprecated(
+    lock_info,
+    "``plone.restapi.services.locking.locking.lock_info`` is deprecated and will be removed in plone.restapi 9.0. Use it from ``plone.restapi.services.locking`` instead.",
+)
+webdav_lock = deprecated(
+    webdav_lock,
+    "``plone.restapi.services.locking.locking.webdav_lock`` is deprecated and will be removed in plone.restapi 9.0. Use it from ``plone.restapi.services.locking`` instead.",
+)
+is_locked = deprecated(
+    is_locked,
+    "``plone.restapi.services.locking.locking.is_locked`` is deprecated and will be removed in plone.restapi 9.0. Use it from ``plone.restapi.services.locking`` instead.",
+)
+
+
+class Lock(AddLock):
     """Lock an object"""
 
     def reply(self):
-        data = json_body(self.request)
-
-        lockable = IRefreshableLockable(self.context, None)
-        if lockable is not None:
-            lockable.lock()
-
-            if "stealable" in data and not data["stealable"]:
-                alsoProvides(self.context, INonStealableLock)
-
-            if "timeout" in data:
-                lock_item = webdav_lock(self.context)
-                lock_item.setTimeout("Second-%s" % data["timeout"])
-
-            # Disable CSRF protection
-            if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-                alsoProvides(
-                    self.request, plone.protect.interfaces.IDisableCSRFProtection
-                )
-
-        return lock_info(self.context)
+        warnings.warn(
+            "``plone.restapi.services.locking.Lock`` is deprecated and will be removed in plone.restapi 9.0. Use it from ``plone.restapi.services.locking.update`` instead.",
+            DeprecationWarning,
+        )
+        return super(Lock, self).reply()
 
 
-class Unlock(Service):
+class Unlock(DeleteLock):
     """Unlock an object"""
 
     def reply(self):
-        lockable = ILockable(self.context)
-        if lockable.can_safely_unlock():
-            lockable.unlock()
-
-            if INonStealableLock.providedBy(self.context):
-                noLongerProvides(self.context, INonStealableLock)
-
-            # Disable CSRF protection
-            if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-                alsoProvides(
-                    self.request, plone.protect.interfaces.IDisableCSRFProtection
-                )
-
-        return lock_info(self.context)
+        warnings.warn(
+            "``POST @unlock`` endpoint is deprecated and will be removed in plone.restapi 9.0. Use ``DELETE @lock`` instead.",
+            DeprecationWarning,
+        )
+        return super(Unlock, self).reply()
 
 
-class RefreshLock(Service):
+class RefreshLock(UpdateLock):
     """Refresh the lock of an object"""
 
     def reply(self):
-        lockable = IRefreshableLockable(self.context, None)
-        if lockable is not None:
-            lockable.refresh_lock()
-
-            # Disable CSRF protection
-            if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-                alsoProvides(
-                    self.request, plone.protect.interfaces.IDisableCSRFProtection
-                )
-
-        return lock_info(self.context)
+        warnings.warn(
+            "``POST @refresh-lock`` endpoint is deprecated and will be removed in plone.restapi 9.0. Use ``PATCH @lock`` instead.",
+            DeprecationWarning,
+        )
+        return super(RefreshLock, self).reply()
 
 
-class LockInfo(Service):
+class LockInfo(GetLock):
     """Lock information about the current lock"""
 
     def reply(self):
-        return lock_info(self.context)
-
-
-def lock_info(obj):
-    """Returns lock information about the given object."""
-    lockable = ILockable(obj, None)
-    if lockable is not None:
-        info = {"locked": lockable.locked(), "stealable": lockable.stealable()}
-        lock_info = lockable.lock_info()
-        if len(lock_info) > 0:
-            info["creator"] = lock_info[0]["creator"]
-            info["time"] = lock_info[0]["time"]
-            info["token"] = lock_info[0]["token"]
-            lock_type = lock_info[0]["type"]
-            if lock_type:
-                info["name"] = lock_info[0]["type"].__name__
-            lock_item = webdav_lock(obj)
-            if lock_item:
-                info["timeout"] = lock_item.getTimeout()
-        return info
-
-
-def webdav_lock(obj):
-    """Returns the WebDAV LockItem"""
-    lockable = ILockable(obj, None)
-    if lockable is None:
-        return
-
-    lock_info = lockable.lock_info()
-    if len(lock_info) > 0:
-        token = lock_info[0]["token"]
-        return obj.wl_getLock(token)
-
-
-def is_locked(obj, request):
-    """Returns true if the object is locked and the request doesn't contain
-    the lock token.
-    """
-    lockable = ILockable(obj, None)
-    if lockable is None:
-        return False
-    if lockable.locked():
-        token = request.getHeader("Lock-Token", "")
-        lock_info = lockable.lock_info()
-        if len(lock_info) > 0 and lock_info[0]["token"] == token:
-            return False
-        return True
-    return False
+        warnings.warn(
+            "``plone.restapi.services.locking.LockInfo`` is deprecated and will be removed in plone.restapi 9.0. Use it from ``plone.restapi.services.locking.get`` instead.",
+            DeprecationWarning,
+        )
+        return super(LockInfo, self).reply()

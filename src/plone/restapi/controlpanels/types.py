@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import queryMultiAdapter
@@ -14,9 +13,6 @@ from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
 import plone.protect.interfaces
 from zope.interface import noLongerProvides
 from plone.restapi.interfaces import IPloneRestapiLayer
-from Products.CMFPlone.utils import getFSVersionTuple
-
-PLONE5 = getFSVersionTuple()[0] >= 5
 
 
 @adapter(Interface, IPloneRestapiLayer)
@@ -24,7 +20,7 @@ PLONE5 = getFSVersionTuple()[0] >= 5
 class DexterityTypesControlpanel(RegistryConfigletPanel):
     schema = Interface
     configlet_id = "dexterity-types"
-    configlet_category_id = "plone-content" if PLONE5 else "Plone"
+    configlet_category_id = "plone-content"
 
     def add(self, names):
         data = json_body(self.request)

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.mixin_ordering import OrderingMixin
-from six.moves import range
 from zope.component import getMultiAdapter
 
 import json
@@ -48,7 +46,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
 
         self.portal.invokeFactory(
             "Document",
-            id=u"doc1",
+            id="doc1",
         )
 
     def deserialize(self, body="{}", validate_all=False, context=None):
@@ -102,5 +100,5 @@ class TestSiteRootDeserializer(unittest.TestCase):
         values = json.loads(self.portal.blocks)
         self.assertEqual(
             values["0358abe2-b4f1-463d-a279-a63ea80daf19"]["url"],
-            "resolveuid/{}".format(self.portal.doc1.UID()),
+            f"resolveuid/{self.portal.doc1.UID()}",
         )

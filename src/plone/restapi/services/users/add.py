@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from AccessControl import getSecurityManager
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
@@ -7,8 +5,10 @@ from plone.restapi.services import Service
 from Products.CMFCore.permissions import AddPortalMember
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import ISecuritySchema
+from Products.CMFPlone.PasswordResetTool import ExpiredRequestError
+from Products.CMFPlone.PasswordResetTool import InvalidRequestError
 from Products.CMFPlone.RegistrationTool import get_member_by_login_name
-from Products.CMFPlone.utils import getFSVersionTuple
 from zope.component import getAdapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
@@ -18,24 +18,6 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
 import plone.protect.interfaces
-import six
-
-
-try:  # pragma: no cover
-    from Products.CMFPlone.interfaces import ISecuritySchema
-except ImportError:  # pragma: no cover
-    from plone.app.controlpanel.security import ISecuritySchema
-
-try:  # pragma: no cover
-    # Plone 5.1+
-    from Products.CMFPlone.PasswordResetTool import ExpiredRequestError
-    from Products.CMFPlone.PasswordResetTool import InvalidRequestError
-except ImportError:  # pragma: no cover
-    # Plone 5.0 and earlier
-    from Products.PasswordResetTool.PasswordResetTool import ExpiredRequestError  # noqa
-    from Products.PasswordResetTool.PasswordResetTool import InvalidRequestError  # noqa
-
-PLONE5 = getFSVersionTuple()[0] >= 5
 
 
 @implementer(IPublishTraverse)
@@ -43,7 +25,7 @@ class UsersPost(Service):
     """Creates a new user."""
 
     def __init__(self, context, request):
-        super(UsersPost, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):
@@ -80,13 +62,11 @@ class UsersPost(Service):
         # check input data
         for fieldname in required:
             if not data.get(fieldname, None):
-                self.add_field_error(
-                    fieldname, "Property '{}' is required.".format(fieldname)
-                )
+                self.add_field_error(fieldname, f"Property '{fieldname}' is required.")
         for fieldname in data:
             if fieldname not in allowed:
                 self.add_field_error(
-                    fieldname, "Property '{}' is not allowed.".format(fieldname)
+                    fieldname, f"Property '{fieldname}' is not allowed."
                 )
 
         password = data.get("password")
@@ -144,7 +124,7 @@ class UsersPost(Service):
             return dict(
                 error=dict(
                     type="WrongParameterError",
-                    message="Error in fields. {}".format(self.errors_to_string()),
+                    message=f"Error in fields. {self.errors_to_string()}",
                     errors=self.errors,
                 )
             )
@@ -156,36 +136,22 @@ class UsersPost(Service):
         send_password_reset = data.pop("sendPasswordReset", None)
         properties = data
 
-        if PLONE5:
-            # We are improving the way the userid/login_name is generated using
-            # Plone's plone.app.users utilities directly. Plone 4 lacks of the
-            # login_name one, so we leave it as it is, improving the Plone 5
-            # story
-            user_id_login_name_data = {
-                "username": username,
-                "email": email,
-                "fullname": data.get("fullname", ""),
-            }
+        user_id_login_name_data = {
+            "username": username,
+            "email": email,
+            "fullname": data.get("fullname", ""),
+        }
 
-            register_view = getMultiAdapter(
-                (self.context, self.request), name="register"
-            )
+        register_view = getMultiAdapter((self.context, self.request), name="register")
 
-            register_view.generate_user_id(user_id_login_name_data)
-            register_view.generate_login_name(user_id_login_name_data)
+        register_view.generate_user_id(user_id_login_name_data)
+        register_view.generate_login_name(user_id_login_name_data)
 
-            user_id = user_id_login_name_data.get("user_id", data.get("username"))
-            login_name = user_id_login_name_data.get("login_name", data.get("username"))
+        user_id = user_id_login_name_data.get("user_id", data.get("username"))
+        login_name = user_id_login_name_data.get("login_name", data.get("username"))
 
-            username = user_id
-            properties["username"] = user_id
-        else:
-            # set username based on the login settings (username or email)
-            if security.use_email_as_login:
-                username = email
-                properties["username"] = email
-            else:
-                properties["username"] = username
+        username = user_id
+        properties["username"] = user_id
 
         properties["email"] = email
 
@@ -203,23 +169,15 @@ class UsersPost(Service):
             self.request.response.setStatus(400)
             return dict(error=dict(type="MissingParameterError", message=str(e)))
 
-        if PLONE5:
-            # After user creation, we have to fix the login_name if it differs.
-            # That happens when the email login is enabled and we are using
-            # UUID as user ID security settings.
-            if user_id != login_name:
-                # The user id differs from the login name.  Set the login
-                # name correctly.
-                pas = getToolByName(self.context, "acl_users")
-                pas.updateLoginName(user_id, login_name)
+        if user_id != login_name:
+            # The user id differs from the login name.  Set the login
+            # name correctly.
+            pas = getToolByName(self.context, "acl_users")
+            pas.updateLoginName(user_id, login_name)
 
         if send_password_reset:
             registration.registeredNotify(username)
         self.request.response.setStatus(201)
-        # Note: to please Zope 4.5.2+ we make sure the header is a string,
-        # and not unicode on Python 2.
-        if six.PY2 and not isinstance(username, str):
-            username = username.encode("utf-8")
         self.request.response.setHeader(
             "Location", portal.absolute_url() + "/@users/" + username
         )

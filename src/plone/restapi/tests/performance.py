@@ -1,15 +1,16 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.interfaces import IDexterityContent
 from plone.namedfile.file import NamedBlobImage
 from Products.CMFCore.utils import getToolByName
-from six.moves import range
 from zope.component.hooks import getSite
 
+import logging
 import os
 import pytz
 
+
+logger = logging.getLogger("plone.restapi.performance")
 
 LOREMIPSUM_HTML_10_PARAGRAPHS = """<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p><p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p><p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p><p>Nam liber tempor cum soluta nobis eleifend option congue nihil imperdiet doming id quod mazim placerat facer possim assum. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.</p><p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis.</p><p>At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, At accusam aliquyam diam diam dolore dolores duo eirmod eos erat, et nonumy sed tempor et et invidunt justo labore Stet clita ea et gubergren, kasd magna no rebum. sanctus sea sed takimata ut vero voluptua. est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat.</p><p>Consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus.</p><p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p><p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p><p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi."""  # noqa
 
@@ -36,10 +37,10 @@ def set_image(obj):
     if IDexterityContent.providedBy(obj):
         from plone.namedfile.file import NamedBlobImage
 
-        filename = os.path.join(os.path.dirname(__file__), u"image.png")
+        filename = os.path.join(os.path.dirname(__file__), "image.png")
         obj.image = NamedBlobImage(data=open(filename, "rb").read(), filename=filename)
     else:
-        filename = os.path.join(os.path.dirname(__file__), u"image.png")
+        filename = os.path.join(os.path.dirname(__file__), "image.png")
         obj.setImage(open(filename, "rb").read())
 
 
@@ -47,14 +48,14 @@ def set_file(obj):
     if IDexterityContent.providedBy(obj):
         from plone.namedfile.file import NamedBlobFile
 
-        filename = os.path.join(os.path.dirname(__file__), u"file.pdf")
+        filename = os.path.join(os.path.dirname(__file__), "file.pdf")
         obj.file = NamedBlobFile(
             data=open(filename, "rb").read(),
             filename=filename,
             contentType="application/pdf",
         )
     else:
-        filename = os.path.join(os.path.dirname(__file__), u"file.pdf")
+        filename = os.path.join(os.path.dirname(__file__), "file.pdf")
         obj.setFile(open(filename, "rb").read())
 
 
@@ -104,37 +105,54 @@ def step_setup_content(context):
     publish(portal.folder)
 
     # Folder with 10 Items
+    logger.info("Creating 10 items in folder")
     portal.invokeFactory("Folder", id="folder-with-10-items", title="Folder 10")
     folder10 = portal["folder-with-10-items"]
     set_description(folder10)
     publish(folder10)
     for i in range(1, 11):
-        folder10.invokeFactory(
-            "Document", id="doc{}".format(i), title="Doc {}".format(i)
-        )
-        publish(folder10["doc{}".format(i)])
+        folder10.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
+        publish(folder10[f"doc{i}"])
 
     # Folder with 100 Items
+    logger.info("Creating folder with 100 items")
     portal.invokeFactory("Folder", id="folder-with-100-items", title="Folder 100")
     folder100 = portal["folder-with-100-items"]
     set_description(folder100)
     publish(folder100)
     for i in range(1, 101):
-        folder100.invokeFactory(
-            "Document", id="doc{}".format(i), title="Doc {}".format(i)
-        )
-        publish(folder100["doc{}".format(i)])
+        folder100.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
+        publish(folder100[f"doc{i}"])
 
     # Folder with 1000 Items
+    logger.info("Creating folder with 1000 items")
     portal.invokeFactory("Folder", id="folder-with-1000-items", title="Folder 1000")
     folder1000 = portal["folder-with-1000-items"]
     set_description(folder1000)
     publish(folder1000)
     for i in range(1, 1001):
-        folder1000.invokeFactory(
-            "Document", id="doc{}".format(i), title="Doc {}".format(i)
-        )
-        publish(folder1000["doc{}".format(i)])
+        folder1000.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
+        publish(folder1000[f"doc{i}"])
+
+    # Folder with 10k Items
+    logger.info("Creating folder with 10k items")
+    portal.invokeFactory("Folder", id="folder-with-10k-items", title="Folder 10k")
+    folder10k = portal["folder-with-10k-items"]
+    set_description(folder10k)
+    publish(folder10k)
+    for i in range(1, 10001):
+        folder10k.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
+        publish(folder10k[f"doc{i}"])
+
+    # # Folder with 100k Items
+    # logger.info("Creating folder with 100k items")
+    # portal.invokeFactory("Folder", id="folder-with-100k-items", title="Folder 100k")
+    # folder100k = portal["folder-with-100k-items"]
+    # set_description(folder100k)
+    # publish(folder100k)
+    # for i in range(1, 100001):
+    #     folder100k.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
+    #     publish(folder100k[f"doc{i}"])
 
     # Folder with 10 Items and next/previous enabled
     portal.invokeFactory(
@@ -147,10 +165,8 @@ def step_setup_content(context):
     set_description(folder10np)
     publish(folder10np)
     for i in range(1, 11):
-        folder10np.invokeFactory(
-            "Document", id="doc{}".format(i), title="Doc {}".format(i)
-        )
-        publish(folder10np["doc{}".format(i)])
+        folder10np.invokeFactory("Document", id=f"doc{i}", title=f"Doc {i}")
+        publish(folder10np[f"doc{i}"])
 
     # Collection
     portal.invokeFactory("Collection", id="collection", title="Collection")
@@ -204,28 +220,28 @@ def step_setup_content(context):
 
     # Image 1 MB
     portal.invokeFactory("Image", id="image-1mb", title="Image 1 MB")
-    filename = os.path.join(os.path.dirname(__file__), "images", u"image-1mb.jpg")
+    filename = os.path.join(os.path.dirname(__file__), "images", "image-1mb.jpg")
     portal.get("image-1mb").image = NamedBlobImage(
         data=open(filename, "rb").read(), filename=filename
     )
 
     # Image 2 MB
     portal.invokeFactory("Image", id="image-2mb", title="Image 2 MB")
-    filename = os.path.join(os.path.dirname(__file__), "images", u"image-2mb.jpg")
+    filename = os.path.join(os.path.dirname(__file__), "images", "image-2mb.jpg")
     portal.get("image-2mb").image = NamedBlobImage(
         data=open(filename, "rb").read(), filename=filename
     )
 
     # Image 3 MB
     portal.invokeFactory("Image", id="image-3mb", title="Image 3 MB")
-    filename = os.path.join(os.path.dirname(__file__), "images", u"image-3mb.jpg")
+    filename = os.path.join(os.path.dirname(__file__), "images", "image-3mb.jpg")
     portal.get("image-3mb").image = NamedBlobImage(
         data=open(filename, "rb").read(), filename=filename
     )
 
     # Image 10 MB
     portal.invokeFactory("Image", id="image-10mb", title="Image 10 MB")
-    filename = os.path.join(os.path.dirname(__file__), "images", u"image-10mb.jpg")
+    filename = os.path.join(os.path.dirname(__file__), "images", "image-10mb.jpg")
     portal.get("image-10mb").image = NamedBlobImage(
         data=open(filename, "rb").read(), filename=filename
     )
@@ -236,30 +252,26 @@ def step_setup_content(context):
     publish(volto_page)
 
     for i in range(1, 31):
-        volto_page.invokeFactory(
-            "News Item", id="newsitem{}".format(i), title="NewsItem {}".format(i)
-        )
-        newsitem = volto_page.get("newsitem{}".format(i))
+        volto_page.invokeFactory("News Item", id=f"newsitem{i}", title=f"NewsItem {i}")
+        newsitem = volto_page.get(f"newsitem{i}")
         set_description(newsitem)
         set_text(newsitem)
-        image_file = os.path.join(os.path.dirname(__file__), u"image.jpeg")
+        image_file = os.path.join(os.path.dirname(__file__), "image.jpeg")
         with open(image_file, "rb") as f:
             image_data = f.read()
         newsitem.image = NamedBlobImage(
-            data=image_data, contentType="image/jpeg", filename=u"image.jpeg"
+            data=image_data, contentType="image/jpeg", filename="image.jpeg"
         )
         publish(newsitem)
         newsitem.reindexObject()
 
     for i in range(1, 31):
-        volto_page.invokeFactory(
-            "Image", id="image{}".format(i), title="Image {}".format(i)
-        )
-        image_file = os.path.join(os.path.dirname(__file__), u"image.jpeg")
+        volto_page.invokeFactory("Image", id=f"image{i}", title=f"Image {i}")
+        image_file = os.path.join(os.path.dirname(__file__), "image.jpeg")
         with open(image_file, "rb") as f:
             image_data = f.read()
-        volto_page.get("image{}".format(i)).image = NamedBlobImage(
-            data=image_data, contentType="image/jpeg", filename=u"image.jpeg"
+        volto_page.get(f"image{i}").image = NamedBlobImage(
+            data=image_data, contentType="image/jpeg", filename="image.jpeg"
         )
 
     # Volto

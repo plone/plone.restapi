@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.multilingual.interfaces import ITranslatable
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.restapi.deserializer import json_body
@@ -13,21 +12,18 @@ from zope.interface import implementer
 from zope.interface import Interface
 
 import plone.protect.interfaces
-import six
 
 
 @implementer(IExpandableElement)
 @adapter(ITranslatable, Interface)
-class Translations(object):
+class Translations:
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, expand=False):
         result = {
-            "translations": {
-                "@id": "{}/@translations".format(self.context.absolute_url())
-            }
+            "translations": {"@id": f"{self.context.absolute_url()}/@translations"}
         }
         if not expand:
             return result
@@ -56,7 +52,7 @@ class LinkTranslations(Service):
     """Link two content objects as translations of each other"""
 
     def __init__(self, context, request):
-        super(LinkTranslations, self).__init__(context, request)
+        super().__init__(context, request)
         self.portal = getMultiAdapter(
             (self.context, self.request), name="plone_portal_state"
         ).portal()
@@ -104,12 +100,8 @@ class LinkTranslations(Service):
         if key.startswith(self.portal_url):
             # Resolve by URL
             key = key[len(self.portal_url) + 1 :]
-            if six.PY2:
-                key = key.encode("utf8")
             return self.portal.restrictedTraverse(key, None)
         elif key.startswith("/"):
-            if six.PY2:
-                key = key.encode("utf8")
             # Resolve by path
             return self.portal.restrictedTraverse(key.lstrip("/"), None)
         else:
@@ -144,7 +136,7 @@ class UnlinkTranslations(Service):
             return dict(
                 error=dict(
                     type="BadRequest",
-                    message="This objects is not translated into {}".format(language),
+                    message=f"This objects is not translated into {language}",
                 )
             )
 

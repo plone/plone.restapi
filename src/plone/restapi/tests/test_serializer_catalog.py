@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from DateTime import DateTime
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISerializeToJson
@@ -22,16 +21,14 @@ class TestCatalogSerializers(unittest.TestCase):
         self.catalog = getToolByName(self.portal, "portal_catalog")
 
         # /plone/my-folder
-        self.folder = createContentInContainer(
-            self.portal, u"Folder", title=u"My Folder"
-        )
+        self.folder = createContentInContainer(self.portal, "Folder", title="My Folder")
 
         # /plone/my-folder/my-document
         self.doc = createContentInContainer(
             self.folder,
-            u"Document",
+            "Document",
             creation_date=DateTime(2015, 12, 31, 23, 45),
-            title=u"My Document",
+            title="My Document",
         )
 
         IMutableUUID(self.doc).set("77779ffa110e45afb1ba502f75f77777")
@@ -71,31 +68,31 @@ class TestCatalogSerializers(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/my-folder/my-document",
                 "@type": "Document",
-                u"changeNote": u"",
-                u"contributors": [],
-                u"creators": [u"test_user_1_"],
-                u"description": u"",
-                u"effective": None,
-                u"exclude_from_nav": False,
-                u"expires": None,
-                "id": u"my-document",
+                "changeNote": "",
+                "contributors": [],
+                "creators": ["test_user_1_"],
+                "description": "",
+                "effective": None,
+                "exclude_from_nav": False,
+                "expires": None,
+                "id": "my-document",
                 "is_folderish": False,
-                u"language": u"",
+                "language": "",
                 "layout": "document_view",
                 "parent": {
-                    u"@id": u"http://nohost/plone/my-folder",
-                    u"@type": u"Folder",
-                    u"description": u"",
-                    u"review_state": u"private",
-                    u"title": u"My Folder",
+                    "@id": "http://nohost/plone/my-folder",
+                    "@type": "Folder",
+                    "description": "",
+                    "review_state": "private",
+                    "title": "My Folder",
                 },
-                u"relatedItems": [],
+                "relatedItems": [],
                 "review_state": "private",
-                u"rights": u"",
-                u"subjects": [],
-                u"table_of_contents": None,
-                u"text": None,
-                u"title": u"My Document",
+                "rights": "",
+                "subjects": [],
+                "table_of_contents": None,
+                "text": None,
+                "title": "My Document",
                 "version": "current",
             },
             result_item,

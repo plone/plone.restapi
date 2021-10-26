@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # XXX: EXPERIMENTAL!!!
 # This is an experimental feature meant for use in Volto only!
 # This code is likely to change in the future, even within minor releases.
@@ -16,26 +15,18 @@ from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-import six
-
 
 def _extract_text(block):
     result = ""
     for paragraph in block.get("text", {}).get("blocks", {}):
         text = paragraph["text"]
-        if six.PY2:
-            if isinstance(text, six.text_type):
-                text = text.encode("utf-8", "replace")
-            if text:
-                result = " ".join((result, text))
-        else:
-            result = " ".join((result, text))
+        result = " ".join((result, text))
     return result
 
 
 @implementer(IBlockSearchableText)
 @adapter(IBlocks, IBrowserRequest)
-class TextBlockSearchableText(object):
+class TextBlockSearchableText:
     def __init__(self, context, request):
         self.context = context
         self.request = request
@@ -75,7 +66,7 @@ def SearchableText_blocks(obj):
     return " ".join(blocks_text)
 
 
-class SlateTextIndexer(object):
+class SlateTextIndexer:
     """SlateTextIndexer."""
 
     def __init__(self, context, request):
@@ -96,7 +87,7 @@ class SlateTextIndexer(object):
         block = block or {}
 
         if block.get("searchableText"):
-            return None
+            return
 
         # BBB compatibility with slate blocks that used the "plaintext" field
         return (block or {}).get("plaintext", "")

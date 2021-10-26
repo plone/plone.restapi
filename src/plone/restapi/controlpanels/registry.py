@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from zope.component import adapter
 from zope.interface import Interface
 from Products.CMFPlone.interfaces.controlpanel import IDateAndTimeSchema

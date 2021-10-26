@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import division
-from six.moves import map
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.globalrequest import getRequest
@@ -33,9 +30,9 @@ def get_scales(context, field, width, height):
         actual_height = scale.height
 
         scales[name] = {
-            u"download": url,
-            u"width": actual_width,
-            u"height": actual_height,
+            "download": url,
+            "width": actual_width,
+            "height": actual_height,
         }
 
     return scales
@@ -47,11 +44,9 @@ def get_original_image_url(context, fieldname, width, height):
     scale = images_view.scale(
         fieldname, width=width, height=height, direction="thumbnail"
     )
-    if not scale:
-        # This might happen for corrupt images.
-        return None
-
-    return scale.url
+    if scale:
+        return scale.url
+    # Corrupt images may not have a scale.
 
 
 def get_actual_scale(dimensions, bbox):

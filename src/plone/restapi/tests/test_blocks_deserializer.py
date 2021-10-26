@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
 from plone.restapi.behaviors import IBlocks
@@ -35,7 +33,7 @@ class TestBlocksDeserializer(unittest.TestCase):
 
         self.portal.invokeFactory(
             "Document",
-            id=u"doc1",
+            id="doc1",
         )
         self.image = self.portal[
             self.portal.invokeFactory("Image", id="image-1", title="Target image")
@@ -52,7 +50,7 @@ class TestBlocksDeserializer(unittest.TestCase):
     def test_register_deserializer(self):
         @implementer(IBlockFieldDeserializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
-        class TestAdapter(object):
+        class TestAdapter:
             order = 10
             block_type = "test"
 
@@ -63,7 +61,7 @@ class TestBlocksDeserializer(unittest.TestCase):
             def __call__(self, value):
                 self.context._handler_called = True
 
-                value["value"] = u"changed: {}".format(value["value"])
+                value["value"] = "changed: {}".format(value["value"])
 
                 return value
 
@@ -72,10 +70,10 @@ class TestBlocksDeserializer(unittest.TestCase):
             (IDexterityItem, IBrowserRequest),
         )
 
-        self.deserialize(blocks={"123": {"@type": "test", "value": u"text"}})
+        self.deserialize(blocks={"123": {"@type": "test", "value": "text"}})
 
         assert self.portal.doc1._handler_called is True
-        assert self.portal.doc1.blocks["123"]["value"] == u"changed: text"
+        assert self.portal.doc1.blocks["123"]["value"] == "changed: text"
 
         sm = getGlobalSiteManager()
         sm.adapters.unsubscribe(
@@ -87,7 +85,7 @@ class TestBlocksDeserializer(unittest.TestCase):
     def test_disabled_deserializer(self):
         @implementer(IBlockFieldDeserializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
-        class TestAdapter(object):
+        class TestAdapter:
             order = 10
             block_type = "test"
             disabled = True
@@ -99,7 +97,7 @@ class TestBlocksDeserializer(unittest.TestCase):
             def __call__(self, value):
                 self.context._handler_called = True
 
-                value["value"] = u"changed: {}".format(value["value"])
+                value["value"] = "changed: {}".format(value["value"])
 
                 return value
 
@@ -108,10 +106,10 @@ class TestBlocksDeserializer(unittest.TestCase):
             (IDexterityItem, IBrowserRequest),
         )
 
-        self.deserialize(blocks={"123": {"@type": "test", "value": u"text"}})
+        self.deserialize(blocks={"123": {"@type": "test", "value": "text"}})
 
         assert not getattr(self.portal.doc1, "_handler_called", False)
-        assert self.portal.doc1.blocks["123"]["value"] == u"text"
+        assert self.portal.doc1.blocks["123"]["value"] == "text"
 
         sm = getGlobalSiteManager()
         sm.adapters.unsubscribe(
@@ -123,7 +121,7 @@ class TestBlocksDeserializer(unittest.TestCase):
     def test_register_multiple_transform(self):
         @implementer(IBlockFieldDeserializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
-        class TestAdapterA(object):
+        class TestAdapterA:
             order = 10
             block_type = "test_multi"
 
@@ -134,13 +132,13 @@ class TestBlocksDeserializer(unittest.TestCase):
             def __call__(self, value):
                 self.context._handler_called_a = True
 
-                value["value"] = value["value"].replace(u"a", u"b")
+                value["value"] = value["value"].replace("a", "b")
 
                 return value
 
         @implementer(IBlockFieldDeserializationTransformer)
         @adapter(IBlocks, IBrowserRequest)
-        class TestAdapterB(object):
+        class TestAdapterB:
             order = 11
             block_type = "test_multi"
 
@@ -151,7 +149,7 @@ class TestBlocksDeserializer(unittest.TestCase):
             def __call__(self, value):
                 self.context._handler_called_b = True
 
-                value["value"] = value["value"].replace(u"b", u"c")
+                value["value"] = value["value"].replace("b", "c")
 
                 return value
 
@@ -165,11 +163,11 @@ class TestBlocksDeserializer(unittest.TestCase):
             (IDexterityItem, IBrowserRequest),
         )
 
-        self.deserialize(blocks={"123": {"@type": "test_multi", "value": u"a"}})
+        self.deserialize(blocks={"123": {"@type": "test_multi", "value": "a"}})
 
         self.assertTrue(self.portal.doc1._handler_called_a)
         self.assertTrue(self.portal.doc1._handler_called_b)
-        self.assertEqual(self.portal.doc1.blocks["123"]["value"], u"c")
+        self.assertEqual(self.portal.doc1.blocks["123"]["value"], "c")
 
         sm = getGlobalSiteManager()
         sm.adapters.unsubscribe(
@@ -188,13 +186,13 @@ class TestBlocksDeserializer(unittest.TestCase):
             blocks={
                 "123": {
                     "@type": "html",
-                    "html": u"<script>nasty</script><div>This stays</div>",
+                    "html": "<script>nasty</script><div>This stays</div>",
                 }
             }
         )
 
         self.assertEqual(
-            self.portal.doc1.blocks["123"]["html"], u"<div>This stays</div>"
+            self.portal.doc1.blocks["123"]["html"], "<div>This stays</div>"
         )
 
     def test_blocks_image_resolve2uid(self):
@@ -204,7 +202,7 @@ class TestBlocksDeserializer(unittest.TestCase):
         )
 
         self.assertEqual(
-            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(image_uid)
+            self.portal.doc1.blocks["123"]["url"], f"../resolveuid/{image_uid}"
         )
 
     def test_blocks_image_href(self):
@@ -221,7 +219,7 @@ class TestBlocksDeserializer(unittest.TestCase):
         self.deserialize(blocks={"123": {"@type": "foo", "url": "/doc1"}})
 
         self.assertEqual(
-            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(doc_uid)
+            self.portal.doc1.blocks["123"]["url"], f"../resolveuid/{doc_uid}"
         )
 
     def test_blocks_image_relative(self):
@@ -229,7 +227,7 @@ class TestBlocksDeserializer(unittest.TestCase):
         self.deserialize(blocks={"123": {"@type": "image", "url": "/image-1"}})
 
         self.assertEqual(
-            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(image_uid)
+            self.portal.doc1.blocks["123"]["url"], f"../resolveuid/{image_uid}"
         )
 
     def test_blocks_custom_block_resolve_standard_fields(self):
@@ -239,7 +237,7 @@ class TestBlocksDeserializer(unittest.TestCase):
         doc_uid = IUUID(self.portal.doc1)
 
         self.assertEqual(
-            self.portal.doc1.blocks["123"]["url"], "../resolveuid/{}".format(doc_uid)
+            self.portal.doc1.blocks["123"]["url"], f"../resolveuid/{doc_uid}"
         )
 
         self.deserialize(
@@ -248,7 +246,7 @@ class TestBlocksDeserializer(unittest.TestCase):
         doc_uid = IUUID(self.portal.doc1)
 
         self.assertEqual(
-            self.portal.doc1.blocks["123"]["href"], "../resolveuid/{}".format(doc_uid)
+            self.portal.doc1.blocks["123"]["href"], f"../resolveuid/{doc_uid}"
         )
 
     def test_blocks_custom_block_doesnt_resolve_non_standard_fields(self):
@@ -273,7 +271,7 @@ class TestBlocksDeserializer(unittest.TestCase):
 
         self.assertEqual(
             self.portal.doc1.blocks["123"]["href"][0]["@id"],
-            "../resolveuid/{}".format(doc_uid),
+            f"../resolveuid/{doc_uid}",
         )
 
     def test_deserialize_blocks_smart_href_array(self):
@@ -284,14 +282,14 @@ class TestBlocksDeserializer(unittest.TestCase):
 
         self.assertEqual(
             self.portal.doc1.blocks["123"]["href"][0],
-            "../resolveuid/{}".format(doc_uid),
+            f"../resolveuid/{doc_uid}",
         )
 
     def test_deserialize_subblocks_transformers(self):
         # use the html transformer to test subblocks transformers
         subblock = {
             "@type": "html",
-            "html": u"<script>nasty</script><div>This stays</div>",
+            "html": "<script>nasty</script><div>This stays</div>",
         }
         self.deserialize(
             blocks={
@@ -307,7 +305,7 @@ class TestBlocksDeserializer(unittest.TestCase):
         block = self.portal.doc1.blocks["1"]["data"]["blocks"]["2"]["blocks"]["3"][
             "html"
         ]
-        self.assertEqual(block, u"<div>This stays</div>")
+        self.assertEqual(block, "<div>This stays</div>")
 
     def test_slate_internal_link_deserializer(self):
         blocks = {
@@ -384,3 +382,38 @@ class TestBlocksDeserializer(unittest.TestCase):
         value = res.blocks["abc"]["value"]
         link = value[0]["children"][1]["data"]["url"]
         self.assertTrue(link.startswith("../resolveuid/"))
+
+    def test_aquisition_messing_with_link_deserializer(self):
+        self.portal.invokeFactory(
+            "Folder",
+            id="aktuelles",
+        )
+        self.portal["aktuelles"].invokeFactory(
+            "Document",
+            id="meldungen",
+        )
+        self.portal.invokeFactory(
+            "Folder",
+            id="institut",
+        )
+
+        wrong_uid = IUUID(self.portal["aktuelles"]["meldungen"])
+
+        self.deserialize(
+            blocks={
+                "123": {
+                    "@type": "foo",
+                    "href": [
+                        {
+                            # Pointing to a not created yet object, but matches because acquisition
+                            # with another existing parent content with alike-ish path structure
+                            "@id": f"{self.portal.absolute_url()}/institut/aktuelles/meldungen"
+                        }
+                    ],
+                }
+            }
+        )
+        self.assertNotEqual(
+            self.portal.doc1.blocks["123"]["href"][0]["@id"],
+            f"../resolveuid/{wrong_uid}",
+        )

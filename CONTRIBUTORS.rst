@@ -21,3 +21,20 @@
 - Giacomo Monari
 - Alin Voinea
 - Rodrigo Ferreira de Souza
+- Jens W. Klein
+- Maurits van Rees
+- Gil Forcada Codinachs
+- David Glick
+- Philip Bauer
+- Tiberiu Ichim
+- Érico Andrei
+- Jonas Baumann
+- Cédric Messiant
+- Héctor Velarde
+- Johannes Raggam
+- Simone Deponti
+- Wesley Barroso Lopes
+- Elio Schmutz
+- Gauthier Bastien
+- Katja Süss
+  

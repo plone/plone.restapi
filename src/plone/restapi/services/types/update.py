@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.services import Service
@@ -20,7 +19,7 @@ import plone.protect.interfaces
 @implementer(IPublishTraverse)
 class TypesUpdate(Service):
     def __init__(self, context, request):
-        super(TypesUpdate, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):
@@ -84,7 +83,7 @@ class TypesUpdate(Service):
 
         if create:
             info = get_info_for_type(context, self.request, name)
-            existing = set(f.get("id") for f in info.get("fieldsets", []))
+            existing = {f.get("id") for f in info.get("fieldsets", [])}
             if fieldset_name not in existing:
                 add_fieldset(context, self.request, data)
         update_fieldset(context, self.request, data)

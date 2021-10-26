@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import IPloneRestapiLayer
@@ -8,6 +7,7 @@ from plone.restapi.types.utils import get_info_for_field
 from plone.restapi.types.utils import get_info_for_fieldset
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import IConstrainTypes
 from zExceptions import Unauthorized
 from zope.component import adapter
 from zope.component import getMultiAdapter, queryMultiAdapter
@@ -29,13 +29,13 @@ def check_security(context):
 
 @implementer(IExpandableElement)
 @adapter(IDexterityContent, Interface)
-class TypesInfo(object):
+class TypesInfo:
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, expand=False):
-        result = {"types": {"@id": "{}/@types".format(self.context.absolute_url())}}
+        result = {"types": {"@id": f"{self.context.absolute_url()}/@types"}}
         if not expand:
             return result
 
@@ -46,9 +46,14 @@ class TypesInfo(object):
         )
 
         portal_types = getToolByName(self.context, "portal_types")
-
         # allowedContentTypes already checks for permissions
-        allowed_types = [x.getId() for x in self.context.allowedContentTypes()]
+        constrains = IConstrainTypes(self.context, None)
+        if constrains:
+            allowed_types = constrains.getLocallyAllowedTypes()
+            immediately_types = constrains.getImmediatelyAddableTypes()
+        else:
+            allowed_types = [x.getId() for x in self.context.allowedContentTypes()]
+            immediately_types = allowed_types
 
         portal = getMultiAdapter(
             (self.context, self.request), name="plone_portal_state"
@@ -65,9 +70,12 @@ class TypesInfo(object):
 
         result["types"] = [
             {
-                "@id": "{}/@types/{}".format(portal_url, fti.getId()),
+                "@id": f"{portal_url}/@types/{fti.getId()}",
                 "title": translate(fti.Title(), context=self.request),
                 "addable": fti.getId() in allowed_types if can_add else False,
+                "immediately_addable": fti.getId() in immediately_types
+                if can_add
+                else False,
             }
             for fti in ftis
         ]
@@ -78,7 +86,7 @@ class TypesInfo(object):
 @implementer(IPublishTraverse)
 class TypesGet(Service):
     def __init__(self, context, request):
-        super(TypesGet, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):

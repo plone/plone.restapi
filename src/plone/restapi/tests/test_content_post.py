@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from OFS.interfaces import IObjectWillBeAddedEvent
 from plone.app.testing import login
 from plone.app.testing import setRoles
@@ -48,7 +47,7 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual("mydocument", response.json().get("id"))
         self.assertEqual("My Document", response.json().get("title"))
 
-        expected_url = self.portal_url + u"/folder1/mydocument"
+        expected_url = self.portal_url + "/folder1/mydocument"
         self.assertEqual(expected_url, response.json().get("@id"))
 
     def test_post_to_folder_creates_folder(self):
@@ -65,7 +64,7 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual("myfolder", response.json().get("id"))
         self.assertEqual("My Folder", response.json().get("title"))
 
-        expected_url = self.portal_url + u"/folder1/myfolder"
+        expected_url = self.portal_url + "/folder1/myfolder"
         self.assertEqual(expected_url, response.json().get("@id"))
 
     def test_post_without_type_returns_400(self):
@@ -202,3 +201,39 @@ class TestFolderCreate(unittest.TestCase):
             "<p>example with '</p>", self.portal.folder1.mydocument2.text.raw
         )
         self.assertEqual("<p>example with '</p>", response.json()["text"]["data"])
+
+    def test_post_with_uid_with_manage_portal_permission(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "Document",
+                "title": "My Document",
+                "UID": "a9597fcb108c4985a713329311bdcca0",
+            },
+        )
+        self.assertEqual(201, response.status_code)
+        self.assertEqual(response.json()["UID"], "a9597fcb108c4985a713329311bdcca0")
+
+    def test_post_with_uid_without_manage_portal_permission(self):
+        user = "test-user-2"
+        password = "secret"
+        self.portal.acl_users.userFolderAddUser(user, password, ["Contributor"], [])
+        transaction.commit()
+
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(user, password),
+            json={
+                "@type": "Document",
+                "title": "My Document",
+                "UID": "a9597fcb108c4985a713329311bdcca0",
+            },
+        )
+        self.assertEqual(403, response.status_code)
+        self.assertEqual(
+            response.json()["error"]["message"],
+            "Setting UID of an object requires Manage Portal permission",
+        )

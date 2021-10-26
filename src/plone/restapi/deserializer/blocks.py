@@ -1,20 +1,14 @@
-# -*- coding: utf-8 -*-
-
-from Acquisition import aq_parent
 from collections import deque
 from copy import deepcopy
 from plone import api
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.deserializer.dxfields import DefaultFieldDeserializer
+from plone.restapi.deserializer.utils import path2uid
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.schema import IJSONField
-from plone.uuid.interfaces import IUUID
-from plone.uuid.interfaces import IUUIDAware
 from Products.CMFPlone.interfaces import IPloneSiteRoot
-from six import string_types
 from zope.component import adapter
-from zope.component import getMultiAdapter
 from zope.component import subscribers
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -33,39 +27,6 @@ def iterate_children(value):
         yield child
         if child.get("children"):
             queue.extend(child["children"] or [])
-
-
-def path2uid(context, link):
-    # unrestrictedTraverse requires a string on py3. see:
-    # https://github.com/zopefoundation/Zope/issues/674
-    if not link:
-        return ""
-    portal = getMultiAdapter(
-        (context, context.REQUEST), name="plone_portal_state"
-    ).portal()
-    portal_url = portal.portal_url()
-    portal_path = "/".join(portal.getPhysicalPath())
-    path = link
-    context_url = context.absolute_url()
-    relative_up = len(context_url.split("/")) - len(portal_url.split("/"))
-    if path.startswith(portal_url):
-        path = path[len(portal_url) + 1 :]
-    if not path.startswith(portal_path):
-        path = "{portal_path}/{path}".format(
-            portal_path=portal_path, path=path.lstrip("/")
-        )
-    obj = portal.unrestrictedTraverse(path, None)
-    if obj is None or obj == portal:
-        return link
-    segments = path.split("/")
-    suffix = ""
-    while not IUUIDAware.providedBy(obj):
-        obj = aq_parent(obj)
-        suffix += "/" + segments.pop()
-    href = relative_up * "../" + "resolveuid/" + IUUID(obj)
-    if suffix:
-        href += suffix
-    return href
 
 
 @implementer(IFieldDeserializer)
@@ -102,7 +63,7 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
             block_value["blocks"] = self._transform(block_value["blocks"])
 
     def __call__(self, value):
-        value = super(BlocksJSONFieldDeserializer, self).__call__(value)
+        value = super().__call__(value)
 
         if self.field.getName() == "blocks":
             for id, block_value in value.items():
@@ -127,7 +88,7 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
         return value
 
 
-class ResolveUIDDeserializerBase(object):
+class ResolveUIDDeserializerBase:
     """The "url" smart block field.
 
     This is a generic handler. In all blocks, it converts any "url"
@@ -136,6 +97,7 @@ class ResolveUIDDeserializerBase(object):
 
     order = 1
     block_type = None
+    fields = ["url", "href"]
     disabled = os.environ.get("disable_transform_resolveuid", False)
 
     def __init__(self, context, request):
@@ -144,9 +106,9 @@ class ResolveUIDDeserializerBase(object):
 
     def __call__(self, block):
         # Convert absolute links to resolveuid
-        for field in ["url", "href"]:
+        for field in self.fields:
             link = block.get(field, "")
-            if link and isinstance(link, string_types):
+            if link and isinstance(link, str):
                 block[field] = path2uid(context=self.context, link=link)
             elif link and isinstance(link, list):
                 # Detect if it has an object inside with an "@id" key (object_widget)
@@ -160,14 +122,14 @@ class ResolveUIDDeserializerBase(object):
                         result.append(item_clone)
 
                     block[field] = result
-                elif len(link) > 0 and isinstance(link[0], string_types):
+                elif len(link) > 0 and isinstance(link[0], str):
                     block[field] = [
                         path2uid(context=self.context, link=item) for item in link
                     ]
         return block
 
 
-class TextBlockDeserializerBase(object):
+class TextBlockDeserializerBase:
     order = 100
     block_type = "text"
     disabled = os.environ.get("disable_transform_resolveuid", False)
@@ -189,7 +151,7 @@ class TextBlockDeserializerBase(object):
         return block
 
 
-class HTMLBlockDeserializerBase(object):
+class HTMLBlockDeserializerBase:
     order = 100
     block_type = "html"
     disabled = os.environ.get("disable_transform_html", False)
@@ -211,7 +173,7 @@ class HTMLBlockDeserializerBase(object):
         return block
 
 
-class ImageBlockDeserializerBase(object):
+class ImageBlockDeserializerBase:
     order = 100
     block_type = "image"
     disabled = os.environ.get("disable_transform_resolveuid", False)
@@ -286,7 +248,7 @@ def transform_links(context, value, transformer):
             link["@id"] = transformer(context, link["@id"])
 
 
-class SlateBlockTransformer(object):
+class SlateBlockTransformer:
     """SlateBlockTransformer."""
 
     field = "value"
@@ -302,7 +264,7 @@ class SlateBlockTransformer(object):
         for child in children:
             node_type = child.get("type")
             if node_type:
-                handler = getattr(self, "handle_{}".format(node_type), None)
+                handler = getattr(self, f"handle_{node_type}", None)
                 if handler:
                     handler(child)
 

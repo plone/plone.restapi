@@ -1,8 +1,5 @@
-# -*- coding: utf-8 -*-
 # pylint: disable=E1002
 # E1002: Use of super on an old style class
-
-from plone import api
 from plone.app.contenttypes.testing import PLONE_APP_CONTENTTYPES_FIXTURE
 from plone.app.i18n.locales.interfaces import IContentLanguages
 from plone.app.i18n.locales.interfaces import IMetadataLanguages
@@ -26,8 +23,8 @@ from plone.testing.layer import Layer
 from plone.uuid.interfaces import IUUIDGenerator
 from Products.CMFCore.utils import getToolByName
 from requests.exceptions import ConnectionError
-from six.moves.urllib.parse import urljoin
-from six.moves.urllib.parse import urlparse
+from urllib.parse import urljoin
+from urllib.parse import urlparse
 from zope.component import getGlobalSiteManager
 from zope.component import getUtility
 from zope.configuration import xmlconfig
@@ -35,21 +32,9 @@ from zope.interface import implementer
 
 import collective.MockMailHost
 import os
-import pkg_resources
 import re
 import requests
-import six
 import time
-
-
-PLONE_VERSION = pkg_resources.parse_version(api.env.plone_version())
-
-
-try:
-    pkg_resources.get_distribution("plone.app.multilingual")
-    PAM_INSTALLED = True
-except pkg_resources.DistributionNotFound:
-    PAM_INSTALLED = False
 
 
 ENABLED_LANGUAGES = ["de", "en", "es", "fr"]
@@ -152,12 +137,7 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         quickInstallProduct(portal, "collective.MockMailHost")
         applyProfile(portal, "collective.MockMailHost:default")
         states = portal.portal_workflow["simple_publication_workflow"].states
-        if six.PY2:  # issue 676
-            states["published"].title = u"Published with accent é".encode(
-                "utf8"
-            )  # noqa: E501
-        else:
-            states["published"].title = u"Published with accent é"  # noqa: E501
+        states["published"].title = "Published with accent é"  # noqa: E501
 
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
@@ -213,12 +193,7 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         set_available_languages()
         enable_request_language_negotiation(portal)
         states = portal.portal_workflow["simple_publication_workflow"].states
-        if six.PY2:  # issue 676
-            states["published"].title = u"Published with accent é".encode(
-                "utf8"
-            )  # noqa: E501
-        else:
-            states["published"].title = u"Published with accent é"  # noqa: E501
+        states["published"].title = "Published with accent é"  # noqa: E501
 
 
 PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()
@@ -279,7 +254,7 @@ class RelativeSession(requests.Session):
     """
 
     def __init__(self, base_url):
-        super(RelativeSession, self).__init__()
+        super().__init__()
         if not base_url.endswith("/"):
             base_url += "/"
         self.__base_url = base_url
@@ -289,17 +264,17 @@ class RelativeSession(requests.Session):
             url = url.lstrip("/")
             url = urljoin(self.__base_url, url)
         try:
-            return super(RelativeSession, self).request(method, url, **kwargs)
+            return super().request(method, url, **kwargs)
         except ConnectionError:
             # On Jenkins we often get one ConnectionError in a seemingly
             # random test, mostly in test_documentation.py.
             # The server is still listening: the port is open.  We retry once.
             time.sleep(1)
-            return super(RelativeSession, self).request(method, url, **kwargs)
+            return super().request(method, url, **kwargs)
 
 
 @implementer(IUUIDGenerator)
-class StaticUUIDGenerator(object):
+class StaticUUIDGenerator:
     """UUID generator that produces stable UUIDs for use in tests.
 
     Based on code from ftw.testing

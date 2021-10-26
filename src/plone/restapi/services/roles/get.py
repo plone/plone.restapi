@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_inner
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
@@ -12,7 +11,7 @@ class RolesGet(Service):
         return [
             {
                 "@type": "role",
-                "@id": "{}/@roles/{}".format(self.context.absolute_url(), r),
+                "@id": f"{self.context.absolute_url()}/@roles/{r}",
                 "id": r,
                 "title": translate(r, context=self.request, domain="plone"),
             }

@@ -1,8 +1,8 @@
-# -*- coding: utf-8 -*-
 from datetime import date
 from DateTime import DateTime
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
+from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.textfield.value import RichTextValue
@@ -17,18 +17,8 @@ from zope.component import getUtility
 from zope.interface import alsoProvides
 from zope.interface import noLongerProvides
 
-import six
 import transaction
 import unittest
-
-
-try:
-    from plone.app.layout.navigation.interfaces import INavigationRoot
-    from Products.CMFPlone.factory import _IMREALLYPLONE5  # noqa
-except ImportError:
-    PLONE5 = False
-else:
-    PLONE5 = True
 
 
 class TestSearchFunctional(unittest.TestCase):
@@ -59,7 +49,7 @@ class TestSearchFunctional(unittest.TestCase):
 
         # /plone/folder
         self.folder = createContentInContainer(
-            self.portal, u"Folder", id=u"folder", title=u"Some Folder"
+            self.portal, "Folder", id="folder", title="Some Folder"
         )
         api.user.grant_roles(username="editoruser", roles=["Editor"])
         api.user.grant_roles(
@@ -69,9 +59,9 @@ class TestSearchFunctional(unittest.TestCase):
         # /plone/folder/doc
         self.doc = createContentInContainer(
             self.folder,
-            u"DXTestDocument",
+            "DXTestDocument",
             id="doc",
-            title=u"Lorem Ipsum",
+            title="Lorem Ipsum",
             start=DateTime(1950, 1, 1, 0, 0),
             effective=DateTime(1995, 1, 1, 0, 0),
             expires=DateTime(1999, 1, 1, 0, 0),
@@ -79,7 +69,7 @@ class TestSearchFunctional(unittest.TestCase):
             test_list_field=["Keyword1", "Keyword2", "Keyword3"],
             test_bool_field=True,
             test_richtext_field=RichTextValue(
-                raw=u"<p>Some Text</p>",
+                raw="<p>Some Text</p>",
                 mimeType="text/html",
                 outputMimeType="text/html",
             ),
@@ -90,10 +80,10 @@ class TestSearchFunctional(unittest.TestCase):
         # /plone/folder/other-document
         self.doc2 = createContentInContainer(
             self.folder,
-            u"DXTestDocument",
+            "DXTestDocument",
             id="other-document",
-            title=u"Other Document",
-            description=u"\xdcbersicht",
+            title="Other Document",
+            description="\xdcbersicht",
             start=DateTime(1975, 1, 1, 0, 0),
             effective=DateTime(2015, 1, 1, 0, 0),
             expires=DateTime(2020, 1, 1, 0, 0),
@@ -103,15 +93,15 @@ class TestSearchFunctional(unittest.TestCase):
 
         # /plone/folder2
         self.folder2 = createContentInContainer(
-            self.portal, u"Folder", id=u"folder2", title=u"Another Folder"
+            self.portal, "Folder", id="folder2", title="Another Folder"
         )
 
         # /plone/folder2/doc
         createContentInContainer(
             self.folder2,
-            u"DXTestDocument",
+            "DXTestDocument",
             id="doc",
-            title=u"Document in second folder",
+            title="Document in second folder",
             start=DateTime(1975, 1, 1, 0, 0),
             effective=DateTime(2015, 1, 1, 0, 0),
             expires=DateTime(2020, 1, 1, 0, 0),
@@ -121,9 +111,9 @@ class TestSearchFunctional(unittest.TestCase):
         # /plone/doc-outside-folder
         createContentInContainer(
             self.portal,
-            u"DXTestDocument",
+            "DXTestDocument",
             id="doc-outside-folder",
-            title=u"Doc outside folder",
+            title="Doc outside folder",
         )
 
         transaction.commit()
@@ -139,15 +129,15 @@ class TestSearchFunctional(unittest.TestCase):
 
         results = response.json()
         self.assertEqual(
-            results[u"items_total"],
-            len(results[u"items"]),
+            results["items_total"],
+            len(results["items"]),
             "items_total property should match actual item count.",
         )
 
     def test_search_on_context_constrains_query_by_path(self):
         response = self.api_session.get("/folder/@search")
         self.assertSetEqual(
-            {u"/plone/folder", u"/plone/folder/doc", u"/plone/folder/other-document"},
+            {"/plone/folder", "/plone/folder/doc", "/plone/folder/other-document"},
             set(result_paths(response.json())),
         )
 
@@ -169,13 +159,13 @@ class TestSearchFunctional(unittest.TestCase):
 
         # If we go through the VHM will will get results if we only use
         # the part of the path inside the VHM
-        vhm_url = "%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s" % (
+        vhm_url = "{}/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/{}".format(
             self.app.absolute_url(),
             "@search?path=/folder",
         )
         response = self.api_session.get(vhm_url)
         self.assertSetEqual(
-            {u"/folder", u"/folder/doc", u"/folder/other-document"},
+            {"/folder", "/folder/doc", "/folder/other-document"},
             set(result_paths(response.json())),
         )
 
@@ -196,18 +186,18 @@ class TestSearchFunctional(unittest.TestCase):
 
         # If we go through the VHM we will get results for multiple paths
         # if we only use the part of the path inside the VHM
-        vhm_url = "%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s" % (
+        vhm_url = "{}/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/{}".format(
             self.app.absolute_url(),
             "@search",
         )
         response = self.api_session.get(vhm_url, params=query)
         self.assertSetEqual(
             {
-                u"/folder",
-                u"/folder/doc",
-                u"/folder/other-document",
-                u"/folder2",
-                u"/folder2/doc",
+                "/folder",
+                "/folder/doc",
+                "/folder/other-document",
+                "/folder2",
+                "/folder2/doc",
             },
             set(result_paths(response.json())),
         )
@@ -217,18 +207,18 @@ class TestSearchFunctional(unittest.TestCase):
 
         # If we go through the VHM we will get results for multiple paths
         # if we only use the part of the path inside the VHM
-        vhm_url = "%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s" % (
+        vhm_url = "{}/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/{}".format(
             self.app.absolute_url(),
             "@search",
         )
         response = self.api_session.get(vhm_url, params=query)
         self.assertSetEqual(
             {
-                u"/folder",
-                u"/folder/doc",
-                u"/folder/other-document",
-                u"/folder2",
-                u"/folder2/doc",
+                "/folder",
+                "/folder/doc",
+                "/folder/other-document",
+                "/folder2",
+                "/folder2/doc",
             },
             set(result_paths(response.json())),
         )
@@ -236,7 +226,7 @@ class TestSearchFunctional(unittest.TestCase):
     def test_path_gets_prefilled_if_missing_from_path_query_dict(self):
         response = self.api_session.get("/@search?path.depth=1")
         self.assertSetEqual(
-            {u"/plone/folder", u"/plone/folder2", u"/plone/doc-outside-folder"},
+            {"/plone/folder", "/plone/folder2", "/plone/doc-outside-folder"},
             set(result_paths(response.json())),
         )
 
@@ -249,10 +239,10 @@ class TestSearchFunctional(unittest.TestCase):
 
         self.assertDictContainsSubset(
             {
-                u"@id": self.portal_url + u"/folder/doc",
-                u"title": u"Lorem Ipsum",
-                u"portal_type": u"DXTestDocument",
-                u"review_state": u"private",
+                "@id": self.portal_url + "/folder/doc",
+                "title": "Lorem Ipsum",
+                "portal_type": "DXTestDocument",
+                "review_state": "private",
             },
             response.json()["items"][0],
         )
@@ -264,45 +254,45 @@ class TestSearchFunctional(unittest.TestCase):
         first_item = response.json()["items"][0]
         self.assertLessEqual(
             {
-                u"@id": self.portal_url + u"/folder/doc",
-                u"Creator": u"test_user_1_",
-                u"Description": u"",
-                u"EffectiveDate": u"None",
-                u"ExpirationDate": u"None",
-                u"Subject": [],
-                u"Title": u"Lorem Ipsum",
-                u"Type": u"DX Test Document",
-                u"UID": u"77779ffa110e45afb1ba502f75f77777",
-                u"author_name": None,
-                u"cmf_uid": None,
-                u"commentators": [],
-                u"description": u"",
-                u"effective": u"1995-01-01T00:00:00+00:00",
-                u"end": None,
-                u"exclude_from_nav": False,
-                u"expires": u"1999-01-01T00:00:00+00:00",
-                u"getId": u"doc",
-                u"getPath": u"/plone/folder/doc",
-                u"getRemoteUrl": None,
-                u"getURL": self.portal_url + u"/folder/doc",
-                u"id": u"doc",
-                u"in_response_to": None,
-                u"is_folderish": False,
-                u"last_comment_date": None,
-                u"listCreators": [u"test_user_1_"],
-                u"location": None,
-                u"portal_type": u"DXTestDocument",
-                u"review_state": u"private",
-                u"start": u"1950-01-01T00:00:00+00:00",
-                u"sync_uid": None,
-                u"title": u"Lorem Ipsum",
-                u"total_comments": 0,
+                "@id": self.portal_url + "/folder/doc",
+                "Creator": "test_user_1_",
+                "Description": "",
+                "EffectiveDate": "None",
+                "ExpirationDate": "None",
+                "Subject": [],
+                "Title": "Lorem Ipsum",
+                "Type": "DX Test Document",
+                "UID": "77779ffa110e45afb1ba502f75f77777",
+                "author_name": None,
+                "cmf_uid": None,
+                "commentators": [],
+                "description": "",
+                "effective": "1995-01-01T00:00:00+00:00",
+                "end": None,
+                "exclude_from_nav": False,
+                "expires": "1999-01-01T00:00:00+00:00",
+                "getId": "doc",
+                "getPath": "/plone/folder/doc",
+                "getRemoteUrl": None,
+                "getURL": self.portal_url + "/folder/doc",
+                "id": "doc",
+                "in_response_to": None,
+                "is_folderish": False,
+                "last_comment_date": None,
+                "listCreators": ["test_user_1_"],
+                "location": None,
+                "portal_type": "DXTestDocument",
+                "review_state": "private",
+                "start": "1950-01-01T00:00:00+00:00",
+                "sync_uid": None,
+                "title": "Lorem Ipsum",
+                "total_comments": 0,
             }.items(),
             first_item.items(),
         )
         # This value changed in Plone 5.2
         # (Dexterity gained support for getObjSize)
-        self.assertIn(first_item[u"getObjSize"], (u"0 KB", u"1 KB"))
+        self.assertIn(first_item["getObjSize"], ("0 KB", "1 KB"))
 
     def test_full_objects_retrieval(self):
         query = {
@@ -313,11 +303,11 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/@search", params=query)
 
         self.assertEqual(
-            u"<p>Some Text</p>",
+            "<p>Some Text</p>",
             response.json()["items"][0]["test_richtext_field"]["data"],
         )
         self.assertEqual(
-            self.portal_url + u"/folder/doc", response.json()["items"][0]["@id"]
+            self.portal_url + "/folder/doc", response.json()["items"][0]["@id"]
         )
 
     def test_full_objects_retrieval_discussion(self):
@@ -329,7 +319,7 @@ class TestSearchFunctional(unittest.TestCase):
 
         transaction.commit()
 
-        url = "{}/@comments".format(self.doc.absolute_url())
+        url = f"{self.doc.absolute_url()}/@comments"
         self.api_session.post(url, json={"text": "comment 1"})
         transaction.commit()
 
@@ -341,7 +331,7 @@ class TestSearchFunctional(unittest.TestCase):
 
     def test_full_objects_retrieval_collections(self):
         self.collection = createContentInContainer(
-            self.folder, u"Collection", id="collection"
+            self.folder, "Collection", id="collection"
         )
         transaction.commit()
 
@@ -351,20 +341,47 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["items"]), 1)
 
+    def test_search_orphan_brain(self):
+
+        # prevent unindex when deleting self.doc
+        old__unindexObject = self.doc.__class__.unindexObject
+        self.doc.__class__.unindexObject = lambda *args: None
+        self.doc.aq_parent.manage_delObjects([self.doc.getId()])
+        self.doc.__class__.unindexObject = old__unindexObject
+        # doc deleted but still in portal_catalog
+        doc_uid = self.doc.UID()
+        self.assertFalse(self.doc in self.doc.aq_parent)
+        self.assertTrue(self.portal.portal_catalog(UID=doc_uid))
+        transaction.commit()
+
+        # query with fullobjects
+        query = {"portal_type": "DXTestDocument", "fullobjects": True, "UID": doc_uid}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200, response.content)
+        results = response.json()
+        self.assertEqual(len(results["items"]), 0)
+
+        # query without fullobjects
+        query = {"portal_type": "DXTestDocument", "UID": doc_uid}
+        response = self.api_session.get("/@search", params=query)
+        self.assertEqual(response.status_code, 200, response.content)
+        results = response.json()
+        self.assertEqual(len(results["items"]), 1)
+
     # ZCTextIndex
 
     def test_fulltext_search(self):
         query = {"SearchableText": "lorem"}
         response = self.api_session.get("/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
 
     def test_fulltext_search_with_non_ascii_characters(self):
-        query = {"SearchableText": u"\xfcbersicht"}
+        query = {"SearchableText": "\xfcbersicht"}
         response = self.api_session.get("/@search", params=query)
 
         self.assertEqual(
-            [u"/plone/folder/other-document"], result_paths(response.json())
+            ["/plone/folder/other-document"], result_paths(response.json())
         )
 
     # KeywordIndex
@@ -373,14 +390,14 @@ class TestSearchFunctional(unittest.TestCase):
         query = {"test_list_field": "Keyword1"}
         response = self.api_session.get("/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
 
     def test_keyword_index_str_query_or(self):
         query = {"test_list_field": ["Keyword2", "Keyword3"]}
         response = self.api_session.get("/@search", params=query)
 
         self.assertEqual(
-            [u"/plone/folder/doc", u"/plone/folder/other-document"],
+            ["/plone/folder/doc", "/plone/folder/other-document"],
             result_paths(response.json()),
         )
 
@@ -391,30 +408,19 @@ class TestSearchFunctional(unittest.TestCase):
         }
         response = self.api_session.get("/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
-
-    @unittest.skipIf(six.PY3, "Python 3 can't sort mixed types")
-    def test_keyword_index_int_query(self):
-        self.doc.test_list_field = [42, 23]
-        self.doc.reindexObject()
-        transaction.commit()
-
-        query = {"test_list_field:int": 42}
-        response = self.api_session.get("/@search", params=query)
-
-        self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
 
     # BooleanIndex
 
     def test_boolean_index_query(self):
         query = {"test_bool_field": True, "portal_type": "DXTestDocument"}
         response = self.api_session.get("/folder/@search", params=query)
-        self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
 
         query = {"test_bool_field": False, "portal_type": "DXTestDocument"}
         response = self.api_session.get("/folder/@search", params=query)
         self.assertEqual(
-            [u"/plone/folder/other-document"], result_paths(response.json())
+            ["/plone/folder/other-document"], result_paths(response.json())
         )
 
     # FieldIndex
@@ -423,7 +429,7 @@ class TestSearchFunctional(unittest.TestCase):
         query = {"test_int_field:int": 42}
         response = self.api_session.get("/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
 
     def test_field_index_int_range_query(self):
         query = {
@@ -432,7 +438,7 @@ class TestSearchFunctional(unittest.TestCase):
         }
         response = self.api_session.get("/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
 
     # ExtendedPathIndex
 
@@ -444,9 +450,9 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(
             sorted(
                 [
-                    u"/plone/folder",
-                    u"/plone/folder/doc",
-                    u"/plone/folder/other-document",
+                    "/plone/folder",
+                    "/plone/folder/doc",
+                    "/plone/folder/other-document",
                 ]
             ),
             sorted(result_paths(response.json())),
@@ -465,11 +471,11 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(
             sorted(
                 [
-                    u"/plone/folder",
-                    u"/plone/folder/doc",
-                    u"/plone/folder/other-document",
-                    u"/plone/folder2",
-                    u"/plone/folder2/doc",
+                    "/plone/folder",
+                    "/plone/folder/doc",
+                    "/plone/folder/other-document",
+                    "/plone/folder2",
+                    "/plone/folder2/doc",
                 ]
             ),
             sorted(result_paths(response.json())),
@@ -487,20 +493,20 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(
             sorted(
                 [
-                    u"/plone/folder",
-                    u"/plone/folder/doc",
-                    u"/plone/folder/other-document",
-                    u"/plone/folder2",
-                    u"/plone/folder2/doc",
+                    "/plone/folder",
+                    "/plone/folder/doc",
+                    "/plone/folder/other-document",
+                    "/plone/folder2",
+                    "/plone/folder2/doc",
                 ]
             ),
             sorted(result_paths(response.json())),
         )
 
     def test_extended_path_index_depth_limiting(self):
-        lvl1 = createContentInContainer(self.portal, u"Folder", id=u"lvl1")
-        lvl2 = createContentInContainer(lvl1, u"Folder", id=u"lvl2")
-        createContentInContainer(lvl2, u"Folder", id=u"lvl3")
+        lvl1 = createContentInContainer(self.portal, "Folder", id="lvl1")
+        lvl2 = createContentInContainer(lvl1, "Folder", id="lvl2")
+        createContentInContainer(lvl2, "Folder", id="lvl3")
         transaction.commit()
 
         path = "/plone/lvl1"
@@ -509,20 +515,20 @@ class TestSearchFunctional(unittest.TestCase):
         query = {"path.query": path, "path.depth": 0}
         response = self.api_session.get("/@search", params=query)
 
-        self.assertEqual([u"/plone/lvl1"], result_paths(response.json()))
+        self.assertEqual(["/plone/lvl1"], result_paths(response.json()))
 
         # Depth 1 - immediate children
         query = {"path.query": path, "path.depth": 1}
         response = self.api_session.get("/@search", params=query)
 
-        self.assertEqual([u"/plone/lvl1/lvl2"], result_paths(response.json()))
+        self.assertEqual(["/plone/lvl1/lvl2"], result_paths(response.json()))
 
         # No depth - object itself and all children
         query = {"path": path}
         response = self.api_session.get("/@search", params=query)
 
         self.assertSetEqual(
-            {u"/plone/lvl1", u"/plone/lvl1/lvl2", u"/plone/lvl1/lvl2/lvl3"},
+            {"/plone/lvl1", "/plone/lvl1/lvl2", "/plone/lvl1/lvl2/lvl3"},
             set(result_paths(response.json())),
         )
 
@@ -532,7 +538,7 @@ class TestSearchFunctional(unittest.TestCase):
         query = {"start": date(1950, 1, 1).isoformat()}
         response = self.api_session.get("/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
 
     def test_date_index_ranged_query(self):
         query = {
@@ -541,7 +547,7 @@ class TestSearchFunctional(unittest.TestCase):
         }
         response = self.api_session.get("/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
 
     # DateRangeIndex
 
@@ -550,8 +556,8 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get("/folder/@search", params=query)
 
         self.assertEqual(2, len(result_paths(response.json())))
-        self.assertTrue(u"/plone/folder" in result_paths(response.json()))
-        self.assertTrue(u"/plone/folder/doc" in result_paths(response.json()))
+        self.assertTrue("/plone/folder" in result_paths(response.json()))
+        self.assertTrue("/plone/folder/doc" in result_paths(response.json()))
 
     # DateRecurringIndex
 
@@ -560,9 +566,9 @@ class TestSearchFunctional(unittest.TestCase):
 
         createContentInContainer(
             self.folder,
-            u"Event",
-            id=u"event",
-            title=u"Event",
+            "Event",
+            id="event",
+            title="Event",
             start=datetime(2013, 1, 1, 0, 0),
             end=datetime(2013, 1, 1, 23, 59),
             whole_day=True,
@@ -577,7 +583,7 @@ class TestSearchFunctional(unittest.TestCase):
         query = {"start": date(2013, 1, 1).isoformat()}
         response = self.api_session.get("/folder/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/event"], result_paths(response.json()))
+        self.assertEqual(["/plone/folder/event"], result_paths(response.json()))
 
         # No event that day
         query = {"start": date(2013, 1, 2).isoformat()}
@@ -589,7 +595,7 @@ class TestSearchFunctional(unittest.TestCase):
         query = {"start": date(2013, 1, 3).isoformat()}
         response = self.api_session.get("/folder/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/event"], result_paths(response.json()))
+        self.assertEqual(["/plone/folder/event"], result_paths(response.json()))
 
         # Ranged query
         query = {
@@ -598,7 +604,7 @@ class TestSearchFunctional(unittest.TestCase):
         }
         response = self.api_session.get("/folder/@search", params=query)
 
-        self.assertEqual([u"/plone/folder/event"], result_paths(response.json()))
+        self.assertEqual(["/plone/folder/event"], result_paths(response.json()))
 
     # UUIDIndex
 
@@ -609,11 +615,8 @@ class TestSearchFunctional(unittest.TestCase):
 
         query = {"UID": "7777a074cb4240d08c9a129e3a837777"}
         response = self.api_session.get("/@search", params=query)
-        self.assertEqual([u"/plone/folder/doc"], result_paths(response.json()))
+        self.assertEqual(["/plone/folder/doc"], result_paths(response.json()))
 
-    @unittest.skipIf(
-        not PLONE5, "searchResults in Plone 4 does not handle correctly that permission"
-    )
     def test_respect_access_inactive_permission(self):
         # admin can see everything
         response = self.api_session.get("/@search", params={}).json()
@@ -666,14 +669,13 @@ class TestSearchFunctional(unittest.TestCase):
         ).json()
         self.assertEqual(response["items_total"], 1)
 
-    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
     def test_search_use_site_search_settings_for_types(self):
         response = self.api_session.get(
             "/@search", params={"use_site_search_settings": 1}
         ).json()
-        types = set([item["@type"] for item in response["items"]])
+        types = {item["@type"] for item in response["items"]}
 
-        self.assertEqual(set(types), set(["Folder", "DXTestDocument"]))
+        self.assertEqual(set(types), {"Folder", "DXTestDocument"})
 
         registry = getUtility(IRegistry)
         from Products.CMFPlone.interfaces import ISearchSchema
@@ -686,24 +688,23 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get(
             "/@search", params={"use_site_search_settings": 1}
         ).json()
-        types = set([item["@type"] for item in response["items"]])
+        types = {item["@type"] for item in response["items"]}
 
-        self.assertEqual(set(types), set(["Folder"]))
+        self.assertEqual(set(types), {"Folder"})
         search_settings.types_not_searched = old
         transaction.commit()
 
-    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
     def test_search_use_site_search_settings_for_default_sort_order(self):
         response = self.api_session.get(
             "/@search", params={"use_site_search_settings": 1}
         ).json()
         titles = [
-            u"Some Folder",
-            u"Lorem Ipsum",
-            u"Other Document",
-            u"Another Folder",
-            u"Document in second folder",
-            u"Doc outside folder",
+            "Some Folder",
+            "Lorem Ipsum",
+            "Other Document",
+            "Another Folder",
+            "Document in second folder",
+            "Doc outside folder",
         ]
         self.assertEqual([item["title"] for item in response["items"]], titles)
 
@@ -712,10 +713,9 @@ class TestSearchFunctional(unittest.TestCase):
         ).json()
         self.assertEqual(
             [item["title"] for item in response["items"]][0],
-            u"Other Document",
+            "Other Document",
         )
 
-    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
     def test_search_use_site_search_settings_with_navigation_root(self):
 
         alsoProvides(self.folder, INavigationRoot)
@@ -724,13 +724,12 @@ class TestSearchFunctional(unittest.TestCase):
         response = self.api_session.get(
             "/folder/@search", params={"use_site_search_settings": 1}
         ).json()
-        titles = [u"Some Folder", u"Lorem Ipsum", u"Other Document"]
+        titles = ["Some Folder", "Lorem Ipsum", "Other Document"]
         self.assertEqual([item["title"] for item in response["items"]], titles)
 
         noLongerProvides(self.folder, INavigationRoot)
         transaction.commit()
 
-    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
     def test_search_use_site_search_settings_with_navigation_root_and_vhm(self):
 
         if "virtual_hosting" not in self.app.objectIds():
@@ -744,20 +743,19 @@ class TestSearchFunctional(unittest.TestCase):
         alsoProvides(self.folder, INavigationRoot)
         transaction.commit()
 
-        vhm_url = "%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s" % (
+        vhm_url = "{}/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/{}".format(
             self.app.absolute_url(),
             "/folder/@search",
         )
         response = self.api_session.get(
             vhm_url, params={"use_site_search_settings": 1, "path": "/folder"}
         ).json()
-        titles = [u"Some Folder", u"Lorem Ipsum", u"Other Document"]
+        titles = ["Some Folder", "Lorem Ipsum", "Other Document"]
         self.assertEqual([item["title"] for item in response["items"]], titles)
 
         noLongerProvides(self.folder, INavigationRoot)
         transaction.commit()
 
-    @unittest.skipIf(not PLONE5, "No ISearchSchema in Plone 4")
     def test_search_use_site_search_settings_with_vhm(self):
 
         if "virtual_hosting" not in self.app.objectIds():
@@ -770,22 +768,24 @@ class TestSearchFunctional(unittest.TestCase):
             manage_addVirtualHostMonster(self.app, "virtual_hosting")
         transaction.commit()
 
-        vhm_url = "%s/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/%s" % (
+        vhm_url = "{}/VirtualHostBase/http/plone.org/plone/VirtualHostRoot/{}".format(
             self.app.absolute_url(),
             "/@search",
         )
         response = self.api_session.get(
             vhm_url, params={"use_site_search_settings": 1, "path": "/"}
         ).json()
-        titles = [
-            "Some Folder",
-            "Lorem Ipsum",
-            "Other Document",
-            "Another Folder",
-            "Document in second folder",
-            "Doc outside folder",
-        ]
-        self.assertEqual([item["title"] for item in response["items"]], titles)
+        titles = sorted(
+            [
+                "Another Folder",
+                "Doc outside folder",
+                "Document in second folder",
+                "Lorem Ipsum",
+                "Other Document",
+                "Some Folder",
+            ]
+        )
+        self.assertEqual(sorted([item["title"] for item in response["items"]]), titles)
 
         noLongerProvides(self.folder, INavigationRoot)
         transaction.commit()
