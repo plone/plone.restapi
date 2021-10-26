@@ -118,7 +118,7 @@ class Slots(object):
         _seen_blocks = {}  # all blocks in this hierarchy
         _replaced = set()  # original blocks that are overridden by variants. We
         _inherited = set()  # block uids that are inherited
-        # don't want to include these in the final output
+        #                     don't want to include these in the final output
 
         __to_include_originals = []  # these blocks need to reference their original
 
@@ -170,16 +170,17 @@ class Slots(object):
                 v["readOnly"] = True  # TODO: should we set this here?
                 # v['_v_original'] = self._resolve_block(v, _seen_blocks)
 
-        # in the frontend, if we have a block that's hidden then we go and
-        # "unhide", we'll need the original data for best UX
-
         for v in __to_include_originals:
-            # original = deepcopy(_seen_blocks[v.get("s:isVariantOf")])
+            # in the frontend, if we have a block that's hidden then we go and
+            # "unhide", we'll need the original data for best UX
             original = _seen_blocks.get(v.get("s:isVariantOf"), None)
+            # original = deepcopy(_seen_blocks[v.get("s:isVariantOf")])
 
             # TODO: what do do when the inherited block has been deleted?
             if original is not None:
                 v["_v_original"] = original
+                original['readOnly'] = True
+                original['_v_inherit'] = True
 
         return {
             "blocks": _blocks,
