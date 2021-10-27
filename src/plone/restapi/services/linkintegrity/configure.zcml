@@ -7,9 +7,9 @@
   <include package="Products.CMFEditions" />
 
   <plone:service
-      method="GET"
-      factory=".get.LinkintegrityGet"
-      for="Products.CMFCore.interfaces.IContentish"
+      method="POST"
+      factory=".post.LinkintegrityPOST"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="CMFEditions.AccessPreviousVersions"
       name="@linkintegrity"
       />

@@ -1,0 +1,20 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+    {
+        "@id": "http://localhost:50989/plone/doc-2",
+        "@type": "Document",
+        "breaches": [
+            {
+                "@id": "http://localhost:50989/plone/doc-1",
+                "accessible": 1,
+                "title": "First document",
+                "uid": "2ef5d7b2bc794336990221b49c66aa01"
+            }
+        ],
+        "description": "",
+        "review_state": "private",
+        "title": "Second document"
+    }
+]

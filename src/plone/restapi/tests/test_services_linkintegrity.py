@@ -44,8 +44,15 @@ class TestServicesNavigation(unittest.TestCase):
     def tearDown(self):
         self.api_session.close()
 
-    def test_return_no_breaches_by_default(self):
-        response = self.api_session.get("/doc-2/@linkintegrity")
+    def test_required_uids(self):
+        response = self.api_session.post("/@linkintegrity")
+
+        self.assertEqual(response.status_code, 400)
+
+    def test_return_empty_list_for_non_referenced_objects(self):
+        response = self.api_session.post(
+            "/@linkintegrity", json={"uids": [self.doc1.UID()]}
+        )
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), [])
@@ -56,16 +63,18 @@ class TestServicesNavigation(unittest.TestCase):
         notify(ObjectModifiedEvent(self.doc1))
         transaction.commit()
 
-        response = self.api_session.get("/doc-2/@linkintegrity")
-        breaches = response.json()
+        response = self.api_session.post(
+            "/@linkintegrity", json={"uids": [self.doc2.UID()]}
+        )
+        result = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertNotEqual(breaches, [])
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["@id"], self.doc2.absolute_url())
+
+        breaches = result[0]["breaches"]
         self.assertEqual(len(breaches), 1)
-        self.assertEqual(breaches[0]["target"]["uid"], IUUID(self.doc2))
-        self.assertEqual(breaches[0]["target"]["@id"], self.doc2.absolute_url())
-        self.assertEqual(len(breaches[0]["sources"]), 1)
-        self.assertEqual(breaches[0]["sources"][0]["uid"], IUUID(self.doc1))
-        self.assertEqual(breaches[0]["sources"][0]["@id"], self.doc1.absolute_url())
+        self.assertEqual(breaches[0]["uid"], IUUID(self.doc1))
+        self.assertEqual(breaches[0]["@id"], self.doc1.absolute_url())
 
     def test_do_not_return_breaches_if_check_is_disabled(self):
         registry = getUtility(IRegistry)
@@ -76,13 +85,17 @@ class TestServicesNavigation(unittest.TestCase):
         notify(ObjectModifiedEvent(self.doc1))
         transaction.commit()
 
-        response = self.api_session.get("/doc-2/@linkintegrity")
+        response = self.api_session.post(
+            "/@linkintegrity", json={"uids": [self.doc2.UID()]}
+        )
         breaches = response.json()
         self.assertEqual(response.status_code, 200)
         self.assertEqual(breaches, [])
 
     def test_return_right_breaches_for_blocks(self):
-        response = self.api_session.get("/doc-2/@linkintegrity")
+        response = self.api_session.post(
+            "/@linkintegrity", json={"uids": [self.doc2.UID()]}
+        )
         breaches = response.json()
         self.assertEqual(breaches, [])
 
@@ -113,13 +126,16 @@ class TestServicesNavigation(unittest.TestCase):
         )
         transaction.commit()
 
-        response = self.api_session.get("/doc-2/@linkintegrity")
-        breaches = response.json()
+        response = self.api_session.post(
+            "/@linkintegrity", json={"uids": [self.doc2.UID()]}
+        )
+
+        result = response.json()
         self.assertEqual(response.status_code, 200)
-        self.assertNotEqual(breaches, [])
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["@id"], self.doc2.absolute_url())
+
+        breaches = result[0]["breaches"]
         self.assertEqual(len(breaches), 1)
-        self.assertEqual(breaches[0]["target"]["uid"], IUUID(self.doc2))
-        self.assertEqual(breaches[0]["target"]["@id"], self.doc2.absolute_url())
-        self.assertEqual(len(breaches[0]["sources"]), 1)
-        self.assertEqual(breaches[0]["sources"][0]["uid"], IUUID(self.doc1))
-        self.assertEqual(breaches[0]["sources"][0]["@id"], self.doc1.absolute_url())
+        self.assertEqual(breaches[0]["uid"], IUUID(self.doc1))
+        self.assertEqual(breaches[0]["@id"], self.doc1.absolute_url())
