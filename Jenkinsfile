@@ -40,6 +40,8 @@ pipeline {
         // sh "bin/locust -f performance/images.py --no-web -c 100 -r 10 --run-time 1m --host http://localhost:12345/Plone"
 
         sh "bin/instance stop"
+
+        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-jmeter.csv --output-file performance-jmeter-filtered.csv --exclude-labels "Create Testfolder Write"'
       }
       post {
         always {
