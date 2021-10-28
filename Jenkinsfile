@@ -32,6 +32,8 @@ pipeline {
 
         sh "jmeter -n -t performance.jmx -l performance-jmeter.csv"
 
+        sh "jmeter -n -t querystring-search.jmx -l performance-querystring-search.csv"
+
         sh "jmeter -n -t volto.jmx -l performance-volto.csv"
 
         // sh "bin/pip install locust"
