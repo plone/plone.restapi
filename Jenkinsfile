@@ -31,7 +31,7 @@ pipeline {
         sh "sleep 20"
 
         sh "jmeter -n -t performance.jmx -l performance-jmeter-unfiltered.csv"
-        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-jmeter-unfiltered.csv --output-file performance-jmeter.csv --exclude-labels "Testfolder" --exclude-label-regex true'
+        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-jmeter-unfiltered.csv --output-file performance-jmeter.csv --exclude-labels "Delete Testfolder Write"'
         sh "rm performance-jmeter-unfiltered.csv"
 
         sh "jmeter -n -t querystring-search.jmx -l performance-querystring-search-unfiltered.csv"
