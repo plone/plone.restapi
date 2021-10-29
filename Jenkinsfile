@@ -31,15 +31,15 @@ pipeline {
         sh "sleep 20"
 
         sh "jmeter -n -t performance.jmx -l performance-jmeter-unfiltered.csv"
-        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-jmeter-unfiltered.csv --output-file performance-jmeter.csv --exclude-labels "Testfolder" --exclude-label-regex true'
+        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-jmeter-unfiltered.csv --output-file performance-jmeter.csv --exclude-labels "Delete Testfolder Write"'
         sh "rm performance-jmeter-unfiltered.csv"
 
         sh "jmeter -n -t querystring-search.jmx -l performance-querystring-search-unfiltered.csv"
-        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-querystring-search-unfiltered.csv --output-file performance-querystring-search.csv --exclude-labels "Testfolder" --exclude-label-regex true'
+        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-querystring-search-unfiltered.csv --output-file performance-querystring-search.csv --exclude-labels "Delete Testfolder Write" --exclude-label-regex true'
         sh "rm performance-querystring-search-unfiltered.csv"
 
         sh "jmeter -n -t volto.jmx -l performance-volto-unfiltered.csv"
-        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-volto-unfiltered.csv --output-file performance-volto.csv --exclude-labels "Testfolder" --exclude-label-regex true'
+        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-volto-unfiltered.csv --output-file performance-volto.csv --exclude-labels "Delete Testfolder"'
         sh "rm performance-volto-unfiltered.csv"
 
         // sh "bin/pip install locust"
