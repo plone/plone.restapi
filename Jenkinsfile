@@ -30,7 +30,9 @@ pipeline {
         sh "bin/instance start"
         sh "sleep 20"
 
-        sh "jmeter -n -t performance.jmx -l performance-jmeter.csv"
+        sh "jmeter -n -t performance.jmx -l performance-jmeter-unfiltered.csv"
+        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-jmeter-unfiltered.csv --output-file performance-jmeter.csv --exclude-labels "Testfolder" --exclude-label-regex true'
+        sh "rm performance-jmeter-unfiltered.csv"
 
         sh "jmeter -n -t querystring-search.jmx -l performance-querystring-search.csv"
 
@@ -41,7 +43,6 @@ pipeline {
 
         sh "bin/instance stop"
 
-        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-jmeter.csv --output-file performance-jmeter-filtered.csv --exclude-labels "Create Testfolder Write"'
       }
       post {
         always {
