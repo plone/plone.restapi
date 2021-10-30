@@ -25,9 +25,7 @@ import unittest
 
 HAS_PLONE_6 = parse_version(
     get_distribution("Products.CMFPlone").version
-) >= parse_version(
-    "6.0.0a1"
-)
+) >= parse_version("6.0.0a1")
 
 
 class TestSearchFunctional(unittest.TestCase):
