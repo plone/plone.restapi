@@ -97,7 +97,11 @@ class TestSearchTextInBlocks(unittest.TestCase):
         self.assertEqual(json_response["items_total"], 1)
         self.assertEqual(json_response["items"][0]["Title"], "A document")
 
-        query = {"SearchableText": "Plone", "metadata_fields": "Title"}
+        query = {
+            "SearchableText": "Plone",
+            "metadata_fields": "Title",
+            "portal_type": "Document",
+        }
         response = self.api_session.get("/@search", params=query)
         json_response = response.json()
         self.assertEqual(json_response["items_total"], 1)
@@ -184,18 +188,30 @@ class TestSearchTextInBlocks(unittest.TestCase):
 
         self.assertEqual(response.status_code, 204)
 
-        query = {"SearchableText": "Volto", "metadata_fields": "Title"}
+        query = {
+            "SearchableText": "Volto",
+            "metadata_fields": "Title",
+            "portal_type": "Document",
+        }
         response = self.api_session.get("/@search", params=query)
         json_response = response.json()
         self.assertEqual(json_response["items_total"], 0)
 
-        query = {"SearchableText": "Plone", "metadata_fields": "Title"}
+        query = {
+            "SearchableText": "Plone",
+            "metadata_fields": "Title",
+            "portal_type": "Document",
+        }
         response = self.api_session.get("/@search", params=query)
         json_response = response.json()
         self.assertEqual(json_response["items_total"], 1)
         self.assertEqual(json_response["items"][0]["Title"], "A document")
 
-        query = {"SearchableText": "custom", "metadata_fields": "Title"}
+        query = {
+            "SearchableText": "custom",
+            "metadata_fields": "Title",
+            "portal_type": "Document",
+        }
         response = self.api_session.get("/@search", params=query)
         json_response = response.json()
         self.assertEqual(json_response["items_total"], 1)
