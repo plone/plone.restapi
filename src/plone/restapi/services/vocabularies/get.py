@@ -1,9 +1,16 @@
+from AccessControl import getSecurityManager
+try:
+    from plone.app.vocabularies import DEFAULT_PERMISSION, DEFAULT_PERMISSION_SECURE, PERMISSIONS
+except ImportError:
+    from plone.app.content.browser.vocabulary import DEFAULT_PERMISSION, DEFAULT_PERMISSION_SECURE, PERMISSIONS
+from plone.app.z3cform.interfaces import IFieldPermissionChecker
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from zope.component import ComponentLookupError
 from zope.component import getMultiAdapter
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
+from zope.component import queryAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
@@ -24,7 +31,24 @@ class VocabulariesGet(Service):
         self.request.response.setStatus(status)
         return {"error": {"type": type, "message": message}}
 
+    def _has_permission_to_access_vocabulary(self, vocabulary_name):
+        """Check if user is authorized to access built-in vocabulary
+
+        default permission for all vocabularies, built-in and others, was
+          <permission
+            id="plone.restapi.vocabularies"
+            title="plone.restapi: Access Plone vocabularies"
+            />
+        """
+        if vocabulary_name in PERMISSIONS:
+            sm = getSecurityManager()
+            return sm.checkPermission(
+                PERMISSIONS.get(vocabulary_name, DEFAULT_PERMISSION), self.context
+            )
+        return True
+
     def reply(self):
+        # return list of all vocabularies
         if len(self.params) == 0:
             return [
                 {
@@ -36,16 +60,28 @@ class VocabulariesGet(Service):
                 for vocab in getUtilitiesFor(IVocabularyFactory)
             ]
 
-        name = self.params[0]
+        # return single vocabulary by name
+        vocabulary_name = self.params[0]
+        if not self._has_permission_to_access_vocabulary(vocabulary_name):
+            return self._error(
+                403,
+                "Not authorized",
+                (
+                    f"You are not authorized to access "
+                    f"the vocabulary '{vocabulary_name}'."
+                )
+            )
+
         try:
-            factory = getUtility(IVocabularyFactory, name=name)
+            factory = getUtility(IVocabularyFactory, name=vocabulary_name)
         except ComponentLookupError:
             return self._error(
-                404, "Not Found", f"The vocabulary '{name}' does not exist"
+                404,
+                "Not Found",
+                f"The vocabulary '{vocabulary_name}' does not exist"
             )
 
         vocabulary = factory(self.context)
-        vocabulary_name = self.params[0]
         serializer = getMultiAdapter(
             (vocabulary, self.request), interface=ISerializeToJson
         )
