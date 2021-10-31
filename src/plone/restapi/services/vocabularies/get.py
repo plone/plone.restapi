@@ -1,16 +1,21 @@
 from AccessControl import getSecurityManager
+
+
 try:
-    from plone.app.vocabularies import DEFAULT_PERMISSION, DEFAULT_PERMISSION_SECURE, PERMISSIONS
+    from plone.app.vocabularies import DEFAULT_PERMISSION
+    from plone.app.vocabularies import PERMISSIONS
 except ImportError:
-    from plone.app.content.browser.vocabulary import DEFAULT_PERMISSION, DEFAULT_PERMISSION_SECURE, PERMISSIONS
-from plone.app.z3cform.interfaces import IFieldPermissionChecker
+    from plone.app.content.browser.vocabulary import (
+        DEFAULT_PERMISSION,
+        PERMISSIONS,
+    )
+
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from zope.component import ComponentLookupError
 from zope.component import getMultiAdapter
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
-from zope.component import queryAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
@@ -69,16 +74,14 @@ class VocabulariesGet(Service):
                 (
                     f"You are not authorized to access "
                     f"the vocabulary '{vocabulary_name}'."
-                )
+                ),
             )
 
         try:
             factory = getUtility(IVocabularyFactory, name=vocabulary_name)
         except ComponentLookupError:
             return self._error(
-                404,
-                "Not Found",
-                f"The vocabulary '{vocabulary_name}' does not exist"
+                404, "Not Found", f"The vocabulary '{vocabulary_name}' does not exist"
             )
 
         vocabulary = factory(self.context)

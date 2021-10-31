@@ -114,7 +114,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
 
     def test_get_builtin_vocabulary(self):
         """Check if built-in vocabularies are protected.
-        
+
         See plone.app.vocabularies.PERMISSIONS
         """
         self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
