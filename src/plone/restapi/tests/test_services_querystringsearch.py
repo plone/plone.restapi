@@ -74,6 +74,41 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.json()["items_total"], 1)
         self.assertEqual(len(response.json()["items"]), 1)
 
+    def test_querystringsearch_metadata_fields(self):
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.is",
+                        "v": ["Document"],
+                    }
+                ],
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("items", response.json())
+        self.assertIn("items_total", response.json())
+        self.assertNotIn("effective", response.json()["items"][0])
+
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.is",
+                        "v": ["Document"],
+                    }
+                ],
+                "metadata_fields": ["effective"],
+            },
+        )
+
+        self.assertIn("effective", response.json()["items"][0])
+
     def test_querystringsearch_complex(self):
 
         for a in range(1, 10):
