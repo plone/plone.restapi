@@ -53,10 +53,13 @@ def merge_serializer_metadata_utilities_data():
         "blocklisted_attributes": set(),
     }
     utils = getAllUtilitiesRegisteredFor(IJSONSummarySerializerMetadata)
-    for attribute in serializer_metadata.keys():
+    for name in serializer_metadata.keys():
         for util in utils:
-            value = getattr(util, attribute)()
-            serializer_metadata[attribute].update(value)
+            method = getattr(util, name, None)
+            if not method:
+                continue
+            value = method()
+            serializer_metadata[name].update(value)
     return serializer_metadata
 
 
