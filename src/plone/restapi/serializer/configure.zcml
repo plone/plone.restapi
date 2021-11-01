@@ -107,4 +107,7 @@
 
   <include package=".controlpanels" />
 
+  <!-- Summary Serializer Metadata -->
+  <utility factory=".summary.JSONSummarySerializerMetadata" name="plone.restapi.summary_serializer_metadata" />
+
 </configure>

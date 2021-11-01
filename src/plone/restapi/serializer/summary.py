@@ -1,5 +1,6 @@
 from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.interfaces import IJSONSummarySerializerMetadata
 from plone.restapi.serializer.converters import json_compatible
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import WorkflowException
@@ -7,34 +8,56 @@ from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.interface import implementer
 from zope.interface import Interface
+from zope.component import getAllUtilitiesRegisteredFor
 
-# fmt: off
-DEFAULT_METADATA_FIELDS = {
-    '@id',
-    '@type',
-    'description',
-    'review_state',
-    'title',
-}
 
-FIELD_ACCESSORS = {
-    "@id": "getURL",
-    "@type": "PortalType",
-    "description": "Description",
-    "title": "Title",
-}
+@implementer(IJSONSummarySerializerMetadata)
+class JSONSummarySerializerMetadata:
+    def default_metadata_fields(self):
+        return {
+            "@id",
+            "@type",
+            "description",
+            "review_state",
+            "title",
+        }
 
-NON_METADATA_ATTRIBUTES = {
-    "getPath",
-    "getURL",
-}
+    def field_accessors(self):
+        return {
+            "@id": "getURL",
+            "@type": "PortalType",
+            "description": "Description",
+            "title": "Title",
+        }
 
-BLACKLISTED_ATTRIBUTES = {
-    'getDataOrigin',
-    'getObject',
-    'getUserData',
-}
-# fmt: on
+    def non_metadata_attributes(self):
+        return {
+            "getPath",
+            "getURL",
+        }
+
+    def blocklisted_attributes(self):
+        return {
+            "getDataOrigin",
+            "getObject",
+            "getUserData",
+        }
+
+
+def merge_serializer_metadata_utilities_data():
+    """Merge data returned by utilities registered for IJSONSummarySerializerMetadata."""
+    serializer_metadata = {
+        "default_metadata_fields": set(),
+        "field_accessors": {},
+        "non_metadata_attributes": set(),
+        "blocklisted_attributes": set(),
+    }
+    utils = getAllUtilitiesRegisteredFor(IJSONSummarySerializerMetadata)
+    for attribute in serializer_metadata.keys():
+        for util in utils:
+            value = getattr(util, attribute)()
+            serializer_metadata[attribute].update(value)
+    return serializer_metadata
 
 
 @implementer(ISerializeToJsonSummary)
@@ -49,15 +72,25 @@ class DefaultJSONSummarySerializer:
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        # Cache summary_serializer_metadata on request
+        metadata = self.request.form.get("summary_serializer_metadata", None)
+        if not metadata:
+            metadata = merge_serializer_metadata_utilities_data()
+            self.request.set("summary_serializer_metadata", metadata)
+
+        self.default_metadata_fields = metadata["default_metadata_fields"]
+        self.field_accessors = metadata["field_accessors"]
+        self.non_metadata_attributes = metadata["non_metadata_attributes"]
+        self.blocklisted_attributes = metadata["blocklisted_attributes"]
 
     def __call__(self):
         obj = IContentListingObject(self.context)
 
         summary = {}
         for field in self.metadata_fields():
-            if field.startswith("_") or field in BLACKLISTED_ATTRIBUTES:
+            if field.startswith("_") or field in self.blocklisted_attributes:
                 continue
-            accessor = FIELD_ACCESSORS.get(field, field)
+            accessor = self.field_accessors.get(field, field)
             value = getattr(obj, accessor, None)
             try:
                 if callable(value):
@@ -78,11 +111,11 @@ class DefaultJSONSummarySerializer:
             fields_cache = self.request.get("_summary_fields_cache", None)
             if fields_cache is None:
                 catalog = getToolByName(self.context, "portal_catalog")
-                fields_cache = set(catalog.schema()) | NON_METADATA_ATTRIBUTES
+                fields_cache = set(catalog.schema()) | self.non_metadata_attributes
                 self.request.set("_summary_fields_cache", fields_cache)
             additional_metadata_fields = fields_cache
 
-        return DEFAULT_METADATA_FIELDS | additional_metadata_fields
+        return self.default_metadata_fields | additional_metadata_fields
 
 
 @implementer(ISerializeToJsonSummary)
