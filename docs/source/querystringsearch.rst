@@ -133,10 +133,32 @@ Querystring Query with limit parameter:
 The `limit` parameter is optional. The default value is `1000`.
 
 
-Query Filters
--------------
+Query
+-----
 
-The following filters are available.
+The `query` parameter is a list that contains an arbitrary number of `filters`:
+
+````
+"query": [
+  {
+    'i': 'Title',
+    'o': 'plone.app.querystring.operation.string.is',
+    'v': 'Welcome to Plone',
+  }
+]
+````
+
+A `filter` always contains three values:
+
+* `ì`: the index of the filter (the name of the field this filter is applied to)
+* `o`: the operator of the filter (the operator, a full list can be found here: https://github.com/plone/plone.app.querystring/blob/master/plone/app/querystring/profiles/default/registry.xml)
+* `v`: the value of the filter (this highly depends on the index, for a text index, this is a string, for a date index this might be a date range)
+
+The following type of filters are available:
+
+* Metadata filters
+* Date filters
+* Text Filters
 
 Metadata Filters
 ^^^^^^^^^^^^^^^^
@@ -144,71 +166,173 @@ Metadata Filters
 Creator
 ,,,,,,,
 
-The creator of the content object, options: "currently logged in user", user fullname).
+The creator of the content object.
+
+You can either set the currently logged in user:
+
+````
+{
+  "query":[
+    {
+      "i":"Creator",
+      "o":"plone.app.querystring.operation.string.currentUser",
+      "v":""
+    }
+  ],
+}
+````
+
+or set a username:
+
+````
+{
+  "query":[
+    {
+      "i":"Creator",
+      "o":"plone.app.querystring.operation.selection.any",
+      "v":["noam"]
+    }
+  ]
+}
+````
 
 Shortname
 ´´´´´´´´´
 
-Shortname (the id of the object that is shown as last part of the URL)
+Shortname (the id of the object that is shown as last part of the URL):
+
+````
+{
+  "query":[
+    {
+      "i":"getId",
+      "o":"plone.app.querystring.operation.string.is",
+      "v":"hero"
+    }
+  ]
+}
+````
 
 Location
 ,,,,,,,,
 
-Location is the path of the content object on the site, e.g. /).
+Location is the path of the content object on the site. You can either set three kind of paths.
 
-Filter by 'path':
+The absolute path (from the portal root)
 
-Querystring Query with 'path':
-
-  "query": [
+````
+{
+  "query":[
     {
-      'i': 'path',
-      'o': 'plone.app.querystring.operation.string.path',
-      'v': '/foo',
+      "i":"path",
+      "o":"plone.app.querystring.operation.string.absolutePath",
+      "v":"/my-content-object"
     }
   ]
+}
+````
+
+The relative path (relative from the current object):
+
+````
+{
+  "query":[
+    {
+      "i":"path",
+      "o":"plone.app.querystring.operation.string.relativePath",
+      "v":"../my-content-object"
+    }
+  ]
+}
+````
+
+The navigation path:
+
+````
+{
+  "query":[
+    {
+      "i":"path",
+      "o":"plone.app.querystring.operation.string.path",
+      "v":"/hero"
+    }
+  ]
+}
+````
 
 The path can be stored computed:
-            
-  "query": [
-    {
-      'i': 'path',
-      'o': 'plone.app.querystring.operation.string.path',
-      'v': '00000000000000001',
-    }
-  ]
+
+````
+"query": [
+  {
+    'i': 'path',
+    'o': 'plone.app.querystring.operation.string.path',
+    'v': '00000000000000001',
+  }
+]
+````
 
 The path can contain a depth parameter (that is separated with a "::"):
 
-  "query": [
-    {
-      'i': 'path',
-      'o': 'plone.app.querystring.operation.string.path',
-      'v': '/foo::2',
-    }
-  ]
-
+````
+"query": [
+  {
+    'i': 'path',
+    'o': 'plone.app.querystring.operation.string.path',
+    'v': '/my-content-object::2',
+  }
+]
+````
 
 Type
 ,,,,
 
 Filter by portal type:
 
-  "query": [
-    {
-      "i": "portal_type",
-      "o": "plone.app.querystring.operation.selection.any",
-      "v": ["Document"],
-    }
-  ]
+````
+"query": [
+  {
+    "i": "portal_type",
+    "o": "plone.app.querystring.operation.selection.any",
+    "v": ["Document"],
+  }
+]
+````
 
 Review State
 ,,,,,,,,,,,,
 
+Filter results by review state:
+
+````
+{
+  "query":[
+    {
+      "i":"review_state",
+      "o":"plone.app.querystring.operation.selection.any",
+      "v":["published"]
+    }
+  ]
+}
+
+````
 
 Show Inactive
 ,,,,,,,,,,,,,
 
+Show inactive will return content objects that is expired for a given role.
+
+````
+{
+  "query":[
+    {
+      "i":"show_inactive",
+      "o":"plone.app.querystring.operation.string.showInactive",
+      "v":["Owner"]
+    }
+  ]
+}
+````
 
 Text Filters
 ^^^^^^^^^^^^
