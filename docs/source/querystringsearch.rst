@@ -340,11 +340,53 @@ Text Filters
 Description
 ,,,,,,,,,,,
 
+Filter content that contains a term in the Description field:
+
+````
+{
+  "query":[
+    {
+      "i":"Description",
+      "o":"plone.app.querystring.operation.string.contains",
+      "v":"Noam"
+    }
+  ]
+}
+````
+
 Searchable Text
 ,,,,,,,,,,,,,,,
 
+Filter content that contains a term in the SearchableText (all searchable fields in the catalog):
+
+````
+{
+  "query":[
+    {
+      "i":"SearchableText",
+      "o":"plone.app.querystring.operation.string.contains",
+      "v":"Noam"
+    }
+  ]
+}
+````
+
 Tag
 ,,,
+
+Filter by a tag (subjects field):
+
+````
+{
+  "query":[
+    {
+      "i":"Subject",
+      "o":"plone.app.querystring.operation.selection.any",
+      "v":["Astrophysics"]
+    }
+  ]
+}
+````
 
 
 Title
@@ -352,13 +394,15 @@ Title
 
 Filter by exact Title match:
 
-  "query": [
-    {
-      'i': 'Title',
-      'o': 'plone.app.querystring.operation.string.is',
-      'v': 'Welcome to Plone',
-    }
-  ]
+````
+"query": [
+  {
+    'i': 'Title',
+    'o': 'plone.app.querystring.operation.string.is',
+    'v': 'Welcome to Plone',
+  }
+]
+````
 
 Date Filters
 ^^^^^^^^^^^^
@@ -369,28 +413,3 @@ Date Filters
 - Expiration date
 - Modification date
 - Event start date
-
-
-
-
-
-
-
-
-Querystring query with multiple 'path' parameters:
-
-    data_1 = {
-        'i': 'path',
-        'o': 'plone.app.querystring.operation.string.path',
-        'v': '/foo',
-    }
-    data_2 = {
-        'i': 'path',
-        'o': 'plone.app.querystring.operation.string.path',
-        'v': '/bar',
-    }
-
-  
-Querystring Query with sort on:
-
-
