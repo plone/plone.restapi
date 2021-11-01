@@ -1,2 +1,2 @@
-Return image_field metadata on SummarySerializer for brains
+Implement IJSONSummarySerializerMetadata allowing addons to extend the metadata returned by Summary serializer.
 [ericof]
