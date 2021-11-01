@@ -407,9 +407,103 @@ Filter by exact Title match:
 Date Filters
 ^^^^^^^^^^^^
 
-- Creation Date
-- Effective Date
-- Event end date
-- Expiration date
-- Modification date
-- Event start date
+Creation Date
+,,,,,,,,,,,,,
+
+Filter by creation date:
+
+````
+{
+  "query":[
+    {
+      "i": "created",
+      "o": "plone.app.querystring.operation.date.lessThan",
+      "v": "2021-11-11"
+    }
+  ]
+}
+````
+
+Effective Date
+,,,,,,,,,,,,,,
+
+Filter by effective date:
+
+````
+{
+  "query":[
+    {
+      "i": "effective",
+      "o": "plone.app.querystring.operation.date.largerThan",
+      "v": "2021-11-11"
+      }
+    }
+  ]
+}
+````
+
+Event end date
+,,,,,,,,,,,,,,
+
+Filter by event end date:
+
+````
+{
+  "query":[
+    {
+      "i": "end",
+      "o": "plone.app.querystring.operation.date.lessThan",
+      "v":"2021-11-04"
+    }
+  ]
+}
+````
+
+Event start date
+,,,,,,,,,,,,,,,,
+
+Filter by event start date:
+
+````
+{
+  "query":[
+    {
+      "i": "end",
+      "o": "plone.app.querystring.operation.date.lessThan",
+      "v":"2021-11-04"
+    }
+  ]
+}
+````
+
+Expiration date
+,,,,,,,,,,,,,,,
+
+````
+{
+  "query":[
+    {
+      "i": "expires",
+      "o": "plone.app.querystring.operation.date.largerThan",
+      "v": "2021-11-11"
+      }
+    }
+  ]
+}
+````
+
+Modification date
+,,,,,,,,,,,,,,,,,
+
+````
+{
+  "query":[
+    {
+      "i": "modified",
+      "o": "plone.app.querystring.operation.date.largerThan",
+      "v": "2021-11-11"
+      }
+    }
+  ]
+}
+````
