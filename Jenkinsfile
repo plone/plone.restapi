@@ -35,11 +35,11 @@ pipeline {
         sh "rm performance-jmeter-unfiltered.csv"
 
         sh "jmeter -n -t querystring-search.jmx -l performance-querystring-search-unfiltered.csv"
-        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-querystring-search-unfiltered.csv --output-file performance-querystring-search.csv --exclude-labels "Delete Testfolder Write" --exclude-labels "Delete Testfolder Read"'
+        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-querystring-search-unfiltered.csv --output-file performance-querystring-search.csv --exclude-label-regex true --exclude-labels ".*Testfolder.*"'
         sh "rm performance-querystring-search-unfiltered.csv"
 
         sh "jmeter -n -t volto.jmx -l performance-volto-unfiltered.csv"
-        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-volto-unfiltered.csv --output-file performance-volto.csv --exclude-labels "Delete Testfolder Write" --exclude-labels "Delete Testfolder Read"'
+        sh '/opt/jmeter/bin/FilterResults.sh --input-file performance-volto-unfiltered.csv --output-file performance-volto.csv --exclude-label-regex true --exclude-labels ".*Testfolder.*"'
         sh "rm performance-volto-unfiltered.csv"
 
         // sh "bin/pip install locust"
