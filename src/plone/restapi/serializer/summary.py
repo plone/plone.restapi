@@ -1,4 +1,5 @@
 from plone.app.contentlisting.interfaces import IContentListingObject
+from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from Products.CMFCore.utils import getToolByName
@@ -69,7 +70,11 @@ class DefaultJSONSummarySerializer:
         return summary
 
     def metadata_fields(self):
-        additional_metadata_fields = self.request.form.get("metadata_fields", [])
+        query = self.request.form
+        if not query:
+            # maybe its a POST request
+            query = json_body(self.request)
+        additional_metadata_fields = query.get("metadata_fields", [])
         if not isinstance(additional_metadata_fields, list):
             additional_metadata_fields = [additional_metadata_fields]
         additional_metadata_fields = set(additional_metadata_fields)
