@@ -8,6 +8,17 @@ Changelog
 
 .. towncrier release notes start
 
+8.13.0 (2021-11-05)
+-------------------
+
+New features:
+
+
+- Implement IJSONSummarySerializerMetadata allowing addons to extend the metadata returned by Summary serializer.
+  [ericof] (#1250)
+- Enable usage of metadata_fields also for POST calls [cekk] (#1253)
+
+
 8.12.1 (2021-10-14)
 -------------------
 
