@@ -44,7 +44,8 @@ pipeline {
 
         sh "bin/pip install locust"
         sh "make test-performance-locust-querystring-search-ci"
-        sh "bin/python performance/convert.py -p example_stats.csv"
+        sh "ls -al performance"
+        // sh "bin/python performance/convert.py -p example_stats.csv"
         // sh "bin/locust -f performance/images.py --no-web -c 100 -r 10 --run-time 1m --host http://localhost:12345/Plone"
 
         sh "bin/instance stop"
