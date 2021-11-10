@@ -8,5 +8,11 @@ Content-Type: application/json
             "@id": "http://localhost:55001/plone/es/test-document",
             "language": "es"
         }
-    ]
+    ],
+    "root": {
+        "de": "http://localhost:55001/plone/de",
+        "en": "http://localhost:55001/plone/en",
+        "es": "http://localhost:55001/plone/es",
+        "fr": "http://localhost:55001/plone/fr"
+    }
 }
