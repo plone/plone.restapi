@@ -41,14 +41,12 @@ class Translations:
         )
         current_lang_nav_root = portal_state.navigation_root()
         nav_root_manager = ITranslationManager(current_lang_nav_root)
-        nav_root_translations = []
+        nav_root_translations = {}
         for (
             language,
             translation,
         ) in nav_root_manager.get_restricted_translations().items():
-            nav_root_translations.append(
-                {"@id": translation.absolute_url(), "language": language}
-            )
+            nav_root_translations[language] = translation.absolute_url()
 
         result["translations"]["items"] = translations
         result["translations"]["root"] = nav_root_translations
