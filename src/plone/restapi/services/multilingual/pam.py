@@ -5,6 +5,7 @@ from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import ILanguage
+from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.interface import alsoProvides
@@ -40,6 +41,11 @@ class Translations:
             (self.context, self.request), name="plone_portal_state"
         )
         current_lang_nav_root = portal_state.navigation_root()
+
+        if IPloneSiteRoot.providedBy(current_lang_nav_root):
+            # We are not inside a LRF, bail off
+            return result
+
         nav_root_manager = ITranslationManager(current_lang_nav_root)
         nav_root_translations = {}
         for (
