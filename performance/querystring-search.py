@@ -1,6 +1,6 @@
 from locust import HttpUser, task
 
-class HelloWorldUser(HttpUser):
+class QuerystringSearchAnonymousUser(HttpUser):
 
     @task
     def querystring_search_root(self):
@@ -15,8 +15,8 @@ class HelloWorldUser(HttpUser):
             json={
                 "query": [
                     {
-                        "i": "portal_type", 
-                        "o": "plone.app.querystring.operation.selection.any", 
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.any",
                         "v": ["Document"]
                     }
                 ]
@@ -38,8 +38,8 @@ class HelloWorldUser(HttpUser):
             json={
                 "query": [
                     {
-                        "i": "portal_type", 
-                        "o": "plone.app.querystring.operation.selection.any", 
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.any",
                         "v": ["Document"]
                     }
                 ],
@@ -62,8 +62,8 @@ class HelloWorldUser(HttpUser):
             json={
                 "query": [
                     {
-                        "i": "portal_type", 
-                        "o": "plone.app.querystring.operation.selection.any", 
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.any",
                         "v": ["Document"]
                     }
                 ]
@@ -85,8 +85,8 @@ class HelloWorldUser(HttpUser):
             json={
                 "query": [
                     {
-                        "i": "portal_type", 
-                        "o": "plone.app.querystring.operation.selection.any", 
+                        "i": "portal_type",
+                        "o": "plone.app.querystring.operation.selection.any",
                         "v": ["Document"]
                     }
                 ],
