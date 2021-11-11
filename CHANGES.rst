@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.14.0 (2021-11-11)
+-------------------
+
+New features:
+
+
+- Add root (INavigationRoot) for the current object information in @translations endpoint
+  [sneridagh] (#1263)
+
+
 8.13.0 (2021-11-05)
 -------------------
 
