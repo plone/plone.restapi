@@ -72,6 +72,14 @@ test:  ## Test
 test-performance:
 	jmeter -n -t performance.jmx -l jmeter.jtl
 
+.PHONY: Test Performance Locust Querystring Search
+test-performance-locust-querystring-search:
+	bin/locust -f performance/querystring-search.py --host http://localhost:12345/Plone --users 100 --spawn-rate 5 --run-time 5m --autostart
+
+.PHONY: Test Performance Locust Querystring Search CI
+test-performance-locust-querystring-search-ci:
+	bin/locust -f performance/querystring-search.py --host http://localhost:12345/Plone --users 100 --spawn-rate 5 --run-time 5m --headless --csv=example
+
 .PHONY: Code Analysis
 code-analysis:  ## Code Analysis
 	bin/code-analysis

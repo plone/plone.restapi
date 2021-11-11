@@ -55,6 +55,15 @@ class TestTranslationInfo(unittest.TestCase):
             ILanguage(self.es_content).get_language(), tinfo_es["language"]
         )
 
+    def test_translation_info_includes_root_translations(self):
+        tinfo = getMultiAdapter(
+            (self.en_content, self.request), name="GET_application_json_@translations"
+        )
+
+        info = tinfo.reply()
+        self.assertIn("root", info)
+        self.assertEqual(4, len(info["root"]))
+
 
 class TestLinkContentsAsTranslations(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING

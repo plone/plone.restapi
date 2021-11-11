@@ -132,4 +132,10 @@
   <adapter factory=".slots.SlotSerializer" />
   <adapter factory=".slots.SlotsSerializer" />
 
+  <!-- Summary Serializer Metadata -->
+  <utility
+      factory=".summary.JSONSummarySerializerMetadata"
+      name="plone.restapi.summary_serializer_metadata"
+      />
+
 </configure>
