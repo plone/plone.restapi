@@ -63,13 +63,6 @@ Install plone.restapi by adding it to your buildout::
 
 and then running ``bin/buildout``
 
-Usage in Plone 5.2:
-
-- Older plone.restapi 7.x. is part of the Plone 5.2.x release series and works on both Python 2.7 and 3.6 to 3.8.
-- plone.restapi 8.x or later works with Plone 5.2:
-  - if Python 3.6 or later is used and
-  - since plone.restapi 8.9.0 if PyJWT 2.1.0 is used. Set a pin `pyjwt = 2.1.0` in the `[versions]` section of the buildout file. 
-
 
 Contribute
 ==========
