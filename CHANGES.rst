@@ -20,8 +20,8 @@ New features:
 Bug fixes:
 
 
-- - Add missing backend logout actions for the @logout endpoint (delete cookie, etc)
-    [sneridagh] (#1239)
+- Add missing backend logout actions for the @logout endpoint (delete cookie, etc)
+  [sneridagh] (#1239)
 
 
 7.4.1 (2021-09-24)
