@@ -8,6 +8,88 @@ Changelog
 
 .. towncrier release notes start
 
+8.14.0 (2021-11-11)
+-------------------
+
+New features:
+
+
+- Add root (INavigationRoot) for the current object information in @translations endpoint
+  [sneridagh] (#1263)
+
+
+8.13.0 (2021-11-05)
+-------------------
+
+New features:
+
+
+- Implement IJSONSummarySerializerMetadata allowing addons to extend the metadata returned by Summary serializer.
+  [ericof] (#1250)
+- Enable usage of metadata_fields also for POST calls [cekk] (#1253)
+
+
+8.12.1 (2021-10-14)
+-------------------
+
+Bug fixes:
+
+
+- Fix wrong @id attribute on the Plone root serialization when using the new ++api++ traversal (introduced in plone.rest 2.0.0)
+  [sneridagh] (#1248)
+
+
+8.12.0 (2021-10-11)
+-------------------
+
+New features:
+
+
+- Add missing backend logout actions for the @logout endpoint (delete cookie, etc)
+  [sneridagh] (#1239)
+
+
+8.11.0 (2021-09-29)
+-------------------
+
+New features:
+
+
+- Make masking specific validation errors configurable in DX DeserializeFromJson. [fredvd] (#1211)
+
+
+Bug fixes:
+
+
+- Normalize unstable generated behavior names in http-examples output.
+  No longer hardcode port 55001 for the tests.
+  [maurits] (#1226)
+- Avoid `UnboundLocalError` or duplicates in results when using `@search` endpoint and a brain is orphan or a `KeyError` occurs during result serialization.
+  [gbastien] (#1231)
+
+
+8.10.0 (2021-09-24)
+-------------------
+
+New features:
+
+
+- Update default allow_headers CORS to include: Lock-Token [@avoinea] (#1181)
+- @types endpoint also returns if a content type is immediately addable in the given context
+  [ericof] (#1228)
+
+
+Bug fixes:
+
+
+- Fix @users endpoint to use acl_users.searchResults instead of portal_membership.listMembers
+  [ericof] (#1199)
+- Fix testing of a checkout instead of a released package.
+  [maurits] (#1213)
+- Fix @users endpoint to return list of users ordered by fullname property
+  [ericof] (#1222)
+
+
 8.9.1 (2021-08-27)
 ------------------
 

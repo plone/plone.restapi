@@ -208,3 +208,19 @@ class IBlockSearchableText(Interface):
 
     def __call__(value):
         """Extract text from the block value. Returns text"""
+
+
+class IJSONSummarySerializerMetadata(Interface):
+    """Configure JSONSummary serializer."""
+
+    def default_metadata():
+        """Returns a set with default metadata to be serialized."""
+
+    def field_accessors():
+        """Returns a dictionary with field accessors to be used during serialization."""
+
+    def non_metadata_attributes():
+        """Returns a set with non metadata attributes."""
+
+    def blocklisted_attributes():
+        """Returns a set with attributes blocked during serialization."""

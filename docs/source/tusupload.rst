@@ -122,7 +122,7 @@ If you use CORS and want to make it work with TUS, you have to make sure the TUS
     allow_origin="http://localhost"
     allow_methods="DELETE,GET,OPTIONS,PATCH,POST,PUT"
     allow_credentials="true"
-    allow_headers="Accept,Authorization,Origin,X-Requested-With,Content-Type,Upload-Length,Upload-Offset,Tus-Resumable,Upload-Metadata"
+    allow_headers="Accept,Authorization,Origin,X-Requested-With,Content-Type,Upload-Length,Upload-Offset,Tus-Resumable,Upload-Metadata,Lock-Token"
     expose_headers="Upload-Offset,Location,Upload-Length,Tus-Version,Tus-Resumable,Tus-Max-Size,Tus-Extension,Upload-Metadata"
     max_age="3600"
     />
