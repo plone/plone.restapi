@@ -43,6 +43,15 @@ def test_vocabulary_factory(context):
     return TEST_VOCABULARY
 
 
+TEST_BIG_VOCABULARY = SimpleVocabulary(
+    [SimpleTerm(a, token=f"token{a}", title=f"Title {a}") for a in range(100)]
+)
+
+
+def test_big_vocabulary_factory(context):
+    return TEST_BIG_VOCABULARY
+
+
 def test_context_vocabulary_factory(context):
     return SimpleVocabulary(
         [
@@ -330,6 +339,20 @@ class TestVocabularyEndpoint(unittest.TestCase):
                 "items_total": 2,
             },
         )
+
+    def test_big_vocabulary_not_batched(self):
+        provideUtility(
+            test_big_vocabulary_factory,
+            provides=IVocabularyFactory,
+            name="plone.restapi.tests.test_big_vocabulary",
+        )
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_big_vocabulary?not_batched=1"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(len(response["items"]), 100)
 
     def tearDown(self):
         self.api_session.close()

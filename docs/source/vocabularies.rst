@@ -83,6 +83,8 @@ The token is what should be sent to the server to address that term.
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/vocabularies_get.resp
    :language: http
 
+By default, the vocabularies are batched. However, you can pass a ``not_batched`` parameter to force the endpoint to return all the terms.
+
 Filter Vocabularies
 ^^^^^^^^^^^^^^^^^^^
 
