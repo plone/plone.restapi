@@ -347,7 +347,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
             name="plone.restapi.tests.test_big_vocabulary",
         )
         response = self.api_session.get(
-            "/@vocabularies/plone.restapi.tests.test_big_vocabulary?not_batched=1"
+            "/@vocabularies/plone.restapi.tests.test_big_vocabulary?b_size=-1"
         )
 
         self.assertEqual(200, response.status_code)

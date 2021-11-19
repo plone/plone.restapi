@@ -27,7 +27,7 @@ class SerializeVocabLikeToJson:
         vocabulary = self.context
         title = safe_unicode(self.request.form.get("title", ""))
         token = self.request.form.get("token", "")
-        not_batched = self.request.form.get("not_batched", "")
+        b_size = self.request.form.get("b_size", "")
 
         terms = []
         for term in vocabulary:
@@ -55,7 +55,8 @@ class SerializeVocabLikeToJson:
 
         serialized_terms = []
 
-        if not_batched:
+        # Do not batch parameter is set
+        if b_size == "-1":
             for term in terms:
                 serializer = getMultiAdapter(
                     (term, self.request), interface=ISerializeToJson
