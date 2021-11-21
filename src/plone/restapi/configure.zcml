@@ -37,6 +37,7 @@
       description="RESTful hypermedia API for Plone."
       provides="Products.GenericSetup.interfaces.EXTENSION"
       directory="profiles/default"
+      post_handler=".setuphandlers.post_install_default"
       />
 
   <genericsetup:registerProfile
@@ -71,14 +72,6 @@
       description="Enables blocks on the Document content type"
       provides="Products.GenericSetup.interfaces.EXTENSION"
       directory="profiles/blocks"
-      />
-
-  <!-- Register "various" import step -->
-  <genericsetup:importStep
-      name="plone.restapi"
-      title="plone.restapi special import handlers"
-      description=""
-      handler="plone.restapi.setuphandlers.import_various"
       />
 
   <genericsetup:registerProfile
