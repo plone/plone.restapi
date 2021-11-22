@@ -385,8 +385,10 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.request.form["include_items"] = True
         serialized = self.serialize(self.portal.collection1)
         items = serialized.get("items")
-        self.assertEqual(items[0]["title"], self.portal.doc1.Title())
-        self.assertEqual(items[1]["title"], self.portal.doc2.Title())
+        self.assertEqual(
+            sorted([item["title"] for item in items]),
+            [self.portal.doc1.Title(), self.portal.doc2.Title()],
+        )
         self.assertEqual(serialized.get("items_total"), 2)
 
     def test_serialize_returns_site_root_common(self):
