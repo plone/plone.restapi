@@ -1,6 +1,0 @@
-Remove all traces of ``Products.CMFQuickInstaller``.
-It was removed in Plone 5.2.
-BBB code was in ``plone.app.upgrade`` only.
-Plone with Restapi broke if ``plone.app.upgrade` was not available, like when dependening on ``Products.CMFPlone`` only.
-[jensens]
-

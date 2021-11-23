@@ -8,6 +8,27 @@ Changelog
 
 .. towncrier release notes start
 
+8.15.0 (2021-11-23)
+-------------------
+
+New features:
+
+
+- Return non-batched vocabularies given a query param ``b_size=-1``
+  [sneridagh] (#1264)
+
+
+Bug fixes:
+
+
+- Remove all traces of ``Products.CMFQuickInstaller``.
+  It was removed in Plone 5.2.
+  BBB code was in ``plone.app.upgrade`` only.
+  Plone with Restapi broke if ``plone.app.upgrade` was not available, like when dependening on ``Products.CMFPlone`` only.
+  [jensens] (#1267)
+- Fix installation of JWT PAS plugin with default profile. [jensens] (#1269)
+
+
 8.14.0 (2021-11-11)
 -------------------
 
