@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+8.15.2 (2021-11-24)
+-------------------
+
+Bug fixes:
+
+
+- Adjust restrictions of vocabularies endpoint [ksuess] (#1258)
+
+
 8.15.1 (2021-11-24)
 -------------------
 
