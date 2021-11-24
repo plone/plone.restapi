@@ -1,12 +1,8 @@
 from AccessControl import getSecurityManager
 
 
-try:
-    from plone.app.vocabularies.security import DEFAULT_PERMISSION
-    from plone.app.vocabularies.security import PERMISSIONS
-except ImportError:
-    from plone.app.content.browser.vocabulary import DEFAULT_PERMISSION
-    from plone.app.content.browser.vocabulary import PERMISSIONS
+from plone.app.content.browser.vocabulary import DEFAULT_PERMISSION
+from plone.app.content.browser.vocabulary import PERMISSIONS
 
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
