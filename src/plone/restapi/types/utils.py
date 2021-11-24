@@ -300,7 +300,7 @@ def serializeSchema(schema):
 
 def get_info_for_type(context, request, name):
     """Get JSON info for the given portal type"""
-    schema = get_jsonschema_for_portal_type(name, getSite(), request)
+    schema = get_jsonschema_for_portal_type(name, context, request)
 
     if not hasattr(context, "schema"):
         return schema

@@ -1,0 +1,1 @@
+Fix schema generation when /@types/ is used in a context. [ericof]
