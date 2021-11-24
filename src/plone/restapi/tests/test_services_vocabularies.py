@@ -3,6 +3,8 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.component import getGlobalSiteManager
@@ -109,6 +111,38 @@ class TestVocabularyEndpoint(unittest.TestCase):
                 "items_total": 7,
             },
         )
+
+    def test_get_builtin_vocabulary(self):
+        """Check if built-in vocabularies are protected.
+
+        See plone.app.vocabularies.PERMISSIONS
+        """
+        self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
+
+        # test editor
+        setRoles(self.portal, TEST_USER_ID, ["Member", "Contributor", "Editor"])
+        transaction.commit()
+        response = self.api_session.get(
+            "/@vocabularies/plone.app.vocabularies.Keywords"
+        )
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.app.vocabularies.Keywords",  # noqa
+                "items": [],
+                "items_total": 0,
+            },
+        )
+        # test Anonymous
+        setRoles(self.portal, TEST_USER_ID, ["Anonymous"])
+        transaction.commit()
+        response = self.api_session.get(
+            "/@vocabularies/plone.app.vocabularies.Keywords"
+        )
+        self.assertEqual(403, response.status_code)
 
     def test_get_vocabulary_batched(self):
         response = self.api_session.get(
