@@ -35,20 +35,19 @@ class VocabulariesGet(Service):
         return {"error": {"type": type, "message": message}}
 
     def _has_permission_to_access_vocabulary(self, vocabulary_name):
-        """Check if user is authorized to access built-in vocabulary
+        """Check if user is authorized to access the vocabulary.
 
-        default permission for all vocabularies, built-in and others, was
-          <permission
-            id="plone.restapi.vocabularies"
-            title="plone.restapi: Access Plone vocabularies"
-            />
+        The endpoint using this method is supposed to have no further protection (`zope.2Public` permission).
+        A vocabulary with no further protection follows the `plone.app.vocabularies.DEFAULT_PERMISSION` (usually `zope2.View`).
+        For further protection the dictionary `plone.app.vocabularies.PERMISSION` is used.
+        It is a mapping from vocabulary name to permission.
+        If a vocabulary is mapped there, the permission from the map is taken.
+        Thus vocabularies can be protected stronger or weaker than the default.
         """
-        if vocabulary_name in PERMISSIONS:
-            sm = getSecurityManager()
-            return sm.checkPermission(
-                PERMISSIONS.get(vocabulary_name, DEFAULT_PERMISSION), self.context
-            )
-        return True
+        sm = getSecurityManager()
+        return sm.checkPermission(
+            PERMISSIONS.get(vocabulary_name, DEFAULT_PERMISSION), self.context
+        )
 
     def reply(self):
         # return list of all vocabularies
