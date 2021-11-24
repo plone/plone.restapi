@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+8.15.1 (2021-11-24)
+-------------------
+
+Bug fixes:
+
+
+- Fix schema generation when /@types/ is used in a context. [ericof] (#1271)
+
+
 8.15.0 (2021-11-23)
 -------------------
 
