@@ -300,7 +300,14 @@ def serializeSchema(schema):
 
 def get_info_for_type(context, request, name):
     """Get JSON info for the given portal type"""
-    schema = get_jsonschema_for_portal_type(name, context, request)
+    base_context = context
+
+    # If context is not a dexterity content, use site root to get
+    # the schema
+    if not IDexterityContent.providedBy(context):
+        base_context = getSite()
+
+    schema = get_jsonschema_for_portal_type(name, base_context, request)
 
     if not hasattr(context, "schema"):
         return schema
