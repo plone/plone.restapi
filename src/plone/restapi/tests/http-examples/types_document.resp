@@ -93,7 +93,7 @@ Content-Type: application/json+schema
             "title": "Allow discussion",
             "type": "string",
             "vocabulary": {
-                "@id": "http://localhost:55001/plone/dexterity-types/Document/@sources/allow_discussion"
+                "@id": "http://localhost:55001/plone/@sources/allow_discussion"
             }
         },
         "author_email": {
@@ -127,7 +127,7 @@ Content-Type: application/json+schema
             "uniqueItems": true,
             "widgetOptions": {
                 "vocabulary": {
-                    "@id": "http://localhost:55001/plone/dexterity-types/Document/@vocabularies/plone.app.vocabularies.Users"
+                    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
                 }
             }
         },
@@ -147,7 +147,7 @@ Content-Type: application/json+schema
             "uniqueItems": true,
             "widgetOptions": {
                 "vocabulary": {
-                    "@id": "http://localhost:55001/plone/dexterity-types/Document/@vocabularies/plone.app.vocabularies.Users"
+                    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Users"
                 }
             }
         },
@@ -198,7 +198,7 @@ Content-Type: application/json+schema
             "title": "Language",
             "type": "string",
             "vocabulary": {
-                "@id": "http://localhost:55001/plone/dexterity-types/Document/@vocabularies/plone.app.vocabularies.SupportedContentLanguages"
+                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SupportedContentLanguages"
             }
         },
         "relatedItems": {
@@ -213,7 +213,7 @@ Content-Type: application/json+schema
                 "title": "Related",
                 "type": "string",
                 "vocabulary": {
-                    "@id": "http://localhost:55001/plone/dexterity-types/Document/@vocabularies/plone.app.vocabularies.Catalog"
+                    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
                 }
             },
             "title": "Related Items",
@@ -224,7 +224,7 @@ Content-Type: application/json+schema
                     "recentlyUsed": true
                 },
                 "vocabulary": {
-                    "@id": "http://localhost:55001/plone/dexterity-types/Document/@vocabularies/plone.app.vocabularies.Catalog"
+                    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
                 }
             }
         },
@@ -252,7 +252,7 @@ Content-Type: application/json+schema
             "uniqueItems": true,
             "widgetOptions": {
                 "vocabulary": {
-                    "@id": "http://localhost:55001/plone/dexterity-types/Document/@vocabularies/plone.app.vocabularies.Keywords"
+                    "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Keywords"
                 }
             }
         },
