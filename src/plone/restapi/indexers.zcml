@@ -20,6 +20,10 @@
              *"
         name="slate"
         />
+    <adapter
+        factory=".indexers.TableBlockSearchableText"
+        name="table"
+        />
   </configure>
 
 </configure>

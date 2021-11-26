@@ -250,3 +250,113 @@ class TestSearchTextInBlocks(unittest.TestCase):
 
         brain = results[0]
         self.assertEqual(brain.Title, "A document")
+
+    def test_search_table_text(self):
+        """Test text in tables is indexed"""
+        self.doc.blocks = {
+            "uuid1": {
+                "@type": "table",
+                "table": {
+                    "rows": [
+                        {
+                            "cells": [
+                                {
+                                    "key": "3dli7",
+                                    "type": "header",
+                                    "value": {
+                                        "blocks": [
+                                            {
+                                                "key": "1kh23",
+                                                "text": "First header",
+                                                "type": "unstyled",
+                                                "depth": 0,
+                                                "inlineStyleRanges": [],
+                                                "entityRanges": [],
+                                                "data": {},
+                                            }
+                                        ],
+                                        "entityMap": {},
+                                    },
+                                },
+                                {
+                                    "key": "3dli8",
+                                    "type": "header",
+                                    "value": {
+                                        "blocks": [
+                                            {
+                                                "key": "1kh23",
+                                                "text": "Second header",
+                                                "type": "unstyled",
+                                                "depth": 0,
+                                                "inlineStyleRanges": [],
+                                                "entityRanges": [],
+                                                "data": {},
+                                            }
+                                        ],
+                                        "entityMap": {},
+                                    },
+                                },
+                            ],
+                        },
+                        {
+                            "cells": [
+                                {
+                                    "key": "3dli9",
+                                    "type": "data",
+                                    "value": {
+                                        "blocks": [
+                                            {
+                                                "key": "1kh23",
+                                                "text": "Data foo",
+                                                "type": "unstyled",
+                                                "depth": 0,
+                                                "inlineStyleRanges": [],
+                                                "entityRanges": [],
+                                                "data": {},
+                                            }
+                                        ],
+                                        "entityMap": {},
+                                    },
+                                },
+                                {
+                                    "key": "3dl29",
+                                    "type": "data",
+                                    "value": {
+                                        "blocks": [
+                                            {
+                                                "key": "1kh23",
+                                                "text": "Data bar",
+                                                "type": "unstyled",
+                                                "depth": 0,
+                                                "inlineStyleRanges": [],
+                                                "entityRanges": [],
+                                                "data": {},
+                                            }
+                                        ],
+                                        "entityMap": {},
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            }
+        }
+        self.doc.blocks_layout = [
+            "uuid1",
+        ]
+        self.portal.portal_catalog.indexObject(self.doc)
+
+        query = {"SearchableText": "foo"}
+        results = self.portal.portal_catalog.searchResults(**query)
+        self.assertEqual(len(results), 1)
+
+        brain = results[0]
+        self.assertEqual(brain.Title, "A document")
+
+        query = {"SearchableText": "first"}
+        results = self.portal.portal_catalog.searchResults(**query)
+        self.assertEqual(len(results), 1)
+
+        brain = results[0]
+        self.assertEqual(brain.Title, "A document")
