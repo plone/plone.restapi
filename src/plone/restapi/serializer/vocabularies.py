@@ -27,6 +27,7 @@ class SerializeVocabLikeToJson:
         vocabulary = self.context
         title = safe_unicode(self.request.form.get("title", ""))
         token = self.request.form.get("token", "")
+        b_size = self.request.form.get("b_size", "")
 
         terms = []
         for term in vocabulary:
@@ -52,9 +53,19 @@ class SerializeVocabLikeToJson:
                     continue
                 terms.append(term)
 
+        serialized_terms = []
+
+        # Do not batch parameter is set
+        if b_size == "-1":
+            for term in terms:
+                serializer = getMultiAdapter(
+                    (term, self.request), interface=ISerializeToJson
+                )
+                serialized_terms.append(serializer())
+            return {"@id": vocabulary_id, "items": serialized_terms}
+
         batch = HypermediaBatch(self.request, terms)
 
-        serialized_terms = []
         for term in batch:
             serializer = getMultiAdapter(
                 (term, self.request), interface=ISerializeToJson

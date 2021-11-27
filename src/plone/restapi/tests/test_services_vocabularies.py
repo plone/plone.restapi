@@ -3,6 +3,8 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_NAME
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.component import getGlobalSiteManager
@@ -41,6 +43,15 @@ TEST_VOCABULARY = SimpleVocabulary(
 
 def test_vocabulary_factory(context):
     return TEST_VOCABULARY
+
+
+TEST_BIG_VOCABULARY = SimpleVocabulary(
+    [SimpleTerm(a, token=f"token{a}", title=f"Title {a}") for a in range(100)]
+)
+
+
+def test_big_vocabulary_factory(context):
+    return TEST_BIG_VOCABULARY
 
 
 def test_context_vocabulary_factory(context):
@@ -100,6 +111,38 @@ class TestVocabularyEndpoint(unittest.TestCase):
                 "items_total": 7,
             },
         )
+
+    def test_get_builtin_vocabulary(self):
+        """Check if built-in vocabularies are protected.
+
+        See plone.app.vocabularies.PERMISSIONS
+        """
+        self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
+
+        # test editor
+        setRoles(self.portal, TEST_USER_ID, ["Member", "Contributor", "Editor"])
+        transaction.commit()
+        response = self.api_session.get(
+            "/@vocabularies/plone.app.vocabularies.Keywords"
+        )
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.app.vocabularies.Keywords",  # noqa
+                "items": [],
+                "items_total": 0,
+            },
+        )
+        # test Anonymous
+        setRoles(self.portal, TEST_USER_ID, ["Anonymous"])
+        transaction.commit()
+        response = self.api_session.get(
+            "/@vocabularies/plone.app.vocabularies.Keywords"
+        )
+        self.assertEqual(403, response.status_code)
 
     def test_get_vocabulary_batched(self):
         response = self.api_session.get(
@@ -330,6 +373,20 @@ class TestVocabularyEndpoint(unittest.TestCase):
                 "items_total": 2,
             },
         )
+
+    def test_big_vocabulary_not_batched(self):
+        provideUtility(
+            test_big_vocabulary_factory,
+            provides=IVocabularyFactory,
+            name="plone.restapi.tests.test_big_vocabulary",
+        )
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_big_vocabulary?b_size=-1"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(len(response["items"]), 100)
 
     def tearDown(self):
         self.api_session.close()

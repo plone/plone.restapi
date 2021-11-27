@@ -130,6 +130,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
                     }
                 ],
                 "b_size": 5,
+                "sort_on": "sortable_title",
             },
         )
 
@@ -153,6 +154,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
                 ],
                 "b_size": 5,
                 "b_start": 5,
+                "sort_on": "sortable_title",
             },
         )
 
