@@ -159,14 +159,17 @@ class DeserializeFromJson(OrderingMixin):
                     if name == "changeNote":
                         continue
                     dm = queryMultiAdapter((self.context, field), IDataManager)
-                    bound = field.bind(self.context)
-                    try:
-                        if name not in data and not dm.get() and not field.required:
+
+                    # Covering here missing_value/default edge cases
+                    if name not in data:
+                        dm = queryMultiAdapter((self.context, field), IDataManager)
+
+                        if field.missing_value and not dm.get() and not field.required:
                             # If the field is not set in data, it has no value set either,
                             # and missing_value is defined, it sets the missing value
                             dm.set(field.missing_value)
                         if (
-                            name not in data
+                            field.missing_value
                             and dm.get() == field.default
                             and not field.required
                         ):
@@ -174,6 +177,9 @@ class DeserializeFromJson(OrderingMixin):
                             # and missing_value is defined, it sets the missing value
                             # (so it prevails instead of default)
                             dm.set(field.missing_value)
+
+                    bound = field.bind(self.context)
+                    try:
                         bound.validate(dm.get())
                     except ValidationError as e:
                         errors.append({"message": e.doc(), "field": name, "error": e})
