@@ -190,9 +190,7 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         # If the field is not set in the request data, it has no value set either,
         # and missing_value is defined, it sets the missing value
         self.deserialize(body='{"test_required_field": "My Value"}', validate_all=True)
-        self.assertEqual(
-            "missing", self.portal.doc1.test_missing_value_field_and_no_default
-        )
+        self.assertEqual([], self.portal.doc1.test_missing_value_field_and_no_default)
 
     def test_deserializer_has_default_and_missing_value_sets_missing_value_when_receiving_nothing_at_all(
         self,

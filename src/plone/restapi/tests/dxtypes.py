@@ -279,8 +279,8 @@ class IDXTestDocumentSchema(model.Schema):
         required=False, missing_value="missing", default="default"
     )
 
-    test_missing_value_field_and_no_default = schema.TextLine(
-        required=False, missing_value="missing"
+    test_missing_value_field_and_no_default = schema.List(
+        required=False, value_type=schema.Choice(values=[1, 2, 3]), missing_value=[]
     )
 
     test_missing_value_required_field = schema.TextLine(
