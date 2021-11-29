@@ -1,11 +1,9 @@
 from AccessControl import getSecurityManager
-
-
 from plone.app.content.browser.vocabulary import DEFAULT_PERMISSION
 from plone.app.content.browser.vocabulary import PERMISSIONS
-
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from Products.CMFCore.utils import getToolByName
 from zope.component import ComponentLookupError
 from zope.component import getMultiAdapter
 from zope.component import getUtilitiesFor
@@ -60,15 +58,26 @@ class VocabulariesGet(Service):
 
         # return single vocabulary by name
         vocabulary_name = self.params[0]
+        pm = getToolByName(self.context, "portal_membership")
         if not self._has_permission_to_access_vocabulary(vocabulary_name):
-            return self._error(
-                403,
-                "Not authorized",
-                (
-                    f"You are not authorized to access "
-                    f"the vocabulary '{vocabulary_name}'."
-                ),
-            )
+            if bool(pm.isAnonymousUser()):
+                return self._error(
+                    401,
+                    "Not authenticated",
+                    (
+                        f"You need to be authenticated to access "
+                        f"the vocabulary '{vocabulary_name}'."
+                    ),
+                )
+            else:
+                return self._error(
+                    403,
+                    "Not authorized",
+                    (
+                        f"You are not authorized to access "
+                        f"the vocabulary '{vocabulary_name}'."
+                    ),
+                )
 
         try:
             factory = getUtility(IVocabularyFactory, name=vocabulary_name)
