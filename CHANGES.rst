@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+8.15.3 (2021-11-29)
+-------------------
+
+Bug fixes:
+
+
+- Types service: Do not consider TypeSchemaContext as a valid context
+  [ericof] (#1278)
+- Improve error status code in vocabularies endpoint refactor
+  [sneridagh] (#1284)
+
+
 8.15.2 (2021-11-24)
 -------------------
 
