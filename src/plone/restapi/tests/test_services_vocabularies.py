@@ -139,10 +139,12 @@ class TestVocabularyEndpoint(unittest.TestCase):
         # test Anonymous
         setRoles(self.portal, TEST_USER_ID, ["Anonymous"])
         transaction.commit()
+
+        self.api_session.auth = ()
         response = self.api_session.get(
             "/@vocabularies/plone.app.vocabularies.Keywords"
         )
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(401, response.status_code)
 
     def test_get_vocabulary_batched(self):
         response = self.api_session.get(
