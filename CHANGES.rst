@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+8.16.0 (2021-11-29)
+-------------------
+
+New features:
+
+
+- Enable table blocks indexing [cekk] (#1281)
+
+
 8.15.3 (2021-11-29)
 -------------------
 
