@@ -35,6 +35,26 @@ class TextBlockSearchableText:
         return _extract_text(value)
 
 
+@implementer(IBlockSearchableText)
+@adapter(IBlocks, IBrowserRequest)
+class TableBlockSearchableText:
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, value):
+        table = value.get("table", {})
+        if not table:
+            return ""
+        result = ""
+        for row in table.get("rows", []):
+            for cell in row.get("cells", []):
+                for paragraph in cell.get("value", {}).get("blocks", {}):
+                    text = paragraph["text"]
+                    result = " ".join((result, text))
+        return result
+
+
 @indexer(IBlocks)
 def SearchableText_blocks(obj):
     request = getRequest()
