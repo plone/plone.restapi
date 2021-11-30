@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.16.1 (2021-11-30)
+-------------------
+
+Bug fixes:
+
+
+- Improve support and meaning for `default` and `missing_value` in serializers/deserializers
+  [sneridagh] (#1282)
+
+
 8.16.0 (2021-11-29)
 -------------------
 
