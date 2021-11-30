@@ -159,27 +159,22 @@ class DeserializeFromJson(OrderingMixin):
                     if name == "changeNote":
                         continue
                     dm = queryMultiAdapter((self.context, field), IDataManager)
-
                     # Covering here missing_value/default edge cases
-                    if name not in data:
-                        dm = queryMultiAdapter((self.context, field), IDataManager)
-
-                        if (
-                            field.missing_value is not None
-                            and not dm.get()
-                            and not field.required
-                        ):
-                            # If the field is not set in data, it has no value set either,
-                            # and missing_value is defined, it sets the missing value
-                            dm.set(field.missing_value)
-                        if (
-                            field.missing_value is not None
-                            and dm.get() == field.default
-                            and not field.required
-                        ):
-                            # If the field is not set in data, it has a default,
-                            # and missing_value is defined, it sets the missing value
+                    if (
+                        name not in data 
+                        and field.missing_value is not None
+                        and not field.required
+                    ):
+                        # precondition:
+                        # - name was not handled before 
+                        # - not required, otherwise there has to be a value
+                        # - missing_value is defined, so it can be set
+                        dm_value = dm.get()
+                        if not dm_value or dm_value == field.default:
+                            # If theres no value at all
+                            # or if value is the default 
                             # (so it prevails instead of default)
+                            # then it sets the missing value
                             dm.set(field.missing_value)
 
                     bound = field.bind(self.context)
