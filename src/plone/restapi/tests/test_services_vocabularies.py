@@ -159,11 +159,13 @@ class TestVocabularyEndpoint(unittest.TestCase):
         response = response.json()
         self.assertEqual(
             response,
-            {'error': {
-                'message': 
-                    'You are not authorized to access the vocabulary '
+            {
+                "error": {
+                    "message": "You are not authorized to access the vocabulary "
                     "'plone.restapi.testing.protected_vocabulary'.",
-                'type': 'Forbidden'}},
+                    "type": "Forbidden",
+                }
+            },
         )
 
         # Test Manager.

@@ -92,7 +92,7 @@ class VocabulariesGet(Service):
 
         factory = ProxyFactory(factory)
         checker = getChecker(factory)
-        permission = dict(checker.get_permissions.items()).get('__call__')
+        permission = dict(checker.get_permissions.items()).get("__call__")
         if permission and not permission == CheckerPublic:
             sm = getSecurityManager()
             if not sm.checkPermission(permission, self.context):
