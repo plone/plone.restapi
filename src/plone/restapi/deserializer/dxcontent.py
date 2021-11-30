@@ -161,18 +161,18 @@ class DeserializeFromJson(OrderingMixin):
                     dm = queryMultiAdapter((self.context, field), IDataManager)
                     # Covering here missing_value/default edge cases
                     if (
-                        name not in data 
+                        name not in data
                         and field.missing_value is not None
                         and not field.required
                     ):
                         # precondition:
-                        # - name was not handled before 
+                        # - name was not handled before
                         # - not required, otherwise there has to be a value
                         # - missing_value is defined, so it can be set
                         dm_value = dm.get()
                         if not dm_value or dm_value == field.default:
                             # If theres no value at all
-                            # or if value is the default 
+                            # or if value is the default
                             # (so it prevails instead of default)
                             # then it sets the missing value
                             dm.set(field.missing_value)
