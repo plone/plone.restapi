@@ -11,6 +11,10 @@ from zope.component import getUtility
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.schema.interfaces import IVocabularyFactory
+from zope.security.proxy import getChecker
+from zope.security.checker import ProxyFactory
+from zope.security.proxy import removeSecurityProxy
+from zope.security.checker import CheckerPublic
 
 
 @implementer(IPublishTraverse)
@@ -85,6 +89,23 @@ class VocabulariesGet(Service):
             return self._error(
                 404, "Not Found", f"The vocabulary '{vocabulary_name}' does not exist"
             )
+
+        factory = ProxyFactory(factory)
+        checker = getChecker(factory)
+        permission = dict(checker.get_permissions.items()).get('__call__')
+        if permission and not permission == CheckerPublic:
+            sm = getSecurityManager()
+            if not sm.checkPermission(permission, self.context):
+                return self._error(
+                    403,
+                    "Forbidden",
+                    (
+                        f"You are not authorized to access "
+                        f"the vocabulary '{vocabulary_name}'."
+                    ),
+                )
+
+        factory = removeSecurityProxy(factory)
 
         vocabulary = factory(self.context)
         serializer = getMultiAdapter(

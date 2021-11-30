@@ -146,6 +146,34 @@ class TestVocabularyEndpoint(unittest.TestCase):
         )
         self.assertEqual(401, response.status_code)
 
+    def test_get_protected_vocabulary(self):
+        self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
+
+        # Test Editor.
+        setRoles(self.portal, TEST_USER_ID, ["Member", "Contributor", "Editor"])
+        transaction.commit()
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.testing.protected_vocabulary"
+        )
+        self.assertEqual(403, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {'error': {
+                'message': 
+                    'You are not authorized to access the vocabulary '
+                    "'plone.restapi.testing.protected_vocabulary'.",
+                'type': 'Forbidden'}},
+        )
+
+        # Test Manager.
+        setRoles(self.portal, TEST_USER_ID, ["Member", "Manager"])
+        transaction.commit()
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.testing.protected_vocabulary"
+        )
+        self.assertEqual(200, response.status_code)
+
     def test_get_vocabulary_batched(self):
         response = self.api_session.get(
             "/@vocabularies/plone.restapi.tests.test_vocabulary?b_size=1"
