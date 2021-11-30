@@ -150,6 +150,16 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertIn("test_read_permission_field", obj)
         self.assertEqual("Secret Stuff", obj["test_read_permission_field"])
 
+    def test_serializer_includes_default_value(self):
+        obj = self.serialize()
+        self.assertIn("test_missing_value_field", obj)
+        self.assertEqual("default", obj["test_missing_value_field"])
+
+    def test_serializer_returns_None_if_only_missing_value_is_present(self):
+        obj = self.serialize()
+        self.assertIn("test_missing_value_field_and_no_default", obj)
+        self.assertEqual(None, obj["test_missing_value_field_and_no_default"])
+
     def test_get_layout(self):
         current_layout = self.portal.doc1.getLayout()
         obj = self.serialize()
