@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.16.2 (2021-12-03)
+-------------------
+
+Bug fixes:
+
+
+- Revert "Improve support for missing_value and default story" because it breaks multilingual
+  [timo] (#1289)
+
+
 8.16.1 (2021-11-30)
 -------------------
 
