@@ -187,18 +187,42 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         self.assertEqual("missing", self.portal.doc1.test_missing_value_field)
 
     def test_deserializer_sets_missing_value_when_receiving_nothing_at_all(self):
-        # If the field is not set in the request data, it has no value set either,
+        # If the field is not set in the request data, it has no value set either, nor default,
         # and missing_value is defined, it sets the missing value
         self.deserialize(body='{"test_required_field": "My Value"}', validate_all=True)
         self.assertEqual([], self.portal.doc1.test_missing_value_field_and_no_default)
 
-    def test_deserializer_has_default_and_missing_value_sets_missing_value_when_receiving_nothing_at_all(
+    def test_deserializer_has_default_and_missing_value_sets_default_when_receiving_nothing_at_all(
         self,
     ):
-        # If the field is not set in the request data, it has a default,
-        # and missing_value is defined, it sets the missing value (so it prevails instead of default)
+        # If the field is not set in the request data, it has a default
+        # and a missing_value defined, it sets nothing, thus Dexterity returns default on validation
         self.deserialize(body='{"test_required_field": "My Value"}', validate_all=True)
-        self.assertEqual("missing", self.portal.doc1.test_missing_value_field)
+        self.assertEqual("default", self.portal.doc1.test_missing_value_field)
+
+    def test_deserializer_on_conflictive_field_language(self):
+        """In the wild, there are conflictive field declarations that has both a default and
+        a missing_value set, that in some cases the deserializer when values are missing in the
+        request. Handling default nullish values is hard."""
+        self.portal.invokeFactory(
+            "Document",
+            id="doc_language",
+        )
+        self.deserialize(
+            body='{"title": "The title"}',
+            context=self.portal["doc_language"],
+            validate_all=True,
+            create=True,
+        )
+        self.assertEqual("en", self.portal.doc_language.language)
+
+        self.deserialize(
+            body='{"title": "The title", "language": "en"}',
+            context=self.portal["doc_language"],
+            validate_all=True,
+            create=True,
+        )
+        self.assertEqual("en", self.portal.doc_language.language)
 
     def test_deserializer_sets_missing_value_on_required_field(self):
         """We don't set missing_value if the field is required"""
