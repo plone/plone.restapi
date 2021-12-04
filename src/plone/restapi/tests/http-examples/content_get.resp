@@ -38,7 +38,10 @@ Content-Type: application/json
     "expires": null,
     "id": "my-document",
     "is_folderish": false,
-    "language": "",
+    "language": {
+        "title": "English",
+        "token": "en"
+    },
     "layout": "document_view",
     "lock": {
         "locked": false,

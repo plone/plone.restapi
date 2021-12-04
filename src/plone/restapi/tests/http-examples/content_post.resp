@@ -39,7 +39,10 @@ Location: http://localhost:55001/plone/folder/my-document
     "expires": null,
     "id": "my-document",
     "is_folderish": false,
-    "language": "",
+    "language": {
+        "title": "English",
+        "token": "en"
+    },
     "layout": "document_view",
     "lock": {
         "locked": false,
