@@ -247,3 +247,31 @@ class TestWorkflowTransition(TestCase):
         self.assertEqual(200, self.request.response.getStatus())
         self.assertEqual("published", self.wftool.getInfoFor(folder, "review_state"))
         self.assertEqual("published", self.wftool.getInfoFor(document, "review_state"))
+
+    def test_transition_recursive_do_not_break_if_children_does_not_have_the_action(
+        self,
+    ):
+        """
+        If one children is already published, he does not have "publish" action available
+        """
+        folder = self.portal[self.portal.invokeFactory("Folder", id="folder")]
+        subfolder1 = folder[folder.invokeFactory("Folder", id="subfolder-1")]
+        subfolder2 = folder[folder.invokeFactory("Folder", id="subfolder-2")]
+        self.wftool.doActionFor(subfolder1, "publish")
+
+        self.assertEqual(
+            "published", self.wftool.getInfoFor(subfolder1, "review_state")
+        )
+
+        # now try to publish folder and all children
+        self.request["BODY"] = '{"comment": "A comment", "include_children": true}'
+        service = self.traverse("/plone/folder/@workflow/publish")
+        service.reply()
+        self.assertEqual(200, self.request.response.getStatus())
+        self.assertEqual("published", self.wftool.getInfoFor(folder, "review_state"))
+        self.assertEqual(
+            "published", self.wftool.getInfoFor(subfolder1, "review_state")
+        )
+        self.assertEqual(
+            "published", self.wftool.getInfoFor(subfolder2, "review_state")
+        )
