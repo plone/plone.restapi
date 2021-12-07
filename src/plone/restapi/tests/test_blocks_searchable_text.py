@@ -50,6 +50,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
         response = self.api_session.patch(
             "/doc",
             json={
+                "blocks_layout": {"items": ["uuid1", "uuid2"]},
                 "blocks": {
                     "uuid1": {
                         "@type": "text",
@@ -85,7 +86,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
                             "entityMap": {},
                         },
                     },
-                }
+                },
             },
         )
 
@@ -147,6 +148,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
         }
 
         self.doc.blocks = blocks
+        self.doc.blocks_layout = {"items": ["uuid1", "uuid3"]}
         from plone.indexer.interfaces import IIndexableObject
         from zope.component import queryMultiAdapter
 
@@ -160,6 +162,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
         response = self.api_session.patch(
             "/doc",
             json={
+                "blocks_layout": {"items": ["uuid1", "uuid2"]},
                 "blocks": {
                     "uuid1": {
                         "@type": "text",
@@ -182,7 +185,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
                         "@type": "custom_type",
                         "searchableText": "custom text foo",
                     },
-                }
+                },
             },
         )
 
@@ -231,10 +234,12 @@ class TestSearchTextInBlocks(unittest.TestCase):
                 "value": [],
             },
         }
-        self.doc.blocks_layout = [
-            "38541872-06c2-41c9-8709-37107e597b18",
-            "4fcfeb9b-f73e-427c-9e06-2e4d53b06865",
-        ]
+        self.doc.blocks_layout = {
+            "items": [
+                "38541872-06c2-41c9-8709-37107e597b18",
+                "4fcfeb9b-f73e-427c-9e06-2e4d53b06865",
+            ]
+        }
         self.portal.portal_catalog.indexObject(self.doc)
 
         query = {"SearchableText": "climatic"}
@@ -342,9 +347,7 @@ class TestSearchTextInBlocks(unittest.TestCase):
                 },
             }
         }
-        self.doc.blocks_layout = [
-            "uuid1",
-        ]
+        self.doc.blocks_layout = {"items": ["uuid1"]}
         self.portal.portal_catalog.indexObject(self.doc)
 
         query = {"SearchableText": "foo"}
