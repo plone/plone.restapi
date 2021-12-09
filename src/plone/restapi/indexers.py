@@ -16,14 +16,6 @@ from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 
-def _extract_text(block):
-    result = ""
-    for paragraph in block.get("text", {}).get("blocks", {}):
-        text = paragraph["text"]
-        result = " ".join((result, text))
-    return result
-
-
 @implementer(IBlockSearchableText)
 @adapter(IBlocks, IBrowserRequest)
 class TextBlockSearchableText:
@@ -34,7 +26,11 @@ class TextBlockSearchableText:
         self.request = request
 
     def __call__(self, value):
-        return _extract_text(value)
+        result = ""
+        for paragraph in value.get("text", {}).get("blocks", {}):
+            text = paragraph["text"]
+            result = " ".join((result, text))
+        return result
 
 
 @implementer(IBlockSearchableText)
