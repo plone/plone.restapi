@@ -74,6 +74,58 @@ class SlateTextIndexer:
         return block.get("plaintext", "")
 
 
+def extract_subblocks(block):
+    """Extract subblocks from a block.
+
+    :param block: Dictionary with block information.
+    :returns: A list with subblocks, if present, or an empty list.
+    """
+    if "data" in block and "blocks" in block["data"]:
+        raw_blocks = block["data"]["blocks"]
+    elif "blocks" in block:
+        raw_blocks = block["blocks"]
+    else:
+        raw_blocks = None
+    return list(raw_blocks.values()) if isinstance(raw_blocks, dict) else []
+
+
+def extract_text(block, obj, request):
+    """Extract text information from a block.
+
+    This function tries the following methods, until it finds a result:
+        1. searchableText attribute
+        2. Server side adapter
+        3. Subblocks
+
+    The decision to use the server side adapter before the subblocks traversal
+    allows addon developers to choose this implementation when they want a
+    more granular control of the indexing.
+
+    :param block: Dictionary with block information.
+    :param obj: Context to be used to get a IBlockSearchableText.
+    :param request: Current request.
+    :returns: A string with text found in the block.
+    """
+    result = ""
+    block_type = block.get("@type", "")
+    subblocks = extract_subblocks(block)
+    # searchableText is the conventional way of storing
+    # searchable info in a block
+    searchableText = block.get("searchableText", "")
+    if searchableText:
+        # TODO: should we evaluate in some way this value? maybe passing
+        # it into html/plain text transformer?
+        return searchableText
+    # Use server side adapters to extract the text data
+    adapter = queryMultiAdapter((obj, request), IBlockSearchableText, name=block_type)
+    result = adapter(block) if adapter is not None else ""
+    if not result and subblocks:
+        for subblock in subblocks:
+            tmp_result = extract_text(subblock, obj, request)
+            result = f"{result} {tmp_result}"
+    return result
+
+
 @indexer(IBlocks)
 def SearchableText_blocks(obj):
     """Extract text to be used by the SearchableText index in the Catalog."""
@@ -83,24 +135,9 @@ def SearchableText_blocks(obj):
     blocks_text = []
     for block_id in blocks_layout.get("items", []):
         block = blocks.get(block_id, {})
-        # searchableText is the conventional way of storing
-        # searchable info in a block
-        searchableText = block.get("searchableText", "")
-        if searchableText:
-            # TODO: should we evaluate in some way this value? maybe passing
-            # it into html/plain text transformer?
-            blocks_text.append(searchableText)
-        else:
-            # Use server side adapters to extract the text data
-            block_type = block.get("@type", "")
-            adapter = queryMultiAdapter(
-                (obj, request), IBlockSearchableText, name=block_type
-            )
-            text = adapter(block) if adapter is not None else ""
-            if text:
-                blocks_text.append(text)
+        blocks_text.append(extract_text(block, obj, request))
 
     # Extract text using the base plone.app.contenttypes indexer
     std_text = SearchableText(obj)
     blocks_text.append(std_text)
-    return " ".join(blocks_text)
+    return " ".join([text.strip() for text in blocks_text if text.strip()])

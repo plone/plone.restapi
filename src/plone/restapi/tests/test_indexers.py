@@ -7,6 +7,86 @@ from zope.component import queryUtility
 import unittest
 
 
+DRAFTJS_BLOCK = {
+    "@type": "text",
+    "text": {
+        "blocks": [
+            {
+                "data": {},
+                "depth": 0,
+                "entityRanges": [],
+                "inlineStyleRanges": [],
+                "key": "behki",
+                "text": "Plone is a powerful content management system",
+                "type": "unstyled",
+            }
+        ],
+        "entityMap": {},
+    },
+}
+
+SLATE_BLOCK = {
+    "@type": "slate",
+    "plaintext": "Follow Plone Conference",
+    "value": [{"children": [{"text": "Follow Plone Conference"}]}],
+}
+
+
+TABLE_BLOCK = {
+    "@type": "table",
+    "table": {
+        "rows": [
+            {
+                "key": "a",
+                "cells": [
+                    {
+                        "type": "data",
+                        "key": "b",
+                        "value": {
+                            "blocks": [
+                                {
+                                    "data": {},
+                                    "depth": 0,
+                                    "entityRanges": [],
+                                    "inlineStyleRanges": [],
+                                    "key": "fgm98",
+                                    "text": "My header",
+                                    "type": "header-two",
+                                },
+                            ],
+                            "entityMap": {},
+                        },
+                    },
+                ],
+            },
+            {
+                "key": "c",
+                "cells": [
+                    {
+                        "type": "data",
+                        "key": "d",
+                        "value": {
+                            "blocks": [
+                                {
+                                    "data": {},
+                                    "depth": 0,
+                                    "entityRanges": [],
+                                    "inlineStyleRanges": [],
+                                    "key": "mmm99",
+                                    "text": "My data",
+                                    "type": "text",
+                                },
+                            ],
+                            "entityMap": {},
+                        },
+                    },
+                ],
+            },
+        ]
+    },
+}
+
+
 class TestSearchableTextIndexer(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -52,7 +132,7 @@ class TestSearchableTextIndexer(unittest.TestCase):
             [{"@type": "new-block", "attribute": "bar", "searchableText": "Foo Bar"}],
         )
         result = self._extract_searchable_text(document)
-        self.assertIn("Title is here Description is there ", result)
+        self.assertIn("Title is here Description is there", result)
         self.assertIn("Foo Bar", result)
 
     def test_indexer_multiple_blocks(self):
@@ -72,15 +152,11 @@ class TestSearchableTextIndexer(unittest.TestCase):
         self._add_blocks(
             document,
             [
-                {
-                    "@type": "slate",
-                    "plaintext": "Follow Plone Conference",
-                    "value": [{"children": [{"text": "Follow Plone Conference"}]}],
-                }
+                SLATE_BLOCK,
             ],
         )
         result = self._extract_searchable_text(document)
-        self.assertIn("Title is here Description is there ", result)
+        self.assertIn("Title is here Description is there", result)
         self.assertIn("Follow Plone Conference", result)
 
     def test_indexer_block_text(self):
@@ -88,27 +164,11 @@ class TestSearchableTextIndexer(unittest.TestCase):
         self._add_blocks(
             document,
             [
-                {
-                    "@type": "text",
-                    "text": {
-                        "blocks": [
-                            {
-                                "data": {},
-                                "depth": 0,
-                                "entityRanges": [],
-                                "inlineStyleRanges": [],
-                                "key": "behki",
-                                "text": "Plone is a powerful content management system",
-                                "type": "unstyled",
-                            }
-                        ],
-                        "entityMap": {},
-                    },
-                }
+                DRAFTJS_BLOCK,
             ],
         )
         result = self._extract_searchable_text(document)
-        self.assertIn("Title is here Description is there ", result)
+        self.assertIn("Title is here Description is there", result)
         self.assertIn("Plone is a powerful content management system", result)
 
     def test_indexer_block_table(self):
@@ -116,61 +176,40 @@ class TestSearchableTextIndexer(unittest.TestCase):
         self._add_blocks(
             document,
             [
-                {
-                    "@type": "table",
-                    "table": {
-                        "rows": [
-                            {
-                                "key": "a",
-                                "cells": [
-                                    {
-                                        "type": "data",
-                                        "key": "b",
-                                        "value": {
-                                            "blocks": [
-                                                {
-                                                    "data": {},
-                                                    "depth": 0,
-                                                    "entityRanges": [],
-                                                    "inlineStyleRanges": [],
-                                                    "key": "fgm98",
-                                                    "text": "My header",
-                                                    "type": "header-two",
-                                                },
-                                            ],
-                                            "entityMap": {},
-                                        },
-                                    },
-                                ],
-                            },
-                            {
-                                "key": "c",
-                                "cells": [
-                                    {
-                                        "type": "data",
-                                        "key": "d",
-                                        "value": {
-                                            "blocks": [
-                                                {
-                                                    "data": {},
-                                                    "depth": 0,
-                                                    "entityRanges": [],
-                                                    "inlineStyleRanges": [],
-                                                    "key": "mmm99",
-                                                    "text": "My data",
-                                                    "type": "text",
-                                                },
-                                            ],
-                                            "entityMap": {},
-                                        },
-                                    },
-                                ],
-                            },
-                        ]
-                    },
-                }
+                TABLE_BLOCK,
             ],
         )
         result = self._extract_searchable_text(document)
-        self.assertIn("Title is here Description is there ", result)
+        self.assertIn("Title is here Description is there", result)
+        self.assertIn("My data", result)
+
+    def test_indexer_block_with_subblocks(self):
+        document = self.document
+        block = {
+            "@type": "complex-block",
+            "blocks": {
+                "ad625c27-670a-412e-821d-57870b6e82f1": SLATE_BLOCK,
+                "80c5d58d-4baf-4adc-8ef4-36810df5628d": DRAFTJS_BLOCK,
+                "4061b21d-c971-4ccc-a719-d8b24214fd8b": {
+                    "@type": "old-complex-block",
+                    "data": {
+                        "blocks": {
+                            "116feae0-7aa3-40f4-a776-fc893d78b353": TABLE_BLOCK,
+                        }
+                    },
+                },
+            },
+        }
+        self._add_blocks(
+            document,
+            [
+                block,
+            ],
+        )
+        result = self._extract_searchable_text(document)
+        # From Slate sub block
+        self.assertIn("Follow Plone Conference", result)
+        # From DraftJS
+        self.assertIn("Plone is a powerful content management system", result)
+        # From Table block
         self.assertIn("My data", result)
