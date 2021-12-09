@@ -256,12 +256,14 @@ class TestWorkflowTransition(TestCase):
         """
         folder = self.portal[self.portal.invokeFactory("Folder", id="folder")]
         subfolder1 = folder[folder.invokeFactory("Folder", id="subfolder-1")]
+        document = subfolder1[subfolder1.invokeFactory("Document", id="document")]
         subfolder2 = folder[folder.invokeFactory("Folder", id="subfolder-2")]
         self.wftool.doActionFor(subfolder1, "publish")
 
         self.assertEqual(
             "published", self.wftool.getInfoFor(subfolder1, "review_state")
         )
+        self.assertEqual("private", self.wftool.getInfoFor(document, "review_state"))
 
         # now try to publish folder and all children
         self.request["BODY"] = '{"comment": "A comment", "include_children": true}'
@@ -275,3 +277,4 @@ class TestWorkflowTransition(TestCase):
         self.assertEqual(
             "published", self.wftool.getInfoFor(subfolder2, "review_state")
         )
+        self.assertEqual("published", self.wftool.getInfoFor(document, "review_state"))
