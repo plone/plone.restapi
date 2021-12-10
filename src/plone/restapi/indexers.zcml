@@ -15,9 +15,6 @@
         />
     <adapter
         factory=".indexers.SlateTextIndexer"
-        provides="plone.restapi.interfaces.IBlockSearchableText"
-        for="*
-             *"
         name="slate"
         />
     <adapter
