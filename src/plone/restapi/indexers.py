@@ -118,7 +118,7 @@ def extract_text(block, obj, request):
     if not result and subblocks:
         for subblock in subblocks:
             tmp_result = extract_text(subblock, obj, request)
-            result = f"{result} {tmp_result}"
+            result = f"{result}\n{tmp_result}"
     return result
 
 
