@@ -104,7 +104,6 @@ def extract_text(block, obj, request):
     """
     result = ""
     block_type = block.get("@type", "")
-    subblocks = extract_subblocks(block)
     # searchableText is the conventional way of storing
     # searchable info in a block
     searchableText = block.get("searchableText", "")
@@ -115,7 +114,8 @@ def extract_text(block, obj, request):
     # Use server side adapters to extract the text data
     adapter = queryMultiAdapter((obj, request), IBlockSearchableText, name=block_type)
     result = adapter(block) if adapter is not None else ""
-    if not result and subblocks:
+    if not result:
+        subblocks = extract_subblocks(block)
         for subblock in subblocks:
             tmp_result = extract_text(subblock, obj, request)
             result = f"{result}\n{tmp_result}"
