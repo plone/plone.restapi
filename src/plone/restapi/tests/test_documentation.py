@@ -2022,8 +2022,7 @@ class TestIterateDocumentation(TestDocumentationBase):
 
     def test_documentation_vocabularies_get_filtered_by_token_list(self):
         response = self.api_session.get(
-            "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes",
-            params={"token_list": ["Document", "Event"]},
+            "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?tokens=Document,Event",
         )
         save_request_and_response_for_docs(
             "vocabularies_get_filtered_by_token_list", response
