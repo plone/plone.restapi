@@ -90,10 +90,11 @@ Filter Vocabularies
 
 .. http:get:: (context)/@vocabularies/(vocab_name)?title=(filter_query)
 .. http:get:: (context)/@vocabularies/(vocab_name)?token=(filter_query)
+.. http:get:: (context)/@vocabularies/(vocab_name)?tokens=(filter_term1)&tokens=(filter_term2)&...
 
-Vocabulary terms can be filtered using the ``title`` or ``token`` parameter.
+Vocabulary terms can be filtered using the ``title``, ``token`` or ``tokens`` (array) parameter.
 
-Use the ``title`` paramenter to filter vocabulary terms by title.
+Use the ``title`` parameter to filter vocabulary terms by title.
 E.g. search for all terms that contain the string ``doc`` in the title:
 
 ..  http:example:: curl httpie python-requests
@@ -102,7 +103,7 @@ E.g. search for all terms that contain the string ``doc`` in the title:
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_title.resp
    :language: http
 
-Use the ``token`` paramenter to filter vocabulary terms by token.
+Use the ``token`` parameter to filter vocabulary terms by token.
 This is useful in case that you have the token and you need to retrieve the ``title``.
 E.g. search the term ``doc`` in the token:
 
@@ -116,6 +117,13 @@ E.g. search the term ``doc`` in the token:
     You must not filter by title and token at the same time.
     The API returns a 400 response code if you do so.
 
+Use the ``tokens`` parameter to filter vocabulary terms by a list of tokens.
+
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token_list.req
+
+.. literalinclude:: ../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token_list.resp
+   :language: http
 
 Get a source
 ------------
