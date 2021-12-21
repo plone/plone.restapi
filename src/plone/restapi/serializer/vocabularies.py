@@ -27,7 +27,7 @@ class SerializeVocabLikeToJson:
         vocabulary = self.context
         title = safe_unicode(self.request.form.get("title", ""))
         token = self.request.form.get("token", "")
-        tokens = self.request.form.get("tokens", "")
+        tokens = self.request.form.get("tokens", [])
         b_size = self.request.form.get("b_size", "")
 
         terms = []
@@ -46,7 +46,7 @@ class SerializeVocabLikeToJson:
                     continue
                 terms.append(term)
             elif tokens:
-                for item in tokens.split(","):
+                for item in tokens:
                     if item.lower() != term.token.lower():
                         continue
                     terms.append(term)

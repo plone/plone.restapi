@@ -308,7 +308,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
 
     def test_get_vocabulary_filtered_by_token_list(self):
         response = self.api_session.get(
-            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1,token2"
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1&tokens=token2"
         )
 
         self.assertEqual(200, response.status_code)
@@ -317,7 +317,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
             response,
             {
                 "@id": self.portal_url
-                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1%2Ctoken2",  # noqa
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1&tokens=token2",  # noqa
                 "items": [
                     {"title": "Title 1", "token": "token1"},
                     {"title": "Title 2", "token": "token2"},

@@ -90,7 +90,7 @@ Filter Vocabularies
 
 .. http:get:: (context)/@vocabularies/(vocab_name)?title=(filter_query)
 .. http:get:: (context)/@vocabularies/(vocab_name)?token=(filter_query)
-.. http:get:: (context)/@vocabularies/(vocab_name)?tokens=(term1,term2,...)
+.. http:get:: (context)/@vocabularies/(vocab_name)?tokens=(filter_term1)&tokens=(filter_term2)&...
 
 Vocabulary terms can be filtered using the ``title``, ``token`` or ``tokens`` (array) parameter.
 
