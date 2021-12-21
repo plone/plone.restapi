@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+8.17.0 (2021-12-21)
+-------------------
+
+New features:
+
+
+- Enhance the vocabularies serializer to accept a list of tokens
+  [sneridagh] (#1294)
+
+
+Bug fixes:
+
+
+- SearchableText indexer should maintain the order of the blocks
+  [ericof] (#1292)
+
+
 8.16.2 (2021-12-03)
 -------------------
 
