@@ -306,7 +306,65 @@ class TestVocabularyEndpoint(unittest.TestCase):
             },
         )
 
-    def test_get_vocabulary_filtered_by_token_list(self):
+    def test_get_vocabulary_filtered_by_token_list_one_item_list_zope_ish(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens:list=token1"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens%3Alist=token1",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                ],
+                "items_total": 1,
+            },
+        )
+
+    def test_get_vocabulary_filtered_by_token_list_two_item_list_zope_ish(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens:list=token1&tokens:list=token2"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens%3Alist=token1&tokens%3Alist=token2",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                    {"title": "Title 2", "token": "token2"},
+                ],
+                "items_total": 2,
+            },
+        )
+
+    def test_get_vocabulary_filtered_by_token_list_one_item(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                ],
+                "items_total": 1,
+            },
+        )
+
+    def test_get_vocabulary_filtered_by_token_list_two_items(self):
         response = self.api_session.get(
             "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1&tokens=token2"
         )
