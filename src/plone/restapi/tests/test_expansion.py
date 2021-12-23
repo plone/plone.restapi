@@ -75,8 +75,15 @@ class TestExpansion(unittest.TestCase):
             expandable_elements(None, request),
         )
 
-    def test_expansion_returns_multiple_expanded_elements(self):
+    def test_expansion_returns_multiple_deprecated_commas_expanded_elements(self):
         request = TestRequest(form={"expand": "foo,bar"})
+        self.assertEqual(
+            {"@components": {"bar": "expanded", "foo": "expanded"}},
+            expandable_elements(None, request),
+        )
+
+    def test_expansion_returns_multiple_expanded_elements(self):
+        request = TestRequest(form={"expand": ["foo", "bar"]})
         self.assertEqual(
             {"@components": {"bar": "expanded", "foo": "expanded"}},
             expandable_elements(None, request),
@@ -119,6 +126,68 @@ class TestExpansionFunctional(unittest.TestCase):
 
     def tearDown(self):
         self.api_session.close()
+
+    def test_expanded_marked_as_list(self):
+        response = self.api_session.get(
+            "/folder", params={"expand:list": ["actions", "navigation"]}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("object" in response.json()["@components"]["actions"])
+        self.assertTrue("object_buttons" in response.json()["@components"]["actions"])
+        self.assertTrue("portal_tabs" in response.json()["@components"]["actions"])
+        self.assertTrue("site_actions" in response.json()["@components"]["actions"])
+        self.assertTrue("user" in response.json()["@components"]["actions"])
+        self.assertEqual(
+            [
+                {
+                    "title": "Home",
+                    "@id": self.portal_url + "",
+                    "description": "",
+                    "review_state": None,
+                    "items": [],
+                },
+                {
+                    "title": "Some Folder",
+                    "@id": self.portal_url + "/folder",
+                    "description": "",
+                    "review_state": "private",
+                    "items": [],
+                },
+            ],
+            response.json()["@components"]["navigation"]["items"],
+        )
+
+    def test_expanded_as_list(self):
+        response = self.api_session.get(
+            "/folder", params={"expand": ["actions", "navigation"]}
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue("object" in response.json()["@components"]["actions"])
+        self.assertTrue("object_buttons" in response.json()["@components"]["actions"])
+        self.assertTrue("portal_tabs" in response.json()["@components"]["actions"])
+        self.assertTrue("site_actions" in response.json()["@components"]["actions"])
+        self.assertTrue("user" in response.json()["@components"]["actions"])
+        self.assertEqual(
+            [
+                {
+                    "title": "Home",
+                    "@id": self.portal_url + "",
+                    "description": "",
+                    "review_state": None,
+                    "items": [],
+                },
+                {
+                    "title": "Some Folder",
+                    "@id": self.portal_url + "/folder",
+                    "description": "",
+                    "review_state": "private",
+                    "items": [],
+                },
+            ],
+            response.json()["@components"]["navigation"]["items"],
+        )
 
     def test_actions_is_expandable(self):
         response = self.api_session.get("/folder")
