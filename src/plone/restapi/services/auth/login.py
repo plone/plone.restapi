@@ -75,9 +75,7 @@ class Login(Service):
         )
         login_view._post_login()
 
-        payload = {}
-        payload["fullname"] = user.getProperty("fullname")
-        return {"token": plugin.create_token(user.getId(), data=payload)}
+        return {"token": self.request[plugin.cookie_name]}
 
     def _find_userfolder(self, userid):
         """Try to find a user folder that contains a user with the given

@@ -39,7 +39,11 @@ def install_pas_plugin(context):
             uf._setObject(plugin.getId(), plugin)
             plugin = uf["jwt_auth"]
             plugin.manage_activateInterfaces(
-                ["IAuthenticationPlugin", "IExtractionPlugin"]
+                [
+                    "IAuthenticationPlugin",
+                    "IExtractionPlugin",
+                    "ICredentialsUpdatePlugin",
+                ],
             )
         if uf_parent is uf_parent.getPhysicalRoot():
             break

@@ -13,6 +13,7 @@ from Products.PageTemplates.PageTemplateFile import PageTemplateFile
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
 from Products.PluggableAuthService.interfaces.plugins import IChallengePlugin
 from Products.PluggableAuthService.interfaces.plugins import IExtractionPlugin
+from Products.PluggableAuthService.interfaces.plugins import ICredentialsUpdatePlugin
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from zope.component import getUtility
 from zope.interface import implementer
@@ -39,7 +40,12 @@ def addJWTAuthenticationPlugin(self, id_, title=None, REQUEST=None):
         )
 
 
-@implementer(IAuthenticationPlugin, IChallengePlugin, IExtractionPlugin)
+@implementer(
+    IAuthenticationPlugin,
+    IChallengePlugin,
+    IExtractionPlugin,
+    ICredentialsUpdatePlugin,
+)
 class JWTAuthenticationPlugin(BasePlugin):
     """Plone PAS plugin for authentication with JSON web tokens (JWT)."""
 
@@ -51,6 +57,7 @@ class JWTAuthenticationPlugin(BasePlugin):
     store_tokens = False
     _secret = None
     _tokens = None
+    cookie_name = "auth_token"
 
     # ZMI tab for configuration page
     manage_options = (
@@ -59,9 +66,11 @@ class JWTAuthenticationPlugin(BasePlugin):
     security.declareProtected(ManagePortal, "manage_config")
     manage_config = PageTemplateFile("config", globals(), __name__="manage_config")
 
-    def __init__(self, id_, title=None):
+    def __init__(self, id_, title=None, cookie_name=None):
         self._setId(id_)
         self.title = title
+        if cookie_name:
+            self.cookie_name = cookie_name
 
     # Initiate a challenge to the user to provide credentials.
     @security.private
@@ -95,11 +104,19 @@ class JWTAuthenticationPlugin(BasePlugin):
                 return creds
 
         creds = {}
+
+        # Prefer the Authorization Bearer header if present
         auth = request._auth
         if auth is None:
             return
         if auth[:7].lower() == "bearer ":
             creds["token"] = auth.split()[-1]
+            return creds
+
+        # Finally, use the cookie if present
+        cookie = request.get(self.cookie_name, "")
+        if cookie:
+            creds["token"] = cookie
             return creds
 
     # IAuthenticationPlugin implementation
@@ -126,6 +143,32 @@ class JWTAuthenticationPlugin(BasePlugin):
                 return
 
         return (userid, userid)
+
+    @security.private
+    def updateCredentials(self, request, response, login, new_password):
+        """
+        Generate a new token for use both in the Bearer header and the cookie.
+        """
+        # Unfortunately PAS itself is confused as to whether this plugin method should
+        # get the immutable user ID or the mutable, user-facing user login/name.  Real
+        # usage in the Plone code base also uses both.  Do our best to guess which.
+        user_id = login
+        data = dict(fullname="")
+        user = self._getPAS().getUserById(login)
+        if user is None:
+            user = self._getPAS().getUser(login)
+        if user is not None:
+            user_id = user.getId()
+            data["fullname"] = user.getProperty("fullname")
+        token = self.create_token(user_id, data=data)
+        # Make available on the request for further use such as returning it in the JSON
+        # body of the response if the current request is for the REST API login view.
+        request[self.cookie_name] = token
+        # Make the token available to the client browser for use in UI code such as when
+        # the login happened through Plone Classic so that the the Volro React
+        # components can retrieve the token that way and use the Authorization Bearer
+        # header from then on.
+        response.setCookie(self.cookie_name, token, path="/")
 
     @security.protected(ManagePortal)
     @postonly
