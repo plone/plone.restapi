@@ -60,8 +60,16 @@ class TestFunctionalAuth(unittest.TestCase):
             headers={"Accept": "application/json"},
             json={"login": TEST_USER_NAME, "password": TEST_USER_PASSWORD},
         )
-        self.assertEqual(200, response.status_code)
-        self.assertIn("token", response.json())
+        self.assertEqual(
+            200,
+            response.status_code,
+            "Wrong API login response status code",
+        )
+        self.assertIn(
+            "token",
+            response.json(),
+            "Authentication token missing from API response JSON",
+        )
 
     def test_api_login_grants_zmi(self):
         """
@@ -78,16 +86,6 @@ class TestFunctionalAuth(unittest.TestCase):
             "__ac",
             login_resp.cookies,
             "Plone session cookie missing from API login POST response",
-        )
-        self.assertEqual(
-            login_resp.status_code,
-            200,
-            "Wrong API login response status code",
-        )
-        self.assertIn(
-            "token",
-            login_resp.json(),
-            "Authentication token missing from API response JSON",
         )
 
         zmi_resp = session.get(
