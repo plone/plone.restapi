@@ -28,8 +28,10 @@ class Login(Service):
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
-        userid = data["login"]
-        password = data["password"]
+        # Also add credentials to the request for other code that depends on it.  In
+        # particular, the PAS cookie authentication plugin depends on `__ac_password`.
+        userid = self.request.form["__ac_name"] = data["login"]
+        password = self.request.form["__ac_password"] = data["password"]
         uf = self._find_userfolder(userid)
 
         if uf is not None:
