@@ -77,14 +77,14 @@ class TestFunctionalAuth(unittest.TestCase):
         """
         session = requests.Session()
         self.addCleanup(session.close)
-        login_resp = session.post(
+        session.post(
             self.portal_url + "/@login",
             headers={"Accept": "application/json"},
             json={"login": SITE_OWNER_NAME, "password": TEST_USER_PASSWORD},
         )
         self.assertIn(
             "__ac",
-            login_resp.cookies,
+            session.cookies,
             "Plone session cookie missing from API login POST response",
         )
 
@@ -183,7 +183,7 @@ class TestFunctionalAuth(unittest.TestCase):
         )
         self.assertIn(
             "__ac",
-            login_resp.history[0].cookies,
+            session.cookies,
             "Plone session cookie missing form login POST response",
         )
         self.assertEqual(
