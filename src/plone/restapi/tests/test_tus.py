@@ -65,7 +65,7 @@ class TestTUS(unittest.TestCase):
         self.upload_url = f"{self.folder.absolute_url()}/@tus-upload"
         transaction.commit()
 
-        self.api_session = RelativeSession(self.portal.absolute_url())
+        self.api_session = RelativeSession(self.portal.absolute_url(), test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -576,7 +576,7 @@ class TestTUSUploadWithCORS(unittest.TestCase):
             CORSTestPolicy, adapts=(Interface, IBrowserRequest), provides=ICORSPolicy
         )
         self.portal = self.layer["portal"]
-        self.api_session = RelativeSession(self.portal.absolute_url())
+        self.api_session = RelativeSession(self.portal.absolute_url(), test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         self.upload_url = f"{self.portal.absolute_url()}/@tus-upload"

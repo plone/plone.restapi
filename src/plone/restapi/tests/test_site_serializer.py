@@ -69,7 +69,7 @@ class TestSiteSerializationFunctional(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(f"{self.portal_url}/++api++")
+        self.api_session = RelativeSession(f"{self.portal_url}/++api++", test=self)
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
     def tearDown(self):

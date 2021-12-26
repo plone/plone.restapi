@@ -253,11 +253,28 @@ class RelativeSession(requests.Session):
     base if their URL is relative (doesn't begin with a HTTP[S] scheme).
     """
 
-    def __init__(self, base_url):
+    def __init__(self, base_url, test=None):
+        """
+        Capture the base URL.  Optionally also capture a test case for cleanup.
+
+        Apparently, network sockets created by the `requests` library can remain open
+        even after the full body of the response has been read, despite [the
+        docs](https://docs.python-requests.org/en/latest/user/advanced/#body-content-workflow). In
+        particular, this results in `ResourceWarning: unclosed <socket.socket ...>` leak
+        warnings when running the tests.  If the `test` kwarg is passed, it will be used
+        to register future cleanup calls to close this session and thus also the
+        sockets. If passed, it must be an object with a `addCleanup(func)` callable
+        attribute, such as instances of `unittest.TestCase`.
+        """
         super().__init__()
+
         if not base_url.endswith("/"):
             base_url += "/"
         self.__base_url = base_url
+
+        if hasattr(test, "addCleanup"):
+            # Avoid `ResourceWarning: unclosed <socket.socket ...>`
+            test.addCleanup(self.close)
 
     def request(self, method, url, **kwargs):
         if urlparse(url).scheme not in ("http", "https"):
