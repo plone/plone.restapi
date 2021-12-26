@@ -18,7 +18,7 @@ from plone.i18n.interfaces import ILanguageSchema
 from plone.registry.interfaces import IRegistry
 from plone.restapi.tests.dxtypes import INDEXES as DX_TYPES_INDEXES
 from plone.restapi.tests.helpers import add_catalog_indexes
-from plone.testing import z2
+from plone.testing import zope
 from plone.testing.layer import Layer
 from plone.uuid.interfaces import IUUIDGenerator
 from Products.CMFCore.utils import getToolByName
@@ -118,7 +118,7 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
 
         self.loadZCML(package=collective.MockMailHost)
-        z2.installProduct(app, "plone.restapi")
+        zope.installProduct(app, "plone.restapi")
 
     def setUpPloneSite(self, portal):
         portal.acl_users.userFolderAddUser(
@@ -145,7 +145,7 @@ PLONE_RESTAPI_DX_INTEGRATION_TESTING = IntegrationTesting(
     bases=(PLONE_RESTAPI_DX_FIXTURE,), name="PloneRestApiDXLayer:Integration"
 )
 PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_RESTAPI_DX_FIXTURE, z2.ZSERVER_FIXTURE),
+    bases=(PLONE_RESTAPI_DX_FIXTURE, zope.WSGI_SERVER_FIXTURE),
     name="PloneRestApiDXLayer:Functional",
 )
 
@@ -175,7 +175,7 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
         xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
 
-        z2.installProduct(app, "plone.restapi")
+        zope.installProduct(app, "plone.restapi")
 
     def setUpPloneSite(self, portal):
         portal.acl_users.userFolderAddUser(
@@ -201,7 +201,7 @@ PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING = IntegrationTesting(
     bases=(PLONE_RESTAPI_DX_PAM_FIXTURE,), name="PloneRestApiDXPAMLayer:Integration"
 )
 PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
+    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, zope.WSGI_SERVER_FIXTURE),
     name="PloneRestApiDXPAMLayer:Functional",
 )
 
@@ -216,7 +216,7 @@ class PloneRestApiDXIterateLayer(PloneSandboxLayer):
         xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
         xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
 
-        z2.installProduct(app, "plone.restapi")
+        zope.installProduct(app, "plone.restapi")
 
 
 PLONE_RESTAPI_ITERATE_FIXTURE = PloneRestApiDXIterateLayer()
@@ -225,7 +225,7 @@ PLONE_RESTAPI_ITERATE_INTEGRATION_TESTING = IntegrationTesting(
     name="PloneRestApiDXIterateLayer:Integration",
 )
 PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_RESTAPI_ITERATE_FIXTURE, z2.ZSERVER_FIXTURE),
+    bases=(PLONE_RESTAPI_ITERATE_FIXTURE, zope.WSGI_SERVER_FIXTURE),
     name="PloneRestApiDXIterateLayer:Functional",
 )
 
@@ -243,7 +243,7 @@ PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING = IntegrationTesting(
     bases=(PLONE_RESTAPI_BLOCKS_FIXTURE,), name="PloneRestApIBlocksLayer:Integration"
 )
 PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE, z2.ZSERVER_FIXTURE),
+    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE, zope.WSGI_SERVER_FIXTURE),
     name="PloneRestApIBlocksLayer:Functional",
 )
 
