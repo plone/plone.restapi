@@ -15,6 +15,7 @@ from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlug
 from Products.PluggableAuthService.interfaces.plugins import IChallengePlugin
 from Products.PluggableAuthService.interfaces.plugins import IExtractionPlugin
 from Products.PluggableAuthService.interfaces.plugins import ICredentialsUpdatePlugin
+from Products.PluggableAuthService.interfaces.plugins import ICredentialsResetPlugin
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
 from zope.component import getUtility
 from zope.interface import implementer
@@ -46,6 +47,7 @@ def addJWTAuthenticationPlugin(self, id_, title=None, REQUEST=None):
     IChallengePlugin,
     IExtractionPlugin,
     ICredentialsUpdatePlugin,
+    ICredentialsResetPlugin,
 )
 class JWTAuthenticationPlugin(BasePlugin):
     """Plone PAS plugin for authentication with JSON web tokens (JWT)."""
@@ -179,6 +181,16 @@ class JWTAuthenticationPlugin(BasePlugin):
             path="/",
             **cookie_kwargs,
         )
+
+    @security.private
+    def resetCredentials(self, request, response):
+        """
+        Expire the token and remove the cookie.
+        """
+        if self.cookie_name in request:
+            if self.store_tokens:
+                self.delete_token(request[self.cookie_name])
+            response.expireCookie(self.cookie_name, path="/")
 
     @security.protected(ManagePortal)
     @postonly

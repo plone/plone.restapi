@@ -43,6 +43,7 @@ def install_pas_plugin(context):
                     "IAuthenticationPlugin",
                     "IExtractionPlugin",
                     "ICredentialsUpdatePlugin",
+                    "ICredentialsResetPlugin",
                 ],
             )
         if uf_parent is uf_parent.getPhysicalRoot():

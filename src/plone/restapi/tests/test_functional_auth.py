@@ -259,6 +259,38 @@ class TestFunctionalAuth(unittest.TestCase):
             "Wrong Plone object URL from API response JSON",
         )
 
+    def test_api_logout_expires_both_cookies(self):
+        """
+        API log out deletes both the API token and Plone classic auth cookie.
+        """
+        session = requests.Session()
+        self.addCleanup(session.close)
+        session.post(
+            self.portal_url + "/@login",
+            headers={"Accept": "application/json"},
+            json={"login": SITE_OWNER_NAME, "password": TEST_USER_PASSWORD},
+        )
+        transaction.commit()
+        logout_resp = session.post(
+            self.portal_url + "/@logout",
+            headers={"Accept": "application/json"},
+        )
+        self.assertEqual(
+            logout_resp.status_code,
+            204,
+            "Wrong API logout response status code",
+        )
+        self.assertNotIn(
+            "__ac",
+            session.cookies,
+            "Plone session cookie remains after API logout POST response",
+        )
+        self.assertNotIn(
+            "auth_token",
+            session.cookies,
+            "API token cookie remains after API logout POST response",
+        )
+
     def test_accessing_private_document_with_valid_token_succeeds(self):
         # login and generate a valid token
         response = requests.post(
