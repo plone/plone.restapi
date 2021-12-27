@@ -2,6 +2,7 @@ from AccessControl.requestmethod import postonly
 from AccessControl.SecurityInfo import ClassSecurityInfo
 from BTrees.OIBTree import OIBTree
 from BTrees.OOBTree import OOBTree
+from DateTime import DateTime
 from datetime import datetime
 from datetime import timedelta
 from plone.keyring.interfaces import IKeyManager
@@ -160,7 +161,7 @@ class JWTAuthenticationPlugin(BasePlugin):
         if user is not None:
             user_id = user.getId()
             data["fullname"] = user.getProperty("fullname")
-        token = self.create_token(user_id, data=data)
+        payload, token = self.create_payload_token(user_id, data=data)
         # Make available on the request for further use such as returning it in the JSON
         # body of the response if the current request is for the REST API login view.
         request[self.cookie_name] = token
@@ -168,7 +169,16 @@ class JWTAuthenticationPlugin(BasePlugin):
         # the login happened through Plone Classic so that the the Volro React
         # components can retrieve the token that way and use the Authorization Bearer
         # header from then on.
-        response.setCookie(self.cookie_name, token, path="/")
+        cookie_kwargs = {}
+        if "exp" in payload:
+            # Match the token expiration date/time.
+            cookie_kwargs["expires"] = DateTime(payload["exp"]).toZone("GMT").rfc822()
+        response.setCookie(
+            self.cookie_name,
+            token,
+            path="/",
+            **cookie_kwargs,
+        )
 
     @security.protected(ManagePortal)
     @postonly
@@ -227,7 +237,10 @@ class JWTAuthenticationPlugin(BasePlugin):
             del self._tokens[userid][token]
             return True
 
-    def create_token(self, userid, timeout=None, data=None):
+    def create_payload_token(self, userid, timeout=None, data=None):
+        """
+        Create and return both a JWT payload and the signed token.
+        """
         payload = {}
         payload["sub"] = userid
         if timeout is None:
@@ -244,4 +257,15 @@ class JWTAuthenticationPlugin(BasePlugin):
             if userid not in self._tokens:
                 self._tokens[userid] = OIBTree()
             self._tokens[userid][token] = int(time.time())
+        return payload, token
+
+    def create_token(self, userid, timeout=None, data=None):
+        """
+        Create a JWT payload and the signed token, return the token.
+        """
+        _, token = self.create_payload_token(
+            userid,
+            timeout=timeout,
+            data=data,
+        )
         return token
