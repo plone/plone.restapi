@@ -22,6 +22,12 @@ def enable_new_pas_plugin_interfaces(context):
     portal = getToolByName(context, "portal_url").getPortalObject()
     for uf, is_plone_site in pas.iter_ancestor_pas(portal):
         for jwt_plugin in uf.objectValues(plugin.JWTAuthenticationPlugin.meta_type):
+            if not is_plone_site and jwt_plugin.use_keyring:
+                logger.info(
+                    "Disabling keyring for plugin outside of Plone: %s",
+                    "/".join(jwt_plugin.getPhysicalPath()),
+                )
+                jwt_plugin.use_keyring = False
             for new_iface in (
                 plugins_ifaces.ICredentialsUpdatePlugin,
                 plugins_ifaces.ICredentialsResetPlugin,

@@ -46,6 +46,8 @@ def install_pas_plugin(context):
                     "ICredentialsResetPlugin",
                 ],
             )
+            if not is_plone_site:
+                plugin.use_keyring = False
 
 
 def post_install_default(context):
