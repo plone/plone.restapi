@@ -33,8 +33,15 @@ class HiddenProfiles:
 def install_pas_plugin(context):
     uf_parent = aq_inner(context)
     while True:
-        uf = getToolByName(uf_parent, "acl_users")
-        if IPluggableAuthService.providedBy(uf) and "jwt_auth" not in uf:
+        uf = getToolByName(uf_parent, "acl_users", default=None)
+
+        # Skip ancestor contexts to which we don't/can't apply
+        if uf is None or not IPluggableAuthService.providedBy(uf):
+            uf_parent = aq_parent(uf_parent)
+            continue
+
+        # Add the API token plugin if not already installed at this level
+        if "jwt_auth" not in uf:
             plugin = JWTAuthenticationPlugin("jwt_auth")
             uf._setObject(plugin.getId(), plugin)
             plugin = uf["jwt_auth"]
@@ -46,6 +53,8 @@ def install_pas_plugin(context):
                     "ICredentialsResetPlugin",
                 ],
             )
+
+        # Go up one more level
         if uf_parent is uf_parent.getPhysicalRoot():
             break
         uf_parent = aq_parent(uf_parent)
