@@ -1,3 +1,4 @@
+from plone.app import testing as pa_testing
 from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -5,6 +6,9 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.testing import zope
+from Products.PluggableAuthService.interfaces import plugins as plugins_ifaces
+from Products.PluggableAuthService.plugins import CookieAuthHelper
 
 import base64
 import requests
@@ -17,14 +21,28 @@ class TestFunctionalAuth(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
+        """
+        Set initial test conditions and convenience attributes.
+        """
+        # Zope root references
+        self.app = self.layer["app"]
+        self.root_acl_users = self.app.acl_users
+
+        # Plone portal references
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
+
+        # User permissions and authentication
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         login(self.portal, SITE_OWNER_NAME)
+
+        # Create a page that can't be publicly accessed
         self.private_document = self.portal[
             self.portal.invokeFactory("Document", id="doc1", title="My Document")
         ]
         self.private_document_url = self.private_document.absolute_url()
+
+        # This is a functional fixture, have to commit our changes
         transaction.commit()
 
     def test_login_without_credentials_fails(self):
@@ -172,6 +190,66 @@ class TestFunctionalAuth(unittest.TestCase):
             "Wrong ZMI view response content",
         )
 
+    def test_root_cookie_login_sets_api_token(self):
+        """
+        Zope root ZMI uses cookie login form and also sets the API token cookie.
+        """
+        # Install the GenericSetup profile that performs the actual switch
+        pa_testing.applyProfile(self.portal, "Products.PlonePAS:root-cookie")
+        transaction.commit()
+
+        # Check the Zope root PAS plugin configuration
+        self.assertIn(
+            "credentials_cookie_auth",
+            self.root_acl_users.objectIds(),
+            "Cookie auth plugin missing from Zope root `/acl_users`",
+        )
+        cookie_plugin = self.root_acl_users.credentials_cookie_auth
+        self.assertIs(
+            type(cookie_plugin.aq_base),
+            CookieAuthHelper.CookieAuthHelper,
+            "Wrong Zope root `/acl_users` cookie auth plugin type",
+        )
+        challenge_plugins = self.root_acl_users.plugins.listPlugins(
+            plugins_ifaces.IChallengePlugin,
+        )
+        _, default_challenge_plugin = challenge_plugins[0]
+        self.assertEqual(
+            "/".join(default_challenge_plugin.getPhysicalPath()),
+            "/".join(cookie_plugin.getPhysicalPath()),
+            "Wrong Zope root `/acl_users` default challenge plugin",
+        )
+
+        # Submit the login form in the browser
+        browser = zope.Browser(self.app)
+        browser.open(self.app.absolute_url() + "/manage_main")
+        login_form = browser.getForm()
+        login_form.getControl(name="__ac_name").value = SITE_OWNER_NAME
+        login_form.getControl(name="__ac_password").value = TEST_USER_PASSWORD
+        login_form.controls[-1].click()
+        self.assertEqual(
+            browser.headers["Status"].lower(),
+            "200 ok",
+            "Wrong Zope root `/acl_users` cookie login response status",
+        )
+        self.assertEqual(
+            browser.url,
+            self.app.absolute_url() + "/manage_main",
+            "Wrong Zope root `/acl_users` cookie login redirect",
+        )
+
+        # Both the Zope root login cookie and the API token cookie are set
+        self.assertIn(
+            "__ac",
+            browser.cookies,
+            "Zope root auth cookie missing from Zope root basic login form response",
+        )
+        self.assertIn(
+            "auth_token",
+            browser.cookies,
+            "API token cookie missing from Zope root basic login form response",
+        )
+
     def test_root_zmi_login_grants_api(self):
         """
         Logging in via the Zope root ZMI also grants access to the API.
@@ -290,6 +368,43 @@ class TestFunctionalAuth(unittest.TestCase):
             session.cookies,
             "API token cookie remains after API logout POST response",
         )
+
+    def test_root_zmi_logout_expires_api_token(self):
+        """
+        Zope root ZMI logout succeeds and deletes all auth cookies.
+        """
+        # Install the GenericSetup profile that performs the actual switch
+        pa_testing.applyProfile(self.portal, "Products.PlonePAS:root-cookie")
+        transaction.commit()
+
+        # Submit the login form in the browser
+        browser = zope.Browser(self.app)
+        browser.open(self.app.absolute_url() + "/manage_main")
+        login_form = browser.getForm()
+        login_form.getControl(name="__ac_name").value = SITE_OWNER_NAME
+        login_form.getControl(name="__ac_password").value = TEST_USER_PASSWORD
+        login_form.controls[-1].click()
+
+        # Click the ZMI logout link
+        browser.raiseHttpErrors = False
+        logout_link = browser.getLink(url="manage_zmi_logout")
+        logout_link.click()
+        browser.raiseHttpErrors = True
+        self.assertNotIn(
+            "__ac",
+            browser.cookies,
+            "Zope root auth cookie missing from Zope root basic login form response",
+        )
+        self.assertNotIn(
+            "auth_token",
+            browser.cookies,
+            "API token cookie missing from Zope root basic login form response",
+        )
+
+        # Confirm the browser is, in fact, logged out
+        browser.open(self.app.absolute_url() + "/manage_main")
+        logout_login_form = browser.getForm()
+        logout_login_form.getControl(name="__ac_name")
 
     def test_accessing_private_document_with_valid_token_succeeds(self):
         # login and generate a valid token
