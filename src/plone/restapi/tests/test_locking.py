@@ -25,7 +25,7 @@ class TestLocking(unittest.TestCase):
         ]
         alsoProvides(self.doc, ITTWLockable)
 
-        self.api_session = RelativeSession(self.doc.absolute_url())
+        self.api_session = RelativeSession(self.doc.absolute_url(), test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 

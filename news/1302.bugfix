@@ -1,0 +1,3 @@
+Resolve the bulk of deprecation and resource leak warnings when running the full test
+suite.
+[rpatterson]
