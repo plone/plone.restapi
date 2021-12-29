@@ -39,7 +39,10 @@ def test_vocabulary_factory(context):
 
 
 TEST_BIG_VOCABULARY = SimpleVocabulary(
-    [SimpleTerm(a, token=f"token{a}", title=f"Title {a}") for a in range(100)]
+    [
+        SimpleTerm(a, token="token{a}".format(a=a), title="Title {a}".format(a=a))
+        for a in range(100)
+    ]
 )
 
 
