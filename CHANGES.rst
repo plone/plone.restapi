@@ -8,6 +8,27 @@ Changelog
 
 .. towncrier release notes start
 
+8.18.0 (2022-01-03)
+-------------------
+
+New features:
+
+
+- Improve vocabulary endpoint when asking for a list of tokens adding resilience and deprecation warning
+  [sneridagh] (#1298)
+- Expandable params as list and deprecations for list as comma separated
+  [sneridagh] (#1300)
+
+
+Bug fixes:
+
+
+- Do not break in recursive transition when children already are in destination state. [cekk] (#1291)
+- Resolve the bulk of deprecation and resource leak warnings when running the full test
+  suite.
+  [rpatterson] (#1302)
+
+
 8.17.0 (2021-12-21)
 -------------------
 
