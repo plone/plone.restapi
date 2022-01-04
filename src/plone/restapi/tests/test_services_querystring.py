@@ -64,7 +64,14 @@ class TestQuerystringEndpoint(unittest.TestCase):
             "values": {},
             "vocabulary": None,
         }
-        self.assertEqual(expected_field_config, idx)
+        # Be permissive with the check and only check the existing
+        # attributes. (This gives plone.app.querystring to extend its schema
+        # when that becomes necessary, while making sure that all code depending
+        # on any existing attributes continues to work.)
+        filtered_idx = {}
+        for key in expected_field_config:
+            filtered_idx[key] = idx.get(key, "NOT-FOUND")
+        self.assertEqual(expected_field_config, filtered_idx)
 
     def test_endpoint_inlines_vocabularies(self):
         response = self.api_session.get("/@querystring")
