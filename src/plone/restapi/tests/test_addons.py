@@ -116,12 +116,15 @@ class TestAddons(unittest.TestCase):
         # Set need upgrade state
         self.ps.setLastVersionForProfile("plone.restapi:default", "0002")
         transaction.commit()
+        # FIXME: At least the `newVersion` should be extracted from
+        # `./profiles/default/metadata.xml` so that this test isn't constantly changing
+        # for unrelated code changes.
         self.assertEqual(
             {
                 "available": True,
                 "hasProfile": True,
                 "installedVersion": "0002",
-                "newVersion": "0006",
+                "newVersion": "0007",
                 "required": True,
             },
             _get_upgrade_info(self),
@@ -135,8 +138,8 @@ class TestAddons(unittest.TestCase):
             {
                 "available": False,
                 "hasProfile": True,
-                "installedVersion": "0006",
-                "newVersion": "0006",
+                "installedVersion": "0007",
+                "newVersion": "0007",
                 "required": False,
             },
             _get_upgrade_info(self),
@@ -190,7 +193,7 @@ class TestAddons(unittest.TestCase):
                 "available": True,
                 "hasProfile": True,
                 "installedVersion": "0002",
-                "newVersion": "0006",
+                "newVersion": "0007",
                 "required": True,
             },
             _get_upgrade_info(self),

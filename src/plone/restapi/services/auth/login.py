@@ -86,7 +86,27 @@ class Login(Service):
         )
         login_view._post_login()
 
-        return {"token": self.request[plugin.cookie_name]}
+        response = {}
+        if plugin.cookie_name in self.request:
+            response["token"] = self.request[plugin.cookie_name]
+        else:
+            self.request.response.setStatus(501)
+            message = (
+                "JWT authentication token not created, plugin probably not activated "
+                "for `ICredentialsUpdatePlugin`"
+            )
+            logger.error(
+                "%s: %s",
+                message,
+                "/".join(plugin.getPhysicalPath()),
+            )
+            return dict(
+                error=dict(
+                    type="Login failed",
+                    message=message,
+                )
+            )
+        return response
 
     def _find_userfolder(self, userid):
         """Try to find a user folder that contains a user with the given
