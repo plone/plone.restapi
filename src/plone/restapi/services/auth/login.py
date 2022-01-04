@@ -7,7 +7,10 @@ from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlug
 from zope.interface import alsoProvides
 from zope import component
 
+import logging
 import plone.protect.interfaces
+
+logger = logging.getLogger(__name__)
 
 
 class Login(Service):
@@ -45,10 +48,16 @@ class Login(Service):
 
             if plugin is None:
                 self.request.response.setStatus(501)
+                message = "JWT authentication plugin not installed"
+                logger.error(
+                    "%s: %s",
+                    message,
+                    "/".join(uf.getPhysicalPath()),
+                )
                 return dict(
                     error=dict(
                         type="Login failed",
-                        message="JWT authentication plugin not installed.",
+                        message=message,
                     )
                 )
 
