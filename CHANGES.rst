@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+7.6.0 (2022-01-05)
+------------------
+
+New features:
+
+
+- Return non-batched vocabularies given a query param ``b_size=-1``
+  [sneridagh] (#1264)
+
+
+Internal:
+
+
+- Format zcml files with collective.zpretty. Add zpretty Github workflow. @tiberiuichim (#1120)
+- Fix tests for Plone 4.3 and 5.2 with Python 2.7 @ichim-david (#1243)
+
+
 7.5.0 (2021-10-12)
 ------------------
 
