@@ -46,32 +46,26 @@ class TestQuerystringEndpoint(unittest.TestCase):
         indexes = response.json()["indexes"]
         idx = indexes["Title"]
 
-        expected_field_config = {
-            "description": "Text search of an item's title",
-            "enabled": True,
-            "group": "Text",
-            "operations": ["plone.app.querystring.operation.string.contains"],
-            "operators": {
+        # Be permissive with the check and only check the existing
+        # attributes. (This gives plone.app.querystring to extend its schema
+        # when that becomes necessary, while making sure that all code depending
+        # on any existing attributes continues to work.)
+        self.assertEqual(idx["description"], "Text search of an item's title")
+        self.assertEqual(idx["enabled"], True)
+        self.assertEqual(idx["group"], "Text")
+        self.assertEqual(idx["operations"], ["plone.app.querystring.operation.string.contains"])
+        self.assertEqual(idx["operators"], {
                 "plone.app.querystring.operation.string.contains": {
                     "description": None,
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Contains",
                     "widget": "StringWidget",
                 }
-            },
-            "sortable": False,
-            "title": "Title",
-            "values": {},
-            "vocabulary": None,
-        }
-        # Be permissive with the check and only check the existing
-        # attributes. (This gives plone.app.querystring to extend its schema
-        # when that becomes necessary, while making sure that all code depending
-        # on any existing attributes continues to work.)
-        filtered_idx = {}
-        for key in expected_field_config:
-            filtered_idx[key] = idx.get(key, "NOT-FOUND")
-        self.assertEqual(expected_field_config, filtered_idx)
+            })
+        self.assertEqual(idx["sortable"], False)
+        self.assertEqual(idx["title"], "Title")
+        self.assertEqual(idx["values"], {})
+        self.assertEqual(idx["vocabulary"], None)
 
     def test_endpoint_inlines_vocabularies(self):
         response = self.api_session.get("/@querystring")
