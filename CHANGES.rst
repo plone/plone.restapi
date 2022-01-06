@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+8.18.1 (2022-01-06)
+-------------------
+
+Internal:
+
+
+- Be permissive when testing the schema of the querystring endpoint [reebalazs] (#1307)
+
+
 8.18.0 (2022-01-03)
 -------------------
 
