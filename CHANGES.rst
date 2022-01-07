@@ -8,6 +8,21 @@ Changelog
 
 .. towncrier release notes start
 
+7.7.0 (2022-01-07)
+------------------
+
+Breaking changes:
+
+
+- Drop support for Plone 5.0 [wesleybl] (#1273)
+
+
+Internal:
+
+
+- Be permissive when testing the schema of the querystring endpoint [reebalazs] (#1307)
+
+
 7.6.0 (2022-01-05)
 ------------------
 
