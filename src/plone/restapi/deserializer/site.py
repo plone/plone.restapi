@@ -7,6 +7,7 @@ from zope.component import adapter
 from zope.component import subscribers
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
+from plone.restapi.deserializer.dxcontent import DeserializeFromJson
 
 import json
 
@@ -22,16 +23,18 @@ else:
 
 @implementer(IDeserializeFromJson)
 @adapter(IPloneSiteRoot, IRequest)
-class DeserializeSiteRootFromJson(OrderingMixin):
+class DeserializeSiteRootFromJson(DeserializeFromJson):
     """JSON deserializer for the Plone site root"""
 
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        super().__init__(self.context, self.request)
 
     def __call__(self, validate_all=False):
-        # Currently we only do layout and ordering, as the plone site root
-        # has no schema or something like that.
+        # Call the default DX content deserializer
+        super().__call__(self)
+
         data = json_body(self.request)
 
         if "layout" in data:
