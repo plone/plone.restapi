@@ -1,4 +1,4 @@
-name: Flake8
+name: Flake 8
 on: [push]
 jobs:
   build:

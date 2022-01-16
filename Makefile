@@ -52,6 +52,18 @@ build-plone-5.2-performance: .installed.cfg  ## Build Plone 5.2
 	bin/pip install -r requirements.txt
 	bin/buildout -c plone-5.2.x-performance.cfg
 
+.PHONY: Build Plone 6.0
+build-plone-6.0: .installed.cfg  ## Build Plone 6.0
+	bin/pip install --upgrade pip
+	bin/pip install -r requirements.txt
+	bin/buildout -c plone-6.0.x.cfg
+
+.PHONY: Build Plone 6.0 Performance
+build-plone-6.0-performance: .installed.cfg  ## Build Plone 6.0
+	bin/pip install --upgrade pip
+	bin/pip install -r requirements.txt
+	bin/buildout -c plone-6.0.x-performance.cfg
+
 .PHONY: Test
 test:  ## Test
 	bin/test
@@ -59,6 +71,14 @@ test:  ## Test
 .PHONY: Test Performance
 test-performance:
 	jmeter -n -t performance.jmx -l jmeter.jtl
+
+.PHONY: Test Performance Locust Querystring Search
+test-performance-locust-querystring-search:
+	bin/locust -f performance/querystring-search.py --host http://localhost:12345/Plone --users 100 --spawn-rate 5 --run-time 5m --autostart
+
+.PHONY: Test Performance Locust Querystring Search CI
+test-performance-locust-querystring-search-ci:
+	bin/locust -f performance/querystring-search.py --host http://localhost:12345/Plone --users 100 --spawn-rate 5 --run-time 5m --headless --csv=example
 
 .PHONY: Code Analysis
 code-analysis:  ## Code Analysis

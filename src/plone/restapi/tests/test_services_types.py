@@ -1,10 +1,12 @@
 from plone import api
+from plone.app.dexterity.behaviors import constrains
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
 
 import transaction
 import unittest
@@ -20,7 +22,7 @@ class TestServicesTypes(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -77,7 +79,9 @@ class TestServicesTypes(unittest.TestCase):
             + '"{}"'.format(response.headers.get("Content-Type")),
         )
         for item in response.json():
-            self.assertEqual(sorted(item), sorted(["@id", "title", "addable"]))
+            self.assertEqual(
+                sorted(item), sorted(["@id", "title", "addable", "immediately_addable"])
+            )
 
     def test_get_types_document(self):
         response = self.api_session.get(f"{self.portal.absolute_url()}/@types/Document")
@@ -540,6 +544,28 @@ class TestServicesTypes(unittest.TestCase):
 
         self.assertEqual(len([a for a in response if a["addable"]]), 0)
 
+    def test_contextual_constrains(self):
+        content = api.content.create(
+            container=self.portal,
+            id="images",
+            type="Folder",
+            title="Image Bank",
+        )
+        # Enable the ISelectableConstrainTypes behavior
+        behavior = ISelectableConstrainTypes(content)
+        behavior.setConstrainTypesMode(constrains.ENABLED)
+        # Allow only Image and File to be added
+        behavior.setLocallyAllowedTypes(["Image", "File"])
+        # Only Images are immediately addable
+        behavior.setImmediatelyAddableTypes(["Image"])
+        transaction.commit()
+
+        #
+        response = self.api_session.get("/images/@types")
+        response = response.json()
+        self.assertEqual(len([a for a in response if a["immediately_addable"]]), 1)
+        self.assertEqual(len([a for a in response if a["addable"]]), 2)
+
 
 class TestServicesTypesTranslatedTitles(unittest.TestCase):
 
@@ -550,7 +576,7 @@ class TestServicesTypesTranslatedTitles(unittest.TestCase):
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.headers.update({"Accept-Language": "es"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)

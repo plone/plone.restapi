@@ -110,8 +110,28 @@ class WorkflowTransition(Service):
                 obj.reindexObject()
             if not self.wftool.getWorkflowsFor(obj):
                 continue
-            self.wftool.doActionFor(obj, self.transition, comment=comment)
+            try:
+                self.wftool.doActionFor(obj, self.transition, comment=comment)
+            except WorkflowException as e:
+                if not self.is_same_state(obj):
+                    # this is a real error
+                    raise e
             if include_children and IFolderish.providedBy(obj):
                 self.recurse_transition(
                     obj.objectValues(), comment, publication_dates, include_children
                 )
+
+    def is_same_state(self, obj):
+        """
+        Return True if the object is already in the transition's destination state.
+        """
+        review_state = self.wftool.getInfoFor(ob=obj, name="review_state")
+
+        for wf in self.wftool.getWorkflowsFor(obj):
+            for transition in wf.transitions.objectValues():
+                if (
+                    review_state == transition.new_state_id
+                    and self.transition == transition.id
+                ):
+                    return True
+        return False

@@ -24,7 +24,7 @@ class TestBatchingDXBase(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         self.request = self.portal.REQUEST
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -281,7 +281,7 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
         response = self.api_session.get("/?b_start=2&b_size=2")
 
         # Response should contain canonical URL without batching params
-        self.assertEqual(response.json()["@id"], self.portal_url + "/")
+        self.assertEqual(response.json()["@id"], self.portal_url)
 
     def test_contains_batching_links(self):
         # Fetch the second page of the batch

@@ -68,6 +68,7 @@ class TestFunctionalAuth(unittest.TestCase):
         Logging in via the API also grants access to the Zope root ZMI.
         """
         session = requests.Session()
+        self.addCleanup(session.close)
         login_resp = session.post(
             self.portal_url + "/@login",
             headers={"Accept": "application/json"},
@@ -112,6 +113,7 @@ class TestFunctionalAuth(unittest.TestCase):
         Logging in via the Zope root ZMI also grants access to the API.
         """
         session = requests.Session()
+        self.addCleanup(session.close)
         basic_auth_headers = {
             "Authorization": "Basic {}".format(
                 base64.b64encode(
@@ -161,6 +163,7 @@ class TestFunctionalAuth(unittest.TestCase):
         Logging in via the Plone login form also grants access to the API.
         """
         session = requests.Session()
+        self.addCleanup(session.close)
         challenge_resp = session.get(self.private_document_url)
         self.assertEqual(
             challenge_resp.status_code,

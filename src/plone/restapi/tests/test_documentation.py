@@ -178,7 +178,7 @@ class TestDocumentationBase(unittest.TestCase):
         pushGlobalRegistry(getSite())
         register_static_uuid_utility(prefix="SomeUUID")
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -516,11 +516,15 @@ class TestDocumentation(TestDocumentationBase):
         )
         # With plone.dexterity 2.10+ we get an unstable behavior name like this:
         # plone.dexterity.schema.generated.plone_5_1630611587_2_523689_0_Document
-        # Replace it.
+        # In older versions, we got this:
+        # plone.dexterity.schema.generated.plone_0_Document
+        # Normalize this to look like the new name
         document_schema_re = re.compile(
-            r"^plone.dexterity.schema.generated.plone_.*_Document$"
+            r"^plone.dexterity.schema.generated.plone_5_\d*_2_\d*_0_Document$"
         )
-        stable_behavior = "plone.dexterity.schema.generated.plone_0_Document"
+        stable_behavior = (
+            "plone.dexterity.schema.generated.plone_5_1234567890_2_123456_0_Document"
+        )
         json_response = response.json()
         response_text_override = ""
         behavior = json_response.get("behavior")
@@ -790,7 +794,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("users", response)
 
     def test_documentation_users_as_anonymous(self):
-        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session = RelativeSession(self.portal_url, test=self)
         logged_out_api_session.headers.update({"Accept": "application/json"})
 
         response = logged_out_api_session.get("@users")
@@ -815,7 +819,7 @@ class TestDocumentation(TestDocumentationBase):
         )
         transaction.commit()
 
-        standard_api_session = RelativeSession(self.portal_url)
+        standard_api_session = RelativeSession(self.portal_url, test=self)
         standard_api_session.headers.update({"Accept": "application/json"})
         standard_api_session.auth = ("noam", "password")
 
@@ -854,7 +858,7 @@ class TestDocumentation(TestDocumentationBase):
         )
         transaction.commit()
 
-        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session = RelativeSession(self.portal_url, test=self)
         logged_out_api_session.headers.update({"Accept": "application/json"})
 
         response = logged_out_api_session.get("@users/noam")
@@ -886,7 +890,7 @@ class TestDocumentation(TestDocumentationBase):
 
         transaction.commit()
 
-        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session = RelativeSession(self.portal_url, test=self)
         logged_out_api_session.headers.update({"Accept": "application/json"})
         logged_out_api_session.auth = ("noam-fake", "secret")
 
@@ -911,7 +915,7 @@ class TestDocumentation(TestDocumentationBase):
         )
         transaction.commit()
 
-        logged_out_api_session = RelativeSession(self.portal_url)
+        logged_out_api_session = RelativeSession(self.portal_url, test=self)
         logged_out_api_session.headers.update({"Accept": "application/json"})
         logged_out_api_session.auth = ("noam", "secret")
         response = logged_out_api_session.get("@users/noam")
@@ -2015,3 +2019,11 @@ class TestIterateDocumentation(TestDocumentationBase):
         )
 
         save_request_and_response_for_docs("workingcopy_delete", response)
+
+    def test_documentation_vocabularies_get_filtered_by_token_list(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?tokens=Document&tokens=Event",
+        )
+        save_request_and_response_for_docs(
+            "vocabularies_get_filtered_by_token_list", response
+        )

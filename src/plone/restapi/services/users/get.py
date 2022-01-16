@@ -2,6 +2,7 @@ from AccessControl import getSecurityManager
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.utils import normalizeString
 from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
@@ -17,6 +18,9 @@ class UsersGet(Service):
     def __init__(self, context, request):
         super().__init__(context, request)
         self.params = []
+        portal = getSite()
+        self.portal_membership = getToolByName(portal, "portal_membership")
+        self.acl_users = getToolByName(portal, "acl_users")
         self.query = self.request.form.copy()
 
     def publishTraverse(self, request, name):
@@ -31,21 +35,27 @@ class UsersGet(Service):
         return self.params[0]
 
     def _get_user(self, user_id):
-        portal = getSite()
-        portal_membership = getToolByName(portal, "portal_membership")
-        return portal_membership.getMemberById(user_id)
+        return self.portal_membership.getMemberById(user_id)
+
+    @staticmethod
+    def _sort_users(users):
+        users.sort(
+            key=lambda x: x is not None
+            and normalizeString(x.getProperty("fullname", ""))
+        )
+        return users
 
     def _get_users(self):
-        portal = getSite()
-        portal_membership = getToolByName(portal, "portal_membership")
-        return portal_membership.listMembers()
+        results = {user["userid"] for user in self.acl_users.searchUsers()}
+        users = [self.portal_membership.getMemberById(userid) for userid in results]
+        return self._sort_users(users)
 
     def _get_filtered_users(self, query, limit):
-        portal = getSite()
-        acl_users = getToolByName(portal, "acl_users")
-        portal_membership = getToolByName(portal, "portal_membership")
-        results = acl_users.searchUsers(id=query, max_results=limit)
-        return [portal_membership.getMemberById(user["userid"]) for user in results]
+        results = self.acl_users.searchUsers(id=query, max_results=limit)
+        users = [
+            self.portal_membership.getMemberById(user["userid"]) for user in results
+        ]
+        return self._sort_users(users)
 
     def has_permission_to_query(self):
         sm = getSecurityManager()
@@ -66,7 +76,7 @@ class UsersGet(Service):
             query = self.query.get("query", "")
             limit = self.query.get("limit", DEFAULT_SEARCH_RESULTS_LIMIT)
             if query:
-                # Someone is searching users, check if he is authorized
+                # Someone is searching users, check if they are authorized
                 if self.has_permission_to_query():
                     users = self._get_filtered_users(query, limit)
                     result = []
@@ -83,7 +93,7 @@ class UsersGet(Service):
                 raise BadRequest("Query string supplied is not valid")
 
         if len(self.params) == 0:
-            # Someone is asking for all users, check if he is authorized
+            # Someone is asking for all users, check if they are authorized
             if self.has_permission_to_enumerate():
                 result = []
                 for user in self._get_users():
@@ -97,9 +107,8 @@ class UsersGet(Service):
                 return
 
         # Some is asking one user, check if the logged in user is asking
-        # his own information or he is a Manager
-        mt = getToolByName(self.context, "portal_membership")
-        current_user_id = mt.getAuthenticatedMember().getId()
+        # their own information or if they are a Manager
+        current_user_id = self.portal_membership.getAuthenticatedMember().getId()
 
         if self.has_permission_to_access_user_info() or (
             current_user_id and current_user_id == self._get_user_id

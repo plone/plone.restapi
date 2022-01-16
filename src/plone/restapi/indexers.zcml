@@ -15,10 +15,11 @@
         />
     <adapter
         factory=".indexers.SlateTextIndexer"
-        provides="plone.restapi.interfaces.IBlockSearchableText"
-        for="*
-             *"
         name="slate"
+        />
+    <adapter
+        factory=".indexers.TableBlockSearchableText"
+        name="table"
         />
   </configure>
 

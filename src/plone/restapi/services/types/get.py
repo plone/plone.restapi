@@ -7,6 +7,7 @@ from plone.restapi.types.utils import get_info_for_field
 from plone.restapi.types.utils import get_info_for_fieldset
 from Products.CMFCore.interfaces import IFolderish
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import IConstrainTypes
 from zExceptions import Unauthorized
 from zope.component import adapter
 from zope.component import getMultiAdapter, queryMultiAdapter
@@ -45,9 +46,14 @@ class TypesInfo:
         )
 
         portal_types = getToolByName(self.context, "portal_types")
-
         # allowedContentTypes already checks for permissions
-        allowed_types = [x.getId() for x in self.context.allowedContentTypes()]
+        constrains = IConstrainTypes(self.context, None)
+        if constrains:
+            allowed_types = constrains.getLocallyAllowedTypes()
+            immediately_types = constrains.getImmediatelyAddableTypes()
+        else:
+            allowed_types = [x.getId() for x in self.context.allowedContentTypes()]
+            immediately_types = allowed_types
 
         portal = getMultiAdapter(
             (self.context, self.request), name="plone_portal_state"
@@ -67,6 +73,9 @@ class TypesInfo:
                 "@id": f"{portal_url}/@types/{fti.getId()}",
                 "title": translate(fti.Title(), context=self.request),
                 "addable": fti.getId() in allowed_types if can_add else False,
+                "immediately_addable": fti.getId() in immediately_types
+                if can_add
+                else False,
             }
             for fti in ftis
         ]

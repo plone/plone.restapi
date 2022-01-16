@@ -8,6 +8,215 @@ Changelog
 
 .. towncrier release notes start
 
+8.18.1 (2022-01-06)
+-------------------
+
+Internal:
+
+
+- Be permissive when testing the schema of the querystring endpoint [reebalazs] (#1307)
+
+
+8.18.0 (2022-01-03)
+-------------------
+
+New features:
+
+
+- Improve vocabulary endpoint when asking for a list of tokens adding resilience and deprecation warning
+  [sneridagh] (#1298)
+- Expandable params as list and deprecations for list as comma separated
+  [sneridagh] (#1300)
+
+
+Bug fixes:
+
+
+- Do not break in recursive transition when children already are in destination state. [cekk] (#1291)
+- Resolve the bulk of deprecation and resource leak warnings when running the full test
+  suite.
+  [rpatterson] (#1302)
+
+
+8.17.0 (2021-12-21)
+-------------------
+
+New features:
+
+
+- Enhance the vocabularies serializer to accept a list of tokens
+  [sneridagh] (#1294)
+
+
+Bug fixes:
+
+
+- SearchableText indexer should maintain the order of the blocks
+  [ericof] (#1292)
+
+
+8.16.2 (2021-12-03)
+-------------------
+
+Bug fixes:
+
+
+- Revert "Improve support for missing_value and default story" because it breaks multilingual
+  [timo] (#1289)
+
+
+8.16.1 (2021-11-30)
+-------------------
+
+Bug fixes:
+
+
+- Improve support and meaning for `default` and `missing_value` in serializers/deserializers
+  [sneridagh] (#1282)
+
+
+8.16.0 (2021-11-29)
+-------------------
+
+New features:
+
+
+- Enable table blocks indexing [cekk] (#1281)
+
+
+8.15.3 (2021-11-29)
+-------------------
+
+Bug fixes:
+
+
+- Types service: Do not consider TypeSchemaContext as a valid context
+  [ericof] (#1278)
+- Improve error status code in vocabularies endpoint refactor
+  [sneridagh] (#1284)
+
+
+8.15.2 (2021-11-24)
+-------------------
+
+Bug fixes:
+
+
+- Adjust restrictions of vocabularies endpoint [ksuess] (#1258)
+
+
+8.15.1 (2021-11-24)
+-------------------
+
+Bug fixes:
+
+
+- Fix schema generation when /@types/ is used in a context. [ericof] (#1271)
+
+
+8.15.0 (2021-11-23)
+-------------------
+
+New features:
+
+
+- Return non-batched vocabularies given a query param ``b_size=-1``
+  [sneridagh] (#1264)
+
+
+Bug fixes:
+
+
+- Remove all traces of ``Products.CMFQuickInstaller``.
+  It was removed in Plone 5.2.
+  BBB code was in ``plone.app.upgrade`` only.
+  Plone with Restapi broke if ``plone.app.upgrade` was not available, like when dependening on ``Products.CMFPlone`` only.
+  [jensens] (#1267)
+- Fix installation of JWT PAS plugin with default profile. [jensens] (#1269)
+
+
+8.14.0 (2021-11-11)
+-------------------
+
+New features:
+
+
+- Add root (INavigationRoot) for the current object information in @translations endpoint
+  [sneridagh] (#1263)
+
+
+8.13.0 (2021-11-05)
+-------------------
+
+New features:
+
+
+- Implement IJSONSummarySerializerMetadata allowing addons to extend the metadata returned by Summary serializer.
+  [ericof] (#1250)
+- Enable usage of metadata_fields also for POST calls [cekk] (#1253)
+
+
+8.12.1 (2021-10-14)
+-------------------
+
+Bug fixes:
+
+
+- Fix wrong @id attribute on the Plone root serialization when using the new ++api++ traversal (introduced in plone.rest 2.0.0)
+  [sneridagh] (#1248)
+
+
+8.12.0 (2021-10-11)
+-------------------
+
+New features:
+
+
+- Add missing backend logout actions for the @logout endpoint (delete cookie, etc)
+  [sneridagh] (#1239)
+
+
+8.11.0 (2021-09-29)
+-------------------
+
+New features:
+
+
+- Make masking specific validation errors configurable in DX DeserializeFromJson. [fredvd] (#1211)
+
+
+Bug fixes:
+
+
+- Normalize unstable generated behavior names in http-examples output.
+  No longer hardcode port 55001 for the tests.
+  [maurits] (#1226)
+- Avoid `UnboundLocalError` or duplicates in results when using `@search` endpoint and a brain is orphan or a `KeyError` occurs during result serialization.
+  [gbastien] (#1231)
+
+
+8.10.0 (2021-09-24)
+-------------------
+
+New features:
+
+
+- Update default allow_headers CORS to include: Lock-Token [@avoinea] (#1181)
+- @types endpoint also returns if a content type is immediately addable in the given context
+  [ericof] (#1228)
+
+
+Bug fixes:
+
+
+- Fix @users endpoint to use acl_users.searchResults instead of portal_membership.listMembers
+  [ericof] (#1199)
+- Fix testing of a checkout instead of a released package.
+  [maurits] (#1213)
+- Fix @users endpoint to return list of users ordered by fullname property
+  [ericof] (#1222)
+
+
 8.9.1 (2021-08-27)
 ------------------
 
