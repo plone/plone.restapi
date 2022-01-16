@@ -1,17 +1,19 @@
-from plone.dexterity.interfaces import IDexterityFTI
-from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
-from zope.component import getMultiAdapter
-from zope.component import queryUtility
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.dexterity.interfaces import IDexterityFTI
+from plone.dexterity.schema import SCHEMA_CACHE
+from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi.testing import RelativeSession
+from zope.component import getMultiAdapter
+from zope.component import queryUtility
 
 import json
 import unittest
+
 
 try:
     from Products.CMFPlone.factory import PLONE60MARKER
@@ -41,6 +43,9 @@ class TestSiteSerializer(unittest.TestCase):
             behavior_list = [a for a in fti.behaviors]
             behavior_list.append("volto.blocks")
             fti.behaviors = tuple(behavior_list)
+            # Invalidating the cache is required for the FTI to be applied
+            # on the existing object
+            SCHEMA_CACHE.invalidate("Plone Site")
 
     def serialize(self):
         serializer = getMultiAdapter((self.portal, self.request), ISerializeToJson)

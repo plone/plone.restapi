@@ -15,6 +15,15 @@ import json
 import os
 import unittest
 
+try:
+    from Products.CMFPlone.factory import PLONE60MARKER
+
+    PLONE60MARKER  # pyflakes
+except ImportError:
+    PLONE_6 = False
+else:
+    PLONE_6 = True
+
 
 class TestSerializeToJsonAdapter(unittest.TestCase):
 
@@ -395,10 +404,18 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.assertIn("title", self.serialize(self.portal))
         self.assertIn("description", self.serialize(self.portal))
 
+    @unittest.skipIf(
+        PLONE_6,
+        "This test is only intended to run for Plone 6 and DX site root enabled",
+    )
     def test_serialize_returns_site_root_opt_in_blocks_not_present(self):
         self.assertEqual(self.serialize(self.portal)["blocks"], {})
         self.assertEqual(self.serialize(self.portal)["blocks_layout"], {})
 
+    @unittest.skipIf(
+        PLONE_6,
+        "This test is only intended to run for Plone 6 and DX site root enabled",
+    )
     def test_serialize_returns_site_root_opt_in_blocks_present(self):
         blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {"@type": "description"},

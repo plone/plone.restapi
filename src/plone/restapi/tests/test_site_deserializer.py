@@ -1,4 +1,5 @@
 from plone.dexterity.interfaces import IDexterityFTI
+from plone.dexterity.schema import SCHEMA_CACHE
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.mixin_ordering import OrderingMixin
@@ -61,11 +62,15 @@ class TestSiteRootDeserializer(unittest.TestCase):
             id="doc1",
         )
 
+        # Enable volto.blocks if Plone Site is DX
         fti = queryUtility(IDexterityFTI, name="Plone Site")
         if fti is not None:
             behavior_list = [a for a in fti.behaviors]
             behavior_list.append("volto.blocks")
             fti.behaviors = tuple(behavior_list)
+            # Invalidating the cache is required for the FTI to be applied
+            # on the existing object
+            SCHEMA_CACHE.invalidate("Plone Site")
 
     def deserialize(self, body="{}", validate_all=False, context=None):
         context = context or self.portal
@@ -146,7 +151,9 @@ class TestSiteRootDeserializer(unittest.TestCase):
         }
 
         self.deserialize(
-            body='{{"blocks": {}, "blocks_layout": {}}}'.format(blocks, blocks_layout)
+            body='{{"blocks": {}, "blocks_layout": {}}}'.format(
+                json.dumps(blocks), json.dumps(blocks_layout)
+            )
         )
 
         self.assertEqual(blocks, self.portal.blocks)
@@ -172,7 +179,9 @@ class TestSiteRootDeserializer(unittest.TestCase):
         }
 
         self.deserialize(
-            body='{{"blocks": {}, "blocks_layout": {}}}'.format(blocks, blocks_layout)
+            body='{{"blocks": {}, "blocks_layout": {}}}'.format(
+                json.dumps(blocks), json.dumps(blocks_layout)
+            )
         )
 
         values = self.portal.blocks
