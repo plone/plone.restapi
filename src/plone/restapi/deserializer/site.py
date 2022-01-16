@@ -1,5 +1,5 @@
 from plone.restapi.deserializer import json_body
-from plone.restapi.deserializer.mixins import OrderingMixin
+from plone.restapi.deserializer.dxcontent import DeserializeFromJson
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
 from plone.restapi.interfaces import IDeserializeFromJson
 from Products.CMFPlone.interfaces import IPloneSiteRoot
@@ -7,7 +7,6 @@ from zope.component import adapter
 from zope.component import subscribers
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
-from plone.restapi.deserializer.dxcontent import DeserializeFromJson
 
 import json
 
@@ -29,11 +28,14 @@ class DeserializeSiteRootFromJson(DeserializeFromJson):
     def __init__(self, context, request):
         self.context = context
         self.request = request
-        super().__init__(self.context, self.request)
+
+        if PLONE_6:
+            super().__init__(self.context, self.request)
 
     def __call__(self, validate_all=False):
-        # Call the default DX content deserializer
-        super().__call__(self)
+        if PLONE_6:
+            # Call the default DX content deserializer
+            super().__call__(self)
 
         data = json_body(self.request)
 
@@ -41,13 +43,13 @@ class DeserializeSiteRootFromJson(DeserializeFromJson):
             layout = data["layout"]
             self.context.setLayout(layout)
 
-        # OrderingMixin
-        if "ordering" in data and "subset_ids" not in data["ordering"]:
-            data["ordering"]["subset_ids"] = self.context.contentIds()
-        self.handle_ordering(data)
-
         # Volto Blocks on the Plone Site root faker for Plone 5
         if not PLONE_6:
+            # OrderingMixin (needed for correct ordering for Plone < 6)
+            if "ordering" in data and "subset_ids" not in data["ordering"]:
+                data["ordering"]["subset_ids"] = self.context.contentIds()
+            self.handle_ordering(data)
+
             if "blocks" in data:
                 value = data["blocks"]
                 for id, block_value in value.items():
