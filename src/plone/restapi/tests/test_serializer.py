@@ -16,9 +16,7 @@ import os
 import unittest
 
 try:
-    from Products.CMFPlone.factory import PLONE60MARKER
-
-    PLONE60MARKER  # pyflakes
+    from Products.CMFPlone.factory import PLONE60MARKER  # noqa
 except ImportError:
     PLONE_6 = False
 else:
