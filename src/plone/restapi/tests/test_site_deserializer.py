@@ -1,3 +1,4 @@
+from importlib import import_module
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.schema import SCHEMA_CACHE
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -9,13 +10,9 @@ from zope.component import queryUtility
 import json
 import unittest
 
-
-try:
-    from Products.CMFPlone.factory import PLONE60MARKER  # noqa
-except ImportError:
-    PLONE_6 = False
-else:
-    PLONE_6 = True
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
 
 
 class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
@@ -77,7 +74,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
         return deserializer(validate_all=validate_all)
 
     @unittest.skipIf(
-        PLONE_6,
+        HAS_PLONE_6,
         "This test is only intended to run for Plone 5 and the blocks behavior site root hack enabled",
     )
     def test_opt_in_blocks_deserializer_plone5(self):
@@ -102,7 +99,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
         self.assertEqual(blocks_layout, json.loads(self.portal.blocks_layout))
 
     @unittest.skipIf(
-        PLONE_6,
+        HAS_PLONE_6,
         "This test is only intended to run for Plone 5 and the blocks behavior site root hack enabled",
     )
     def test_resolveuids_blocks_deserializer_plone5(self):
@@ -133,7 +130,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
         )
 
     @unittest.skipIf(
-        not PLONE_6,
+        not HAS_PLONE_6,
         "This test is only intended to run for Plone 6 and DX site root enabled",
     )
     def test_opt_in_blocks_deserializer(self):
@@ -158,7 +155,7 @@ class TestSiteRootDeserializer(unittest.TestCase):
         self.assertEqual(blocks_layout, self.portal.blocks_layout)
 
     @unittest.skipIf(
-        not PLONE_6,
+        not HAS_PLONE_6,
         "This test is only intended to run for Plone 6 and DX site root enabled",
     )
     def test_resolveuids_blocks_deserializer(self):

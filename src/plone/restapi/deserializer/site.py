@@ -1,3 +1,4 @@
+from importlib import import_module
 from plone.restapi.deserializer import json_body
 from plone.restapi.deserializer.dxcontent import DeserializeFromJson
 from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
@@ -10,12 +11,10 @@ from zope.publisher.interfaces import IRequest
 
 import json
 
-try:
-    from Products.CMFPlone.factory import PLONE60MARKER  # noqa
-except ImportError:
-    PLONE_6 = False
-else:
-    PLONE_6 = True
+
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
 
 
 @implementer(IDeserializeFromJson)
@@ -27,11 +26,11 @@ class DeserializeSiteRootFromJson(DeserializeFromJson):
         self.context = context
         self.request = request
 
-        if PLONE_6:
+        if HAS_PLONE_6:
             super().__init__(self.context, self.request)
 
     def __call__(self, validate_all=False):
-        if PLONE_6:
+        if HAS_PLONE_6:
             # Call the default DX content deserializer
             super().__call__(self)
 
@@ -42,7 +41,7 @@ class DeserializeSiteRootFromJson(DeserializeFromJson):
             self.context.setLayout(layout)
 
         # Volto Blocks on the Plone Site root faker for Plone 5
-        if not PLONE_6:
+        if not HAS_PLONE_6:
             # OrderingMixin (needed for correct ordering for Plone < 6)
             if "ordering" in data and "subset_ids" not in data["ordering"]:
                 data["ordering"]["subset_ids"] = self.context.contentIds()

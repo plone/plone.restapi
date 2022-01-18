@@ -1,3 +1,4 @@
+from importlib import import_module
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -14,13 +15,9 @@ from zope.component import queryUtility
 import json
 import unittest
 
-
-try:
-    from Products.CMFPlone.factory import PLONE60MARKER  # noqa
-except ImportError:
-    PLONE_6 = False
-else:
-    PLONE_6 = True
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
 
 
 class TestSiteSerializer(unittest.TestCase):
@@ -64,7 +61,7 @@ class TestSiteSerializer(unittest.TestCase):
         self.assertEqual(True, obj["is_folderish"])
 
     @unittest.skipIf(
-        PLONE_6,
+        HAS_PLONE_6,
         "This test is only intended to run for Plone 5 and the blocks behavior site root hack enabled",
     )
     def test_resolveuids_get_serialized_in_serializer_plone5(self):
@@ -83,7 +80,7 @@ class TestSiteSerializer(unittest.TestCase):
         )
 
     @unittest.skipIf(
-        not PLONE_6,
+        not HAS_PLONE_6,
         "This test is only intended to run for Plone 6 and DX site root enabled",
     )
     def test_resolveuids_get_serialized_in_serializer(self):

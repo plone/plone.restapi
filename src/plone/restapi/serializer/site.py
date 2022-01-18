@@ -1,4 +1,5 @@
 from AccessControl import getSecurityManager
+from importlib import import_module
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
@@ -24,13 +25,9 @@ from zope.security.interfaces import IPermission
 
 import json
 
-
-try:
-    from Products.CMFPlone.factory import PLONE60MARKER  # noqa
-except ImportError:
-    PLONE_6 = False
-else:
-    PLONE_6 = True
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
 
 
 @implementer(ISerializeToJson)
@@ -71,7 +68,7 @@ class SerializeSiteRootToJson:
             "description": self.context.description,
         }
 
-        if PLONE_6:
+        if HAS_PLONE_6:
             # Insert Plone Site DX root field values
             for schema in iterSchemata(self.context):
                 read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
