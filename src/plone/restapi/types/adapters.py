@@ -7,6 +7,7 @@ from plone.restapi.types.utils import get_querysource_url
 from plone.restapi.types.utils import get_source_url
 from plone.restapi.types.utils import get_vocabulary_url
 from plone.restapi.types.utils import get_widget_params
+from plone.restapi.types.utils import get_multilingual_directives
 from plone.schema import IEmail
 from plone.schema import IJSONField
 from z3c.formwidget.query.interfaces import IQuerySource
@@ -83,6 +84,10 @@ class DefaultJsonSchemaProvider:
         if widget_options:
             schema["widgetOptions"] = widget_options
 
+        multilingual_options = self.get_multilingual_directives()
+        if multilingual_options:
+            schema["multilingual_options"] = multilingual_options
+
         if self.field.default is not None:
             schema["default"] = self.field.default
 
@@ -106,6 +111,11 @@ class DefaultJsonSchemaProvider:
             params["vocabulary"] = {
                 "@id": get_vocabulary_url(vocab_name, self.context, self.request)
             }
+        return params
+
+    def get_multilingual_directives(self):
+        all_params = get_multilingual_directives([self.field.interface])
+        params = all_params.get(self.field.getName(), {})
         return params
 
 
