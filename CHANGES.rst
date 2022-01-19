@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+8.19.0 (2022-01-19)
+-------------------
+
+New features:
+
+
+- Add support for multilingual language independent fields in field serialization
+  [sneridagh] (#1316)
+
+
+Internal:
+
+
+- Update build to Plone 6 alpha 2
+  [sneridagh] (#1312)
+
+
 8.18.1 (2022-01-06)
 -------------------
 
