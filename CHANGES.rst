@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.20.0 (2022-01-19)
+-------------------
+
+New features:
+
+
+- Add support for DX Plone Site root in Plone 6. Remove blocks behavior hack for site root in Plone 6.
+  [sneridagh] (#1219)
+
+
 8.19.0 (2022-01-19)
 -------------------
 
