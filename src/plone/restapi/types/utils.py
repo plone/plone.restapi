@@ -40,6 +40,8 @@ from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
+from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
+from plone.supermodel.utils import mergedTaggedValueList
 
 try:
     # Plone 5.1+
@@ -193,6 +195,20 @@ def get_widget_params(schemas):
                     if callable(v):
                         v = v()
                     params[field_name][k] = v
+    return params
+
+
+def get_multilingual_directives(schemas):
+    params = {}
+    for schema in schemas:
+        if not schema:
+            continue
+        tagged_values = mergedTaggedValueList(schema, MULTILINGUAL_KEY)
+        result = {field_name: value for _, field_name, value in tagged_values}
+
+        for field_name, value in result.items():
+            params[field_name] = {}
+            params[field_name]["language_independent"] = value
     return params
 
 
