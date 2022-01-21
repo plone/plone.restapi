@@ -10,6 +10,7 @@ class AddonsGet(Service):
         super().__init__(context, request)
         self.params = []
         self.addons = Addons(context, request)
+        self.query = self.request.form.copy()
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@addons as parameters
@@ -31,6 +32,17 @@ class AddonsGet(Service):
         addons_data = []
         for addon in all_addons.values():
             addons_data.append(self.addons.serializeAddon(addon))
+
+        if len(self.query) > 0 and len(self.params) == 0:
+            upgradeables = self.query.get("upgradeable", "")
+            if upgradeables:
+                addons_data = [
+                    addon
+                    for addon in addons_data
+                    if addon.get("upgrade_info", False)
+                    and addon["upgrade_info"].get("available", False) is True
+                ]
+
         result["items"] = addons_data
         self.request.response.setStatus(200)
         return result
