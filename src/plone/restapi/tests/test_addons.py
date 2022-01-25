@@ -175,3 +175,28 @@ class TestAddons(unittest.TestCase):
         session = [a for a in result["items"] if a["id"] == "plone.restapi"]
         self.assertEqual(len(session), 1)
         self.assertEqual(last_version, session[0]["upgrade_info"])
+
+    def test_get_only_upgradeables(self):
+        def _get_upgrade_info(self):
+            response = self.api_session.get("/@addons/plone.restapi")
+            result = response.json()
+            return result["upgrade_info"]
+
+        # Set need upgrade state
+        self.ps.setLastVersionForProfile("plone.restapi:default", "0002")
+        transaction.commit()
+        self.assertEqual(
+            {
+                "available": True,
+                "hasProfile": True,
+                "installedVersion": "0002",
+                "newVersion": "0006",
+                "required": True,
+            },
+            _get_upgrade_info(self),
+        )
+
+        response = self.api_session.get("/@addons?upgradeable=1")
+
+        self.assertEqual(1, len(response.json()["items"]))
+        self.assertEqual("plone.restapi", response.json()["items"][0]["id"])
