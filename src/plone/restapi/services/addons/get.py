@@ -40,7 +40,7 @@ class AddonsGet(Service):
                     addon
                     for addon in addons_data
                     if addon.get("upgrade_info", False)
-                    and addon["upgrade_info"].get("available", False) is True
+                    and addon["upgrade_info"].get("available", False)
                 ]
 
         result["items"] = addons_data
