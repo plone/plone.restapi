@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.21.0 (2022-01-25)
+-------------------
+
+New features:
+
+
+- Enhance @addons endpoint to return a list of upgradeable addons.
+  [sneridagh] (#1319)
+
+
 8.20.0 (2022-01-19)
 -------------------
 
