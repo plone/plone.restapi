@@ -1,5 +1,6 @@
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.batching import HypermediaBatch
 from Products.CMFCore.interfaces._tools import IMemberData
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
@@ -60,8 +61,21 @@ class BaseSerializer:
 @implementer(ISerializeToJson)
 @adapter(IMemberData, IRequest)
 class SerializeUserToJson(BaseSerializer):
-    pass
+    def __call__(self):
+        data = super().__call__()
+        user = self.context
+        groups = user.getGroups()
+        batch = HypermediaBatch(self.request, groups)
+        groups_data = {
+            "@id": batch.canonical_url,
+            "items_total": batch.items_total,
+            "items": sorted(batch),
+        }
+        if batch.links:
+            groups_data["batching"] = batch.links
 
+        data["groups"] = groups_data
+        return data
 
 @implementer(ISerializeToJsonSummary)
 @adapter(IMemberData, IRequest)
