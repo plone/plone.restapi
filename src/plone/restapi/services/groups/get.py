@@ -66,7 +66,7 @@ class GroupsGet(Service):
             result = []
             for group in self._get_groups():
                 serializer = queryMultiAdapter(
-                    (group, self.request), ISerializeToJsonSummary
+                    (group, self.request), ISerializeToJson
                 )
                 result.append(serializer())
             return result
