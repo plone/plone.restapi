@@ -55,6 +55,7 @@ New features:
 
 - Enhance @addons endpoint to return a list of upgradeable addons.
   [sneridagh] (#1319)
+- Include users data in groups while retrieving @groups [@nileshgulia1] (#1325)
 
 
 8.20.0 (2022-01-19)
