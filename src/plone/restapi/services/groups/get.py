@@ -65,9 +65,7 @@ class GroupsGet(Service):
         if len(self.params) == 0:
             result = []
             for group in self._get_groups():
-                serializer = queryMultiAdapter(
-                    (group, self.request), ISerializeToJson
-                )
+                serializer = queryMultiAdapter((group, self.request), ISerializeToJson)
                 result.append(serializer())
             return result
         # we retrieve the user on the user id not the username
