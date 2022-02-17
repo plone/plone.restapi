@@ -5,7 +5,9 @@ from plone.restapi.interfaces import IJsonCompatible
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services.discussion.utils import can_delete
 from plone.restapi.services.discussion.utils import can_delete_own
+from plone.restapi.services.discussion.utils import can_view
 from plone.restapi.services.discussion.utils import can_edit
+from plone.restapi.services.discussion.utils import can_reply
 from plone.restapi.services.discussion.utils import delete_own_comment_allowed
 from plone.restapi.services.discussion.utils import edit_comment_allowed
 from Products.CMFCore.utils import getToolByName
@@ -31,6 +33,10 @@ class ConversationSerializer:
         results["@id"] = batch.canonical_url
 
         results["items_total"] = batch.items_total
+        results["permissions"] = {
+            "view_comments": can_view(self.context),
+            "can_reply": can_reply(self.context),
+        }
         if batch.links:
             results["batching"] = batch.links
 
@@ -87,6 +93,7 @@ class CommentSerializer:
             ),  # noqa
             "is_editable": edit_comment_allowed() and can_edit(self.context),
             "is_deletable": can_delete(self.context) or delete_own,
+            "can_reply": can_reply(self.context),
         }
 
     def get_author_image(self, username=None):
