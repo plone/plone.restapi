@@ -45,9 +45,7 @@ def can_review(comment):
 def can_reply(comment):
     """Returns true if current user has the 'Reply to item' permission."""
     return bool(
-        getSecurityManager().checkPermission(
-            "Reply to item", aq_inner(comment)
-        )
+        getSecurityManager().checkPermission("Reply to item", aq_inner(comment))
     )
 
 
