@@ -77,6 +77,7 @@ class SerializeUserToJson(BaseSerializer):
         data["groups"] = groups_data
         return data
 
+
 @implementer(ISerializeToJsonSummary)
 @adapter(IMemberData, IRequest)
 class SerializeUserToJsonSummary(BaseSerializer):
