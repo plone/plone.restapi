@@ -182,13 +182,20 @@ class TestLinkContentsAsTranslations(unittest.TestCase):
             json={"id": self.es_content.absolute_url()},
         )
         self.assertEqual(400, response.status_code)
-        self.assertEqual(response.json()['error']['message'], "Source already translated into language es")
+        self.assertEqual(
+            response.json()["error"]["message"],
+            "Source already translated into language es",
+        )
 
-    def test_link_translation_with_target_already_linked_to_other_object_returns_400(self):
+    def test_link_translation_with_target_already_linked_to_other_object_returns_400(
+        self,
+    ):
         self.en_content_2 = createContentInContainer(
             self.portal["en"], "Document", title="Test document 2"
         )
-        ITranslationManager(self.en_content_2).register_translation("es", self.es_content)
+        ITranslationManager(self.en_content_2).register_translation(
+            "es", self.es_content
+        )
         transaction.commit()
         response = requests.post(
             f"{self.en_content.absolute_url()}/@translations",
@@ -197,17 +204,26 @@ class TestLinkContentsAsTranslations(unittest.TestCase):
             json={"id": self.es_content.absolute_url()},
         )
         self.assertEqual(400, response.status_code)
-        self.assertEqual(response.json()['error']['message'], "Target already translated into language es")
+        self.assertEqual(
+            response.json()["error"]["message"],
+            "Target already translated into language es",
+        )
 
-    def test_link_translation_with_LFRs_not_possible_since_they_are_protected_returns_400(self):
+    def test_link_translation_with_LFRs_not_possible_since_they_are_protected_returns_400(
+        self,
+    ):
         response = requests.post(
             f"{self.es_content.absolute_url()}/@translations",
             headers={"Accept": "application/json"},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-            json={"id": self.portal['en'].absolute_url()},
+            json={"id": self.portal["en"].absolute_url()},
         )
         self.assertEqual(400, response.status_code)
-        self.assertEqual(response.json()['error']['message'], "Language Root Folders can only be linked between each other")
+        self.assertEqual(
+            response.json()["error"]["message"],
+            "Language Root Folders can only be linked between each other",
+        )
+
 
 class TestUnLinkContentTranslations(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING

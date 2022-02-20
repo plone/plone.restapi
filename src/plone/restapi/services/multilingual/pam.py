@@ -96,9 +96,14 @@ class LinkTranslations(Service):
         if target is None:
             self.request.response.setStatus(400)
             return dict(error=dict(type="BadRequest", message="Content does not exist"))
-        elif target.portal_type == 'LRF':
+        elif target.portal_type == "LRF":
             self.request.response.setStatus(400)
-            return dict(error=dict(type="BadRequest", message="Language Root Folders can only be linked between each other"))
+            return dict(
+                error=dict(
+                    type="BadRequest",
+                    message="Language Root Folders can only be linked between each other",
+                )
+            )
 
         target_language = ILanguage(target).get_language()
         manager = ITranslationManager(self.context)
@@ -129,7 +134,9 @@ class LinkTranslations(Service):
         manager.register_translation(target_language, target)
         # We want to leave a log in the transaction that the link has been executed
         ts = transaction.get()
-        ts.note(f'Linked translation {"/".join(self.context.getPhysicalPath())} ({self.context.language}) -> {"/".join(target.getPhysicalPath())} ({target_language})')
+        ts.note(
+            f'Linked translation {"/".join(self.context.getPhysicalPath())} ({self.context.language}) -> {"/".join(target.getPhysicalPath())} ({target_language})'
+        )
 
         self.request.response.setStatus(201)
         self.request.response.setHeader("Location", self.context.absolute_url())
@@ -182,6 +189,8 @@ class UnlinkTranslations(Service):
         manager.remove_translation(language)
         # We want to leave a log in the transaction that the unlink has been executed
         ts = transaction.get()
-        ts.note(f'Unlinked translation for {language} in {"/".join(self.context.getPhysicalPath())} ({self.context.language})')
+        ts.note(
+            f'Unlinked translation for {language} in {"/".join(self.context.getPhysicalPath())} ({self.context.language})'
+        )
 
         return self.reply_no_content()
