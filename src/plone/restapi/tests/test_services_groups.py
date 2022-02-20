@@ -65,10 +65,9 @@ class TestGroupsEndpoint(unittest.TestCase):
 
         self.assertEqual(ptgroup.get("roles"), ["Authenticated"])
 
-        # We don't want the group members listed in the overview as there
-        # might be loads.
+        # # Assert batched list of group members
         self.assertTrue(
-            not any(["users" in group for group in response.json()]),
+            all(["users" in group for group in response.json()]),
             "Users key found in groups listing",
         )
 

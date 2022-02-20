@@ -7,6 +7,13 @@ Location: http://localhost:55001/plone/@users/noamchomsky
     "description": "Professor of Linguistics",
     "email": "noam.chomsky@example.com",
     "fullname": "Noam Avram Chomsky",
+    "groups": {
+        "@id": "http://localhost:55001/plone/@users",
+        "items": [
+            "AuthenticatedUsers"
+        ],
+        "items_total": 1
+    },
     "home_page": "web.mit.edu/chomsky",
     "id": "noamchomsky",
     "location": "Cambridge, MA",
