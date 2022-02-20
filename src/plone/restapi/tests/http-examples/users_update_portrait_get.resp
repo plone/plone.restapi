@@ -6,6 +6,13 @@ Content-Type: application/json
     "description": null,
     "email": "noam.chomsky@example.com",
     "fullname": null,
+    "groups": {
+        "@id": "http://localhost:55001/plone/@users/noam",
+        "items": [
+            "AuthenticatedUsers"
+        ],
+        "items_total": 1
+    },
     "home_page": null,
     "id": "noam",
     "location": null,
