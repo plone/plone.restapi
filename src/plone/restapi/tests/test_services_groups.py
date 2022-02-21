@@ -114,7 +114,7 @@ class TestGroupsEndpoint(unittest.TestCase):
         self.assertEqual("ploneteam@plone.org", response.json().get("email"))
         self.assertEqual("Plone Team", response.json().get("title"))
         self.assertEqual("We are Plone", response.json().get("description"))
-        self.assertIn("users", response.json())
+        self.assertIn("members", response.json())
 
     def test_get_search_group_with_filter(self):
         response = self.api_session.get("/@groups", params={"query": "plo"})
