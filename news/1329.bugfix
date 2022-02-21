@@ -1,0 +1,2 @@
+Improve handling of linking translations taking into account the state of the target. Restricting it completely for LRFs. Adding a transaction note to the action if it succeeds.
+[sneridagh]
