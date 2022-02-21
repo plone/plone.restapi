@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.21.1 (2022-02-21)
+-------------------
+
+Bug fixes:
+
+
+- Improve handling of linking translations taking into account the state of the target. Restricting it completely for LRFs. Adding a transaction note to the action if it succeeds.
+  [sneridagh] (#1329)
+
+
 8.21.0 (2022-01-25)
 -------------------
 
