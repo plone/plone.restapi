@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.21.2 (2022-02-21)
+-------------------
+
+Bug fixes:
+
+
+- Restrict unlinking on Language Root Folders
+  [sneridagh] (#1332)
+
+
 8.21.1 (2022-02-21)
 -------------------
 
