@@ -276,6 +276,19 @@ class TestUnLinkContentTranslations(unittest.TestCase):
         )
         self.assertEqual(400, response.status_code)
 
+    def test_translation_unlinking_a_LRF_errors(self):
+        response = requests.delete(
+            f"{self.portal['en'].absolute_url()}/@translations",
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"language": "es"},
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(
+            response.json()["error"]["message"],
+            "Language Root Folders cannot be unlinked",
+        )
+
 
 class TestCreateContentsAsTranslations(unittest.TestCase):
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING

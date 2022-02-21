@@ -176,13 +176,20 @@ class UnlinkTranslations(Service):
                     message="You need to provide the language to unlink",
                 )
             )
-
-        if language not in list(manager.get_translations()):
+        elif language not in list(manager.get_translations()):
             self.request.response.setStatus(400)
             return dict(
                 error=dict(
                     type="BadRequest",
                     message=f"This objects is not translated into {language}",
+                )
+            )
+        elif self.context.portal_type == "LRF":
+            self.request.response.setStatus(400)
+            return dict(
+                error=dict(
+                    type="BadRequest",
+                    message="Language Root Folders cannot be unlinked",
                 )
             )
 
