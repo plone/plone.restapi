@@ -67,8 +67,8 @@ class TestGroupsEndpoint(unittest.TestCase):
 
         # # Assert batched list of group members
         self.assertTrue(
-            all(["users" in group for group in response.json()]),
-            "Users key found in groups listing",
+            all(["members" in group for group in response.json()]),
+            "Members key found in groups listing",
         )
 
     def test_add_group(self):
