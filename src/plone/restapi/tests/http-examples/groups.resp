@@ -8,16 +8,16 @@ Content-Type: application/json
         "email": "",
         "groupname": "Administrators",
         "id": "Administrators",
+        "members": {
+            "@id": "http://localhost:55001/plone/@groups",
+            "items": [],
+            "items_total": 0
+        },
         "roles": [
             "Manager",
             "Authenticated"
         ],
-        "title": "Administrators",
-        "users": {
-            "@id": "http://localhost:55001/plone/@groups",
-            "items": [],
-            "items_total": 0
-        }
+        "title": "Administrators"
     },
     {
         "@id": "http://localhost:55001/plone/@groups/Reviewers",
@@ -25,16 +25,16 @@ Content-Type: application/json
         "email": "",
         "groupname": "Reviewers",
         "id": "Reviewers",
+        "members": {
+            "@id": "http://localhost:55001/plone/@groups",
+            "items": [],
+            "items_total": 0
+        },
         "roles": [
             "Reviewer",
             "Authenticated"
         ],
-        "title": "Reviewers",
-        "users": {
-            "@id": "http://localhost:55001/plone/@groups",
-            "items": [],
-            "items_total": 0
-        }
+        "title": "Reviewers"
     },
     {
         "@id": "http://localhost:55001/plone/@groups/Site Administrators",
@@ -42,16 +42,16 @@ Content-Type: application/json
         "email": "",
         "groupname": "Site Administrators",
         "id": "Site Administrators",
+        "members": {
+            "@id": "http://localhost:55001/plone/@groups",
+            "items": [],
+            "items_total": 0
+        },
         "roles": [
             "Site Administrator",
             "Authenticated"
         ],
-        "title": "Site Administrators",
-        "users": {
-            "@id": "http://localhost:55001/plone/@groups",
-            "items": [],
-            "items_total": 0
-        }
+        "title": "Site Administrators"
     },
     {
         "@id": "http://localhost:55001/plone/@groups/ploneteam",
@@ -59,15 +59,15 @@ Content-Type: application/json
         "email": "ploneteam@plone.org",
         "groupname": "ploneteam",
         "id": "ploneteam",
-        "roles": [
-            "Authenticated"
-        ],
-        "title": "Plone Team",
-        "users": {
+        "members": {
             "@id": "http://localhost:55001/plone/@groups",
             "items": [],
             "items_total": 0
-        }
+        },
+        "roles": [
+            "Authenticated"
+        ],
+        "title": "Plone Team"
     },
     {
         "@id": "http://localhost:55001/plone/@groups/AuthenticatedUsers",
@@ -75,12 +75,12 @@ Content-Type: application/json
         "email": "",
         "groupname": "AuthenticatedUsers",
         "id": "AuthenticatedUsers",
-        "roles": [],
-        "title": "Authenticated Users (Virtual Group)",
-        "users": {
+        "members": {
             "@id": "http://localhost:55001/plone/@groups",
             "items": [],
             "items_total": 0
-        }
+        },
+        "roles": [],
+        "title": "Authenticated Users (Virtual Group)"
     }
 ]
