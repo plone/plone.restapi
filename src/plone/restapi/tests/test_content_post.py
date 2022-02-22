@@ -118,6 +118,23 @@ class TestFolderCreate(unittest.TestCase):
         )
         self.assertEqual(400, response.status_code)
 
+    def test_post_with_invalid_type(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "NonExistentType",
+                "id": "mydocument",
+                "title": "My Document",
+            },
+        )
+        self.assertEqual(403, response.status_code)
+        self.assertEqual(
+            "Invalid '@type' parameter. No content type with the name 'NonExistentType' found",
+            response.json().get("error").get("message"),
+        )
+
     def test_post_to_folder_returns_401_unauthorized(self):
         response = requests.post(
             self.portal.folder1.absolute_url(),
