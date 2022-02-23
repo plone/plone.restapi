@@ -17,12 +17,15 @@ from Products.PluggableAuthService.interfaces.plugins import IExtractionPlugin
 from Products.PluggableAuthService.interfaces.plugins import ICredentialsUpdatePlugin
 from Products.PluggableAuthService.interfaces.plugins import ICredentialsResetPlugin
 from Products.PluggableAuthService.plugins.BasePlugin import BasePlugin
+from zope import component
 from zope.component import getUtility
 from zope.interface import implementer
 
 import jwt
+import logging
 import time
 
+logger = logging.getLogger(__name__)
 
 manage_addJWTAuthenticationPlugin = PageTemplateFile(
     "add_plugin", globals(), __name__="manage_addJWTAuthenticationPlugin"
@@ -211,7 +214,15 @@ class JWTAuthenticationPlugin(BasePlugin):
 
     def _decode_token(self, token, verify=True):
         if self.use_keyring:
-            manager = getUtility(IKeyManager)
+            manager = component.queryUtility(IKeyManager)
+            if manager is None:
+                logger.error(
+                    "JWT token plugin configured to use IKeyManager "
+                    "but no utility is registered: %r\n"
+                    "Have you upgraded the `plone.restapi:default` profile?",
+                    "/".join(self.getPhysicalPath()),
+                )
+                return
             for secret in manager["_system"]:
                 if secret is None:
                     continue
