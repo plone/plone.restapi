@@ -71,7 +71,7 @@ class SerializeToJson(object):
             name = field.getName()
 
             serializer = queryMultiAdapter(
-                (field, self.context, self.request), IFieldSerializer
+                (field, obj, self.request), IFieldSerializer
             )
             if serializer is not None:
                 result[name] = serializer()
