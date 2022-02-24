@@ -26,6 +26,7 @@ class ConversationSerializer:
 
     def __call__(self):
         # We'll batch the threads
+        view_comments = can_view(self.context)
         results = list(self.context.getThreads())
         batch = HypermediaBatch(self.request, results)
 
@@ -34,16 +35,20 @@ class ConversationSerializer:
 
         results["items_total"] = batch.items_total
         results["permissions"] = {
-            "view_comments": can_view(self.context),
+            "view_comments": view_comments,
             "can_reply": can_reply(self.context),
         }
         if batch.links:
             results["batching"] = batch.links
 
-        results["items"] = [
-            getMultiAdapter((thread["comment"], self.request), ISerializeToJson)()
-            for thread in batch
-        ]
+        results["items"] = (
+            [
+                getMultiAdapter((thread["comment"], self.request), ISerializeToJson)()
+                for thread in batch
+            ]
+            if view_comments
+            else []
+        )
 
         return results
 
