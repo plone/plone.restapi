@@ -48,6 +48,7 @@ class SerializeToJson(object):
             "parent": parent_summary,
             "review_state": self._get_workflow_state(obj),
             "UID": obj.UID(),
+            "version": version,
             "layout": self.context.getLayout(),
             "is_folderish": False,
         }
