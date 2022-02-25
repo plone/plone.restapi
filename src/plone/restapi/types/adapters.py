@@ -1,18 +1,21 @@
 """JsonSchema providers."""
 from plone.app.textfield.interfaces import IRichText
+from plone.registry.interfaces import IRegistry
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_properties
+from plone.restapi.types.utils import get_multilingual_directives
 from plone.restapi.types.utils import get_querysource_url
 from plone.restapi.types.utils import get_source_url
 from plone.restapi.types.utils import get_vocabulary_url
 from plone.restapi.types.utils import get_widget_params
-from plone.restapi.types.utils import get_multilingual_directives
 from plone.schema import IEmail
 from plone.schema import IJSONField
+from Products.CMFCore.utils import getToolByName
 from z3c.formwidget.query.interfaces import IQuerySource
 from zope.component import adapter
 from zope.component import getMultiAdapter
+from zope.component import getUtility
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.interface import Interface
@@ -33,11 +36,11 @@ from zope.schema.interfaces import IInt
 from zope.schema.interfaces import IList
 from zope.schema.interfaces import IObject
 from zope.schema.interfaces import IPassword
-from zope.schema.interfaces import IURI
 from zope.schema.interfaces import ISet
 from zope.schema.interfaces import IText
 from zope.schema.interfaces import ITextLine
 from zope.schema.interfaces import ITuple
+from zope.schema.interfaces import IURI
 
 
 @adapter(IField, Interface, Interface)
@@ -278,6 +281,7 @@ class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
     def additional(self):
         info = {}
         info["additionalItems"] = True
+
         if self.field.min_length:
             info["minItems"] = self.field.min_length
 
@@ -501,8 +505,22 @@ class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
 
 @adapter(ITuple, Interface, Interface)
 @implementer(IJsonSchemaProvider)
-class SubjectsFieldJsonSchemaProvider(ChoiceJsonSchemaProvider):
-    pass
+class SubjectsFieldJsonSchemaProvider(TupleJsonSchemaProvider):
+    def additional(self):
+        info = super().additional()
+        membership = getToolByName(self.context, "portal_membership")
+        user = membership.getAuthenticatedMember()
+        registry = getUtility(IRegistry)
+        roles_allowed_to_add_keywords = registry.get(
+            "plone.roles_allowed_to_add_keywords", set()
+        )
+        roles = set(user.getRolesInContext(self.context))
+        allowNewItems = bool(
+            roles.intersection(roles_allowed_to_add_keywords),
+        )
+        info["additionalItems"] = allowNewItems
+
+        return info
 
 
 @adapter(IJSONField, Interface, Interface)
