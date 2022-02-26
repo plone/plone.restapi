@@ -169,7 +169,7 @@ SearchableText indexing for blocks
 
 As the main consumer of plone.restapi's blocks, this functionality is specific to Volto blocks. By default searchable text (for Plone's SearchableText index) is extracted from `text` blocks.
 
-To extract searchable text for other types of blocks, there are two approaches:
+To extract searchable text for other types of blocks, there are two approaches.
 
 Client side solution
 ++++++++++++++++++++
