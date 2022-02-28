@@ -53,7 +53,7 @@ bin/python bin/pip:
 	bin/pip install -r requirements-docs.txt
 	cp ./README.rst ./docs/source/
 	mkdir ./docs/plone.restapi.http-examples
-	cp -R src/plone/restapi/tests/http-examples/ ./docs/plone.restapi.http-examples
+	cp -R ./src/plone/restapi/tests/http-examples/ ./docs/plone.restapi.http-examples
 
 .PHONY: Build Plone 5.2
 build-plone-5.2: .installed.cfg  ## Build Plone 5.2
