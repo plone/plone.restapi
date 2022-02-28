@@ -13,7 +13,7 @@
       method="GET"
       factory=".conversation.CommentsGet"
       for="*"
-      permission="plone.app.discussion.ViewComments"
+      permission="zope2.View"
       name="@comments"
       />
 
@@ -21,7 +21,7 @@
       method="POST"
       factory=".conversation.CommentsAdd"
       for="*"
-      permission="plone.app.discussion.ViewComments"
+      permission="zope2.View"
       name="@comments"
       />
 
@@ -29,7 +29,7 @@
       method="PATCH"
       factory=".conversation.CommentsUpdate"
       for="*"
-      permission="plone.app.discussion.EditComments"
+      permission="zope2.View"
       name="@comments"
       />
 
@@ -37,7 +37,7 @@
       method="DELETE"
       factory=".conversation.CommentsDelete"
       for="*"
-      permission="plone.app.discussion.DeleteComments"
+      permission="zope2.View"
       name="@comments"
       />
 
