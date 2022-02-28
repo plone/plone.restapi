@@ -51,6 +51,8 @@ bin/python bin/pip:
 	python$(version) -m venv . || virtualenv --python=python$(version) .
 	bin/python -m pip install --upgrade pip
 	bin/pip install -r requirements-docs.txt
+	ln -s ../../src/plone/restapi/tests/http-examples ./docs/plone.restapi.http-examples
+	ln -s ../.. ./docs/plone.restapi.root
 
 .PHONY: Build Plone 5.2
 build-plone-5.2: .installed.cfg  ## Build Plone 5.2
