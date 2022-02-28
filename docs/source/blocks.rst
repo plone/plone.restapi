@@ -167,7 +167,7 @@ with the transfomers.
 SearchableText indexing for blocks
 ----------------------------------
 
-As the main consumer of plone.restapi's blocks, this functionality is specific to Volto blocks. By default searchable text (for Plone's SearchableText index) is extracted from `text` blocks.
+As the main consumer of plone.restapi's blocks, this functionality is specific to Volto blocks. By default searchable text (for Plone's SearchableText index) is extracted from ``text`` blocks.
 
 To extract searchable text for other types of blocks, there are two approaches.
 
@@ -191,7 +191,7 @@ This is the preferred solution.
 Server side solution
 ++++++++++++++++++++
 
- For each new block, you need to write an adapter that will extract the searchable text from the block information::
+For each new block, you need to write an adapter that will extract the searchable text from the block information::
 
   @implementer(IBlockSearchableText)
   @adapter(IBlocks, IBrowserRequest)
@@ -205,6 +205,6 @@ Server side solution
 
 See ``plone.restapi.interfaces.IBlockSearchableText`` for details. The ``__call__`` methods needs to return a string, for the text to be indexed.
 
-This adapter needs to be registered as a named adapter, where the name is the same as the block type (its `@type` property from the block value).::
+This adapter needs to be registered as a named adapter, where the name is the same as the block type (its ``@type`` property from the block value).::
 
     <adapter name="image" factory=".indexers.ImageBlockSearchableText" />
