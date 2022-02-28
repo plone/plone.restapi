@@ -48,6 +48,7 @@ class SerializeToJson(object):
             "parent": parent_summary,
             "review_state": self._get_workflow_state(obj),
             "UID": obj.UID(),
+            "version": version,
             "layout": self.context.getLayout(),
             "is_folderish": False,
         }
@@ -71,7 +72,7 @@ class SerializeToJson(object):
             name = field.getName()
 
             serializer = queryMultiAdapter(
-                (field, self.context, self.request), IFieldSerializer
+                (field, obj, self.request), IFieldSerializer
             )
             if serializer is not None:
                 result[name] = serializer()
