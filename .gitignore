@@ -27,6 +27,8 @@ docs/.DS_Store
 /.mr.developer.cfg
 *.mo
 docs/_build
+docs/plone.restapi.http-examples
+docs/source/README.rst
 sphinx_build.log
 htmlcov
 npm-debug.log
