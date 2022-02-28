@@ -57,7 +57,7 @@ class TestCommentsSerializers(TestCase):
         )
 
         output = serializer()
-        self.assertEqual(set(output), {"@id", "items_total", "items"})
+        self.assertEqual(set(output), {"@id", "permissions", "items_total", "items"})
 
     def test_conversation_batched(self):
         self.request.form["b_size"] = 1
@@ -88,6 +88,7 @@ class TestCommentsSerializers(TestCase):
             "modification_date",
             "is_editable",
             "is_deletable",
+            "can_reply",
         ]
         self.assertEqual(set(output), set(expected))
 
