@@ -46,7 +46,7 @@ jobs:
       # build sphinx
       - name: sphinx
 #        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then bin/sphinxbuilder; fi
-        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then make html; fi
+        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then make docs-html; fi
 
       # test
       - name: test
