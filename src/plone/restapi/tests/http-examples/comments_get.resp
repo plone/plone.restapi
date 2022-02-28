@@ -11,6 +11,7 @@ Content-Type: application/json
             "author_image": null,
             "author_name": null,
             "author_username": null,
+            "can_reply": true,
             "comment_id": "1400000000000000",
             "creation_date": "1995-07-31T13:45:00",
             "in_reply_to": null,
@@ -31,6 +32,7 @@ Content-Type: application/json
             "author_name": null,
             "author_username": null,
             "comment_id": "1400000000000001",
+            "can_reply": true,
             "creation_date": "1995-07-31T13:45:00",
             "in_reply_to": "1400000000000000",
             "is_deletable": true,
@@ -43,5 +45,9 @@ Content-Type: application/json
             "user_notification": null
         }
     ],
-    "items_total": 2
+    "items_total": 2,
+    "permissions": {
+        "can_reply": true,
+        "view_comments": true
+    }
 }
