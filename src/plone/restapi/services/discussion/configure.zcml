@@ -29,7 +29,7 @@
       method="PATCH"
       factory=".conversation.CommentsUpdate"
       for="*"
-      permission="zope2.View"
+      permission="plone.app.discussion.EditComments"
       name="@comments"
       />
 
@@ -37,7 +37,7 @@
       method="DELETE"
       factory=".conversation.CommentsDelete"
       for="*"
-      permission="zope2.View"
+      permission="plone.app.discussion.DeleteComments"
       name="@comments"
       />
 
