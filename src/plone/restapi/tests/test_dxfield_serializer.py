@@ -3,6 +3,7 @@ from datetime import datetime
 from datetime import time
 from datetime import timedelta
 from decimal import Decimal
+from importlib import import_module
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import iterSchemata
 from plone.namedfile.file import NamedBlobFile
@@ -21,6 +22,11 @@ from zope.component import getMultiAdapter
 from zope.interface.verify import verifyClass
 
 import os
+
+
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
 
 
 class TestDexterityFieldSerializing(TestCase):
@@ -431,6 +437,34 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
                     "height": 576,
                 },
             }
+            if HAS_PLONE_6:
+                # PLIP #3279 amended the image scales
+                # https://github.com/plone/Products.CMFPlone/pull/3450
+                scales["great"] = {
+                    "download": scale_download_url,
+                    "height": 768,
+                    "width": 1024,
+                }
+                scales["huge"] = {
+                    "download": scale_download_url,
+                    "height": 768,
+                    "width": 1024,
+                }
+                scales["larger"] = {
+                    "download": scale_download_url,
+                    "height": 750,
+                    "width": 1000,
+                }
+                scales["large"] = {
+                    "download": scale_download_url,
+                    "height": 600,
+                    "width": 800,
+                }
+                scales["teaser"] = {
+                    "download": scale_download_url,
+                    "height": 450,
+                    "width": 600,
+                }
             self.assertEqual(
                 {
                     "filename": "1024x768.gif",
@@ -530,6 +564,34 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
                     "height": 576,
                 },
             }
+            if HAS_PLONE_6:
+                # PLIP #3279 amended the image scales
+                # https://github.com/plone/Products.CMFPlone/pull/3450
+                scales["great"] = {
+                    "download": scale_download_url,
+                    "height": 768,
+                    "width": 1024,
+                }
+                scales["huge"] = {
+                    "download": scale_download_url,
+                    "height": 768,
+                    "width": 1024,
+                }
+                scales["larger"] = {
+                    "download": scale_download_url,
+                    "height": 750,
+                    "width": 1000,
+                }
+                scales["large"] = {
+                    "download": scale_download_url,
+                    "height": 600,
+                    "width": 800,
+                }
+                scales["teaser"] = {
+                    "download": scale_download_url,
+                    "height": 450,
+                    "width": 600,
+                }
             self.assertEqual(
                 {
                     "filename": "1024x768.gif",
