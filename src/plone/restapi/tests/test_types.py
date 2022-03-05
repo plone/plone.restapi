@@ -1,5 +1,6 @@
 from datetime import date
 from decimal import Decimal
+from plone.app.multilingual.dx import directives
 from plone.app.textfield import RichText
 from plone.autoform import directives as form
 from plone.dexterity.fti import DexterityFTI
@@ -52,6 +53,11 @@ class ITaggedValuesSchema(model.Schema):
         title="No parametrized widget field"
     )
     form.widget(not_parametrized_widget_field=TextWidget)
+
+    directives.languageindependent("test_language_independent_field")
+    test_language_independent_field = schema.TextLine(
+        required=False,
+    )
 
 
 class TestJsonSchemaUtils(TestCase):
@@ -183,6 +189,28 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
             jsonschema["properties"]["parametrized_widget_field"]["widgetOptions"].get(
                 "defaultFactory"
             ),
+        )
+
+    def test_get_jsonschema_with_language_independent_fields(self):
+        ttool = getToolByName(self.portal, "portal_types")
+        jsonschema = get_jsonschema_for_fti(
+            ttool["TaggedDocument"], self.portal, self.request
+        )
+
+        self.assertIn(
+            "multilingual_options",
+            jsonschema["properties"]["test_language_independent_field"],
+        )
+        self.assertIn(
+            "language_independent",
+            jsonschema["properties"]["test_language_independent_field"][
+                "multilingual_options"
+            ],
+        )
+        self.assertTrue(
+            jsonschema["properties"]["test_language_independent_field"][
+                "multilingual_options"
+            ]
         )
 
 

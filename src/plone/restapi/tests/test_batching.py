@@ -24,7 +24,7 @@ class TestBatchingDXBase(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         self.request = self.portal.REQUEST
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 

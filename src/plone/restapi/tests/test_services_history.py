@@ -23,7 +23,7 @@ class TestHistoryEndpoint(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -153,7 +153,7 @@ class TestHistoryEndpointEmptyOrInacessibleHistory(unittest.TestCase):
         api.content.transition(self.doc, "publish")
         self.endpoint_url = f"{self.doc.absolute_url()}/@history"
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
         # forbid access to `workflowHistory`
@@ -178,7 +178,7 @@ class TestHistoryEndpointTranslatedMessages(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.headers.update({"Accept-Language": "es"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)

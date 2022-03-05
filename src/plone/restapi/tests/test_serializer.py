@@ -1,5 +1,5 @@
 from DateTime import DateTime
-from unittest.mock import patch
+from importlib import import_module
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
@@ -9,11 +9,16 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.scale import storage
 from Products.CMFCore.utils import getToolByName
+from unittest.mock import patch
 from zope.component import getMultiAdapter
 
 import json
 import os
 import unittest
+
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
 
 
 class TestSerializeToJsonAdapter(unittest.TestCase):
@@ -395,10 +400,18 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.assertIn("title", self.serialize(self.portal))
         self.assertIn("description", self.serialize(self.portal))
 
+    @unittest.skipIf(
+        HAS_PLONE_6,
+        "This test is only intended to run for Plone 6 and DX site root enabled",
+    )
     def test_serialize_returns_site_root_opt_in_blocks_not_present(self):
         self.assertEqual(self.serialize(self.portal)["blocks"], {})
         self.assertEqual(self.serialize(self.portal)["blocks_layout"], {})
 
+    @unittest.skipIf(
+        HAS_PLONE_6,
+        "This test is only intended to run for Plone 6 and DX site root enabled",
+    )
     def test_serialize_returns_site_root_opt_in_blocks_present(self):
         blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {"@type": "description"},

@@ -75,7 +75,7 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         provideUtility(
@@ -139,10 +139,12 @@ class TestVocabularyEndpoint(unittest.TestCase):
         # test Anonymous
         setRoles(self.portal, TEST_USER_ID, ["Anonymous"])
         transaction.commit()
+
+        self.api_session.auth = ()
         response = self.api_session.get(
             "/@vocabularies/plone.app.vocabularies.Keywords"
         )
-        self.assertEqual(403, response.status_code)
+        self.assertEqual(401, response.status_code)
 
     def test_get_vocabulary_batched(self):
         response = self.api_session.get(
@@ -301,6 +303,84 @@ class TestVocabularyEndpoint(unittest.TestCase):
                 + "/@vocabularies/plone.app.vocabularies.Weekdays?token=0",  # noqa
                 "items": [{"title": "Monday", "token": "0"}],
                 "items_total": 1,
+            },
+        )
+
+    def test_get_vocabulary_filtered_by_token_list_one_item_list_zope_ish(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens:list=token1"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens%3Alist=token1",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                ],
+                "items_total": 1,
+            },
+        )
+
+    def test_get_vocabulary_filtered_by_token_list_two_item_list_zope_ish(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens:list=token1&tokens:list=token2"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens%3Alist=token1&tokens%3Alist=token2",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                    {"title": "Title 2", "token": "token2"},
+                ],
+                "items_total": 2,
+            },
+        )
+
+    def test_get_vocabulary_filtered_by_token_list_one_item(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                ],
+                "items_total": 1,
+            },
+        )
+
+    def test_get_vocabulary_filtered_by_token_list_two_items(self):
+        response = self.api_session.get(
+            "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1&tokens=token2"
+        )
+
+        self.assertEqual(200, response.status_code)
+        response = response.json()
+        self.assertEqual(
+            response,
+            {
+                "@id": self.portal_url
+                + "/@vocabularies/plone.restapi.tests.test_vocabulary?tokens=token1&tokens=token2",  # noqa
+                "items": [
+                    {"title": "Title 1", "token": "token1"},
+                    {"title": "Title 2", "token": "token2"},
+                ],
+                "items_total": 2,
             },
         )
 

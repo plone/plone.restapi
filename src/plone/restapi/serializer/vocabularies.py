@@ -11,6 +11,8 @@ from zope.schema.interfaces import ITitledTokenizedTerm
 from zope.schema.interfaces import ITokenizedTerm
 from zope.schema.interfaces import IVocabulary
 
+import warnings
+
 
 @implementer(ISerializeToJson)
 class SerializeVocabLikeToJson:
@@ -27,6 +29,7 @@ class SerializeVocabLikeToJson:
         vocabulary = self.context
         title = safe_unicode(self.request.form.get("title", ""))
         token = self.request.form.get("token", "")
+        tokens = self.request.form.get("tokens", [])
         b_size = self.request.form.get("b_size", "")
 
         terms = []
@@ -41,9 +44,20 @@ class SerializeVocabLikeToJson:
                 )
 
             if token:
+                warnings.warn(
+                    "``token`` parameter is deprecated and will be removed in plone.restapi 9.0. Use ``tokens`` parameter instead.",
+                    DeprecationWarning,
+                )
                 if token.lower() != term.token.lower():
                     continue
                 terms.append(term)
+            elif tokens:
+                if isinstance(tokens, str):
+                    tokens = [tokens]
+                for item in tokens:
+                    if item.lower() != term.token.lower():
+                        continue
+                    terms.append(term)
             else:
                 term_title = safe_unicode(getattr(term, "title", None) or "")
                 if (

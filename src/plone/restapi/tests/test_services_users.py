@@ -28,10 +28,10 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.mailhost = getUtility(IMailHost)
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-        self.anon_api_session = RelativeSession(self.portal_url)
+        self.anon_api_session = RelativeSession(self.portal_url, test=self)
         self.anon_api_session.headers.update({"Accept": "application/json"})
 
         properties = {
@@ -84,7 +84,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual("Cambridge, MA", noam.get("location"))
 
     def test_list_users_without_being_manager(self):
-        noam_api_session = RelativeSession(self.portal_url)
+        noam_api_session = RelativeSession(self.portal_url, test=self)
         noam_api_session.headers.update({"Accept": "application/json"})
         noam_api_session.auth = ("noam", "password")
 
@@ -307,7 +307,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_get_other_user_info_when_logged_in(self):
-        noam_api_session = RelativeSession(self.portal_url)
+        noam_api_session = RelativeSession(self.portal_url, test=self)
         noam_api_session.headers.update({"Accept": "application/json"})
         noam_api_session.auth = ("noam", "password")
 
@@ -366,7 +366,7 @@ class TestUsersEndpoint(unittest.TestCase):
             },
         )
         transaction.commit()
-        noam_api_session = RelativeSession(self.portal_url)
+        noam_api_session = RelativeSession(self.portal_url, test=self)
         noam_api_session.headers.update({"Accept": "application/json"})
         noam_api_session.auth = ("noam", "password")
 
