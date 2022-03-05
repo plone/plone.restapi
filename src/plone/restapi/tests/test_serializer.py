@@ -275,30 +275,30 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 "large": {"download": download_url, "width": 215, "height": 56},
             }
             if HAS_PLONE_6:
-                # PLIP #3279 amend the image scales
+                # PLIP #3279 amended the image scales
                 # https://github.com/plone/Products.CMFPlone/pull/3450
                 scales["great"] = {
-                    "download": "http://nohost/plone/image1/@@images/uuid_1.png",
+                    "download": download_url,
                     "height": 56,
                     "width": 215,
                 }
                 scales["huge"] = {
-                    "download": "http://nohost/plone/image1/@@images/uuid_1.png",
+                    "download": download_url,
                     "height": 56,
                     "width": 215,
                 }
                 scales["larger"] = {
-                    "download": "http://nohost/plone/image1/@@images/uuid_1.png",
+                    "download": download_url,
                     "height": 56,
                     "width": 215,
                 }
                 scales["large"] = {
-                    "download": "http://nohost/plone/image1/@@images/uuid_1.png",
+                    "download": download_url,
                     "height": 56,
                     "width": 215,
                 }
                 scales["teaser"] = {
-                    "download": "http://nohost/plone/image1/@@images/uuid_1.png",
+                    "download": download_url,
                     "height": 56,
                     "width": 215,
                 }
