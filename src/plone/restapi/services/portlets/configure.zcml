@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml">
+
+  <!-- TODO: what interface do we want to register for ? -->
+  <plone:service
+    method="GET"
+    name="@portlets"
+    for="zope.interface.Interface"
+    factory=".get.PortletsGet"
+    permission="zope2.View"
+    />
+
+  <plone:service
+    method="POST"
+    name="@portlets"
+    for="*"
+    factory=".add.PortletPost"
+    permission="plone.app.portlets.ManageOwnPortlets"
+    />
+
+  <plone:service
+    method="PATCH"
+    name="@portlets"
+    for="*"
+    factory=".update.PortletPatch"
+    permission="plone.app.portlets.ManageOwnPortlets"
+    />
+
+</configure>

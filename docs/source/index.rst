@@ -42,6 +42,7 @@ plone.restapi: A RESTful hypermedia API for Plone.
    roles
    breadcrumbs
    navigation
+   portlets
    contextnavigation
    serialization
    searching
