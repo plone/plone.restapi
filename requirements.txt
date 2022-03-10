@@ -1,5 +1,5 @@
 # Keep this file in sync with: https://github.com/kitconcept/buildout/edit/master/requirements.txt
-setuptools==42.0.2
-zc.buildout==2.13.4
+zc.buildout==3.0.0rc1
+setuptools==59.6.0
 wheel
 zpretty
