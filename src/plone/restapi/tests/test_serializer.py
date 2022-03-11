@@ -16,6 +16,7 @@ import json
 import os
 import unittest
 
+
 HAS_PLONE_6 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
 )
@@ -273,6 +274,34 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 "preview": {"download": download_url, "width": 215, "height": 56},
                 "large": {"download": download_url, "width": 215, "height": 56},
             }
+            if HAS_PLONE_6:
+                # PLIP #3279 amended the image scales
+                # https://github.com/plone/Products.CMFPlone/pull/3450
+                scales["great"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
+                scales["huge"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
+                scales["larger"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
+                scales["large"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
+                scales["teaser"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
             self.assertEqual(
                 {
                     "filename": "image.png",
