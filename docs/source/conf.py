@@ -108,6 +108,13 @@ pygments_style = "sphinx"
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
 
+# Options for the linkcheck builder
+# Ignore localhost
+linkcheck_ignore = [
+    r"https://coveralls.io/repos/github/plone/plone.restapi/badge.svg\?branch=master",  # plone.restapi
+    r"https://github.com/plone/plone.restapi/blob/dde57b88e0f1b5f5e9f04e6a21865bc0dde55b1c/src/plone/restapi/services/content/add.py#L35-L61",  # plone.restapi
+]
+
 
 # -- Intersphinx configuration ----------------------------------
 
