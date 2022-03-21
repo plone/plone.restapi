@@ -149,6 +149,11 @@ docs-spellcheck: bin/python  ## Run spellcheck
 	@echo "Spellcheck is finished; look for any errors in the above output " \
 		" or in $(BUILDDIR)/spellcheck/ ."
 
+.PHONY: netlify
+netlify:
+	pip install -r requirements-docs.txt
+	cd $(DOCS_DIR) && sphinx-build -b html $(ALLSPHINXOPTS) ../$(BUILDDIR)/html
+
 .PHONY: Test Release
 test-release:  ## Run Pyroma and Check Manifest
 	bin/pyroma -n 10 -d .
