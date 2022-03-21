@@ -27,7 +27,7 @@ Listing registry records
 ------------------------
 
 The registry records listing uses a batched method to access all registry records.
-See :doc:`/batching` for more details on how to work with batched results.
+See :doc:`./batching` for more details on how to work with batched results.
 
 The output per record contains the following fields:
 name: The record's fully qualified dotted name.

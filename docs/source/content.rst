@@ -143,7 +143,7 @@ The following example additionaly retrieves the UID and Creator:
 .. note::
         For folderish types, collections or search results, the results will
         be **batched** if the size of the resultset exceeds the batch size.
-        See :doc:`/batching` for more details on how to work with batched
+        See :doc:`./batching` for more details on how to work with batched
         results.
 
 Unsuccessful response (404 Not Found)
