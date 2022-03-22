@@ -37,7 +37,7 @@ specific actions or calculations, .e.g.::
   /reset-password
 
 
-Singluar vs Plural
+Singuar vs Plural
 ^^^^^^^^^^^^^^^^^^
 
 Rule: Use plural resources.

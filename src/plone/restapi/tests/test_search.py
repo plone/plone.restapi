@@ -1,5 +1,7 @@
 from datetime import date
 from DateTime import DateTime
+from pkg_resources import get_distribution
+from pkg_resources import parse_version
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.layout.navigation.interfaces import INavigationRoot
@@ -21,6 +23,11 @@ import transaction
 import unittest
 
 
+HAS_PLONE_6 = parse_version(
+    get_distribution("Products.CMFPlone").version
+) >= parse_version("6.0.0a1")
+
+
 class TestSearchFunctional(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -32,7 +39,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.request = self.portal.REQUEST
         self.catalog = getToolByName(self.portal, "portal_catalog")
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -620,7 +627,12 @@ class TestSearchFunctional(unittest.TestCase):
     def test_respect_access_inactive_permission(self):
         # admin can see everything
         response = self.api_session.get("/@search", params={}).json()
-        self.assertEqual(response["items_total"], 6)
+        if HAS_PLONE_6:
+            # Since Plone 6 the Plone site is indexed ...
+            self.assertEqual(response["items_total"], 7)
+        else:
+            # ... before it was not
+            self.assertEqual(response["items_total"], 6)
         response = self.api_session.get(
             "/@search", params={"Title": "Lorem Ipsum"}
         ).json()
@@ -630,7 +642,12 @@ class TestSearchFunctional(unittest.TestCase):
         self.api_session.auth = ("editoruser", "secret")
 
         response = self.api_session.get("/@search", params={}).json()
-        self.assertEqual(response["items_total"], 3)
+        if HAS_PLONE_6:
+            # Since Plone 6 the Plone site is indexed ...
+            self.assertEqual(response["items_total"], 4)
+        else:
+            # ... before it was not
+            self.assertEqual(response["items_total"], 3)
         response = self.api_session.get(
             "/@search", params={"Title": "Lorem Ipsum"}
         ).json()
@@ -644,7 +661,12 @@ class TestSearchFunctional(unittest.TestCase):
 
         #  portal-enabled Editor can see expired contents
         response = self.api_session.get("/@search", params={}).json()
-        self.assertEqual(response["items_total"], 6)
+        if HAS_PLONE_6:
+            # Since Plone 6 the Plone site is indexed ...
+            self.assertEqual(response["items_total"], 7)
+        else:
+            # ... before it was not
+            self.assertEqual(response["items_total"], 6)
         response = self.api_session.get(
             "/@search", params={"Title": "Lorem Ipsum"}
         ).json()
@@ -653,7 +675,12 @@ class TestSearchFunctional(unittest.TestCase):
         # local-enabled Editor can only access expired contents inside folder
         self.api_session.auth = ("localeditor", "secret")
         response = self.api_session.get("/@search", params={}).json()
-        self.assertEqual(response["items_total"], 1)
+        if HAS_PLONE_6:
+            # Since Plone 6 the Plone site is indexed ...
+            self.assertEqual(response["items_total"], 2)
+        else:
+            # ... before it was not
+            self.assertEqual(response["items_total"], 1)
         response = self.api_session.get(
             "/@search", params={"path": "/plone/folder"}
         ).json()

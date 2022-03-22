@@ -46,6 +46,8 @@ The following fields are returned:
 - is_installed: is the add-on installed?
 - has_uninstall_profile: does the add-on have an uninstall profile
 
+The querystring parameter ``upgradeable`` is available in case you want to query only the
+addons that have an upgrade step pending.
 
 Installing an addon
 -------------------

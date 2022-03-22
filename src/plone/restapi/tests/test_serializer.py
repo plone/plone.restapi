@@ -1,5 +1,5 @@
 from DateTime import DateTime
-from unittest.mock import patch
+from importlib import import_module
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
@@ -9,11 +9,17 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.scale import storage
 from Products.CMFCore.utils import getToolByName
+from unittest.mock import patch
 from zope.component import getMultiAdapter
 
 import json
 import os
 import unittest
+
+
+HAS_PLONE_6 = getattr(
+    import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
+)
 
 
 class TestSerializeToJsonAdapter(unittest.TestCase):
@@ -268,6 +274,34 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 "preview": {"download": download_url, "width": 215, "height": 56},
                 "large": {"download": download_url, "width": 215, "height": 56},
             }
+            if HAS_PLONE_6:
+                # PLIP #3279 amended the image scales
+                # https://github.com/plone/Products.CMFPlone/pull/3450
+                scales["great"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
+                scales["huge"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
+                scales["larger"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
+                scales["large"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
+                scales["teaser"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
             self.assertEqual(
                 {
                     "filename": "image.png",
@@ -385,18 +419,28 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
         self.request.form["include_items"] = True
         serialized = self.serialize(self.portal.collection1)
         items = serialized.get("items")
-        self.assertEqual(items[0]["title"], self.portal.doc1.Title())
-        self.assertEqual(items[1]["title"], self.portal.doc2.Title())
+        self.assertEqual(
+            sorted([item["title"] for item in items]),
+            [self.portal.doc1.Title(), self.portal.doc2.Title()],
+        )
         self.assertEqual(serialized.get("items_total"), 2)
 
     def test_serialize_returns_site_root_common(self):
         self.assertIn("title", self.serialize(self.portal))
         self.assertIn("description", self.serialize(self.portal))
 
+    @unittest.skipIf(
+        HAS_PLONE_6,
+        "This test is only intended to run for Plone 6 and DX site root enabled",
+    )
     def test_serialize_returns_site_root_opt_in_blocks_not_present(self):
         self.assertEqual(self.serialize(self.portal)["blocks"], {})
         self.assertEqual(self.serialize(self.portal)["blocks_layout"], {})
 
+    @unittest.skipIf(
+        HAS_PLONE_6,
+        "This test is only intended to run for Plone 6 and DX site root enabled",
+    )
     def test_serialize_returns_site_root_opt_in_blocks_present(self):
         blocks = {
             "0358abe2-b4f1-463d-a279-a63ea80daf19": {"@type": "description"},

@@ -40,6 +40,8 @@ from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
+from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
+from plone.supermodel.utils import mergedTaggedValueList
 
 try:
     # Plone 5.1+
@@ -196,6 +198,20 @@ def get_widget_params(schemas):
     return params
 
 
+def get_multilingual_directives(schemas):
+    params = {}
+    for schema in schemas:
+        if not schema:
+            continue
+        tagged_values = mergedTaggedValueList(schema, MULTILINGUAL_KEY)
+        result = {field_name: value for _, field_name, value in tagged_values}
+
+        for field_name, value in result.items():
+            params[field_name] = {}
+            params[field_name]["language_independent"] = value
+    return params
+
+
 def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     """Build a complete JSON schema for the given FTI."""
     if excluded_fields is None:
@@ -300,7 +316,14 @@ def serializeSchema(schema):
 
 def get_info_for_type(context, request, name):
     """Get JSON info for the given portal type"""
-    schema = get_jsonschema_for_portal_type(name, getSite(), request)
+    base_context = context
+
+    # If context is not a dexterity content, use site root to get
+    # the schema
+    if not IDexterityContent.providedBy(context):
+        base_context = getSite()
+
+    schema = get_jsonschema_for_portal_type(name, base_context, request)
 
     if not hasattr(context, "schema"):
         return schema

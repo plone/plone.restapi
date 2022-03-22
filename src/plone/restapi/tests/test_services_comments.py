@@ -41,12 +41,12 @@ class TestCommentsEndpoint(unittest.TestCase):
         api.user.create(username="jos", password="josjos", email="jos@plone.org")
 
         # Admin session
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         # User session
-        self.user_session = RelativeSession(self.portal_url)
+        self.user_session = RelativeSession(self.portal_url, test=self)
         self.user_session.headers.update({"Accept": "application/json"})
         self.user_session.auth = ("jos", "jos")
 

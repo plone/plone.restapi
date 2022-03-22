@@ -6,6 +6,7 @@ from Products.CMFPlone.interfaces import INonInstallable
 from Products.PluggableAuthService.interfaces.authservice import (
     IPluggableAuthService,
 )  # noqa: E501
+from zope.component.hooks import getSite
 from zope.interface import implementer
 
 
@@ -45,10 +46,7 @@ def install_pas_plugin(context):
         uf_parent = aq_parent(uf_parent)
 
 
-def import_various(context):
-    """Miscellanous steps import handle"""
-    if context.readDataFile("plone.restapi_various.txt") is None:
-        return
-
-    site = context.getSite()
+def post_install_default(context):
+    """Post install of default profile"""
+    site = getSite()
     install_pas_plugin(site)

@@ -8,6 +8,211 @@ Changelog
 
 .. towncrier release notes start
 
+8.21.2 (2022-02-21)
+-------------------
+
+Bug fixes:
+
+
+- Restrict unlinking on Language Root Folders
+  [sneridagh] (#1332)
+
+
+8.21.1 (2022-02-21)
+-------------------
+
+Bug fixes:
+
+
+- Improve handling of linking translations taking into account the state of the target. Restricting it completely for LRFs. Adding a transaction note to the action if it succeeds.
+  [sneridagh] (#1329)
+
+
+8.21.0 (2022-01-25)
+-------------------
+
+New features:
+
+
+- Enhance @addons endpoint to return a list of upgradeable addons.
+  [sneridagh] (#1319)
+
+
+8.20.0 (2022-01-19)
+-------------------
+
+New features:
+
+
+- Add support for DX Plone Site root in Plone 6. Remove blocks behavior hack for site root in Plone 6.
+  [sneridagh] (#1219)
+
+
+8.19.0 (2022-01-19)
+-------------------
+
+New features:
+
+
+- Add support for multilingual language independent fields in field serialization
+  [sneridagh] (#1316)
+
+
+Internal:
+
+
+- Update build to Plone 6 alpha 2
+  [sneridagh] (#1312)
+
+
+8.18.1 (2022-01-06)
+-------------------
+
+Internal:
+
+
+- Be permissive when testing the schema of the querystring endpoint [reebalazs] (#1307)
+
+
+8.18.0 (2022-01-03)
+-------------------
+
+New features:
+
+
+- Improve vocabulary endpoint when asking for a list of tokens adding resilience and deprecation warning
+  [sneridagh] (#1298)
+- Expandable params as list and deprecations for list as comma separated
+  [sneridagh] (#1300)
+
+
+Bug fixes:
+
+
+- Do not break in recursive transition when children already are in destination state. [cekk] (#1291)
+- Resolve the bulk of deprecation and resource leak warnings when running the full test
+  suite.
+  [rpatterson] (#1302)
+
+
+8.17.0 (2021-12-21)
+-------------------
+
+New features:
+
+
+- Enhance the vocabularies serializer to accept a list of tokens
+  [sneridagh] (#1294)
+
+
+Bug fixes:
+
+
+- SearchableText indexer should maintain the order of the blocks
+  [ericof] (#1292)
+
+
+8.16.2 (2021-12-03)
+-------------------
+
+Bug fixes:
+
+
+- Revert "Improve support for missing_value and default story" because it breaks multilingual
+  [timo] (#1289)
+
+
+8.16.1 (2021-11-30)
+-------------------
+
+Bug fixes:
+
+
+- Improve support and meaning for `default` and `missing_value` in serializers/deserializers
+  [sneridagh] (#1282)
+
+
+8.16.0 (2021-11-29)
+-------------------
+
+New features:
+
+
+- Enable table blocks indexing [cekk] (#1281)
+
+
+8.15.3 (2021-11-29)
+-------------------
+
+Bug fixes:
+
+
+- Types service: Do not consider TypeSchemaContext as a valid context
+  [ericof] (#1278)
+- Improve error status code in vocabularies endpoint refactor
+  [sneridagh] (#1284)
+
+
+8.15.2 (2021-11-24)
+-------------------
+
+Bug fixes:
+
+
+- Adjust restrictions of vocabularies endpoint [ksuess] (#1258)
+
+
+8.15.1 (2021-11-24)
+-------------------
+
+Bug fixes:
+
+
+- Fix schema generation when /@types/ is used in a context. [ericof] (#1271)
+
+
+8.15.0 (2021-11-23)
+-------------------
+
+New features:
+
+
+- Return non-batched vocabularies given a query param ``b_size=-1``
+  [sneridagh] (#1264)
+
+
+Bug fixes:
+
+
+- Remove all traces of ``Products.CMFQuickInstaller``.
+  It was removed in Plone 5.2.
+  BBB code was in ``plone.app.upgrade`` only.
+  Plone with Restapi broke if ``plone.app.upgrade` was not available, like when dependening on ``Products.CMFPlone`` only.
+  [jensens] (#1267)
+- Fix installation of JWT PAS plugin with default profile. [jensens] (#1269)
+
+
+8.14.0 (2021-11-11)
+-------------------
+
+New features:
+
+
+- Add root (INavigationRoot) for the current object information in @translations endpoint
+  [sneridagh] (#1263)
+
+
+8.13.0 (2021-11-05)
+-------------------
+
+New features:
+
+
+- Implement IJSONSummarySerializerMetadata allowing addons to extend the metadata returned by Summary serializer.
+  [ericof] (#1250)
+- Enable usage of metadata_fields also for POST calls [cekk] (#1253)
+
+
 8.12.1 (2021-10-14)
 -------------------
 

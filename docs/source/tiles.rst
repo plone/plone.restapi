@@ -1,6 +1,9 @@
 Tiles
 =====
 
+.. warning::
+   The tiles endpoint is deprecated and will be removed in plone.restapi 9.
+
 .. note::
   The tiles endpoint currently match only partially (the GET endpoints) the default Plone implementation.
 
