@@ -139,10 +139,10 @@ class TestLinkintegrityForBlocks(TestCase):
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         self.doc1 = createContentInContainer(
-            self.portal, u"Document", id=u"doc-1", title=u"First document"
+            self.portal, "Document", id="doc-1", title="First document"
         )
         self.doc2 = createContentInContainer(
-            self.portal, u"Document", id=u"doc-2", title=u"Second document"
+            self.portal, "Document", id="doc-2", title="Second document"
         )
         transaction.commit()
 
