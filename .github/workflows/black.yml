@@ -26,9 +26,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      # install black
+      # install black (extract version from versions.cfg)
       - name: install black
-        run: pip install black
+        run: pip install black==$(awk '/^black =/{print $NF}' versions.cfg)
 
       # run black
       - name: run black
