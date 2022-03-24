@@ -128,6 +128,29 @@ class TextBlockSerializerBase:
         return value
 
 
+class TableBlockSerializerBase:
+    order = 100
+    block_type = "table"
+    disabled = os.environ.get("disable_transform_resolveuid", False)
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, value):
+        # Resolve UID links:
+        #   ../resolveuid/023c61b44e194652804d05a15dc126f4
+        #   ->
+        #   http://localhost:55001/plone/link-target
+        for row in value.get("table", {}).get("rows", []):
+            for cell in row.get("cells", []):
+                for entity in cell.get("value", {}).get("entityMap", {}).values():
+                    if entity.get("type") == "LINK":
+                        url = entity.get("data", {}).get("url", "")
+                        entity["data"]["url"] = uid_to_url(url)
+        return value
+
+
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IBlocks, IBrowserRequest)
 class ResolveUIDSerializer(ResolveUIDSerializerBase):
@@ -149,6 +172,18 @@ class TextBlockSerializer(TextBlockSerializerBase):
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IPloneSiteRoot, IBrowserRequest)
 class TextBlockSerializerRoot(TextBlockSerializerBase):
+    """Serializer for site root"""
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IBlocks, IBrowserRequest)
+class TableBlockSerializer(TableBlockSerializerBase):
+    """Serializer for content-types with IBlocks behavior"""
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IPloneSiteRoot, IBrowserRequest)
+class TableBlockSerializerRoot(TableBlockSerializerBase):
     """Serializer for site root"""
 
 

@@ -60,6 +60,14 @@
       factory=".blocks.SlateBlockDeserializerRoot"
       provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
       />
+  <subscriber
+      factory=".blocks.TableBlockDeserializer"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
+  <subscriber
+      factory=".blocks.TableBlockDeserializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldDeserializationTransformer"
+      />
 
   <adapter
       factory=".local_roles.DeserializeFromJson"

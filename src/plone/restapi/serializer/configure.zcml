@@ -53,6 +53,16 @@
       provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
       />
 
+  <subscriber
+      factory=".blocks.TableBlockSerializerRoot"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
+
+  <subscriber
+      factory=".blocks.TableBlockSerializer"
+      provides="plone.restapi.interfaces.IBlockFieldSerializationTransformer"
+      />
+
 
   <adapter factory=".converters.date_converter" />
   <adapter factory=".converters.decimal_converter" />

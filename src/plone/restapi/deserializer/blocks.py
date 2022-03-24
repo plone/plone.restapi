@@ -188,6 +188,30 @@ class ImageBlockDeserializerBase:
         return block
 
 
+class TableBlockDeserializerBase:
+    order = 100
+    block_type = "table"
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, block):
+        # Convert absolute links to resolveuid
+        #   http://localhost:55001/plone/link-target
+        #   ->
+        #   ../resolveuid/023c61b44e194652804d05a15dc126f4
+        for row in block.get("table", {}).get("rows", []):
+            for cell in row.get("cells", []):
+                for entity in cell.get("value", {}).get("entityMap", {}).values():
+                    if entity.get("type") == "LINK":
+                        href = entity.get("data", {}).get("url", "")
+                        entity["data"]["url"] = path2uid(
+                            context=self.context, link=href
+                        )
+        return block
+
+
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class ResolveUIDDeserializer(ResolveUIDDeserializerBase):
@@ -233,6 +257,18 @@ class ImageBlockDeserializer(ImageBlockDeserializerBase):
 @adapter(IPloneSiteRoot, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class ImageBlockDeserializerRoot(ImageBlockDeserializerBase):
+    """Deserializer for site root"""
+
+
+@adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class TableBlockDeserializer(TableBlockDeserializerBase):
+    """Deserializer for content-types that implements IBlocks behavior"""
+
+
+@adapter(IPloneSiteRoot, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class TableBlockDeserializerRoot(TableBlockDeserializerBase):
     """Deserializer for site root"""
 
 

@@ -274,3 +274,58 @@ class TestBlocksSerializer(unittest.TestCase):
         value = res["abc"]["value"]
         link = value[0]["children"][1]["data"]["url"]
         self.assertTrue(link, self.portal.absolute_url() + "/doc1")
+
+    def test_table_block_links_serializer(self):
+        doc_uid = IUUID(self.portal["doc1"])
+        resolve_uid_link = f"../resolveuid/{doc_uid}"
+
+        blocks = {
+            "ba80f02f-16bf-4bee-8207-3529d6636ccc": {
+                "@type": "table",
+                "table": {
+                    "rows": [
+                        {
+                            "key": "f6dnh",
+                            "cells": [
+                                {
+                                    "key": "1gaio",
+                                    "type": "data",
+                                    "value": {
+                                        "blocks": [
+                                            {
+                                                "key": "8c7a4",
+                                                "text": "link",
+                                                "type": "unstyled",
+                                                "depth": 0,
+                                                "inlineStyleRanges": [],
+                                                "entityRanges": [
+                                                    {"offset": 0, "length": 4, "key": 0}
+                                                ],
+                                                "data": {},
+                                            }
+                                        ],
+                                        "entityMap": {
+                                            "0": {
+                                                "type": "LINK",
+                                                "mutability": "MUTABLE",
+                                                "data": {"url": resolve_uid_link},
+                                            }
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
+        }
+
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks=blocks,
+        )
+        value = res["ba80f02f-16bf-4bee-8207-3529d6636ccc"]["table"]["rows"][0][
+            "cells"
+        ][0]["value"]
+        link = value["entityMap"]["0"]["data"]["url"]
+        self.assertTrue(link, self.portal.doc1.absolute_url())

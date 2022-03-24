@@ -417,3 +417,54 @@ class TestBlocksDeserializer(unittest.TestCase):
             self.portal.doc1.blocks["123"]["href"][0]["@id"],
             f"../resolveuid/{wrong_uid}",
         )
+
+    def test_table_internal_link_deserializer(self):
+        blocks = {
+            "ba80f02f-16bf-4bee-8207-3529d6636ccc": {
+                "@type": "table",
+                "table": {
+                    "rows": [
+                        {
+                            "key": "f6dnh",
+                            "cells": [
+                                {
+                                    "key": "1gaio",
+                                    "type": "data",
+                                    "value": {
+                                        "blocks": [
+                                            {
+                                                "key": "8c7a4",
+                                                "text": "link",
+                                                "type": "unstyled",
+                                                "depth": 0,
+                                                "inlineStyleRanges": [],
+                                                "entityRanges": [
+                                                    {"offset": 0, "length": 4, "key": 0}
+                                                ],
+                                                "data": {},
+                                            }
+                                        ],
+                                        "entityMap": {
+                                            "0": {
+                                                "type": "LINK",
+                                                "mutability": "MUTABLE",
+                                                "data": {
+                                                    "url": self.portal.doc1.absolute_url()
+                                                },
+                                            }
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            },
+        }
+        res = self.deserialize(blocks=blocks)
+        value = res.blocks["ba80f02f-16bf-4bee-8207-3529d6636ccc"]["table"]["rows"][0][
+            "cells"
+        ][0]["value"]
+        link = value["entityMap"]["0"]["data"]["url"]
+        self.assertTrue(link.startswith("../resolveuid/"))
+        self.assertEqual(link, "../resolveuid/{}".format(IUUID(self.portal.doc1)))
