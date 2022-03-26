@@ -4,7 +4,7 @@ Introduction
 .. sidebar:: API Browser Quick Guide
     :subtitle: **It can make your life easier** if you use some kind of **API browser application** to **explore the API** when diving into this documentation.
 
-    * We recommend to use the free `Postman <http://www.getpostman.com/>`_ browser plugin. 
+    * We recommend to use the free `Postman <https://www.postman.com/>`_ browser plugin.
     * For easy onboarding take a look at **our** :ref:`exploring-api-postman-onboarding` **Quick-Guide**.
 
 A hypermedia API provides an entry point to the API, which contains hyperlinks the clients can follow.

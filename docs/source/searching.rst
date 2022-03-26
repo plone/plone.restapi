@@ -38,7 +38,7 @@ In order to return specific metadata columns, see the documentation of the ``met
 
 .. note::
         Search results will be **batched** if the size of the
-        resultset exceeds the batch size. See :doc:`/batching` for more
+        resultset exceeds the batch size. See :doc:`./batching` for more
         details on how to work with batched results.
 
 .. warning::
@@ -57,7 +57,7 @@ Queries and query-wide options (like ``sort_on``) are submitted as query string 
 
 This is nearly identical to the way that queries are passed to the Plone ``@@search`` browser view, with only a few minor differences.
 
-For general information on how to query the Plone catalog, please refer to the `Plone Documentation on Querying <http://docs.plone.org/develop/plone/searching_and_indexing/query.html>`_.
+For general information on how to query the Plone catalog, please refer to the `Plone Documentation on Querying <https://docs.plone.org/develop/plone/searching_and_indexing/query.html>`_.
 
 Query options
 ^^^^^^^^^^^^^
@@ -77,7 +77,7 @@ This dictionary will need to be flattened in dotted notation in order to pass it
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/search_options.resp
    :language: http
 
-Again, this is very similar to how `Record Arguments <http://docs.zope.org/zope2/zdgbook/ObjectPublishing.html?highlight=record#record-arguments>`_ are parsed by ZPublisher, except that you can omit the ``:record`` suffix.
+Again, this is very similar to how `Record Arguments <https://zope.readthedocs.io/en/latest/zdgbook/ObjectPublishing.html#an-aggregator-in-detail-the-record-argument>`_ are parsed by ZPublisher, except that you can omit the ``:record`` suffix.
 
 
 Restricting search to multiple paths
@@ -116,7 +116,7 @@ In that case, ``plone.restapi`` simply can't know what data type to cast your qu
     Accept: application/json
 
 
-Please refer to the `Documentation on Argument Conversion in ZPublisher <http://docs.zope.org/zope2/zdgbook/ObjectPublishing.html#argument-conversion>`_ for details.
+Please refer to the `Documentation on Argument Conversion in ZPublisher <https://zope.readthedocs.io/en/latest/zdgbook/ObjectPublishing.html#argument-conversion>`_ for details.
 
 .. _retrieving-additional-metadata:
 

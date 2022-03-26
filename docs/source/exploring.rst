@@ -75,7 +75,7 @@ The :term:`Response` of the server is now displayed below the :term:`Request`. Y
 
 .. links
 
-.. _Postman: http://www.getpostman.com/
+.. _Postman: https://www.postman.com/
 
 .. |fawrench| raw:: html
 
