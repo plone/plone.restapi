@@ -172,7 +172,7 @@ html_theme_options = {
     # "google_analytics_id": "UA-1907133-6",
     "path_to_docs": "docs",
     "repository_url": "https://github.com/plone/plone.restapi",
-    "repository_branch": "plone6docs",
+    "repository_branch": "master",
     "use_repository_button": True,
     "use_issues_button": True,
     "use_edit_page_button": True,
