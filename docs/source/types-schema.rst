@@ -3,7 +3,7 @@
 Types Schema
 ============
 
-A detailed list of all available `Zope Schema <https://zopeschema.readthedocs.io/en/latest/>`_  field types and their corresponding representation as `JSON Schema <http://json-schema.org/>`_ .
+A detailed list of all available `Zope Schema <http://docs.zope.org/zope.schema/>`_  field types and their corresponding representation as `JSON Schema <http://json-schema.org/>`_ .
 
 TextLine
 --------

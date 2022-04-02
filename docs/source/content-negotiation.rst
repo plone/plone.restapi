@@ -1,7 +1,7 @@
 Content Negotiation
 ===================
 
-`Content negotiation <https://datatracker.ietf.org/doc/html/rfc7231#section-5.3>`_ is a mechanism defined in the `HTTP specification <https://datatracker.ietf.org/doc/html/rfc7231>`_ that makes it possible to serve different versions of a document (or more generally, a resource representation) at the same URI, so that user agents can specify which version fit their capabilities the best.
+`Content negotiation <http://tools.ietf.org/html/rfc7231#section-5.3>`_ is a mechanism defined in the `HTTP specification <http://tools.ietf.org/html/rfc7231>`_ that makes it possible to serve different versions of a document (or more generally, a resource representation) at the same URI, so that user agents can specify which version fit their capabilities the best.
 
 The user agent (or the REST consumer) can ask for a specific representation by providing an Accept HTTP header that lists acceptable media types (e.g. JSON)::
 

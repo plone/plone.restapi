@@ -143,7 +143,7 @@ The following example additionaly retrieves the UID and Creator:
 .. note::
         For folderish types, collections or search results, the results will
         be **batched** if the size of the resultset exceeds the batch size.
-        See :doc:`./batching` for more details on how to work with batched
+        See :doc:`/batching` for more details on how to work with batched
         results.
 
 Unsuccessful response (404 Not Found)
@@ -226,7 +226,7 @@ In this case, the response will be a :term:`200 OK`:
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/content_patch_representation.resp
    :language: http
 
-See for full specs the `RFC 5789: PATCH Method for HTTP <https://datatracker.ietf.org/doc/html/rfc5789>`_
+See for full specs the `RFC 5789: PATCH Method for HTTP <http://tools.ietf.org/html/rfc5789>`_
 
 
 Replacing a Resource with PUT
@@ -309,7 +309,7 @@ Difference between POST and PUT:
   * Use POST to append a resource to a collection identified by a service-generated URI
   * Use PUT to overwrite a resource
 
-This follows `RFC 7231: HTTP 1.1: PUT Method <https://datatracker.ietf.org/doc/html/rfc7231#section-4.3.4>`_.
+This follows `RFC 7231: HTTP 1.1: PUT Method <https://tools.ietf.org/html/rfc7231#section-4.3.4>`_.
 
 
 Removing a Resource with DELETE

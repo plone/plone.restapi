@@ -120,6 +120,6 @@ entry with the URL of the `@translations` endpoint:
 
 
 
-.. _`plone.app.multilingual`: https://pypi.org/project/plone.app.multilingual/
+.. _`plone.app.multilingual`: https://pypi.python.org/pypi/plone.app.multilingual
 .. _`Products.LinguaPlone`: https://pypi.python.org/pypi/Products.LinguaPlone.
 .. _`documentation`: https://docs.plone.org/develop/plone/i18n/translating_content.html

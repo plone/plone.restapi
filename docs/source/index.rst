@@ -3,11 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-========
-REST API
-========
 
-A RESTful API for Plone.
+plone.restapi: A RESTful hypermedia API for Plone.
+==================================================
 
 .. toctree::
    :caption: Table of Contents

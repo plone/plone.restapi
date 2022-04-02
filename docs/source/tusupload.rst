@@ -1,7 +1,7 @@
 TUS resumable upload
 ====================
 
-plone.restapi supports the `TUS Open Protocol <https://tus.io/>`_ for resumable file uploads.
+plone.restapi supports the `TUS Open Protocol <http://tus.io>`_ for resumable file uploads.
 There is a `@tus-upload` endpoint to upload a file and a `@tus-replace` endpoint to replace an existing file.
 
 
@@ -129,7 +129,7 @@ If you use CORS and want to make it work with TUS, you have to make sure the TUS
 
 See the plone.rest documentation for more information on how to configure CORS policies.
 
-See https://tus.io/protocols/resumable-upload.html#headers for a list and description of the individual headers.
+See http://tus.io/protocols/resumable-upload.html#headers for a list and description of the individual headers.
 
 
 Temporary Upload Directory

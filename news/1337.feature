@@ -1,1 +1,0 @@
-Fix broken links. Add `make netlify` as a build target to preview changes to docs only. Prepare docs for import into main Plone documentation without significant changes. Use sphinx-book-them as theme. [stevepiercy]
