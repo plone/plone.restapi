@@ -17,6 +17,7 @@ from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.test_expansion import ExpandableElementFoo
+from plone.restapi.serializer.utils import get_portal_type
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getGlobalSiteManager
@@ -118,6 +119,11 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = self.serialize()
         self.assertIn("@type", obj)
         self.assertEqual(self.portal.doc1.portal_type, obj["@type"])
+
+    def test_serializer_includes_friendly_type(self):
+        obj = self.serialize()
+        self.assertIn("@type", obj)
+        self.assertEqual(get_portal_type(self.portal.doc1.portal_type), obj["type"])
 
     def test_serializer_includes_review_state(self):
         obj = self.serialize()
@@ -229,6 +235,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/folder-with-items/item-1",
                 "@type": "Document",
+                "type": "Page",
                 "title": "Item 1",
                 "description": "Previous item",
             },
@@ -258,6 +265,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/folder-with-items/item-2",
                 "@type": "Document",
+                "type": "Page",
                 "title": "Item 2",
                 "description": "Next item",
             },
@@ -291,6 +299,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/folder-with-items/item-1",
                 "@type": "Document",
+                "type": "Page",
                 "title": "Item 1",
                 "description": "Previous item",
             },
@@ -323,6 +332,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
+                "type": "DX Test Document",
                 "title": "",
                 "description": "",
             },
@@ -343,6 +353,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/item-2",
                 "@type": "Document",
+                "type": "Page",
                 "title": "Item 2",
                 "description": "Next item",
             },
@@ -373,6 +384,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/item-1",
                 "@type": "Document",
+                "type": "Page",
                 "title": "Item 1",
                 "description": "Previous item",
             },
@@ -382,6 +394,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/item-3",
                 "@type": "Document",
+                "type": "Page",
                 "title": "Item 3",
                 "description": "Next item",
             },
