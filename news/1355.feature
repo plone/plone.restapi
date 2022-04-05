@@ -1,0 +1,1 @@
+Add portal_type title (`type`) to content response [razvanMiu]
