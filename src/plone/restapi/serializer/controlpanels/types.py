@@ -7,7 +7,6 @@ from plone.restapi.serializer.controlpanels import SERVICE_ID
 from plone.restapi.serializer.controlpanels import ControlpanelSerializeToJson
 from plone.restapi.serializer.controlpanels import get_jsonschema_for_controlpanel
 from plone.restapi.serializer.converters import json_compatible
-from plone.restapi.serializer.utils import get_portal_type
 from zope.component import adapter
 from zope.component import getAllUtilitiesRegisteredFor
 from zope.component import queryMultiAdapter
@@ -107,7 +106,6 @@ class DexterityTypesControlpanelSerializeToJson(ControlpanelSerializeToJson):
                         portal_url, name
                     ),
                     "@type": name,
-                    "type": get_portal_type(name),
                     "meta_type": fti.meta_type,
                     "id": name,
                     "title": fti.Title(),

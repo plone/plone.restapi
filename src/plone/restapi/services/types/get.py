@@ -71,6 +71,7 @@ class TypesInfo:
         result["types"] = [
             {
                 "@id": f"{portal_url}/@types/{fti.getId()}",
+                "@type": fti.getId(),
                 "title": translate(fti.Title(), context=self.request),
                 "addable": fti.getId() in allowed_types if can_add else False,
                 "immediately_addable": fti.getId() in immediately_types
