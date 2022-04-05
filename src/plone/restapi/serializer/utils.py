@@ -1,7 +1,9 @@
 from plone.outputfilters.browser.resolveuid import uuidToObject
 from plone.outputfilters.browser.resolveuid import uuidToURL
+from plone.dexterity.interfaces import IDexterityFTI
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from zope.component import queryMultiAdapter
+from zope.component import queryUtility
 
 import re
 
@@ -31,3 +33,8 @@ def uid_to_url(path):
             if adapter and adapter():
                 href = adapter()
     return href
+
+
+def get_portal_type(portal_type):
+    fti = queryUtility(IDexterityFTI, name=portal_type)
+    return getattr(fti, 'Title', lambda: portal_type)()

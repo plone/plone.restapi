@@ -17,6 +17,7 @@ from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
 from plone.restapi.serializer.working_copy import WorkingCopyInfo
 from plone.restapi.services.locking import lock_info
+from plone.restapi.serializer.utils import get_portal_type
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
@@ -61,7 +62,7 @@ class SerializeToJson:
             "@id": obj.absolute_url(),
             "id": obj.id,
             "@type": obj.portal_type,
-            "type": obj.portal_types[obj.portal_type].title or obj.portal_type,
+            "type": get_portal_type(obj.portal_type),
             "parent": parent_summary,
             "created": json_compatible(obj.created()),
             "modified": json_compatible(obj.modified()),

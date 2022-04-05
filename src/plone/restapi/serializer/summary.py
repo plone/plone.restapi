@@ -3,6 +3,7 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.interfaces import IJSONSummarySerializerMetadata
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.serializer.utils import get_portal_type
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import WorkflowException
 from Products.CMFPlone.interfaces import IPloneSiteRoot
@@ -140,6 +141,7 @@ class SiteRootJSONSummarySerializer:
             {
                 "@id": self.context.absolute_url(),
                 "@type": self.context.portal_type,
+                "type": get_portal_type(self.context.portal_type),
                 "title": self.context.title,
                 "description": self.context.description,
             }
