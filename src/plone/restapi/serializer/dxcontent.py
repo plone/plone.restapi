@@ -55,11 +55,13 @@ class SerializeToJson:
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary
         )()
+
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             "@id": obj.absolute_url(),
             "id": obj.id,
             "@type": obj.portal_type,
+            "type": obj.portal_types[obj.portal_type].title or obj.portal_type,
             "parent": parent_summary,
             "created": json_compatible(obj.created()),
             "modified": json_compatible(obj.modified()),
