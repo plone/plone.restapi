@@ -63,7 +63,7 @@ class SerializeSiteRootToJson:
             "@id": self.context.absolute_url(),
             "id": self.context.id,
             "@type": "Plone Site",
-            "type": get_portal_type("Plone Site"),
+            "type": get_portal_type("Plone Site", self.request),
             "title": self.context.Title(),
             "parent": {},
             "is_folderish": True,

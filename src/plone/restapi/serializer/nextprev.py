@@ -24,8 +24,9 @@ class NextPreviousFixed(NextPreviousBase):
 class NextPrevious:
     """Facade with more pythonic interface"""
 
-    def __init__(self, context):
+    def __init__(self, context, request):
         self.context = context
+        self.request = request
         self.parent = aq_parent(aq_inner(context))
         self.nextprev = NextPreviousFixed(self.parent)
 
@@ -41,7 +42,7 @@ class NextPrevious:
         return {
             "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
-            "type": get_portal_type(data["portal_type"]),
+            "type": get_portal_type(data["portal_type"], self.request),
             "title": data["title"],
             "description": data["description"],
         }
@@ -58,7 +59,7 @@ class NextPrevious:
         return {
             "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
-            "type": get_portal_type(data["portal_type"]),
+            "type": get_portal_type(data["portal_type"], self.request),
             "title": data["title"],
             "description": data["description"],
         }

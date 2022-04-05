@@ -4,6 +4,7 @@ from plone.dexterity.interfaces import IDexterityFTI
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
+from zope.i18n import translate
 
 import re
 
@@ -35,6 +36,8 @@ def uid_to_url(path):
     return href
 
 
-def get_portal_type(portal_type):
+def get_portal_type(portal_type, request=None):
     fti = queryUtility(IDexterityFTI, name=portal_type)
-    return getattr(fti, 'Title', lambda: portal_type)()
+    if request:
+        return translate(getattr(fti, "Title", lambda: portal_type)(), context=request)
+    return getattr(fti, "Title", lambda: portal_type)()

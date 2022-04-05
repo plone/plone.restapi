@@ -62,7 +62,7 @@ class SerializeToJson:
             "@id": obj.absolute_url(),
             "id": obj.id,
             "@type": obj.portal_type,
-            "type": get_portal_type(obj.portal_type),
+            "type": get_portal_type(obj.portal_type, self.request),
             "parent": parent_summary,
             "created": json_compatible(obj.created()),
             "modified": json_compatible(obj.modified()),
@@ -74,7 +74,7 @@ class SerializeToJson:
         }
 
         # Insert next/prev information
-        nextprevious = NextPrevious(obj)
+        nextprevious = NextPrevious(obj, self.request)
         result.update(
             {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
         )

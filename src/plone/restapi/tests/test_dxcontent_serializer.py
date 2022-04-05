@@ -309,6 +309,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/folder-with-items/item-3",
                 "@type": "Document",
+                "type": "Page",
                 "title": "Item 3",
                 "description": "Next item",
             },
