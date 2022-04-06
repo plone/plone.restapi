@@ -1,5 +1,4 @@
 from plone.app.redirector.interfaces import IRedirectionStorage
-from plone.app.redirector.storage import RedirectionStorage
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
