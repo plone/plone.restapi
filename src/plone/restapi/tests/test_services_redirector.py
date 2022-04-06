@@ -1,9 +1,13 @@
+from plone.app.redirector.interfaces import IRedirectionStorage
+from plone.app.redirector.storage import RedirectionStorage
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from zope.component import getUtility
+
 
 import transaction
 import unittest
@@ -23,32 +27,26 @@ class TestRedirector(unittest.TestCase):
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
+        # Create contents
+        self.portal.invokeFactory("Folder", id="folder", title="Folderish")
+        folder = self.portal.folder
+        folder.invokeFactory("Folder", id="sub_folder", title="Another Folderish")
+        folder.invokeFactory("Document", id="archive", title="My Document")
+
+        # Add redirection from parent to a child
+        storage = getUtility(IRedirectionStorage)
+        storage.add(
+            "/".join(folder.getPhysicalPath()),
+            "/".join(folder.archive.getPhysicalPath()),
+        )
+        transaction.commit()
+
     def tearDown(self):
         self.api_session.close()
 
-    def test_redirector(self):
+    def test_redirection_loop(self):
+        url = self.portal.folder.sub_folder.absolute_url()
 
-        # create a document (doc)
-        self.portal.invokeFactory("Document", id="doc", title="My Document")
-        self.original_doc_url = self.portal.doc.absolute_url()
-        transaction.commit()
-
-        # move the document to a new place (doc -> new-doc)
-        self.portal.manage_renameObject("doc", "new-doc")
-        transaction.commit()
-
-        # query the original document url returns the moved document
-        response = self.api_session.get(self.original_doc_url)
-        self.assertEqual("My Document", response.json().get("title"))
-
-        # create a new document under the old location
-        self.portal.invokeFactory(
-            "Document", id="doc", title="New document under the old location"
-        )
-        transaction.commit()
-
-        # query the original document url returns the moved document
-        response = self.api_session.get(self.original_doc_url)
-        self.assertEqual(
-            "New document under the old location", response.json().get("title")
-        )
+        # A request to a invalid service should return 404
+        response = self.api_session.get(f"{url}/@service_not_found")
+        self.assertEqual(response.status_code, 404)
