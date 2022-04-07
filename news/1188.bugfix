@@ -1,1 +1,0 @@
-Return proper error message when trying to create a content object with a wrong @type parameter. [tisto]
