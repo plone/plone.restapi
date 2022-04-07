@@ -81,7 +81,7 @@ It can be seen in action at the following sites:
 - Zeelandia GmbH & Co. KG: https://www.zeelandia.de (by kitconcept GmbH)
 - VHS-Ehrenamtsportal: https://vhs-ehrenamtsportal.de (by kitconcept GmbH)
 - German Physical Society: https://www.dpg-physik.de (by kitconcept GmbH)
-- Universitat Politècnica de Catalunya: https://www.upc.edu/ca (by kitconcept GmbH)
+- Universitat Politècnica de Catalunya: https://www.upc.edu/en (by kitconcept GmbH)
 
 Support
 =======
