@@ -236,21 +236,6 @@ class TestServicesContextNavigation(unittest.TestCase):
                     "type": "document",
                 },
                 {
-                    "@id": "%s/folder2/file21/view" % base,
-                    "description": "",
-                    "href": "%s/folder2/file21/view" % base,
-                    "icon": None,
-                    "is_current": False,
-                    "is_folderish": False,
-                    "is_in_path": False,
-                    "items": [],
-                    "normalized_id": "file21",
-                    "review_state": "",
-                    "thumb": "",
-                    "title": "file21",
-                    "type": "file",
-                },
-                {
                     "@id": "%s/folder2/folder21" % base,
                     "description": "",
                     "href": "%s/folder2/folder21" % base,
@@ -531,7 +516,7 @@ class TestServicesContextNavigation(unittest.TestCase):
 
         self.assertEqual(
             tree["items"][-1]["href"],
-            "%s/folder2/folder21" % base,
+            "%s/folder2/file21/view" % base,
         )
 
     def testTopLevelWithContextAboveLevel(self):
