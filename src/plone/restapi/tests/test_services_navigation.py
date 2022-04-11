@@ -126,9 +126,15 @@ class TestServicesNavigation(unittest.TestCase):
 
     def test_navigation_sorting(self):
         registry = getUtility(IRegistry)
-        settings = registry.forInterface(INavigationSchema, prefix="plone")
-        displayed_types = settings.displayed_types
-        settings.displayed_types = tuple(list(displayed_types) + ["File"])
+        registry["plone.displayed_types"] = (
+            "Link",
+            "News Item",
+            "Folder",
+            "Document",
+            "Event",
+            "Collection",
+            "File",
+        )
         createContentInContainer(
             self.portal,
             "File",
