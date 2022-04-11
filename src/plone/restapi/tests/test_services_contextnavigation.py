@@ -262,19 +262,21 @@ class TestServicesContextNavigation(unittest.TestCase):
         }
         if not HAS_PLONE_6:
             # before Plone 6.0.0a4 files and images were displayed in navigation.
-            file_data = {'@id': 'http://localhost:42335/plone/folder2/file21/view',
-             'description': '',
-             'href': 'http://localhost:42335/plone/folder2/file21/view',
-             'icon': None,
-             'is_current': False,
-             'is_folderish': False,
-             'is_in_path': False,
-             'items': [],
-             'normalized_id': 'file21',
-             'review_state': '',
-             'thumb': '',
-             'title': 'file21',
-             'type': 'file'}
+            file_data = {
+                "@id": "http://localhost:42335/plone/folder2/file21/view",
+                "description": ",
+                "href": "http://localhost:42335/plone/folder2/file21/view",
+                "icon": None,
+                "is_current": False,
+                "is_folderish": False,
+                "is_in_path": False,
+                "items": [],
+                "normalized_id": "file21",
+                "review_state": ",
+                "thumb": ",
+                "title": "file21",
+                "type": "file",
+            }
             res["items"].insert(4, file_data)
 
         self.assertEqual(
@@ -547,7 +549,6 @@ class TestServicesContextNavigation(unittest.TestCase):
                 tree["items"][-1]["href"],
                 "%s/folder2/folder21" % base,
             )
-
 
     def testTopLevelWithContextAboveLevel(self):
         view = self.renderer(self.portal, opts(topLevel=1))
