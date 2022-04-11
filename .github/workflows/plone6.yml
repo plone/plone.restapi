@@ -1,4 +1,4 @@
-name: Tests Plone 5
+name: Tests Plone 6
 on: [push]
 jobs:
   build:
@@ -6,8 +6,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        plone-version: ['5.2']
-        python-version: ['3.6' '3.7', '3.8']
+        plone-version: ['6.0']
+        python-version: ['3.7', '3.8', '3.9']
 
     steps:
       # git checkout
@@ -27,11 +27,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pip-
 
-      # python install
-      - run: pip install virtualenv
-      - run: pip install wheel
+      # pip install
       - name: pip install
-        run: pip install -r requirements.txt -r requirements-docs.txt
+        run: pip install -r requirements-60.txt -r requirements-docs.txt
 
       # buildout
       - name: buildout
@@ -43,22 +41,12 @@ jobs:
       - name: code analysis
         run: bin/code-analysis
 
-      # build sphinx
-      - name: sphinx
-#        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then bin/sphinxbuilder; fi
-        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then make docs-html; fi
-
       # test
       - name: test
         run: bin/test
 
+      # Commented out a few actions that should not currently be run on Plone 6.
+      # Kept a note here, so we do not forget about them when we drop Plone 5 support.
+      # build sphinx
       # test no uncommited changes
-      - name: test no uncommited changes
-        run: bin/test-no-uncommitted-doc-changes
-        env:
-          PYTHON_VERSION: ${{ matrix.python-version }}
-          PLONE_VERSION: ${{ matrix.plone-version }}
-
       # test sphinx warnings
-#      - name: sphinx
-#        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then bin/test-no-sphinx-warnings; fi

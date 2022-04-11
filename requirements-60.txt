@@ -1,0 +1,12 @@
+# from https://dist.plone.org/release/6.0.0a4/requirements.txt
+setuptools==62.0.0
+zc.buildout==3.0.0rc3
+pip==22.0.4
+wheel==0.37.1
+
+# Windows specific down here (has to be installed here, fails in buildout)
+# Dependency of zope.sendmail:
+pywin32 ; platform_system == 'Windows'
+
+# SSL Certs on windows, because Python is missing them otherwise:
+certifi ; platform_system == 'Windows'
