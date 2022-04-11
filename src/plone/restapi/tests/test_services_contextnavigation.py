@@ -264,7 +264,7 @@ class TestServicesContextNavigation(unittest.TestCase):
             # before Plone 6.0.0a4 files and images were displayed in navigation.
             file_data = {
                 "@id": "http://localhost:42335/plone/folder2/file21/view",
-                "description": ",
+                "description": "",
                 "href": "http://localhost:42335/plone/folder2/file21/view",
                 "icon": None,
                 "is_current": False,
@@ -272,8 +272,8 @@ class TestServicesContextNavigation(unittest.TestCase):
                 "is_in_path": False,
                 "items": [],
                 "normalized_id": "file21",
-                "review_state": ",
-                "thumb": ",
+                "review_state": "",
+                "thumb": "",
                 "title": "file21",
                 "type": "file",
             }
