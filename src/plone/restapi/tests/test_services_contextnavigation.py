@@ -180,8 +180,10 @@ class TestServicesContextNavigation(unittest.TestCase):
 
     def test_contextnavigation_with_no_params_gets_only_top_level_mixed_content(self):
         # Use default setting of Plone 6
+        from Products.CMFPlone.interfaces import INavigationSchema
         registry = getUtility(IRegistry)
-        registry["plone.displayed_types"] = (
+        navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
+        navigation_settings.displayed_types = (
             "Link",
             "News Item",
             "Folder",
@@ -189,6 +191,7 @@ class TestServicesContextNavigation(unittest.TestCase):
             "Event",
             "Collection",
         )
+        transaction.commit()
         # With the context set to folder2 it should return a dict with
         # currentItem set to True
         response = self.api_session.get("/folder2/@contextnavigation")
