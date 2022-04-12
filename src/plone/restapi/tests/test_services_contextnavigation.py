@@ -180,7 +180,8 @@ class TestServicesContextNavigation(unittest.TestCase):
 
     def test_contextnavigation_with_no_params_gets_only_top_level_mixed_content(self):
         # Use default setting of Plone 6
-        from Products.CMFPlone.interfaces import INavigationSchema
+        from Products.CMFPlone.interfaces import INavigationSchema  # noqa
+
         registry = getUtility(IRegistry)
         navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
         navigation_settings.displayed_types = (
