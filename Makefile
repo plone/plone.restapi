@@ -53,27 +53,19 @@ bin/python bin/pip: ./requirements-docs.txt
 	bin/pip install -r requirements-docs.txt
 
 .PHONY: Build Plone 5.2
-build-plone-5.2: .installed.cfg  ## Build Plone 5.2
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
+build-plone-5.2: ./bin/buildout  ## Build Plone 5.2
 	bin/buildout -c plone-5.2.x.cfg
 
 .PHONY: Build Plone 5.2 Performance
-build-plone-5.2-performance: .installed.cfg  ## Build Plone 5.2
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
+build-plone-5.2-performance: ./bin/buildout  ## Build Plone 5.2
 	bin/buildout -c plone-5.2.x-performance.cfg
 
 .PHONY: Build Plone 6.0
-build-plone-6.0: .installed.cfg  ## Build Plone 6.0
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
+build-plone-6.0: ./bin/buildout  ## Build Plone 6.0
 	bin/buildout -c plone-6.0.x.cfg
 
 .PHONY: Build Plone 6.0 Performance
-build-plone-6.0-performance: .installed.cfg  ## Build Plone 6.0
-	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
+build-plone-6.0-performance: ./bin/buildout  ## Build Plone 6.0
 	bin/buildout -c plone-6.0.x-performance.cfg
 
 .PHONY: Test
@@ -150,8 +142,7 @@ docs-spellcheck: bin/python  ## Run spellcheck
 		" or in $(BUILDDIR)/spellcheck/ ."
 
 .PHONY: netlify
-netlify:
-	pip install -r requirements-docs.txt
+netlify: ./bin/pip
 	cd $(DOCS_DIR) && sphinx-build -b html $(ALLSPHINXOPTS) ../$(BUILDDIR)/html
 
 .PHONY: Test Release
