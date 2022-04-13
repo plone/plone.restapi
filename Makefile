@@ -41,13 +41,13 @@ update: ## Update Make and Buildout
 .installed.cfg: bin/buildout *.cfg
 	bin/buildout
 
-bin/buildout: bin/pip
+bin/buildout: bin/pip ./requirements.txt
 	bin/pip install --upgrade pip
 	bin/pip install -r requirements.txt
 	bin/pip install black || true
 	@touch -c $@
 
-bin/python bin/pip:
+bin/python bin/pip: ./requirements-docs.txt
 	python$(version) -m venv . || virtualenv --python=python$(version) .
 	bin/python -m pip install --upgrade pip
 	bin/pip install -r requirements-docs.txt
