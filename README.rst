@@ -5,10 +5,10 @@
   :target: https://coveralls.io/github/plone/plone.restapi?branch=master
 
 .. image:: https://readthedocs.org/projects/pip/badge
-  :target: https://plonerestapi.readthedocs.org
+  :target: https://plonerestapi.readthedocs.io/en/latest/
 
 .. image:: https://img.shields.io/pypi/v/plone.restapi.svg
-  :target: https://pypi.python.org/pypi/plone.restapi
+  :target: https://pypi.org/project/plone.restapi/
 
 
 Introduction
@@ -20,7 +20,7 @@ plone.restapi is a RESTful hypermedia API for Plone.
 Documentation
 =============
 
-https://plonerestapi.readthedocs.org
+https://plonerestapi.readthedocs.io/en/latest/
 
 
 Getting started
@@ -45,7 +45,7 @@ Example POST request to create a new document
 .. note::
 
    You will need some kind of API browser application to explore the API.
-   We recommend using `Postman <http://www.getpostman.com/>`_.
+   We recommend using `Postman <https://www.postman.com/>`_.
 
 
 Installation
@@ -81,7 +81,7 @@ It can be seen in action at the following sites:
 - Zeelandia GmbH & Co. KG: https://www.zeelandia.de (by kitconcept GmbH)
 - VHS-Ehrenamtsportal: https://vhs-ehrenamtsportal.de (by kitconcept GmbH)
 - German Physical Society: https://www.dpg-physik.de (by kitconcept GmbH)
-- Universitat Politècnica de Catalunya: https://www.upc.edu (by kitconcept GmbH)
+- Universitat Politècnica de Catalunya: https://www.upc.edu/en (by kitconcept GmbH)
 
 Support
 =======

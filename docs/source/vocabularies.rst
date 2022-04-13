@@ -78,7 +78,7 @@ The token is what should be sent to the server to address that term.
 
 .. note::
     Vocabulary terms will be **batched** if the size of the resultset exceeds the batch size.
-    See :doc:`/batching` for more details on how to work with batched results.
+    See :doc:`./batching` for more details on how to work with batched results.
 
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/vocabularies_get.resp
    :language: http

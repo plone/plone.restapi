@@ -107,7 +107,7 @@ Reason:
 
 Spinal case is better to read and safer to use than camelCase (URLs are case sensitive (RFC3986)).
 Plone uses spinal case for URL creation (title "My page" becomes "my-page") and mixed naming conventions in URLs would be confusing (e.g. "/my-folder/@send_url_to_user").
-Google recommends spinal-case in URLs for better SEO (https://support.google.com/webmasters/answer/76329).
+Google recommends spinal-case in URLs for better SEO (https://developers.google.com/search/docs/advanced/guidelines/url-structure).
 
 Discussion:
 
