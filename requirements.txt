@@ -3,3 +3,8 @@ setuptools==42.0.2
 zc.buildout==2.13.4
 wheel
 zpretty
+# MyPy library stubs are incompatible with buildout
+types-setuptools
+types-pytz
+types-jwt
+types-requests

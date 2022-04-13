@@ -1,3 +1,35 @@
+[tool.pylint.'MESSAGES CONTROL']
+disable = [
+    "wrong-import-order",
+]
+
+[[tool.mypy.overrides]]
+module = [
+# Ignore packages with unavailable typing packages/stubs, mostly Zope and Plone
+    'AccessControl.*',
+    'Acquisition.*',
+    'BTrees.*',
+    'DateTime.*',
+    'Missing',
+    'OFS.*',
+    'zExceptions',
+    'ZPublisher.*',
+    'Products.*',
+    'persistent.*',
+    'transaction',
+    'zope.*',
+    'z3c.*',
+    'plone.*',
+    'collective.*',
+]
+ignore_missing_imports = true
+[[tool.mypy.overrides]]
+module = [
+# Behavior and usage from `zope.interface` that MyPy doesn't know how to handle
+    'plone.restapi.interfaces',
+]
+ignore_errors = true
+
 [tool.towncrier]
 filename = "CHANGES.rst"
 directory = "news/"

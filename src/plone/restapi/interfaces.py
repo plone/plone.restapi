@@ -1,6 +1,16 @@
-# pylint: disable=E0211, W0221
+# pylint: disable=E0211, W0221, inherit-non-class, no-self-argument, super-init-not-called, signature-differs, too-many-ancestors
 # E0211: Method has no argument
 # W0221: Arguments number differs from overridden '__call__' method
+# :inherit-non-class (E0239): *Inheriting 'Interface', which is not a class.*
+# :no-self-argument (E0213): *Method should have "self" as first argument*
+# :super-init-not-called (W0231): *__init__ method from base class 'InterfaceClass' is not called*
+# :signature-differs (W0222): *Signature differs from %s %r method*
+# :too-many-ancestors (R0901): *Too many ancestors (%s/%s)*
+
+"""
+Abstract interfaces describing the contracts implemented by the Plone Rest API.
+"""
+
 
 from zope.interface import Attribute
 from zope.interface import Interface
