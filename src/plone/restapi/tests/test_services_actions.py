@@ -27,12 +27,13 @@ class TestActions(unittest.TestCase):
         return category
 
     def add_action(
-        self, category, name, title, icon_expr="", available_expr="", permissions=()
+        self, category, name, title, icon_expr="", url="", available_expr="", permissions=()
     ):
         action = Action(
             name,
             title=title,
             icon_expr=icon_expr,
+            url=url,
             available_expr=available_expr,
             permissions=permissions,
         )
@@ -109,16 +110,18 @@ class TestActions(unittest.TestCase):
             response,
             {
                 "category1": [
-                    {"title": "Members only", "id": "member_action", "icon": ""},
+                    {"title": "Members only", "id": "member_action", "icon": "","url":""},
                     {
                         "title": "Action with view permission",
                         "id": "view_action",
                         "icon": "",
+                        "url": ""
                     },
                     {
                         "title": "Action with Manage Portal Content permission",
                         "id": "manage_action",
                         "icon": "",
+                        "url": ""
                     },
                 ],
                 "category2": [],
@@ -139,6 +142,7 @@ class TestActions(unittest.TestCase):
                         "title": "Action with view permission",
                         "id": "view_action",
                         "icon": "",
+                        "url": ""
                     }
                 ],
                 "category2": [],
