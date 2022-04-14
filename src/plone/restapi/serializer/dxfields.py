@@ -82,7 +82,15 @@ class CollectionFieldSerializer(DefaultFieldSerializer):
                     term = value_type.vocabulary.getTerm(v)
                     values.append({"token": term.token, "title": term.title})
                 except LookupError:
-                    log.warning("Term lookup error: %r %s (%s:%s)" % (v, self.field.title, self.context.portal_type, self.context.absolute_url(1)))
+                    log.warning(
+                        "Term lookup error: %r %s (%s:%s)"
+                        % (
+                            v,
+                            self.field.title,
+                            self.context.portal_type,
+                            self.context.absolute_url(1),
+                        )
+                    )
             value = values
         return json_compatible(value)
 
