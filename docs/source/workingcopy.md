@@ -1,7 +1,7 @@
 # Working Copy
 
 ```{note}
-This is only available on Plone 5.
+This feature is available only on Plone 5 or greater.
 ```
 
 Plone has a *working copy* feature provided by the core package `plone.app.iterate`.
