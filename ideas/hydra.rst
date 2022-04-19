@@ -81,63 +81,63 @@ Implementation
 Plone Document:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/document.req
+    :request: ../src/plone/restapi/tests/http-examples/document.req
 
-.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/document.resp
+.. literalinclude:: ../src/plone/restapi/tests/http-examples/document.resp
    :language: http
 
 Plone Folder:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/folder.req
+    :request: ../src/plone/restapi/tests/http-examples/folder.req
 
-.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/folder.resp
+.. literalinclude:: ../src/plone/restapi/tests/http-examples/folder.resp
    :language: http
 
 Plone Portal Root:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/siteroot.req
+    :request: ../src/plone/restapi/tests/http-examples/siteroot.req
 
-.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/siteroot.resp
+.. literalinclude:: ../src/plone/restapi/tests/http-examples/siteroot.resp
    :language: http
 
 Collection:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/collection.req
+    :request: ../src/plone/restapi/tests/http-examples/collection.req
 
-.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/collection.resp
+.. literalinclude:: ../src/plone/restapi/tests/http-examples/collection.resp
    :language: http
 
 Plone Image:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/image.req
+    :request: ../src/plone/restapi/tests/http-examples/image.req
 
-.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/image.resp
+.. literalinclude:: ../src/plone/restapi/tests/http-examples/image.resp
    :language: http
 
 File:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/file.req
+    :request: ../src/plone/restapi/tests/http-examples/file.req
 
-.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/file.resp
+.. literalinclude:: ../src/plone/restapi/tests/http-examples/file.resp
    :language: http
 
 Link:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/link.req
+    :request: ../src/plone/restapi/tests/http-examples/link.req
 
-.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/link.resp
+.. literalinclude:: ../src/plone/restapi/tests/http-examples/link.resp
    :language: http
 
 News Item:
 
 ..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/newsitem.req
+    :request: ../src/plone/restapi/tests/http-examples/newsitem.req
 
-.. literalinclude:: ../../../src/plone/restapi/tests/http-examples/newsitem.resp
+.. literalinclude:: ../src/plone/restapi/tests/http-examples/newsitem.resp
    :language: http
