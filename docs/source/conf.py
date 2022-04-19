@@ -301,7 +301,9 @@ myst_substitutions = {
     "postman_request": "![](_static/img/postman_request.png)",
     "postman_response": "![](_static/img/postman_response.png)",
     "postman_retain_headers": "![](_static/img/postman_retain_headers.png)",
+    "fawrench": '<span class="fa fa-wrench" style="font-size: 1.6em;"></span>',
 }
+
 # -- Options for LaTeX output --------------------------------------------------
 
 latex_elements = {

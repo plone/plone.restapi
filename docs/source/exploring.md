@@ -1,11 +1,3 @@
----
-substitutions:
-  fawrench: |
-    ```{raw} html
-    <span class="fa fa-wrench" style="font-size: 1.6em;"></span>
-    ```
----
-
 (exploring-api-postman-onboarding)=
 
 # Explore the API using Postman
