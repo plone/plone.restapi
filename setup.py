@@ -80,11 +80,12 @@ setup(
     zip_safe=False,
     install_requires=[
         "setuptools",
+        "importlib-metadata; python_version<'3.8'",
         "python-dateutil",
         "plone.behavior>=1.1",  # adds name to behavior directive
         "plone.rest >= 1.0a6",  # json renderer moved to plone.restapi
         "plone.schema >= 1.2.1",  # new/fixed json field
-        "PyJWT",
+        "PyJWT>=1.7.0",
         "pytz",
     ],
     extras_require={"test": TEST_REQUIRES},
