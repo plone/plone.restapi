@@ -9,7 +9,7 @@ The `@controlpanels` endpoint is a more convenient way of accessing the settings
 easier to render control panels on the front-end.
 
 ```{note}
-The `@controlpanels` endpoint is currently only implemented for Plone 5.
+The `@controlpanels` endpoint is implemented for Plone 5 or greater.
 ```
 
 
