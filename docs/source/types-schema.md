@@ -2,7 +2,7 @@
 
 # Types Schema
 
-The following is a detailed list of all available [Zope Schema](https://zopeschema.readthedocs.io/en/latest/) field types and their corresponding representation as [JSON Schema](https://json-schema.org/).
+The following is a detailed list of all available [Zope Schema](https://zopeschema.readthedocs.io/en/latest/) field types and their corresponding representation as JSON objects.
 
 
 ## TextLine
@@ -11,20 +11,20 @@ Zope Schema:
 
 ```python
 zope.schema.TextLine(
-    title=u'My field',
-    description=u'My great field',
-    default=u'foobar'
+    title="My field",
+    description="My great field",
+    default="foobar"
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'string',
-    'title': u'My field',
-    'description': u'My great field',
-    'default': u'foobar',
+  "type": "string",
+  "title": "My field",
+  "description": "My great field",
+  "default": "foobar"
 }
 ```
 
@@ -33,25 +33,25 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 zope.schema.Text(
-    title=u'My field',
-    description=u'My great field',
-    default=u'Lorem ipsum dolor sit amet',
+    title="My field",
+    description="My great field",
+    default="Lorem ipsum dolor sit amet",
     min_length=10,
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'string',
-    'title': u'My field',
-    'description': u'My great field',
-    'widget': 'textarea',
-    'default': u'Lorem ipsum dolor sit amet',
-    'minLength': 10,
+  "type": "string",
+  "title": "My field",
+  "description": "My great field",
+  "widget": "textarea",
+  "default": "Lorem ipsum dolor sit amet",
+  "minLength": 10
 }
 ```
 
@@ -60,22 +60,22 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 zope.schema.Bool(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
     default=False,
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'boolean',
-    'title': u'My field',
-    'description': u'My great field',
-    'default': False,
+  "type": "boolean",
+  "title": "My field",
+  "description": "My great field",
+  "default": false
 }
 ```
 
@@ -84,26 +84,26 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 zope.schema.Float(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
     min=0.0,
     max=1.0,
     default=0.5,
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'minimum': 0.0,
-    'maximum': 1.0,
-    'type': 'number',
-    'title': u'My field',
-    'description': u'My great field',
-    'default': 0.5,
+  "minimum": 0.0,
+  "maximum": 1.0,
+  "type": "number",
+  "title": "My field",
+  "description": "My great field",
+  "default": 0.5
 }
 ```
 
@@ -112,26 +112,26 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 zope.schema.Decimal(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
     min=Decimal(0),
     max=Decimal(1),
     default=Decimal(0.5),
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'minimum': 0.0,
-    'maximum': 1.0,
-    'type': 'number',
-    'title': u'My field',
-    'description': u'My great field',
-    'default': 0.5,
+  "minimum": 0.0,
+  "maximum": 1.0,
+  "type": "number",
+  "title": "My field",
+  "description": "My great field",
+  "default": 0.5
 },
 ```
 
@@ -140,26 +140,26 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 zope.schema.Int(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
     min=0,
     max=100,
     default=50,
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'minimum': 0,
-    'maximum': 100,
-    'type': 'integer',
-    'title': u'My field',
-    'description': u'My great field',
-    'default': 50,
+  "minimum": 0,
+  "maximum": 100,
+  "type": "integer",
+  "title": "My field",
+  "description": "My great field",
+  "default": 50
 }
 ```
 
@@ -168,24 +168,27 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 zope.schema.Choice(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
     vocabulary=self.dummy_vocabulary,
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'string',
-    'title': u'My field',
-    'description': u'My great field',
-    'enum': ['foo', 'bar'],
-    'enumNames': ['Foo', 'Bar'],
-    'choices': [('foo', 'Foo'), ('bar', 'Bar')],
+  "type": "string",
+  "title": "My field",
+  "description": "My great field",
+  "enum": ["foo", "bar"],
+  "enumNames": ["Foo", "Bar"],
+  "choices": [
+    {"foo": "Foo"},
+    {"bar": "Bar"}
+  ]
 }
 ```
 
@@ -194,37 +197,37 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 zope.schema.List(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
     min_length=1,
     value_type=schema.TextLine(
-        title=u'Text',
-        description=u'Text field',
-        default=u'Default text'
+        title="Text",
+        description="Text field",
+        default="Default text"
     ),
-    default=['foobar'],
+    default=["foobar"],
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'array',
-    'title': u'My field',
-    'description': u'My great field',
-    'default': ['foobar'],
-    'minItems': 1,
-    'uniqueItems': False,
-    'additionalItems': True,
-    'items': {
-        'type': 'string',
-        'title': u'Text',
-        'description': u'Text field',
-        'default': u'Default text',
-    }
+  "type": "array",
+  "title": "My field",
+  "description": "My great field",
+  "default": ["foobar"],
+  "minItems": 1,
+  "uniqueItems": false,
+  "additionalItems": true,
+  "items": {
+    "type": "string",
+    "title": "Text",
+    "description": "Text field",
+    "default": "Default text"
+  }
 },
 ```
 
@@ -233,29 +236,29 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 field = zope.schema.Tuple(
-    title=u'My field',
+    title="My field",
     value_type=schema.Int(),
     default=(1, 2),
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'array',
-    'title': u'My field',
-    'description': u'',
-    'uniqueItems': True,
-    'additionalItems': True,
-    'items': {
-        'title': u'',
-        'description': u'',
-        'type': 'integer',
-    },
-    'default': (1, 2),
+  "type": "array",
+  "title": "My field",
+  "description": "",
+  "uniqueItems": true,
+  "additionalItems": true,
+  "items": {
+    "title": "",
+    "description": "",
+    "type": "integer"
+  },
+"default": [1, 2]
 }
 ```
 
@@ -264,27 +267,27 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 field = zope.schema.Set(
-    title=u'My field',
+    title="My field",
     value_type=schema.TextLine(),
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'array',
-    'title': u'My field',
-    'description': u'',
-    'uniqueItems': True,
-    'additionalItems': True,
-    'items': {
-        'title': u'',
-        'description': u'',
-        'type': 'string',
-    }
+  "type": "array",
+  "title": "My field",
+  "description": "",
+  "uniqueItems": true,
+  "additionalItems": true,
+  "items": {
+    "title": "",
+    "description": "",
+    "type": "string"
+  }
 }
 ```
 
@@ -293,32 +296,35 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 field = zope.schema.List(
-    title=u'My field',
+    title="My field",
     value_type=schema.Choice(
         vocabulary=self.dummy_vocabulary,
     ),
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'array',
-    'title': u'My field',
-    'description': u'',
-    'uniqueItems': True,
-    'additionalItems': True,
-    'items': {
-        'title': u'',
-        'description': u'',
-        'type': 'string',
-        'enum': ['foo', 'bar'],
-        'enumNames': ['Foo', 'Bar'],
-        'choices': [('foo', 'Foo'), ('bar', 'Bar')],
-    }
+  "type": "array",
+  "title": "My field",
+  "description": "",
+  "uniqueItems": true,
+  "additionalItems": true,
+  "items": {
+    "title": "",
+    "description": "",
+    "type": "string",
+    "enum": ["foo", "bar"],
+    "enumNames": ["Foo", "Bar"],
+    "choices": [
+      {"foo": "Foo"},
+      {"bar": "Bar"}
+    ]
+  }
 }
 ```
 
@@ -327,34 +333,34 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 zope.schema.Object(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
     schema=IDummySchema,
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'object',
-    'title': u'My field',
-    'description': u'My great field',
-    'properties': {
-        'field1': {
-            'title': u'Foo',
-            'description': u'',
-            'type': 'boolean'
-        },
-        'field2': {
-            'title': u'Bar',
-            'description': u'',
-            'type': 'string'
-        },
+  "type": "object",
+  "title": "My field",
+  "description": "My great field",
+  "properties": {
+    "field1": {
+      "title": "Foo",
+      "description": "",
+      "type": "boolean"
+    },
+    "field2": {
+      "title": "Bar",
+      "description": "",
+      "type": "string"
     }
-},
+  }
+}
 ```
 
 
@@ -362,22 +368,22 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 from plone.app.textfield import RichText
 field = RichText(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'string',
-    'title': u'My field',
-    'description': u'My great field',
-    'widget': 'richtext',
+  "type": "string",
+  "title": "My field",
+  "description": "My great field",
+  "widget": "richtext"
 }
 ```
 
@@ -386,23 +392,23 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 zope.schema.Date(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
     default=date(2016, 1, 1),
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'string',
-    'title': u'My field',
-    'description': u'My great field',
-    'default': date(2016, 1, 1),
-    'widget': u'date',
+  "type": "string",
+  "title": "My field",
+  "description": "My great field",
+  "default": "2016-01-01",
+  "widget": "date"
 }
 ```
 
@@ -411,21 +417,21 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 zope.schema.Datetime(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'string',
-    'title': u'My field',
-    'description': u'My great field',
-    'widget': u'datetime',
+  "type": "string",
+  "title": "My field",
+  "description": "My great field",
+  "widget": "datetime"
 }
 ```
 
@@ -434,21 +440,21 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 plone.schema.Email(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'string',
-    'title': u'My field',
-    'description': u'My great field',
-    'widget': u'email',
+  "type": "string",
+  "title": "My field",
+  "description": "My great field",
+  "widget": "email"
 }
 ```
 
@@ -457,21 +463,21 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 zope.schema.Password(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'string',
-    'title': u'My field',
-    'description': u'My great field',
-    'widget': u'password',
+  "type": "string",
+  "title": "My field",
+  "description": "My great field",
+  "widget": "password"
 }
 ```
 
@@ -480,20 +486,20 @@ JSON Schema:
 
 Zope Schema:
 
-```
+```python
 zope.schema.URI(
-    title=u'My field',
-    description=u'My great field',
+    title="My field",
+    description="My great field",
 )
 ```
 
-JSON Schema:
+JSON:
 
-```
+```json
 {
-    'type': 'string',
-    'title': u'My field',
-    'description': u'My great field',
-    'widget': u'url',
+  "type": "string",
+  "title": "My field",
+  "description": "My great field",
+  "widget": "url"
 }
 ```
