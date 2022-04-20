@@ -3,7 +3,7 @@
 # Translations
 
 ```{note}
-This is only available on Plone 5.
+Translations are implemented for Plone 5 or greater.
 ```
 
 Since Plone 5, the product [`plone.app.multilingual`](https://pypi.org/project/plone.app.multilingual/) is included in the base Plone installation.
