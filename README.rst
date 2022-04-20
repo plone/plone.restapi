@@ -14,7 +14,7 @@
 Introduction
 ============
 
-plone.restapi is a RESTful hypermedia API for Plone.
+``plone.restapi`` is a RESTful hypermedia API for Plone.
 
 
 Documentation
@@ -26,17 +26,17 @@ https://plonerestapi.readthedocs.io/en/latest/
 Getting started
 ===============
 
-A live demo of Plone 5 with the latest plone.restapi release is available at:
+A live demo of Plone 5 with the latest ``plone.restapi`` release is available at:
 
 https://plonedemo.kitconcept.com
 
-Example GET request on the portal root
+An example GET request on the portal root is the following.
 
 .. code-block:: shell
 
    curl -i https://plonedemo.kitconcept.com -H "Accept: application/json"
 
-Example POST request to create a new document
+An example POST request to create a new document is the following.
 
 .. code-block:: shell
 
@@ -51,17 +51,19 @@ Example POST request to create a new document
 Installation
 ============
 
-Install plone.restapi by adding it to your buildout::
+Install ``plone.restapi`` by adding it to your buildout.
+
+.. code-block:: ini
 
     [buildout]
 
-    ...
+    # ...
 
     eggs =
         plone.restapi
 
 
-and then running ``bin/buildout``
+…and then running ``bin/buildout``.
 
 
 Contribute
@@ -75,7 +77,7 @@ Contribute
 Examples
 ========
 
-plone.restapi is used in production since the first alpha release.
+``plone.restapi`` has been used in production since its first alpha release.
 It can be seen in action at the following sites:
 
 - Zeelandia GmbH & Co. KG: https://www.zeelandia.de (by kitconcept GmbH)
@@ -83,12 +85,13 @@ It can be seen in action at the following sites:
 - German Physical Society: https://www.dpg-physik.de (by kitconcept GmbH)
 - Universitat Politècnica de Catalunya: https://www.upc.edu/en (by kitconcept GmbH)
 
+
 Support
 =======
 
 If you are having issues, please let us know via the `issue tracker <https://github.com/plone/plone.restapi/issues>`_.
 
-If you required professional support, here is a list of Plone solution providers that contributed significantly to plone.restapi in the past:
+If you require professional support, here is a list of Plone solution providers that contributed significantly to ``plone.restapi`` in the past.
 
 - `kitconcept GmbH <https://kitconcept.com>`_ (Germany)
 - `4teamwork <https://www.4teamwork.ch>`_ (Switzerland)
