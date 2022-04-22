@@ -1,21 +1,26 @@
+"""
+Test the group serializer used internally in the Rest API.
+"""
+
 from plone import api
 from plone.app.testing import TEST_USER_ID
+from plone.restapi import testing
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
 
-import unittest
 
-
-class TestSerializeUserToJsonAdapters(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestSerializeUserToJsonAdapters(testing.PloneRestAPITestCase):
+    """
+    Test the group serializer used internally in the Rest API.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a group to test against.
+        """
+        super().setUp()
+
         self.gtool = api.portal.get_tool("portal_groups")
         properties = {
             "title": "Plone Team",

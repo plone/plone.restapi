@@ -1,24 +1,24 @@
+"""
+Test Rest API endpoints for retrieving portal actions.
+"""
+
 from plone import api
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi import testing
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore import permissions
 from Products.CMFCore.ActionInformation import Action
 from Products.CMFCore.ActionInformation import ActionCategory
 
 import transaction
-import unittest
 
 
 TEST_CATEGORY_ID = "testcategory"
 
 
-class TestActions(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestActions(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for retrieving portal actions.
+    """
 
     def add_category(self, name):
         category = ActionCategory()
@@ -41,14 +41,10 @@ class TestActions(unittest.TestCase):
         return action
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        """
+        Create actions to test against.
+        """
+        super().setUp()
 
         self.anon_api_session = RelativeSession(self.portal_url, test=self)
         self.anon_api_session.headers.update({"Accept": "application/json"})
@@ -79,10 +75,6 @@ class TestActions(unittest.TestCase):
         self.cat3 = self.add_category("category3")
 
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
-        self.anon_api_session.close()
 
     def test_actions_all_categories(self):
         response = self.api_session.get("/@actions")

@@ -1,26 +1,32 @@
+"""
+Test the content summary serializer used internally in the Rest API.
+"""
+
 from DateTime import DateTime
 from plone.app.contentlisting.interfaces import IContentListingObject
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.dexterity.utils import createContentInContainer
+from plone.restapi import testing
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
 from zope.component.hooks import getSite
 
 import Missing
-import unittest
 
 
-class TestSummarySerializers(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestSummarySerializers(testing.PloneRestAPITestCase):
+    """
+    Test the content summary serializer used internally in the Rest API.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create content to test against.
+        """
+        super().setUp()
 
         pushGlobalRegistry(getSite())
         register_static_uuid_utility(prefix="c6dcbd55ab2746e199cd4ed458")

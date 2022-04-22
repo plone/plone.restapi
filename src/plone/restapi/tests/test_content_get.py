@@ -1,11 +1,14 @@
-from plone.app.testing import login
+"""
+Test API support for retrieving content.
+"""
+
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobImage
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi import testing
 from Products.CMFCore.utils import getToolByName
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
@@ -14,19 +17,21 @@ from zope.intid.interfaces import IIntIds
 import os
 import requests
 import transaction
-import unittest
 
 
-class TestContentGet(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestContentGet(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test API support for retrieving content.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
+        """
+        Create content instances in workflow states to test against.
+        """
+        super().setUp()
+
         setRoles(self.portal, TEST_USER_ID, ["Member"])
-        login(self.portal, SITE_OWNER_NAME)
+
         self.portal.invokeFactory("Folder", id="folder1", title="My Folder")
         self.portal.folder1.invokeFactory("Document", id="doc1", title="My Document")
         self.portal.folder1.doc1.text = RichTextValue(

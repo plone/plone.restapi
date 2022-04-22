@@ -1,23 +1,26 @@
+"""
+Test the blocks Dexterity behavior.
+"""
+
 from plone.app.testing import login
-from plone.app.testing import setRoles
-from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.dexterity.fti import DexterityFTI
+from plone.restapi import testing
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-
-import unittest
 
 
-class TestBlocksBehavior(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestBlocksBehavior(testing.PloneRestAPILoggedInTestCase):
+    """
+    Test the blocks Dexterity behavior.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Set up a new content type to test against.
+        """
+        super().setUp()
         login(self.portal, TEST_USER_NAME)
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+
         fti = DexterityFTI("blocksfolder")
         self.portal.portal_types._setObject("blocksfolder", fti)
         fti.klass = "plone.dexterity.content.Container"

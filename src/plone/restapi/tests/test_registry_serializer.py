@@ -1,20 +1,19 @@
+"""
+Test Rest API support for serializing registry records.
+"""
+
 from plone.registry import field
 from plone.registry import Registry
 from plone.registry.record import Record
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi import testing
 from zope.component import getMultiAdapter
 
-import unittest
 
-
-class TestRegistrySerializer(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
-
-    def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+class TestRegistrySerializer(testing.PloneRestAPITestCase):
+    """
+    Test Rest API support for serializing registry records.
+    """
 
     def serialize(self, obj):
         serializer = getMultiAdapter((obj, self.request), ISerializeToJson)

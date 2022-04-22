@@ -1,4 +1,9 @@
+"""
+Test utility functions for managing content used in the Rest API implementation.
+"""
+
 from Acquisition import aq_parent
+from plone.restapi import testing
 from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
@@ -12,13 +17,16 @@ from zope.lifecycleevent.interfaces import IObjectAddedEvent
 import unittest
 
 
-class TestCreateContent(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestCreateContent(testing.PloneRestAPITestCase):
+    """
+    Test utility function for creating content used in the Rest API implementation.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
 
         self.folder = self.portal[
             self.portal.invokeFactory("Folder", id="folder", title="My Folder")
@@ -55,13 +63,16 @@ class TestCreateContent(unittest.TestCase):
             create(self.folder, "Document", "my-document")
 
 
-class TestAddContent(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestAddContent(testing.PloneRestAPITestCase):
+    """
+    Test utility function for adding content used in the Rest API implementation.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
 
         self.folder = self.portal[
             self.portal.invokeFactory("Folder", id="folder", title="My Folder")

@@ -1,3 +1,7 @@
+"""
+Test Rest API internal handling of static times.
+"""
+
 from datetime import datetime
 from DateTime import DateTime
 from datetime import timedelta
@@ -6,37 +10,36 @@ from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
+from plone.app.iterate.interfaces import ICheckinCheckoutPolicy
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.locking.interfaces import ILockable
 from plone.locking.interfaces import ITTWLockable
 from plone.registry.interfaces import IRegistry
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi import testing
 from plone.restapi.tests.statictime import StaticTime
-from zope.component import createObject
-from zope.component import getUtility
-from zope.interface import alsoProvides
-from plone.app.iterate.interfaces import ICheckinCheckoutPolicy
 from plone.restapi.serializer.working_copy import WorkingCopyInfo
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.serializer.converters import json_compatible
+from zope.component import createObject
+from zope.component import getUtility
+from zope.interface import alsoProvides
 
 import transaction
 import unittest
 
 
-class TestStaticTime(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestStaticTime(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API internal handling of static times.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.request = self.layer["request"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        """
+        Enable content discussion to test against.
+        """
+        super().setUp()
 
         registry = getUtility(IRegistry)
         settings = registry.forInterface(IDiscussionSettings, check=False)

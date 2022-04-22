@@ -1,6 +1,11 @@
+"""
+Test Rest API support for deserializing Dexterity content.
+"""
+
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.interfaces import IDexterityItem
+from plone.restapi import testing
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
@@ -16,13 +21,16 @@ import json
 import unittest
 
 
-class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestDXContentDeserializer(testing.PloneRestAPITestCase, OrderingMixin):
+    """
+    Test Rest API support for deserializing Dexterity content.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create content instances to test against.
+        """
+        super().setUp()
 
         self.portal.invokeFactory(
             "DXTestDocument",
@@ -230,13 +238,16 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         )
 
 
-class TestDXContentSerializerDeserializer(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestDXContentSerializerDeserializer(testing.PloneRestAPITestCase):
+    """
+    Test Rest API support for serializing and deserializing Dexterity content.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create content instances to test against.
+        """
+        super().setUp()
 
         self.portal.invokeFactory(
             "DXTestDocument",

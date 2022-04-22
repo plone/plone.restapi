@@ -1,9 +1,9 @@
+"""
+Test Rest API endpoints for managing users.
+"""
+
 from plone import api
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi import testing
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
@@ -13,24 +13,21 @@ from zope.component import getAdapter
 from zope.component import getUtility
 
 import transaction
-import unittest
 
 
-class TestUsersEndpoint(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestUsersEndpoint(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for managing users.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        """
+        Create users to test against.
+        """
+        super().setUp()
 
         self.mailhost = getUtility(IMailHost)
 
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         self.anon_api_session = RelativeSession(self.portal_url, test=self)
         self.anon_api_session.headers.update({"Accept": "application/json"})
 
@@ -60,10 +57,6 @@ class TestUsersEndpoint(unittest.TestCase):
             password="otherpassword",
         )
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
-        self.anon_api_session.close()
 
     def test_list_users(self):
         response = self.api_session.get("/@users")

@@ -1,10 +1,12 @@
+"""
+Test Rest API support for portal catalog indexers.
+"""
+
 from plone.dexterity.interfaces import IDexterityFTI
+from plone.restapi import testing
 from plone.restapi.indexers import SearchableText_blocks
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from uuid import uuid4
 from zope.component import queryUtility
-
-import unittest
 
 
 DRAFTJS_BLOCK = {
@@ -87,13 +89,17 @@ TABLE_BLOCK = {
 }
 
 
-class TestSearchableTextIndexer(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestSearchableTextIndexer(testing.PloneRestAPITestCase):
+    """
+    Test Rest API support indexing searchable text.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a content instance with the blocks behavior to test against.
+        """
+        super().setUp()
+
         fti = queryUtility(IDexterityFTI, name="Document")
         behavior_list = [a for a in fti.behaviors]
         behavior_list.append("volto.blocks")

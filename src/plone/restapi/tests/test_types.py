@@ -1,10 +1,14 @@
+"""
+Test Rest API handling of content types.
+"""
+
 from datetime import date
 from decimal import Decimal
 from plone.app.multilingual.dx import directives
 from plone.app.textfield import RichText
 from plone.autoform import directives as form
 from plone.dexterity.fti import DexterityFTI
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi import testing
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
@@ -14,7 +18,6 @@ from plone.schema import Email
 from plone.schema import JSONField
 from plone.supermodel import model
 from Products.CMFCore.utils import getToolByName
-from unittest import TestCase
 from z3c.form.browser.text import TextWidget
 from zope import schema
 from zope.component import getMultiAdapter
@@ -60,13 +63,10 @@ class ITaggedValuesSchema(model.Schema):
     )
 
 
-class TestJsonSchemaUtils(TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
-
-    def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+class TestJsonSchemaUtils(testing.PloneRestAPITestCase):
+    """
+    Test Rest API handling of content types.
+    """
 
     def test_get_jsonschema_properties(self):
         fieldsets = get_fieldsets(self.portal, self.request, IDummySchema)
@@ -130,13 +130,17 @@ class TestJsonSchemaUtils(TestCase):
         self.assertNotIn("title", list(jsonschema["properties"]))
 
 
-class TestTaggedValuesJsonSchemaUtils(TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestTaggedValuesJsonSchemaUtils(testing.PloneRestAPITestCase):
+    """
+    Test Rest API handling of tagged values in content types.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a content types to test against.
+        """
+        super().setUp()
+
         fti = DexterityFTI("TaggedDocument")
         self.portal.portal_types._setObject("TaggedDocument", fti)
         fti.klass = "plone.dexterity.content.Container"
@@ -214,13 +218,17 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
         )
 
 
-class TestJsonSchemaProviders(TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestJsonSchemaProviders(testing.PloneRestAPITestCase):
+    """
+    Test Rest API handling of vocabularies in content types.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a vocabulary to test against.
+        """
+        super().setUp()
+
         self.dummy_vocabulary = SimpleVocabulary(
             [
                 SimpleTerm(value="foo", title="Foo"),

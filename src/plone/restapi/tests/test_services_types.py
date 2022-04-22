@@ -1,30 +1,25 @@
+"""
+Test Rest API endpoints for managing content types.
+"""
+
 from plone import api
 from plone.app.dexterity.behaviors import constrains
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
+from plone.restapi import testing
 from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
 
 import transaction
-import unittest
 
 
-class TestServicesTypes(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestServicesTypes(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for managing content types.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        """
+        Create content type fields to test against.
+        """
+        super().setUp()
 
         self.api_session.post(
             "/@types/Document",
@@ -65,7 +60,6 @@ class TestServicesTypes(unittest.TestCase):
     def tearDown(self):
         # Remove all custom changed on Document
         self.api_session.put("/@types/Document", json={})
-        self.api_session.close()
 
     def test_get_types(self):
         response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa
@@ -567,24 +561,18 @@ class TestServicesTypes(unittest.TestCase):
         self.assertEqual(len([a for a in response if a["addable"]]), 2)
 
 
-class TestServicesTypesTranslatedTitles(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestServicesTypesTranslatedTitles(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for retrieving translated content types.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
+        """
+        Set up a browser session that requests translations.
+        """
+        super().setUp()
+
         self.api_session.headers.update({"Accept-Language": "es"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-
-        transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     def test_get_types_translated(self):
         response = self.api_session.get(f"{self.portal.absolute_url()}/@types")  # noqa

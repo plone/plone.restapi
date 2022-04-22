@@ -1,19 +1,22 @@
 from plone import api
+from plone.restapi import testing
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
 
 import unittest
 
 
-class TestSerializeUserToJsonAdapter(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestSerializeUserToJsonAdapter(testing.PloneRestAPITestCase):
+    """
+    Test the user serializer used internally in the Rest API.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a user to test against.
+        """
+        super().setUp()
+
         properties = {
             "email": "noam.chomsky@example.com",
             "username": "noamchomsky",

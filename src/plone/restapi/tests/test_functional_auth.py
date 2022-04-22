@@ -1,26 +1,28 @@
-from plone.app.testing import login
-from plone.app.testing import setRoles
+"""
+Test Rest API authentication endpoints.
+"""
+
 from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi import testing
 
 import base64
 import requests
 import transaction
-import unittest
 
 
-class TestFunctionalAuth(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestFunctionalAuth(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API authentication endpoints.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-        login(self.portal, SITE_OWNER_NAME)
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
+
         self.private_document = self.portal[
             self.portal.invokeFactory("Document", id="doc1", title="My Document")
         ]

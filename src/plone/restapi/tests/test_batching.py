@@ -1,48 +1,31 @@
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
+"""
+Test batching/paging listings throughout the API.
+"""
+
 from plone.dexterity.utils import createContentInContainer
+from plone.restapi import testing
 from plone.restapi.batching import DEFAULT_BATCH_SIZE
 from plone.restapi.batching import HypermediaBatch
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import result_paths
 from urllib.parse import parse_qsl
 from urllib.parse import urlparse
 
 import transaction
-import unittest
 
 
-class TestBatchingDXBase(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-
-    def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        self.request = self.portal.REQUEST
-
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-
-    def tearDown(self):
-        self.api_session.close()
-
-    def _create_doc(self, container, number):
-        createContentInContainer(
-            container,
-            "DXTestDocument",
-            id="doc-%s" % str(number + 1),
-            title="Document %s" % str(number + 1),
-        )
+def _create_doc(container, number):
+    createContentInContainer(
+        container,
+        "DXTestDocument",
+        id="doc-%s" % str(number + 1),
+        title="Document %s" % str(number + 1),
+    )
 
 
-class TestBatchingSearch(TestBatchingDXBase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestBatchingSearch(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test searching the portal catalog with batching/paging.
+    """
 
     def setUp(self):
         super().setUp()
@@ -50,7 +33,7 @@ class TestBatchingSearch(TestBatchingDXBase):
         folder = createContentInContainer(self.portal, "Folder", id="folder")
 
         for i in range(5):
-            self._create_doc(folder, i)
+            _create_doc(folder, i)
         transaction.commit()
 
     def test_contains_canonical_url(self):
@@ -114,9 +97,10 @@ class TestBatchingSearch(TestBatchingDXBase):
         self.assertEqual(6, response.json()["items_total"])
 
 
-class TestBatchingCollections(TestBatchingDXBase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestBatchingCollections(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test batching in the collection API endpoints.
+    """
 
     def setUp(self):
         super().setUp()
@@ -124,7 +108,7 @@ class TestBatchingCollections(TestBatchingDXBase):
         folder = createContentInContainer(self.portal, "Folder", id="folder")
 
         for i in range(5):
-            self._create_doc(folder, i)
+            _create_doc(folder, i)
 
         collection = createContentInContainer(
             self.portal, "Collection", id="collection"
@@ -186,9 +170,10 @@ class TestBatchingCollections(TestBatchingDXBase):
         self.assertNotIn("batching", list(response.json()))
 
 
-class TestBatchingDXFolders(TestBatchingDXBase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestBatchingDXFolders(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test batching support in the folder listing API endpoints.
+    """
 
     def setUp(self):
         super().setUp()
@@ -196,7 +181,7 @@ class TestBatchingDXFolders(TestBatchingDXBase):
         folder = createContentInContainer(self.portal, "Folder", id="folder")
 
         for i in range(5):
-            self._create_doc(folder, i)
+            _create_doc(folder, i)
         transaction.commit()
 
     def test_contains_canonical_url(self):
@@ -265,15 +250,16 @@ class TestBatchingDXFolders(TestBatchingDXBase):
         )
 
 
-class TestBatchingSiteRoot(TestBatchingDXBase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestBatchingSiteRoot(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test batching in the portal root listing API endpoints.
+    """
 
     def setUp(self):
         super().setUp()
 
         for i in range(5):
-            self._create_doc(self.portal, i)
+            _create_doc(self.portal, i)
         transaction.commit()
 
     def test_contains_canonical_url(self):
@@ -322,13 +308,10 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
         self.assertNotIn("batching", list(response.json()))
 
 
-class TestHypermediaBatch(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
-
-    def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.portal.REQUEST
+class TestHypermediaBatch(testing.PloneRestAPITestCase):
+    """
+    Test the API batching class.
+    """
 
     def test_items_total(self):
         items = list(range(1, 26))

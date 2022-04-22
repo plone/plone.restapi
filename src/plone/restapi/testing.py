@@ -35,6 +35,8 @@ import os
 import re
 import requests
 import time
+import transaction
+import unittest
 
 
 ENABLED_LANGUAGES = ["de", "en", "es", "fr"]
@@ -311,3 +313,62 @@ def register_static_uuid_utility(prefix):
     prefix = re.sub(r"[^a-zA-Z0-9\-_]", "", prefix)
     generator = StaticUUIDGenerator(prefix)
     getGlobalSiteManager().registerUtility(component=generator)
+
+
+class PloneRestAPITestCase(unittest.TestCase):
+    """
+    Common test set up for Rest API tests.
+    """
+
+    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+
+    def setUp(self):
+        """
+        Set convenience attributes.
+        """
+        # Zope root references
+        self.request = self.layer["request"]
+        self.app = self.layer["app"]
+        self.root_acl_users = self.app.acl_users
+
+        # Plone portal references
+        self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
+
+
+class PloneRestAPILoggedInTestCase(PloneRestAPITestCase):
+    """
+    Common test set up for Rest API tests running as a logged in user.
+    """
+
+    def setUp(self):
+        """
+        Grant the test user all permissions and log in as the portal owner.
+        """
+        super().setUp()
+
+        # User permissions and authentication
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        login(self.portal, SITE_OWNER_NAME)
+
+
+class PloneRestAPIBrowserTestCase(PloneRestAPILoggedInTestCase):
+    """
+    Common test set up for Rest API tests that send browser requests to the server.
+    """
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        """
+        Set up an authenticated browser session dealing in JSON.
+        """
+        super().setUp()
+
+        # This is a functional fixture, have to commit our changes
+        transaction.commit()
+
+        # Set up a logged in JSON browser session
+        self.api_session = RelativeSession(self.portal_url, test=self)
+        self.api_session.headers.update({"Accept": "application/json"})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)

@@ -1,3 +1,7 @@
+"""
+Test Rest API handling of content workflow.
+"""
+
 from base64 import b64encode
 from DateTime import DateTime
 from plone.app.testing import login
@@ -8,6 +12,7 @@ from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi import testing
 from plone.restapi.testing import PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
 from unittest import TestCase
@@ -17,13 +22,19 @@ from zope.event import notify
 from ZPublisher.pubevents import PubStart
 
 
-class TestWorkflowInfo(TestCase):
+class TestWorkflowInfo(testing.PloneRestAPITestCase):
+    """
+    Test Rest API handling of content workflow.
+    """
 
     layer = PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
+
         self.doc1 = self.portal[
             self.portal.invokeFactory(
                 "DXTestDocument", id="doc1", title="Test Document"
@@ -122,15 +133,20 @@ class TestWorkflowInfo(TestCase):
         self.assertEqual(obj["state"], {"id": "", "title": ""})
 
 
-class TestWorkflowTransition(TestCase):
+class TestWorkflowTransition(testing.PloneRestAPITestCase):
+    """
+    Test Rest API handling of content workflow transitions.
+    """
 
     layer = PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
+
         self.wftool = getToolByName(self.portal, "portal_workflow")
-        login(self.portal, SITE_OWNER_NAME)
         self.portal.invokeFactory("Document", id="doc1")
 
     def traverse(

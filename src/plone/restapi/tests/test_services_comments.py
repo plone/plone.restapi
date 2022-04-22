@@ -1,25 +1,27 @@
+"""
+Test Rest API endpoints for retrieving content comments.
+"""
+
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.registry.interfaces import IRegistry
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi import testing
 from plone.restapi.testing import RelativeSession
 from zope.component import getUtility
 
 import transaction
-import unittest
 
 
-class TestCommentsEndpoint(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestCommentsEndpoint(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for retrieving content comments.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
-        self.portal_url = self.portal.absolute_url()
+        """
+        Create content and users to test against.
+        """
+        super().setUp()
 
         # Allow discussion
         registry = getUtility(IRegistry)
@@ -40,21 +42,12 @@ class TestCommentsEndpoint(unittest.TestCase):
 
         api.user.create(username="jos", password="josjos", email="jos@plone.org")
 
-        # Admin session
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-
         # User session
         self.user_session = RelativeSession(self.portal_url, test=self)
         self.user_session.headers.update({"Accept": "application/json"})
         self.user_session.auth = ("jos", "jos")
 
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
-        self.user_session.close()
 
     def test_list_datastructure(self):
         url = f"{self.doc.absolute_url()}/@comments"

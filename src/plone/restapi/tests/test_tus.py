@@ -1,13 +1,17 @@
+"""
+Test Rest API handling of TUS uploading in the browser.
+"""
+
 from base64 import b64encode
 from DateTime import DateTime
 from io import BytesIO
 from OFS.interfaces import IObjectWillBeAddedEvent
 from plone import api
-from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.rest.cors import CORSPolicy
 from plone.rest.interfaces import ICORSPolicy
+from plone.restapi import testing
 from plone.restapi.services.content.tus import TUSUpload
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -50,24 +54,22 @@ def _prepare_metadata(filename, content_type):
     )
 
 
-class TestTUS(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestTUS(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API handling of TUS uploads in the browser.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        login(self.portal, SITE_OWNER_NAME)
+        """
+        Create content to test against.
+        """
+        super().setUp()
 
         self.folder = api.content.create(
             container=self.portal, type="Folder", id="testfolder", title="Testfolder"
         )
         self.upload_url = f"{self.folder.absolute_url()}/@tus-upload"
         transaction.commit()
-
-        self.api_session = RelativeSession(self.portal.absolute_url(), test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
     def get_tus_uid_from_url(self, url):
         uid = url.rsplit("/", 1)[-1]
@@ -542,7 +544,6 @@ class TestTUS(unittest.TestCase):
         sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
 
     def tearDown(self):
-        self.api_session.close()
         client_home = os.environ.get("CLIENT_HOME")
         tmp_dir = os.path.join(client_home, "tus-uploads")
         if os.path.isdir(tmp_dir):
@@ -567,18 +568,20 @@ class CORSTestPolicy(CORSPolicy):
     max_age = 3600
 
 
-class TestTUSUploadWithCORS(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestTUSUploadWithCORS(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API handling of CORS for TUS uploads in the browser.
+    """
 
     def setUp(self):
+        """
+        Register a CORS policy to test against.
+        """
+        super().setUp()
+
         provideAdapter(
             CORSTestPolicy, adapts=(Interface, IBrowserRequest), provides=ICORSPolicy
         )
-        self.portal = self.layer["portal"]
-        self.api_session = RelativeSession(self.portal.absolute_url(), test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         self.upload_url = f"{self.portal.absolute_url()}/@tus-upload"
 
     def test_cors_preflight_for_post_contains_tus_headers(self):

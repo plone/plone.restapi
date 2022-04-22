@@ -1,3 +1,7 @@
+"""
+Test the content serializer used internally in the Rest API.
+"""
+
 from DateTime import DateTime
 from importlib import import_module
 from plone.app.testing import setRoles
@@ -6,7 +10,7 @@ from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi import testing
 from plone.scale import storage
 from Products.CMFCore.utils import getToolByName
 from unittest.mock import patch
@@ -22,16 +26,18 @@ HAS_PLONE_6 = getattr(
 )
 
 
-class TestSerializeToJsonAdapter(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestSerializeToJsonAdapter(testing.PloneRestAPITestCase):
+    """
+    Test the content serializer used internally in the Rest API.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create content to test against.
+        """
+        super().setUp()
+
         self.workflowTool = getToolByName(self.portal, "portal_workflow")
-        self.portal_url = self.portal.absolute_url()
         self.portal.invokeFactory("Document", id="doc1", title="Document 1")
         self.portal.invokeFactory(
             "DXTestDocument", id="dxdoc", title="DX Test Document"

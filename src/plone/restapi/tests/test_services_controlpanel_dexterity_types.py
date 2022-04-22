@@ -1,29 +1,14 @@
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
-import unittest
+"""
+Test Rest API endpoints for managing Dexterity content types.
+"""
+
+from plone.restapi import testing
 
 
-class TestDexterityTypesControlpanel(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-
-    def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-
-    def tearDown(self):
-        self.api_session.close()
+class TestDexterityTypesControlpanel(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for managing Dexterity content types.
+    """
 
     def test_controlpanels_dexterity_types_get(self):
         response = self.api_session.get("/@controlpanels/dexterity-types")

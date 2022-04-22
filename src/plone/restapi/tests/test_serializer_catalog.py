@@ -1,10 +1,14 @@
+"""
+Test the catalog serializer used internally in the Rest API.
+"""
+
 from DateTime import DateTime
 from pkg_resources import get_distribution
 from pkg_resources import parse_version
 from plone.dexterity.utils import createContentInContainer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi import testing
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
@@ -17,14 +21,17 @@ HAS_PLONE_6 = parse_version(
 ) >= parse_version("6.0.0a1")
 
 
-class TestCatalogSerializers(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestCatalogSerializers(testing.PloneRestAPITestCase):
+    """
+    Test the catalog serializer used internally in the Rest API.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.request = self.portal.REQUEST
+        """
+        Create content to test against.
+        """
+        super().setUp()
+
         self.catalog = getToolByName(self.portal, "portal_catalog")
 
         # /plone/my-folder

@@ -1,18 +1,24 @@
+"""
+Test the Rest API JWT token PluggableAuthService (PAS) plugin.
+"""
+
 from plone.keyring.interfaces import IKeyManager
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi import testing
 from Products.CMFCore.utils import getToolByName
 from zope.component import getUtility
 
-import unittest
 
-
-class TestJWTAuthenticationPlugin(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestJWTAuthenticationPlugin(testing.PloneRestAPITestCase):
+    """
+    Test the Rest API JWT token PluggableAuthService (PAS) plugin.
+    """
 
     def setUp(self):
+        """
+        Capture convenience references.
+        """
+        super().setUp()
 
-        self.portal = self.layer["portal"]
         uf = getToolByName(self.portal, "acl_users")
         self.plugin = uf["jwt_auth"]
 

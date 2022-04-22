@@ -1,24 +1,29 @@
-from plone.app.testing import login
+"""
+Test the Rest API handling of profile tiles in blocks.
+"""
+
 from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.behaviors import IBlocks
+from plone.restapi import testing
 from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
 
-import unittest
 
-
-class TestProfileBlocks(unittest.TestCase):
+class TestProfileBlocks(testing.PloneRestAPILoggedInTestCase):
+    """
+    Test the Rest API handling of profile tiles in blocks.
+    """
 
     layer = PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
+        """
+        Make the test user a normal portal member without elevated permissions.
+        """
+        super().setUp()
+
         setRoles(self.portal, TEST_USER_ID, ["Member"])
-        login(self.portal, SITE_OWNER_NAME)
 
     def test_document_type_has_blocks_behavior_enabled(self):
         self.portal.invokeFactory(

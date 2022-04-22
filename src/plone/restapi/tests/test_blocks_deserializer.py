@@ -1,9 +1,13 @@
+"""
+Test the blocks deserializer.
+"""
+
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
+from plone.restapi import testing
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.interfaces import IBlockFieldDeserializationTransformer
+from plone.restapi.interfaces import IBlockFieldDeserializationTransformer  # type: ignore
 from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.uuid.interfaces import IUUID
 from zope.component import adapter
 from zope.component import getGlobalSiteManager
@@ -14,17 +18,18 @@ from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import json
-import unittest
 
 
-class TestBlocksDeserializer(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestBlocksDeserializer(testing.PloneRestAPITestCase):
+    """
+    Test the blocks deserializer.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Set up a content type and instance to test against.
+        """
+        super().setUp()
 
         fti = queryUtility(IDexterityFTI, name="Document")
         behavior_list = [a for a in fti.behaviors]

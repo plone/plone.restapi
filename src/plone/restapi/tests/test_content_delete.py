@@ -1,17 +1,19 @@
+"""
+Test API support for deleting content.
+"""
+
 from pkg_resources import get_distribution
 from pkg_resources import parse_version
-from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi import testing
 
 import requests
 import transaction
-import unittest
 
 
 linkintegrity_version = get_distribution("plone.app.linkintegrity").version
@@ -21,14 +23,19 @@ else:
     NEW_LINKINTEGRITY = False
 
 
-class TestContentDelete(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestContentDelete(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test API support for deleting content.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
+
         setRoles(self.portal, TEST_USER_ID, ["Member"])
-        login(self.portal, SITE_OWNER_NAME)
+
         self.doc1 = self.portal[
             self.portal.invokeFactory("Document", id="doc1", title="My Document")
         ]

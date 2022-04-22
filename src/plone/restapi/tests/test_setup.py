@@ -1,20 +1,17 @@
+"""
+Test add-on installation.
+"""
+
 from plone.browserlayer.utils import registered_layers
 from plone.restapi import PROJECT_NAME
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-
-import unittest
-
-
+from plone.restapi import testing
 from Products.CMFPlone.utils import get_installer
 
 
-class TestInstall(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
-
-    def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
+class TestInstall(testing.PloneRestAPITestCase):
+    """
+    Test add-on installation.
+    """
 
     def test_product_is_installed(self):
         """Validate that our products GS profile has been run and the product
@@ -25,13 +22,16 @@ class TestInstall(unittest.TestCase):
         self.assertTrue(installed, "package appears not to have been installed")
 
 
-class TestUninstall(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestUninstall(testing.PloneRestAPITestCase):
+    """
+    Test add-on uninstallation.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
+        """
+        Uninstall this add-on to test against that state.
+        """
+        super().setUp()
 
         qi = get_installer(self.portal)
         qi.uninstall_product(PROJECT_NAME)

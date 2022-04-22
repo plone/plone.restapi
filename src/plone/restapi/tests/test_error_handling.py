@@ -1,9 +1,8 @@
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
+"""
+Test error handling in the Rest API.
+"""
+
+from plone.restapi import testing
 from Products.Five.browser import BrowserView
 from zope.component import provideAdapter
 from zope.interface import Interface
@@ -27,21 +26,17 @@ class InternalServerErrorView(BrowserView):
         )
 
 
-class TestErrorHandling(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestErrorHandling(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test error handling in the Rest API.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.request = self.layer["request"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
+        """
+        Create content instances to test against.
+        """
+        super().setUp()
 
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
         self.portal.invokeFactory("Document", id="document1")
         self.document = self.portal.document1
         self.document_url = self.document.absolute_url()
@@ -49,9 +44,6 @@ class TestErrorHandling(unittest.TestCase):
         self.folder = self.portal.folder1
         self.folder_url = self.folder.absolute_url()
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     @unittest.skip("Not working since we moved to plone.rest")
     def test_404_not_found(self):
@@ -87,8 +79,6 @@ class TestErrorHandling(unittest.TestCase):
             provides=Interface,
             name="internal_server_error",
         )
-        import transaction
-
         transaction.commit()
 
         response = self.api_session.get("internal_server_error")

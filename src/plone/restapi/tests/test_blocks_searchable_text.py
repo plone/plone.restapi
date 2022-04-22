@@ -1,14 +1,13 @@
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
+"""
+Test indexing of text inside blocks.
+"""
+
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
 from plone.dexterity.utils import createContentInContainer
+from plone.restapi import testing
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IBlockSearchableText
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
 from zope.component import adapter
 from zope.component import provideAdapter
 from zope.component import queryUtility
@@ -16,22 +15,18 @@ from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
 import transaction
-import unittest
 
 
-class TestSearchTextInBlocks(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestSearchTextInBlocks(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test indexing of text inside blocks.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        """
+        Enable the blocks behavior for a content type and instance.
+        """
+        super().setUp()
 
         fti = queryUtility(IDexterityFTI, name="Document")
         behavior_list = [a for a in fti.behaviors]
@@ -42,9 +37,6 @@ class TestSearchTextInBlocks(unittest.TestCase):
             self.portal, "Document", id="doc", title="A document"
         )
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     def test_search_text(self):
         response = self.api_session.patch(

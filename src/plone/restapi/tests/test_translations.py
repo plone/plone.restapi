@@ -1,10 +1,14 @@
+"""
+Test Rest API of content translation.
+"""
+
 from plone import api
-from plone.app.testing import login
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.dexterity.utils import createContentInContainer
 from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
 from plone.app.multilingual.interfaces import ITranslationManager
+from plone.restapi import testing
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING
 from Products.CMFPlone.interfaces import ILanguage
@@ -14,18 +18,22 @@ from zope.interface import alsoProvides
 
 import requests
 import transaction
-import unittest
 
 
-class TestTranslationInfo(unittest.TestCase):
+class TestTranslationInfo(testing.PloneRestAPITestCase):
+    """
+    Test Rest API handling of content translation.
+    """
 
     layer = PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create translated content to test against.
+        """
+        super().setUp()
+
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
-        login(self.portal, SITE_OWNER_NAME)
         self.en_content = createContentInContainer(
             self.portal["en"], "Document", title="Test document"
         )
@@ -65,14 +73,20 @@ class TestTranslationInfo(unittest.TestCase):
         self.assertEqual(4, len(info["root"]))
 
 
-class TestLinkContentsAsTranslations(unittest.TestCase):
+class TestLinkContentsAsTranslations(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API of content translation in the browser.
+    """
+
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create translated content to test against.
+        """
+        super().setUp()
+
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
-        login(self.portal, SITE_OWNER_NAME)
         self.en_content = createContentInContainer(
             self.portal["en"], "Document", title="Test document"
         )
@@ -225,14 +239,20 @@ class TestLinkContentsAsTranslations(unittest.TestCase):
         )
 
 
-class TestUnLinkContentTranslations(unittest.TestCase):
+class TestUnLinkContentTranslations(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API handling of unlinked content translation.
+    """
+
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create translated content to test against.
+        """
+        super().setUp()
+
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
-        login(self.portal, SITE_OWNER_NAME)
         self.en_content = createContentInContainer(
             self.portal["en"], "Document", title="Test document"
         )
@@ -290,14 +310,20 @@ class TestUnLinkContentTranslations(unittest.TestCase):
         )
 
 
-class TestCreateContentsAsTranslations(unittest.TestCase):
+class TestCreateContentsAsTranslations(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API handling of content created as a translation.
+    """
+
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create translated content to test against.
+        """
+        super().setUp()
+
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
-        login(self.portal, SITE_OWNER_NAME)
         self.es_content = createContentInContainer(
             self.portal["es"], "Document", title="Test document"
         )
@@ -329,15 +355,20 @@ class TestCreateContentsAsTranslations(unittest.TestCase):
         self.assertEqual("My Document DE", response.json().get("title"))
 
 
-class TestTranslationLocator(unittest.TestCase):
+class TestTranslationLocator(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API handling of loacles for translated content.
+    """
+
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        self.request = self.layer["request"]
+        """
+        Create translated content to test against.
+        """
+        super().setUp()
+
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
-        login(self.portal, SITE_OWNER_NAME)
         self.es_content = createContentInContainer(
             self.portal["es"], "Document", title="Test document"
         )
@@ -354,3 +385,5 @@ class TestTranslationLocator(unittest.TestCase):
         self.assertEqual(200, response.status_code)
 
         self.assertEqual(self.portal_url + "/de", response.json().get("@id"))
+
+import unittest

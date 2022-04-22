@@ -1,16 +1,16 @@
+"""
+Test Rest API handling of add-on profile upgrades.
+"""
+
 from plone.app.upgrade.utils import loadMigrationProfile
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi import testing
 from Products.CMFCore.utils import getToolByName
-from unittest import TestCase
 
 
-class TestUpgrades(TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
-
-    def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+class TestUpgrades(testing.PloneRestAPITestCase):
+    """
+    Test Rest API handling of add-on profile upgrades.
+    """
 
     def test_migration_profile_to_0002_can_be_loaded(self):
         loadMigrationProfile(self.portal, "profile-plone.restapi.upgrades:0002")
@@ -40,3 +40,5 @@ class TestUpgrades(TestCase):
         portal_setup = getToolByName(self.portal, "portal_setup")
         rename_tiles_to_blocks(portal_setup)
         self.assertTrue(True)
+
+import unittest

@@ -1,26 +1,26 @@
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
+"""
+Test Rest API endpoints for sending email.
+"""
+
 from plone.registry.interfaces import IRegistry
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi import testing
 from plone.restapi.testing import RelativeSession
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getUtility
 
 import transaction
-import unittest
 
 
-class EmailSendEndpoint(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class EmailSendEndpoint(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for sending email.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        """
+        Set registry records needed to test sending mail.
+        """
+        super().setUp()
 
         self.mailhost = getUtility(IMailHost)
 
@@ -28,17 +28,10 @@ class EmailSendEndpoint(unittest.TestCase):
         registry["plone.email_from_address"] = "info@plone.org"
         registry["plone.email_from_name"] = "Plone test site"
 
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         self.anon_api_session = RelativeSession(self.portal_url, test=self)
         self.anon_api_session.headers.update({"Accept": "application/json"})
 
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
-        self.anon_api_session.close()
 
     def test_email_send(self):
         response = self.api_session.post(

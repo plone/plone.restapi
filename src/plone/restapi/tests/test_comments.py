@@ -1,3 +1,7 @@
+"""
+Test support for comments in the API.
+"""
+
 from OFS.Image import Image
 from plone import api
 from plone.app.discussion.interfaces import IConversation
@@ -6,25 +10,26 @@ from plone.app.discussion.interfaces import IReplies
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.registry.interfaces import IRegistry
+from plone.restapi import testing
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
 from Products.PlonePAS.tests import dummy
-from unittest import TestCase
 from zope.component import createObject
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component import queryUtility
 
 
-class TestCommentsSerializers(TestCase):
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestCommentsSerializers(testing.PloneRestAPITestCase):
+    """
+    Test support for comments in the API.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
-        self.portal_url = self.portal.absolute_url()
+        """
+        Enable commenting and create and instance with some comments.
+        """
+        super().setUp()
 
         # Allow discussion
         registry = getUtility(IRegistry)

@@ -1,20 +1,20 @@
+"""
+Test the authentication API endpoints.
+"""
+
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.restapi import testing
 from plone.restapi.permissions import UseRESTAPI
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from unittest import TestCase
 from zExceptions import Unauthorized
 from zope.event import notify
 from ZPublisher.pubevents import PubStart
 
 
-class TestLogin(TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
-
-    def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+class TestLogin(testing.PloneRestAPITestCase):
+    """
+    Test the login API endpoint.
+    """
 
     def traverse(self, path="/plone/@login", accept="application/json", method="POST"):
         request = self.layer["request"]
@@ -101,13 +101,10 @@ class TestLogin(TestCase):
         self.assertIn("token", res)
 
 
-class TestLogout(TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
-
-    def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+class TestLogout(testing.PloneRestAPITestCase):
+    """
+    Test the logout API endpoint.
+    """
 
     def traverse(self, path="/plone/@logout", accept="application/json", method="POST"):
         request = self.layer["request"]
@@ -152,13 +149,10 @@ class TestLogout(TestCase):
         self.assertEqual(200, self.request.response.getStatus())
 
 
-class TestRenew(TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
-
-    def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+class TestRenew(testing.PloneRestAPITestCase):
+    """
+    Test the JWT token renewal API endpoint.
+    """
 
     def traverse(
         self, path="/plone/@login-renew", accept="application/json", method="POST"

@@ -1,3 +1,7 @@
+"""
+Test Rest API support for serializing Dexterity fields.
+"""
+
 from datetime import date
 from datetime import datetime
 from datetime import time
@@ -10,9 +14,9 @@ from plone.namedfile.file import NamedBlobFile
 from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.namedfile.file import NamedImage
+from plone.restapi import testing
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.scale import storage
 from plone.uuid.interfaces import IUUID
 from unittest import TestCase
@@ -29,13 +33,18 @@ HAS_PLONE_6 = getattr(
 )
 
 
-class TestDexterityFieldSerializing(TestCase):
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestDexterityFieldSerializing(testing.PloneRestAPITestCase):
+    """
+    Test Rest API support for serializing Dexterity fields.
+    """
+
     maxDiff = None
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
 
         self.doc1 = self.portal[
             self.portal.invokeFactory(
@@ -355,13 +364,18 @@ class TestDexterityFieldSerializing(TestCase):
         self.assertEqual(serializer(), "/doc2")
 
 
-class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestDexterityImageFieldSerializingOriginalAndPNGScales(testing.PloneRestAPITestCase):
+    """
+    Test Rest API support for serializing Dexterity fields.
+    """
+
     maxDiff = None
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
 
         self.doc1 = self.portal[
             self.portal.invokeFactory(

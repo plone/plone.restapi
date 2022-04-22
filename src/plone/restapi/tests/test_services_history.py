@@ -1,31 +1,27 @@
+"""
+Test Rest API endpoints for retrieving content history.
+"""
+
 from plone import api
-from plone.app.testing import login
 from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
+from plone.restapi import testing
 
 import transaction
-import unittest
 
 
-class TestHistoryEndpoint(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestHistoryEndpoint(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for retrieving content history.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        """
+        Create content to test against.
+        """
+        super().setUp()
 
         self.portal.invokeFactory(
             "Document", id="doc_with_history", title="My Document"
@@ -38,9 +34,6 @@ class TestHistoryEndpoint(unittest.TestCase):
         self.endpoint_url = f"{self.doc.absolute_url()}/@history"
 
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     def test_get_types(self):
         # Check if we have all history types in our test setup
@@ -125,9 +118,10 @@ class TestHistoryEndpoint(unittest.TestCase):
         self.assertNotIn("sharing", response.json())
 
 
-class TestHistoryEndpointEmptyOrInacessibleHistory(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestHistoryEndpointEmptyOrInacessibleHistory(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for retrieving empty content history.
+    """
 
     def _disable_auto_versioning(self, content_type):
         portal_repository = self.portal.portal_repository
@@ -137,10 +131,10 @@ class TestHistoryEndpointEmptyOrInacessibleHistory(unittest.TestCase):
         portal_repository.removePolicyFromContentType(content_type, "version_on_revert")
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-
-        login(self.portal, SITE_OWNER_NAME)
+        """
+        Create content to test against.
+        """
+        super().setUp()
 
         # disabling auto versioning is necessary to have an empty revision
         # history
@@ -153,15 +147,10 @@ class TestHistoryEndpointEmptyOrInacessibleHistory(unittest.TestCase):
         api.content.transition(self.doc, "publish")
         self.endpoint_url = f"{self.doc.absolute_url()}/@history"
 
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
         # forbid access to `workflowHistory`
         setRoles(self.portal, TEST_USER_ID, ["Reader", "Contributor"])
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     def test_empty_or_inaccessible_full_history_returns_empty_list(self):
         url = self.doc.absolute_url() + "/@history"
@@ -169,19 +158,18 @@ class TestHistoryEndpointEmptyOrInacessibleHistory(unittest.TestCase):
         self.assertEqual([], response.json())
 
 
-class TestHistoryEndpointTranslatedMessages(unittest.TestCase):
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestHistoryEndpointTranslatedMessages(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for retrieving content history with translation.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        """
+        Create content to test against.
+        """
+        super().setUp()
 
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.headers.update({"Accept-Language": "es"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
         self.portal.invokeFactory(
             "Document", id="doc_with_history", title="My Document"
@@ -194,9 +182,6 @@ class TestHistoryEndpointTranslatedMessages(unittest.TestCase):
         self.endpoint_url = f"{self.doc.absolute_url()}/@history"
 
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     def test_actions_are_translated(self):
         url = self.doc.absolute_url() + "/@history"

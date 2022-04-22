@@ -1,10 +1,14 @@
+"""
+Test the blocks serializer.
+"""
+
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.interfaces import IDexterityItem
 from plone.dexterity.utils import iterSchemata
+from plone.restapi import testing
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.uuid.interfaces import IUUID
 from z3c.form.interfaces import IDataManager
 from zope.component import adapter
@@ -15,17 +19,17 @@ from zope.component import queryUtility
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
-import unittest
 
-
-class TestBlocksSerializer(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestBlocksSerializer(testing.PloneRestAPITestCase):
+    """
+    Test the blocks serializer.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Enable the blocks behavior for a content type and instance.
+        """
+        super().setUp()
 
         fti = queryUtility(IDexterityFTI, name="Document")
         behavior_list = [a for a in fti.behaviors]

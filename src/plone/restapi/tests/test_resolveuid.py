@@ -1,4 +1,7 @@
-from plone.app.testing import login
+"""
+Test Rest API support for resolving UIDs.
+"""
+
 from plone.app.testing import logout
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -9,11 +12,11 @@ from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.interfaces import IFieldSerializer
+from plone.restapi import testing
 from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
-from unittest import TestCase
 from z3c.form.interfaces import IDataManager
 from zope.component import getMultiAdapter
 
@@ -22,16 +25,21 @@ import requests
 import transaction
 
 
-class TestBlocksResolveUIDFunctional(TestCase):
+class TestBlocksResolveUIDFunctional(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API support for resolving UIDs.
+    """
 
     layer = PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
+        """
+        Create content instances to test against.
+        """
+        super().setUp()
+
         setRoles(self.portal, TEST_USER_ID, ["Member"])
-        login(self.portal, SITE_OWNER_NAME)
+
         self.portal.invokeFactory("Folder", id="folder1", title="My Folder")
         self.portal.invokeFactory("Document", id="target", title="Link Target")
         wftool = getToolByName(self.portal, "portal_workflow")
@@ -201,13 +209,19 @@ class TestBlocksResolveUIDFunctional(TestCase):
         )
 
 
-class TestBlocksResolveUID(TestCase):
+class TestBlocksResolveUID(testing.PloneRestAPITestCase):
+    """
+    Test Rest API internal support for resolving UIDs.
+    """
+
     layer = PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
     maxDiff = None
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create content instances to test against.
+        """
+        super().setUp()
 
         self.doc1 = self.portal[
             self.portal.invokeFactory(

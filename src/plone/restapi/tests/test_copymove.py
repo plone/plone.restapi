@@ -1,11 +1,15 @@
+"""
+Test Rest API support for copying and moving content.
+"""
+
 from base64 import b64encode
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.restapi import testing
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.testing import RelativeSession
 from zope.event import notify
 from ZPublisher.pubevents import PubStart
@@ -14,14 +18,17 @@ import transaction
 import unittest
 
 
-class TestCopyMove(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestCopyMove(testing.PloneRestAPILoggedInTestCase):
+    """
+    Test Rest API service support for copying and moving content.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        """
+        Create content instances to test against.
+        """
+        super().setUp()
+
         self.doc1 = self.portal[
             self.portal.invokeFactory("Document", id="doc1", title="My Document")
         ]
@@ -59,15 +66,17 @@ class TestCopyMove(unittest.TestCase):
         self.assertEqual(self.doc1, obj)
 
 
-class TestCopyMoveFunctional(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestCopyMoveFunctional(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for copying and moving content.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        """
+        Create content instances to test against.
+        """
+        super().setUp()
+
         self.doc1 = self.portal[
             self.portal.invokeFactory("Document", id="doc1", title="My Document")
         ]
@@ -82,14 +91,7 @@ class TestCopyMoveFunctional(unittest.TestCase):
             email="memberuser@example.com", username="memberuser", password="secret"
         )
 
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
-
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     def test_copy_single_object(self):
         response = self.api_session.post(

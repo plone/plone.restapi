@@ -1,3 +1,7 @@
+"""
+Test Rest API support for serializing Dexterity content.
+"""
+
 from datetime import date
 from datetime import datetime
 from datetime import time
@@ -13,9 +17,9 @@ from plone.app.textfield.interfaces import ITransformer
 from plone.app.textfield.value import RichTextValue
 from plone.namedfile.file import NamedFile
 from plone.registry.interfaces import IRegistry
+from plone.restapi import testing
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.test_expansion import ExpandableElementFoo
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
@@ -46,13 +50,16 @@ class AdapterCM:
         self.gsm.unregisterAdapter(self.adapter, self.from_, self.provides)
 
 
-class TestDXContentSerializer(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestDXContentSerializer(testing.PloneRestAPITestCase):
+    """
+    Test Rest API support for serializing Dexterity content.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
 
         richtext_value = RichTextValue("Käfer", "text/plain", "text/html")
 
@@ -573,13 +580,16 @@ class TestDXContentSerializer(unittest.TestCase):
         self.assertEqual(False, obj["allow_discussion"])
 
 
-class TestDXContentPrimaryFieldTargetUrl(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestDXContentPrimaryFieldTargetUrl(testing.PloneRestAPITestCase):
+    """
+    Test Rest API support for primary fields in Dexterity content.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create content instances to test against.
+        """
+        super().setUp()
 
         self.portal.invokeFactory(
             "DXTestDocument",

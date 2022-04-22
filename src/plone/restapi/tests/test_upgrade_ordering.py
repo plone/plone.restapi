@@ -1,20 +1,25 @@
+"""
+Test Rest API handling folder ordering upgrades.
+"""
+
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi import testing
 from plone.restapi.upgrades.ordering import (
     ensure_child_ordering_object_ids_are_native_strings,
 )
 
-import unittest
 
-
-class TestUpgradeOrdering(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestUpgradeOrdering(testing.PloneRestAPITestCase):
+    """
+    Test Rest API handling folder ordering upgrades.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create content instances to test against.
+        """
+        super().setUp()
 
         self.folder = self.portal[
             self.portal.invokeFactory("Folder", id="folder1", title="Folder")

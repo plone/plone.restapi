@@ -1,31 +1,27 @@
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
+
+"""
+Test Rest API endpoints for `plone.app.registry`.
+"""
+
 from plone.registry import field
 from plone.registry.interfaces import IRegistry
 from plone.registry.record import Record
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
+from plone.restapi import testing
 from zope.component import getUtility
 
 import transaction
-import unittest
 
 
-class TestRegistry(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestRegistry(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for `plone.app.registry`.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        """
+        Create registry records to test against.
+        """
+        super().setUp()
 
         registry = getUtility(IRegistry)
         record = Record(field.TextLine(title="Foo Bar"), "Lorem Ipsum")

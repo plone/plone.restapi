@@ -1,43 +1,33 @@
+"""
+Test Rest API endpoints for retrieving navigation breadcrumbs.
+"""
+
 from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
 from plone.app.multilingual.interfaces import ITranslationManager
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+from plone.restapi import testing
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
 from zope.interface import alsoProvides
-from plone.app.testing import login
-
 
 import transaction
-import unittest
 
 
-class TestServicesBreadcrumbs(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestServicesBreadcrumbs(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for retrieving navigation breadcrumbs.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        """
+        Create content to test against.
+        """
+        super().setUp()
 
         self.folder = createContentInContainer(
             self.portal, "Folder", id="folder", title="Some Folder"
         )
         createContentInContainer(self.folder, "Document", id="doc1", title="A document")
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     def test_breadcrumbs(self):
         response = self.api_session.get("/folder/doc1/@breadcrumbs")
@@ -62,21 +52,20 @@ class TestServicesBreadcrumbs(unittest.TestCase):
         )
 
 
-class TestServicesMultilingualBreadcrumbs(unittest.TestCase):
+class TestServicesMultilingualBreadcrumbs(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for retrieving navigation breadcrumbs.
+    """
 
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        self.request = self.layer["request"]
-
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        """
+        Create content to test against.
+        """
+        super().setUp()
 
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
-        login(self.portal, SITE_OWNER_NAME)
         self.en_content = createContentInContainer(
             self.portal["en"], "Document", title="Test document"
         )
@@ -89,9 +78,6 @@ class TestServicesMultilingualBreadcrumbs(unittest.TestCase):
         )
         createContentInContainer(self.folder, "Document", id="doc1", title="A document")
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     def test_breadcrumbs_multilingual(self):
         response = self.api_session.get("/es/folder/doc1/@breadcrumbs")

@@ -1,20 +1,22 @@
+"""
+Test Rest API endpoints for managing local roles.
+"""
+
 from Acquisition import aq_base
-from plone import api
-from plone.app.testing import login
+from plone import api  # type: ignore
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
+from plone.restapi import testing
 from plone.restapi.serializer.local_roles import SerializeLocalRolesToJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from Products.CMFCore.utils import getToolByName
 from zope.component import getGlobalSiteManager
 
 import requests
 import transaction
-import unittest
 
 
 def sorted_roles(roles):
@@ -26,15 +28,19 @@ def sorted_roles(roles):
     return results
 
 
-class TestFolderCreate(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestFolderCreate(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for managing local roles.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
+
         setRoles(self.portal, TEST_USER_ID, ["Member"])
-        login(self.portal, SITE_OWNER_NAME)
+
         self.portal.invokeFactory("Folder", id="folder1", title="My Folder")
         wftool = getToolByName(self.portal, "portal_workflow")
         wftool.doActionFor(self.portal.folder1, "publish")

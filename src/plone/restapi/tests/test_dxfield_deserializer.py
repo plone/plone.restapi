@@ -1,3 +1,7 @@
+"""
+Test Rest API support for serializing and deserializing Dexterity fields.
+"""
+
 from datetime import date
 from datetime import datetime
 from datetime import time
@@ -6,8 +10,8 @@ from decimal import Decimal
 from plone import namedfile
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import iterSchemata
+from plone.restapi import testing
 from plone.restapi.interfaces import IFieldDeserializer
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.dxtypes import IDXTestDocumentSchema
 from plone.uuid.interfaces import IUUID
 from pytz import timezone
@@ -16,8 +20,6 @@ from zope.schema import Field
 from zope.schema._bootstrapinterfaces import RequiredMissing
 from zope.schema.interfaces import ConstraintNotSatisfied
 from zope.schema.interfaces import ValidationError
-
-import unittest
 
 
 class RequiredField:
@@ -34,13 +36,16 @@ class RequiredField:
         self.field.required = self.old_state
 
 
-class TestDXFieldDeserializer(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestDXFieldDeserializer(testing.PloneRestAPITestCase):
+    """
+    Test Rest API support for deserializing Dexterity fields.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
 
         self.portal.invokeFactory("DXTestDocument", id="doc1", title="Test Document")
 

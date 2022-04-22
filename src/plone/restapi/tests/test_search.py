@@ -1,3 +1,7 @@
+"""
+Test Rest API endpoints for searching the catalog.
+"""
+
 from datetime import date
 from DateTime import DateTime
 from pkg_resources import get_distribution
@@ -5,13 +9,11 @@ from pkg_resources import parse_version
 from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.layout.navigation.interfaces import INavigationRoot
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app import testing as pa_testing
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
+from plone.restapi import testing
 from plone.restapi.tests.helpers import result_paths
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
@@ -20,7 +22,6 @@ from zope.interface import alsoProvides
 from zope.interface import noLongerProvides
 
 import transaction
-import unittest
 
 
 HAS_PLONE_6 = parse_version(
@@ -28,20 +29,19 @@ HAS_PLONE_6 = parse_version(
 ) >= parse_version("6.0.0a1")
 
 
-class TestSearchFunctional(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestSearchFunctional(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for searching the catalog.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        self.request = self.portal.REQUEST
-        self.catalog = getToolByName(self.portal, "portal_catalog")
+        """
+        Create users and content to test against.
+        """
+        super().setUp()
+        pa_testing.login(self.portal, pa_testing.TEST_USER_NAME)
 
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        self.catalog = getToolByName(self.portal, "portal_catalog")
 
         api.user.create(
             email="editor@example.com",
@@ -124,9 +124,6 @@ class TestSearchFunctional(unittest.TestCase):
         )
 
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     def test_overall_response_format(self):
         response = self.api_session.get("/@search")

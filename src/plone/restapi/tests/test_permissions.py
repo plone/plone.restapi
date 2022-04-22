@@ -1,30 +1,29 @@
+"""
+Test Rest API handling of authenticated user permissions.
+"""
+
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.permissions import UseRESTAPI
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
+from plone.restapi import testing
 
 import transaction
-import unittest
 
 
-class TestPermissions(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestPermissions(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API handling of authenticated user permissions.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
+        """
+        Log the browser session in as the normal test user.
+        """
+        super().setUp()
 
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
-
-    def tearDown(self):
-        self.api_session.close()
 
     def test_anonymous_allowed_to_use_api_by_default(self):
         setRoles(self.portal, TEST_USER_ID, ["Anonymous"])

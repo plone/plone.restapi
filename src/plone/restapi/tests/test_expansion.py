@@ -1,16 +1,14 @@
+"""
+Test Rest API support for expanding variables.
+"""
+
 from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
 from plone.app.multilingual.interfaces import ITranslationManager
-from plone.app.testing import login
-from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
-from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
+from plone.restapi import testing
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.expansion import expandable_elements
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
 from zope.component import getGlobalSiteManager
 from zope.component import provideAdapter
 from zope.interface import alsoProvides
@@ -105,27 +103,21 @@ class TestExpansion(unittest.TestCase):
         )
 
 
-class TestExpansionFunctional(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestExpansionFunctional(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API support for expanding variables.
+    """
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
 
         self.folder = createContentInContainer(
             self.portal, "Folder", id="folder", title="Some Folder"
         )
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     def test_expanded_marked_as_list(self):
         response = self.api_session.get(
@@ -411,22 +403,20 @@ class TestExpansionFunctional(unittest.TestCase):
         )
 
 
-class TestTranslationExpansionFunctional(unittest.TestCase):
+class TestTranslationExpansionFunctional(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API support for translations when expanding variables.
+    """
 
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        """
+        Create content instances to test against.
+        """
+        super().setUp()
 
         alsoProvides(self.layer["request"], IPloneAppMultilingualInstalled)
-        login(self.portal, SITE_OWNER_NAME)
         self.en_content = createContentInContainer(
             self.portal["en"], "Document", title="Test document"
         )
@@ -439,9 +429,6 @@ class TestTranslationExpansionFunctional(unittest.TestCase):
         ITranslationManager(self.en_content).register_translation("es", self.es_content)
 
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     def test_translations_is_expandable(self):
         response = self.api_session.get("/en/test-document")

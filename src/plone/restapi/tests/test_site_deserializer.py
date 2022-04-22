@@ -1,8 +1,12 @@
+"""
+Test the deserializer for the portal root.
+"""
+
 from importlib import import_module
 from plone.dexterity.interfaces import IDexterityFTI
 from plone.dexterity.schema import SCHEMA_CACHE
 from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi import testing
 from plone.restapi.tests.mixin_ordering import OrderingMixin
 from zope.component import getMultiAdapter
 from zope.component import queryUtility
@@ -15,13 +19,16 @@ HAS_PLONE_6 = getattr(
 )
 
 
-class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestDXContentDeserializer(testing.PloneRestAPITestCase, OrderingMixin):
+    """
+    Test the deserializer for local sites.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Set up a content type and instance to test against.
+        """
+        super().setUp()
 
         # ordering setup
         self.folder = self.portal
@@ -44,13 +51,16 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
         self.assertEqual("my_new_layout", self.portal.getLayout())
 
 
-class TestSiteRootDeserializer(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
+class TestSiteRootDeserializer(testing.PloneRestAPITestCase):
+    """
+    Test the deserializer for the portal root.
+    """
 
     def setUp(self):
-        self.portal = self.layer["portal"]
-        self.request = self.layer["request"]
+        """
+        Create a content instance to test against.
+        """
+        super().setUp()
 
         self.portal.invokeFactory(
             "Document",

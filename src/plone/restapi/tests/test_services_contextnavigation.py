@@ -1,12 +1,13 @@
+"""
+Test Rest API endpoints for retrieving navigation data for specific content.
+"""
+
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.registry.interfaces import IRegistry
 from plone.restapi.services.contextnavigation.get import ContextNavigation
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
+from plone.restapi import testing
 from Products.CMFPlone.tests import dummy
 from urllib.parse import urlencode
 from zope.component import getUtility
@@ -14,7 +15,6 @@ from zope.interface import directlyProvides
 from zope.interface import noLongerProvides
 
 import transaction
-import unittest
 
 
 def opts(**kw):
@@ -25,26 +25,21 @@ def opts(**kw):
     return res
 
 
-class TestServicesContextNavigation(unittest.TestCase):
+class TestServicesContextNavigation(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for retrieving navigation data for specific content.
+    """
 
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
     maxDiff = None
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+        """
+        Create content to test against.
+        """
+        super().setUp()
 
         self.populateSite()
         transaction.commit()
-
-    def tearDown(self):
-        self.api_session.close()
 
     def populateSite(self):
         """

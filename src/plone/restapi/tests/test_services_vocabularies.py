@@ -1,12 +1,13 @@
+"""
+Test Rest API endpoints for retrieving vocabularies.
+"""
+
 from plone import api
 from plone.app.testing import setRoles
-from plone.app.testing import SITE_OWNER_NAME
-from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
-from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
-from plone.restapi.testing import RelativeSession
+from plone.restapi import testing
 from zope.component import getGlobalSiteManager
 from zope.component import provideUtility
 from zope.componentvocabulary.vocabulary import UtilityTerm
@@ -15,7 +16,6 @@ from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
 
 import transaction
-import unittest
 
 
 TEST_TERM_1 = SimpleTerm(42, token="token1", title="Title 1")
@@ -63,21 +63,19 @@ def test_context_vocabulary_factory(context):
     )
 
 
-class TestVocabularyEndpoint(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+class TestVocabularyEndpoint(testing.PloneRestAPIBrowserTestCase):
+    """
+    Test Rest API endpoints for retrieving vocabularies.
+    """
 
     maxDiff = None
 
     def setUp(self):
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        self.portal_url = self.portal.absolute_url()
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        """
+        Register a vocabulary to test against.
+        """
+        super().setUp()
 
-        self.api_session = RelativeSession(self.portal_url, test=self)
-        self.api_session.headers.update({"Accept": "application/json"})
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
         provideUtility(
             test_vocabulary_factory,
             provides=IVocabularyFactory,
@@ -469,7 +467,6 @@ class TestVocabularyEndpoint(unittest.TestCase):
         self.assertEqual(len(response["items"]), 100)
 
     def tearDown(self):
-        self.api_session.close()
         gsm = getGlobalSiteManager()
         gsm.unregisterUtility(
             provided=IVocabularyFactory, name="plone.restapi.tests.test_vocabulary"
