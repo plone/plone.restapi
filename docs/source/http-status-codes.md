@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": ""
+  "property=og:description": ""
+  "property=og:title": ""
+  "keywords": "Plone, plone.restapi, REST, API"
+---
+
 # HTTP Status Codes
 
 This is the list of HTTP status codes that are used in `plone.restapi`.

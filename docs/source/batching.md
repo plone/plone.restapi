@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": ""
+  "property=og:description": ""
+  "property=og:title": ""
+  "keywords": "Plone, plone.restapi, REST, API"
+---
+
 # Batching
 
 Representations of collection-like resources are batched or paginated if the

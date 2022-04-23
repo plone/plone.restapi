@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": ""
+  "property=og:description": ""
+  "property=og:title": ""
+  "keywords": "Plone, plone.restapi, REST, API"
+---
+
 % plone.restapi documentation master file, created by
 % sphinx-quickstart on Mon Apr 28 13:04:12 2014.
 % You can adapt this file completely to your liking, but it should at least

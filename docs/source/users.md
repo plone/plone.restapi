@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": ""
+  "property=og:description": ""
+  "property=og:title": ""
+  "keywords": "Plone, plone.restapi, REST, API"
+---
+
 # Users
 
 Available users in a Plone site can be created, queried, updated, and deleted by interacting with the `/@users` endpoint on portal root.

@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": ""
+  "property=og:description": ""
+  "property=og:title": ""
+  "keywords": "Plone, plone.restapi, REST, API"
+---
+
 # Roles
 
 Available roles in a Plone site can be queried by interacting with the `/@roles` endpoint on the portal root.

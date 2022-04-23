@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": ""
+  "property=og:description": ""
+  "property=og:title": ""
+  "keywords": "Plone, plone.restapi, REST, API"
+---
+
 # TUS resumable upload
 
 `plone.restapi` supports the [TUS Open Protocol](https://tus.io/) for resumable file uploads.

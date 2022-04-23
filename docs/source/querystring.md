@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": ""
+  "property=og:description": ""
+  "property=og:title": ""
+  "keywords": "Plone, plone.restapi, REST, API"
+---
+
 # Querystring
 
 The `@querystring` endpoint returns the `querystring` configuration of `plone.app.querystring`.
