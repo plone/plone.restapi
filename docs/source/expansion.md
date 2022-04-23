@@ -1,7 +1,7 @@
 ---
 html_meta:
-  "description": "Expansion is a mechanism in plone.restapi to embed additional "components"—such as navigation, breadcrumbs, schema, or workflows—within the main content response. This helps the API consumers avoid unnecessary requests."
-  "property=og:description": "Expansion is a mechanism in plone.restapi to embed additional "components"—such as navigation, breadcrumbs, schema, or workflows—within the main content response. This helps the API consumers avoid unnecessary requests."
+  "description": "Expansion is a mechanism in plone.restapi to embed additional components—such as navigation, breadcrumbs, schema, or workflows—within the main content response. This helps the API consumers avoid unnecessary requests."
+  "property=og:description": "Expansion is a mechanism in plone.restapi to embed additional components—such as navigation, breadcrumbs, schema, or workflows—within the main content response. This helps the API consumers avoid unnecessary requests."
   "property=og:title": "Expansion"
   "keywords": "Plone, plone.restapi, REST, API, Expansion"
 ---
