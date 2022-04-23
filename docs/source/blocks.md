@@ -1,18 +1,16 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "The plone.restapi package gives support for Volto blocks providing a Dexterity behavior plone.restapi.behaviors.IBlocks."
+  "property=og:description": "The plone.restapi package gives support for Volto blocks providing a Dexterity behavior plone.restapi.behaviors.IBlocks."
+  "property=og:title": "Volto Blocks support"
+  "keywords": "Plone, plone.restapi, REST, API, Volto, Blocks, support"
 ---
 
 # Volto Blocks support
 
-```{note}
 The `plone.restapi` package gives support for Volto blocks providing a Dexterity behavior `plone.restapi.behaviors.IBlocks`.
 It is used to enable Volto blocks in any content type.
 Volto then renders the blocks engine for all the content types that have this behavior enabled.
-```
 
 
 ## Retrieving blocks on a content object

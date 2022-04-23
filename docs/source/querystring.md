@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "The @querystring endpoint returns the querystring configuration of plone.app.querystring."
+  "property=og:description": "The @querystring endpoint returns the querystring configuration of plone.app.querystring."
+  "property=og:title": "Querystring"
+  "keywords": "Plone, plone.restapi, REST, API, Querystring"
 ---
 
 # Querystring

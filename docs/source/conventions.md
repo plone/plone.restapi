@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "Naming convention for REST API resources and endpoints."
+  "property=og:description": "Naming convention for REST API resources and endpoints."
+  "property=og:title": "Conventions"
+  "keywords": "Plone, plone.restapi, REST, API, Conventions"
 ---
 
 # Conventions

@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "The @database endpoint exposes system information about the Plone database (ZODB)."
+  "property=og:description": "The @database endpoint exposes system information about the Plone database (ZODB)."
+  "property=og:title": "Database"
+  "keywords": "Plone, plone.restapi, REST, API, Database"
 ---
 
 (database)=

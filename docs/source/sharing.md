@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "Plone comes with a sophisticated user management system that allows an administrator to assign users and groups with global roles and permissions. Sharing give users the permission to access or edit a specific part of your website or a specific content object."
+  "property=og:description": "Plone comes with a sophisticated user management system that allows an administrator to assign users and groups with global roles and permissions. Sharing give users the permission to access or edit a specific part of your website or a specific content object."
+  "property=og:title": "Sharing"
+  "keywords": "Plone, plone.restapi, REST, API, Sharing"
 ---
 
 (sharing)=

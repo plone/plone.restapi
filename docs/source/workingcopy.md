@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "Plone has a working copy feature that allows the users to create a working copy of a published or live content object, and work with it until it is ready to be published without having to edit the original object."
+  "property=og:description": "Plone has a working copy feature that allows the users to create a working copy of a published or live content object, and work with it until it is ready to be published without having to edit the original object."
+  "property=og:title": "Working Copy"
+  "keywords": "Plone, plone.restapi, REST, API, Working, Copy"
 ---
 
 # Working Copy

@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "To copy a content object, use the /@copy endpoint at the destination's URL with the source object specified in the request body. Similarly use the /@move endpoint to move an object."
+  "property=og:description": "To copy a content object, use the /@copy endpoint at the destination's URL with the source object specified in the request body. Similarly use the /@move endpoint to move an object."
+  "property=og:title": "Copy and Move"
+  "keywords": "Plone, plone.restapi, REST, API, Copy, Move"
 ---
 
 # Copy and Move

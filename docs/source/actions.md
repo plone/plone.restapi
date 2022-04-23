@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "Portal actions can be used to build UI elements that adapt to the available actions, such as displaying only certain tabs for an authenticated user."
+  "property=og:description": "Portal actions can be used to build UI elements that adapt to the available actions, such as displaying only certain tabs for an authenticated user."
+  "property=og:title": "Portal Actions"
+  "keywords": "Plone, plone.restapi, REST, API, Portal Actions"
 ---
 
 # Portal Actions

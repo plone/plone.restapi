@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "Registry records can be addressed through the @registry endpoint on the Plone site."
+  "property=og:description": "Registry records can be addressed through the @registry endpoint on the Plone site."
+  "property=og:title": "Registry"
+  "keywords": "Plone, plone.restapi, REST, API, Registry"
 ---
 
 # Registry

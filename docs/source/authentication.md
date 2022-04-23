@@ -1,14 +1,14 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "plone.restapi uses PlonePAS for authentication."
+  "property=og:description": "`plone.restapi uses PlonePAS for authentication."
+  "property=og:title": "Authentication"
+  "keywords": "Plone, plone.restapi, REST, API, Authentication, "
 ---
 
 # Authentication
 
-`plone.restapi` uses Plone PAS for authentication.
+`plone.restapi` uses [`PlonePAS`](https://github.com/plone/Products.PlonePAS) for authentication.
 
 That means that any authentication method supported by an installed PAS plugin should work, assuming it's an authentication method that makes sense to use with an API.
 

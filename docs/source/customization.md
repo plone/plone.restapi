@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "Customizing the API with the IFieldSerializer adapter."
+  "property=og:description": "Customizing the API with the IFieldSerializer adapter."
+  "property=og:title": "Customizing the API"
+  "keywords": "Plone, plone.restapi, REST, API, Customizing, IFieldSerializer, adapter"
 ---
 
 # Customizing the API

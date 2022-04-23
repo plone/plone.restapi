@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "Vocabularies are a set of allowed choices that back a particular field, whereas sources are similar but usually too large to be enumerated and should be queried such as through an autocomplete."
+  "property=og:description": "Vocabularies are a set of allowed choices that back a particular field, whereas sources are similar but usually too large to be enumerated and should be queried such as through an autocomplete."
+  "property=og:title": "Vocabularies and Sources"
+  "keywords": "Plone, plone.restapi, REST, API, Vocabularies, Sources"
 ---
 
 (vocabularies)=

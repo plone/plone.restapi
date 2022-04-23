@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "Plone offers to users a feature to post comments on any content object with plone.app.discussion."
+  "property=og:description": "Plone offers to users a feature to post comments on any content object with plone.app.discussion."
+  "property=og:title": "Comments"
+  "keywords": "Plone, plone.restapi, REST, API, Comments, plone.app.discussion"
 ---
 
 # Comments

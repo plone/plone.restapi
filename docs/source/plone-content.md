@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "A list of all standard Plone content representations with sample requests and responses."
+  "property=og:description": "A list of all standard Plone content representations with sample requests and responses."
+  "property=og:title": "Plone Content"
+  "keywords": "Plone, plone.restapi, REST, API, Plone, Content"
 ---
 
 # Plone Content

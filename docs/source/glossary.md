@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "plone.restapi Glossary"
+  "property=og:description": "plone.restapi Glossary"
+  "property=og:title": "Glossary"
+  "keywords": "Plone, plone.restapi, REST, API, Glossary"
 ---
 
 # Glossary

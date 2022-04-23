@@ -1,8 +1,8 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
+  "description": "A RESTful API for Plone."
+  "property=og:description": "A RESTful API for Plone."
+  "property=og:title": "REST API"
   "keywords": "Plone, plone.restapi, REST, API"
 ---
 

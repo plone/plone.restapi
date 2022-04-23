@@ -1,9 +1,9 @@
 ---
 html_meta:
-  "description": ""
-  "property=og:description": ""
-  "property=og:title": ""
-  "keywords": "Plone, plone.restapi, REST, API"
+  "description": "A detailed list of all available Zope Schema field types and their corresponding representation as JSON objects."
+  "property=og:description": "A detailed list of all available Zope Schema field types and their corresponding representation as JSON objects."
+  "property=og:title": "Types Schema"
+  "keywords": "Plone, plone.restapi, REST, API, Types, Schema"
 ---
 
 (types-schema)=
