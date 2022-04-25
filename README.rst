@@ -26,26 +26,32 @@ https://plonerestapi.readthedocs.io/en/latest/
 Getting started
 ===============
 
-A live demo of Plone 5 with the latest ``plone.restapi`` release is available at:
+A live demo of Plone 6 with the latest ``plone.restapi`` release is available at:
 
-https://plonedemo.kitconcept.com
+https://6.demo.plone.org/
 
 An example GET request on the portal root is the following.
 
 .. code-block:: shell
 
-   curl -i https://plonedemo.kitconcept.com -H "Accept: application/json"
+    curl -i https://6.demo.plone.org/ -H "Accept: application/json"
 
 An example POST request to create a new document is the following.
 
 .. code-block:: shell
 
-   curl -i -X POST https://plonedemo.kitconcept.com -H "Accept: application/json" -H "Content-Type: application/json" --data-raw '{"@type": "Document", "title": "My Document"}' --user admin:admin
+    curl -i -X POST https://6.demo.plone.org/ \
+        -H "Accept: application/json" \
+        -H "Content-Type: application/json" \
+        -H "Authorization: Basic YOUR_BASIC_AUTH_TOKEN" \
+        --data-raw '{"@type": "Document", "title": "My Document"}' \
+        --user admin:admin
 
 .. note::
 
-   You will need some kind of API browser application to explore the API.
-   We recommend using `Postman <https://www.postman.com/>`_.
+    You will need some kind of API browser application to explore the API.
+    You will also need to first obtain a basic authorization token.
+    We recommend using `Postman <https://www.postman.com/>`_ which makes it easier to obtain a basic authorization token.
 
 
 Installation
