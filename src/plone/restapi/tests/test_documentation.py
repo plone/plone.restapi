@@ -27,7 +27,7 @@ from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.statictime import StaticTime
 from plone.scale import storage
-from plone.testing.z2 import Browser
+from plone.testing.zope import Browser
 from zope.component import createObject
 from zope.component import getUtility
 from zope.component.hooks import getSite
