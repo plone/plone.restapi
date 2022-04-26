@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": "Available users in a Plone site can be created, queried, updated, and deleted by interacting with the /@users endpoint on portal root."
+  "property=og:description": "Available users in a Plone site can be created, queried, updated, and deleted by interacting with the /@users endpoint on portal root."
+  "property=og:title": "Users"
+  "keywords": "Plone, plone.restapi, REST, API, Users"
+---
+
 # Users
 
 Available users in a Plone site can be created, queried, updated, and deleted by interacting with the `/@users` endpoint on portal root.

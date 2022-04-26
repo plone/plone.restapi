@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": "Locking is a mechanism to prevent users from accidentally overriding each other's changes."
+  "property=og:description": "Locking is a mechanism to prevent users from accidentally overriding each other's changes."
+  "property=og:title": "Locking"
+  "keywords": "Plone, plone.restapi, REST, API, Locking"
+---
+
 # Locking
 
 Locking is a mechanism to prevent users from accidentally overriding each other's changes.

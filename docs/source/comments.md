@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": "Plone offers to users a feature to post comments on any content object with plone.app.discussion."
+  "property=og:description": "Plone offers to users a feature to post comments on any content object with plone.app.discussion."
+  "property=og:title": "Comments"
+  "keywords": "Plone, plone.restapi, REST, API, Comments, plone.app.discussion"
+---
+
 # Comments
 
 Plone offers to users a feature to post comments on any content object with `plone.app.discussion`.

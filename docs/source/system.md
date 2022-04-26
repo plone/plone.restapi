@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": "The @system endpoint exposes system information about the Plone backend."
+  "property=og:description": "The @system endpoint exposes system information about the Plone backend."
+  "property=og:title": "System"
+  "keywords": "Plone, plone.restapi, REST, API, System"
+---
+
 (system)=
 
 # System

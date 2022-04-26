@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": "To send an email to an arbitrary email address use the /@email-send endpoint."
+  "property=og:description": "To send an email to an arbitrary email address use the /@email-send endpoint."
+  "property=og:title": "Email Send"
+  "keywords": "Plone, plone.restapi, REST, API, Email, Send"
+---
+
 # Email Send
 
 

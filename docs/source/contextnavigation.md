@@ -1,3 +1,13 @@
+---
+html_meta:
+  "description": "The @contextnavigation endpoint uses the same semantics as the classic Plone navigation portlet. Instead of storing the portlet configuration in a portlet assignment storage, you can pass these as
+parameters to the service or expand the component."
+  "property=og:description": "The @contextnavigation endpoint uses the same semantics as the classic Plone navigation portlet. Instead of storing the portlet configuration in a portlet assignment storage, you can pass these as
+parameters to the service or expand the component."
+  "property=og:title": "Context Navigation"
+  "keywords": "Plone, plone.restapi, REST, API, Context, Navigation"
+---
+
 (contextnavigation)=
 
 # Context Navigation

@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": "Control panels in Plone allow you to configure the global site setup of a Plone site. The @controlpanels endpoint in plone.restapi allows you to list all existing control panels in a Plone site, and to retrieve or edit the settings of a specific control panel."
+  "property=og:description": "Control panels in Plone allow you to configure the global site setup of a Plone site. The @controlpanels endpoint in plone.restapi allows you to list all existing control panels in a Plone site, and to retrieve or edit the settings of a specific control panel."
+  "property=og:title": "Control Panels"
+  "keywords": "Plone, plone.restapi, REST, API, Control, Panels"
+---
+
 # Control Panels
 
 Control panels in Plone allow you to configure the global site setup of a Plone site.

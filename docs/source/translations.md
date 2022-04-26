@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": "plone.restapi provides a @translations endpoint to handle the translation information of the content objects."
+  "property=og:description": "plone.restapi provides a @translations endpoint to handle the translation information of the content objects."
+  "property=og:title": "Translations"
+  "keywords": "Plone, plone.restapi, REST, API, Translations, plone.app.multilingual, multilingual"
+---
+
 (translations)=
 
 # Translations

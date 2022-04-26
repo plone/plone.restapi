@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": "Plone allows the user to contact the site owner via a form on the website which sends an email notification."
+  "property=og:description": "Plone allows the user to contact the site owner via a form on the website which sends an email notification."
+  "property=og:title": "Email Notification"
+  "keywords": "Plone, plone.restapi, REST, API, Email, Notification"
+---
+
 # Email Notification
 
 

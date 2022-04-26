@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": "plone.restapi Upgrade Guide"
+  "property=og:description": "plone.restapi Upgrade Guide"
+  "property=og:title": "Upgrade Guide"
+  "keywords": "Plone, plone.restapi, REST, API, Upgrade, Guide"
+---
+
 # Upgrade Guide
 
 This upgrade guide lists all breaking changes in `plone.restapi`.

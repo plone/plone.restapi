@@ -1,3 +1,11 @@
+---
+html_meta:
+  "description": "plone.restapi not only exposes content objects via a RESTful API, but the API consumer can create, read, update, and delete a content object."
+  "property=og:description": "plone.restapi not only exposes content objects via a RESTful API, but the API consumer can create, read, update, and delete a content object."
+  "property=og:title": "Content Manipulation"
+  "keywords": "Plone, plone.restapi, REST, API, Content, Manipulation"
+---
+
 # Content Manipulation
 
 `plone.restapi` does not only expose content objects via a RESTful API.
