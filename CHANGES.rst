@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+7.7.1 (2022-04-27)
+------------------
+
+Bug fixes:
+
+
+- Fix serializing revisions of Archetypes content. [pbauer] (#1335)
+
+
 7.7.0 (2022-01-07)
 ------------------
 
