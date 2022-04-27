@@ -160,6 +160,14 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
         self.deserialize(body='{"layout": "my_new_layout"}')
         self.assertEqual("my_new_layout", self.doc1.getLayout())
 
+    def test_validation_done_when_create(self):
+        self.doc1.setTitle("")
+        self.assertEqual(self.deserialize(body='{}'), self.doc1)
+        with self.assertRaises(BadRequest) as cm:
+            self.deserialize(body='', create=True, validate_all=True)
+        self.assertEqual("Title is required, please correct.",
+                         cm.exception.args[0][1]["message"])
+
 
 class TestValidationRequest(unittest.TestCase):
 

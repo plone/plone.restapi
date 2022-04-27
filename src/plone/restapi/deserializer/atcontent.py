@@ -52,7 +52,7 @@ class DeserializeFromJson(OrderingMixin, object):
                 mutator(value, **kwargs)
                 modified = True
 
-        if modified:
+        if create or modified:
             errors = self.validate()
             if not validate_all:
                 errors = {f: e for f, e in errors.items() if f in data}
