@@ -28,7 +28,7 @@ jobs:
 
       # install black (extract version from versions.cfg)
       - name: install black
-        run: pip install click==$(awk '/^click =/{print $NF}' black==$(awk '/^black =/{print $NF}' versions.cfg)
+        run: pip install click==$(awk '/^click =/{print $NF}' versions.cfg) black==$(awk '/^black =/{print $NF}' versions.cfg)
 
       # run black
       - name: run black
