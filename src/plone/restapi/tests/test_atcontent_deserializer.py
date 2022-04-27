@@ -164,7 +164,7 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
         self.doc1.setTitle("")
         self.assertEqual(self.deserialize(body='{}'), self.doc1)
         self.assertRaises(
-            BadRequest, self.deserialize(body='', create=True, validate_all=True))
+            BadRequest, self.deserialize, body='', create=True, validate_all=True)
 
 
 class TestValidationRequest(unittest.TestCase):
