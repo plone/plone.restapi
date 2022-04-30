@@ -162,9 +162,10 @@ class TestATContentDeserializer(unittest.TestCase, OrderingMixin):
 
     def test_validation_done_when_create(self):
         self.doc1.setTitle("")
-        self.assertEqual(self.deserialize(body='{}'), self.doc1)
+        self.assertEqual(self.deserialize(body="{}"), self.doc1)
         self.assertRaises(
-            BadRequest, self.deserialize, body='', create=True, validate_all=True)
+            BadRequest, self.deserialize, body="", create=True, validate_all=True
+        )
 
 
 class TestValidationRequest(unittest.TestCase):
