@@ -36,7 +36,7 @@ class DeserializeFromJson(OrderingMixin, object):
         self.modified = {}
 
     def __call__(
-        self, validate_all=False, data=None, create=False
+        self, validate_all=False, data=None, create=False, mask_validation_errors=True
     ):  # noqa: ignore=C901
 
         if data is None:
@@ -53,10 +53,11 @@ class DeserializeFromJson(OrderingMixin, object):
                 errors.append({"error": error, "message": str(error)})
 
         if errors:
-            # Drop Python specific error classes in order to be able to better handle
-            # errors on front-end
-            for error in errors:
-                error["error"] = "ValidationError"
+            if mask_validation_errors:
+                # Drop Python specific error classes in order to be able to better handle
+                # errors on front-end
+                for error in errors:
+                    error["error"] = "ValidationError"
             raise BadRequest(errors)
 
         # We'll set the layout after the validation and even if there
