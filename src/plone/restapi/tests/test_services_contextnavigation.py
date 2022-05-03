@@ -179,6 +179,20 @@ class TestServicesContextNavigation(unittest.TestCase):
         )
 
     def test_contextnavigation_with_no_params_gets_only_top_level_mixed_content(self):
+        # Use default setting of Plone 6
+        from Products.CMFPlone.interfaces import INavigationSchema  # noqa
+
+        registry = getUtility(IRegistry)
+        navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
+        navigation_settings.displayed_types = (
+            "Link",
+            "News Item",
+            "Folder",
+            "Document",
+            "Event",
+            "Collection",
+        )
+        transaction.commit()
         # With the context set to folder2 it should return a dict with
         # currentItem set to True
         response = self.api_session.get("/folder2/@contextnavigation")
@@ -234,21 +248,6 @@ class TestServicesContextNavigation(unittest.TestCase):
                     "thumb": "",
                     "title": "doc23",
                     "type": "document",
-                },
-                {
-                    "@id": "%s/folder2/file21/view" % base,
-                    "description": "",
-                    "href": "%s/folder2/file21/view" % base,
-                    "icon": None,
-                    "is_current": False,
-                    "is_folderish": False,
-                    "is_in_path": False,
-                    "items": [],
-                    "normalized_id": "file21",
-                    "review_state": "",
-                    "thumb": "",
-                    "title": "file21",
-                    "type": "file",
                 },
                 {
                     "@id": "%s/folder2/folder21" % base,
@@ -524,14 +523,24 @@ class TestServicesContextNavigation(unittest.TestCase):
         self.assertEqual(len(tree["items"][3]["items"][3]["items"]), 0)
 
     def testTopLevel(self):
+        # Use default setting of Plone 6
+        registry = getUtility(IRegistry)
+        registry["plone.displayed_types"] = (
+            "Link",
+            "News Item",
+            "Folder",
+            "Document",
+            "Event",
+            "Collection",
+        )
         base = self.portal.absolute_url()
         view = self.renderer(self.portal.folder2.file21, opts(topLevel=1))
         tree = view.getNavTree()
         self.assertTrue(tree)
-
+        # before Plone 6.0.0a4 files and images were displayed in navigation.
         self.assertEqual(
             tree["items"][-1]["href"],
-            "%s/folder2/folder21" % base,
+            "%s/folder2/file21/view" % base,
         )
 
     def testTopLevelWithContextAboveLevel(self):
