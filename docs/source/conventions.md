@@ -73,19 +73,19 @@ Mixing singular and plural is confusing.
 For example, using `/users` for retrieving users, and `/user/21` to retrieve a single user.
 
 
-### URL Attributes (singular vs plural)
+### URL Parameters (singular vs plural)
 
-**Rule:** Use plural for attributes that can contain one or multiple items. Use singular for attributes that can contain only one single item.
+**Rule:** Use plural for URL parameters that can contain one or multiple items. Use singular for parameters that can contain only one single item.
 
 **Do:**
 
-If attribute allows passing multiple values:
+If the parameter allows passing multiple values:
 
 ```text
 /tokens
 ```
 
-If attribute allows passing a single value only:
+If the parameter allows passing a single value only:
 
 ```text
 /token
@@ -93,7 +93,7 @@ If attribute allows passing a single value only:
 
 **Don't:**
 
-If attribute allows passing multiple values:
+If the parameter allows passing multiple values:
 
 ```text
 /token
