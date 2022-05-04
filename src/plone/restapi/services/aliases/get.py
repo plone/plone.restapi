@@ -10,10 +10,7 @@ import json
 @implementer(IPublishTraverse)
 class AliasesGet(Service):
     def reply(self):
-        # import pdb
-        # pdb.set_trace()
         storage = getUtility(IRedirectionStorage)
-        # portal = getSite()
         context_path = "/".join(self.context.getPhysicalPath())
         redirects = storage.redirects(context_path)
         return {"aliases": json.dumps(redirects)}

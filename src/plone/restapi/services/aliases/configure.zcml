@@ -15,7 +15,7 @@
   <plone:service
       method="POST"
       factory=".add.AliasesPost"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="*"
       permission="plone.app.controlpanel.Overview"
       name="@aliases"
       />
