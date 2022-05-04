@@ -1,57 +1,339 @@
-.rst-content .menuselection {
-    background-color: #f9ebb3;
-    border: 1px solid #f0b37e;
-    border-radius: 3px;
-    padding: 1px 6px;
+:root {
+  /* Add Font Awesome 5 icon and color for `todo` */
+  --pst-icon-clipboard-list: '\f46d';
+  --pst-icon-admonition-todo: var(--pst-icon-clipboard-list);
+  --pst-color-admonition-todo:  161 , 46, 233;
+  --target-color: #b9ee9e;
+  --codeblock-color: #aad993;
 }
 
-.rst-content .guilabel{
-    border: 1px solid #777;
-    background-color: #cee3fb;
-    border-radius: 3px;
-    padding: 1px 6px;
+.visuallyhidden {
+  display: none;
 }
-.rst-content .toggle {
-    background: none repeat scroll 0 0 #e7f2fa;
-    padding: 12px;
-    line-height: 24px;
-    margin-bottom: 24px;
+pre {
+  border-radius: 0;
+  background-color: white;
+  box-shadow: none;
+}
+a,
+a:visited,
+main.bd-content #main-content a,
+main.bd-content #main-content a:visited {
+  color: #2980b9;
+}
+a:hover,
+main.bd-content #main-content a:hover {
+  color: #1a567e;
+  text-decoration: none;
+}
+ul {
+  list-style-type: square;
+}
+ul li > p {
+  margin-bottom: 0.3rem;
+}
+ol li > p {
+  margin-bottom: 0.3rem;
+}
+img{
+  margin: 1rem 0;
+}
+figure img,
+.figure img {
+  box-shadow: 0 6px 24px 0 rgba(153,153,153,0.3);
+}
+.sidebar img.logo {
+  box-shadow: none;
+  width: 200px;
+  margin-bottom: 1rem;
+}
+span.linenos {
+  padding-right: 1em;
+}
+p.ploneorglink img {
+  vertical-align: bottom;
+}
+dt:target,
+span.highlighted,
+ul.search li span.highlighted {
+  background-color: var(--target-color);
 }
 
-.rst-content .toggle .admonition-title {
-    display: block;
-    clear: both;
-    cursor: pointer;
+.bd-sidebar .nav ul {
+  padding: 0 0 0 1rem;
+}
+.bd-sidebar .nav .toctree-checkbox ~ label i {
+  transform: rotate(90deg);
+}
+.bd-sidebar .nav .toctree-checkbox:checked ~ label i {
+  transform: rotate(0deg);
 }
 
-.rst-content .toggle .admonition-title:after {
-    content: " â–¼";
+.toctree-wrapper .caption {
+  font-weight: bold;
+  font-size: 1.2em;
+  margin-top: 3rem;
+}
+.toctree-wrapper ul {
+  list-style: none;
 }
 
-.rst-content .toggle .admonition-title.open:after {
-    content: " â–²";
+section:not(#glossary) h1 ~ dl {
+  display: grid;
+  grid-template-columns: max-content auto;
+}
+section:not(#glossary) h1 ~ dl dd {
+  margin-bottom: unset !important;
 }
 
-.rst-content .toggle p:last-child {
-    margin-bottom: 0;
+div.section {
+  margin-bottom: 5rem;
 }
 
-/* Support for "more Font-Awesome Icons" example    */
-/* ################################################ */
-
-.fa:before,
-.icon:before {
-    font-family: "FontAwesome";
-    display: inline-block;
-    font-style: normal;
-    font-weight: normal;
-    line-height: 1;
-    text-decoration: inherit;
-    padding-left: 0.2em;
-    padding-right: 0.2em;
+/* admonitions */
+.admonition {
+  border-radius: 0;
+  border: none;
+  border-left: .2rem solid;
+  border-left-color: rgba(var(--pst-color-admonition-default),1);
+}
+.admonition .admonition-title {
+  margin-bottom: 1.5rem !important;
+}
+.admonition.toggle .admonition-title {
+  cursor: pointer;
+  display: flex;
+}
+.admonition.toggle .admonition-title::after {
+  content: "\f105";
+  font-weight: 900;
+  font-family: "Font Awesome 5 Free";
+  margin-left: auto;
+}
+.admonition.toggle .admonition-title.open::after {
+  content: "\f107";
+}
+/* admonition `todo` */
+.admonition.admonition-todo,
+div.admonition.admonition-todo {
+  border-color: rgba(var(--pst-color-admonition-todo),1);
+}
+.admonition.admonition-todo > .admonition-title,
+div.admonition.admonition-todo > .admonition-title {
+  background-color: rgba(var(--pst-color-admonition-todo),.1);
+}
+.admonition.admonition-todo > .admonition-title::before,
+div.admonition.admonition-todo > .admonition-title::before {
+  color: rgba(var(--pst-color-admonition-todo),1);
+  content: var(--pst-icon-admonition-todo);
+}
+.admonition-github-only.admonition {
+  display: none;
 }
 
-/*  Hint for providing the Unicode Value of an fa-icon in CSS as ASCII 
+
+.topic {
+  padding: 1.5em 1em .5em 1em;
+}
+.topic-title {
+  font-weight: bold;
+}
+
+
+/* Bootstrap */
+.btn-primary {
+  color: #fff;
+  background-color: #2980b9;
+  border-color: #2980b9;
+}
+.btn-primary {
+  background-color: #1f86ca;
+  border-color: #2980b9;
+}
+
+/* Search */
+
+/* Show search form. It is hidden by default. */
+#search-documentation,
+#search-documentation~form,
+#search-documentation~p {
+ display:block;
+}
+ul.search {
+  margin-left: 0;
+}
+p.search-summary {
+  margin: 1em 0 2rem 0;
+}
+#search-results ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+#search-results ul li,
+ul.search li {
+  margin-bottom: 2rem;
+  padding: 0;
+  background-image: none;
+  border-bottom: none;
+}
+#search-results ul li h3 {
+  margin: 0.4rem 0 .5rem;
+  font-size: 1.5rem;
+}
+#search-results ul li .breadcrumbs {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+#search-results ul li .breadcrumbs a {
+  font-weight: normal;
+}
+#search-results ul li .breadcrumbs .lastbreadcrumb {
+  white-space: nowrap;
+  display: inline-block;
+  max-width: 12rem;
+  overflow: hidden;              /* "overflow"-Wert darf nicht "visible" sein */
+
+  text-overflow: ellipsis;
+}
+ul.search li p.context {
+  margin-left: 0;
+}
+.pathseparator {
+  padding: 0 0.7rem;
+}
+
+
+/* submenu */
+.bd-toc {
+  box-shadow: 0 .2rem .5rem rgba(0,0,0,.05),0 0 .0625rem rgba(0,0,0,.1);
+}
+
+/* extra sidebar */
+div.sidebar:not(.margin){
+  width: 40%;
+  float: right;
+  clear: right;
+  margin: .3rem 0 .3rem 0.5em;
+  padding: 2rem 0 1.5rem 1rem !important;
+  background-color: rgba(var(--pst-color-admonition-note),.1);
+  border: none;
+  border-left: 8px rgba(var(--pst-color-admonition-default),1) solid;
+  border-radius: .2rem;
+  box-shadow: 0 .2rem .5rem rgba(0,0,0,.05),0 0 .0625rem rgba(0,0,0,.1);
+}
+
+div.sidebar:not(.margin) .figure {
+  margin-top: 0;
+  padding-top: 0;
+  margin-left: 0;
+  padding-left: 0;
+}
+div.sidebar:not(.margin) img.logo {
+  margin-top: 0;
+  margin-bottom: .3rem;
+}
+div.sidebar:not(.margin) p {
+  margin-bottom: 0;
+}
+div.sidebar:not(.margin) p.sidebar-title {
+  display: none;
+}
+div.sidebar:not(.margin) div.topic {
+  padding: .5em 0;
+  background-color: transparent;
+  border: none;
+}
+div.sidebar:not(.margin) pre {
+  margin: .5em 0 1.5em 0;
+}
+div.sidebar:not(.margin) div[class*="highlight-"] {
+  margin-right: .5em;
+}
+div.sidebar:not(.margin) .admonition {
+  margin-right: .5em;
+  background-color: #ffffff;
+}
+@media (min-width:768px) {
+  div.sidebar:not(.margin) {
+    width: 50%;
+    margin-left: 1.5em;
+    margin-right: -28%;
+  }
+}
+
+
+main.bd-content #main-content dl.simple dt {
+  margin-top: .8em;
+}
+main.bd-content #main-content dl.simple dt:nth-of-type(1) {
+  margin-top: 0;
+}
+main.bd-content #main-content dl.simple dd {
+  margin-top: .8em;
+}
+main.bd-content #main-content dl.simple dt + dd {
+  margin-top: 0;
+}
+
+.prev-next-bottom {
+  margin: 20px 0 30px 0;
+}
+.prev-next-bottom a.left-prev, .prev-next-bottom a.right-next {
+  padding: 5px 10px;
+  border: 1px solid rgba(0,0,0,.2);
+  max-width: 45%;
+  overflow-x: hidden;
+  color: rgba(0,0,0,.65);
+  border-radius: 10px;
+}
+
+/* Local navigation */
+li.nav-item.toc-entry {
+  line-height: 1.25em;
+  margin-bottom: 0.25em;
+}
+
+span.guilabel, span.menuselection {
+  border: none;
+  background: #e7f2fa;
+  border-radius: 4px;
+  padding: 4px 5px;
+  font-size: 90%;
+  font-weight: bold;
+  font-style: italic;
+  white-space: nowrap;
+}
+
+
+/*
+ * extensions
+ */
+
+/* definitions */
+dl.py.function {
+  margin-bottom: 5rem;
+}
+dl.py.function > dt {
+  background-color: var(--codeblock-color);
+  padding: 4px 5px;
+}
+dl.py.function > dt:target {
+  background-color: var(--target-color);
+}
+dl.field-list > dt {
+  padding-left: 0;
+}
+
+/* code blocks */
+div.viewcode-block:target {
+  padding: 10px 10px;
+  background-color: var(--codeblock-color);
+  border-top: 1px solid var(--codeblock-color);
+  border-bottom: 1px solid var(--codeblock-color);
+}
+
+/*  Hint for providing the Unicode Value of an fa-icon in CSS as ASCII
     replace the "&#x" part from the unicode HTML5 literal 
     displayed on the font-awesome website cheatsheet e.g. 
     http://fontawesome.io/cheatsheet/
@@ -63,7 +345,6 @@
         .fa-wrench:before {
             content: "\f0ad";
         }
-
 */
 
 .icon-wrench:before,
