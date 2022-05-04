@@ -23,7 +23,7 @@
   <plone:service
       method="DELETE"
       factory=".delete.AliasesDelete"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="*"
       permission="plone.app.controlpanel.Overview"
       name="@aliases"
       />
