@@ -6,6 +6,6 @@ Content-Type: application/json
 {
     "aliases": [
         "/new-alias",
-        "new-alias-2"
+        "/new-alias-2"
     ]
 }
