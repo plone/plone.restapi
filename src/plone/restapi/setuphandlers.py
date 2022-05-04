@@ -1,11 +1,6 @@
-from Acquisition import aq_inner
-from Acquisition import aq_parent
+from plone.restapi import pas
 from plone.restapi.pas.plugin import JWTAuthenticationPlugin
-from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces import INonInstallable
-from Products.PluggableAuthService.interfaces.authservice import (
-    IPluggableAuthService,
-)  # noqa: E501
 from zope.component.hooks import getSite
 from zope.interface import implementer
 
@@ -31,19 +26,26 @@ class HiddenProfiles:
 
 
 def install_pas_plugin(context):
-    uf_parent = aq_inner(context)
-    while True:
-        uf = getToolByName(uf_parent, "acl_users")
-        if IPluggableAuthService.providedBy(uf) and "jwt_auth" not in uf:
+    """
+    Install the JWT token PAS plugin in every PAS acl_users here and above.
+
+    Usually this means it is installed into Plone and into the Zope root.
+    """
+    for uf, is_plone_site in pas.iter_ancestor_pas(context):
+
+        # Add the API token plugin if not already installed at this level
+        if "jwt_auth" not in uf:
             plugin = JWTAuthenticationPlugin("jwt_auth")
             uf._setObject(plugin.getId(), plugin)
             plugin = uf["jwt_auth"]
             plugin.manage_activateInterfaces(
-                ["IAuthenticationPlugin", "IExtractionPlugin"]
+                [
+                    "IAuthenticationPlugin",
+                    "IExtractionPlugin",
+                    "ICredentialsUpdatePlugin",
+                    "ICredentialsResetPlugin",
+                ],
             )
-        if uf_parent is uf_parent.getPhysicalRoot():
-            break
-        uf_parent = aq_parent(uf_parent)
 
 
 def post_install_default(context):

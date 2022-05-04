@@ -86,7 +86,8 @@ class TestLogin(TestCase):
         res = service.reply()
         self.assertIn("error", res)
         self.assertEqual(
-            "JWT authentication plugin not installed.", res["error"]["message"]
+            "jwt authentication plugin not installed",
+            res["error"]["message"].lower(),
         )
         self.assertNotIn("token", res)
 

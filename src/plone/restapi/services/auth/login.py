@@ -7,7 +7,10 @@ from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlug
 from zope.interface import alsoProvides
 from zope import component
 
+import logging
 import plone.protect.interfaces
+
+logger = logging.getLogger(__name__)
 
 
 class Login(Service):
@@ -28,8 +31,10 @@ class Login(Service):
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
-        userid = data["login"]
-        password = data["password"]
+        # Also add credentials to the request for other code that depends on it.  In
+        # particular, the PAS cookie authentication plugin depends on `__ac_password`.
+        userid = self.request.form["__ac_name"] = data["login"]
+        password = self.request.form["__ac_password"] = data["password"]
         uf = self._find_userfolder(userid)
 
         if uf is not None:
@@ -43,10 +48,16 @@ class Login(Service):
 
             if plugin is None:
                 self.request.response.setStatus(501)
+                message = "JWT authentication plugin not installed"
+                logger.error(
+                    "%s: %s",
+                    message,
+                    "/".join(uf.getPhysicalPath()),
+                )
                 return dict(
                     error=dict(
                         type="Login failed",
-                        message="JWT authentication plugin not installed.",
+                        message=message,
                     )
                 )
 
@@ -75,9 +86,27 @@ class Login(Service):
         )
         login_view._post_login()
 
-        payload = {}
-        payload["fullname"] = user.getProperty("fullname")
-        return {"token": plugin.create_token(user.getId(), data=payload)}
+        response = {}
+        if plugin.cookie_name in self.request:
+            response["token"] = self.request[plugin.cookie_name]
+        else:
+            self.request.response.setStatus(501)
+            message = (
+                "JWT authentication token not created, plugin probably not activated "
+                "for `ICredentialsUpdatePlugin`"
+            )
+            logger.error(
+                "%s: %s",
+                message,
+                "/".join(plugin.getPhysicalPath()),
+            )
+            return dict(
+                error=dict(
+                    type="Login failed",
+                    message=message,
+                )
+            )
+        return response
 
     def _find_userfolder(self, userid):
         """Try to find a user folder that contains a user with the given

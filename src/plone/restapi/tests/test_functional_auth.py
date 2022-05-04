@@ -60,8 +60,87 @@ class TestFunctionalAuth(unittest.TestCase):
             headers={"Accept": "application/json"},
             json={"login": TEST_USER_NAME, "password": TEST_USER_PASSWORD},
         )
-        self.assertEqual(200, response.status_code)
-        self.assertIn("token", response.json())
+        self.assertEqual(
+            200,
+            response.status_code,
+            "Wrong API login response status code",
+        )
+        self.assertIn(
+            "token",
+            response.json(),
+            "Authentication token missing from API response JSON",
+        )
+
+    def test_api_login_sets_classic_cookie(self):
+        """
+        Logging in via the API also sets the Plone classic auth cookie.
+        """
+        session = requests.Session()
+        self.addCleanup(session.close)
+        session.post(
+            self.portal_url + "/@login",
+            headers={"Accept": "application/json"},
+            json={"login": SITE_OWNER_NAME, "password": TEST_USER_PASSWORD},
+        )
+        self.assertIn(
+            "__ac",
+            session.cookies,
+            "Plone session cookie missing from API login POST response",
+        )
+
+    def test_classic_login_sets_api_token_cookie(self):
+        """
+        Logging in via Plone classic login form also sets cookie with the API token.
+
+        The cookie that Volto React components will recognize on first request and use
+        as the Authorization Bearer header for subsequent requests.
+        """
+        session = requests.Session()
+        self.addCleanup(session.close)
+        challenge_resp = session.get(self.private_document_url)
+        self.assertEqual(
+            challenge_resp.status_code,
+            200,
+            "Wrong Plone login challenge status code",
+        )
+        self.assertTrue(
+            '<input id="__ac_password" name="__ac_password"' in challenge_resp.text,
+            "Plone login challenge response content missing password field",
+        )
+        login_resp = session.post(
+            self.portal_url + "/login",
+            data={
+                "__ac_name": SITE_OWNER_NAME,
+                "__ac_password": TEST_USER_PASSWORD,
+                "came_from": "/".join(self.private_document.getPhysicalPath()),
+                "buttons.login": "Log in",
+            },
+        )
+        self.assertEqual(
+            login_resp.status_code,
+            200,
+            "Wrong Plone login response status code",
+        )
+        self.assertEqual(
+            login_resp.url,
+            self.private_document_url,
+            "Plone login response didn't redirect to original URL",
+        )
+
+        self.assertTrue(
+            login_resp.history,
+            "Plone classic login form response missing redirect history",
+        )
+        self.assertIn(
+            "__ac",
+            session.cookies,
+            "Plone session cookie missing from Plone classic login form response",
+        )
+        self.assertIn(
+            "auth_token",
+            session.cookies,
+            "API token cookie missing from Plone classic login form response",
+        )
 
     def test_api_login_grants_zmi(self):
         """
@@ -69,25 +148,10 @@ class TestFunctionalAuth(unittest.TestCase):
         """
         session = requests.Session()
         self.addCleanup(session.close)
-        login_resp = session.post(
+        session.post(
             self.portal_url + "/@login",
             headers={"Accept": "application/json"},
             json={"login": SITE_OWNER_NAME, "password": TEST_USER_PASSWORD},
-        )
-        self.assertIn(
-            "__ac",
-            login_resp.cookies,
-            "Plone session cookie missing from API login POST response",
-        )
-        self.assertEqual(
-            login_resp.status_code,
-            200,
-            "Wrong API login response status code",
-        )
-        self.assertIn(
-            "token",
-            login_resp.json(),
-            "Authentication token missing from API response JSON",
         )
 
         zmi_resp = session.get(
@@ -108,7 +172,7 @@ class TestFunctionalAuth(unittest.TestCase):
             "Wrong ZMI view response content",
         )
 
-    def test_zmi_login_grants_api(self):
+    def test_root_zmi_login_grants_api(self):
         """
         Logging in via the Zope root ZMI also grants access to the API.
         """
@@ -164,17 +228,7 @@ class TestFunctionalAuth(unittest.TestCase):
         """
         session = requests.Session()
         self.addCleanup(session.close)
-        challenge_resp = session.get(self.private_document_url)
-        self.assertEqual(
-            challenge_resp.status_code,
-            200,
-            "Wrong Plone login challenge status code",
-        )
-        self.assertTrue(
-            '<input id="__ac_password" name="__ac_password"' in challenge_resp.text,
-            "Plone login challenge response content missing password field",
-        )
-        login_resp = session.post(
+        session.post(
             self.portal_url + "/login",
             data={
                 "__ac_name": SITE_OWNER_NAME,
@@ -182,21 +236,6 @@ class TestFunctionalAuth(unittest.TestCase):
                 "came_from": "/".join(self.private_document.getPhysicalPath()),
                 "buttons.login": "Log in",
             },
-        )
-        self.assertIn(
-            "__ac",
-            login_resp.history[0].cookies,
-            "Plone session cookie missing form login POST response",
-        )
-        self.assertEqual(
-            login_resp.status_code,
-            200,
-            "Wrong Plone login response status code",
-        )
-        self.assertEqual(
-            login_resp.url,
-            self.private_document_url,
-            "Plone login response didn't redirect to original URL",
         )
 
         api_resp = session.get(
@@ -218,6 +257,38 @@ class TestFunctionalAuth(unittest.TestCase):
             api_json["@id"],
             self.private_document_url,
             "Wrong Plone object URL from API response JSON",
+        )
+
+    def test_api_logout_expires_both_cookies(self):
+        """
+        API log out deletes both the API token and Plone classic auth cookie.
+        """
+        session = requests.Session()
+        self.addCleanup(session.close)
+        session.post(
+            self.portal_url + "/@login",
+            headers={"Accept": "application/json"},
+            json={"login": SITE_OWNER_NAME, "password": TEST_USER_PASSWORD},
+        )
+        transaction.commit()
+        logout_resp = session.post(
+            self.portal_url + "/@logout",
+            headers={"Accept": "application/json"},
+        )
+        self.assertEqual(
+            logout_resp.status_code,
+            204,
+            "Wrong API logout response status code",
+        )
+        self.assertNotIn(
+            "__ac",
+            session.cookies,
+            "Plone session cookie remains after API logout POST response",
+        )
+        self.assertNotIn(
+            "auth_token",
+            session.cookies,
+            "API token cookie remains after API logout POST response",
         )
 
     def test_accessing_private_document_with_valid_token_succeeds(self):

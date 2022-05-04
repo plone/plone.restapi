@@ -69,4 +69,13 @@
       handler="plone.restapi.upgrades.to0006.rename_iface_to_name_in_blocks_behavior"
       />
 
+  <genericsetup:upgradeStep
+      title="Enable new PAS plugin interfaces"
+      description="After correcting/completing the PAS plugin interfaces, those interfaces need to be enabled for existing functionality to continue working."
+      profile="plone.restapi:default"
+      source="0006"
+      destination="0007"
+      handler="plone.restapi.upgrades.to0007.enable_new_pas_plugin_interfaces"
+      />
+
 </configure>
