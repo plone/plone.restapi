@@ -40,6 +40,10 @@ class AliasesPost(Service):
 
             alias, err = absolutize_path(alias, is_source=True)
 
+            if err:
+                failed_aliases.append(alias)
+                continue
+
             storage.add(
                 alias,
                 "/".join(self.context.getPhysicalPath()),
@@ -49,7 +53,7 @@ class AliasesPost(Service):
         if len(failed_aliases) > 0:
             return {
                 "type": "Error",
-                "message": "Aliases must start with a / %s " % failed_aliases,
+                "message": "Couldn't add following aliases %s " % failed_aliases,
             }
         self.request.response.setStatus(201)
         return self.reply_no_content()
