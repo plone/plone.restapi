@@ -1782,6 +1782,25 @@ class TestCommenting(TestDocumentationBase):
         response = self.api_session.get("/front-page?expand=breadcrumbs,workflow")
         save_request_and_response_for_docs("expansion", response)
 
+    def test_aliases_add(self):
+        # Add a reply
+        url = f"{self.document.absolute_url()}/@aliases"
+        payload = {"aliases": ["/new-alias", "new-alias-2"]}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs("aliases_add", response)
+
+    def test_aliases_get(self):
+        url = f"{self.document.absolute_url()}/@aliases"
+        payload = {"text": "My NEW comment"}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("aliases_get", response)
+
+    def test_aliases_delete(self):
+        url = f"{self.document.absolute_url()}/@aliases"
+        payload = {"aliases": ["/new-alias"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("aliases_delete", response)
+
 
 class TestControlPanelDocumentation(TestDocumentationBase):
 
