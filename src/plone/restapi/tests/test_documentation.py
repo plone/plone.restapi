@@ -1785,21 +1785,21 @@ class TestCommenting(TestDocumentationBase):
     def test_aliases_add(self):
         # Add 2 aliases
         url = f"{self.document.absolute_url()}/@aliases"
-        payload = {"aliases": ["/new-alias", "/new-alias-2"]}
+        payload = {"aliases": ["/new-alias", "/old-alias", "/final-alias"]}
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs("aliases_add", response)
 
     def test_aliases_get(self):
         # Get aliases
         url = f"{self.document.absolute_url()}/@aliases"
-        response = self.api_session.patch(url)
+        response = self.api_session.get(url)
         save_request_and_response_for_docs("aliases_get", response)
 
     def test_aliases_delete(self):
         # Delete 1 alias
         url = f"{self.document.absolute_url()}/@aliases"
         payload = {"aliases": ["/new-alias"]}
-        response = self.api_session.patch(url, json=payload)
+        response = self.api_session.delete(url, json=payload)
         save_request_and_response_for_docs("aliases_delete", response)
 
 

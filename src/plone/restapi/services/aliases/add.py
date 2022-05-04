@@ -56,7 +56,7 @@ class AliasesPost(Service):
                 "message": "Couldn't add following aliases %s " % failed_aliases,
             }
         self.request.response.setStatus(201)
-        return self.reply_no_content()
+        return {"message": "Successfully added the aliases %s" % aliases}
 
     def edit_for_navigation_root(self, alias):
         # Check navigation root

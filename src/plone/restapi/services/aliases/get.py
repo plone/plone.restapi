@@ -11,4 +11,5 @@ class AliasesGet(Service):
         storage = getUtility(IRedirectionStorage)
         context_path = "/".join(self.context.getPhysicalPath())
         redirects = storage.redirects(context_path)
+        self.request.response.setStatus(201)
         return {"aliases": redirects}

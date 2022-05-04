@@ -45,4 +45,4 @@ class AliasesDelete(Service):
             }
 
         self.request.response.setStatus(201)
-        return self.reply_no_content()
+        return {"message": "Successfully deleted the aliases %s" % aliases}
