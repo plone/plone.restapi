@@ -1,0 +1,31 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
+
+  <plone:service
+      method="GET"
+      accept="application/json,application/schema+json"
+      factory=".get.AliasesGet"
+      for="*"
+      permission="zope2.View"
+      name="@aliases"
+    />
+
+  <plone:service
+      method="POST"
+      factory=".add.AliasesPost"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="plone.app.controlpanel.Overview"
+      name="@aliases"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".delete.AliasesDelete"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="plone.app.controlpanel.Overview"
+      name="@aliases"
+      />
+
+</configure>
