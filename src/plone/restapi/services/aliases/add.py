@@ -14,7 +14,7 @@ from zope.component import getMultiAdapter
 
 @implementer(IPublishTraverse)
 class AliasesPost(Service):
-    """Creates a new alias"""
+    """Creates new aliases"""
 
     def __init__(self, context, request):
         super().__init__(context, request)
@@ -30,10 +30,6 @@ class AliasesPost(Service):
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
-
-        # Make sure we get the right dexterity-types adapter
-        if IPloneRestapiLayer.providedBy(self.request):
-            noLongerProvides(self.request, IPloneRestapiLayer)
 
         failed_aliases = []
         for alias in aliases:
