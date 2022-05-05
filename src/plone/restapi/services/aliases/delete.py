@@ -23,7 +23,9 @@ class AliasesDelete(Service):
         aliases = data.get("aliases", [])
 
         if isinstance(aliases, str):
-            aliases = [aliases, ]
+            aliases = [
+                aliases,
+            ]
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
@@ -43,7 +45,8 @@ class AliasesDelete(Service):
         if len(failed_aliases) > 0:
             return {
                 "type": "Error",
-                "message": "The following aliases are already removed %s " % failed_aliases,
+                "message": "The following aliases are already removed %s "
+                % failed_aliases,
             }
 
         self.request.response.setStatus(201)

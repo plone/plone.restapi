@@ -18,7 +18,7 @@ class AliasesGet(Service):
 
 
 def deroot_path(path):
-    """ Remove the portal root from alias """
+    """Remove the portal root from alias"""
     portal = getSite()
     root_path = "/".join(portal.getPhysicalPath())
     return path.replace(root_path, "", 1)

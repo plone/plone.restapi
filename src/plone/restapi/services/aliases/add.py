@@ -23,7 +23,9 @@ class AliasesPost(Service):
         aliases = data.get("aliases", [])
 
         if isinstance(aliases, str):
-            aliases = [aliases, ]
+            aliases = [
+                aliases,
+            ]
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
@@ -31,7 +33,7 @@ class AliasesPost(Service):
 
         failed_aliases = []
         for alias in aliases:
-            if alias.startswith('/'):
+            if alias.startswith("/"):
                 # Check navigation root
                 alias = self.edit_for_navigation_root(alias)
             else:
@@ -60,16 +62,14 @@ class AliasesPost(Service):
 
     def edit_for_navigation_root(self, alias):
         # Check navigation root
-        pps = getMultiAdapter(
-            (self.context, self.request), name='plone_portal_state'
-        )
+        pps = getMultiAdapter((self.context, self.request), name="plone_portal_state")
         nav_url = pps.navigation_root_url()
         portal_url = pps.portal_url()
         if nav_url != portal_url:
             # We are in a navigation root different from the portal root.
             # Update the path accordingly, unless the user already did this.
-            extra = nav_url[len(portal_url):]
+            extra = nav_url[len(portal_url) :]
             if not alias.startswith(extra):
-                alias = f'{extra}{alias}'
+                alias = f"{extra}{alias}"
         # Finally, return the (possibly edited) redirection
         return alias
