@@ -10,7 +10,7 @@
       for="*"
       permission="zope2.View"
       name="@aliases"
-    />
+      />
 
   <plone:service
       method="POST"
