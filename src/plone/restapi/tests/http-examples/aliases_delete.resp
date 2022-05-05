@@ -1,7 +1,6 @@
-HTTP/1.1 200 OK
+HTTP/1.1 201 Created
 Content-Type: application/json
 
 {
-    "message": "The following aliases are already removed ['/plone/new-alias'] ",
-    "type": "Error"
+    "message": "Successfully deleted the aliases ['/old-alias']"
 }
