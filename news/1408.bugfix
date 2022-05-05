@@ -1,0 +1,2 @@
+Use ``plone.base``. Update isort rules to follow Plone standards.
+[jensens]
