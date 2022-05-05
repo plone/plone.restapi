@@ -1,6 +1,7 @@
 from plone.app.contentrules.browser.assignments import ManageAssignments
 from plone.restapi.services import Service
 import plone.protect.interfaces
+from zExceptions import BadRequest
 from zope.interface import implementer
 from zope.interface import alsoProvides
 from zope.publisher.interfaces import IPublishTraverse
@@ -22,21 +23,15 @@ class RulesAdd(Service):
     def reply(self):
 
         if not self.params:
-            raise BadRequest("Missing parameter typename")
+            raise BadRequest("Missing parameter rule_id")
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request,
                          plone.protect.interfaces.IDisableCSRFProtection)
 
-        import ipdb;ipdb.set_trace()
-        manage_assignments = ManageAssignments(self.context, self.request)
-        acquired_rules = manage_assignments.acquired_rules()
-        assigned_rules = manage_assignments.assigned_rules()
-
-        return {
-            "rules": {
-                "acquired_rules": acquired_rules,
-                "assigned_rules": assigned_rules
-                }
-        }
+        rule_id = self.params[0]
+        self.request.form['form.button.AddAssignment'] = True
+        self.request.form['rule_id'] = rule_id
+        ManageAssignments(self.context, self.request)()
+        return self.reply_no_content()

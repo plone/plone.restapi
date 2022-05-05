@@ -1,31 +1,43 @@
 from plone.app.contentrules.browser.assignments import ManageAssignments
 from plone.restapi.services import Service
 import plone.protect.interfaces
-from zope.interface import implementer
+from zExceptions import BadRequest
 from zope.interface import alsoProvides
-from zope.publisher.interfaces import IPublishTraverse
+from plone.restapi.deserializer import json_body
 
 
-@implementer(IPublishTraverse)
 class RulesUpdate(Service):
-    """Performs sorting/enable/disable (also on subfolders) of rules"""
+    """Update rules"""
 
     def reply(self):
-
-        data = json_body(self.request)
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request,
                          plone.protect.interfaces.IDisableCSRFProtection)
 
-        manage_assignments = ManageAssignments(self.context, self.request)
-        acquired_rules = manage_assignments.acquired_rules()
-        assigned_rules = manage_assignments.assigned_rules()
+        data = json_body(self.request)
+        operation = data.get('operation', None)
+        if operation:
+            self.request.form['operation'] = operation
+        rule_id = data.get('rule_id', None)
+        if rule_id:
+            self.request.form['rule_id'] = rule_id
+        rule_ids = data.get('rule_ids', None)
+        if rule_ids:
+            self.request.form['rule_ids'] = rule_ids
+        enable = data.get('form.button.Enable', None)
+        if 'form.button.Enable':
+            self.request.form['form.button.Enable'] = enable
+        disable = data.get('form.button.Disable', None)
+        if disable:
+            self.request.form['form.button.Disable'] = disable
+        bubble = data.get('form.button.Bubble', None)
+        if bubble:
+            self.request.form['form.button.Bubble'] = bubble
+        no_bubble = data.get('form.button.NoBubble', None)
+        if no_bubble:
+            self.request.form['form.button.NoBubble'] = no_bubble
 
-        return {
-            "rules": {
-                "acquired_rules": acquired_rules,
-                "assigned_rules": assigned_rules
-                }
-        }
+        ManageAssignments(self.context, self.request)()
+        return self.reply_no_content()

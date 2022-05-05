@@ -1,37 +1,27 @@
 from plone.app.contentrules.browser.assignments import ManageAssignments
-from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
-from zope.component import adapter
-from zope.interface import implementer
-from zope.interface import Interface
-
-
-@implementer(IExpandableElement)
-@adapter(Interface, Interface)
-class Rules:
-    def __init__(self, context, request):
-        self.context = context
-        self.request = request
-
-    def __call__(self, expand=False):
-
-        result = {"rules": {"@id": f"{self.context.absolute_url()}/@rules"}}
-        if not expand:
-            return result
-
-        manage_assignments = ManageAssignments(self.context, self.request)
-        acquired_rules = manage_assignments.acquired_rules()
-        assigned_rules = manage_assignments.assigned_rules()
-
-        return {
-            "rules": {
-                "acquired_rules": acquired_rules,
-                "assigned_rules": assigned_rules
-                }
-        }
+import plone.protect.interfaces
+from zExceptions import BadRequest
+from zope.interface import alsoProvides
+from plone.restapi.deserializer import json_body
 
 
 class RulesDelete(Service):
+    """Delete rules"""
+
     def reply(self):
-        rules = Rules(self.context, self.request)
-        return rules(expand=True)["rules"]
+
+        # Disable CSRF protection
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(self.request,
+                         plone.protect.interfaces.IDisableCSRFProtection)
+
+        data = json_body(self.request)
+        rule_ids = data.get('rule_ids')
+        if not rule_ids:
+            raise BadRequest("Missing parameter rule_ids")
+
+        self.request.form['form.button.Delete'] = True
+        self.request.form['rule_ids'] = rule_ids
+        ManageAssignments(self.context, self.request)()
+        return self.reply_no_content()

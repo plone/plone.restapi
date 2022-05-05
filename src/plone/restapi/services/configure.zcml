@@ -29,6 +29,7 @@
   <include package=".querystringsearch" />
   <include package=".registry" />
   <include package=".roles" />
+  <include package=".rules" />
   <include package=".search" />
   <include package=".system" />
   <include package=".sources" />
