@@ -99,9 +99,25 @@ class TestQuerystringEndpoint(unittest.TestCase):
             "published": {"title": "Published with accent \xe9 [published]"},
             "visible": {"title": "Public draft [visible]"},
         }
+
+        self.assertTrue("external" in (idx["values"].keys()))
         self.assertTrue(
-            all(elem in idx["values"].items() for elem in expected_vocab_values.items())
+            set(expected_vocab_values.keys()).issubset((idx["values"].keys()))
         )
+
+        self.assertEqual(
+            expected_vocab_values["external"]["title"],
+            idx["values"]["external"]["title"],
+        )
+
+        # Only checking token if it actually exists
+        if len(idx["values"]["external"]) > 1:
+            self.assertTrue("token" in (idx["values"]["external"].keys()))
+
+            self.assertEqual(
+                "external",
+                idx["values"]["external"]["token"],
+            )
 
     def test_endpoint_inlines_operators(self):
         response = self.api_session.get("/@querystring")
