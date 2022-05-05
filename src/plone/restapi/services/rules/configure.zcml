@@ -1,0 +1,38 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
+
+  <plone:service
+      method="GET"
+      factory=".get.RulesGet"
+      for="plone.contentrules.engine.interfaces.IRuleAssignable"
+      permission="plone.app.contentrules.ManageContentRules"
+      name="@rules"
+      />
+
+  <plone:service
+      method="POST"
+      factory=".add.RulesAdd"
+      for="plone.contentrules.engine.interfaces.IRuleAssignable"
+      permission="plone.app.contentrules.ManageContentRules"
+      name="@rules"
+      />
+
+  <plone:service
+      method="PATCH"
+      factory=".update.RulesUpdate"
+      for="plone.contentrules.engine.interfaces.IRuleAssignable"
+      permission="plone.app.contentrules.ManageContentRules"
+      name="@rules"
+      />
+
+   <plone:service
+      method="DELETE"
+      factory=".delete.RulesDelete"
+      for="plone.contentrules.engine.interfaces.IRuleAssignable"
+      permission="plone.app.contentrules.ManageContentRules"
+      name="@rules"
+      />
+
+</configure>
