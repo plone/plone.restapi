@@ -1,7 +1,6 @@
 from plone.app.contentrules.browser.assignments import ManageAssignments
 from plone.restapi.services import Service
 import plone.protect.interfaces
-from zExceptions import BadRequest
 from zope.interface import alsoProvides
 from plone.restapi.deserializer import json_body
 
