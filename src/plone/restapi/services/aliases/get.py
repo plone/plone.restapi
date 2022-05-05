@@ -17,6 +17,17 @@ class AliasesGet(Service):
         return {"aliases": aliases}
 
 
+@implementer(IPublishTraverse)
+class AliasesRootGet(Service):
+    def reply(self):
+        storage = getUtility(IRedirectionStorage)
+        context_path = "/".join(self.context.getPhysicalPath())
+        redirects = storage.redirects(context_path)
+        aliases = [deroot_path(alias) for alias in redirects]
+        self.request.response.setStatus(201)
+        return {"aliases": aliases}
+
+
 def deroot_path(path):
     """Remove the portal root from alias"""
     portal = getSite()

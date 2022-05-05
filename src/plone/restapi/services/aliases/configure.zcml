@@ -13,6 +13,15 @@
     />
 
   <plone:service
+      method="GET"
+      accept="application/json,application/schema+json"
+      factory=".get.AliasesRootGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@aliases"
+    />
+
+  <plone:service
       method="POST"
       factory=".add.AliasesPost"
       for="*"
