@@ -10,7 +10,7 @@
       for="*"
       permission="zope2.View"
       name="@aliases"
-    />
+      />
 
   <plone:service
       method="GET"
@@ -19,7 +19,7 @@
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="zope2.View"
       name="@aliases"
-    />
+      />
 
   <plone:service
       method="POST"
