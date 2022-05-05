@@ -26,7 +26,7 @@ class RulesUpdate(Service):
         if rule_ids:
             self.request.form['rule_ids'] = rule_ids
         enable = data.get('form.button.Enable', None)
-        if 'form.button.Enable':
+        if enable:
             self.request.form['form.button.Enable'] = enable
         disable = data.get('form.button.Disable', None)
         if disable:
