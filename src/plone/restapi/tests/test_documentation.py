@@ -1787,7 +1787,6 @@ class TestCommenting(TestDocumentationBase):
         url = f"{self.document.absolute_url()}/@aliases"
         payload = {"aliases": ["/new-alias", "/old-alias", "/final-alias"]}
         response = self.api_session.post(url, json=payload)
-        response = self.api_session.get(url)
         save_request_and_response_for_docs("aliases_add", response)
 
     def test_aliases_delete(self):
@@ -1799,7 +1798,6 @@ class TestCommenting(TestDocumentationBase):
         payload = {"aliases": ["/old-alias"]}
         response = self.api_session.delete(url, json=payload)
 
-        response = self.api_session.get(url)
         save_request_and_response_for_docs("aliases_delete", response)
 
     def test_aliases_get(self):
