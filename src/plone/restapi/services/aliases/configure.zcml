@@ -16,7 +16,7 @@
       method="POST"
       factory=".add.AliasesPost"
       for="*"
-      permission="plone.app.controlpanel.Overview"
+      permission="cmf.ModifyPortalContent"
       name="@aliases"
       />
 
@@ -24,7 +24,7 @@
       method="DELETE"
       factory=".delete.AliasesDelete"
       for="*"
-      permission="plone.app.controlpanel.Overview"
+      permission="cmf.ModifyPortalContent"
       name="@aliases"
       />
 
