@@ -5,9 +5,10 @@ from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 from zope.component import getUtility
 from plone.app.redirector.interfaces import IRedirectionStorage
-import plone.protect.interfaces
 from Products.CMFPlone.controlpanel.browser.redirects import absolutize_path
 from zope.component import getMultiAdapter
+from zExceptions import BadRequest
+import plone.protect.interfaces
 
 
 @implementer(IPublishTraverse)
@@ -68,8 +69,49 @@ class AliasesPost(Service):
         if nav_url != portal_url:
             # We are in a navigation root different from the portal root.
             # Update the path accordingly, unless the user already did this.
-            extra = nav_url[len(portal_url) :]
+            extra = nav_url[len(portal_url):]
             if not alias.startswith(extra):
                 alias = f"{extra}{alias}"
         # Finally, return the (possibly edited) redirection
         return alias
+
+
+@implementer(IPublishTraverse)
+class AliasesRootPost(Service):
+    """Creates new aliases via controlpanel"""
+
+    def __init__(self, context, request):
+        super().__init__(context, request)
+
+    def reply(self):
+        data = json_body(self.request)
+        storage = getUtility(IRedirectionStorage)
+        aliases = data.get("aliases", [])
+
+        # Disable CSRF protection
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
+
+        for alias in aliases:
+            redirection = alias['path']
+            target = alias['redirect-to']
+            abs_redirection, err = absolutize_path(redirection, is_source=True)
+            abs_target, target_err = absolutize_path(target, is_source=False)
+
+            if err and target_err:
+                err = f"{err} {target_err}"
+            elif target_err:
+                err = target_err
+            else:
+                if abs_redirection == abs_target:
+                    err = _(
+                        "Alternative urls that point to themselves will cause"
+                        " an endless cycle of redirects."
+                    )
+            if err:
+                raise BadRequest(err)
+
+            storage.add(abs_redirection, abs_target, manual=True)
+
+        self.request.response.setStatus(201)
+        return {"message": "Successfully added the aliases %s" % aliases}

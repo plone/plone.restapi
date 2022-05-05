@@ -30,6 +30,14 @@
       />
 
   <plone:service
+      method="POST"
+      factory=".add.AliasesRootPost"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ModifyPortalContent"
+      name="@aliases"
+      />
+
+  <plone:service
       method="DELETE"
       factory=".delete.AliasesDelete"
       for="*"
