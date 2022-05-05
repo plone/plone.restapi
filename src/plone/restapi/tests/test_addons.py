@@ -2,10 +2,10 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.base.utils import safe_text
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_unicode
 
 import transaction
 import unittest
@@ -61,7 +61,7 @@ class TestAddons(unittest.TestCase):
 
         response = self.api_session.post("/@addons/plone.session/install")
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(safe_unicode(response.content), "")
+        self.assertEqual(safe_text(response.content), "")
 
         # Check to make sure the addon is currently shown as installed
         self.assertEqual(_get_install_status(self), True)
@@ -69,7 +69,7 @@ class TestAddons(unittest.TestCase):
         # Now uninstall the addon
         response = self.api_session.post("/@addons/plone.session/uninstall")
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(safe_unicode(response.content), "")
+        self.assertEqual(safe_text(response.content), "")
 
         # Check to make sure the addon is currently shown as not installed
         self.assertEqual(_get_install_status(self), False)
@@ -130,7 +130,7 @@ class TestAddons(unittest.TestCase):
         # Now call the upgrade
         response = self.api_session.post("/@addons/plone.restapi/upgrade")
         self.assertEqual(response.status_code, 204)
-        self.assertEqual(safe_unicode(response.content), "")
+        self.assertEqual(safe_text(response.content), "")
         self.assertEqual(
             {
                 "available": False,

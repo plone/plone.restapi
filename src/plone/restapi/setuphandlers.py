@@ -1,11 +1,11 @@
 from Acquisition import aq_inner
 from Acquisition import aq_parent
+from plone.base.interfaces import INonInstallable
 from plone.restapi.pas.plugin import JWTAuthenticationPlugin
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import INonInstallable
-from Products.PluggableAuthService.interfaces.authservice import (
+from Products.PluggableAuthService.interfaces.authservice import (  # noqa: E501
     IPluggableAuthService,
-)  # noqa: E501
+)
 from zope.component.hooks import getSite
 from zope.interface import implementer
 

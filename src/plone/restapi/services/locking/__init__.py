@@ -1,7 +1,7 @@
 """ Locking
 """
-from plone import api
 from datetime import datetime
+from plone import api
 from plone.locking.interfaces import ILockable
 
 

@@ -7,10 +7,10 @@ from decimal import Decimal
 from persistent.list import PersistentList
 from persistent.mapping import PersistentMapping
 from plone.app.textfield.interfaces import IRichTextValue
+from plone.base.utils import safe_text
 from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.interfaces import IContextawareJsonCompatible
 from plone.restapi.interfaces import IJsonCompatible
-from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.globalrequest import getRequest
@@ -86,13 +86,13 @@ def default_converter(value):
 @adapter(Decimal)
 @implementer(IJsonCompatible)
 def decimal_converter(value):
-    return safe_unicode(str(value))
+    return safe_text(str(value))
 
 
 @adapter(bytes)
 @implementer(IJsonCompatible)
 def bytes_converter(value):
-    return safe_unicode(value, "utf-8")
+    return safe_text(value, "utf-8")
 
 
 @adapter(list)

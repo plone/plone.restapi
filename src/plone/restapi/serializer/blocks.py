@@ -1,4 +1,5 @@
 from copy import deepcopy
+from plone.base.interfaces import IPloneSiteRoot
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.deserializer.blocks import SlateBlockTransformer
 from plone.restapi.deserializer.blocks import transform_links
@@ -8,7 +9,6 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.serializer.utils import uid_to_url
 from plone.schema import IJSONField
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import subscribers
 from zope.interface import implementer

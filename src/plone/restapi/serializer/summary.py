@@ -1,15 +1,15 @@
 from plone.app.contentlisting.interfaces import IContentListingObject
+from plone.base.interfaces import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
-from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.interfaces import IJSONSummarySerializerMetadata
+from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import WorkflowException
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
+from zope.component import getAllUtilitiesRegisteredFor
 from zope.interface import implementer
 from zope.interface import Interface
-from zope.component import getAllUtilitiesRegisteredFor
 
 
 @implementer(IJSONSummarySerializerMetadata)

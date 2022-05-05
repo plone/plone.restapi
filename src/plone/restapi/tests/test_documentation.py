@@ -1,6 +1,5 @@
 from base64 import b64encode
 from datetime import datetime
-from unittest.mock import patch
 from pkg_resources import resource_filename
 from plone import api
 from plone.app.discussion.interfaces import IConversation
@@ -28,6 +27,7 @@ from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.statictime import StaticTime
 from plone.scale import storage
 from plone.testing.z2 import Browser
+from unittest.mock import patch
 from zope.component import createObject
 from zope.component import getUtility
 from zope.component.hooks import getSite

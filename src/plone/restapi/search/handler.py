@@ -1,9 +1,9 @@
+from plone.base.interfaces import ISearchSchema
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.browser.navtree import getNavigationRoot
-from Products.CMFPlone.interfaces import ISearchSchema
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 

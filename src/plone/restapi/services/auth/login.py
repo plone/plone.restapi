@@ -4,8 +4,8 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService.interfaces.plugins import IAuthenticationPlugin
-from zope.interface import alsoProvides
 from zope import component
+from zope.interface import alsoProvides
 
 import plone.protect.interfaces
 

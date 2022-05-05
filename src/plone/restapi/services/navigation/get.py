@@ -1,6 +1,8 @@
 from Acquisition import aq_inner
 from collections import defaultdict
 from plone.app.layout.navigation.root import getNavigationRoot
+from plone.base.interfaces.controlpanel import INavigationSchema
+from plone.base.utils import safe_text
 from plone.memoize.view import memoize
 from plone.memoize.view import memoize_contextless
 from plone.registry.interfaces import IRegistry
@@ -8,8 +10,6 @@ from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
-from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import getUtility
@@ -99,7 +99,7 @@ class Navigation:
                     entry["title"], domain="plone", context=self.request
                 )
 
-            entry["title"] = safe_unicode(entry["title"])
+            entry["title"] = safe_text(entry["title"])
             ret[navtree_path].append(entry)
 
         query = {
@@ -142,8 +142,8 @@ class Navigation:
             entry = {
                 "path": brain_path,
                 "@id": url,
-                "title": safe_unicode(brain.Title),
-                "description": safe_unicode(brain.Description),
+                "title": safe_text(brain.Title),
+                "description": safe_text(brain.Description),
                 "review_state": json_compatible(brain.review_state),
                 "use_view_action_in_listings": brain.portal_type in types_using_view,
             }

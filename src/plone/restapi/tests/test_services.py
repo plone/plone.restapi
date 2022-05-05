@@ -1,4 +1,3 @@
-from unittest.mock import patch
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -9,6 +8,7 @@ from plone.namedfile.file import NamedBlobImage
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from plone.scale import storage
+from unittest.mock import patch
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds

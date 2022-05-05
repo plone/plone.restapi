@@ -9,6 +9,9 @@ from plone import api
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.layout.navigation.navtree import buildFolderTree
 from plone.app.layout.navigation.root import getNavigationRoot
+from plone.base.interfaces import INavigationSchema
+from plone.base.interfaces import INonStructuralFolder
+from plone.base.interfaces import ISiteSchema
 from plone.i18n.normalizer.interfaces import IIDNormalizer
 from plone.memoize.instance import memoize
 from plone.registry.interfaces import IRegistry
@@ -20,9 +23,6 @@ from Products.CMFDynamicViewFTI.interfaces import IBrowserDefault
 from Products.CMFPlone import utils
 from Products.CMFPlone.browser.navtree import SitemapNavtreeStrategy
 from Products.CMFPlone.defaultpage import is_default_page
-from Products.CMFPlone.interfaces import INavigationSchema
-from Products.CMFPlone.interfaces import INonStructuralFolder
-from Products.CMFPlone.interfaces import ISiteSchema
 from Products.MimetypesRegistry.MimeTypeItem import guess_icon_path
 from zExceptions import NotFound
 from zope import schema

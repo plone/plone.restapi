@@ -6,7 +6,7 @@
   <plone:service
       method="GET"
       factory=".get.RolesGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       permission="cmf.ManagePortal"
       name="@roles"
       />

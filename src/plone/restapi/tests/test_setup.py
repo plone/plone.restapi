@@ -1,11 +1,9 @@
+from plone.base.utils import get_installer
 from plone.browserlayer.utils import registered_layers
 from plone.restapi import PROJECT_NAME
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
 import unittest
-
-
-from Products.CMFPlone.utils import get_installer
 
 
 class TestInstall(unittest.TestCase):

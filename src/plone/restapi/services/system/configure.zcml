@@ -6,7 +6,7 @@
   <plone:service
       method="GET"
       factory=".get.SystemGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       permission="plone.app.controlpanel.Overview"
       name="@system"
       />

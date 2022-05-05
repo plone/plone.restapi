@@ -2,6 +2,7 @@ from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
+from plone.base.utils import base_hasattr
 from plone.dexterity.interfaces import IDexterityContainer
 from plone.dexterity.interfaces import IDexterityContent
 from plone.dexterity.utils import iterSchemata
@@ -20,7 +21,6 @@ from plone.restapi.services.locking import lock_info
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import base_hasattr
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter

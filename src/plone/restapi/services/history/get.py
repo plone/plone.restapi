@@ -1,9 +1,9 @@
 from datetime import datetime as dt
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
+from plone.base.utils import safe_text
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
-from Products.CMFPlone.utils import safe_unicode
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
@@ -81,17 +81,17 @@ class HistoryGet(Service):
             # We want action, state and transition names translated
             if "state_title" in item:
                 item["state_title"] = self.context.translate(
-                    safe_unicode(item["state_title"]), context=self.request
+                    safe_text(item["state_title"]), context=self.request
                 )
 
             if "transition_title" in item:
                 item["transition_title"] = self.context.translate(
-                    safe_unicode(item["transition_title"]), context=self.request
+                    safe_text(item["transition_title"]), context=self.request
                 )
 
             if "action" in item:
                 item["action"] = self.context.translate(
-                    safe_unicode(item["action"]), context=self.request
+                    safe_text(item["action"]), context=self.request
                 )
 
             # clean up

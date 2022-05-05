@@ -6,7 +6,7 @@
   <plone:service
       method="POST"
       factory=".get.QuerystringSearchPost"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       permission="zope2.View"
       name="@querystring-search"
       />

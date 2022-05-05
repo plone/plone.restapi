@@ -1,14 +1,14 @@
+from plone.app.users.browser.userdatapanel import getUserDataSchema
+from plone.base.utils import safe_text
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from Products.CMFCore.interfaces._tools import IMemberData
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
 from zope.schema import getFieldNames
-from plone.app.users.browser.userdatapanel import getUserDataSchema
 
 
 class BaseSerializer:
@@ -51,7 +51,7 @@ class BaseSerializer:
                 if value == "":
                     value = None
                 if value:
-                    value = safe_unicode(value)
+                    value = safe_text(value)
             data[name] = value
 
         return data

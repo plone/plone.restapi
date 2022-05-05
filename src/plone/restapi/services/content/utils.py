@@ -2,9 +2,9 @@ from Acquisition import aq_base
 from DateTime import DateTime
 from plone.app.content.interfaces import INameFromTitle
 from plone.app.uuid.utils import uuidToObject
+from plone.base.utils import base_hasattr
 from plone.uuid.interfaces import IUUID
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import base_hasattr
 from random import randint
 from zExceptions import Unauthorized
 from zope.component import getUtility

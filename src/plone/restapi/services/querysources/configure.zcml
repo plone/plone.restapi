@@ -7,7 +7,7 @@
       method="GET"
       accept="application/json"
       factory=".get.QuerySourcesGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      for="plone.base.interfaces.IPloneSiteRoot"
       permission="plone.restapi.vocabularies"
       name="@querysources"
       />

@@ -59,7 +59,7 @@ Content-Type: application/json
             "value": "%H:%M"
         },
         {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed",
+            "name": "plone.base.interfaces.syndication.ISiteSyndicationSettings.allowed",
             "schema": {
                 "properties": {
                     "default": true,
@@ -72,7 +72,7 @@ Content-Type: application/json
             "value": true
         },
         {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed_feed_types",
+            "name": "plone.base.interfaces.syndication.ISiteSyndicationSettings.allowed_feed_types",
             "schema": {
                 "properties": {
                     "additionalItems": true,
@@ -103,7 +103,7 @@ Content-Type: application/json
             ]
         },
         {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.default_enabled",
+            "name": "plone.base.interfaces.syndication.ISiteSyndicationSettings.default_enabled",
             "schema": {
                 "properties": {
                     "default": false,
@@ -116,7 +116,7 @@ Content-Type: application/json
             "value": false
         },
         {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.max_items",
+            "name": "plone.base.interfaces.syndication.ISiteSyndicationSettings.max_items",
             "schema": {
                 "properties": {
                     "default": 15,
@@ -130,7 +130,7 @@ Content-Type: application/json
             "value": 15
         },
         {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.render_body",
+            "name": "plone.base.interfaces.syndication.ISiteSyndicationSettings.render_body",
             "schema": {
                 "properties": {
                     "default": false,
@@ -143,7 +143,7 @@ Content-Type: application/json
             "value": false
         },
         {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.search_rss_enabled",
+            "name": "plone.base.interfaces.syndication.ISiteSyndicationSettings.search_rss_enabled",
             "schema": {
                 "properties": {
                     "default": true,
@@ -156,7 +156,7 @@ Content-Type: application/json
             "value": true
         },
         {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_author_info",
+            "name": "plone.base.interfaces.syndication.ISiteSyndicationSettings.show_author_info",
             "schema": {
                 "properties": {
                     "default": true,
@@ -169,7 +169,7 @@ Content-Type: application/json
             "value": true
         },
         {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_button",
+            "name": "plone.base.interfaces.syndication.ISiteSyndicationSettings.show_syndication_button",
             "schema": {
                 "properties": {
                     "description": "Makes it possible to customize syndication settings for particular folders and collections ",
@@ -181,7 +181,7 @@ Content-Type: application/json
             "value": null
         },
         {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_link",
+            "name": "plone.base.interfaces.syndication.ISiteSyndicationSettings.show_syndication_link",
             "schema": {
                 "properties": {
                     "description": "Enable RSS link document action on the syndication content item.",
@@ -193,7 +193,7 @@ Content-Type: application/json
             "value": null
         },
         {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.site_rss_items",
+            "name": "plone.base.interfaces.syndication.ISiteSyndicationSettings.site_rss_items",
             "schema": {
                 "properties": {
                     "additionalItems": true,

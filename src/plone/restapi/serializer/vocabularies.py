@@ -1,6 +1,6 @@
+from plone.base.utils import safe_text
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
-from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.i18n import translate
@@ -27,7 +27,7 @@ class SerializeVocabLikeToJson:
 
     def __call__(self, vocabulary_id):
         vocabulary = self.context
-        title = safe_unicode(self.request.form.get("title", ""))
+        title = safe_text(self.request.form.get("title", ""))
         token = self.request.form.get("token", "")
         tokens = self.request.form.get("tokens", [])
         b_size = self.request.form.get("b_size", "")
@@ -59,7 +59,7 @@ class SerializeVocabLikeToJson:
                         continue
                     terms.append(term)
             else:
-                term_title = safe_unicode(getattr(term, "title", None) or "")
+                term_title = safe_text(getattr(term, "title", None) or "")
                 if (
                     title.lower()
                     not in translate(term_title, context=self.request).lower()

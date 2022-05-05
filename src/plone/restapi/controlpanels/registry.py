@@ -1,21 +1,22 @@
+from plone.base.interfaces.controlpanel import IDateAndTimeSchema
+from plone.base.interfaces.controlpanel import IEditingSchema
+from plone.base.interfaces.controlpanel import IImagingSchema
+from plone.base.interfaces.controlpanel import IMailSchema
+from plone.base.interfaces.controlpanel import IMarkupSchema
+from plone.base.interfaces.controlpanel import INavigationSchema
+from plone.base.interfaces.controlpanel import ISearchSchema
+from plone.base.interfaces.controlpanel import ISecuritySchema
+from plone.base.interfaces.controlpanel import ISiteSchema
+from plone.base.interfaces.controlpanel import ISocialMediaSchema
+from plone.restapi.controlpanels import RegistryConfigletPanel
 from zope.component import adapter
 from zope.interface import Interface
-from Products.CMFPlone.interfaces.controlpanel import IDateAndTimeSchema
-from Products.CMFPlone.interfaces.controlpanel import IEditingSchema
-from Products.CMFPlone.interfaces.controlpanel import IImagingSchema
-from Products.CMFPlone.interfaces.controlpanel import IMailSchema
-from Products.CMFPlone.interfaces.controlpanel import IMarkupSchema
-from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
-from Products.CMFPlone.interfaces.controlpanel import ISearchSchema
-from Products.CMFPlone.interfaces.controlpanel import ISecuritySchema
-from Products.CMFPlone.interfaces.controlpanel import ISiteSchema
-from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
-from plone.restapi.controlpanels import RegistryConfigletPanel
+
 
 try:
     from plone.i18n.interfaces import ILanguageSchema
 except ImportError:  # pragma: no cover
-    from Products.CMFPlone.interfaces.controlpanel import ILanguageSchema
+    from plone.base.interfaces.controlpanel import ILanguageSchema
 
 
 # General
