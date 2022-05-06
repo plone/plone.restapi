@@ -12,31 +12,30 @@ class RulesUpdate(Service):
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         data = json_body(self.request)
-        operation = data.get('operation', None)
+        operation = data.get("operation", None)
         if operation:
-            self.request.form['operation'] = operation
-        rule_id = data.get('rule_id', None)
+            self.request.form["operation"] = operation
+        rule_id = data.get("rule_id", None)
         if rule_id:
-            self.request.form['rule_id'] = rule_id
-        rule_ids = data.get('rule_ids', None)
+            self.request.form["rule_id"] = rule_id
+        rule_ids = data.get("rule_ids", None)
         if rule_ids:
-            self.request.form['rule_ids'] = rule_ids
-        enable = data.get('form.button.Enable', None)
+            self.request.form["rule_ids"] = rule_ids
+        enable = data.get("form.button.Enable", None)
         if enable:
-            self.request.form['form.button.Enable'] = enable
-        disable = data.get('form.button.Disable', None)
+            self.request.form["form.button.Enable"] = enable
+        disable = data.get("form.button.Disable", None)
         if disable:
-            self.request.form['form.button.Disable'] = disable
-        bubble = data.get('form.button.Bubble', None)
+            self.request.form["form.button.Disable"] = disable
+        bubble = data.get("form.button.Bubble", None)
         if bubble:
-            self.request.form['form.button.Bubble'] = bubble
-        no_bubble = data.get('form.button.NoBubble', None)
+            self.request.form["form.button.Bubble"] = bubble
+        no_bubble = data.get("form.button.NoBubble", None)
         if no_bubble:
-            self.request.form['form.button.NoBubble'] = no_bubble
+            self.request.form["form.button.NoBubble"] = no_bubble
 
         ManageAssignments(self.context, self.request)()
         return self.reply_no_content()

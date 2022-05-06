@@ -27,7 +27,7 @@
       name="@rules"
       />
 
-   <plone:service
+  <plone:service
       method="DELETE"
       factory=".delete.RulesDelete"
       for="plone.contentrules.engine.interfaces.IRuleAssignable"

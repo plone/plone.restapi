@@ -13,6 +13,6 @@ class RulesGet(Service):
         return {
             "rules": {
                 "acquired_rules": acquired_rules,
-                "assigned_rules": assigned_rules
+                "assigned_rules": assigned_rules,
             }
         }

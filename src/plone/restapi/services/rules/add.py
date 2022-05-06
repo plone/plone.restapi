@@ -27,11 +27,10 @@ class RulesAdd(Service):
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         rule_id = self.params[0]
-        self.request.form['form.button.AddAssignment'] = True
-        self.request.form['rule_id'] = rule_id
+        self.request.form["form.button.AddAssignment"] = True
+        self.request.form["rule_id"] = rule_id
         ManageAssignments(self.context, self.request)()
         return self.reply_no_content()

@@ -13,15 +13,14 @@ class RulesDelete(Service):
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-            alsoProvides(self.request,
-                         plone.protect.interfaces.IDisableCSRFProtection)
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         data = json_body(self.request)
-        rule_ids = data.get('rule_ids')
+        rule_ids = data.get("rule_ids")
         if not rule_ids:
             raise BadRequest("Missing parameter rule_ids")
 
-        self.request.form['form.button.Delete'] = True
-        self.request.form['rule_ids'] = rule_ids
+        self.request.form["form.button.Delete"] = True
+        self.request.form["rule_ids"] = rule_ids
         ManageAssignments(self.context, self.request)()
         return self.reply_no_content()
