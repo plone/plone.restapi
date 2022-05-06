@@ -2,11 +2,15 @@ from base64 import b64encode
 from datetime import datetime
 from unittest.mock import patch
 from pkg_resources import resource_filename
+from z3c.form.form import applyChanges
 from plone import api
+from plone.app.discussion.interfaces import ICommentAddedEvent
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.multilingual.interfaces import ITranslationManager
+from plone.app.contentrules.rule import Rule
+from plone.app.contentrules.browser.rule import RuleAddForm
 from plone.app.testing import applyProfile
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
@@ -29,6 +33,7 @@ from plone.restapi.tests.statictime import StaticTime
 from plone.scale import storage
 from plone.testing.z2 import Browser
 from zope.component import createObject
+from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
@@ -2027,3 +2032,103 @@ class TestIterateDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs(
             "vocabularies_get_filtered_by_token_list", response
         )
+
+
+class TestRules(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super().setUp()
+
+        rules = getMultiAdapter((self.portal, self.request), name="+rule")
+        form = RuleAddForm(self.portal, self.request)
+        data = {'title': 'First test rule', 'description': 'First rule added in the testing setup',
+         'event': ICommentAddedEvent, 'enabled': True, 'stop': False, 'cascading': False}
+        rule = form.create(data)
+        rules.add(rule)
+        data = {'title': 'Second test rule', 'description': 'Second rule added in the testing setup',
+         'event': ICommentAddedEvent, 'enabled': True, 'stop': False, 'cascading': False}
+        rule = form.create(data)
+        rules.add(rule)
+
+        transaction.commit()
+
+    def tearDown(self):
+        super().tearDown()
+
+    def test_rules_add(self):
+        # Assign a rule
+        url = "/@rules/rule-1"
+        response = self.api_session.post(url)
+        save_request_and_response_for_docs("rules_add", response)
+
+    def test_rules_get(self):
+        # Get assigned rules
+        url = "/@rules/rule-1"
+        response = self.api_session.post(url)
+        url = "/@rules"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("rules_get", response)
+
+    def test_rules_delete(self):
+        # Unassign a rule
+        url = "/@rules/rule-1"
+        response = self.api_session.post(url)
+        payload = {"rule_ids": ["rule-1"]}
+        url = "/@rules"
+        response = self.api_session.delete(url, json=payload)
+        save_request_and_response_for_docs("rules_add", response)
+
+    def test_rules_move_up(self):
+        # Move a rule up in the order
+        url = "/@rules/rule-1"
+        response = self.api_session.post(url)
+        url = "/@rules/rule-2"
+        response = self.api_session.post(url)
+        payload = {"operation": "move_up"}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_move_up", response)
+
+    def test_rules_move_down(self):
+        # Move a rule down in the order
+        url = "/@rules/rule-1"
+        response = self.api_session.post(url)
+        url = "/@rules/rule-2"
+        response = self.api_session.post(url)
+        payload = {"operation": "move_down"}
+        url = "/@rules/rule-1"
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_move_down", response)
+
+    def test_rules_enable(self):
+        # Enable some rules
+        url = "/@rules"
+        response = self.api_session.post(url)
+        payload = {"form.button.Enable": True, "rule_ids": ["rule-1", "rule-2"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_enable", response)
+
+    def test_rules_disable(self):
+        # Disable some assigned rules
+        url = "/@rules"
+        response = self.api_session.post(url)
+        payload = {"form.button.Disable": True, "rule_ids": ["rule-1", "rule-2"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_disable", response)
+
+    def test_rules_apply_subfolders(self):
+        # Enable apply on subfolders
+        url = "/@rules"
+        response = self.api_session.post(url)
+        payload = {"form.button.Bubble": True, "rule_ids": ["rule-1", "rule-2"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_apply_subfolders", response)
+
+    def test_rules_disable_apply_subfolders(self):
+        # Disable apply on subfolders
+        url = "/@rules"
+        response = self.api_session.post(url)
+        payload = {"form.button.Bubble": True, "rule_ids": ["rule-1", "rule-2"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_disable_apply_subfolders", response)

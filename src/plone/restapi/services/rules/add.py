@@ -33,4 +33,4 @@ class RulesAdd(Service):
         self.request.form["form.button.AddAssignment"] = True
         self.request.form["rule_id"] = rule_id
         ManageAssignments(self.context, self.request)()
-        return self.reply_no_content()
+        return {"message": "Successfully assigned the rule %s" % rule_id}

@@ -18,6 +18,7 @@ class RulesUpdate(Service):
         operation = data.get("operation", None)
         if operation:
             self.request.form["operation"] = operation
+            message = "Successfully applied the %s" % operation
         rule_id = data.get("rule_id", None)
         if rule_id:
             self.request.form["rule_id"] = rule_id
@@ -27,15 +28,19 @@ class RulesUpdate(Service):
         enable = data.get("form.button.Enable", None)
         if enable:
             self.request.form["form.button.Enable"] = enable
+            message = "Successfully enabled rules %s" % rule_ids
         disable = data.get("form.button.Disable", None)
         if disable:
             self.request.form["form.button.Disable"] = disable
+            message = "Successfully disabled rules %s" % rule_ids
         bubble = data.get("form.button.Bubble", None)
         if bubble:
             self.request.form["form.button.Bubble"] = bubble
+            message = "Successfully applied %s to subfolders" % rule_ids
         no_bubble = data.get("form.button.NoBubble", None)
         if no_bubble:
             self.request.form["form.button.NoBubble"] = no_bubble
+            message = "Disabled apply to subfolders for %s" % rule_ids
 
         ManageAssignments(self.context, self.request)()
-        return self.reply_no_content()
+        return {"message": message}
