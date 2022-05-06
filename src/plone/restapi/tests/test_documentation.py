@@ -1810,6 +1810,51 @@ class TestCommenting(TestDocumentationBase):
         response = self.api_session.get(url)
         save_request_and_response_for_docs("aliases_get", response)
 
+    def test_aliases_root_add(self):
+        # Add 2 aliases
+        url = f"{self.absolute_url()}/@aliases"
+        payload = {
+            "aliases": [
+                {"path": "/blabla", "redirect-to": "/front-page"},
+                {"path": "/fizzbuzz", "redirect-to": "/front-page"},
+            ]
+        }
+
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs("aliases_root_add", response)
+
+    def test_aliases_root_delete(self):
+        # Delete 1 alias
+        url = f"{self.absolute_url()}/@aliases"
+        payload = {
+            "aliases": [
+                {"path": "/blabla", "redirect-to": "/front-page"},
+                {"path": "/fizzbuzz", "redirect-to": "/front-page"},
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        payload = {"aliases": ["/blabla"]}
+        response = self.api_session.delete(url, json=payload)
+
+        save_request_and_response_for_docs("aliases_root_delete", response)
+
+    def test_aliases_root_get(self):
+        # Get aliases
+        url = f"{self.absolute_url()}/@aliases"
+        query = "?q=/fizzbuzz"
+
+        payload = {
+            "aliases": [
+                {"path": "/blabla", "redirect-to": "/front-page"},
+                {"path": "/fizzbuzz", "redirect-to": "/front-page"},
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_root_get", response)
+
 
 class TestControlPanelDocumentation(TestDocumentationBase):
 
