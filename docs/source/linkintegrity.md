@@ -15,7 +15,7 @@ If you are going to delete a folderish content, the check will be performed for 
 
 The `@linkintegrity` endpoint returns the list of reference breaches.
 
-You can call the `/@linkintegrity` endpoint on site root with a `POST` request and a list of uids in JSON BODY:
+You can call the `/@linkintegrity` endpoint on site root with a `GET` request and a list of uids in JSON BODY:
 
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/linkintegrity_get.req
