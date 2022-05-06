@@ -2,14 +2,12 @@ from base64 import b64encode
 from datetime import datetime
 from unittest.mock import patch
 from pkg_resources import resource_filename
-from z3c.form.form import applyChanges
 from plone import api
 from plone.app.discussion.interfaces import ICommentAddedEvent
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.multilingual.interfaces import ITranslationManager
-from plone.app.contentrules.rule import Rule
 from plone.app.contentrules.browser.rule import RuleAddForm
 from plone.app.testing import applyProfile
 from plone.app.testing import popGlobalRegistry
@@ -2043,12 +2041,24 @@ class TestRules(TestDocumentationBase):
 
         rules = getMultiAdapter((self.portal, self.request), name="+rule")
         form = RuleAddForm(self.portal, self.request)
-        data = {'title': 'First test rule', 'description': 'First rule added in the testing setup',
-         'event': ICommentAddedEvent, 'enabled': True, 'stop': False, 'cascading': False}
+        data = {
+            "title": "First test rule",
+            "description": "First rule added in the testing setup",
+            "event": ICommentAddedEvent,
+            "enabled": True,
+            "stop": False,
+            "cascading": False,
+        }
         rule = form.create(data)
         rules.add(rule)
-        data = {'title': 'Second test rule', 'description': 'Second rule added in the testing setup',
-         'event': ICommentAddedEvent, 'enabled': True, 'stop': False, 'cascading': False}
+        data = {
+            "title": "Second test rule",
+            "description": "Second rule added in the testing setup",
+            "event": ICommentAddedEvent,
+            "enabled": True,
+            "stop": False,
+            "cascading": False,
+        }
         rule = form.create(data)
         rules.add(rule)
 
