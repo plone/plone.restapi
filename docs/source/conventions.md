@@ -93,7 +93,7 @@ If the parameter allows passing a single value only:
 
 **Don't:**
 
-If the parameter allows passing multiple values:
+If the parameter allows passing multiple values, do not use the singular form, and do not append a type to the variable name. The following are examples of what _not_ to do:
 
 ```text
 /token
