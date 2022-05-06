@@ -5,6 +5,7 @@ from Products.CMFPlone.interfaces import INonInstallable
 from Products.GenericSetup import EXTENSION
 from Products.GenericSetup.tool import UNKNOWN
 from zope.component import getAllUtilitiesRegisteredFor
+from zope.i18n import translate
 
 import logging
 import pkg_resources
@@ -31,7 +32,7 @@ class Addons:
         return {
             "@id": "{}/@addons/{}".format(self.context.absolute_url(), addon["id"]),
             "id": addon["id"],
-            "title": addon["title"],
+            "title": translate(addon["title"], context=self.request),
             "description": addon["description"],
             "install_profile_id": addon["install_profile_id"],
             "is_installed": addon["is_installed"],
