@@ -1,0 +1,14 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+    "aliases": [
+        {
+            "datetime": "2022-05-06T11:01:57+00:00",
+            "manual": true,
+            "path": "/fizzbuzz",
+            "redirect": "/plone/fizzbuzz",
+            "redirect-to": "/front-page"
+        }
+    ]
+}

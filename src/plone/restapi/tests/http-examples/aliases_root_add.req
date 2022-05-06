@@ -1,0 +1,17 @@
+POST /plone/@aliases HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "aliases": [
+        {
+            "path": "/blabla",
+            "redirect-to": "/front-page"
+        },
+        {
+            "path": "/fizzbuzz",
+            "redirect-to": "/front-page"
+        }
+    ]
+}

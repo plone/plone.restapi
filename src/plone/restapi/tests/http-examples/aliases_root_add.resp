@@ -1,0 +1,6 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+    "message": "Successfully added the aliases [{'path': '/blabla', 'redirect-to': '/front-page'}, {'path': '/fizzbuzz', 'redirect-to': '/front-page'}]"
+}

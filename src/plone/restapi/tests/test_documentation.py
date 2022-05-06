@@ -1812,7 +1812,7 @@ class TestCommenting(TestDocumentationBase):
 
     def test_aliases_root_add(self):
         # Add 2 aliases
-        url = f"{self.absolute_url()}/@aliases"
+        url = f"{self.portal.absolute_url()}/@aliases"
         payload = {
             "aliases": [
                 {"path": "/blabla", "redirect-to": "/front-page"},
@@ -1825,7 +1825,7 @@ class TestCommenting(TestDocumentationBase):
 
     def test_aliases_root_delete(self):
         # Delete 1 alias
-        url = f"{self.absolute_url()}/@aliases"
+        url = f"{self.portal.absolute_url()}/@aliases"
         payload = {
             "aliases": [
                 {"path": "/blabla", "redirect-to": "/front-page"},
@@ -1841,7 +1841,7 @@ class TestCommenting(TestDocumentationBase):
 
     def test_aliases_root_get(self):
         # Get aliases
-        url = f"{self.absolute_url()}/@aliases"
+        url = f"{self.portal.absolute_url()}/@aliases"
         query = "?q=/fizzbuzz"
 
         payload = {
