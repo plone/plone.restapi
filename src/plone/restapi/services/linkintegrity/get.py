@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 from plone.app.linkintegrity.utils import linkintegrity_enabled
-from plone.restapi.deserializer import json_body
+from plone.app.uuid.utils import uuidToObject
+from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from zExceptions import BadRequest
+from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-from plone.app.uuid.utils import uuidToObject
-from plone.restapi.interfaces import ISerializeToJsonSummary
-from zope.component import getMultiAdapter
 
 
 @implementer(IPublishTraverse)
