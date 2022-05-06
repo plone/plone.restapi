@@ -33,7 +33,7 @@ class Addons:
             "@id": "{}/@addons/{}".format(self.context.absolute_url(), addon["id"]),
             "id": addon["id"],
             "title": translate(addon["title"], context=self.request),
-            "description": addon["description"],
+            "description": translate(addon["description"], context=self.request),
             "install_profile_id": addon["install_profile_id"],
             "is_installed": addon["is_installed"],
             "profile_type": addon["profile_type"],
