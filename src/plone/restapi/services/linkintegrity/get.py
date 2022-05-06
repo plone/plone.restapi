@@ -12,20 +12,21 @@ from zope.component import getMultiAdapter
 
 
 @implementer(IPublishTraverse)
-class LinkintegrityPOST(Service):
+class LinkintegrityGET(Service):
     """
     Return a list of breaches from p.a.linkintegrity view
     """
 
     def reply(self):
-        query = json_body(self.request)
+        if not linkintegrity_enabled():
+            return json_compatible([])
+        query = self.request.form
         uids = query.get("uids", [])
 
         if not uids:
             raise BadRequest('Missing parameter "uids"')
-
-        if not linkintegrity_enabled():
-            return json_compatible([])
+        if not isinstance(uids, list):
+            uids = [uids]
 
         result = []
         for uid in uids:
@@ -38,8 +39,10 @@ class LinkintegrityPOST(Service):
             data["breaches"] = []
             for breach in breaches:
                 for source in breach.get("sources", []):
+                    # remove unwanted data
                     source["@id"] = source["url"]
                     del source["url"]
+                    del source["accessible"]
                     data["breaches"].append(source)
             result.append(data)
         return json_compatible(result)

@@ -29,6 +29,7 @@ class BlocksRetriever(DXGeneral):
                     handlers.append(h)
             for handler in sorted(handlers, key=lambda h: h.order):
                 links |= set(handler(block))
+
         return links
 
 
@@ -50,9 +51,10 @@ class TextBlockLinksRetriever(object):
         entity_map = block.get("text", {}).get("entityMap", {})
         for entity in entity_map.values():
             if entity.get("type") == "LINK":
-                href = entity.get("data", {}).get("href", "")
-                if href and "resolveuid" in href:
-                    links.append(href)
+                for attr in ["href", "url"]:
+                    relation = entity.get("data", {}).get(attr, "")
+                    if relation and "resolveuid" in relation and relation not in links:
+                        links.append(relation)
         return links
 
 

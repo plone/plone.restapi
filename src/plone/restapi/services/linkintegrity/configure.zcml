@@ -7,10 +7,10 @@
   <include package="Products.CMFEditions" />
 
   <plone:service
-      method="POST"
-      factory=".post.LinkintegrityPOST"
+      method="GET"
+      factory=".get.LinkintegrityGET"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      permission="CMFEditions.AccessPreviousVersions"
+      permission="zope2.AccessContentsInformation"
       name="@linkintegrity"
       />
 
