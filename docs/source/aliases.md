@@ -21,11 +21,11 @@ The API consumer can create, read, and delete aliases.
 | `GET`    | `/@aliases` | List all aliases                       |
 | `DELETE` | `/@aliases` | Remove one or more aliases             |
 
-## Adding new aliases on a Content Object
+## Adding new URL aliases for a Page
 
 By default, Plone automatically creates a new alias when an object is renamed or moved. Still, you can also create aliases manually.
 
-To create a new alias, send a POST request to the `/@aliases` endpoint:
+To create a new alias, send a `POST` request to the `/@aliases` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -38,9 +38,9 @@ Response:
 :language: http
 ```
 
-## Listing aliases of a Content Object
+## Listing URL aliases of a Page
 
-Listing aliases of a resource you can send a `GET` request to the `/@aliases` endpoint:
+To list aliases, you can send a `GET` request to the `/@aliases` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -54,9 +54,9 @@ Response:
 ```
 
 
-## Removing aliases of a Content Object
+## Removing URL aliases of a Page
 
-To remove aliases of an object, send a `DELETE` request to the `/@aliases` endpoint:
+To remove aliases, send a `DELETE` request to the `/@aliases` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -66,5 +66,51 @@ To remove aliases of an object, send a `DELETE` request to the `/@aliases` endpo
 Response:
 
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_delete.resp
+:language: http
+```
+
+## Adding URL aliases in bulk
+
+You can add multiple URL aliases for multiple pages by sending a `POST` request to the `/@aliases` endpoint on site `root`:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/aliases_root_add.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_root_add.resp
+:language: http
+```
+
+## Listing all available aliases
+
+To list all aliases, send a `GET` request to the `/@aliases` endpoint on site `root`:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/aliases_root_get.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_root_get.resp
+:language: http
+```
+
+
+## Bulk removing aliases
+
+To bulk remove aliases send a `DELETE` request to the `/@aliases` endpoint on site `root`:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/aliases_root_delete.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_root_delete.resp
 :language: http
 ```
