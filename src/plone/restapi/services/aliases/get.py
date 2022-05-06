@@ -16,7 +16,11 @@ class AliasesGet(Service):
         redirects = storage.redirects(context_path)
         aliases = [deroot_path(alias) for alias in redirects]
         self.request.response.setStatus(201)
-        return {"aliases": aliases}
+        response = {
+            "@id": self.request.URL,
+            "items": [{"path": alias} for alias in aliases],
+        }
+        return response
 
 
 @implementer(IPublishTraverse)
@@ -31,10 +35,12 @@ class AliasesRootGet(Service):
         redirects = [entry for entry in batch]
 
         for redirect in redirects:
+            del redirect["redirect"]
             redirect["datetime"] = datetimelike_to_iso(redirect["datetime"])
         self.request.response.setStatus(201)
 
-        return {"aliases": redirects}
+        response = {"@id": self.request.URL, "items": redirects}
+        return response
 
 
 def deroot_path(path):

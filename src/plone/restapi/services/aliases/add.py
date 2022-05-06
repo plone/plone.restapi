@@ -23,7 +23,7 @@ class AliasesPost(Service):
     def reply(self):
         data = json_body(self.request)
         storage = getUtility(IRedirectionStorage)
-        aliases = data.get("aliases", [])
+        aliases = data.get("items", [])
 
         if isinstance(aliases, str):
             aliases = [
@@ -88,7 +88,7 @@ class AliasesRootPost(Service):
     def reply(self):
         data = json_body(self.request)
         storage = getUtility(IRedirectionStorage)
-        aliases = data.get("aliases", [])
+        aliases = data.get("items", [])
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
