@@ -1785,17 +1785,17 @@ class TestCommenting(TestDocumentationBase):
     def test_aliases_add(self):
         # Add 3 aliases
         url = f"{self.document.absolute_url()}/@aliases"
-        payload = {"aliases": ["/new-alias", "/old-alias", "/final-alias"]}
+        payload = {"items": ["/new-alias", "/old-alias", "/final-alias"]}
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs("aliases_add", response)
 
     def test_aliases_delete(self):
         # Delete 1 alias
         url = f"{self.document.absolute_url()}/@aliases"
-        payload = {"aliases": ["/new-alias", "/old-alias", "/final-alias"]}
+        payload = {"items": ["/new-alias", "/old-alias", "/final-alias"]}
         response = self.api_session.post(url, json=payload)
 
-        payload = {"aliases": ["/old-alias"]}
+        payload = {"items": ["/old-alias"]}
         response = self.api_session.delete(url, json=payload)
 
         save_request_and_response_for_docs("aliases_delete", response)
@@ -1804,7 +1804,7 @@ class TestCommenting(TestDocumentationBase):
         # Get aliases
         url = f"{self.document.absolute_url()}/@aliases"
 
-        payload = {"aliases": "/simple-alias"}
+        payload = {"items": "/simple-alias"}
         response = self.api_session.post(url, json=payload)
 
         response = self.api_session.get(url)
@@ -1814,7 +1814,7 @@ class TestCommenting(TestDocumentationBase):
         # Add 2 aliases
         url = f"{self.portal.absolute_url()}/@aliases"
         payload = {
-            "aliases": [
+            "items": [
                 {"path": "/blabla", "redirect-to": "/front-page", "date": "2022-05-05"},
                 {
                     "path": "/fizzbuzz",
@@ -1831,7 +1831,7 @@ class TestCommenting(TestDocumentationBase):
         # Delete 1 alias
         url = f"{self.portal.absolute_url()}/@aliases"
         payload = {
-            "aliases": [
+            "items": [
                 {"path": "/blabla", "redirect-to": "/front-page", "date": "2022-05-05"},
                 {
                     "path": "/fizzbuzz",
@@ -1842,7 +1842,7 @@ class TestCommenting(TestDocumentationBase):
         }
         response = self.api_session.post(url, json=payload)
 
-        payload = {"aliases": ["/blabla"]}
+        payload = {"items": ["/blabla"]}
         response = self.api_session.delete(url, json=payload)
 
         save_request_and_response_for_docs("aliases_root_delete", response)
@@ -1853,7 +1853,7 @@ class TestCommenting(TestDocumentationBase):
         query = "?q=/fizzbuzz"
 
         payload = {
-            "aliases": [
+            "items": [
                 {"path": "/blabla", "redirect-to": "/front-page", "date": "2022-05-05"},
                 {
                     "path": "/fizzbuzz",
