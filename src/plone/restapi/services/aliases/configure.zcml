@@ -13,6 +13,15 @@
       />
 
   <plone:service
+      method="GET"
+      accept="application/json,application/schema+json"
+      factory=".get.AliasesRootGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@aliases"
+      />
+
+  <plone:service
       method="POST"
       factory=".add.AliasesPost"
       for="*"
@@ -21,9 +30,25 @@
       />
 
   <plone:service
+      method="POST"
+      factory=".add.AliasesRootPost"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ModifyPortalContent"
+      name="@aliases"
+      />
+
+  <plone:service
       method="DELETE"
       factory=".delete.AliasesDelete"
       for="*"
+      permission="cmf.ModifyPortalContent"
+      name="@aliases"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".delete.AliasesDelete"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
       name="@aliases"
       />
