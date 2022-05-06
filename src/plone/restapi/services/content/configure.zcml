@@ -2,7 +2,6 @@
     xmlns="http://namespaces.zope.org/zope"
     xmlns:cache="http://namespaces.zope.org/cache"
     xmlns:plone="http://namespaces.plone.org/plone"
-    xmlns:cache="http://namespaces.zope.org/cache"
     xmlns:zcml="http://namespaces.zope.org/zcml"
     >
 
@@ -20,9 +19,9 @@
       permission="zope2.View"
       />
   <cache:ruleset
-      zcml:condition="have plone-app-caching-3"
       for=".get.ContentGet"
       ruleset="plone.content.dynamic"
+      zcml:condition="have plone-app-caching-3"
       />
 
   <plone:service

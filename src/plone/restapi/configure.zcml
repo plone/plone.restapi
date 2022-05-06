@@ -24,7 +24,7 @@
   <include package="plone.schema" />
 
   <configure zcml:condition="installed plone.app.caching">
-      <include package="plone.app.caching" />
+    <include package="plone.app.caching" />
   </configure>
 
   <include file="indexers.zcml" />
