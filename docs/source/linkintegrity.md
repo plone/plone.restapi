@@ -6,14 +6,14 @@ html_meta:
   "keywords": "Plone, plone.restapi, REST, API, Linkintegrity"
 ---
 
-# Link integrity
+# Link Integrity
 
-When you create relations between contents in Plone (for example with relation fields or links in text), these relations are automatically stored in the database.
-When you try to delete a content from Plone interface, you will get a warning if that content is referenced by one or more contents to avoid possible reference breaches.
+When you create relations between content objects in Plone (e.g. via relation fields or links in text blocks), these relations are stored in the database.
+The Plone user interface will use those stored relations to show a warning when you try to delete a content object that is still referenced somewhere. This avoids broken links ("breaches") in the site.
 
-If you are going to delete a folderish content, the check will be performed for all contents in that folder too.
+This check includes content objects that are located within a content object ("folderish content").
 
-The `@linkintegrity` endpoint returns the list of reference breaches.
+The `@linkintegrity` endpoint returns the list of reference breaches. If there are none, it will return an empty list ("[]").
 
 You can call the `/@linkintegrity` endpoint on site root with a `GET` request and a list of uids in JSON BODY:
 
@@ -25,6 +25,6 @@ The server will respond with the results:
 .. literalinclude:: ../../src/plone/restapi/tests/http-examples/linkintegrity_get.resp
    :language: http
 
-The endpoint accepts only a parameter:
+The endpoint accepts a single parameter:
 
   - ``uids`` (a list of object uids that you want to check)
