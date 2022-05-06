@@ -45,4 +45,12 @@
       name="@aliases"
       />
 
+  <plone:service
+      method="DELETE"
+      factory=".delete.AliasesDelete"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ModifyPortalContent"
+      name="@aliases"
+      />
+
 </configure>

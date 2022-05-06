@@ -8,6 +8,7 @@ from plone.app.redirector.interfaces import IRedirectionStorage
 from Products.CMFPlone.controlpanel.browser.redirects import absolutize_path
 from zope.component import getMultiAdapter
 from zExceptions import BadRequest
+from plone.restapi import _
 import plone.protect.interfaces
 
 
