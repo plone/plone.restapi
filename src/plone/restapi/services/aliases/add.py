@@ -8,6 +8,7 @@ from plone.app.redirector.interfaces import IRedirectionStorage
 from Products.CMFPlone.controlpanel.browser.redirects import absolutize_path
 from zope.component import getMultiAdapter
 from zExceptions import BadRequest
+from DateTime import DateTime
 from plone.restapi import _
 import plone.protect.interfaces
 
@@ -112,7 +113,11 @@ class AliasesRootPost(Service):
             if err:
                 raise BadRequest(err)
 
-            storage.add(abs_redirection, abs_target, manual=True)
+            date = alias.get("date", None)
+            if date:
+                date = DateTime(date)
+
+            storage.add(abs_redirection, abs_target, now=date, manual=True)
 
         self.request.response.setStatus(201)
         return {"message": "Successfully added the aliases %s" % aliases}

@@ -1815,8 +1815,16 @@ class TestCommenting(TestDocumentationBase):
         url = f"{self.portal.absolute_url()}/@aliases"
         payload = {
             "aliases": [
-                {"path": "/blabla", "redirect-to": "/front-page"},
-                {"path": "/fizzbuzz", "redirect-to": "/front-page"},
+                {
+                    "path": "/blabla",
+                    "redirect-to": "/front-page",
+                    "date": "2022-05-05"
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "date": "2022-05-05",
+                },
             ]
         }
 
@@ -1828,8 +1836,16 @@ class TestCommenting(TestDocumentationBase):
         url = f"{self.portal.absolute_url()}/@aliases"
         payload = {
             "aliases": [
-                {"path": "/blabla", "redirect-to": "/front-page"},
-                {"path": "/fizzbuzz", "redirect-to": "/front-page"},
+                {
+                    "path": "/blabla",
+                    "redirect-to": "/front-page",
+                    "date": "2022-05-05"
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "date": "2022-05-05",
+                },
             ]
         }
         response = self.api_session.post(url, json=payload)
@@ -1846,8 +1862,16 @@ class TestCommenting(TestDocumentationBase):
 
         payload = {
             "aliases": [
-                {"path": "/blabla", "redirect-to": "/front-page"},
-                {"path": "/fizzbuzz", "redirect-to": "/front-page"},
+                {
+                    "path": "/blabla",
+                    "redirect-to": "/front-page",
+                    "date": "2022-05-05"
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "date": "2022-05-05",
+                },
             ]
         }
         response = self.api_session.post(url, json=payload)
