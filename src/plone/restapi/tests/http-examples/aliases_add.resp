@@ -1,6 +1,2 @@
-HTTP/1.1 201 Created
-Content-Type: application/json
+HTTP/1.1 204 No Content
 
-{
-    "message": "Successfully added the aliases ['/new-alias', '/old-alias', '/final-alias']"
-}
