@@ -104,7 +104,8 @@ If the parameter allows passing multiple values, do not use the singular form, a
 
 **Reason:**
 
-The naming should clearly indicate if an attribute expects a single (singular) item or multiple items (plural). We decided to use plural instead of appending "_list" or "_array" or "_set".
+The naming should clearly indicate if an attribute expects a single (singular) item or multiple items (plural).
+We decided to use the plural form, instead of appending a possible type—such as `_list`, `_array`, or `_set`—to the variable name.
 
 See https://github.com/plone/plone.restapi/pull/1295#issuecomment-997281715 for the discussion that led to this decision.
 
