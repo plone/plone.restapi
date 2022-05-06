@@ -23,15 +23,15 @@ class AliasesGet(Service):
 class AliasesRootGet(Service):
     def reply(self):
         """
-            redirect-to - target
-            path        - path
-            redirect    - full path with root
+        redirect-to - target
+        path        - path
+        redirect    - full path with root
         """
         batch = RedirectsControlPanel(self.context, self.request).redirects()
         redirects = [entry for entry in batch]
 
         for redirect in redirects:
-            redirect['datetime'] = datetimelike_to_iso(redirect['datetime'])
+            redirect["datetime"] = datetimelike_to_iso(redirect["datetime"])
         self.request.response.setStatus(201)
 
         return {"aliases": redirects}

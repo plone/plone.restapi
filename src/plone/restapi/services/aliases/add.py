@@ -70,7 +70,7 @@ class AliasesPost(Service):
         if nav_url != portal_url:
             # We are in a navigation root different from the portal root.
             # Update the path accordingly, unless the user already did this.
-            extra = nav_url[len(portal_url):]
+            extra = nav_url[len(portal_url) :]
             if not alias.startswith(extra):
                 alias = f"{extra}{alias}"
         # Finally, return the (possibly edited) redirection
@@ -94,8 +94,8 @@ class AliasesRootPost(Service):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         for alias in aliases:
-            redirection = alias['path']
-            target = alias['redirect-to']
+            redirection = alias["path"]
+            target = alias["redirect-to"]
             abs_redirection, err = absolutize_path(redirection, is_source=True)
             abs_target, target_err = absolutize_path(target, is_source=False)
 
