@@ -4,7 +4,7 @@ Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    "aliases": [
+    "items": [
         "/new-alias",
         "/old-alias",
         "/final-alias"
