@@ -1815,11 +1815,7 @@ class TestCommenting(TestDocumentationBase):
         url = f"{self.portal.absolute_url()}/@aliases"
         payload = {
             "aliases": [
-                {
-                    "path": "/blabla",
-                    "redirect-to": "/front-page",
-                    "date": "2022-05-05"
-                },
+                {"path": "/blabla", "redirect-to": "/front-page", "date": "2022-05-05"},
                 {
                     "path": "/fizzbuzz",
                     "redirect-to": "/front-page",
@@ -1836,11 +1832,7 @@ class TestCommenting(TestDocumentationBase):
         url = f"{self.portal.absolute_url()}/@aliases"
         payload = {
             "aliases": [
-                {
-                    "path": "/blabla",
-                    "redirect-to": "/front-page",
-                    "date": "2022-05-05"
-                },
+                {"path": "/blabla", "redirect-to": "/front-page", "date": "2022-05-05"},
                 {
                     "path": "/fizzbuzz",
                     "redirect-to": "/front-page",
@@ -1862,11 +1854,7 @@ class TestCommenting(TestDocumentationBase):
 
         payload = {
             "aliases": [
-                {
-                    "path": "/blabla",
-                    "redirect-to": "/front-page",
-                    "date": "2022-05-05"
-                },
+                {"path": "/blabla", "redirect-to": "/front-page", "date": "2022-05-05"},
                 {
                     "path": "/fizzbuzz",
                     "redirect-to": "/front-page",
