@@ -7,16 +7,16 @@
       method="GET"
       accept="application/json,application/schema+json"
       factory=".get.AliasesGet"
-      for="*"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="zope2.View"
       name="@aliases"
       />
 
-  <plone:service
+    <plone:service
       method="GET"
       accept="application/json,application/schema+json"
-      factory=".get.AliasesRootGet"
-      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      factory=".get.AliasesGet"
+      for="Products.CMFCore.interfaces.IContentish"
       permission="zope2.View"
       name="@aliases"
       />
@@ -51,6 +51,11 @@
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
       name="@aliases"
+      />
+
+    <adapter
+      factory=".get.Aliases"
+      name="aliases"
       />
 
 </configure>
