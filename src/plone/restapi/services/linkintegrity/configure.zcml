@@ -8,7 +8,7 @@
 
   <plone:service
       method="GET"
-      factory=".get.LinkintegrityGET"
+      factory=".get.LinkIntegrityGet"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="zope2.AccessContentsInformation"
       name="@linkintegrity"

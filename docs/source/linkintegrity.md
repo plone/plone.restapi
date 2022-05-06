@@ -9,7 +9,8 @@ html_meta:
 # Link Integrity
 
 When you create relations between content objects in Plone (e.g. via relation fields or links in text blocks), these relations are stored in the database.
-The Plone user interface will use those stored relations to show a warning when you try to delete a content object that is still referenced somewhere. This avoids broken links ("breaches") in the site.
+The Plone user interface will use those stored relations to show a warning when you try to delete a content object that is still referenced somewhere.
+This avoids broken links ("breaches") in the site.
 
 This check includes content objects that are located within a content object ("folderish content").
 

@@ -11,7 +11,7 @@ from zope.publisher.interfaces import IPublishTraverse
 
 
 @implementer(IPublishTraverse)
-class LinkintegrityGET(Service):
+class LinkIntegrityGet(Service):
     """
     Return a list of breaches from p.a.linkintegrity view
     """
