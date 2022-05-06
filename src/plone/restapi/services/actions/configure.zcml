@@ -1,6 +1,8 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:cache="http://namespaces.zope.org/cache"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
     >
 
   <adapter
@@ -14,6 +16,11 @@
       for="zope.interface.Interface"
       permission="zope2.View"
       name="@actions"
+      />
+  <cache:ruleset
+      zcml:condition="have plone-app-caching-3"
+      for=".get.ActionsGet"
+      ruleset="plone.content.dynamic"
       />
 
 </configure>
