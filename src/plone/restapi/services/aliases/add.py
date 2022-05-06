@@ -17,9 +17,6 @@ import plone.protect.interfaces
 class AliasesPost(Service):
     """Creates new aliases"""
 
-    def __init__(self, context, request):
-        super().__init__(context, request)
-
     def reply(self):
         data = json_body(self.request)
         storage = getUtility(IRedirectionStorage)
@@ -57,11 +54,11 @@ class AliasesPost(Service):
 
         if len(failed_aliases) > 0:
             return {
-                "type": "Error",
-                "message": "Couldn't add following aliases %s " % failed_aliases,
+                "type": "error",
+                "failed": failed_aliases,
             }
-        self.request.response.setStatus(201)
-        return {"message": "Successfully added the aliases %s" % aliases}
+
+        return self.reply_no_content()
 
     def edit_for_navigation_root(self, alias):
         # Check navigation root
@@ -119,5 +116,4 @@ class AliasesRootPost(Service):
 
             storage.add(abs_redirection, abs_target, now=date, manual=True)
 
-        self.request.response.setStatus(201)
-        return {"message": "Successfully added the aliases %s" % aliases}
+        return self.reply_no_content()

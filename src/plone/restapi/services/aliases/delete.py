@@ -14,9 +14,6 @@ import plone.protect.interfaces
 class AliasesDelete(Service):
     """Deletes an alias from object"""
 
-    def __init__(self, context, request):
-        super().__init__(context, request)
-
     def reply(self):
         data = json_body(self.request)
         storage = getUtility(IRedirectionStorage)
@@ -33,7 +30,7 @@ class AliasesDelete(Service):
 
         failed_aliases = []
         for alias in aliases:
-            alias, err = absolutize_path(alias, is_source=True)
+            alias, _err = absolutize_path(alias, is_source=True)
 
             try:
                 storage.remove(alias)
@@ -44,10 +41,8 @@ class AliasesDelete(Service):
 
         if len(failed_aliases) > 0:
             return {
-                "type": "Error",
-                "message": "The following aliases are already removed %s "
-                % failed_aliases,
+                "type": "error",
+                "failed": failed_aliases,
             }
 
-        self.request.response.setStatus(201)
-        return {"message": "Successfully deleted the aliases %s" % aliases}
+        return self.reply_no_content()
