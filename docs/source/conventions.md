@@ -73,6 +73,42 @@ Mixing singular and plural is confusing.
 For example, using `/users` for retrieving users, and `/user/21` to retrieve a single user.
 
 
+### URL Parameters (singular vs plural)
+
+**Rule:** Use plural for URL parameters that can contain one or multiple items. Use singular for parameters that can contain only one single item.
+
+**Do:**
+
+If the parameter allows passing multiple values:
+
+```text
+/tokens
+```
+
+If the parameter allows passing a single value only:
+
+```text
+/token
+```
+
+**Don't:**
+
+If the parameter allows passing multiple values, do not use the singular form, and do not append a type to the variable name. The following are examples of what _not_ to do:
+
+```text
+/token
+/token_list
+/token_array
+/token_set
+```
+
+**Reason:**
+
+The naming should clearly indicate if an attribute expects a single (singular) item or multiple items (plural).
+We decided to use the plural form, instead of appending a possible type—such as `_list`, `_array`, or `_set`—to the variable name.
+
+See https://github.com/plone/plone.restapi/pull/1295#issuecomment-997281715 for the discussion that led to this decision.
+
 ### Uppercase versus Lowercase
 
 **Rule:** Use lowercase letters in URIs.
