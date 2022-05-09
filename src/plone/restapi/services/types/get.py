@@ -117,7 +117,6 @@ class TypesGet(Service):
             return self.reply_for_field()
 
     def reply_for_type(self):
-        check_security(self.context)
         portal_type = self.params.pop()
 
         # Make sure we get the right dexterity-types adapter

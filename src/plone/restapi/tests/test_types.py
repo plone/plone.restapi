@@ -1,10 +1,15 @@
 from datetime import date
 from decimal import Decimal
 from plone.app.multilingual.dx import directives
+from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.textfield import RichText
 from plone.autoform import directives as form
+from plone.autoform.directives import write_permission
 from plone.dexterity.fti import DexterityFTI
+from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi.testing import RelativeSession
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.restapi.types.utils import get_fieldsets
 from plone.restapi.types.utils import get_jsonschema_for_fti
@@ -22,6 +27,8 @@ from zope.interface import provider
 from zope.schema.interfaces import IContextAwareDefaultFactory
 from zope.schema.vocabulary import SimpleTerm
 from zope.schema.vocabulary import SimpleVocabulary
+
+import transaction
 
 
 class IDummySchema(model.Schema):
@@ -46,7 +53,9 @@ class ITaggedValuesSchema(model.Schema):
 
     parametrized_widget_field = schema.TextLine(title="Parametrized widget field")
     form.widget(
-        "parametrized_widget_field", a_param="some_value", defaultFactory=lambda: "Foo"
+        "parametrized_widget_field",
+        a_param="some_value",
+        defaultFactory=lambda: "Foo",
     )
 
     not_parametrized_widget_field = schema.TextLine(
@@ -56,6 +65,11 @@ class ITaggedValuesSchema(model.Schema):
 
     directives.languageindependent("test_language_independent_field")
     test_language_independent_field = schema.TextLine(
+        required=False,
+    )
+
+    write_permission(test_write_permission_field="cmf.ManagePortal")
+    test_write_permission_field = schema.TextLine(
         required=False,
     )
 
@@ -459,7 +473,11 @@ class TestJsonSchemaProviders(TestCase):
 
     def test_int(self):
         field = schema.Int(
-            title="My field", description="My great field", min=0, max=100, default=50
+            title="My field",
+            description="My great field",
+            min=0,
+            max=100,
+            default=50,
         )
         adapter = getMultiAdapter(
             (field, self.portal, self.request), IJsonSchemaProvider
@@ -744,7 +762,9 @@ class TestJsonSchemaProviders(TestCase):
 
     def test_date(self):
         field = schema.Date(
-            title="My field", description="My great field", default=date(2016, 1, 1)
+            title="My field",
+            description="My great field",
+            default=date(2016, 1, 1),
         )
         adapter = getMultiAdapter(
             (field, self.portal, self.request), IJsonSchemaProvider
@@ -781,7 +801,9 @@ class TestJsonSchemaProviders(TestCase):
 
     def test_jsonfield(self):
         field = JSONField(
-            title="My field", description="My great field", widget="my_widget_name"
+            title="My field",
+            description="My great field",
+            widget="my_widget_name",
         )
         adapter = getMultiAdapter(
             (field, self.portal, self.request), IJsonSchemaProvider
@@ -797,3 +819,40 @@ class TestJsonSchemaProviders(TestCase):
             },
             adapter.get_schema(),
         )
+
+
+class TestTaggedValues(TestCase):
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        self.portal = self.layer["portal"]
+        self.portal_url = self.portal.absolute_url()
+        self.request = self.layer["request"]
+        fti = DexterityFTI("TaggedDocument")
+        self.portal.portal_types._setObject("TaggedDocument", fti)
+        fti.klass = "plone.dexterity.content.Container"
+        fti.schema = "plone.restapi.tests.test_types.ITaggedValuesSchema"
+
+        self.anonymous_session = RelativeSession(self.portal_url, test=self)
+        self.anonymous_session.headers.update({"Accept": "application/json"})
+
+        self.api_session = RelativeSession(self.portal_url, test=self)
+        self.api_session.headers.update({"Accept": "application/json"})
+        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+        transaction.commit()
+
+    def test_write_permission_anonymous(self):
+        response = self.anonymous_session.get("/@types/TaggedDocument")
+        self.assertEqual(response.status_code, 200)
+        jsonschema = response.json()
+
+        self.assertEqual(jsonschema["title"], "TaggedDocument")
+        self.assertNotIn("test_write_permission_field", jsonschema["properties"])
+
+    def test_write_permission_manager(self):
+        response = self.api_session.get("/@types/TaggedDocument")
+        self.assertEqual(response.status_code, 200)
+        jsonschema = response.json()
+        self.assertEqual(jsonschema["title"], "TaggedDocument")
+        self.assertIn("test_write_permission_field", jsonschema["properties"])
