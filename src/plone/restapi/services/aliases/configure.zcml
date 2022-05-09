@@ -12,7 +12,7 @@
       name="@aliases"
       />
 
-    <plone:service
+  <plone:service
       method="GET"
       accept="application/json,application/schema+json"
       factory=".get.AliasesGet"
@@ -53,7 +53,7 @@
       name="@aliases"
       />
 
-    <adapter
+  <adapter
       factory=".get.Aliases"
       name="aliases"
       />
