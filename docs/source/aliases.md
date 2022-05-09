@@ -1,14 +1,14 @@
 ---
 html_meta:
-  "description": "Aliases is a mechanism to redirect old URLs to new ones."
-  "property=og:description": "Aliases is a mechanism to redirect old URLs to new ones."
+  "description": "Aliases - a mechanism to redirect old URLs to new ones."
+  "property=og:description": "Aliases - a mechanism to redirect old URLs to new ones."
   "property=og:title": "Aliases"
   "keywords": "Plone, plone.app.redirector, redirector, REST, API, Aliases"
 ---
 
 # Aliases
 
-Aliases is a mechanism to redirect old URLs to new ones.
+A mechanism to redirect old URLs to new ones.
 
 When an object is moved (renamed or cut/pasted into a different location), the redirection storage will remember the old path. It is smart enough to deal with transitive references (if we have a -> b and then add b -> c, it is replaced by a reference a -> c) and circular references (attempting to add a -> a does nothing).
 
@@ -96,6 +96,21 @@ To list all aliases, send a `GET` request to the `/@aliases` endpoint on site `r
 Response:
 
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_root_get.resp
+:language: http
+```
+
+## Filter aliases
+
+To search for specific aliases, send a `GET` request to the `/@aliases` endpoint on site `root` with a `q` parameter:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/aliases_root_filter.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_root_filter.resp
 :language: http
 ```
 

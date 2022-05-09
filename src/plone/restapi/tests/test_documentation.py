@@ -1858,7 +1858,7 @@ class TestCommenting(TestDocumentationBase):
     def test_aliases_root_get(self):
         # Get aliases
         url = f"{self.portal.absolute_url()}/@aliases"
-        query = "?q=/fizzbuzz"
+        query = ""
 
         payload = {
             "items": [
@@ -1878,6 +1878,30 @@ class TestCommenting(TestDocumentationBase):
 
         response = self.api_session.get(url + query)
         save_request_and_response_for_docs("aliases_root_get", response)
+
+    def test_aliases_root_filter(self):
+        # Get aliases
+        url = f"{self.portal.absolute_url()}/@aliases"
+        query = "?q=/fizzbuzz"
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "date": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "date": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_root_filter", response)
 
 
 class TestControlPanelDocumentation(TestDocumentationBase):
