@@ -25,9 +25,8 @@ class Aliases:
         context_path = "/".join(self.context.getPhysicalPath())
         redirects = storage.redirects(context_path)
         aliases = [deroot_path(alias) for alias in redirects]
-        redirect_to = deroot_path(self.context.absolute_url(1))
         self.request.response.setStatus(201)
-        return [{"path": alias, "redirect-to": redirect_to} for alias in aliases]
+        return [{"path": alias} for alias in aliases]
 
     def reply_root(self):
         """

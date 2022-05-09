@@ -33,6 +33,9 @@ class AliasesPost(Service):
 
         failed_aliases = []
         for alias in aliases:
+            if isinstance(alias, dict):
+                alias = alias.get("path")
+
             if alias.startswith("/"):
                 # Check navigation root
                 alias = self.edit_for_navigation_root(alias)
@@ -79,9 +82,6 @@ class AliasesPost(Service):
 class AliasesRootPost(Service):
     """Creates new aliases via controlpanel"""
 
-    def __init__(self, context, request):
-        super().__init__(context, request)
-
     def reply(self):
         data = json_body(self.request)
         storage = getUtility(IRedirectionStorage)
@@ -92,8 +92,8 @@ class AliasesRootPost(Service):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         for alias in aliases:
-            redirection = alias["path"]
-            target = alias["redirect-to"]
+            redirection = alias.get("path")
+            target = alias.get("redirect-to")
             abs_redirection, err = absolutize_path(redirection, is_source=True)
             abs_target, target_err = absolutize_path(target, is_source=False)
 
@@ -110,7 +110,7 @@ class AliasesRootPost(Service):
             if err:
                 raise BadRequest(err)
 
-            date = alias.get("date", None)
+            date = alias.get("datetime", None)
             if date:
                 date = DateTime(date)
 

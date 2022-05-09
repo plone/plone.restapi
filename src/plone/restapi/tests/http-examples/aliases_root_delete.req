@@ -5,6 +5,8 @@ Content-Type: application/json
 
 {
     "items": [
-        "/old-page"
+        {
+            "path": "/old-page"
+        }
     ]
 }

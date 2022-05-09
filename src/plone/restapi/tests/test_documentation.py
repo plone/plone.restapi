@@ -1785,17 +1785,29 @@ class TestCommenting(TestDocumentationBase):
     def test_aliases_add(self):
         # Add 3 aliases
         url = f"{self.document.absolute_url()}/@aliases"
-        payload = {"items": ["/new-alias", "/old-alias", "/final-alias"]}
+        payload = {
+            "items": [
+                {"path": "/new-alias"},
+                {"path": "/old-alias"},
+                {"path": "/final-alias"},
+            ]
+        }
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs("aliases_add", response)
 
     def test_aliases_delete(self):
         # Delete 1 alias
         url = f"{self.document.absolute_url()}/@aliases"
-        payload = {"items": ["/new-alias", "/old-alias", "/final-alias"]}
+        payload = {
+            "items": [
+                {"path": "/new-alias"},
+                {"path": "/old-alias"},
+                {"path": "/final-alias"},
+            ]
+        }
         response = self.api_session.post(url, json=payload)
 
-        payload = {"items": ["/old-alias"]}
+        payload = {"items": [{"path": "/old-alias"}]}
         response = self.api_session.delete(url, json=payload)
 
         save_request_and_response_for_docs("aliases_delete", response)
@@ -1818,12 +1830,12 @@ class TestCommenting(TestDocumentationBase):
                 {
                     "path": "/old-page",
                     "redirect-to": "/front-page",
-                    "date": "2022-05-05",
+                    "datetime": "2022-05-05",
                 },
                 {
                     "path": "/fizzbuzz",
                     "redirect-to": "/front-page",
-                    "date": "2022-05-05",
+                    "datetime": "2022-05-05",
                 },
             ]
         }
@@ -1839,18 +1851,16 @@ class TestCommenting(TestDocumentationBase):
                 {
                     "path": "/old-page",
                     "redirect-to": "/front-page",
-                    "date": "2022-05-05",
                 },
                 {
                     "path": "/fizzbuzz",
                     "redirect-to": "/front-page",
-                    "date": "2022-05-05",
                 },
             ]
         }
         response = self.api_session.post(url, json=payload)
 
-        payload = {"items": ["/old-page"]}
+        payload = {"items": [{"path": "/old-page"}]}
         response = self.api_session.delete(url, json=payload)
 
         save_request_and_response_for_docs("aliases_root_delete", response)
@@ -1865,12 +1875,12 @@ class TestCommenting(TestDocumentationBase):
                 {
                     "path": "/old-page",
                     "redirect-to": "/front-page",
-                    "date": "2022-05-05",
+                    "datetime": "2022-05-05",
                 },
                 {
                     "path": "/fizzbuzz",
                     "redirect-to": "/front-page",
-                    "date": "2022-05-05",
+                    "datetime": "2022-05-05",
                 },
             ]
         }
@@ -1889,12 +1899,12 @@ class TestCommenting(TestDocumentationBase):
                 {
                     "path": "/old-page",
                     "redirect-to": "/front-page",
-                    "date": "2022-05-05",
+                    "datetime": "2022-05-05",
                 },
                 {
                     "path": "/fizzbuzz",
                     "redirect-to": "/front-page",
-                    "date": "2022-05-05",
+                    "datetime": "2022-05-05",
                 },
             ]
         }

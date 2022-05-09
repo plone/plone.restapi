@@ -5,8 +5,14 @@ Content-Type: application/json
 
 {
     "items": [
-        "/new-alias",
-        "/old-alias",
-        "/final-alias"
+        {
+            "path": "/new-alias"
+        },
+        {
+            "path": "/old-alias"
+        },
+        {
+            "path": "/final-alias"
+        }
     ]
 }

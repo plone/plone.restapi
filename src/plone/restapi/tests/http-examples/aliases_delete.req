@@ -5,6 +5,8 @@ Content-Type: application/json
 
 {
     "items": [
-        "/old-alias"
+        {
+            "path": "/old-alias"
+        }
     ]
 }

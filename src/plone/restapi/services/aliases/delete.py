@@ -30,6 +30,9 @@ class AliasesDelete(Service):
 
         failed_aliases = []
         for alias in aliases:
+            if isinstance(alias, dict):
+                alias = alias.get("path")
+
             alias, _err = absolutize_path(alias, is_source=True)
 
             try:

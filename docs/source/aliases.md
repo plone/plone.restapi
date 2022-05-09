@@ -71,7 +71,7 @@ Response:
 
 ## Adding URL aliases in bulk
 
-You can add multiple URL aliases for multiple pages by sending a `POST` request to the `/@aliases` endpoint on site `root`:
+You can add multiple URL aliases for multiple pages by sending a `POST` request to the `/@aliases` endpoint on site `root`. **datetime** parameter is optional:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -83,6 +83,7 @@ Response:
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_root_add.resp
 :language: http
 ```
+
 
 ## Listing all available aliases
 
