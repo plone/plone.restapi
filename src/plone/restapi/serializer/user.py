@@ -58,6 +58,14 @@ class BaseSerializer:
         return data
 
 
+@implementer(ISerializeToJsonSummary)
+@adapter(IMemberData, IRequest)
+class SerializeUserToJsonSummary(BaseSerializer):
+    def __call__(self):
+        data = super().__call__()
+        return data
+
+
 @implementer(ISerializeToJson)
 @adapter(IMemberData, IRequest)
 class SerializeUserToJson(BaseSerializer):
@@ -76,9 +84,3 @@ class SerializeUserToJson(BaseSerializer):
 
         data["groups"] = groups_data
         return data
-
-
-@implementer(ISerializeToJsonSummary)
-@adapter(IMemberData, IRequest)
-class SerializeUserToJsonSummary(BaseSerializer):
-    pass

@@ -1,5 +1,5 @@
 from AccessControl import getSecurityManager
-from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import ISerializeToJson, ISerializeToJsonSummary
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
@@ -50,11 +50,15 @@ class UsersGet(Service):
         users = [self.portal_membership.getMemberById(userid) for userid in results]
         return self._sort_users(users)
 
-    def _get_filtered_users(self, query, limit):
+    def _get_filtered_users(self, query, groups_filter, limit):
         results = self.acl_users.searchUsers(id=query, max_results=limit)
         users = [
             self.portal_membership.getMemberById(user["userid"]) for user in results
         ]
+        if groups_filter:
+            groups_filter_list = groups_filter.split(",")
+            users = [user for user in users if set(user.getGroups()) & set(groups_filter_list)]
+
         return self._sort_users(users)
 
     def has_permission_to_query(self):
@@ -74,11 +78,12 @@ class UsersGet(Service):
     def reply(self):
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
+            groups_filter = self.query.get("groups_filter", "")
             limit = self.query.get("limit", DEFAULT_SEARCH_RESULTS_LIMIT)
-            if query:
+            if query or groups_filter:
                 # Someone is searching users, check if they are authorized
                 if self.has_permission_to_query():
-                    users = self._get_filtered_users(query, limit)
+                    users = self._get_filtered_users(query, groups_filter, limit)
                     result = []
                     for user in users:
                         serializer = queryMultiAdapter(
@@ -119,7 +124,7 @@ class UsersGet(Service):
             if not user:
                 self.request.response.setStatus(404)
                 return
-            serializer = queryMultiAdapter((user, self.request), ISerializeToJson)
+            serializer = queryMultiAdapter((user, self.request), ISerializeToJsonSummary)
             return serializer()
         else:
             self.request.response.setStatus(401)
