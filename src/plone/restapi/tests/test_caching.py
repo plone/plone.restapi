@@ -1,5 +1,4 @@
 from ..testing import PLONE_RESTAPI_CACHING_FUNCTIONAL_TESTING
-from ..testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from ..testing import RelativeSession
 from plone.app.testing import applyProfile
 from plone.app.testing import setRoles
@@ -16,6 +15,7 @@ import unittest
 @unittest.skipIf(
     PLONE_RESTAPI_CACHING_FUNCTIONAL_TESTING is None,
     "Test needs plone.app.caching>3.0.0a13",
+    # condition and fallback can be removed in a Plone 6.0 only scenario
 )
 class TestProfileWithCachingRestAPI(unittest.TestCase):
     """This test aims to exercise the caching operations expected from the
@@ -24,8 +24,6 @@ class TestProfileWithCachingRestAPI(unittest.TestCase):
 
     if PLONE_RESTAPI_CACHING_FUNCTIONAL_TESTING is not None:
         layer = PLONE_RESTAPI_CACHING_FUNCTIONAL_TESTING
-    else:
-        layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.app = self.layer["app"]
@@ -127,6 +125,7 @@ class TestProfileWithCachingRestAPI(unittest.TestCase):
 @unittest.skipIf(
     PLONE_RESTAPI_CACHING_FUNCTIONAL_TESTING is None,
     "Test needs plone.app.caching>3.0.0a13",
+    # condition and fallback can be removed in a Plone 6.0 only scenario
 )
 class TestProfileWithoutCachingRestAPI(unittest.TestCase):
     """This test aims to exercise the caching operations expected from the
@@ -135,8 +134,6 @@ class TestProfileWithoutCachingRestAPI(unittest.TestCase):
 
     if PLONE_RESTAPI_CACHING_FUNCTIONAL_TESTING is not None:
         layer = PLONE_RESTAPI_CACHING_FUNCTIONAL_TESTING
-    else:
-        layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
         self.app = self.layer["app"]

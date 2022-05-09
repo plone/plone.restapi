@@ -40,6 +40,7 @@ import time
 try:
     from plone.app.caching.testing import PloneAppCachingBase
 except ImportError:
+    # we get an import error in Plone 5.2 and in 6.0a4 an earlier
     PloneAppCachingBase = None
 
 ENABLED_LANGUAGES = ["de", "en", "es", "fr"]
@@ -212,7 +213,7 @@ PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
 )
 
 if PloneAppCachingBase is not None:
-
+    # condition and fallback can be removed in a Plone 6.0 only scenario
     class PloneRestApiCachingLayer(PloneAppCachingBase):
 
         defaultBases = [
