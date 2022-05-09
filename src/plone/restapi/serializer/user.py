@@ -1,3 +1,4 @@
+from plone.app.users.browser.userdatapanel import getUserDataSchema
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -10,7 +11,6 @@ from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
 from zope.schema import getFieldNames
-from plone.app.users.browser.userdatapanel import getUserDataSchema
 
 
 class BaseSerializer:

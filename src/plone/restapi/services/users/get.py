@@ -1,5 +1,6 @@
 from AccessControl import getSecurityManager
-from plone.restapi.interfaces import ISerializeToJson, ISerializeToJsonSummary
+from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
