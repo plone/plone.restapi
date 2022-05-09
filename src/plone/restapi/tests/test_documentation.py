@@ -1815,7 +1815,7 @@ class TestCommenting(TestDocumentationBase):
         url = f"{self.portal.absolute_url()}/@aliases"
         payload = {
             "items": [
-                {"path": "/blabla", "redirect-to": "/front-page", "date": "2022-05-05"},
+                {"path": "/old-page", "redirect-to": "/front-page", "date": "2022-05-05"},
                 {
                     "path": "/fizzbuzz",
                     "redirect-to": "/front-page",
@@ -1832,7 +1832,7 @@ class TestCommenting(TestDocumentationBase):
         url = f"{self.portal.absolute_url()}/@aliases"
         payload = {
             "items": [
-                {"path": "/blabla", "redirect-to": "/front-page", "date": "2022-05-05"},
+                {"path": "/old-page", "redirect-to": "/front-page", "date": "2022-05-05"},
                 {
                     "path": "/fizzbuzz",
                     "redirect-to": "/front-page",
@@ -1842,7 +1842,7 @@ class TestCommenting(TestDocumentationBase):
         }
         response = self.api_session.post(url, json=payload)
 
-        payload = {"items": ["/blabla"]}
+        payload = {"items": ["/old-page"]}
         response = self.api_session.delete(url, json=payload)
 
         save_request_and_response_for_docs("aliases_root_delete", response)
@@ -1854,7 +1854,7 @@ class TestCommenting(TestDocumentationBase):
 
         payload = {
             "items": [
-                {"path": "/blabla", "redirect-to": "/front-page", "date": "2022-05-05"},
+                {"path": "/old-page", "redirect-to": "/front-page", "date": "2022-05-05"},
                 {
                     "path": "/fizzbuzz",
                     "redirect-to": "/front-page",

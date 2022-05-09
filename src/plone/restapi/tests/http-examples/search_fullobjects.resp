@@ -9,6 +9,9 @@ Content-Type: application/json
                 "actions": {
                     "@id": "http://localhost:55001/plone/doc1/@actions"
                 },
+                "aliases": {
+                    "@id": "http://localhost:55001/plone/doc1/@aliases"
+                },
                 "breadcrumbs": {
                     "@id": "http://localhost:55001/plone/doc1/@breadcrumbs"
                 },
