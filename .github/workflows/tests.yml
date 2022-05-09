@@ -65,11 +65,11 @@ jobs:
 
       # test no uncommited changes
       - name: test no uncommited changes
-        run: bin/test-no-uncommitted-doc-changes
+        run: ./test-no-uncommitted-doc-changes
         env:
           PYTHON_VERSION: ${{ matrix.python-version }}
           PLONE_VERSION: ${{ matrix.plone-version }}
 
       # test sphinx warnings
 #      - name: sphinx
-#        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then bin/test-no-sphinx-warnings; fi
+#        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then ./test-no-sphinx-warnings; fi
