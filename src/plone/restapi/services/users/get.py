@@ -57,7 +57,11 @@ class UsersGet(Service):
         ]
         if groups_filter:
             groups_filter_list = groups_filter.split(",")
-            users = [user for user in users if set(user.getGroups()) & set(groups_filter_list)]
+            users = [
+                user
+                for user in users
+                if set(user.getGroups()) & set(groups_filter_list)
+            ]
 
         return self._sort_users(users)
 
@@ -124,7 +128,9 @@ class UsersGet(Service):
             if not user:
                 self.request.response.setStatus(404)
                 return
-            serializer = queryMultiAdapter((user, self.request), ISerializeToJsonSummary)
+            serializer = queryMultiAdapter(
+                (user, self.request), ISerializeToJsonSummary
+            )
             return serializer()
         else:
             self.request.response.setStatus(401)

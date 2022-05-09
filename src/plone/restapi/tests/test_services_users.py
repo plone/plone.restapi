@@ -59,7 +59,7 @@ class TestUsersEndpoint(unittest.TestCase):
             properties=properties,
             password="otherpassword",
         )
-        api.group.add_user(groupname='Reviewers', username='otheruser')
+        api.group.add_user(groupname="Reviewers", username="otheruser")
         transaction.commit()
 
     def tearDown(self):
@@ -99,7 +99,9 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
 
     def test_list_users_filtered(self):
-        response = self.api_session.get("/@users?groups_filter=Reviewers,Administrators")
+        response = self.api_session.get(
+            "/@users?groups_filter=Reviewers,Administrators"
+        )
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, len(response.json()))
         user_ids = [user["id"] for user in response.json()]
