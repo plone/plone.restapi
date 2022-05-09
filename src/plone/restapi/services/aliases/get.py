@@ -1,31 +1,35 @@
-from plone.restapi.services import Service
-from zope.interface import implementer
-from zope.publisher.interfaces import IPublishTraverse
-from zope.component import getUtility
 from plone.app.redirector.interfaces import IRedirectionStorage
-from zope.component.hooks import getSite
-from Products.CMFPlone.controlpanel.browser.redirects import RedirectsControlPanel
+from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.serializer.converters import datetimelike_to_iso
+from plone.restapi.services import Service
+from Products.CMFPlone.controlpanel.browser.redirects import RedirectsControlPanel
+from Products.CMFPlone.interfaces import IPloneSiteRoot
+from zope.component import adapter
+from zope.component import getUtility
+from zope.component.hooks import getSite
+from zope.interface import implementer
+from zope.interface import Interface
 
 
-@implementer(IPublishTraverse)
-class AliasesGet(Service):
-    def reply(self):
+@implementer(IExpandableElement)
+@adapter(Interface, Interface)
+class Aliases:
+    """@aliases"""
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def reply_item(self):
         storage = getUtility(IRedirectionStorage)
         context_path = "/".join(self.context.getPhysicalPath())
         redirects = storage.redirects(context_path)
         aliases = [deroot_path(alias) for alias in redirects]
+        redirect_to = deroot_path(self.context.absolute_url(1))
         self.request.response.setStatus(201)
-        response = {
-            "@id": self.request.URL,
-            "items": [{"path": alias} for alias in aliases],
-        }
-        return response
+        return [{"path": alias, "redirect-to": redirect_to} for alias in aliases]
 
-
-@implementer(IPublishTraverse)
-class AliasesRootGet(Service):
-    def reply(self):
+    def reply_root(self):
         """
         redirect-to - target
         path        - path
@@ -39,12 +43,32 @@ class AliasesRootGet(Service):
             redirect["datetime"] = datetimelike_to_iso(redirect["datetime"])
         self.request.response.setStatus(201)
 
-        response = {"@id": self.request.URL, "items": redirects}
-        return response
+        return redirects
+
+    def __call__(self, expand=False):
+        result = {"aliases": {"@id": f"{self.context.absolute_url()}/@aliases"}}
+        if not expand:
+            return result
+
+        if IPloneSiteRoot.providedBy(self.context):
+            result["aliases"]["items"] = self.reply_root()
+        else:
+            result["aliases"]["items"] = self.reply_item()
+        return result
+
+
+class AliasesGet(Service):
+    """Get aliases"""
+
+    def reply(self):
+        aliases = Aliases(self.context, self.request)
+        return aliases(expand=True)["aliases"]
 
 
 def deroot_path(path):
     """Remove the portal root from alias"""
     portal = getSite()
     root_path = "/".join(portal.getPhysicalPath())
+    if not path.startswith("/"):
+        path = "/%s" % path
     return path.replace(root_path, "", 1)

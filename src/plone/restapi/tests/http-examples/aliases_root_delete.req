@@ -5,6 +5,6 @@ Content-Type: application/json
 
 {
     "items": [
-        "/blabla"
+        "/old-page"
     ]
 }
