@@ -8,6 +8,45 @@ Changelog
 
 .. towncrier release notes start
 
+8.22.0 (2022-04-08)
+-------------------
+
+New features:
+
+
+- Fix broken links. Add `make netlify` as a build target to preview changes to docs only. Prepare docs for import into main Plone documentation without significant changes. Use sphinx-book-them as theme. [stevepiercy] (#1337)
+
+
+Bug fixes:
+
+
+- Return proper error message when trying to create a content object with a wrong @type parameter. [tisto] (#1188)
+- Fix the link in the GitHub menu item "suggest edit" to point to master branch. [stevepiercy] (#1346)
+- Fix the redirect link for upc.edu to /en. [stevepiercy] (#1351)
+- Fix testing matrix to use correct combos of Python and Plone.
+  [maurits] (#1356)
+
+
+8.21.2 (2022-02-21)
+-------------------
+
+Bug fixes:
+
+
+- Restrict unlinking on Language Root Folders
+  [sneridagh] (#1332)
+
+
+8.21.1 (2022-02-21)
+-------------------
+
+Bug fixes:
+
+
+- Improve handling of linking translations taking into account the state of the target. Restricting it completely for LRFs. Adding a transaction note to the action if it succeeds.
+  [sneridagh] (#1329)
+
+
 8.21.0 (2022-01-25)
 -------------------
 

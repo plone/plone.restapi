@@ -67,12 +67,43 @@ class TestFolderCreate(unittest.TestCase):
         expected_url = self.portal_url + "/folder1/myfolder"
         self.assertEqual(expected_url, response.json().get("@id"))
 
-    def test_post_without_type_returns_400(self):
+    def test_post_without_type_returns_validation_error(self):
         response = requests.post(
             self.portal.folder1.absolute_url(),
             headers={"Accept": "application/json"},
             auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
             json={"id": "mydocument", "title": "My Document"},
+        )
+        self.assertEqual(400, response.status_code)
+        self.assertIn("Property '@type' is required", response.text)
+
+    def test_post_with_invalid_type_returns_validation_error(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "NonExistentType",
+                "id": "mydocument",
+                "title": "My Document",
+            },
+        )
+        self.assertEqual(403, response.status_code)
+        self.assertEqual(
+            "Invalid '@type' parameter. No content type with the name 'NonExistentType' found",
+            response.json().get("error").get("message"),
+        )
+
+    def test_post_with_empty_type_returns_validation_error(self):
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={
+                "@type": "",
+                "id": "mydocument",
+                "title": "My Document",
+            },
         )
         self.assertEqual(400, response.status_code)
         self.assertIn("Property '@type' is required", response.text)

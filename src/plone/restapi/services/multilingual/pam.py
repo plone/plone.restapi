@@ -13,6 +13,7 @@ from zope.interface import implementer
 from zope.interface import Interface
 
 import plone.protect.interfaces
+import transaction
 
 
 @implementer(IExpandableElement)
@@ -95,22 +96,48 @@ class LinkTranslations(Service):
         if target is None:
             self.request.response.setStatus(400)
             return dict(error=dict(type="BadRequest", message="Content does not exist"))
+        elif target.portal_type == "LRF":
+            self.request.response.setStatus(400)
+            return dict(
+                error=dict(
+                    type="BadRequest",
+                    message="Language Root Folders can only be linked between each other",
+                )
+            )
 
         target_language = ILanguage(target).get_language()
         manager = ITranslationManager(self.context)
         current_translation = manager.get_translation(target_language)
+        target_manager = ITranslationManager(target)
+        target_translation = target_manager.get_translation(self.context.language)
         if current_translation is not None:
             self.request.response.setStatus(400)
             return dict(
                 error=dict(
                     type="BadRequest",
-                    message="Already translated into language {}".format(
+                    message="Source already translated into language {}".format(
+                        target_language
+                    ),
+                )
+            )
+        if target_translation is not None:
+            self.request.response.setStatus(400)
+            return dict(
+                error=dict(
+                    type="BadRequest",
+                    message="Target already translated into language {}".format(
                         target_language
                     ),
                 )
             )
 
         manager.register_translation(target_language, target)
+        # We want to leave a log in the transaction that the link has been executed
+        ts = transaction.get()
+        ts.note(
+            f'Linked translation {"/".join(self.context.getPhysicalPath())} ({self.context.language}) -> {"/".join(target.getPhysicalPath())} ({target_language})'
+        )
+
         self.request.response.setStatus(201)
         self.request.response.setHeader("Location", self.context.absolute_url())
         return {}
@@ -149,8 +176,7 @@ class UnlinkTranslations(Service):
                     message="You need to provide the language to unlink",
                 )
             )
-
-        if language not in list(manager.get_translations()):
+        elif language not in list(manager.get_translations()):
             self.request.response.setStatus(400)
             return dict(
                 error=dict(
@@ -158,6 +184,20 @@ class UnlinkTranslations(Service):
                     message=f"This objects is not translated into {language}",
                 )
             )
+        elif self.context.portal_type == "LRF":
+            self.request.response.setStatus(400)
+            return dict(
+                error=dict(
+                    type="BadRequest",
+                    message="Language Root Folders cannot be unlinked",
+                )
+            )
 
         manager.remove_translation(language)
+        # We want to leave a log in the transaction that the unlink has been executed
+        ts = transaction.get()
+        ts.note(
+            f'Unlinked translation for {language} in {"/".join(self.context.getPhysicalPath())} ({self.context.language})'
+        )
+
         return self.reply_no_content()

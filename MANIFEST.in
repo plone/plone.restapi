@@ -24,3 +24,4 @@ prune src/plone/restapi/tests/images
 prune news
 global-exclude *.pyc
 include pyproject.toml
+include netlify.toml
