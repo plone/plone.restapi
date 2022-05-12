@@ -1,0 +1,2 @@
+Fix mssing `Decimal` field deserializer.
+[jensens]
