@@ -1,10 +1,11 @@
-# -*- coding: utf-8 -*-
 from AccessControl import getSecurityManager
 from Acquisition import aq_inner
+from io import BytesIO
 from OFS.Image import Image
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
+from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.CMFPlone.utils import set_own_login_name
 from Products.PlonePAS.tools.membership import default_portrait
 from Products.PlonePAS.utils import scale_image
@@ -17,22 +18,14 @@ from zope.publisher.interfaces import IPublishTraverse
 import codecs
 import json
 import plone
-import six
-
-
-try:  # pragma: no cover
-    from Products.CMFPlone.interfaces import ISecuritySchema
-except ImportError:  # pragma: no cover
-    from plone.app.controlpanel.security import ISecuritySchema
 
 
 @implementer(IPublishTraverse)
 class UsersPatch(Service):
-    """Updates an existing user.
-    """
+    """Updates an existing user."""
 
     def __init__(self, context, request):
-        super(UsersPatch, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):
@@ -77,7 +70,7 @@ class UsersPatch(Service):
                     # no data on it, then we should not set it since it will fail
                     if key == "portrait" and isinstance(value, dict):
                         self.set_member_portrait(user, value)
-                    user.setMemberProperties(mapping={key: value})
+                    user.setMemberProperties(mapping={key: value}, force_empty=True)
 
             roles = user_settings_to_update.get("roles", {})
             if roles:
@@ -108,7 +101,7 @@ class UsersPatch(Service):
                     # no data on it, then we should not set it since it will fail
                     if key == "portrait" and isinstance(value, dict):
                         self.set_member_portrait(user, value)
-                    user.setMemberProperties(mapping={key: value})
+                    user.setMemberProperties(mapping={key: value}, force_empty=True)
 
         else:
             if self._is_anonymous:
@@ -168,7 +161,7 @@ class UsersPatch(Service):
         content_type = portrait.get("content-type", content_type)
         filename = portrait.get("filename", filename)
         data = portrait.get("data")
-        if isinstance(data, six.text_type):
+        if isinstance(data, str):
             data = data.encode("utf-8")
         if "encoding" in portrait:
             data = codecs.decode(data, portrait["encoding"])
@@ -176,7 +169,7 @@ class UsersPatch(Service):
         if portrait.get("scale", False):
             # Only scale if the scale (default Plone behavior) boolean is set
             # This should be handled by the core in the future
-            scaled, mimetype = scale_image(six.BytesIO(data))
+            scaled, mimetype = scale_image(BytesIO(data))
         else:
             # Normally, the scale and cropping is going to be handled in the
             # frontend

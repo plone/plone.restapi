@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.types.adapters import ListJsonSchemaProvider
 from plone.restapi.types.interfaces import IJsonSchemaProvider
 from z3c.relationfield.interfaces import IRelationList

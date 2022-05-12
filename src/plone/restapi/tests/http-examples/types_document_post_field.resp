@@ -1,0 +1,11 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+
+{
+    "behavior": "plone.dexterity.schema.generated.plone_5_1234567890_2_123456_0_Document",
+    "description": "Email of the author",
+    "factory": "Email",
+    "title": "Author email",
+    "type": "string",
+    "widget": "email"
+}

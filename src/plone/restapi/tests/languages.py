@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-
 from plone.app.i18n.locales.languages import ContentLanguages
 from plone.app.i18n.locales.languages import MetadataLanguages
 from plone.i18n.locales.languages import _combinedlanguagelist
 from plone.i18n.locales.languages import _languagelist
 
 
-class ModifiableLanguages(object):
+class ModifiableLanguages:
     """Mixin for the `IModifiableLanguageAvailability` based local utilities
     that makes the getLanguages and getLanguageListing methods
     (queried by portal_languages) also respect *modifiable* language
@@ -21,8 +19,7 @@ class ModifiableLanguages(object):
     """
 
     def getLanguages(self, combined=False):
-        """Return a sequence of Language objects for available languages.
-        """
+        """Return a sequence of Language objects for available languages."""
         languages = _languagelist.copy()
         if combined:
             languages.update(_combinedlanguagelist.copy())
@@ -33,8 +30,7 @@ class ModifiableLanguages(object):
         return languages
 
     def getLanguageListing(self, combined=False):
-        """Return a sequence of language code and language name tuples.
-        """
+        """Return a sequence of language code and language name tuples."""
         languages = _languagelist.copy()
         if combined:
             languages.update(_combinedlanguagelist.copy())
@@ -42,7 +38,7 @@ class ModifiableLanguages(object):
         available = self.getAvailableLanguages(combined=combined)
         languages = {k: v for k, v in languages.items() if k in available}
 
-        return [(code, languages[code][u"name"]) for code in languages]
+        return [(code, languages[code]["name"]) for code in languages]
 
 
 class ModifiableContentLanguages(ModifiableLanguages, ContentLanguages):

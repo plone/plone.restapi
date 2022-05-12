@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from plone.restapi.upgrades.ordering import ensure_child_ordering_object_ids_are_native_strings
+from plone.restapi.upgrades.ordering import (
+    ensure_child_ordering_object_ids_are_native_strings,
+)
 
 import unittest
-import six
 
 
 class TestUpgradeOrdering(unittest.TestCase):
@@ -29,7 +29,7 @@ class TestUpgradeOrdering(unittest.TestCase):
 
         # use incorrect type for ordering, results in mixed type ordering ids
         # on folder
-        ordering.moveObjectsToBottom([six.text_type('doc1')])
+        ordering.moveObjectsToBottom(["doc1"])
 
         ensure_child_ordering_object_ids_are_native_strings(self.folder)
 
@@ -38,8 +38,8 @@ class TestUpgradeOrdering(unittest.TestCase):
                 "doc2",
                 "doc3",
                 "doc1",
-            ],  # noqa
-            self.folder.objectIds(),
+            ],
+            self.folder.objectIds(),  # noqa
         )
 
         # upgrade helper should ensure bytestring ids in python2 and do nothing
@@ -57,11 +57,10 @@ class TestUpgradeOrdering(unittest.TestCase):
         ordering = self.folder.getOrdering()
         # use incorrect type for ordering, results in mixed type ordering ids
         # on folder
-        ordering.moveObjectsToBottom([six.text_type('doc1')])
+        ordering.moveObjectsToBottom(["doc1"])
 
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
-        view = self.portal.restrictedTraverse(
-            '@@plone-restapi-upgrade-fix-ordering')
+        view = self.portal.restrictedTraverse("@@plone-restapi-upgrade-fix-ordering")
         view()
 
         self.assertEqual(
@@ -69,8 +68,8 @@ class TestUpgradeOrdering(unittest.TestCase):
                 "doc2",
                 "doc3",
                 "doc1",
-            ],  # noqa
-            self.folder.objectIds(),
+            ],
+            self.folder.objectIds(),  # noqa
         )
 
         # upgrade helper should ensure bytestring ids in python2 and do nothing

@@ -1,0 +1,11 @@
+PATCH /plone/@controlpanels/dexterity-types/my_custom_content_type HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "description": "A content-type",
+    "plone.richtext": true,
+    "plone.versioning": true,
+    "title": "My Content Type"
+}

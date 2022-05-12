@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from zope.component.hooks import getSite
@@ -8,11 +7,10 @@ from zope.publisher.interfaces import IPublishTraverse
 
 @implementer(IPublishTraverse)
 class UsersDelete(Service):
-    """Deletes a user.
-    """
+    """Deletes a user."""
 
     def __init__(self, context, request):
-        super(UsersDelete, self).__init__(context, request)
+        super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):

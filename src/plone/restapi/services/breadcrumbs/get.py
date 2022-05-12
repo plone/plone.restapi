@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.services import Service
 from zope.component import adapter
@@ -9,28 +8,35 @@ from zope.interface import Interface
 
 @implementer(IExpandableElement)
 @adapter(Interface, Interface)
-class Breadcrumbs(object):
+class Breadcrumbs:
     def __init__(self, context, request):
         self.context = context
         self.request = request
 
     def __call__(self, expand=False):
-        result = {
-            "breadcrumbs": {
-                "@id": "{}/@breadcrumbs".format(self.context.absolute_url())
-            }
-        }
+        result = {"breadcrumbs": {"@id": f"{self.context.absolute_url()}/@breadcrumbs"}}
         if not expand:
             return result
 
+        portal_state = getMultiAdapter(
+            (self.context, self.request), name="plone_portal_state"
+        )
         breadcrumbs_view = getMultiAdapter(
             (self.context, self.request), name="breadcrumbs_view"
         )
         items = []
         for crumb in breadcrumbs_view.breadcrumbs():
-            items.append({"title": crumb["Title"], "@id": crumb["absolute_url"]})
+            item = {
+                "title": crumb["Title"],
+                "@id": crumb["absolute_url"],
+            }
+            if crumb.get("nav_title", False):
+                item.update({"title": crumb["nav_title"]})
+
+            items.append(item)
 
         result["breadcrumbs"]["items"] = items
+        result["breadcrumbs"]["root"] = portal_state.navigation_root().absolute_url()
         return result
 
 

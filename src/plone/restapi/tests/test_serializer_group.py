@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone import api
 from plone.app.testing import TEST_USER_ID
 from plone.restapi.interfaces import ISerializeToJson
@@ -49,7 +48,7 @@ class TestSerializeUserToJsonAdapters(unittest.TestCase):
         self.assertEqual("ploneteam@plone.org", group.get("email"))
         self.assertEqual("Plone Team", group.get("title"))
         self.assertEqual("We are Plone", group.get("description"))
-        self.assertEqual(set(group["users"]), set(["@id", "items_total", "items"]))
+        self.assertEqual(set(group["users"]), {"@id", "items_total", "items"})
 
     def test_summary(self):
         group = self.serialize_summary(self.group)

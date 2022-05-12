@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -19,7 +18,7 @@ log = logging.getLogger(__name__)
 
 @implementer(ISerializeToJson)
 @adapter(Lazy, Interface)
-class LazyCatalogResultSerializer(object):
+class LazyCatalogResultSerializer:
     """Serializes a ZCatalog resultset (one of the subclasses of `Lazy`) to
     a Python data structure that can in turn be serialized to JSON.
     """
@@ -28,7 +27,7 @@ class LazyCatalogResultSerializer(object):
         self.lazy_resultset = lazy_resultset
         self.request = request
 
-    def __call__(self, metadata_fields=(), fullobjects=False):
+    def __call__(self, fullobjects=False):
         batch = HypermediaBatch(self.request, self.lazy_resultset)
 
         results = {}
@@ -42,9 +41,7 @@ class LazyCatalogResultSerializer(object):
         for brain in batch:
             if fullobjects:
                 try:
-                    result = getMultiAdapter(
-                        (brain.getObject(), self.request), ISerializeToJson
-                    )(include_items=False)
+                    obj = brain.getObject()
                 except KeyError:
                     # Guard in case the brain returned refers to an object that doesn't
                     # exists because it failed to uncatalog itself or the catalog has
@@ -54,6 +51,11 @@ class LazyCatalogResultSerializer(object):
                             brain.getPath()
                         )
                     )
+                    continue
+
+                result = getMultiAdapter((obj, self.request), ISerializeToJson)(
+                    include_items=False
+                )
             else:
                 result = getMultiAdapter(
                     (brain, self.request), ISerializeToJsonSummary

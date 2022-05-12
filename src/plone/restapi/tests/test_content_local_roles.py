@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from Acquisition import aq_base
 from plone import api
 from plone.app.testing import login
@@ -50,7 +49,7 @@ class TestFolderCreate(unittest.TestCase):
         )
 
     def test_sharing_search(self):
-        """A request to @sharing should support the search parameter. """
+        """A request to @sharing should support the search parameter."""
         response = requests.get(
             self.portal.folder1.absolute_url() + "/@sharing",
             headers={"Accept": "application/json"},
@@ -69,8 +68,7 @@ class TestFolderCreate(unittest.TestCase):
         self.assertNotEqual(len(non_search_entries), len(search_entries))
 
     def test_sharing_search_roundtrip(self):
-        """Search for a user and use save roles
-        """
+        """Search for a user and use save roles"""
         # Make sure we don't already have admin
         response = requests.get(
             self.portal.folder1.absolute_url() + "/@sharing",
@@ -88,7 +86,7 @@ class TestFolderCreate(unittest.TestCase):
         roles = [x for x in response.json()["entries"] if x["id"] == "admin"]
         roles = roles[0]["roles"]
 
-        new_roles = dict([(key, not val) for key, val in roles.items()])
+        new_roles = {key: not val for key, val in roles.items()}
         payload = {"entries": [{"id": "admin", "roles": new_roles}]}
 
         response = requests.post(
@@ -121,10 +119,10 @@ class TestFolderCreate(unittest.TestCase):
         available_roles = response.json()["available_roles"]
         self.assertEqual(
             [
-                {u"id": u"Contributor", u"title": u"Kann hinzuf\xfcgen"},
-                {u"id": u"Editor", u"title": u"Kann bearbeiten"},
-                {u"id": u"Reader", u"title": u"Kann ansehen"},
-                {u"id": u"Reviewer", u"title": u"Kann ver\xf6ffentlichen"},
+                {"id": "Contributor", "title": "Kann hinzuf\xfcgen"},
+                {"id": "Editor", "title": "Kann bearbeiten"},
+                {"id": "Reader", "title": "Kann ansehen"},
+                {"id": "Reviewer", "title": "Kann ver\xf6ffentlichen"},
             ],
             available_roles,
         )
@@ -150,28 +148,28 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                u"available_roles": [
-                    {u"id": u"Contributor", u"title": u"Can add"},
-                    {u"id": u"Editor", u"title": u"Can edit"},
-                    {u"id": u"Reader", u"title": u"Can view"},
-                    {u"id": u"Reviewer", u"title": u"Can review"},
+                "available_roles": [
+                    {"id": "Contributor", "title": "Can add"},
+                    {"id": "Editor", "title": "Can edit"},
+                    {"id": "Reader", "title": "Can view"},
+                    {"id": "Reviewer", "title": "Can review"},
                 ],
-                u"entries": [
+                "entries": [
                     {
-                        u"disabled": False,
-                        u"id": u"AuthenticatedUsers",
-                        u"login": None,
-                        u"roles": {
-                            u"Contributor": False,
-                            u"Editor": False,
-                            u"Reader": False,
-                            u"Reviewer": False,
+                        "disabled": False,
+                        "id": "AuthenticatedUsers",
+                        "login": None,
+                        "roles": {
+                            "Contributor": False,
+                            "Editor": False,
+                            "Reader": False,
+                            "Reviewer": False,
                         },
-                        u"title": u"Logged-in users",
-                        u"type": u"group",
+                        "title": "Logged-in users",
+                        "type": "group",
                     }
                 ],
-                u"inherit": True,
+                "inherit": True,
             },
         )
 
@@ -191,40 +189,40 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(
             response.json(),
             {
-                u"available_roles": [
-                    {u"id": u"Contributor", u"title": u"Can add"},
-                    {u"id": u"Editor", u"title": u"Can edit"},
-                    {u"id": u"Reader", u"title": u"Can view"},
-                    {u"id": u"Reviewer", u"title": u"Can review"},
+                "available_roles": [
+                    {"id": "Contributor", "title": "Can add"},
+                    {"id": "Editor", "title": "Can edit"},
+                    {"id": "Reader", "title": "Can view"},
+                    {"id": "Reviewer", "title": "Can review"},
                 ],
-                u"entries": [
+                "entries": [
                     {
-                        u"disabled": False,
-                        u"id": u"AuthenticatedUsers",
-                        u"login": None,
-                        u"roles": {
-                            u"Contributor": False,
-                            u"Editor": False,
-                            u"Reader": False,
-                            u"Reviewer": False,
+                        "disabled": False,
+                        "id": "AuthenticatedUsers",
+                        "login": None,
+                        "roles": {
+                            "Contributor": False,
+                            "Editor": False,
+                            "Reader": False,
+                            "Reviewer": False,
                         },
-                        u"title": u"Logged-in users",
-                        u"type": u"group",
+                        "title": "Logged-in users",
+                        "type": "group",
                     },
                     {
-                        u"disabled": False,
-                        u"id": u"test_user_1_",
-                        u"roles": {
-                            u"Contributor": False,
-                            u"Editor": False,
-                            u"Reader": False,
-                            u"Reviewer": True,
+                        "disabled": False,
+                        "id": "test_user_1_",
+                        "roles": {
+                            "Contributor": False,
+                            "Editor": False,
+                            "Reader": False,
+                            "Reviewer": True,
                         },
-                        u"title": u"test-user",
-                        u"type": u"user",
+                        "title": "test-user",
+                        "type": "user",
                     },
                 ],
-                u"inherit": True,
+                "inherit": True,
             },
         )
 
@@ -243,14 +241,14 @@ class TestFolderCreate(unittest.TestCase):
             json={
                 "entries": [
                     {
-                        u"id": TEST_USER_ID,
-                        u"roles": {
-                            u"Contributor": False,
-                            u"Editor": False,
-                            u"Reader": True,
-                            u"Reviewer": True,
+                        "id": TEST_USER_ID,
+                        "roles": {
+                            "Contributor": False,
+                            "Editor": False,
+                            "Reader": True,
+                            "Reviewer": True,
                         },
-                        u"type": u"user",
+                        "type": "user",
                     }
                 ]
             },
@@ -263,23 +261,25 @@ class TestFolderCreate(unittest.TestCase):
             sorted_roles(pas.getLocalRolesForDisplay(self.portal.folder1)),
             [
                 ["admin", ["Owner"], "user", "admin"],
-                ["test-user", [u"Reader", u"Reviewer"], "user", u"test_user_1_"],
+                ["test-user", ["Reader", "Reviewer"], "user", "test_user_1_"],
             ],
         )
 
     def test_may_only_manage_roles_already_held(self):
         # Grant Editor role to our test user (which gives them the required
         # "plone.DelegateRoles" permission to manage local roles at all)
-        api.user.grant_roles(username=TEST_USER_ID, obj=self.portal.folder1,
-                             roles=['Editor'])
+        api.user.grant_roles(
+            username=TEST_USER_ID, obj=self.portal.folder1, roles=["Editor"]
+        )
         transaction.commit()
 
         # Guard assertion - our test user starts with a limited set of roles
-        existing_roles = api.user.get_roles(username=TEST_USER_ID,
-                                            obj=self.portal.folder1)
+        existing_roles = api.user.get_roles(
+            username=TEST_USER_ID, obj=self.portal.folder1
+        )
         self.assertEqual(
-            sorted(['Member', 'Authenticated', 'Editor']),
-            sorted(existing_roles))
+            sorted(["Member", "Authenticated", "Editor"]), sorted(existing_roles)
+        )
 
         # Attempt to gain additional roles not already held
         response = requests.post(
@@ -289,16 +289,16 @@ class TestFolderCreate(unittest.TestCase):
             json={
                 "entries": [
                     {
-                        u"id": TEST_USER_ID,
-                        u"roles": {
-                            u"Contributor": True,
-                            u"Editor": True,
-                            u"Reader": True,
-                            u"Publisher": True,
-                            u"Reviewer": True,
-                            u"Manager": True,
+                        "id": TEST_USER_ID,
+                        "roles": {
+                            "Contributor": True,
+                            "Editor": True,
+                            "Reader": True,
+                            "Publisher": True,
+                            "Reviewer": True,
+                            "Manager": True,
                         },
-                        u"type": u"user",
+                        "type": "user",
                     }
                 ]
             },
@@ -307,21 +307,20 @@ class TestFolderCreate(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(response.status_code, 204)
-        new_roles = api.user.get_roles(username=TEST_USER_ID,
-                                       obj=self.portal.folder1)
+        new_roles = api.user.get_roles(username=TEST_USER_ID, obj=self.portal.folder1)
 
         # New roles should not contain any new roles that the user didn't
         # have permission to delegate.
-        self.assertNotIn(u'Manager', new_roles)
-        self.assertNotIn(u'Publisher', new_roles)
-        self.assertNotIn(u'Reviewer', new_roles)
-        self.assertNotIn(u'Contributor', new_roles)
+        self.assertNotIn("Manager", new_roles)
+        self.assertNotIn("Publisher", new_roles)
+        self.assertNotIn("Reviewer", new_roles)
+        self.assertNotIn("Contributor", new_roles)
 
         # 'Reader' gets added because the permission to delegate it is
         # assigned to 'Editor' by default (see p.a.workflow.permissions)
         self.assertEqual(
-            sorted(['Member', 'Authenticated', 'Editor', 'Reader']),
-            sorted(new_roles))
+            sorted(["Member", "Authenticated", "Editor", "Reader"]), sorted(new_roles)
+        )
 
     def test_unmanaged_existing_roles_are_retained_on_update(self):
         """Make sure that existing roles don't get dropped when a user that
@@ -330,30 +329,40 @@ class TestFolderCreate(unittest.TestCase):
         """
         # Create another user that holds the Reviewer role, which is not
         # managed by our test user
-        api.user.create(username='peter', email='peter@example.org',
-                        password='secret', roles=('Member', ))
+        api.user.create(
+            username="peter",
+            email="peter@example.org",
+            password="secret",
+            roles=("Member",),
+        )
 
-        api.user.grant_roles(username='peter', obj=self.portal.folder1,
-                             roles=['Reviewer'])
+        api.user.grant_roles(
+            username="peter", obj=self.portal.folder1, roles=["Reviewer"]
+        )
         transaction.commit()
 
-        peters_existing_roles = api.user.get_roles(username='peter',
-                                                   obj=self.portal.folder1)
-        self.assertEqual(sorted(['Member', 'Reviewer', 'Authenticated']),
-                         sorted(peters_existing_roles))
+        peters_existing_roles = api.user.get_roles(
+            username="peter", obj=self.portal.folder1
+        )
+        self.assertEqual(
+            sorted(["Member", "Reviewer", "Authenticated"]),
+            sorted(peters_existing_roles),
+        )
 
         # Grant Editor role to our test user (which gives them the required
         # "plone.DelegateRoles" permission to manage local roles at all)
-        api.user.grant_roles(username=TEST_USER_ID, obj=self.portal.folder1,
-                             roles=['Editor'])
+        api.user.grant_roles(
+            username=TEST_USER_ID, obj=self.portal.folder1, roles=["Editor"]
+        )
         transaction.commit()
 
         # Guard assertion - our test user doesn't have/manage Reviewer
-        existing_roles = api.user.get_roles(username=TEST_USER_ID,
-                                            obj=self.portal.folder1)
+        existing_roles = api.user.get_roles(
+            username=TEST_USER_ID, obj=self.portal.folder1
+        )
         self.assertEqual(
-            sorted(['Member', 'Authenticated', 'Editor']),
-            sorted(existing_roles))
+            sorted(["Member", "Authenticated", "Editor"]), sorted(existing_roles)
+        )
 
         # Test user now gives Editor to peter. This should not lead to
         # peter losing the Reviewer role.
@@ -364,16 +373,16 @@ class TestFolderCreate(unittest.TestCase):
             json={
                 "entries": [
                     {
-                        u"id": "peter",
-                        u"roles": {
-                            u"Contributor": False,
-                            u"Editor": True,
-                            u"Reader": True,
-                            u"Publisher": False,
-                            u"Reviewer": True,
-                            u"Manager": False,
+                        "id": "peter",
+                        "roles": {
+                            "Contributor": False,
+                            "Editor": True,
+                            "Reader": True,
+                            "Publisher": False,
+                            "Reviewer": True,
+                            "Manager": False,
                         },
-                        u"type": u"user",
+                        "type": "user",
                     }
                 ]
             },
@@ -382,13 +391,13 @@ class TestFolderCreate(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(response.status_code, 204)
-        new_roles = api.user.get_roles(username='peter',
-                                       obj=self.portal.folder1)
+        new_roles = api.user.get_roles(username="peter", obj=self.portal.folder1)
 
-        self.assertIn(u'Reviewer', new_roles)
+        self.assertIn("Reviewer", new_roles)
         self.assertEqual(
-            sorted(['Member', 'Authenticated', 'Editor', 'Reader', 'Reviewer']),
-            sorted(new_roles))
+            sorted(["Member", "Authenticated", "Editor", "Reader", "Reviewer"]),
+            sorted(new_roles),
+        )
 
     def test_unset_local_roles_for_user(self):
         api.user.grant_roles(
@@ -412,14 +421,14 @@ class TestFolderCreate(unittest.TestCase):
             json={
                 "entries": [
                     {
-                        u"id": TEST_USER_ID,
-                        u"roles": {
-                            u"Contributor": False,
-                            u"Editor": False,
-                            u"Reader": False,
-                            u"Reviewer": True,
+                        "id": TEST_USER_ID,
+                        "roles": {
+                            "Contributor": False,
+                            "Editor": False,
+                            "Reader": False,
+                            "Reviewer": True,
                         },
-                        u"type": u"user",
+                        "type": "user",
                     }
                 ]
             },
@@ -432,7 +441,7 @@ class TestFolderCreate(unittest.TestCase):
             pas.getLocalRolesForDisplay(self.portal.folder1),
             (
                 ("admin", ("Owner",), "user", "admin"),
-                ("test-user", (u"Reviewer",), "user", u"test_user_1_"),
+                ("test-user", ("Reviewer",), "user", "test_user_1_"),
             ),
         )
 
@@ -451,14 +460,14 @@ class TestFolderCreate(unittest.TestCase):
             json={
                 "entries": [
                     {
-                        u"id": TEST_USER_ID,
-                        u"roles": {
-                            u"Contributor": False,
-                            u"Editor": False,
-                            u"Reader": True,
-                            u"Reviewer": True,
+                        "id": TEST_USER_ID,
+                        "roles": {
+                            "Contributor": False,
+                            "Editor": False,
+                            "Reader": True,
+                            "Reviewer": True,
                         },
-                        u"type": u"user",
+                        "type": "user",
                     }
                 ]
             },
@@ -470,7 +479,7 @@ class TestFolderCreate(unittest.TestCase):
             sorted_roles(pas.getLocalRolesForDisplay(self.portal)),
             [
                 ["admin", ["Owner"], "user", "admin"],
-                ["test-user", [u"Reader", u"Reviewer"], "user", u"test_user_1_"],
+                ["test-user", ["Reader", "Reviewer"], "user", "test_user_1_"],
             ],
         )
 
@@ -587,7 +596,7 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(response.status_code, 501)
         response = response.json()
         self.assertIn("error", response)
-        self.assertEqual(u"No serializer available.", response["error"]["message"])
+        self.assertEqual("No serializer available.", response["error"]["message"])
 
         # we need to re-register the adapter here for following tests
         gsm.registerAdapter(SerializeLocalRolesToJson, name="local_roles")

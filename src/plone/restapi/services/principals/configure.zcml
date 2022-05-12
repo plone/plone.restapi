@@ -1,14 +1,15 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:plone="http://namespaces.plone.org/plone"
-    xmlns:zcml="http://namespaces.zope.org/zcml">
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
 
   <plone:service
-    method="GET"
-    name="@principals"
-    for="Products.CMFCore.interfaces.ISiteRoot"
-    factory=".get.PrincipalsGet"
-    permission="cmf.ManagePortal"
-    />
+      method="GET"
+      factory=".get.PrincipalsGet"
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      permission="cmf.ManagePortal"
+      name="@principals"
+      />
 
 </configure>

@@ -1,0 +1,14 @@
+PATCH /plone/@types/Document HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "properties": {
+        "author_email": {
+            "default": "foo@bar.com",
+            "maxLength": 20,
+            "minLength": 5
+        }
+    }
+}

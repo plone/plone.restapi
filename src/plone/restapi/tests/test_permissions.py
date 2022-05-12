@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
@@ -20,7 +19,7 @@ class TestPermissions(unittest.TestCase):
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
 
-        self.api_session = RelativeSession(self.portal_url)
+        self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (TEST_USER_NAME, TEST_USER_PASSWORD)
 
@@ -58,8 +57,8 @@ class TestPermissions(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
         self.assertDictContainsSubset(
             {
-                u"type": u"Unauthorized",
-                u"message": u"Missing 'plone.restapi: Use REST API' permission",
+                "type": "Unauthorized",
+                "message": "Missing 'plone.restapi: Use REST API' permission",
             },
             response.json(),
         )

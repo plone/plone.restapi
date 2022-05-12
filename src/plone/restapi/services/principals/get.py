@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from itertools import chain
 from plone.app.workflow.browser.sharing import merge_search_results
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -35,10 +34,10 @@ class PrincipalsGet(Service):
         def search_for_principal(hunter, search_term):
             return merge_search_results(
                 chain(
-                    *[
+                    *(
                         hunter.searchUsers(**{field: search_term})
                         for field in ["name", "fullname", "email"]
-                    ]
+                    )
                 ),
                 "userid",
             )
@@ -55,10 +54,10 @@ class PrincipalsGet(Service):
         def search_for_principal(hunter, search_term):
             return merge_search_results(
                 chain(
-                    *[
+                    *(
                         hunter.searchGroups(**{field: search_term})
                         for field in ["id", "title"]
-                    ]
+                    )
                 ),
                 "groupid",
             )

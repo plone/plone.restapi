@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.interfaces import ISerializeToJson
@@ -11,8 +10,7 @@ import plone.protect.interfaces
 
 
 class SharingGet(Service):
-    """Returns a serialized content object.
-    """
+    """Returns a serialized content object."""
 
     def reply(self):
         # return 403 Forbidden if the user has no DelegateRoles permission

@@ -1,11 +1,15 @@
-# -*- coding: utf-8 -*-
+from OFS.Image import Image
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
+from plone.app.testing import setRoles
+from plone.app.testing import TEST_USER_ID
 from plone.registry.interfaces import IRegistry
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from Products.CMFCore.utils import getToolByName
+from Products.PlonePAS.tests import dummy
 from unittest import TestCase
 from zope.component import createObject
 from zope.component import getMultiAdapter
@@ -53,7 +57,7 @@ class TestCommentsSerializers(TestCase):
         )
 
         output = serializer()
-        self.assertEqual(set(output), set(["@id", "items_total", "items"]))
+        self.assertEqual(set(output), {"@id", "items_total", "items"})
 
     def test_conversation_batched(self):
         self.request.form["b_size"] = 1
@@ -79,6 +83,7 @@ class TestCommentsSerializers(TestCase):
             "user_notification",
             "author_username",
             "author_name",
+            "author_image",
             "creation_date",
             "modification_date",
             "is_editable",
@@ -86,10 +91,44 @@ class TestCommentsSerializers(TestCase):
         ]
         self.assertEqual(set(output), set(expected))
 
-        self.assertEqual(set(output["text"]), set(["data", "mime-type"]))
+        self.assertEqual(set(output["text"]), {"data", "mime-type"})
+
+    def test_comment_with_author_image(self):
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        # set member portrait
+        membertool = getToolByName(self.portal, "portal_memberdata")
+        membertool._setPortrait(
+            Image(id=TEST_USER_ID, file=dummy.File(), title=""), TEST_USER_ID
+        )
+        self.conversation = IConversation(self.doc)
+        self.replies = IReplies(self.conversation)
+        comment = createObject("plone.Comment")
+        comment.text = "Hey ho, let's go!"
+        comment.author_username = TEST_USER_ID
+        self.comment = self.replies[self.replies.addComment(comment)]
+
+        serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
+        self.assertEqual(
+            f"{self.portal_url}/portal_memberdata/portraits/test_user_1_",
+            serializer().get("author_image"),
+        )
+
+    def test_comment_with_no_author_image(self):
+        setRoles(self.portal, TEST_USER_ID, ["Manager"])
+        self.conversation = IConversation(self.doc)
+        self.replies = IReplies(self.conversation)
+        comment = createObject("plone.Comment")
+        comment.text = "Hey ho, let's go!"
+        comment.author_username = TEST_USER_ID
+        self.comment = self.replies[self.replies.addComment(comment)]
+
+        serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
+        self.assertEqual(
+            None,
+            serializer().get("author_image"),
+        )
 
     def test_comment_with_mimetype_text_plain(self):
-
         self.conversation = IConversation(self.doc)
         self.replies = IReplies(self.conversation)
         comment = createObject("plone.Comment")
@@ -101,7 +140,7 @@ class TestCommentsSerializers(TestCase):
 
         # serializer should return HTML with a clickable link
         self.assertEqual(
-            'Hey, I am plain text!',
+            "Hey, I am plain text!",
             serializer()["text"]["data"],
         )
         # serializer should return mimetype = text/x-web-intelligent

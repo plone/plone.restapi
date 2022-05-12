@@ -1,0 +1,43 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@addons",
+  "items": [
+    {
+      "description": "Optional plone.session refresh support.",
+      "profile_type": "default",
+      "upgrade_profiles": {},
+      "uninstall_profile_id": "plone.session:uninstall",
+      "other_profiles": [],
+      "is_installed": "FALSE",
+      "id": "plone.session",
+      "install_profile": {
+        "product": "plone.session",
+        "description": "Optional plone.session refresh support.",
+        "for": "NULL",
+        "title": "Session refresh support",
+        "pre_handler": "NULL",
+        "version": "1001",
+        "type": 2,
+        "id": "plone.session:default",
+        "post_handler": "NULL"
+      },
+      "title": "Session refresh support",
+      "uninstall_profile": {
+        "product": "plone.session",
+        "description": "Optional plone.session refresh support. [uninstall]",
+        "for": "NULL",
+        "title": "Session refresh support [uninstall]",
+        "pre_handler": "NULL",
+        "type": 2,
+        "id": "plone.session:uninstall",
+        "post_handler": "NULL"
+      },
+      "install_profile_id": "plone.session:default",
+      "version": "3.7.0",
+      "upgrade_info": {}
+    }
+  ],
+  "items_total": 16
+}

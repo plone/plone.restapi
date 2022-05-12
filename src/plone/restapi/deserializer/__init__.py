@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.exceptions import DeserializationError
 
 import json

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.registry.interfaces import IRegistry
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
@@ -11,7 +10,7 @@ from zope.publisher.interfaces import IRequest
 
 @implementer(ISerializeToJson)
 @adapter(IRegistry, IRequest)
-class SerializeRegistryToJson(object):
+class SerializeRegistryToJson:
     def __init__(self, registry, request):
         self.registry = registry
         self.request = request

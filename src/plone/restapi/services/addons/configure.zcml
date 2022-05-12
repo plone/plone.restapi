@@ -1,0 +1,22 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
+
+  <plone:service
+      method="GET"
+      factory=".get.AddonsGet"
+      for="zope.interface.Interface"
+      permission="cmf.ManagePortal"
+      name="@addons"
+      />
+
+  <plone:service
+      method="POST"
+      factory=".post.AddonsPost"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@addons"
+      />
+
+</configure>

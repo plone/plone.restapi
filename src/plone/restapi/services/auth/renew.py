@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.PluggableAuthService.interfaces.plugins import (
@@ -10,8 +9,7 @@ import plone.protect.interfaces
 
 
 class Renew(Service):
-    """Renew authentication token
-    """
+    """Renew authentication token"""
 
     def reply(self):
         plugin = None

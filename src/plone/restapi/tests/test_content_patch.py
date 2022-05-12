@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from OFS.interfaces import IObjectWillBeAddedEvent
 from plone.app.testing import login
 from plone.app.testing import setRoles
@@ -7,8 +6,6 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
-from plone.restapi import HAS_AT
-from plone.restapi.testing import PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from Products.CMFCore.PortalContent import PortalContent
 from Products.CMFCore.utils import getToolByName
@@ -17,6 +14,7 @@ from zope.lifecycleevent.interfaces import IObjectAddedEvent
 from zope.lifecycleevent.interfaces import IObjectCreatedEvent
 from zope.lifecycleevent.interfaces import IObjectModifiedEvent
 
+import json
 import requests
 import transaction
 import unittest
@@ -61,7 +59,7 @@ class TestContentPatch(unittest.TestCase):
 
         # null will set field.missing_value which is u'' for the field
         self.assertEqual(204, response.status_code)
-        self.assertEqual(u"", self.portal.doc1.description)
+        self.assertEqual("", self.portal.doc1.description)
 
     def test_patch_document_will_not_delete_value_with_null_if_required(self):
         response = requests.patch(
@@ -133,9 +131,9 @@ class TestContentPatch(unittest.TestCase):
             json={
                 "@type": "Image",
                 "image": {
-                    "data": u"R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",  # noqa
-                    "encoding": u"base64",
-                    "content-type": u"image/gif",
+                    "data": "R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=",  # noqa
+                    "encoding": "base64",
+                    "content-type": "image/gif",
                 },
             },
         )
@@ -182,58 +180,20 @@ class TestContentPatch(unittest.TestCase):
         sm.unregisterHandler(record_event, (IObjectAddedEvent,))
         sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
 
-
-class TestATContentPatch(unittest.TestCase):
-
-    layer = PLONE_RESTAPI_AT_FUNCTIONAL_TESTING
-
-    def setUp(self):
-        if not HAS_AT:
-            raise unittest.SkipTest("Skip tests if Archetypes is not present")
-        self.app = self.layer["app"]
-        self.portal = self.layer["portal"]
-        setRoles(self.portal, TEST_USER_ID, ["Manager"])
-        login(self.portal, TEST_USER_NAME)
-        self.portal.portal_repository._versionable_content_types = []
-        self.portal.invokeFactory(
-            "Document", id="doc1", title="My Document", description="Some Description"
-        )
-        self.portal.doc1.unmarkCreationFlag()
-        transaction.commit()
-
-    def test_patch_reindexes_document(self):
-        requests.patch(
+    def test_patch_document_with_apostrophe_dont_return_500(self):
+        data = {
+            "text": {
+                "content-type": "text/html",
+                "encoding": "utf8",
+                "data": "<p>example with &#x27;</p>",
+            }
+        }
+        response = requests.patch(
             self.portal.doc1.absolute_url(),
             headers={"Accept": "application/json"},
-            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
-            json={"description": "Foo Bar"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            data=json.dumps(data),
         )
+        self.assertEqual(204, response.status_code)
         transaction.begin()
-        brain = self.portal.portal_catalog(UID=self.portal.doc1.UID())[0]
-        self.assertEqual(brain.Description, "Foo Bar")
-
-    def test_patch_document_fires_proper_events(self):
-        sm = getGlobalSiteManager()
-        fired_events = []
-
-        def record_event(event):
-            fired_events.append(event.__class__.__name__)
-
-        sm.registerHandler(record_event, (IObjectCreatedEvent,))
-        sm.registerHandler(record_event, (IObjectWillBeAddedEvent,))
-        sm.registerHandler(record_event, (IObjectAddedEvent,))
-        sm.registerHandler(record_event, (IObjectModifiedEvent,))
-
-        requests.patch(
-            self.portal.doc1.absolute_url(),
-            headers={"Accept": "application/json"},
-            auth=(TEST_USER_NAME, TEST_USER_PASSWORD),
-            json={"description": "123"},
-        )
-
-        self.assertEqual(fired_events, ["ObjectEditedEvent"])
-
-        sm.unregisterHandler(record_event, (IObjectCreatedEvent,))
-        sm.unregisterHandler(record_event, (IObjectWillBeAddedEvent,))
-        sm.unregisterHandler(record_event, (IObjectAddedEvent,))
-        sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
+        self.assertEqual("<p>example with '</p>", self.portal.doc1.text.raw)

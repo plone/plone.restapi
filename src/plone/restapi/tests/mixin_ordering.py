@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from zExceptions import BadRequest
 
 import json
@@ -255,4 +254,38 @@ class OrderingMixin:
         with self.assertRaises(BadRequest) as cm:
             self.deserialize(body=json.dumps(data), context=self.folder)
 
-        self.assertEqual(u"Client/server ordering mismatch", str(cm.exception))
+        self.assertEqual("Client/server ordering mismatch", str(cm.exception))
+
+    def test_resort_all_items(self):
+        self.assertEqual(
+            [
+                "doc1",
+                "doc2",
+                "doc3",
+                "doc4",
+                "doc5",
+                "doc6",
+                "doc7",
+                "doc8",
+                "doc9",
+            ],  # noqa
+            self.folder.contentIds(),
+        )
+
+        # Resort all Ids descending
+        data = {"sort": {"on": "id", "order": "descending"}}
+        self.deserialize(body=json.dumps(data), context=self.folder)
+        self.assertEqual(
+            [
+                "doc9",
+                "doc8",
+                "doc7",
+                "doc6",
+                "doc5",
+                "doc4",
+                "doc3",
+                "doc2",
+                "doc1",
+            ],  # noqa
+            self.folder.contentIds(),
+        )

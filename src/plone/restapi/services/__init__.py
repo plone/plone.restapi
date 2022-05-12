@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from AccessControl.SecurityManagement import getSecurityManager
 from plone.rest import Service as RestService
 from plone.restapi.permissions import UseRESTAPI
@@ -11,8 +10,7 @@ _no_content_marker = object()
 
 
 class Service(RestService):
-    """Base class for Plone REST API services
-    """
+    """Base class for Plone REST API services"""
 
     content_type = "application/json"
 
@@ -32,7 +30,7 @@ class Service(RestService):
 
     def reply(self):
         """Process the request and return a JSON serializable data structure or
-           the no content marker if the response body should be empty.
+        the no content marker if the response body should be empty.
         """
         return _no_content_marker
 

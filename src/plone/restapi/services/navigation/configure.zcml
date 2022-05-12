@@ -1,15 +1,26 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
-    xmlns:plone="http://namespaces.plone.org/plone">
+    xmlns:cache="http://namespaces.zope.org/cache"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
 
-  <adapter factory=".get.Navigation" name="navigation"/>
+  <adapter
+      factory=".get.Navigation"
+      name="navigation"
+      />
 
   <plone:service
-    method="GET"
-    for="zope.interface.Interface"
-    factory=".get.NavigationGet"
-    name="@navigation"
-    permission="zope2.View"
-    />
+      method="GET"
+      factory=".get.NavigationGet"
+      for="zope.interface.Interface"
+      permission="zope2.View"
+      name="@navigation"
+      />
+  <cache:ruleset
+      for=".get.NavigationGet"
+      ruleset="plone.content.dynamic"
+      zcml:condition="have plone-app-caching-3"
+      />
 
 </configure>

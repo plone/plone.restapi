@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from plone.restapi.controlpanels import IControlpanel
 from plone.restapi.interfaces import IJsonCompatible
 from plone.restapi.interfaces import ISerializeToJson
@@ -12,10 +11,12 @@ from zope.publisher.interfaces import IPublishTraverse
 
 @implementer(IPublishTraverse)
 class ControlpanelsGet(Service):
-    controlpanel_name = None
+    def __init__(self, context, request):
+        super().__init__(context, request)
+        self.params = []
 
     def publishTraverse(self, request, name):
-        self.controlpanel_name = name
+        self.params.append(name)
         return self
 
     def get_controlpanel_adapters(self):
@@ -26,9 +27,7 @@ class ControlpanelsGet(Service):
 
     def available_controlpanels(self):
         panels = dict(self.get_controlpanel_adapters())
-        panels_by_configlet = dict(
-            [(p.configlet_id, name) for name, p in panels.items()]
-        )
+        panels_by_configlet = {p.configlet_id: name for name, p in panels.items()}
 
         pctool = getToolByName(self.context, "portal_controlpanel")
         for group in pctool.getGroups():
@@ -43,7 +42,7 @@ class ControlpanelsGet(Service):
         return panels.get(name)
 
     def reply(self):
-        if self.controlpanel_name:
+        if self.params:
             return self.reply_panel()
 
         def serialize(panels):
@@ -51,12 +50,20 @@ class ControlpanelsGet(Service):
                 serializer = ISerializeToJsonSummary(panel)
                 yield serializer()
 
+        # List panels
         panels = self.available_controlpanels()
         return IJsonCompatible(list(serialize(panels)))
 
     def reply_panel(self):
-        panel = self.panel_by_name(self.controlpanel_name)
+        name = self.params[0]
+        panel = self.panel_by_name(name)
         if panel is None:
             self.request.response.setStatus(404)
             return
+
+        # Panel child request
+        if len(self.params) > 1:
+            return IJsonCompatible(panel.get(self.params[1:]))
+
+        # Panel request
         return IJsonCompatible(ISerializeToJson(panel)())

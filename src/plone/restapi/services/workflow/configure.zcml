@@ -1,32 +1,36 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
     xmlns:plone="http://namespaces.plone.org/plone"
-    xmlns:zcml="http://namespaces.zope.org/zcml">
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
 
   <plone:service
-    method="GET"
-    name="@workflow"
-    for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-    factory=".info.WorkflowInfoService"
-    permission="zope2.View"
-    />
+      method="GET"
+      factory=".info.WorkflowInfoService"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@workflow"
+      />
 
   <plone:service
-    method="GET"
-    name="@workflow"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".info.WorkflowInfoService"
-    permission="zope2.View"
-    />
+      method="GET"
+      factory=".info.WorkflowInfoService"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@workflow"
+      />
 
   <plone:service
-    method="POST"
-    name="@workflow"
-    for="Products.CMFCore.interfaces.IContentish"
-    factory=".transition.WorkflowTransition"
-    permission="zope2.View"
-    />
+      method="POST"
+      factory=".transition.WorkflowTransition"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@workflow"
+      />
 
-  <adapter factory=".info.WorkflowInfo" name="workflow"/>
+  <adapter
+      factory=".info.WorkflowInfo"
+      name="workflow"
+      />
 
 </configure>

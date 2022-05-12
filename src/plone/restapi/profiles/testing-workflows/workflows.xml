@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<object name="portal_workflow" meta_type="Plone Workflow Tool">
+ <object name="restriction_workflow" meta_type="Workflow"/>
+ <bindings>
+   <type type_id="DXTestDocument">
+     <bound-workflow workflow_id="simple_publication_workflow" />
+   </type>
+   <type type_id="ATTestFolder">
+     <bound-workflow workflow_id="simple_publication_workflow" />
+   </type>
+   <type type_id="ATTestDocument">
+     <bound-workflow workflow_id="simple_publication_workflow" />
+   </type>
+ </bindings>
+</object>

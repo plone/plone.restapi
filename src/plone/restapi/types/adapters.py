@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """JsonSchema providers."""
 from plone.app.textfield.interfaces import IRichText
 from plone.restapi.types.interfaces import IJsonSchemaProvider
@@ -8,6 +7,8 @@ from plone.restapi.types.utils import get_querysource_url
 from plone.restapi.types.utils import get_source_url
 from plone.restapi.types.utils import get_vocabulary_url
 from plone.restapi.types.utils import get_widget_params
+from plone.restapi.types.utils import get_multilingual_directives
+from plone.schema import IEmail
 from plone.schema import IJSONField
 from z3c.formwidget.query.interfaces import IQuerySource
 from zope.component import adapter
@@ -31,6 +32,8 @@ from zope.schema.interfaces import IFloat
 from zope.schema.interfaces import IInt
 from zope.schema.interfaces import IList
 from zope.schema.interfaces import IObject
+from zope.schema.interfaces import IPassword
+from zope.schema.interfaces import IURI
 from zope.schema.interfaces import ISet
 from zope.schema.interfaces import IText
 from zope.schema.interfaces import ITextLine
@@ -39,7 +42,7 @@ from zope.schema.interfaces import ITuple
 
 @adapter(IField, Interface, Interface)
 @implementer(IJsonSchemaProvider)
-class DefaultJsonSchemaProvider(object):
+class DefaultJsonSchemaProvider:
     def __init__(self, field, context, request):
         self.field = field.bind(context)
         self.context = context
@@ -54,7 +57,7 @@ class DefaultJsonSchemaProvider(object):
 
     def get_description(self):
         if self.field.description is None:
-            return u""
+            return ""
 
         return translate(self.field.description, context=self.request)
 
@@ -73,9 +76,17 @@ class DefaultJsonSchemaProvider(object):
         if widget:
             schema["widget"] = widget
 
+        factory = self.get_factory()
+        if factory:
+            schema["factory"] = factory
+
         widget_options = self.get_widget_params()
         if widget_options:
             schema["widgetOptions"] = widget_options
+
+        multilingual_options = self.get_multilingual_directives()
+        if multilingual_options:
+            schema["multilingual_options"] = multilingual_options
 
         if self.field.default is not None:
             schema["default"] = self.field.default
@@ -86,8 +97,11 @@ class DefaultJsonSchemaProvider(object):
     def get_type(self):
         raise NotImplementedError
 
+    def get_factory(self):
+        pass
+
     def get_widget(self):
-        return None
+        return getattr(self.field, "widget", None)
 
     def get_widget_params(self):
         all_params = get_widget_params([self.field.interface])
@@ -99,6 +113,11 @@ class DefaultJsonSchemaProvider(object):
             }
         return params
 
+    def get_multilingual_directives(self):
+        all_params = get_multilingual_directives([self.field.interface])
+        params = all_params.get(self.field.getName(), {})
+        return params
+
 
 @adapter(IBytes, Interface, Interface)
 @implementer(IJsonSchemaProvider)
@@ -106,42 +125,79 @@ class BytesLineJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "string"
 
+    def get_factory(self):
+        return "Text line (String)"
+
 
 @adapter(ITextLine, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class TextLineJsonSchemaProvider(DefaultJsonSchemaProvider):
+    def additional(self):
+        info = {}
+        if self.field.min_length:
+            info["minLength"] = self.field.min_length
+
+        if self.field.max_length:
+            info["maxLength"] = self.field.max_length
+
+        return info
+
     def get_type(self):
         return "string"
+
+    def get_factory(self):
+        return "Text line (String)"
 
 
 @adapter(IText, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class TextJsonSchemaProvider(TextLineJsonSchemaProvider):
-    def additional(self):
-        info = {}
-        if self.field.min_length is not None:
-            info["minLength"] = self.field.min_length
-
-        if self.field.max_length is not None:
-            info["maxLength"] = self.field.max_length
-
-        return info
-
     def get_widget(self):
         return "textarea"
+
+    def get_factory(self):
+        return "Text"
+
+
+@adapter(IEmail, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class EmailJsonSchemaProvider(TextLineJsonSchemaProvider):
+    def get_widget(self):
+        return "email"
+
+    def get_factory(self):
+        return "Email"
+
+
+@adapter(IPassword, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class PasswordJsonSchemaProvider(TextLineJsonSchemaProvider):
+    def get_widget(self):
+        return "password"
+
+    def get_factory(self):
+        return "Password"
+
+
+@adapter(IURI, Interface, Interface)
+@implementer(IJsonSchemaProvider)
+class URIJsonSchemaProvider(TextLineJsonSchemaProvider):
+    def get_widget(self):
+        return "url"
+
+    def get_factory(self):
+        return "URL"
 
 
 @adapter(IASCII, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class ASCIIJsonSchemaProvider(TextLineJsonSchemaProvider):
-
     pass
 
 
 @adapter(IASCIILine, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class ASCIILineJsonSchemaProvider(TextLineJsonSchemaProvider):
-
     pass
 
 
@@ -161,11 +217,13 @@ class FloatJsonSchemaProvider(DefaultJsonSchemaProvider):
 
         return info
 
+    def get_factory(self):
+        return "Floating-point number"
+
 
 @adapter(IDecimal, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DecimalJsonSchemaProvider(FloatJsonSchemaProvider):
-
     pass
 
 
@@ -175,6 +233,9 @@ class IntegerJsonSchemaProvider(FloatJsonSchemaProvider):
     def get_type(self):
         return "integer"
 
+    def get_factory(self):
+        return "Integer"
+
 
 @adapter(IBool, Interface, Interface)
 @implementer(IJsonSchemaProvider)
@@ -182,12 +243,29 @@ class BoolJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "boolean"
 
+    def get_factory(self):
+        return "Yes/No"
+
 
 @adapter(ICollection, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "array"
+
+    def get_factory(self):
+        map = {
+            "RelationList": "Relation List",
+            "Set": "Multiple Choice",
+            "List": "List",
+            "Tuple": "Tuple",
+        }
+
+        for key, value in map.items():
+            if key in self.field.__repr__():
+                return value
+
+        return "Collection"
 
     def get_items(self):
         """Get items properties."""
@@ -215,7 +293,7 @@ class CollectionJsonSchemaProvider(DefaultJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
     def additional(self):
-        info = super(ListJsonSchemaProvider, self).additional()
+        info = super().additional()
         if IChoice.providedBy(self.field.value_type):
             info["uniqueItems"] = True
         else:
@@ -228,7 +306,7 @@ class ListJsonSchemaProvider(CollectionJsonSchemaProvider):
 @implementer(IJsonSchemaProvider)
 class SetJsonSchemaProvider(CollectionJsonSchemaProvider):
     def additional(self):
-        info = super(SetJsonSchemaProvider, self).additional()
+        info = super().additional()
         info["uniqueItems"] = True
         return info
 
@@ -249,6 +327,14 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
 
     def get_type(self):
         return "string"
+
+    def get_factory(self):
+        map = {"RelationChoice": "Relation Choice", "Choice": "Choice"}
+
+        for key, value in map.items():
+            if key in self.field.__repr__():
+                return value
+        return "Choice"
 
     def additional(self):
         # Named global vocabulary
@@ -316,6 +402,12 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_type(self):
         return "object"
 
+    def get_factory(self):
+        if self.field.schema.__name__ == "INamedBlobImage":
+            return "Image"
+        else:
+            return "File"
+
     def get_properties(self):
         if self.prefix:
             prefix = ".".join([self.prefix, self.field.__name__])
@@ -328,7 +420,7 @@ class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
         return get_jsonschema_properties(context, request, fieldsets, prefix)
 
     def additional(self):
-        info = super(ObjectJsonSchemaProvider, self).additional()
+        info = super().additional()
         info["properties"] = self.get_properties()
         return info
 
@@ -349,7 +441,7 @@ class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
             "additional": key_type.additional(),
         }
         value_type = getMultiAdapter(
-            (self.field.key_type, self.context, self.request), IJsonSchemaProvider
+            (self.field.value_type, self.context, self.request), IJsonSchemaProvider
         )
         info["value_type"] = {
             "schema": value_type.get_schema(),
@@ -369,6 +461,9 @@ class RichTextJsonSchemaProvider(DefaultJsonSchemaProvider):
 
     def get_widget(self):
         return "richtext"
+
+    def get_factory(self):
+        return "Rich Text"
 
 
 @adapter(IDate, Interface, Interface)
@@ -390,12 +485,18 @@ class DateJsonSchemaProvider(DefaultJsonSchemaProvider):
     def get_widget(self):
         return "date"
 
+    def get_factory(self):
+        return "Date"
+
 
 @adapter(IDatetime, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class DatetimeJsonSchemaProvider(DateJsonSchemaProvider):
     def get_widget(self):
         return "datetime"
+
+    def get_factory(self):
+        return "Date/Time"
 
 
 @adapter(ITuple, Interface, Interface)
@@ -411,4 +512,7 @@ class JSONFieldSchemaProvider(DefaultJsonSchemaProvider):
         return "dict"
 
     def get_widget(self):
-        return "json"
+        return getattr(self.field, "widget", False) or "json"
+
+    def get_factory(self):
+        return "JSONField"

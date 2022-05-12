@@ -1,0 +1,12 @@
+PATCH /plone/@types/Document/contact_info HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "description": "Contact information",
+    "fields": [
+        "author_email"
+    ],
+    "title": "Contact information"
+}
