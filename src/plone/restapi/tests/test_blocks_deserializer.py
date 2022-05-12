@@ -427,7 +427,7 @@ class TestBlocksDeserializer(unittest.TestCase):
                         {
                             # Pointing to a not created yet object, but matches because acquisition
                             # with another existing parent content with alike-ish path structure
-                            "@id": f"../.."
+                            "@id": "../.."
                         }
                     ],
                 }
