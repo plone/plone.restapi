@@ -3,6 +3,7 @@ from plone.restapi.interfaces import ISerializeToJson, ISerializeToJsonSummary
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
+from urllib.parse import parse_qsl
 from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
@@ -21,7 +22,7 @@ class UsersGet(Service):
         portal = getSite()
         self.portal_membership = getToolByName(portal, "portal_membership")
         self.acl_users = getToolByName(portal, "acl_users")
-        self.query = self.request.form.copy()
+        self.query = dict(parse_qsl(self.request["QUERY_STRING"]))
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
