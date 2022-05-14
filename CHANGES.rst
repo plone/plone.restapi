@@ -8,6 +8,22 @@ Changelog
 
 .. towncrier release notes start
 
+7.8.0 (2022-05-14)
+------------------
+
+New features:
+
+
+- Make masking specific validation errors configurable in DX DeserializeFromJson. [fredvd] (#1211)
+
+
+Bug fixes:
+
+
+- Prevent to create an empty AT content.
+  [gbastien] (#1386)
+
+
 7.7.1 (2022-04-27)
 ------------------
 
