@@ -1,0 +1,14 @@
+POST /plone/@relations HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "items": [
+        {
+            "source": "http://localhost:55001/plone/test-document",
+            "target": "http://localhost:55001/plone/test-document2",
+            "relation": "evil_mastermind"
+        }
+    ]
+}
