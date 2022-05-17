@@ -65,7 +65,7 @@ jobs:
 
       # test no uncommited changes
       - name: test no uncommited changes
-        run: bin/test-no-uncommitted-doc-changes
+        run: ./test-no-uncommitted-doc-changes
         env:
           PYTHON_VERSION: ${{ matrix.python-version }}
           PLONE_VERSION: ${{ matrix.plone-version }}
