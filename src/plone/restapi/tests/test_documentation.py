@@ -1644,6 +1644,10 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
             "translated_messages_object_history", response
         )
 
+    def test_translate_messages_addons(self):
+        response = self.api_session.get("/@addons")
+        save_request_and_response_for_docs("translated_messages_addons", response)
+
 
 class TestCommenting(TestDocumentationBase):
 

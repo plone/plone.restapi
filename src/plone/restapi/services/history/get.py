@@ -71,7 +71,7 @@ class HistoryGet(Service):
             # Versioning entries use a timestamp,
             # workflow ISO formatted string
             if not isinstance(item["time"], str):
-                item["time"] = dt.fromtimestamp(item["time"]).isoformat()
+                item["time"] = dt.fromtimestamp(int(item["time"])).isoformat()
 
             # The create event has an empty 'action', but we like it to say
             # 'Create', alike the transition_title
