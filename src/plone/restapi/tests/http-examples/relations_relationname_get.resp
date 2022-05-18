@@ -5,12 +5,24 @@ Content-Type: application/json
     "@id": "http://localhost:55001/plone/test-document/@relations?relation=relatedItems",
     "relatedItems": [
         {
-            "source": "http://localhost:55001/plone/test-document",
-            "target": "http://localhost:55001/plone/test-document2"
+            "source": {
+                "@id": "http://localhost:55001/plone/test-document",
+                "title": "Test Document"
+            },
+            "target": {
+                "id": "http://localhost:55001/plone/test-document-2",.
+                "title": "Test Document 2"
+            }
         },
         {
-            "source": "http://localhost:55001/plone/test-document",
-            "target": "http://localhost:55001/plone/test-document3"
+            "source": {
+                "@id": "http://localhost:55001/plone/test-document",
+                "title": "Test Document"
+            },
+            "target": {
+                "id": "http://localhost:55001/plone/test-document-3",.
+                "title": "Test Document 3"
+            }
         }
     ]
 }
