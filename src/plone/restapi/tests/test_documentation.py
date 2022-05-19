@@ -2260,3 +2260,129 @@ class TestIterateDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@userschema")
 
         save_request_and_response_for_docs("userschema", response)
+
+
+class TestRelationsDocumentation(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super().setUp()
+
+        self.doc1 = api.content.create(
+            container=self.portal,
+            type="Document",
+            id="document",
+            title="Test document 1",
+        )
+        self.doc2 = api.content.create(
+            container=self.portal,
+            type="Document",
+            id="document-2",
+            title="Test document 2",
+        )
+        self.doc3 = api.content.create(
+            container=self.portal,
+            type="Document",
+            id="document-3",
+            title="Test document 3",
+        )
+
+        transaction.commit()
+
+    def tearDown(self):
+        super().tearDown()
+
+    def test_documentation_relations_get(self):
+        api.relation.create(
+            source=self.doc1,
+            target=self.doc2,
+            relationship="link",
+        )
+        api.relation.create(
+            source=self.doc1,
+            target=self.doc3,
+            relationship="link",
+        )
+        api.relation.create(
+            source=self.doc1,
+            target=self.doc3,
+            relationship="relatedItems",
+        )
+        api.relation.create(
+            source=self.doc2,
+            target=self.doc1,
+            relationship="relatedItems",
+        )
+        self.assertEqual(
+            api.relation.get(source=self.doc1)[0].to_object,
+            self.doc2,
+        )
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/document/@relations",
+        )
+        save_request_and_response_for_docs("relations_get", response)
+
+        response = self.api_session.get(
+            "/document/@relations?relation=link",
+        )
+        save_request_and_response_for_docs("relations_get_relationname", response)
+
+        response = self.api_session.get(
+            "/document/@relations?backrelations=1",
+        )
+        save_request_and_response_for_docs("relations_get_backrelations", response)
+
+        response = self.api_session.get(
+            "/document/@relations?backrelations=1&relation=relatedItems",
+        )
+        save_request_and_response_for_docs(
+            "relations_get_backrelations_relationname", response
+        )
+
+    def test_documentation_relations_catalog_get(self):
+        api.relation.create(
+            source=self.doc1,
+            target=self.doc2,
+            relationship="link",
+        )
+        api.relation.create(
+            source=self.doc1,
+            target=self.doc3,
+            relationship="link",
+        )
+        api.relation.create(
+            source=self.doc1,
+            target=self.doc3,
+            relationship="relatedItems",
+        )
+        api.relation.create(
+            source=self.doc2,
+            target=self.doc1,
+            relationship="relatedItems",
+        )
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/@relations-catalog?source={}".format(self.doc1.UID()),
+        )
+        save_request_and_response_for_docs("relations_catalog_get_source", response)
+
+        response = self.api_session.get(
+            "/@relations-catalog?target={}".format(self.doc1.UID()),
+        )
+        save_request_and_response_for_docs("relations_catalog_get_target", response)
+
+        response = self.api_session.get(
+            "/@relations-catalog?relation=relatedItems",
+        )
+        save_request_and_response_for_docs(
+            "relations_catalog_get_relationname", response
+        )
+
+        response = self.api_session.get(
+            "/@relations-catalog",
+        )
+        save_request_and_response_for_docs("relations_catalog_get_stats", response)
