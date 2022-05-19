@@ -1,0 +1,3 @@
+Tests: patch unique url for scale in old or new way.
+This is only in serializer tests for images.
+[maurits]
