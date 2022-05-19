@@ -1,0 +1,75 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:plone="http://namespaces.plone.org/plone"
+    >
+
+  <plone:service
+      method="GET"
+      accept="application/json,application/schema+json"
+      factory=".get.RelationsGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="zope2.View"
+      name="@relations"
+      />
+
+  <plone:service
+      method="GET"
+      accept="application/json,application/schema+json"
+      factory=".get.RelationsGet"
+      for="Products.CMFCore.interfaces.IContentish"
+      permission="zope2.View"
+      name="@relations"
+      />
+
+  <plone:service
+      method="GET"
+      accept="application/json,application/schema+json"
+      factory=".get.RelationsCatalogGet"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@relations-catalog"
+      />
+
+  <plone:service
+      method="POST"
+      factory=".add.RelationsPost"
+      for="*"
+      permission="cmf.ModifyPortalContent"
+      name="@relations"
+      />
+
+  <plone:service
+      method="POST"
+      accept="application/json,application/schema+json"
+      factory=".add.RelationsCatalogPost"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@relations-catalog"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".delete.RelationsDelete"
+      for="*"
+      permission="cmf.ModifyPortalContent"
+      name="@relations"
+      />
+
+  <plone:service
+      method="DELETE"
+      factory=".delete.RelationsDelete"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ModifyPortalContent"
+      name="@relations"
+      />
+
+  <plone:service
+      method="DELETE"
+      accept="application/json,application/schema+json"
+      factory=".delete.RelationsCatalogDelete"
+      for="Products.CMFPlone.interfaces.IPloneSiteRoot"
+      permission="cmf.ManagePortal"
+      name="@relations-catalog"
+      />
+
+</configure>

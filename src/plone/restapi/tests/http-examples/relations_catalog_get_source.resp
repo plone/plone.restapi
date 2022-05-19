@@ -1,0 +1,41 @@
+HTTP/1.1 500 Internal Server Error
+Content-Type: application/json
+
+{
+    "message": "<PloneSite at /plone>",
+    "traceback": [
+        "File \"/Users/pbauer/workspace/coredev/src/Zope/src/ZPublisher/WSGIPublisher.py\", line 167, in transaction_pubevents",
+        "    yield",
+        "",
+        "  File \"/Users/pbauer/workspace/coredev/src/Zope/src/ZPublisher/WSGIPublisher.py\", line 376, in publish_module",
+        "    response = _publish(request, new_mod_info)",
+        "",
+        "  File \"/Users/pbauer/workspace/coredev/src/Zope/src/ZPublisher/WSGIPublisher.py\", line 271, in publish",
+        "    result = mapply(obj,",
+        "",
+        "  File \"/Users/pbauer/workspace/coredev/src/Zope/src/ZPublisher/mapply.py\", line 85, in mapply",
+        "    return debug(object, args, context)",
+        "",
+        "  File \"/Users/pbauer/workspace/coredev/src/Zope/src/ZPublisher/WSGIPublisher.py\", line 68, in call_object",
+        "    return obj(*args)",
+        "",
+        "  File \"/Users/pbauer/.cache/buildout/eggs/cp310/plone.rest-2.0.0a5-py3.10.egg/plone/rest/service.py\", line 22, in __call__",
+        "    return self.render()",
+        "",
+        "  File \"/Users/pbauer/workspace/coredev/src/plone.restapi/src/plone/restapi/services/__init__.py\", line 19, in render",
+        "    content = self.reply()",
+        "",
+        "  File \"/Users/pbauer/workspace/coredev/src/plone.restapi/src/plone/restapi/services/relations/get.py\", line 117, in reply",
+        "    data = get_relations(",
+        "",
+        "  File \"/Users/pbauer/workspace/coredev/src/plone.restapi/src/plone/restapi/services/relations/get.py\", line 35, in get_relations",
+        "    query[\"from_id\"] = intids.getId(source)",
+        "",
+        "  File \"/Users/pbauer/.cache/buildout/eggs/cp310/five.intid-1.2.6-py3.10.egg/five/intid/intid.py\", line 41, in getId",
+        "    return z3IntIds.getId(self, ob)",
+        "",
+        "  File \"/Users/pbauer/.cache/buildout/eggs/cp310/zope.intid-4.4.0-py3.10.egg/zope/intid/__init__.py\", line 108, in getId",
+        "    raise IntIdMissingError(ob)"
+    ],
+    "type": "IntIdMissingError"
+}
