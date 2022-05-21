@@ -2,22 +2,28 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "relatedItems": [
-        {
-            "source": {
-                "@id": "http://localhost:55001/plone/document-2",
-                "@type": "Document",
-                "description": "",
-                "review_state": "private",
-                "title": "Test document 2"
-            },
-            "target": {
-                "@id": "http://localhost:55001/plone/document",
-                "@type": "Document",
-                "description": "",
-                "review_state": "private",
-                "title": "Test document 1"
+    "@id": "http://localhost:55001/plone/document/@relations?backrelations=1&relation=relatedItems",
+    "items": {
+        "relatedItems": [
+            {
+                "source": {
+                    "@id": "http://localhost:55001/plone/document-2",
+                    "@type": "Document",
+                    "description": "",
+                    "review_state": "private",
+                    "title": "Test document 2"
+                },
+                "target": {
+                    "@id": "http://localhost:55001/plone/document",
+                    "@type": "Document",
+                    "description": "",
+                    "review_state": "private",
+                    "title": "Test document 1"
+                }
             }
-        }
-    ]
+        ]
+    },
+    "items_total": {
+        "relatedItems": 1
+    }
 }

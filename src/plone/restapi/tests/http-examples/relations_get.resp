@@ -2,56 +2,63 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "link": [
-        {
-            "source": {
-                "@id": "http://localhost:55001/plone/document",
-                "@type": "Document",
-                "description": "",
-                "review_state": "private",
-                "title": "Test document 1"
+    "@id": "http://localhost:55001/plone/document/@relations",
+    "items": {
+        "comprisesComponentPart": [
+            {
+                "source": {
+                    "@id": "http://localhost:55001/plone/document",
+                    "@type": "Document",
+                    "description": "",
+                    "review_state": "private",
+                    "title": "Test document 1"
+                },
+                "target": {
+                    "@id": "http://localhost:55001/plone/document-2",
+                    "@type": "Document",
+                    "description": "",
+                    "review_state": "private",
+                    "title": "Test document 2"
+                }
             },
-            "target": {
-                "@id": "http://localhost:55001/plone/document-2",
-                "@type": "Document",
-                "description": "",
-                "review_state": "private",
-                "title": "Test document 2"
+            {
+                "source": {
+                    "@id": "http://localhost:55001/plone/document",
+                    "@type": "Document",
+                    "description": "",
+                    "review_state": "private",
+                    "title": "Test document 1"
+                },
+                "target": {
+                    "@id": "http://localhost:55001/plone/document-3",
+                    "@type": "Document",
+                    "description": "",
+                    "review_state": "private",
+                    "title": "Test document 3"
+                }
             }
-        },
-        {
-            "source": {
-                "@id": "http://localhost:55001/plone/document",
-                "@type": "Document",
-                "description": "",
-                "review_state": "private",
-                "title": "Test document 1"
-            },
-            "target": {
-                "@id": "http://localhost:55001/plone/document-3",
-                "@type": "Document",
-                "description": "",
-                "review_state": "private",
-                "title": "Test document 3"
+        ],
+        "relatedItems": [
+            {
+                "source": {
+                    "@id": "http://localhost:55001/plone/document",
+                    "@type": "Document",
+                    "description": "",
+                    "review_state": "private",
+                    "title": "Test document 1"
+                },
+                "target": {
+                    "@id": "http://localhost:55001/plone/document-3",
+                    "@type": "Document",
+                    "description": "",
+                    "review_state": "private",
+                    "title": "Test document 3"
+                }
             }
-        }
-    ],
-    "relatedItems": [
-        {
-            "source": {
-                "@id": "http://localhost:55001/plone/document",
-                "@type": "Document",
-                "description": "",
-                "review_state": "private",
-                "title": "Test document 1"
-            },
-            "target": {
-                "@id": "http://localhost:55001/plone/document-3",
-                "@type": "Document",
-                "description": "",
-                "review_state": "private",
-                "title": "Test document 3"
-            }
-        }
-    ]
+        ]
+    },
+    "items_total": {
+        "comprisesComponentPart": 2,
+        "relatedItems": 1
+    }
 }
