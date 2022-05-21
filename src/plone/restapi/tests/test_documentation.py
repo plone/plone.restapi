@@ -2317,11 +2317,25 @@ class TestRelationsDocumentation(TestDocumentationBase):
         transaction.commit()
 
         self.assertEqual(
-            set([relationvalue.to_object for relationvalue in api.relation.get(source=self.doc1, relationship="comprisesComponentPart")]),
+            set(
+                [
+                    relationvalue.to_object
+                    for relationvalue in api.relation.get(
+                        source=self.doc1, relationship="comprisesComponentPart"
+                    )
+                ]
+            ),
             {self.doc2, self.doc3},
         )
         self.assertEqual(
-            set([relationvalue.to_object for relationvalue in api.relation.get(source=self.doc1, relationship="relatedItems")]),
+            set(
+                [
+                    relationvalue.to_object
+                    for relationvalue in api.relation.get(
+                        source=self.doc1, relationship="relatedItems"
+                    )
+                ]
+            ),
             {self.doc3},
         )
 

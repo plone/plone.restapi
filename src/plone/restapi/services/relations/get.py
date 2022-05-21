@@ -53,7 +53,9 @@ def get_relations(
         target_obj = relation.to_object
 
         if not unrestricted:
-            can_view = checkPermission("View", source_obj) and checkPermission("View", target_obj)
+            can_view = checkPermission("View", source_obj) and checkPermission(
+                "View", target_obj
+            )
             if not can_view:
                 continue
 
@@ -99,7 +101,7 @@ class RelationsGet(Service):
         return {
             "@id": f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}',
             "items": data,
-            "items_total": dict([(el, len(data[el])) for el in data])
+            "items_total": dict([(el, len(data[el])) for el in data]),
         }
 
 
@@ -136,5 +138,5 @@ class RelationsCatalogGet(Service):
         return {
             "@id": f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}',
             "items": data,
-            "items_total": dict([(el, len(data[el])) for el in data])
+            "items_total": dict([(el, len(data[el])) for el in data]),
         }
