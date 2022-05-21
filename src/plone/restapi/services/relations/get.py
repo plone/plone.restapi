@@ -5,13 +5,17 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.relationhelper import get_relations_stats
-from Products.CMFPlone.utils import base_hasattr
 from zc.relation.interfaces import ICatalog
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.globalrequest import getRequest
 from zope.intid.interfaces import IIntIds
+
+
+def make_summary(obj, request):
+    summary = getMultiAdapter((obj, request), ISerializeToJsonSummary)()
+    return json_compatible(summary)
 
 
 # Loosely based on plone.api.relation.get
@@ -69,7 +73,7 @@ def relation_stats():
 
 
 class RelationsGet(Service):
-    """Get relations relevant to the context."""
+    """Get relations of context."""
 
     def reply(self):
         source = None
@@ -82,7 +86,7 @@ class RelationsGet(Service):
             target = self.context
 
         if self.request.get("relation", False):
-            relationship=self.request["relation"]
+            relationship = self.request["relation"]
 
         data = get_relations(
             source=source,
@@ -90,11 +94,17 @@ class RelationsGet(Service):
             relationship=relationship,
             request=self.request,
         )
-        return data
+        # @ksuess prefers "@id": self.request.environ["REQUEST_URI"]
+        # as this is all that is of interest, but uri is a convention.
+        return {
+            "@id": f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}',
+            "items": data,
+            "items_total": dict([(el, len(data[el])) for el in data])
+        }
 
 
 class RelationsCatalogGet(Service):
-    """Get all kinds of relations"""
+    """Get global relations, independent of any context"""
 
     def reply(self):
         source = self.request.get("source", None)
@@ -121,9 +131,10 @@ class RelationsCatalogGet(Service):
             unrestricted=True,
             request=self.request,
         )
-        return data
-
-
-def make_summary(obj, request):
-    summary = getMultiAdapter((obj, request), ISerializeToJsonSummary)()
-    return json_compatible(summary)
+        # @ksuess prefers "@id": self.request.environ["REQUEST_URI"]
+        # as this is all that is of interest, but uri is a convention.
+        return {
+            "@id": f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}',
+            "items": data,
+            "items_total": dict([(el, len(data[el])) for el in data])
+        }
