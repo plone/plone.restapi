@@ -35,6 +35,7 @@ workflow
 workingcopy
 locking
 sharing
+relations
 registry
 types
 types-schema
