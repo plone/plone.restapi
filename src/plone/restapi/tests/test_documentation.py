@@ -2314,11 +2314,16 @@ class TestRelationsDocumentation(TestDocumentationBase):
             target=self.doc1,
             relationship="relatedItems",
         )
-        self.assertEqual(
-            api.relation.get(source=self.doc1)[0].to_object,
-            self.doc2,
-        )
         transaction.commit()
+
+        self.assertEqual(
+            set([relationvalue.to_object for relationvalue in api.relation.get(source=self.doc1, relationship="comprisesComponentPart")]),
+            {self.doc2, self.doc3},
+        )
+        self.assertEqual(
+            set([relationvalue.to_object for relationvalue in api.relation.get(source=self.doc1, relationship="relatedItems")]),
+            {self.doc3},
+        )
 
         response = self.api_session.get(
             "/document/@relations",
