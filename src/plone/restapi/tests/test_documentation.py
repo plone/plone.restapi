@@ -2068,12 +2068,12 @@ class TestRelationsDocumentation(TestDocumentationBase):
         api.relation.create(
             source=self.doc1,
             target=self.doc2,
-            relationship="link",
+            relationship="comprisesComponentPart",
         )
         api.relation.create(
             source=self.doc1,
             target=self.doc3,
-            relationship="link",
+            relationship="comprisesComponentPart",
         )
         api.relation.create(
             source=self.doc1,
@@ -2097,7 +2097,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("relations_get", response)
 
         response = self.api_session.get(
-            "/document/@relations?relation=link",
+            "/document/@relations?relation=comprisesComponentPart",
         )
         save_request_and_response_for_docs("relations_get_relationname", response)
 
@@ -2111,17 +2111,16 @@ class TestRelationsDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("relations_get_backrelations_relationname", response)
 
-
     def test_documentation_relations_catalog_get(self):
         api.relation.create(
             source=self.doc1,
             target=self.doc2,
-            relationship="link",
+            relationship="comprisesComponentPart",
         )
         api.relation.create(
             source=self.doc1,
             target=self.doc3,
-            relationship="link",
+            relationship="comprisesComponentPart",
         )
         api.relation.create(
             source=self.doc1,
