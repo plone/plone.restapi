@@ -1,3 +1,0 @@
-GET /plone/test-document/@relations?backrelations=1&relation=relatedItems HTTP/1.1
-Accept: application/json
-Authorization: Basic YWRtaW46c2VjcmV0

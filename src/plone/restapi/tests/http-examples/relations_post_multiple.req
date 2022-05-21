@@ -9,6 +9,11 @@ Content-Type: application/json
             "source": "http://localhost:55001/plone/test-document",
             "target": "http://localhost:55001/plone/test-document2",
             "relation": "comprisesComponentPart"
+        },
+        {
+            "source": "http://localhost:55001/plone/test-document",
+            "target": "http://localhost:55001/plone/test-document3",
+            "relation": "comprisesComponentPart"
         }
     ]
 }
