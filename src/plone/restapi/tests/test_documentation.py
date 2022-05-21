@@ -2044,19 +2044,19 @@ class TestRelationsDocumentation(TestDocumentationBase):
             container=self.portal,
             type="Document",
             id="document",
-            title="Test document 1"
+            title="Test document 1",
         )
         self.doc2 = api.content.create(
             container=self.portal,
             type="Document",
             id="document-2",
-            title="Test document 2"
+            title="Test document 2",
         )
         self.doc3 = api.content.create(
             container=self.portal,
             type="Document",
             id="document-3",
-            title="Test document 3"
+            title="Test document 3",
         )
 
         transaction.commit()
@@ -2088,11 +2088,25 @@ class TestRelationsDocumentation(TestDocumentationBase):
         transaction.commit()
 
         self.assertEqual(
-            set([relationvalue.to_object for relationvalue in api.relation.get(source=self.doc1, relationship="comprisesComponentPart")]),
+            set(
+                [
+                    relationvalue.to_object
+                    for relationvalue in api.relation.get(
+                        source=self.doc1, relationship="comprisesComponentPart"
+                    )
+                ]
+            ),
             {self.doc2, self.doc3},
         )
         self.assertEqual(
-            set([relationvalue.to_object for relationvalue in api.relation.get(source=self.doc1, relationship="relatedItems")]),
+            set(
+                [
+                    relationvalue.to_object
+                    for relationvalue in api.relation.get(
+                        source=self.doc1, relationship="relatedItems"
+                    )
+                ]
+            ),
             {self.doc3},
         )
 
@@ -2114,7 +2128,9 @@ class TestRelationsDocumentation(TestDocumentationBase):
         response = self.api_session.get(
             "/document/@relations?backrelations=1&relation=relatedItems",
         )
-        save_request_and_response_for_docs("relations_get_backrelations_relationname", response)
+        save_request_and_response_for_docs(
+            "relations_get_backrelations_relationname", response
+        )
 
     def test_documentation_relations_catalog_get(self):
         api.relation.create(
@@ -2152,7 +2168,9 @@ class TestRelationsDocumentation(TestDocumentationBase):
         response = self.api_session.get(
             "/@relations-catalog?relation=relatedItems",
         )
-        save_request_and_response_for_docs("relations_catalog_get_relationname", response)
+        save_request_and_response_for_docs(
+            "relations_catalog_get_relationname", response
+        )
 
         response = self.api_session.get(
             "/@relations-catalog",
