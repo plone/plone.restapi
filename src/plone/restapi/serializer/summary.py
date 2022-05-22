@@ -18,6 +18,7 @@ class JSONSummarySerializerMetadata:
         return {
             "@id",
             "@type",
+            "UID",
             "description",
             "review_state",
             "title",
