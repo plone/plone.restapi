@@ -104,7 +104,6 @@ class TestQuerystringEndpoint(unittest.TestCase):
             "visible": {"title": "Public draft [visible]", "token": "visible"},
         }
 
-        self.assertTrue("external" in (idx["values"].keys()))
         self.assertTrue(
             set(expected_vocab_values.keys()).issubset((idx["values"].keys()))
         )
