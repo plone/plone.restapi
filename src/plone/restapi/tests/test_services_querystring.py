@@ -89,15 +89,19 @@ class TestQuerystringEndpoint(unittest.TestCase):
         )
 
         expected_vocab_values = {
-            "external": {"title": "Externally visible [external]"},
-            "internal": {"title": "Internal draft [internal]"},
+            "external": {"title": "Externally visible [external]", "token": "external"},
+            "internal": {"title": "Internal draft [internal]", "token": "internal"},
             "internally_published": {
-                "title": "Internally published [internally_published]"
+                "title": "Internally published [internally_published]",
+                "token": "internally_published",
             },
-            "pending": {"title": "Pending [pending]"},
-            "private": {"title": "Private [private]"},
-            "published": {"title": "Published with accent \xe9 [published]"},
-            "visible": {"title": "Public draft [visible]"},
+            "pending": {"title": "Pending [pending]", "token": "pending"},
+            "private": {"title": "Private [private]", "token": "private"},
+            "published": {
+                "title": "Published with accent \xe9 [published]",
+                "token": "published",
+            },
+            "visible": {"title": "Public draft [visible]", "token": "visible"},
         }
 
         self.assertTrue("external" in (idx["values"].keys()))
