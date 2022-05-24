@@ -7,5 +7,6 @@ Content-Type: application/json
         {
             "path": "/simple-alias"
         }
-    ]
+    ],
+    "items_total": 1
 }
