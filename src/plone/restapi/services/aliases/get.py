@@ -51,9 +51,10 @@ class Aliases:
 
         if IPloneSiteRoot.providedBy(self.context):
             result["aliases"]["items"] = self.reply_root()
-            result["aliases"]["items_total"] = len(result["aliases"]["items"])
         else:
             result["aliases"]["items"] = self.reply_item()
+        result["aliases"]["items_total"] = len(result["aliases"]["items"])
+
         return result
 
 
