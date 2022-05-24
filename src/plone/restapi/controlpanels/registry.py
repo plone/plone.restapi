@@ -10,7 +10,7 @@ from Products.CMFPlone.interfaces.controlpanel import ISearchSchema
 from Products.CMFPlone.interfaces.controlpanel import ISecuritySchema
 from Products.CMFPlone.interfaces.controlpanel import ISiteSchema
 from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
-from plone.base.interfaces.controlpanel import IUserGroupsSettingsSchema
+from Products.CMFPlone.interfaces.controlpanel import IUserGroupsSettingsSchema
 from plone.restapi.controlpanels import RegistryConfigletPanel
 
 try:
