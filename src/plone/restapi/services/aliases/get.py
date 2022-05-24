@@ -53,6 +53,8 @@ class Aliases:
             result["aliases"]["items"] = self.reply_root()
         else:
             result["aliases"]["items"] = self.reply_item()
+        result["aliases"]["items_total"] = len(result["aliases"]["items"])
+
         return result
 
 

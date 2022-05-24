@@ -10,5 +10,6 @@ Content-Type: application/json
             "path": "/fizzbuzz",
             "redirect-to": "/front-page"
         }
-    ]
+    ],
+    "items_total": 1
 }
