@@ -105,6 +105,7 @@ class SecurityControlpanel(RegistryConfigletPanel):
 
 # Users and groups
 
+
 @adapter(Interface, Interface)
 class UserGroupControlpanel(RegistryConfigletPanel):
     schema = IUserGroupsSettingsSchema
