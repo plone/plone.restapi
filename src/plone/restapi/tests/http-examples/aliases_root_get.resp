@@ -16,5 +16,6 @@ Content-Type: application/json
             "path": "/old-page",
             "redirect-to": "/front-page"
         }
-    ]
+    ],
+    "items_total": 2
 }
