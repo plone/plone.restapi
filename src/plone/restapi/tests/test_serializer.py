@@ -116,7 +116,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 {
                     "@id": "http://nohost/plone/folder1/doc1",
                     "@type": "Document",
-                    "type": "Page",
+                    "type_name": "Page",
                     "description": "This is a document",
                     "title": "Document 1",
                     "review_state": "private",
@@ -147,7 +147,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 {
                     "@id": "http://nohost/plone/folder1/doc2",
                     "@type": "Document",
-                    "type": "Page",
+                    "type_name": "Page",
                     "description": "Second doc",
                     "title": "Document 2",
                     "review_state": "private",
@@ -155,7 +155,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 {
                     "@id": "http://nohost/plone/folder1/doc1",
                     "@type": "Document",
-                    "type": "Page",
+                    "type_name": "Page",
                     "description": "This is a document",
                     "title": "Document 1",
                     "review_state": "private",
@@ -172,7 +172,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             {
                 "@id": self.portal.absolute_url(),
                 "@type": self.portal.portal_type,
-                "type": get_portal_type(self.portal.portal_type),
+                "type_name": get_portal_type(self.portal.portal_type),
                 "title": self.portal.title,
                 "description": self.portal.description,
             },
@@ -189,7 +189,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             {
                 "@id": self.portal.absolute_url(),
                 "@type": self.portal.portal_type,
-                "type": get_portal_type(self.portal.portal_type),
+                "type_name": get_portal_type(self.portal.portal_type),
                 "title": self.portal.title,
                 "description": self.portal.description,
             },
@@ -214,7 +214,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 {
                     "@id": "http://nohost/plone/dxdoc",
                     "@type": "DXTestDocument",
-                    "type": "DX Test Document",
+                    "type_name": "DX Test Document",
                     "description": "",
                     "title": "DX Test Document",
                     "review_state": "private",
@@ -222,7 +222,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 {
                     "@id": "http://nohost/plone/doc1",
                     "@type": "Document",
-                    "type": "Page",
+                    "type_name": "Page",
                     "description": "",
                     "title": "Document 1",
                     "review_state": "private",
@@ -352,7 +352,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 {
                     "@id": self.portal.doc1.absolute_url(),
                     "@type": "Document",
-                    "type": "Page",
+                    "type_name": "Page",
                     "description": "",
                     "title": "Document 1",
                     "review_state": "private",
@@ -360,7 +360,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 {
                     "@id": self.portal.doc2.absolute_url(),
                     "@type": "Document",
-                    "type": "Page",
+                    "type_name": "Page",
                     "description": "",
                     "title": "Document 2",
                     "review_state": "private",

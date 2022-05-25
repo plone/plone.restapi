@@ -125,7 +125,7 @@ Content-Type: application/json
                 "encoding": "utf-8"
             },
             "title": "Welcome to Plone",
-            "type": "Page",
+            "type_name": "Page",
             "version": "current",
             "versioning_enabled": true,
             "working_copy": null,

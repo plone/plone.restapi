@@ -51,7 +51,7 @@ class TestSummarySerializers(unittest.TestCase):
             {
                 "@id": "http://nohost/plone",
                 "@type": "Plone Site",
-                "type": "Plone Site",
+                "type_name": "Plone Site",
                 "title": "Plone site",
                 "description": "",
             },
@@ -66,7 +66,7 @@ class TestSummarySerializers(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
-                "type": "DX Test Document",
+                "type_name": "DX Test Document",
                 "title": "Lorem Ipsum",
                 "description": "Description",
                 "review_state": "private",
@@ -86,7 +86,7 @@ class TestSummarySerializers(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
-                "type": "DX Test Document",
+                "type_name": "DX Test Document",
                 "title": "Lorem Ipsum",
                 "description": "Description",
                 "review_state": "private",
@@ -104,7 +104,7 @@ class TestSummarySerializers(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
-                "type": "DX Test Document",
+                "type_name": "DX Test Document",
                 "title": "Lorem Ipsum",
                 "description": None,
                 "review_state": "private",
@@ -121,7 +121,7 @@ class TestSummarySerializers(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
-                "type": "DX Test Document",
+                "type_name": "DX Test Document",
                 "UID": "c6dcbd55ab2746e199cd4ed458000001",
                 "Creator": "test_user_1_",
                 "title": "Lorem Ipsum",
@@ -146,7 +146,7 @@ class TestSummarySerializers(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
-                "type": "DX Test Document",
+                "type_name": "DX Test Document",
                 "CreationDate": "2016-01-21T01:14:48+00:00",
                 "Creator": "test_user_1_",
                 "Date": "2017-01-21T01:14:48+00:00",
@@ -198,7 +198,7 @@ class TestSummarySerializers(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
-                "type": "DX Test Document",
+                "type_name": "DX Test Document",
                 "title": "Lorem Ipsum",
                 "description": "Description",
                 "review_state": "private",
