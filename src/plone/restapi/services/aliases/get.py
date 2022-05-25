@@ -42,6 +42,7 @@ class Aliases:
             redirect["datetime"] = datetimelike_to_iso(redirect["datetime"])
         self.request.response.setStatus(201)
 
+        self.request.form["b_start"] = "0"
         self.request.form["b_size"] = "1000000"
         self.request.__annotations__.pop("plone.memoize")
 
