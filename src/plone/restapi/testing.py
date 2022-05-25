@@ -290,7 +290,7 @@ class RelativeSession(requests.Session):
 
         Apparently, network sockets created by the `requests` library can remain open
         even after the full body of the response has been read, despite [the
-        docs](https://docs.python-requests.org/en/latest/user/advanced/#body-content-workflow). In
+        docs](https://requests.readthedocs.io/en/latest/user/advanced/#body-content-workflow). In
         particular, this results in `ResourceWarning: unclosed <socket.socket ...>` leak
         warnings when running the tests.  If the `test` kwarg is passed, it will be used
         to register future cleanup calls to close this session and thus also the
