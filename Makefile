@@ -43,7 +43,7 @@ update: ## Update Make and Buildout
 
 bin/buildout: bin/pip
 	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
+	bin/pip install -r requirements-5.2.txt
 	bin/pip install black || true
 	@touch -c $@
 
@@ -55,25 +55,25 @@ bin/python bin/pip:
 .PHONY: Build Plone 5.2
 build-plone-5.2: .installed.cfg  ## Build Plone 5.2
 	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
+	bin/pip install -r requirements-5.2.txt
 	bin/buildout -c plone-5.2.x.cfg
 
 .PHONY: Build Plone 5.2 Performance
 build-plone-5.2-performance: .installed.cfg  ## Build Plone 5.2
 	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
+	bin/pip install -r requirements-5.2.txt
 	bin/buildout -c plone-5.2.x-performance.cfg
 
 .PHONY: Build Plone 6.0
 build-plone-6.0: .installed.cfg  ## Build Plone 6.0
 	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
+	bin/pip install -r requirements-6.0.txt
 	bin/buildout -c plone-6.0.x.cfg
 
 .PHONY: Build Plone 6.0 Performance
 build-plone-6.0-performance: .installed.cfg  ## Build Plone 6.0
 	bin/pip install --upgrade pip
-	bin/pip install -r requirements.txt
+	bin/pip install -r requirements-6.0.txt
 	bin/buildout -c plone-6.0.x-performance.cfg
 
 .PHONY: Test
@@ -137,7 +137,7 @@ docs-linkcheck: bin/python  ## Run linkcheck
 
 .PHONY: docs-linkcheckbroken
 docs-linkcheckbroken: bin/python  ## Run linkcheck and show only broken links
-	cd $(DOCS_DIR) && $(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck | GREP_COLORS='0;31' egrep -wi broken --color=auto
+	cd $(DOCS_DIR) && $(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck | GREP_COLORS='0;31' egrep -wi broken --color=auto || test $$? = 1
 	@echo
 	@echo "Link check complete; look for any errors in the above output " \
 		"or in $(BUILDDIR)/linkcheck/ ."

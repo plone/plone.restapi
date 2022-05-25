@@ -1,6 +1,5 @@
 from base64 import b64encode
 from datetime import datetime
-from unittest.mock import patch
 from pkg_resources import resource_filename
 from plone import api
 from plone.app.discussion.interfaces import IConversation
@@ -25,8 +24,8 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
+from plone.restapi.tests.helpers import patch_scale_uuid
 from plone.restapi.tests.statictime import StaticTime
-from plone.scale import storage
 from plone.testing.z2 import Browser
 from zope.component import createObject
 from zope.component import getUtility
@@ -301,7 +300,8 @@ class TestDocumentation(TestDocumentationBase):
         self.portal.newsitem.image_caption = "This is an image caption."
         transaction.commit()
 
-        with patch.object(storage, "uuid4", return_value="uuid1"):
+        scale_url_uuid = "uuid1"
+        with patch_scale_uuid(scale_url_uuid):
             response = self.api_session.get(self.portal.newsitem.absolute_url())
             save_request_and_response_for_docs("newsitem", response)
 
@@ -349,7 +349,8 @@ class TestDocumentation(TestDocumentationBase):
             data=image_data, contentType="image/png", filename="image.png"
         )
         transaction.commit()
-        with patch.object(storage, "uuid4", return_value="uuid1"):
+        scale_url_uuid = "uuid1"
+        with patch_scale_uuid(scale_url_uuid):
             response = self.api_session.get(self.portal.image.absolute_url())
             save_request_and_response_for_docs("image", response)
 
@@ -1643,6 +1644,10 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
         save_request_and_response_for_docs(
             "translated_messages_object_history", response
         )
+
+    def test_translate_messages_addons(self):
+        response = self.api_session.get("/@addons")
+        save_request_and_response_for_docs("translated_messages_addons", response)
 
 
 class TestCommenting(TestDocumentationBase):

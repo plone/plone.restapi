@@ -43,6 +43,10 @@ templates_path = ["_templates"]
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named "sphinx.ext.*") or your custom ones.
 extensions = [
+    "myst_parser",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.todo",
+    "sphinx_copybutton",
     "sphinxcontrib.httpdomain",
     "sphinxcontrib.httpexample",
 ]
@@ -64,10 +68,11 @@ def patch_pygments_to_highlight_jsonschema():
 
 
 # The suffix of source filenames.
-source_suffix = ".rst"
-# source_suffix = {
-#     ".md": "markdown",
-# }
+# source_suffix = ".rst"
+source_suffix = {
+    ".md": "markdown",
+    ".rst": "reStructuredText",
+}
 
 
 # The master toctree document.
@@ -86,7 +91,7 @@ master_doc = "index"
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["*ideas/*"]
+# exclude_patterns = ["*ideas/*"]
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 # default_role = None
@@ -168,11 +173,10 @@ html_css_files = ["custom.css",
 todo_include_todos = True
 
 html_theme_options = {
-    # TODO: Either get a separate GA ID or enable this one once it is in production.
-    # "google_analytics_id": "UA-1907133-6",
+    "google_analytics_id": "G-P8NCTB796E",
     "path_to_docs": "docs",
     "repository_url": "https://github.com/plone/plone.restapi",
-    "repository_branch": "plone6docs",
+    "repository_branch": "master",
     "use_repository_button": True,
     "use_issues_button": True,
     "use_edit_page_button": True,
@@ -287,8 +291,17 @@ myst_enable_extensions = [
     "linkify",  # Identify “bare” web URLs and add hyperlinks.
     "colon_fence",  # You can also use ::: delimiters to denote code fences,\
                     #  instead of ```.
+    "substitution",  # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#substitutions-with-jinja2
 ]
 
+myst_substitutions = {
+    "postman_basic_auth": "![](_static/img/postman_basic_auth.png)",
+    "postman_headers": "![](_static/img/postman_headers.png)",
+    "postman_request": "![](_static/img/postman_request.png)",
+    "postman_response": "![](_static/img/postman_response.png)",
+    "postman_retain_headers": "![](_static/img/postman_retain_headers.png)",
+    "fawrench": '<span class="fa fa-wrench" style="font-size: 1.6em;"></span>',
+}
 
 # -- Options for LaTeX output --------------------------------------------------
 

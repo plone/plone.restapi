@@ -18,7 +18,7 @@ from plone.i18n.interfaces import ILanguageSchema
 from plone.registry.interfaces import IRegistry
 from plone.restapi.tests.dxtypes import INDEXES as DX_TYPES_INDEXES
 from plone.restapi.tests.helpers import add_catalog_indexes
-from plone.testing import z2
+from plone.testing import zope
 from plone.testing.layer import Layer
 from plone.uuid.interfaces import IUUIDGenerator
 from Products.CMFCore.utils import getToolByName
@@ -36,6 +36,12 @@ import re
 import requests
 import time
 
+
+try:
+    from plone.app.caching.testing import PloneAppCachingBase
+except ImportError:
+    # we get an import error in Plone 5.2 and in 6.0a4 an earlier
+    PloneAppCachingBase = None
 
 ENABLED_LANGUAGES = ["de", "en", "es", "fr"]
 
@@ -118,7 +124,7 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
 
         self.loadZCML(package=collective.MockMailHost)
-        z2.installProduct(app, "plone.restapi")
+        zope.installProduct(app, "plone.restapi")
 
     def setUpPloneSite(self, portal):
         portal.acl_users.userFolderAddUser(
@@ -142,10 +148,11 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
 PLONE_RESTAPI_DX_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_DX_FIXTURE,), name="PloneRestApiDXLayer:Integration"
+    bases=(PLONE_RESTAPI_DX_FIXTURE,),
+    name="PloneRestApiDXLayer:Integration",
 )
 PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_RESTAPI_DX_FIXTURE, z2.ZSERVER_FIXTURE),
+    bases=(PLONE_RESTAPI_DX_FIXTURE, zope.WSGI_SERVER_FIXTURE),
     name="PloneRestApiDXLayer:Functional",
 )
 
@@ -175,7 +182,7 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
         xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
 
-        z2.installProduct(app, "plone.restapi")
+        zope.installProduct(app, "plone.restapi")
 
     def setUpPloneSite(self, portal):
         portal.acl_users.userFolderAddUser(
@@ -201,9 +208,33 @@ PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING = IntegrationTesting(
     bases=(PLONE_RESTAPI_DX_PAM_FIXTURE,), name="PloneRestApiDXPAMLayer:Integration"
 )
 PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, z2.ZSERVER_FIXTURE),
+    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, zope.WSGI_SERVER_FIXTURE),
     name="PloneRestApiDXPAMLayer:Functional",
 )
+
+if PloneAppCachingBase is not None:
+    # condition and fallback can be removed in a Plone 6.0 only scenario
+    class PloneRestApiCachingLayer(PloneAppCachingBase):
+
+        defaultBases = [
+            PLONE_RESTAPI_DX_PAM_FIXTURE,
+        ]
+
+    PLONE_RESTAPI_CACHING_FIXTURE = PloneRestApiCachingLayer()
+    PLONE_RESTAPI_CACHING_INTEGRATION_TESTING = IntegrationTesting(
+        bases=(PLONE_RESTAPI_CACHING_FIXTURE,),
+        name="PloneRestApICachingLayer:Integration",
+    )
+    PLONE_RESTAPI_CACHING_FUNCTIONAL_TESTING = FunctionalTesting(
+        bases=(
+            PLONE_RESTAPI_CACHING_FIXTURE,
+            zope.WSGI_SERVER_FIXTURE,
+        ),
+        name="PloneRestApICachingLayer:Functional",
+    )
+else:
+    PLONE_RESTAPI_CACHING_INTEGRATION_TESTING = None
+    PLONE_RESTAPI_CACHING_FUNCTIONAL_TESTING = None
 
 
 class PloneRestApiDXIterateLayer(PloneSandboxLayer):
@@ -216,7 +247,7 @@ class PloneRestApiDXIterateLayer(PloneSandboxLayer):
         xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
         xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
 
-        z2.installProduct(app, "plone.restapi")
+        zope.installProduct(app, "plone.restapi")
 
 
 PLONE_RESTAPI_ITERATE_FIXTURE = PloneRestApiDXIterateLayer()
@@ -225,7 +256,7 @@ PLONE_RESTAPI_ITERATE_INTEGRATION_TESTING = IntegrationTesting(
     name="PloneRestApiDXIterateLayer:Integration",
 )
 PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_RESTAPI_ITERATE_FIXTURE, z2.ZSERVER_FIXTURE),
+    bases=(PLONE_RESTAPI_ITERATE_FIXTURE, zope.WSGI_SERVER_FIXTURE),
     name="PloneRestApiDXIterateLayer:Functional",
 )
 
@@ -243,7 +274,7 @@ PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING = IntegrationTesting(
     bases=(PLONE_RESTAPI_BLOCKS_FIXTURE,), name="PloneRestApIBlocksLayer:Integration"
 )
 PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING = FunctionalTesting(
-    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE, z2.ZSERVER_FIXTURE),
+    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE, zope.WSGI_SERVER_FIXTURE),
     name="PloneRestApIBlocksLayer:Functional",
 )
 
@@ -259,7 +290,7 @@ class RelativeSession(requests.Session):
 
         Apparently, network sockets created by the `requests` library can remain open
         even after the full body of the response has been read, despite [the
-        docs](https://docs.python-requests.org/en/latest/user/advanced/#body-content-workflow). In
+        docs](https://requests.readthedocs.io/en/latest/user/advanced/#body-content-workflow). In
         particular, this results in `ResourceWarning: unclosed <socket.socket ...>` leak
         warnings when running the tests.  If the `test` kwarg is passed, it will be used
         to register future cleanup calls to close this session and thus also the
