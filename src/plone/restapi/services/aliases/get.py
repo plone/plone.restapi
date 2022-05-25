@@ -42,7 +42,12 @@ class Aliases:
             redirect["datetime"] = datetimelike_to_iso(redirect["datetime"])
         self.request.response.setStatus(201)
 
-        return redirects
+        self.request.form['b_size'] = '1000000'
+        self.request.__annotations__.pop('plone.memoize')
+
+        newbatch = RedirectsControlPanel(self.context, self.request).redirects()
+        items_total = len([item for item in newbatch])
+        return redirects, items_total
 
     def __call__(self, expand=False):
         result = {"aliases": {"@id": f"{self.context.absolute_url()}/@aliases"}}
@@ -50,10 +55,12 @@ class Aliases:
             return result
 
         if IPloneSiteRoot.providedBy(self.context):
-            result["aliases"]["items"] = self.reply_root()
+            items, items_total = self.reply_root()
+            result["aliases"]["items"] = items
+            result["aliases"]["items_total"] = items_total
         else:
             result["aliases"]["items"] = self.reply_item()
-        result["aliases"]["items_total"] = len(result["aliases"]["items"])
+            result["aliases"]["items_total"] = len(result["aliases"]["items"])
 
         return result
 
