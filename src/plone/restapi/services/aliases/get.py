@@ -42,8 +42,8 @@ class Aliases:
             redirect["datetime"] = datetimelike_to_iso(redirect["datetime"])
         self.request.response.setStatus(201)
 
-        self.request.form['b_size'] = '1000000'
-        self.request.__annotations__.pop('plone.memoize')
+        self.request.form["b_size"] = "1000000"
+        self.request.__annotations__.pop("plone.memoize")
 
         newbatch = RedirectsControlPanel(self.context, self.request).redirects()
         items_total = len([item for item in newbatch])
