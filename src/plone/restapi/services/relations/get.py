@@ -14,6 +14,12 @@ from zope.intid.interfaces import IIntIds
 
 
 def make_summary(obj, request):
+    # Add UID to metadata_fields
+    metadata_fields = request.form.get("metadata_fields", []) or []
+    if not isinstance(metadata_fields, list):
+        metadata_fields = [metadata_fields]
+    metadata_fields.append("UID")
+    request.form['metadata_fields'] = list(set(metadata_fields))
     summary = getMultiAdapter((obj, request), ISerializeToJsonSummary)()
     return json_compatible(summary)
 
