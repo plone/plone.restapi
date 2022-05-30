@@ -1,6 +1,6 @@
+from plone.restapi.deserializer.utils import path2uid
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
-from plone.restapi.deserializer.utils import path2uid
 
 import unittest
 

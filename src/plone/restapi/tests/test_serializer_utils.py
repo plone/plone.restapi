@@ -1,3 +1,4 @@
+from plone.restapi.serializer.utils import uid_to_url
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from Products.CMFCore.utils import getToolByName
 
