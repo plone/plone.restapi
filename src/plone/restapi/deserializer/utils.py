@@ -3,6 +3,10 @@ from plone.uuid.interfaces import IUUID
 from plone.uuid.interfaces import IUUIDAware
 from zope.component import getMultiAdapter
 
+import re
+
+SUFFIX_RE = re.compile("(.*)/(@@?.*)")
+
 
 def path2uid(context, link):
     # unrestrictedTraverse requires a string on py3. see:
@@ -23,6 +27,12 @@ def path2uid(context, link):
         path = "{portal_path}/{path}".format(
             portal_path=portal_path, path=path.lstrip("/")
         )
+
+    # check if the path has a @@ suffix
+    match = SUFFIX_RE.match(path)
+    view_suffix = ""
+    if match:
+        path, view_suffix = match.groups()
     obj = portal.unrestrictedTraverse(path, None)
     if obj is None or obj == portal:
         return link
@@ -39,4 +49,6 @@ def path2uid(context, link):
     href = relative_up * "../" + "resolveuid/" + IUUID(obj)
     if suffix:
         href += suffix
+    if view_suffix:
+        href += "/" + view_suffix
     return href
