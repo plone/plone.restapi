@@ -1145,12 +1145,9 @@ class TestDocumentation(TestDocumentationBase):
                 "email": "ploneteam2@plone.org",
                 "groups": ["Site Administrators"],
                 "users": {TEST_USER_ID: False},
-                "roles": [
-                    "Authenticated",
-                    "Reviewer"
-                ],
-                "title": "The Plone team"
-            }
+                "roles": ["Authenticated", "Reviewer"],
+                "title": "The Plone team",
+            },
         )
         save_request_and_response_for_docs("groups_update", response)
 
