@@ -100,14 +100,14 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_list_users_filtered(self):
         response = self.api_session.get(
-            "/@users?groups_filter=Reviewers,Administrators"
+            "/@users?groups-filter=Reviewers,Administrators"
         )
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, len(response.json()))
         user_ids = [user["id"] for user in response.json()]
         self.assertIn("otheruser", user_ids)
 
-        response = self.api_session.get("/@users?groups_filter=Administrators")
+        response = self.api_session.get("/@users?groups-filter=Administrators")
         self.assertEqual(200, response.status_code)
         user_ids = [user["id"] for user in response.json()]
         self.assertNotIn("otheruser", user_ids)

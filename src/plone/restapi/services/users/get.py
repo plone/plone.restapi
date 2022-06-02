@@ -83,7 +83,7 @@ class UsersGet(Service):
     def reply(self):
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
-            groups_filter = self.query.get("groups_filter", "")
+            groups_filter = self.query.get("groups-filter", "")
             limit = self.query.get("limit", DEFAULT_SEARCH_RESULTS_LIMIT)
             if query or groups_filter:
                 # Someone is searching users, check if they are authorized
