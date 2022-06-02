@@ -4,7 +4,16 @@ Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
+    "description": "Plone team members",
     "email": "ploneteam2@plone.org",
+    "groups": [
+        "Site Administrators"
+    ],
+    "roles": [
+        "Authenticated",
+        "Reviewer"
+    ],
+    "title": "The Plone team",
     "users": {
         "test_user_1_": false
     }
