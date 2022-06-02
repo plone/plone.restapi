@@ -1,3 +1,4 @@
+from DateTime import DateTime
 from datetime import date
 from datetime import datetime
 from datetime import time
@@ -268,6 +269,9 @@ class TestDexterityFieldSerializing(TestCase):
                 description="Description 2",
             )
         ]
+        doc2.creation_date = DateTime("2016-01-21T01:14:48+00:00")
+        doc2.modification_date = DateTime("2017-01-21T01:14:48+00:00")
+        doc2_uid = doc2.UID()
         value = self.serialize("test_relationchoice_field", doc2)
         self.assertEqual(
             {
@@ -276,6 +280,42 @@ class TestDexterityFieldSerializing(TestCase):
                 "title": "Referenceable Document",
                 "description": "Description 2",
                 "review_state": "private",
+                # Additional fields are added by the relationship serializer
+                # for default content.
+                "UID": doc2_uid,
+                "created": "2016-01-21T01:14:48+00:00",
+                "id": "doc2",
+                "modified": "2017-01-21T01:14:48+00:00",
+            },
+            value,
+        )
+
+    def test_relationchoice_field_serialization_depends_on_content_type(self):
+        image1 = self.portal[
+            self.portal.invokeFactory(
+                "Image",
+                id="image1",
+                title="Test Image",
+                description="Test Image Description",
+            )
+        ]
+        image1.creation_date = DateTime("2016-01-21T01:14:48+00:00")
+        image1.modification_date = DateTime("2017-01-21T01:14:48+00:00")
+        image1_uid = image1.UID()
+        value = self.serialize("test_relationchoice_field", image1)
+        self.assertEqual(
+            {
+                "@id": "http://nohost/plone/image1",
+                "@type": "Image",
+                "title": "Test Image",
+                "description": "Test Image Description",
+                "review_state": None,
+                # Additional fields are added by the relationship serializer
+                # for default content.
+                "UID": image1_uid,
+                "created": "2016-01-21T01:14:48+00:00",
+                "id": "image1",
+                "modified": "2017-01-21T01:14:48+00:00",
             },
             value,
         )
@@ -634,5 +674,5 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
 
 
 class TestDexterityFieldSerializers(TestCase):
-    def default_field_serializer(self):
+    def test_default_field_serializer(self):
         verifyClass(IFieldSerializer, DefaultFieldSerializer)

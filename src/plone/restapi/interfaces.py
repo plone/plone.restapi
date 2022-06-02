@@ -224,3 +224,15 @@ class IJSONSummarySerializerMetadata(Interface):
 
     def blocklisted_attributes():
         """Returns a set with attributes blocked during serialization."""
+
+
+class IRelationObjectSerializer(Interface):
+    """The relation object serializer multi adapter serializes the relation object into
+    JSON compatible python data.
+    """
+
+    def __init__(rel_obj, field, context, request):
+        """Adapts relation object, field, context and request."""
+
+    def __call__():
+        """Returns JSON compatible python data."""

@@ -1,0 +1,1 @@
+- Enhance relation field serialization for image content types [@reebalazs]

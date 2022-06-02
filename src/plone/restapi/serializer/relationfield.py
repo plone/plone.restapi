@@ -27,7 +27,25 @@ def relationvalue_converter(value):
 @adapter(IRelationChoice, IDexterityContent, Interface)
 @implementer(IFieldSerializer)
 class RelationChoiceFieldSerializer(DefaultFieldSerializer):
-    pass
+    def __call__(self):
+        result = json_compatible(self.get_value())
+        # Enhance information based on the content type in relation
+        if result is None:
+            return None
+        portal = getMultiAdapter(
+            (self.context, self.request), name="plone_portal_state"
+        ).portal()
+        portal_url = portal.absolute_url()
+        rel_url = result["@id"]
+        if not rel_url.startswith(portal_url):
+            raise RuntimeError(
+                f"Url must start with portal url. [{portal_url} <> {rel_url}]"
+            )
+        rel_path = rel_url[len(portal_url) + 1 :]
+        rel_obj = portal.unrestrictedTraverse(rel_path, None)
+        serializer = getMultiAdapter((rel_obj, self.field, self.context, self.request))
+        result = serializer()
+        return result
 
 
 @adapter(IRelationList, IDexterityContent, Interface)

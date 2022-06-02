@@ -113,4 +113,9 @@
       name="plone.restapi.summary_serializer_metadata"
       />
 
+  <!-- Relation object serializer -->
+  <adapter factory=".relationobject.DefaultRelationObjectSerializer" />
+  <adapter factory=".relationobject.ImageRelationObjectSerializer" />
+
+
 </configure>
