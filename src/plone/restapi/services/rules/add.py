@@ -8,15 +8,15 @@ from zope.publisher.interfaces import IPublishTraverse
 
 
 @implementer(IPublishTraverse)
-class RulesAdd(Service):
-    """Adds rules"""
+class ContentRulesAdd(Service):
+    """Adds content rules"""
 
     def __init__(self, context, request):
         super().__init__(context, request)
         self.params = []
 
     def publishTraverse(self, request, name):
-        # Treat any path segments after /@rules as parameters
+        # Treat any path segments after /@content-rules as parameters
         self.params.append(name)
         return self
 

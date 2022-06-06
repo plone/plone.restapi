@@ -8,31 +8,31 @@
       factory=".get.ContentRulesGet"
       for="plone.contentrules.engine.interfaces.IRuleAssignable"
       permission="plone.app.contentrules.ManageContentRules"
-      name="@rules"
+      name="@content-rules"
       />
 
   <plone:service
       method="POST"
-      factory=".add.RulesAdd"
+      factory=".add.ContentRulesAdd"
       for="plone.contentrules.engine.interfaces.IRuleAssignable"
       permission="plone.app.contentrules.ManageContentRules"
-      name="@rules"
+      name="@content-rules"
       />
 
   <plone:service
       method="PATCH"
-      factory=".update.RulesUpdate"
+      factory=".update.ContentRulesUpdate"
       for="plone.contentrules.engine.interfaces.IRuleAssignable"
       permission="plone.app.contentrules.ManageContentRules"
-      name="@rules"
+      name="@content-rules"
       />
 
   <plone:service
       method="DELETE"
-      factory=".delete.RulesDelete"
+      factory=".delete.ContentRulesDelete"
       for="plone.contentrules.engine.interfaces.IRuleAssignable"
       permission="plone.app.contentrules.ManageContentRules"
-      name="@rules"
+      name="@content-rules"
       />
 
 </configure>

@@ -5,8 +5,8 @@ from zope.interface import alsoProvides
 from plone.restapi.deserializer import json_body
 
 
-class RulesUpdate(Service):
-    """Update rules"""
+class ContentRulesUpdate(Service):
+    """Update content rules"""
 
     def reply(self):
 

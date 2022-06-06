@@ -6,8 +6,8 @@ from zope.interface import alsoProvides
 from plone.restapi.deserializer import json_body
 
 
-class RulesDelete(Service):
-    """Delete rules"""
+class ContentRulesDelete(Service):
+    """Delete content rules"""
 
     def reply(self):
 
