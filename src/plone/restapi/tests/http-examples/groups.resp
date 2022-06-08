@@ -61,8 +61,10 @@ Content-Type: application/json
         "id": "ploneteam",
         "members": {
             "@id": "http://localhost:55001/plone/@groups",
-            "items": [],
-            "items_total": 0
+            "items": [
+                "noam"
+            ],
+            "items_total": 1
         },
         "roles": [
             "Authenticated"

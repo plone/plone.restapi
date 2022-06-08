@@ -1066,6 +1066,16 @@ class TestDocumentation(TestDocumentationBase):
             title=properties["title"],
             description=properties["description"],
         )
+        properties = {
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com", username="noam", properties=properties
+        )
+        api.group.add_user(groupname="ploneteam", username="noam")
         transaction.commit()
         response = self.api_session.get("/@groups")
         save_request_and_response_for_docs("groups", response)
@@ -1085,6 +1095,16 @@ class TestDocumentation(TestDocumentationBase):
             title=properties["title"],
             description=properties["description"],
         )
+        properties = {
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com", username="noam", properties=properties
+        )
+        api.group.add_user(groupname="ploneteam", username="noam")
         transaction.commit()
         response = self.api_session.get("@groups/ploneteam")
         save_request_and_response_for_docs("groups_get", response)
