@@ -110,4 +110,6 @@ class SecurityControlpanel(RegistryConfigletPanel):
 class UserGroupControlpanel(RegistryConfigletPanel):
     schema = IUserGroupsSettingsSchema
     configlet_id = "UsersGroupsSettings"
-    configlet_category_id = "plone-users"
+    configlet_category_id = "plone-users-and-groups"
+    group = "Users and Groups"
+    title = "User and Group Settings"
