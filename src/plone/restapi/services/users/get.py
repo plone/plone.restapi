@@ -3,7 +3,7 @@ from plone.restapi.interfaces import ISerializeToJson, ISerializeToJsonSummary
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
-from urllib.parse import parse_qsl
+from urllib.parse import parse_qs
 from zExceptions import BadRequest
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
@@ -22,7 +22,7 @@ class UsersGet(Service):
         portal = getSite()
         self.portal_membership = getToolByName(portal, "portal_membership")
         self.acl_users = getToolByName(portal, "acl_users")
-        self.query = dict(parse_qsl(self.request["QUERY_STRING"]))
+        self.query = parse_qs(self.request["QUERY_STRING"])
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
@@ -57,11 +57,10 @@ class UsersGet(Service):
             self.portal_membership.getMemberById(user["userid"]) for user in results
         ]
         if groups_filter:
-            groups_filter_list = groups_filter.split(",")
             users = [
                 user
                 for user in users
-                if set(user.getGroups()) & set(groups_filter_list)
+                if set(user.getGroups()) & set(groups_filter)
             ]
 
         return self._sort_users(users)
@@ -83,7 +82,7 @@ class UsersGet(Service):
     def reply(self):
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
-            groups_filter = self.query.get("groups-filter", "")
+            groups_filter = self.query.get("groups-filter:list", self.query.get("groups-filter%3Alist", []))
             limit = self.query.get("limit", DEFAULT_SEARCH_RESULTS_LIMIT)
             if query or groups_filter:
                 # Someone is searching users, check if they are authorized

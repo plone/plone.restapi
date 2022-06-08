@@ -925,8 +925,6 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_users_filtered_get(self):
         properties = {
-            "email": "noam.chomsky@example.com",
-            "username": "noamchomsky",
             "fullname": "Noam Avram Chomsky",
             "home_page": "web.mit.edu/chomsky",
             "description": "Professor of Linguistics",
@@ -935,11 +933,18 @@ class TestDocumentation(TestDocumentationBase):
         api.user.create(
             email="noam.chomsky@example.com", username="noam", properties=properties
         )
+        api.group.add_user(groupname='Reviewers', username='noam')
         transaction.commit()
+        # filter by username
         response = self.api_session.get("@users", params={"query": "noa"})
         save_request_and_response_for_docs(
             "users_filtered_by_username", response
         )  # noqa
+        # filter by groups
+        response = self.api_session.get("@users", params={"groups-filter:list": ["Reviewers", "Site Administrators"]})
+        save_request_and_response_for_docs(
+            "users_filtered_by_groups", response
+        )  # noqa   
 
     def test_documentation_users_created(self):
         response = self.api_session.post(

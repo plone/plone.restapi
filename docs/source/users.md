@@ -79,8 +79,11 @@ Filtering by groups:
     :request: ../../src/plone/restapi/tests/http-examples/users_filtered_by_groups.req
 ```
 
-The server will respond with a list of the filtered users in the portal where the users are member of one of the mentioned groups. The groups are to be separated by commas.
+The server will respond with a list of users where the users are member of one of the groups of the `groups-filter` parameter value.
 
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_filtered_by_groups.resp
+:language: http
+```
 
 The endpoint also takes a `limit` parameter.
 Its default is a maximum of 25 users at a time for performance reasons.

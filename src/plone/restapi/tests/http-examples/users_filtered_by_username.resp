@@ -13,15 +13,20 @@ Content-Type: application/json
                 {
                     "id": "AuthenticatedUsers",
                     "title": "AuthenticatedUsers"
+                },
+                {
+                    "id": "Reviewers",
+                    "title": "Reviewers"
                 }
             ],
-            "items_total": 1
+            "items_total": 2
         },
         "home_page": "web.mit.edu/chomsky",
         "id": "noam",
         "location": "Cambridge, MA",
         "portrait": null,
         "roles": [
+            "Reviewer",
             "Member"
         ],
         "username": "noam"
