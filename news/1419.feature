@@ -1,2 +1,2 @@
-List Users (@users): Allow filtering by groups
-[ksuess]
+List Users (@users): Add groups [ksuess]
+List Users (@users): Support filtering by groups [ksuess]
