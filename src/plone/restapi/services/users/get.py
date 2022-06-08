@@ -58,9 +58,7 @@ class UsersGet(Service):
         ]
         if groups_filter:
             users = [
-                user
-                for user in users
-                if set(user.getGroups()) & set(groups_filter)
+                user for user in users if set(user.getGroups()) & set(groups_filter)
             ]
 
         return self._sort_users(users)
@@ -82,7 +80,9 @@ class UsersGet(Service):
     def reply(self):
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
-            groups_filter = self.query.get("groups-filter:list", self.query.get("groups-filter%3Alist", []))
+            groups_filter = self.query.get(
+                "groups-filter:list", self.query.get("groups-filter%3Alist", [])
+            )
             limit = self.query.get("limit", DEFAULT_SEARCH_RESULTS_LIMIT)
             if query or groups_filter:
                 # Someone is searching users, check if they are authorized
