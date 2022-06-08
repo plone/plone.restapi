@@ -59,20 +59,20 @@ The server will return a {term}`401 Unauthorized` status code.
 
 The endpoint supports some basic filtering.
 
-Filtering by `fullname` and `id`:
+Filtering by `id`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/users_filtered_by_username.req
 ```
 
-The server will respond with a list of the filtered users in the portal where the `fullname` or `id` contains the `query` parameter's value:
+The server will respond with a list of the filtered users in the portal where the `username` starts with the `query` parameter's value:
 
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_filtered_by_username.resp
 :language: http
 ```
 
-Filtering by groups:
+Filtering by `groups`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
