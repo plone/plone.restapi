@@ -1,11 +1,11 @@
-docutils<0.17,>=0.15  # sphinx-book-theme 0.2.0 has requirement docutils<0.17,>=0.15
-Sphinx
+docutils
+Sphinx<=4.99
 jsx-lexer
 lesscpy
 linkify-it-py
 myst-parser
 sphinx-autobuild
-sphinx-book-theme
+sphinx-book-theme<=0.3.99
 sphinx-copybutton
 sphinx-sitemap
 sphinx-togglebutton
