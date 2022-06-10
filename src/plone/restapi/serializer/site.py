@@ -135,6 +135,7 @@ class SerializeSiteRootToJson:
         if not blocks:
             return blocks
         for id, block_value in blocks.items():
+            self.handle_subblocks(block_value)
             block_type = block_value.get("@type", "")
             handlers = []
             for h in subscribers(
@@ -148,4 +149,35 @@ class SerializeSiteRootToJson:
                     block_value = handler(block_value)
 
             blocks[id] = block_value
+        return blocks
+
+    def handle_subblocks(self, block_value):
+        if "data" in block_value:
+            if isinstance(block_value["data"], dict):
+                if "blocks" in block_value["data"]:
+                    block_value["data"]["blocks"] = self._transform(
+                        block_value["data"]["blocks"]
+                    )
+
+        if "blocks" in block_value:
+            block_value["blocks"] = self._transform(block_value["blocks"])
+
+    def _transform(self, blocks):
+        for id, block_value in blocks.items():
+            self.handle_subblocks(block_value)
+            block_type = block_value.get("@type", "")
+            handlers = []
+            for h in subscribers(
+                (self.context, self.request),
+                IBlockFieldSerializationTransformer,
+            ):
+                if h.block_type == block_type or h.block_type is None:
+                    h.blockid = id
+                    handlers.append(h)
+
+            for handler in sorted(handlers, key=lambda h: h.order):
+                block_value = handler(block_value)
+
+            blocks[id] = block_value
+
         return blocks
