@@ -25,7 +25,7 @@ class BaseSerializer:
         roles = user.getRoles()
         # Anonymous and Authenticated are pseudo roles assign automatically
         # to logged-in or logged-out users. They should not be exposed here
-        roles = list(set(roles) - {"Anonymous", "Authenticated"})
+        roles = sorted(list(set(roles) - {"Anonymous", "Authenticated"}))
 
         data = {
             "@id": f"{portal.absolute_url()}/@users/{user.id}",
