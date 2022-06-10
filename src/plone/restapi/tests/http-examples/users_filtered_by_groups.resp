@@ -26,8 +26,8 @@ Content-Type: application/json
         "location": "Cambridge, MA",
         "portrait": null,
         "roles": [
-            "Reviewer",
-            "Member"
+            "Member",
+            "Reviewer"
         ],
         "username": "noam"
     }
