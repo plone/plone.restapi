@@ -6,6 +6,7 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
+from plone.restapi.testing import normalize_html
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from Products.CMFCore.utils import getToolByName
 from zope.component import getGlobalSiteManager
@@ -231,7 +232,10 @@ class TestFolderCreate(unittest.TestCase):
         self.assertEqual(
             "<p>example with '</p>", self.portal.folder1.mydocument2.text.raw
         )
-        self.assertEqual("<p>example with '</p>", response.json()["text"]["data"])
+        self.assertEqual(
+            "<p>example with '</p>",
+            normalize_html(response.json()["text"]["data"]),
+        )
 
     def test_post_with_uid_with_manage_portal_permission(self):
         response = requests.post(
