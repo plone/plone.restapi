@@ -166,15 +166,13 @@ html_theme = "sphinx_book_theme"
 html_logo = "_static/logo.svg"
 html_favicon = "_static/favicon.ico"
 
-html_css_files = ["custom.css",
-                  ("print.css", {"media": "print"})]
+html_css_files = ["custom.css", ("print.css", {"media": "print"})]
 
 # See http://sphinx-doc.org/ext/todo.html#confval-todo_include_todos
 todo_include_todos = True
 
 html_theme_options = {
-    # TODO: Either get a separate GA ID or enable this one once it is in production.
-    # "google_analytics_id": "UA-1907133-6",
+    "google_analytics_id": "G-P8NCTB796E",
     "path_to_docs": "docs",
     "repository_url": "https://github.com/plone/plone.restapi",
     "repository_branch": "master",
@@ -288,10 +286,10 @@ htmlhelp_basename = "plonerestapidoc"
 # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
 myst_enable_extensions = [
     "deflist",  # You will be able to utilise definition lists
-                # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#definition-lists
+    # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#definition-lists
     "linkify",  # Identify “bare” web URLs and add hyperlinks.
     "colon_fence",  # You can also use ::: delimiters to denote code fences,\
-                    #  instead of ```.
+    #  instead of ```.
     "substitution",  # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#substitutions-with-jinja2
 ]
 
@@ -308,11 +306,11 @@ myst_substitutions = {
 
 latex_elements = {
     # The paper size ("letterpaper" or "a4paper").
-    #"papersize": "letterpaper",
+    # "papersize": "letterpaper",
     # The font size ("10pt", "11pt" or "12pt").
-    #"pointsize": "10pt",
+    # "pointsize": "10pt",
     # Additional stuff for the LaTeX preamble.
-    #"preamble": "",
+    # "preamble": "",
 }
 
 # Grouping the document tree into LaTeX files. List of tuples

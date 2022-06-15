@@ -78,9 +78,6 @@ To update the settings on a control panel, send a `PATCH` request to control pan
 
 A successful response to a `PATCH` request will be indicated by a {term}`204 No Content` response:
 
-```http
-HTTP/1.1 204 No Content
-```
 
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_patch.resp
 :language: http

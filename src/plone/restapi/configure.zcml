@@ -22,6 +22,12 @@
   <include package="plone.behavior" />
   <include package="plone.rest" />
   <include package="plone.schema" />
+
+  <include
+      package="plone.app.caching"
+      zcml:condition="installed plone.app.caching"
+      />
+
   <include file="indexers.zcml" />
 
   <five:registerPackage
