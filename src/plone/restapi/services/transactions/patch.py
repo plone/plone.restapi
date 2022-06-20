@@ -8,7 +8,7 @@ from zExceptions import BadRequest
 class TransactionsPatch(Service):
     def reply(self):
         body = json_body(self.request)
-        message = revert(self.context, body["Transaction_id"])
+        message = revert(self.context, body["Transactions_IDs"])
         return json_compatible(message)
 
 def revert(context, transactions_info=()):
@@ -29,11 +29,11 @@ def revert(context, transactions_info=()):
         context._p_jar.db().undoMultiple(tids)
         try:
             ts.commit()
-            return "Successfully Undone transactions"
         except Exception as exc:
-            ts.abort()
-            error_msg = 'Failed in undoing transactions'
-            raise BadRequest({"errors": error_msg})
+            raise BadRequest({"errors": "Failed in undoing transactions"})
+
+    msg = f"Transactions has been reverted successfully."
+    return {"message": msg}
 
 def decode64(s, a2b=binascii.a2b_base64):
     __traceback_info__ = len(s), repr(s)
