@@ -27,7 +27,7 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
 
     def publishTraverse(self, request, name):
 
-        return self.context.restrictedTraverse('++rule++' + name)
+        return self.context.restrictedTraverse("++rule++" + name)
 
     # def add(self, names):
     #     data = json_body(self.request)

@@ -21,8 +21,7 @@ from zope.interface import implementer
 class ContentRulesControlpanelSerializeToJson(ControlpanelSerializeToJson):
 
     def serialize_item(self, proxy):
-        manage_elements = ManageElements(proxy,
-                                         self.controlpanel.request)
+        manage_elements = ManageElements(proxy, self.controlpanel.request)
         return {
             "@id": "{}/{}/{}/{}".format(
                 self.controlpanel.context.absolute_url(),
@@ -41,7 +40,7 @@ class ContentRulesControlpanelSerializeToJson(ControlpanelSerializeToJson):
             "addable_conditions": manage_elements.addable_conditions(),
             "actions": manage_elements.actions(),
             "addable_actions": manage_elements.addable_actions(),
-            "assignments": manage_elements.assignments()
+            "assignments": manage_elements.assignments(),
         }
 
     def __call__(self, item=None):
@@ -55,14 +54,15 @@ class ContentRulesControlpanelSerializeToJson(ControlpanelSerializeToJson):
         portal_url = portal.absolute_url()
 
         rules_control_panel = ContentRulesControlPanel(
-            self.controlpanel.context, self.controlpanel.request)
+            self.controlpanel.context, self.controlpanel.request
+        )
         registeredRules = rules_control_panel.registeredRules()
 
         for rule in registeredRules:
             rule["@id"] = "{}/@controlpanels/content-rules/{}".format(
                 portal_url, rule["id"]
             )
-            del(rule["id"])
+            del rule["id"]
         json["items"].append(registeredRules)
 
         return json
