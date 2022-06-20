@@ -1,0 +1,49 @@
+---
+html_meta:
+  "description": "The @transactions endpoint exposes transactions those have been made through the plone website."
+  "property=og:description": "The @transactions endpoint exposes transactions those have been made through the plone website."
+  "property=og:title": "Transactions"
+  "keywords": "Plone, plone.restapi, REST, API, Transactions"
+---
+
+# Transactions
+
+The `@transactions` endpoint exposes transactions those have been made through the plone website.
+Each change thorough the plone website is listed.
+It also allows to revert transactions so that previous version of the website can be achievable.
+
+
+## Listing the Transactions of a Content Object
+
+Listing versions and transactions of a resource:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/transactions_get.req
+```
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/transactions_get.resp
+:language: http
+```
+
+The following fields are returned:
+
+- `user_name`: The person who made transactions through the website.
+- `time`: At what time transaction was made through the website.
+- `description`: Description about the transaction with `path` where transaction was made in the website.
+- `id`: Transaction ID.
+- `size`: Size of the transaction.
+
+
+## Reverting a Transaction or a group of Transactions
+
+Reverting a single transaction or a group of transactions, both operations can be done by sending a `PATCH` request to the `@transactions` endpoint with a list of transactions IDs you want to revert:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/transactions_revert.req
+```
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/transactions_revert.resp
+:language: http
+```
