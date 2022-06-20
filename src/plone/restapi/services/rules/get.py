@@ -5,6 +5,15 @@ from plone.restapi.services import Service
 class ContentRulesGet(Service):
     """Publishes the content rules assigned or acquired by given context"""
 
+    def __init__(self, context, request):
+        super().__init__(context, request)
+        self.params = []
+
+    def publishTraverse(self, request, name):
+        # Treat any path segments after /@content-rules as parameters
+        self.params.append(name)
+        return self
+
     def reply(self):
         manage_assignments = ManageAssignments(self.context, self.request)
         acquired_rules = manage_assignments.acquired_rules()
