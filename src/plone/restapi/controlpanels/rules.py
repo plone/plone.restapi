@@ -1,19 +1,19 @@
-from zExceptions import BadRequest
+# from zExceptions import BadRequest
 from zope.component import adapter
-from zope.component import queryMultiAdapter
-from zope.interface import alsoProvides
+# from zope.component import queryMultiAdapter
+# from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import Interface
-from plone.i18n.normalizer import idnormalizer
+# from plone.i18n.normalizer import idnormalizer
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.deserializer import json_body
+# from plone.restapi.interfaces import IDeserializeFromJson
+# from plone.restapi.deserializer import json_body
 from plone.restapi.controlpanels import RegistryConfigletPanel
 from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
-from plone.contentrules.engine.interfaces import IRuleStorage
-import plone.protect.interfaces
-from zope.interface import noLongerProvides
-from zope.component import getUtility
+# from plone.contentrules.engine.interfaces import IRuleStorage
+# import plone.protect.interfaces
+# from zope.interface import noLongerProvides
+# from zope.component import getUtility
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from plone.restapi.interfaces import IPloneRestapiLayer
 

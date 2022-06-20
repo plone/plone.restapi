@@ -1,20 +1,19 @@
-from Products.CMFCore.utils import getToolByName
-from plone.dexterity.interfaces import IDexterityFTI
+# from Products.CMFCore.utils import getToolByName
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.interfaces import IFieldSerializer
+# from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
-from plone.app.contentrules.browser.controlpanel import ContentRulesControlPanel
+# from plone.app.contentrules.browser.controlpanel import ContentRulesControlPanel
 from plone.restapi.serializer.controlpanels import SERVICE_ID
 from plone.restapi.serializer.controlpanels import ControlpanelSerializeToJson
-from plone.restapi.serializer.controlpanels import get_jsonschema_for_controlpanel
-from plone.restapi.serializer.converters import json_compatible
+# from plone.restapi.serializer.controlpanels import get_jsonschema_for_controlpanel
+# from plone.restapi.serializer.converters import json_compatible
 from plone.app.contentrules.browser.elements import ManageElements
 from zope.component import adapter
-from zope.component import getAllUtilitiesRegisteredFor
-from zope.component import queryMultiAdapter
+# from zope.component import getAllUtilitiesRegisteredFor
+# from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
-from zope.i18n import translate
+# from zope.i18n import translate
 
 
 @implementer(ISerializeToJson)
