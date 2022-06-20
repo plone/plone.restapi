@@ -2,7 +2,7 @@
 from plone.restapi.interfaces import ISerializeToJson
 # from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
-# from plone.app.contentrules.browser.controlpanel import ContentRulesControlPanel
+from plone.app.contentrules.browser.controlpanel import ContentRulesControlPanel
 from plone.restapi.serializer.controlpanels import SERVICE_ID
 from plone.restapi.serializer.controlpanels import ControlpanelSerializeToJson
 # from plone.restapi.serializer.controlpanels import get_jsonschema_for_controlpanel
