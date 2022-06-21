@@ -55,16 +55,33 @@ The server will return a {term}`401 Unauthorized` status code.
 :language: http
 ```
 
-The endpoint supports some basic filtering:
+### Filtering the list of users
+
+The endpoint supports some basic filtering.
+
+Filtering by `id`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
     :request: ../../src/plone/restapi/tests/http-examples/users_filtered_by_username.req
 ```
 
-The server will respond with a list of the filtered users in the portal where the username starts with the `query` parameter's value:
+The server will respond with a list of the filtered users in the portal where the `username` starts with the `query` parameter's value:
 
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_filtered_by_username.resp
+:language: http
+```
+
+Filtering by `groups`:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/users_filtered_by_groups.req
+```
+
+The server will respond with a list of users where the users are member of one of the groups of the `groups-filter` parameter value.
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_filtered_by_groups.resp
 :language: http
 ```
 

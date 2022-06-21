@@ -123,6 +123,13 @@
         name="security"
         />
 
+
+    <!-- Users and Groups -->
+    <adapter
+        factory="plone.restapi.controlpanels.registry.UserGroupControlpanel"
+        name="usergroup"
+        />
+
   </configure>
 
 </configure>

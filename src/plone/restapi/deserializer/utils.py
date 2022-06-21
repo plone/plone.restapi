@@ -30,9 +30,11 @@ def path2uid(context, link):
     suffix = ""
     while not IUUIDAware.providedBy(obj):
         obj = aq_parent(obj)
+        if obj is None:
+            break
         suffix += "/" + segments.pop()
     # check if obj is wrong because of acquisition
-    if "/".join(obj.getPhysicalPath()) != "/".join(segments):
+    if not obj or "/".join(obj.getPhysicalPath()) != "/".join(segments):
         return link
     href = relative_up * "../" + "resolveuid/" + IUUID(obj)
     if suffix:

@@ -10,6 +10,7 @@ from Products.CMFPlone.interfaces.controlpanel import ISearchSchema
 from Products.CMFPlone.interfaces.controlpanel import ISecuritySchema
 from Products.CMFPlone.interfaces.controlpanel import ISiteSchema
 from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
+from Products.CMFPlone.interfaces.controlpanel import IUserGroupsSettingsSchema
 from plone.restapi.controlpanels import RegistryConfigletPanel
 
 try:
@@ -100,3 +101,15 @@ class SecurityControlpanel(RegistryConfigletPanel):
     schema = ISecuritySchema
     configlet_id = "SecuritySettings"
     configlet_category_id = "plone-security"
+
+
+# Users and groups
+
+
+@adapter(Interface, Interface)
+class UserGroupControlpanel(RegistryConfigletPanel):
+    schema = IUserGroupsSettingsSchema
+    configlet_id = "UsersGroupsSettings"
+    configlet_category_id = "plone-users-and-groups"
+    group = "Users and Groups"
+    title = "User and Group Settings"
