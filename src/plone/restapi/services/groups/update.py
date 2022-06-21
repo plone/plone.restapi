@@ -12,7 +12,23 @@ import plone
 
 @implementer(IPublishTraverse)
 class GroupsPatch(Service):
-    """Updates an existing group."""
+    """Update an existing group with users, roles, groups, title and description.
+
+    Args:
+        data (dict): dictionary of
+        id: str
+        users: dict: The users object is a mapping of a user_id and a boolean indicating adding or removing from the group.
+        roles: list of str
+        groups: list of str
+        title: str
+        description: str
+
+    Raises:
+        BadRequest: No group with this id exists.
+
+    Response:
+        HTTP/1.1 204 No Content
+    """
 
     def __init__(self, context, request):
         super().__init__(context, request)
@@ -41,8 +57,6 @@ class GroupsPatch(Service):
         if not group:
             raise BadRequest("Trying to update a non-existing group.")
 
-        title = data.get("title", None)
-        description = data.get("description", None)
         roles = data.get("roles", None)
         groups = data.get("groups", None)
         users = data.get("users", {})
@@ -52,20 +66,18 @@ class GroupsPatch(Service):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         portal_groups = getToolByName(self.context, "portal_groups")
-
+        properties = dict((k, data[k]) for k in ["title", "description"] if k in data)
         portal_groups.editGroup(
             self._get_group_id,
             roles=roles,
             groups=groups,
-            title=title,
-            description=description,
+            **properties,
         )
 
         properties = {}
         for id, property in group.propertyItems():
             if data.get(id, False):
                 properties[id] = data[id]
-
         group.setGroupProperties(properties)
 
         # Add/remove members
@@ -77,5 +89,4 @@ class GroupsPatch(Service):
             else:
                 if userid in memberids:
                     group.removeMember(userid)
-
         return self.reply_no_content()
