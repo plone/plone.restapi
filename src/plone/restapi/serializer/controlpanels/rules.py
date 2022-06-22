@@ -55,7 +55,6 @@ class ContentRulesControlpanelSerializeToJson(ControlpanelSerializeToJson):
             rule["@id"] = "{}/@controlpanels/content-rules/{}".format(
                 portal_url, rule["id"]
             )
-            del rule["id"]
         json["items"].append(registeredRules)
 
         return json
