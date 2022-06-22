@@ -131,7 +131,7 @@ class UsersGet(Service):
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
             groups_filter = self.query.get("groups-filter:list", [])
-            limit = self.query.get("limit", DEFAULT_SEARCH_RESULTS_LIMIT)
+            limit = self.query.get("limit", [DEFAULT_SEARCH_RESULTS_LIMIT])[0]
             if query or groups_filter or self.search_term:
                 if self.has_permission_to_query():
                     users = self._get_filtered_users(
