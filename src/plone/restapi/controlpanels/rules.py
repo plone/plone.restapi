@@ -1,20 +1,14 @@
-# from zExceptions import BadRequest
 from zope.component import adapter
-# from zope.component import queryMultiAdapter
-# from zope.interface import alsoProvides
+from zope.component import queryMultiAdapter
+from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import Interface
-# from plone.i18n.normalizer import idnormalizer
 from plone.restapi.interfaces import ISerializeToJson
-# from plone.restapi.interfaces import IDeserializeFromJson
-# from plone.restapi.deserializer import json_body
 from plone.restapi.controlpanels import RegistryConfigletPanel
 from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
-# from plone.contentrules.engine.interfaces import IRuleStorage
-# import plone.protect.interfaces
-# from zope.interface import noLongerProvides
-# from zope.component import getUtility
 from zope.publisher.interfaces.browser import IBrowserPublisher
+from zope.interface import noLongerProvides
+import plone.protect.interfaces
 from plone.restapi.interfaces import IPloneRestapiLayer
 
 
@@ -80,14 +74,16 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
     #     deserializer = IDeserializeFromJson(self)
     #     return deserializer(context)
 
-    # def delete(self, names):
-    #     name = names[0]
+    def delete(self, names):
+        name = names[0]
+        self.request['rule-id'] = name
 
-    #     if IPloneRestapiLayer.providedBy(self.request):
-    #         noLongerProvides(self.request, IPloneRestapiLayer)
-
-    #     context = queryMultiAdapter(
-    #         (self.context, self.request), name="content-rules"
-    #     )
-    #     edit = queryMultiAdapter((context, self.request), name="edit")
-    #     edit.form_instance.remove((name, None))
+        cpanel = queryMultiAdapter(
+            (self.context, self.request), name="rules-controlpanel"
+        )
+        # Disable CSRF protection
+        # The "regular" way to force authorization was via the interface
+        # IDisableCSRFProtection, but the plone.app.contentrules controlpanel
+        # calls authorize directly, so we need to override that here
+        cpanel.authorize = lambda: True
+        cpanel.delete_rule()
