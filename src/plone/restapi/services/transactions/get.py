@@ -1,4 +1,5 @@
 import binascii
+import sys
 from datetime import datetime as dt
 from plone.restapi.services import Service
 
@@ -7,7 +8,8 @@ class TransactionsGet(Service):
         super().__init__(context, request)
     
     def reply(self):
-        r = self.context._p_jar.db().undoInfo()
+        total_num_of_transactions = self.context._p_jar.db().undoInfo(0,sys.maxsize).__len__()
+        r = self.context._p_jar.db().undoInfo(0,total_num_of_transactions)
 
         for d in r:
             d['time'] = t = dt.fromtimestamp(int(d['time'])).isoformat()
