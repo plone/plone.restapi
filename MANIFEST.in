@@ -25,3 +25,6 @@ prune news
 global-exclude *.pyc
 include pyproject.toml
 include netlify.toml
+prune ideas
+exclude test-no-sphinx-warnings
+exclude test-no-uncommitted-doc-changes
