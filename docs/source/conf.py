@@ -43,6 +43,10 @@ templates_path = ["_templates"]
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named "sphinx.ext.*") or your custom ones.
 extensions = [
+    "myst_parser",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.todo",
+    "sphinx_copybutton",
     "sphinxcontrib.httpdomain",
     "sphinxcontrib.httpexample",
 ]
@@ -64,10 +68,11 @@ def patch_pygments_to_highlight_jsonschema():
 
 
 # The suffix of source filenames.
-source_suffix = ".rst"
-# source_suffix = {
-#     ".md": "markdown",
-# }
+# source_suffix = ".rst"
+source_suffix = {
+    ".md": "markdown",
+    ".rst": "reStructuredText",
+}
 
 
 # The master toctree document.
@@ -86,7 +91,7 @@ master_doc = "index"
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ["*ideas/*"]
+# exclude_patterns = ["*ideas/*"]
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 # default_role = None
@@ -161,15 +166,13 @@ html_theme = "sphinx_book_theme"
 html_logo = "_static/logo.svg"
 html_favicon = "_static/favicon.ico"
 
-html_css_files = ["custom.css",
-                  ("print.css", {"media": "print"})]
+html_css_files = ["custom.css", ("print.css", {"media": "print"})]
 
 # See http://sphinx-doc.org/ext/todo.html#confval-todo_include_todos
 todo_include_todos = True
 
 html_theme_options = {
-    # TODO: Either get a separate GA ID or enable this one once it is in production.
-    # "google_analytics_id": "UA-1907133-6",
+    "google_analytics_id": "G-P8NCTB796E",
     "path_to_docs": "docs",
     "repository_url": "https://github.com/plone/plone.restapi",
     "repository_branch": "master",
@@ -283,22 +286,31 @@ htmlhelp_basename = "plonerestapidoc"
 # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
 myst_enable_extensions = [
     "deflist",  # You will be able to utilise definition lists
-                # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#definition-lists
+    # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#definition-lists
     "linkify",  # Identify “bare” web URLs and add hyperlinks.
     "colon_fence",  # You can also use ::: delimiters to denote code fences,\
-                    #  instead of ```.
+    #  instead of ```.
+    "substitution",  # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#substitutions-with-jinja2
 ]
 
+myst_substitutions = {
+    "postman_basic_auth": "![](_static/img/postman_basic_auth.png)",
+    "postman_headers": "![](_static/img/postman_headers.png)",
+    "postman_request": "![](_static/img/postman_request.png)",
+    "postman_response": "![](_static/img/postman_response.png)",
+    "postman_retain_headers": "![](_static/img/postman_retain_headers.png)",
+    "fawrench": '<span class="fa fa-wrench" style="font-size: 1.6em;"></span>',
+}
 
 # -- Options for LaTeX output --------------------------------------------------
 
 latex_elements = {
     # The paper size ("letterpaper" or "a4paper").
-    #"papersize": "letterpaper",
+    # "papersize": "letterpaper",
     # The font size ("10pt", "11pt" or "12pt").
-    #"pointsize": "10pt",
+    # "pointsize": "10pt",
     # Additional stuff for the LaTeX preamble.
-    #"preamble": "",
+    # "preamble": "",
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
