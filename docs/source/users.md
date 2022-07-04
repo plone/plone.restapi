@@ -66,7 +66,7 @@ Filtering by `id`:
     :request: ../../src/plone/restapi/tests/http-examples/users_filtered_by_username.req
 ```
 
-The server will respond with a list of the filtered users in the portal where the `username` starts with the `query` parameter's value:
+The server will respond with a list of the filtered users in the portal where the `username` contains the `query` parameter's value:
 
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_filtered_by_username.resp
 :language: http
@@ -87,6 +87,21 @@ The server will respond with a list of users where the users are member of one o
 
 The endpoint also takes a `limit` parameter.
 Its default is a maximum of 25 users at a time for performance reasons.
+
+### Search users
+
+Search by `id`, `fullname` and `email`:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/users_searched.req
+```
+
+The server will respond with a list of users where the `fullname`, `email` or `id` contains the `query` parameter's value:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_searched.resp
+:language: http
+```
 
 
 ## Create User
