@@ -8,7 +8,7 @@ from zExceptions import BadRequest
 class TransactionsPatch(Service):
     def reply(self):
         body = json_body(self.request)
-        message = revert(self.context, body["Transactions_IDs"])
+        message = revert(self.context, body["transaction_ids"])
         return json_compatible(message)
 
 def revert(context, transactions_info=()):
