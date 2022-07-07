@@ -23,7 +23,15 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-        self.portal.invokeFactory("Document", "testdocument", title="Test Document")
+        self.portal.invokeFactory(
+            "Document",
+            "testdocument",
+            title="Test Document",
+            description=(
+                "This and that is the description of this item or it can be"
+                " something else"
+            ),
+        )
         self.doc = self.portal.testdocument
 
         transaction.commit()
@@ -113,7 +121,9 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
 
         for a in range(1, 10):
             self.portal.invokeFactory(
-                "Document", "testdocument" + str(a), title="Test Document " + str(a)
+                "Document",
+                "testdocument" + str(a),
+                title="Test Document " + str(a),
             )
             self.doc = self.portal.testdocument
 
@@ -140,7 +150,9 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.json()["items_total"], 10)
         self.assertEqual(len(response.json()["items"]), 5)
         self.assertNotIn("effective", response.json()["items"][0])
-        self.assertEqual(response.json()["items"][4]["title"], "Test Document 4")
+        self.assertEqual(
+            response.json()["items"][4]["title"], "Test Document 4"
+        )
 
         response = self.api_session.post(
             "/@querystring-search",
@@ -164,10 +176,14 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.json()["items_total"], 10)
         self.assertEqual(len(response.json()["items"]), 5)
         self.assertNotIn("effective", response.json()["items"][0])
-        self.assertEqual(response.json()["items"][4]["title"], "Test Document 9")
+        self.assertEqual(
+            response.json()["items"][4]["title"], "Test Document 9"
+        )
 
     def test_querystringsearch_do_not_return_context(self):
-        self.portal.invokeFactory("Document", "testdocument2", title="Test Document 2")
+        self.portal.invokeFactory(
+            "Document", "testdocument2", title="Test Document 2"
+        )
         self.doc = self.portal.testdocument
 
         transaction.commit()
@@ -286,3 +302,66 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
             response.json()["items"][-1]["@id"],
             f"{self.portal.absolute_url()}/testdocument9",
         )
+
+    def test_querystring_searchable_text(self):
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "SearchableText",
+                        "o": "plone.app.querystring.operation.string.contains",
+                        "v": "Test document",
+                    }
+                ]
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("items", response.json())
+        self.assertIn("items_total", response.json())
+        self.assertEqual(response.json()["items_total"], 1)
+        self.assertEqual(len(response.json()["items"]), 1)
+        self.assertNotIn("effective", response.json()["items"][0])
+
+    def test_querystring_searchable_text_special_keywords_in_search_and(self):
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "SearchableText",
+                        "o": "plone.app.querystring.operation.string.contains",
+                        "v": "this and that",
+                    }
+                ]
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("items", response.json())
+        self.assertIn("items_total", response.json())
+        self.assertEqual(response.json()["items_total"], 1)
+        self.assertEqual(len(response.json()["items"]), 1)
+        self.assertNotIn("effective", response.json()["items"][0])
+
+    def test_querystring_searchable_text_special_keywords_in_search_or(self):
+        response = self.api_session.post(
+            "/@querystring-search",
+            json={
+                "query": [
+                    {
+                        "i": "SearchableText",
+                        "o": "plone.app.querystring.operation.string.contains",
+                        "v": "this or that",
+                    }
+                ]
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("items", response.json())
+        self.assertIn("items_total", response.json())
+        self.assertEqual(response.json()["items_total"], 1)
+        self.assertEqual(len(response.json()["items"]), 1)
+        self.assertNotIn("effective", response.json()["items"][0])
