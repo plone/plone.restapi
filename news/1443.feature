@@ -1,1 +1,1 @@
-@users: Support search for fullname, email, id with ?search= [ksuess]
+Add support to search for fullname, email, id on the @users endpoint with "?search=" [ksuess]
