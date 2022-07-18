@@ -74,18 +74,48 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
 
         return serializer(context)
 
-    # def update(self, names):
-    #     name = names[0]
-
-    #     #if IPloneRestapiLayer.providedBy(self.request):
-    #     #    noLongerProvides(self.request, IPloneRestapiLayer)
-
-    #     context = queryMultiAdapter(
-    #         (self.context, self.request), name="content-rules"
-    #     )
-    #     context = context.publishTraverse(self.request, name)
-    #     deserializer = IDeserializeFromJson(self)
-    #     return deserializer(context)
+    def update(self, names):
+        data = json_body(self.request)
+        name = names[0]
+        rule = self.publishTraverse(self.request, name=name)
+        manage_elements = queryMultiAdapter(
+            (rule, self.request), name="manage-elements"
+        )
+        manage_elements.authorize = lambda: True
+        move_action = data.get('form.button.Move')
+        if 'form.button.Save' in data:
+            rule.title = data.get('title', rule.title)
+            rule.description = data.get('description', rule.description)
+            rule.stop = data.get('stopExecuting', False)
+            rule.cascading = data.get('cascading', False)
+            rule.enabled = data.get('enabled', False)
+        elif move_action:
+            if len(names) == 1:
+                raise BadRequest(
+                    "Condition or action is required" % extra.title()
+                )
+            extra = names[1]
+            if len(names) == 2:
+                raise BadRequest(
+                    "%s's index is required" % extra.title()
+                )
+            extras = getattr(rule, extra + 's')
+            move_action = getattr(manage_elements, move_action)
+            move_action(extras, int(names[2]))
+        elif 'form.button.MoveDown' in data:
+            if len(names) == 1:
+                raise BadRequest(
+                    "Condition or action is required" % extra.title()
+                )
+            extra = names[1]
+            if len(names) == 2:
+                raise BadRequest(
+                    "%s's index is required" % extra.title()
+                )
+            extras = getattr(rule, extra + 's')
+            manage_elements._move_down(extras, int(names[2]))
+        elif 'form.button.ApplyOnWholeSite' in data:
+            manage_elements.globally_assign()
 
     def delete(self, names):
         if len(names) == 1:
@@ -107,5 +137,5 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             if len(names) == 2:
                 raise BadRequest("%s index is required" % extra.title())
             rule = self.publishTraverse(self.request, name=names[0])
-            extras = getattr(rule, extra)
+            extras = getattr(rule, extra + 's')
             del extras[int(names[2])]
