@@ -43,9 +43,9 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             form.add(rule)
         else:
             # we need to add a condition or action to the current rule
+            extra = names[1]
             if len(names) == 2:
                 raise BadRequest("%s type is required" % extra.title())
-            extra =  names[1]
             rule = self.publishTraverse(self.request, name=names[0])
             view_name = names[2]
             extra_ob = self.context.restrictedTraverse(
@@ -97,9 +97,9 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             cpanel.delete_rule()
         else:
             # we need to delete a condition or action from the current rule
+            extra = names[1]
             if len(names) == 2:
                 raise BadRequest("%s index is required" % extra.title())
-            extra =  names[1]
             rule = self.publishTraverse(self.request, name=names[0])
             extras = getattr(rule, extra)
             del extras[int(names[2])]
