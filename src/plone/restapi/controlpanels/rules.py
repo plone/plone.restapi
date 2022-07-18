@@ -36,9 +36,13 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             if not title:
                 raise BadRequest("Property 'title' is required")
             widget = form.widgets["event"]
-            data["event"] = interfaces.IDataConverter(widget).toFieldValue([data["event"]])
+            data["event"] = interfaces.IDataConverter(widget).toFieldValue(
+                [data["event"]]
+            )
             if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-                alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
+                alsoProvides(
+                    self.request, plone.protect.interfaces.IDisableCSRFProtection
+                )
             rule = form.create(data)
             form.add(rule)
         else:
@@ -55,7 +59,9 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             form = view.form_instance
             form.update()
             if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-                alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
+                alsoProvides(
+                    self.request, plone.protect.interfaces.IDisableCSRFProtection
+                )
             extra_ob = form.create(data)
             form.add(extra_ob)
         return self.get([rule.__name__])
