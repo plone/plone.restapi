@@ -6,7 +6,7 @@ from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserPublisher
 from z3c.form import interfaces
-from plone.restapi.interfaces import ISerializeToJson, IDeserializeFromJson
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.controlpanels import RegistryConfigletPanel
 from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
