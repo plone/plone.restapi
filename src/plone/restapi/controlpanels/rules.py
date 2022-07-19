@@ -48,10 +48,11 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
         else:
             # we need to add a condition or action to the current rule
             extra = names[1]
-            if len(names) == 2:
+            try:
+                view_name = data.pop('view')
+            except KeyError:
                 raise BadRequest("%s type is required" % extra.title())
             rule = self.publishTraverse(self.request, name=names[0])
-            view_name = names[2]
             extra_ob = self.context.restrictedTraverse(
                 "++rule++" + names[0] + "/+%s" % extra
             )
@@ -98,14 +99,19 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             extras = getattr(rule, extra + "s")
             move_action = getattr(manage_elements, move_action)
             move_action(extras, int(names[2]))
-        elif "form.button.MoveDown" in data:
+        elif "edit" in data:
+            data.pop('edit')
             if len(names) == 1:
-                raise BadRequest("Condition or action is required" % extra.title())
+                raise BadRequest("Condition or action is required")
             extra = names[1]
             if len(names) == 2:
                 raise BadRequest("%s's index is required" % extra.title())
             extras = getattr(rule, extra + "s")
-            manage_elements._move_down(extras, int(names[2]))
+            idx = int(names[2])
+            extra_ob = extras[idx]
+            view = queryMultiAdapter((extra_ob, self.request), name='edit')
+            view.form_instance.update()
+            view.form_instance.applyChanges(data)
         elif "form.button.ApplyOnWholeSite" in data:
             manage_elements.globally_assign()
 
