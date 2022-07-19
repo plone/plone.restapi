@@ -91,27 +91,19 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             rule.enabled = data.get("enabled", False)
         elif move_action:
             if len(names) == 1:
-                raise BadRequest(
-                    "Condition or action is required"
-                )
+                raise BadRequest("Condition or action is required")
             extra = names[1]
             if len(names) == 2:
-                raise BadRequest(
-                    "%s's index is required" % extra.title()
-                )
+                raise BadRequest("%s's index is required" % extra.title())
             extras = getattr(rule, extra + "s")
             move_action = getattr(manage_elements, move_action)
             move_action(extras, int(names[2]))
         elif "form.button.MoveDown" in data:
             if len(names) == 1:
-                raise BadRequest(
-                    "Condition or action is required" % extra.title()
-                )
+                raise BadRequest("Condition or action is required" % extra.title())
             extra = names[1]
             if len(names) == 2:
-                raise BadRequest(
-                    "%s's index is required" % extra.title()
-                )
+                raise BadRequest("%s's index is required" % extra.title())
             extras = getattr(rule, extra + "s")
             manage_elements._move_down(extras, int(names[2]))
         elif "form.button.ApplyOnWholeSite" in data:
