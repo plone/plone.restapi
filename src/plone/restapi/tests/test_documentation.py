@@ -936,7 +936,7 @@ class TestDocumentation(TestDocumentationBase):
         api.group.add_user(groupname="Reviewers", username="noam")
         transaction.commit()
         # filter by username
-        response = self.api_session.get("@users", params={"query": "noa"})
+        response = self.api_session.get("@users", params={"query": "oam"})
         save_request_and_response_for_docs("users_filtered_by_username", response)
         # filter by groups
         response = self.api_session.get(
@@ -944,6 +944,22 @@ class TestDocumentation(TestDocumentationBase):
             params={"groups-filter:list": ["Reviewers", "Site Administrators"]},
         )
         save_request_and_response_for_docs("users_filtered_by_groups", response)
+
+    def test_documentation_users_searched_get(self):
+        properties = {
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com", username="noam", properties=properties
+        )
+        api.group.add_user(groupname="Reviewers", username="noam")
+        transaction.commit()
+        # search by fullname
+        response = self.api_session.get("@users", params={"search": "avram"})
+        save_request_and_response_for_docs("users_searched", response)
 
     def test_documentation_users_created(self):
         response = self.api_session.post(
