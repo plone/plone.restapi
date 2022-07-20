@@ -1,4 +1,4 @@
-DELETE /plone/@rules HTTP/1.1
+DELETE /plone/@content-rules HTTP/1.1
 Accept: application/json
 Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json

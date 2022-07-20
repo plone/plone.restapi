@@ -1,7 +1,6 @@
-HTTP/1.1 404 Not Found
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "message": "Resource not found: http://localhost:55001/plone/@rules/rule-2",
-    "type": "NotFound"
+    "message": "Successfully applied the move_up"
 }

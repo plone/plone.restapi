@@ -2077,6 +2077,7 @@ class TestRules(TestDocumentationBase):
 
         rules = getMultiAdapter((self.portal, self.request), name="+rule")
         form = RuleAddForm(self.portal, self.request)
+        form.update()
         data = {
             "title": "First test rule",
             "description": "First rule added in the testing setup",
@@ -2103,78 +2104,126 @@ class TestRules(TestDocumentationBase):
     def tearDown(self):
         super().tearDown()
 
+    # Tests for the object rules
+
     def test_rules_add(self):
         # Assign a rule
-        url = "/@rules/rule-1"
+        url = "/@content-rules/rule-1"
         response = self.api_session.post(url)
         save_request_and_response_for_docs("rules_add", response)
 
     def test_rules_get(self):
         # Get assigned rules
-        url = "/@rules/rule-1"
-        response = self.api_session.post(url)
-        url = "/@rules"
+        url = "/@content-rules/rule-1"
+        self.api_session.post(url)
+        url = "/@content-rules"
         response = self.api_session.get(url)
         save_request_and_response_for_docs("rules_get", response)
 
     def test_rules_delete(self):
         # Unassign a rule
-        url = "/@rules/rule-1"
-        response = self.api_session.post(url)
+        url = "/@content-rules/rule-1"
+        self.api_session.post(url)
         payload = {"rule_ids": ["rule-1"]}
-        url = "/@rules"
+        url = "/@content-rules"
         response = self.api_session.delete(url, json=payload)
         save_request_and_response_for_docs("rules_add", response)
 
     def test_rules_move_up(self):
         # Move a rule up in the order
-        url = "/@rules/rule-1"
-        response = self.api_session.post(url)
-        url = "/@rules/rule-2"
-        response = self.api_session.post(url)
-        payload = {"operation": "move_up"}
+        url = "/@content-rules/rule-1"
+        self.api_session.post(url)
+        url = "/@content-rules/rule-2"
+        self.api_session.post(url)
+        url = "/@content-rules"
+        payload = {"operation": "move_up", "rule_id": "rule-2"}
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs("rules_move_up", response)
 
     def test_rules_move_down(self):
         # Move a rule down in the order
-        url = "/@rules/rule-1"
-        response = self.api_session.post(url)
-        url = "/@rules/rule-2"
-        response = self.api_session.post(url)
-        payload = {"operation": "move_down"}
-        url = "/@rules/rule-1"
+        url = "/@content-rules/rule-1"
+        self.api_session.post(url)
+        url = "/@content-rules/rule-2"
+        self.api_session.post(url)
+        url = "/@content-rules"
+        payload = {"operation": "move_down", "rule_id": "rule-1"}
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs("rules_move_down", response)
 
     def test_rules_enable(self):
         # Enable some rules
-        url = "/@rules"
-        response = self.api_session.post(url)
+        url = "/@content-rules"
+        self.api_session.post(url)
         payload = {"form.button.Enable": True, "rule_ids": ["rule-1", "rule-2"]}
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs("rules_enable", response)
 
     def test_rules_disable(self):
         # Disable some assigned rules
-        url = "/@rules"
-        response = self.api_session.post(url)
+        url = "/@content-rules"
+        self.api_session.post(url)
         payload = {"form.button.Disable": True, "rule_ids": ["rule-1", "rule-2"]}
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs("rules_disable", response)
 
     def test_rules_apply_subfolders(self):
         # Enable apply on subfolders
-        url = "/@rules"
-        response = self.api_session.post(url)
+        url = "/@content-rules"
+        self.api_session.post(url)
         payload = {"form.button.Bubble": True, "rule_ids": ["rule-1", "rule-2"]}
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs("rules_apply_subfolders", response)
 
     def test_rules_disable_apply_subfolders(self):
         # Disable apply on subfolders
-        url = "/@rules"
-        response = self.api_session.post(url)
+        url = "/@content-rules"
+        self.api_session.post(url)
         payload = {"form.button.Bubble": True, "rule_ids": ["rule-1", "rule-2"]}
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs("rules_disable_apply_subfolders", response)
+
+    # Tests for the rules controlpanel
+
+    def test_controlpanels_get_rules(self):
+        # Get rules defined in controlpanel
+        url = "/@controlpanels/content-rules"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("controlpanels_get_contentrules", response)
+
+    def test_controlpanels_crud_rules(self):
+        # POST
+        url = "/@controlpanels/content-rules"
+        payload = {
+            "title": "Third test rule",
+            "description": "Third rule added in the testing setup",
+            "event": "Comment added",
+            "enabled": True,
+            "stop": False,
+            "cascading": False,
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs("controlpanels_post_rule", response)
+
+        # GET
+        url = "/@controlpanels/content-rules/rule-3"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("controlpanels_get_rule", response)
+
+        # PATCH
+        url = "/@controlpanels/content-rules/rule-3"
+        payload = {
+            "title": "Third test rule (modified)",
+            "description": "Third rule added in the testing setup (modified)",
+            "event": "Comment removed",
+            "enabled": False,
+            "stop": True,
+            "cascading": True,
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("controlpanels_patch_rule", response)
+
+        # DELETE
+        url = "/@controlpanels/content-rules/rule-3"
+        response = self.api_session.delete(url)
+        save_request_and_response_for_docs("controlpanels_delete_rule", response)

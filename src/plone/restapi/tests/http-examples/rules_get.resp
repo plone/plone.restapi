@@ -2,17 +2,24 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "rules": {
+    "content-rules": {
         "acquired_rules": [],
+        "assignable_rules": [
+            {
+                "description": "Second rule added in the testing setup",
+                "id": "rule-2",
+                "title": "Second test rule"
+            }
+        ],
         "assigned_rules": [
             {
                 "bubbles": true,
-                "description": "",
+                "description": "First rule added in the testing setup",
                 "enabled": true,
                 "global_enabled": true,
                 "id": "rule-1",
-                "title": "",
-                "trigger": "Unknown",
+                "title": "First test rule",
+                "trigger": "Comment added",
                 "url": "http://localhost:55001/plone/++rule++rule-1/@@manage-elements"
             }
         ]

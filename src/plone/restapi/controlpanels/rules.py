@@ -28,7 +28,7 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
     def add(self, names):
         data = json_body(self.request)
         rules = queryMultiAdapter((self.context, self.request), name="+rule")
-        if len(names) == 1:
+        if len(names) == 0:
             view = queryMultiAdapter((rules, self.request), name="plone.ContentRule")
             form = view.form_instance
             form.update()
@@ -45,16 +45,19 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
                 )
             rule = form.create(data)
             form.add(rule)
+        elif len(names) == 1:
+            raise BadRequest("Rule id and condition or action are required")
         else:
             # we need to add a condition or action to the current rule
+            name = names[0]
             extra = names[1]
             try:
                 view_name = data.pop("view")
             except KeyError:
                 raise BadRequest("%s type is required" % extra.title())
-            rule = self.publishTraverse(self.request, name=names[0])
+            rule = self.publishTraverse(self.request, name=name)
             extra_ob = self.context.restrictedTraverse(
-                "++rule++" + names[0] + "/+%s" % extra
+                "++rule++" + name + "/+%s" % extra
             )
             view = queryMultiAdapter((extra_ob, self.request), name=view_name)
             form = view.form_instance
@@ -84,36 +87,29 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
         )
         manage_elements.authorize = lambda: True
         move_action = data.get("form.button.Move")
-        if "form.button.Save" in data:
-            rule.title = data.get("title", rule.title)
-            rule.description = data.get("description", rule.description)
-            rule.stop = data.get("stopExecuting", False)
-            rule.cascading = data.get("cascading", False)
-            rule.enabled = data.get("enabled", False)
+        if len(names) == 1:
+            if "form.button.ApplyOnWholeSite" in data:
+                manage_elements.globally_assign()
+            else:
+                rule.title = data.get("title", rule.title)
+                rule.description = data.get("description", rule.description)
+                rule.stop = data.get("stopExecuting", False)
+                rule.cascading = data.get("cascading", False)
+                rule.enabled = data.get("enabled", False)
+        elif len(names) == 2:
+            raise BadRequest("%s and its index are required" % names[1].title())
         elif move_action:
-            if len(names) == 1:
-                raise BadRequest("Condition or action is required")
-            extra = names[1]
-            if len(names) == 2:
-                raise BadRequest("%s's index is required" % extra.title())
-            extras = getattr(rule, extra + "s")
+            extras = getattr(rule, names[1] + "s")
             move_action = getattr(manage_elements, move_action)
             move_action(extras, int(names[2]))
-        elif "edit" in data:
-            data.pop("edit")
-            if len(names) == 1:
-                raise BadRequest("Condition or action is required")
-            extra = names[1]
-            if len(names) == 2:
-                raise BadRequest("%s's index is required" % extra.title())
-            extras = getattr(rule, extra + "s")
+        else:
+            extras = getattr(rule, names[1] + "s")
             idx = int(names[2])
             extra_ob = extras[idx]
             view = queryMultiAdapter((extra_ob, self.request), name="edit")
             view.form_instance.update()
             view.form_instance.applyChanges(data)
-        elif "form.button.ApplyOnWholeSite" in data:
-            manage_elements.globally_assign()
+        return self.get([rule.__name__])
 
     def delete(self, names):
         if len(names) == 1:
