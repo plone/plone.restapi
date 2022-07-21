@@ -7,8 +7,6 @@ from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.multilingual.interfaces import ITranslationManager
-from plone.app.contentrules.browser.rule import RuleAddForm
-from plone.app.contentrules.browser.rule import RuleEditForm
 from plone.app.testing import applyProfile
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
