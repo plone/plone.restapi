@@ -2,6 +2,7 @@ from base64 import b64encode
 from datetime import datetime
 from pkg_resources import resource_filename
 from plone import api
+from plone.uuid.interfaces import IUUID
 from plone.app.discussion.interfaces import ICommentAddedEvent
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
@@ -2106,6 +2107,9 @@ class TestRules(TestDocumentationBase):
         edit_form.authorize = lambda: True
         edit_form.globally_assign()
 
+        # Create a folder for copy and move actions
+        self.portal.invokeFactory("Folder", id="folder")
+
         transaction.commit()
 
     def tearDown(self):
@@ -2212,6 +2216,139 @@ class TestRules(TestDocumentationBase):
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs("controlpanels_post_rule", response)
 
+        # Conditions
+        url = "/@controlpanels/content-rules/rule-3/condition"
+        payload = {
+            "check_types": ["Collection", "Comment"],
+            "type": "plone.conditions.PortalType"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_portaltype", response
+        )
+        payload = {
+            "check_types": ["Collection", "Comment"],
+            "type": "plone.conditions.FileExtension"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_portaltype", response
+        )
+        payload = {
+            "file_extension": "JPG",
+            "type": "plone.conditions.PortalType"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_fileextension", response
+        )
+        payload = {
+            "wf_states": ["pending", "private"],
+            "type": "plone.conditions.WorkflowState"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_workflowstate", response
+        )
+        payload = {
+            "group_names": ["Administrators", "Site Administrators"],
+            "type": "plone.conditions.Group"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_group", response
+        )
+        payload = {
+            "role_names": ["Anonymous", "Authenticated"],
+            "type": "plone.conditions.Role"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_role", response
+        )
+        payload = {
+            "tales_expression": "<tal:block content='string:' />",
+            "type": "plone.conditions.TalesExpression"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_tales", response
+        )
+
+        # Actions
+        url = "/@controlpanels/content-rules/rule-3/action"
+        payload = {
+            "targetLogger": "Plone",
+            "Level": "20",
+            "message": "text_contentrules_logger_message",
+            "type": "plone.actions.Logger"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_logger", response
+        )
+        payload = {
+            "message": "Information",
+            "message_type": "info",
+            "type": "plone.actions.Notify",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_notify", response
+        )
+        uuid = IUUID(self.portal.folder)
+        payload = {
+            "target_folder": uuid,
+            "type": "plone.actions.Copy"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_copy", response
+        )
+        payload = {
+            "target_folder": uuid,
+            "type": "plone.actions.Move"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_move", response
+        )
+        payload = {
+            "type": "plone.actions.Delete"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_delete", response
+        )
+        payload = {
+            "transition": "hide",
+            "type": "plone.actions.Workflow"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_transition", response
+        )
+        payload = {
+            "subject": "Email Subject",
+            "source": "noreply@something.com",
+            "recipients": "test@somethingelse.com",
+            "exclude_actor": True,
+            "message": "And the message body",
+            "type": "plone.actions.Mail"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_mail", response
+        )
+        payload = {
+            "comment": "Some comment",
+            "type": "plone.actions.Versioning"
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_versioning", response
+        )
+
         # GET
         url = "/@controlpanels/content-rules/rule-3"
         response = self.api_session.get(url)
@@ -2230,7 +2367,37 @@ class TestRules(TestDocumentationBase):
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs("controlpanels_patch_rule", response)
 
+        # Conditions
+        url = "/@controlpanels/content-rules/rule-3/condition/0"
+        payload = {
+            "check_types": ["Collection"],
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_condition_portaltype", response
+        )
+        # Actions
+        url = "/@controlpanels/content-rules/rule-3/action/0"
+        payload = {
+            "targetLogger": "Plone6",
+            "Level": "20",
+            "message": "text_contentrules_logger_message",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_action_logger", response
+        )
+
+
         # DELETE
+        url = "/@controlpanels/content-rules/rule-3/condition/0"
+        response = self.api_session.delete(url)
+        save_request_and_response_for_docs("controlpanels_delete_rule_condition", response)
+
+        url = "/@controlpanels/content-rules/rule-3/action/0"
+        response = self.api_session.delete(url)
+        save_request_and_response_for_docs("controlpanels_delete_action_condition", response)
+
         url = "/@controlpanels/content-rules/rule-3"
         response = self.api_session.delete(url)
         save_request_and_response_for_docs("controlpanels_delete_rule", response)

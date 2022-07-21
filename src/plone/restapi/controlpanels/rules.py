@@ -52,7 +52,7 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             name = names[0]
             extra = names[1]
             try:
-                view_name = data.pop("view")
+                view_name = data.pop("type")
             except KeyError:
                 raise BadRequest("%s type is required" % extra.title())
             rule = self.publishTraverse(self.request, name=name)
@@ -60,14 +60,17 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
                 "++rule++" + name + "/+%s" % extra
             )
             view = queryMultiAdapter((extra_ob, self.request), name=view_name)
-            form = view.form_instance
-            form.update()
             if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
                 alsoProvides(
                     self.request, plone.protect.interfaces.IDisableCSRFProtection
                 )
-            extra_ob = form.create(data)
-            form.add(extra_ob)
+            if view_name == "plone.actions.Delete":
+                view()
+            else:
+                form = view.form_instance
+                form.update()
+                extra_ob = form.create(data)
+                form.add(extra_ob)
         return self.get([rule.__name__])
 
     def get(self, names):
