@@ -8,6 +8,7 @@ from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.multilingual.interfaces import ITranslationManager
 from plone.app.contentrules.browser.rule import RuleAddForm
+from plone.app.contentrules.browser.rule import RuleEditForm
 from plone.app.testing import applyProfile
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
@@ -2075,9 +2076,11 @@ class TestRules(TestDocumentationBase):
     def setUp(self):
         super().setUp()
 
+        # Create two test rules and assign them globally
+
         rules = getMultiAdapter((self.portal, self.request), name="+rule")
-        form = RuleAddForm(self.portal, self.request)
-        form.update()
+        add_form = getMultiAdapter((rules, self.request), name="plone.ContentRule")
+        add_form.update()
         data = {
             "title": "First test rule",
             "description": "First rule added in the testing setup",
@@ -2086,8 +2089,11 @@ class TestRules(TestDocumentationBase):
             "stop": False,
             "cascading": False,
         }
-        rule = form.create(data)
+        rule = add_form.form_instance.create(data)
         rules.add(rule)
+        edit_form = getMultiAdapter((rule, self.request), name="manage-elements")
+        edit_form.authorize = lambda: True
+        edit_form.globally_assign()
         data = {
             "title": "Second test rule",
             "description": "Second rule added in the testing setup",
@@ -2096,8 +2102,11 @@ class TestRules(TestDocumentationBase):
             "stop": False,
             "cascading": False,
         }
-        rule = form.create(data)
+        rule = add_form.form_instance.create(data)
         rules.add(rule)
+        edit_form = getMultiAdapter((rule, self.request), name="manage-elements")
+        edit_form.authorize = lambda: True
+        edit_form.globally_assign()
 
         transaction.commit()
 

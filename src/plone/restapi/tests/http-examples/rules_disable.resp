@@ -1,38 +1,6 @@
-HTTP/1.1 500 Internal Server Error
+HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "message": "'NoneType' object has no attribute 'enabled'",
-    "traceback": [
-        "File \"/tmp/plone.restapi/eggs/Zope-4.6.3-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 162, in transaction_pubevents",
-        "    yield",
-        "",
-        "  File \"/tmp/plone.restapi/eggs/Zope-4.6.3-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 371, in publish_module",
-        "    response = _publish(request, new_mod_info)",
-        "",
-        "  File \"/tmp/plone.restapi/eggs/Zope-4.6.3-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 266, in publish",
-        "    result = mapply(obj,",
-        "",
-        "  File \"/tmp/plone.restapi/eggs/Zope-4.6.3-py3.8.egg/ZPublisher/mapply.py\", line 85, in mapply",
-        "    return debug(object, args, context)",
-        "",
-        "  File \"/tmp/plone.restapi/eggs/Zope-4.6.3-py3.8.egg/ZPublisher/WSGIPublisher.py\", line 63, in call_object",
-        "    return obj(*args)",
-        "",
-        "  File \"/tmp/plone.restapi/eggs/plone.rest-2.0.0a3-py3.8.egg/plone/rest/service.py\", line 22, in __call__",
-        "    return self.render()",
-        "",
-        "  File \"/tmp/plone.restapi/src/plone/restapi/services/__init__.py\", line 19, in render",
-        "    content = self.reply()",
-        "",
-        "  File \"/tmp/plone.restapi/src/plone/restapi/services/rules/update.py\", line 45, in reply",
-        "    ManageAssignments(self.context, self.request)()",
-        "",
-        "  File \"/tmp/plone.restapi/eggs/plone.app.contentrules-4.1.6-py3.8.egg/plone/app/contentrules/browser/assignments.py\", line 66, in __call__",
-        "    api.edit_rule_assignment(context, r, enabled=False)",
-        "",
-        "  File \"/tmp/plone.restapi/eggs/plone.app.contentrules-4.1.6-py3.8.egg/plone/app/contentrules/api.py\", line 78, in edit_rule_assignment",
-        "    assignment.enabled = bool(enabled)"
-    ],
-    "type": "AttributeError"
+    "message": "Successfully disabled rules ['rule-1', 'rule-2']"
 }

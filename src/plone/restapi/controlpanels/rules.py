@@ -109,7 +109,6 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             view = queryMultiAdapter((extra_ob, self.request), name="edit")
             view.form_instance.update()
             view.form_instance.applyChanges(data)
-        return self.get([rule.__name__])
 
     def delete(self, names):
         if len(names) == 1:
