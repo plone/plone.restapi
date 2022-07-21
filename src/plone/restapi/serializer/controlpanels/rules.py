@@ -1,11 +1,10 @@
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
-from plone.app.contentrules.browser.controlpanel import ContentRulesControlPanel
 from plone.restapi.serializer.controlpanels import SERVICE_ID
 from plone.restapi.serializer.controlpanels import ControlpanelSerializeToJson
-from plone.app.contentrules.browser.elements import ManageElements
 from zope.component import adapter
 from zope.component.hooks import getSite
+from zope.component import queryMultiAdapter
 from zope.interface import implementer
 
 
@@ -13,7 +12,9 @@ from zope.interface import implementer
 @adapter(IContentRulesControlpanel)
 class ContentRulesControlpanelSerializeToJson(ControlpanelSerializeToJson):
     def serialize_item(self, proxy):
-        manage_elements = ManageElements(proxy, self.controlpanel.request)
+        manage_elements = queryMultiAdapter(
+            (proxy, self.controlpanel.request), name="manage-elements"
+        )
         return {
             "@id": "{}/{}/{}/{}".format(
                 self.controlpanel.context.absolute_url(),
@@ -45,11 +46,13 @@ class ContentRulesControlpanelSerializeToJson(ControlpanelSerializeToJson):
 
         portal = getSite()
         portal_url = portal.absolute_url()
+        context = self.controlpanel.context
+        request = self.controlpanel.request
 
-        rules_control_panel = ContentRulesControlPanel(
-            self.controlpanel.context, self.controlpanel.request
+        cpanel = queryMultiAdapter(
+            (context, request), name="rules-controlpanel"
         )
-        registeredRules = rules_control_panel.registeredRules()
+        registeredRules = cpanel.registeredRules()
 
         for rule in registeredRules:
             rule["@id"] = "{}/@controlpanels/content-rules/{}".format(
