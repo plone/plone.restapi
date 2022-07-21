@@ -8,6 +8,21 @@ Changelog
 
 .. towncrier release notes start
 
+8.24.0 (2022-07-15)
+-------------------
+
+New features:
+
+
+- Add support to search for fullname, email, id on the @users endpoint with "?search=" [ksuess] (#1443)
+
+
+Bug fixes:
+
+
+- Tests: add names to behaviors.  [maurits] (#169)
+
+
 8.23.0 (2022-06-23)
 -------------------
 
