@@ -2220,7 +2220,7 @@ class TestRules(TestDocumentationBase):
         url = "/@controlpanels/content-rules/rule-3/condition"
         payload = {
             "check_types": ["Collection", "Comment"],
-            "type": "plone.conditions.PortalType"
+            "type": "plone.conditions.PortalType",
         }
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
@@ -2228,23 +2228,20 @@ class TestRules(TestDocumentationBase):
         )
         payload = {
             "check_types": ["Collection", "Comment"],
-            "type": "plone.conditions.FileExtension"
+            "type": "plone.conditions.FileExtension",
         }
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
             "controlpanels_post_rule_condition_portaltype", response
         )
-        payload = {
-            "file_extension": "JPG",
-            "type": "plone.conditions.PortalType"
-        }
+        payload = {"file_extension": "JPG", "type": "plone.conditions.PortalType"}
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
             "controlpanels_post_rule_condition_fileextension", response
         )
         payload = {
             "wf_states": ["pending", "private"],
-            "type": "plone.conditions.WorkflowState"
+            "type": "plone.conditions.WorkflowState",
         }
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
@@ -2252,7 +2249,7 @@ class TestRules(TestDocumentationBase):
         )
         payload = {
             "group_names": ["Administrators", "Site Administrators"],
-            "type": "plone.conditions.Group"
+            "type": "plone.conditions.Group",
         }
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
@@ -2260,7 +2257,7 @@ class TestRules(TestDocumentationBase):
         )
         payload = {
             "role_names": ["Anonymous", "Authenticated"],
-            "type": "plone.conditions.Role"
+            "type": "plone.conditions.Role",
         }
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
@@ -2268,7 +2265,7 @@ class TestRules(TestDocumentationBase):
         )
         payload = {
             "tales_expression": "<tal:block content='string:' />",
-            "type": "plone.conditions.TalesExpression"
+            "type": "plone.conditions.TalesExpression",
         }
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
@@ -2281,7 +2278,7 @@ class TestRules(TestDocumentationBase):
             "targetLogger": "Plone",
             "Level": "20",
             "message": "text_contentrules_logger_message",
-            "type": "plone.actions.Logger"
+            "type": "plone.actions.Logger",
         }
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
@@ -2297,10 +2294,7 @@ class TestRules(TestDocumentationBase):
             "controlpanels_post_rule_action_notify", response
         )
         uuid = IUUID(self.portal.folder)
-        payload = {
-            "target_folder": uuid,
-            "type": "plone.actions.Copy"
-        }
+        payload = {"target_folder": uuid, "type": "plone.actions.Copy"}
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
             "controlpanels_post_rule_action_copy", response
@@ -2313,17 +2307,12 @@ class TestRules(TestDocumentationBase):
         save_request_and_response_for_docs(
             "controlpanels_post_rule_action_move", response
         )
-        payload = {
-            "type": "plone.actions.Delete"
-        }
+        payload = {"type": "plone.actions.Delete"}
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
             "controlpanels_post_rule_action_delete", response
         )
-        payload = {
-            "transition": "hide",
-            "type": "plone.actions.Workflow"
-        }
+        payload = {"transition": "hide", "type": "plone.actions.Workflow"}
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
             "controlpanels_post_rule_action_transition", response
@@ -2334,16 +2323,13 @@ class TestRules(TestDocumentationBase):
             "recipients": "test@somethingelse.com",
             "exclude_actor": True,
             "message": "And the message body",
-            "type": "plone.actions.Mail"
+            "type": "plone.actions.Mail",
         }
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
             "controlpanels_post_rule_action_mail", response
         )
-        payload = {
-            "comment": "Some comment",
-            "type": "plone.actions.Versioning"
-        }
+        payload = {"comment": "Some comment", "type": "plone.actions.Versioning"}
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
             "controlpanels_post_rule_action_versioning", response
@@ -2391,11 +2377,15 @@ class TestRules(TestDocumentationBase):
         # DELETE
         url = "/@controlpanels/content-rules/rule-3/condition/0"
         response = self.api_session.delete(url)
-        save_request_and_response_for_docs("controlpanels_delete_rule_condition", response)
+        save_request_and_response_for_docs(
+            "controlpanels_delete_rule_condition", response
+        )
 
         url = "/@controlpanels/content-rules/rule-3/action/0"
         response = self.api_session.delete(url)
-        save_request_and_response_for_docs("controlpanels_delete_action_condition", response)
+        save_request_and_response_for_docs(
+            "controlpanels_delete_action_condition", response
+        )
 
         url = "/@controlpanels/content-rules/rule-3"
         response = self.api_session.delete(url)
