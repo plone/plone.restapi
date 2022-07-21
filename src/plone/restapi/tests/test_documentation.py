@@ -2299,10 +2299,7 @@ class TestRules(TestDocumentationBase):
         save_request_and_response_for_docs(
             "controlpanels_post_rule_action_copy", response
         )
-        payload = {
-            "target_folder": uuid,
-            "type": "plone.actions.Move"
-        }
+        payload = {"target_folder": uuid, "type": "plone.actions.Move"}
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
             "controlpanels_post_rule_action_move", response
