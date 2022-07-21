@@ -1,9 +1,9 @@
-from plone.app.contentrules.browser.assignments import ManageAssignments
 from plone.restapi.services import Service
 import plone.protect.interfaces
 from zExceptions import BadRequest
 from zope.interface import implementer
 from zope.interface import alsoProvides
+from zope.component import queryMultiAdapter
 from zope.publisher.interfaces import IPublishTraverse
 
 
@@ -32,5 +32,8 @@ class ContentRulesAdd(Service):
         rule_id = self.params[0]
         self.request.form["form.button.AddAssignment"] = True
         self.request.form["rule_id"] = rule_id
-        ManageAssignments(self.context, self.request)()
+        manage_assignments = queryMultiAdapter(
+            (self.context, self.request), name="manage-content-rules"
+        )
+        manage_assignments()
         return {"message": "Successfully assigned the rule %s" % rule_id}

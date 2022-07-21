@@ -1,4 +1,4 @@
-from plone.app.contentrules.browser.assignments import ManageAssignments
+from zope.component import queryMultiAdapter
 from plone.restapi.services import Service
 
 
@@ -15,7 +15,9 @@ class ContentRulesGet(Service):
         return self
 
     def reply(self):
-        manage_assignments = ManageAssignments(self.context, self.request)
+        manage_assignments = queryMultiAdapter(
+            (self.context, self.request), name="manage-content-rules"
+        )
         acquired_rules = manage_assignments.acquired_rules()
         assigned_rules = manage_assignments.assigned_rules()
         assignable_rules = manage_assignments.assignable_rules()

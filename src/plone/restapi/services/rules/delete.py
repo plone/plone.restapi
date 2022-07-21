@@ -1,8 +1,8 @@
-from plone.app.contentrules.browser.assignments import ManageAssignments
 from plone.restapi.services import Service
 import plone.protect.interfaces
 from zExceptions import BadRequest
 from zope.interface import alsoProvides
+from zope.component import queryMultiAdapter
 from plone.restapi.deserializer import json_body
 
 
@@ -22,5 +22,8 @@ class ContentRulesDelete(Service):
 
         self.request.form["form.button.Delete"] = True
         self.request.form["rule_ids"] = rule_ids
-        ManageAssignments(self.context, self.request)()
+        manage_assignments = queryMultiAdapter(
+            (self.context, self.request), name="manage-content-rules"
+        )
+        manage_assignments()
         return self.reply_no_content()

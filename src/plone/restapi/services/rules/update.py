@@ -1,7 +1,7 @@
-from plone.app.contentrules.browser.assignments import ManageAssignments
 from plone.restapi.services import Service
 import plone.protect.interfaces
 from zope.interface import alsoProvides
+from zope.component import queryMultiAdapter
 from plone.restapi.deserializer import json_body
 
 
@@ -42,5 +42,8 @@ class ContentRulesUpdate(Service):
             self.request.form["form.button.NoBubble"] = no_bubble
             message = "Disabled apply to subfolders for %s" % rule_ids
 
-        ManageAssignments(self.context, self.request)()
+        manage_assignments = queryMultiAdapter(
+            (self.context, self.request), name="manage-content-rules"
+        )
+        manage_assignments()
         return {"message": message}
