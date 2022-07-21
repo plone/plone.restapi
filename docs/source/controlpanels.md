@@ -194,3 +194,206 @@ Response:
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_delete_dexterity_item.resp
 :language: http
 ```
+
+### Content rules
+
+`@controlpanels/content-rules` is a custom control panel endpoint that will allow you to add, remove, and configure available {ref}`rules`.
+
+| Verb     | URL                                         | Action                                    |
+| -------- | ------------------------------------------- | ----------------------------------------- |
+| `GET`    | `/@controlpanels/content-rules`             | List configurable content rules           |
+| `POST`   | `/@controlpanels/content-rules`             | Creates a new content rule                |
+| `GET`    | `/@controlpanels/content-rules/{rule-id}`   | Get the current state of the content rule |
+| `PATCH`  | `/@controlpanels/content-rules/{rule-id}`   | Update the content rule details           |
+| `DELETE` | `/@controlpanels/content-rules/{rule-id}`   | Remove the content rule                   |
+
+
+#### Listing Content Rules
+
+To list the available content rules, send a `GET` request to `@controlpanels/content-rules`
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_get_contentrules.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_get_contentrules.resp
+:language: http
+```
+
+The following fields are returned:
+
+- `@id`: hypermedia link to the rule
+- `id`: actual id of the content rule
+- `assigned`: rule assigned or not
+- `title`: title of the rule
+- `description`: rule description
+- `enabled`: rule is enabled or not
+- `trigger`: triggering event
+- `conditions`: conditions before triggering the rule
+- `actions`: actions to take place
+
+
+#### Creating a new Content rule with `POST`
+
+To create a new content rule, send a `POST` request to the `/@controlpanels/content-rules` endpoint:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_post_rule.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_post_rule.resp
+:language: http
+```
+
+
+#### Creating a new Condition on a Content rule with `POST`
+
+To create a new condition on a content rule, send a `POST` request to the
+`/@controlpanels/content-rules/{rule-id}/condition` endpoint, specifying the
+condition type in the payload:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_condition_portaltype.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_condition_portaltype.resp
+:language: http
+```
+
+
+#### Creating a new Action on a Content rule with `POST`
+
+To create a new action on a content rule, send a `POST` request to the
+`/@controlpanels/content-rules/{rule-id}/action` endpoint, specifying the
+action type in the payload:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_action_logger.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_action_logger.resp
+:language: http
+```
+
+
+#### Reading a Content rule with `GET`
+
+After a successful `POST`, access the content rule by sending a `GET` request to the endpoint `/@controlpanels/content-rules/{rule-id}`:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_get_rule.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_get_rule.resp
+:language: http
+```
+
+
+#### Updating a Content rule with `PATCH`
+
+To update an existing content rule, send a `PATCH` request to the server.
+`PATCH` allows to provide just a subset of the resource, that is, the values you actually want to change:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule.resp
+:language: http
+```
+
+#### Updating a Condition on a Content rule with `PATCH`
+
+To update an existing condition on a content rule, send a `PATCH` request to the server.
+`PATCH` allows to provide just a subset of the resource, that is, the values you actually want to change:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_condition_portaltype.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_condition_portaltype.resp
+:language: http
+```
+
+### Updating an Action on a Content rule with `PATCH`
+
+To update an existing action on a content rule, send a `PATCH` request to the server.
+`PATCH` allows to provide just a subset of the resource, that is, the values you actually want to change:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_action_portaltype.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_action_portaltype.resp
+:language: http
+```
+
+
+#### Removing a Content rule with `DELETE`
+
+Delete an existing content rule by sending a `DELETE` request to the URL of an existing content rule:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule.resp
+:language: http
+```
+
+#### Removing a Condition on a Content rule with `DELETE`
+
+Delete an existing condition from a content rule by sending a `DELETE` request to the URL of an existing content rule:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_condition.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_condition.resp
+:language: http
+```
+
+#### Removing an Action on a Content rule with `DELETE`
+
+Delete an existing action from a content rule by sending a `DELETE` request to the URL of an existing content rule:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_action.req
+```
+
+Response:
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/delete_rule_action.resp
+:language: http
+```
