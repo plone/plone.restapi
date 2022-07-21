@@ -49,9 +49,7 @@ class ContentRulesControlpanelSerializeToJson(ControlpanelSerializeToJson):
         context = self.controlpanel.context
         request = self.controlpanel.request
 
-        cpanel = queryMultiAdapter(
-            (context, request), name="rules-controlpanel"
-        )
+        cpanel = queryMultiAdapter((context, request), name="rules-controlpanel")
         registeredRules = cpanel.registeredRules()
 
         for rule in registeredRules:
