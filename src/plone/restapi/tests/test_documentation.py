@@ -2388,7 +2388,6 @@ class TestRules(TestDocumentationBase):
             "controlpanels_patch_rule_action_logger", response
         )
 
-
         # DELETE
         url = "/@controlpanels/content-rules/rule-3/condition/0"
         response = self.api_session.delete(url)
