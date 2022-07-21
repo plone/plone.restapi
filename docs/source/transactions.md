@@ -1,15 +1,15 @@
 ---
 html_meta:
-  "description": "The @transactions endpoint exposes transactions those have been made through the plone website."
-  "property=og:description": "The @transactions endpoint exposes transactions those have been made through the plone website."
+  "description": "The @transactions endpoint expose transactions that have been made through the Plone website."
+  "property=og:description": "The @transactions endpoint expose transactions that have been made through the Plone website."
   "property=og:title": "Transactions"
   "keywords": "Plone, plone.restapi, REST, API, Transactions"
 ---
 
 # Transactions
 
-The `@transactions` endpoint exposes transactions those have been made through the plone website.
-Each change thorough the plone website is listed.
+The `@transactions` endpoint expose transactions that have been made through the Plone website.
+Each change through the plone website is listed.
 It also allows to revert transactions so that previous version of the website can be achievable.
 
 

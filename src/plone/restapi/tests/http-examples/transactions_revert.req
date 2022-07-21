@@ -5,5 +5,5 @@ Content-Type: application/json
 
 {
     // Single or more Transaction_Id can be inserted in the List
-    "Transactions_IDs": ["Transaction_ID","Transaction_ID"]
+    "Transactions_ids": ["Transactions_ids","Transactions_ids"]
 }
