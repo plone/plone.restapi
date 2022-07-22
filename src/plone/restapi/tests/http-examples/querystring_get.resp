@@ -7,6 +7,7 @@ Content-Type: application/json
         "Creator": {
             "description": "The person that created an item",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.string.currentUser",
@@ -34,6 +35,7 @@ Content-Type: application/json
         "Description": {
             "description": "An item's description",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.string.contains"
@@ -54,6 +56,7 @@ Content-Type: application/json
         "SearchableText": {
             "description": "Text search of an item's contents",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.string.contains"
@@ -74,6 +77,7 @@ Content-Type: application/json
         "Subject": {
             "description": "Tags are used for organization of content",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.selection.any",
@@ -101,6 +105,7 @@ Content-Type: application/json
         "Title": {
             "description": "Text search of an item's title",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.string.contains"
@@ -121,6 +126,7 @@ Content-Type: application/json
         "created": {
             "description": "The date an item was created",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -204,6 +210,7 @@ Content-Type: application/json
         "effective": {
             "description": "The time and date an item was first published",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -287,6 +294,7 @@ Content-Type: application/json
         "effectiveRange": {
             "description": "Querying this is undefined",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [],
             "operators": {},
@@ -298,6 +306,7 @@ Content-Type: application/json
         "end": {
             "description": "The end date and time of an event",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -381,6 +390,7 @@ Content-Type: application/json
         "expires": {
             "description": "The time and date an item was expired",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -464,6 +474,7 @@ Content-Type: application/json
         "getId": {
             "description": "The short name of an item (used in the url)",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.string.is"
@@ -484,6 +495,7 @@ Content-Type: application/json
         "getObjPositionInParent": {
             "description": "The order of an item in its parent folder",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.int.is",
@@ -518,6 +530,7 @@ Content-Type: application/json
         "getRawRelatedItems": {
             "description": "Find items related to the selected items",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.reference.is"
@@ -538,6 +551,7 @@ Content-Type: application/json
         "isDefaultPage": {
             "description": "Find items that are the default view for their containing folder.",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.boolean.isTrue",
@@ -565,6 +579,7 @@ Content-Type: application/json
         "isFolderish": {
             "description": "Find items that can contain other objects",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.boolean.isTrue",
@@ -592,6 +607,7 @@ Content-Type: application/json
         "modified": {
             "description": "The time and date an item was last modified",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -675,6 +691,7 @@ Content-Type: application/json
         "path": {
             "description": "The location of an item ",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.string.absolutePath",
@@ -709,6 +726,7 @@ Content-Type: application/json
         "portal_type": {
             "description": "An item's type (e.g. Event)",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.selection.any"
@@ -766,6 +784,7 @@ Content-Type: application/json
         "review_state": {
             "description": "An item's workflow state (e.g.published)",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.selection.any"
@@ -814,6 +833,7 @@ Content-Type: application/json
         "show_inactive": {
             "description": "Select which roles have the permission to view inactive objects",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.string.showInactive"
@@ -865,6 +885,7 @@ Content-Type: application/json
         "sortable_title": {
             "description": "The item's title, transformed for sorting",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.string.contains",
@@ -892,6 +913,7 @@ Content-Type: application/json
         "start": {
             "description": "The start date and time of an event",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -977,6 +999,7 @@ Content-Type: application/json
         "Creator": {
             "description": "The person that created an item",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.string.currentUser",
@@ -1004,6 +1027,7 @@ Content-Type: application/json
         "created": {
             "description": "The date an item was created",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -1087,6 +1111,7 @@ Content-Type: application/json
         "effective": {
             "description": "The time and date an item was first published",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -1170,6 +1195,7 @@ Content-Type: application/json
         "end": {
             "description": "The end date and time of an event",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -1253,6 +1279,7 @@ Content-Type: application/json
         "expires": {
             "description": "The time and date an item was expired",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -1336,6 +1363,7 @@ Content-Type: application/json
         "getId": {
             "description": "The short name of an item (used in the url)",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.string.is"
@@ -1356,6 +1384,7 @@ Content-Type: application/json
         "getObjPositionInParent": {
             "description": "The order of an item in its parent folder",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.int.is",
@@ -1390,6 +1419,7 @@ Content-Type: application/json
         "modified": {
             "description": "The time and date an item was last modified",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
@@ -1473,6 +1503,7 @@ Content-Type: application/json
         "review_state": {
             "description": "An item's workflow state (e.g.published)",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.selection.any"
@@ -1521,6 +1552,7 @@ Content-Type: application/json
         "sortable_title": {
             "description": "The item's title, transformed for sorting",
             "enabled": false,
+            "fetch_vocabulary": true,
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.string.contains",
@@ -1548,6 +1580,7 @@ Content-Type: application/json
         "start": {
             "description": "The start date and time of an event",
             "enabled": true,
+            "fetch_vocabulary": true,
             "group": "Dates",
             "operations": [
                 "plone.app.querystring.operation.date.lessThan",
