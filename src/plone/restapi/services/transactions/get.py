@@ -38,5 +38,5 @@ def encode64(s, b2a=binascii.b2a_base64):
     r = []
     a = r.append
     for i in range(0, len(s), 57):
-        a(b2a(s[i: i + 57])[:-1])
+        a(b2a(s[i : i + 57])[:-1])
     return (b"".join(r)).decode("ascii")
