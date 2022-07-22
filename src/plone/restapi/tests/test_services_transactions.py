@@ -39,7 +39,9 @@ class TestTransactionsEndpoint(unittest.TestCase):
             self.assertEqual(set(item), set(keys))
 
     def test_revert(self):
-        response = self.api_session.patch(self.endpoint_url, json={"transaction_ids": [""]})
+        response = self.api_session.patch(
+            self.endpoint_url, json={"transaction_ids": [""]}
+        )
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(

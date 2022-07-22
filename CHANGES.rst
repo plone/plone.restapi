@@ -58,6 +58,7 @@ New features:
 
 
 - Add support to search for fullname, email, id on the @users endpoint with "?search=" [ksuess] (#1443)
+- Add @transactions endpoint to fetch transactions have been made through plone website [@MdSahil-oss]
 
 
 Bug fixes:
