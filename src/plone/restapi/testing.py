@@ -290,7 +290,7 @@ class RelativeSession(requests.Session):
 
         Apparently, network sockets created by the `requests` library can remain open
         even after the full body of the response has been read, despite [the
-        docs](https://docs.python-requests.org/en/latest/user/advanced/#body-content-workflow). In
+        docs](https://requests.readthedocs.io/en/latest/user/advanced/#body-content-workflow). In
         particular, this results in `ResourceWarning: unclosed <socket.socket ...>` leak
         warnings when running the tests.  If the `test` kwarg is passed, it will be used
         to register future cleanup calls to close this session and thus also the
@@ -342,3 +342,19 @@ def register_static_uuid_utility(prefix):
     prefix = re.sub(r"[^a-zA-Z0-9\-_]", "", prefix)
     generator = StaticUUIDGenerator(prefix)
     getGlobalSiteManager().registerUtility(component=generator)
+
+
+def normalize_html(value):
+    # Strip all white spaces of every line, then join on one line.
+    # But try to avoid getting 'Go to<a href' instead of 'Go to <a href'.
+    lines = []
+    for line in value.splitlines():
+        line = line.strip()
+        if (
+            line.startswith("<")
+            and not line.startswith("</")
+            and not line.startswith("<br")
+        ):
+            line = " " + line
+        lines.append(line)
+    return "".join(lines).strip()

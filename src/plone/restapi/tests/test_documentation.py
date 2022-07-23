@@ -1,6 +1,5 @@
 from base64 import b64encode
 from datetime import datetime
-from unittest.mock import patch
 from pkg_resources import resource_filename
 from plone import api
 from plone.app.discussion.interfaces import IConversation
@@ -25,8 +24,8 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
+from plone.restapi.tests.helpers import patch_scale_uuid
 from plone.restapi.tests.statictime import StaticTime
-from plone.scale import storage
 from plone.testing.z2 import Browser
 from zope.component import createObject
 from zope.component import getUtility
@@ -301,7 +300,8 @@ class TestDocumentation(TestDocumentationBase):
         self.portal.newsitem.image_caption = "This is an image caption."
         transaction.commit()
 
-        with patch.object(storage, "uuid4", return_value="uuid1"):
+        scale_url_uuid = "uuid1"
+        with patch_scale_uuid(scale_url_uuid):
             response = self.api_session.get(self.portal.newsitem.absolute_url())
             save_request_and_response_for_docs("newsitem", response)
 
@@ -349,7 +349,8 @@ class TestDocumentation(TestDocumentationBase):
             data=image_data, contentType="image/png", filename="image.png"
         )
         transaction.commit()
-        with patch.object(storage, "uuid4", return_value="uuid1"):
+        scale_url_uuid = "uuid1"
+        with patch_scale_uuid(scale_url_uuid):
             response = self.api_session.get(self.portal.image.absolute_url())
             save_request_and_response_for_docs("image", response)
 
@@ -924,8 +925,6 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_users_filtered_get(self):
         properties = {
-            "email": "noam.chomsky@example.com",
-            "username": "noamchomsky",
             "fullname": "Noam Avram Chomsky",
             "home_page": "web.mit.edu/chomsky",
             "description": "Professor of Linguistics",
@@ -934,11 +933,33 @@ class TestDocumentation(TestDocumentationBase):
         api.user.create(
             email="noam.chomsky@example.com", username="noam", properties=properties
         )
+        api.group.add_user(groupname="Reviewers", username="noam")
         transaction.commit()
-        response = self.api_session.get("@users", params={"query": "noa"})
-        save_request_and_response_for_docs(
-            "users_filtered_by_username", response
-        )  # noqa
+        # filter by username
+        response = self.api_session.get("@users", params={"query": "oam"})
+        save_request_and_response_for_docs("users_filtered_by_username", response)
+        # filter by groups
+        response = self.api_session.get(
+            "@users",
+            params={"groups-filter:list": ["Reviewers", "Site Administrators"]},
+        )
+        save_request_and_response_for_docs("users_filtered_by_groups", response)
+
+    def test_documentation_users_searched_get(self):
+        properties = {
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com", username="noam", properties=properties
+        )
+        api.group.add_user(groupname="Reviewers", username="noam")
+        transaction.commit()
+        # search by fullname
+        response = self.api_session.get("@users", params={"search": "avram"})
+        save_request_and_response_for_docs("users_searched", response)
 
     def test_documentation_users_created(self):
         response = self.api_session.post(
@@ -1061,6 +1082,16 @@ class TestDocumentation(TestDocumentationBase):
             title=properties["title"],
             description=properties["description"],
         )
+        properties = {
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com", username="noam", properties=properties
+        )
+        api.group.add_user(groupname="ploneteam", username="noam")
         transaction.commit()
         response = self.api_session.get("/@groups")
         save_request_and_response_for_docs("groups", response)
@@ -1080,6 +1111,16 @@ class TestDocumentation(TestDocumentationBase):
             title=properties["title"],
             description=properties["description"],
         )
+        properties = {
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com", username="noam", properties=properties
+        )
+        api.group.add_user(groupname="ploneteam", username="noam")
         transaction.commit()
         response = self.api_session.get("@groups/ploneteam")
         save_request_and_response_for_docs("groups_get", response)
@@ -1139,7 +1180,14 @@ class TestDocumentation(TestDocumentationBase):
 
         response = self.api_session.patch(
             "/@groups/ploneteam",
-            json={"email": "ploneteam2@plone.org", "users": {TEST_USER_ID: False}},
+            json={
+                "description": "Plone team members",
+                "email": "ploneteam2@plone.org",
+                "groups": ["Site Administrators"],
+                "users": {TEST_USER_ID: False},
+                "roles": ["Authenticated", "Reviewer"],
+                "title": "The Plone team",
+            },
         )
         save_request_and_response_for_docs("groups_update", response)
 

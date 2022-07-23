@@ -56,8 +56,7 @@ jobs:
 
       # build sphinx
       - name: sphinx
-#        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then bin/sphinxbuilder; fi
-        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then make docs-html; fi
+        run: if [ "${{ matrix.plone-version }}" == "6.0" ] && [ ${{ matrix.python-version }} == '3.9' ]; then make docs-html; fi
 
       # test
       - name: test
@@ -70,6 +69,6 @@ jobs:
           PYTHON_VERSION: ${{ matrix.python-version }}
           PLONE_VERSION: ${{ matrix.plone-version }}
 
-      # test sphinx warnings
-#      - name: sphinx
-#        run: if [ "${{ matrix.plone-version }}" == "5.2" ] && [ ${{ matrix.python-version }} == '3.7' ]; then ./test-no-sphinx-warnings; fi
+      # test for broken links
+      - name: linkcheck
+        run: if [ "${{ matrix.plone-version }}" == "6.0" ] && [ ${{ matrix.python-version }} == '3.9' ]; then make docs-linkcheckbroken; fi
