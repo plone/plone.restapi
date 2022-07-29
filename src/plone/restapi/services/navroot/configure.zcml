@@ -12,6 +12,6 @@
       permission="zope2.View"
       name="@navroot"
       />
-  
+
 
 </configure>
