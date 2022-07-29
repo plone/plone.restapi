@@ -3,5 +3,4 @@ Content-Type: application/json
 
 {
   "title": "Plone Site",
-  "description": "Plone Site Description"
 }
