@@ -9,5 +9,5 @@ class SiteGet(Service):
             (self.context, self.request), name="plone_portal_state"
         )
         return {
-            "title": portal_state.portal_title,
+            "title": portal_state.portal_title(),
         }

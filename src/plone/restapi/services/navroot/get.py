@@ -9,6 +9,6 @@ class NavrootGet(Service):
             (self.context, self.request), name="plone_portal_state"
         )
         return {
-            "@id": portal_state.navigation_root().absolute_url(),
+            "@id": portal_state.navigation_root_url(),
             "title": portal_state.navigation_root_title(),
         }

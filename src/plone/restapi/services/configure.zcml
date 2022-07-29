@@ -24,6 +24,7 @@
   <include package=".contextnavigation" />
   <include package=".history" />
   <include package=".locking" />
+  <include package=".navroot" />
   <include package=".principals" />
   <include package=".querysources" />
   <include package=".querystring" />
@@ -31,6 +32,7 @@
   <include package=".registry" />
   <include package=".roles" />
   <include package=".search" />
+  <include package=".site" />
   <include package=".system" />
   <include package=".sources" />
   <include package=".types" />
