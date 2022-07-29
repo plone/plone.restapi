@@ -2216,3 +2216,38 @@ class TestIterateDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs(
             "vocabularies_get_filtered_by_token_list", response
         )
+
+
+class TestSiteDocumentation(TestDocumentationBase):
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def test_site_get(self):
+        response = self.api_session.get("/@site")
+        save_request_and_response_for_docs("site_get", response)
+
+
+class TestNavrootDocumentation(TestDocumentationBase):
+    layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super().setUp()
+        self.api_session.auth = None
+        api.content.create(
+            container=self.portal.en,
+            id="news",
+            type="Document",
+        )
+        api.content.transition(obj=self.portal.en.news, transition="publish")
+        transaction.commit()
+
+    def test_site_navroot_get(self):
+        response = self.api_session.get("/@navroot")
+        save_request_and_response_for_docs("navroot_site_get", response)
+
+    def test_site_navroot_language_folder_get(self):
+        response = self.api_session.get("/en/@navroot")
+        save_request_and_response_for_docs("navroot_lang_folder_get", response)
+
+    def test_site_navroot_language_content_get(self):
+        response = self.api_session.get("/en/news/@navroot")
+        save_request_and_response_for_docs("navroot_lang_content_get", response)

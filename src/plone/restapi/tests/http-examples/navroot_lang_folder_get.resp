@@ -2,6 +2,6 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "@id": "http://localhost:55001/plone/en",
-  "title": "English",
+    "@id": "http://localhost:55001/plone/en",
+    "title": "English"
 }

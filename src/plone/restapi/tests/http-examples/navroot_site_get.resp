@@ -2,7 +2,6 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-  "@id": "http://localhost:55001/plone",
-  "nav_root_title": "Plone Site",
-  "nav_root_description": "Plone Site Description"
+    "@id": "http://localhost:55001/plone",
+    "title": "Plone site"
 }
