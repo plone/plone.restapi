@@ -1,0 +1,2 @@
+GET /plone/en/@navroot HTTP/1.1
+Accept: application/json
