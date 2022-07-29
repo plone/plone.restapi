@@ -1,0 +1,1 @@
+@site and @navroot endpoints
