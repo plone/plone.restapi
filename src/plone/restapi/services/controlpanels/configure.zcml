@@ -123,6 +123,18 @@
         name="usergroup"
         />
 
+    <adapter
+        factory="plone.restapi.controlpanels.registry.UsersControlpanel"
+        name="users"
+        />
+
+    <adapter
+        factory="plone.restapi.controlpanels.registry.GroupsControlpanel"
+        name="groups"
+        />
+
+
+
   </configure>
 
 </configure>

@@ -113,3 +113,21 @@ class UserGroupControlpanel(RegistryConfigletPanel):
     configlet_category_id = "plone-users-and-groups"
     group = "Users and Groups"
     title = "User and Group Settings"
+
+
+@adapter(Interface, Interface)
+class UsersControlpanel(RegistryConfigletPanel):
+    schema = IUserGroupsSettingsSchema
+    configlet_id = "UsersSettings"
+    configlet_category_id = "plone-users-and-groups"
+    group = "Users and Groups"
+    title = "Users"
+
+
+@adapter(Interface, Interface)
+class GroupsControlpanel(RegistryConfigletPanel):
+    schema = IUserGroupsSettingsSchema
+    configlet_id = "GroupsSettings"
+    configlet_category_id = "plone-users-and-groups"
+    group = "Users and Groups"
+    title = "Groups"
