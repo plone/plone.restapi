@@ -12,12 +12,12 @@ class TransactionsGet(Service):
         total_num_of_transactions = (
             self.context._p_jar.db().undoInfo(0, sys.maxsize).__len__()
         )
-        r = self.context._p_jar.db().undoInfo(0, total_num_of_transactions)
+        total_transactions = self.context._p_jar.db().undoInfo(0, total_num_of_transactions)
 
-        for d in r:
-            d["time"] = t = dt.fromtimestamp(int(d["time"])).isoformat()
-            desc = d["description"]
-            tid = d["id"]
+        for transaction in total_transactions:
+            transaction["time"] = t = dt.fromtimestamp(int(transaction["time"])).isoformat()
+            desc = transaction["description"]
+            tid = transaction["id"]
             if desc:
                 desc = desc.split()
                 d1 = desc[0]
@@ -27,9 +27,9 @@ class TransactionsGet(Service):
                 tid = f"{encode64(tid)} {t} {d1} {desc}"
             else:
                 tid = f"{encode64(tid)} {t}"
-            d["id"] = tid
+            transaction["id"] = tid
 
-        return r
+        return total_transactions
 
 
 def encode64(s, b2a=binascii.b2a_base64):
