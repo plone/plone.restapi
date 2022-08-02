@@ -38,10 +38,12 @@ class BaseSerializer:
 
         for name in getFieldNames(schema):
             if name == "portrait":
+                membership = getToolByName(portal, 'portal_membership')
                 memberdata = getToolByName(portal, "portal_memberdata")
-                if user.id in memberdata.portraits:
+                safe_id = membership._getSafeMemberId(user.id)
+                if safe_id in memberdata.portraits:
                     value = "{}/portal_memberdata/portraits/{}".format(
-                        portal.absolute_url(), user.id
+                        portal.absolute_url(), safe_id
                     )
                 else:
                     value = None
