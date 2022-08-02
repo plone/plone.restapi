@@ -31,3 +31,6 @@ class TestServicesSite(unittest.TestCase):
             (self.portal, self.layer["request"]), name="plone_portal_state"
         )
         self.assertEqual(response.json()["title"], portal_state.portal_title())
+        self.assertIn("logo", response.json())
+        self.assertIn("robots_txt", response.json())
+        self.assertIn("imaging_allowed_sizes", response.json())
