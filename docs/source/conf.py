@@ -32,7 +32,7 @@ copyright = "2014-%s, Plone Foundation" % thisyear
 # built documents.
 # TODO: There must be a way to import this from `setup.py` so we don't have to
 # update it manually for each release.
-version = "8.21.3.dev0"
+version = "8.24.1.dev0"
 release = version
 
 # -- General configuration ----------------------------------------------------
