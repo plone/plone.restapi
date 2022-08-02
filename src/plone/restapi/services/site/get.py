@@ -14,9 +14,7 @@ class SiteGet(Service):
             (self.context, self.request), name="plone_portal_state"
         )
         registry = getUtility(IRegistry)
-        site_settings = registry.forInterface(
-            ISiteSchema, prefix="plone", check=False
-        )
+        site_settings = registry.forInterface(ISiteSchema, prefix="plone", check=False)
         image_settings = registry.forInterface(
             IImagingSchema, prefix="plone", check=False
         )
