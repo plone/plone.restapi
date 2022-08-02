@@ -21,7 +21,7 @@ Bug fixes:
 
 
 - Tests: add names to behaviors.  [maurits] (#169)
-- Sanitise user id when checking for portrait [instification]
+- Sanitise user id when checking for portrait [instification] (#1261)
 
 
 8.23.0 (2022-06-23)

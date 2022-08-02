@@ -38,7 +38,7 @@ class BaseSerializer:
 
         for name in getFieldNames(schema):
             if name == "portrait":
-                membership = getToolByName(portal, 'portal_membership')
+                membership = getToolByName(portal, "portal_membership")
                 memberdata = getToolByName(portal, "portal_memberdata")
                 safe_id = membership._getSafeMemberId(user.id)
                 if safe_id in memberdata.portraits:
