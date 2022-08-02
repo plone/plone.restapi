@@ -7,8 +7,18 @@ from zope.interface import implementer
 from zope.interface import Interface
 
 
-class NavrootGet(Service):
-    def reply(self):
+@implementer(IExpandableElement)
+@adapter(Interface, Interface)
+class Navroot:
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, expand=False):
+        result = {"navroot": {"@id": f"{self.context.absolute_url()}/@navroot"}}
+        if not expand:
+            return result
+
         portal_state = getMultiAdapter(
             (self.context, self.request), name="plone_portal_state"
         )
