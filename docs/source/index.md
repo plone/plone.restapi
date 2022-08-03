@@ -62,6 +62,8 @@ translations
 email-send
 i18n
 email-notification
+site
+navroot
 system
 database
 upgrade-guide
