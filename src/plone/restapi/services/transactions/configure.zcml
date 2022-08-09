@@ -10,7 +10,7 @@
       method="GET"
       factory=".get.TransactionsGet"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      permission="CMFEditions.AccessPreviousVersions"
+      permission="cmf.ListUndoableChanges"
       name="@transactions"
       />
 
@@ -18,7 +18,7 @@
       method="PATCH"
       factory=".patch.TransactionsPatch"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
-      permission="CMFEditions.RevertToPreviousVersions"
+      permission="zope2.Undo"
       name="@transactions"
       />
 

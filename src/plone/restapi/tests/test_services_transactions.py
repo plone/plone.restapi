@@ -40,11 +40,11 @@ class TestTransactionsEndpoint(unittest.TestCase):
 
     def test_revert(self):
         response = self.api_session.patch(
-            self.endpoint_url, json={"transaction_ids": [""]}
+            self.endpoint_url, json={"transaction_ids": ["QStvcExLS1ZiRlU9"]}
         )
         self.assertEqual(response.status_code, 200)
 
         self.assertEqual(
             response.json(),
-            {"message": "Transactions has been reverted successfully."},
+            {"message": "Transactions have been reverted successfully."},
         )
