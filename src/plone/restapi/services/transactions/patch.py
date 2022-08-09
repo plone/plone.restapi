@@ -33,7 +33,7 @@ def revert(context, transactions_info=()):
         except Exception:
             raise BadRequest({"errors": "Failed in undoing transactions"})
 
-    msg = "Transactions has been reverted successfully."
+    msg = "Transactions have been reverted successfully."
     return {"message": msg}
 
 
