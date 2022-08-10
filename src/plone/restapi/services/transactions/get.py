@@ -12,10 +12,14 @@ class TransactionsGet(Service):
         total_num_of_transactions = (
             self.context._p_jar.db().undoInfo(0, sys.maxsize).__len__()
         )
-        total_transactions = self.context._p_jar.db().undoInfo(0, total_num_of_transactions)
+        total_transactions = self.context._p_jar.db().undoInfo(
+            0, total_num_of_transactions
+        )
 
         for transaction in total_transactions:
-            transaction["time"] = t = dt.fromtimestamp(int(transaction["time"])).isoformat()
+            transaction["time"] = t = dt.fromtimestamp(
+                int(transaction["time"])
+            ).isoformat()
             desc = transaction["description"]
             tid = transaction["id"]
             if desc:
