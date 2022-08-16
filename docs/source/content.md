@@ -171,7 +171,7 @@ Content-Type: application/json
 
 {
   "message": "Resource not found: https://<resource url>",
-  'type': 'NotFound'
+  "type": "NotFound"
 }
 ```
 
