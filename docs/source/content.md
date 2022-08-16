@@ -170,7 +170,7 @@ HTTP/1.1 404 Not Found
 Content-Type: application/json
 
 {
-  'message': "Resource not found: https://<resource url>",
+  "message": "Resource not found: https://<resource url>",
   'type': 'NotFound'
 }
 ```
