@@ -63,8 +63,8 @@ class UsersGet(Service):
 
         return principals
 
-    def _get_users(self):
-        results = {user["userid"] for user in self.acl_users.searchUsers()}
+    def _get_users(self, **kw):
+        results = {user["userid"] for user in self.acl_users.searchUsers(**kw)}
         users = [self.portal_membership.getMemberById(userid) for userid in results]
         return self._sort_users(users)
 
@@ -103,14 +103,19 @@ class UsersGet(Service):
         if search_term:
             users = self._user_search_results()
         else:
-            results = self.acl_users.searchUsers(id=query, max_results=limit)
-            users = [
-                self.portal_membership.getMemberById(user["userid"]) for user in results
-            ]
+            kw = {}
+            if query:
+                kw["id"] = query
+                # No max_results if groups_filter
+                if limit:
+                    kw["max_results"] = limit
+            users = self._get_users(**kw)
+
         if groups_filter:
             users = [
                 user for user in users if set(user.getGroups()) & set(groups_filter)
             ]
+        users = limit and users[:limit] or users
         return self._sort_users(users)
 
     def has_permission_to_query(self):
@@ -131,7 +136,7 @@ class UsersGet(Service):
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
             groups_filter = self.query.get("groups-filter:list", [])
-            limit = self.query.get("limit", [DEFAULT_SEARCH_RESULTS_LIMIT])[0]
+            limit = int(self.query.get("limit", [DEFAULT_SEARCH_RESULTS_LIMIT])[0])
             if query or groups_filter or self.search_term or limit:
                 if self.has_permission_to_query():
                     users = self._get_filtered_users(
