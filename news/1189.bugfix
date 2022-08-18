@@ -1,0 +1,2 @@
+Fix @registry endpoint Object of type datetime is not JSON serializable
+[iulianpetchesi]
