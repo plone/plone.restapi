@@ -53,4 +53,9 @@ Authentication Method
 
 Basic Auth
     A simple {term}`Authentication Method` referenced in the {term}`Authorization Header` that needs to be provided by the server.
+    
+Navigation Root
+navigation root
+    An object markes as a navigation root provides a way to root catalog queries, searches, breadcrumbs, etc into that object.
+    
 ```
