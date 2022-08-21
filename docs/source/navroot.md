@@ -1,6 +1,7 @@
 ---
 html_meta:
-  "description": ""
+  "description": "Navigation root is a concept that provides a way to root catalog queries, searches, and breadcrumbs in Plone."
+  "property=og:description": "Navigation root is a concept that provides a way to root catalog queries, searches, and breadcrumbs in Plone."
   "property=og:title": "Navigation Root"
   "keywords": "Plone, plone.restapi, REST, API, site, navigation root"
 ---
