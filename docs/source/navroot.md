@@ -12,7 +12,9 @@ html_meta:
 Plone has an idea called {term}`navigation root` which provides a way to root catalog queries, searches, breadcrumbs, etc. in a given section of the site.
 This feature is useful when working with subsites or multilingual sites, because it allows the site manager to restrict searches or navigation queries to a specific location in the site.
 
-This navigation root information is different depending on the context where is requested. For instance in a default multilingual site, when browsing the contents inside a language folder, the navigation root will be the language folder, but in a non-multilingual site the navigation root will be the root of the site.
+This navigation root information is different depending on the context of the request.
+For instance, in a default multilingual site when browsing the contents inside a language folder (`www.domain.com/en`), the context is `en` and its navigation root will be `/en/`.
+In a non-multilingual site, the context is the root of the site (`www.domain.com`) and the navigation root will be `/`.
 
 To get the information about the navigation root, the REST API has a `@navroot` contextual endpoint, which will return the correct information about it.
 
