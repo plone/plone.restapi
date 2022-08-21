@@ -1,7 +1,7 @@
 ---
 html_meta:
   "description": "Site endpoint for Plone REST API"
-  "property=og:title": "Site"
+  "property=og:title": "Site endpoint for Plone REST API"
   "property=og:description": "Site endpoint for Plone REST API"
   "keywords": "Plone, plone.restapi, REST, API, site, navigation root"
 ---
