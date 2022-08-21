@@ -60,6 +60,9 @@ The response will contain the navigation root information with the site :
 :language: http
 ```
 
+
+(navigation-root-expansion-label)=
+
 ## Expansion
 
 This endpoint can be used with the {doc}`expansion` mechanism which allows getting more information about a content item in one query, avoiding unnecessary requests.
