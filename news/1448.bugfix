@@ -1,0 +1,2 @@
+Fix for test cases failing when deprecating uuidToObject() from `plone.outputfilters.browser.resolveuid`.
+[anirudhhkashyap]

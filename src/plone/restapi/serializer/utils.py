@@ -1,4 +1,4 @@
-from plone.outputfilters.browser.resolveuid import uuidToObject
+from plone.app.uuid.utils import uuidToObject
 from plone.outputfilters.browser.resolveuid import uuidToURL
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from zope.component import queryMultiAdapter
@@ -23,7 +23,10 @@ def uid_to_url(path):
     if suffix:
         href += "/" + suffix
     else:
-        target_object = uuidToObject(uid)
+        """ Pass unrestricted flag as true so the object is accessible.
+        At uuidToObject(), this leads to unrestrictedTraverse() to be invoked instead of restrictedTraverse().
+        """
+        target_object = uuidToObject(uid, unrestricted = True)
         if target_object:
             adapter = queryMultiAdapter(
                 (target_object, target_object.REQUEST), IObjectPrimaryFieldTarget
