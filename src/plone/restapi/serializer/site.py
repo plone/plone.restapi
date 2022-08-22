@@ -142,6 +142,7 @@ class SerializeSiteRootToJson:
                 (self.context, self.request), IBlockFieldSerializationTransformer
             ):
                 if h.block_type == block_type or h.block_type is None:
+                    h.blockid = id
                     handlers.append(h)
 
             for handler in sorted(handlers, key=lambda h: h.order):
