@@ -8,6 +8,7 @@ import re
 
 RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
 
+
 # Takes the resolveID URL and returns a URL to the actual object
 def uid_to_url(path):
     if not path:
@@ -25,7 +26,6 @@ def uid_to_url(path):
     else:
         # Pass unrestricted flag as true so the object is accessible.
         # At uuidToObject(), this leads to unrestrictedTraverse() to be invoked instead of restrictedTraverse().
-        
         target_object = uuidToObject(uid, unrestricted=True)
         if target_object:
             adapter = queryMultiAdapter(
