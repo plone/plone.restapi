@@ -11,6 +11,7 @@ from plone.schema import IJSONField
 from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import subscribers
+from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -19,59 +20,66 @@ import copy
 import os
 
 
+def _transform(blocks, context):
+    for id, block_value in blocks.items():
+        handle_subblocks(block_value, context)
+        block_type = block_value.get("@type", "")
+        handlers = []
+        for h in subscribers(
+            (context, getRequest()),
+            IBlockFieldSerializationTransformer,
+        ):
+            if h.block_type == block_type or h.block_type is None:
+                h.blockid = id
+                handlers.append(h)
+
+        for handler in sorted(handlers, key=lambda h: h.order):
+            block_value = handler(block_value)
+
+        blocks[id] = block_value
+
+    return blocks
+
+
+def handle_subblocks(block_value, context):
+    if "data" in block_value:
+        if isinstance(block_value["data"], dict):
+            if "blocks" in block_value["data"]:
+                block_value["data"]["blocks"] = _transform(
+                    block_value["data"]["blocks"], context
+                )
+
+    if "blocks" in block_value:
+        block_value["blocks"] = _transform(block_value["blocks"], context)
+
+    return block_value
+
+
+def handle_block_value(block_value, context):
+    block_value = handle_subblocks(block_value, context)
+    block_type = block_value.get("@type", "")
+    handlers = []
+    for h in subscribers((context, getRequest()), IBlockFieldSerializationTransformer):
+        if h.block_type == block_type or h.block_type is None:
+            h.blockid = id
+            handlers.append(h)
+
+    for handler in sorted(handlers, key=lambda h: h.order):
+        if not getattr(handler, "disabled", False):
+            block_value = handler(block_value)
+
+    return block_value
+
+
 @adapter(IJSONField, IBlocks, Interface)
 @implementer(IFieldSerializer)
 class BlocksJSONFieldSerializer(DefaultFieldSerializer):
-    def _transform(self, blocks):
-        for id, block_value in blocks.items():
-            self.handle_subblocks(block_value)
-            block_type = block_value.get("@type", "")
-            handlers = []
-            for h in subscribers(
-                (self.context, self.request), IBlockFieldSerializationTransformer
-            ):
-                if h.block_type == block_type or h.block_type is None:
-                    h.blockid = id
-                    handlers.append(h)
-
-            for handler in sorted(handlers, key=lambda h: h.order):
-                block_value = handler(block_value)
-
-            blocks[id] = block_value
-
-        return blocks
-
-    def handle_subblocks(self, block_value):
-        if "data" in block_value:
-            if isinstance(block_value["data"], dict):
-                if "blocks" in block_value["data"]:
-                    block_value["data"]["blocks"] = self._transform(
-                        block_value["data"]["blocks"]
-                    )
-
-        if "blocks" in block_value:
-            block_value["blocks"] = self._transform(block_value["blocks"])
-
     def __call__(self):
         value = copy.deepcopy(self.get_value())
 
         if self.field.getName() == "blocks":
             for id, block_value in value.items():
-                self.handle_subblocks(block_value)
-                block_type = block_value.get("@type", "")
-                handlers = []
-                for h in subscribers(
-                    (self.context, self.request), IBlockFieldSerializationTransformer
-                ):
-                    if h.block_type == block_type or h.block_type is None:
-                        h.blockid = id
-                        handlers.append(h)
-
-                for handler in sorted(handlers, key=lambda h: h.order):
-                    if not getattr(handler, "disabled", False):
-                        block_value = handler(block_value)
-
-                value[id] = block_value
+                value[id] = handle_block_value(block_value, self.context)
 
         return json_compatible(value)
 
