@@ -6,7 +6,7 @@ from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.serializer.blocks import handle_block_value
+from plone.restapi.serializer.blocks import apply_block_serialization_transforms
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.services.locking import lock_info
@@ -134,5 +134,5 @@ class SerializeSiteRootToJson:
         if not blocks:
             return blocks
         for id, block_value in blocks.items():
-            blocks[id] = handle_block_value(block_value, self.context)
+            blocks[id] = apply_block_serialization_transforms(block_value, self.context)
         return blocks

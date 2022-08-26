@@ -55,7 +55,7 @@ def handle_subblocks(block_value, context):
     return block_value
 
 
-def handle_block_value(block_value, context):
+def apply_block_serialization_transforms(block_value, context):
     block_value = handle_subblocks(block_value, context)
     block_type = block_value.get("@type", "")
     handlers = []
@@ -79,7 +79,9 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
 
         if self.field.getName() == "blocks":
             for id, block_value in value.items():
-                value[id] = handle_block_value(block_value, self.context)
+                value[id] = apply_block_serialization_transforms(
+                    block_value, self.context
+                )
 
         return json_compatible(value)
 
