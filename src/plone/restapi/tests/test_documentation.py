@@ -2226,15 +2226,7 @@ class TestRules(TestDocumentationBase):
         save_request_and_response_for_docs(
             "controlpanels_post_rule_condition_portaltype", response
         )
-        payload = {
-            "check_types": ["Collection", "Comment"],
-            "type": "plone.conditions.FileExtension",
-        }
-        response = self.api_session.post(url, json=payload)
-        save_request_and_response_for_docs(
-            "controlpanels_post_rule_condition_portaltype", response
-        )
-        payload = {"file_extension": "JPG", "type": "plone.conditions.PortalType"}
+        payload = {"file_extension": "JPG", "type": "plone.conditions.FileExtension"}
         response = self.api_session.post(url, json=payload)
         save_request_and_response_for_docs(
             "controlpanels_post_rule_condition_fileextension", response
@@ -2336,6 +2328,141 @@ class TestRules(TestDocumentationBase):
         url = "/@controlpanels/content-rules/rule-3"
         response = self.api_session.get(url)
         save_request_and_response_for_docs("controlpanels_get_rule", response)
+
+        # get condition
+        url = "/@controlpanels/content-rules/rule-3/condition/0"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_portaltype", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/1"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_fileextension", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/2"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_workflowstate", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/3"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_group", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/4"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_role", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/5"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_tales", response
+        )
+
+        # get action
+
+        url = "/@controlpanels/content-rules/rule-3/action/0"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_logger", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/1
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_notify", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/2"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_copy", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/3"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_move", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/4"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_delete", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/5"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_transition", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/6"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_mail", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/7"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_versioning", response
+        )
+
+
+
+
+
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_logger", response
+        )
+        payload = {
+            "message": "Information",
+            "message_type": "info",
+            "type": "plone.actions.Notify",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_notify", response
+        )
+        uuid = IUUID(self.portal.folder)
+        payload = {"target_folder": uuid, "type": "plone.actions.Copy"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_copy", response
+        )
+        payload = {"target_folder": uuid, "type": "plone.actions.Move"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_move", response
+        )
+        payload = {"type": "plone.actions.Delete"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_delete", response
+        )
+        payload = {"transition": "hide", "type": "plone.actions.Workflow"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_transition", response
+        )
+        payload = {
+            "subject": "Email Subject",
+            "source": "noreply@something.com",
+            "recipients": "test@somethingelse.com",
+            "exclude_actor": True,
+            "message": "And the message body",
+            "type": "plone.actions.Mail",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_mail", response
+        )
+        payload = {"comment": "Some comment", "type": "plone.actions.Versioning"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_versioning", response
+        )
+
+
+
+
+
 
         # PATCH
         url = "/@controlpanels/content-rules/rule-3"

@@ -74,12 +74,23 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
         return self.get([rule.__name__])
 
     def get(self, names):
-        name = names[0]
+        if len(names) == 1:
+            context = self.publishTraverse(self.request, names[0])
+            serializer = ISerializeToJson(self)
 
-        context = self.publishTraverse(self.request, name)
-        serializer = ISerializeToJson(self)
-
-        return serializer(context)
+            return serializer(context)
+        else:
+            # the get is for a condition or action
+            fields = {}
+            rule = self.publishTraverse(self.request, name=names[0])
+            extras = getattr(rule, names[1] + "s")
+            idx = int(names[2])
+            extra_ob = extras[idx]
+            view = queryMultiAdapter((extra_ob, self.request), name="edit")
+            view.form_instance.update()
+            for field in view.form_instance.fields._data_values:
+                fields[field.__name__] = getattr(extra_ob, field.__name__)
+            return fields
 
     def update(self, names):
         data = json_body(self.request)
