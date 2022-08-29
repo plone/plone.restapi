@@ -5,5 +5,5 @@ Content-Type: application/json
 
 {
     "file_extension": "JPG",
-    "type": "plone.conditions.PortalType"
+    "type": "plone.conditions.FileExtension"
 }

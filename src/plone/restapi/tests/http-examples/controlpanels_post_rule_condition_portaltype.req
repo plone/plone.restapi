@@ -8,5 +8,5 @@ Content-Type: application/json
         "Collection",
         "Comment"
     ],
-    "type": "plone.conditions.FileExtension"
+    "type": "plone.conditions.PortalType"
 }

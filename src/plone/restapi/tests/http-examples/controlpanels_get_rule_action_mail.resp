@@ -1,0 +1,10 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "exclude_actor": true,
+    "message": "And the message body",
+    "recipients": "test@somethingelse.com",
+    "source": "noreply@something.com",
+    "subject": "Email Subject"
+}

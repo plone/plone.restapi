@@ -96,18 +96,9 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
             "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++1/edit",
             "first": false,
             "idx": 1,
-            "last": false,
+            "last": true,
             "summary": "File extension is ${ext}",
             "title": "File Extension"
-        },
-        {
-            "description": "Apply only when the current content object is of a particular type",
-            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++2/edit",
-            "first": false,
-            "idx": 2,
-            "last": true,
-            "summary": "Content types are: ${names}",
-            "title": "Content type"
         }
     ],
     "description": "Third rule added in the testing setup",
