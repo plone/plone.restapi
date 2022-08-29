@@ -2368,7 +2368,7 @@ class TestRules(TestDocumentationBase):
         save_request_and_response_for_docs(
             "controlpanels_get_rule_action_logger", response
         )
-        url = "/@controlpanels/content-rules/rule-3/action/1
+        url = "/@controlpanels/content-rules/rule-3/action/1"
         response = self.api_session.get(url)
         save_request_and_response_for_docs(
             "controlpanels_get_rule_action_notify", response
@@ -2403,66 +2403,6 @@ class TestRules(TestDocumentationBase):
         save_request_and_response_for_docs(
             "controlpanels_get_rule_action_versioning", response
         )
-
-
-
-
-
-        save_request_and_response_for_docs(
-            "controlpanels_post_rule_action_logger", response
-        )
-        payload = {
-            "message": "Information",
-            "message_type": "info",
-            "type": "plone.actions.Notify",
-        }
-        response = self.api_session.post(url, json=payload)
-        save_request_and_response_for_docs(
-            "controlpanels_post_rule_action_notify", response
-        )
-        uuid = IUUID(self.portal.folder)
-        payload = {"target_folder": uuid, "type": "plone.actions.Copy"}
-        response = self.api_session.post(url, json=payload)
-        save_request_and_response_for_docs(
-            "controlpanels_post_rule_action_copy", response
-        )
-        payload = {"target_folder": uuid, "type": "plone.actions.Move"}
-        response = self.api_session.post(url, json=payload)
-        save_request_and_response_for_docs(
-            "controlpanels_post_rule_action_move", response
-        )
-        payload = {"type": "plone.actions.Delete"}
-        response = self.api_session.post(url, json=payload)
-        save_request_and_response_for_docs(
-            "controlpanels_post_rule_action_delete", response
-        )
-        payload = {"transition": "hide", "type": "plone.actions.Workflow"}
-        response = self.api_session.post(url, json=payload)
-        save_request_and_response_for_docs(
-            "controlpanels_post_rule_action_transition", response
-        )
-        payload = {
-            "subject": "Email Subject",
-            "source": "noreply@something.com",
-            "recipients": "test@somethingelse.com",
-            "exclude_actor": True,
-            "message": "And the message body",
-            "type": "plone.actions.Mail",
-        }
-        response = self.api_session.post(url, json=payload)
-        save_request_and_response_for_docs(
-            "controlpanels_post_rule_action_mail", response
-        )
-        payload = {"comment": "Some comment", "type": "plone.actions.Versioning"}
-        response = self.api_session.post(url, json=payload)
-        save_request_and_response_for_docs(
-            "controlpanels_post_rule_action_versioning", response
-        )
-
-
-
-
-
 
         # PATCH
         url = "/@controlpanels/content-rules/rule-3"
