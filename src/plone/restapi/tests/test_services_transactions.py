@@ -40,7 +40,7 @@ class TestTransactionsEndpoint(unittest.TestCase):
 
     def test_revert(self):
         response = self.api_session.patch(
-            self.endpoint_url, json={"transaction_ids": ["QStvcExLS1ZiRlU9"]}
+            self.endpoint_url, json={"transaction_ids": [""]}
         )
         self.assertEqual(response.status_code, 200)
 
