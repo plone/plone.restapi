@@ -39,7 +39,8 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
         "tests.restapi.test_annotations_behavior": false,
         "tests.restapi.test_behavior": false,
         "title": "My Custom Content Type",
-        "volto.blocks": false
+        "volto.blocks": false,
+        "volto.blocks.editable.layout": false
     },
     "description": "A custom content-type",
     "group": "Content",
@@ -63,6 +64,7 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
                     "plone.allowdiscussion",
                     "plone.basic",
                     "volto.blocks",
+                    "volto.blocks.editable.layout",
                     "plone.categorization",
                     "plone.collection",
                     "plone.publication",
@@ -345,6 +347,12 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
                 "description": "Enables Volto Blocks support",
                 "factory": "Yes/No",
                 "title": "Blocks",
+                "type": "boolean"
+            },
+            "volto.blocks.editable.layout": {
+                "description": "Enables Volto Blocks (editable layout) support",
+                "factory": "Yes/No",
+                "title": "Blocks (Editable Layout)",
                 "type": "boolean"
             }
         },
