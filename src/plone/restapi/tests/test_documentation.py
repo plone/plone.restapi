@@ -2399,11 +2399,9 @@ class TestRules(TestDocumentationBase):
         save_request_and_response_for_docs(
             "controlpanels_get_rule_action_move", response
         )
-        url = "/@controlpanels/content-rules/rule-3/action/4"
-        response = self.api_session.get(url)
-        save_request_and_response_for_docs(
-            "controlpanels_get_rule_action_delete", response
-        )
+
+        # delete action doesn't have any values to get
+
         url = "/@controlpanels/content-rules/rule-3/action/5"
         response = self.api_session.get(url)
         save_request_and_response_for_docs(
