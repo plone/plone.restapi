@@ -40,4 +40,4 @@ class IBlocks(model.Schema):
 
 
 class IBlocksEditableLayout(IBlocks):
-    """ Volto Blocks Editable Layout marker interface """
+    """Volto Blocks Editable Layout marker interface"""
