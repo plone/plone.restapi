@@ -8,6 +8,30 @@ Changelog
 
 .. towncrier release notes start
 
+8.24.1 (2022-08-04)
+-------------------
+
+Bug fixes:
+
+
+- Fix of users endpoint for Membrane users. [ksuess] (#1459)
+
+
+8.24.0 (2022-07-15)
+-------------------
+
+New features:
+
+
+- Add support to search for fullname, email, id on the @users endpoint with "?search=" [ksuess] (#1443)
+
+
+Bug fixes:
+
+
+- Tests: add names to behaviors.  [maurits] (#169)
+
+
 8.23.0 (2022-06-23)
 -------------------
 
