@@ -88,8 +88,8 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             extra_ob = extras[idx]
             view = queryMultiAdapter((extra_ob, self.request), name="edit")
             view.form_instance.update()
-            for field in view.form_instance.fields._data_values:
-                fields[field.__name__] = getattr(extra_ob, field.__name__)
+            for field in view.form_instance.fields:
+                fields[field] = getattr(extra_ob, field)
             return fields
 
     def update(self, names):
