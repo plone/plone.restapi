@@ -43,7 +43,7 @@ Content-Type: application/json
             "title": "Soporte de Copia de Trabajo (Repetir)",
             "uninstall_profile_id": "plone.app.iterate:uninstall",
             "upgrade_info": {},
-            "version": "4.0.2"
+            "version": "4.0.3"
         },
         {
             "@id": "http://localhost:55001/plone/@addons/plone.app.multilingual",
@@ -73,7 +73,7 @@ Content-Type: application/json
                 "newVersion": "0006",
                 "required": false
             },
-            "version": "8.24.1.dev0"
+            "version": "8.24.2.dev0"
         },
         {
             "@id": "http://localhost:55001/plone/@addons/plone.session",

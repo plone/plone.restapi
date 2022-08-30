@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+8.24.1 (2022-08-04)
+-------------------
+
+Bug fixes:
+
+
+- Fix of users endpoint for Membrane users. [ksuess] (#1459)
+
+
 8.24.0 (2022-07-15)
 -------------------
 

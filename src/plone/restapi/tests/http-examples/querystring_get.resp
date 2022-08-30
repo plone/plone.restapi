@@ -11,13 +11,20 @@ Content-Type: application/json
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.string.currentUser",
-                "plone.app.querystring.operation.selection.any"
+                "plone.app.querystring.operation.selection.any",
+                "plone.app.querystring.operation.selection.none"
             ],
             "operators": {
                 "plone.app.querystring.operation.selection.any": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Matches any of",
+                    "widget": "MultipleSelectionWidget"
+                },
+                "plone.app.querystring.operation.selection.none": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Matches none of",
                     "widget": "MultipleSelectionWidget"
                 },
                 "plone.app.querystring.operation.string.currentUser": {
@@ -81,7 +88,8 @@ Content-Type: application/json
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.selection.any",
-                "plone.app.querystring.operation.selection.all"
+                "plone.app.querystring.operation.selection.all",
+                "plone.app.querystring.operation.selection.none"
             ],
             "operators": {
                 "plone.app.querystring.operation.selection.all": {
@@ -94,6 +102,12 @@ Content-Type: application/json
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Matches any of",
+                    "widget": "MultipleSelectionWidget"
+                },
+                "plone.app.querystring.operation.selection.none": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Matches none of",
                     "widget": "MultipleSelectionWidget"
                 }
             },
@@ -477,13 +491,20 @@ Content-Type: application/json
             "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
-                "plone.app.querystring.operation.string.is"
+                "plone.app.querystring.operation.string.is",
+                "plone.app.querystring.operation.string.isNot"
             ],
             "operators": {
                 "plone.app.querystring.operation.string.is": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._equal",
                     "title": "Is",
+                    "widget": "StringWidget"
+                },
+                "plone.app.querystring.operation.string.isNot": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Is not",
                     "widget": "StringWidget"
                 }
             },
@@ -729,13 +750,20 @@ Content-Type: application/json
             "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
-                "plone.app.querystring.operation.selection.any"
+                "plone.app.querystring.operation.selection.any",
+                "plone.app.querystring.operation.selection.none"
             ],
             "operators": {
                 "plone.app.querystring.operation.selection.any": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Matches any of",
+                    "widget": "MultipleSelectionWidget"
+                },
+                "plone.app.querystring.operation.selection.none": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Matches none of",
                     "widget": "MultipleSelectionWidget"
                 }
             },
@@ -787,13 +815,20 @@ Content-Type: application/json
             "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
-                "plone.app.querystring.operation.selection.any"
+                "plone.app.querystring.operation.selection.any",
+                "plone.app.querystring.operation.selection.none"
             ],
             "operators": {
                 "plone.app.querystring.operation.selection.any": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Matches any of",
+                    "widget": "MultipleSelectionWidget"
+                },
+                "plone.app.querystring.operation.selection.none": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Matches none of",
                     "widget": "MultipleSelectionWidget"
                 }
             },
@@ -889,7 +924,8 @@ Content-Type: application/json
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.string.contains",
-                "plone.app.querystring.operation.string.is"
+                "plone.app.querystring.operation.string.is",
+                "plone.app.querystring.operation.string.isNot"
             ],
             "operators": {
                 "plone.app.querystring.operation.string.contains": {
@@ -902,6 +938,12 @@ Content-Type: application/json
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._equal",
                     "title": "Is",
+                    "widget": "StringWidget"
+                },
+                "plone.app.querystring.operation.string.isNot": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Is not",
                     "widget": "StringWidget"
                 }
             },
@@ -1003,13 +1045,20 @@ Content-Type: application/json
             "group": "Metadata",
             "operations": [
                 "plone.app.querystring.operation.string.currentUser",
-                "plone.app.querystring.operation.selection.any"
+                "plone.app.querystring.operation.selection.any",
+                "plone.app.querystring.operation.selection.none"
             ],
             "operators": {
                 "plone.app.querystring.operation.selection.any": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Matches any of",
+                    "widget": "MultipleSelectionWidget"
+                },
+                "plone.app.querystring.operation.selection.none": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Matches none of",
                     "widget": "MultipleSelectionWidget"
                 },
                 "plone.app.querystring.operation.string.currentUser": {
@@ -1366,13 +1415,20 @@ Content-Type: application/json
             "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
-                "plone.app.querystring.operation.string.is"
+                "plone.app.querystring.operation.string.is",
+                "plone.app.querystring.operation.string.isNot"
             ],
             "operators": {
                 "plone.app.querystring.operation.string.is": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._equal",
                     "title": "Is",
+                    "widget": "StringWidget"
+                },
+                "plone.app.querystring.operation.string.isNot": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Is not",
                     "widget": "StringWidget"
                 }
             },
@@ -1506,13 +1562,20 @@ Content-Type: application/json
             "fetch_vocabulary": true,
             "group": "Metadata",
             "operations": [
-                "plone.app.querystring.operation.selection.any"
+                "plone.app.querystring.operation.selection.any",
+                "plone.app.querystring.operation.selection.none"
             ],
             "operators": {
                 "plone.app.querystring.operation.selection.any": {
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._contains",
                     "title": "Matches any of",
+                    "widget": "MultipleSelectionWidget"
+                },
+                "plone.app.querystring.operation.selection.none": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Matches none of",
                     "widget": "MultipleSelectionWidget"
                 }
             },
@@ -1556,7 +1619,8 @@ Content-Type: application/json
             "group": "Text",
             "operations": [
                 "plone.app.querystring.operation.string.contains",
-                "plone.app.querystring.operation.string.is"
+                "plone.app.querystring.operation.string.is",
+                "plone.app.querystring.operation.string.isNot"
             ],
             "operators": {
                 "plone.app.querystring.operation.string.contains": {
@@ -1569,6 +1633,12 @@ Content-Type: application/json
                     "description": "Tip: you can use * to autocomplete.",
                     "operation": "plone.app.querystring.queryparser._equal",
                     "title": "Is",
+                    "widget": "StringWidget"
+                },
+                "plone.app.querystring.operation.string.isNot": {
+                    "description": "Tip: you can use * to autocomplete.",
+                    "operation": "plone.app.querystring.queryparser._excludes",
+                    "title": "Is not",
                     "widget": "StringWidget"
                 }
             },
