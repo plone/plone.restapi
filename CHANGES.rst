@@ -8,6 +8,89 @@ Changelog
 
 .. towncrier release notes start
 
+8.24.1 (2022-08-04)
+-------------------
+
+Bug fixes:
+
+
+- Fix of users endpoint for Membrane users. [ksuess] (#1459)
+
+
+8.24.0 (2022-07-15)
+-------------------
+
+New features:
+
+
+- Add support to search for fullname, email, id on the @users endpoint with "?search=" [ksuess] (#1443)
+
+
+Bug fixes:
+
+
+- Tests: add names to behaviors.  [maurits] (#169)
+
+
+8.23.0 (2022-06-23)
+-------------------
+
+New features:
+
+
+- Include users data in groups while retrieving @groups
+  [@nileshgulia1] (#1325)
+- Added 'View comments' and 'Reply to item' permission to discussion [@razvanMiu] (#1327)
+- better error logging for term lookup errors
+  [ajung] (#1365)
+- Documentation was converted to MyST from reStructuredText. [stevepiercy] (#1375)
+- Move caching rulesets to the ZCML where the endpoints are defined.
+  [jensens] (#1414)
+- List Users (@users): Add groups [ksuess]
+  List Users (@users): Support filtering by groups [ksuess] (#1419)
+- Fix: Update group: Preserve title and description. [ksuess] (#1424)
+- Add UsersGroupsSettings to set of control panels. [ksuess]
+  Move configlet UsersGroupsSettings to correct group (Volto control panel group "Users and Groups") [ksuess] (#1436)
+
+
+Bug fixes:
+
+
+- Test-only fix: normalize white space in html in some tests.
+  Needed to not fail with newer plone.outputfilters.
+  [maurits] (#49)
+- Tests: patch unique url for scale in old or new way.
+  This is only in serializer tests for images.
+  [maurits] (#57)
+- Make the PAS plugin compatible with ``PyJWT`` 1 and 2.
+  [jensens, maurits] (#1193)
+- Fix tests for changes in displayed_types. See https://github.com/plone/Products.CMFPlone/issues/3486
+  [pbauer] (#1359)
+- Use JSON instead of JSON Schema for code samples. [stevepiercy] (#1379)
+- Control panels and translations are supported in Plone 5 or greater. [stevepiercy] (#1380)
+- Add html_meta tags and values for better SEO. [stevepiercy] (#1382)
+- Update demo site to 6.demo.plone.org in README.rst. [stevepiercy] (#1383)
+- Fixed timestamp calculation in history service on Python 3.10.
+  [maurits] (#1391)
+- Fix empty .resp in docs of PATCH controlpanel (#1396)
+- Translate addon titles on @addon controlpanel
+  [erral] (#1412)
+- Do not break path2uid with some edge-cases.
+  [cekk] (#1428)
+- Sort the roles in the user serializer.
+  [maurits] (#1452)
+
+
+Internal:
+
+
+- Add naming best practices for URL Attributes (singular vs plural) to the docs
+  [tisto] (#1295)
+- Enable Google Analytics 4 [stevepiercy] (#1404)
+- fixed broken make task docs-linkcheckbroken (#1421)
+- Fix broken link to Python requests library docs. [stevepiercy] (#1438)
+
+
 8.22.0 (2022-04-08)
 -------------------
 

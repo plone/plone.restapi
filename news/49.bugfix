@@ -1,3 +1,0 @@
-Test-only fix: normalize white space in html in some tests.
-Needed to not fail with newer plone.outputfilters.
-[maurits]

@@ -1,10 +1,13 @@
 from AccessControl import getSecurityManager
+from itertools import chain
+from plone.app.workflow.browser.sharing import merge_search_results
 from plone.restapi.interfaces import ISerializeToJson, ISerializeToJsonSummary
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
 from urllib.parse import parse_qs
 from zExceptions import BadRequest
+from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
@@ -23,6 +26,7 @@ class UsersGet(Service):
         self.portal_membership = getToolByName(portal, "portal_membership")
         self.acl_users = getToolByName(portal, "acl_users")
         self.query = parse_qs(self.request["QUERY_STRING"])
+        self.search_term = self.query.get("search", [""])[0]
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
@@ -46,21 +50,72 @@ class UsersGet(Service):
         )
         return users
 
-    def _get_users(self):
-        results = {user["userid"] for user in self.acl_users.searchUsers()}
+    def _principal_search_results(
+        self, search_for_principal, get_principal_by_id, principal_type, id_key
+    ):
+
+        hunter = getMultiAdapter((self.context, self.request), name="pas_search")
+
+        principals = []
+        for principal_info in search_for_principal(hunter, self.search_term):
+            principal_id = principal_info[id_key]
+            principals.append(get_principal_by_id(principal_id))
+
+        return principals
+
+    def _get_users(self, **kw):
+        results = {user["userid"] for user in self.acl_users.searchUsers(**kw)}
         users = [self.portal_membership.getMemberById(userid) for userid in results]
         return self._sort_users(users)
 
-    def _get_filtered_users(self, query, groups_filter, limit):
-        results = self.acl_users.searchUsers(id=query, max_results=limit)
-        users = [
-            self.portal_membership.getMemberById(user["userid"]) for user in results
-        ]
+    def _user_search_results(self):
+        def search_for_principal(hunter, search_term):
+            return merge_search_results(
+                chain(
+                    *(
+                        hunter.searchUsers(**{field: search_term})
+                        for field in ["name", "fullname", "email"]
+                    )
+                ),
+                "userid",
+            )
+
+        def get_principal_by_id(user_id):
+            mtool = getToolByName(self.context, "portal_membership")
+            return mtool.getMemberById(user_id)
+
+        return self._principal_search_results(
+            search_for_principal, get_principal_by_id, "user", "userid"
+        )
+
+    def _get_filtered_users(self, query, groups_filter, search_term, limit):
+        """Filter or search users by id, fullname, email and/or groups.
+
+        Args:
+            query (str): filter by query
+            groups_filter (list of str): list of groups
+            search_term (str): search by id, fullname, email
+            limit (integer): limit result
+
+        Returns:
+            list: list of users sorted by fullname
+        """
+        if search_term:
+            users = self._user_search_results()
+        else:
+            kw = {}
+            if query:
+                kw["id"] = query
+                # No max_results if groups_filter
+                if limit:
+                    kw["max_results"] = limit
+            users = self._get_users(**kw)
+
         if groups_filter:
             users = [
                 user for user in users if set(user.getGroups()) & set(groups_filter)
             ]
-
+        users = limit and users[:limit] or users
         return self._sort_users(users)
 
     def has_permission_to_query(self):
@@ -80,14 +135,13 @@ class UsersGet(Service):
     def reply(self):
         if len(self.query) > 0 and len(self.params) == 0:
             query = self.query.get("query", "")
-            groups_filter = self.query.get(
-                "groups-filter:list", self.query.get("groups-filter%3Alist", [])
-            )
-            limit = self.query.get("limit", DEFAULT_SEARCH_RESULTS_LIMIT)
-            if query or groups_filter:
-                # Someone is searching users, check if they are authorized
+            groups_filter = self.query.get("groups-filter:list", [])
+            limit = int(self.query.get("limit", [DEFAULT_SEARCH_RESULTS_LIMIT])[0])
+            if query or groups_filter or self.search_term or limit:
                 if self.has_permission_to_query():
-                    users = self._get_filtered_users(query, groups_filter, limit)
+                    users = self._get_filtered_users(
+                        query, groups_filter, self.search_term, limit
+                    )
                     result = []
                     for user in users:
                         serializer = queryMultiAdapter(
@@ -99,7 +153,7 @@ class UsersGet(Service):
                     self.request.response.setStatus(401)
                     return
             else:
-                raise BadRequest("Query string supplied is not valid")
+                raise BadRequest("Parameters supplied are not valid")
 
         if len(self.params) == 0:
             # Someone is asking for all users, check if they are authorized
