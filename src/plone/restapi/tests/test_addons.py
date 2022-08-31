@@ -1,3 +1,4 @@
+from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -200,3 +201,16 @@ class TestAddons(unittest.TestCase):
 
         self.assertEqual(1, len(response.json()["items"]))
         self.assertEqual("plone.restapi", response.json()["items"][0]["id"])
+
+    def test_install_specific_profile(self):
+        response = self.api_session.post(
+            "/@addons/plone.restapi/import/testing-workflows"
+        )
+        self.assertEqual(response.status_code, 204)
+
+        transaction.commit()
+
+        # This test installs the profile 'testing-workflows', which installs
+        # a workflow named "restriction_workflow", we check for it to be present
+        pw = api.portal.get_tool("portal_workflow")
+        self.assertIn("restriction_workflow", pw.listWorkflows())
