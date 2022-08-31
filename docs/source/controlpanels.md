@@ -343,12 +343,12 @@ To update an existing action on a content rule, send a `PATCH` request to the se
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_action_portaltype.req
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_action_logger.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_action_portaltype.resp
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_action_logger.resp
 :language: http
 ```
 
