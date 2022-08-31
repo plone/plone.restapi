@@ -341,6 +341,17 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
         noam_api_session.close()
 
+    def test_get_user_with_portrait_set(self):
+        image = self.makeRealImage()
+        pm = api.portal.get_tool("portal_membership")
+        pm.changeMemberPortrait(image, "noam")
+        transaction.commit()
+
+        response = self.api_session.get("/@users/noam")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["portrait"].endswith("/@portrait/noam"))
+
     def test_get_search_user_with_filter(self):
         response = self.api_session.post(
             "/@users",
@@ -493,9 +504,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         user = self.api_session.get("/@users/noam").json()
-        self.assertTrue(
-            user.get("portrait").endswith("plone/portal_memberdata/portraits/noam")
-        )
+        self.assertTrue(user.get("portrait").endswith("/@portrait/noam"))
 
     def test_update_portrait_with_default_plone_scaling(self):
         payload = {
@@ -514,9 +523,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         user = self.api_session.get("/@users/noam").json()
-        self.assertTrue(
-            user.get("portrait").endswith("plone/portal_memberdata/portraits/noam")
-        )
+        self.assertTrue(user.get("portrait").endswith("/@portrait/noam"))
 
     def test_update_portrait_by_manager(self):
         payload = {
@@ -533,9 +540,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         user = self.api_session.get("/@users/noam").json()
-        self.assertTrue(
-            user.get("portrait").endswith("plone/portal_memberdata/portraits/noam")
-        )
+        self.assertTrue(user.get("portrait").endswith("/@portrait/noam"))
 
     def test_delete_portrait(self):
         payload = {
@@ -583,7 +588,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "fullname": "Noam A. Chomsky",
             "username": "noam",
             "email": "avram.chomsky@plone.org",
-            "portrait": "http://localhost:55001/plone/portal_memberdata/portraits/noam",
+            "portrait": "http://localhost:55001/plone/@portrait/noam",
         }
         self.api_session.auth = ("noam", "password")
         response = self.api_session.patch("/@users/noam", json=payload)
@@ -592,9 +597,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         user = self.api_session.get("/@users/noam").json()
-        self.assertTrue(
-            user.get("portrait").endswith("plone/portal_memberdata/portraits/noam")
-        )
+        self.assertTrue(user.get("portrait").endswith("/@portrait/noam"))
 
     def test_anonymous_user_can_not_update_existing_user(self):
         payload = {
@@ -941,6 +944,31 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertIn("Member", response["roles"])
         self.assertEqual(1, len(response["roles"]))
 
+    def test_get_own_user_portrait(self):
+        image = self.makeRealImage()
+        pm = api.portal.get_tool("portal_membership")
+        pm.changeMemberPortrait(image, "admin")
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/@portrait",
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/gif")
+
+    def test_get_own_user_portrait_logged_out(self):
+        image = self.makeRealImage()
+        pm = api.portal.get_tool("portal_membership")
+        pm.changeMemberPortrait(image, "admin")
+        transaction.commit()
+
+        response = self.anon_api_session.get(
+            "/@portrait",
+        )
+
+        self.assertEqual(204, response.status_code)
+
     def test_get_user_portrait(self):
         image = self.makeRealImage()
         pm = api.portal.get_tool("portal_membership")
@@ -948,6 +976,19 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.get(
+            "/@portrait/admin",
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/gif")
+
+    def test_get_user_portrait_anonymous(self):
+        image = self.makeRealImage()
+        pm = api.portal.get_tool("portal_membership")
+        pm.changeMemberPortrait(image, "admin")
+        transaction.commit()
+
+        response = self.anon_api_session.get(
             "/@portrait/admin",
         )
 

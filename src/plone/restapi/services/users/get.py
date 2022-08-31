@@ -223,11 +223,18 @@ class PortraitGet(Service):
         if len(self.params) == 1:
             # Retrieve the user portrait
             portrait = self.portal_membership.getPersonalPortrait(self.params[0])
+        elif len(self.params) == 0:
+            current_user_id = self.portal_membership.getAuthenticatedMember().getId()
+            portrait = self.portal_membership.getPersonalPortrait(current_user_id)
+        else:
+            raise Exception(
+                "Must supply exactly zero (own portrait) or one parameter (user id)"
+            )
 
-            if isDefaultPortrait(portrait, self.portal):
-                return None
+        if isDefaultPortrait(portrait, self.portal):
+            return None
 
-            self.request.response.setStatus(200)
-            self.request.response.setHeader("Content-Type", portrait.content_type)
+        self.request.response.setStatus(200)
+        self.request.response.setHeader("Content-Type", portrait.content_type)
 
-            return stream_data(portrait)
+        return stream_data(portrait)
