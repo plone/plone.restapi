@@ -12,6 +12,7 @@ from Products.MailHost.interfaces import IMailHost
 from zope.component import getAdapter
 from zope.component import getUtility
 
+import os
 import transaction
 import unittest
 
@@ -65,6 +66,16 @@ class TestUsersEndpoint(unittest.TestCase):
     def tearDown(self):
         self.api_session.close()
         self.anon_api_session.close()
+
+    def makeRealImage(self):
+        import Products.PlonePAS as ppas
+        from Products.PlonePAS.tests import dummy
+
+        pas_path = os.path.dirname(ppas.__file__)
+        path = os.path.join(pas_path, "tool.gif")
+        image = open(path, "rb")
+        image_upload = dummy.FileUpload(dummy.FieldStorage(image))
+        return image_upload
 
     def test_list_users(self):
         response = self.api_session.get("/@users")
@@ -929,3 +940,16 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertIn("Member", response["roles"])
         self.assertEqual(1, len(response["roles"]))
+
+    def test_get_user_portrait(self):
+        image = self.makeRealImage()
+        pm = api.portal.get_tool("portal_membership")
+        pm.changeMemberPortrait(image, "admin")
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/@portrait/admin",
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/gif")
