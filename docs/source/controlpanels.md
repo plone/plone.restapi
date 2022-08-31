@@ -389,11 +389,11 @@ Delete an existing action from a content rule by sending a `DELETE` request to t
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_action.req
+    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_condition.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/delete_rule_action.resp
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/delete_rule_condition.resp
 :language: http
 ```
