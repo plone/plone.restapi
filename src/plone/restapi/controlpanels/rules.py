@@ -103,6 +103,7 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
         manage_elements.authorize = lambda: True
         move_action = data.get("form.button.Move")
         if len(names) == 1:
+            # we are editing the rule
             if "form.button.ApplyOnWholeSite" in data:
                 manage_elements.globally_assign()
             else:
@@ -113,6 +114,7 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
                 rule.enabled = data.get("enabled", False)
         elif len(names) == 2:
             raise BadRequest("%s and its index are required" % names[1].title())
+        # we are editing a condition or action
         elif move_action:
             extras = getattr(rule, names[1] + "s")
             move_action = getattr(manage_elements, move_action)

@@ -2440,6 +2440,26 @@ class TestRules(TestDocumentationBase):
         save_request_and_response_for_docs(
             "controlpanels_patch_rule_condition_portaltype", response
         )
+
+        # move
+        # down
+        url = "/@controlpanels/content-rules/rule-3/condition/0"
+        payload = {
+            "form.button.Move": "_move_down",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_condition_move_down", response
+        )
+        # up
+        url = "/@controlpanels/content-rules/rule-3/condition/1"
+        payload = {
+            "form.button.Move": "_move_up",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_condition_move_up", response
+        )
         # Actions
         url = "/@controlpanels/content-rules/rule-3/action/0"
         payload = {
@@ -2450,6 +2470,25 @@ class TestRules(TestDocumentationBase):
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs(
             "controlpanels_patch_rule_action_logger", response
+        )
+        # move
+        # down
+        url = "/@controlpanels/content-rules/rule-3/action/0"
+        payload = {
+            "form.button.Move": "_move_down",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_action_move_down", response
+        )
+        # up
+        url = "/@controlpanels/content-rules/rule-3/action/1"
+        payload = {
+            "form.button.Move": "_move_up",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_action_move_up", response
         )
 
         # DELETE
