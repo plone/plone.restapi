@@ -1640,6 +1640,12 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@database")
         save_request_for_docs("database_get", response)
 
+    def test_addons_install_specific_profile(self):
+        response = self.api_session.post(
+            "/@addons/plone.restapi/import/testing-workflows"
+        )
+        save_request_for_docs("addons_install_profile", response)
+
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
 

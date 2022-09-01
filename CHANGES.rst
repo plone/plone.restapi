@@ -8,6 +8,30 @@ Changelog
 
 .. towncrier release notes start
 
+8.25.0 (2022-08-31)
+-------------------
+
+New features:
+
+
+- Add support for importing profiles in @addons endpoint
+  [sneridagh] (#1479)
+
+
+Bug fixes:
+
+
+- Fix @registry endpoint Object of type datetime is not JSON serializable
+  [iulianpetchesi] (#1189)
+- Fixed small documentation for error code 404
+  [rohnsha] (#1430)
+- Handle subblocks in site root serializer for Plone 5.x
+  [erral] (#1449)
+- Do not hard depend on `plone.app.iterate`. It is not an direct core package and might not be available.
+  [jensens] (#1461)
+- Sanitise user id when checking for portrait [instification] (#1466)
+
+
 8.24.1 (2022-08-04)
 -------------------
 

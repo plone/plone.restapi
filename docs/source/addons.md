@@ -93,3 +93,16 @@ An individual add-on can be upgraded by issuing a `POST` to the given URL:
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/addons_upgrade.resp
 :language: http
 ```
+
+## Install a profile of an add-on
+
+You can install a profile of a given add-on by issuing a `POST` to the given URL and providing the name of the profile like:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/addons_install_profile.req
+```
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/addons_install_profile.resp
+:language: http
+```
