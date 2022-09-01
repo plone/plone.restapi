@@ -232,6 +232,7 @@ class PortraitGet(Service):
             )
 
         if isDefaultPortrait(portrait, self.portal):
+            self.request.response.setStatus(404)
             return None
 
         self.request.response.setStatus(200)

@@ -967,7 +967,14 @@ class TestUsersEndpoint(unittest.TestCase):
             "/@portrait",
         )
 
-        self.assertEqual(204, response.status_code)
+        self.assertEqual(404, response.status_code)
+
+    def test_get_user_portrait_not_set(self):
+        response = self.anon_api_session.get(
+            "/@portrait/admin",
+        )
+
+        self.assertEqual(404, response.status_code)
 
     def test_get_user_portrait(self):
         image = self.makeRealImage()
