@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys
 
-version = "8.25.1"
+version = "8.25.2.dev0"
 
 assert sys.version_info >= (
     3,
