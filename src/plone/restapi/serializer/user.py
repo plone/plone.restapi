@@ -42,7 +42,7 @@ class BaseSerializer:
                 memberdata = getToolByName(portal, "portal_memberdata")
                 safe_id = membership._getSafeMemberId(user.id)
                 if safe_id in memberdata.portraits:
-                    value = "{}/@portrait/{}".format(portal.absolute_url(), safe_id)
+                    value = f"{portal.absolute_url()}/@portrait/{safe_id}"
                 else:
                     value = None
             elif name == "pdelete":
