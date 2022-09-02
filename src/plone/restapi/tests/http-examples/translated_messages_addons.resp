@@ -73,7 +73,7 @@ Content-Type: application/json
                 "newVersion": "0006",
                 "required": false
             },
-            "version": "8.24.2.dev0"
+            "version": "8.25.1.dev0"
         },
         {
             "@id": "http://localhost:55001/plone/@addons/plone.session",
