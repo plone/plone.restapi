@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "A RESTful API for Plone."
-  "property=og:description": "A RESTful API for Plone."
-  "property=og:title": "REST API"
-  "keywords": "Plone, plone.restapi, REST, API"
+myst:
+  html_meta:
+    "description": "A RESTful API for Plone."
+    "property=og:description": "A RESTful API for Plone."
+    "property=og:title": "REST API"
+    "keywords": "Plone, plone.restapi, REST, API"
 ---
 
 % plone.restapi documentation master file, created by

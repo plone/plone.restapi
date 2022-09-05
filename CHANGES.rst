@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.25.1 (2022-09-02)
+-------------------
+
+Bug fixes:
+
+
+- Fix the category of the 'Users and groups settings' controlpanel adapter
+  [sneridagh] (#1482)
+
+
 8.25.0 (2022-08-31)
 -------------------
 

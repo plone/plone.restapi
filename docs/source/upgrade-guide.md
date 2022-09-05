@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "plone.restapi Upgrade Guide"
-  "property=og:description": "plone.restapi Upgrade Guide"
-  "property=og:title": "Upgrade Guide"
-  "keywords": "Plone, plone.restapi, REST, API, Upgrade, Guide"
+myst:
+  html_meta:
+    "description": "plone.restapi Upgrade Guide"
+    "property=og:description": "plone.restapi Upgrade Guide"
+    "property=og:title": "Upgrade Guide"
+    "keywords": "Plone, plone.restapi, REST, API, Upgrade, Guide"
 ---
 
 # Upgrade Guide
