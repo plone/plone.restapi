@@ -1,10 +1,14 @@
 from AccessControl import getSecurityManager
+from Acquisition import aq_inner
 from itertools import chain
 from plone.app.workflow.browser.sharing import merge_search_results
-from plone.restapi.interfaces import ISerializeToJson, ISerializeToJsonSummary
+from plone.namedfile.utils import stream_data
+from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
+from Products.PlonePAS.tools.membership import default_portrait
 from urllib.parse import parse_qs
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
@@ -15,6 +19,11 @@ from zope.publisher.interfaces import IPublishTraverse
 
 
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
+
+
+def isDefaultPortrait(value, portal):
+    default_portrait_value = getattr(portal, default_portrait, None)
+    return aq_inner(value) == aq_inner(default_portrait_value)
 
 
 @implementer(IPublishTraverse)
@@ -189,3 +198,44 @@ class UsersGet(Service):
         else:
             self.request.response.setStatus(401)
             return
+
+
+@implementer(IPublishTraverse)
+class PortraitGet(Service):
+    def __init__(self, context, request):
+        super().__init__(context, request)
+        self.params = []
+        self.portal = getSite()
+        self.portal_membership = getToolByName(self.portal, "portal_membership")
+
+    def publishTraverse(self, request, name):
+        # Consume any path segments after /@users as parameters
+        self.params.append(name)
+        return self
+
+    @property
+    def _get_user_id(self):
+        if len(self.params) != 1:
+            raise Exception("Must supply exactly one parameter (user id)")
+        return self.params[0]
+
+    def render(self):
+        if len(self.params) == 1:
+            # Retrieve the user portrait
+            portrait = self.portal_membership.getPersonalPortrait(self.params[0])
+        elif len(self.params) == 0:
+            current_user_id = self.portal_membership.getAuthenticatedMember().getId()
+            portrait = self.portal_membership.getPersonalPortrait(current_user_id)
+        else:
+            raise Exception(
+                "Must supply exactly zero (own portrait) or one parameter (user id)"
+            )
+
+        if isDefaultPortrait(portrait, self.portal):
+            self.request.response.setStatus(404)
+            return None
+
+        self.request.response.setStatus(200)
+        self.request.response.setHeader("Content-Type", portrait.content_type)
+
+        return stream_data(portrait)

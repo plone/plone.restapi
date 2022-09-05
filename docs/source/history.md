@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "The @history endpoint exposes history and versioning information on previous versions of the content."
-  "property=og:description": "The @history endpoint exposes history and versioning information on previous versions of the content."
-  "property=og:title": "History"
-  "keywords": "Plone, plone.restapi, REST, API, History"
+myst:
+  html_meta:
+    "description": "The @history endpoint exposes history and versioning information on previous versions of the content."
+    "property=og:description": "The @history endpoint exposes history and versioning information on previous versions of the content."
+    "property=og:title": "History"
+    "keywords": "Plone, plone.restapi, REST, API, History"
 ---
 
 # History

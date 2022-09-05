@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "The @querystring-search endpoint returns search results that can be filtered on search criteria."
-  "property=og:description": "The @querystring-search endpoint returns search results that can be filtered on search criteria."
-  "property=og:title": "Querystring Search"
-  "keywords": "Plone, plone.restapi, REST, API, Querystring, Search"
+myst:
+  html_meta:
+    "description": "The @querystring-search endpoint returns search results that can be filtered on search criteria."
+    "property=og:description": "The @querystring-search endpoint returns search results that can be filtered on search criteria."
+    "property=og:title": "Querystring Search"
+    "keywords": "Plone, plone.restapi, REST, API, Querystring, Search"
 ---
 
 # Querystring Search

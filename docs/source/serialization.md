@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Throughout the REST API, content needs to be serialized and deserialized to and from JSON representations."
-  "property=og:description": "Throughout the REST API, content needs to be serialized and deserialized to and from JSON representations."
-  "property=og:title": "Serialization"
-  "keywords": "Plone, plone.restapi, REST, API, Serialization"
+myst:
+  html_meta:
+    "description": "Throughout the REST API, content needs to be serialized and deserialized to and from JSON representations."
+    "property=og:description": "Throughout the REST API, content needs to be serialized and deserialized to and from JSON representations."
+    "property=og:title": "Serialization"
+    "keywords": "Plone, plone.restapi, REST, API, Serialization"
 ---
 
 # Serialization
