@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Add-on product records can be addressed through the @addons endpoint in a Plone site."
-  "property=og:description": "Add-on product records can be addressed through the @addons endpoint in a Plone site."
-  "property=og:title": "Add-ons"
-  "keywords": "Plone, plone.restapi, REST, API, Add-ons"
+myst:
+  html_meta:
+    "description": "Add-on product records can be addressed through the @addons endpoint in a Plone site."
+    "property=og:description": "Add-on product records can be addressed through the @addons endpoint in a Plone site."
+    "property=og:title": "Add-ons"
+    "keywords": "Plone, plone.restapi, REST, API, Add-ons"
 ---
 
 # Add-ons

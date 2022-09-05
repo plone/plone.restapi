@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Available groups in a Plone site can be created, queried, updated, and deleted by interacting with the /@groups endpoint on the portal root."
-  "property=og:description": "Available groups in a Plone site can be created, queried, updated, and deleted by interacting with the /@groups endpoint on the portal root."
-  "property=og:title": "Groups"
-  "keywords": "Plone, plone.restapi, REST, API, Groups"
+myst:
+  html_meta:
+    "description": "Available groups in a Plone site can be created, queried, updated, and deleted by interacting with the /@groups endpoint on the portal root."
+    "property=og:description": "Available groups in a Plone site can be created, queried, updated, and deleted by interacting with the /@groups endpoint on the portal root."
+    "property=og:title": "Groups"
+    "keywords": "Plone, plone.restapi, REST, API, Groups"
 ---
 
 # Groups
