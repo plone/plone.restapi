@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Available content types in a Plone site can be listed and queried by accessing the /@types endpoint on any context. Access requires an authenticated user."
-  "property=og:description": "Available content types in a Plone site can be listed and queried by accessing the /@types endpoint on any context. Access requires an authenticated user."
-  "property=og:title": "Types"
-  "keywords": "Plone, plone.restapi, REST, API, Types"
+myst:
+  html_meta:
+    "description": "Available content types in a Plone site can be listed and queried by accessing the /@types endpoint on any context. Access requires an authenticated user."
+    "property=og:description": "Available content types in a Plone site can be listed and queried by accessing the /@types endpoint on any context. Access requires an authenticated user."
+    "property=og:title": "Types"
+    "keywords": "Plone, plone.restapi, REST, API, Types"
 ---
 
 (types)=

@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "The plone.restapi package gives support for Volto blocks providing a Dexterity behavior plone.restapi.behaviors.IBlocks."
-  "property=og:description": "The plone.restapi package gives support for Volto blocks providing a Dexterity behavior plone.restapi.behaviors.IBlocks."
-  "property=og:title": "Volto Blocks support"
-  "keywords": "Plone, plone.restapi, REST, API, Volto, Blocks, support"
+myst:
+  html_meta:
+    "description": "The plone.restapi package gives support for Volto blocks providing a Dexterity behavior plone.restapi.behaviors.IBlocks."
+    "property=og:description": "The plone.restapi package gives support for Volto blocks providing a Dexterity behavior plone.restapi.behaviors.IBlocks."
+    "property=og:title": "Volto Blocks support"
+    "keywords": "Plone, plone.restapi, REST, API, Volto, Blocks, support"
 ---
 
 # Volto Blocks support
