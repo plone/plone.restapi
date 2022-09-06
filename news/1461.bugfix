@@ -1,2 +1,0 @@
-Do not hard depend on `plone.app.iterate`. It is not an direct core package and might not be available.
-[jensens]

@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Contributing to plone.restapi"
-  "property=og:description": "Contributing to plone.restapi"
-  "property=og:title": "Contributing to plone.restapi"
-  "keywords": "Plone, plone.restapi, REST, API, Contributing, documentation"
+myst:
+  html_meta:
+    "description": "Contributing to plone.restapi"
+    "property=og:description": "Contributing to plone.restapi"
+    "property=og:title": "Contributing to plone.restapi"
+    "keywords": "Plone, plone.restapi, REST, API, Contributing, documentation"
 ---
 
 # Contributing to plone.restapi
