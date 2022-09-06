@@ -28,9 +28,9 @@ Listing versions and transactions of a resource:
 
 The following fields are returned:
 
-- `user_name`: The person who made transactions through the website.
+- `username`: The person who made transactions through the website.
 - `time`: At what time transaction was made through the website.
-- `description`: Description about the transaction with `path` where transaction was made in the website.
+- `description`: Description of the transaction with the `path` where the transaction was made in the website.
 - `id`: Transaction ID.
 - `size`: Size of the transaction.
 
