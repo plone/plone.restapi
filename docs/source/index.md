@@ -40,6 +40,7 @@ registry
 types
 types-schema
 users
+portrait
 groups
 principals
 roles
