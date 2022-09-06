@@ -6,8 +6,7 @@ Content-Type: application/json
     "batching": {
         "@id": "http://localhost:55001/plone/@registry",
         "first": "http://localhost:55001/plone/@registry?b_start=0",
-        "last": "http://localhost:55001/plone/@registry?b_start=1850",
-        upstream/master
+        "last": "http://localhost:55001/plone/@registry?b_start=2575",
         "next": "http://localhost:55001/plone/@registry?b_start=25"
     },
     "items": [
@@ -424,9 +423,5 @@ Content-Type: application/json
             "value": "The person that created an item"
         }
     ],
-<<<<<<< HEAD
     "items_total": 2595
-=======
-    "items_total": 1853
->>>>>>> upstream/master
 }
