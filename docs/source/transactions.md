@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "The @transactions endpoint expose transactions that have been made through the Plone website."
-  "property=og:description": "The @transactions endpoint expose transactions that have been made through the Plone website."
-  "property=og:title": "Transactions"
-  "keywords": "Plone, plone.restapi, REST, API, Transactions"
+myst:
+  html_meta:
+    "description": "The @transactions endpoint expose transactions that have been made through the Plone website."
+    "property=og:description": "The @transactions endpoint expose transactions that have been made through the Plone website."
+    "property=og:title": "Transactions"
+    "keywords": "Plone, plone.restapi, REST, API, Transactions"
 ---
 
 # Transactions
