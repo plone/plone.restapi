@@ -7,15 +7,6 @@ Content-Type: application/json
     "group": "Content",
     "items": [
         {
-            "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Plone Site",
-            "@type": "Plone Site",
-            "count": 1,
-            "description": "",
-            "id": "Plone Site",
-            "meta_type": "Dexterity FTI",
-            "title": "Plone Site"
-        },
-        {
             "@id": "http://localhost:55001/plone/@controlpanels/dexterity-types/Collection",
             "@type": "Collection",
             "count": 0,
