@@ -56,6 +56,6 @@ Basic Auth
     
 Navigation Root
 navigation root
-    An object markes as a navigation root provides a way to root catalog queries, searches, breadcrumbs, etc into that object.
+    An object marked as a navigation root provides a way to root catalog queries, searches, breadcrumbs, etc into that object.
     
 ```
