@@ -4,6 +4,5 @@ Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    // One or more Transaction_Id can be inserted in the List
     "transaction_ids": ["QStvcExLS1ZiRlU9"]
 }
