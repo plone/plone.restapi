@@ -33,7 +33,7 @@ class TestTransactionsEndpoint(unittest.TestCase):
         response = self.api_session.get(self.endpoint_url)
         data = response.json()
 
-        keys = ["description", "id", "size", "time", "user_name"]
+        keys = ["description", "id", "size", "time", "username"]
 
         for item in data:
             self.assertEqual(set(item), set(keys))

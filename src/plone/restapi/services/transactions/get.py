@@ -17,6 +17,8 @@ class TransactionsGet(Service):
         )
 
         for transaction in total_transactions:
+            transaction["username"] = transaction["user_name"]
+            del transaction["user_name"]
             transaction["time"] = t = dt.fromtimestamp(
                 int(transaction["time"])
             ).isoformat()
