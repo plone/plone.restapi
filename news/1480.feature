@@ -1,2 +1,0 @@
-Add @portrait endpoint
-[sneridagh]
