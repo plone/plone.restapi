@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "A tile in Plone is an HTML snippet that can contain arbitrary content, such as text, images, or videos. The tiles endpoint is deprecated and will be removed in plone.restapi 9."
-  "property=og:description": "A tile in Plone is an HTML snippet that can contain arbitrary content, such as text, images, or videos. The tiles endpoint is deprecated and will be removed in plone.restapi 9."
-  "property=og:title": "Tiles"
-  "keywords": "Plone, plone.restapi, REST, API, Tiles"
+myst:
+  html_meta:
+    "description": "A tile in Plone is an HTML snippet that can contain arbitrary content, such as text, images, or videos. The tiles endpoint is deprecated and will be removed in plone.restapi 9."
+    "property=og:description": "A tile in Plone is an HTML snippet that can contain arbitrary content, such as text, images, or videos. The tiles endpoint is deprecated and will be removed in plone.restapi 9."
+    "property=og:title": "Tiles"
+    "keywords": "Plone, plone.restapi, REST, API, Tiles"
 ---
 
 # Tiles

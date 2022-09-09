@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "plone.restapi supports the TUS Open Protocol for resumable file uploads. There is a @tus-upload endpoint to upload a file, and a @tus-replace endpoint to replace an existing file."
-  "property=og:description": "plone.restapi supports the TUS Open Protocol for resumable file uploads. There is a @tus-upload endpoint to upload a file, and a @tus-replace endpoint to replace an existing file."
-  "property=og:title": "TUS resumable upload"
-  "keywords": "Plone, plone.restapi, REST, API, TUS, resumable, upload"
+myst:
+  html_meta:
+    "description": "plone.restapi supports the TUS Open Protocol for resumable file uploads. There is a @tus-upload endpoint to upload a file, and a @tus-replace endpoint to replace an existing file."
+    "property=og:description": "plone.restapi supports the TUS Open Protocol for resumable file uploads. There is a @tus-upload endpoint to upload a file, and a @tus-replace endpoint to replace an existing file."
+    "property=og:title": "TUS resumable upload"
+    "keywords": "Plone, plone.restapi, REST, API, TUS, resumable, upload"
 ---
 
 # TUS resumable upload

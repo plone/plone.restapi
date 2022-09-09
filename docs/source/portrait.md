@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Returns user's portrait in a Plone site using the @portrait endpoint"
-  "property=og:description": "Returns user's portrait in a Plone site using the @portrait endpoint"
-  "property=og:title": "Portraits"
-  "keywords": "Plone, plone.restapi, REST, API, Users, portrait, profile"
+myst:
+  html_meta:
+    "description": "Returns user's portrait in a Plone site using the @portrait endpoint"
+    "property=og:description": "Returns user's portrait in a Plone site using the @portrait endpoint"
+    "property=og:title": "Portraits"
+    "keywords": "Plone, plone.restapi, REST, API, Users, portrait, profile"
 ---
 
 # Portraits

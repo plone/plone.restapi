@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Get the breadcrumbs for the current page with plone.restapi."
-  "property=og:description": "Get the breadcrumbs for the current page with plone.restapi."
-  "property=og:title": "Breadcrumbs"
-  "keywords": "Plone, plone.restapi, REST, API, Breadcrumbs"
+myst:
+  html_meta:
+    "description": "Get the breadcrumbs for the current page with plone.restapi."
+    "property=og:description": "Get the breadcrumbs for the current page with plone.restapi."
+    "property=og:title": "Breadcrumbs"
+    "keywords": "Plone, plone.restapi, REST, API, Breadcrumbs"
 ---
 
 (breadcrumbs)=

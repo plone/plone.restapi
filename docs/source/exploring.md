@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "To discover the API interactively, using Postman is recommended."
-  "property=og:description": "To discover the API interactively, using Postman is recommended."
-  "property=og:title": "Explore the API using Postman"
-  "keywords": "Plone, plone.restapi, REST, API, Explore, Postman"
+myst:
+  html_meta:
+    "description": "To discover the API interactively, using Postman is recommended."
+    "property=og:description": "To discover the API interactively, using Postman is recommended."
+    "property=og:title": "Explore the API using Postman"
+    "keywords": "Plone, plone.restapi, REST, API, Explore, Postman"
 ---
 
 (exploring-api-postman-onboarding)=

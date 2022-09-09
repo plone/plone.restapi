@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Get the top-level navigation items or navigation item tree with the navigation endpoint."
-  "property=og:description": "Get the top-level navigation items or navigation item tree with the navigation endpoint."
-  "property=og:title": "Navigation"
-  "keywords": "Plone, plone.restapi, REST, API, Navigation"
+myst:
+  html_meta:
+    "description": "Get the top-level navigation items or navigation item tree with the navigation endpoint."
+    "property=og:description": "Get the top-level navigation items or navigation item tree with the navigation endpoint."
+    "property=og:title": "Navigation"
+    "keywords": "Plone, plone.restapi, REST, API, Navigation"
 ---
 
 (navigation)=
