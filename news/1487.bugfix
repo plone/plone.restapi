@@ -1,0 +1,4 @@
+Use the name chooser to normalize the short name of content
+even when an `id` is specified explicitly in the content POST endpoint.
+This prevents setting the id to include invalid characters.
+[davisagli]
