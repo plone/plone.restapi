@@ -184,6 +184,18 @@ class TestFolderCreate(unittest.TestCase):
         transaction.begin()
         self.assertIn("my-document", self.portal.folder1)
 
+    def test_post_with_reserved_id_gets_normalized(self):
+        # Some short names are reserved to avoid colliding with field names, etc
+        response = requests.post(
+            self.portal.folder1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            json={"@type": "Document", "id": "layout", "title": "My Document"},
+        )
+        self.assertEqual(201, response.status_code)
+        transaction.begin()
+        self.assertIn("layout-1", self.portal.folder1)
+
     def test_post_with_empty_id_creates_id_from_title(self):
         # spaces in id get replaced with dashes
         response = requests.post(
