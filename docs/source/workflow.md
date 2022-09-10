@@ -46,3 +46,91 @@ We can also change the state recursively for all contained items, provide a comm
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/workflow_post_with_body.resp
 :language: http
 ```
+
+# Specification for the fetching and updating all the workflow present is Plone
+
+We have to create a Get request for getting all the workflow. Post request for adding a
+new workflow. Patch request for updating the existing workflow and Delete request for
+deleting the specific requeset.
+
+A workflow consist of state, transition and permission related to who can change this.
+
+## For creating a workflow we need these field
+
+1. Id(required)
+2. Title
+3. Description
+
+## For creating a sate we need these field
+
+1. Id(required)
+2. Title
+3. Description
+4. Possible Transitions
+5. Permission field of this state
+
+
+## For creating a Transition we need these field
+
+1. Id(required)
+2. Title
+3. Description
+4. Destination state
+5. Permission
+6. Display in action box( this should be just name)
+
+Trigger wil be intiated by the user action
+
+
+# API Specification
+
+## Get
+
+We can make a get request to `/@@workflow which will fetch a list of all workflow with
+
+1. Id
+2. title
+3. description
+4. @id
+
+For fetching the data of specific workflow we should make a `/@@worflow/[@id]` endpoint
+which fetches the data related to that specifc workfow and it must contains all the data.
+
+response :-
+
+1. id
+2. title
+3. description
+4. @id
+5. states
+6. transitions
+
+## Post
+
+For creating a Post request we should have all the data which we are getting for the
+specifc workflow and make request to `/@@workflow`.
+
+payload :-
+
+1. id
+2. title
+3. description
+4. @id
+5. states
+6. transitions
+
+## Patch
+
+For updating the previous created workflow we have to make a patch request to individual
+workflow `/@@workflow/[@id]` with the updated field.
+
+## Delete
+
+For deleting a workflow we just have to make a post request to individual workflow
+`@@workflow/[@id]` with payload `Delete: true` and that workflow will be deleted.
+
+
+
+
+
+
