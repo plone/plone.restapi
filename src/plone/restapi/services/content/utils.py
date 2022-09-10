@@ -70,12 +70,12 @@ def create(container, type_, id_=None, title=None):
 
 def add(container, obj, rename=True):
     """Add an object to a container."""
-    id_ = getattr(aq_base(obj), "id", None)
+    old_id = getattr(aq_base(obj), "id", None)
 
     # Archetypes objects are already created in a container thus we just fire
     # the notification events and rename the object if necessary.
     if base_hasattr(obj, "_at_rename_after_creation"):
-        notify(ObjectAddedEvent(obj, container, id_))
+        notify(ObjectAddedEvent(obj, container, old_id))
         notifyContainerModified(container)
         if obj._at_rename_after_creation and rename:
             obj._renameAfterCreation(check_auto_id=True)
@@ -91,8 +91,10 @@ def add(container, obj, rename=True):
             if name_from_title is None:
                 suggestion = obj.Title()
         else:
-            suggestion = id_
+            suggestion = old_id
         id_ = chooser.chooseName(suggestion, obj)
+        if not rename and id_ != old_id:
+            raise ValueError(f"id is invalid or already used: {old_id}")
         obj.id = id_
         new_id = container._setObject(id_, obj)
         # _setObject triggers ObjectAddedEvent which can end up triggering a
