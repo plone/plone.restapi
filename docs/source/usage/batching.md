@@ -74,6 +74,6 @@ The following is a full example of a batched request and response:
     :request: ../../src/plone/restapi/tests/http-examples/batching.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/batching.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/batching.resp
 :language: http
 ```

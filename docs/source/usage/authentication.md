@@ -59,7 +59,7 @@ A JWT token can be acquired by posting a user's credentials to the `@login` endp
 
 The server responds with a JSON object containing the token:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/jwt_login.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/jwt_login.resp
 :language: http
 ```
 
@@ -86,7 +86,7 @@ To renew the token, `POST` to the `@login-renew` endpoint:
 
 The server returns a JSON object with a new token:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/jwt_login_renew.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/jwt_login_renew.resp
 :language: http
 ```
 
@@ -107,7 +107,7 @@ The logout request must contain the existing token in the `Authorization` header
 
 If invalidation succeeds, the server responds with an empty 204 response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/jwt_logout.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/jwt_logout.resp
 :language: http
 ```
 

@@ -50,7 +50,7 @@ For example, to access the sharing information for a top-level folder, do the fo
     :request: ../../src/plone/restapi/tests/http-examples/sharing_folder_get.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/sharing_folder_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/sharing_folder_get.resp
 :language: http
 ```
 
@@ -69,7 +69,7 @@ Inherited roles are marked with the string `acquired`:
     :request: ../../src/plone/restapi/tests/http-examples/sharing_search.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/sharing_search.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/sharing_search.resp
 :language: http
 ```
 
@@ -84,6 +84,6 @@ Say you want to give the `AuthenticatedUsers` group the `Reader` local role for 
     :request: ../../src/plone/restapi/tests/http-examples/sharing_folder_post.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/sharing_folder_post.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/sharing_folder_post.resp
 :language: http
 ```

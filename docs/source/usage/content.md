@@ -51,7 +51,7 @@ Without the permission, the request will fail as `Unauthorized`.
 If a resource has been created, the server responds with the {term}`201 Created` status code.
 The `Location` header contains the URL of the newly created resource, and the resource representation is in the payload:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/content_post.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/content_post.resp
 :language: http
 ```
 
@@ -134,7 +134,7 @@ After a successful `POST`, we can access the resource by sending a `GET` request
 
 If a resource has been retrieved successfully, the server responds with {term}`200 OK`:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/content_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/content_get.resp
 :language: http
 ```
 
@@ -152,7 +152,7 @@ The following example additionally retrieves the `UID` and `Creator`:
     :request: ../../src/plone/restapi/tests/http-examples/content_get_folder.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/content_get_folder.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/content_get_folder.resp
 :language: http
 ```
 
@@ -225,7 +225,7 @@ Note that this is not possible if the field is `required`, and it only works for
 
 A successful response to a `PATCH` request will be indicated by a {term}`204 No Content` response by default:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/content_patch.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/content_patch.resp
 :language: http
 ```
 
@@ -240,7 +240,7 @@ In this case, the response will be a {term}`200 OK`:
     :request: ../../src/plone/restapi/tests/http-examples/content_patch_representation.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/content_patch_representation.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/content_patch_representation.resp
 :language: http
 ```
 
@@ -346,7 +346,7 @@ We can delete an existing resource by sending a `DELETE` request:
 
 A successful response will be indicated by a {term}`204 No Content` response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/content_delete.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/content_delete.resp
 :language: http
 ```
 
