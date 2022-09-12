@@ -56,7 +56,6 @@ tiles
 querystring
 querystringsearch
 customization
-conventions
 translations
 email-send
 i18n
@@ -64,7 +63,7 @@ email-notification
 system
 database
 upgrade-guide
-contributing
+contributing/index
 ```
 
 ```{eval-rst}

@@ -7,7 +7,7 @@ myst:
     "keywords": "Plone, plone.restapi, REST, API, Contributing, documentation"
 ---
 
-# Contributing to plone.restapi
+# Contributing to `plone.restapi`
 
 
 ## Generating documentation examples
@@ -60,3 +60,12 @@ Alternatively, you can use Makefile targets:
 : Build Docs
  
 Make sure you add and commit the generated files in `http-examples`.
+
+
+## Conventions
+
+```{toctree}
+:maxdepth: 2
+
+conventions
+```
