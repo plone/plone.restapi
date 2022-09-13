@@ -22,8 +22,33 @@ For instance, send a `GET` request to the `@navroot` endpoint in the root of the
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/navroot_site_get.req
+    :request: ../../src/plone/restapi/tests/http-examples/navroot_standard_site_get.req
 ```
+
+The response will contain the navigation root information with the site :
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_standard_site_get.resp
+:language: http
+```
+
+In a multilingual site (where the language root folders are naviation root objects), the endpoint will work in a similar way:
+
+And if you request the @navroot of a given content in the site, it will return with it:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.req
+```
+
+The response will contain the navigation root information with the site :
+
+````{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.resp
+:language: http
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/navroot_site_get.req
+````
 
 The response will contain the navigation root information with the site :
 
@@ -64,6 +89,34 @@ The response will contain the navigation root information for the site:
 This endpoint can be used with the {doc}`expansion` mechanism which allows getting more information about a content item in one query, avoiding unnecessary requests.
 
 If a simple `GET` request is done on the content item, a new entry will be shown on the `@components` entry with the URL of the `@navroot` endpoint.
+
+In a standard site when querying the site root:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/navroot_standard_site_get_expansion.req
+```
+
+The response will contain the navigation root information with the site :
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_standard_site_get_expansion.resp
+:language: http
+```
+
+And also when querying a content inside the root:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get_expansion.req
+```
+
+The response will contain the navigation root information with the site :
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get_expansion.resp
+:language: http
+```
+
+In a multilingual site, it will work similarly:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests

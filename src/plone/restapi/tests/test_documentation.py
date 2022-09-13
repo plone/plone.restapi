@@ -1646,6 +1646,22 @@ class TestDocumentation(TestDocumentationBase):
         )
         save_request_for_docs("addons_install_profile", response)
 
+    def test_site_navroot_get(self):
+        response = self.api_session.get("/@navroot")
+        save_request_and_response_for_docs("navroot_standard_site_get", response)
+
+    def test_site_content_navroot_get(self):
+        response = self.api_session.get("/front-page/@navroot")
+        save_request_and_response_for_docs("navroot_standard_site_content_get", response)
+
+    def test_site_navroot_get_expansion(self):
+        response = self.api_session.get("/?expand=navroot")
+        save_request_and_response_for_docs("navroot_standard_site_get_expansion", response)
+
+    def test_site_content_navroot_get(self):
+        response = self.api_session.get("/front-page?expand=navroot")
+        save_request_and_response_for_docs("navroot_standard_site_content_get_expansion", response)
+
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
 
@@ -2217,6 +2233,7 @@ class TestIterateDocumentation(TestDocumentationBase):
             "vocabularies_get_filtered_by_token_list", response
         )
 
+   
 
 class TestSiteDocumentation(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
