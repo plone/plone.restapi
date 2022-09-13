@@ -71,7 +71,7 @@ The following is a full example of a batched request and response:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/batching.req
+    :request: ../../../src/plone/restapi/tests/http-examples/batching.req
 ```
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/batching.resp

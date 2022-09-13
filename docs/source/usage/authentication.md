@@ -54,7 +54,7 @@ A JWT token can be acquired by posting a user's credentials to the `@login` endp
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/jwt_login.req
+    :request: ../../../src/plone/restapi/tests/http-examples/jwt_login.req
 ```
 
 The server responds with a JSON object containing the token:
@@ -70,7 +70,7 @@ The token can now be used in subsequent requests by including it in the `Authori
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/jwt_logged_in.req
+    :request: ../../../src/plone/restapi/tests/http-examples/jwt_logged_in.req
 ```
 
 
@@ -81,7 +81,7 @@ To renew the token, `POST` to the `@login-renew` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/jwt_login_renew.req
+    :request: ../../../src/plone/restapi/tests/http-examples/jwt_login_renew.req
 ```
 
 The server returns a JSON object with a new token:
@@ -102,7 +102,7 @@ The logout request must contain the existing token in the `Authorization` header
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/jwt_logout.req
+    :request: ../../../src/plone/restapi/tests/http-examples/jwt_logout.req
 ```
 
 If invalidation succeeds, the server responds with an empty 204 response:

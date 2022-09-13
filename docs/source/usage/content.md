@@ -31,7 +31,7 @@ If we want to create a new document within an existing folder, we send a `POST` 
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/content_post.req
+    :request: ../../../src/plone/restapi/tests/http-examples/content_post.req
 ```
 
 By setting the `Accept` header, we tell the server that we would like to receive the response in the `application/json` representation format.
@@ -126,7 +126,7 @@ After a successful `POST`, we can access the resource by sending a `GET` request
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/content_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/content_get.req
 ```
 
 
@@ -149,7 +149,7 @@ The following example additionally retrieves the `UID` and `Creator`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/content_get_folder.req
+    :request: ../../../src/plone/restapi/tests/http-examples/content_get_folder.req
 ```
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/content_get_folder.resp
@@ -217,7 +217,7 @@ Note that this is not possible if the field is `required`, and it only works for
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/content_patch.req
+    :request: ../../../src/plone/restapi/tests/http-examples/content_patch.req
 ```
 
 
@@ -237,7 +237,7 @@ In this case, the response will be a {term}`200 OK`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/content_patch_representation.req
+    :request: ../../../src/plone/restapi/tests/http-examples/content_patch_representation.req
 ```
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/content_patch_representation.resp
@@ -341,7 +341,7 @@ We can delete an existing resource by sending a `DELETE` request:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/content_delete.req
+    :request: ../../../src/plone/restapi/tests/http-examples/content_delete.req
 ```
 
 A successful response will be indicated by a {term}`204 No Content` response:
@@ -404,7 +404,7 @@ A response of `400 BadRequest` with a message `Content ordering is not supported
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/content_reorder.req
+    :request: ../../../src/plone/restapi/tests/http-examples/content_reorder.req
 ```
 
 To rearrange all items in a folderish context, use the `sort` key.
@@ -416,5 +416,5 @@ A response `400 BadRequest` with a message `Content ordering is not supported by
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/content_resort.req
+    :request: ../../../src/plone/restapi/tests/http-examples/content_resort.req
 ```
