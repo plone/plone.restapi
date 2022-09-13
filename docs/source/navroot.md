@@ -103,7 +103,7 @@ The response will contain the navigation root information with the site:
 :language: http
 ```
 
-And also when querying a content inside the root:
+When querying a content type inside the root:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
