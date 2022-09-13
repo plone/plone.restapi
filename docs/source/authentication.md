@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "plone.restapi uses PlonePAS for authentication."
-  "property=og:description": "`plone.restapi uses PlonePAS for authentication."
-  "property=og:title": "Authentication"
-  "keywords": "Plone, plone.restapi, REST, API, Authentication, "
+myst:
+  html_meta:
+    "description": "plone.restapi uses PlonePAS for authentication."
+    "property=og:description": "`plone.restapi uses PlonePAS for authentication."
+    "property=og:title": "Authentication"
+    "keywords": "Plone, plone.restapi, REST, API, Authentication, "
 ---
 
 # Authentication

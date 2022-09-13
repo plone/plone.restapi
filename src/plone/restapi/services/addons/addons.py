@@ -358,6 +358,17 @@ class Addons:
             self.ps.unsetLastVersionForProfile(install_profile["id"])
         return True
 
+    def import_profile(self, product_id, profile_id):
+        profile = self._get_profile(
+            product_id, profile_id, strict=True, allow_hidden=True
+        )
+        if not profile:
+            logger.error("Could not find %s: profile", product_id)
+            return False
+        else:
+            self.ps.runAllImportStepsFromProfile("profile-%s" % profile["id"])
+            return True
+
     @view.memoize
     def marshall_addons(self):
         addons = {}

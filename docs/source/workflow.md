@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Get the current state and history of an object, or workflow, by issuing a GET request for any context."
-  "property=og:description": "Get the current state and history of an object, or workflow, by issuing a GET request for any context."
-  "property=og:title": "Workflow"
-  "keywords": "Plone, plone.restapi, REST, API, Workflow"
+myst:
+  html_meta:
+    "description": "Get the current state and history of an object, or workflow, by issuing a GET request for any context."
+    "property=og:description": "Get the current state and history of an object, or workflow, by issuing a GET request for any context."
+    "property=og:title": "Workflow"
+    "keywords": "Plone, plone.restapi, REST, API, Workflow"
 ---
 
 # Workflow

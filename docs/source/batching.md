@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Representations of collection-like resources are batched or paginated if the size of the resultset exceeds the batching size."
-  "property=og:description": "Representations of collection-like resources are batched or paginated if the size of the resultset exceeds the batching size"
-  "property=og:title": "Batching"
-  "keywords": "Plone, plone.restapi, REST, API, Batching"
+myst:
+  html_meta:
+    "description": "Representations of collection-like resources are batched or paginated if the size of the resultset exceeds the batching size."
+    "property=og:description": "Representations of collection-like resources are batched or paginated if the size of the resultset exceeds the batching size"
+    "property=og:title": "Batching"
+    "keywords": "Plone, plone.restapi, REST, API, Batching"
 ---
 
 # Batching

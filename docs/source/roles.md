@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Available roles in a Plone site can be queried by interacting with the /@roles endpoint on the portal root. This action requires an authenticated user."
-  "property=og:description": "Available roles in a Plone site can be queried by interacting with the /@roles endpoint on the portal root. This action requires an authenticated user."
-  "property=og:title": "Roles"
-  "keywords": "Plone, plone.restapi, REST, API, Roles"
+myst:
+  html_meta:
+    "description": "Available roles in a Plone site can be queried by interacting with the /@roles endpoint on the portal root. This action requires an authenticated user."
+    "property=og:description": "Available roles in a Plone site can be queried by interacting with the /@roles endpoint on the portal root. This action requires an authenticated user."
+    "property=og:title": "Roles"
+    "keywords": "Plone, plone.restapi, REST, API, Roles"
 ---
 
 # Roles
