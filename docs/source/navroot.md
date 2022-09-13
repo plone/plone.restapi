@@ -31,7 +31,7 @@ The response will contain the navigation root information with the site :
 :language: http
 ```
 
-In a multilingual site (where the language root folders are naviation root objects), the endpoint will work in a similar way:
+In a multilingual site (where the language root folders are naviation root objects), the endpoint will work in a similar way.
 
 If you request the `@navroot` of a given content type in the site, it will return the following.
 
