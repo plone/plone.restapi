@@ -37,7 +37,7 @@ In a multilingual site where the language folder is the navigation root, the res
     :request: ../../src/plone/restapi/tests/http-examples/navroot_lang_folder_get.req
 ```
 
-The response will contain the navigation root information with the site :
+The response will contain the navigation root information for the site:
 
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_lang_folder_get.resp
 :language: http
