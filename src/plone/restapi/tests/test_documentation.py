@@ -2233,7 +2233,6 @@ class TestIterateDocumentation(TestDocumentationBase):
             "vocabularies_get_filtered_by_token_list", response
         )
 
-   
 
 class TestSiteDocumentation(TestDocumentationBase):
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
