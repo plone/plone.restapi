@@ -50,7 +50,7 @@ In a multilingual site, if the navigation root is requested for content inside a
     :request: ../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.req
 ```
 
-The response will contain the navigation root information with the site :
+The response will contain the navigation root information for the site:
 
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.resp
 :language: http
