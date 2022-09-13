@@ -20,12 +20,12 @@ Get the top-level navigation items:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/contextnavigation.req
+    :request: ../../../src/plone/restapi/tests/http-examples/contextnavigation.req
 ```
 
 Example response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/contextnavigation.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/contextnavigation.resp
 :language: http
 ```
 

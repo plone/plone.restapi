@@ -20,10 +20,10 @@ Listing versions and history of a resource:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/history_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/history_get.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/history_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/history_get.resp
 :language: http
 ```
 
@@ -46,7 +46,7 @@ Older versions of a resource can be retrieved by appending `version` to the `@hi
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/history_get_versioned.req
+    :request: ../../../src/plone/restapi/tests/http-examples/history_get_versioned.req
 ```
 
 
@@ -56,9 +56,9 @@ Reverting to an older versions of a resource can be done by sending a `PATCH` re
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/history_revert.req
+    :request: ../../../src/plone/restapi/tests/http-examples/history_revert.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/history_revert.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/history_revert.resp
 :language: http
 ```

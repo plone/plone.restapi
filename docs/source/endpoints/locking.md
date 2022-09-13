@@ -30,13 +30,13 @@ To lock an object, send a `POST` request to the `/@lock` endpoint that is availa
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/lock.req
+    :request: ../../../src/plone/restapi/tests/http-examples/lock.req
 ```
 
 If the lock operation succeeds, the server will respond with status {term}`200 OK` and return various information about the lock, including the lock token.
 The token is needed in later requests to update the locked object:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/lock.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/lock.resp
 :language: http
 ```
 
@@ -50,12 +50,12 @@ The following example creates a non-stealable lock with a timeout of one hour:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/lock_nonstealable_timeout.req
+    :request: ../../../src/plone/restapi/tests/http-examples/lock_nonstealable_timeout.req
 ```
 
 The server responds with status {term}`200 OK` and returns the lock information:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/lock_nonstealable_timeout.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/lock_nonstealable_timeout.resp
 :language: http
 ```
 
@@ -66,12 +66,12 @@ To unlock an object, send a `DELETE` request to the `/@lock` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/unlock.req
+    :request: ../../../src/plone/restapi/tests/http-examples/unlock.req
 ```
 
 The server responds with status {term}`200 OK` and returns the lock information:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/unlock.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/unlock.resp
 :language: http
 ```
 
@@ -79,12 +79,12 @@ To unlock an object locked by another user, send a force `DELETE` request to the
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/unlock_force.req
+    :request: ../../../src/plone/restapi/tests/http-examples/unlock_force.req
 ```
 
 The server responds with status {term}`200 OK` and returns the lock information:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/unlock_force.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/unlock_force.resp
 :language: http
 ```
 
@@ -99,12 +99,12 @@ An existing lock can be refreshed by sending a `PATCH` request to the `@lock` en
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/refresh_lock.req
+    :request: ../../../src/plone/restapi/tests/http-examples/refresh_lock.req
 ```
 
 The server responds with status {term}`200 OK` and returns the lock information containing the updated creation time:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/refresh_lock.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/refresh_lock.resp
 :language: http
 ```
 
@@ -119,12 +119,12 @@ To find out if an object is locked or to get information about the current lock,
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/lock_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/lock_get.req
 ```
 
 The server responds with status {term}`200 OK` and returns the information about the lock:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/lock_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/lock_get.resp
 :language: http
 ```
 
@@ -135,5 +135,5 @@ To update a locked object with a `PATCH` request, you have to provide the lock t
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/lock_update.req
+    :request: ../../../src/plone/restapi/tests/http-examples/lock_update.req
 ```

@@ -57,12 +57,12 @@ Request (unexpanded):
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/expansion.req
+    :request: ../../../src/plone/restapi/tests/http-examples/expansion.req
 ```
 
 Response (unexpanded):
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/expansion.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/expansion.resp
 :language: http
 ```
 
@@ -71,12 +71,12 @@ Say you want to expand the `breadcrumbs` component:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/expansion_expanded.req
+    :request: ../../../src/plone/restapi/tests/http-examples/expansion_expanded.req
 ```
 
 Response (breadcrumbs expanded):
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/expansion_expanded.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/expansion_expanded.resp
 :language: http
 ```
 
@@ -84,11 +84,11 @@ Here is an example of a request that expands all possible expansions:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/expansion_expanded_full.req
+    :request: ../../../src/plone/restapi/tests/http-examples/expansion_expanded_full.req
 ```
 
 And the response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/expansion_expanded_full.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/expansion_expanded_full.resp
 :language: http
 ```

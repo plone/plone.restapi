@@ -67,12 +67,12 @@ To retrieve a list of all the available vocabularies, send a `GET` request to th
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/vocabularies.req
+    :request: ../../../src/plone/restapi/tests/http-examples/vocabularies.req
 ```
 
 The response will include a list with the URL (`@id`) and the names (`title`) of all the available vocabularies in Plone:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/vocabularies.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/vocabularies.resp
 :language: http
 ```
 
@@ -88,7 +88,7 @@ The endpoint can be used with the site root and content objects:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/vocabularies_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/vocabularies_get.req
 ```
 
 The server will respond with a list of terms.
@@ -97,10 +97,10 @@ The token is what should be sent to the server to address that term.
 
 ```{note}
 Vocabulary terms will be *batched* if the size of the resultset exceeds the batch size.
-See {doc}`batching` for more details on how to work with batched results.
+See {doc}`../usage/batching` for more details on how to work with batched results.
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/vocabularies_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/vocabularies_get.resp
 :language: http
 ```
 
@@ -129,10 +129,10 @@ For example, search for all terms that contain the string `doc` in the title:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_title.req
+    :request: ../../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_title.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_title.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_title.resp
 :language: http
 ```
 
@@ -142,10 +142,10 @@ For example, search for the term `doc` in the token:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token.req
+    :request: ../../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token.resp
 :language: http
 ```
 
@@ -158,10 +158,10 @@ Use the `tokens` parameter to filter vocabulary terms by a list of tokens:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token_list.req
+    :request: ../../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token_list.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token_list.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/vocabularies_get_filtered_by_token_list.resp
 :language: http
 ```
 
@@ -183,14 +183,14 @@ Example:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/sources_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/sources_get.req
 ```
 
 The server will respond with a list of terms.
 The title is purely for display purposes.
 The token is what should be sent to the server to address that term:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/sources_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/sources_get.resp
 :language: http
 ```
 
@@ -215,14 +215,14 @@ Example:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/querysources_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/querysources_get.req
 ```
 
 The server will respond with a list of terms.
 The title is purely for display purposes.
 The token is what should be sent to the server to address that term:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/querysources_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/querysources_get.resp
 :language: http
 ```
 

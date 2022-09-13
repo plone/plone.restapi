@@ -30,10 +30,10 @@ Search results are represented similar to collections:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/search.req
+    :request: ../../../src/plone/restapi/tests/http-examples/search.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/search.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/search.resp
 :language: http
 ```
 
@@ -50,7 +50,7 @@ for more details.
 
 ```{note}
 Search results will be *batched* if the size of the resultset exceeds the batch size.
-See {doc}`batching` for more details on how to work with batched results.
+See {doc}`../usage/batching` for more details on how to work with batched results.
 ```
 
 ```{warning}
@@ -89,10 +89,10 @@ This dictionary will need to be flattened in dotted notation to pass it into a q
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/search_options.req
+    :request: ../../../src/plone/restapi/tests/http-examples/search_options.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/search_options.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/search_options.resp
 :language: http
 ```
 
@@ -115,10 +115,10 @@ The `requests` module will automatically do this for you if you pass it a list o
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/search_multiple_paths.req
+    :request: ../../../src/plone/restapi/tests/http-examples/search_multiple_paths.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/search_multiple_paths.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/search_multiple_paths.resp
 :language: http
 ```
 
@@ -152,10 +152,10 @@ If you need to retrieve additional metadata columns, you can do so by specifying
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/search_metadata_fields.req
+    :request: ../../../src/plone/restapi/tests/http-examples/search_metadata_fields.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/search_metadata_fields.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/search_metadata_fields.resp
 :language: http
 ```
 
@@ -183,10 +183,10 @@ You do so by specifying the `fullobjects` parameter:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/search_fullobjects.req
+    :request: ../../../src/plone/restapi/tests/http-examples/search_fullobjects.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/search_fullobjects.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/search_fullobjects.resp
 :language: http
 ```
 

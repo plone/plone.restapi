@@ -17,12 +17,12 @@ You can request your own user portrait by issuing a `GET` request to the root UR
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/portrait_self_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/portrait_self_get.req
 ```
 
 The server will respond with a `Status 200` and the image requested (not JSON). The content type is set accordingly. One can use it directly in HTML `src` properties:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/portrait_self_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/portrait_self_get.resp
 :language: http
 ```
 
@@ -30,10 +30,10 @@ The server will respond with a `Status 404` in case that the portrait is not set
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/portrait_self_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/portrait_self_get.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/portrait_self_404_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/portrait_self_404_get.resp
 :language: http
 ```
 
@@ -43,11 +43,11 @@ You can request the portrait for a specific user `username` by issuing a `GET` r
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/portrait_username_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/portrait_username_get.req
 ```
 
 The server will respond with a `Status 200` and the image requested (not JSON). The content type is set accordingly. One can use it directly in HTML `src` properties:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/portrait_username_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/portrait_username_get.resp
 :language: http
 ```

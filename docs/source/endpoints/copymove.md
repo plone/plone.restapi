@@ -17,12 +17,12 @@ The source object can be specified either by URL, path, UID or `intid`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/copy.req
+    :request: ../../../src/plone/restapi/tests/http-examples/copy.req
 ```
 
 If the copy operation succeeds, the server will respond with status {term}`200 OK`, and return the new and old URL of the copied object:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/copy.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/copy.resp
 :language: http
 ```
 
@@ -34,12 +34,12 @@ The source object can be specified either by URL, path, UID or `intid`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/move.req
+    :request: ../../../src/plone/restapi/tests/http-examples/move.req
 ```
 
 If the move operation succeeds, the server will respond with status {term}`200 OK`, and return the new and old URL of the moved object:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/move.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/move.resp
 :language: http
 ```
 
@@ -50,11 +50,11 @@ Multiple objects can be moved or copied by giving a list of sources:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/copy_multiple.req
+    :request: ../../../src/plone/restapi/tests/http-examples/copy_multiple.req
 ```
 
 If the operation succeeds, the server will respond with status {term}`200 OK`, and return the new and old URLs for each copied or moved object:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/copy_multiple.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/copy_multiple.resp
 :language: http
 ```

@@ -25,12 +25,12 @@ The user initiates the process and creates a working copy by checking out the co
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/workingcopy_post.req
+    :request: ../../../src/plone/restapi/tests/http-examples/workingcopy_post.req
 ```
 
 …and receives the response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/workingcopy_post.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/workingcopy_post.resp
 :language: http
 ```
 
@@ -41,13 +41,13 @@ A working copy has been created and can be accessed querying the content:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/workingcopy_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/workingcopy_get.req
 
 ```
 
 …and receives the response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/workingcopy_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/workingcopy_get.resp
 :language: http
 ```
 
@@ -55,11 +55,11 @@ The `GET` content of any object also states the location of the working copy, if
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/workingcopy_baseline_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/workingcopy_baseline_get.req
 
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/workingcopy_baseline_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/workingcopy_baseline_get.resp
 :language: http
 ```
 
@@ -67,10 +67,10 @@ The `GET` content of any a working copy also returns the original as `working_co
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/workingcopy_wc_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/workingcopy_wc_get.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/workingcopy_wc_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/workingcopy_wc_get.resp
 :language: http
 ```
 
@@ -81,13 +81,13 @@ Once the user has finished editing the working copy and wants to update the orig
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/workingcopy_patch.req
+    :request: ../../../src/plone/restapi/tests/http-examples/workingcopy_patch.req
 
 ```
 
 …and receives the response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/workingcopy_patch.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/workingcopy_patch.resp
 :language: http
 ```
 
@@ -102,13 +102,13 @@ the working copy):
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/workingcopy_delete.req
+    :request: ../../../src/plone/restapi/tests/http-examples/workingcopy_delete.req
 
 ```
 
 and receives the response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/workingcopy_delete.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/workingcopy_delete.resp
 :language: http
 ```
 

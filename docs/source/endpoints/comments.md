@@ -22,12 +22,12 @@ You can list the existing comment on a content object by sending a `GET` request
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/comments_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/comments_get.req
 ```
 
 The server will respond with a `Status 200` and a batched list of all comments:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/comments_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/comments_get.resp
 :language: http
 ```
 
@@ -61,12 +61,12 @@ The body of the request needs to contain a JSON structure with a `text` attribut
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/comments_add_root.req
+    :request: ../../../src/plone/restapi/tests/http-examples/comments_add_root.req
 ```
 
 If the creation of the comment has been successful, the server will respond with a {term}`204 No Content` status and the URL of the newly created comment in the location header:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/comments_add_root.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/comments_add_root.resp
 :language: http
 ```
 
@@ -79,12 +79,12 @@ The body of the request needs to contain a JSON structure with a `text` attribut
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/comments_add_sub.req
+    :request: ../../../src/plone/restapi/tests/http-examples/comments_add_sub.req
 ```
 
 If the creation of the comment has been successful, the server will respond with a {term}`204 No Content` status and the URL of the newly created comment in the location header:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/comments_add_sub.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/comments_add_sub.resp
 :language: http
 ```
 
@@ -100,12 +100,12 @@ The request body needs to contain a JSON structure with at least a `text` attrib
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/comments_update.req
+    :request: ../../../src/plone/restapi/tests/http-examples/comments_update.req
 ```
 
 The server will respond with a {term}`204 No Content` response and a location header with the comment URL when the comment has been updated successfully:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/comments_update.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/comments_update.resp
 :language: http
 ```
 
@@ -120,11 +120,11 @@ Deleting a comment will, by default, also delete all existing replies to that co
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-         :request: ../../src/plone/restapi/tests/http-examples/comments_delete.req
+         :request: ../../../src/plone/restapi/tests/http-examples/comments_delete.req
 ```
 
 When the comment has been deleted successfully, the server will respond with a {term}`204 No Content` response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/comments_delete.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/comments_delete.resp
 :language: http
 ```

@@ -19,12 +19,12 @@ To retrieve a list of all current users in the portal, call the `/@users` endpoi
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users.req
 ```
 
 The server will respond with a list of all users in the portal:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users.resp
 :language: http
 ```
 
@@ -34,12 +34,12 @@ This is the example as an anonymous user:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_anonymous.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_anonymous.req
 ```
 
 The server will return a {term}`401 Unauthorized` status code.
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_anonymous.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_anonymous.resp
 :language: http
 ```
 
@@ -47,12 +47,12 @@ And this one as a user without the proper rights:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_unauthorized.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_unauthorized.req
 ```
 
 The server will return a {term}`401 Unauthorized` status code.
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_unauthorized.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_unauthorized.resp
 :language: http
 ```
 
@@ -64,12 +64,12 @@ Filtering by `id`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_filtered_by_username.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_filtered_by_username.req
 ```
 
 The server will respond with a list of the filtered users in the portal where the `username` contains the `query` parameter's value:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_filtered_by_username.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_filtered_by_username.resp
 :language: http
 ```
 
@@ -77,12 +77,12 @@ Filtering by `groups`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_filtered_by_groups.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_filtered_by_groups.req
 ```
 
 The server will respond with a list of users where the users are member of one of the groups of the `groups-filter` parameter value.
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_filtered_by_groups.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_filtered_by_groups.resp
 :language: http
 ```
 
@@ -95,12 +95,12 @@ Search by `id`, `fullname` and `email`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_searched.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_searched.req
 ```
 
 The server will respond with a list of users where the `fullname`, `email` or `id` contains the `query` parameter's value:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_searched.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_searched.resp
 :language: http
 ```
 
@@ -111,7 +111,7 @@ To create a new user, send a `POST` request to the global `/@users` endpoint wit
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_created.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_created.req
 ```
 
 ```{note}
@@ -125,7 +125,7 @@ The field `username` is *not allowed* when email login is *enabled*.
 If the user has been created successfully, the server will respond with a status {term}`201 Created`.
 The `Location` header contains the URL of the newly created user, and the resource representation is in the payload:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_created.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_created.resp
 :language: http
 ```
 
@@ -137,12 +137,12 @@ To retrieve all details for a particular user, send a `GET` request to the `/@us
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_get.req
 ```
 
 The server will respond with a {term}`200 OK` status code and the JSON representation of the user in the body:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_get.resp
 :language: http
 ```
 
@@ -152,12 +152,12 @@ Only users with Manager rights are allowed to get other users' information:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_unauthorized_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_unauthorized_get.req
 ```
 
 If the user lacks these rights, the server will respond with a {term}`401 Unauthorized` status code:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_unauthorized_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_unauthorized_get.resp
 :language: http
 ```
 
@@ -165,12 +165,12 @@ Anonymous users are not allowed to get users' information:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_anonymous_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_anonymous_get.req
 ```
 
 If the user is anonymous, the server will respond with a {term}`401 Unauthorized` status code:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_anonymous_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_anonymous_get.resp
 :language: http
 ```
 
@@ -178,12 +178,12 @@ But each user is allowed to get its own information:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_authorized_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_authorized_get.req
 ```
 
 In this case, the server will respond with a {term}`200 OK` status code and the JSON representation of the user in the body:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_authorized_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_authorized_get.resp
 :language: http
 ```
 
@@ -195,12 +195,12 @@ For example, if you want to update the email address of the admin user, do the f
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_update.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_update.req
 ```
 
 A successful response to a `PATCH` request will be indicated by a {term}`204 No Content` response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_update.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_update.resp
 :language: http
 ```
 
@@ -214,13 +214,13 @@ The user portrait or avatar can also be updated using the same serialization as 
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_update_portrait.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_update_portrait.req
 ```
 
 A successful response to a `PATCH` request will be indicated by a {term}`204 No Content` response.
 Then when requesting the user, the portrait URL should be on the response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_update_portrait_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_update_portrait_get.resp
 :language: http
 ```
 
@@ -229,7 +229,7 @@ If you still want Plone to take care of image scaling using the default Plone be
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_update_portrait_scale.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_update_portrait_scale.req
 ```
 
 
@@ -240,12 +240,12 @@ For example, to delete the user with the ID `johndoe`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_delete.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_delete.req
 ```
 
 A successful response will be indicated by a {term}`204 No Content` response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_delete.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_delete.resp
 :language: http
 ```
 
@@ -260,7 +260,7 @@ To create a new user, send a `POST` request to the `@users` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_add.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_add.req
 ```
 
 If the user should receive an email to set her password, you should pass `"sendPasswordReset": true` in the JSON body of the request.
@@ -268,7 +268,7 @@ Keep in mind that Plone will send a URL that points to the URL of the Plone site
 
 If the user has been created, the server will respond with a {term}`201 Created` response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/users_add.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/users_add.resp
 :language: http
 ```
 
@@ -289,7 +289,7 @@ The token that is part of the reset URL in the email can be used to authorize se
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/users_reset.req
+    :request: ../../../src/plone/restapi/tests/http-examples/users_reset.req
 ```
 
 

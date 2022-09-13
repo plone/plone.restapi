@@ -15,12 +15,12 @@ Call the `/@querystring-search` endpoint with a `POST` request and a query in th
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/querystringsearch_post.req
+    :request: ../../../src/plone/restapi/tests/http-examples/querystringsearch_post.req
 ```
 
 The server will respond with the results that are filtered based on the query you provided:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/querystringsearch_post.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/querystringsearch_post.resp
 :language: http
 ```
 

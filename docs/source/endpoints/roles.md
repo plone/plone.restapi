@@ -19,12 +19,12 @@ To retrieve a list of all roles in the portal, call the `/@roles` endpoint with 
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/roles.req
+    :request: ../../../src/plone/restapi/tests/http-examples/roles.req
 ```
 
 The server will respond with a list of all roles in the portal:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/roles.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/roles.resp
 :language: http
 ```
 

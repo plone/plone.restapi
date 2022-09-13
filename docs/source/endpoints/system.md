@@ -17,7 +17,7 @@ Send a `GET` request to the `@system` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/system_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/system_get.req
 ```
 
 The response will contain the system information:

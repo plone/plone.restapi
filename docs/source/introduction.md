@@ -64,11 +64,3 @@ Click on the buttons below to show the different syntaxes for the request:
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/document.resp
 :language: http
 ```
-
-And so on, see:
-
-```{toctree}
-:maxdepth: 1
-
-Representation of all standard Plone content types <plone-content>
-```

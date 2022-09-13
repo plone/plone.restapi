@@ -17,7 +17,7 @@ Send a `GET` request to the `@database` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/database_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/database_get.req
 ```
 
 The response will contain the database information:

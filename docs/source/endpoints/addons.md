@@ -20,12 +20,12 @@ Reading a single record:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/addons_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/addons_get.req
 ```
 
 Example response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/addons_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/addons_get.resp
 :language: http
 ```
 
@@ -35,12 +35,12 @@ A list of all add-ons in the portal can be retrieved by sending a `GET` request 
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/addons_get_list.req
+    :request: ../../../src/plone/restapi/tests/http-examples/addons_get_list.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/addons_get_list.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/addons_get_list.resp
 :language: http
 ```
 
@@ -62,10 +62,10 @@ An individual add-on can be installed by issuing a `POST` to the given URL:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/addons_install.req
+    :request: ../../../src/plone/restapi/tests/http-examples/addons_install.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/addons_install.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/addons_install.resp
 :language: http
 ```
 
@@ -75,10 +75,10 @@ An individual add-on can be uninstalled by issuing a `POST` to the given URL:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/addons_uninstall.req
+    :request: ../../../src/plone/restapi/tests/http-examples/addons_uninstall.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/addons_uninstall.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/addons_uninstall.resp
 :language: http
 ```
 
@@ -88,10 +88,10 @@ An individual add-on can be upgraded by issuing a `POST` to the given URL:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/addons_upgrade.req
+    :request: ../../../src/plone/restapi/tests/http-examples/addons_upgrade.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/addons_upgrade.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/addons_upgrade.resp
 :language: http
 ```
 
@@ -101,9 +101,9 @@ You can install a profile of a given add-on by issuing a `POST` to the given URL
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/addons_install_profile.req
+    :request: ../../../src/plone/restapi/tests/http-examples/addons_install_profile.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/addons_install_profile.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/addons_install_profile.resp
 :language: http
 ```

@@ -19,12 +19,12 @@ To retrieve a list of all current groups in the portal, call the `/@groups` endp
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/groups.req
+    :request: ../../../src/plone/restapi/tests/http-examples/groups.req
 ```
 
 The server will respond with a list of all groups in the portal:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/groups.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/groups.resp
 :language: http
 ```
 
@@ -32,7 +32,7 @@ The endpoint supports some basic filtering:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/groups_filtered_by_groupname.req
+    :request: ../../../src/plone/restapi/tests/http-examples/groups_filtered_by_groupname.req
 ```
 
 The server will respond with a list of the filtered groups in the portal where `groupname` starts with the value of the `query` parameter.
@@ -40,7 +40,7 @@ The server will respond with a list of the filtered groups in the portal where `
 The endpoint also takes a `limit` parameter.
 Its default is a maximum of 25 groups at a time for performance reasons:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/groups_filtered_by_groupname.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/groups_filtered_by_groupname.resp
 :language: http
 ```
 
@@ -51,7 +51,7 @@ To create a new group, send a `POST` request to the global `/@groups` endpoint w
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/groups_created.req
+    :request: ../../../src/plone/restapi/tests/http-examples/groups_created.req
 ```
 
 ```{note}
@@ -60,7 +60,7 @@ By default, `groupname` is a required field.
 
 If the group has been created successfully, the server will respond with a status {term}`201 Created`. The `Location` header contains the URL of the newly created group, and the resource representation is in the payload:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/groups_created.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/groups_created.resp
 :language: http
 ```
 
@@ -71,12 +71,12 @@ To retrieve all details for a particular group, send a `GET` request to the `/@g
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/groups_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/groups_get.req
 ```
 
 The server will respond with a {term}`200 OK` status code and the JSON representation of the group in the body:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/groups_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/groups_get.resp
 :language: http
 ```
 
@@ -89,7 +89,7 @@ To update the settings of a group, send a `PATCH` request with the group details
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/groups_update.req
+    :request: ../../../src/plone/restapi/tests/http-examples/groups_update.req
 ```
 
 ```{note}
@@ -98,7 +98,7 @@ The `users` object is a mapping of a `user_id` and a boolean indicating adding o
 
 A successful response to a `PATCH` request will be indicated by a {term}`204 No Content` response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/groups_update.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/groups_update.resp
 :language: http
 ```
 
@@ -109,11 +109,11 @@ To delete a group, send a `DELETE` request to the `/@groups` endpoint and append
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/groups_delete.req
+    :request: ../../../src/plone/restapi/tests/http-examples/groups_delete.req
 ```
 
 A successful response will be indicated by a {term}`204 No Content` response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/groups_delete.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/groups_delete.resp
 :language: js
 ```

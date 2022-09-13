@@ -21,12 +21,12 @@ Reading a single record:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/registry_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/registry_get.req
 ```
 
 Example response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/registry_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/registry_get.resp
 :language: http
 ```
 
@@ -34,7 +34,7 @@ Example response:
 ## Listing registry records
 
 The registry records listing uses a batched method to access all registry records.
-See {doc}`batching` for more details on how to work with batched results.
+See {doc}`../usage/batching` for more details on how to work with batched results.
 
 The output record contains the following fields:
 
@@ -43,12 +43,12 @@ The output record contains the following fields:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/registry_get_list.req
+    :request: ../../../src/plone/restapi/tests/http-examples/registry_get_list.req
 ```
 
 Example response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/registry_get_list.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/registry_get_list.resp
 :language: http
 ```
 
@@ -59,11 +59,11 @@ Updating an existing record:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/registry_update.req
+    :request: ../../../src/plone/restapi/tests/http-examples/registry_update.req
 ```
 
 Example response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/registry_update.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/registry_update.resp
 :language: http
 ```

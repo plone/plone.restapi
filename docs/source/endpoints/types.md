@@ -22,10 +22,10 @@ The `layouts` key specifies the defined views:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types.resp
 :language: http
 ```
 
@@ -58,12 +58,12 @@ To create a new *fieldset*, send a `POST` request to the `/@types/Document` endp
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_post_fieldset.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types_document_post_fieldset.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types_document_post_fieldset.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types_document_post_fieldset.resp
 :language: http
 ```
 
@@ -71,12 +71,12 @@ To create a new *field*, send a `POST` request to the `/@types/Document` endpoin
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_post_field.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types_document_post_field.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types_document_post_field.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types_document_post_field.resp
 :language: http
 ```
 
@@ -84,12 +84,12 @@ For a complete list of available field `@types`, you can access `/@vocabularies/
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/vocabularies_get_fields.req
+    :request: ../../../src/plone/restapi/tests/http-examples/vocabularies_get_fields.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/vocabularies_get_fields.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/vocabularies_get_fields.resp
 :language: http
 ```
 
@@ -100,10 +100,10 @@ To get the schema of a content type, access the `/@types` endpoint with the name
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types_document.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types_document.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types_document.resp
 :language: http
 ```
 
@@ -126,10 +126,10 @@ To get one schema **fieldset** properties, access `@types/Document/{fieldset}` e
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_get_fieldset.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types_document_get_fieldset.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types_document_get_fieldset.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types_document_get_fieldset.resp
 :language: http
 ```
 
@@ -137,10 +137,10 @@ To get one schema *field* properties, access `@types/Document/{field}` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_get_field.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types_document_get_field.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types_document_get_field.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types_document_get_field.resp
 :language: http
 ```
 
@@ -154,12 +154,12 @@ To update one or more schema *field* properties:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch_properites.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types_document_patch_properites.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types_document_patch_properites.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types_document_patch_properites.resp
 :language: http
 ```
 
@@ -167,12 +167,12 @@ To change one or more *fieldset* properties:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch_fieldsets.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types_document_patch_fieldsets.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types_document_patch_fieldsets.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types_document_patch_fieldsets.resp
 :language: http
 ```
 
@@ -180,12 +180,12 @@ To update one *fieldset* settings, we can also send a `PATCH` request to `@types
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch_fieldset.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types_document_patch_fieldset.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types_document_patch_fieldset.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types_document_patch_fieldset.resp
 :language: http
 ```
 
@@ -193,12 +193,12 @@ To update one *field* settings, we can also send a `PATCH` request to `@types/Do
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_patch_field.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types_document_patch_field.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types_document_patch_field.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types_document_patch_field.resp
 :language: http
 ```
 
@@ -209,10 +209,10 @@ Use `PUT` when more changes are needed in one call, such as creating new fields 
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_put.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types_document_put.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types_document_put.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types_document_put.resp
 :language: http
 ```
 
@@ -223,12 +223,12 @@ Delete an existing schema *field* by sending a `DELETE` request to the URL of an
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_delete_field.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types_document_delete_field.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types_document_delete_field.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types_document_delete_field.resp
 :language: http
 ```
 
@@ -236,11 +236,11 @@ Delete an existing schema *fieldset* by sending a `DELETE` request to the URL of
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/types_document_delete_fieldset.req
+    :request: ../../../src/plone/restapi/tests/http-examples/types_document_delete_fieldset.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/types_document_delete_fieldset.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/types_document_delete_fieldset.resp
 :language: http
 ```

@@ -31,11 +31,11 @@ To retrieve all `querystring` options in the portal, call the `/@querystring` en
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/querystring_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/querystring_get.req
 ```
 
 The server will respond with all `querystring` options in the portal:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/querystring_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/querystring_get.resp
 :language: http
 ```

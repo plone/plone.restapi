@@ -28,12 +28,12 @@ A list of all existing control panels in the portal can be retrieved by sending 
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_get.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_get.resp
 :language: http
 ```
 
@@ -50,12 +50,12 @@ To retrieve a single control panel, send a `GET` request to the URL of the contr
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_get_item.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_get_item.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_get_item.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_get_item.resp
 :language: http
 ```
 
@@ -74,13 +74,13 @@ To update the settings on a control panel, send a `PATCH` request to control pan
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_patch.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_patch.req
 ```
 
 A successful response to a `PATCH` request will be indicated by a {term}`204 No Content` response:
 
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_patch.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_patch.resp
 :language: http
 ```
 
@@ -113,12 +113,12 @@ To list the available content types, send a `GET` request to `@controlpanels/dex
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_get_dexterity.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_get_dexterity.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_get_dexterity.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_get_dexterity.resp
 :language: http
 ```
 
@@ -138,12 +138,12 @@ To create a new content type, send a `POST` request to the `/@controlpanels/dext
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_post_dexterity_item.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_post_dexterity_item.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_post_dexterity_item.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_post_dexterity_item.resp
 :language: http
 ```
 
@@ -154,12 +154,12 @@ After a successful `POST`, access the content type by sending a `GET` request to
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_get_dexterity_item.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_get_dexterity_item.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_get_dexterity_item.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_get_dexterity_item.resp
 :language: http
 ```
 
@@ -171,12 +171,12 @@ To update an existing content type, send a `PATCH` request to the server.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_patch_dexterity_item.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_patch_dexterity_item.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_patch_dexterity_item.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_patch_dexterity_item.resp
 :language: http
 ```
 
@@ -187,11 +187,11 @@ Delete an existing content type by sending a `DELETE` request to the URL of an e
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_delete_dexterity_item.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_delete_dexterity_item.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_delete_dexterity_item.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_delete_dexterity_item.resp
 :language: http
 ```

@@ -15,7 +15,7 @@ Click on "curl", "http-request" or "python-requests" to see an example for those
 
 ```{note}
 For folderish types, collections or search results, the results will be **batched** if the size of the resultset exceeds the batch size.
-See {doc}`./batching` for more details on how to work with batched results.
+See {doc}`../usage/batching` for more details on how to work with batched results.
 ```
 
 
@@ -23,10 +23,10 @@ See {doc}`./batching` for more details on how to work with batched results.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/siteroot.req
+    :request: ../../../src/plone/restapi/tests/http-examples/siteroot.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/siteroot.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/siteroot.resp
 :language: http
 ```
 
@@ -35,10 +35,10 @@ See {doc}`./batching` for more details on how to work with batched results.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/folder.req
+    :request: ../../../src/plone/restapi/tests/http-examples/folder.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/folder.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/folder.resp
 :language: http
 ```
 
@@ -47,10 +47,10 @@ See {doc}`./batching` for more details on how to work with batched results.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/document.req
+    :request: ../../../src/plone/restapi/tests/http-examples/document.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/document.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/document.resp
 :language: http
 ```
 
@@ -64,10 +64,10 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/newsitem.req
+    :request: ../../../src/plone/restapi/tests/http-examples/newsitem.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/newsitem.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/newsitem.resp
 :language: http
 ```
 
@@ -76,10 +76,10 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/event.req
+    :request: ../../../src/plone/restapi/tests/http-examples/event.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/event.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/event.resp
 :language: http
 ```
 
@@ -93,10 +93,10 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/image.req
+    :request: ../../../src/plone/restapi/tests/http-examples/image.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/image.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/image.resp
 :language: http
 ```
 
@@ -105,10 +105,10 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/file.req
+    :request: ../../../src/plone/restapi/tests/http-examples/file.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/file.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/file.resp
 :language: http
 ```
 
@@ -117,10 +117,10 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/link.req
+    :request: ../../../src/plone/restapi/tests/http-examples/link.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/link.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/link.resp
 :language: http
 ```
 
@@ -129,10 +129,10 @@ When running in a real application, these `uuid1` values will be exchanged by pr
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/collection.req
+    :request: ../../../src/plone/restapi/tests/http-examples/collection.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/collection.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/collection.resp
 :language: http
 ```
 
@@ -140,9 +140,9 @@ You can also get all the data for each of the items in a collection by appending
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/collection_fullobjects.req
+    :request: ../../../src/plone/restapi/tests/http-examples/collection_fullobjects.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/collection_fullobjects.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/collection_fullobjects.resp
 :language: http
 ```

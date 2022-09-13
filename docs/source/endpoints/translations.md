@@ -31,7 +31,7 @@ The `id` of the content must be a full URL of the content object:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/translations_post.req
+    :request: ../../../src/plone/restapi/tests/http-examples/translations_post.req
 ```
 
 ```{note}
@@ -40,7 +40,7 @@ The `id` of the content must be a full URL of the content object:
 
 The API will return a {term}`201 Created` response, if the linking was successful:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/translations_post.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_post.resp
 :language: http
 ```
 
@@ -48,10 +48,10 @@ We can also use the object's path to link the translation instead of the full UR
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples//translations_post_by_id.req
+    :request: ../../../src/plone/restapi/tests/http-examples//translations_post_by_id.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples//translations_post_by_id.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples//translations_post_by_id.resp
 :language: http
 ```
 
@@ -59,10 +59,10 @@ We can also use the object's UID to link the translation:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples//translations_post_by_uid.req
+    :request: ../../../src/plone/restapi/tests/http-examples//translations_post_by_uid.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples//translations_post_by_id.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples//translations_post_by_id.resp
 :language: http
 ```
 
@@ -70,10 +70,10 @@ After linking the contents, we can get the list of the translations of that cont
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/translations_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/translations_get.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/translations_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_get.resp
 :language: http
 ```
 
@@ -81,14 +81,14 @@ To unlink the content, issue a `DELETE` request on the `@translations` endpoint 
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/translations_delete.req
+    :request: ../../../src/plone/restapi/tests/http-examples/translations_delete.req
 ```
 
 ```{note}
 `language` is a required field.
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/translations_delete.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_delete.resp
 :language: http
 ```
 
@@ -100,10 +100,10 @@ exising translation using two parameters: `translationOf` and `language`.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/translations_link_on_post.req
+    :request: ../../../src/plone/restapi/tests/http-examples/translations_link_on_post.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/translations_link_on_post.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translations_link_on_post.resp
 :language: http
 ```
 
@@ -115,10 +115,10 @@ This endpoint returns the proper placement for the newly created translation:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/translation_locator.req
+    :request: ../../../src/plone/restapi/tests/http-examples/translation_locator.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/translation_locator.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/translation_locator.resp
 :language: http
 ```
 

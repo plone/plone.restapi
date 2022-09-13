@@ -20,41 +20,11 @@ A RESTful API for Plone.
 :caption: Table of Contents
 :maxdepth: 2
 
-usage/index
-actions
-addons
-breadcrumbs
-comments
-contextnavigation
-contributing/index
-controlpanels
-copymove
-database
-email-notification
-email-send
-expansion
-groups
-history
 introduction
-locking
-navigation
-portrait
-principals
-querystring
-querystringsearch
-registry
-roles
-searching
-system
-tiles
-translations
-tusupload
-types
+usage/index
+endpoints/index
+contributing/index
 upgrade-guide
-users
-vocabularies
-workflow
-workingcopy
 ```
 
 ```{eval-rst}
