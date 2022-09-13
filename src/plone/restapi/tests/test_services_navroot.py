@@ -54,7 +54,7 @@ class TestServicesNavroot(unittest.TestCase):
             (self.portal, self.layer["request"]), name="plone_portal_state"
         )
         self.assertEqual(response.json()["title"], portal_state.navigation_root_title())
-        self.assertEqual(response.json()["@id"], self.portal_url)
+        self.assertEqual(response.json()["@id"], self.portal_url + "/@navroot")
 
     def test_get_navroot_non_multilingual_navigation_root(self):
         """test that the navroot is computed correctly when a section
@@ -135,7 +135,9 @@ class TestServicesNavrootMultilingual(unittest.TestCase):
             (self.portal, self.layer["request"]), name="plone_portal_state"
         )
         self.assertEqual(response.json()["title"], portal_state.navigation_root_title())
-        self.assertEqual(response.json()["@id"], portal_state.navigation_root_url())
+        self.assertEqual(
+            response.json()["@id"], portal_state.navigation_root_url() + "/@navroot"
+        )
 
     def test_get_navroot_language_folder(self):
         response = self.api_session.get(
@@ -147,7 +149,9 @@ class TestServicesNavrootMultilingual(unittest.TestCase):
             (self.portal.en, self.layer["request"]), name="plone_portal_state"
         )
         self.assertEqual(response.json()["title"], portal_state.navigation_root_title())
-        self.assertEqual(response.json()["@id"], portal_state.navigation_root_url())
+        self.assertEqual(
+            response.json()["@id"], portal_state.navigation_root_url() + "/@navroot"
+        )
 
     def test_get_navroot_language_content(self):
         response = self.api_session.get(

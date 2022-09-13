@@ -6,6 +6,9 @@ Content-Type: application/json
         "actions": {
             "@id": "http://localhost:55001/plone/@actions"
         },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/@aliases"
+        },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/@breadcrumbs"
         },
@@ -14,11 +17,6 @@ Content-Type: application/json
         },
         "navigation": {
             "@id": "http://localhost:55001/plone/@navigation"
-        },
-        "navroot": {
-            "@id": "http://localhost:55001/plone/@navroot",
-            "title": "Plone site",
-            "url": "http://localhost:55001/plone"
         }
     },
     "@id": "http://localhost:55001/plone",

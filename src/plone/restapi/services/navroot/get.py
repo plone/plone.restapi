@@ -22,7 +22,6 @@ class Navroot:
         portal_state = getMultiAdapter(
             (self.context, self.request), name="plone_portal_state"
         )
-        result = {}
         result["navroot"].update(
             {
                 "url": portal_state.navigation_root_url(),
@@ -35,5 +34,5 @@ class Navroot:
 
 class NavrootGet(Service):
     def reply(self):
-        navroot = NavrootGet(self.context, self.request)
+        navroot = Navroot(self.context, self.request)
         return navroot(expand=True)["navroot"]

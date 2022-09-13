@@ -6,6 +6,9 @@ Content-Type: application/json
         "actions": {
             "@id": "http://localhost:55001/plone/en/@actions"
         },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/en/@aliases"
+        },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/en/@breadcrumbs"
         },
@@ -14,11 +17,6 @@ Content-Type: application/json
         },
         "navigation": {
             "@id": "http://localhost:55001/plone/en/@navigation"
-        },
-        "navroot": {
-            "@id": "http://localhost:55001/plone/en/@navroot",
-            "title": "English",
-            "url": "http://localhost:55001/plone/en"
         },
         "translations": {
             "@id": "http://localhost:55001/plone/en/@translations"
@@ -32,7 +30,7 @@ Content-Type: application/json
     },
     "@id": "http://localhost:55001/plone/en",
     "@type": "LRF",
-    "UID": "35f68d7f1f634ce7836545678f29abc9",
+    "UID": "57a9f4c1204547dfa20f788b3d059785",
     "allow_discussion": false,
     "contributors": [],
     "created": "1995-07-31T13:45:00",

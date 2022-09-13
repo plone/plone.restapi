@@ -6,6 +6,9 @@ Content-Type: application/json
         "actions": {
             "@id": "http://localhost:55001/plone/en/news/@actions"
         },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/en/news/@aliases"
+        },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/en/news/@breadcrumbs"
         },
@@ -14,11 +17,6 @@ Content-Type: application/json
         },
         "navigation": {
             "@id": "http://localhost:55001/plone/en/news/@navigation"
-        },
-        "navroot": {
-            "@id": "http://localhost:55001/plone/en/news/@navroot",
-            "title": "English",
-            "url": "http://localhost:55001/plone/en"
         },
         "translations": {
             "@id": "http://localhost:55001/plone/en/news/@translations"

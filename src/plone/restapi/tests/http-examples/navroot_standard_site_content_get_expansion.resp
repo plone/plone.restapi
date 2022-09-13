@@ -6,6 +6,9 @@ Content-Type: application/json
         "actions": {
             "@id": "http://localhost:55001/plone/front-page/@actions"
         },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/front-page/@aliases"
+        },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/front-page/@breadcrumbs"
         },
@@ -14,11 +17,6 @@ Content-Type: application/json
         },
         "navigation": {
             "@id": "http://localhost:55001/plone/front-page/@navigation"
-        },
-        "navroot": {
-            "@id": "http://localhost:55001/plone/front-page/@navroot",
-            "title": "Plone site",
-            "url": "http://localhost:55001/plone"
         },
         "types": {
             "@id": "http://localhost:55001/plone/front-page/@types"
