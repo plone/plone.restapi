@@ -17,7 +17,6 @@ This part of the documentation explains the endpoints of Plone REST API.
 :caption: Table of Contents
 :maxdepth: 2
 
-actions
 addons
 breadcrumbs
 comments
@@ -33,6 +32,7 @@ groups
 history
 locking
 navigation
+actions
 portrait
 principals
 querystring
