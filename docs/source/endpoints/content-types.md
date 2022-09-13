@@ -1,13 +1,13 @@
 ---
 myst:
   html_meta:
-    "description": "A list of all standard Plone content representations with sample requests and responses."
-    "property=og:description": "A list of all standard Plone content representations with sample requests and responses."
-    "property=og:title": "Plone Content"
-    "keywords": "Plone, plone.restapi, REST, API, Plone, Content"
+    "description": "A list of all standard Plone content types with sample requests and responses."
+    "property=og:description": "A list of all standard Plone content with sample requests and responses."
+    "property=og:title": "Plone Content Types"
+    "keywords": "Plone, plone.restapi, REST, API, Plone, Content, Types"
 ---
 
-# Plone Content
+# Content Types
 
 How to get all standard Plone content representations.
 The syntax is given in various tools.
