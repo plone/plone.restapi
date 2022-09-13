@@ -1658,7 +1658,7 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/?expand=navroot")
         save_request_and_response_for_docs("navroot_standard_site_get_expansion", response)
 
-    def test_site_content_navroot_get(self):
+    def test_site_navroot_content_get_expansion(self):
         response = self.api_session.get("/front-page?expand=navroot")
         save_request_and_response_for_docs("navroot_standard_site_content_get_expansion", response)
 

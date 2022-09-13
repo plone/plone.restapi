@@ -32,7 +32,7 @@ Content-Type: application/json
     },
     "@id": "http://localhost:55001/plone/en",
     "@type": "LRF",
-    "UID": "e56184fea3fc4bfa80c26a957fca3d10",
+    "UID": "35f68d7f1f634ce7836545678f29abc9",
     "allow_discussion": false,
     "contributors": [],
     "created": "1995-07-31T13:45:00",
