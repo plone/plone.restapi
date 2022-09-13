@@ -34,6 +34,7 @@ expansion
 actions
 workflow
 workingcopy
+aliases
 locking
 sharing
 registry

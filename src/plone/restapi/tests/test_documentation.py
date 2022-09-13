@@ -1840,6 +1840,137 @@ class TestCommenting(TestDocumentationBase):
         response = self.api_session.get("/front-page?expand=breadcrumbs,workflow")
         save_request_and_response_for_docs("expansion", response)
 
+    def test_aliases_add(self):
+        # Add 3 aliases
+        url = f"{self.document.absolute_url()}/@aliases"
+        payload = {
+            "items": [
+                {"path": "/new-alias"},
+                {"path": "/old-alias"},
+                {"path": "/final-alias"},
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs("aliases_add", response)
+
+    def test_aliases_delete(self):
+        # Delete 1 alias
+        url = f"{self.document.absolute_url()}/@aliases"
+        payload = {
+            "items": [
+                {"path": "/new-alias"},
+                {"path": "/old-alias"},
+                {"path": "/final-alias"},
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        payload = {"items": [{"path": "/old-alias"}]}
+        response = self.api_session.delete(url, json=payload)
+
+        save_request_and_response_for_docs("aliases_delete", response)
+
+    def test_aliases_get(self):
+        # Get aliases
+        url = f"{self.document.absolute_url()}/@aliases"
+
+        payload = {"items": "/simple-alias"}
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("aliases_get", response)
+
+    def test_aliases_root_add(self):
+        # Add 2 aliases
+        url = f"{self.portal.absolute_url()}/@aliases"
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs("aliases_root_add", response)
+
+    def test_aliases_root_delete(self):
+        # Delete 1 alias
+        url = f"{self.portal.absolute_url()}/@aliases"
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        payload = {"items": [{"path": "/old-page"}]}
+        response = self.api_session.delete(url, json=payload)
+
+        save_request_and_response_for_docs("aliases_root_delete", response)
+
+    def test_aliases_root_get(self):
+        # Get aliases
+        url = f"{self.portal.absolute_url()}/@aliases"
+        query = ""
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_root_get", response)
+
+    def test_aliases_root_filter(self):
+        # Get aliases
+        url = f"{self.portal.absolute_url()}/@aliases"
+        query = "?q=/fizzbuzz"
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_root_filter", response)
+
 
 class TestControlPanelDocumentation(TestDocumentationBase):
 

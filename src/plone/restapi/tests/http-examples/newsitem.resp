@@ -6,6 +6,9 @@ Content-Type: application/json
         "actions": {
             "@id": "http://localhost:55001/plone/newsitem/@actions"
         },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/newsitem/@aliases"
+        },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/newsitem/@breadcrumbs"
         },
