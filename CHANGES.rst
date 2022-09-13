@@ -8,6 +8,22 @@ Changelog
 
 .. towncrier release notes start
 
+8.26.0 (2022-09-10)
+-------------------
+
+New features:
+
+
+- Add @portrait endpoint
+  [sneridagh] (#1480)
+
+
+Bug fixes:
+
+
+- Add portrait to the docs toctree to fix build warning. [stevepiercy] (#1485)
+
+
 8.25.1 (2022-09-02)
 -------------------
 
