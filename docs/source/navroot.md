@@ -30,7 +30,7 @@ The response will contain the navigation root information with the site :
 :language: http
 ```
 
-In a multilingual site, where the language folder is the navigation root, the response has the language
+In a multilingual site where the language folder is the navigation root, the response has the language folder information:
 folder information:
 
 ```{eval-rst}
