@@ -43,7 +43,7 @@ The response will contain the navigation root information for the site:
 :language: http
 ```
 
-In a multilingual site if the navigation root is requested for a content inside a language folder, the response has the language folder information as a navigation root:
+In a multilingual site, if the navigation root is requested for content inside a language folder, the response has the language folder information as a navigation root:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
