@@ -40,7 +40,7 @@ If you request the `@navroot` of a given content type in the site, it will retur
     :request: ../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.req
 ```
 
-The response will contain the navigation root information with the site :
+The response will contain the navigation root information with the site:
 
 ````{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.resp
 :language: http
