@@ -6,7 +6,6 @@ html_meta:
   "keywords": "Plone, plone.restapi, REST, API, site, navigation root"
 ---
 
-
 (navigation-root-label)=
 
 # Navigation root
@@ -58,7 +57,6 @@ The response will contain the navigation root information with the site :
 :language: http
 ```
 
-
 (navigation-root-expansion-label)=
 
 ## Expansion
@@ -66,3 +64,41 @@ The response will contain the navigation root information with the site :
 This endpoint can be used with the {doc}`expansion` mechanism which allows getting more information about a content item in one query, avoiding unnecessary requests.
 
 If a simple `GET` request is done on the content item, a new entry will be shown on the `@components` entry, with the URL of the `@navroot` endpoint.
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/site_get_expand_navroot.req
+```
+
+The response will contain the navigation root information with the site :
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/site_get_expand_navroot.resp
+:language: http
+```
+
+It will also work with language root folders (that are navigation roots):
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder.req
+```
+
+The response will contain the navigation root information with the site :
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder.resp
+:language: http
+```
+
+And also for contents inside the language root folders, where the navigation root will point to the language root folder:
+
+``{eval-rst}
+.. http:example:: curl httpie python-requests
+:request: ../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder_content.req
+
+````
+
+The response will contain the navigation root information with the site :
+
+```{literalinclude} ../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder_content.resp
+:language: http
+````

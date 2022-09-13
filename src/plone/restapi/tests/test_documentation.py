@@ -2251,3 +2251,15 @@ class TestNavrootDocumentation(TestDocumentationBase):
     def test_site_navroot_language_content_get(self):
         response = self.api_session.get("/en/news/@navroot")
         save_request_and_response_for_docs("navroot_lang_content_get", response)
+
+    def test_site_expansion_navroot(self):
+        response = self.api_session.get("?expand=navroot")
+        save_request_and_response_for_docs("site_get_expand_navroot", response)
+
+    def test_site_expansion_navroot_language_folder(self):
+        response = self.api_session.get("/en?expand=navroot")
+        save_request_and_response_for_docs("site_get_expand_lang_folder", response)
+
+    def test_site_expansion_navroot_language_folder_content(self):
+        response = self.api_session.get("/en/news?expand=navroot")
+        save_request_and_response_for_docs("site_get_expand_lang_folder_content", response)

@@ -1,0 +1,84 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@components": {
+        "actions": {
+            "@id": "http://localhost:55001/plone/en/news/@actions"
+        },
+        "breadcrumbs": {
+            "@id": "http://localhost:55001/plone/en/news/@breadcrumbs"
+        },
+        "contextnavigation": {
+            "@id": "http://localhost:55001/plone/en/news/@contextnavigation"
+        },
+        "navigation": {
+            "@id": "http://localhost:55001/plone/en/news/@navigation"
+        },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/en/news/@navroot",
+            "title": "English",
+            "url": "http://localhost:55001/plone/en"
+        },
+        "translations": {
+            "@id": "http://localhost:55001/plone/en/news/@translations"
+        },
+        "types": {
+            "@id": "http://localhost:55001/plone/en/news/@types"
+        },
+        "workflow": {
+            "@id": "http://localhost:55001/plone/en/news/@workflow"
+        }
+    },
+    "@id": "http://localhost:55001/plone/en/news",
+    "@type": "Document",
+    "UID": "SomeUUID000000000000000000000001",
+    "allow_discussion": false,
+    "changeNote": "",
+    "contributors": [],
+    "created": "1995-07-31T13:45:00",
+    "creators": [
+        "test_user_1_"
+    ],
+    "description": "",
+    "effective": null,
+    "exclude_from_nav": false,
+    "expires": null,
+    "id": "news",
+    "is_folderish": false,
+    "language": {
+        "title": "English",
+        "token": "en"
+    },
+    "layout": "document_view",
+    "lock": {
+        "locked": false,
+        "stealable": true
+    },
+    "modified": "1995-07-31T17:30:00",
+    "next_item": {},
+    "parent": {
+        "@id": "http://localhost:55001/plone/en",
+        "@type": "LRF",
+        "description": "",
+        "review_state": "published",
+        "title": "English"
+    },
+    "previous_item": {
+        "@id": "http://localhost:55001/plone/en/assets",
+        "@type": "LIF",
+        "description": "",
+        "title": "Assets"
+    },
+    "relatedItems": [],
+    "review_state": "published",
+    "rights": "",
+    "subjects": [],
+    "table_of_contents": null,
+    "text": null,
+    "title": "",
+    "version": "current",
+    "versioning_enabled": true,
+    "working_copy": null,
+    "working_copy_of": null
+}
