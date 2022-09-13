@@ -1652,15 +1652,21 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_site_content_navroot_get(self):
         response = self.api_session.get("/front-page/@navroot")
-        save_request_and_response_for_docs("navroot_standard_site_content_get", response)
+        save_request_and_response_for_docs(
+            "navroot_standard_site_content_get", response
+        )
 
     def test_site_navroot_get_expansion(self):
         response = self.api_session.get("/?expand=navroot")
-        save_request_and_response_for_docs("navroot_standard_site_get_expansion", response)
+        save_request_and_response_for_docs(
+            "navroot_standard_site_get_expansion", response
+        )
 
     def test_site_navroot_content_get_expansion(self):
         response = self.api_session.get("/front-page?expand=navroot")
-        save_request_and_response_for_docs("navroot_standard_site_content_get_expansion", response)
+        save_request_and_response_for_docs(
+            "navroot_standard_site_content_get_expansion", response
+        )
 
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
@@ -2278,4 +2284,6 @@ class TestNavrootDocumentation(TestDocumentationBase):
 
     def test_site_expansion_navroot_language_folder_content(self):
         response = self.api_session.get("/en/news?expand=navroot")
-        save_request_and_response_for_docs("site_get_expand_lang_folder_content", response)
+        save_request_and_response_for_docs(
+            "site_get_expand_lang_folder_content", response
+        )
