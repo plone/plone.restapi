@@ -90,7 +90,11 @@ class FolderPost(Service):
         if not getattr(deserializer, "notifies_create", False):
             notify(ObjectCreatedEvent(obj))
 
-        obj = add(self.context, obj, rename=not bool(id_))
+        try:
+            obj = add(self.context, obj, rename=not bool(id_))
+        except ValueError as e:
+            self.request.response.setStatus(400)
+            return dict(error=dict(type="ValueError", message=str(e)))
 
         # Link translation given the translation_of property
         if (

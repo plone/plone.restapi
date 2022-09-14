@@ -106,6 +106,9 @@ Content-Type: application/json
                 }
             ]
         },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/front-page/@aliases"
+        },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/front-page/@breadcrumbs",
             "items": [

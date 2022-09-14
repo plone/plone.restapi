@@ -25,6 +25,7 @@ usage/index
 endpoints/index
 contributing/index
 upgrade-guide
+contributing
 ```
 
 ```{eval-rst}
