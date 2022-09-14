@@ -33,6 +33,7 @@ groups
 history
 locking
 navigation
+navroot
 actions
 portrait
 principals
@@ -41,6 +42,7 @@ querystringsearch
 registry
 roles
 searching
+site
 system
 tiles
 translations

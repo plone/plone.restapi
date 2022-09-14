@@ -22,12 +22,12 @@ For instance, send a `GET` request to the `@navroot` endpoint in the root of the
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/navroot_standard_site_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_get.req
 ```
 
 The response will contain the navigation root information with the site :
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_standard_site_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_get.resp
 :language: http
 ```
 
@@ -37,22 +37,22 @@ If you request the `@navroot` of a given content type in the site, it will retur
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.req
 ```
 
 The response will contain the navigation root information with the site:
 
-````{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.resp
+````{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.resp
 :language: http
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/navroot_site_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/navroot_site_get.req
 ````
 
 The response will contain the navigation root information with the site :
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_site_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_site_get.resp
 :language: http
 ```
 
@@ -60,12 +60,12 @@ In a multilingual site where the language folder is the navigation root, the res
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/navroot_lang_folder_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/navroot_lang_folder_get.req
 ```
 
 The response will contain the navigation root information for the site:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_lang_folder_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_lang_folder_get.resp
 :language: http
 ```
 
@@ -73,12 +73,12 @@ In a multilingual site, if the navigation root is requested for content inside a
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.req
 ```
 
 The response will contain the navigation root information for the site:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.resp
 :language: http
 ```
 
@@ -94,12 +94,12 @@ In a standard site when querying the site root:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/navroot_standard_site_get_expansion.req
+    :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_get_expansion.req
 ```
 
 The response will contain the navigation root information with the site:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_standard_site_get_expansion.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_get_expansion.resp
 :language: http
 ```
 
@@ -107,12 +107,12 @@ When querying a content type inside the root:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get_expansion.req
+    :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get_expansion.req
 ```
 
 The response will contain the navigation root information with the site:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get_expansion.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get_expansion.resp
 :language: http
 ```
 
@@ -120,7 +120,7 @@ In a multilingual site, it will work similarly:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/site_get_expand_navroot.req
+    :request: ../../../src/plone/restapi/tests/http-examples/site_get_expand_navroot.req
 ```
 
 The response will contain the navigation root information with the site :
@@ -133,12 +133,12 @@ It will also work with language root folders (that are navigation roots):
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder.req
+    :request: ../../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder.req
 ```
 
 The response will contain the navigation root information with the site :
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder.resp
 :language: http
 ```
 
@@ -146,12 +146,12 @@ And also for contents inside the language root folders, where the navigation roo
 
 ``{eval-rst}
 .. http:example:: curl httpie python-requests
-:request: ../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder_content.req
+:request: ../../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder_content.req
 
 ````
 
 The response will contain the navigation root information with the site :
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder_content.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder_content.resp
 :language: http
 ````

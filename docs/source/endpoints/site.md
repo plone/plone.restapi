@@ -14,12 +14,12 @@ Send a `GET` request to the `@site` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/site_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/site_get.req
 ```
 
 The response will contain the site information:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/site_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/site_get.resp
 :language: http
 ```
 
@@ -35,12 +35,12 @@ For instance, send a `GET` request to the `@navroot` endpoint in the root of the
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/navroot_site_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/navroot_site_get.req
 ```
 
 The response will contain the navigation root information with the site :
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_site_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_site_get.resp
 :language: http
 ```
 
@@ -49,12 +49,12 @@ folder information:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/navroot_lang_folder_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/navroot_lang_folder_get.req
 ```
 
 The response will contain the navigation root information with the site :
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_lang_folder_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_lang_folder_get.resp
 :language: http
 ```
 
@@ -62,11 +62,11 @@ In a multilingual site if the navigation root is requested for a content inside 
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.req
 ```
 
 The response will contain the navigation root information with the site :
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.resp
 :language: http
 ```
