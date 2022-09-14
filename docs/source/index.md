@@ -23,9 +23,8 @@ A RESTful API for Plone.
 introduction
 usage/index
 endpoints/index
-contributing/index
 upgrade-guide
-contributing
+contributing/index
 ```
 
 ```{eval-rst}

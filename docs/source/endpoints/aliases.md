@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Aliases - a mechanism to redirect old URLs to new ones."
-  "property=og:description": "Aliases - a mechanism to redirect old URLs to new ones."
-  "property=og:title": "Aliases"
-  "keywords": "Plone, plone.app.redirector, redirector, REST, API, Aliases"
+myst:
+  html_meta:
+    "description": "Aliases - a mechanism to redirect old URLs to new ones."
+    "property=og:description": "Aliases - a mechanism to redirect old URLs to new ones."
+    "property=og:title": "Aliases"
+    "keywords": "Plone, plone.app.redirector, redirector, REST, API, Aliases"
 ---
 
 # Aliases
@@ -29,12 +30,12 @@ To create a new alias, send a `POST` request to the `/@aliases` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/aliases_add.req
+    :request: ../../../src/plone/restapi/tests/http-examples/aliases_add.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_add.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/aliases_add.resp
 :language: http
 ```
 
@@ -44,12 +45,12 @@ To list aliases, you can send a `GET` request to the `/@aliases` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/aliases_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/aliases_get.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/aliases_get.resp
 :language: http
 ```
 
@@ -60,12 +61,12 @@ To remove aliases, send a `DELETE` request to the `/@aliases` endpoint:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/aliases_delete.req
+    :request: ../../../src/plone/restapi/tests/http-examples/aliases_delete.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_delete.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/aliases_delete.resp
 :language: http
 ```
 
@@ -75,12 +76,12 @@ You can add multiple URL aliases for multiple pages by sending a `POST` request 
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/aliases_root_add.req
+    :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_add.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_root_add.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/aliases_root_add.resp
 :language: http
 ```
 
@@ -91,12 +92,12 @@ To list all aliases, send a `GET` request to the `/@aliases` endpoint on site `r
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/aliases_root_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_get.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_root_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/aliases_root_get.resp
 :language: http
 ```
 
@@ -106,12 +107,12 @@ To search for specific aliases, send a `GET` request to the `/@aliases` endpoint
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/aliases_root_filter.req
+    :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_filter.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_root_filter.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/aliases_root_filter.resp
 :language: http
 ```
 
@@ -122,11 +123,11 @@ To bulk remove aliases send a `DELETE` request to the `/@aliases` endpoint on si
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/aliases_root_delete.req
+    :request: ../../../src/plone/restapi/tests/http-examples/aliases_root_delete.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/aliases_root_delete.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/aliases_root_delete.resp
 :language: http
 ```

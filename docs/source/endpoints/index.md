@@ -18,6 +18,7 @@ This part of the documentation explains the endpoints of Plone REST API.
 :maxdepth: 2
 
 addons
+aliases
 breadcrumbs
 comments
 content-types
