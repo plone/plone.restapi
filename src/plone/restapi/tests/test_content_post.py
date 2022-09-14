@@ -139,27 +139,7 @@ class TestFolderCreate(unittest.TestCase):
         transaction.begin()
         self.assertIn("test.txt", self.portal.folder1)
 
-    def test_post_with_explicit_file_id_allows_dots(self):
-        response = requests.post(
-            self.portal.folder1.absolute_url(),
-            headers={"Accept": "application/json"},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-            json={
-                "@type": "File",
-                "title": "My File",
-                "file": {
-                    "filename": "test.txt",
-                    "data": "Spam and Eggs",
-                    "content_type": "text/plain",
-                },
-                "id": "custom.txt",
-            },
-        )
-        self.assertEqual(201, response.status_code)
-        transaction.begin()
-        self.assertIn("custom.txt", self.portal.folder1)
-
-    def test_post_with_id_already_in_use_returns_validation_error(self):
+    def test_post_with_id_already_in_use_returns_400(self):
         self.portal.folder1.invokeFactory("Document", "mydocument")
         transaction.commit()
         response = requests.post(
@@ -169,49 +149,6 @@ class TestFolderCreate(unittest.TestCase):
             json={"@type": "Document", "id": "mydocument", "title": "My Document"},
         )
         self.assertEqual(400, response.status_code)
-        self.assertEqual(
-            "id is invalid or already used: mydocument",
-            response.json().get("error").get("message"),
-        )
-
-    def test_post_with_invalid_id_chars_returns_validation_error(self):
-        response = requests.post(
-            self.portal.folder1.absolute_url(),
-            headers={"Accept": "application/json"},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-            json={"@type": "Document", "id": "my document", "title": "My Document"},
-        )
-        self.assertEqual(400, response.status_code)
-        self.assertEqual(
-            "id is invalid or already used: my document",
-            response.json().get("error").get("message"),
-        )
-
-    def test_post_with_reserved_id_returns_validation_error(self):
-        # Some short names are reserved to avoid colliding with field names, etc
-        response = requests.post(
-            self.portal.folder1.absolute_url(),
-            headers={"Accept": "application/json"},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-            json={"@type": "Document", "id": "layout", "title": "My Document"},
-        )
-        self.assertEqual(400, response.status_code)
-        self.assertEqual(
-            "id is invalid or already used: layout",
-            response.json().get("error").get("message"),
-        )
-
-    def test_post_with_empty_id_creates_id_from_title(self):
-        # spaces in id get replaced with dashes
-        response = requests.post(
-            self.portal.folder1.absolute_url(),
-            headers={"Accept": "application/json"},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-            json={"@type": "Document", "id": "", "title": "My Document"},
-        )
-        self.assertEqual(201, response.status_code)
-        transaction.begin()
-        self.assertIn("my-document", self.portal.folder1)
 
     def test_post_to_folder_returns_401_unauthorized(self):
         response = requests.post(

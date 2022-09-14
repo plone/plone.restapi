@@ -70,19 +70,19 @@ def create(container, type_, id_=None, title=None):
 
 def add(container, obj, rename=True):
     """Add an object to a container."""
-    old_id = getattr(aq_base(obj), "id", None)
+    id_ = getattr(aq_base(obj), "id", None)
 
     # Archetypes objects are already created in a container thus we just fire
     # the notification events and rename the object if necessary.
     if base_hasattr(obj, "_at_rename_after_creation"):
-        notify(ObjectAddedEvent(obj, container, old_id))
+        notify(ObjectAddedEvent(obj, container, id_))
         notifyContainerModified(container)
         if obj._at_rename_after_creation and rename:
             obj._renameAfterCreation(check_auto_id=True)
         return obj
     else:
-        chooser = INameChooser(container)
         if rename:
+            chooser = INameChooser(container)
             # INameFromTitle adaptable objects should not get a name
             # suggestion. NameChooser would prefer the given name instead of
             # the one provided by the INameFromTitle adapter.
@@ -90,12 +90,8 @@ def add(container, obj, rename=True):
             name_from_title = INameFromTitle(obj, None)
             if name_from_title is None:
                 suggestion = obj.Title()
-        else:
-            suggestion = old_id
-        id_ = chooser.chooseName(suggestion, obj)
-        if not rename and id_ != old_id:
-            raise ValueError(f"id is invalid or already used: {old_id}")
-        obj.id = id_
+            id_ = chooser.chooseName(suggestion, obj)
+            obj.id = id_
         new_id = container._setObject(id_, obj)
         # _setObject triggers ObjectAddedEvent which can end up triggering a
         # content rule to move the item to a different container. In this case
