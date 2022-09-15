@@ -2049,12 +2049,6 @@ class TestPAMDocumentation(TestDocumentationBase):
     def setUp(self):
         super().setUp()
 
-        language_tool = api.portal.get_tool("portal_languages")
-        language_tool.addSupportedLanguage("en")
-        language_tool.addSupportedLanguage("es")
-        language_tool.addSupportedLanguage("de")
-        applyProfile(self.portal, "plone.app.multilingual:default")
-
         en_id = self.portal["en"].invokeFactory(
             "Document", id="test-document", title="Test document"
         )
@@ -2064,9 +2058,6 @@ class TestPAMDocumentation(TestDocumentationBase):
         )
         self.es_content = self.portal["es"].get(es_id)
         transaction.commit()
-
-    def tearDown(self):
-        super().tearDown()
 
     def test_documentation_translations_post(self):
         response = self.api_session.post(
