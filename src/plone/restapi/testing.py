@@ -30,12 +30,15 @@ from zope.component import getGlobalSiteManager
 from zope.component import getUtility
 from zope.configuration import xmlconfig
 from zope.interface import implementer
+from plone.app.testing import popGlobalRegistry
+
 
 import collective.MockMailHost
 import os
 import re
 import requests
 import time
+import transaction
 
 
 try:
@@ -128,6 +131,12 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         zope.installProduct(app, "plone.restapi")
 
     def setUpPloneSite(self, portal):
+        # Register the static uuid generator utility
+        # as a first thing, to have one global generator to rule them all
+        pushGlobalRegistry(portal)
+        register_static_uuid_utility(prefix="SomeUUID")
+        transaction.commit()
+
         portal.acl_users.userFolderAddUser(
             SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ["Manager"], []
         )
@@ -145,6 +154,10 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         applyProfile(portal, "collective.MockMailHost:default")
         states = portal.portal_workflow["simple_publication_workflow"].states
         states["published"].title = "Published with accent é"  # noqa: E501
+
+    def tearDownPloneSite(self, portal):
+        super().tearDownPloneSite(portal)
+        popGlobalRegistry(portal)
 
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
@@ -188,11 +201,11 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
     def setUpPloneSite(self, portal):
         # Register the static uuid generator utility
         # before p.a.multilingual creates LRFs
-        # in order to have predictable UIDs
+        # in order to have predictable UIDs and not to have shared UUIDs
+        # between object UIDs and TranslationGroup UIDs
+        # that creates issues with working of the tests
         pushGlobalRegistry(portal)
         register_static_uuid_utility(prefix="SomeUUID")
-        import transaction
-
         transaction.commit()
 
         portal.acl_users.userFolderAddUser(
@@ -211,6 +224,10 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         enable_request_language_negotiation(portal)
         states = portal.portal_workflow["simple_publication_workflow"].states
         states["published"].title = "Published with accent é"  # noqa: E501
+
+    def tearDownPloneSite(self, portal):
+        super().tearDownPloneSite(portal)
+        popGlobalRegistry(portal)
 
 
 PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()

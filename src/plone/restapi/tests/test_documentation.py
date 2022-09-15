@@ -6,9 +6,6 @@ from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
 from plone.app.multilingual.interfaces import ITranslationManager
-from plone.app.testing import applyProfile
-from plone.app.testing import popGlobalRegistry
-from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -173,10 +170,6 @@ class TestDocumentationBase(unittest.TestCase):
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
 
-        # Register custom UUID generator to produce stable UUIDs during tests
-        pushGlobalRegistry(getSite())
-        register_static_uuid_utility(prefix="SomeUUID")
-
         self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
         self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
@@ -203,7 +196,6 @@ class TestDocumentationBase(unittest.TestCase):
         return val
 
     def tearDown(self):
-        popGlobalRegistry(getSite())
         self.api_session.close()
 
 
