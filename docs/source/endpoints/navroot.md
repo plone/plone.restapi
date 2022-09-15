@@ -25,15 +25,15 @@ For instance, send a `GET` request to the `@navroot` endpoint in the root of the
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_get.req
 ```
 
-The response will contain the navigation root information with the site :
+The response will contain the navigation root information with the site:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_get.resp
 :language: http
 ```
 
-In a multilingual site (where the language root folders are naviation root objects), the endpoint will work in a similar way.
+In a multilingual site (where the language root folders are navigation root objects), the endpoint will work in a similar way.
 
-If you request the `@navroot` of a given content type in the site, it will return the following.
+If you request the `@navroot` of a given content type in the site:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -45,12 +45,16 @@ The response will contain the navigation root information with the site:
 ````{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.resp
 :language: http
 
+
+In a multilingual site, the root of the site will work as usual:
+
+
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_site_get.req
 ````
 
-The response will contain the navigation root information with the site :
+The response will contain the navigation root information of the root of the site:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_site_get.resp
 :language: http
@@ -69,14 +73,14 @@ The response will contain the navigation root information for the site:
 :language: http
 ```
 
-In a multilingual site, if the navigation root is requested for content inside a language folder, the response has the language folder information as a navigation root:
+In a multilingual site, if the navigation root is requested for content inside a language folder:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.req
 ```
 
-The response will contain the navigation root information for the site:
+The response has the language folder information as a navigation root:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_lang_content_get.resp
 :language: http
@@ -97,7 +101,7 @@ In a standard site when querying the site root:
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_get_expansion.req
 ```
 
-The response will contain the navigation root information with the site:
+The response will contain information of the site root with the navigation expanded:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_get_expansion.resp
 :language: http
@@ -110,20 +114,20 @@ When querying a content type inside the root:
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get_expansion.req
 ```
 
-The response will contain the navigation root information with the site:
+The response will contain the information of that content and navigation root information with the site expanded:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get_expansion.resp
 :language: http
 ```
 
-In a multilingual site, it will work similarly:
+In a multilingual site, it will work similarly. This will be the request:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/site_get_expand_navroot.req
 ```
 
-The response will contain the navigation root information with the site :
+And the response will contain the navigation root information pointing to the root of the site:
 
 ```{literalinclude} ../../src/plone/restapi/tests/http-examples/site_get_expand_navroot.resp
 :language: http
@@ -136,13 +140,13 @@ It will also work with language root folders (that are navigation roots):
     :request: ../../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder.req
 ```
 
-The response will contain the navigation root information with the site :
+The response will contain the navigation root information expanded:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder.resp
 :language: http
 ```
 
-And also for contents inside the language root folders, where the navigation root will point to the language root folder:
+And also for contents inside the language root folders:
 
 ``{eval-rst}
 .. http:example:: curl httpie python-requests
@@ -150,7 +154,7 @@ And also for contents inside the language root folders, where the navigation roo
 
 ````
 
-The response will contain the navigation root information with the site :
+The response will include the expanded information pointing to the language root:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder_content.resp
 :language: http
