@@ -28,7 +28,6 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 from zope.component import getGlobalSiteManager
 from zope.component import getUtility
-from zope.component.hooks import getSite
 from zope.configuration import xmlconfig
 from zope.interface import implementer
 
