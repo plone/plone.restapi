@@ -27,7 +27,7 @@ Content-Type: application/json
     },
     "@id": "http://localhost:55001/plone/front-page",
     "@type": "Document",
-    "UID": "SomeUUID000000000000000000000001",
+    "UID": "SomeUUID000000000000000000000481",
     "allow_discussion": false,
     "changeNote": "",
     "contributors": [],

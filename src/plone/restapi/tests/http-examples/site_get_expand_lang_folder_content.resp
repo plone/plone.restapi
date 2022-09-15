@@ -4,33 +4,33 @@ Content-Type: application/json
 {
     "@components": {
         "actions": {
-            "@id": "http://localhost:55001/plone/en/news/@actions"
+            "@id": "http://localhost:55001/plone/en/test-document/@actions"
         },
         "aliases": {
-            "@id": "http://localhost:55001/plone/en/news/@aliases"
+            "@id": "http://localhost:55001/plone/en/test-document/@aliases"
         },
         "breadcrumbs": {
-            "@id": "http://localhost:55001/plone/en/news/@breadcrumbs"
+            "@id": "http://localhost:55001/plone/en/test-document/@breadcrumbs"
         },
         "contextnavigation": {
-            "@id": "http://localhost:55001/plone/en/news/@contextnavigation"
+            "@id": "http://localhost:55001/plone/en/test-document/@contextnavigation"
         },
         "navigation": {
-            "@id": "http://localhost:55001/plone/en/news/@navigation"
+            "@id": "http://localhost:55001/plone/en/test-document/@navigation"
         },
         "translations": {
-            "@id": "http://localhost:55001/plone/en/news/@translations"
+            "@id": "http://localhost:55001/plone/en/test-document/@translations"
         },
         "types": {
-            "@id": "http://localhost:55001/plone/en/news/@types"
+            "@id": "http://localhost:55001/plone/en/test-document/@types"
         },
         "workflow": {
-            "@id": "http://localhost:55001/plone/en/news/@workflow"
+            "@id": "http://localhost:55001/plone/en/test-document/@workflow"
         }
     },
-    "@id": "http://localhost:55001/plone/en/news",
+    "@id": "http://localhost:55001/plone/en/test-document",
     "@type": "Document",
-    "UID": "SomeUUID000000000000000000000001",
+    "UID": "SomeUUID000000000000000000000056",
     "allow_discussion": false,
     "changeNote": "",
     "contributors": [],
@@ -42,7 +42,7 @@ Content-Type: application/json
     "effective": null,
     "exclude_from_nav": false,
     "expires": null,
-    "id": "news",
+    "id": "test-document",
     "is_folderish": false,
     "language": {
         "title": "English",
@@ -69,12 +69,12 @@ Content-Type: application/json
         "title": "Assets"
     },
     "relatedItems": [],
-    "review_state": "published",
+    "review_state": "private",
     "rights": "",
     "subjects": [],
     "table_of_contents": null,
     "text": null,
-    "title": "",
+    "title": "Test document",
     "version": "current",
     "versioning_enabled": true,
     "working_copy": null,

@@ -28,7 +28,7 @@ Location: http://localhost:55001/plone/folder/my-document
     },
     "@id": "http://localhost:55001/plone/folder/my-document",
     "@type": "Document",
-    "UID": "SomeUUID000000000000000000000005",
+    "UID": "SomeUUID000000000000000000000360",
     "allow_discussion": false,
     "changeNote": "",
     "contributors": [],

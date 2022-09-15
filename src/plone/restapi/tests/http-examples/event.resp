@@ -27,7 +27,7 @@ Content-Type: application/json
     },
     "@id": "http://localhost:55001/plone/event",
     "@type": "Event",
-    "UID": "SomeUUID000000000000000000000002",
+    "UID": "SomeUUID000000000000000000000377",
     "allow_discussion": false,
     "attendees": [],
     "changeNote": "",

@@ -1,2 +1,3 @@
-GET /plone/en/news/@navroot HTTP/1.1
+GET /plone/en/test-document/@navroot HTTP/1.1
 Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
