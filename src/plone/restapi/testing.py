@@ -9,6 +9,7 @@ from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import login
 from plone.app.testing import PloneSandboxLayer
+from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import quickInstallProduct
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -27,6 +28,7 @@ from urllib.parse import urljoin
 from urllib.parse import urlparse
 from zope.component import getGlobalSiteManager
 from zope.component import getUtility
+from zope.component.hooks import getSite
 from zope.configuration import xmlconfig
 from zope.interface import implementer
 
@@ -185,6 +187,15 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         zope.installProduct(app, "plone.restapi")
 
     def setUpPloneSite(self, portal):
+        # Register the static uuid generator utility
+        # before p.a.multilingual creates LRFs
+        # in order to have predictable UIDs
+        pushGlobalRegistry(portal)
+        register_static_uuid_utility(prefix="SomeUUID")
+        import transaction
+
+        transaction.commit()
+
         portal.acl_users.userFolderAddUser(
             SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ["Manager"], []
         )
