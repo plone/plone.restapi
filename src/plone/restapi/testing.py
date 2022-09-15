@@ -276,6 +276,19 @@ class PloneRestApiDXIterateLayer(PloneSandboxLayer):
 
         zope.installProduct(app, "plone.restapi")
 
+    def setUpPloneSite(self, portal):
+        # Register the static uuid generator utility
+        # in order to have predictable UIDs and not to have shared UUIDs
+        # between object UIDs and TranslationGroup UIDs
+        # that creates issues with working of the tests
+        pushGlobalRegistry(portal)
+        register_static_uuid_utility(prefix="SomeUUID")
+        transaction.commit()
+
+    def tearDownPloneSite(self, portal):
+        super().tearDownPloneSite(portal)
+        popGlobalRegistry(portal)
+
 
 PLONE_RESTAPI_ITERATE_FIXTURE = PloneRestApiDXIterateLayer()
 PLONE_RESTAPI_ITERATE_INTEGRATION_TESTING = IntegrationTesting(
