@@ -62,7 +62,7 @@ class TestCommentsEndpoint(unittest.TestCase):
 
         self.assertEqual(200, response.status_code)
         data = response.json()
-        self.assertEqual({"items_total", "items", "@id"}, set(data))
+        self.assertEqual({"items_total", "items", "permissions", "@id"}, set(data))
 
     def test_list_batching(self):
         url = f"{self.doc.absolute_url()}/@comments"

@@ -7,14 +7,14 @@ from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from plone.scale import storage
+from plone.restapi.tests.helpers import patch_scale_uuid
 from Products.CMFCore.utils import getToolByName
-from unittest.mock import patch
 from zope.component import getMultiAdapter
 
 import json
 import os
 import unittest
+
 
 HAS_PLONE_6 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False
@@ -260,9 +260,9 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
 
         self.maxDiff = 99999
 
-        with patch.object(storage, "uuid4", return_value="uuid_1"):
+        scale_url_uuid = "uuid_1"
+        with patch_scale_uuid(scale_url_uuid):
             obj_url = self.portal.image1.absolute_url()
-            scale_url_uuid = "uuid_1"
             download_url = f"{obj_url}/@@images/{scale_url_uuid}.png"
             scales = {
                 "listing": {"download": download_url, "width": 16, "height": 4},
@@ -273,6 +273,34 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                 "preview": {"download": download_url, "width": 215, "height": 56},
                 "large": {"download": download_url, "width": 215, "height": 56},
             }
+            if HAS_PLONE_6:
+                # PLIP #3279 amended the image scales
+                # https://github.com/plone/Products.CMFPlone/pull/3450
+                scales["great"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
+                scales["huge"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
+                scales["larger"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
+                scales["large"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
+                scales["teaser"] = {
+                    "download": download_url,
+                    "height": 56,
+                    "width": 215,
+                }
             self.assertEqual(
                 {
                     "filename": "image.png",

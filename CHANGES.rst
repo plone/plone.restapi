@@ -8,6 +8,196 @@ Changelog
 
 .. towncrier release notes start
 
+8.27.0 (2022-09-14)
+-------------------
+
+New features:
+
+
+- Added @aliases endpoint with GET/POST/DELETE
+  [iulianpetchesi] (#1393)
+
+
+Bug fixes:
+
+
+- When an `id` is specified explicitly in the content POST endpoint,
+  return a 400 error response if it is invalid or unavailable.
+  [davisagli] (#1487)
+
+
+8.26.0 (2022-09-10)
+-------------------
+
+New features:
+
+
+- Add @portrait endpoint
+  [sneridagh] (#1480)
+
+
+Bug fixes:
+
+
+- Add portrait to the docs toctree to fix build warning. [stevepiercy] (#1485)
+
+
+8.25.1 (2022-09-02)
+-------------------
+
+Bug fixes:
+
+
+- Fix the category of the 'Users and groups settings' controlpanel adapter
+  [sneridagh] (#1482)
+
+
+8.25.0 (2022-08-31)
+-------------------
+
+New features:
+
+
+- Add support for importing profiles in @addons endpoint
+  [sneridagh] (#1479)
+
+
+Bug fixes:
+
+
+- Fix @registry endpoint Object of type datetime is not JSON serializable
+  [iulianpetchesi] (#1189)
+- Fixed small documentation for error code 404
+  [rohnsha] (#1430)
+- Handle subblocks in site root serializer for Plone 5.x
+  [erral] (#1449)
+- Do not hard depend on `plone.app.iterate`. It is not an direct core package and might not be available.
+  [jensens] (#1461)
+- Sanitise user id when checking for portrait [instification] (#1466)
+
+
+8.24.1 (2022-08-04)
+-------------------
+
+Bug fixes:
+
+
+- Fix of users endpoint for Membrane users. [ksuess] (#1459)
+
+
+8.24.0 (2022-07-15)
+-------------------
+
+New features:
+
+
+- Add support to search for fullname, email, id on the @users endpoint with "?search=" [ksuess] (#1443)
+
+
+Bug fixes:
+
+
+- Tests: add names to behaviors.  [maurits] (#169)
+
+
+8.23.0 (2022-06-23)
+-------------------
+
+New features:
+
+
+- Include users data in groups while retrieving @groups
+  [@nileshgulia1] (#1325)
+- Added 'View comments' and 'Reply to item' permission to discussion [@razvanMiu] (#1327)
+- better error logging for term lookup errors
+  [ajung] (#1365)
+- Documentation was converted to MyST from reStructuredText. [stevepiercy] (#1375)
+- Move caching rulesets to the ZCML where the endpoints are defined.
+  [jensens] (#1414)
+- List Users (@users): Add groups [ksuess]
+  List Users (@users): Support filtering by groups [ksuess] (#1419)
+- Fix: Update group: Preserve title and description. [ksuess] (#1424)
+- Add UsersGroupsSettings to set of control panels. [ksuess]
+  Move configlet UsersGroupsSettings to correct group (Volto control panel group "Users and Groups") [ksuess] (#1436)
+
+
+Bug fixes:
+
+
+- Test-only fix: normalize white space in html in some tests.
+  Needed to not fail with newer plone.outputfilters.
+  [maurits] (#49)
+- Tests: patch unique url for scale in old or new way.
+  This is only in serializer tests for images.
+  [maurits] (#57)
+- Make the PAS plugin compatible with ``PyJWT`` 1 and 2.
+  [jensens, maurits] (#1193)
+- Fix tests for changes in displayed_types. See https://github.com/plone/Products.CMFPlone/issues/3486
+  [pbauer] (#1359)
+- Use JSON instead of JSON Schema for code samples. [stevepiercy] (#1379)
+- Control panels and translations are supported in Plone 5 or greater. [stevepiercy] (#1380)
+- Add html_meta tags and values for better SEO. [stevepiercy] (#1382)
+- Update demo site to 6.demo.plone.org in README.rst. [stevepiercy] (#1383)
+- Fixed timestamp calculation in history service on Python 3.10.
+  [maurits] (#1391)
+- Fix empty .resp in docs of PATCH controlpanel (#1396)
+- Translate addon titles on @addon controlpanel
+  [erral] (#1412)
+- Do not break path2uid with some edge-cases.
+  [cekk] (#1428)
+- Sort the roles in the user serializer.
+  [maurits] (#1452)
+
+
+Internal:
+
+
+- Add naming best practices for URL Attributes (singular vs plural) to the docs
+  [tisto] (#1295)
+- Enable Google Analytics 4 [stevepiercy] (#1404)
+- fixed broken make task docs-linkcheckbroken (#1421)
+- Fix broken link to Python requests library docs. [stevepiercy] (#1438)
+
+
+8.22.0 (2022-04-08)
+-------------------
+
+New features:
+
+
+- Fix broken links. Add `make netlify` as a build target to preview changes to docs only. Prepare docs for import into main Plone documentation without significant changes. Use sphinx-book-them as theme. [stevepiercy] (#1337)
+
+
+Bug fixes:
+
+
+- Return proper error message when trying to create a content object with a wrong @type parameter. [tisto] (#1188)
+- Fix the link in the GitHub menu item "suggest edit" to point to master branch. [stevepiercy] (#1346)
+- Fix the redirect link for upc.edu to /en. [stevepiercy] (#1351)
+- Fix testing matrix to use correct combos of Python and Plone.
+  [maurits] (#1356)
+
+
+8.21.2 (2022-02-21)
+-------------------
+
+Bug fixes:
+
+
+- Restrict unlinking on Language Root Folders
+  [sneridagh] (#1332)
+
+
+8.21.1 (2022-02-21)
+-------------------
+
+Bug fixes:
+
+
+- Improve handling of linking translations taking into account the state of the target. Restricting it completely for LRFs. Adding a transaction note to the action if it succeeds.
+  [sneridagh] (#1329)
+
+
 8.21.0 (2022-01-25)
 -------------------
 

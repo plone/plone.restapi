@@ -1,5 +1,6 @@
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.batching import HypermediaBatch
 from Products.CMFCore.interfaces._tools import IMemberData
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
@@ -24,7 +25,7 @@ class BaseSerializer:
         roles = user.getRoles()
         # Anonymous and Authenticated are pseudo roles assign automatically
         # to logged-in or logged-out users. They should not be exposed here
-        roles = list(set(roles) - {"Anonymous", "Authenticated"})
+        roles = sorted(list(set(roles) - {"Anonymous", "Authenticated"}))
 
         data = {
             "@id": f"{portal.absolute_url()}/@users/{user.id}",
@@ -37,11 +38,11 @@ class BaseSerializer:
 
         for name in getFieldNames(schema):
             if name == "portrait":
+                membership = getToolByName(portal, "portal_membership")
                 memberdata = getToolByName(portal, "portal_memberdata")
-                if user.id in memberdata.portraits:
-                    value = "{}/portal_memberdata/portraits/{}".format(
-                        portal.absolute_url(), user.id
-                    )
+                safe_id = membership._getSafeMemberId(user.id)
+                if safe_id in memberdata.portraits:
+                    value = f"{portal.absolute_url()}/@portrait/{safe_id}"
                 else:
                     value = None
             elif name == "pdelete":
@@ -57,13 +58,32 @@ class BaseSerializer:
         return data
 
 
-@implementer(ISerializeToJson)
-@adapter(IMemberData, IRequest)
-class SerializeUserToJson(BaseSerializer):
-    pass
-
-
 @implementer(ISerializeToJsonSummary)
 @adapter(IMemberData, IRequest)
 class SerializeUserToJsonSummary(BaseSerializer):
-    pass
+    def __call__(self):
+        data = super().__call__()
+        return data
+
+
+@implementer(ISerializeToJson)
+@adapter(IMemberData, IRequest)
+class SerializeUserToJson(BaseSerializer):
+    def __call__(self):
+        data = super().__call__()
+        user = self.context
+        gtool = getToolByName(self.context, "portal_groups")
+        groupIds = user.getGroups()
+        groups = [gtool.getGroupById(grp) for grp in groupIds]
+        groups = [{"id": grp.id, "title": grp.title or grp.id} for grp in groups]
+        batch = HypermediaBatch(self.request, groups)
+        groups_data = {
+            "@id": batch.canonical_url,
+            "items_total": batch.items_total,
+            "items": sorted(batch, key=lambda x: x["title"]),
+        }
+        if batch.links:
+            groups_data["batching"] = batch.links
+
+        data["groups"] = groups_data
+        return data
