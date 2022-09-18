@@ -13,6 +13,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.locking.interfaces import ITTWLockable
@@ -878,14 +879,14 @@ class TestDocumentation(TestDocumentationBase):
         api.user.create(
             email="noam.chomsky@example.com",
             username="noam",
-            password="secret",
+            password=TEST_USER_PASSWORD,
             properties=properties,
         )
 
         api.user.create(
             email="noam.chomsky@example.com",
             username="noam-fake",
-            password="secret",
+            password=TEST_USER_PASSWORD,
             properties=properties,
         )
 
@@ -893,7 +894,7 @@ class TestDocumentation(TestDocumentationBase):
 
         logged_out_api_session = RelativeSession(self.portal_url, test=self)
         logged_out_api_session.headers.update({"Accept": "application/json"})
-        logged_out_api_session.auth = ("noam-fake", "secret")
+        logged_out_api_session.auth = ("noam-fake", TEST_USER_PASSWORD)
 
         response = logged_out_api_session.get("@users/noam")
         save_request_and_response_for_docs("users_unauthorized_get", response)
@@ -911,14 +912,14 @@ class TestDocumentation(TestDocumentationBase):
         api.user.create(
             email="noam.chomsky@example.com",
             username="noam",
-            password="secret",
+            password=TEST_USER_PASSWORD,
             properties=properties,
         )
         transaction.commit()
 
         logged_out_api_session = RelativeSession(self.portal_url, test=self)
         logged_out_api_session.headers.update({"Accept": "application/json"})
-        logged_out_api_session.auth = ("noam", "secret")
+        logged_out_api_session.auth = ("noam", TEST_USER_PASSWORD)
         response = logged_out_api_session.get("@users/noam")
         save_request_and_response_for_docs("users_authorized_get", response)
         logged_out_api_session.close()

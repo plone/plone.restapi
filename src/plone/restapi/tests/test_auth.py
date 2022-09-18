@@ -1,5 +1,6 @@
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.permissions import UseRESTAPI
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from unittest import TestCase
@@ -78,10 +79,10 @@ class TestLogin(TestCase):
 
     def test_login_with_zope_user_fails_without_pas_plugin(self):
         uf = self.layer["app"].acl_users
-        uf.plugins.users.addUser("zopeuser", "zopeuser", "secret")
+        uf.plugins.users.addUser("zopeuser", "zopeuser", TEST_USER_PASSWORD)
         if "jwt_auth" in uf:
             uf["jwt_auth"].manage_activateInterfaces([])
-        self.request["BODY"] = '{"login": "zopeuser", "password": "secret"}'
+        self.request["BODY"] = '{"login": "zopeuser", "password": "' + TEST_USER_PASSWORD + '"}'
         service = self.traverse()
         res = service.reply()
         self.assertIn("error", res)
@@ -92,9 +93,9 @@ class TestLogin(TestCase):
 
     def test_login_with_zope_user(self):
         self.layer["app"].acl_users.plugins.users.addUser(
-            "zopeuser", "zopeuser", "secret"
+            "zopeuser", "zopeuser", TEST_USER_PASSWORD
         )
-        self.request["BODY"] = '{"login": "zopeuser", "password": "secret"}'
+        self.request["BODY"] = '{"login": "zopeuser", "password": "' + TEST_USER_PASSWORD + '"}'
         service = self.traverse()
         res = service.reply()
         self.assertEqual(200, self.request.response.getStatus())

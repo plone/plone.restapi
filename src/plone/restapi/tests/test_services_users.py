@@ -3,6 +3,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
@@ -163,7 +164,7 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"username": "noam", "password": "secret"}
+            "/@users", json={"username": "noam", "password": TEST_USER_PASSWORD}
         )
 
         self.assertEqual(400, response.status_code)
@@ -175,7 +176,7 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users", json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD}
         )
         transaction.commit()
 
@@ -192,7 +193,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "howard",
                 "email": "howard.zinn@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
         transaction.commit()
@@ -206,7 +207,7 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users", json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD}
         )
         transaction.commit()
 
@@ -239,7 +240,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "/@users",
             json={
                 "username": "howard",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
                 "email": "howard.zinn@example.com",
                 "fullname": "Howard Zinn",
             },
@@ -299,7 +300,7 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_uuid_as_userid = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users", json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD}
         )
         transaction.commit()
 
@@ -479,7 +480,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_update_user_password(self):
         old_password_hashes = dict(self.portal.acl_users.source_users._user_passwords)
-        payload = {"password": "secret"}
+        payload = {"password": TEST_USER_PASSWORD}
         response = self.api_session.patch("/@users/noam", json=payload)
         transaction.commit()
 
@@ -723,7 +724,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users", json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD}
         )
         transaction.commit()
 
@@ -752,7 +753,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users", json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD}
         )
         transaction.commit()
 
@@ -780,7 +781,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users", json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD}
         )
         transaction.commit()
 
@@ -865,7 +866,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "new_user",
                 "email": "avram.chomsky@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
         transaction.commit()
@@ -881,7 +882,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "new_user",
                 "email": "avram.chomsky@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
         transaction.commit()
@@ -899,7 +900,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "new_user",
                 "email": "avram.chomsky@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
         transaction.commit()
@@ -918,7 +919,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "new_user",
                 "email": "avram.chomsky@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
 
