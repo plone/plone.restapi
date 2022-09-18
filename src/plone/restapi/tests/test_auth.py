@@ -82,7 +82,9 @@ class TestLogin(TestCase):
         uf.plugins.users.addUser("zopeuser", "zopeuser", TEST_USER_PASSWORD)
         if "jwt_auth" in uf:
             uf["jwt_auth"].manage_activateInterfaces([])
-        self.request["BODY"] = '{"login": "zopeuser", "password": "' + TEST_USER_PASSWORD + '"}'
+        self.request["BODY"] = (
+            '{"login": "zopeuser", "password": "' + TEST_USER_PASSWORD + '"}'
+        )
         service = self.traverse()
         res = service.reply()
         self.assertIn("error", res)
@@ -95,7 +97,9 @@ class TestLogin(TestCase):
         self.layer["app"].acl_users.plugins.users.addUser(
             "zopeuser", "zopeuser", TEST_USER_PASSWORD
         )
-        self.request["BODY"] = '{"login": "zopeuser", "password": "' + TEST_USER_PASSWORD + '"}'
+        self.request["BODY"] = (
+            '{"login": "zopeuser", "password": "' + TEST_USER_PASSWORD + '"}'
+        )
         service = self.traverse()
         res = service.reply()
         self.assertEqual(200, self.request.response.getStatus())

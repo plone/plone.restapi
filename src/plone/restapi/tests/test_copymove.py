@@ -80,7 +80,9 @@ class TestCopyMoveFunctional(unittest.TestCase):
         ]
 
         api.user.create(
-            email="memberuser@example.com", username="memberuser", password=TEST_USER_PASSWORD
+            email="memberuser@example.com",
+            username="memberuser",
+            password=TEST_USER_PASSWORD,
         )
 
         self.api_session = RelativeSession(self.portal_url, test=self)

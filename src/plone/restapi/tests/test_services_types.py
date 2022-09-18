@@ -503,7 +503,9 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_addable_types_for_non_manager_user(self):
         user = api.user.create(
-            email="noam.chomsky@example.com", username="noam", password=TEST_USER_PASSWORD
+            email="noam.chomsky@example.com",
+            username="noam",
+            password=TEST_USER_PASSWORD,
         )
 
         folder = api.content.create(

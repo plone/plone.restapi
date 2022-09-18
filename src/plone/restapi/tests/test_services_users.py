@@ -176,7 +176,8 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD}
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
         )
         transaction.commit()
 
@@ -207,7 +208,8 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD}
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
         )
         transaction.commit()
 
@@ -300,7 +302,8 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_uuid_as_userid = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD}
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
         )
         transaction.commit()
 
@@ -724,7 +727,8 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD}
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
         )
         transaction.commit()
 
@@ -753,7 +757,8 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD}
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
         )
         transaction.commit()
 
@@ -781,7 +786,8 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD}
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
         )
         transaction.commit()
 
