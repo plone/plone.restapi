@@ -4,6 +4,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFPlone.interfaces.constrains import ISelectableConstrainTypes
@@ -502,7 +503,9 @@ class TestServicesTypes(unittest.TestCase):
 
     def test_addable_types_for_non_manager_user(self):
         user = api.user.create(
-            email="noam.chomsky@example.com", username="noam", password="12345"
+            email="noam.chomsky@example.com",
+            username="noam",
+            password=TEST_USER_PASSWORD,
         )
 
         folder = api.content.create(
@@ -522,7 +525,7 @@ class TestServicesTypes(unittest.TestCase):
 
         transaction.commit()
 
-        self.api_session.auth = ("noam", "12345")
+        self.api_session.auth = ("noam", TEST_USER_PASSWORD)
         # In the folder, the user should be able to add types since we granted
         # Contributor role on it
         response = self.api_session.get("/folder/@types")
