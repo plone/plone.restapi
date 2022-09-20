@@ -165,12 +165,12 @@ To avoid confusion we always use lowercase letters in URIs.
 **Reason:**
 
 Spinal case is easier to read and safer to use than camelCase.
-URLs are case sensitive (RFC3986).
+URLs are case-sensitive (RFC3986).
 Plone uses spinal case for URL creation.
 The page title "My page" becomes "my-page".
 Mixed naming conventions in URLs would be confusing.
 For example, `/my-folder/@send_url_to_user`, is confusing.
-[Google recommends spinal-case in URLs](https://developers.google.com/search/docs/advanced/guidelines/url-structure) for better search engine optimization.
+[Google recommends spinal-case in URLs](https://developers.google.com/search/docs/crawling-indexing/url-structure) for better search engine optimization.
 
 **Discussion:**
 
