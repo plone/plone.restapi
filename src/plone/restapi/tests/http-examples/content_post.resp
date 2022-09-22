@@ -7,6 +7,9 @@ Location: http://localhost:55001/plone/folder/my-document
         "actions": {
             "@id": "http://localhost:55001/plone/folder/my-document/@actions"
         },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/folder/my-document/@aliases"
+        },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/folder/my-document/@breadcrumbs"
         },

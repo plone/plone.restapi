@@ -12,6 +12,7 @@
   <include package=".auth" />
   <include package=".actions" />
   <include package=".addons" />
+  <include package=".aliases" />
   <include package=".breadcrumbs" />
   <include package=".content" />
   <include package=".controlpanels" />

@@ -2,6 +2,7 @@ from plone import api
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.registry.interfaces import IRegistry
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
@@ -38,7 +39,9 @@ class TestCommentsEndpoint(unittest.TestCase):
         )
         api.content.transition(self.doc, "publish")
 
-        api.user.create(username="jos", password="josjos", email="jos@plone.org")
+        api.user.create(
+            username="jos", password=TEST_USER_PASSWORD, email="jos@plone.org"
+        )
 
         # Admin session
         self.api_session = RelativeSession(self.portal_url, test=self)
@@ -48,7 +51,7 @@ class TestCommentsEndpoint(unittest.TestCase):
         # User session
         self.user_session = RelativeSession(self.portal_url, test=self)
         self.user_session.headers.update({"Accept": "application/json"})
-        self.user_session.auth = ("jos", "jos")
+        self.user_session.auth = ("jos", TEST_USER_PASSWORD)
 
         transaction.commit()
 
