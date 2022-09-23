@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "Relations between content items can be created, queried and deleted using the /@relations endpoint."
-  "property=og:description": "Relations between content items can be created, queried and deleted using the /@relations and /@relations-catalog endpoints."
-  "property=og:title": "Relations"
-  "keywords": "Plone, plone.restapi, REST, API, Relations"
+myst:
+  html_meta:
+    "description": "Relations between content items can be created, queried and deleted using the /@relations endpoint."
+    "property=og:description": "Relations between content items can be created, queried and deleted using the /@relations and /@relations-catalog endpoints."
+    "property=og:title": "Relations"
+    "keywords": "Plone, plone.restapi, REST, API, Relations"
 ---
 
 # Relations
@@ -38,12 +39,12 @@ Request outgoing relations for a content item `/plone/document`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/relations_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/relations_get.req
 ```
 
 Response with outgoing relations of `/plone/document`:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/relations_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_get.resp
 :language: http
 ```
 
@@ -51,12 +52,12 @@ Request outgoing relations of a certain type for a content item:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/relations_get_relationname.req
+    :request: ../../../src/plone/restapi/tests/http-examples/relations_get_relationname.req
 ```
 
 Response with outgoing relations for `/plone/document` of type `comprisesComponentPart`:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/relations_get_relationname.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_get_relationname.resp
 :language: http
 ```
 
@@ -65,7 +66,7 @@ Reading incoming relations for a content item:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/relations_get_backrelations.req
+    :request: ../../../src/plone/restapi/tests/http-examples/relations_get_backrelations.req
 ```
 
 Example response:
@@ -76,10 +77,10 @@ Reading incoming relations of a certain type for a content item:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/relations_get_backrelations_relationname.req
+    :request: ../../../src/plone/restapi/tests/http-examples/relations_get_backrelations_relationname.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/relations_get_backrelations_relationname.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_get_backrelations_relationname.resp
 :language: http
 ```
 
@@ -93,10 +94,10 @@ Adding a relation:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/relations_post.req
+    :request: ../../../src/plone/restapi/tests/http-examples/relations_post.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/relations_post.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_post.resp
 :language: http
 ```
 
@@ -104,10 +105,10 @@ Adding multiple relations:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/relations_post_multiple.req
+    :request: ../../../src/plone/restapi/tests/http-examples/relations_post_multiple.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/relations_post_multiple.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_post_multiple.resp
 :language: http
 ```
 
@@ -165,7 +166,7 @@ GET /plone/@relations-catalog
 This will return statistics on all existing relations.
 That data will be used for the relations-controlpanel.
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/relations_catalog_get_stats.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_catalog_get_stats.resp
 :language: http
 ```
 
@@ -179,10 +180,10 @@ List all relations of the type "comprisesComponentPart":
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/relations_get_relationname.req
+    :request: ../../../src/plone/restapi/tests/http-examples/relations_get_relationname.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/relations_get_relationname.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_get_relationname.resp
 :language: http
 ```
 
