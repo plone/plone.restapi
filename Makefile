@@ -124,6 +124,7 @@ docs-html: bin/python  ## Build HTML
 docs-livehtml: bin/python  ## Rebuild Sphinx documentation on changes, with live-reload in the browser
 	cd "$(DOCS_DIR)" && ${SPHINXAUTOBUILD} \
 		--ignore "*.swp" \
+		--port 8050 \
 		-b html . "$(BUILDDIR)/html" $(SPHINXOPTS)
 
 .PHONY: docs-linkcheck
