@@ -1,39 +1,43 @@
 ---
 myst:
   html_meta:
-    "description": "Relations between content items can be created, queried and deleted using the /@relations endpoint."
-    "property=og:description": "Relations between content items can be created, queried and deleted using the /@relations and /@relations-catalog endpoints."
+    "description": "Relations between content items can be created, queried, and deleted using the /@relations and /@relations-catalog endpoints."
+    "property=og:description": "Relations between content items can be created, queried, and deleted using the /@relations and /@relations-catalog endpoints."
     "property=og:title": "Relations"
-    "keywords": "Plone, plone.restapi, REST, API, Relations"
+    "keywords": "Plone, plone.restapi, REST, API, Relations, relations-catalog, endpoints"
 ---
+
+(restapi-relations-label)=
 
 # Relations
 
-Plones relations model binary relationships between objects without using links or a hierarchy.
+Plone's relations represent binary relationships between objects without using links or a hierarchy.
 
-There are relations based on fields in a content-type schema that are editable by users.
-There are also relations without fields (e.g. linkintegrity or working-copy) that are created and deleted dynamically.
-Every relation element has a source object, a target object and the name of the relation.
+There are relations based on fields in a content type schema that are editable by users.
+There are also relations without fields, such as `linkintegrity` or `working-copy`, that are created and deleted dynamically.
+Every relation element has a source object, a target object, and the name of the relation.
 
-Relations can be created, queried and deleted by interacting through the `@relations` and `@relations-catalog` endpoints.
+Relations can be created, queried, and deleted by interacting through the `@relations` and `@relations-catalog` endpoints.
 
 Reading relations with the `@relations` endpoint requires the `zope2.View` permission on the content object.
 Creating and deleting relations requires the `cmf.ModifyContent` permission on the content object.
 
 Interacting with the `@relations-catalog` endpoint requires the `cmf.ManagePortal` permission.
 
+
+(restapi-listing-relations-of-an-object-label)=
+
 ## Listing relations of an object
 
-By default all relations are listed for which the context is the source.
-```{TODO} language and grammar. 
-Hm, @ksuess suggests:
+By default, all relations are listed for a given source's context.
 
-By default, without any parameters, all relations with source context are listed.
-```
 Alternatively you can list incoming relations by passing the parameter `backrelations=1`.
+
 Optionally you can filter by relationship by passing the parameter `relation=<relationname>`.
-Relation-targets for which the user does not have the View-permission are omitted from the results.
-In all cases the results are grouped by relations and the source and target are returned using the summarizer format.
+
+Relation targets for which the user does not have the View permission are omitted from the results.
+
+In all cases the results are grouped by relations, and the source and target are returned using the summarizer format.
 
 Request outgoing relations for a content item `/plone/document`:
 
@@ -71,7 +75,9 @@ Reading incoming relations for a content item:
 
 Example response:
 
-TODO
+```{todo}
+Add example response for this request.
+```
 
 Reading incoming relations of a certain type for a content item:
 
@@ -85,12 +91,14 @@ Reading incoming relations of a certain type for a content item:
 ```
 
 
+(restapi-relations-creating-relations-for-an-object-label)=
+
 ## Creating relations for an object
 
-You can create all kinds of relations between objects and query for them later.
-If the relation is based on a `RelationChoice` or `RelationList` field on the source object, the value of that field is created/updated accordingly.
+You can create all kinds of relations between objects, then query for them later.
+If the relation is based on a `RelationChoice` or `RelationList` field on the source object, the value of that field is created or updated accordingly.
 
-Adding a relation: 
+Adding a relation:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -113,49 +121,55 @@ Adding multiple relations:
 ```
 
 
-## Deleting relations
+(restapi-relations-deleting-relations-of-an-object-label)=
 
-In order to delete relation elements, you must provide either source, target, or relation.
+## Deleting relations of an object
+
+In order to delete relation elements, you must provide either the source, target, or relation.
 You can mix and match.
 
-Delete all relations from this object to any target
+Delete all relations from this object to any target:
 
 ```
 DELETE /plone/test-document/@relations
 ```
 
-Delete all relations from any source to this object
+Delete all relations from any source to this object:
 
 ```
 DELETE /plone/test-document/@relations?backrelations=1
 ```
 
-Delete relations with name "comprisesComponentPart" from this object to any target
+Delete relations with name `comprisesComponentPart` from this object to any target:
 
 ```
 DELETE /plone/test-document/@relations?relation=comprisesComponentPart
 ```
 
-Delete relations with name "comprisesComponentPart" from any source to this object
+Delete relations with name `comprisesComponentPart` from any source to this object:
 
 ```
 DELETE /plone/test-document/@relations?backrelations=1&relation=comprisesComponentPart
 ```
 
-Delete relations with name "comprisesComponentPart" from any source to any target
+Delete relations with name `comprisesComponentPart` from any source to any target:
 
 ```
 DELETE /plone/@relations-catalog?relation=comprisesComponentPart
 ```
 
-If a deleted relation is based on a `RelationChoice` or `RelationList` field on the source object, the value of the field is removed/updated accordingly.
+If a deleted relation is based on a `RelationChoice` or `RelationList` field on the source object, the value of the field is removed or updated accordingly.
 
+
+(restapi-relations-the-relations-catalog-endpoint-label)=
 
 ## The `@relations-catalog` endpoint
 
-The `@relations-catalog` endpoint allows to interact with all kinds of relations individually or in bulk.
-It is necessary to use a differently named endpoint for that purpose because the site-root itself can be the source or target of relations.
+The `@relations-catalog` endpoint allows to interact with all kinds of relations, individually or in bulk.
+It is necessary to use a differently named endpoint for that purpose because the site root itself can be the source or target of relations.
 
+
+(restapi-relations-getting-statistics-for-all-relations-label)=
 
 ### Getting statistics for all relations
 
@@ -164,19 +178,21 @@ GET /plone/@relations-catalog
 ```
 
 This will return statistics on all existing relations.
-That data will be used for the relations-controlpanel.
+That data will be used for the relations control panel.
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_catalog_get_stats.resp
 :language: http
 ```
 
 
+(restapi-relations-listing-relations-label)=
+
 ### Listing relations
 
-To list relation(s), you must provide either source, target or relationship.
-You can mix and match to inspect all kind of relations.
+To list relations, you must provide either the source, target, or relationship.
+You can mix and match to inspect all kinds of relations.
 
-List all relations of the type "comprisesComponentPart":
+List all relations of the type `comprisesComponentPart`:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -193,26 +209,25 @@ List all relations outgoing from a certain object.
 GET /plone/@relations-catalog?source=uuid1
 ```
 
-This is equivalent to
+This is equivalent to:
 
 ```
 GET /plone/<item-with-uuid1>/@relations
 ```
 
-
-List all relations outgoing from an object with the relation `comprisesComponentPart`
+List all relations outgoing from an object with the relation `comprisesComponentPart`:
 
 ```
 GET /plone/@relations-catalog?source=uuid1&relation=comprisesComponentPart
 ```
 
-This is equivalent to
+This is equivalent to:
 
 ```
 GET /plone/<item-with-uuid1>/@relations?relation=comprisesComponentPart
 ```
 
-List all relations from any source to a certain object
+List all relations from any source to a certain object:
 
 ```
 GET /plone/@relations-catalog?target=uuid1
@@ -224,7 +239,7 @@ This is equivalent to:
 GET /plone/<item-with-uuid1>/@relations?backrelations=1
 ```
 
-List all relations of type `comprisesComponentPart` from any source to a certain object
+List all relations of type `comprisesComponentPart` from any source to a certain object:
 
 ```
 GET /plone/@relations-catalog?target=uuid1&relation=comprisesComponentPart
@@ -236,13 +251,16 @@ This is equivalent to:
 GET /plone/<item-with-uuid1>/@relations?backrelations=1&relation=comprisesComponentPart
 ```
 
+
+(restapi-relations-creating-relations-label)=
+
 ### Creating relations
 
 You can create all kinds of relations between objects and query for them later.
 
-Adding a relation requires a source uuid, a target uuid and the name of the relation.
+Adding a relation requires a source UUID, a target UUID, and the name of the relation.
 
-If the relation is based on a `RelationChoice` or `RelationList` field on the source object, the value of that field is created/updated accordingly.
+If the relation is based on a `RelationChoice` or `RelationList` field on the source object, the value of that field is created or updated accordingly.
 
 Add relations:
 
@@ -293,9 +311,11 @@ Content-Type: application/json
 ```
 
 
+(restapi-relations-deleting-relations-label)=
+
 ### Deleting relations
 
-If a deleted relation is based on a `RelationChoice` or `RelationList` field on the source object, the value of the field is removed/updated accordingly.
+If a deleted relation is based on a `RelationChoice` or `RelationList` field on the source object, the value of the field is removed or updated accordingly.
 
 Delete all relations of the type `comprisesComponentPart` from any source to any target:
 
@@ -326,5 +346,3 @@ This is equivalent to:
 ```
 DELETE /plone/<item-with-uuid1>/@relations?backrelations=1
 ```
-
-[...]
