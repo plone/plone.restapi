@@ -2292,7 +2292,7 @@ class TestRules(TestDocumentationBase):
         payload = {"rule_ids": ["rule-1"]}
         url = "/@content-rules"
         response = self.api_session.delete(url, json=payload)
-        save_request_and_response_for_docs("rules_add", response)
+        save_request_and_response_for_docs("rules_delete", response)
 
     def test_rules_move_up(self):
         # Move a rule up in the order
