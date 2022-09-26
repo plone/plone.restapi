@@ -35,3 +35,133 @@ The API consumer can assign, unassign , enable, disable,
 | `GET`   | `/@content-rules/`         | Get aquired, assignable and assigned rules                      |
 | `PATCH` | `/@content-rules/` with RAW Body | enable/disable/(disable) apply to subfolders/move down/up |
 | `DELETE`| `/@content-rules/` with RAW Body | Unassign rule on context                                  |
+
+
+## Assigning a new Content rule with `POST`
+
+To assign a content rule to a context, send a `POST` request to the `<context>/@content-rules` endpoint:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/rules_add.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/rules_add.resp
+:language: http
+```
+
+## Getting content rule on a context with `GET`
+
+To get content rules assigned/assignable/aquired on a context, send a `GET`
+request to the `<context>/@content-rules` endpoint:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/rules_get.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/rules_get.resp
+:language: http
+```
+
+## Changing content rules on a context with `PATCH`
+
+To make changes on content rule assignments on a context, send a `PATCH`
+request to the `<context>/@content-rules` endpoint:
+
+### Apply on subfolders
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/rules_apply_subfolders.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/rules_apply_subfolders.resp
+:language: http
+```
+
+### Disable apply on subfolders
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/rules_disable_apply_subfolders.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/rules_disable_apply_subfolders.resp
+:language: http
+```
+
+### Enable
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/rules_enable.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/rules_enable.resp
+:language: http
+```
+
+### Disable
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/rules_disable.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/rules_disable.resp
+:language: http
+```
+
+### Move up
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/rules_move_up.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/rules_move_up.resp
+:language: http
+```
+
+### Move down
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/rules_move_down.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/rules_move_down.resp
+:language: http
+```
+
+## Unassign content rules with `DELETE`
+
+To unassign content rules on a context, send a `DELETE` request to the `<context>/@content-rules` endpoint:
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/rules_delete.req
+```
+
+Response:
+
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/rules_delete.resp
+:language: http
+```

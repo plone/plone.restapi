@@ -215,12 +215,12 @@ To list the available content rules, send a `GET` request to `@controlpanels/con
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_get_contentrules.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_get_contentrules.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_get_contentrules.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_get_contentrules.resp
 :language: http
 ```
 
@@ -243,12 +243,12 @@ To create a new content rule, send a `POST` request to the `/@controlpanels/cont
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_post_rule.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_post_rule.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_post_rule.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_post_rule.resp
 :language: http
 ```
 
@@ -261,12 +261,12 @@ condition type in the payload:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_condition_portaltype.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_condition_portaltype.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_condition_portaltype.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_condition_portaltype.resp
 :language: http
 ```
 
@@ -279,12 +279,12 @@ action type in the payload:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_action_logger.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_action_logger.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_action_logger.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_post_rule_action_logger.resp
 :language: http
 ```
 
@@ -295,12 +295,12 @@ After a successful `POST`, access the content rule by sending a `GET` request to
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_get_rule.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_get_rule.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_get_rule.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_get_rule.resp
 :language: http
 ```
 
@@ -312,12 +312,12 @@ To update an existing content rule, send a `PATCH` request to the server.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule.resp
 :language: http
 ```
 
@@ -328,12 +328,12 @@ To update an existing condition on a content rule, send a `PATCH` request to the
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_condition_portaltype.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_condition_portaltype.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_condition_portaltype.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_condition_portaltype.resp
 :language: http
 ```
 
@@ -344,12 +344,12 @@ To update an existing action on a content rule, send a `PATCH` request to the se
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_action_logger.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_action_logger.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_action_logger.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_patch_rule_action_logger.resp
 :language: http
 ```
 
@@ -360,12 +360,12 @@ Delete an existing content rule by sending a `DELETE` request to the URL of an e
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule.resp
 :language: http
 ```
 
@@ -375,12 +375,12 @@ Delete an existing condition from a content rule by sending a `DELETE` request t
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_condition.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_condition.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_condition.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_condition.resp
 :language: http
 ```
 
@@ -390,11 +390,11 @@ Delete an existing action from a content rule by sending a `DELETE` request to t
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_condition.req
+    :request: ../../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_condition.req
 ```
 
 Response:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/delete_rule_condition.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/delete_rule_condition.resp
 :language: http
 ```
