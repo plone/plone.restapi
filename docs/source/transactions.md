@@ -33,7 +33,20 @@ The following fields are returned:
 - `time`: At what time transaction was made through the website.
 - `description`: Description of the transaction with the `path` where the transaction was made in the website.
 - `id`: Transaction ID.
-- `size`: Size of the transaction.
+`username`
+: The person who made the transactions through the website.
+
+`time`
+: The time when the transaction was made through the website.
+
+`description`
+: The description of the transaction with the `path` where the transaction was made in the website.
+
+`id`
+: The transaction ID.
+
+`size`
+: The size of the transaction.
 
 
 ## Reverting a Transaction or a group of Transactions
