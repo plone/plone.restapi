@@ -8,6 +8,24 @@ Changelog
 
 .. towncrier release notes start
 
+8.27.0 (2022-09-14)
+-------------------
+
+New features:
+
+
+- Added @aliases endpoint with GET/POST/DELETE
+  [iulianpetchesi] (#1393)
+
+
+Bug fixes:
+
+
+- When an `id` is specified explicitly in the content POST endpoint,
+  return a 400 error response if it is invalid or unavailable.
+  [davisagli] (#1487)
+
+
 8.26.0 (2022-09-10)
 -------------------
 
@@ -74,7 +92,7 @@ New features:
 
 
 - Add support to search for fullname, email, id on the @users endpoint with "?search=" [ksuess] (#1443)
-- Add @transactions endpoint to fetch transactions have been made through plone website [@MdSahil-oss]
+- Add @transactions endpoint to fetch transactions that have been made through the Plone website. [@MdSahil-oss]
 
 
 Bug fixes:
