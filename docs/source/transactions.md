@@ -10,7 +10,7 @@ myst:
 # Transactions
 
 The `@transactions` endpoint exposes transactions that have been made through the Plone website.
-Each change through the plone website is listed.
+Each change through the Plone website is listed.
 It also allows to revert transactions so that the Plone website can be reverted to a previous state.
 
 
