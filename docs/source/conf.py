@@ -294,11 +294,11 @@ myst_enable_extensions = [
 ]
 
 myst_substitutions = {
-    "postman_basic_auth": "![](_static/img/postman_basic_auth.png)",
-    "postman_headers": "![](_static/img/postman_headers.png)",
-    "postman_request": "![](_static/img/postman_request.png)",
-    "postman_response": "![](_static/img/postman_response.png)",
-    "postman_retain_headers": "![](_static/img/postman_retain_headers.png)",
+    "postman_basic_auth": "![](../_static/img/postman_basic_auth.png)",
+    "postman_headers": "![](../_static/img/postman_headers.png)",
+    "postman_request": "![](../_static/img/postman_request.png)",
+    "postman_response": "![](../_static/img/postman_response.png)",
+    "postman_retain_headers": "![](../_static/img/postman_retain_headers.png)",
     "fawrench": '<span class="fa fa-wrench" style="font-size: 1.6em;"></span>',
 }
 

@@ -253,7 +253,7 @@ class TestFolderCreate(unittest.TestCase):
 
     def test_post_with_uid_without_manage_portal_permission(self):
         user = "test-user-2"
-        password = "secret"
+        password = TEST_USER_PASSWORD
         self.portal.acl_users.userFolderAddUser(user, password, ["Contributor"], [])
         transaction.commit()
 

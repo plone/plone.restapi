@@ -13,6 +13,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.locking.interfaces import ITTWLockable
@@ -878,14 +879,14 @@ class TestDocumentation(TestDocumentationBase):
         api.user.create(
             email="noam.chomsky@example.com",
             username="noam",
-            password="secret",
+            password=TEST_USER_PASSWORD,
             properties=properties,
         )
 
         api.user.create(
             email="noam.chomsky@example.com",
             username="noam-fake",
-            password="secret",
+            password=TEST_USER_PASSWORD,
             properties=properties,
         )
 
@@ -893,7 +894,7 @@ class TestDocumentation(TestDocumentationBase):
 
         logged_out_api_session = RelativeSession(self.portal_url, test=self)
         logged_out_api_session.headers.update({"Accept": "application/json"})
-        logged_out_api_session.auth = ("noam-fake", "secret")
+        logged_out_api_session.auth = ("noam-fake", TEST_USER_PASSWORD)
 
         response = logged_out_api_session.get("@users/noam")
         save_request_and_response_for_docs("users_unauthorized_get", response)
@@ -911,14 +912,14 @@ class TestDocumentation(TestDocumentationBase):
         api.user.create(
             email="noam.chomsky@example.com",
             username="noam",
-            password="secret",
+            password=TEST_USER_PASSWORD,
             properties=properties,
         )
         transaction.commit()
 
         logged_out_api_session = RelativeSession(self.portal_url, test=self)
         logged_out_api_session.headers.update({"Accept": "application/json"})
-        logged_out_api_session.auth = ("noam", "secret")
+        logged_out_api_session.auth = ("noam", TEST_USER_PASSWORD)
         response = logged_out_api_session.get("@users/noam")
         save_request_and_response_for_docs("users_authorized_get", response)
         logged_out_api_session.close()
@@ -1839,6 +1840,137 @@ class TestCommenting(TestDocumentationBase):
     def test_documentation_expansion(self):
         response = self.api_session.get("/front-page?expand=breadcrumbs,workflow")
         save_request_and_response_for_docs("expansion", response)
+
+    def test_aliases_add(self):
+        # Add 3 aliases
+        url = f"{self.document.absolute_url()}/@aliases"
+        payload = {
+            "items": [
+                {"path": "/new-alias"},
+                {"path": "/old-alias"},
+                {"path": "/final-alias"},
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs("aliases_add", response)
+
+    def test_aliases_delete(self):
+        # Delete 1 alias
+        url = f"{self.document.absolute_url()}/@aliases"
+        payload = {
+            "items": [
+                {"path": "/new-alias"},
+                {"path": "/old-alias"},
+                {"path": "/final-alias"},
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        payload = {"items": [{"path": "/old-alias"}]}
+        response = self.api_session.delete(url, json=payload)
+
+        save_request_and_response_for_docs("aliases_delete", response)
+
+    def test_aliases_get(self):
+        # Get aliases
+        url = f"{self.document.absolute_url()}/@aliases"
+
+        payload = {"items": "/simple-alias"}
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("aliases_get", response)
+
+    def test_aliases_root_add(self):
+        # Add 2 aliases
+        url = f"{self.portal.absolute_url()}/@aliases"
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs("aliases_root_add", response)
+
+    def test_aliases_root_delete(self):
+        # Delete 1 alias
+        url = f"{self.portal.absolute_url()}/@aliases"
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        payload = {"items": [{"path": "/old-page"}]}
+        response = self.api_session.delete(url, json=payload)
+
+        save_request_and_response_for_docs("aliases_root_delete", response)
+
+    def test_aliases_root_get(self):
+        # Get aliases
+        url = f"{self.portal.absolute_url()}/@aliases"
+        query = ""
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_root_get", response)
+
+    def test_aliases_root_filter(self):
+        # Get aliases
+        url = f"{self.portal.absolute_url()}/@aliases"
+        query = "?q=/fizzbuzz"
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_root_filter", response)
 
 
 class TestControlPanelDocumentation(TestDocumentationBase):

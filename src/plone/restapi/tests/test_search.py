@@ -7,6 +7,7 @@ from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
@@ -46,12 +47,12 @@ class TestSearchFunctional(unittest.TestCase):
         api.user.create(
             email="editor@example.com",
             username="editoruser",
-            password="secret",
+            password=TEST_USER_PASSWORD,
         )
         api.user.create(
             email="editor@example.com",
             username="localeditor",
-            password="secret",
+            password=TEST_USER_PASSWORD,
         )
 
         # /plone/folder
@@ -639,7 +640,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(response["items_total"], 1)
 
         # not admin users can't see expired items
-        self.api_session.auth = ("editoruser", "secret")
+        self.api_session.auth = ("editoruser", TEST_USER_PASSWORD)
 
         response = self.api_session.get("/@search", params={}).json()
         if HAS_PLONE_6:
@@ -673,7 +674,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(response["items_total"], 1)
 
         # local-enabled Editor can only access expired contents inside folder
-        self.api_session.auth = ("localeditor", "secret")
+        self.api_session.auth = ("localeditor", TEST_USER_PASSWORD)
         response = self.api_session.get("/@search", params={}).json()
         if HAS_PLONE_6:
             # Since Plone 6 the Plone site is indexed ...
