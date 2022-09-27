@@ -51,7 +51,7 @@ The following fields are returned:
 
 ## Reverting a Transaction or a group of Transactions
 
-Reverting a single transaction or a group of transactions, both operations can be done by sending a `PATCH` request to the `@transactions` endpoint with a list of transactions IDs you want to revert:
+Reverting a single transaction or a group of transactions can be done by sending a `PATCH` request to the `@transactions` endpoint with a list of transactions IDs you want to revert:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
