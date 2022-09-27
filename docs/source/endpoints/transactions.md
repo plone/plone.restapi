@@ -20,19 +20,15 @@ Listing versions and transactions of a resource:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/transactions_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/transactions_get.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/transactions_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/transactions_get.resp
 :language: http
 ```
 
 The following fields are returned:
 
-- `username`: The person who made transactions through the website.
-- `time`: At what time transaction was made through the website.
-- `description`: Description of the transaction with the `path` where the transaction was made in the website.
-- `id`: Transaction ID.
 `username`
 : The person who made the transactions through the website.
 
@@ -46,7 +42,7 @@ The following fields are returned:
 : The transaction ID.
 
 `size`
-: The size of the transaction.
+: The size of the transaction in bytes.
 
 
 ## Reverting a Transaction or a group of Transactions
@@ -55,9 +51,9 @@ Reverting a single transaction or a group of transactions can be done by sending
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/transactions_revert.req
+    :request: ../../../src/plone/restapi/tests/http-examples/transactions_revert.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/transactions_revert.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/transactions_revert.resp
 :language: http
 ```
