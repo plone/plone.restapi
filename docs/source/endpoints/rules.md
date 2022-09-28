@@ -23,7 +23,7 @@ Access requires the `ManageContentRules` permission.
     :request: ../../src/plone/restapi/tests/http-examples/rules_get.req
 ```
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/rules_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/rules_get.resp
 :language: http
 ```
 
