@@ -33,7 +33,7 @@ The API consumer can assign, unassign, enable, disable,
 | Verb    | URL              | Action                                             |
 | ------- | ---------------- | -------------------------------------------------- |
 | `POST`  | `/@content-rules/{rule-id}`| Add rule to context                                          |
-| `GET`   | `/@content-rules/`         | Get aquired, assignable and assigned rules                      |
+| `GET`   | `/@content-rules/`         | Get acquired, assignable, and assigned rules                      |
 | `PATCH` | `/@content-rules/` with RAW Body | enable/disable/(disable) apply to subfolders/move down/up |
 | `DELETE`| `/@content-rules/` with RAW Body | Unassign rule on context                                  |
 
