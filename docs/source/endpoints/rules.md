@@ -7,7 +7,7 @@ myst:
   "keywords": "Plone, plone.restapi, REST, API, ContentRules, Rules"
 ---
 
-(rules)=
+(content-rules)=
 
 # Content Rules
 
