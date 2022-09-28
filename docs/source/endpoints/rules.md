@@ -20,7 +20,7 @@ Access requires the `ManageContentRules` permission.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../src/plone/restapi/tests/http-examples/rules_get.req
+    :request: ../../../src/plone/restapi/tests/http-examples/rules_get.req
 ```
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/rules_get.resp
