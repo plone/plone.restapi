@@ -1,5 +1,6 @@
 ---
-html_meta:
+myst:
+  html_meta:
   "description": "Available content rules in a Plone site can be listed and queried by accessing the /@content-rules endpoint on any context. Access requires the ManageContentRules permission."
   "property=og:description": "Available content rules in a Plone site can be listed and queried by accessing the /@content-rules endpoint on any context. Access requires the ManageContentRules permission."
   "property=og:title": "Content rules"
