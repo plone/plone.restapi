@@ -27,7 +27,7 @@ Access requires the `ManageContentRules` permission.
 :language: http
 ```
 
-The API consumer can assign, unassign , enable, disable,
+The API consumer can assign, unassign, enable, disable,
 (disable) apply to subfolders any of the rules available in the portal.
 
 | Verb    | URL              | Action                                             |
