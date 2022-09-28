@@ -55,7 +55,7 @@ Response:
 
 ## Getting content rule for a context with `GET`
 
-To get content rules assigned/assignable/aquired on a context, send a `GET`
+To get content rules that are assigned, assignable, or acquired for a context, send a `GET`
 request to the `<context>/@content-rules` endpoint:
 
 ```{eval-rst}
