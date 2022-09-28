@@ -53,7 +53,7 @@ Response:
 :language: http
 ```
 
-## Getting content rule on a context with `GET`
+## Getting content rule for a context with `GET`
 
 To get content rules assigned/assignable/aquired on a context, send a `GET`
 request to the `<context>/@content-rules` endpoint:
