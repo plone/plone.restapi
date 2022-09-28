@@ -43,6 +43,7 @@ roles
 searching
 system
 tiles
+transactions
 translations
 tusupload
 types
