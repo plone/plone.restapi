@@ -69,7 +69,7 @@ Response:
 :language: http
 ```
 
-## Changing content rules on a context with `PATCH`
+## Changing content rules for a context with `PATCH`
 
 To make changes on content rule assignments for a context, send a `PATCH`
 request to the `<context>/@content-rules` endpoint:
