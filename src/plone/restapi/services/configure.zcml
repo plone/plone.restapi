@@ -34,6 +34,7 @@
   <include package=".search" />
   <include package=".system" />
   <include package=".sources" />
+  <include package=".transactions" />
   <include package=".types" />
   <include package=".users" />
   <include package=".vocabularies" />
