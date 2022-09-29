@@ -28,7 +28,7 @@ Access requires the `ManageContentRules` permission.
 ```
 
 The API consumer can assign, unassign, enable, disable,
-(disable) apply to subfolders any of the rules available in the portal.
+apply or disable apply to subfolders any of the rules available in the portal.
 
 | Verb    | URL              | Action                                             |
 | ------- | ---------------- | -------------------------------------------------- |
