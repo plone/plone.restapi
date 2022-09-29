@@ -4,7 +4,7 @@ Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    "form.button.Bubble": false,
+    "form.button.NoBubble": true,
     "rule_ids": [
         "rule-1",
         "rule-2"
