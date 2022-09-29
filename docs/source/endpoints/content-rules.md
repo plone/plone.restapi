@@ -34,7 +34,8 @@ apply to subfolders, or disable apply to subfolders any of the rules available i
 | ------- | ---------------- | -------------------------------------------------- |
 | `POST`  | `/@content-rules/{rule-id}`| Add rule to context                                          |
 | `GET`   | `/@content-rules/`         | Get acquired, assignable, and assigned rules                      |
-| `PATCH` | `/@content-rules/` with RAW Body | enable/disable/(disable) apply to subfolders/move down/up |
+| `PATCH` | `/@content-rules/` with RAW Body | enable or disable,
+apply to subfolders or disable apply to subfolders, move down or move up |
 | `DELETE`| `/@content-rules/` with RAW Body | Unassign rule on context                                  |
 
 
