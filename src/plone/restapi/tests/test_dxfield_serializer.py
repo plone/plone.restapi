@@ -405,7 +405,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             )
 
             scale_download_url = "{}/@@images/{}.{}".format(
-                obj_url, scale_url_uuid, "png"
+                obj_url, scale_url_uuid, "gif" if HAS_PLONE_6 else "png"
             )
             scales = {
                 "listing": {
@@ -532,7 +532,7 @@ class TestDexterityImageFieldSerializingOriginalAndPNGScales(TestCase):
             )
 
             scale_download_url = "{}/@@images/{}.{}".format(
-                obj_url, scale_url_uuid, "png"
+                obj_url, scale_url_uuid, "gif" if HAS_PLONE_6 else "png"
             )
             scales = {
                 "listing": {
