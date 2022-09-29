@@ -2344,7 +2344,7 @@ class TestRules(TestDocumentationBase):
         # Disable apply on subfolders
         url = "/@content-rules"
         self.api_session.post(url)
-        payload = {"form.button.Bubble": True, "rule_ids": ["rule-1", "rule-2"]}
+        payload = {"form.button.Bubble": False, "rule_ids": ["rule-1", "rule-2"]}
         response = self.api_session.patch(url, json=payload)
         save_request_and_response_for_docs("rules_disable_apply_subfolders", response)
 
