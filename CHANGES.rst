@@ -8,6 +8,34 @@ Changelog
 
 .. towncrier release notes start
 
+8.28.0 (2022-09-29)
+-------------------
+
+New features:
+
+
+- Improve performance of serializing image scales. [davisagli] (#1498)
+
+
+Bug fixes:
+
+
+- Revert "When an id is specified explicitly in the content POST endpoint,
+  return a 400 error response if it is invalid or unavailable."
+  The fix was incorrect and disallowing ids that should be allowed.
+  [davisagli] (#1488)
+- Increase the length of passwords used in tests. [davisagli] (#1492)
+- Use json_compatible when serializing users in @users endpoint
+  [erral] (#1493)
+
+
+Documentation:
+
+
+- Reorganize navigation. [stevepiercy] (#1486)
+- Fix Google redirect and hyphenation of word. [stevepiercy] (#1495)
+
+
 8.27.0 (2022-09-14)
 -------------------
 
