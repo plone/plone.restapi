@@ -395,6 +395,6 @@ Delete an existing action from a content rule by sending a `DELETE` request to t
 
 Response:
 
-```{literalinclude} ../../../src/plone/restapi/tests/http-examples/delete_rule_condition.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/controlpanels_delete_rule_condition.resp
 :language: http
 ```
