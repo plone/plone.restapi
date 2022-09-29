@@ -1,1 +1,1 @@
-- Improve performance of serializing image scales. [davisagli]
+Improve performance of serializing image scales. [davisagli]
