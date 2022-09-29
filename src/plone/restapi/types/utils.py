@@ -119,6 +119,7 @@ def get_form_fieldsets(form):
         fieldset = {
             "id": group.__name__,
             "title": translate(group.label, context=getRequest()),
+            "description": translate(group.description, context=getRequest()),
             "fields": list(group.fields.values()),
             "behavior": "plone",
         }
