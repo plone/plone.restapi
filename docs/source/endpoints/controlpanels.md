@@ -198,7 +198,7 @@ Response:
 
 ### Content rules
 
-`@controlpanels/content-rules` is a custom control panel endpoint that will allow you to add, remove, and configure available {ref}`rules`.
+`@controlpanels/content-rules` is a custom control panel endpoint that will allow you to add, remove, and configure available {doc}`content-rules`.
 
 | Verb     | URL                                         | Action                                    |
 | -------- | ------------------------------------------- | ----------------------------------------- |
