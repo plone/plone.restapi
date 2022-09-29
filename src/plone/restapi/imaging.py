@@ -12,13 +12,20 @@ def get_scales(context, field, width, height):
     images_view = getMultiAdapter((context, request), name="images")
 
     for name, actual_width, actual_height in get_scale_infos():
-        # Try first with scale name
-        scale = images_view.scale(field.__name__, scale=name)
+        # Recent versions of plone.namedfile support getting scale
+        # metadata without actually generating the image scale.
+        # This was added in the same version as the `picture` method,
+        # so we can use that to check whether the `scale` method
+        # accepts the `pre` flag.
+        scale_flags = {}
+        if hasattr(images_view, "picture"):
+            scale_flags["pre"] = True
+        scale = images_view.scale(field.__name__, scale=name, **scale_flags)
         if scale is None:
             # Sometimes it fails, but we can create it
             # using scale sizes
             scale = images_view.scale(
-                field.__name__, width=actual_width, height=actual_height
+                field.__name__, width=actual_width, height=actual_height, **scale_flags
             )
 
         if scale is None:
