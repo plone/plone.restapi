@@ -48,8 +48,11 @@ def get_scales(context, field, width, height):
 def get_original_image_url(context, fieldname, width, height):
     request = getRequest()
     images_view = getMultiAdapter((context, request), name="images")
+    scale_flags = {}
+    if hasattr(images_view, "picture"):
+        scale_flags["pre"] = True
     scale = images_view.scale(
-        fieldname, width=width, height=height, direction="thumbnail"
+        fieldname, width=width, height=height, direction="thumbnail", **scale_flags
     )
     if scale:
         return scale.url
