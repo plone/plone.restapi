@@ -22,7 +22,7 @@ DOCS_DIR        = ./docs/source/
 BUILDDIR        = ../_build/
 ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(SPHINXOPTS) .
 
-all: .installed.cfg
+all: build-plone-6.0
 
 # Add the following 'help' target to your Makefile
 # And add help text after each target name starting with '\#\#'

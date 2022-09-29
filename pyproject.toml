@@ -23,3 +23,8 @@ showcontent = true
 directory = "internal"
 name = "Internal:"
 showcontent = true
+
+[[tool.towncrier.type]]
+directory = "doc"
+name = "Documentation:"
+showcontent = true
