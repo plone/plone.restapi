@@ -48,6 +48,7 @@ translations
 tusupload
 types
 users
+userschema
 vocabularies
 workflow
 workingcopy

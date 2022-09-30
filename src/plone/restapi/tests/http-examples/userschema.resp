@@ -1,0 +1,87 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "fieldsets": [
+        {
+            "behavior": "plone",
+            "fields": [
+                "fullname",
+                "email",
+                "home_page",
+                "description",
+                "location",
+                "portrait"
+            ],
+            "id": "default",
+            "title": "Default"
+        }
+    ],
+    "properties": {
+        "description": {
+            "description": "\n          A short overview of who you are and what you do. Will be displayed on your author page, linked from the items you create.\n      ",
+            "factory": "Text",
+            "title": "Biography",
+            "type": "string",
+            "widget": "textarea"
+        },
+        "email": {
+            "description": "We will use this address if you need to recover your password",
+            "factory": "Email",
+            "title": "Email",
+            "type": "string",
+            "widget": "email"
+        },
+        "fullname": {
+            "description": "Enter full name, e.g. John Smith.",
+            "factory": "Text line (String)",
+            "title": "Full Name",
+            "type": "string"
+        },
+        "home_page": {
+            "description": "\n          The URL for your external home page, if you have one.\n      ",
+            "factory": "URL",
+            "title": "Home page",
+            "type": "string",
+            "widget": "url"
+        },
+        "location": {
+            "description": "\n          Your location - either city and country - or in a company setting, where your office is located.\n      ",
+            "factory": "Text line (String)",
+            "title": "Location",
+            "type": "string"
+        },
+        "portrait": {
+            "description": "\n          To add or change the portrait: click the \"Browse\" button; select a picture of yourself. Recommended image size is 75 pixels wide by 100 pixels tall.\n      ",
+            "factory": "Image",
+            "properties": {
+                "portrait.contentType": {
+                    "default": "",
+                    "description": "The content type identifies the type of data.",
+                    "factory": "Text line (String)",
+                    "title": "Content Type",
+                    "type": "string"
+                },
+                "portrait.data": {
+                    "default": "",
+                    "description": "The actual content of the object.",
+                    "factory": "Text line (String)",
+                    "title": "Data",
+                    "type": "string"
+                },
+                "portrait.filename": {
+                    "description": "",
+                    "factory": "Text line (String)",
+                    "title": "Filename",
+                    "type": "string"
+                }
+            },
+            "title": "Portrait",
+            "type": "object"
+        }
+    },
+    "required": [
+        "email"
+    ],
+    "type": "object"
+}

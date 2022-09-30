@@ -251,7 +251,8 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
 
         response = self.api_session.post(
-            folder.absolute_url(), json={"@type": "Document", "title": "My Document"}
+            folder.absolute_url(),
+            json={"@type": "Document", "title": "My Document"},
         )
         save_request_and_response_for_docs("content_post", response)
 
@@ -414,7 +415,11 @@ class TestDocumentation(TestDocumentationBase):
         self.portal.invokeFactory("Folder", id="folder1", title="Folder 1")
         self.portal.folder1.invokeFactory("Folder", id="folder2", title="Folder 2")
         transaction.commit()
-        query = {"sort_on": "path", "path.query": "/plone/folder1", "path.depth": "1"}
+        query = {
+            "sort_on": "path",
+            "path.query": "/plone/folder1",
+            "path.depth": "1",
+        }
         response = self.api_session.get("/@search", params=query)
         save_request_and_response_for_docs("search_options", response)
 
@@ -435,7 +440,10 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_search_metadata_fields(self):
         self.portal.invokeFactory("Document", id="doc1", title="Lorem Ipsum")
         transaction.commit()
-        query = {"SearchableText": "lorem", "metadata_fields": ["modified", "created"]}
+        query = {
+            "SearchableText": "lorem",
+            "metadata_fields": ["modified", "created"],
+        }
         response = self.api_session.get("/@search", params=query)
         save_request_and_response_for_docs("search_metadata_fields", response)
 
@@ -478,7 +486,8 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_registry_update(self):
         response = self.api_session.patch(
-            "/@registry/", json={"plone.app.querystring.field.path.title": "Value"}
+            "/@registry/",
+            json={"plone.app.querystring.field.path.title": "Value"},
         )
         save_request_and_response_for_docs("registry_update", response)
 
@@ -762,7 +771,9 @@ class TestDocumentation(TestDocumentationBase):
         ]
         for i in range(7):
             folder.invokeFactory(
-                "Document", id="doc-%s" % str(i + 1), title="Document %s" % str(i + 1)
+                "Document",
+                id="doc-%s" % str(i + 1),
+                title="Document %s" % str(i + 1),
             )
         transaction.commit()
 
@@ -840,7 +851,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
         response = self.api_session.get("@users/noam")
@@ -856,7 +869,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
 
@@ -932,7 +947,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         api.group.add_user(groupname="Reviewers", username="noam")
         transaction.commit()
@@ -1003,7 +1020,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
 
@@ -1061,7 +1080,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
 
@@ -1232,7 +1253,10 @@ class TestDocumentation(TestDocumentationBase):
         )
         createContentInContainer(folder, "Folder", id="subfolder2", title="SubFolder 2")
         thirdlevelfolder = createContentInContainer(
-            subfolder1, "Folder", id="thirdlevelfolder", title="Third Level Folder"
+            subfolder1,
+            "Folder",
+            id="thirdlevelfolder",
+            title="Third Level Folder",
         )
         createContentInContainer(
             thirdlevelfolder,
@@ -1261,7 +1285,10 @@ class TestDocumentation(TestDocumentationBase):
         )
         createContentInContainer(folder, "Folder", id="subfolder2", title="SubFolder 2")
         thirdlevelfolder = createContentInContainer(
-            subfolder1, "Folder", id="thirdlevelfolder", title="Third Level Folder"
+            subfolder1,
+            "Folder",
+            id="thirdlevelfolder",
+            title="Third Level Folder",
         )
         createContentInContainer(
             thirdlevelfolder,
@@ -1308,7 +1335,12 @@ class TestDocumentation(TestDocumentationBase):
 
         response = self.api_session.post(
             "/@copy",
-            json={"source": [self.document.absolute_url(), newsitem.absolute_url()]},
+            json={
+                "source": [
+                    self.document.absolute_url(),
+                    newsitem.absolute_url(),
+                ]
+            },
         )
         save_request_and_response_for_docs("copy_multiple", response)
 
@@ -1353,7 +1385,10 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_sources_get(self):
         api.content.create(
-            container=self.portal, id="doc", type="DXTestDocument", title="DX Document"
+            container=self.portal,
+            id="doc",
+            type="DXTestDocument",
+            title="DX Document",
         )
         transaction.commit()
         response = self.api_session.get("/doc/@sources/test_choice_with_source")
@@ -1545,7 +1580,8 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token":'
+            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("lock", response)
@@ -1558,7 +1594,8 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token":'
+            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("lock_nonstealable_timeout", response)
@@ -1584,7 +1621,8 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token":'
+            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("refresh_lock", response)
@@ -2217,3 +2255,8 @@ class TestIterateDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs(
             "vocabularies_get_filtered_by_token_list", response
         )
+
+    def test_documentation_schema_user(self):
+        response = self.api_session.get("/@userschema")
+
+        save_request_and_response_for_docs("userschema", response)
