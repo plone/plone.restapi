@@ -1,3 +1,4 @@
+from importlib import import_module
 from zope.component import adapter
 from zope.interface import Interface
 from Products.CMFPlone.interfaces.controlpanel import IDateAndTimeSchema
@@ -17,6 +18,8 @@ try:
     from plone.i18n.interfaces import ILanguageSchema
 except ImportError:  # pragma: no cover
     from Products.CMFPlone.interfaces.controlpanel import ILanguageSchema
+
+PLONE_6 = getattr(import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False)
 
 
 # General
@@ -111,3 +114,5 @@ class UserGroupControlpanel(RegistryConfigletPanel):
     schema = IUserGroupsSettingsSchema
     configlet_id = "UsersGroupsSettings"
     configlet_category_id = "plone-users"
+    if not PLONE_6:
+        title = "User and Group Settings"
