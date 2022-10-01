@@ -7,100 +7,100 @@ Content-Type: application/json
             "document_actions": [],
             "object": [
                 {
-                    "icon": "",
+                    "icon": "toolbar-action/view",
                     "id": "view",
                     "title": "View"
                 },
                 {
-                    "icon": "",
+                    "icon": "toolbar-action/edit",
                     "id": "edit",
                     "title": "Edit"
                 },
                 {
-                    "icon": "",
+                    "icon": "toolbar-action/folderContents",
                     "id": "folderContents",
                     "title": "Contents"
                 },
                 {
-                    "icon": "",
+                    "icon": "toolbar-action/history",
                     "id": "history",
                     "title": "History"
                 },
                 {
-                    "icon": "",
+                    "icon": "toolbar-action/sharing",
                     "id": "local_roles",
                     "title": "Sharing"
                 }
             ],
             "object_buttons": [
                 {
-                    "icon": "",
+                    "icon": "plone-cut",
                     "id": "cut",
                     "title": "Cut"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-copy",
                     "id": "copy",
                     "title": "Copy"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-delete",
                     "id": "delete",
                     "title": "Delete"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-rename",
                     "id": "rename",
                     "title": "Rename"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-redirection",
                     "id": "redirection",
                     "title": "URL Management"
                 }
             ],
             "portal_tabs": [
                 {
-                    "icon": "",
+                    "icon": "plone-home",
                     "id": "index_html",
                     "title": "Home"
                 }
             ],
             "site_actions": [
                 {
-                    "icon": "",
+                    "icon": "plone-sitemap",
                     "id": "sitemap",
                     "title": "Site Map"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-accessibility",
                     "id": "accessibility",
                     "title": "Accessibility"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-contact-info",
                     "id": "contact",
                     "title": "Contact"
                 }
             ],
             "user": [
                 {
-                    "icon": "",
+                    "icon": "plone-user",
                     "id": "preferences",
                     "title": "Preferences"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-dashboard",
                     "id": "dashboard",
                     "title": "Dashboard"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-controlpanel",
                     "id": "plone_setup",
                     "title": "Site Setup"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-logout",
                     "id": "logout",
                     "title": "Log out"
                 }

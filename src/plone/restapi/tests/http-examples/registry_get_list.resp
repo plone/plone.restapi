@@ -6,7 +6,7 @@ Content-Type: application/json
     "batching": {
         "@id": "http://localhost:55001/plone/@registry",
         "first": "http://localhost:55001/plone/@registry?b_start=0",
-        "last": "http://localhost:55001/plone/@registry?b_start=1850",
+        "last": "http://localhost:55001/plone/@registry?b_start=2725",
         "next": "http://localhost:55001/plone/@registry?b_start=25"
     },
     "items": [
@@ -59,177 +59,15 @@ Content-Type: application/json
             "value": "%H:%M"
         },
         {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed",
-            "schema": {
-                "properties": {
-                    "default": true,
-                    "description": "Allow syndication for collections and folders on site.",
-                    "factory": "Yes/No",
-                    "title": "Allowed",
-                    "type": "boolean"
-                }
-            },
-            "value": true
-        },
-        {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.allowed_feed_types",
-            "schema": {
-                "properties": {
-                    "additionalItems": true,
-                    "default": [
-                        "RSS|RSS 1.0",
-                        "rss.xml|RSS 2.0",
-                        "atom.xml|Atom",
-                        "itunes.xml|iTunes"
-                    ],
-                    "description": "Separate view name and title by '|'",
-                    "factory": "Tuple",
-                    "items": {
-                        "description": "",
-                        "factory": "Text line (String)",
-                        "title": "",
-                        "type": "string"
-                    },
-                    "title": "Allowed Feed Types",
-                    "type": "array",
-                    "uniqueItems": true
-                }
-            },
-            "value": [
-                "RSS|RSS 1.0",
-                "rss.xml|RSS 2.0",
-                "atom.xml|Atom",
-                "itunes.xml|iTunes"
-            ]
-        },
-        {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.default_enabled",
-            "schema": {
-                "properties": {
-                    "default": false,
-                    "description": "If syndication should be enabled by default for all folders and collections.",
-                    "factory": "Yes/No",
-                    "title": "Enabled by default",
-                    "type": "boolean"
-                }
-            },
-            "value": false
-        },
-        {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.max_items",
-            "schema": {
-                "properties": {
-                    "default": 15,
-                    "description": "Maximum number of items that will be syndicated.",
-                    "factory": "Integer",
-                    "minimum": 1,
-                    "title": "Maximum items",
-                    "type": "integer"
-                }
-            },
-            "value": 15
-        },
-        {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.render_body",
-            "schema": {
-                "properties": {
-                    "default": false,
-                    "description": "If body text available for item, render it, otherwise use description.",
-                    "factory": "Yes/No",
-                    "title": "Render Body",
-                    "type": "boolean"
-                }
-            },
-            "value": false
-        },
-        {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.search_rss_enabled",
-            "schema": {
-                "properties": {
-                    "default": true,
-                    "description": "Allows users to subscribe to feeds of search results",
-                    "factory": "Yes/No",
-                    "title": "Search RSS enabled",
-                    "type": "boolean"
-                }
-            },
-            "value": true
-        },
-        {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_author_info",
-            "schema": {
-                "properties": {
-                    "default": true,
-                    "description": "Should feeds include author information",
-                    "factory": "Yes/No",
-                    "title": "Show author info",
-                    "type": "boolean"
-                }
-            },
-            "value": true
-        },
-        {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_button",
-            "schema": {
-                "properties": {
-                    "description": "Makes it possible to customize syndication settings for particular folders and collections ",
-                    "factory": "Yes/No",
-                    "title": "Show settings button",
-                    "type": "boolean"
-                }
-            },
-            "value": null
-        },
-        {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.show_syndication_link",
-            "schema": {
-                "properties": {
-                    "description": "Enable RSS link document action on the syndication content item.",
-                    "factory": "Yes/No",
-                    "title": "Show feed link",
-                    "type": "boolean"
-                }
-            },
-            "value": null
-        },
-        {
-            "name": "Products.CMFPlone.interfaces.syndication.ISiteSyndicationSettings.site_rss_items",
-            "schema": {
-                "properties": {
-                    "additionalItems": true,
-                    "default": [
-                        "/news/aggregator"
-                    ],
-                    "description": "Paths to folders and collections to link to at the portal root.",
-                    "factory": "Tuple",
-                    "items": {
-                        "description": "",
-                        "factory": "Choice",
-                        "title": "",
-                        "type": "string",
-                        "vocabulary": {
-                            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.SyndicatableFeedItems"
-                        }
-                    },
-                    "title": "Site RSS",
-                    "type": "array",
-                    "uniqueItems": true
-                }
-            },
-            "value": [
-                "/news/aggregator"
-            ]
-        },
-        {
             "name": "plone.alignment_styles",
             "schema": {
                 "properties": {
                     "additionalItems": true,
                     "default": [
-                        "Left|alignleft|alignleft",
-                        "Center|aligncenter|aligncenter",
-                        "Right|alignright|alignright",
-                        "Justify|alignjustify|alignjustify"
+                        "Left|alignleft|align-left",
+                        "Center|aligncenter|align-center",
+                        "Right|alignright|align-right",
+                        "Justify|alignjustify|align-justify"
                     ],
                     "description": "Name|format|icon",
                     "factory": "List",
@@ -245,10 +83,10 @@ Content-Type: application/json
                 }
             },
             "value": [
-                "Left|alignleft|alignleft",
-                "Center|aligncenter|aligncenter",
-                "Right|alignright|alignright",
-                "Justify|alignjustify|alignjustify"
+                "Left|alignleft|align-left",
+                "Center|aligncenter|align-center",
+                "Right|alignright|align-right",
+                "Justify|alignjustify|align-justify"
             ]
         },
         {
@@ -291,9 +129,13 @@ Content-Type: application/json
                 "properties": {
                     "additionalItems": true,
                     "default": [
-                        "large 768:768",
-                        "preview 400:400",
-                        "mini 200:200",
+                        "huge 1600:65536",
+                        "great 1200:65536",
+                        "larger 1000:65536",
+                        "large 800:65536",
+                        "teaser 600:65536",
+                        "preview 400:65536",
+                        "mini 200:65536",
                         "thumb 128:128",
                         "tile 64:64",
                         "icon 32:32",
@@ -313,9 +155,13 @@ Content-Type: application/json
                 }
             },
             "value": [
-                "large 768:768",
-                "preview 400:400",
-                "mini 200:200",
+                "huge 1600:65536",
+                "great 1200:65536",
+                "larger 1000:65536",
+                "large 800:65536",
+                "teaser 600:65536",
+                "preview 400:65536",
+                "mini 200:65536",
                 "thumb 128:128",
                 "tile 64:64",
                 "icon 32:32",
@@ -432,7 +278,150 @@ Content-Type: application/json
                 }
             },
             "value": false
+        },
+        {
+            "name": "plone.app.discussion.interfaces.IDiscussionSettings.globally_enabled",
+            "schema": {
+                "properties": {
+                    "default": false,
+                    "description": "If selected, users are able to post comments on the site. However, you will still need to enable comments for specific content types, folders or content objects before users will be able to post comments.",
+                    "factory": "Yes/No",
+                    "title": "Globally enable comments",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderation_enabled",
+            "schema": {
+                "properties": {
+                    "default": false,
+                    "description": "If selected, comments will enter a \"Pending\" state in which they are invisible to the public. A user with the \"Review comments\" permission (\"Reviewer\" or \"Manager\") can approve comments to make them visible to the public. If you want to enable a custom comment workflow, you have to go to the types control panel.",
+                    "factory": "Yes/No",
+                    "title": "Enable comment moderation",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderator_email",
+            "schema": {
+                "properties": {
+                    "description": "Address to which moderator notifications will be sent.",
+                    "factory": "Text line (String)",
+                    "title": "Moderator Email Address",
+                    "type": "string"
+                }
+            },
+            "value": null
+        },
+        {
+            "name": "plone.app.discussion.interfaces.IDiscussionSettings.moderator_notification_enabled",
+            "schema": {
+                "properties": {
+                    "default": false,
+                    "description": "If selected, the moderator is notified if a comment needs attention. The moderator email address can be set below.",
+                    "factory": "Yes/No",
+                    "title": "Enable moderator email notification",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "plone.app.discussion.interfaces.IDiscussionSettings.show_commenter_image",
+            "schema": {
+                "properties": {
+                    "default": true,
+                    "description": "If selected, an image of the user is shown next to the comment.",
+                    "factory": "Yes/No",
+                    "title": "Show commenter image",
+                    "type": "boolean"
+                }
+            },
+            "value": true
+        },
+        {
+            "name": "plone.app.discussion.interfaces.IDiscussionSettings.text_transform",
+            "schema": {
+                "properties": {
+                    "default": "text/plain",
+                    "description": "Use this setting to choose if the comment text should be transformed in any way. You can choose between \"Plain text\" and \"Intelligent text\". \"Intelligent text\" converts plain text into HTML where line breaks and indentation is preserved, and web and email addresses are made into clickable links.",
+                    "factory": "Choice",
+                    "title": "Comment text transform",
+                    "type": "string",
+                    "vocabulary": {
+                        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.discussion.vocabularies.TextTransformVocabulary"
+                    }
+                }
+            },
+            "value": "text/plain"
+        },
+        {
+            "name": "plone.app.discussion.interfaces.IDiscussionSettings.user_notification_enabled",
+            "schema": {
+                "properties": {
+                    "default": false,
+                    "description": "If selected, users can choose to be notified of new comments by email.",
+                    "factory": "Yes/No",
+                    "title": "Enable user email notification",
+                    "type": "boolean"
+                }
+            },
+            "value": false
+        },
+        {
+            "name": "plone.app.layout.globals.bodyClass.depth",
+            "schema": {
+                "properties": {
+                    "description": "Depth relative the site root that body class are generated for.\n      ",
+                    "factory": "Integer",
+                    "title": "Body class path depth",
+                    "type": "integer"
+                }
+            },
+            "value": 4
+        },
+        {
+            "name": "plone.app.portlets.PortletManagerBlacklist",
+            "schema": {
+                "properties": {
+                    "additionalItems": true,
+                    "description": "A list of portlet manager names that will not be shown in the toolbar dropdown",
+                    "factory": "List",
+                    "items": {
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "title": "",
+                        "type": "string"
+                    },
+                    "title": "Toolbar Portlet Manager Blacklist",
+                    "type": "array",
+                    "uniqueItems": false
+                }
+            },
+            "value": [
+                "plone.dashboard1",
+                "plone.dashboard2",
+                "plone.dashboard3",
+                "plone.dashboard4"
+            ]
+        },
+        {
+            "name": "plone.app.querystring.field.Creator.description",
+            "schema": {
+                "properties": {
+                    "description": "",
+                    "factory": "Text",
+                    "title": "Description",
+                    "type": "string",
+                    "widget": "textarea"
+                }
+            },
+            "value": "The person that created an item"
         }
     ],
-    "items_total": 1853
+    "items_total": 2734
 }

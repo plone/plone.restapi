@@ -3,6 +3,14 @@ Content-Type: application/json
 
 [
     {
+        "@id": "http://localhost:55001/plone/@vocabularies/plone.contentrules.events",
+        "title": "plone.contentrules.events"
+    },
+    {
+        "@id": "http://localhost:55001/plone/@vocabularies/Behaviors",
+        "title": "Behaviors"
+    },
+    {
         "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.AvailableContentLanguages",
         "title": "plone.app.vocabularies.AvailableContentLanguages"
     },
@@ -139,14 +147,6 @@ Content-Type: application/json
         "title": "plone.app.content.ValidAddableTypes"
     },
     {
-        "@id": "http://localhost:55001/plone/@vocabularies/plone.contentrules.events",
-        "title": "plone.contentrules.events"
-    },
-    {
-        "@id": "http://localhost:55001/plone/@vocabularies/Behaviors",
-        "title": "Behaviors"
-    },
-    {
         "@id": "http://localhost:55001/plone/@vocabularies/Fields",
         "title": "Fields"
     },
@@ -167,6 +167,10 @@ Content-Type: application/json
         "title": "plone.app.contenttypes.metadatafields"
     },
     {
+        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.contenttypes.migration.changed_base_classes",
+        "title": "plone.app.contenttypes.migration.changed_base_classes"
+    },
+    {
         "@id": "http://localhost:55001/plone/@vocabularies/Interfaces",
         "title": "Interfaces"
     },
@@ -179,14 +183,6 @@ Content-Type: application/json
         "title": "plone.app.discussion.vocabularies.TextTransformVocabulary"
     },
     {
-        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.users.user_registration_fields",
-        "title": "plone.app.users.user_registration_fields"
-    },
-    {
-        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.users.group_ids",
-        "title": "plone.app.users.group_ids"
-    },
-    {
         "@id": "http://localhost:55001/plone/@vocabularies/plone.app.multilingual.vocabularies.AllContentLanguageVocabulary",
         "title": "plone.app.multilingual.vocabularies.AllContentLanguageVocabulary"
     },
@@ -197,6 +193,14 @@ Content-Type: application/json
     {
         "@id": "http://localhost:55001/plone/@vocabularies/plone.app.multilingual.RootCatalog",
         "title": "plone.app.multilingual.RootCatalog"
+    },
+    {
+        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.users.user_registration_fields",
+        "title": "plone.app.users.user_registration_fields"
+    },
+    {
+        "@id": "http://localhost:55001/plone/@vocabularies/plone.app.users.group_ids",
+        "title": "plone.app.users.group_ids"
     },
     {
         "@id": "http://localhost:55001/plone/@vocabularies/plone.restapi.testing.context_vocabulary",
