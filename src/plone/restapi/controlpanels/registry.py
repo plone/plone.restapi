@@ -1,6 +1,8 @@
 from importlib import import_module
 from zope.component import adapter
+from zope.i18n import translate
 from zope.interface import Interface
+from zope.globalrequest import getRequest
 from Products.CMFPlone.interfaces.controlpanel import IDateAndTimeSchema
 from Products.CMFPlone.interfaces.controlpanel import IEditingSchema
 from Products.CMFPlone.interfaces.controlpanel import IImagingSchema
@@ -115,4 +117,15 @@ class UserGroupControlpanel(RegistryConfigletPanel):
     configlet_id = "UsersGroupsSettings"
     configlet_category_id = "plone-users"
     if not PLONE_6:
-        title = "User and Group Settings"
+        title = translate(
+            "User and Group Settings",
+            default="User and Group Settings",
+            domain="plone",
+            context=getRequest(),
+        )
+        group = translate(
+            "Users and Groups",
+            default="Users and Groups",
+            domain="plone",
+            context=getRequest(),
+        )
