@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import sys
 
-version = "8.22.1.dev0"
+version = "8.29.1.dev0"
 
 assert sys.version_info >= (
     3,
@@ -38,6 +38,7 @@ long_description = (
 
 TEST_REQUIRES = [
     "collective.MockMailHost",
+    "plone.app.caching",
     "plone.app.contenttypes",
     "plone.app.robotframework",
     "plone.app.testing [robot] >= 4.2.2",  # ROBOT_TEST_LEVEL added
@@ -86,9 +87,9 @@ setup(
         "setuptools",
         "importlib-metadata; python_version<'3.8'",
         "python-dateutil",
-        "plone.behavior>=1.1",  # adds name to behavior directive
-        "plone.rest >= 1.0a6",  # json renderer moved to plone.restapi
-        "plone.schema >= 1.2.1",  # new/fixed json field
+        "plone.rest",  # json renderer moved to plone.restapi
+        "plone.schema>=1.2.1",  # new/fixed json field
+        "Products.CMFPlone>=5.2",
         "PyJWT>=1.7.0",
         "pytz",
     ],

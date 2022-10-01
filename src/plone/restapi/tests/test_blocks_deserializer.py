@@ -417,3 +417,23 @@ class TestBlocksDeserializer(unittest.TestCase):
             self.portal.doc1.blocks["123"]["href"][0]["@id"],
             f"../resolveuid/{wrong_uid}",
         )
+
+        # another use-case: pass "../.." as link. Do not change the link.
+        self.deserialize(
+            blocks={
+                "123": {
+                    "@type": "foo",
+                    "href": [
+                        {
+                            # Pointing to a not created yet object, but matches because acquisition
+                            # with another existing parent content with alike-ish path structure
+                            "@id": "../.."
+                        }
+                    ],
+                }
+            }
+        )
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["href"][0]["@id"],
+            "../..",
+        )

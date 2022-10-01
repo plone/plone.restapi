@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "plone.restapi Glossary"
-  "property=og:description": "plone.restapi Glossary"
-  "property=og:title": "Glossary"
-  "keywords": "Plone, plone.restapi, REST, API, Glossary"
+myst:
+  html_meta:
+    "description": "plone.restapi Glossary"
+    "property=og:description": "plone.restapi Glossary"
+    "property=og:title": "Glossary"
+    "keywords": "Plone, plone.restapi, REST, API, Glossary"
 ---
 
 # Glossary

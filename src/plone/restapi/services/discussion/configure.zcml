@@ -1,5 +1,6 @@
 <configure
     xmlns="http://namespaces.zope.org/zope"
+    xmlns:cache="http://namespaces.zope.org/cache"
     xmlns:plone="http://namespaces.plone.org/plone"
     xmlns:zcml="http://namespaces.zope.org/zcml"
     >
@@ -16,6 +17,11 @@
       permission="zope2.View"
       name="@comments"
       />
+  <cache:ruleset
+      for=".conversation.CommentsGet"
+      ruleset="plone.content.itemView"
+      zcml:condition="have plone-app-caching-3"
+      />
 
   <plone:service
       method="POST"
@@ -29,7 +35,7 @@
       method="PATCH"
       factory=".conversation.CommentsUpdate"
       for="*"
-      permission="zope2.View"
+      permission="plone.app.discussion.EditComments"
       name="@comments"
       />
 
@@ -37,7 +43,7 @@
       method="DELETE"
       factory=".conversation.CommentsDelete"
       for="*"
-      permission="zope2.View"
+      permission="plone.app.discussion.DeleteComments"
       name="@comments"
       />
 

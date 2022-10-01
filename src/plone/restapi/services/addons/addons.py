@@ -5,6 +5,7 @@ from Products.CMFPlone.interfaces import INonInstallable
 from Products.GenericSetup import EXTENSION
 from Products.GenericSetup.tool import UNKNOWN
 from zope.component import getAllUtilitiesRegisteredFor
+from zope.i18n import translate
 
 import logging
 import pkg_resources
@@ -31,8 +32,8 @@ class Addons:
         return {
             "@id": "{}/@addons/{}".format(self.context.absolute_url(), addon["id"]),
             "id": addon["id"],
-            "title": addon["title"],
-            "description": addon["description"],
+            "title": translate(addon["title"], context=self.request),
+            "description": translate(addon["description"], context=self.request),
             "install_profile_id": addon["install_profile_id"],
             "is_installed": addon["is_installed"],
             "profile_type": addon["profile_type"],
@@ -356,6 +357,17 @@ class Addons:
         if install_profile:
             self.ps.unsetLastVersionForProfile(install_profile["id"])
         return True
+
+    def import_profile(self, product_id, profile_id):
+        profile = self._get_profile(
+            product_id, profile_id, strict=True, allow_hidden=True
+        )
+        if not profile:
+            logger.error("Could not find %s: profile", product_id)
+            return False
+        else:
+            self.ps.runAllImportStepsFromProfile("profile-%s" % profile["id"])
+            return True
 
     @view.memoize
     def marshall_addons(self):

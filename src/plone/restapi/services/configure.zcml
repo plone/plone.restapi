@@ -12,6 +12,7 @@
   <include package=".auth" />
   <include package=".actions" />
   <include package=".addons" />
+  <include package=".aliases" />
   <include package=".breadcrumbs" />
   <include package=".content" />
   <include package=".controlpanels" />
@@ -33,13 +34,15 @@
   <include package=".search" />
   <include package=".system" />
   <include package=".sources" />
+  <include package=".transactions" />
   <include package=".types" />
   <include package=".users" />
+  <include package=".userschema" />
   <include package=".vocabularies" />
   <include package=".workflow" />
   <include
       package=".workingcopy"
-      zcml:condition="have plone-5"
+      zcml:condition="installed plone.app.iterate"
       />
   <include
       package=".multilingual"
