@@ -8,6 +8,25 @@ Changelog
 
 .. towncrier release notes start
 
+8.29.0 (2022-10-01)
+-------------------
+
+New features:
+
+
+- Add @userschema endpoint for getting the user schema.
+  [sneridagh] (#706)
+- Add @transactions endpoint to fetch transactions that have been made through the Plone website.
+  [@MdSahil-oss] (#1505)
+
+
+Bug fixes:
+
+
+- The ``@controlpanels/usergroup`` does not work for Plone 5 since it does not exist there. Bring back the missing `title` just for Plone 5.
+  [sneridagh] (#1501)
+
+
 8.28.0 (2022-09-29)
 -------------------
 
