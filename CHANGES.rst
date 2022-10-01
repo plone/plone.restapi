@@ -8,6 +8,25 @@ Changelog
 
 .. towncrier release notes start
 
+8.29.0 (2022-10-01)
+-------------------
+
+New features:
+
+
+- Add @userschema endpoint for getting the user schema.
+  [sneridagh] (#706)
+- Add @transactions endpoint to fetch transactions that have been made through the Plone website.
+  [@MdSahil-oss] (#1505)
+
+
+Bug fixes:
+
+
+- The ``@controlpanels/usergroup`` does not work for Plone 5 since it does not exist there. Bring back the missing `title` just for Plone 5.
+  [sneridagh] (#1501)
+
+
 8.28.0 (2022-09-29)
 -------------------
 
@@ -120,8 +139,6 @@ New features:
 
 
 - Add support to search for fullname, email, id on the @users endpoint with "?search=" [ksuess] (#1443)
-- Add @transactions endpoint to fetch transactions that have been made through the Plone website. [@MdSahil-oss]
-
 
 Bug fixes:
 
@@ -576,7 +593,7 @@ Bug fixes:
 
 
 - In src run `find . -name "*.py"|xargs pyupgrade --py36-plus`.
-  Then run black and remove six import leftovers. 
+  Then run black and remove six import leftovers.
   [jensens] (#1162)
 - Fix link content serialization when url points to local content but it does not exist
   [sneridagh] (#1167)
