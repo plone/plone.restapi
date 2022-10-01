@@ -120,8 +120,6 @@ New features:
 
 
 - Add support to search for fullname, email, id on the @users endpoint with "?search=" [ksuess] (#1443)
-- Add @transactions endpoint to fetch transactions that have been made through the Plone website. [@MdSahil-oss]
-
 
 Bug fixes:
 
@@ -576,7 +574,7 @@ Bug fixes:
 
 
 - In src run `find . -name "*.py"|xargs pyupgrade --py36-plus`.
-  Then run black and remove six import leftovers. 
+  Then run black and remove six import leftovers.
   [jensens] (#1162)
 - Fix link content serialization when url points to local content but it does not exist
   [sneridagh] (#1167)
