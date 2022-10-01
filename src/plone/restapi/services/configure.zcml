@@ -37,6 +37,7 @@
   <include package=".transactions" />
   <include package=".types" />
   <include package=".users" />
+  <include package=".userschema" />
   <include package=".vocabularies" />
   <include package=".workflow" />
   <include
