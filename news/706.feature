@@ -1,2 +1,2 @@
-- Add @userschema endpoint for getting the user schema.
-  [sneridagh]
+Add @userschema endpoint for getting the user schema.
+[sneridagh]
