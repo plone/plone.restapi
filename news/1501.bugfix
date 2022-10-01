@@ -1,0 +1,2 @@
+The ``@controlpanels/usergroup`` does not work for Plone 5 since it does not exist there. Bring back the missing `title` just for Plone 5.
+[sneridagh]
