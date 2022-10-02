@@ -8,6 +8,23 @@ Changelog
 
 .. towncrier release notes start
 
+8.30.0 (2022-10-02)
+-------------------
+
+New features:
+
+
+- Add link integrity support for blocks
+  [cekk] (#953)
+
+
+Internal:
+
+
+- Plone 6 as first class citizen in builds and CI. Remove non-supported Python versions. Add 3.10 for Plone 6.
+  [sneridagh] (#1503)
+
+
 8.29.0 (2022-10-01)
 -------------------
 
