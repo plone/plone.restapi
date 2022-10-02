@@ -114,3 +114,8 @@ class TestControlpanelsEndpoint(unittest.TestCase):
         response = response.json()
         self.assertIn("message", response)
         self.assertIn("Required input is missing.", response["message"])
+
+    def test_get_usergroup_control_panel(self):
+        # This control panel does not exist in Plone 5
+        response = self.api_session.get("/@controlpanels/usergroup")
+        self.assertEqual(200, response.status_code)
