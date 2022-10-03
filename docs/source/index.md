@@ -36,7 +36,7 @@ contributing/index
 
 ```{toctree}
 http-status-codes
-glossary
+/glossary
 ```
 
 
