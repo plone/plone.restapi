@@ -59,4 +59,5 @@ content rule
 
 trigger
     A trigger is an event in Plone that causes the execution of defined actions.
-    Example triggers include object modified, user logged in, and workflow state changed.```
+    Example triggers include object modified, user logged in, and workflow state changed.
+```
