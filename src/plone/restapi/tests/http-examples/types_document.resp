@@ -17,7 +17,7 @@ Content-Type: application/json+schema
         },
         {
             "behavior": "plone",
-            "description": "None",
+            "description": "",
             "fields": [
                 "allow_discussion",
                 "exclude_from_nav",
@@ -30,7 +30,7 @@ Content-Type: application/json+schema
         },
         {
             "behavior": "plone",
-            "description": "None",
+            "description": "",
             "fields": [
                 "subjects",
                 "language",
@@ -41,7 +41,7 @@ Content-Type: application/json+schema
         },
         {
             "behavior": "plone",
-            "description": "None",
+            "description": "",
             "fields": [
                 "effective",
                 "expires"
@@ -51,7 +51,7 @@ Content-Type: application/json+schema
         },
         {
             "behavior": "plone",
-            "description": "None",
+            "description": "",
             "fields": [
                 "creators",
                 "contributors",
