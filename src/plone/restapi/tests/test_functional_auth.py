@@ -1,6 +1,7 @@
 from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
+from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_NAME
 from plone.app.testing import TEST_USER_PASSWORD
@@ -72,7 +73,7 @@ class TestFunctionalAuth(unittest.TestCase):
         login_resp = session.post(
             self.portal_url + "/@login",
             headers={"Accept": "application/json"},
-            json={"login": SITE_OWNER_NAME, "password": TEST_USER_PASSWORD},
+            json={"login": SITE_OWNER_NAME, "password": SITE_OWNER_PASSWORD},
         )
         self.assertIn(
             "__ac",
@@ -117,7 +118,7 @@ class TestFunctionalAuth(unittest.TestCase):
         basic_auth_headers = {
             "Authorization": "Basic {}".format(
                 base64.b64encode(
-                    f"{SITE_OWNER_NAME}:{TEST_USER_PASSWORD}".encode(),
+                    f"{SITE_OWNER_NAME}:{SITE_OWNER_PASSWORD}".encode(),
                 ).decode()
             )
         }
@@ -178,7 +179,7 @@ class TestFunctionalAuth(unittest.TestCase):
             self.portal_url + "/login",
             data={
                 "__ac_name": SITE_OWNER_NAME,
-                "__ac_password": TEST_USER_PASSWORD,
+                "__ac_password": SITE_OWNER_PASSWORD,
                 "came_from": "/".join(self.private_document.getPhysicalPath()),
                 "buttons.login": "Log in",
             },
