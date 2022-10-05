@@ -31,6 +31,7 @@ email-send
 expansion
 groups
 history
+linkintegrity
 locking
 navigation
 actions
@@ -43,10 +44,12 @@ roles
 searching
 system
 tiles
+transactions
 translations
 tusupload
 types
 users
+userschema
 vocabularies
 workflow
 workingcopy

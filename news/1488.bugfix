@@ -1,4 +1,0 @@
-- Revert "When an id is specified explicitly in the content POST endpoint,
-  return a 400 error response if it is invalid or unavailable."
-  The fix was incorrect and disallowing ids that should be allowed.
-  [davisagli]
