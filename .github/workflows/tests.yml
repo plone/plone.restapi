@@ -32,7 +32,7 @@ jobs:
       # buildout eggs cache
       - uses: actions/cache@v1
         with:
-          path: ~/eggs
+          path: eggs
           key: ${{ runner.os }}-py${{ matrix.python-version }}-plone${{ matrix.plone-version }}-buildout-
 
       # python install
