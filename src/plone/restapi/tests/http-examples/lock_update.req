@@ -1,6 +1,6 @@
 PATCH /plone/front-page HTTP/1.1
 Accept: application/json
-Authorization: Basic YWRtaW46c2VjcmV0
+Authorization: Basic YWRtaW46Y29ycmVjdCBob3JzZSBiYXR0ZXJ5IHN0YXBsZQ==
 Lock-Token: 0.684672730996-0.25195226375-00105A989226:1477076400.000
 Content-Type: application/json
 
