@@ -37,3 +37,7 @@ class IBlocks(model.Schema):
         default={"items": []},
         required=False,
     )
+
+
+class IBlocksEditableLayout(IBlocks):
+    """Volto Blocks Editable Layout marker interface"""
