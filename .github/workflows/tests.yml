@@ -24,17 +24,16 @@ jobs:
 
       # python setup
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+          cache: 'pip'
 
-      # python cache
+      # buildout eggs cache
       - uses: actions/cache@v1
         with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
+          path: ~/eggs
+          key: ${{ runner.os }}-buildout-
 
       # python install
       - run: pip install virtualenv
@@ -60,8 +59,8 @@ jobs:
       - name: test
         run: bin/test
 
-      # test no uncommited changes
-      - name: test no uncommited changes
+      # test no uncommitted changes
+      - name: test no uncommitted changes
         run: ./test-no-uncommitted-doc-changes
         env:
           PYTHON_VERSION: ${{ matrix.python-version }}
