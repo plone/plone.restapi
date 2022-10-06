@@ -48,10 +48,6 @@ jobs:
         env:
           CI: true
 
-      # code analysis
-      - name: code analysis
-        run: bin/code-analysis
-
       # build sphinx
       - name: sphinx
         run: if [ "${{ matrix.plone-version }}" == "6.0" ] && [ ${{ matrix.python-version }} == '3.9' ]; then make docs-html; fi
