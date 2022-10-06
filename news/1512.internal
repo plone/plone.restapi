@@ -1,0 +1,1 @@
+- Don't use -latest when installing Plone for tests. [tisto]
