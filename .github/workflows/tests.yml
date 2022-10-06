@@ -33,7 +33,7 @@ jobs:
       - uses: actions/cache@v1
         with:
           path: ~/eggs
-          key: ${{ runner.os }}-buildout-
+          key: ${{ runner.os }}-py${{ matrix.python-version }}-buildout-
 
       # python install
       - run: pip install virtualenv
