@@ -33,7 +33,10 @@ jobs:
       - uses: actions/cache@v3
         with:
           path: eggs
-          key: ${{ runner.os }}-py${{ matrix.python-version }}-plone${{ matrix.plone-version }}-buildout-
+          key: ${{ runner.os }}-py${{ matrix.python-version }}-plone${{ matrix.plone-version }}-${{ hashFiles('*.cfg') }}
+          restore-keys: |
+            ${{ runner.os }}-py${{ matrix.python-version }}-plone${{ matrix.plone-version }}-
+            ${{ runner.os }}-py${{ matrix.python-version }}-
 
       # python install
       - run: pip install virtualenv
@@ -43,7 +46,7 @@ jobs:
 
       # buildout
       - name: buildout
-        run: buildout -t 10 -c plone-${{ matrix.plone-version }}.x.cfg code-analysis:return-status-codes=True
+        run: buildout -t 10 -c plone-${{ matrix.plone-version }}.x.cfg
         env:
           CI: true
 
