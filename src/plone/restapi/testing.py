@@ -121,12 +121,8 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
     def setUpZope(self, app, configurationContext):
         import plone.restapi
 
-        xmlconfig.file(
-            "configure.zcml", plone.restapi, context=configurationContext
-        )
-        xmlconfig.file(
-            "testing.zcml", plone.restapi, context=configurationContext
-        )
+        xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
+        xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
 
         self.loadZCML(package=collective.MockMailHost)
         zope.installProduct(app, "plone.restapi")
@@ -184,12 +180,8 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
     def setUpZope(self, app, configurationContext):
         import plone.restapi
 
-        xmlconfig.file(
-            "configure.zcml", plone.restapi, context=configurationContext
-        )
-        xmlconfig.file(
-            "testing.zcml", plone.restapi, context=configurationContext
-        )
+        xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
+        xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
 
         zope.installProduct(app, "plone.restapi")
 
@@ -254,12 +246,8 @@ class PloneRestApiDXIterateLayer(PloneSandboxLayer):
     def setUpZope(self, app, configurationContext):
         import plone.restapi
 
-        xmlconfig.file(
-            "configure.zcml", plone.restapi, context=configurationContext
-        )
-        xmlconfig.file(
-            "testing.zcml", plone.restapi, context=configurationContext
-        )
+        xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
+        xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
 
         zope.installProduct(app, "plone.restapi")
 
