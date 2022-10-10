@@ -106,7 +106,10 @@ class ImageFieldSerializer(DefaultFieldSerializer):
 
         url = get_original_image_url(self.context, self.field.__name__, width, height)
 
-        scales = get_scales(self.context, self.field, width, height)
+        if width != -1 and height != -1:
+            scales = get_scales(self.context, self.field, width, height)
+        else:
+            scales = {}
         result = {
             "filename": image.filename,
             "content-type": image.contentType,

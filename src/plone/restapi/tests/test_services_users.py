@@ -1,8 +1,10 @@
+from DateTime import DateTime
 from plone import api
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
@@ -68,8 +70,9 @@ class TestUsersEndpoint(unittest.TestCase):
         self.anon_api_session.close()
 
     def makeRealImage(self):
-        import Products.PlonePAS as ppas
         from Products.PlonePAS.tests import dummy
+
+        import Products.PlonePAS as ppas
 
         pas_path = os.path.dirname(ppas.__file__)
         path = os.path.join(pas_path, "tool.gif")
@@ -163,7 +166,7 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"username": "noam", "password": "secret"}
+            "/@users", json={"username": "noam", "password": TEST_USER_PASSWORD}
         )
 
         self.assertEqual(400, response.status_code)
@@ -175,7 +178,8 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
         )
         transaction.commit()
 
@@ -192,7 +196,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "howard",
                 "email": "howard.zinn@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
         transaction.commit()
@@ -206,7 +210,8 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_email_as_login = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
         )
         transaction.commit()
 
@@ -239,7 +244,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "/@users",
             json={
                 "username": "howard",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
                 "email": "howard.zinn@example.com",
                 "fullname": "Howard Zinn",
             },
@@ -299,7 +304,8 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings.use_uuid_as_userid = True
         transaction.commit()
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
         )
         transaction.commit()
 
@@ -479,7 +485,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_update_user_password(self):
         old_password_hashes = dict(self.portal.acl_users.source_users._user_passwords)
-        payload = {"password": "secret"}
+        payload = {"password": TEST_USER_PASSWORD}
         response = self.api_session.patch("/@users/noam", json=payload)
         transaction.commit()
 
@@ -723,7 +729,8 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
         )
         transaction.commit()
 
@@ -752,7 +759,8 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
         )
         transaction.commit()
 
@@ -780,7 +788,8 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         response = self.api_session.post(
-            "/@users", json={"email": "howard.zinn@example.com", "password": "secret"}
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
         )
         transaction.commit()
 
@@ -865,7 +874,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "new_user",
                 "email": "avram.chomsky@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
         transaction.commit()
@@ -881,7 +890,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "new_user",
                 "email": "avram.chomsky@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
         transaction.commit()
@@ -899,7 +908,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "new_user",
                 "email": "avram.chomsky@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
         transaction.commit()
@@ -918,7 +927,7 @@ class TestUsersEndpoint(unittest.TestCase):
             json={
                 "username": "new_user",
                 "email": "avram.chomsky@example.com",
-                "password": "secret",
+                "password": TEST_USER_PASSWORD,
             },
         )
 
@@ -1001,3 +1010,51 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.headers["Content-Type"], "image/gif")
+
+    def test_user_with_datetime(self):
+        """test that when using a datetime field in the user schema
+        the endpoints works correctly
+        """
+        from plone.app.users.browser.schemaeditor import applySchema
+
+        member_schema = """
+            <model xmlns="http://namespaces.plone.org/supermodel/schema"
+                xmlns:form="http://namespaces.plone.org/supermodel/form"
+                xmlns:users="http://namespaces.plone.org/supermodel/users"
+                xmlns:i18n="http://xml.zope.org/namespaces/i18n"
+                i18n:domain="plone">
+              <schema name="member-fields">
+                <field name="birthdate" type="zope.schema.Date"
+                         users:forms="In User Profile">
+                  <description i18n:translate="help_birthdate">
+                    Birthdate
+                  </description>
+                  <required>False</required>
+                  <title i18n:translate="label_birthdate">Birthdate</title>
+                </field>
+                <field name="registration_datetime" type="zope.schema.Datetime"
+                         users:forms="In User Profile">
+                  <description i18n:translate="help_registration_datetime">
+                    Registration datetime
+                  </description>
+                  <required>False</required>
+                  <title i18n:translate="label_registration_datetime">Registration datetime</title>
+                </field>
+              </schema>
+            </model>
+        """
+        applySchema(member_schema)
+        api.user.create(
+            email="donald.duck@example.com",
+            username="donald",
+            properties={
+                "birthdate": DateTime("2022-01-10"),
+                "registration_datetime": DateTime("2022-01-10 14:00:00"),
+            },
+        )
+        transaction.commit()
+
+        response = self.api_session.get("/@users/donald")
+        self.assertEqual(200, response.status_code)
+        self.assertIn("birthdate", response.json())
+        self.assertIn("registration_datetime", response.json())

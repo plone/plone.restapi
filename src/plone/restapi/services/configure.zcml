@@ -23,6 +23,7 @@
   <include package=".navigation" />
   <include package=".contextnavigation" />
   <include package=".history" />
+  <include package=".linkintegrity" />
   <include package=".locking" />
   <include package=".navroot" />
   <include package=".principals" />
@@ -35,8 +36,10 @@
   <include package=".site" />
   <include package=".system" />
   <include package=".sources" />
+  <include package=".transactions" />
   <include package=".types" />
   <include package=".users" />
+  <include package=".userschema" />
   <include package=".vocabularies" />
   <include package=".workflow" />
   <include

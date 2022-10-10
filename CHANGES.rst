@@ -8,6 +8,70 @@ Changelog
 
 .. towncrier release notes start
 
+8.30.0 (2022-10-02)
+-------------------
+
+New features:
+
+
+- Add link integrity support for blocks
+  [cekk] (#953)
+
+
+Internal:
+
+
+- Plone 6 as first class citizen in builds and CI. Remove non-supported Python versions. Add 3.10 for Plone 6.
+  [sneridagh] (#1503)
+
+
+8.29.0 (2022-10-01)
+-------------------
+
+New features:
+
+
+- Add @userschema endpoint for getting the user schema.
+  [sneridagh] (#706)
+- Add @transactions endpoint to fetch transactions that have been made through the Plone website.
+  [@MdSahil-oss] (#1505)
+
+
+Bug fixes:
+
+
+- The ``@controlpanels/usergroup`` does not work for Plone 5 since it does not exist there. Bring back the missing `title` just for Plone 5.
+  [sneridagh] (#1501)
+
+
+8.28.0 (2022-09-29)
+-------------------
+
+New features:
+
+
+- Improve performance of serializing image scales. [davisagli] (#1498)
+
+
+Bug fixes:
+
+
+- Revert "When an id is specified explicitly in the content POST endpoint,
+  return a 400 error response if it is invalid or unavailable."
+  The fix was incorrect and disallowing ids that should be allowed.
+  [davisagli] (#1488)
+- Increase the length of passwords used in tests. [davisagli] (#1492)
+- Use json_compatible when serializing users in @users endpoint
+  [erral] (#1493)
+
+
+Documentation:
+
+
+- Reorganize navigation. [stevepiercy] (#1486)
+- Fix Google redirect and hyphenation of word. [stevepiercy] (#1495)
+
+
 8.27.0 (2022-09-14)
 -------------------
 
@@ -92,7 +156,6 @@ New features:
 
 
 - Add support to search for fullname, email, id on the @users endpoint with "?search=" [ksuess] (#1443)
-
 
 Bug fixes:
 
@@ -547,7 +610,7 @@ Bug fixes:
 
 
 - In src run `find . -name "*.py"|xargs pyupgrade --py36-plus`.
-  Then run black and remove six import leftovers. 
+  Then run black and remove six import leftovers.
   [jensens] (#1162)
 - Fix link content serialization when url points to local content but it does not exist
   [sneridagh] (#1167)

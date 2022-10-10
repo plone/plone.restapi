@@ -31,6 +31,7 @@ email-send
 expansion
 groups
 history
+linkintegrity
 locking
 navigation
 navroot
@@ -45,10 +46,12 @@ searching
 site
 system
 tiles
+transactions
 translations
 tusupload
 types
 users
+userschema
 vocabularies
 workflow
 workingcopy

@@ -14,6 +14,7 @@ Content-Type: application/json+schema
         },
         {
             "behavior": "plone",
+            "description": "",
             "fields": [
                 "subjects",
                 "language",
@@ -24,6 +25,7 @@ Content-Type: application/json+schema
         },
         {
             "behavior": "plone",
+            "description": "",
             "fields": [
                 "effective",
                 "expires"
@@ -33,6 +35,7 @@ Content-Type: application/json+schema
         },
         {
             "behavior": "plone",
+            "description": "",
             "fields": [
                 "creators",
                 "contributors",
@@ -43,6 +46,7 @@ Content-Type: application/json+schema
         },
         {
             "behavior": "plone",
+            "description": "",
             "fields": [
                 "allow_discussion",
                 "exclude_from_nav",
@@ -55,11 +59,11 @@ Content-Type: application/json+schema
     ],
     "layouts": [
         "album_view",
-        "event_listing",
         "full_view",
         "listing_view",
         "summary_view",
-        "tabular_view"
+        "tabular_view",
+        "event_listing"
     ],
     "properties": {
         "allow_discussion": {
@@ -140,7 +144,7 @@ Content-Type: application/json+schema
         },
         "effective": {
             "behavior": "plone.dublincore",
-            "description": "La fecha en la que el documento ser\u00e1 publicado. Si no selecciona ninguna fecha, el documento ser\u00e1 publicado inmediatamente.",
+            "description": "Si la fecha es del futuro, el contenido no se mostrar\u00e1 en los listados y las b\u00fasquedas hasta esa fecha.",
             "factory": "Date/Time",
             "title": "Fecha de Publicaci\u00f3n",
             "type": "string",
@@ -156,7 +160,7 @@ Content-Type: application/json+schema
         },
         "expires": {
             "behavior": "plone.dublincore",
-            "description": "La fecha en la que expira el documento. Esto har\u00e1 autom\u00e1ticamente el documento invisible a otros a una fecha dada. Si no elije ninguna fecha, nunca expirar\u00e1.",
+            "description": "Cuando esta fecha llegue, el contenido no se mostrar\u00e1 en los listados y b\u00fasquedas.",
             "factory": "Date/Time",
             "title": "Fecha de Terminaci\u00f3n",
             "type": "string",
@@ -203,7 +207,7 @@ Content-Type: application/json+schema
                     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
                 }
             },
-            "title": "Contenido relacionado",
+            "title": "Related Items",
             "type": "array",
             "uniqueItems": true,
             "widgetOptions": {
