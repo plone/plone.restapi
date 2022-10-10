@@ -124,19 +124,17 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
     def setUpZope(self, app, configurationContext):
         import plone.restapi
 
-        xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
-        xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
+        xmlconfig.file(
+            "configure.zcml", plone.restapi, context=configurationContext
+        )
+        xmlconfig.file(
+            "testing.zcml", plone.restapi, context=configurationContext
+        )
 
         self.loadZCML(package=collective.MockMailHost)
         zope.installProduct(app, "plone.restapi")
 
     def setUpPloneSite(self, portal):
-        # Register the static uuid generator utility
-        # as a first thing, to have one global generator to rule them all
-        pushGlobalRegistry(portal)
-        register_static_uuid_utility(prefix="SomeUUID")
-        transaction.commit()
-
         portal.acl_users.userFolderAddUser(
             SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ["Manager"], []
         )
@@ -154,10 +152,6 @@ class PloneRestApiDXLayer(PloneSandboxLayer):
         applyProfile(portal, "collective.MockMailHost:default")
         states = portal.portal_workflow["simple_publication_workflow"].states
         states["published"].title = "Published with accent é"  # noqa: E501
-
-    def tearDownPloneSite(self, portal):
-        super().tearDownPloneSite(portal)
-        popGlobalRegistry(portal)
 
 
 PLONE_RESTAPI_DX_FIXTURE = PloneRestApiDXLayer()
@@ -193,21 +187,16 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
     def setUpZope(self, app, configurationContext):
         import plone.restapi
 
-        xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
-        xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
+        xmlconfig.file(
+            "configure.zcml", plone.restapi, context=configurationContext
+        )
+        xmlconfig.file(
+            "testing.zcml", plone.restapi, context=configurationContext
+        )
 
         zope.installProduct(app, "plone.restapi")
 
     def setUpPloneSite(self, portal):
-        # Register the static uuid generator utility
-        # before p.a.multilingual creates LRFs
-        # in order to have predictable UIDs and not to have shared UUIDs
-        # between object UIDs and TranslationGroup UIDs
-        # that creates issues with working of the tests
-        pushGlobalRegistry(portal)
-        register_static_uuid_utility(prefix="SomeUUID")
-        transaction.commit()
-
         portal.acl_users.userFolderAddUser(
             SITE_OWNER_NAME, SITE_OWNER_PASSWORD, ["Manager"], []
         )
@@ -225,14 +214,11 @@ class PloneRestApiDXPAMLayer(PloneSandboxLayer):
         states = portal.portal_workflow["simple_publication_workflow"].states
         states["published"].title = "Published with accent é"  # noqa: E501
 
-    def tearDownPloneSite(self, portal):
-        super().tearDownPloneSite(portal)
-        popGlobalRegistry(portal)
-
 
 PLONE_RESTAPI_DX_PAM_FIXTURE = PloneRestApiDXPAMLayer()
 PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE,), name="PloneRestApiDXPAMLayer:Integration"
+    bases=(PLONE_RESTAPI_DX_PAM_FIXTURE,),
+    name="PloneRestApiDXPAMLayer:Integration",
 )
 PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_DX_PAM_FIXTURE, zope.WSGI_SERVER_FIXTURE),
@@ -271,23 +257,14 @@ class PloneRestApiDXIterateLayer(PloneSandboxLayer):
     def setUpZope(self, app, configurationContext):
         import plone.restapi
 
-        xmlconfig.file("configure.zcml", plone.restapi, context=configurationContext)
-        xmlconfig.file("testing.zcml", plone.restapi, context=configurationContext)
+        xmlconfig.file(
+            "configure.zcml", plone.restapi, context=configurationContext
+        )
+        xmlconfig.file(
+            "testing.zcml", plone.restapi, context=configurationContext
+        )
 
         zope.installProduct(app, "plone.restapi")
-
-    def setUpPloneSite(self, portal):
-        # Register the static uuid generator utility
-        # in order to have predictable UIDs and not to have shared UUIDs
-        # between object UIDs and TranslationGroup UIDs
-        # that creates issues with working of the tests
-        pushGlobalRegistry(portal)
-        register_static_uuid_utility(prefix="SomeUUID")
-        transaction.commit()
-
-    def tearDownPloneSite(self, portal):
-        super().tearDownPloneSite(portal)
-        popGlobalRegistry(portal)
 
 
 PLONE_RESTAPI_ITERATE_FIXTURE = PloneRestApiDXIterateLayer()
@@ -311,7 +288,8 @@ class PloneRestApIBlocksLayer(PloneSandboxLayer):
 
 PLONE_RESTAPI_BLOCKS_FIXTURE = PloneRestApIBlocksLayer()
 PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING = IntegrationTesting(
-    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE,), name="PloneRestApIBlocksLayer:Integration"
+    bases=(PLONE_RESTAPI_BLOCKS_FIXTURE,),
+    name="PloneRestApIBlocksLayer:Integration",
 )
 PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING = FunctionalTesting(
     bases=(PLONE_RESTAPI_BLOCKS_FIXTURE, zope.WSGI_SERVER_FIXTURE),
