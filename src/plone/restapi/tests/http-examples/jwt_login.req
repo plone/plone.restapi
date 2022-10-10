@@ -4,5 +4,5 @@ Content-Type: application/json
 
 {
     "login": "admin",
-    "password": "correct horse battery staple"
+    "password": "secret"
 }

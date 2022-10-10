@@ -1,8 +1,8 @@
 POST /plone/en/test-document/@translations HTTP/1.1
 Accept: application/json
-Authorization: Basic YWRtaW46Y29ycmVjdCBob3JzZSBiYXR0ZXJ5IHN0YXBsZQ==
+Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    "id": "SomeUUID000000000000000000000046"
+    "id": "SomeUUID000000000000000000000003"
 }

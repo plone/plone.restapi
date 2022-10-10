@@ -27,7 +27,7 @@ Content-Type: application/json
     },
     "@id": "http://localhost:55001/plone/folder",
     "@type": "Folder",
-    "UID": "SomeUUID000000000000000000000384",
+    "UID": "SomeUUID000000000000000000000002",
     "allow_discussion": false,
     "contributors": [],
     "created": "1995-07-31T13:45:00",

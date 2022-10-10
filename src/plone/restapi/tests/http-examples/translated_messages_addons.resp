@@ -13,7 +13,7 @@ Content-Type: application/json
             "title": "Soporte de Pol\u00edtica de Flujo de trabajo (CMFPlacefulWorkflow)",
             "uninstall_profile_id": "Products.CMFPlacefulWorkflow:uninstall",
             "upgrade_info": {},
-            "version": "3.0.0b2"
+            "version": "3.0.0b1"
         },
         {
             "@id": "http://localhost:55001/plone/@addons/collective.MockMailHost",
@@ -73,7 +73,7 @@ Content-Type: application/json
                 "newVersion": "0006",
                 "required": false
             },
-            "version": "8.30.1.dev0"
+            "version": "8.27.1.dev0"
         },
         {
             "@id": "http://localhost:55001/plone/@addons/plone.session",
