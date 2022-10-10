@@ -9,7 +9,6 @@ from plone.app.testing import FunctionalTesting
 from plone.app.testing import IntegrationTesting
 from plone.app.testing import login
 from plone.app.testing import PloneSandboxLayer
-from plone.app.testing import pushGlobalRegistry
 from plone.app.testing import quickInstallProduct
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
@@ -30,7 +29,6 @@ from zope.component import getGlobalSiteManager
 from zope.component import getUtility
 from zope.configuration import xmlconfig
 from zope.interface import implementer
-from plone.app.testing import popGlobalRegistry
 
 
 import collective.MockMailHost
