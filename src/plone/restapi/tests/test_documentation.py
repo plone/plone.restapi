@@ -27,7 +27,6 @@ from plone.testing.z2 import Browser
 from zope.component import createObject
 from zope.component import getUtility
 from zope.interface import alsoProvides
-from plone.app.testing import applyProfile
 from plone.app.testing import popGlobalRegistry
 from plone.app.testing import pushGlobalRegistry
 from plone.restapi.testing import register_static_uuid_utility
