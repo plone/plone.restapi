@@ -25,10 +25,15 @@ import logging
 
 try:
     from plone.app.contenttypes.interfaces import ILink
-    from plone.app.contenttypes.utils import replace_link_variables_by_paths
 except ImportError:
     # Probably Plone 4.3 with dexterity but without plone.app.contenttypes.
     ILink = None
+
+try:
+    from plone.app.contenttypes.utils import replace_link_variables_by_paths
+except ImportError:
+    # Very old plone.app.contenttypes without replace_link_variables_by_paths function
+    replace_link_variables_by_paths = None
 
 log = logging.getLogger(__name__)
 
@@ -148,7 +153,10 @@ if ILink is not None:
             if self.field.getName() != "remoteUrl":
                 return super(TextLineFieldSerializer, self).__call__()
             value = self.get_value()
-            path = replace_link_variables_by_paths(context=self.context, url=value)
+            if replace_link_variables_by_paths is not None:
+                path = replace_link_variables_by_paths(context=self.context, url=value)
+            else:
+                path = value
             portal = getMultiAdapter(
                 (self.context, self.context.REQUEST), name="plone_portal_state"
             ).portal()
