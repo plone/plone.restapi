@@ -1,0 +1,17 @@
+{% extends "sphinx_book_theme/layout.html" %}
+{%- block extrahead %}
+{{ super() }}
+<!-- Matomo Tag Manager -->
+<script>
+var _mtm = window._mtm = window._mtm || [];
+_mtm.push({'mtm.startTime': (new Date().getTime()), 'event': 'mtm.Start'});
+var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+g.async=true; g.src='https://stats.plone.org/js/container_RVam7mtw.js'; s.parentNode.insertBefore(g,s);
+</script>
+<!-- End Matomo Tag Manager -->
+{% endblock %}
+
+
+{% block body_tag %}
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="100">
+{%- endblock %}
