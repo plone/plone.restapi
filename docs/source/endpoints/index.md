@@ -32,6 +32,7 @@ email-send
 expansion
 groups
 history
+linkintegrity
 locking
 navigation
 actions

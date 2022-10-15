@@ -96,14 +96,8 @@ test-performance-locust-querystring-search:
 test-performance-locust-querystring-search-ci:
 	bin/locust -f performance/querystring-search.py --host http://localhost:12345/Plone --users 100 --spawn-rate 5 --run-time 5m --headless --csv=example
 
-.PHONY: Code Analysis
-code-analysis:  ## Code Analysis
-	bin/code-analysis
-	if [ -f "bin/black" ]; then bin/black src/ --check ; fi
-
 .PHONY: Black
 black:  ## Black
-	bin/code-analysis
 	if [ -f "bin/black" ]; then bin/black src/ ; fi
 
 .PHONY: zpretty
