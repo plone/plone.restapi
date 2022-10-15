@@ -172,7 +172,6 @@ html_css_files = ["custom.css", ("print.css", {"media": "print"})]
 todo_include_todos = True
 
 html_theme_options = {
-    "google_analytics_id": "G-P8NCTB796E",
     "path_to_docs": "docs",
     "repository_url": "https://github.com/plone/plone.restapi",
     "repository_branch": "master",
