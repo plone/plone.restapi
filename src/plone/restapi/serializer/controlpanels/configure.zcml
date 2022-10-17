@@ -6,5 +6,6 @@
   <adapter factory=".ControlpanelSerializeToJson" />
   <adapter factory=".ControlpanelSummarySerializeToJson" />
   <adapter factory=".types.DexterityTypesControlpanelSerializeToJson" />
+  <adapter factory=".rules.ContentRulesControlpanelSerializeToJson" />
 
 </configure>

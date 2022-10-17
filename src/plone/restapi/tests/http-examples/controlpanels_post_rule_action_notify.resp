@@ -1,0 +1,166 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
+
+{
+    "@id": "http://localhost:55001/plone/@controlpanels/content-rules/rule-3",
+    "actions": [
+        {
+            "description": "Log a particular event",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++action++0/edit",
+            "first": true,
+            "idx": 0,
+            "last": false,
+            "summary": "Log message ${message}",
+            "title": "Logger"
+        },
+        {
+            "description": "Return a portal message to the user",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++action++1/edit",
+            "first": false,
+            "idx": 1,
+            "last": true,
+            "summary": "Notify with message ${message}",
+            "title": "Notify user"
+        }
+    ],
+    "addable_actions": [
+        {
+            "addview": "plone.actions.Logger",
+            "description": "Log a particular event",
+            "title": "Logger"
+        },
+        {
+            "addview": "plone.actions.Notify",
+            "description": "Return a portal message to the user",
+            "title": "Notify user"
+        },
+        {
+            "addview": "plone.actions.Copy",
+            "description": "Copy the triggering item to a specific folder",
+            "title": "Copy to folder"
+        },
+        {
+            "addview": "plone.actions.Move",
+            "description": "Move the triggering item to a specific folder",
+            "title": "Move to folder"
+        },
+        {
+            "addview": "plone.actions.Delete",
+            "description": "Delete the triggering item",
+            "title": "Delete object"
+        },
+        {
+            "addview": "plone.actions.Workflow",
+            "description": "Perform a workflow transition on the triggering object",
+            "title": "Transition workflow state"
+        },
+        {
+            "addview": "plone.actions.Mail",
+            "description": "Send an email on the triggering object",
+            "title": "Send email"
+        },
+        {
+            "addview": "plone.actions.Versioning",
+            "description": "Store a new version of the object",
+            "title": "Version object"
+        }
+    ],
+    "addable_conditions": [
+        {
+            "addview": "plone.conditions.PortalType",
+            "description": "Apply only when the current content object is of a particular type",
+            "title": "Content type"
+        },
+        {
+            "addview": "plone.conditions.FileExtension",
+            "description": "Apply only to a particular file extension",
+            "title": "File Extension"
+        },
+        {
+            "addview": "plone.conditions.WorkflowState",
+            "description": "Apply only to a objects in a particular workflow state",
+            "title": "Workflow state"
+        },
+        {
+            "addview": "plone.conditions.Group",
+            "description": "Apply only when the current user is in the given group",
+            "title": "User's group"
+        },
+        {
+            "addview": "plone.conditions.Role",
+            "description": "Apply only when the current user has the given role",
+            "title": "User's role"
+        },
+        {
+            "addview": "plone.conditions.TalesExpression",
+            "description": "Apply only when the result of a TALES expression is True",
+            "title": "TALES expression"
+        }
+    ],
+    "assignments": [],
+    "cascading": false,
+    "conditions": [
+        {
+            "description": "Apply only when the current content object is of a particular type",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++0/edit",
+            "first": true,
+            "idx": 0,
+            "last": false,
+            "summary": "Content types are: ${names}",
+            "title": "Content type"
+        },
+        {
+            "description": "Apply only to a particular file extension",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++1/edit",
+            "first": false,
+            "idx": 1,
+            "last": false,
+            "summary": "File extension is ${ext}",
+            "title": "File Extension"
+        },
+        {
+            "description": "Apply only to a objects in a particular workflow state",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++2/edit",
+            "first": false,
+            "idx": 2,
+            "last": false,
+            "summary": "Workflow states are: ${states}",
+            "title": "Workflow state"
+        },
+        {
+            "description": "Apply only when the current user is in the given group",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++3/edit",
+            "first": false,
+            "idx": 3,
+            "last": false,
+            "summary": "Groups are: ${names}",
+            "title": "User's group"
+        },
+        {
+            "description": "Apply only when the current user has the given role",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++4/edit",
+            "first": false,
+            "idx": 4,
+            "last": false,
+            "summary": "Roles are: ${names}",
+            "title": "User's role"
+        },
+        {
+            "description": "Apply only when the result of a TALES expression is True",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++5/edit",
+            "first": false,
+            "idx": 5,
+            "last": true,
+            "summary": "TALES expression is: ${tales_expression}",
+            "title": "TALES expression"
+        }
+    ],
+    "description": "Third rule added in the testing setup",
+    "enabled": true,
+    "event": "Comment added",
+    "group": "Content",
+    "id": "rule-3",
+    "stop": false,
+    "title": "Third test rule"
+}
