@@ -1,6 +1,7 @@
 from datetime import datetime
 from DateTime import DateTime
 from datetime import timedelta
+from datetime import timezone
 from operator import itemgetter
 from plone import api
 from plone.app.discussion.interfaces import IConversation
@@ -75,13 +76,10 @@ class TestStaticTime(unittest.TestCase):
         if isinstance(pydt, DateTime):
             pydt = pydt.asdatetime()
         elif isinstance(pydt, float):
-            pydt = datetime.fromtimestamp(pydt)
+            pydt = datetime.fromtimestamp(pydt).astimezone(timezone.utc)
 
         epsilon = timedelta(minutes=5)
-        now = datetime.now()
-        if pydt.tzinfo is not None:
-            now = pydt.tzinfo.localize(now)
-
+        now = datetime.now().astimezone(timezone.utc)
         upper = now + epsilon
         lower = now - epsilon
 
