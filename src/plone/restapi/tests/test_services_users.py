@@ -1017,6 +1017,7 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings = getAdapter(self.portal, ISecuritySchema)
         security_settings.use_email_as_login = True
         transaction.commit()
+        
         response = self.api_session.post(
             "/@users",
             json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
@@ -1025,13 +1026,13 @@ class TestUsersEndpoint(unittest.TestCase):
 
         image = self.makeRealImage()
         pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "admin")
+        pm.changeMemberPortrait(image, "howard.zinn@example.com")
         transaction.commit()
-
-        response = self.api_session.get("/@users/noam")
-
-        self.assertEqual(response.status_code, 200)
-        urlre = re.match(r'.*/@portrait/(.*)', response.json()["portrait"])
+        
+        response = self.api_session.get("/@users/howard.zinn@example.com")
+        self.assertEqual(200, response.status_code)
+        portrait_url = response.json()["portrait"]
+        urlre = re.match(r'.*/@portrait/(.*)', portrait_url)
         portrait = urlre.group(1)
 
         response = self.api_session.get(
