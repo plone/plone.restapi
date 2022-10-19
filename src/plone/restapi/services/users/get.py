@@ -207,6 +207,7 @@ class PortraitGet(Service):
         self.params = []
         self.portal = getSite()
         self.portal_membership = getToolByName(self.portal, "portal_membership")
+        self.portal_memberdata = getToolByName(self.portal, "portal_memberdata")
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
@@ -222,7 +223,12 @@ class PortraitGet(Service):
     def render(self):
         if len(self.params) == 1:
             # Retrieve the user portrait
-            portrait = self.portal_membership.getPersonalPortrait(self.params[0])
+            user = self.params[0]
+            if user in self.portal_memberdata.portraits:
+                portrait = self.portal_memberdata.portraits[user]
+            else:
+                self.request.response.setStatus(404)
+                return None
         elif len(self.params) == 0:
             current_user_id = self.portal_membership.getAuthenticatedMember().getId()
             portrait = self.portal_membership.getPersonalPortrait(current_user_id)
@@ -231,7 +237,8 @@ class PortraitGet(Service):
                 "Must supply exactly zero (own portrait) or one parameter (user id)"
             )
 
-        if isDefaultPortrait(portrait, self.portal):
+        # User uploaded portraits have a meta_type of "Image"
+        if portrait.meta_type == "Filesystem Image":
             self.request.response.setStatus(404)
             return None
 
