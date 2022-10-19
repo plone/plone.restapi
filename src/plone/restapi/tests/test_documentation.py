@@ -2,6 +2,8 @@ from base64 import b64encode
 from datetime import datetime
 from pkg_resources import resource_filename
 from plone import api
+from plone.uuid.interfaces import IUUID
+from plone.app.discussion.interfaces import ICommentAddedEvent
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
@@ -25,6 +27,7 @@ from plone.restapi.tests.helpers import patch_scale_uuid
 from plone.restapi.tests.statictime import StaticTime
 from plone.testing.z2 import Browser
 from zope.component import createObject
+from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.interface import alsoProvides
 from plone.app.testing import popGlobalRegistry
@@ -2310,3 +2313,428 @@ class TestIterateDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@userschema")
 
         save_request_and_response_for_docs("userschema", response)
+
+
+class TestRules(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super().setUp()
+
+        # Create two test rules and assign them globally
+
+        rules = getMultiAdapter((self.portal, self.request), name="+rule")
+        add_form = getMultiAdapter((rules, self.request), name="plone.ContentRule")
+        add_form.update()
+        data = {
+            "title": "First test rule",
+            "description": "First rule added in the testing setup",
+            "event": ICommentAddedEvent,
+            "enabled": True,
+            "stop": False,
+            "cascading": False,
+        }
+        rule = add_form.form_instance.create(data)
+        rules.add(rule)
+        edit_form = getMultiAdapter((rule, self.request), name="manage-elements")
+        edit_form.authorize = lambda: True
+        edit_form.globally_assign()
+        data = {
+            "title": "Second test rule",
+            "description": "Second rule added in the testing setup",
+            "event": ICommentAddedEvent,
+            "enabled": True,
+            "stop": False,
+            "cascading": False,
+        }
+        rule = add_form.form_instance.create(data)
+        rules.add(rule)
+        edit_form = getMultiAdapter((rule, self.request), name="manage-elements")
+        edit_form.authorize = lambda: True
+        edit_form.globally_assign()
+
+        # Create a folder for copy and move actions
+        self.portal.invokeFactory("Folder", id="folder")
+
+        transaction.commit()
+
+    def tearDown(self):
+        super().tearDown()
+
+    # Tests for the object rules
+
+    def test_rules_add(self):
+        # Assign a rule
+        url = "/@content-rules/rule-1"
+        response = self.api_session.post(url)
+        save_request_and_response_for_docs("rules_add", response)
+
+    def test_rules_get(self):
+        # Get assigned rules
+        url = "/@content-rules/rule-1"
+        self.api_session.post(url)
+        url = "/@content-rules"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("rules_get", response)
+
+    def test_rules_delete(self):
+        # Unassign a rule
+        url = "/@content-rules/rule-1"
+        self.api_session.post(url)
+        payload = {"rule_ids": ["rule-1"]}
+        url = "/@content-rules"
+        response = self.api_session.delete(url, json=payload)
+        save_request_and_response_for_docs("rules_delete", response)
+
+    def test_rules_move_up(self):
+        # Move a rule up in the order
+        url = "/@content-rules/rule-1"
+        self.api_session.post(url)
+        url = "/@content-rules/rule-2"
+        self.api_session.post(url)
+        url = "/@content-rules"
+        payload = {"operation": "move_up", "rule_id": "rule-2"}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_move_up", response)
+
+    def test_rules_move_down(self):
+        # Move a rule down in the order
+        url = "/@content-rules/rule-1"
+        self.api_session.post(url)
+        url = "/@content-rules/rule-2"
+        self.api_session.post(url)
+        url = "/@content-rules"
+        payload = {"operation": "move_down", "rule_id": "rule-1"}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_move_down", response)
+
+    def test_rules_enable(self):
+        # Enable some rules
+        url = "/@content-rules"
+        self.api_session.post(url)
+        payload = {"form.button.Enable": True, "rule_ids": ["rule-1", "rule-2"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_enable", response)
+
+    def test_rules_disable(self):
+        # Disable some assigned rules
+        url = "/@content-rules"
+        self.api_session.post(url)
+        payload = {"form.button.Disable": True, "rule_ids": ["rule-1", "rule-2"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_disable", response)
+
+    def test_rules_apply_subfolders(self):
+        # Enable apply on subfolders
+        url = "/@content-rules"
+        self.api_session.post(url)
+        payload = {"form.button.Bubble": True, "rule_ids": ["rule-1", "rule-2"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_apply_subfolders", response)
+
+    def test_rules_disable_apply_subfolders(self):
+        # Disable apply on subfolders
+        url = "/@content-rules"
+        self.api_session.post(url)
+        payload = {"form.button.NoBubble": True, "rule_ids": ["rule-1", "rule-2"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_disable_apply_subfolders", response)
+
+    # Tests for the rules controlpanel
+
+    def test_controlpanels_get_rules(self):
+        # Get rules defined in controlpanel
+        url = "/@controlpanels/content-rules"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("controlpanels_get_contentrules", response)
+
+    def test_controlpanels_crud_rules(self):
+        # POST
+        url = "/@controlpanels/content-rules"
+        payload = {
+            "title": "Third test rule",
+            "description": "Third rule added in the testing setup",
+            "event": "Comment added",
+            "enabled": True,
+            "stop": False,
+            "cascading": False,
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs("controlpanels_post_rule", response)
+
+        # Conditions
+        url = "/@controlpanels/content-rules/rule-3/condition"
+        payload = {
+            "check_types": ["Collection", "Comment"],
+            "type": "plone.conditions.PortalType",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_portaltype", response
+        )
+        payload = {"file_extension": "JPG", "type": "plone.conditions.FileExtension"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_fileextension", response
+        )
+        payload = {
+            "wf_states": ["pending", "private"],
+            "type": "plone.conditions.WorkflowState",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_workflowstate", response
+        )
+        payload = {
+            "group_names": ["Administrators", "Site Administrators"],
+            "type": "plone.conditions.Group",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_group", response
+        )
+        payload = {
+            "role_names": ["Anonymous", "Authenticated"],
+            "type": "plone.conditions.Role",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_role", response
+        )
+        payload = {
+            "tales_expression": "<tal:block content='string:' />",
+            "type": "plone.conditions.TalesExpression",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_tales", response
+        )
+
+        # Actions
+        url = "/@controlpanels/content-rules/rule-3/action"
+        payload = {
+            "targetLogger": "Plone",
+            "Level": "20",
+            "message": "text_contentrules_logger_message",
+            "type": "plone.actions.Logger",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_logger", response
+        )
+        payload = {
+            "message": "Information",
+            "message_type": "info",
+            "type": "plone.actions.Notify",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_notify", response
+        )
+        uuid = IUUID(self.portal.folder)
+        payload = {"target_folder": uuid, "type": "plone.actions.Copy"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_copy", response
+        )
+        payload = {"target_folder": uuid, "type": "plone.actions.Move"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_move", response
+        )
+        payload = {"type": "plone.actions.Delete"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_delete", response
+        )
+        payload = {"transition": "hide", "type": "plone.actions.Workflow"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_transition", response
+        )
+        payload = {
+            "subject": "Email Subject",
+            "source": "noreply@something.com",
+            "recipients": "test@somethingelse.com",
+            "exclude_actor": True,
+            "message": "And the message body",
+            "type": "plone.actions.Mail",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_mail", response
+        )
+        payload = {"comment": "Some comment", "type": "plone.actions.Versioning"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_versioning", response
+        )
+
+        # GET
+        url = "/@controlpanels/content-rules/rule-3"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("controlpanels_get_rule", response)
+
+        # get condition
+        url = "/@controlpanels/content-rules/rule-3/condition/0"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_portaltype", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/1"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_fileextension", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/2"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_workflowstate", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/3"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_group", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/4"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_role", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/5"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_tales", response
+        )
+
+        # get action
+
+        url = "/@controlpanels/content-rules/rule-3/action/0"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_logger", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/1"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_notify", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/2"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_copy", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/3"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_move", response
+        )
+
+        # delete action doesn't have any values to get
+
+        url = "/@controlpanels/content-rules/rule-3/action/5"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_transition", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/6"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_mail", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/7"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_versioning", response
+        )
+
+        # PATCH
+        url = "/@controlpanels/content-rules/rule-3"
+        payload = {
+            "title": "Third test rule (modified)",
+            "description": "Third rule added in the testing setup (modified)",
+            "event": "Comment removed",
+            "enabled": False,
+            "stop": True,
+            "cascading": True,
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("controlpanels_patch_rule", response)
+
+        # Conditions
+        url = "/@controlpanels/content-rules/rule-3/condition/0"
+        payload = {
+            "check_types": ["Collection"],
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_condition_portaltype", response
+        )
+
+        # move
+        # down
+        url = "/@controlpanels/content-rules/rule-3/condition/0"
+        payload = {
+            "form.button.Move": "_move_down",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_condition_move_down", response
+        )
+        # up
+        url = "/@controlpanels/content-rules/rule-3/condition/1"
+        payload = {
+            "form.button.Move": "_move_up",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_condition_move_up", response
+        )
+        # Actions
+        url = "/@controlpanels/content-rules/rule-3/action/0"
+        payload = {
+            "targetLogger": "Plone6",
+            "Level": "20",
+            "message": "text_contentrules_logger_message",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_action_logger", response
+        )
+        # move
+        # down
+        url = "/@controlpanels/content-rules/rule-3/action/0"
+        payload = {
+            "form.button.Move": "_move_down",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_action_move_down", response
+        )
+        # up
+        url = "/@controlpanels/content-rules/rule-3/action/1"
+        payload = {
+            "form.button.Move": "_move_up",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_action_move_up", response
+        )
+
+        # DELETE
+        url = "/@controlpanels/content-rules/rule-3/condition/0"
+        response = self.api_session.delete(url)
+        save_request_and_response_for_docs(
+            "controlpanels_delete_rule_condition", response
+        )
+
+        url = "/@controlpanels/content-rules/rule-3/action/0"
+        response = self.api_session.delete(url)
+        save_request_and_response_for_docs(
+            "controlpanels_delete_action_condition", response
+        )
+
+        url = "/@controlpanels/content-rules/rule-3"
+        response = self.api_session.delete(url)
+        save_request_and_response_for_docs("controlpanels_delete_rule", response)

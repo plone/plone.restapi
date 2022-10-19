@@ -22,6 +22,7 @@ aliases
 breadcrumbs
 comments
 content-types
+content-rules
 contextnavigation
 controlpanels
 copymove

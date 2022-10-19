@@ -1,0 +1,8 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "loggingLevel": "",
+    "message": "text_contentrules_logger_message",
+    "targetLogger": "Plone"
+}
