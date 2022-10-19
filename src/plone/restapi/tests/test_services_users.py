@@ -957,22 +957,24 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_get_own_user_portrait(self):
         image = self.makeRealImage()
         pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "admin")
+        pm.changeMemberPortrait(image, "noam")
         transaction.commit()
 
-        response = self.api_session.get(
+        self.assertEqual("noam", pm.getPersonalPortrait("noam").getId())
+
+        noam_api_session = RelativeSession(self.portal_url, test=self)
+        noam_api_session.headers.update({"Accept": "application/json"})
+        noam_api_session.auth = ("noam", "password")
+
+        response = noam_api_session.get(
             "/@portrait",
         )
 
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.headers["Content-Type"], "image/gif")
+        noam_api_session.close()
 
     def test_get_own_user_portrait_logged_out(self):
-        image = self.makeRealImage()
-        pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "admin")
-        transaction.commit()
-
         response = self.anon_api_session.get(
             "/@portrait",
         )
@@ -981,7 +983,7 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_get_user_portrait_not_set(self):
         response = self.anon_api_session.get(
-            "/@portrait/admin",
+            "/@portrait/noam",
         )
 
         self.assertEqual(404, response.status_code)
@@ -989,11 +991,11 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_get_user_portrait(self):
         image = self.makeRealImage()
         pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "admin")
+        pm.changeMemberPortrait(image, "noam")
         transaction.commit()
 
         response = self.api_session.get(
-            "/@portrait/admin",
+            "/@portrait/noam",
         )
 
         self.assertEqual(200, response.status_code)
@@ -1017,7 +1019,7 @@ class TestUsersEndpoint(unittest.TestCase):
         security_settings = getAdapter(self.portal, ISecuritySchema)
         security_settings.use_email_as_login = True
         transaction.commit()
-        
+
         response = self.api_session.post(
             "/@users",
             json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
@@ -1028,11 +1030,11 @@ class TestUsersEndpoint(unittest.TestCase):
         pm = api.portal.get_tool("portal_membership")
         pm.changeMemberPortrait(image, "howard.zinn@example.com")
         transaction.commit()
-        
+
         response = self.api_session.get("/@users/howard.zinn@example.com")
         self.assertEqual(200, response.status_code)
         portrait_url = response.json()["portrait"]
-        urlre = re.match(r'.*/@portrait/(.*)', portrait_url)
+        urlre = re.match(r".*/@portrait/(.*)", portrait_url)
         portrait = urlre.group(1)
 
         response = self.api_session.get(
