@@ -15,6 +15,7 @@ from zope.component import getAdapter
 from zope.component import getUtility
 
 import os
+import re
 import transaction
 import unittest
 
@@ -1006,6 +1007,35 @@ class TestUsersEndpoint(unittest.TestCase):
 
         response = self.anon_api_session.get(
             "/@portrait/admin",
+        )
+
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(response.headers["Content-Type"], "image/gif")
+
+    def test_get_user_portrait_if_email_login_enabled(self):
+        # enable use_email_as_login
+        security_settings = getAdapter(self.portal, ISecuritySchema)
+        security_settings.use_email_as_login = True
+        transaction.commit()
+        response = self.api_session.post(
+            "/@users",
+            json={"email": "howard.zinn@example.com", "password": TEST_USER_PASSWORD},
+        )
+        transaction.commit()
+
+        image = self.makeRealImage()
+        pm = api.portal.get_tool("portal_membership")
+        pm.changeMemberPortrait(image, "admin")
+        transaction.commit()
+
+        response = self.api_session.get("/@users/noam")
+
+        self.assertEqual(response.status_code, 200)
+        urlre = re.match(r'.*/@portrait/(.*)', response.json()["portrait"])
+        portrait = urlre.group(1)
+
+        response = self.api_session.get(
+            f"/@portrait/{portrait}",
         )
 
         self.assertEqual(200, response.status_code)
