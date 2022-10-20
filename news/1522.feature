@@ -1,2 +1,2 @@
-- Add link integrity support for slate blocks
+Add link integrity support for slate blocks
 [sneridagh]
