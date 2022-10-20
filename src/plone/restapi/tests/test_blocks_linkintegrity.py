@@ -68,6 +68,85 @@ class TestBlocksLinkintegrity(TestCase):
         self.assertEqual(len(value), 1)
         self.assertIn("../resolveuid/{}".format(uid), value)
 
+    def test_links_retriever_return_internal_links_type_a_in_slate_block(self):
+        uid = IUUID(self.doc2)
+        resolve_uid_link = {
+            "@id": f"../resolveuid/{uid}",
+            "title": "Welcome to Plone",
+        }
+        blocks = {
+            "2caef9e6-93ff-4edf-896f-8c16654a9923": {
+                "@type": "slate",
+                "plaintext": "this is a slate link inside some text",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "this is a "},
+                            {
+                                "children": [
+                                    {"text": ""},
+                                    {
+                                        "children": [{"text": "slate link"}],
+                                        "data": {
+                                            "link": {
+                                                "internal": {
+                                                    "internal_link": [resolve_uid_link]
+                                                }
+                                            }
+                                        },
+                                        "type": "a",
+                                    },
+                                    {"text": ""},
+                                ],
+                                "type": "strong",
+                            },
+                            {"text": " inside some text"},
+                        ],
+                        "type": "p",
+                    }
+                ],
+            },
+            "6b2be2e6-9857-4bcc-a21a-29c0449e1c68": {"@type": "title"},
+        }
+
+        self.portal.doc1.blocks = blocks
+        value = self.retrieve_links(blocks)
+
+        self.assertEqual(len(value), 1)
+        self.assertIn("../resolveuid/{}".format(uid), value)
+
+    def test_links_retriever_return_internal_links_type_link_in_slate_block(self):
+        uid = IUUID(self.doc2)
+        resolve_uid_link = f"../resolveuid/{uid}"
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": resolve_uid_link,
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+
+        self.portal.doc1.blocks = blocks
+        value = self.retrieve_links(blocks)
+
+        self.assertEqual(len(value), 1)
+        self.assertIn("../resolveuid/{}".format(uid), value)
+
     def test_links_retriever_return_internal_links_in_generic_block(self):
         uid = IUUID(self.doc2)
         blocks = {"111": {"@type": "foo", "href": "../resolveuid/{}".format(uid)}}
@@ -252,6 +331,137 @@ class TestLinkintegrityForBlocks(TestCase):
                     }
                 }
             },
+        )
+        transaction.commit()
+        back_references = self.get_back_references(self.doc2)
+        self.assertEqual(len(back_references), 0)
+
+    def test_reference_correctly_set_for_slate_blocks(self):
+        self.assertEqual([], self.get_back_references(self.doc2))
+
+        uid = IUUID(self.doc2)
+        resolve_uid_link = {
+            "@id": f"../resolveuid/{uid}",
+            "title": "Welcome to Plone",
+        }
+        blocks = {
+            "2caef9e6-93ff-4edf-896f-8c16654a9923": {
+                "@type": "slate",
+                "plaintext": "this is a slate link inside some text",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "this is a "},
+                            {
+                                "children": [
+                                    {"text": ""},
+                                    {
+                                        "children": [{"text": "slate link"}],
+                                        "data": {
+                                            "link": {
+                                                "internal": {
+                                                    "internal_link": [resolve_uid_link]
+                                                }
+                                            }
+                                        },
+                                        "type": "a",
+                                    },
+                                    {"text": ""},
+                                ],
+                                "type": "strong",
+                            },
+                            {"text": " inside some text"},
+                        ],
+                        "type": "p",
+                    }
+                ],
+            },
+            "6b2be2e6-9857-4bcc-a21a-29c0449e1c68": {"@type": "title"},
+        }
+        response = self.api_session.patch(
+            "/doc-1",
+            json={"blocks": blocks},
+        )
+        transaction.commit()
+        self.assertEqual(response.status_code, 204)
+        back_references = self.get_back_references(self.doc2)
+        self.assertEqual(len(back_references), 1)
+        self.assertEqual(back_references[0], self.doc1)
+
+    def test_reference_correctly_unset_for_slate_blocks(self):
+        uid = IUUID(self.doc2)
+        resolve_uid_link = {
+            "@id": f"../resolveuid/{uid}",
+            "title": "Welcome to Plone",
+        }
+        blocks = {
+            "2caef9e6-93ff-4edf-896f-8c16654a9923": {
+                "@type": "slate",
+                "plaintext": "this is a slate link inside some text",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "this is a "},
+                            {
+                                "children": [
+                                    {"text": ""},
+                                    {
+                                        "children": [{"text": "slate link"}],
+                                        "data": {
+                                            "link": {
+                                                "internal": {
+                                                    "internal_link": [resolve_uid_link]
+                                                }
+                                            }
+                                        },
+                                        "type": "a",
+                                    },
+                                    {"text": ""},
+                                ],
+                                "type": "strong",
+                            },
+                            {"text": " inside some text"},
+                        ],
+                        "type": "p",
+                    }
+                ],
+            },
+            "6b2be2e6-9857-4bcc-a21a-29c0449e1c68": {"@type": "title"},
+        }
+        self.api_session.patch(
+            "/doc-1",
+            json={"blocks": blocks},
+        )
+        transaction.commit()
+        back_references = self.get_back_references(self.doc2)
+        self.assertEqual(len(back_references), 1)
+
+        # now unset reference
+        unset_blocks = {
+            "2caef9e6-93ff-4edf-896f-8c16654a9923": {
+                "@type": "slate",
+                "plaintext": "this is a slate link inside some text",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "this is a "},
+                            {
+                                "children": [
+                                    {"text": ""},
+                                ],
+                                "type": "strong",
+                            },
+                            {"text": " inside some text"},
+                        ],
+                        "type": "p",
+                    }
+                ],
+            },
+            "6b2be2e6-9857-4bcc-a21a-29c0449e1c68": {"@type": "title"},
+        }
+        self.api_session.patch(
+            "/doc-1",
+            json={"blocks": unset_blocks},
         )
         transaction.commit()
         back_references = self.get_back_references(self.doc2)
