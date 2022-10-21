@@ -108,9 +108,9 @@ class CommentSerializer:
         if username is None:
             return
         portal = getSite()
-        portal_membership = getToolByName(portal, "portal_membership")
-        portrait = portal_membership.getPersonalPortrait(username)
-        if portrait and not isDefaultPortrait(portrait):
+        portal_membership = getToolByName(portal, "portal_membership", None)
+        image = portal_membership.getPersonalPortrait(username)
+        if image and not isDefaultPortrait(image):
             # Despite being called username, it is actually a userid.
             # See https://github.com/plone/plone.app.discussion/blob/dd0255fd5db6662a1b1b4cb7046785038d0d6b71/plone/app/discussion/browser/comments.py#L211-L217
             user = portal_membership.getMemberById(username)
