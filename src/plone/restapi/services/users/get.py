@@ -9,6 +9,7 @@ from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
 from Products.PlonePAS.tools.membership import default_portrait
+from Products.PlonePAS.utils import decleanId
 from urllib.parse import parse_qs
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
@@ -21,7 +22,19 @@ from zope.publisher.interfaces import IPublishTraverse
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
 
 
-def isDefaultPortrait(value, portal):
+def getPortraitUrl(user):
+    if not user:
+        return
+    portal = getSite()
+    portal_membership = getToolByName(portal, "portal_membership")    
+    portrait = portal_membership.getPersonalPortrait(user.id)
+    if portrait and not isDefaultPortrait(portrait):
+        safe_id = portal_membership._getSafeMemberId(user.id)
+        return f"{portal.absolute_url()}/@portrait/{safe_id}"
+    return
+
+def isDefaultPortrait(value):
+    portal = getSite()
     default_portrait_value = getattr(portal, default_portrait, None)
     return aq_inner(value) == aq_inner(default_portrait_value)
 
@@ -207,7 +220,6 @@ class PortraitGet(Service):
         self.params = []
         self.portal = getSite()
         self.portal_membership = getToolByName(self.portal, "portal_membership")
-        self.portal_memberdata = getToolByName(self.portal, "portal_memberdata")
 
     def publishTraverse(self, request, name):
         # Consume any path segments after /@users as parameters
@@ -223,22 +235,20 @@ class PortraitGet(Service):
     def render(self):
         if len(self.params) == 1:
             # Retrieve the user portrait
-            user = self.params[0]
-            if user in self.portal_memberdata.portraits:
-                portrait = self.portal_memberdata.portraits[user]
-            else:
-                self.request.response.setStatus(404)
-                return None
+            user = decleanId(self.params[0])
+            portrait = self.portal_membership.getPersonalPortrait(user)
         elif len(self.params) == 0:
-            current_user_id = self.portal_membership.getAuthenticatedMember().getId()
-            portrait = self.portal_membership.getPersonalPortrait(current_user_id)
+            current_user_id = \
+                self.portal_membership.getAuthenticatedMember().getId()
+            portrait = \
+                self.portal_membership.getPersonalPortrait(current_user_id)
         else:
             raise Exception(
-                "Must supply exactly zero (own portrait) or one parameter (user id)"
+                "Must supply exactly zero (own portrait) or one parameter "
+                "(user id)"
             )
-
         # User uploaded portraits have a meta_type of "Image"
-        if portrait.meta_type == "Filesystem Image":
+        if not portrait or isDefaultPortrait(portrait):
             self.request.response.setStatus(404)
             return None
 
