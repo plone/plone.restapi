@@ -26,12 +26,13 @@ def getPortraitUrl(user):
     if not user:
         return
     portal = getSite()
-    portal_membership = getToolByName(portal, "portal_membership")    
+    portal_membership = getToolByName(portal, "portal_membership")
     portrait = portal_membership.getPersonalPortrait(user.id)
     if portrait and not isDefaultPortrait(portrait):
         safe_id = portal_membership._getSafeMemberId(user.id)
         return f"{portal.absolute_url()}/@portrait/{safe_id}"
     return
+
 
 def isDefaultPortrait(value):
     portal = getSite()
@@ -238,14 +239,11 @@ class PortraitGet(Service):
             user = decleanId(self.params[0])
             portrait = self.portal_membership.getPersonalPortrait(user)
         elif len(self.params) == 0:
-            current_user_id = \
-                self.portal_membership.getAuthenticatedMember().getId()
-            portrait = \
-                self.portal_membership.getPersonalPortrait(current_user_id)
+            current_user_id = self.portal_membership.getAuthenticatedMember().getId()
+            portrait = self.portal_membership.getPersonalPortrait(current_user_id)
         else:
             raise Exception(
-                "Must supply exactly zero (own portrait) or one parameter "
-                "(user id)"
+                "Must supply exactly zero (own portrait) or one parameter " "(user id)"
             )
         # User uploaded portraits have a meta_type of "Image"
         if not portrait or isDefaultPortrait(portrait):
