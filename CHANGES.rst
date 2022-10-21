@@ -8,6 +8,47 @@ Changelog
 
 .. towncrier release notes start
 
+8.31.0 (2022-10-20)
+-------------------
+
+New features:
+
+
+- Added @rules endpoint with GET/POST/DELETE/PATCH
+  [valipod] (#1397)
+- Add link integrity support for slate blocks
+  [sneridagh] (#1522)
+
+
+Bug fixes:
+
+
+- New behavior `volto.blocks.editable.layout` to be used with Volto DX Editable Layout
+  [avoinea] (#1476)
+- Fixed the `description` field not being included in fieldsets
+  [JeffersonBledsoe] (#1499)
+- Fix passwords used in tests. [davisagli] (#1513)
+
+
+Internal:
+
+
+- Remove plone.recipe.codeanalysis from buildout. [tisto] (#1507)
+- Don't use -latest when installing Plone for tests. [tisto] (#1512)
+- Cache buildout eggs between Github Actions runs. [davisagli] (#1515)
+- Use specific version of Plone in requirements.txt. Remove unnecessary pins. [wesleybl] (#1516)
+- Remove code-analysis from Makefile. [wesleybl] (#1517)
+
+
+Documentation:
+
+
+- Merge glossary terms into main plone/documentation. [stevepiercy] (#1508)
+- Fix linkintegrity documentation, add missing a response file, and use MyST syntax. [stevepiercy] (#1509)
+- Add Matomo Analytics, Remove Google Analytics. [stevepiercy] (#1518)
+- Trigger a new deploy core Plone documentation when Volto documentation is updated [esteele] (#1519)
+
+
 8.30.0 (2022-10-02)
 -------------------
 
