@@ -36,8 +36,9 @@ def getPortraitUrl(user):
 
 def isDefaultPortrait(value):
     portal = getSite()
-    default_portrait_value = getattr(portal, default_portrait, None)
-    return aq_inner(value) == aq_inner(default_portrait_value)
+    default_portrait_value = portal.restrictedTraverse(default_portrait, None)
+    return aq_inner(value).getPhysicalPath() ==\
+        aq_inner(default_portrait_value).getPhysicalPath()
 
 
 @implementer(IPublishTraverse)
