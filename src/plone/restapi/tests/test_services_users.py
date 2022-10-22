@@ -1044,6 +1044,12 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.headers["Content-Type"], "image/gif")
 
+    def test_get_user_defalut_portrait(self):
+        response = self.anon_api_session.get(
+            "/@portrait/admin",
+        )
+        self.assertEqual(404, response.status_code)
+
     def test_user_with_datetime(self):
         """test that when using a datetime field in the user schema
         the endpoints works correctly
