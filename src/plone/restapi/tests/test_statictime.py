@@ -1,12 +1,13 @@
 from datetime import datetime
 from DateTime import DateTime
 from datetime import timedelta
-from datetime import timezone
+from dateutil import tz
 from operator import itemgetter
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
+from plone.app.event.base import default_timezone
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
@@ -76,10 +77,10 @@ class TestStaticTime(unittest.TestCase):
         if isinstance(pydt, DateTime):
             pydt = pydt.asdatetime()
         elif isinstance(pydt, float):
-            pydt = datetime.fromtimestamp(pydt).astimezone(timezone.utc)
+            pydt = datetime.fromtimestamp(pydt).astimezone(tz.gettz(default_timezone()))
 
         epsilon = timedelta(minutes=5)
-        now = datetime.now().astimezone(timezone.utc)
+        now = datetime.now().astimezone(tz.gettz(default_timezone()))
         upper = now + epsilon
         lower = now - epsilon
 
@@ -134,7 +135,10 @@ class TestStaticTime(unittest.TestCase):
         self.assert_of_same_type(fake_datetimes, real_datetimes)
 
     def test_statictime_comment_created(self):
-        frozen_time = datetime(1950, 7, 31, 13, 45)
+        frozen_time = datetime(1950, 7, 31, 13, 45).astimezone(
+            tz.gettz(default_timezone())
+        )
+
         statictime = StaticTime(created=frozen_time)
 
         statictime.start()
@@ -152,7 +156,9 @@ class TestStaticTime(unittest.TestCase):
         self.assert_of_same_type(fake_datetimes, real_datetimes)
 
     def test_statictime_comment_modified(self):
-        frozen_time = datetime(1950, 7, 31, 17, 30)
+        frozen_time = datetime(1950, 7, 31, 17, 30).astimezone(
+            tz.gettz(default_timezone())
+        )
         statictime = StaticTime(modified=frozen_time)
 
         statictime.start()
