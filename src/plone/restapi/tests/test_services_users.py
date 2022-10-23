@@ -1044,7 +1044,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(response.headers["Content-Type"], "image/gif")
 
-    def test_get_user_defalut_portrait(self):
+    def test_get_user_default_portrait(self):
         response = self.anon_api_session.get(
             "/@portrait/admin",
         )
