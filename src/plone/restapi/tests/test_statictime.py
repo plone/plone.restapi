@@ -3,8 +3,6 @@ from DateTime import DateTime
 from datetime import timedelta
 from dateutil import tz
 from operator import itemgetter
-from pkg_resources import get_distribution
-from pkg_resources import parse_version
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
