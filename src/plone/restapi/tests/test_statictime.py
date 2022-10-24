@@ -3,6 +3,8 @@ from DateTime import DateTime
 from datetime import timedelta
 from dateutil import tz
 from operator import itemgetter
+from pkg_resources import get_distribution
+from pkg_resources import parse_version
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
@@ -27,6 +29,11 @@ from plone.restapi.serializer.converters import json_compatible
 import transaction
 import unittest
 
+padiscussion_version = get_distribution("plone.app.discussion").version
+if parse_version(padiscussion_version) > parse_version("4.0.0b4"):
+    NEW_PADISCUSSION = True
+else:
+    NEW_PADISCUSSION = False
 
 class TestStaticTime(unittest.TestCase):
 
@@ -77,10 +84,19 @@ class TestStaticTime(unittest.TestCase):
         if isinstance(pydt, DateTime):
             pydt = pydt.asdatetime()
         elif isinstance(pydt, float):
-            pydt = datetime.fromtimestamp(pydt).astimezone(tz.gettz(default_timezone()))
+            if NEW_PADISCUSSION:
+                pydt = datetime.fromtimestamp(pydt).astimezone(tz.gettz(default_timezone()))
+            else:
+                pydt = datetime.fromtimestamp(pydt)
 
         epsilon = timedelta(minutes=5)
-        now = datetime.now().astimezone(tz.gettz(default_timezone()))
+        if NEW_PADISCUSSION:
+            now = datetime.now().astimezone(tz.gettz(default_timezone()))
+        else:
+            now = datetime.now()
+            if pydt.tzinfo is not None:
+                now = pydt.tzinfo.localize(now)
+
         upper = now + epsilon
         lower = now - epsilon
 
@@ -135,10 +151,12 @@ class TestStaticTime(unittest.TestCase):
         self.assert_of_same_type(fake_datetimes, real_datetimes)
 
     def test_statictime_comment_created(self):
-        frozen_time = datetime(1950, 7, 31, 13, 45).astimezone(
-            tz.gettz(default_timezone())
-        )
-
+        if NEW_PADISCUSSION:
+            frozen_time = datetime(1950, 7, 31, 13, 45).astimezone(
+                tz.gettz(default_timezone())
+            )
+        else:
+            frozen_time = datetime(1950, 7, 31, 13, 45)
         statictime = StaticTime(created=frozen_time)
 
         statictime.start()
@@ -156,9 +174,12 @@ class TestStaticTime(unittest.TestCase):
         self.assert_of_same_type(fake_datetimes, real_datetimes)
 
     def test_statictime_comment_modified(self):
-        frozen_time = datetime(1950, 7, 31, 17, 30).astimezone(
-            tz.gettz(default_timezone())
-        )
+        if NEW_PADISCUSSION:
+            frozen_time = datetime(1950, 7, 31, 17, 30).astimezone(
+                tz.gettz(default_timezone())
+            )
+        else:
+            frozen_time = datetime(1950, 7, 31, 17, 30)
         statictime = StaticTime(modified=frozen_time)
 
         statictime.start()
