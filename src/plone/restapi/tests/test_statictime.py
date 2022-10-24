@@ -30,7 +30,7 @@ import transaction
 import unittest
 
 padiscussion_version = get_distribution("plone.app.discussion").version
-if parse_version(padiscussion_version) > parse_version("4.0.0b4"):
+if parse_version(padiscussion_version) >= parse_version("4.0.0b4.dev1"):
     NEW_PADISCUSSION = True
 else:
     NEW_PADISCUSSION = False
