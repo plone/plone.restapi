@@ -2,6 +2,7 @@ from plone.app.users.browser.userdatapanel import getUserDataSchema
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.services.users.get import getPortraitUrl
 from plone.restapi.serializer.converters import json_compatible
 from Products.CMFCore.interfaces._tools import IMemberData
 from Products.CMFCore.utils import getToolByName
@@ -39,13 +40,7 @@ class BaseSerializer:
 
         for name in getFieldNames(schema):
             if name == "portrait":
-                membership = getToolByName(portal, "portal_membership")
-                memberdata = getToolByName(portal, "portal_memberdata")
-                safe_id = membership._getSafeMemberId(user.id)
-                if safe_id in memberdata.portraits:
-                    value = f"{portal.absolute_url()}/@portrait/{safe_id}"
-                else:
-                    value = None
+                value = getPortraitUrl(user)
             elif name == "pdelete":
                 continue
             else:

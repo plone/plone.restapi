@@ -111,7 +111,7 @@ class TestCommentsSerializers(TestCase):
 
         serializer = getMultiAdapter((self.comment, self.request), ISerializeToJson)
         self.assertEqual(
-            f"{self.portal_url}/portal_memberdata/portraits/test_user_1_",
+            f"{self.portal_url}/@portrait/test_user_1_",
             serializer().get("author_image"),
         )
 
