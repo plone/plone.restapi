@@ -9,6 +9,7 @@ from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
+from plone.app.discussion import comment
 from plone.app.event.base import default_timezone
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.app.testing import setRoles
@@ -29,11 +30,9 @@ from plone.restapi.serializer.converters import json_compatible
 import transaction
 import unittest
 
-padiscussion_version = get_distribution("plone.app.discussion").version
-if parse_version(padiscussion_version) >= parse_version("4.0.0b4.dev1"):
-    NEW_PADISCUSSION = True
-else:
-    NEW_PADISCUSSION = False
+# Check if comments from p.a.discussion are tz aware
+# Introduced via https://github.com/plone/plone.app.discussion/pull/204
+HAS_TZ_AWARE_COMMENTS = hasattr(comment, "localized_now")
 
 
 class TestStaticTime(unittest.TestCase):
@@ -85,7 +84,7 @@ class TestStaticTime(unittest.TestCase):
         if isinstance(pydt, DateTime):
             pydt = pydt.asdatetime()
         elif isinstance(pydt, float):
-            if NEW_PADISCUSSION:
+            if HAS_TZ_AWARE_COMMENTS:
                 pydt = datetime.fromtimestamp(pydt).astimezone(
                     tz.gettz(default_timezone())
                 )
@@ -93,7 +92,7 @@ class TestStaticTime(unittest.TestCase):
                 pydt = datetime.fromtimestamp(pydt)
 
         epsilon = timedelta(minutes=5)
-        if NEW_PADISCUSSION:
+        if HAS_TZ_AWARE_COMMENTS:
             now = datetime.now().astimezone(tz.gettz(default_timezone()))
         else:
             now = datetime.now()
@@ -154,7 +153,7 @@ class TestStaticTime(unittest.TestCase):
         self.assert_of_same_type(fake_datetimes, real_datetimes)
 
     def test_statictime_comment_created(self):
-        if NEW_PADISCUSSION:
+        if HAS_TZ_AWARE_COMMENTS:
             frozen_time = datetime(1950, 7, 31, 13, 45).astimezone(
                 tz.gettz(default_timezone())
             )
@@ -177,7 +176,7 @@ class TestStaticTime(unittest.TestCase):
         self.assert_of_same_type(fake_datetimes, real_datetimes)
 
     def test_statictime_comment_modified(self):
-        if NEW_PADISCUSSION:
+        if HAS_TZ_AWARE_COMMENTS:
             frozen_time = datetime(1950, 7, 31, 17, 30).astimezone(
                 tz.gettz(default_timezone())
             )
