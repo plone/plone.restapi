@@ -35,6 +35,7 @@ if parse_version(padiscussion_version) > parse_version("4.0.0b4"):
 else:
     NEW_PADISCUSSION = False
 
+
 class TestStaticTime(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
@@ -85,7 +86,9 @@ class TestStaticTime(unittest.TestCase):
             pydt = pydt.asdatetime()
         elif isinstance(pydt, float):
             if NEW_PADISCUSSION:
-                pydt = datetime.fromtimestamp(pydt).astimezone(tz.gettz(default_timezone()))
+                pydt = datetime.fromtimestamp(pydt).astimezone(
+                    tz.gettz(default_timezone())
+                )
             else:
                 pydt = datetime.fromtimestamp(pydt)
 
