@@ -20,9 +20,9 @@
   <property name="klass">plone.restapi.tests.dxtypes.DXTestDocument</property>
 
   <property name="behaviors">
-    <element value="plone.restapi.tests.dxtypes.ITestBehavior"/>
-    <element value="plone.restapi.tests.dxtypes.ITestAnnotationsBehavior"/>
     <element value="plone.app.dexterity.behaviors.metadata.IBasic"/>
+    <element value="tests.restapi.test_annotations_behavior"/>
+    <element value="tests.restapi.test_behavior"/>
   </property>
 
   <!-- View information -->

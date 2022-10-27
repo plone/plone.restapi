@@ -1,5 +1,9 @@
+from plone.app.users.browser.userdatapanel import getUserDataSchema
+from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.services.users.get import getPortraitUrl
+from plone.restapi.serializer.converters import json_compatible
 from Products.CMFCore.interfaces._tools import IMemberData
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
@@ -8,7 +12,6 @@ from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
 from zope.schema import getFieldNames
-from plone.app.users.browser.userdatapanel import getUserDataSchema
 
 
 class BaseSerializer:
@@ -24,7 +27,7 @@ class BaseSerializer:
         roles = user.getRoles()
         # Anonymous and Authenticated are pseudo roles assign automatically
         # to logged-in or logged-out users. They should not be exposed here
-        roles = list(set(roles) - {"Anonymous", "Authenticated"})
+        roles = sorted(list(set(roles) - {"Anonymous", "Authenticated"}))
 
         data = {
             "@id": f"{portal.absolute_url()}/@users/{user.id}",
@@ -37,13 +40,7 @@ class BaseSerializer:
 
         for name in getFieldNames(schema):
             if name == "portrait":
-                memberdata = getToolByName(portal, "portal_memberdata")
-                if user.id in memberdata.portraits:
-                    value = "{}/portal_memberdata/portraits/{}".format(
-                        portal.absolute_url(), user.id
-                    )
-                else:
-                    value = None
+                value = getPortraitUrl(user)
             elif name == "pdelete":
                 continue
             else:
@@ -52,18 +49,37 @@ class BaseSerializer:
                     value = None
                 if value:
                     value = safe_unicode(value)
-            data[name] = value
+            data[name] = json_compatible(value)
 
+        return data
+
+
+@implementer(ISerializeToJsonSummary)
+@adapter(IMemberData, IRequest)
+class SerializeUserToJsonSummary(BaseSerializer):
+    def __call__(self):
+        data = super().__call__()
         return data
 
 
 @implementer(ISerializeToJson)
 @adapter(IMemberData, IRequest)
 class SerializeUserToJson(BaseSerializer):
-    pass
+    def __call__(self):
+        data = super().__call__()
+        user = self.context
+        gtool = getToolByName(self.context, "portal_groups")
+        groupIds = user.getGroups()
+        groups = [gtool.getGroupById(grp) for grp in groupIds]
+        groups = [{"id": grp.id, "title": grp.title or grp.id} for grp in groups]
+        batch = HypermediaBatch(self.request, groups)
+        groups_data = {
+            "@id": batch.canonical_url,
+            "items_total": batch.items_total,
+            "items": sorted(batch, key=lambda x: x["title"]),
+        }
+        if batch.links:
+            groups_data["batching"] = batch.links
 
-
-@implementer(ISerializeToJsonSummary)
-@adapter(IMemberData, IRequest)
-class SerializeUserToJsonSummary(BaseSerializer):
-    pass
+        data["groups"] = groups_data
+        return data

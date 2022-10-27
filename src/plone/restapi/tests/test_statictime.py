@@ -1,11 +1,14 @@
 from datetime import datetime
 from DateTime import DateTime
 from datetime import timedelta
+from dateutil import tz
 from operator import itemgetter
 from plone import api
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
+from plone.app.discussion import comment
+from plone.app.event.base import default_timezone
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.app.testing import setRoles
 from plone.app.testing import TEST_USER_ID
@@ -24,6 +27,10 @@ from plone.restapi.serializer.converters import json_compatible
 
 import transaction
 import unittest
+
+# Check if comments from p.a.discussion are tz aware
+# Introduced via https://github.com/plone/plone.app.discussion/pull/204
+HAS_TZ_AWARE_COMMENTS = hasattr(comment, "localized_now")
 
 
 class TestStaticTime(unittest.TestCase):
@@ -75,12 +82,20 @@ class TestStaticTime(unittest.TestCase):
         if isinstance(pydt, DateTime):
             pydt = pydt.asdatetime()
         elif isinstance(pydt, float):
-            pydt = datetime.fromtimestamp(pydt)
+            if HAS_TZ_AWARE_COMMENTS:
+                pydt = datetime.fromtimestamp(pydt).astimezone(
+                    tz.gettz(default_timezone())
+                )
+            else:
+                pydt = datetime.fromtimestamp(pydt)
 
         epsilon = timedelta(minutes=5)
-        now = datetime.now()
-        if pydt.tzinfo is not None:
-            now = pydt.tzinfo.localize(now)
+        if HAS_TZ_AWARE_COMMENTS:
+            now = datetime.now().astimezone(tz.gettz(default_timezone()))
+        else:
+            now = datetime.now()
+            if pydt.tzinfo is not None:
+                now = pydt.tzinfo.localize(now)
 
         upper = now + epsilon
         lower = now - epsilon
@@ -136,7 +151,12 @@ class TestStaticTime(unittest.TestCase):
         self.assert_of_same_type(fake_datetimes, real_datetimes)
 
     def test_statictime_comment_created(self):
-        frozen_time = datetime(1950, 7, 31, 13, 45)
+        if HAS_TZ_AWARE_COMMENTS:
+            frozen_time = datetime(1950, 7, 31, 13, 45).astimezone(
+                tz.gettz(default_timezone())
+            )
+        else:
+            frozen_time = datetime(1950, 7, 31, 13, 45)
         statictime = StaticTime(created=frozen_time)
 
         statictime.start()
@@ -154,7 +174,12 @@ class TestStaticTime(unittest.TestCase):
         self.assert_of_same_type(fake_datetimes, real_datetimes)
 
     def test_statictime_comment_modified(self):
-        frozen_time = datetime(1950, 7, 31, 17, 30)
+        if HAS_TZ_AWARE_COMMENTS:
+            frozen_time = datetime(1950, 7, 31, 17, 30).astimezone(
+                tz.gettz(default_timezone())
+            )
+        else:
+            frozen_time = datetime(1950, 7, 31, 17, 30)
         statictime = StaticTime(modified=frozen_time)
 
         statictime.start()

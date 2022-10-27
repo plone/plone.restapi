@@ -1,5 +1,8 @@
+from importlib import import_module
 from zope.component import adapter
+from zope.i18n import translate
 from zope.interface import Interface
+from zope.globalrequest import getRequest
 from Products.CMFPlone.interfaces.controlpanel import IDateAndTimeSchema
 from Products.CMFPlone.interfaces.controlpanel import IEditingSchema
 from Products.CMFPlone.interfaces.controlpanel import IImagingSchema
@@ -10,12 +13,15 @@ from Products.CMFPlone.interfaces.controlpanel import ISearchSchema
 from Products.CMFPlone.interfaces.controlpanel import ISecuritySchema
 from Products.CMFPlone.interfaces.controlpanel import ISiteSchema
 from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
+from Products.CMFPlone.interfaces.controlpanel import IUserGroupsSettingsSchema
 from plone.restapi.controlpanels import RegistryConfigletPanel
 
 try:
     from plone.i18n.interfaces import ILanguageSchema
 except ImportError:  # pragma: no cover
     from Products.CMFPlone.interfaces.controlpanel import ILanguageSchema
+
+PLONE_6 = getattr(import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False)
 
 
 # General
@@ -100,3 +106,26 @@ class SecurityControlpanel(RegistryConfigletPanel):
     schema = ISecuritySchema
     configlet_id = "SecuritySettings"
     configlet_category_id = "plone-security"
+
+
+# Users and groups
+
+
+@adapter(Interface, Interface)
+class UserGroupControlpanel(RegistryConfigletPanel):
+    schema = IUserGroupsSettingsSchema
+    configlet_id = "UsersGroupsSettings"
+    configlet_category_id = "plone-users"
+    if not PLONE_6:
+        title = translate(
+            "User and Group Settings",
+            default="User and Group Settings",
+            domain="plone",
+            context=getRequest(),
+        )
+        group = translate(
+            "Users and Groups",
+            default="Users and Groups",
+            domain="plone",
+            context=getRequest(),
+        )

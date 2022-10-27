@@ -1,4 +1,4 @@
 HEAD /plone/folder/@tus-upload/032803b64ad746b3ab46d9223ea3d90f HTTP/1.1
 Accept: application/json
-Authorization: Basic YWRtaW46c2VjcmV0
+Authorization: Basic YWRtaW46Y29ycmVjdCBob3JzZSBiYXR0ZXJ5IHN0YXBsZQ==
 Tus-Resumable: 1.0.0

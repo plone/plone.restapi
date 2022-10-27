@@ -32,7 +32,7 @@ copyright = "2014-%s, Plone Foundation" % thisyear
 # built documents.
 # TODO: There must be a way to import this from `setup.py` so we don't have to
 # update it manually for each release.
-version = "8.21.3.dev0"
+version = "8.24.2.dev0"
 release = version
 
 # -- General configuration ----------------------------------------------------
@@ -166,14 +166,12 @@ html_theme = "sphinx_book_theme"
 html_logo = "_static/logo.svg"
 html_favicon = "_static/favicon.ico"
 
-html_css_files = ["custom.css",
-                  ("print.css", {"media": "print"})]
+html_css_files = ["custom.css", ("print.css", {"media": "print"})]
 
 # See http://sphinx-doc.org/ext/todo.html#confval-todo_include_todos
 todo_include_todos = True
 
 html_theme_options = {
-    "google_analytics_id": "G-P8NCTB796E",
     "path_to_docs": "docs",
     "repository_url": "https://github.com/plone/plone.restapi",
     "repository_branch": "master",
@@ -287,19 +285,19 @@ htmlhelp_basename = "plonerestapidoc"
 # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html
 myst_enable_extensions = [
     "deflist",  # You will be able to utilise definition lists
-                # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#definition-lists
+    # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#definition-lists
     "linkify",  # Identify “bare” web URLs and add hyperlinks.
     "colon_fence",  # You can also use ::: delimiters to denote code fences,\
-                    #  instead of ```.
+    #  instead of ```.
     "substitution",  # https://myst-parser.readthedocs.io/en/latest/syntax/optional.html#substitutions-with-jinja2
 ]
 
 myst_substitutions = {
-    "postman_basic_auth": "![](_static/img/postman_basic_auth.png)",
-    "postman_headers": "![](_static/img/postman_headers.png)",
-    "postman_request": "![](_static/img/postman_request.png)",
-    "postman_response": "![](_static/img/postman_response.png)",
-    "postman_retain_headers": "![](_static/img/postman_retain_headers.png)",
+    "postman_basic_auth": "![](../_static/img/postman_basic_auth.png)",
+    "postman_headers": "![](../_static/img/postman_headers.png)",
+    "postman_request": "![](../_static/img/postman_request.png)",
+    "postman_response": "![](../_static/img/postman_response.png)",
+    "postman_retain_headers": "![](../_static/img/postman_retain_headers.png)",
     "fawrench": '<span class="fa fa-wrench" style="font-size: 1.6em;"></span>',
 }
 
@@ -307,11 +305,11 @@ myst_substitutions = {
 
 latex_elements = {
     # The paper size ("letterpaper" or "a4paper").
-    #"papersize": "letterpaper",
+    # "papersize": "letterpaper",
     # The font size ("10pt", "11pt" or "12pt").
-    #"pointsize": "10pt",
+    # "pointsize": "10pt",
     # Additional stuff for the LaTeX preamble.
-    #"preamble": "",
+    # "preamble": "",
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
