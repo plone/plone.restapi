@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+7.8.1 (2022-10-28)
+------------------
+
+Bug fixes:
+
+
+- Document needed version pins for Plone 4.3.  [erral] (#1150)
+
+
 7.8.0 (2022-05-14)
 ------------------
 
