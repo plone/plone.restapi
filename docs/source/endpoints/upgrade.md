@@ -68,6 +68,9 @@ Content-Type: application/json
 }
 ```
 
+`fs` shows the current version of the `CMFPlone:default` profile on the filesystem.
+`instance` shows the current version of the `CMFPlone:default` profile in the database.
+
 ## Dry run the upgrade
 
 Send a `POST` request to the `@upgrade` endpoint passing the value of `dry_run` as `true`:
