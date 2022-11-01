@@ -2,7 +2,7 @@
 myst:
   html_meta:
     "description": "The @upgrade endpoint exposes  Plone backend."
-    "property=og:description": "The @system endpoint exposes system information about the Plone backend."
+    "property=og:description": "The @upgrade endpoint exposes upgrade information about the Plone backend, and supports running the upgrade of the site."
     "property=og:title": "Upgrade"
     "keywords": "Plone, plone.restapi, REST, API, Upgrade"
 ---
@@ -15,7 +15,7 @@ A Plone site needs to be in sync with the version available on the file system.
 The `@upgrade` endpoint exposes upgrade information about the Plone backend, and supports running the upgrade of the site.
 
 ```{note}
-The upgrade endpoint is protected by the `cmf.ManagePortal` permission that requires the Site Administrator or Manager role.
+The upgrade endpoint is protected by the `cmf.ManagePortal` permission that requires the Manager role.
 ```
 
 ## Get upgrade information
