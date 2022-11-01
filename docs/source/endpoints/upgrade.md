@@ -79,7 +79,7 @@ Send a `POST` request to the `@upgrade` endpoint passing the value of `dry_run` 
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/upgrade_post_dry_run.req
 ```
-
+A dry run runs the entire upgrade, but does not commit the result to the database.
 The response will contain the result of the upgrade operation, indicating `dry_run` was selected:
 
 ```http
