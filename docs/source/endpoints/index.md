@@ -49,6 +49,7 @@ transactions
 translations
 tusupload
 types
+upgrade
 users
 userschema
 vocabularies
