@@ -27,7 +27,7 @@ Send a `GET` request to the `@upgrade` endpoint:
     :request: ../../../src/plone/restapi/tests/http-examples/upgrade_get.req
 ```
 
-The response will contain the upgrade information:
+The response will contain information about available upgrade steps:
 
 ```http
 HTTP/1.1 200 OK
