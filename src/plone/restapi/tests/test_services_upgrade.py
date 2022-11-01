@@ -11,7 +11,7 @@ import unittest
 
 # Python 3 is only supported on 5.2+.
 # This means you can not upgrade from 5.1 or earlier.
-START_PROFILE = "5200"
+START_VERSION = "5200"
 
 
 class TestUpgradeServiceFunctional(unittest.TestCase):
@@ -24,7 +24,7 @@ class TestUpgradeServiceFunctional(unittest.TestCase):
         self.portal_url = self.portal.absolute_url()
         self.request = self.portal.REQUEST
         self.setup = getToolByName(self.portal, "portal_setup")
-        self.setup.setLastVersionForProfile(_DEFAULT_PROFILE, START_PROFILE)
+        self.setup.setLastVersionForProfile(_DEFAULT_PROFILE, START_VERSION)
         transaction.commit()
         self.api_session = RelativeSession(self.portal_url, test=self)
         self.api_session.headers.update({"Accept": "application/json"})
@@ -42,7 +42,7 @@ class TestUpgradeServiceFunctional(unittest.TestCase):
         results = response.json()
         self.assertEqual(results["@id"], f"{self.portal.absolute_url()}/@upgrade")
         self.assertTrue("versions" in results.keys())
-        self.assertEqual(results["versions"]["instance"], START_PROFILE)
+        self.assertEqual(results["versions"]["instance"], START_VERSION)
         self.assertNotEqual(results["versions"]["fs"], results["versions"]["instance"])
         self.assertTrue("upgrade_steps" in results.keys())
         self.assertGreater(len(results["upgrade_steps"]), 0)
