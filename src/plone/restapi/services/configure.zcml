@@ -37,6 +37,7 @@
   <include package=".sources" />
   <include package=".transactions" />
   <include package=".types" />
+  <include package=".upgrade" />
   <include package=".users" />
   <include package=".userschema" />
   <include package=".vocabularies" />

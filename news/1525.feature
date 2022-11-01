@@ -1,0 +1,1 @@
+Add @upgrade endpoint to use upgrade a Plone instance
