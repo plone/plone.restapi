@@ -11,7 +11,7 @@ import unittest
 
 # Python 3 is only supported on 5.2+.
 # This means you can not upgrade from 5.1 or earlier.
-START_PROFILE = '5200'
+START_PROFILE = "5200"
 
 
 class TestUpgradeServiceFunctional(unittest.TestCase):
@@ -59,8 +59,7 @@ class TestUpgradeServiceFunctional(unittest.TestCase):
         self.assertTrue("versions" in results.keys())
         self.assertNotEqual(results["versions"]["fs"], results["versions"]["instance"])
 
-
-    def test_post_upgrade_dry_run(self):
+    def test_post_upgrade(self):
         response = self.api_session.post("/@upgrade", json={"dry_run": False})
 
         self.assertEqual(response.status_code, 200)
