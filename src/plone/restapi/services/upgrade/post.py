@@ -18,11 +18,15 @@ class UpgradeSitePost(Service):
         report = pm.upgrade(REQUEST=self.request, dry_run=dry_run)
         view = Upgrade(self.context, self.request)
         versions = view.versions()
+        gs_fs = versions["fs"]
+        gs_instance = versions["instance"]
         return {
             "@id": f"{self.context.absolute_url()}/@upgrade",
             "report": report,
             "versions": {
-                "instance": versions["instance"],
-                "fs": versions["fs"],
+                "instance": gs_instance,
+                "fs": gs_fs,
             },
+            "dry_run": dry_run,
+            "upgraded": gs_instance == gs_fs,
         }

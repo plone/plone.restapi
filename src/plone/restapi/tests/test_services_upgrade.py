@@ -58,6 +58,8 @@ class TestUpgradeServiceFunctional(unittest.TestCase):
         self.assertTrue("report" in results.keys())
         self.assertTrue("versions" in results.keys())
         self.assertNotEqual(results["versions"]["fs"], results["versions"]["instance"])
+        self.assertTrue(results["dry_run"])
+        self.assertFalse(results["upgraded"])
 
     def test_post_upgrade(self):
         response = self.api_session.post("/@upgrade", json={"dry_run": False})
@@ -70,3 +72,5 @@ class TestUpgradeServiceFunctional(unittest.TestCase):
         self.assertTrue("report" in results.keys())
         self.assertTrue("versions" in results.keys())
         self.assertEqual(results["versions"]["fs"], results["versions"]["instance"])
+        self.assertFalse(results["dry_run"])
+        self.assertTrue(results["upgraded"])
