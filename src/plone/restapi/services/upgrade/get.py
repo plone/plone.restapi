@@ -19,9 +19,9 @@ class UpgradeSiteGet(Service):
         upgrade_steps = format_steps(view.upgrades())
         return {
             "@id": f"{self.context.absolute_url()}/@upgrade",
+            "upgrade_steps": upgrade_steps,
             "versions": {
                 "instance": versions["instance"],
                 "fs": versions["fs"],
             },
-            "upgrade_steps": upgrade_steps,
         }
