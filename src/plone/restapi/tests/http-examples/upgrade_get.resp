@@ -1,0 +1,36 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "@id": "http://localhost:55001/plone/@upgrade",
+  "upgrade_steps": {
+    "6006-6007": [
+      {
+        "id": "cb3b910894ab80c94b6367b39bc93039",
+        "title": "Run to6007 upgrade profile."
+      },
+      {
+        "id": "bb72e6a5b0c9c6131b1efad155868131",
+        "title": "Add a timezone property to portal memberdata if it is missing."
+      },
+      {
+        "id": "62ef4eea9b3bfbd472cf349277de749b",
+        "title": "Fix the portal action icons."
+      },
+      {
+        "id": "bac1428c12e294517042a1cee5cfabdc",
+        "title": "Rename the behavior collective.dexteritytextindexer to plone.textindexer"
+      }
+    ],
+    "6007-6008": [
+      {
+        "id": "e5cad1e9fd65e8bd1b23519d49417e51",
+        "title": "Update plonetheme.barceloneta registry"
+      }
+    ]
+  },
+  "versions": {
+    "fs": "6008",
+    "instance": "6006"
+  }
+}
