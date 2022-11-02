@@ -106,6 +106,7 @@ Send a `POST` request to the `@upgrade` endpoint, with `dry_run` set to `false`:
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/upgrade_post.req
 ```
+
 The response will contain the result of the upgrade operation:
 
 ```http
