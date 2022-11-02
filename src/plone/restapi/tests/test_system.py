@@ -54,3 +54,4 @@ class TestSystemFunctional(unittest.TestCase):
         )
         self.assertEqual(results["plone_version"], self.core_versions.get("Plone"))
         self.assertEqual(results["zope_version"], self.core_versions.get("Zope"))
+        self.assertFalse(results["upgrade"])
