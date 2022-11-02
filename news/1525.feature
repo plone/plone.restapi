@@ -1,1 +1,1 @@
-Add @upgrade endpoint to use upgrade a Plone instance
+Add @upgrade endpoint to preview or run an upgrade of a Plone instance
