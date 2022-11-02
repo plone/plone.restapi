@@ -1,7 +1,7 @@
 ---
 myst:
   html_meta:
-    "description": "The @upgrade endpoint exposes  Plone backend."
+    "description": "The @upgrade endpoint exposes upgrade information about the Plone backend, and supports running the upgrade of the site."
     "property=og:description": "The @upgrade endpoint exposes upgrade information about the Plone backend, and supports running the upgrade of the site."
     "property=og:title": "Upgrade"
     "keywords": "Plone, plone.restapi, REST, API, Upgrade"
