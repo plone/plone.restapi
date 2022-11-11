@@ -32,7 +32,6 @@ Content-Type: application/json
         "plone.richtext": false,
         "plone.shortname": false,
         "plone.tableofcontents": false,
-        "plone.textindexer": false,
         "plone.thumb_icon": false,
         "plone.translatable": false,
         "plone.versioning": false,
@@ -76,7 +75,6 @@ Content-Type: application/json
                     "plone.eventrecurrence",
                     "plone.excludefromnavigation",
                     "plone.constraintypes",
-                    "plone.textindexer",
                     "plone.leadimage",
                     "plone.locking",
                     "plone.translatable",
@@ -306,12 +304,6 @@ Content-Type: application/json
                 "description": "Adds a table of contents",
                 "factory": "Yes/No",
                 "title": "Table of contents",
-                "type": "boolean"
-            },
-            "plone.textindexer": {
-                "description": "Enables the enhanced full-text indexing for a content type ('plone.textindexer'). If a field is marked 'searchable', its content gets added to the 'SearchableText' index in the catalog.",
-                "factory": "Yes/No",
-                "title": "Full-Text Indexing",
                 "type": "boolean"
             },
             "plone.thumb_icon": {

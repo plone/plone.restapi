@@ -45,27 +45,12 @@ Content-Type: application/json
         "filename": "image.png",
         "height": 56,
         "scales": {
-            "great": {
-                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
-                "height": 56,
-                "width": 215
-            },
-            "huge": {
-                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
-                "height": 56,
-                "width": 215
-            },
             "icon": {
                 "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
                 "height": 8,
                 "width": 32
             },
             "large": {
-                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
-                "height": 56,
-                "width": 215
-            },
-            "larger": {
                 "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
                 "height": 56,
                 "width": 215
@@ -81,11 +66,6 @@ Content-Type: application/json
                 "width": 200
             },
             "preview": {
-                "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
-                "height": 56,
-                "width": 215
-            },
-            "teaser": {
                 "download": "http://localhost:55001/plone/image/@@images/uuid1.png",
                 "height": 56,
                 "width": 215
