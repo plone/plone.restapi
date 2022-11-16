@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+8.32.1 (2022-11-14)
+-------------------
+
+Bug fixes:
+
+
+- Fix time to be returned with a timezone specifier in history endpoint [reebalazs] (#1530)
+
+
 8.32.0 (2022-11-03)
 -------------------
 
