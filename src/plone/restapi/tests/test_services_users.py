@@ -1135,23 +1135,3 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(len(users), 2)
         self.assertEqual(users[0].userid, "user1")
         self.assertEqual(users[1].userid, "user2")
-
-    # Not testable via the service, hence unittest
-    def test_sort_users_filtering(self):
-        class MockUser(object):
-            def __init__(self, userid):
-                self.userid = userid
-
-            def getProperty(self, key, default):
-                return "Full Name " + self.userid
-
-        class MockUsersGet(UsersGet):
-            def __init__(self):
-                pass
-
-        mockService = MockUsersGet()
-        user1 = MockUser("user1")
-        user2 = MockUser("user2")
-        users = mockService._sort_users([user2, user1, None])
-        # None does not break and equals to empty name in sorting order
-        self.assertEqual(users, [None, user1, user2])
