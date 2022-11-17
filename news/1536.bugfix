@@ -1,0 +1,2 @@
+Fix AttributeError for ``REQUEST`` in linkintegrity when pasting nested content.
+[maurits]
