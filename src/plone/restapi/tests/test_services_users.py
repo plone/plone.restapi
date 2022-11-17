@@ -13,6 +13,7 @@ from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getAdapter
 from zope.component import getUtility
+from plone.restapi.services.users.get import UsersGet
 
 import os
 import re
@@ -1097,3 +1098,60 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(200, response.status_code)
         self.assertIn("birthdate", response.json())
         self.assertIn("registration_datetime", response.json())
+
+    # Not testable via the service, hence unittest
+    def test_get_users_filtering(self):
+        class MockUsersGet(UsersGet):
+            def __init__(self):
+                class MockUser(object):
+                    def __init__(self, userid):
+                        self.userid = userid
+
+                    def getProperty(self, key, default):
+                        return "Full Name " + self.userid
+
+                class MockAclUsers(object):
+                    def searchUsers(self, **kw):
+                        return [
+                            {"userid": "user2"},
+                            {"userid": "user1"},
+                            {"userid": "NONEUSER"},
+                        ]
+
+                self.acl_users = MockAclUsers()
+
+                class MockPortalMembership(object):
+                    def getMemberById(self, userid):
+                        if userid == "NONEUSER":
+                            return None
+                        else:
+                            return MockUser(userid)
+
+                self.portal_membership = MockPortalMembership()
+
+        mockService = MockUsersGet()
+        users = mockService._get_users(foo="bar")
+        # Sorted by full name. None does not break and is filtered.
+        self.assertEqual(len(users), 2)
+        self.assertEqual(users[0].userid, "user1")
+        self.assertEqual(users[1].userid, "user2")
+
+    # Not testable via the service, hence unittest
+    def test_sort_users_filtering(self):
+        class MockUser(object):
+            def __init__(self, userid):
+                self.userid = userid
+
+            def getProperty(self, key, default):
+                return "Full Name " + self.userid
+
+        class MockUsersGet(UsersGet):
+            def __init__(self):
+                pass
+
+        mockService = MockUsersGet()
+        user1 = MockUser("user1")
+        user2 = MockUser("user2")
+        users = mockService._sort_users([user2, user1, None])
+        # None does not break and equals to empty name in sorting order
+        self.assertEqual(users, [None, user1, user2])
