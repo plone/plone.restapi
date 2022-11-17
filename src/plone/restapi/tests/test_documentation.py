@@ -2203,7 +2203,7 @@ class TestIterateDocumentation(TestDocumentationBase):
         # So replace it.
         json_response = json.loads(response.text)
         lock = json_response.get("lock")
-        response_text_override = ""
+        # response_text_override = ""
         if lock:
             token = lock.get("token")
             if token:
@@ -2214,10 +2214,11 @@ class TestIterateDocumentation(TestDocumentationBase):
                     token,
                 )
                 lock["token"] = token
-                response_text_override = pretty_json(json_response)
-        save_request_and_response_for_docs(
-            "workingcopy_baseline_get", response, response_text_override
-        )
+                # response_text_override = pretty_json(json_response)
+        # # Disabled because of timezone ambiguity
+        # save_request_and_response_for_docs(
+        #    "workingcopy_baseline_get", response, response_text_override
+        # )
 
         response = self.api_session.get(
             "/copy_of_document",
