@@ -32,7 +32,7 @@ List all available tiles types by sending a `GET` request to the `@tiles` endpoi
 ```
 GET /plone/@tiles HTTP/1.1
 Accept: application/json
-Authorization: Basic YWRtaW46c2VjcmV0
+Authorization: Basic YWRtaW46Y29ycmVjdCBob3JzZSBiYXR0ZXJ5IHN0YXBsZQ==
 ```
 
 The server responds with a {term}`200 OK` status and lists all available tiles:
@@ -67,7 +67,7 @@ Retrieve the JSON schema of a specific tile by calling the `@tiles` endpoint wit
 ```
 GET /plone/@tiles/title HTTP/1.1
 Accept: application/json
-Authorization: Basic YWRtaW46c2VjcmV0
+Authorization: Basic YWRtaW46Y29ycmVjdCBob3JzZSBiYXR0ZXJ5IHN0YXBsZQ==
 ```
 
 The server responds with a JSON schema definition for that particular tile:

@@ -22,7 +22,7 @@ The list of expandable components is listed in the `@components` attribute in th
 ```http
 GET /plone/front-page HTTP/1.1
 Accept: application/json
-Authorization: Basic YWRtaW46c2VjcmV0
+Authorization: Basic YWRtaW46Y29ycmVjdCBob3JzZSBiYXR0ZXJ5IHN0YXBsZQ==
 
 {
   "@id": "http://localhost:55001/plone/front-page",

@@ -23,7 +23,7 @@ As they are fields in a Dexterity behavior, both fields will be returned in a `G
 ```http
 GET /plone/my-document HTTP/1.1
 Accept: application/json
-Authorization: Basic YWRtaW46c2VjcmV0
+Authorization: Basic YWRtaW46Y29ycmVjdCBob3JzZSBiYXR0ZXJ5IHN0YXBsZQ==
 ```
 
 The server responds with a `Status 200`, and lists all stored blocks on that content object:
@@ -31,7 +31,7 @@ The server responds with a `Status 200`, and lists all stored blocks on that con
 ```http
 GET /plone/my-document HTTP/1.1
 Accept: application/json
-Authorization: Basic YWRtaW46c2VjcmV0
+Authorization: Basic YWRtaW46Y29ycmVjdCBob3JzZSBiYXR0ZXJ5IHN0YXBsZQ==
 Content-Type: application/json
 
 {
@@ -69,7 +69,7 @@ Storing blocks is done via a default `PATCH` content operation:
 ```http
 PATCH /plone/my-document HTTP/1.1
 Accept: application/json
-Authorization: Basic YWRtaW46c2VjcmV0
+Authorization: Basic YWRtaW46Y29ycmVjdCBob3JzZSBiYXR0ZXJ5IHN0YXBsZQ==
 Content-Type: application/json
 
 {
