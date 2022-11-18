@@ -6,6 +6,7 @@ from plone.restapi.deserializer.blocks import iterate_children
 from plone.restapi.interfaces import IBlockFieldLinkIntegrityRetriever
 from zope.component import adapter
 from zope.component import subscribers
+from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
@@ -19,11 +20,17 @@ class BlocksRetriever(DXGeneral):
         """Finds all links from the object and return them."""
         links = set()
         blocks = getattr(self.context, "blocks", {})
+        if not blocks:
+            return links
+        request = getattr(self.context, "REQUEST", None)
+        if request is None:
+            # context does not have full acquisition chain
+            request = getRequest()
         for block in blocks.values():
             block_type = block.get("@type", None)
             handlers = []
             for h in subscribers(
-                (self.context, self.context.REQUEST),
+                (self.context, request),
                 IBlockFieldLinkIntegrityRetriever,
             ):
                 if h.block_type == block_type or h.block_type is None:
