@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.32.2 (2022-11-18)
+-------------------
+
+Bug fixes:
+
+
+- Fix AttributeError for ``REQUEST`` in linkintegrity when pasting nested content.
+  [maurits] (#1536)
+
+
 8.32.1 (2022-11-14)
 -------------------
 
