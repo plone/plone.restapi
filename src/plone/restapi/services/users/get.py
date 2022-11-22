@@ -17,7 +17,8 @@ from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-
+from Products.PlonePAS.tools.memberdata import MemberData
+from typing import Sequence, Iterable
 
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
 
@@ -69,12 +70,11 @@ class UsersGet(Service):
         return self.portal_membership.getMemberById(user_id)
 
     @staticmethod
-    def _sort_users(users):
-        users.sort(
-            key=lambda x: x is not None
-            and normalizeString(x.getProperty("fullname", ""))
+    def _sort_users(users: Iterable[MemberData]) -> Sequence[MemberData]:
+        """users is an iterable of MemberData objects, None is not accepted"""
+        return sorted(
+            users, key=lambda x: normalizeString(x.getProperty("fullname", ""))
         )
-        return users
 
     def _principal_search_results(
         self, search_for_principal, get_principal_by_id, principal_type, id_key
@@ -91,7 +91,9 @@ class UsersGet(Service):
 
     def _get_users(self, **kw):
         results = {user["userid"] for user in self.acl_users.searchUsers(**kw)}
-        users = [self.portal_membership.getMemberById(userid) for userid in results]
+        users = (self.portal_membership.getMemberById(userid) for userid in results)
+        # Filtering for None which might happen due to some unknown condition
+        users = filter(lambda x: x is not None, users)
         return self._sort_users(users)
 
     def _user_search_results(self):
