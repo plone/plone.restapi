@@ -8,6 +8,52 @@ Changelog
 
 .. towncrier release notes start
 
+8.32.3 (2022-11-22)
+-------------------
+
+Bug fixes:
+
+
+- Fortify user api against missing user data (None) @reebalazs (#1534)
+
+
+8.32.2 (2022-11-18)
+-------------------
+
+Bug fixes:
+
+
+- Fix AttributeError for ``REQUEST`` in linkintegrity when pasting nested content.
+  [maurits] (#1536)
+
+
+8.32.1 (2022-11-14)
+-------------------
+
+Bug fixes:
+
+
+- Fix time to be returned with a timezone specifier in history endpoint [reebalazs] (#1530)
+
+
+8.32.0 (2022-11-03)
+-------------------
+
+New features:
+
+
+- Add @upgrade endpoint to preview or run an upgrade of a Plone instance [ericof] (#1525)
+
+
+Bug fixes:
+
+
+- Added url field to Actions (#817)
+- Update statictime tests following changes to p.a.disucssion (see 
+  https://github.com/plone/plone.app.discussion/pull/204) - [instification] (#1520)
+- Update @portrait endpoint to use sanitized user id [instification] (#1524)
+
+
 8.31.0 (2022-10-20)
 -------------------
 

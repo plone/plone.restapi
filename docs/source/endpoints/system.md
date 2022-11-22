@@ -35,6 +35,7 @@ Content-Type: application/json
   "plone_gs_metadata_version_installed": "5208",
   "plone_version": "5.2.1",
   "python_version": "3.7.7 (default, Mar 10 2020, 15:43:33) \n[Clang 11.0.0 (clang-1100.0.33.17)]",
+  "upgrade": true,
   "zope_version": "4.1.3"
 }
 ```
