@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+8.32.3 (2022-11-22)
+-------------------
+
+Bug fixes:
+
+
+- Fortify user api against missing user data (None) @reebalazs (#1534)
+
+
 8.32.2 (2022-11-18)
 -------------------
 
