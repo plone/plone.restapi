@@ -1,0 +1,80 @@
+config:
+  target: "/"
+  phases:
+    - duration: 60
+      arrivalRate: 1
+      name: Warm up
+    - duration: 120
+      arrivalRate: 2
+      rampTo: 5
+      name: Ramp up load
+    - duration: 60
+      arrivalRate: 5
+      name: Sustained load
+  processor: "./artillery-helpers.js"
+
+scenarios:
+  - name: "Homepage and read file - AnonUser"
+    flow:
+      - think: 2
+      - log: "ANON-USER GETS HOMEPAGE!"
+      - get:
+          url: "http://127.0.0.1:12345/Plone"
+          headers:
+            Accept: "application/json"
+            # Authorization: "Basic YWRtaW46YWRtaW4="
+      - think: 1
+      - log: "ANON-USER GETS TEST-DOC-PAGE!"
+      - get:
+          url: "http://127.0.0.1:12345/Plone/testfolder-read/folder-with-10-items/doc1"
+          headers:
+            Accept: "application/json"
+            # Authorization: "Basic YWRtaW46YWRtaW4="
+
+  - name: "Create and read file - AuthUser"
+    flow:
+      - think: 2
+      - log: "POSTING NEW ITEM!"
+      - post:
+          url: "http://127.0.0.1:12345/Plone/testfolder-read/folder"
+          json:
+            "@type": "Document"
+            title: "My Documento"
+          headers:
+            Accept: "application/json"
+            Authorization: "Basic YWRtaW46YWRtaW4="
+          afterResponse: "catchNewLocation"
+      - think: 1
+      - log: "GETTING NEWLY CREATED ITEM!"
+      - get:
+          url: "{{ newLocation }}"
+          headers:
+            Accept: "application/json"
+            Authorization: "Basic YWRtaW46YWRtaW4="
+
+  - name: "Search and read item - AuthUser"
+    flow:
+      - think: 2
+      - log: "SEARCHING ITEMS!"
+      - post:
+          url: "http://127.0.0.1:12345/Plone/testfolder-read/folder/@querystring-search"
+          json:
+            query:
+              [
+                {
+                  "i": "Title",
+                  "o": "plone.app.querystring.operation.string.is",
+                  "v": ["Documento"],
+                },
+              ]
+          headers:
+            Accept: "application/json"
+            Authorization: "Basic YWRtaW46YWRtaW4=" # Without it, reponse.body.items.length == 0
+            Content-Type: "application/json"
+          afterResponse: "catchGoalItem"
+      - log: "GETTING GOAL ITEM!"
+      - get:
+          url: "{{ newGoalItem }}"
+          headers:
+            Accept: "application/json"
+            Authorization: "Basic YWRtaW46YWRtaW4="
