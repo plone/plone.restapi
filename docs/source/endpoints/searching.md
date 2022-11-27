@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    "description": "Content in a Plone site can be searched for by invoking the /@search endpoint in any context."
-    "property=og:description": "Content in a Plone site can be searched for by invoking the /@search endpoint in any context."
-    "property=og:title": "Search"
-    "keywords": "Plone, plone.restapi, REST, API, Search"
+    'description': 'Content in a Plone site can be searched for by invoking the /@search endpoint in any context.'
+    'property=og:description': 'Content in a Plone site can be searched for by invoking the /@search endpoint in any context.'
+    'property=og:title': 'Search'
+    'keywords': 'Plone, plone.restapi, REST, API, Search'
 ---
 
 # Search
@@ -16,8 +16,8 @@ GET /plone/@search HTTP/1.1
 Accept: application/json
 ```
 
-A search is *contextual* by default.
-In other words, it is bound to a specific context—a *collection* in HTTP REST terms—and searches within that collection and any sub-collections.
+A search is _contextual_ by default.
+In other words, it is bound to a specific context—a _collection_ in HTTP REST terms—and searches within that collection and any sub-collections.
 
 A Plone site is also a collection.
 We therefore have a global search by invoking the `/@search` endpoint on the site root.
@@ -60,7 +60,6 @@ The `plone.restapi` `@search` endpoint will not do that for you.
 You will have to add it if you want to keep this feature.
 ```
 
-
 ## Query format
 
 Queries and query-wide options, such as `sort_on`, are submitted as query string parameters to the `/@search` request:
@@ -72,7 +71,6 @@ GET /plone/@search?SearchableText=lorem HTTP/1.1
 This is nearly identical to the way that queries are passed to the Plone `@@search` browser view, with only a few minor differences.
 
 For general information on how to query the Plone catalog, please refer to the [Plone Documentation on Querying](https://docs.plone.org/develop/plone/searching_and_indexing/query.html).
-
 
 ### Query options
 
@@ -98,7 +96,6 @@ This dictionary will need to be flattened in dotted notation to pass it into a q
 
 Again this is very similar to how [Record Arguments](https://zope.readthedocs.io/en/latest/zdgbook/ObjectPublishing.html#an-aggregator-in-detail-the-record-argument) are parsed by ZPublisher, except that you can omit the `:record` suffix.
 
-
 ### Restricting search to multiple paths
 
 To restrict a search to multiple paths, the original query as a Python dictionary would look like this, with an optional `depth` and `sort_on`:
@@ -122,6 +119,14 @@ The `requests` module will automatically do this for you if you pass it a list o
 :language: http
 ```
 
+### Sorting on multiple indexes
+
+Sorting can happen on multiple indexes, as the underlying catalog supports it. To do so the query has to contain the list of indexes to be used for sorting in the `sort_on` parameter. If wanted the ordering of the sorting can also be added in the query in the `sort_order` parameter.
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/search_sort_multiple_indexes.req
+```
 
 ### Data types in queries
 
@@ -141,7 +146,6 @@ Accept: application/json
 ```
 
 Please refer to the [Documentation on Argument Conversion in ZPublisher](https://zope.readthedocs.io/en/latest/zdgbook/ObjectPublishing.html#argument-conversion) for details.
-
 
 (retrieving-additional-metadata)=
 
@@ -174,7 +178,6 @@ Doing so will result in a TypeError `"No converter for making <...> JSON compati
 In [ZCatalog](https://zope.readthedocs.io/en/latest/zopebook/SearchingZCatalog.html) terms, this reflects the difference between *catalog brains* and objects that have been *woken up*.
 ```
 
-
 ## Retrieving full objects
 
 If the data provided as metadata is not enough, you can retrieve search results as full serialized objects equivalent to what the resource `GET` request would produce.
@@ -194,7 +197,6 @@ You do so by specifying the `fullobjects` parameter:
 Be aware that this might induce performance issues when retrieving a lot of resources.
 Normally the search just serializes catalog brains, but with `fullobjects`, we wake up all the returned objects.
 ```
-
 
 ## Restrict search results to Plone's search settings
 

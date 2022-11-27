@@ -440,6 +440,18 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@search", params=query)
         save_request_and_response_for_docs("search_multiple_paths", response)
 
+    def test_documentation_search_sort_multiple_indexes(self):
+        self.portal.invokeFactory("Folder", id="folder1", title="Folder 1")
+        self.portal.invokeFactory("Document", id="doc1", title="Lorem Ipsum")
+        self.portal.invokeFactory("Folder", id="folder2", title="Folder 2")
+        self.portal.invokeFactory("Document", id="doc2", title="Lorem Ipsum")
+        transaction.commit()
+        query = {
+            "sort_on": ["portal_type", "sortable_title"],
+        }
+        response = self.api_session.get("/@search", params=query)
+        save_request_and_response_for_docs("search_sort_multiple_indexes", response)
+
     def test_documentation_search_metadata_fields(self):
         self.portal.invokeFactory("Document", id="doc1", title="Lorem Ipsum")
         transaction.commit()
@@ -1371,7 +1383,7 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_vocabularies_get_filtered_by_title(self):
         response = self.api_session.get(
-            "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?" "title=doc"
+            "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?title=doc"
         )
         save_request_and_response_for_docs(
             "vocabularies_get_filtered_by_title", response
@@ -1583,8 +1595,7 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token":'
-            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("lock", response)
@@ -1597,8 +1608,7 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token":'
-            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("lock_nonstealable_timeout", response)
@@ -1624,8 +1634,7 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token":'
-            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("refresh_lock", response)
