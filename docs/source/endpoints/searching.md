@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    'description': 'Content in a Plone site can be searched for by invoking the /@search endpoint in any context.'
-    'property=og:description': 'Content in a Plone site can be searched for by invoking the /@search endpoint in any context.'
-    'property=og:title': 'Search'
-    'keywords': 'Plone, plone.restapi, REST, API, Search'
+    "description': "Content in a Plone site can be searched for by invoking the /@search endpoint in any context."
+    "property=og:description": "Content in a Plone site can be searched for by invoking the /@search endpoint in any context."
+    "property=og:title": "Search"
+    "keywords": "Plone, plone.restapi, REST, API, Search"
 ---
 
 # Search
@@ -16,8 +16,8 @@ GET /plone/@search HTTP/1.1
 Accept: application/json
 ```
 
-A search is _contextual_ by default.
-In other words, it is bound to a specific context—a _collection_ in HTTP REST terms—and searches within that collection and any sub-collections.
+A search is *contextual* by default.
+In other words, it is bound to a specific context—a *collection* in HTTP REST terms—and searches within that collection and any sub-collections.
 
 A Plone site is also a collection.
 We therefore have a global search by invoking the `/@search` endpoint on the site root.
