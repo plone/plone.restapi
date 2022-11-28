@@ -1,7 +1,7 @@
 ---
 myst:
   html_meta:
-    "description': "Content in a Plone site can be searched for by invoking the /@search endpoint in any context."
+    "description": "Content in a Plone site can be searched for by invoking the /@search endpoint in any context."
     "property=og:description": "Content in a Plone site can be searched for by invoking the /@search endpoint in any context."
     "property=og:title": "Search"
     "keywords": "Plone, plone.restapi, REST, API, Search"
