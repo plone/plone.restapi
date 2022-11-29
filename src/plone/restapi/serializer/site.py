@@ -68,6 +68,7 @@ class SerializeSiteRootToJson:
         }
 
         if HAS_PLONE_6:
+            result["UID"] = self.context.UID()
             # Insert Plone Site DX root field values
             for schema in iterSchemata(self.context):
                 read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
