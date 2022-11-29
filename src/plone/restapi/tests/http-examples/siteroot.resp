@@ -27,7 +27,7 @@ Content-Type: application/json
     },
     "@id": "http://localhost:55001/plone",
     "@type": "Plone Site",
-    "UID": "c969bb6c04954195b75e82b7fe7d1d0b",
+    "UID": "SomeUUIDPortal",
     "allow_discussion": null,
     "contributors": [],
     "creators": [
