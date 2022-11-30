@@ -23,7 +23,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from plone.restapi.tests.helpers import patch_scale_uuid
+from plone.restapi.tests.helpers import patch_scale_uuid, patch_addon_versions
 from plone.restapi.tests.statictime import StaticTime
 from plone.testing.z2 import Browser
 from zope.component import createObject
@@ -174,6 +174,8 @@ class TestDocumentationBase(unittest.TestCase):
         self.request = self.layer["request"]
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
+
+        setattr(self.portal, "_plone.uuid", "55c25ebc220d400393574f37d648727c")
 
         # Register custom UUID generator to produce stable UUIDs during tests
         pushGlobalRegistry(getSite())
@@ -437,6 +439,18 @@ class TestDocumentation(TestDocumentationBase):
         }
         response = self.api_session.get("/@search", params=query)
         save_request_and_response_for_docs("search_multiple_paths", response)
+
+    def test_documentation_search_sort_multiple_indexes(self):
+        self.portal.invokeFactory("Folder", id="folder1", title="Folder 1")
+        self.portal.invokeFactory("Document", id="doc1", title="Lorem Ipsum")
+        self.portal.invokeFactory("Folder", id="folder2", title="Folder 2")
+        self.portal.invokeFactory("Document", id="doc2", title="Lorem Ipsum")
+        transaction.commit()
+        query = {
+            "sort_on": ["portal_type", "sortable_title"],
+        }
+        response = self.api_session.get("/@search", params=query)
+        save_request_and_response_for_docs("search_sort_multiple_indexes", response)
 
     def test_documentation_search_metadata_fields(self):
         self.portal.invokeFactory("Document", id="doc1", title="Lorem Ipsum")
@@ -1375,7 +1389,7 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_vocabularies_get_filtered_by_title(self):
         response = self.api_session.get(
-            "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?" "title=doc"
+            "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?title=doc"
         )
         save_request_and_response_for_docs(
             "vocabularies_get_filtered_by_title", response
@@ -1587,8 +1601,7 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token":'
-            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("lock", response)
@@ -1601,8 +1614,7 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token":'
-            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("lock_nonstealable_timeout", response)
@@ -1628,8 +1640,7 @@ class TestDocumentation(TestDocumentationBase):
         # Replace dynamic lock token with a static one
         response._content = re.sub(
             b'"token": "[^"]+"',
-            b'"token":'
-            b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
+            b'"token": "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
         save_request_and_response_for_docs("refresh_lock", response)
@@ -1771,8 +1782,9 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
         )
 
     def test_translate_messages_addons(self):
-        response = self.api_session.get("/@addons")
-        save_request_and_response_for_docs("translated_messages_addons", response)
+        with patch_addon_versions("1.2.3"):
+            response = self.api_session.get("/@addons")
+            save_request_and_response_for_docs("translated_messages_addons", response)
 
 
 class TestCommenting(TestDocumentationBase):

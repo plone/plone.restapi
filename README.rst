@@ -40,10 +40,9 @@ An example POST request to create a new document is the following.
 
 .. code-block:: shell
 
-    curl -i -X POST https://6.demo.plone.org/ \
+    curl -i -X POST https://6.demo.plone.org/++api++ \
         -H "Accept: application/json" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Basic YOUR_BASIC_AUTH_TOKEN" \
         --data-raw '{"@type": "Document", "title": "My Document"}' \
         --user admin:admin
 
