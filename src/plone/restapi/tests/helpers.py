@@ -3,6 +3,7 @@ from plone.scale import storage
 from Products.CMFCore.utils import getToolByName
 from unittest.mock import patch
 from urllib.parse import urlparse
+from plone.restapi.services.addons.addons import Addons
 
 import quopri
 
@@ -73,3 +74,14 @@ def patch_scale_uuid(value):
             storage.AnnotationStorage, "_modified_since", return_value=True
         ):
             yield
+
+
+@contextmanager
+def patch_addon_versions(value):
+    """Patch the method that extracts the version of each of the addons.
+    Without this patch we get version errors each time an addon is upgraded
+    which is really annoying when a new version of plone.restapi is released
+    because all PRs need to be updated
+    """
+    with patch.object(Addons, "get_product_version", return_value=value):
+        yield
