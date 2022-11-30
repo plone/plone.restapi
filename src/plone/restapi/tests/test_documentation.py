@@ -177,6 +177,8 @@ class TestDocumentationBase(unittest.TestCase):
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
 
+        setattr(self.portal, "_plone.uuid", "55c25ebc220d400393574f37d648727c")
+
         # Register custom UUID generator to produce stable UUIDs during tests
         pushGlobalRegistry(getSite())
         register_static_uuid_utility(prefix="SomeUUID")
