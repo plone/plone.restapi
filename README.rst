@@ -34,7 +34,7 @@ An example GET request on the portal root is the following.
 
 .. code-block:: shell
 
-    curl -i https://6.demo.plone.org/ -H "Accept: application/json"
+    curl -i https://6.demo.plone.org/++api++ -H "Accept: application/json"
 
 An example POST request to create a new document is the following.
 
