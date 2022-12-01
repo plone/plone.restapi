@@ -8,6 +8,20 @@ Changelog
 
 .. towncrier release notes start
 
+8.32.4 (2022-12-01)
+-------------------
+
+Bug fixes:
+
+
+- Allow multiple values for sort_on and sort_order parameters in @search
+  [erral] (#1532)
+- Mock addon versions in documentation
+  [erral] (#1538)
+- Add "UID" to content type endpoint response of "Plone Site"
+  [ksuess] (#1546)
+
+
 8.32.3 (2022-11-22)
 -------------------
 
