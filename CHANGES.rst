@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+8.32.5 (2022-12-08)
+-------------------
+
+Bug fixes:
+
+
+- Fix timezone for Locking creation date @iFlameing (#1551)
+
+
 8.32.4 (2022-12-01)
 -------------------
 
