@@ -1,0 +1,1 @@
+Fix an error when saving content with a slate block that includes an empty link. [davisagli]
