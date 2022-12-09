@@ -202,6 +202,35 @@ class TestBlocksLinkintegrity(TestCase):
         self.assertEqual(len(value), 1)
         self.assertIn("../resolveuid/{}".format(uid), value)
 
+    def test_links_retriever_skip_empty_links(self):
+        blocks = {
+            "abc": {
+                "@type": "slate",
+                "plaintext": "Frontpage content here",
+                "value": [
+                    {
+                        "children": [
+                            {"text": "Frontpage "},
+                            {
+                                "children": [{"text": "content "}],
+                                "data": {
+                                    "url": None,
+                                },
+                                "type": "link",
+                            },
+                            {"text": "here"},
+                        ],
+                        "type": "h2",
+                    }
+                ],
+            }
+        }
+
+        self.portal.doc1.blocks = blocks
+        value = self.retrieve_links(blocks)
+
+        self.assertEqual(len(value), 0)
+
 
 class TestLinkintegrityForBlocks(TestCase):
 

@@ -88,7 +88,9 @@ class SlateBlockLinksRetriever:
             if node_type:
                 handler = getattr(self, f"handle_{node_type}", None)
                 if handler:
-                    self.links.append(handler(child))
+                    value = handler(child)
+                    if value:
+                        self.links.append(value)
 
         return self.links
 
