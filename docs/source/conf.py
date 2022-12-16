@@ -144,7 +144,7 @@ intersphinx_mapping = {
 
 ogp_site_url = "https://plonerestapi.readthedocs.org/"
 ogp_description_length = 200
-ogp_image = "https://docs.plone.org/_static/Plone_logo_square.png"
+ogp_image = "https://6.docs.plone.org/_static/Plone_logo_square.png"
 ogp_site_name = "plone.restapi Documentation"
 ogp_type = "website"
 ogp_custom_meta_tags = [
