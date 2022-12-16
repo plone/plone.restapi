@@ -134,7 +134,7 @@ linkcheck_ignore = [
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 #
 intersphinx_mapping = {
-    "plone": ("https://6.dev-docs.plone.org/", None),
+    "plone": ("https://6.docs.plone.org/", None),
     "python": ("https://docs.python.org/3/", None),
     "training": ("https://training.plone.org/5/", None),
 }
