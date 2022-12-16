@@ -2,6 +2,7 @@ from AccessControl import getSecurityManager
 from Acquisition import aq_inner
 from io import BytesIO
 from OFS.Image import Image
+from plone.restapi import _
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
@@ -11,6 +12,7 @@ from Products.PlonePAS.tools.membership import default_portrait
 from Products.PlonePAS.utils import scale_image
 from zope.component import getAdapter
 from zope.component.hooks import getSite
+from zope.i18n import translate
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
@@ -47,6 +49,12 @@ class UsersPatch(Service):
     def _change_user_password(self, user, value):
         acl_users = getToolByName(self.context, "acl_users")
         acl_users.userSetPassword(user.getUserId(), value)
+
+    def translate(self, msgid):
+        return translate(
+            msgid,
+            context=self.request,
+        )
 
     def reply(self):
         user_settings_to_update = json.loads(self.request.get("BODY", "{}"))
@@ -108,11 +116,13 @@ class UsersPatch(Service):
                 return self._error(
                     401,
                     "Unauthorized",
-                    "You are not authorized to perform this " "action",
+                    _("You are not authorized to perform this action"),
                 )
             else:
                 return self._error(
-                    403, "Forbidden", "You can't update the " "properties of this user"
+                    403,
+                    "Forbidden",
+                    _("You can't update the properties of this user"),
                 )
 
         return self.reply_no_content()
@@ -127,9 +137,9 @@ class UsersPatch(Service):
         sm = getSecurityManager()
         return sm.checkPermission(SetOwnPassword, self.context)
 
-    def _error(self, status, type, message):
+    def _error(self, status, _type, msgid):
         self.request.response.setStatus(status)
-        return {"error": {"type": type, "message": message}}
+        return {"error": {"type": _type, "message": self.translate(msgid)}}
 
     @property
     def _get_current_user(self):
@@ -169,7 +179,7 @@ class UsersPatch(Service):
         if portrait.get("scale", False):
             # Only scale if the scale (default Plone behavior) boolean is set
             # This should be handled by the core in the future
-            scaled, mimetype = scale_image(BytesIO(data))
+            scaled, _mimetype = scale_image(BytesIO(data))
         else:
             # Normally, the scale and cropping is going to be handled in the
             # frontend
