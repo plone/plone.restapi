@@ -134,7 +134,7 @@ linkcheck_ignore = [
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 #
 intersphinx_mapping = {
-    "plone": ("https://6.dev-docs.plone.org/", None),
+    "plone": ("https://6.docs.plone.org/", None),
     "python": ("https://docs.python.org/3/", None),
     "training": ("https://training.plone.org/5/", None),
 }
@@ -144,7 +144,7 @@ intersphinx_mapping = {
 
 ogp_site_url = "https://plonerestapi.readthedocs.org/"
 ogp_description_length = 200
-ogp_image = "https://docs.plone.org/_static/Plone_logo_square.png"
+ogp_image = "https://6.docs.plone.org/_static/Plone_logo_square.png"
 ogp_site_name = "plone.restapi Documentation"
 ogp_type = "website"
 ogp_custom_meta_tags = [
