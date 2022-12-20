@@ -8,6 +8,24 @@ Changelog
 
 .. towncrier release notes start
 
+8.32.6 (2022-12-10)
+-------------------
+
+Bug fixes:
+
+
+- Fix an error when saving content with a slate block that includes an empty link. [davisagli] (#1553)
+
+
+8.32.5 (2022-12-08)
+-------------------
+
+Bug fixes:
+
+
+- Fix timezone for Locking creation date @iFlameing (#1551)
+
+
 8.32.4 (2022-12-01)
 -------------------
 

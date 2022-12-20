@@ -5,6 +5,7 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_PASSWORD
+from plone.restapi.services.users.get import UsersGet
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
@@ -13,7 +14,6 @@ from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getAdapter
 from zope.component import getUtility
-from plone.restapi.services.users.get import UsersGet
 
 import os
 import re
@@ -150,7 +150,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(400, response.status_code)
-        self.assertTrue("Property 'username' is required" in response.text)
+        self.assertTrue("Property 'User Name' is required" in response.text)
 
     def test_add_user_password_is_required(self):
         response = self.api_session.post("/@users", json={"username": "noamchomsky"})
@@ -172,7 +172,7 @@ class TestUsersEndpoint(unittest.TestCase):
         )
 
         self.assertEqual(400, response.status_code)
-        self.assertTrue("Property 'username' is not allowed" in response.text)
+        self.assertTrue("Property 'User Name' is not allowed" in response.text)
 
     def test_add_user_email_with_email_login_enabled(self):
         # enable use_email_as_login
@@ -204,7 +204,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(400, response.status_code)
-        self.assertTrue("Property 'username' is not allowed" in response.text)
+        self.assertTrue("Property 'User Name' is not allowed" in response.text)
 
     def test_add_user_with_email_login_enabled(self):
         # enable use_email_as_login
@@ -882,7 +882,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         self.assertEqual(400, response.status_code)
-        self.assertTrue("Property 'password' is not allowed" in response.text)
+        self.assertTrue("Property 'Password' is not allowed" in response.text)
 
         security_settings.enable_user_pwd_choice = True
         transaction.commit()
