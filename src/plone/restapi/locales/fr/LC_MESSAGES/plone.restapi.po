@@ -20,15 +20,15 @@ msgstr "${sender_fullname} via ${portal_title}"
 
 #: plone/restapi/services/email_send/post.py:74
 msgid "A portal user via ${portal_title}"
-msgstr "Un portail utilsateur via ${portal_title}"
+msgstr "Un utilisateur du portail via ${portal_title}"
 
 #: plone/restapi/configure.zcml:73
-msgid "Adds sample content for performance testing"
+msgid "Ajoute un échantillon de contenu pour les tests de performance"
 msgstr "Ajoute un exemple de contenu pour les tests de performances"
 
 #: plone/restapi/configure.zcml:56
 msgid "Adds sample content types for testing"
-msgstr "Ajoute des exemples de types de contenu pour les tests"
+msgstr "Ajoute un échantillon de types de contenu pour les tests"
 
 #: plone/restapi/configure.zcml:65
 msgid "Adds sample workflows for testing"
@@ -36,7 +36,7 @@ msgstr "Ajoute des exemples processus pour les tests"
 
 #: plone/restapi/services/aliases/add.py:106
 msgid "Alternative urls that point to themselves will cause an endless cycle of redirects."
-msgstr "Les URL alternatives qui pointent vers elles-mêmes provoqueront un cycle sans fin de redirections."
+msgstr "Les URLs alternatives qui pointent vers elles-mêmes provoqueront un cycle sans fin de redirections."
 
 #: plone/restapi/configure.zcml:115
 msgid "Blocks"
@@ -60,7 +60,7 @@ msgstr "Active les blocs sur le type de contenu Document"
 
 #: plone/restapi/services/contextnavigation/get.py:133
 msgid "Enter a valid scale name (see 'Image Handling' control panel) to override (e.g. icon, tile, thumb, mini, preview, ... ). Leave empty to use default (see 'Site' control panel)."
-msgstr "Saisissez un nom valide d'échelle (cf. « Gestion des images » dans le panneau de configuration) pour outrepasser (p. ex. icône, tuile, miniature, mini, prévisualisation, etc.). Laisser vide pour utiliser les échelles par défaut (cf. « Site » dans le panneau de configuration)."
+msgstr "Saisissez un nom valide d'échelle (cf. « Gestion des images » dans le panneau de configuration) pour outrepasser (p. ex. icon, tile, thumb, mini, preview, etc.). Laisser vide pour utiliser les échelles par défaut (cf. « Site » dans le panneau de configuration)."
 
 #: plone/restapi/services/users/add.py:163
 msgid "Error in fields. ${errors_to_string}"
@@ -85,7 +85,7 @@ msgstr "Si vous passez 'ancien mot de passe' vous devez passer 'nouveau mot de p
 
 #: plone/restapi/services/users/add.py:290
 msgid "If you pass 'reset_token' you have to pass 'new_password'"
-msgstr "Si vous passez "réinitialiser le jeton", vous devez passer "nouveau mot de passe""
+msgstr "Si vous passez 'réinitialiser le jeton', vous devez passer 'nouveau mot de passe'"
 
 #: plone/restapi/behaviors.py:23
 msgid "Layout"
@@ -196,7 +196,7 @@ msgstr "Si cette option est sélectionnée, l'arborescence de navigation n'affic
 #. Default: "Whether or not to show the top, or 'root', node in the navigation tree. This is affected by the 'Start level' setting."
 #: plone/restapi/services/contextnavigation/get.py:69
 msgid "help_include_top_node"
-msgstr "Afficher ou non le nœud supérieur ou "racine" dans l'arborescence de navigation. Ceci est affecté par le paramètre 'Niveau de démarrage'."
+msgstr "Afficher ou non le nœud supérieur ou 'racine' dans l'arborescence de navigation. Ceci est affecté par le paramètre 'Niveau de démarrage'."
 
 #. Default: "You may search for and choose a folder to act as the root of the navigation tree. Leave blank to use the Plone site root."
 #: plone/restapi/services/contextnavigation/get.py:58
@@ -206,7 +206,7 @@ msgstr "Vous pouvez rechercher et choisir un dossier qui servira de racine à l'
 #. Default: "An integer value that specifies the number of folder levels below the site root that must be exceeded before the navigation tree will display. 0 means that the navigation tree should be displayed everywhere including pages in the root of the site. 1 means the tree only shows up inside folders located in the root and downwards, never showing at the top level."
 #: plone/restapi/services/contextnavigation/get.py:96
 msgid "help_navigation_start_level"
-msgstr "Une valeur entière qui spécifie le nombre de niveaux de dossier sous la racine du site qui doit être dépassé avant que l'arborescence de navigation s'affiche. 0 signifie que l'arborescence de navigation doit être affichée partout, y compris les pages à la racine du site. 1 signifie que l'arborescence n'apparaît qu'à l'intérieur des dossiers situés à la racine et vers le bas, sans jamais s'afficher au niveau supérieur."
+msgstr "Une nombre entière qui spécifie le nombre de niveaux de dossier sous la racine du site qui doit être dépassé avant que l'arborescence de navigation s'affiche. 0 signifie que l'arborescence de navigation doit être affichée partout, en ce compris les pages à la racine du site. 1 signifie que l'arborescence n'apparaît qu'à l'intérieur des dossiers situés à la racine et en dessous, sans jamais s'afficher au niveau supérieur."
 
 #. Default: "The title of the navigation tree."
 #: plone/restapi/services/contextnavigation/get.py:49
@@ -236,7 +236,7 @@ msgstr "Noeud principal"
 #. Default: "Start level"
 #: plone/restapi/services/contextnavigation/get.py:95
 msgid "label_navigation_startlevel"
-msgstr "'Niveau de démarrage"
+msgstr "Niveau de démarrage"
 
 #. Default: "Title"
 #: plone/restapi/services/contextnavigation/get.py:48
