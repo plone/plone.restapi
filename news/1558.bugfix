@@ -1,0 +1,2 @@
+Fix mistaken warnings about sort_on and sort_order parameters in the @query
+service. [davisagli]
