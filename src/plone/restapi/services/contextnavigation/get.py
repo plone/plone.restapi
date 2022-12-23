@@ -117,7 +117,7 @@ class INavigationPortlet(Interface):
             "means no limit. 1 only includes the "
             "root folder.",
         ),
-        default=9,
+        default=0,
         required=False,
     )
 
@@ -646,10 +646,7 @@ class QueryBuilder:
         # nothing (since we explicitly start from the root always). Hence,
         # use a regular depth-1 query in this case.
 
-        if currentPath != rootPath and not currentPath.startswith(rootPath + "/"):
-            query["path"] = {"query": rootPath, "depth": data.bottomLevel}
-        else:
-            query["path"] = {"query": currentPath, "depth": data.bottomLevel}
+        query["path"] = {"query": rootPath, "depth": data.bottomLevel}
 
         topLevel = data.topLevel
         if topLevel and topLevel > 0:
