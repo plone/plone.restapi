@@ -23,16 +23,16 @@ msgid "A portal user via ${portal_title}"
 msgstr "Un utilisateur du portail via ${portal_title}"
 
 #: plone/restapi/configure.zcml:73
-msgid "Ajoute un échantillon de contenu pour les tests de performance"
-msgstr "Ajoute un exemple de contenu pour les tests de performances"
+msgid "Adds sample content for performance testing"
+msgstr ""
 
 #: plone/restapi/configure.zcml:56
 msgid "Adds sample content types for testing"
-msgstr "Ajoute un échantillon de types de contenu pour les tests"
+msgstr ""
 
 #: plone/restapi/configure.zcml:65
 msgid "Adds sample workflows for testing"
-msgstr "Ajoute des exemples processus pour les tests"
+msgstr ""
 
 #: plone/restapi/services/aliases/add.py:106
 msgid "Alternative urls that point to themselves will cause an endless cycle of redirects."
@@ -56,11 +56,11 @@ msgstr "Active la prise en charge des blocs Volto"
 
 #: plone/restapi/configure.zcml:81
 msgid "Enables blocks on the Document content type"
-msgstr "Active les blocs sur le type de contenu Document"
+msgstr ""
 
 #: plone/restapi/services/contextnavigation/get.py:133
 msgid "Enter a valid scale name (see 'Image Handling' control panel) to override (e.g. icon, tile, thumb, mini, preview, ... ). Leave empty to use default (see 'Site' control panel)."
-msgstr "Saisissez un nom valide d'échelle (cf. « Gestion des images » dans le panneau de configuration) pour outrepasser (p. ex. icon, tile, thumb, mini, preview, etc.). Laisser vide pour utiliser les échelles par défaut (cf. « Site » dans le panneau de configuration)."
+msgstr "Saisissez un nom d'échelle valide (cf. « Gestion des images » dans le panneau de configuration) pour outrepasser (p. ex. icon, tile, thumb, mini, preview, etc.). Laisser vide pour utiliser les échelles par défaut (cf. « Site » dans le panneau de configuration)."
 
 #: plone/restapi/services/users/add.py:163
 msgid "Error in fields. ${errors_to_string}"
@@ -69,7 +69,7 @@ msgstr "Erreur dans les champs. ${errors_to_string}"
 #. Default: "The reset_token is expired."
 #: plone/restapi/services/users/add.py:312
 msgid "Expired Token"
-msgstr "Le jeton de réinitialisation a expiré"
+msgstr "Le reset_token a expiré"
 
 #: plone/restapi/services/contextnavigation/get.py:126
 msgid "If enabled, the portlet will not show document type icons."
@@ -81,11 +81,11 @@ msgstr "Si activé, le portlet n'affichera pas les miniatures."
 
 #: plone/restapi/services/users/add.py:296
 msgid "If you pass 'old_password' you have to pass 'new_password'"
-msgstr "Si vous passez 'ancien mot de passe' vous devez passer 'nouveau mot de passe'"
+msgstr "Si vous passez le paramètre 'old_password' vous devez passer le paramètre 'new_password'"
 
 #: plone/restapi/services/users/add.py:290
 msgid "If you pass 'reset_token' you have to pass 'new_password'"
-msgstr "Si vous passez 'réinitialiser le jeton', vous devez passer 'nouveau mot de passe'"
+msgstr "Si vous passez le paramètre 'reset_token', vous devez passer le paramètre 'new_password'"
 
 #: plone/restapi/behaviors.py:23
 msgid "Layout"
@@ -97,7 +97,7 @@ msgstr "Navigation"
 
 #: plone/restapi/services/contextnavigation/get.py:132
 msgid "Override thumb scale"
-msgstr "Remplacer l'échelle du pouce"
+msgstr "Remplacer l'échelle de miniature"
 
 #: plone/restapi/services/users/add.py:97
 msgid "Property '${fieldname}' is not allowed."
@@ -125,7 +125,7 @@ msgstr "Rôles"
 
 #: plone/restapi/services/users/add.py:350
 msgid "See the user endpoint documentation for the valid parameters."
-msgstr "Consultez la documentation du point de terminaison utilisateur pour les paramètres valides."
+msgstr "Consultez la documentation du endpoint user pour les paramètres valides."
 
 #: plone/restapi/services/contextnavigation/get.py:125
 msgid "Suppress Icons"
@@ -133,15 +133,15 @@ msgstr "Supprimer les icônes"
 
 #: plone/restapi/services/contextnavigation/get.py:144
 msgid "Suppress thumbs"
-msgstr "Supprimer les miniature"
+msgstr "Supprimer les miniatures"
 
 #: plone/restapi/services/users/add.py:342
 msgid "The password passed as 'old_password' is wrong."
-msgstr "Le mot de passe passé comme 'ancien mot de passe' est erroné."
+msgstr "Le mot de passe passé comme 'old_password' est erroné."
 
 #: plone/restapi/services/users/add.py:307
 msgid "The reset_token is unknown/not valid."
-msgstr "Le jeton de réinitialisation est inconnu/non valide."
+msgstr "Le reset_token est inconnu/non valide."
 
 #: plone/restapi/configure.zcml:81
 msgid "Volto Blocks"
@@ -157,7 +157,7 @@ msgstr "Vous recevez cette e-mail, car ${sender_fullname} vous a envoyé ce mess
 
 #: plone/restapi/services/users/add.py:114
 msgid "You can't send both password and sendPasswordReset."
-msgstr "Vous ne pouvez pas saisir à la fois le mot de passe et envoyer un e-mail demandant de définir le mot de passe"
+msgstr "Vous ne pouvez pas envoyer à la fois le password et sendPasswordReset"
 
 #: plone/restapi/services/users/add.py:322
 msgid "You can't set a password without a password reset token."
@@ -169,11 +169,11 @@ msgstr "Vous ne pouvez pas mettre à jour les propriétés de cet utilisateur"
 
 #: plone/restapi/services/users/add.py:284
 msgid "You can't use 'reset_token' and 'old_password' together."
-msgstr "Vous ne pouvez pas utiliser 'jeton de réinitialisation' et 'ancien mot de passe' ensemble."
+msgstr "Vous ne pouvez pas utiliser 'reset_token' et 'old_password' ensemble."
 
 #: plone/restapi/services/users/add.py:109
 msgid "You have to either send a password or sendPasswordReset."
-msgstr "Vous devez soit saisir un mot de passe ou envoyer un e-mail demandant de définir le mot de passe"
+msgstr "Vous devez soit saisir un password ou sendPasswordReset"
 
 #: plone/restapi/services/users/add.py:154
 msgid "You need AddPortalMember permission."
