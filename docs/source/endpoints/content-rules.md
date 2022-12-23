@@ -20,7 +20,7 @@ Content rules can perform routine tasks, including the following.
 -   Delete content after a certain date.
 
 ```{seealso}
-[Using Content Rules](https://docs.plone.org/working-with-content/managing-content/contentrules.html)
+[Using Content Rules](https://5.docs.plone.org/working-with-content/managing-content/contentrules.html)
 ```
 
 ```{note}

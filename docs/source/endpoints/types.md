@@ -47,7 +47,7 @@ In addition to the above methods we can also do:
 | `DELETE` | `/@type/{type}/{field/fieldset}` | Remove field/fieldset from schema |
 
 ```{note}
-Schema fields and fieldsets defined by [behaviors](https://docs.plone.org/external/plone.app.dexterity/docs/behaviors/index.html) are immutable and can NOT be changed via this RestAPI endpoint.
+Schema fields and fieldsets defined by [behaviors](https://5.docs.plone.org/external/plone.app.dexterity/docs/behaviors/index.html) are immutable and can NOT be changed via this RestAPI endpoint.
 See {ref}`dexterity-types` control panel RestAPI endpoint for enabling and disabling behaviors.
 ```
 

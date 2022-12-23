@@ -53,8 +53,8 @@ Alternatively, you can use Makefile targets:
 `docs-livehtml`
 : Rebuild Sphinx documentation on changes, with live-reload in the browser
 
-`docs-spellcheck`
-: Run spellcheck
+`docs-vale`
+: Run spell, grammar, and style checks
 
 `docs`
 : Build Docs
