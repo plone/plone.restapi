@@ -646,7 +646,10 @@ class QueryBuilder:
         # nothing (since we explicitly start from the root always). Hence,
         # use a regular depth-1 query in this case.
 
-        query["path"] = {"query": rootPath, "depth": data.bottomLevel}
+        if currentPath != rootPath and not currentPath.startswith(rootPath + "/"):
+            query["path"] = {"query": rootPath, "depth": data.bottomLevel}
+        else:
+            query["path"] = {"query": currentPath, "depth": data.bottomLevel}
 
         topLevel = data.topLevel
         if topLevel and topLevel > 0:
