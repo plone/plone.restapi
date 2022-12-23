@@ -646,10 +646,22 @@ class QueryBuilder:
         # nothing (since we explicitly start from the root always). Hence,
         # use a regular depth-1 query in this case.
 
+        depth = data.bottomLevel
+
+        if depth == 0:
+            depth = 999;
+
         if currentPath != rootPath and not currentPath.startswith(rootPath + "/"):
-            query["path"] = {"query": rootPath, "depth": data.bottomLevel}
+            query["path"] = {
+                "query": rootPath,
+                "depth": depth
+                }
         else:
-            query["path"] = {"query": currentPath, "depth": data.bottomLevel}
+            query["path"] = {
+                "query": currentPath,
+                "depth": depth,
+                "navtree": 1
+                }
 
         topLevel = data.topLevel
         if topLevel and topLevel > 0:
