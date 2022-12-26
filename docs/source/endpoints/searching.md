@@ -44,7 +44,7 @@ In order to return specific metadata columns, see the documentation of the `meta
 A search invoked on a container will by default *include that container itself* as part of the search results.
 This is the same behavior as displayed by [ZCatalog](https://zope.readthedocs.io/en/latest/zopebook/SearchingZCatalog.html), which is used internally.
 If you add the query string parameter `path.depth=1` to your search, you will only get the *immediate* children of the container, and the container itself won't be part of the results.
-See the Plone documentation on [searching for content within a folder](https://docs.plone.org/develop/plone/searching_and_indexing/query.html#searching-for-content-within-a-folder)
+See the Plone documentation on [searching for content within a folder](https://5.docs.plone.org/develop/plone/searching_and_indexing/query.html#searching-for-content-within-a-folder)
 for more details.
 ```
 
@@ -70,7 +70,7 @@ GET /plone/@search?SearchableText=lorem HTTP/1.1
 
 This is nearly identical to the way that queries are passed to the Plone `@@search` browser view, with only a few minor differences.
 
-For general information on how to query the Plone catalog, please refer to the [Plone Documentation on Querying](https://docs.plone.org/develop/plone/searching_and_indexing/query.html).
+For general information on how to query the Plone catalog, please refer to the [Plone Documentation on Querying](https://5.docs.plone.org/develop/plone/searching_and_indexing/query.html).
 
 ### Query options
 

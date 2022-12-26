@@ -43,7 +43,7 @@ Both vocabularies and sources can be context-sensitive.
 This means that they take the context into account and their contents may therefore change depending on the context in which they are invoked.
 
 This section can only provide a basic overview of vocabularies and related concepts.
-For a more in-depth explanation please refer to the [Plone documentation](https://docs.plone.org/develop/plone/forms/vocabularies.html).
+For a more in-depth explanation please refer to the [Plone documentation](https://5.docs.plone.org/develop/plone/forms/vocabularies.html).
 
 
 ## Endpoints overview
