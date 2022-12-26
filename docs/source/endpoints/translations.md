@@ -22,7 +22,7 @@ Site interface texts include the configuration menus, error messages, informatio
 Multilingualism in Plone not only allows the managers of the site to configure the site interface texts to be in one language or another, but also to configure Plone to handle multilingual content.
 To achieve that, Plone provides the user interface for managing content translations.
 
-You can get additional information about the multilingual capabilities of Plone in the [documentation](https://docs.plone.org/develop/plone/i18n/translating_content.html).
+You can get additional information about the multilingual capabilities of Plone in the [documentation](https://5.docs.plone.org/develop/plone/i18n/translating_content.html).
 
 In connection with those capabilities, `plone.restapi` provides a `@translations` endpoint to handle the translation information of the content objects.
 
