@@ -14,6 +14,7 @@ from plone.registry.interfaces import IRegistry
 from plone.restapi.search.query import ZCatalogCompatibleQueryAdapter
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from plone.restapi.tests import PY3_10
 from plone.restapi.tests.helpers import result_paths
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
@@ -819,6 +820,8 @@ class TestSearchFunctional(unittest.TestCase):
         noLongerProvides(self.folder, INavigationRoot)
         transaction.commit()
 
+    # BBB: Remove condition when drop Python 3.9 support.
+    @unittest.skipUnless(PY3_10, "assertNoLogs is only in Python >= 3.10")
     def test_zcatalogcompatiblequeryadapter_log(self):
         """When we have sort_on or sort_order in the query passed to
         ZCatalogCompatibleQueryAdapter, warnings should not be issued in the
