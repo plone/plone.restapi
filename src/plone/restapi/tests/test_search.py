@@ -11,6 +11,7 @@ from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
+from plone.restapi.search.query import ZCatalogCompatibleQueryAdapter
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from plone.restapi.tests.helpers import result_paths
@@ -817,3 +818,20 @@ class TestSearchFunctional(unittest.TestCase):
 
         noLongerProvides(self.folder, INavigationRoot)
         transaction.commit()
+
+    def test_zcatalogcompatiblequeryadapter_log(self):
+        """When we have sort_on or sort_order in the query passed to
+        ZCatalogCompatibleQueryAdapter, warnings should not be issued in the
+        log.
+        """
+        query_adapter = ZCatalogCompatibleQueryAdapter(self.portal, self.request)
+        with self.assertNoLogs("plone.restapi.search.query", level="WARN"):
+            query_adapter(
+                {
+                    "b_size": "50",
+                    "metadata_fields": "_all",
+                    "path": {"depth": "1", "query": "/Plone"},
+                    "sort_on": "getObjPositionInParent",
+                    "sort_order": "ascending",
+                },
+            )
