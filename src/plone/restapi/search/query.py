@@ -102,12 +102,13 @@ class ZCatalogCompatibleQueryAdapter:
     def __call__(self, query):
         for idx_name, idx_query in query.items():
             if idx_name in self.global_query_params:
-                # It's a query-wide parameter like 'sort_on'
+                # It's a query-wide parameter like 'sort_limit'
                 query[idx_name] = self.parse_query_param(idx_name, idx_query)
                 continue
 
             if idx_name in self.multiple_types_global_query_params:
                 query[idx_name] = self.parse_multiple_types_param(idx_name, idx_query)
+                continue
 
             # Then check for each index present in the query if there is an
             # IIndexQueryParser that knows how to deserialize any values
