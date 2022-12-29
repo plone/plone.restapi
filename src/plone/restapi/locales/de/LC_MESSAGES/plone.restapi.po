@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-12-16 02:02+0000\n"
+"POT-Creation-Date: 2022-12-29 15:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: Timo Stollenwerk <tisto@plone.org>\n"
 "Language-Team: German <DE@li.org>\n"

@@ -1,1 +1,0 @@
-Update makefile to use Vale for spell, grammar, and style checking. Fix linkcheckbroken to return the correct exit code for broken links. Prepare links ot use 5.docs.plone.org in preparation for Plone 6 docs launch. [stevepiercy]
