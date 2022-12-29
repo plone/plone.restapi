@@ -1,0 +1,1 @@
+Add fr translation. [jimbiscuit]
