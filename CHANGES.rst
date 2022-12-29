@@ -8,6 +8,32 @@ Changelog
 
 .. towncrier release notes start
 
+8.33.0 (2022-12-29)
+-------------------
+
+New features:
+
+
+- Internationalization of ``@users`` endpoint error messages. [wesleybl] (#1548)
+- Add pt_BR translation. [wesleybl] (#1557)
+- Add fr translation. [jimbiscuit] (#1560)
+
+
+Bug fixes:
+
+
+- Fix mistaken warnings about sort_on and sort_order parameters in the @query
+  service. [davisagli] (#1558)
+
+
+Documentation:
+
+
+- Update links to the demo site in the README. [davisagli] (#1555)
+- Fix ogp_image URL. [stevepiercy] (#1556)
+- Update makefile to use Vale for spell, grammar, and style checking. Fix linkcheckbroken to return the correct exit code for broken links. Prepare links ot use 5.docs.plone.org in preparation for Plone 6 docs launch. [stevepiercy] (#1561)
+
+
 8.32.6 (2022-12-10)
 -------------------
 
