@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2022-12-16 02:02+0000\n"
+"POT-Creation-Date: 2022-12-29 15:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI +ZONE\n"
 "Last-Translator: Julien Chandelle <jchandelle@affinitic.be>\n"
 "Language-Team: French <FR@li.org>\n"
@@ -101,7 +101,7 @@ msgstr "Remplacer l'échelle de miniature"
 
 #: plone/restapi/services/users/add.py:97
 msgid "Property '${fieldname}' is not allowed."
-msgstr "La propriété '${fieldname}' n'est pas autorisée.""
+msgstr "La propriété '${fieldname}' n'est pas autorisée."
 
 #: plone/restapi/services/users/add.py:87
 msgid "Property '${fieldname}' is required."
