@@ -16,6 +16,7 @@ from zope.interface import noLongerProvides
 import transaction
 import unittest
 
+
 def opts(**kw):
     res = {}
     for k, v in kw.items():
