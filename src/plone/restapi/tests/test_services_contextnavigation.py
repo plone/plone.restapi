@@ -15,8 +15,6 @@ from zope.interface import noLongerProvides
 
 import transaction
 import unittest
-import json
-
 
 def opts(**kw):
     res = {}
