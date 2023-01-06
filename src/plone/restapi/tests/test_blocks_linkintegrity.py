@@ -156,6 +156,24 @@ class TestBlocksLinkintegrity(TestCase):
         self.assertEqual(len(value), 1)
         self.assertIn("../resolveuid/{}".format(uid), value)
 
+    def test_links_retriever_return_internal_links_in_generic_block_href_list(self):
+        uid = IUUID(self.doc2)
+        blocks = {"111": {"@type": "foo", "href": ["../resolveuid/{}".format(uid)]}}
+        self.portal.doc1.blocks = blocks
+        value = self.retrieve_links(blocks)
+
+        self.assertEqual(len(value), 1)
+        self.assertIn("../resolveuid/{}".format(uid), value)
+
+    def test_links_retriever_return_internal_links_in_generic_block_href_id(self):
+        uid = IUUID(self.doc2)
+        blocks = {"111": {"@type": "foo", "href": [{"@id": "../resolveuid/{}".format(uid)}]}}
+        self.portal.doc1.blocks = blocks
+        value = self.retrieve_links(blocks)
+
+        self.assertEqual(len(value), 1)
+        self.assertIn("../resolveuid/{}".format(uid), value)
+
     def test_links_retriever_return_internal_links_in_text_block_once(self):
         uid = IUUID(self.doc2)
         blocks = {
