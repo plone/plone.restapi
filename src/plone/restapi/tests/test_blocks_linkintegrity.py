@@ -167,7 +167,9 @@ class TestBlocksLinkintegrity(TestCase):
 
     def test_links_retriever_return_internal_links_in_generic_block_href_id(self):
         uid = IUUID(self.doc2)
-        blocks = {"111": {"@type": "foo", "href": [{"@id": "../resolveuid/{}".format(uid)}]}}
+        blocks = {
+            "111": {"@type": "foo", "href": [{"@id": "../resolveuid/{}".format(uid)}]}
+        }
         self.portal.doc1.blocks = blocks
         value = self.retrieve_links(blocks)
 

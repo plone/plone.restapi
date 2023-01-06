@@ -1,0 +1,1 @@
+Fix blocks linkintegrity to find some links in `url` and `href` fields that were previously ignored. [davisagli]
