@@ -487,7 +487,12 @@ class TestDXFieldDeserializer(unittest.TestCase):
         # DefaultFieldDeserializer that the CollectionFieldDeserializer will
         # delegate to for deserializing collection items.
         self.assertEqual("Object is of wrong type.", cm.exception.doc())
-        self.assertEqual((b"2", int, ""), cm.exception.args)
+        exception_args = list(cm.exception.args)
+        if isinstance(exception_args[1], tuple):
+            # BBB: since zope.schema >= 7.0.0 the Int field changed its validation `_type`
+            # from (int, ) to int ... we adjust that to work with both versions
+            exception_args[1] = exception_args[1][0]
+        self.assertEqual([b"2", int, ""], exception_args)
 
     def test_dict_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
