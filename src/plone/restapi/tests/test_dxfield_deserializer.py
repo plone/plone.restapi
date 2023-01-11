@@ -487,7 +487,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
         # DefaultFieldDeserializer that the CollectionFieldDeserializer will
         # delegate to for deserializing collection items.
         self.assertEqual("Object is of wrong type.", cm.exception.doc())
-        self.assertEqual((b"2", (int,), ""), cm.exception.args)
+        self.assertEqual((b"2", int, ""), cm.exception.args)
 
     def test_dict_deserializer_validates_value(self):
         with self.assertRaises(ValidationError) as cm:
