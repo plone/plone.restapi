@@ -8,6 +8,21 @@ Changelog
 
 .. towncrier release notes start
 
+8.33.1 (2023-01-10)
+-------------------
+
+Bug fixes:
+
+
+- Fix blocks linkintegrity to find some links in `url` and `href` fields that were previously ignored. [davisagli] (#1565)
+
+
+Documentation:
+
+
+- Pin Sphinx<5,>=3 due to sphinx-book-theme 0.3.3 requirement. [stevepiercy] (#1563)
+
+
 8.33.0 (2022-12-29)
 -------------------
 

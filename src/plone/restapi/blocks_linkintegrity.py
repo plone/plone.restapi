@@ -109,6 +109,8 @@ class SlateBlockLinksRetriever:
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldLinkIntegrityRetriever)
 class GenericBlockLinksRetriever(object):
+    """Retrieves links from the url and href fields of any block"""
+
     order = 1
     block_type = None
 
@@ -123,6 +125,23 @@ class GenericBlockLinksRetriever(object):
         links = []
         for field in ["url", "href"]:
             value = block.get(field, "")
-            if value and "resolveuid" in value:
-                links.append(value)
+            for url in get_urls_from_value(value):
+                links.append(url)
         return links
+
+
+def get_urls_from_value(value):
+    """Generator of urls from a block field value
+
+    Recognizes:
+    - strings containing "resolveuid"
+    - objects with an @id property containing "resolveuid"
+    - lists of either of the above
+    """
+    if isinstance(value, str) and "resolveuid" in value:
+        yield value
+    elif isinstance(value, list):
+        for item in value:
+            yield from get_urls_from_value(item)
+    elif isinstance(value, dict):
+        yield from get_urls_from_value(value.get("@id"))
