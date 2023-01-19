@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+8.33.2 (2023-01-19)
+-------------------
+
+Bug fixes:
+
+
+- Fix context navigation endpoint @contextnavigation to serve the navigation tree based on depth (bottomLevel).
+  [andreiggr] (#1562)
+- Fix tests for `zope.schema >= 7.0.0`
+  [petschki] (#1567)
+
+
 8.33.1 (2023-01-10)
 -------------------
 
