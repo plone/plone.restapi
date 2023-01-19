@@ -1,1 +1,0 @@
-Fix context navigation endpoint @contextnavigation to serve the navigation tree based on depth (bottomLevel).
