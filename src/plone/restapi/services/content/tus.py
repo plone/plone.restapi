@@ -117,9 +117,12 @@ class UploadPost(TUSBaseService):
         tus_upload = TUSUpload(uuid4().hex, metadata=metadata)
 
         self.request.response.setStatus(201)
+        url = self.request.getURL()
+        if url.endswith("@tus-replace"):
+            url = url[:-7] + "upload"
         self.request.response.setHeader(
             "Location",
-            f"{self.request.getURL()}/{tus_upload.uid}",
+            f"{url}/{tus_upload.uid}",
         )
         self.request.response.setHeader("Upload-Expires", tus_upload.expires())
         self.request.response.setHeader("Tus-Resumable", "1.0.0")
