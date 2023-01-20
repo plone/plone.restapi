@@ -542,7 +542,9 @@ class TestTUS(unittest.TestCase):
         sm.unregisterHandler(record_event, (IObjectModifiedEvent,))
 
     def test_tus_with_api(self):
-        self.upload_url = f"{self.portal.absolute_url()}/++api++/{self.folder.id}/@tus-upload"
+        self.upload_url = (
+            f"{self.portal.absolute_url()}/++api++/{self.folder.id}/@tus-upload"
+        )
         metadata = _prepare_metadata(UPLOAD_FILENAME, UPLOAD_MIMETYPE)
         response = self.api_session.post(
             self.upload_url,
@@ -567,7 +569,6 @@ class TestTUS(unittest.TestCase):
             data=BytesIO(UPLOAD_DATA),
         )
         self.assertEqual(response.status_code, 204)
-
 
     def tearDown(self):
         self.api_session.close()
