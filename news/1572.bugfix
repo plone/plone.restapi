@@ -1,0 +1,1 @@
+Fix bug where the `@login` endpoint did not set the correct `__ac` cookie for Zope users. [davisagli]
