@@ -35,7 +35,7 @@ class Login(Service):
         # Also put the password in __ac_password on the request.
         # The post-login code in PlonePAS expects to find it there
         # when it calls the PAS updateCredentials plugin.
-        self.request.form['__ac_password'] = data["password"]
+        self.request.form["__ac_password"] = data["password"]
 
         if uf is not None:
             plugins = uf._getOb("plugins")

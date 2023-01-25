@@ -1,4 +1,3 @@
-from plone.app.testing import login
 from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
@@ -69,7 +68,9 @@ class TestFunctionalAuth(unittest.TestCase):
         """
         app = self.layer["app"]
         app.acl_users.plugins.users.addUser(
-            "zopeuser", "zopeuser", TEST_USER_PASSWORD,
+            "zopeuser",
+            "zopeuser",
+            TEST_USER_PASSWORD,
         )
         app.acl_users.plugins.roles.assignRoleToPrincipal("Manager", "zopeuser")
         transaction.commit()
