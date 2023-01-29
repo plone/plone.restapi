@@ -32,6 +32,11 @@ class Login(Service):
         password = data["password"]
         uf = self._find_userfolder(userid)
 
+        # Also put the password in __ac_password on the request.
+        # The post-login code in PlonePAS expects to find it there
+        # when it calls the PAS updateCredentials plugin.
+        self.request.form["__ac_password"] = data["password"]
+
         if uf is not None:
             plugins = uf._getOb("plugins")
             authenticators = plugins.listPlugins(IAuthenticationPlugin)
