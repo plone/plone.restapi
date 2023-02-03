@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+8.33.3 (2023-01-29)
+-------------------
+
+Bug fixes:
+
+
+- Fix bug where the `@login` endpoint did not set the correct `__ac` cookie for Zope users. [davisagli] (#1572)
+
+
 8.33.2 (2023-01-19)
 -------------------
 
