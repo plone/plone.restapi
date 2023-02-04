@@ -11,7 +11,6 @@ from zope.component import getAllUtilitiesRegisteredFor
 from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
-from zope.schema import getFields
 
 
 @implementer(IDexterityContent)
