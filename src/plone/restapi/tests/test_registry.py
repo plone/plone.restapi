@@ -35,6 +35,18 @@ class TestRegistry(unittest.TestCase):
             record = Record(field.TextLine(title="Foo Bar"), "Lorem Ipsum")
             registry.records["foo.bar" + str(counter)] = record
 
+        # Add Tuple record
+        record = Record(
+            field.Tuple(
+                title="Tuple",
+                min_length=0,
+                max_length=10,
+                value_type=field.TextLine(title="Value"),
+            ),
+            ("Hello", "World", "!"),
+        )
+        registry.records["foo.tuple"] = record
+
         transaction.commit()
 
     def tearDown(self):
@@ -72,6 +84,20 @@ class TestRegistry(unittest.TestCase):
         payload = {"foo.bar.baz": "lorem ipsum"}
         response = self.api_session.patch("/@registry", json=payload)
         self.assertEqual(response.status_code, 500)
+
+    def test_update_wrong_type(self):
+        payload = {"foo.bar": ["lorem ipsum"]}
+        response = self.api_session.patch("/@registry", json=payload)
+        self.assertEqual(response.status_code, 500)
+
+    def test_update_tuple_record(self):
+        registry = getUtility(IRegistry)
+        payload = {"foo.tuple": ["lorem", "ipsum", "dolor"]}
+        response = self.api_session.patch("/@registry", json=payload)
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(registry["foo.tuple"], ("lorem", "ipsum", "dolor"))
 
     def test_get_listing(self):
         response = self.api_session.get("/@registry")
