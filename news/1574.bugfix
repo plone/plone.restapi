@@ -1,0 +1,1 @@
+Fix Plone Site serialization not returning the review_state in Plone 6. [ericof]
