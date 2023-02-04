@@ -69,6 +69,12 @@ class SerializeSiteRootToJson:
 
         if HAS_PLONE_6:
             result["UID"] = self.context.UID()
+            # Insert review_state
+            wf = getToolByName(self.context, "portal_workflow")
+            result["review_state"] = wf.getInfoFor(
+                ob=self.context, name="review_state", default=None
+            )
+
             # Insert Plone Site DX root field values
             for schema in iterSchemata(self.context):
                 read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
