@@ -1,28 +1,83 @@
-from plone.restapi.interfaces import ISerializeToJson
+from plone.contentrules.rule.interfaces import IRuleAction
+from plone.contentrules.rule.interfaces import IRuleCondition
+from plone.dexterity.interfaces import IDexterityContent
 from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
-from plone.restapi.serializer.controlpanels import SERVICE_ID
+from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.serializer.controlpanels import ControlpanelSerializeToJson
+from plone.restapi.serializer.controlpanels import SERVICE_ID
+from plone.restapi.types import utils
 from zope.component import adapter
-from zope.component.hooks import getSite
+from zope.component import getAllUtilitiesRegisteredFor
 from zope.component import queryMultiAdapter
+from zope.component.hooks import getSite
 from zope.interface import implementer
+from zope.schema import getFields
+
+
+@implementer(IDexterityContent)
+class FakeDXContext:
+    """Fake DX content class, so we can re-use the DX field serializers"""
+
+
+def convert_schema_to_jsonschema(context, schema, request):
+    """Build a complete JSON schema for the given controlpanel."""
+    fieldsets = utils.get_fieldsets(context, request, schema)
+
+    # Build JSON schema properties
+    properties = utils.get_jsonschema_properties(context, request, fieldsets)
+
+    # Determine required fields
+    required = []
+    for field in utils.iter_fields(fieldsets):
+        if field.field.required:
+            required.append(field.field.getName())
+
+    # Include field modes
+    for field in utils.iter_fields(fieldsets):
+        if field.mode:
+            properties[field.field.getName()]["mode"] = field.mode
+
+    return {
+        "type": "object",
+        "properties": properties,
+        "required": required,
+        "fieldsets": utils.get_fieldset_infos(fieldsets),
+    }
 
 
 @implementer(ISerializeToJson)
 @adapter(IContentRulesControlpanel)
 class ContentRulesControlpanelSerializeToJson(ControlpanelSerializeToJson):
+    def _serialize_schema(self, elements, interface):
+        context = FakeDXContext()
+        request = self.controlpanel.request
+        all_utils = {
+            util.title: util for util in getAllUtilitiesRegisteredFor(interface)
+        }
+        for element in elements:
+            element["schema"] = convert_schema_to_jsonschema(
+                context, all_utils[element["title"]].schema, request
+            )
+        return elements
+
+    def addable_actions(self, manage_elements):
+        addable_actions = manage_elements.addable_actions()
+        return self._serialize_schema(addable_actions, IRuleAction)
+
+    def addable_conditions(self, manage_elements):
+        addable_conditions = manage_elements.addable_conditions()
+        return self._serialize_schema(addable_conditions, IRuleCondition)
+
     def serialize_item(self, proxy):
         manage_elements = queryMultiAdapter(
             (proxy, self.controlpanel.request), name="manage-elements"
         )
+        url = self.controlpanel.context.absolute_url()
+        name = self.controlpanel.__name__
+        proxy_name = proxy.__name__
         return {
-            "@id": "{}/{}/{}/{}".format(
-                self.controlpanel.context.absolute_url(),
-                SERVICE_ID,
-                self.controlpanel.__name__,
-                proxy.__name__,
-            ),
-            "id": proxy.__name__,
+            "@id": f"{url}/{SERVICE_ID}/{name}/{proxy_name}",
+            "id": proxy_name,
             "title": proxy.title,
             "description": proxy.description,
             "group": self.controlpanel.group,
@@ -31,9 +86,9 @@ class ContentRulesControlpanelSerializeToJson(ControlpanelSerializeToJson):
             "enabled": proxy.enabled,
             "event": manage_elements.rule_event(),
             "conditions": manage_elements.conditions(),
-            "addable_conditions": manage_elements.addable_conditions(),
+            "addable_conditions": self.addable_conditions(manage_elements),
             "actions": manage_elements.actions(),
-            "addable_actions": manage_elements.addable_actions(),
+            "addable_actions": self.addable_actions(manage_elements),
             "assignments": manage_elements.assignments(),
         }
 
@@ -53,9 +108,8 @@ class ContentRulesControlpanelSerializeToJson(ControlpanelSerializeToJson):
         registeredRules = cpanel.registeredRules()
 
         for rule in registeredRules:
-            rule["@id"] = "{}/@controlpanels/content-rules/{}".format(
-                portal_url, rule["id"]
-            )
+            rule_id = rule["id"]
+            rule["@id"] = f"{portal_url}/@controlpanels/content-rules/{rule_id}"
         json["items"].append(registeredRules)
 
         return json
