@@ -35,9 +35,7 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
     ],
     "addable_actions": [
         {
-            "addview": "plone.actions.Logger",
-            "description": "Log a particular event",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -80,12 +78,12 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 ],
                 "type": "object"
             },
+            "addview": "plone.actions.Logger",
+            "description": "Log a particular event",
             "title": "Logger"
         },
         {
-            "addview": "plone.actions.Notify",
-            "description": "Return a portal message to the user",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -145,12 +143,12 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 ],
                 "type": "object"
             },
+            "addview": "plone.actions.Notify",
+            "description": "Return a portal message to the user",
             "title": "Notify user"
         },
         {
-            "addview": "plone.actions.Copy",
-            "description": "Copy the triggering item to a specific folder",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -177,12 +175,12 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 ],
                 "type": "object"
             },
+            "addview": "plone.actions.Copy",
+            "description": "Copy the triggering item to a specific folder",
             "title": "Copy to folder"
         },
         {
-            "addview": "plone.actions.Move",
-            "description": "Move the triggering item to a specific folder",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -209,23 +207,23 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 ],
                 "type": "object"
             },
+            "addview": "plone.actions.Move",
+            "description": "Move the triggering item to a specific folder",
             "title": "Move to folder"
         },
         {
-            "addview": "plone.actions.Delete",
-            "description": "Delete the triggering item",
-            "schema": {
+            "@schema": {
                 "fieldsets": [],
                 "properties": {},
                 "required": [],
                 "type": "object"
             },
+            "addview": "plone.actions.Delete",
+            "description": "Delete the triggering item",
             "title": "Delete object"
         },
         {
-            "addview": "plone.actions.Workflow",
-            "description": "Perform a workflow transition on the triggering object",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -252,12 +250,12 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 ],
                 "type": "object"
             },
+            "addview": "plone.actions.Workflow",
+            "description": "Perform a workflow transition on the triggering object",
             "title": "Transition workflow state"
         },
         {
-            "addview": "plone.actions.Mail",
-            "description": "Send an email on the triggering object",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -313,12 +311,12 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 ],
                 "type": "object"
             },
+            "addview": "plone.actions.Mail",
+            "description": "Send an email on the triggering object",
             "title": "Send email"
         },
         {
-            "addview": "plone.actions.Versioning",
-            "description": "Store a new version of the object",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -340,14 +338,14 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 "required": [],
                 "type": "object"
             },
+            "addview": "plone.actions.Versioning",
+            "description": "Store a new version of the object",
             "title": "Version object"
         }
     ],
     "addable_conditions": [
         {
-            "addview": "plone.conditions.PortalType",
-            "description": "Apply only when the current content object is of a particular type",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -382,12 +380,12 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 ],
                 "type": "object"
             },
+            "addview": "plone.conditions.PortalType",
+            "description": "Apply only when the current content object is of a particular type",
             "title": "Content type"
         },
         {
-            "addview": "plone.conditions.FileExtension",
-            "description": "Apply only to a particular file extension",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -411,12 +409,12 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 ],
                 "type": "object"
             },
+            "addview": "plone.conditions.FileExtension",
+            "description": "Apply only to a particular file extension",
             "title": "File Extension"
         },
         {
-            "addview": "plone.conditions.WorkflowState",
-            "description": "Apply only to a objects in a particular workflow state",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -451,12 +449,12 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 ],
                 "type": "object"
             },
+            "addview": "plone.conditions.WorkflowState",
+            "description": "Apply only to a objects in a particular workflow state",
             "title": "Workflow state"
         },
         {
-            "addview": "plone.conditions.Group",
-            "description": "Apply only when the current user is in the given group",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -491,12 +489,12 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 ],
                 "type": "object"
             },
+            "addview": "plone.conditions.Group",
+            "description": "Apply only when the current user is in the given group",
             "title": "User's group"
         },
         {
-            "addview": "plone.conditions.Role",
-            "description": "Apply only when the current user has the given role",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -531,12 +529,12 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 ],
                 "type": "object"
             },
+            "addview": "plone.conditions.Role",
+            "description": "Apply only when the current user has the given role",
             "title": "User's role"
         },
         {
-            "addview": "plone.conditions.TalesExpression",
-            "description": "Apply only when the result of a TALES expression is True",
-            "schema": {
+            "@schema": {
                 "fieldsets": [
                     {
                         "behavior": "plone",
@@ -560,6 +558,8 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 ],
                 "type": "object"
             },
+            "addview": "plone.conditions.TalesExpression",
+            "description": "Apply only when the result of a TALES expression is True",
             "title": "TALES expression"
         }
     ],

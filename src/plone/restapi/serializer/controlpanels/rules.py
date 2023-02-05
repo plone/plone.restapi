@@ -18,8 +18,9 @@ class FakeDXContext:
     """Fake DX content class, so we can re-use the DX field serializers"""
 
 
-def convert_schema_to_jsonschema(context, schema, request):
+def rule_schema_as_json(schema, request):
     """Build a complete JSON schema for the given controlpanel."""
+    context = FakeDXContext()
     fieldsets = utils.get_fieldsets(context, request, schema)
 
     # Build JSON schema properties
@@ -48,14 +49,13 @@ def convert_schema_to_jsonschema(context, schema, request):
 @adapter(IContentRulesControlpanel)
 class ContentRulesControlpanelSerializeToJson(ControlpanelSerializeToJson):
     def _serialize_schema(self, elements, interface):
-        context = FakeDXContext()
         request = self.controlpanel.request
         all_utils = {
             util.title: util for util in getAllUtilitiesRegisteredFor(interface)
         }
         for element in elements:
-            element["schema"] = convert_schema_to_jsonschema(
-                context, all_utils[element["title"]].schema, request
+            element["@schema"] = rule_schema_as_json(
+                all_utils[element["title"]].schema, request
             )
         return elements
 
