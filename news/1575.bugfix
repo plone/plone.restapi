@@ -1,1 +1,0 @@
-Fix bug with registry service that would not support tuple records. [ericof]
