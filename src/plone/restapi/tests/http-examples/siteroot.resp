@@ -59,6 +59,7 @@ Content-Type: application/json
     },
     "parent": {},
     "relatedItems": [],
+    "review_state": null,
     "rights": "",
     "subjects": [],
     "table_of_contents": null,
