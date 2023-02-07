@@ -118,8 +118,10 @@ class UploadPost(TUSBaseService):
 
         self.request.response.setStatus(201)
         url = self.request.getURL()
+        # Regardless of @tus-upload or @tus-replace the response should return
+        # a Location of @tus-upload
         if url.endswith("@tus-replace"):
-            url = url[:-7] + "upload"
+            url = url.replace("@tus-replace", "@tus-upload")
         self.request.response.setHeader(
             "Location",
             f"{url}/{tus_upload.uid}",
