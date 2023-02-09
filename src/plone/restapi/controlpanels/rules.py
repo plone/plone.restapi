@@ -11,6 +11,7 @@ from plone.restapi.interfaces import IPloneRestapiLayer
 from plone.restapi.controlpanels import RegistryConfigletPanel
 from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
 from plone.restapi.deserializer import json_body
+from plone.restapi.serializer.controlpanels.rules import rule_schema_as_json
 import plone.protect.interfaces
 
 
@@ -22,7 +23,6 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
     configlet_category_id = "plone-content"
 
     def publishTraverse(self, request, name):
-
         return self.context.restrictedTraverse("++rule++" + name)
 
     def add(self, names):
@@ -81,16 +81,21 @@ class ContentRulesControlpanel(RegistryConfigletPanel):
             return serializer(context)
         else:
             # the get is for a condition or action
-            fields = {}
-            rule = self.publishTraverse(self.request, name=names[0])
-            extras = getattr(rule, names[1] + "s")
+            rule_name = names[0]
+            category = names[1]
+            rule = self.publishTraverse(self.request, name=rule_name)
+            extras = getattr(rule, f"{category}s")
             idx = int(names[2])
             extra_ob = extras[idx]
             view = queryMultiAdapter((extra_ob, self.request), name="edit")
+            base_url = f"{self.context.absolute_url()}/@controlpanels/content-rules"
+            fields = {"@id": f"{base_url}/{rule_name}/{category}/{idx}"}
             if view:
                 view.form_instance.update()
                 for field in view.form_instance.fields:
                     fields[field] = getattr(extra_ob, field)
+                schema = view.form.schema
+                fields["@schema"] = rule_schema_as_json(schema, self.request)
                 return fields
 
     def update(self, names):

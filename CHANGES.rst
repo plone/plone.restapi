@@ -8,6 +8,22 @@ Changelog
 
 .. towncrier release notes start
 
+8.34.0 (2023-02-06)
+-------------------
+
+New features:
+
+
+- Implement IRuleAction and IRuleCondition schema serialization in `@controlpanels/content-rules/` endpoint. [ericof] (#1579)
+
+
+Bug fixes:
+
+
+- Fix Plone Site serialization not returning the review_state in Plone 6. [ericof] (#1574)
+- Fix bug with registry service that would not support tuple records. [ericof] (#1575)
+
+
 8.33.3 (2023-01-29)
 -------------------
 
