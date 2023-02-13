@@ -78,8 +78,7 @@ def default_converter(value):
         return value
 
     raise TypeError(
-        "No converter for making"
-        " {!r} ({}) JSON compatible.".format(value, type(value))
+        "No converter for making {!r} ({}) JSON compatible.".format(value, type(value))
     )
 
 
@@ -171,6 +170,12 @@ def time_converter(value):
 @implementer(IJsonCompatible)
 def timedelta_converter(value):
     return json_compatible(value.total_seconds())
+
+
+@adapter(IRichTextValue)
+@implementer(IJsonCompatible)
+def richtextvalue_converter(value):
+    return json_compatible(value.output)
 
 
 @adapter(IRichTextValue, IDexterityContent)

@@ -65,6 +65,7 @@
   <adapter factory=".converters.persistent_list_converter" />
   <adapter factory=".converters.persistent_mapping_converter" />
   <adapter factory=".converters.python_datetime_converter" />
+  <adapter factory=".converters.richtextvalue_converter" />
   <adapter factory=".converters.RichtextDXContextConverter" />
   <adapter factory=".converters.set_converter" />
   <adapter factory=".converters.bytes_converter" />
