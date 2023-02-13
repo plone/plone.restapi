@@ -1,3 +1,4 @@
+from plone import api
 from plone.app.users.browser.userdatapanel import getUserDataSchema
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
@@ -68,18 +69,19 @@ class SerializeUserToJson(BaseSerializer):
     def __call__(self):
         data = super().__call__()
         user = self.context
-        gtool = getToolByName(self.context, "portal_groups")
-        groupIds = user.getGroups()
-        groups = [gtool.getGroupById(grp) for grp in groupIds]
-        groups = [{"id": grp.id, "title": grp.title or grp.id} for grp in groups]
-        batch = HypermediaBatch(self.request, groups)
-        groups_data = {
-            "@id": batch.canonical_url,
-            "items_total": batch.items_total,
-            "items": sorted(batch, key=lambda x: x["title"]),
-        }
-        if batch.links:
-            groups_data["batching"] = batch.links
+        gtool = getToolByName(self.context, "portal_groups", None)
+        if gtool:
+            groupIds = user.getGroups()
+            groups = [gtool.getGroupById(grp) for grp in groupIds]
+            groups = [{"id": grp.id, "title": grp.title or grp.id} for grp in groups]
 
-        data["groups"] = groups_data
+            batch = HypermediaBatch(self.request, groups)
+            groups_data = {
+                "@id": batch.canonical_url,
+                "items_total": batch.items_total,
+                "items": sorted(batch, key=lambda x: x["title"]),
+            }
+            if batch.links:
+                groups_data["batching"] = batch.links
+            data["groups"] = groups_data
         return data
