@@ -1,4 +1,3 @@
-from plone import api
 from plone.app.users.browser.userdatapanel import getUserDataSchema
 from plone.restapi.batching import HypermediaBatch
 from plone.restapi.interfaces import ISerializeToJson
