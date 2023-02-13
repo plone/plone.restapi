@@ -4,7 +4,6 @@ from itertools import chain
 from plone.app.workflow.browser.sharing import merge_search_results
 from plone.namedfile.utils import stream_data
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
