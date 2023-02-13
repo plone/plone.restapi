@@ -210,9 +210,7 @@ class UsersGet(Service):
             if not user:
                 self.request.response.setStatus(404)
                 return
-            serializer = queryMultiAdapter(
-                (user, self.request), ISerializeToJsonSummary
-            )
+            serializer = queryMultiAdapter((user, self.request), ISerializeToJson)
             return serializer()
         else:
             self.request.response.setStatus(401)
