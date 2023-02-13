@@ -1,0 +1,1 @@
+Request of own user data provides joined groups @ksuess
