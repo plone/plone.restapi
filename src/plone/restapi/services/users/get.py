@@ -4,7 +4,6 @@ from itertools import chain
 from plone.app.workflow.browser.sharing import merge_search_results
 from plone.namedfile.utils import stream_data
 from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
@@ -210,9 +209,7 @@ class UsersGet(Service):
             if not user:
                 self.request.response.setStatus(404)
                 return
-            serializer = queryMultiAdapter(
-                (user, self.request), ISerializeToJsonSummary
-            )
+            serializer = queryMultiAdapter((user, self.request), ISerializeToJson)
             return serializer()
         else:
             self.request.response.setStatus(401)
