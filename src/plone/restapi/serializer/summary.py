@@ -21,6 +21,7 @@ class JSONSummarySerializerMetadata:
             "description",
             "review_state",
             "title",
+            "UID",
         }
 
     def field_accessors(self):
