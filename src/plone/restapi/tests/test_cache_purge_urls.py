@@ -9,7 +9,6 @@ from zope.interface import implementer
 import unittest
 
 
-
 @implementer(IContentish)
 class FauxNonContent(Explicit):
     def __init__(self, name=None):
@@ -35,7 +34,6 @@ class FauxNonContent(Explicit):
 
 @implementer(IBrowserDefault)
 class FauxContent(FauxNonContent):
-
     portal_type = "testtype"
 
     def defaultView(self):
@@ -43,7 +41,6 @@ class FauxContent(FauxNonContent):
 
 
 class TestRestAPIPurgePaths(unittest.TestCase):
-
     layer = UNIT_TESTING
 
     def test_no_parent(self):
@@ -58,7 +55,7 @@ class TestRestAPIPurgePaths(unittest.TestCase):
                 "/++api++/foo/@comments",
                 "/++api++/foo/@navigation",
             ],
-            list(purger.getRelativePaths())
+            list(purger.getRelativePaths()),
         )
         self.assertEqual([], list(purger.getAbsolutePaths()))
 

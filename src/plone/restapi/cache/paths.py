@@ -41,9 +41,7 @@ class RestAPIPurgePaths:
         """
         prefix = self.TRAVERSAL_PREFIX
         base_path = f"/{self.context.virtual_url_path()}"
-        paths = [
-            f"{prefix}{base_path}"
-        ]
+        paths = [f"{prefix}{base_path}"]
 
         # Add service endpoints for content
         for endpoint in CONTEXT_ENDPOINTS:

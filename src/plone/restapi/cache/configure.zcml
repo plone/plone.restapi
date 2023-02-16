@@ -8,6 +8,6 @@
       factory=".paths.RestAPIPurgePaths"
       name="plone.restapi"
       zcml:condition="have plone-app-caching-3"
-    />
+      />
 
 </configure>
