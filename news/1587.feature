@@ -1,0 +1,1 @@
+Implement IPurgePaths for RestAPI traversal (++api++) @ericof
