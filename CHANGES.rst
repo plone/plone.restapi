@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.35.0 (2023-02-18)
+-------------------
+
+New features:
+
+
+- Request of own user data provides joined groups @ksuess (#1581)
+- Implement IPurgePaths for RestAPI traversal (++api++) @ericof (#1587)
+
+
 8.34.0 (2023-02-06)
 -------------------
 
