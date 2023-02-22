@@ -16,6 +16,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 class RelationChoiceFieldDeserializer(DefaultFieldDeserializer):
     def __call__(self, value):
         obj = None
+        resolved_by = "<unresolved>"
 
         if isinstance(value, dict):
             # We are trying to deserialize the output of a serialization
