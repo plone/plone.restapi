@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from datetime import datetime
 from datetime import time
 from datetime import timedelta
@@ -311,6 +310,8 @@ class DXTestDocument(Item):
 @provider(IFormFieldProvider)
 class ITestBehavior(model.Schema):
     test_behavior_field = schema.TextLine(required=False)
+    # Add nav_title to test if it gets substituted in Navigation service
+    nav_title = schema.TextLine(required=False)
 
 
 @provider(IFormFieldProvider)
