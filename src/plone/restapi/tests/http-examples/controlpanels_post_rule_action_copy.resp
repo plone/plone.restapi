@@ -1,0 +1,631 @@
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
+
+{
+    "@id": "http://localhost:55001/plone/@controlpanels/content-rules/rule-3",
+    "actions": [
+        {
+            "description": "Log a particular event",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++action++0/edit",
+            "first": true,
+            "idx": 0,
+            "last": false,
+            "summary": "Log message ${message}",
+            "title": "Logger"
+        },
+        {
+            "description": "Return a portal message to the user",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++action++1/edit",
+            "first": false,
+            "idx": 1,
+            "last": false,
+            "summary": "Notify with message ${message}",
+            "title": "Notify user"
+        },
+        {
+            "description": "Copy the triggering item to a specific folder",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++action++2/edit",
+            "first": false,
+            "idx": 2,
+            "last": true,
+            "summary": "Copy to folder ${folder}.",
+            "title": "Copy to folder"
+        }
+    ],
+    "addable_actions": [
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "targetLogger",
+                            "loggingLevel",
+                            "message"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "loggingLevel": {
+                        "default": 20,
+                        "description": "",
+                        "factory": "Integer",
+                        "title": "Logging level",
+                        "type": "integer"
+                    },
+                    "message": {
+                        "default": "text_contentrules_logger_message",
+                        "description": "&e = the triggering event, &c = the context, &u = the user",
+                        "factory": "Text line (String)",
+                        "title": "Message",
+                        "type": "string"
+                    },
+                    "targetLogger": {
+                        "default": "Plone",
+                        "description": "",
+                        "factory": "Text line (String)",
+                        "title": "Logger name",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "targetLogger",
+                    "loggingLevel",
+                    "message"
+                ],
+                "type": "object"
+            },
+            "addview": "plone.actions.Logger",
+            "description": "Log a particular event",
+            "title": "Logger"
+        },
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "message",
+                            "message_type"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "message": {
+                        "description": "The message to send to the user.",
+                        "factory": "Text line (String)",
+                        "title": "Message",
+                        "type": "string"
+                    },
+                    "message_type": {
+                        "choices": [
+                            [
+                                "info",
+                                null
+                            ],
+                            [
+                                "warning",
+                                null
+                            ],
+                            [
+                                "error",
+                                null
+                            ]
+                        ],
+                        "default": "info",
+                        "description": "Select the type of message to display.",
+                        "enum": [
+                            "info",
+                            "warning",
+                            "error"
+                        ],
+                        "enumNames": [
+                            null,
+                            null,
+                            null
+                        ],
+                        "factory": "Choice",
+                        "title": "Message type",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/message_type"
+                        }
+                    }
+                },
+                "required": [
+                    "message",
+                    "message_type"
+                ],
+                "type": "object"
+            },
+            "addview": "plone.actions.Notify",
+            "description": "Return a portal message to the user",
+            "title": "Notify user"
+        },
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "target_folder"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "target_folder": {
+                        "description": "As a path relative to the portal root.",
+                        "factory": "Choice",
+                        "title": "Target folder",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/target_folder"
+                        }
+                    }
+                },
+                "required": [
+                    "target_folder"
+                ],
+                "type": "object"
+            },
+            "addview": "plone.actions.Copy",
+            "description": "Copy the triggering item to a specific folder",
+            "title": "Copy to folder"
+        },
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "target_folder"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "target_folder": {
+                        "description": "As a path relative to the portal root.",
+                        "factory": "Choice",
+                        "title": "Target folder",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@sources/target_folder"
+                        }
+                    }
+                },
+                "required": [
+                    "target_folder"
+                ],
+                "type": "object"
+            },
+            "addview": "plone.actions.Move",
+            "description": "Move the triggering item to a specific folder",
+            "title": "Move to folder"
+        },
+        {
+            "@schema": {
+                "fieldsets": [],
+                "properties": {},
+                "required": [],
+                "type": "object"
+            },
+            "addview": "plone.actions.Delete",
+            "description": "Delete the triggering item",
+            "title": "Delete object"
+        },
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "transition"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "transition": {
+                        "description": "Select the workflow transition to attempt",
+                        "factory": "Choice",
+                        "title": "Transition",
+                        "type": "string",
+                        "vocabulary": {
+                            "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WorkflowTransitions"
+                        }
+                    }
+                },
+                "required": [
+                    "transition"
+                ],
+                "type": "object"
+            },
+            "addview": "plone.actions.Workflow",
+            "description": "Perform a workflow transition on the triggering object",
+            "title": "Transition workflow state"
+        },
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "subject",
+                            "source",
+                            "recipients",
+                            "exclude_actor",
+                            "message"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "exclude_actor": {
+                        "description": "Do not send the email to the user that did the action.",
+                        "factory": "Yes/No",
+                        "title": "Exclude actor from recipients",
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "description": "The message that you want to mail.",
+                        "factory": "Text",
+                        "title": "Message",
+                        "type": "string",
+                        "widget": "textarea"
+                    },
+                    "recipients": {
+                        "description": "The email where you want to send this message. To send it to different email addresses, just separate them with ,",
+                        "factory": "Text line (String)",
+                        "title": "Email recipients",
+                        "type": "string"
+                    },
+                    "source": {
+                        "description": "The email address that sends the email. If no email is provided here, it will use the portal from address.",
+                        "factory": "Text line (String)",
+                        "title": "Email source",
+                        "type": "string"
+                    },
+                    "subject": {
+                        "description": "Subject of the message",
+                        "factory": "Text line (String)",
+                        "title": "Subject",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "subject",
+                    "recipients",
+                    "exclude_actor",
+                    "message"
+                ],
+                "type": "object"
+            },
+            "addview": "plone.actions.Mail",
+            "description": "Send an email on the triggering object",
+            "title": "Send email"
+        },
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "comment"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "comment": {
+                        "description": "The comment added to the history while versioning the content.",
+                        "factory": "Text line (String)",
+                        "title": "Comment",
+                        "type": "string"
+                    }
+                },
+                "required": [],
+                "type": "object"
+            },
+            "addview": "plone.actions.Versioning",
+            "description": "Store a new version of the object",
+            "title": "Version object"
+        }
+    ],
+    "addable_conditions": [
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "check_types"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "check_types": {
+                        "additionalItems": true,
+                        "description": "The content type to check for.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes"
+                            }
+                        },
+                        "title": "Content type",
+                        "type": "array",
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "check_types"
+                ],
+                "type": "object"
+            },
+            "addview": "plone.conditions.PortalType",
+            "description": "Apply only when the current content object is of a particular type",
+            "title": "Content type"
+        },
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "file_extension"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "file_extension": {
+                        "description": "The file extension to check for",
+                        "factory": "Text line (String)",
+                        "title": "File extension",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "file_extension"
+                ],
+                "type": "object"
+            },
+            "addview": "plone.conditions.FileExtension",
+            "description": "Apply only to a particular file extension",
+            "title": "File Extension"
+        },
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "wf_states"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "wf_states": {
+                        "additionalItems": true,
+                        "description": "The workflow states to check for.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.WorkflowStates"
+                            }
+                        },
+                        "title": "Workflow state",
+                        "type": "array",
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "wf_states"
+                ],
+                "type": "object"
+            },
+            "addview": "plone.conditions.WorkflowState",
+            "description": "Apply only to a objects in a particular workflow state",
+            "title": "Workflow state"
+        },
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "group_names"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "group_names": {
+                        "additionalItems": true,
+                        "description": "The name of the group.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Groups"
+                            }
+                        },
+                        "title": "Group name",
+                        "type": "array",
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "group_names"
+                ],
+                "type": "object"
+            },
+            "addview": "plone.conditions.Group",
+            "description": "Apply only when the current user is in the given group",
+            "title": "User's group"
+        },
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "role_names"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "role_names": {
+                        "additionalItems": true,
+                        "description": "The roles to check for.",
+                        "factory": "Multiple Choice",
+                        "items": {
+                            "description": "",
+                            "factory": "Choice",
+                            "title": "",
+                            "type": "string",
+                            "vocabulary": {
+                                "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Roles"
+                            }
+                        },
+                        "title": "Roles",
+                        "type": "array",
+                        "uniqueItems": true
+                    }
+                },
+                "required": [
+                    "role_names"
+                ],
+                "type": "object"
+            },
+            "addview": "plone.conditions.Role",
+            "description": "Apply only when the current user has the given role",
+            "title": "User's role"
+        },
+        {
+            "@schema": {
+                "fieldsets": [
+                    {
+                        "behavior": "plone",
+                        "fields": [
+                            "tales_expression"
+                        ],
+                        "id": "default",
+                        "title": "Default"
+                    }
+                ],
+                "properties": {
+                    "tales_expression": {
+                        "description": "The TALES expression to check.",
+                        "factory": "Text line (String)",
+                        "title": "TALES expression",
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "tales_expression"
+                ],
+                "type": "object"
+            },
+            "addview": "plone.conditions.TalesExpression",
+            "description": "Apply only when the result of a TALES expression is True",
+            "title": "TALES expression"
+        }
+    ],
+    "assignments": [],
+    "cascading": false,
+    "conditions": [
+        {
+            "description": "Apply only when the current content object is of a particular type",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++0/edit",
+            "first": true,
+            "idx": 0,
+            "last": false,
+            "summary": "Content types are: ${names}",
+            "title": "Content type"
+        },
+        {
+            "description": "Apply only to a particular file extension",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++1/edit",
+            "first": false,
+            "idx": 1,
+            "last": false,
+            "summary": "File extension is ${ext}",
+            "title": "File Extension"
+        },
+        {
+            "description": "Apply only to a objects in a particular workflow state",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++2/edit",
+            "first": false,
+            "idx": 2,
+            "last": false,
+            "summary": "Workflow states are: ${states}",
+            "title": "Workflow state"
+        },
+        {
+            "description": "Apply only when the current user is in the given group",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++3/edit",
+            "first": false,
+            "idx": 3,
+            "last": false,
+            "summary": "Groups are: ${names}",
+            "title": "User's group"
+        },
+        {
+            "description": "Apply only when the current user has the given role",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++4/edit",
+            "first": false,
+            "idx": 4,
+            "last": false,
+            "summary": "Roles are: ${names}",
+            "title": "User's role"
+        },
+        {
+            "description": "Apply only when the result of a TALES expression is True",
+            "editview": "http://localhost:55001/plone/++rule++rule-3/++condition++5/edit",
+            "first": false,
+            "idx": 5,
+            "last": true,
+            "summary": "TALES expression is: ${tales_expression}",
+            "title": "TALES expression"
+        }
+    ],
+    "description": "Third rule added in the testing setup",
+    "enabled": true,
+    "event": "Comment added",
+    "group": "Content",
+    "id": "rule-3",
+    "stop": false,
+    "title": "Third test rule"
+}

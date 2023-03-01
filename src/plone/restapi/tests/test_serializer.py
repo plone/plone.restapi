@@ -7,9 +7,8 @@ from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from plone.scale import storage
+from plone.restapi.tests.helpers import patch_scale_uuid
 from Products.CMFCore.utils import getToolByName
-from unittest.mock import patch
 from zope.component import getMultiAdapter
 
 import json
@@ -261,9 +260,9 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
 
         self.maxDiff = 99999
 
-        with patch.object(storage, "uuid4", return_value="uuid_1"):
+        scale_url_uuid = "uuid_1"
+        with patch_scale_uuid(scale_url_uuid):
             obj_url = self.portal.image1.absolute_url()
-            scale_url_uuid = "uuid_1"
             download_url = f"{obj_url}/@@images/{scale_url_uuid}.png"
             scales = {
                 "listing": {"download": download_url, "width": 16, "height": 4},

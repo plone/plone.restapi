@@ -3,10 +3,10 @@ from importlib import import_module
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
-from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
+from plone.restapi.serializer.blocks import apply_block_serialization_transforms
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.services.locking import lock_info
@@ -17,7 +17,6 @@ from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.component import queryUtility
-from zope.component import subscribers
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
@@ -69,6 +68,13 @@ class SerializeSiteRootToJson:
         }
 
         if HAS_PLONE_6:
+            result["UID"] = self.context.UID()
+            # Insert review_state
+            wf = getToolByName(self.context, "portal_workflow")
+            result["review_state"] = wf.getInfoFor(
+                ob=self.context, name="review_state", default=None
+            )
+
             # Insert Plone Site DX root field values
             for schema in iterSchemata(self.context):
                 read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
@@ -135,17 +141,5 @@ class SerializeSiteRootToJson:
         if not blocks:
             return blocks
         for id, block_value in blocks.items():
-            block_type = block_value.get("@type", "")
-            handlers = []
-            for h in subscribers(
-                (self.context, self.request), IBlockFieldSerializationTransformer
-            ):
-                if h.block_type == block_type or h.block_type is None:
-                    handlers.append(h)
-
-            for handler in sorted(handlers, key=lambda h: h.order):
-                if not getattr(handler, "disabled", False):
-                    block_value = handler(block_value)
-
-            blocks[id] = block_value
+            blocks[id] = apply_block_serialization_transforms(block_value, self.context)
         return blocks

@@ -7,11 +7,14 @@ from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.layout.navigation.interfaces import INavigationRoot
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
+from plone.restapi.search.query import ZCatalogCompatibleQueryAdapter
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
+from plone.restapi.tests import PY3_10
 from plone.restapi.tests.helpers import result_paths
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
@@ -46,12 +49,12 @@ class TestSearchFunctional(unittest.TestCase):
         api.user.create(
             email="editor@example.com",
             username="editoruser",
-            password="secret",
+            password=TEST_USER_PASSWORD,
         )
         api.user.create(
             email="editor@example.com",
             username="localeditor",
-            password="secret",
+            password=TEST_USER_PASSWORD,
         )
 
         # /plone/folder
@@ -639,7 +642,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(response["items_total"], 1)
 
         # not admin users can't see expired items
-        self.api_session.auth = ("editoruser", "secret")
+        self.api_session.auth = ("editoruser", TEST_USER_PASSWORD)
 
         response = self.api_session.get("/@search", params={}).json()
         if HAS_PLONE_6:
@@ -673,7 +676,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(response["items_total"], 1)
 
         # local-enabled Editor can only access expired contents inside folder
-        self.api_session.auth = ("localeditor", "secret")
+        self.api_session.auth = ("localeditor", TEST_USER_PASSWORD)
         response = self.api_session.get("/@search", params={}).json()
         if HAS_PLONE_6:
             # Since Plone 6 the Plone site is indexed ...
@@ -816,3 +819,22 @@ class TestSearchFunctional(unittest.TestCase):
 
         noLongerProvides(self.folder, INavigationRoot)
         transaction.commit()
+
+    # BBB: Remove condition when drop Python 3.9 support.
+    @unittest.skipUnless(PY3_10, "assertNoLogs is only in Python >= 3.10")
+    def test_zcatalogcompatiblequeryadapter_log(self):
+        """When we have sort_on or sort_order in the query passed to
+        ZCatalogCompatibleQueryAdapter, warnings should not be issued in the
+        log.
+        """
+        query_adapter = ZCatalogCompatibleQueryAdapter(self.portal, self.request)
+        with self.assertNoLogs("plone.restapi.search.query", level="WARN"):
+            query_adapter(
+                {
+                    "b_size": "50",
+                    "metadata_fields": "_all",
+                    "path": {"depth": "1", "query": "/Plone"},
+                    "sort_on": "getObjPositionInParent",
+                    "sort_order": "ascending",
+                },
+            )

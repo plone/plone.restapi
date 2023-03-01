@@ -1,8 +1,9 @@
 from base64 import b64encode
 from datetime import datetime
-from unittest.mock import patch
 from pkg_resources import resource_filename
 from plone import api
+from plone.uuid.interfaces import IUUID
+from plone.app.discussion.interfaces import ICommentAddedEvent
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
 from plone.app.discussion.interfaces import IReplies
@@ -14,6 +15,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.app.testing import TEST_USER_PASSWORD
 from plone.app.textfield.value import RichTextValue
 from plone.dexterity.utils import createContentInContainer
 from plone.locking.interfaces import ITTWLockable
@@ -25,10 +27,11 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.testing import register_static_uuid_utility
 from plone.restapi.testing import RelativeSession
+from plone.restapi.tests.helpers import patch_scale_uuid, patch_addon_versions
 from plone.restapi.tests.statictime import StaticTime
-from plone.scale import storage
 from plone.testing.z2 import Browser
 from zope.component import createObject
+from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component.hooks import getSite
 from zope.interface import alsoProvides
@@ -174,6 +177,8 @@ class TestDocumentationBase(unittest.TestCase):
         self.portal = self.layer["portal"]
         self.portal_url = self.portal.absolute_url()
 
+        setattr(self.portal, "_plone.uuid", "55c25ebc220d400393574f37d648727c")
+
         # Register custom UUID generator to produce stable UUIDs during tests
         pushGlobalRegistry(getSite())
         register_static_uuid_utility(prefix="SomeUUID")
@@ -251,7 +256,8 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
 
         response = self.api_session.post(
-            folder.absolute_url(), json={"@type": "Document", "title": "My Document"}
+            folder.absolute_url(),
+            json={"@type": "Document", "title": "My Document"},
         )
         save_request_and_response_for_docs("content_post", response)
 
@@ -301,7 +307,8 @@ class TestDocumentation(TestDocumentationBase):
         self.portal.newsitem.image_caption = "This is an image caption."
         transaction.commit()
 
-        with patch.object(storage, "uuid4", return_value="uuid1"):
+        scale_url_uuid = "uuid1"
+        with patch_scale_uuid(scale_url_uuid):
             response = self.api_session.get(self.portal.newsitem.absolute_url())
             save_request_and_response_for_docs("newsitem", response)
 
@@ -349,7 +356,8 @@ class TestDocumentation(TestDocumentationBase):
             data=image_data, contentType="image/png", filename="image.png"
         )
         transaction.commit()
-        with patch.object(storage, "uuid4", return_value="uuid1"):
+        scale_url_uuid = "uuid1"
+        with patch_scale_uuid(scale_url_uuid):
             response = self.api_session.get(self.portal.image.absolute_url())
             save_request_and_response_for_docs("image", response)
 
@@ -412,7 +420,11 @@ class TestDocumentation(TestDocumentationBase):
         self.portal.invokeFactory("Folder", id="folder1", title="Folder 1")
         self.portal.folder1.invokeFactory("Folder", id="folder2", title="Folder 2")
         transaction.commit()
-        query = {"sort_on": "path", "path.query": "/plone/folder1", "path.depth": "1"}
+        query = {
+            "sort_on": "path",
+            "path.query": "/plone/folder1",
+            "path.depth": "1",
+        }
         response = self.api_session.get("/@search", params=query)
         save_request_and_response_for_docs("search_options", response)
 
@@ -430,10 +442,25 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@search", params=query)
         save_request_and_response_for_docs("search_multiple_paths", response)
 
+    def test_documentation_search_sort_multiple_indexes(self):
+        self.portal.invokeFactory("Folder", id="folder1", title="Folder 1")
+        self.portal.invokeFactory("Document", id="doc1", title="Lorem Ipsum")
+        self.portal.invokeFactory("Folder", id="folder2", title="Folder 2")
+        self.portal.invokeFactory("Document", id="doc2", title="Lorem Ipsum")
+        transaction.commit()
+        query = {
+            "sort_on": ["portal_type", "sortable_title"],
+        }
+        response = self.api_session.get("/@search", params=query)
+        save_request_and_response_for_docs("search_sort_multiple_indexes", response)
+
     def test_documentation_search_metadata_fields(self):
         self.portal.invokeFactory("Document", id="doc1", title="Lorem Ipsum")
         transaction.commit()
-        query = {"SearchableText": "lorem", "metadata_fields": ["modified", "created"]}
+        query = {
+            "SearchableText": "lorem",
+            "metadata_fields": ["modified", "created"],
+        }
         response = self.api_session.get("/@search", params=query)
         save_request_and_response_for_docs("search_metadata_fields", response)
 
@@ -476,7 +503,8 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_registry_update(self):
         response = self.api_session.patch(
-            "/@registry/", json={"plone.app.querystring.field.path.title": "Value"}
+            "/@registry/",
+            json={"plone.app.querystring.field.path.title": "Value"},
         )
         save_request_and_response_for_docs("registry_update", response)
 
@@ -760,7 +788,9 @@ class TestDocumentation(TestDocumentationBase):
         ]
         for i in range(7):
             folder.invokeFactory(
-                "Document", id="doc-%s" % str(i + 1), title="Document %s" % str(i + 1)
+                "Document",
+                id="doc-%s" % str(i + 1),
+                title="Document %s" % str(i + 1),
             )
         transaction.commit()
 
@@ -838,7 +868,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
         response = self.api_session.get("@users/noam")
@@ -854,7 +886,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
 
@@ -877,14 +911,14 @@ class TestDocumentation(TestDocumentationBase):
         api.user.create(
             email="noam.chomsky@example.com",
             username="noam",
-            password="secret",
+            password=TEST_USER_PASSWORD,
             properties=properties,
         )
 
         api.user.create(
             email="noam.chomsky@example.com",
             username="noam-fake",
-            password="secret",
+            password=TEST_USER_PASSWORD,
             properties=properties,
         )
 
@@ -892,7 +926,7 @@ class TestDocumentation(TestDocumentationBase):
 
         logged_out_api_session = RelativeSession(self.portal_url, test=self)
         logged_out_api_session.headers.update({"Accept": "application/json"})
-        logged_out_api_session.auth = ("noam-fake", "secret")
+        logged_out_api_session.auth = ("noam-fake", TEST_USER_PASSWORD)
 
         response = logged_out_api_session.get("@users/noam")
         save_request_and_response_for_docs("users_unauthorized_get", response)
@@ -910,22 +944,44 @@ class TestDocumentation(TestDocumentationBase):
         api.user.create(
             email="noam.chomsky@example.com",
             username="noam",
-            password="secret",
+            password=TEST_USER_PASSWORD,
             properties=properties,
         )
         transaction.commit()
 
         logged_out_api_session = RelativeSession(self.portal_url, test=self)
         logged_out_api_session.headers.update({"Accept": "application/json"})
-        logged_out_api_session.auth = ("noam", "secret")
+        logged_out_api_session.auth = ("noam", TEST_USER_PASSWORD)
         response = logged_out_api_session.get("@users/noam")
         save_request_and_response_for_docs("users_authorized_get", response)
         logged_out_api_session.close()
 
     def test_documentation_users_filtered_get(self):
         properties = {
-            "email": "noam.chomsky@example.com",
-            "username": "noamchomsky",
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
+        )
+        api.group.add_user(groupname="Reviewers", username="noam")
+        transaction.commit()
+        # filter by username
+        response = self.api_session.get("@users", params={"query": "oam"})
+        save_request_and_response_for_docs("users_filtered_by_username", response)
+        # filter by groups
+        response = self.api_session.get(
+            "@users",
+            params={"groups-filter:list": ["Reviewers", "Site Administrators"]},
+        )
+        save_request_and_response_for_docs("users_filtered_by_groups", response)
+
+    def test_documentation_users_searched_get(self):
+        properties = {
             "fullname": "Noam Avram Chomsky",
             "home_page": "web.mit.edu/chomsky",
             "description": "Professor of Linguistics",
@@ -934,11 +990,11 @@ class TestDocumentation(TestDocumentationBase):
         api.user.create(
             email="noam.chomsky@example.com", username="noam", properties=properties
         )
+        api.group.add_user(groupname="Reviewers", username="noam")
         transaction.commit()
-        response = self.api_session.get("@users", params={"query": "noa"})
-        save_request_and_response_for_docs(
-            "users_filtered_by_username", response
-        )  # noqa
+        # search by fullname
+        response = self.api_session.get("@users", params={"search": "avram"})
+        save_request_and_response_for_docs("users_searched", response)
 
     def test_documentation_users_created(self):
         response = self.api_session.post(
@@ -981,7 +1037,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
 
@@ -1039,7 +1097,9 @@ class TestDocumentation(TestDocumentationBase):
             "location": "Cambridge, MA",
         }
         api.user.create(
-            email="noam.chomsky@example.com", username="noam", properties=properties
+            email="noam.chomsky@example.com",
+            username="noam",
+            properties=properties,
         )
         transaction.commit()
 
@@ -1061,6 +1121,16 @@ class TestDocumentation(TestDocumentationBase):
             title=properties["title"],
             description=properties["description"],
         )
+        properties = {
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com", username="noam", properties=properties
+        )
+        api.group.add_user(groupname="ploneteam", username="noam")
         transaction.commit()
         response = self.api_session.get("/@groups")
         save_request_and_response_for_docs("groups", response)
@@ -1080,6 +1150,16 @@ class TestDocumentation(TestDocumentationBase):
             title=properties["title"],
             description=properties["description"],
         )
+        properties = {
+            "fullname": "Noam Avram Chomsky",
+            "home_page": "web.mit.edu/chomsky",
+            "description": "Professor of Linguistics",
+            "location": "Cambridge, MA",
+        }
+        api.user.create(
+            email="noam.chomsky@example.com", username="noam", properties=properties
+        )
+        api.group.add_user(groupname="ploneteam", username="noam")
         transaction.commit()
         response = self.api_session.get("@groups/ploneteam")
         save_request_and_response_for_docs("groups_get", response)
@@ -1139,7 +1219,14 @@ class TestDocumentation(TestDocumentationBase):
 
         response = self.api_session.patch(
             "/@groups/ploneteam",
-            json={"email": "ploneteam2@plone.org", "users": {TEST_USER_ID: False}},
+            json={
+                "description": "Plone team members",
+                "email": "ploneteam2@plone.org",
+                "groups": ["Site Administrators"],
+                "users": {TEST_USER_ID: False},
+                "roles": ["Authenticated", "Reviewer"],
+                "title": "The Plone team",
+            },
         )
         save_request_and_response_for_docs("groups_update", response)
 
@@ -1183,7 +1270,10 @@ class TestDocumentation(TestDocumentationBase):
         )
         createContentInContainer(folder, "Folder", id="subfolder2", title="SubFolder 2")
         thirdlevelfolder = createContentInContainer(
-            subfolder1, "Folder", id="thirdlevelfolder", title="Third Level Folder"
+            subfolder1,
+            "Folder",
+            id="thirdlevelfolder",
+            title="Third Level Folder",
         )
         createContentInContainer(
             thirdlevelfolder,
@@ -1212,7 +1302,10 @@ class TestDocumentation(TestDocumentationBase):
         )
         createContentInContainer(folder, "Folder", id="subfolder2", title="SubFolder 2")
         thirdlevelfolder = createContentInContainer(
-            subfolder1, "Folder", id="thirdlevelfolder", title="Third Level Folder"
+            subfolder1,
+            "Folder",
+            id="thirdlevelfolder",
+            title="Third Level Folder",
         )
         createContentInContainer(
             thirdlevelfolder,
@@ -1259,7 +1352,12 @@ class TestDocumentation(TestDocumentationBase):
 
         response = self.api_session.post(
             "/@copy",
-            json={"source": [self.document.absolute_url(), newsitem.absolute_url()]},
+            json={
+                "source": [
+                    self.document.absolute_url(),
+                    newsitem.absolute_url(),
+                ]
+            },
         )
         save_request_and_response_for_docs("copy_multiple", response)
 
@@ -1287,7 +1385,7 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_vocabularies_get_filtered_by_title(self):
         response = self.api_session.get(
-            "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?" "title=doc"
+            "/@vocabularies/plone.app.vocabularies.ReallyUserFriendlyTypes?title=doc"
         )
         save_request_and_response_for_docs(
             "vocabularies_get_filtered_by_title", response
@@ -1304,7 +1402,10 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_sources_get(self):
         api.content.create(
-            container=self.portal, id="doc", type="DXTestDocument", title="DX Document"
+            container=self.portal,
+            id="doc",
+            type="DXTestDocument",
+            title="DX Document",
         )
         transaction.commit()
         response = self.api_session.get("/doc/@sources/test_choice_with_source")
@@ -1592,6 +1693,12 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.get("/@database")
         save_request_for_docs("database_get", response)
 
+    def test_addons_install_specific_profile(self):
+        response = self.api_session.post(
+            "/@addons/plone.restapi/import/testing-workflows"
+        )
+        save_request_for_docs("addons_install_profile", response)
+
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
 
@@ -1645,8 +1752,9 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
         )
 
     def test_translate_messages_addons(self):
-        response = self.api_session.get("/@addons")
-        save_request_and_response_for_docs("translated_messages_addons", response)
+        with patch_addon_versions("1.2.3"):
+            response = self.api_session.get("/@addons")
+            save_request_and_response_for_docs("translated_messages_addons", response)
 
 
 class TestCommenting(TestDocumentationBase):
@@ -1785,6 +1893,137 @@ class TestCommenting(TestDocumentationBase):
     def test_documentation_expansion(self):
         response = self.api_session.get("/front-page?expand=breadcrumbs,workflow")
         save_request_and_response_for_docs("expansion", response)
+
+    def test_aliases_add(self):
+        # Add 3 aliases
+        url = f"{self.document.absolute_url()}/@aliases"
+        payload = {
+            "items": [
+                {"path": "/new-alias"},
+                {"path": "/old-alias"},
+                {"path": "/final-alias"},
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs("aliases_add", response)
+
+    def test_aliases_delete(self):
+        # Delete 1 alias
+        url = f"{self.document.absolute_url()}/@aliases"
+        payload = {
+            "items": [
+                {"path": "/new-alias"},
+                {"path": "/old-alias"},
+                {"path": "/final-alias"},
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        payload = {"items": [{"path": "/old-alias"}]}
+        response = self.api_session.delete(url, json=payload)
+
+        save_request_and_response_for_docs("aliases_delete", response)
+
+    def test_aliases_get(self):
+        # Get aliases
+        url = f"{self.document.absolute_url()}/@aliases"
+
+        payload = {"items": "/simple-alias"}
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("aliases_get", response)
+
+    def test_aliases_root_add(self):
+        # Add 2 aliases
+        url = f"{self.portal.absolute_url()}/@aliases"
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs("aliases_root_add", response)
+
+    def test_aliases_root_delete(self):
+        # Delete 1 alias
+        url = f"{self.portal.absolute_url()}/@aliases"
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        payload = {"items": [{"path": "/old-page"}]}
+        response = self.api_session.delete(url, json=payload)
+
+        save_request_and_response_for_docs("aliases_root_delete", response)
+
+    def test_aliases_root_get(self):
+        # Get aliases
+        url = f"{self.portal.absolute_url()}/@aliases"
+        query = ""
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_root_get", response)
+
+    def test_aliases_root_filter(self):
+        # Get aliases
+        url = f"{self.portal.absolute_url()}/@aliases"
+        query = "?q=/fizzbuzz"
+
+        payload = {
+            "items": [
+                {
+                    "path": "/old-page",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+                {
+                    "path": "/fizzbuzz",
+                    "redirect-to": "/front-page",
+                    "datetime": "2022-05-05",
+                },
+            ]
+        }
+        response = self.api_session.post(url, json=payload)
+
+        response = self.api_session.get(url + query)
+        save_request_and_response_for_docs("aliases_root_filter", response)
 
 
 class TestControlPanelDocumentation(TestDocumentationBase):
@@ -2031,3 +2270,433 @@ class TestIterateDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs(
             "vocabularies_get_filtered_by_token_list", response
         )
+
+    def test_documentation_schema_user(self):
+        response = self.api_session.get("/@userschema")
+
+        save_request_and_response_for_docs("userschema", response)
+
+
+class TestRules(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super().setUp()
+
+        # Create two test rules and assign them globally
+
+        rules = getMultiAdapter((self.portal, self.request), name="+rule")
+        add_form = getMultiAdapter((rules, self.request), name="plone.ContentRule")
+        add_form.update()
+        data = {
+            "title": "First test rule",
+            "description": "First rule added in the testing setup",
+            "event": ICommentAddedEvent,
+            "enabled": True,
+            "stop": False,
+            "cascading": False,
+        }
+        rule = add_form.form_instance.create(data)
+        rules.add(rule)
+        edit_form = getMultiAdapter((rule, self.request), name="manage-elements")
+        edit_form.authorize = lambda: True
+        edit_form.globally_assign()
+        data = {
+            "title": "Second test rule",
+            "description": "Second rule added in the testing setup",
+            "event": ICommentAddedEvent,
+            "enabled": True,
+            "stop": False,
+            "cascading": False,
+        }
+        rule = add_form.form_instance.create(data)
+        rules.add(rule)
+        edit_form = getMultiAdapter((rule, self.request), name="manage-elements")
+        edit_form.authorize = lambda: True
+        edit_form.globally_assign()
+
+        # Create a folder for copy and move actions
+        self.portal.invokeFactory("Folder", id="folder")
+
+        transaction.commit()
+
+    def tearDown(self):
+        super().tearDown()
+
+    # Tests for the object rules
+
+    def test_rules_add(self):
+        # Assign a rule
+        url = "/@content-rules/rule-1"
+        response = self.api_session.post(url)
+        save_request_and_response_for_docs("rules_add", response)
+
+    def test_rules_get(self):
+        # Get assigned rules
+        url = "/@content-rules/rule-1"
+        self.api_session.post(url)
+        url = "/@content-rules"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("rules_get", response)
+
+    def test_rules_delete(self):
+        # Unassign a rule
+        url = "/@content-rules/rule-1"
+        self.api_session.post(url)
+        payload = {"rule_ids": ["rule-1"]}
+        url = "/@content-rules"
+        response = self.api_session.delete(url, json=payload)
+        save_request_and_response_for_docs("rules_delete", response)
+
+    def test_rules_move_up(self):
+        # Move a rule up in the order
+        url = "/@content-rules/rule-1"
+        self.api_session.post(url)
+        url = "/@content-rules/rule-2"
+        self.api_session.post(url)
+        url = "/@content-rules"
+        payload = {"operation": "move_up", "rule_id": "rule-2"}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_move_up", response)
+
+    def test_rules_move_down(self):
+        # Move a rule down in the order
+        url = "/@content-rules/rule-1"
+        self.api_session.post(url)
+        url = "/@content-rules/rule-2"
+        self.api_session.post(url)
+        url = "/@content-rules"
+        payload = {"operation": "move_down", "rule_id": "rule-1"}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_move_down", response)
+
+    def test_rules_enable(self):
+        # Enable some rules
+        url = "/@content-rules"
+        self.api_session.post(url)
+        payload = {"form.button.Enable": True, "rule_ids": ["rule-1", "rule-2"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_enable", response)
+
+    def test_rules_disable(self):
+        # Disable some assigned rules
+        url = "/@content-rules"
+        self.api_session.post(url)
+        payload = {"form.button.Disable": True, "rule_ids": ["rule-1", "rule-2"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_disable", response)
+
+    def test_rules_apply_subfolders(self):
+        # Enable apply on subfolders
+        url = "/@content-rules"
+        self.api_session.post(url)
+        payload = {"form.button.Bubble": True, "rule_ids": ["rule-1", "rule-2"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_apply_subfolders", response)
+
+    def test_rules_disable_apply_subfolders(self):
+        # Disable apply on subfolders
+        url = "/@content-rules"
+        self.api_session.post(url)
+        payload = {"form.button.NoBubble": True, "rule_ids": ["rule-1", "rule-2"]}
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("rules_disable_apply_subfolders", response)
+
+    # Tests for the rules controlpanel
+
+    def test_controlpanels_get_rules(self):
+        # Get rules defined in controlpanel
+        url = "/@controlpanels/content-rules"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("controlpanels_get_contentrules", response)
+
+    def test_controlpanels_crud_rules(self):
+        # POST
+        url = "/@controlpanels/content-rules"
+        payload = {
+            "title": "Third test rule",
+            "description": "Third rule added in the testing setup",
+            "event": "Comment added",
+            "enabled": True,
+            "stop": False,
+            "cascading": False,
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs("controlpanels_post_rule", response)
+
+        # Conditions
+        url = "/@controlpanels/content-rules/rule-3/condition"
+        payload = {
+            "check_types": ["Collection", "Comment"],
+            "type": "plone.conditions.PortalType",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_portaltype", response
+        )
+        payload = {"file_extension": "JPG", "type": "plone.conditions.FileExtension"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_fileextension", response
+        )
+        payload = {
+            "wf_states": ["pending", "private"],
+            "type": "plone.conditions.WorkflowState",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_workflowstate", response
+        )
+        payload = {
+            "group_names": ["Administrators", "Site Administrators"],
+            "type": "plone.conditions.Group",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_group", response
+        )
+        payload = {
+            "role_names": ["Anonymous", "Authenticated"],
+            "type": "plone.conditions.Role",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_role", response
+        )
+        payload = {
+            "tales_expression": "<tal:block content='string:' />",
+            "type": "plone.conditions.TalesExpression",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_condition_tales", response
+        )
+
+        # Actions
+        url = "/@controlpanels/content-rules/rule-3/action"
+        payload = {
+            "targetLogger": "Plone",
+            "Level": "20",
+            "message": "text_contentrules_logger_message",
+            "type": "plone.actions.Logger",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_logger", response
+        )
+        payload = {
+            "message": "Information",
+            "message_type": "info",
+            "type": "plone.actions.Notify",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_notify", response
+        )
+        uuid = IUUID(self.portal.folder)
+        payload = {"target_folder": uuid, "type": "plone.actions.Copy"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_copy", response
+        )
+        payload = {"target_folder": uuid, "type": "plone.actions.Move"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_move", response
+        )
+        payload = {"type": "plone.actions.Delete"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_delete", response
+        )
+        payload = {"transition": "hide", "type": "plone.actions.Workflow"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_transition", response
+        )
+        payload = {
+            "subject": "Email Subject",
+            "source": "noreply@something.com",
+            "recipients": "test@somethingelse.com",
+            "exclude_actor": True,
+            "message": "And the message body",
+            "type": "plone.actions.Mail",
+        }
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_mail", response
+        )
+        payload = {"comment": "Some comment", "type": "plone.actions.Versioning"}
+        response = self.api_session.post(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_post_rule_action_versioning", response
+        )
+
+        # GET
+        url = "/@controlpanels/content-rules/rule-3"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("controlpanels_get_rule", response)
+
+        # get condition
+        url = "/@controlpanels/content-rules/rule-3/condition/0"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_portaltype", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/1"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_fileextension", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/2"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_workflowstate", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/3"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_group", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/4"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_role", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/condition/5"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_condition_tales", response
+        )
+
+        # get action
+
+        url = "/@controlpanels/content-rules/rule-3/action/0"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_logger", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/1"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_notify", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/2"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_copy", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/3"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_move", response
+        )
+
+        # delete action doesn't have any values to get
+
+        url = "/@controlpanels/content-rules/rule-3/action/5"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_transition", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/6"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_mail", response
+        )
+        url = "/@controlpanels/content-rules/rule-3/action/7"
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs(
+            "controlpanels_get_rule_action_versioning", response
+        )
+
+        # PATCH
+        url = "/@controlpanels/content-rules/rule-3"
+        payload = {
+            "title": "Third test rule (modified)",
+            "description": "Third rule added in the testing setup (modified)",
+            "event": "Comment removed",
+            "enabled": False,
+            "stop": True,
+            "cascading": True,
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs("controlpanels_patch_rule", response)
+
+        # Conditions
+        url = "/@controlpanels/content-rules/rule-3/condition/0"
+        payload = {
+            "check_types": ["Collection"],
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_condition_portaltype", response
+        )
+
+        # move
+        # down
+        url = "/@controlpanels/content-rules/rule-3/condition/0"
+        payload = {
+            "form.button.Move": "_move_down",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_condition_move_down", response
+        )
+        # up
+        url = "/@controlpanels/content-rules/rule-3/condition/1"
+        payload = {
+            "form.button.Move": "_move_up",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_condition_move_up", response
+        )
+        # Actions
+        url = "/@controlpanels/content-rules/rule-3/action/0"
+        payload = {
+            "targetLogger": "Plone6",
+            "Level": "20",
+            "message": "text_contentrules_logger_message",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_action_logger", response
+        )
+        # move
+        # down
+        url = "/@controlpanels/content-rules/rule-3/action/0"
+        payload = {
+            "form.button.Move": "_move_down",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_action_move_down", response
+        )
+        # up
+        url = "/@controlpanels/content-rules/rule-3/action/1"
+        payload = {
+            "form.button.Move": "_move_up",
+        }
+        response = self.api_session.patch(url, json=payload)
+        save_request_and_response_for_docs(
+            "controlpanels_patch_rule_action_move_up", response
+        )
+
+        # DELETE
+        url = "/@controlpanels/content-rules/rule-3/condition/0"
+        response = self.api_session.delete(url)
+        save_request_and_response_for_docs(
+            "controlpanels_delete_rule_condition", response
+        )
+
+        url = "/@controlpanels/content-rules/rule-3/action/0"
+        response = self.api_session.delete(url)
+        save_request_and_response_for_docs(
+            "controlpanels_delete_action_condition", response
+        )
+
+        url = "/@controlpanels/content-rules/rule-3"
+        response = self.api_session.delete(url)
+        save_request_and_response_for_docs("controlpanels_delete_rule", response)

@@ -7,104 +7,125 @@ Content-Type: application/json
             "document_actions": [],
             "object": [
                 {
-                    "icon": "",
+                    "icon": "toolbar-action/view",
                     "id": "view",
-                    "title": "View"
+                    "title": "View",
+                    "url": "http://localhost:55001/plone/front-page"
                 },
                 {
-                    "icon": "",
+                    "icon": "toolbar-action/edit",
                     "id": "edit",
-                    "title": "Edit"
+                    "title": "Edit",
+                    "url": "http://localhost:55001/plone/front-page/edit"
                 },
                 {
-                    "icon": "",
+                    "icon": "toolbar-action/folderContents",
                     "id": "folderContents",
-                    "title": "Contents"
+                    "title": "Contents",
+                    "url": "http://localhost:55001/plone/folder_contents"
                 },
                 {
-                    "icon": "",
+                    "icon": "toolbar-action/history",
                     "id": "history",
-                    "title": "History"
+                    "title": "History",
+                    "url": "http://localhost:55001/plone/front-page/@@historyview"
                 },
                 {
-                    "icon": "",
+                    "icon": "toolbar-action/sharing",
                     "id": "local_roles",
-                    "title": "Sharing"
+                    "title": "Sharing",
+                    "url": "http://localhost:55001/plone/front-page/@@sharing"
                 }
             ],
             "object_buttons": [
                 {
-                    "icon": "",
+                    "icon": "plone-cut",
                     "id": "cut",
-                    "title": "Cut"
+                    "title": "Cut",
+                    "url": "http://localhost:55001/plone/front-page/object_cut"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-copy",
                     "id": "copy",
-                    "title": "Copy"
+                    "title": "Copy",
+                    "url": "http://localhost:55001/plone/front-page/object_copy"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-delete",
                     "id": "delete",
-                    "title": "Delete"
+                    "title": "Delete",
+                    "url": "http://localhost:55001/plone/front-page/delete_confirmation"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-rename",
                     "id": "rename",
-                    "title": "Rename"
+                    "title": "Rename",
+                    "url": "http://localhost:55001/plone/front-page/object_rename"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-redirection",
                     "id": "redirection",
-                    "title": "URL Management"
+                    "title": "URL Management",
+                    "url": " http://localhost:55001/plone/front-page/@@manage-aliases"
                 }
             ],
             "portal_tabs": [
                 {
-                    "icon": "",
+                    "icon": "plone-home",
                     "id": "index_html",
-                    "title": "Home"
+                    "title": "Home",
+                    "url": "http://localhost:55001/plone"
                 }
             ],
             "site_actions": [
                 {
-                    "icon": "",
+                    "icon": "plone-sitemap",
                     "id": "sitemap",
-                    "title": "Site Map"
+                    "title": "Site Map",
+                    "url": "http://localhost:55001/plone/sitemap"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-accessibility",
                     "id": "accessibility",
-                    "title": "Accessibility"
+                    "title": "Accessibility",
+                    "url": "http://localhost:55001/plone/accessibility-info"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-contact-info",
                     "id": "contact",
-                    "title": "Contact"
+                    "title": "Contact",
+                    "url": "http://localhost:55001/plone/contact-info"
                 }
             ],
             "user": [
                 {
-                    "icon": "",
+                    "icon": "plone-user",
                     "id": "preferences",
-                    "title": "Preferences"
+                    "title": "Preferences",
+                    "url": "http://localhost:55001/plone/@@personal-preferences"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-dashboard",
                     "id": "dashboard",
-                    "title": "Dashboard"
+                    "title": "Dashboard",
+                    "url": "http://localhost:55001/plone/dashboard"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-controlpanel",
                     "id": "plone_setup",
-                    "title": "Site Setup"
+                    "title": "Site Setup",
+                    "url": "http://localhost:55001/plone/@@overview-controlpanel"
                 },
                 {
-                    "icon": "",
+                    "icon": "plone-logout",
                     "id": "logout",
-                    "title": "Log out"
+                    "title": "Log out",
+                    "url": "http://localhost:55001/plone/logout"
                 }
             ]
+        },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/front-page/@aliases"
         },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/front-page/@breadcrumbs",

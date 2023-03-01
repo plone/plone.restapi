@@ -1,0 +1,13 @@
+PATCH /plone/@controlpanels/content-rules/rule-3 HTTP/1.1
+Accept: application/json
+Authorization: Basic YWRtaW46c2VjcmV0
+Content-Type: application/json
+
+{
+    "cascading": true,
+    "description": "Third rule added in the testing setup (modified)",
+    "enabled": false,
+    "event": "Comment removed",
+    "stop": true,
+    "title": "Third test rule (modified)"
+}

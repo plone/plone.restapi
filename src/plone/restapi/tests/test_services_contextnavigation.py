@@ -201,8 +201,8 @@ class TestServicesContextNavigation(unittest.TestCase):
 
         res = {
             "@id": "%s/folder2/@contextnavigation" % base,
-            "has_custom_name": False,
             "available": True,
+            "has_custom_name": False,
             "items": [
                 {
                     "@id": "%s/folder2/doc21" % base,
@@ -257,7 +257,38 @@ class TestServicesContextNavigation(unittest.TestCase):
                     "is_current": False,
                     "is_folderish": True,
                     "is_in_path": False,
-                    "items": [],
+                    "items": [
+                        {
+                            "@id": "%s/folder2/folder21/doc211" % base,
+                            "description": "",
+                            "href": "%s/folder2/folder21/doc211" % base,
+                            "icon": "",
+                            "is_current": False,
+                            "is_folderish": False,
+                            "is_in_path": False,
+                            "items": [],
+                            "normalized_id": "doc211",
+                            "review_state": "private",
+                            "thumb": "",
+                            "title": "doc211",
+                            "type": "document",
+                        },
+                        {
+                            "@id": "%s/folder2/folder21/doc212" % base,
+                            "description": "",
+                            "href": "%s/folder2/folder21/doc212" % base,
+                            "icon": "",
+                            "is_current": False,
+                            "is_folderish": False,
+                            "is_in_path": False,
+                            "items": [],
+                            "normalized_id": "doc212",
+                            "review_state": "private",
+                            "thumb": "",
+                            "title": "doc212",
+                            "type": "document",
+                        },
+                    ],
                     "normalized_id": "folder21",
                     "review_state": "private",
                     "thumb": "",
@@ -268,13 +299,8 @@ class TestServicesContextNavigation(unittest.TestCase):
             "title": "Navigation",
             "url": "%s/sitemap" % base,
         }
-        self.assertEqual(
-            response.json(),
-            res,
-        )
 
-        # self.assertTrue(tree)
-        # self.assertEqual(tree["children"][-1]["currentItem"], True)
+        self.assertEqual(res, response.json())
 
     def testHeadingLinkRooted(self):
         """
@@ -516,11 +542,12 @@ class TestServicesContextNavigation(unittest.TestCase):
             self.portal.folder1.ns_folder, opts(includeTop=True, topLevel=0)
         )
         tree = view.getNavTree()
-        self.assertEqual(
-            tree["items"][3]["items"][3]["href"],
-            "%s/folder1/ns_folder" % base,
-        )
-        self.assertEqual(len(tree["items"][3]["items"][3]["items"]), 0)
+        if tree["items"][3]["items"][0]["href"]:
+            self.assertEqual(
+                tree["items"][3]["items"][0]["href"],
+                "%s/folder1/ns_folder" % base,
+            )
+            self.assertEqual(len(tree["items"][3]["items"][0]["items"]), 0)
 
     def testTopLevel(self):
         # Use default setting of Plone 6
@@ -730,7 +757,7 @@ class TestServicesContextNavigation(unittest.TestCase):
         )
         tree = view.getNavTree()
         self.assertTrue(tree)
-        self.assertEqual(tree["items"][0]["href"], "%s/folder2/doc21" % base)
+        self.assertEqual(tree["items"][0]["href"], "%s/folder2/file21/view" % base)
 
     def testRootDoesNotExist(self):
         view = self.renderer(

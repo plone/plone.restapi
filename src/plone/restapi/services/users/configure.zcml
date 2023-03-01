@@ -36,4 +36,12 @@
       name="@users"
       />
 
+  <plone:service
+      method="GET"
+      factory=".get.PortraitGet"
+      for="Products.CMFCore.interfaces.ISiteRoot"
+      permission="zope2.View"
+      name="@portrait"
+      />
+
 </configure>

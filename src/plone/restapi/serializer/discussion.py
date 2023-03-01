@@ -5,12 +5,17 @@ from plone.restapi.interfaces import IJsonCompatible
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services.discussion.utils import can_delete
 from plone.restapi.services.discussion.utils import can_delete_own
+from plone.restapi.services.discussion.utils import can_view
 from plone.restapi.services.discussion.utils import can_edit
+from plone.restapi.services.discussion.utils import can_reply
 from plone.restapi.services.discussion.utils import delete_own_comment_allowed
 from plone.restapi.services.discussion.utils import edit_comment_allowed
+from plone.restapi.services.users.get import getPortraitUrl
+from plone.restapi.services.users.get import isDefaultPortrait
 from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
 from zope.component import getMultiAdapter
+from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IRequest
 
@@ -24,6 +29,7 @@ class ConversationSerializer:
 
     def __call__(self):
         # We'll batch the threads
+        view_comments = can_view(self.context)
         results = list(self.context.getThreads())
         batch = HypermediaBatch(self.request, results)
 
@@ -31,13 +37,21 @@ class ConversationSerializer:
         results["@id"] = batch.canonical_url
 
         results["items_total"] = batch.items_total
+        results["permissions"] = {
+            "view_comments": view_comments,
+            "can_reply": can_reply(self.context),
+        }
         if batch.links:
             results["batching"] = batch.links
 
-        results["items"] = [
-            getMultiAdapter((thread["comment"], self.request), ISerializeToJson)()
-            for thread in batch
-        ]
+        results["items"] = (
+            [
+                getMultiAdapter((thread["comment"], self.request), ISerializeToJson)()
+                for thread in batch
+            ]
+            if view_comments
+            else []
+        )
 
         return results
 
@@ -87,13 +101,17 @@ class CommentSerializer:
             ),  # noqa
             "is_editable": edit_comment_allowed() and can_edit(self.context),
             "is_deletable": can_delete(self.context) or delete_own,
+            "can_reply": can_reply(self.context),
         }
 
     def get_author_image(self, username=None):
         if username is None:
             return
-        portal_membership = getToolByName(self.context, "portal_membership", None)
-        image = portal_membership.getPersonalPortrait(username).absolute_url()
-        if image.endswith("defaultUser.png"):
-            return
-        return image
+        portal = getSite()
+        portal_membership = getToolByName(portal, "portal_membership", None)
+        image = portal_membership.getPersonalPortrait(username)
+        if image and not isDefaultPortrait(image):
+            # Despite being called username, it is actually a userid.
+            # See https://github.com/plone/plone.app.discussion/blob/dd0255fd5db6662a1b1b4cb7046785038d0d6b71/plone/app/discussion/browser/comments.py#L211-L217
+            user = portal_membership.getMemberById(username)
+            return getPortraitUrl(user)

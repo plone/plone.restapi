@@ -1,0 +1,13 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    >
+
+  <!-- Paths to purge -->
+  <adapter
+      factory=".paths.RestAPIPurgePaths"
+      name="plone.restapi"
+      zcml:condition="have plone-app-caching-3"
+      />
+
+</configure>

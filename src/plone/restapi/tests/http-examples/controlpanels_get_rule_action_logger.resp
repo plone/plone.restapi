@@ -1,0 +1,52 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@controlpanels/content-rules/rule-3/action/0",
+    "@schema": {
+        "fieldsets": [
+            {
+                "behavior": "plone",
+                "fields": [
+                    "targetLogger",
+                    "loggingLevel",
+                    "message"
+                ],
+                "id": "default",
+                "title": "Default"
+            }
+        ],
+        "properties": {
+            "loggingLevel": {
+                "default": 20,
+                "description": "",
+                "factory": "Integer",
+                "title": "Logging level",
+                "type": "integer"
+            },
+            "message": {
+                "default": "Caught &e at &c by &u",
+                "description": "&e = the triggering event, &c = the context, &u = the user",
+                "factory": "Text line (String)",
+                "title": "Message",
+                "type": "string"
+            },
+            "targetLogger": {
+                "default": "Plone",
+                "description": "",
+                "factory": "Text line (String)",
+                "title": "Logger name",
+                "type": "string"
+            }
+        },
+        "required": [
+            "targetLogger",
+            "loggingLevel",
+            "message"
+        ],
+        "type": "object"
+    },
+    "loggingLevel": "",
+    "message": "text_contentrules_logger_message",
+    "targetLogger": "Plone"
+}
