@@ -303,7 +303,6 @@ class RichTextFieldDeserializer(DefaultFieldDeserializer):
 @implementer(IFieldDeserializer)
 @adapter(IDecimal, IDexterityContent, IBrowserRequest)
 class DecimalFieldDeserializer(DefaultFieldDeserializer):
-
     def __call__(self, value):
         if not isinstance(value, Decimal):
             value = Decimal(value)
