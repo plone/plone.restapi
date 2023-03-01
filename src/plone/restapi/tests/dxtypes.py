@@ -39,7 +39,7 @@ INDEXES = (
 
 
 @implementer(ISource)
-class MyNonIterableSource(object):
+class MyNonIterableSource:
     divisor = 2
 
     def __contains__(self, value):
@@ -47,7 +47,7 @@ class MyNonIterableSource(object):
 
 
 @implementer(IIterableSource)
-class MyIterableSource(object):
+class MyIterableSource:
     values = [1, 2, 3]
 
     def __contains__(self, value):
@@ -62,7 +62,7 @@ class MyIterableSource(object):
 
 
 @implementer(IQuerySource)
-class MyIterableQuerySource(object):
+class MyIterableQuerySource:
     values = [1, 2, 3]
 
     def __contains__(self, value):
@@ -81,7 +81,7 @@ class MyIterableQuerySource(object):
 
 
 @implementer(IIterableSource)
-class MyIterableContextSource(object):
+class MyIterableContextSource:
     def __init__(self, context):
         self.context = context
 
@@ -99,7 +99,7 @@ class MyIterableContextSource(object):
 
 
 @implementer(IQuerySource)
-class MyContextQuerySource(object):
+class MyContextQuerySource:
     def __init__(self, context):
         self.context = context
 
