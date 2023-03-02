@@ -31,6 +31,16 @@ Since JSON does not have native support for dates and times, the Python and Zope
 | `DateTime("2015/11/23 19:45:55")`    | `"2015-11-23T19:45:55"` |
 
 
+## Decimal Type
+
+The [Python Decimal type](https://docs.python.org/3/library/decimal.html) supports correctly rounded decimal floating point arithmetic.
+To keep the precision serialization results in a string.
+
+| Python                               | JSON                    |
+| ------------------------------------ | ----------------------- |
+| `Dezimal("3.14159265359")`           | `"3.14159265359"`       |
+
+
 ## RichText fields
 
 RichText fields will be serialized as follows:
