@@ -1,2 +1,2 @@
-Fix mssing `Decimal` field deserializer.
+Fix missing `Decimal` field deserializer.
 [jensens]
