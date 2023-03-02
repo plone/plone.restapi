@@ -38,7 +38,7 @@ To keep the precision serialization results in a string.
 
 | Python                               | JSON                    |
 | ------------------------------------ | ----------------------- |
-| `Dezimal("3.14159265359")`           | `"3.14159265359"`       |
+| `Decimal("3.14159265359")`           | `"3.14159265359"`       |
 
 
 ## RichText fields
@@ -48,9 +48,11 @@ RichText fields will be serialized as follows:
 A `RichTextValue` such as the following:
 
 ```python
-RichTextValue(u'<p>Hallöchen</p>',
-              mimeType='text/html',
-              outputMimeType='text/html')
+RichTextValue(
+    "<p>Hallöchen</p>",
+    mimeType="text/html",
+    outputMimeType="text/html",
+)
 ```
 
 …will be serialized to:
