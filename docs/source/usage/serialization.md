@@ -34,7 +34,7 @@ Since JSON does not have native support for dates and times, the Python and Zope
 ## Decimal Type
 
 The [Python Decimal type](https://docs.python.org/3/library/decimal.html) supports correctly rounded decimal floating point arithmetic.
-To keep the precision serialization results in a string.
+To keep the precision, serializing the value to JSON results in a string.
 
 | Python                               | JSON                    |
 | ------------------------------------ | ----------------------- |
