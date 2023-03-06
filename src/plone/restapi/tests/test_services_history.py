@@ -59,7 +59,7 @@ class TestHistoryEndpoint(unittest.TestCase):
 
         main_keys = ["action", "actor", "comments", "time", "transition_title", "type"]
 
-        history_keys = main_keys + ["@id", "may_revert", "version"]
+        history_keys = main_keys + ["@id", "may_revert", "version", "show_revert"]
 
         workflow_keys = main_keys + ["review_state", "state_title"]
 

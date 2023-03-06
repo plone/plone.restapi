@@ -68,6 +68,13 @@ class HistoryGet(Service):
                 # permissions.
                 item["may_revert"] = bool(item.get("revert_url"))
 
+                # The BrowserView is using 'diff_current_url' for determining if
+                # it should show or not the button 'Revert to this version'
+                # eg. when it's the last revision, it does not make sense of showing it.
+                # Probably we will need to improve the template and logic to a more
+                # clear naming for this use case, instead of relying on 'diff_current_url'
+                item["show_revert"] = bool(item.get("diff_current_url"))
+
             # Versioning entries use a timestamp,
             # workflow ISO formatted string
             if not isinstance(item["time"], str):
