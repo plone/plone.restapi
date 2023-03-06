@@ -269,6 +269,21 @@ class TestBlocksDeserializer(unittest.TestCase):
             self.portal.doc1.absolute_url(),
         )
 
+    def test_blocks_custom_block_resolve_standard_fields_nested(self):
+        self.deserialize(
+            blocks={
+                "123": {
+                    "@type": "foo",
+                    "bar": [{"url": self.portal.doc1.absolute_url()}],
+                }
+            }
+        )
+        doc_uid = IUUID(self.portal.doc1)
+
+        self.assertEqual(
+            self.portal.doc1.blocks["123"]["bar"][0]["url"], f"../resolveuid/{doc_uid}"
+        )
+
     def test_deserialize_blocks_smart_href_array_volto_object_browser(self):
         self.deserialize(
             blocks={
