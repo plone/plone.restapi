@@ -110,7 +110,7 @@ class ResolveUIDDeserializerBase:
             return path2uid(context=self.context, link=data)
             # data[field] = path2uid(context=self.context, link=data)
         elif data and isinstance(data, list):
-            return [self._process_data(data=value) for value in data]
+            return [self._process_data(data=value, field=field) for value in data]
         elif isinstance(data, dict):
             # Detect if it has an object inside with an "@id" key (object_widget)
             if "@id" in data:
