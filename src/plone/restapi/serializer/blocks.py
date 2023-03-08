@@ -15,6 +15,7 @@ from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
+from plone.restapi.deserializer.blocks import iterate_children
 
 import copy
 import os
@@ -189,4 +190,41 @@ class SlateBlockSerializer(SlateBlockSerializerBase):
 @implementer(IBlockFieldSerializationTransformer)
 @adapter(IPloneSiteRoot, IBrowserRequest)
 class SlateBlockSerializerRoot(SlateBlockSerializerBase):
+    """Serializer for site root"""
+
+
+class SlateTableBlockSerializerBase(SlateBlockSerializerBase):
+    """SlateBlockSerializerBase."""
+
+    order = 100
+    block_type = "slateTable"
+
+    def __call__(self, block):
+        """call"""
+        rows = block.get("table", {}).get("rows", [])
+        for row in rows:
+            cells = row.get("cells", [])
+
+            for cell in cells:
+                cellvalue = cell.get("value", [])
+                children = iterate_children(cellvalue or [])
+                for child in children:
+                    node_type = child.get("type")
+                    if node_type:
+                        handler = getattr(self, f"handle_{node_type}", None)
+                        if handler:
+                            handler(child)
+
+        return block
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IBlocks, IBrowserRequest)
+class SlateTableBlockSerializer(SlateTableBlockSerializerBase):
+    """Serializer for content-types with IBlocks behavior"""
+
+
+@implementer(IBlockFieldSerializationTransformer)
+@adapter(IPloneSiteRoot, IBrowserRequest)
+class SlateTableBlockSerializerRoot(SlateTableBlockSerializerBase):
     """Serializer for site root"""

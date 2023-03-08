@@ -274,3 +274,106 @@ class TestBlocksSerializer(unittest.TestCase):
         value = res["abc"]["value"]
         link = value[0]["children"][1]["data"]["url"]
         self.assertTrue(link, self.portal.absolute_url() + "/doc1")
+
+    def test_slate_table_block_link_serializer(self):
+        doc_uid = IUUID(self.portal["doc1"])
+        resolve_uid_link = f"../resolveuid/{doc_uid}"
+        blocks = {
+            "abc": {
+                "@type": "slateTable",
+                "table": {
+                    "hideHeaders": False,
+                    "fixed": True,
+                    "compact": False,
+                    "basic": False,
+                    "celled": True,
+                    "inverted": False,
+                    "striped": False,
+                    "rows": [
+                        {
+                            "key": "25k7t",
+                            "cells": [
+                                {
+                                    "key": "ajes8",
+                                    "type": "header",
+                                    "value": [
+                                        {
+                                            "type": "p",
+                                            "children": [{"text": "Table with links"}],
+                                        }
+                                    ],
+                                },
+                                {
+                                    "key": "cm2bj",
+                                    "type": "header",
+                                    "value": [
+                                        {
+                                            "type": "p",
+                                            "children": [{"text": "Table with links"}],
+                                        }
+                                    ],
+                                },
+                            ],
+                        },
+                        {
+                            "key": "6gteb",
+                            "cells": [
+                                {
+                                    "key": "1gs74",
+                                    "type": "data",
+                                    "value": [
+                                        {
+                                            "type": "p",
+                                            "children": [
+                                                {"text": ""},
+                                                {
+                                                    "type": "link",
+                                                    "data": {"url": resolve_uid_link},
+                                                    "children": [
+                                                        {
+                                                            "text": (
+                                                                "This internal" " link"
+                                                            )
+                                                        }
+                                                    ],
+                                                },
+                                                {"text": ""},
+                                            ],
+                                        }
+                                    ],
+                                },
+                                {
+                                    "key": "ab93b",
+                                    "type": "data",
+                                    "value": [
+                                        {
+                                            "type": "p",
+                                            "children": [
+                                                {"text": "This "},
+                                                {
+                                                    "type": "link",
+                                                    "data": {
+                                                        "url": "https://google.com/"
+                                                    },
+                                                    "children": [{"text": "external"}],
+                                                },
+                                                {"text": " link"},
+                                            ],
+                                        }
+                                    ],
+                                },
+                            ],
+                        },
+                    ],
+                },
+            }
+        }
+
+        res = self.serialize(
+            context=self.portal["doc1"],
+            blocks=blocks,
+        )
+        rows = res["abc"]["table"]["rows"]
+        cell = rows[1]["cells"][0]
+        link = cell["value"][0]["children"][1]["data"]["url"]
+        self.assertTrue(link, self.portal.absolute_url() + "/doc1")

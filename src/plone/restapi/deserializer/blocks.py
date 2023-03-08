@@ -38,7 +38,8 @@ class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
             block_type = block_value.get("@type", "")
             handlers = []
             for h in subscribers(
-                (self.context, self.request), IBlockFieldDeserializationTransformer
+                (self.context, self.request),
+                IBlockFieldDeserializationTransformer,
             ):
                 if h.block_type == block_type or h.block_type is None:
                     h.blockid = id
@@ -295,4 +296,45 @@ class SlateBlockDeserializer(SlateBlockDeserializerBase):
 @adapter(IPloneSiteRoot, IBrowserRequest)
 @implementer(IBlockFieldDeserializationTransformer)
 class SlateBlockDeserializerRoot(SlateBlockDeserializerBase):
+    """Deserializer for site root"""
+
+
+class SlateTableBlockTransformer(SlateBlockTransformer):
+    def __call__(self, block):
+
+        rows = block.get("table", {}).get("rows", [])
+        for row in rows:
+            cells = row.get("cells", [])
+
+            for cell in cells:
+                cellvalue = cell.get("value", [])
+                children = iterate_children(cellvalue or [])
+                for child in children:
+                    node_type = child.get("type")
+                    if node_type:
+                        handler = getattr(self, f"handle_{node_type}", None)
+                        if handler:
+                            handler(child)
+
+        return block
+
+
+class SlateTableBlockDeserializerBase(
+    SlateTableBlockTransformer, SlateBlockDeserializerBase
+):
+    """SlateTableBlockDeserializerBase."""
+
+    order = 100
+    block_type = "slateTable"
+
+
+@adapter(IBlocks, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class SlateTableBlockDeserializer(SlateTableBlockDeserializerBase):
+    """Deserializer for content-types that implements IBlocks behavior"""
+
+
+@adapter(IPloneSiteRoot, IBrowserRequest)
+@implementer(IBlockFieldDeserializationTransformer)
+class SlateTableBlockDeserializerRoot(SlateTableBlockDeserializerBase):
     """Deserializer for site root"""
