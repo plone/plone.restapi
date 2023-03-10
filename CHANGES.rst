@@ -8,6 +8,18 @@ Changelog
 
 .. towncrier release notes start
 
+8.35.2 (2023-03-10)
+-------------------
+
+Bug fixes:
+
+
+- Fix missing `Decimal` field deserializer.
+  [jensens] (#903)
+- Fix translation of the error message for a password that is too short while
+  adding a user. [davisagli] (#4395)
+
+
 8.35.1 (2023-03-02)
 -------------------
 
