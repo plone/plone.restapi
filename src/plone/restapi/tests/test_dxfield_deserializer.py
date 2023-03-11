@@ -184,6 +184,16 @@ class TestDXFieldDeserializer(unittest.TestCase):
         self.assertTrue(isinstance(value, float), "Not a <float>")
         self.assertEqual(1.0, value)
 
+    def test_float_deserialization_returns_decimal(self):
+        value = self.deserialize("test_decimal_field", 1.111)
+        self.assertTrue(isinstance(value, Decimal), "Not a <Decimal>")
+        # a float from JSON to decimal can not work properly, so you would get
+        # real floating point precision only
+        self.assertEqual(
+            Decimal("1.1109999999999999875655021241982467472553253173828125"),
+            value,
+        )
+
     def test_frozenset_deserialization_returns_frozenset(self):
         value = self.deserialize("test_frozenset_field", ["foo", "bar"])
         self.assertTrue(isinstance(value, frozenset), "Not a <frozenset>")

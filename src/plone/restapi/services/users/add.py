@@ -210,7 +210,7 @@ class UsersPost(Service):
             return dict(
                 error=dict(
                     type="MissingParameterError",
-                    message=self.translate(str(e)),
+                    message=self.translate(e.args[0]),
                 )
             )
 

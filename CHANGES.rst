@@ -8,6 +8,37 @@ Changelog
 
 .. towncrier release notes start
 
+8.35.2 (2023-03-10)
+-------------------
+
+Bug fixes:
+
+
+- Fix missing `Decimal` field deserializer.
+  [jensens] (#903)
+- Fix translation of the error message for a password that is too short while
+  adding a user. [davisagli] (#4395)
+
+
+8.35.1 (2023-03-02)
+-------------------
+
+Bug fixes:
+
+
+- Provide slateTable block serializer/deserializer to properly convert URLs to uids (#1590)
+
+
+8.35.0 (2023-02-18)
+-------------------
+
+New features:
+
+
+- Request of own user data provides joined groups @ksuess (#1581)
+- Implement IPurgePaths for RestAPI traversal (++api++) @ericof (#1587)
+
+
 8.34.0 (2023-02-06)
 -------------------
 
