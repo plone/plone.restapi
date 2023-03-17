@@ -30,7 +30,9 @@ class TestServicesSite(unittest.TestCase):
         portal_state = getMultiAdapter(
             (self.portal, self.layer["request"]), name="plone_portal_state"
         )
-        self.assertEqual(response.json()["plone.site_title"], portal_state.portal_title())
+        self.assertEqual(
+            response.json()["plone.site_title"], portal_state.portal_title()
+        )
         self.assertIn("plone.site_logo", response.json())
         self.assertIn("plone.robots_txt", response.json())
         self.assertIn("plone.allowed_sizes", response.json())
