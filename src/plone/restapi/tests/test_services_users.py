@@ -100,15 +100,11 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertIn("noam", user_ids)
         noam = [x for x in response.json() if x.get("username") == "noam"][0]
         self.assertEqual("noam", noam.get("id"))
-        self.assertEqual(
-            self.portal.absolute_url() + "/@users/noam", noam.get("@id")
-        )
+        self.assertEqual(self.portal.absolute_url() + "/@users/noam", noam.get("@id"))
         self.assertEqual("noam.chomsky@example.com", noam.get("email"))
         self.assertEqual("Noam Avram Chomsky", noam.get("fullname"))
         self.assertEqual("web.mit.edu/chomsky", noam.get("home_page"))  # noqa
-        self.assertEqual(
-            "Professor of Linguistics", noam.get("description")
-        )  # noqa
+        self.assertEqual("Professor of Linguistics", noam.get("description"))  # noqa
         self.assertEqual("Cambridge, MA", noam.get("location"))
 
     def test_list_users_without_being_manager(self):
@@ -134,9 +130,7 @@ class TestUsersEndpoint(unittest.TestCase):
         user_ids = [user["id"] for user in response.json()]
         self.assertIn("otheruser", user_ids)
 
-        response = self.api_session.get(
-            "/@users?groups-filter:list=Administrators"
-        )
+        response = self.api_session.get("/@users?groups-filter:list=Administrators")
         self.assertEqual(200, response.status_code)
         user_ids = [user["id"] for user in response.json()]
         self.assertNotIn("otheruser", user_ids)
@@ -155,30 +149,23 @@ class TestUsersEndpoint(unittest.TestCase):
 
         self.assertEqual(201, response.status_code)
         howard = api.user.get(userid="howard")
-        self.assertEqual(
-            "howard.zinn@example.com", howard.getProperty("email")
-        )
+        self.assertEqual("howard.zinn@example.com", howard.getProperty("email"))
         self.assertIn("Contributor", api.user.get_roles(username="howard"))
 
     def test_add_user_username_is_required(self):
-        response = self.api_session.post(
-            "/@users", json={"password": "noamchomsky"}
-        )
+        response = self.api_session.post("/@users", json={"password": "noamchomsky"})
         transaction.commit()
 
         self.assertEqual(400, response.status_code)
         self.assertTrue("Property 'User Name' is required" in response.text)
 
     def test_add_user_password_is_required(self):
-        response = self.api_session.post(
-            "/@users", json={"username": "noamchomsky"}
-        )
+        response = self.api_session.post("/@users", json={"username": "noamchomsky"})
         transaction.commit()
 
         self.assertEqual(400, response.status_code)
         self.assertTrue(
-            "You have to either send a password or sendPasswordReset"
-            in response.text
+            "You have to either send a password or sendPasswordReset" in response.text
         )
 
     def test_add_user_email_is_required_if_email_login_is_enabled(self):
@@ -356,9 +343,7 @@ class TestUsersEndpoint(unittest.TestCase):
             self.portal.absolute_url() + "/@users/noam",
             response.json().get("@id"),
         )
-        self.assertEqual(
-            "noam.chomsky@example.com", response.json().get("email")
-        )
+        self.assertEqual("noam.chomsky@example.com", response.json().get("email"))
         self.assertEqual("Noam Avram Chomsky", response.json().get("fullname"))
         self.assertEqual(
             "web.mit.edu/chomsky", response.json().get("home_page")
@@ -390,9 +375,7 @@ class TestUsersEndpoint(unittest.TestCase):
         response = self.api_session.get("/@users/noam")
 
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(
-            response.json()["portrait"].endswith("/@portrait/noam")
-        )
+        self.assertTrue(response.json()["portrait"].endswith("/@portrait/noam"))
 
     def test_get_search_user_with_filter(self):
         response = self.api_session.post(
@@ -413,9 +396,7 @@ class TestUsersEndpoint(unittest.TestCase):
             self.portal.absolute_url() + "/@users/noam",
             response.json()[0].get("@id"),
         )
-        self.assertEqual(
-            "noam.chomsky@example.com", response.json()[0].get("email")
-        )
+        self.assertEqual("noam.chomsky@example.com", response.json()[0].get("email"))
         self.assertEqual(
             "Noam Avram Chomsky", response.json()[0].get("fullname")
         )  # noqa
@@ -435,9 +416,7 @@ class TestUsersEndpoint(unittest.TestCase):
             },
         )
         transaction.commit()
-        response = self.anon_api_session.get(
-            "/@users", params={"query": "howa"}
-        )
+        response = self.anon_api_session.get("/@users", params={"query": "howa"})
         self.assertEqual(response.status_code, 401)
 
     def test_get_search_user_with_filter_as_unauthorized_user(self):
@@ -477,9 +456,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual("noam", noam.getUserId())  # user id never changes
         self.assertEqual("avram", noam.getUserName())
         self.assertEqual("Noam A. Chomsky", noam.getProperty("fullname"))
-        self.assertEqual(
-            "avram.chomsky@example.com", noam.getProperty("email")
-        )
+        self.assertEqual("avram.chomsky@example.com", noam.getProperty("email"))
 
     def test_user_can_update_himself(self):
         payload = {
@@ -518,34 +495,24 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_update_roles(self):
         self.assertNotIn("Contributor", api.user.get_roles(username="noam"))
 
-        self.api_session.patch(
-            "/@users/noam", json={"roles": {"Contributor": True}}
-        )
+        self.api_session.patch("/@users/noam", json={"roles": {"Contributor": True}})
         transaction.commit()
         self.assertIn("Contributor", api.user.get_roles(username="noam"))
 
-        self.api_session.patch(
-            "/@users/noam", json={"roles": {"Contributor": False}}
-        )
+        self.api_session.patch("/@users/noam", json={"roles": {"Contributor": False}})
         transaction.commit()
         self.assertNotIn("Contributor", api.user.get_roles(username="noam"))
 
     def test_update_user_password(self):
-        old_password_hashes = dict(
-            self.portal.acl_users.source_users._user_passwords
-        )
+        old_password_hashes = dict(self.portal.acl_users.source_users._user_passwords)
         payload = {"password": TEST_USER_PASSWORD}
         response = self.api_session.patch("/@users/noam", json=payload)
         transaction.commit()
 
         self.assertEqual(response.status_code, 204)
 
-        new_password_hashes = dict(
-            self.portal.acl_users.source_users._user_passwords
-        )
-        self.assertNotEqual(
-            old_password_hashes["noam"], new_password_hashes["noam"]
-        )
+        new_password_hashes = dict(self.portal.acl_users.source_users._user_passwords)
+        self.assertNotEqual(old_password_hashes["noam"], new_password_hashes["noam"])
 
     def test_update_portrait(self):
         payload = {
@@ -683,9 +650,7 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_user_requests_password_sends_password_via_mail(self):
         self.api_session.auth = ("noam", "password")
         payload = {}
-        response = self.api_session.post(
-            "/@users/noam/reset-password", json=payload
-        )
+        response = self.api_session.post("/@users/noam/reset-password", json=payload)
         transaction.commit()
 
         self.assertEqual(response.status_code, 200)
@@ -699,9 +664,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         payload = {"old_password": "password", "new_password": "new_password"}
-        response = self.api_session.post(
-            "/@users/noam/reset-password", json=payload
-        )
+        response = self.api_session.post("/@users/noam/reset-password", json=payload)
         transaction.commit()
 
         self.assertEqual(response.status_code, 200)
@@ -726,15 +689,11 @@ class TestUsersEndpoint(unittest.TestCase):
 
     def test_user_set_own_password_requires_set_own_password_permission(self):
         self.api_session.auth = ("noam", "password")
-        self.portal.manage_permission(
-            SetOwnPassword, roles=["Manager"], acquire=False
-        )
+        self.portal.manage_permission(SetOwnPassword, roles=["Manager"], acquire=False)
         transaction.commit()
 
         payload = {"old_password": "password", "new_password": "new_password"}
-        response = self.api_session.post(
-            "/@users/noam/reset-password", json=payload
-        )
+        response = self.api_session.post("/@users/noam/reset-password", json=payload)
         transaction.commit()
 
         self.assertEqual(response.status_code, 403)
@@ -742,23 +701,15 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_user_set_own_password_requires_old_and_new_password(self):
         self.api_session.auth = ("noam", "password")
         payload = {"old_password": "password"}
-        response = self.api_session.post(
-            "/@users/noam/reset-password", json=payload
-        )
+        response = self.api_session.post("/@users/noam/reset-password", json=payload)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json()["error"]["type"], "Invalid parameters"
-        )
+        self.assertEqual(response.json()["error"]["type"], "Invalid parameters")
         payload = {"new_password": "new_password"}
-        response = self.api_session.post(
-            "/@users/noam/reset-password", json=payload
-        )
+        response = self.api_session.post("/@users/noam/reset-password", json=payload)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json()["error"]["type"], "Invalid parameters"
-        )
+        self.assertEqual(response.json()["error"]["type"], "Invalid parameters")
 
     def test_user_set_own_password_checks_old_password(self):
         self.api_session.auth = ("noam", "password")
@@ -766,9 +717,7 @@ class TestUsersEndpoint(unittest.TestCase):
             "new_password": "new_password",
             "old_password": "wrong_password",
         }
-        response = self.api_session.post(
-            "/@users/noam/reset-password", json=payload
-        )
+        response = self.api_session.post("/@users/noam/reset-password", json=payload)
 
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.json()["error"]["type"], "Wrong password")
@@ -776,14 +725,10 @@ class TestUsersEndpoint(unittest.TestCase):
     def test_user_set_reset_token_requires_new_password(self):
         self.api_session.auth = ("noam", "password")
         payload = {"reset_token": "abc"}
-        response = self.api_session.post(
-            "/@users/noam/reset-password", json=payload
-        )
+        response = self.api_session.post("/@users/noam/reset-password", json=payload)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(
-            response.json()["error"]["type"], "Invalid parameters"
-        )
+        self.assertEqual(response.json()["error"]["type"], "Invalid parameters")
 
     def test_reset_with_token(self):
         reset_tool = getToolByName(self.portal, "portal_password_reset")
@@ -792,9 +737,7 @@ class TestUsersEndpoint(unittest.TestCase):
         transaction.commit()
 
         payload = {"reset_token": token, "new_password": "new_password"}
-        response = self.api_session.post(
-            "/@users/noam/reset-password", json=payload
-        )
+        response = self.api_session.post("/@users/noam/reset-password", json=payload)
         transaction.commit()
 
         self.assertEqual(response.status_code, 200)
@@ -932,14 +875,10 @@ class TestUsersEndpoint(unittest.TestCase):
             id="folder",
             title="My Folder",
         )
-        api.user.grant_roles(
-            username="noam", roles=["Reviewer"], obj=self.folder
-        )
+        api.user.grant_roles(username="noam", roles=["Reviewer"], obj=self.folder)
         transaction.commit()
 
-        self.assertIn(
-            "Reviewer", api.user.get_roles(username="noam", obj=self.folder)
-        )
+        self.assertIn("Reviewer", api.user.get_roles(username="noam", obj=self.folder))
 
         response = self.api_session.delete(
             "/@users/noam", data={"delete_localroles": 0}
@@ -949,9 +888,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.status_code, 204)
         self.assertEqual(None, api.user.get(userid="noam"))
 
-        user_local_roles = self.folder.get_local_roles_for_userid(
-            userid="noam"
-        )
+        user_local_roles = self.folder.get_local_roles_for_userid(userid="noam")
         self.assertIn("Reviewer", user_local_roles)
 
     def test_delete_deletes_localroles(self):
