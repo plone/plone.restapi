@@ -1,0 +1,2 @@
+GET /plone/@relations?source=SomeUUID000000000000000000000001 HTTP/1.1
+Accept: application/json

@@ -1,0 +1,49 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@relations?source=SomeUUID000000000000000000000001&relation=comprisesComponentPart",
+    "items": {
+        "comprisesComponentPart": [
+            {
+                "source": {
+                    "@id": "http://localhost:55001/plone/document",
+                    "@type": "Document",
+                    "UID": "SomeUUID000000000000000000000001",
+                    "description": "",
+                    "review_state": "published",
+                    "title": "Test document 1"
+                },
+                "target": {
+                    "@id": "http://localhost:55001/plone/document-2",
+                    "@type": "Document",
+                    "UID": "SomeUUID000000000000000000000002",
+                    "description": "",
+                    "review_state": "published",
+                    "title": "Test document 2"
+                }
+            },
+            {
+                "source": {
+                    "@id": "http://localhost:55001/plone/document",
+                    "@type": "Document",
+                    "UID": "SomeUUID000000000000000000000001",
+                    "description": "",
+                    "review_state": "published",
+                    "title": "Test document 1"
+                },
+                "target": {
+                    "@id": "http://localhost:55001/plone/document-3",
+                    "@type": "Document",
+                    "UID": "SomeUUID000000000000000000000003",
+                    "description": "",
+                    "review_state": "private",
+                    "title": "Test document 3"
+                }
+            }
+        ]
+    },
+    "items_total": {
+        "comprisesComponentPart": 2
+    }
+}
