@@ -421,7 +421,8 @@ class TestDXFieldDeserializer(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.deserialize("test_relationchoice_field", 123456789)
         self.assertEqual(
-            str(cm.exception), "Could not resolve object for 123456789 (resolved by intid)"
+            str(cm.exception),
+            "Could not resolve object for 123456789 (resolved by intid)",
         )
         self.assertEqual(400, self.request.response.getStatus())
 
@@ -453,16 +454,15 @@ class TestDXFieldDeserializer(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.deserialize("test_relationchoice_field", "/doesnotexist")
         self.assertEqual(
-            str(cm.exception), "Could not resolve object for /doesnotexist (resolved by path)"
+            str(cm.exception),
+            "Could not resolve object for /doesnotexist (resolved by path)",
         )
         self.assertEqual(400, self.request.response.getStatus())
 
     def test_relationchoice_deserialization_from_wrong_type_raises(self):
         with self.assertRaises(ValueError) as cm:
             self.deserialize("test_relationchoice_field", None)
-        self.assertEqual(
-            str(cm.exception), "Could not resolve object for None"
-        )
+        self.assertEqual(str(cm.exception), "Could not resolve object for None")
         self.assertEqual(400, self.request.response.getStatus())
 
     def test_relationlist_deserialization_returns_list_of_documents(self):
