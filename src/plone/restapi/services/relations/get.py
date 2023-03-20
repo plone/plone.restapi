@@ -13,6 +13,14 @@ from zope.component import queryUtility
 from zope.globalrequest import getRequest
 from zope.intid.interfaces import IIntIds
 
+try:
+    from Products.CMFPlone.relationhelper import get_relations_stats
+except ImportError:
+    try:
+        from collective.relationhelpers.api import get_relations_stats
+    except ImportError:
+        get_relations_stats = None
+
 
 def make_summary(obj, request):
     """Add UID to metadata_fields."""
@@ -76,9 +84,12 @@ def get_relations(
 
 
 def relation_stats():
-    rels, broken = get_relations_stats()
-    results = {"relations": rels, "broken": broken}
-    return json_compatible(results)
+    if get_relations_stats is not None:
+        rels, broken = get_relations_stats()
+        results = {"relations": rels, "broken": broken}
+        return json_compatible(results)
+    else:
+        raise ImportError
 
 
 class GetRelations(Service):
@@ -108,8 +119,15 @@ class GetRelations(Service):
                     "@id"
                 ] = f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}'
                 return stats
-
-            except Unauthorized as exception:
+            except ImportError:
+                self.request.response.setStatus(501)
+                return dict(
+                    error=dict(
+                        type="ImportError",
+                        message="Relationhelpers not available. Install collective.relationhelpers or upgrade to Plone 6!",
+                    )
+                )
+            except Unauthorized:
                 return self.reply_no_content(status=401)
 
         catalog = getToolByName(self.context, "portal_catalog")
