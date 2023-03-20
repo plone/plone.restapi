@@ -1,7 +1,7 @@
 from plone.restapi.services import Service
 
 
-class RelationsPost(Service):
+class PostRelations(Service):
     """TODO Create new relations."""
 
     def reply(self):

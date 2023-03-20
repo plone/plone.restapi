@@ -5,19 +5,19 @@
 
   <plone:service
       method="GET"
+      accept="application/json,application/schema+json"
       factory=".get.GetRelations"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="zope2.View"
       name="@relations"
       />
 
-  <!-- <plone:service
+  <plone:service
       method="POST"
-      accept="application/json,application/schema+json"
       factory=".add.PostRelations"
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
-      name="@relations-catalog"
+      name="@relations"
       />
 
   <plone:service
@@ -26,6 +26,6 @@
       for="Products.CMFPlone.interfaces.IPloneSiteRoot"
       permission="cmf.ModifyPortalContent"
       name="@relations"
-      /> -->
+      />
 
 </configure>

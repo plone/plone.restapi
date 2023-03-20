@@ -1,7 +1,7 @@
 from plone.restapi.services import Service
 
 
-class RelationsDelete(Service):
+class DeleteRelations(Service):
     """TODO Delete relations."""
 
     def reply(self):

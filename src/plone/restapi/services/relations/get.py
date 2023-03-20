@@ -6,12 +6,15 @@ from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.relationhelper import get_relations_stats
 from zc.relation.interfaces import ICatalog
-from zExceptions import Unauthorized
+from zExceptions import BadRequest, Unauthorized
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component import queryUtility
 from zope.globalrequest import getRequest
 from zope.intid.interfaces import IIntIds
+from zope.interface import alsoProvides
+
+import plone.protect.interfaces
 
 try:
     from Products.CMFPlone.relationhelper import get_relations_stats
@@ -20,6 +23,14 @@ except ImportError:
         from collective.relationhelpers.api import get_relations_stats
     except ImportError:
         get_relations_stats = None
+
+try:
+    from Products.CMFPlone.relationhelper import rebuild_relations
+except ImportError:
+    try:
+        from collective.relationhelpers.api import rebuild_relations
+    except ImportError:
+        rebuild_relations = None
 
 
 def make_summary(obj, request):
@@ -111,9 +122,40 @@ class GetRelations(Service):
         self.sm = getSecurityManager()
 
     def reply(self):
+
+        # Disable CSRF protection
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
+
         source = self.request.get("source", None)
         target = self.request.get("target", None)
         relationship = self.request.get("relation", None)
+        rebuild = self.request.get("rebuild", False)
+
+        if rebuild:
+            if rebuild_relations:
+                flush = self.request.get("flush", None) and True or False
+                try:
+                    # print("Now rebuild relations. flush:", flush)
+                    rebuild_relations(flush_and_rebuild_intids=flush)
+                    # raise BadRequest("bä")
+                    return self.reply_no_content()
+                except Exception as e:
+                    self.request.response.setStatus(500)
+                    return dict(
+                        error=dict(
+                            # type="ImportError",
+                            message=str(e),
+                        )
+                    )
+            else:
+                self.request.response.setStatus(501)
+                return dict(
+                    error=dict(
+                        type="ImportError",
+                        message="Relationhelpers not available. Install collective.relationhelpers or upgrade to Plone 6!",
+                    )
+                )
 
         if not source and not target and not relationship:
             try:
