@@ -33,13 +33,13 @@ def make_summary(obj, request):
     return json_compatible(summary)
 
 
-# Loosely based on plone.api.relation.get
 def get_relations(
     source=None,
     target=None,
     relationship=None,
     request=None,
     unrestricted=False,
+    max=None,
 ):
     results = defaultdict(list)
     if request is None:
@@ -60,7 +60,10 @@ def get_relations(
     if not unrestricted:
         checkPermission = getSecurityManager().checkPermission
 
-    for relation in relation_catalog.findRelations(query):
+    relations = relation_catalog.findRelations(query)
+    if max:
+        relations = relations[: max - 1]
+    for relation in relations:
         if relation.isBroken():
             continue
 
