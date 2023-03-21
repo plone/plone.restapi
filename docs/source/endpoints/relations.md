@@ -44,8 +44,11 @@ The call without any parameters returns statistics on all existing relations the
 
 ## Querying relations
 
-A query of relations must provide one single source, one single target, or one single relationship.
-Combinations are allowed.
+<!-- TODO replace examples by examples querying path (not uid) -->
+
+A query of relations must provide one single source, one single target or one single relationship.
+Combinations are allowed.  
+source and target are UIDs or paths.
 
 Relations with sources or targets for which the user does not have the `View permission` are omitted from the results.
 
@@ -53,7 +56,7 @@ The relations are grouped by relation name, and the source and target are return
 
 ---
 
-Query all relations of the **relation type** `comprisesComponentPart`:
+Query relations of a **relation type**:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -64,7 +67,7 @@ Query all relations of the **relation type** `comprisesComponentPart`:
 :language: http
 ```
 
-Query all relations outgoing from a certain object: query all relations with object as **source**:
+Query relations of a **source** object:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -75,7 +78,7 @@ Query all relations outgoing from a certain object: query all relations with obj
 :language: http
 ```
 
-Query all relations outgoing from an object with the relation `comprisesComponentPart`:
+Query relations by relation name and source:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -86,7 +89,7 @@ Query all relations outgoing from an object with the relation `comprisesComponen
 :language: http
 ```
 
-List all relations from any source to a certain **target** object:
+Query relations to a target:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
