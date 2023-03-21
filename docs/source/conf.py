@@ -118,6 +118,7 @@ pygments_style = "sphinx"
 linkcheck_ignore = [
     r"https://coveralls.io/repos/github/plone/plone.restapi/badge.svg\?branch=master",  # plone.restapi
     r"https://github.com/plone/plone.restapi/blob/dde57b88e0f1b5f5e9f04e6a21865bc0dde55b1c/src/plone/restapi/services/content/add.py#L35-L61",  # plone.restapi
+    r"https://vhs-ehrenamtsportal.de/",  # cert fix in progress
 ]
 
 
