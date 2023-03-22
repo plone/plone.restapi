@@ -82,15 +82,17 @@ def get_relations(
             max = int(max)
         except TypeError as e:
             raise ValueError(str(e))
-    for count, relation in enumerate(relations):
-        if max and count > max:
-            break
+    count = 0
+    for relation in relations:
         if relation.isBroken():
             if not onlyBroken:
                 continue
         else:
             if onlyBroken:
                 continue
+        count += 1
+        if max and count > max:
+            break
 
         source_obj = relation.from_object
         target_obj = relation.to_object
@@ -256,4 +258,9 @@ class GetRelations(Service):
             "@id": f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}',
             "items": data,
             "items_total": dict([(el, len(data[el])) for el in data]),
+            # TODO If querying for relation type: Get StaticCatalogVocabulary query from schema field and include in response
+            "staticCatalogVocabularyQuery": {
+                "portal_type": ["Document", "Event"],
+                "review_state": "published",
+            },
         }
