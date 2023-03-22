@@ -12,6 +12,7 @@ from zope.component import queryUtility
 from zope.globalrequest import getRequest
 from zope.intid.interfaces import IIntIds
 from zope.interface import alsoProvides
+from zope.schema.interfaces import IVocabularyFactory
 
 import plone.protect.interfaces
 
@@ -139,6 +140,13 @@ def getBrokenRelationNames():
     return relations["broken"] and relations["broken"].keys() or []
 
 
+def getStaticCatalogVocabularyQuery(vocabularyFactoryName):
+    factory = queryUtility(IVocabularyFactory, vocabularyFactoryName)
+    if factory:
+        return factory().query
+    return
+
+
 class GetRelations(Service):
     """Get relations or stats
 
@@ -254,13 +262,15 @@ class GetRelations(Service):
             request=self.request,
         )
 
-        return {
+        result = {
             "@id": f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}',
             "items": data,
             "items_total": dict([(el, len(data[el])) for el in data]),
-            # TODO If querying for relation type: Get StaticCatalogVocabulary query from schema field and include in response
-            "staticCatalogVocabularyQuery": {
-                "portal_type": ["Document", "Event"],
-                "review_state": "published",
-            },
         }
+
+        if relationship:
+            # TODO If querying for relation type: Get StaticCatalogVocabulary query from schema field and include in response
+            scvq = getStaticCatalogVocabularyQuery(relationship)
+            result["staticCatalogVocabularyQuery"] = scvq
+
+        return result
