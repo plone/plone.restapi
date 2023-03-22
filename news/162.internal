@@ -1,0 +1,2 @@
+Fixed tests in combination with newer ``plone.app.z3cform``.
+[maurits]

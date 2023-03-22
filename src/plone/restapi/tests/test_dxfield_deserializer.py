@@ -421,7 +421,8 @@ class TestDXFieldDeserializer(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.deserialize("test_relationchoice_field", 123456789)
         self.assertEqual(
-            str(cm.exception), "Could not resolve object for intid=123456789"
+            str(cm.exception),
+            "Could not resolve object for 123456789 (resolved by intid)",
         )
         self.assertEqual(400, self.request.response.getStatus())
 
@@ -433,7 +434,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             )
         self.assertEqual(
             str(cm.exception),
-            "Could not resolve object for UID=ac12b24913cf45c6863937367aacc263",
+            "Could not resolve object for ac12b24913cf45c6863937367aacc263 (resolved by UID)",
         )
         self.assertEqual(400, self.request.response.getStatus())
 
@@ -445,7 +446,7 @@ class TestDXFieldDeserializer(unittest.TestCase):
             )
         self.assertEqual(
             str(cm.exception),
-            "Could not resolve object for URL=http://nohost/plone/doesnotexist",
+            "Could not resolve object for http://nohost/plone/doesnotexist (resolved by URL)",
         )
         self.assertEqual(400, self.request.response.getStatus())
 
@@ -453,8 +454,15 @@ class TestDXFieldDeserializer(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             self.deserialize("test_relationchoice_field", "/doesnotexist")
         self.assertEqual(
-            str(cm.exception), "Could not resolve object for path=/doesnotexist"
+            str(cm.exception),
+            "Could not resolve object for /doesnotexist (resolved by path)",
         )
+        self.assertEqual(400, self.request.response.getStatus())
+
+    def test_relationchoice_deserialization_from_wrong_type_raises(self):
+        with self.assertRaises(ValueError) as cm:
+            self.deserialize("test_relationchoice_field", None)
+        self.assertEqual(str(cm.exception), "Could not resolve object for None")
         self.assertEqual(400, self.request.response.getStatus())
 
     def test_relationlist_deserialization_returns_list_of_documents(self):
