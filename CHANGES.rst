@@ -8,6 +8,28 @@ Changelog
 
 .. towncrier release notes start
 
+8.35.3 (2023-03-23)
+-------------------
+
+Bug fixes:
+
+
+- Fix UnboundLocalError in RelationChoice deserializer. @davisagli (#1600)
+
+
+Internal:
+
+
+- Fixed tests in combination with newer ``plone.app.z3cform``.
+  [maurits] (#162)
+
+
+Documentation:
+
+
+- Update intersphinx_mapping for training @ksuess (#1596)
+
+
 8.35.2 (2023-03-10)
 -------------------
 
