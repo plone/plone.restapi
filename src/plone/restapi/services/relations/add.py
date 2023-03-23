@@ -1,8 +1,54 @@
+from plone.app.uuid.utils import uuidToObject
+from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from plone.restapi.services.relations import api_relation_create
+from zope.interface import alsoProvides
+import plone.protect.interfaces
+
+import json
 
 
 class PostRelations(Service):
-    """TODO Create new relations."""
+    """Create new relations."""
 
     def reply(self):
-        raise NotImplementedError()
+        # Disable CSRF protection
+        if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
+
+        if not api_relation_create:
+            raise NotImplementedError()
+
+        data = json_body(self.request)
+        print("data", data)
+
+        for relationdata in data["items"]:
+            source_obj = uuidToObject(relationdata["source"])
+            target_obj = uuidToObject(relationdata["target"])
+            if not source_obj or not target_obj:
+                self.request.response.setStatus(500)
+                return dict(
+                    error=dict(
+                        message=f"Relations could not be created for: {str(relationdata)}. At least one of the UID is invalid.",
+                    )
+                )
+
+        for relationdata in data["items"]:
+            source_obj = uuidToObject(relationdata["source"])
+            target_obj = uuidToObject(relationdata["target"])
+            try:
+                api_relation_create(
+                    source=source_obj,
+                    target=target_obj,
+                    relationship=relationdata["relation"],
+                )
+            except Exception as e:
+                print(str(e))
+                self.request.response.setStatus(500)
+                return dict(
+                    error=dict(
+                        message=f"Relations could not be created for: {str(relationdata)}. {str(e)}",
+                    )
+                )
+
+        return self.reply_no_content()
