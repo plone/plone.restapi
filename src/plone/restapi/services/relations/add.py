@@ -20,22 +20,15 @@ class PostRelations(Service):
             raise NotImplementedError()
 
         data = json_body(self.request)
-        print("data", data)
 
+        failed_relations = []
         for relationdata in data["items"]:
             source_obj = uuidToObject(relationdata["source"])
             target_obj = uuidToObject(relationdata["target"])
             if not source_obj or not target_obj:
-                self.request.response.setStatus(500)
-                return dict(
-                    error=dict(
-                        message=f"Relations could not be created for: {str(relationdata)}. At least one of the UID is invalid.",
-                    )
-                )
+                failed_relations.append(relationdata)
+                continue
 
-        for relationdata in data["items"]:
-            source_obj = uuidToObject(relationdata["source"])
-            target_obj = uuidToObject(relationdata["target"])
             try:
                 api_relation_create(
                     source=source_obj,
@@ -43,12 +36,13 @@ class PostRelations(Service):
                     relationship=relationdata["relation"],
                 )
             except Exception as e:
-                print(str(e))
-                self.request.response.setStatus(500)
-                return dict(
-                    error=dict(
-                        message=f"Relations could not be created for: {str(relationdata)}. {str(e)}",
-                    )
-                )
+                failed_relations.append(relationdata)
+                continue
+
+        if len(failed_relations) > 0:
+            return {
+                "type": "error",
+                "failed": failed_relations,
+            }
 
         return self.reply_no_content()
