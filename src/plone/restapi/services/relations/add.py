@@ -5,8 +5,6 @@ from plone.restapi.services.relations import api_relation_create
 from zope.interface import alsoProvides
 import plone.protect.interfaces
 
-import json
-
 
 class PostRelations(Service):
     """Create new relations."""
