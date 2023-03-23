@@ -3,6 +3,7 @@ from plone.app.testing import setRoles
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
+from plone.restapi.services.relations import api_relation_create
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.tests.test_documentation import TestDocumentationBase
 from plone.restapi.tests.test_documentation import save_request_and_response_for_docs
@@ -46,106 +47,109 @@ class TestRelationsDocumentation(TestDocumentationBase):
         super().tearDown()
 
     def test_documentation_relations_get(self):
-        api.relation.create(
-            source=self.doc1,
-            target=self.doc2,
-            relationship="comprisesComponentPart",
-        )
-        api.relation.create(
-            source=self.doc1,
-            target=self.doc3,
-            relationship="comprisesComponentPart",
-        )
-        api.relation.create(
-            source=self.doc1,
-            target=self.doc3,
-            relationship="relatedItems",
-        )
-        api.relation.create(
-            source=self.doc2,
-            target=self.doc1,
-            relationship="relatedItems",
-        )
-        transaction.commit()
+        if api_relation_create:
+            api_relation_create(
+                source=self.doc1,
+                target=self.doc2,
+                relationship="comprisesComponentPart",
+            )
+            api_relation_create(
+                source=self.doc1,
+                target=self.doc3,
+                relationship="comprisesComponentPart",
+            )
+            api_relation_create(
+                source=self.doc1,
+                target=self.doc3,
+                relationship="relatedItems",
+            )
+            api_relation_create(
+                source=self.doc2,
+                target=self.doc1,
+                relationship="relatedItems",
+            )
+            transaction.commit()
 
-        self.assertEqual(
-            set(
-                [
-                    relationvalue.to_object
-                    for relationvalue in api.relation.get(
-                        source=self.doc1, relationship="comprisesComponentPart"
-                    )
-                ]
-            ),
-            {self.doc2, self.doc3},
-        )
-        self.assertEqual(
-            set(
-                [
-                    relationvalue.to_object
-                    for relationvalue in api.relation.get(
-                        source=self.doc1, relationship="relatedItems"
-                    )
-                ]
-            ),
-            {self.doc3},
-        )
+            self.assertEqual(
+                set(
+                    [
+                        relationvalue.to_object
+                        for relationvalue in api.relation.get(
+                            source=self.doc1, relationship="comprisesComponentPart"
+                        )
+                    ]
+                ),
+                {self.doc2, self.doc3},
+            )
+            self.assertEqual(
+                set(
+                    [
+                        relationvalue.to_object
+                        for relationvalue in api.relation.get(
+                            source=self.doc1, relationship="relatedItems"
+                        )
+                    ]
+                ),
+                {self.doc3},
+            )
 
-        """
-        Stats of relations
-        """
-        response = self.api_session.get(
-            "/@relations",
-        )
-        save_request_and_response_for_docs("relations_catalog_get_stats", response)
+            """
+            Stats of relations
+            """
+            response = self.api_session.get(
+                "/@relations",
+            )
+            save_request_and_response_for_docs("relations_catalog_get_stats", response)
 
-        """
-        Query relations by UID
-        """
-        # relation name
-        response = self.api_session.get(
-            "/@relations?relation=comprisesComponentPart",
-        )
-        save_request_and_response_for_docs("relations_get_relationname", response)
+            """
+            Query relations by UID
+            """
+            # relation name
+            response = self.api_session.get(
+                "/@relations?relation=comprisesComponentPart",
+            )
+            save_request_and_response_for_docs("relations_get_relationname", response)
 
-        # (sub set of relations for Anonymous)
-        self.api_session.auth = None
-        response = self.api_session.get(
-            "/@relations?relation=comprisesComponentPart",
-        )
-        save_request_and_response_for_docs(
-            "relations_get_relationname_anonymous", response
-        )
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+            # (sub set of relations for Anonymous)
+            self.api_session.auth = None
+            response = self.api_session.get(
+                "/@relations?relation=comprisesComponentPart",
+            )
+            save_request_and_response_for_docs(
+                "relations_get_relationname_anonymous", response
+            )
+            self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-        # source
-        response = self.api_session.get(
-            f"/@relations?source={self.doc1.UID()}",
-        )
-        save_request_and_response_for_docs("relations_get_source", response)
+            # source
+            response = self.api_session.get(
+                f"/@relations?source={self.doc1.UID()}",
+            )
+            save_request_and_response_for_docs("relations_get_source", response)
 
-        # (sub set of relations for Anonymous)
-        self.api_session.auth = None
-        response = self.api_session.get(
-            f"/@relations?source={self.doc1.UID()}",
-        )
-        save_request_and_response_for_docs("relations_get_source_anonymous", response)
-        self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+            # (sub set of relations for Anonymous)
+            self.api_session.auth = None
+            response = self.api_session.get(
+                f"/@relations?source={self.doc1.UID()}",
+            )
+            save_request_and_response_for_docs(
+                "relations_get_source_anonymous", response
+            )
+            self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-        # source and relation
-        response = self.api_session.get(
-            f"/@relations?source={self.doc1.UID()}&relation=comprisesComponentPart",
-        )
-        save_request_and_response_for_docs(
-            "relations_get_source_and_relation", response
-        )
+            # source and relation
+            response = self.api_session.get(
+                f"/@relations?source={self.doc1.UID()}&relation=comprisesComponentPart",
+            )
+            save_request_and_response_for_docs(
+                "relations_get_source_and_relation", response
+            )
 
-        # target
-        response = self.api_session.get(
-            f"/@relations?target={self.doc1.UID()}",
-        )
-        save_request_and_response_for_docs("relations_get_target", response)
+            # target
+            response = self.api_session.get(
+                f"/@relations?target={self.doc1.UID()}",
+            )
+            save_request_and_response_for_docs("relations_get_target", response)
 
-        """
-        TODO Query relations by path
-        """
+            """
+            TODO Query relations by path
+            """

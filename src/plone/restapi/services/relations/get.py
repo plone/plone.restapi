@@ -4,6 +4,7 @@ from collections import defaultdict
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
+from plone.restapi.services.relations import api_relation_create
 from zc.relation.interfaces import ICatalog
 from zExceptions import Unauthorized
 from zope.component import getMultiAdapter
@@ -77,13 +78,13 @@ def get_relations(
     if not unrestricted:
         checkPermission = getSecurityManager().checkPermission
 
-    relations = relation_catalog.findRelations(query)
     if max:
         try:
             max = int(max)
         except TypeError as e:
             raise ValueError(str(e))
     count = 0
+    relations = relation_catalog.findRelations(query)
     for relation in relations:
         if relation.isBroken():
             if not onlyBroken:
@@ -257,7 +258,6 @@ class GetRelations(Service):
             source=source,
             target=target,
             relationship=relationship,
-            # unrestricted=True,
             max=max,
             request=self.request,
         )
@@ -269,8 +269,8 @@ class GetRelations(Service):
         }
 
         if relationship:
-            # TODO If querying for relation type: Get StaticCatalogVocabulary query from schema field and include in response
             scvq = getStaticCatalogVocabularyQuery(relationship)
             result["staticCatalogVocabularyQuery"] = scvq
+            result["readonly"] = not api_relation_create
 
         return result
