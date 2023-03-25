@@ -9,7 +9,6 @@ Content-Type: application/json
                 "source": {
                     "@id": "http://localhost:55001/plone/document",
                     "@type": "Document",
-                    "UID": "SomeUUID000000000000000000000001",
                     "description": "",
                     "review_state": "published",
                     "title": "Test document 1"
@@ -17,7 +16,6 @@ Content-Type: application/json
                 "target": {
                     "@id": "http://localhost:55001/plone/document-2",
                     "@type": "Document",
-                    "UID": "SomeUUID000000000000000000000002",
                     "description": "",
                     "review_state": "published",
                     "title": "Test document 2"
