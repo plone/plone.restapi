@@ -37,16 +37,10 @@ except ImportError:
 
 
 def make_summary(obj, request):
-    """Add UID to metadata_fields."""
-    metadata_fields = request.form.get("metadata_fields", []) or []
-    if not isinstance(metadata_fields, list):
-        metadata_fields = [metadata_fields]
-    metadata_fields.append("UID")
-    request.form["metadata_fields"] = list(set(metadata_fields))
     summary = getMultiAdapter((obj, request), ISerializeToJsonSummary)()
     summary = json_compatible(summary)
-    ("image_scales" in summary) and summary.pop("image_scales", None)
-    ("image_field" in summary) and summary.pop("image_field", None)
+    # ("image_scales" in summary) and summary.pop("image_scales", None)
+    # ("image_field" in summary) and summary.pop("image_field", None)
     return summary
 
 
