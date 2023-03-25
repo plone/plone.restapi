@@ -33,7 +33,7 @@ class PostRelations(Service):
                     target=target_obj,
                     relationship=relationdata["relation"],
                 )
-            except Exception as e:
+            except Exception:
                 failed_relations.append(relationdata)
                 continue
 
