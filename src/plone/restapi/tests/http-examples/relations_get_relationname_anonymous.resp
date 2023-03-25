@@ -27,5 +27,7 @@ Content-Type: application/json
     },
     "items_total": {
         "comprisesComponentPart": 1
-    }
+    },
+    "readonly": false,
+    "staticCatalogVocabularyQuery": null
 }

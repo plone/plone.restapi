@@ -45,5 +45,7 @@ Content-Type: application/json
     },
     "items_total": {
         "comprisesComponentPart": 2
-    }
+    },
+    "readonly": false,
+    "staticCatalogVocabularyQuery": null
 }
