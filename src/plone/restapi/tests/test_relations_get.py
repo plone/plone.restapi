@@ -46,7 +46,7 @@ class TestRelationsGet(unittest.TestCase):
 
         transaction.commit()
 
-    def test_get_content_include_items(self):
+    def test_get_stats(self):
         response = requests.get(
             self.portal.absolute_url() + "/@relations",
             headers={"Accept": "application/json"},
@@ -54,6 +54,7 @@ class TestRelationsGet(unittest.TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
+        self.assertIn("relations", response.json())
         self.assertIn("broken", response.json())
 
 
