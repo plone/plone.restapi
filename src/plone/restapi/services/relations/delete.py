@@ -79,7 +79,7 @@ class DeleteRelations(Service):
                 except Exception as e:
                     log.error(str(e))
                     log.error(
-                        f"Failed on deleting relation. source:{source}, target: {target}"
+                        f"Failed on deleting relation. source:{source_obj}, target: {target_obj}"
                     )
                     failed_relations.append(relationdata)
                     continue
@@ -102,7 +102,6 @@ class DeleteRelations(Service):
                 if not source_obj:
                     source_obj = api.content.get(path=source)
                 if not source_obj:
-                    log.error(str(e))
                     msg = f"Failed on deleting relations. Source not found: {source}"
                     log.error(msg)
                     return {
@@ -116,7 +115,6 @@ class DeleteRelations(Service):
                 if not target_obj:
                     target_obj = api.content.get(path=target)
                 if not target_obj:
-                    log.error(str(e))
                     msg = f"Failed on deleting relations. Target not found: {target}"
                     log.error(msg)
                     return {
