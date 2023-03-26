@@ -13,7 +13,6 @@ import unittest
 
 
 class TestFunctionalAuth(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -173,8 +172,17 @@ class TestFunctionalAuth(unittest.TestCase):
             200,
             "Wrong Plone login challenge status code",
         )
+        # The input differs slightly per Plone version.
         self.assertTrue(
-            '<input id="__ac_password" name="__ac_password"' in challenge_resp.text,
+            "<input" in challenge_resp.text,
+            "Plone login challenge response content missing input",
+        )
+        self.assertTrue(
+            'id="__ac_password"' in challenge_resp.text,
+            "Plone login challenge response content missing password field",
+        )
+        self.assertTrue(
+            'name="__ac_password"' in challenge_resp.text,
             "Plone login challenge response content missing password field",
         )
         login_resp = session.post(
