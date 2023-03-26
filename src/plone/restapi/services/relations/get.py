@@ -237,10 +237,8 @@ class GetRelations(Service):
         # Query relations
         if source:
             if source[0:1] == "/":
-                print("Find source by path")
                 source = api.content.get(path=source)
             else:
-                print("Find source by UID")
                 source = api.content.get(UID=source)
             if not source:
                 return self.reply_no_content(status=404)
