@@ -11,6 +11,32 @@ import logging
 log = logging.getLogger(__name__)
 
 
+def _delete_relation(source, target, relationship):
+    # Cases could be handled by plone.api.relations.
+    if source and relationship:
+        api_relation_delete(
+            source=source,
+            relationship=relationship,
+        )
+    elif target and relationship:
+        api_relation_delete(
+            target=target,
+            relationship=relationship,
+        )
+    elif source:
+        api_relation_delete(
+            source=source,
+        )
+    elif target:
+        api_relation_delete(
+            target=target,
+        )
+    else:
+        log.warning(
+            f"Do not call _delete_relation without source object or target object or relationship. source:{source}, target: {target}, relationship {relationship}"
+        )
+
+
 class DeleteRelations(Service):
     """Delete relations."""
 
@@ -23,32 +49,6 @@ class DeleteRelations(Service):
             raise NotImplementedError()
 
         data = json_body(self.request)
-
-        # TODO delete by relation name, source or target
-
-        # Delete all relations of the type `comprisesComponentPart` from any source to any target:
-
-        # ```
-        # DELETE /plone/@relations?relation=comprisesComponentPart
-        # ```
-
-        # Delete all relations outgoing from a certain item:
-
-        # ```
-        # DELETE /plone/@relations?source=uuid1
-        # ```
-
-        # Delete all relations to a certain item:
-
-        # ```
-        # DELETE /plone/@relations?target=uuid1
-        # ```
-
-        # Or delete the relations of type `comprisesComponentPart` to a target object:
-
-        # ```
-        # DELETE /plone/@relations?relation=comprisesComponentPart&target=uuid1
-        # ```
 
         failed_relations = []
         # List of single relations
@@ -95,7 +95,48 @@ class DeleteRelations(Service):
             relation = data.get("relation", None)
             source = data.get("source", None)
             target = data.get("target", None)
-            # TODO delete by …
-            pass
+
+            source_obj = None
+            if source:
+                source_obj = uuidToObject(source)
+                if not source_obj:
+                    source_obj = api.content.get(path=source)
+                if not source_obj:
+                    log.error(str(e))
+                    msg = f"Failed on deleting relations. Source not found: {source}"
+                    log.error(msg)
+                    return {
+                        "type": "error",
+                        "failed": msg,
+                    }
+
+            target_obj = None
+            if target:
+                target_obj = uuidToObject(target)
+                if not target_obj:
+                    target_obj = api.content.get(path=target)
+                if not target_obj:
+                    log.error(str(e))
+                    msg = f"Failed on deleting relations. Target not found: {target}"
+                    log.error(msg)
+                    return {
+                        "type": "error",
+                        "failed": msg,
+                    }
+
+            try:
+                _delete_relation(
+                    source=source_obj,
+                    target=target_obj,
+                    relationship=relation,
+                )
+            except Exception as e:
+                log.error(str(e))
+                msg = f"Failed on deleting relations. {str(e)} – source: {source}, target: {target}, relation: {relation}"
+                log.error(msg)
+                return {
+                    "type": "error",
+                    "failed": msg,
+                }
 
         return self.reply_no_content()

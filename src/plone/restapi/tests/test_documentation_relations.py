@@ -258,7 +258,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_del_failure", response)
 
-            # Delete by relation
+            # Delete by relation name
             response = self.api_session.delete(
                 "/@relations",
                 json={"relation": "comprisesComponentPart"},
