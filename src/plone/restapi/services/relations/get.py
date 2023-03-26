@@ -180,11 +180,10 @@ class GetRelations(Service):
         # Rebuild relations with or without regenerating intids
         if rebuild:
             if rebuild_relations:
-                flush = self.request.get("flush", None) and True or False
+                flush = self.request.get("flush", False) and True
                 try:
-                    # print("Now rebuild relations. flush:", flush)
+                    print("*** Now rebuild relations. flush:", flush)
                     rebuild_relations(flush_and_rebuild_intids=flush)
-                    # raise BadRequest("bä")
                     return self.reply_no_content()
                 except Exception as e:
                     self.request.response.setStatus(500)

@@ -1,3 +1,4 @@
+from plone import api
 from plone.app.uuid.utils import uuidToObject
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
@@ -22,7 +23,13 @@ class PostRelations(Service):
         failed_relations = []
         for relationdata in data["items"]:
             source_obj = uuidToObject(relationdata["source"])
+            if not source_obj:
+                source_obj = api.content.get(path=relationdata["source"])
             target_obj = uuidToObject(relationdata["target"])
+            if not target_obj:
+                target_obj = api.content.get(path=relationdata["target"])
+
+            # source or target not found by UID nor path
             if not source_obj or not target_obj:
                 failed_relations.append(relationdata)
                 continue

@@ -100,7 +100,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             save_request_and_response_for_docs("relations_catalog_get_stats", response)
 
             """
-            Query relations by UID
+            Query relations
             """
             # relation name
             response = self.api_session.get(
@@ -118,16 +118,22 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
-            # source
+            # source by path
+            response = self.api_session.get(
+                f"/@relations?source=/document",
+            )
+            save_request_and_response_for_docs("relations_get_source_by_path", response)
+
+            # source by uid
             response = self.api_session.get(
                 f"/@relations?source={self.doc1.UID()}",
             )
-            save_request_and_response_for_docs("relations_get_source", response)
+            save_request_and_response_for_docs("relations_get_source_by_uid", response)
 
             # (sub set of relations for Anonymous)
             self.api_session.auth = None
             response = self.api_session.get(
-                f"/@relations?source={self.doc1.UID()}",
+                f"/@relations?source=/document",
             )
             save_request_and_response_for_docs(
                 "relations_get_source_anonymous", response
@@ -136,7 +142,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
 
             # source and relation
             response = self.api_session.get(
-                f"/@relations?source={self.doc1.UID()}&relation=comprisesComponentPart",
+                f"/@relations?source=/document&relation=comprisesComponentPart",
             )
             save_request_and_response_for_docs(
                 "relations_get_source_and_relation", response
@@ -144,10 +150,138 @@ class TestRelationsDocumentation(TestDocumentationBase):
 
             # target
             response = self.api_session.get(
-                f"/@relations?target={self.doc1.UID()}",
+                f"/@relations?target=/document",
             )
             save_request_and_response_for_docs("relations_get_target", response)
 
             """
-            TODO Query relations by path
+            Add relations
             """
+            response = self.api_session.post(
+                "/@relations",
+                json={
+                    "items": [
+                        {
+                            "source": "/document",
+                            "target": "/document-2",
+                            "relation": "comprisesComponentPart",
+                        },
+                        {
+                            "source": "/document-3",
+                            "target": "/document-2",
+                            "relation": "comprisesComponentPart",
+                        },
+                    ]
+                },
+            )
+            save_request_and_response_for_docs("relations_post", response)
+
+            response = self.api_session.post(
+                "/@relations",
+                json={
+                    "items": [
+                        {
+                            "source": "/document",
+                            "target": "/document-does-not-exist",
+                            "relation": "comprisesComponentPart",
+                        }
+                    ]
+                },
+            )
+            save_request_and_response_for_docs("relations_post_failure", response)
+
+            response = self.api_session.post(
+                "/@relations",
+                json={
+                    "items": [
+                        {
+                            "source": self.doc1.UID(),
+                            "target": self.doc2.UID(),
+                            "relation": "comprisesComponentPart",
+                        },
+                        {
+                            "source": self.doc3.UID(),
+                            "target": self.doc2.UID(),
+                            "relation": "comprisesComponentPart",
+                        },
+                    ]
+                },
+            )
+            save_request_and_response_for_docs("relations_post_with_uid", response)
+
+            """
+            Delete relations
+            """
+
+            # Delete list by path
+            response = self.api_session.delete(
+                "/@relations",
+                json={
+                    "items": [
+                        {
+                            "source": "/document",
+                            "target": "/document-2",
+                            "relation": "comprisesComponentPart",
+                        }
+                    ]
+                },
+            )
+            save_request_and_response_for_docs("relations_del_path", response)
+
+            # Delete list by UID
+            response = self.api_session.delete(
+                "/@relations",
+                json={
+                    "items": [
+                        {
+                            "source": self.doc1.UID(),
+                            "target": self.doc3.UID(),
+                            "relation": "comprisesComponentPart",
+                        }
+                    ]
+                },
+            )
+            save_request_and_response_for_docs("relations_del_uid", response)
+
+            # Failing deletion
+            response = self.api_session.delete(
+                "/@relations",
+                json={
+                    "items": [
+                        {
+                            "source": "/document",
+                            "target": "/dont-know-this-doc",
+                            "relation": "comprisesComponentPart",
+                        }
+                    ]
+                },
+            )
+            save_request_and_response_for_docs("relations_del_failure", response)
+
+            # Delete by relation
+            response = self.api_session.delete(
+                "/@relations",
+                json={"relation": "comprisesComponentPart"},
+            )
+            save_request_and_response_for_docs("relations_del_relationname", response)
+
+            # Delete by source
+            response = self.api_session.delete(
+                "/@relations",
+                json={"source": "/document"},
+            )
+            save_request_and_response_for_docs("relations_del_source", response)
+
+            # Delete by target
+            response = self.api_session.delete(
+                "/@relations",
+                json={"target": "/document"},
+            )
+            save_request_and_response_for_docs("relations_del_target", response)
+
+            # Delete by combination of source and relation name
+            response = self.api_session.delete(
+                "/@relations",
+                json={"source": "/document", "relation": "comprisesComponentPart"},
+            )
+            save_request_and_response_for_docs("relations_del_combi", response)
