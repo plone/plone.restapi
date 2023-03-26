@@ -120,7 +120,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
 
             # source by path
             response = self.api_session.get(
-                f"/@relations?source=/document",
+                "/@relations?source=/document",
             )
             save_request_and_response_for_docs("relations_get_source_by_path", response)
 
@@ -133,7 +133,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             # (sub set of relations for Anonymous)
             self.api_session.auth = None
             response = self.api_session.get(
-                f"/@relations?source=/document",
+                "/@relations?source=/document",
             )
             save_request_and_response_for_docs(
                 "relations_get_source_anonymous", response
@@ -142,7 +142,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
 
             # source and relation
             response = self.api_session.get(
-                f"/@relations?source=/document&relation=comprisesComponentPart",
+                "/@relations?source=/document&relation=comprisesComponentPart",
             )
             save_request_and_response_for_docs(
                 "relations_get_source_and_relation", response
@@ -150,7 +150,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
 
             # target
             response = self.api_session.get(
-                f"/@relations?target=/document",
+                "/@relations?target=/document",
             )
             save_request_and_response_for_docs("relations_get_target", response)
 
