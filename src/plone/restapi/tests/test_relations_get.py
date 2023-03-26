@@ -10,6 +10,14 @@ import requests
 import transaction
 import unittest
 
+try:
+    from Products.CMFPlone.relationhelper import get_relations_stats
+except ImportError:
+    try:
+        from collective.relationhelpers.api import get_relations_stats
+    except ImportError:
+        get_relations_stats = None
+
 
 class TestRelationsGet(unittest.TestCase):
 
@@ -47,15 +55,16 @@ class TestRelationsGet(unittest.TestCase):
         transaction.commit()
 
     def test_get_stats(self):
-        response = requests.get(
-            self.portal.absolute_url() + "/@relations",
-            headers={"Accept": "application/json"},
-            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
-        )
+        if get_relations_stats:
+            response = requests.get(
+                self.portal.absolute_url() + "/@relations",
+                headers={"Accept": "application/json"},
+                auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            )
 
-        self.assertEqual(response.status_code, 200)
-        self.assertIn("relations", response.json())
-        self.assertIn("broken", response.json())
+            self.assertEqual(response.status_code, 200)
+            self.assertIn("relations", response.json())
+            self.assertIn("broken", response.json())
 
 
-# TODO test relations
+# TODO test relations (if get_relations_stats)
