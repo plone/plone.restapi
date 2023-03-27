@@ -1,12 +1,26 @@
 from plone import api
 from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
+from plone.app.vocabularies.catalog import StaticCatalogVocabulary
 from plone.restapi.services.relations import api_relation_create
+from plone.restapi.services.relations.get import getStaticCatalogVocabularyQuery
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.tests.test_documentation import TestDocumentationBase
 from plone.restapi.tests.test_documentation import save_request_and_response_for_docs
+from zope.component import provideUtility
+from zope.schema.interfaces import IVocabularyFactory
 
 import transaction
+
+
+def ExamplesVocabularyFactory(context=None):
+    return StaticCatalogVocabulary(
+        {
+            "portal_type": ["example"],
+            "review_state": "published",
+            "sort_on": "sortable_title",
+        }
+    )
 
 
 class TestRelationsDocumentation(TestDocumentationBase):
@@ -16,36 +30,32 @@ class TestRelationsDocumentation(TestDocumentationBase):
     def setUp(self):
         super().setUp()
 
-        self.doc1 = api.content.create(
-            container=self.portal,
-            type="Document",
-            id="document",
-            title="Test document 1",
-        )
-        api.content.transition(self.doc1, "publish")
-
-        self.doc2 = api.content.create(
-            container=self.portal,
-            type="Document",
-            id="document-2",
-            title="Test document 2",
-        )
-        api.content.transition(self.doc2, "publish")
-
-        self.doc3 = api.content.create(
-            container=self.portal,
-            type="Document",
-            id="document-3",
-            title="Test document 3",
-        )
-
-        transaction.commit()
-
-    def tearDown(self):
-        super().tearDown()
-
-    def test_documentation_relations_get(self):
         if api_relation_create:
+            self.doc1 = api.content.create(
+                container=self.portal,
+                type="Document",
+                id="document",
+                title="Test document 1",
+            )
+            api.content.transition(self.doc1, "publish")
+
+            self.doc2 = api.content.create(
+                container=self.portal,
+                type="Document",
+                id="document-2",
+                title="Test document 2",
+            )
+            api.content.transition(self.doc2, "publish")
+
+            self.doc3 = api.content.create(
+                container=self.portal,
+                type="Document",
+                id="document-3",
+                title="Test document 3",
+            )
+
+            transaction.commit()
+
             api_relation_create(
                 source=self.doc1,
                 target=self.doc2,
@@ -68,6 +78,11 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             transaction.commit()
 
+    def tearDown(self):
+        super().tearDown()
+
+    def test_documentation_GET_relations(self):
+        if api_relation_create:
             self.assertEqual(
                 set(
                     [
@@ -99,6 +114,13 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_catalog_get_stats", response)
 
+            self.assertEqual(response.status_code, 200)
+            resp = response.json()
+            self.assertIn("relations", resp)
+            self.assertIn("broken", resp)
+            self.assertEqual(resp["relations"]["comprisesComponentPart"], 2)
+            self.assertEqual(resp["broken"], {})
+
             """
             Query relations
             """
@@ -108,7 +130,11 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_get_relationname", response)
 
-            # (sub set of relations for Anonymous)
+            resp = response.json()
+            self.assertEqual(resp["items_total"]["comprisesComponentPart"], 2)
+            self.assertIn("UID", resp["items"]["comprisesComponentPart"][0]["source"])
+
+            # relation name (sub set of relations for Anonymous)
             self.api_session.auth = None
             response = self.api_session.get(
                 "/@relations?relation=comprisesComponentPart",
@@ -130,7 +156,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_get_source_by_uid", response)
 
-            # (sub set of relations for Anonymous)
+            # source by path (sub set of relations for Anonymous)
             self.api_session.auth = None
             response = self.api_session.get(
                 "/@relations?source=/document",
@@ -154,9 +180,44 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_get_target", response)
 
-            """
-            Add relations
-            """
+    def test_documentation_GET_relations_vocabulary(self):
+        if api_relation_create:
+            # Register named staticCatalogVocabulary
+            factory = ExamplesVocabularyFactory  # ()
+            provideUtility(
+                factory, provides=IVocabularyFactory, name="comprisesComponentPart"
+            )
+
+            # Query relations
+            response = self.api_session.get(
+                "/@relations?relation=comprisesComponentPart",
+            )
+
+            resp = response.json()
+            # Is the vocabulary registered?
+            self.assertEqual(
+                getStaticCatalogVocabularyQuery("comprisesComponentPart"),
+                {
+                    "portal_type": ["example"],
+                    "review_state": "published",
+                    "sort_on": "sortable_title",
+                },
+            )
+            # Is the vocabulary included in response?
+            self.assertEqual(
+                resp["staticCatalogVocabularyQuery"],
+                {
+                    "portal_type": ["example"],
+                    "review_state": "published",
+                    "sort_on": "sortable_title",
+                },
+            )
+
+    def test_documentation_POST_relations(self):
+        """
+        Add relations
+        """
+        if api_relation_create:
             response = self.api_session.post(
                 "/@relations",
                 json={
@@ -209,10 +270,11 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_post_with_uid", response)
 
-            """
-            Delete relations
-            """
-
+    def test_documentation_DEL_relations(self):
+        """
+        Delete relations
+        """
+        if api_relation_create:
             # Delete list by path
             response = self.api_session.delete(
                 "/@relations",
