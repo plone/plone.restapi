@@ -95,7 +95,7 @@ Query relations of a **source** object by UID:
 :language: http
 ```
 
-Query relations by relation name and source:
+Query relations by **relation name and source**:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -106,7 +106,7 @@ Query relations by relation name and source:
 :language: http
 ```
 
-Query relations to a target:
+Query relations to a **target**:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
