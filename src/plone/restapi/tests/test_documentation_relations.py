@@ -129,7 +129,6 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "/@relations?relation=comprisesComponentPart",
             )
             save_request_and_response_for_docs("relations_get_relationname", response)
-
             resp = response.json()
             self.assertEqual(resp["items_total"]["comprisesComponentPart"], 2)
             self.assertIn("UID", resp["items"]["comprisesComponentPart"][0]["source"])
@@ -142,6 +141,10 @@ class TestRelationsDocumentation(TestDocumentationBase):
             save_request_and_response_for_docs(
                 "relations_get_relationname_anonymous", response
             )
+            resp = response.json()
+            self.assertEqual(
+                resp["items_total"]["comprisesComponentPart"], 1
+            )  # not 2 as for admin
             self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
             # source by path
@@ -149,6 +152,10 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "/@relations?source=/document",
             )
             save_request_and_response_for_docs("relations_get_source_by_path", response)
+            resp = response.json()
+            self.assertEqual(
+                resp["items_total"], {"comprisesComponentPart": 2, "relatedItems": 1}
+            )
 
             # source by uid
             response = self.api_session.get(
@@ -163,6 +170,11 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs(
                 "relations_get_source_anonymous", response
+            )
+            resp = response.json()
+            self.assertEqual(
+                resp["items_total"],
+                {"comprisesComponentPart": 1},  # subset of results for manager
             )
             self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -179,6 +191,8 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "/@relations?target=/document",
             )
             save_request_and_response_for_docs("relations_get_target", response)
+            resp = response.json()
+            self.assertEqual(resp["items_total"], {"relatedItems": 1})
 
     def test_documentation_GET_relations_vocabulary(self):
         if api_relation_create:
@@ -250,6 +264,8 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 },
             )
             save_request_and_response_for_docs("relations_post_failure", response)
+            resp = response.json()
+            self.assertIn("failed", resp)
 
             response = self.api_session.post(
                 "/@relations",
@@ -274,6 +290,8 @@ class TestRelationsDocumentation(TestDocumentationBase):
         """
         Delete relations
         """
+        self.maxDiff = None
+
         if api_relation_create:
             # Delete list by path
             response = self.api_session.delete(
@@ -289,6 +307,15 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 },
             )
             save_request_and_response_for_docs("relations_del_path", response)
+
+            # Get relations and test that deleted relation is removed.
+            response = self.api_session.get(
+                "/@relations?relation=comprisesComponentPart",
+            )
+            resp = response.json()
+            self.assertEqual(
+                resp["items_total"], {"comprisesComponentPart": 1}
+            )  # insted of 2 before deletion
 
             # Delete list by UID
             response = self.api_session.delete(
@@ -319,6 +346,8 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 },
             )
             save_request_and_response_for_docs("relations_del_failure", response)
+            resp = response.json()
+            self.assertIn("failed", resp)
 
             # Delete by relation name
             response = self.api_session.delete(
