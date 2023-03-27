@@ -15,16 +15,18 @@ Plone's relations represent binary relationships between content objects.
 
 A single relation is defined by source, target and relation name.
 
-Relations are either defined by content type schema fields or are of type `linkintegrity` or `working-copy`.
+Relations are either defined by content type schema fields (`RelationChoice` or `RelationList`) or are of type `linkintegrity` or `working-copy`.
 
 Relations based on fields of a content type schema are editable by users.
 
-Relations `linkintegrity` (block text links to a Plone content object) and `working-copy` (working copy is enabled and the content object is a working copy) are not. They are created and deleted with links in text, respectively creating and deleting working copies.
+Relations `linkintegrity` (block text links to a Plone content object) and `working-copy` (working copy is enabled and the content object is a working copy) are not editable. They are created and deleted with links in text, respectively creating and deleting working copies.
 
 
 Relations can be created, queried, and deleted by interacting through the `@relations` endpoint on the site root.
 
-Reading relations with the `@relations` endpoint requires the `zope2.View` permission on the content object.  
+Querying relations with the `@relations` endpoint requires the `zope2.View` permission on the source object and target object.  
+Therefore results include relations if and only if source and target are accesible by the querying user.
+
 Creating and deleting relations requires the respective permission on the content object.
 
 
@@ -49,13 +51,14 @@ The call without any parameters returns statistics on all existing relations the
 
 ## Querying relations
 
-A query of relations must provide one single source, one single target or one single relationship.
+Relations can be queried by one single source, one single target or one single relation type.
 Combinations are allowed.  
-source and target are UIDs or paths.
+source and target are a UID or a path.
 
-Relations with sources or targets for which the user does not have the `View permission` are omitted from the results.
+Queried relations require `View permission` on source and target.
+Therefore relations without permission to access by current user are omitted from the results.
 
-The relations are grouped by relation name, and the source and target are returned using the summarizer format.
+The relations are grouped by relation name, source and target are provided in summarizer format.
 
 ---
 
@@ -119,13 +122,10 @@ Query relations to a target:
 
 ## Creating relations
 
-Create a relation of type `<relation name>` from source to target.
-Or create multiple relations in one POST request.
-
-Creating a relation requires a source, a target, and the name of the relation.  
+Relations can be created by providing a list of: source, target, and name of the relation.  
 Source and target can be UID or path.
 
-If the relation is based on a `RelationChoice` or `RelationList` field of the source object, the value of that field is created or updated accordingly.
+If the relation is based on a `RelationChoice` or `RelationList` field of the source object, the value of the field is created or updated accordingly.
 
 Add by **path**:
 
