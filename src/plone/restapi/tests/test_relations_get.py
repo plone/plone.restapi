@@ -19,7 +19,7 @@ except ImportError:
         get_relations_stats = None
 
 
-class TestRelationsGet(unittest.TestCase):
+class TestRelationsEndpoint(unittest.TestCase):
 
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
@@ -33,19 +33,19 @@ class TestRelationsGet(unittest.TestCase):
         self.doc1 = api.content.create(
             container=self.portal,
             type="Document",
-            id="doc1",
+            id="document",
             title="Document 1",
         )
         self.doc2 = api.content.create(
             container=self.portal,
             type="Document",
-            id="doc2",
+            id="document-2",
             title="Document 2",
         )
         self.doc3 = api.content.create(
             container=self.portal,
             type="Document",
-            id="doc3",
+            id="document-3",
             title="Document 3",
         )
         api.content.transition(self.doc1, "publish")
@@ -63,8 +63,21 @@ class TestRelationsGet(unittest.TestCase):
             )
 
             self.assertEqual(response.status_code, 200)
-            self.assertIn("relations", response.json())
-            self.assertIn("broken", response.json())
+            resp = response.json()
+            self.assertIn("relations", resp)
+            self.assertIn("broken", resp)
+
+    def test_query_relations(self):
+        if get_relations_stats:
+            response = requests.get(
+                self.portal.absolute_url() + "/@relations?source=/document",
+                headers={"Accept": "application/json"},
+                auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+            )
+
+            self.assertEqual(response.status_code, 200)
+            resp = response.json()
+            self.assertEqual(resp, {"foo": "bar"})
 
 
-# TODO test relations (if get_relations_stats)
+# TODO relations: tests (if get_relations_stats)
