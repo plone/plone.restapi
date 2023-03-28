@@ -31,6 +31,10 @@ def _delete_relation(source, target, relationship):
         api_relation_delete(
             target=target,
         )
+    elif relationship:
+        api_relation_delete(
+            relationship=relationship,
+        )
     else:
         log.warning(
             f"Do not call _delete_relation without source object or target object or relationship. source:{source}, target: {target}, relationship {relationship}"
