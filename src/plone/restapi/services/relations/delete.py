@@ -1,5 +1,4 @@
 from plone import api
-from plone.app.uuid.utils import uuidToObject
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from plone.restapi.services.relations import api_relation_delete
@@ -59,8 +58,8 @@ class DeleteRelations(Service):
         if data.get("items", None):
             for relationdata in data["items"]:
                 # UIDs provided?
-                source_obj = uuidToObject(relationdata["source"])
-                target_obj = uuidToObject(relationdata["target"])
+                source_obj = api.content.get(UID=relationdata["source"])
+                target_obj = api.content.get(UID=relationdata["target"])
                 # Or maybe path provided?
                 if not source_obj:
                     source_obj = api.content.get(path=relationdata["source"])
@@ -102,7 +101,7 @@ class DeleteRelations(Service):
 
             source_obj = None
             if source:
-                source_obj = uuidToObject(source)
+                source_obj = api.content.get(UID=relationdata["source"])
                 if not source_obj:
                     source_obj = api.content.get(path=source)
                 if not source_obj:
@@ -115,7 +114,7 @@ class DeleteRelations(Service):
 
             target_obj = None
             if target:
-                target_obj = uuidToObject(target)
+                target_obj = api.content.get(UID=relationdata["target"])
                 if not target_obj:
                     target_obj = api.content.get(path=target)
                 if not target_obj:
