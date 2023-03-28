@@ -5,6 +5,7 @@ from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from plone.restapi.services.relations import api_relation_create
+from plone.restapi.services.relations import plone_api_content_get
 from zc.relation.interfaces import ICatalog
 from zExceptions import Unauthorized
 from zope.component import getMultiAdapter
@@ -237,17 +238,17 @@ class GetRelations(Service):
         # Query relations
         if source:
             if source[0:1] == "/":
-                source = api.content.get(path=source)
+                source = plone_api_content_get(path=source)
             else:
-                source = api.content.get(UID=source)
+                source = plone_api_content_get(UID=source)
             if not source:
                 return self.reply_no_content(status=404)
 
         if target:
             if target[0:1] == "/":
-                target = api.content.get(path=target)
+                target = plone_api_content_get(path=target)
             else:
-                target = api.content.get(UID=target)
+                target = plone_api_content_get(UID=target)
             if not target:
                 return self.reply_no_content(status=404)
 

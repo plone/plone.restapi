@@ -325,7 +325,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
 
             save_request_and_response_for_docs("relations_post_anonyous", response)
 
-            # Get relations and test that no relation is created.
+            # Get relations and test that no relation is removed.
             response = self.api_session.get(
                 "/@relations?relation=comprisesComponentPart",
             )

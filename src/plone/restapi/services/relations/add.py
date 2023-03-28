@@ -1,6 +1,7 @@
 from plone import api
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from plone.restapi.services.relations import plone_api_content_get
 from plone.restapi.services.relations import api_relation_create
 from zope.interface import alsoProvides
 import plone.protect.interfaces
@@ -21,12 +22,12 @@ class PostRelations(Service):
 
         failed_relations = []
         for relationdata in data["items"]:
-            source_obj = api.content.get(UID=relationdata["source"])
+            source_obj = plone_api_content_get(UID=relationdata["source"])
             if not source_obj:
-                source_obj = api.content.get(path=relationdata["source"])
-            target_obj = api.content.get(UID=relationdata["target"])
+                source_obj = plone_api_content_get(path=relationdata["source"])
+            target_obj = plone_api_content_get(UID=relationdata["target"])
             if not target_obj:
-                target_obj = api.content.get(path=relationdata["target"])
+                target_obj = plone_api_content_get(path=relationdata["target"])
 
             # source or target not found by UID nor path
             if not source_obj or not target_obj:

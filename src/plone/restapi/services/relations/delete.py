@@ -1,6 +1,7 @@
 from plone import api
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from plone.restapi.services.relations import plone_api_content_get
 from plone.restapi.services.relations import api_relation_delete
 from zope.interface import alsoProvides
 import plone.protect.interfaces
@@ -58,13 +59,13 @@ class DeleteRelations(Service):
         if data.get("items", None):
             for relationdata in data["items"]:
                 # UIDs provided?
-                source_obj = api.content.get(UID=relationdata["source"])
-                target_obj = api.content.get(UID=relationdata["target"])
+                source_obj = plone_api_content_get(UID=relationdata["source"])
+                target_obj = plone_api_content_get(UID=relationdata["target"])
                 # Or maybe path provided?
                 if not source_obj:
-                    source_obj = api.content.get(path=relationdata["source"])
+                    source_obj = plone_api_content_get(path=relationdata["source"])
                 if not target_obj:
-                    target_obj = api.content.get(path=relationdata["target"])
+                    target_obj = plone_api_content_get(path=relationdata["target"])
                 # Source or target not found by UID or path
                 if not source_obj or not target_obj:
                     log.error(
@@ -101,9 +102,9 @@ class DeleteRelations(Service):
 
             source_obj = None
             if source:
-                source_obj = api.content.get(UID=relationdata["source"])
+                source_obj = plone_api_content_get(UID=source)
                 if not source_obj:
-                    source_obj = api.content.get(path=source)
+                    source_obj = plone_api_content_get(path=source)
                 if not source_obj:
                     msg = f"Failed on deleting relations. Source not found: {source}"
                     log.error(msg)
@@ -114,9 +115,9 @@ class DeleteRelations(Service):
 
             target_obj = None
             if target:
-                target_obj = api.content.get(UID=relationdata["target"])
+                target_obj = plone_api_content_get(UID=target)
                 if not target_obj:
-                    target_obj = api.content.get(path=target)
+                    target_obj = plone_api_content_get(path=target)
                 if not target_obj:
                     msg = f"Failed on deleting relations. Target not found: {target}"
                     log.error(msg)
