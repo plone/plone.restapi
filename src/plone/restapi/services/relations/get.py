@@ -1,4 +1,3 @@
-from plone import api
 from AccessControl.SecurityManagement import getSecurityManager
 from collections import defaultdict
 from plone.restapi.interfaces import ISerializeToJsonSummary

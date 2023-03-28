@@ -1,4 +1,3 @@
-from plone import api
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from plone.restapi.services.relations import plone_api_content_get
