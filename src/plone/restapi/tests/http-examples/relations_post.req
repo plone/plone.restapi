@@ -6,12 +6,12 @@ Content-Type: application/json
 {
     "items": [
         {
-            "relation": "comprisesComponentPart",
-            "source": "/document",
-            "target": "/document-2"
+            "relation": "relatedItems",
+            "source": "/document-3",
+            "target": "/document"
         },
         {
-            "relation": "comprisesComponentPart",
+            "relation": "relatedItems",
             "source": "/document-3",
             "target": "/document-2"
         }

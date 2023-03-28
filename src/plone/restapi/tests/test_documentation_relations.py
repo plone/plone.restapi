@@ -231,26 +231,41 @@ class TestRelationsDocumentation(TestDocumentationBase):
         """
         Add relations
         """
+        self.maxDiff = None
+
         if api_relation_create:
+            response = self.api_session.get(
+                "/@relations?relation=relatedItems",
+            )
+            resp = response.json()
+            self.assertEqual(resp["items_total"]["relatedItems"], 2)
+
             response = self.api_session.post(
                 "/@relations",
                 json={
                     "items": [
                         {
-                            "source": "/document",
-                            "target": "/document-2",
-                            "relation": "comprisesComponentPart",
+                            "source": "/document-3",
+                            "target": "/document",
+                            "relation": "relatedItems",
                         },
                         {
                             "source": "/document-3",
                             "target": "/document-2",
-                            "relation": "comprisesComponentPart",
+                            "relation": "relatedItems",
                         },
                     ]
                 },
             )
             save_request_and_response_for_docs("relations_post", response)
 
+            response = self.api_session.get(
+                "/@relations?relation=relatedItems",
+            )
+            resp = response.json()
+            self.assertEqual(resp["items_total"]["relatedItems"], 4)
+
+            # Failing addition
             response = self.api_session.post(
                 "/@relations",
                 json={
@@ -267,6 +282,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             resp = response.json()
             self.assertIn("failed", resp)
 
+            # Add by UID
             response = self.api_session.post(
                 "/@relations",
                 json={
@@ -286,7 +302,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_post_with_uid", response)
 
-    def test_documentation_DEL_relations(self):
+    def test_documentation_DEL_relations_list(self):
         """
         Delete relations
         """
@@ -315,7 +331,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             resp = response.json()
             self.assertEqual(
                 resp["items_total"], {"comprisesComponentPart": 1}
-            )  # insted of 2 before deletion
+            )  # instead of 2 before deletion
 
             # Delete list by UID
             response = self.api_session.delete(
@@ -331,6 +347,12 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 },
             )
             save_request_and_response_for_docs("relations_del_uid", response)
+
+            response = self.api_session.get(
+                "/@relations?relation=comprisesComponentPart",
+            )
+            resp = response.json()
+            self.assertEqual(resp["items_total"], {})  # instead of 1 before deletion
 
             # Failing deletion
             response = self.api_session.delete(
@@ -349,30 +371,106 @@ class TestRelationsDocumentation(TestDocumentationBase):
             resp = response.json()
             self.assertIn("failed", resp)
 
-            # Delete by relation name
-            response = self.api_session.delete(
-                "/@relations",
-                json={"relation": "comprisesComponentPart"},
-            )
-            save_request_and_response_for_docs("relations_del_relationname", response)
+    # Uncomment with https://github.com/plone/plone.api/pull/502 merged
+    # def test_documentation_DEL_relations_by_relationship(self):
+    #     """
+    #     Delete relations
+    #     """
+    #     self.maxDiff = None
 
-            # Delete by source
-            response = self.api_session.delete(
-                "/@relations",
-                json={"source": "/document"},
-            )
-            save_request_and_response_for_docs("relations_del_source", response)
+    #     if api_relation_create:
 
-            # Delete by target
-            response = self.api_session.delete(
+    #         response = self.api_session.get(
+    #             "/@relations?relation=relatedItems",
+    #         )
+    #         resp = response.json()
+    #         self.assertEqual(resp["items_total"]["relatedItems"], 2)
+
+    #         # Delete by relation name
+    #         response = self.api_session.delete(
+    #             "/@relations",
+    #             json={"relation": "relatedItems"},
+    #         )
+    #         save_request_and_response_for_docs("relations_del_relationname", response)
+
+    #         response = self.api_session.get(
+    #             "/@relations?relation=relatedItems",
+    #         )
+    #         resp = response.json()
+    #         self.assertEqual(resp["items_total"], {})
+
+    # Uncomment with https://github.com/plone/plone.api/pull/502 merged
+    # def test_documentation_DEL_relations_by_source_or_target(self):
+    #     """
+    #     Delete relations
+    #     """
+    #     self.maxDiff = None
+
+    #     if api_relation_create:
+    #         # Delete by source
+    #         response = self.api_session.delete(
+    #             "/@relations",
+    #             json={"source": "/document"},
+    #         )
+    #         save_request_and_response_for_docs("relations_del_source", response)
+
+    #         response = self.api_session.get(
+    #             "/@relations?relation=relatedItems",
+    #         )
+    #         resp = response.json()
+    #         self.assertEqual(resp["items_total"]["relatedItems"], 1)
+
+    #         # Delete by target
+    #         response = self.api_session.delete(
+    #             "/@relations",
+    #             json={"target": "/document"},
+    #         )
+    #         save_request_and_response_for_docs("relations_del_target", response)
+
+    #         response = self.api_session.get(
+    #             "/@relations?relation=relatedItems",
+    #         )
+    #         resp = response.json()
+    #         self.assertEqual(resp["items_total"], {})
+
+    def test_documentation_DEL_relations_bunch_combi(self):
+        """
+        Delete relations
+        """
+        self.maxDiff = None
+
+        if api_relation_create:
+            response = self.api_session.get(
                 "/@relations",
-                json={"target": "/document"},
             )
-            save_request_and_response_for_docs("relations_del_target", response)
+            resp = response.json()
+            self.assertEqual(resp["relations"]["comprisesComponentPart"], 2)
+            self.assertEqual(resp["relations"]["relatedItems"], 2)
 
             # Delete by combination of source and relation name
             response = self.api_session.delete(
                 "/@relations",
-                json={"source": "/document", "relation": "comprisesComponentPart"},
+                json={"source": "/document", "relation": "relatedItems"},
             )
             save_request_and_response_for_docs("relations_del_combi", response)
+
+            response = self.api_session.get(
+                "/@relations",
+            )
+            resp = response.json()
+            self.assertEqual(resp["relations"]["comprisesComponentPart"], 2)
+            self.assertEqual(resp["relations"]["relatedItems"], 1)
+
+            # Delete by combination of target and relation name
+            response = self.api_session.delete(
+                "/@relations",
+                json={"target": "/document", "relation": "relatedItems"},
+            )
+            save_request_and_response_for_docs("relations_del_combi", response)
+
+            response = self.api_session.get(
+                "/@relations",
+            )
+            resp = response.json()
+            self.assertEqual(resp["relations"]["comprisesComponentPart"], 2)
+            self.assertNotIn("relatedItems", resp["relations"])

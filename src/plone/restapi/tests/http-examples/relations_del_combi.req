@@ -4,6 +4,6 @@ Authorization: Basic YWRtaW46c2VjcmV0
 Content-Type: application/json
 
 {
-    "relation": "comprisesComponentPart",
-    "source": "/document"
+    "relation": "relatedItems",
+    "target": "/document"
 }
