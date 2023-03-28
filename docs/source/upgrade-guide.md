@@ -803,7 +803,7 @@ Changelog:
 
 Pull Request:
 
-- <https://github.com/plone/plone.restapi/pull/428>
+- `https://github.com/plone/plone.restapi/pull/428`
 
 
 ## Upgrading to `plone.restapi` 1.0a17
