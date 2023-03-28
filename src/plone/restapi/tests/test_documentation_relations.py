@@ -302,6 +302,36 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_post_with_uid", response)
 
+    def test_documentation_POST_relations_anonymous(self):
+        """
+        Post relations
+        """
+
+        if api_relation_create:
+            self.api_session.auth = None
+            response = self.api_session.post(
+                "/@relations",
+                json={
+                    "items": [
+                        {
+                            "source": "/document",
+                            "target": "/document-2",
+                            "relation": "comprisesComponentPart",
+                        }
+                    ]
+                },
+            )
+            self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+            save_request_and_response_for_docs("relations_post_anonyous", response)
+
+            # Get relations and test that no relation is removed.
+            response = self.api_session.get(
+                "/@relations?relation=comprisesComponentPart",
+            )
+            resp = response.json()
+            self.assertEqual(resp["items_total"], {"comprisesComponentPart": 2})
+
     def test_documentation_DEL_relations_list(self):
         """
         Delete relations
@@ -370,6 +400,36 @@ class TestRelationsDocumentation(TestDocumentationBase):
             save_request_and_response_for_docs("relations_del_failure", response)
             resp = response.json()
             self.assertIn("failed", resp)
+
+    def test_documentation_DEL_relations_list_anonymous(self):
+        """
+        Delete relations
+        """
+
+        if api_relation_create:
+            self.api_session.auth = None
+            response = self.api_session.delete(
+                "/@relations",
+                json={
+                    "items": [
+                        {
+                            "source": "/document",
+                            "target": "/document-2",
+                            "relation": "comprisesComponentPart",
+                        }
+                    ]
+                },
+            )
+            self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
+
+            save_request_and_response_for_docs("relations_del_anonymous", response)
+
+            # Get relations and test that no relation is removed.
+            response = self.api_session.get(
+                "/@relations?relation=comprisesComponentPart",
+            )
+            resp = response.json()
+            self.assertEqual(resp["items_total"], {"comprisesComponentPart": 2})
 
     # Uncomment with https://github.com/plone/plone.api/pull/502 merged
     # def test_documentation_DEL_relations_by_relationship(self):
