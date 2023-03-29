@@ -1,39 +1,39 @@
 try:
-    from plone.base.defaultpage import is_default_page
-    from plone.base.interfaces import IConstrainTypes
-    from plone.base.interfaces import IEditingSchema
-    from plone.base.interfaces import IImagingSchema
-    from plone.base.interfaces import ILanguage
-    from plone.base.interfaces import IMailSchema
-    from plone.base.interfaces import INavigationSchema
-    from plone.base.interfaces import INonInstallable
-    from plone.base.interfaces import INonStructuralFolder
-    from plone.base.interfaces import IPloneSiteRoot
-    from plone.base.interfaces import ISearchSchema
-    from plone.base.interfaces import ISecuritySchema
-    from plone.base.interfaces import ISelectableConstrainTypes
-    from plone.base.interfaces import ISiteSchema
-    from plone.base.utils import base_hasattr
-    from plone.base.utils import safe_callable
-    from plone.base.utils import safe_hasattr
-    from plone.base.utils import safe_text
+    from plone.base.defaultpage import is_default_page  # noqa: F401
+    from plone.base.interfaces import IConstrainTypes  # noqa: F401
+    from plone.base.interfaces import IEditingSchema  # noqa: F401
+    from plone.base.interfaces import IImagingSchema  # noqa: F401
+    from plone.base.interfaces import ILanguage  # noqa: F401
+    from plone.base.interfaces import IMailSchema  # noqa: F401
+    from plone.base.interfaces import INavigationSchema  # noqa: F401
+    from plone.base.interfaces import INonInstallable  # noqa: F401
+    from plone.base.interfaces import INonStructuralFolder  # noqa: F401
+    from plone.base.interfaces import IPloneSiteRoot  # noqa: F401
+    from plone.base.interfaces import ISearchSchema  # noqa: F401
+    from plone.base.interfaces import ISecuritySchema  # noqa: F401
+    from plone.base.interfaces import ISelectableConstrainTypes  # noqa: F401
+    from plone.base.interfaces import ISiteSchema  # noqa: F401
+    from plone.base.utils import base_hasattr  # noqa: F401
+    from plone.base.utils import safe_callable  # noqa: F401
+    from plone.base.utils import safe_hasattr  # noqa: F401
+    from plone.base.utils import safe_text  # noqa: F401
 except ImportError:
     # BBB Plone 5.2
-    from Products.CMFPlone.defaultpage import is_default_page
-    from Products.CMFPlone.interfaces import IConstrainTypes
-    from Products.CMFPlone.interfaces import IEditingSchema
-    from Products.CMFPlone.interfaces import IImagingSchema
-    from Products.CMFPlone.interfaces import ILanguage
-    from Products.CMFPlone.interfaces import IMailSchema
-    from Products.CMFPlone.interfaces import INavigationSchema
-    from Products.CMFPlone.interfaces import INonInstallable
-    from Products.CMFPlone.interfaces import INonStructuralFolder
-    from Products.CMFPlone.interfaces import IPloneSiteRoot
-    from Products.CMFPlone.interfaces import ISearchSchema
-    from Products.CMFPlone.interfaces import ISecuritySchema
-    from Products.CMFPlone.interfaces import ISelectableConstrainTypes
-    from Products.CMFPlone.interfaces import ISiteSchema
-    from Products.CMFPlone.utils import base_hasattr
-    from Products.CMFPlone.utils import safe_callable
-    from Products.CMFPlone.utils import safe_hasattr
-    from Products.CMFPlone.utils import safe_text
+    from Products.CMFPlone.defaultpage import is_default_page  # noqa: F401
+    from Products.CMFPlone.interfaces import IConstrainTypes  # noqa: F401
+    from Products.CMFPlone.interfaces import IEditingSchema  # noqa: F401
+    from Products.CMFPlone.interfaces import IImagingSchema  # noqa: F401
+    from Products.CMFPlone.interfaces import ILanguage  # noqa: F401
+    from Products.CMFPlone.interfaces import IMailSchema  # noqa: F401
+    from Products.CMFPlone.interfaces import INavigationSchema  # noqa: F401
+    from Products.CMFPlone.interfaces import INonInstallable  # noqa: F401
+    from Products.CMFPlone.interfaces import INonStructuralFolder  # noqa: F401
+    from Products.CMFPlone.interfaces import IPloneSiteRoot  # noqa: F401
+    from Products.CMFPlone.interfaces import ISearchSchema  # noqa: F401
+    from Products.CMFPlone.interfaces import ISecuritySchema  # noqa: F401
+    from Products.CMFPlone.interfaces import ISelectableConstrainTypes  # noqa: F401
+    from Products.CMFPlone.interfaces import ISiteSchema  # noqa: F401
+    from Products.CMFPlone.utils import base_hasattr  # noqa: F401
+    from Products.CMFPlone.utils import safe_callable  # noqa: F401
+    from Products.CMFPlone.utils import safe_hasattr  # noqa: F401
+    from Products.CMFPlone.utils import safe_text  # noqa: F401
