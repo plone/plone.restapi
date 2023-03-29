@@ -3,11 +3,11 @@ from AccessControl.Permissions import use_mailhost_services
 from email.mime.text import MIMEText
 from plone.registry.interfaces import IRegistry
 from plone.restapi import _
+from plone.restapi.bbb import IMailSchema
+from plone.restapi.bbb import ISiteSchema
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import ISiteSchema
-from Products.CMFPlone.interfaces.controlpanel import IMailSchema
 from smtplib import SMTPException
 from zope.component import getMultiAdapter
 from zope.component import getUtility

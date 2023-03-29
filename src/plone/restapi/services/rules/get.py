@@ -1,5 +1,5 @@
-from zope.component import queryMultiAdapter
 from plone.restapi.services import Service
+from zope.component import queryMultiAdapter
 
 
 class ContentRulesGet(Service):

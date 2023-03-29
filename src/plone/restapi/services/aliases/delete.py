@@ -1,12 +1,13 @@
+from plone.app.redirector.interfaces import IRedirectionStorage
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from plone.restapi.services.aliases.get import deroot_path
+from Products.CMFPlone.controlpanel.browser.redirects import absolutize_path
+from zope.component import getUtility
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-from zope.component import getUtility
-from plone.app.redirector.interfaces import IRedirectionStorage
-from Products.CMFPlone.controlpanel.browser.redirects import absolutize_path
-from plone.restapi.services.aliases.get import deroot_path
+
 import plone.protect.interfaces
 
 

@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.services import Service
-from plone.restapi.types.utils import get_jsonschema_properties
-from plone.restapi.types.utils import get_fieldsets
-from plone.restapi.types.utils import get_fieldset_infos
-from plone.restapi.types.utils import iter_fields
 from plone.app.users.browser.userdatapanel import getUserDataSchema
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.services import Service
+from plone.restapi.types.utils import get_fieldset_infos
+from plone.restapi.types.utils import get_fieldsets
+from plone.restapi.types.utils import get_jsonschema_properties
+from plone.restapi.types.utils import iter_fields
 
 
 class UserSchemaGet(Service):

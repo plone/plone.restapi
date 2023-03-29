@@ -4,6 +4,7 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.utils import getToolByName
 
+
 try:
     from Products.CMFPlone.controlpanel.browser.overview import OverviewControlPanel
 except ImportError:

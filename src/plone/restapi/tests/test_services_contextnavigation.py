@@ -180,7 +180,7 @@ class TestServicesContextNavigation(unittest.TestCase):
 
     def test_contextnavigation_with_no_params_gets_only_top_level_mixed_content(self):
         # Use default setting of Plone 6
-        from Products.CMFPlone.interfaces import INavigationSchema  # noqa
+        from plone.restapi.bbb import INavigationSchema  # noqa
 
         registry = getUtility(IRegistry)
         navigation_settings = registry.forInterface(INavigationSchema, prefix="plone")
@@ -841,7 +841,7 @@ class TestServicesContextNavigation(unittest.TestCase):
 
     def testStateFiltering(self):
         # Test Navtree workflow state filtering
-        from Products.CMFPlone.interfaces import INavigationSchema  # noqa
+        from plone.restapi.bbb import INavigationSchema  # noqa
 
         setRoles(self.portal, TEST_USER_ID, ["Manager"])
         registry = getUtility(IRegistry)
