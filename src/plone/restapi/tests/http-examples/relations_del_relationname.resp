@@ -2,6 +2,6 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "failed": "Failed on deleting relations. the bucket being iterated changed size \u2013 source: None, target: None, relation: relatedItems",
+    "failed": "Failed on deleting relations. 'the bucket being iterated changed size' \u2013 source: None, target: None, relation: relatedItems",
     "type": "error"
 }

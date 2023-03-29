@@ -133,7 +133,7 @@ class DeleteRelations(Service):
                 )
             except Exception as e:
                 log.error(str(e))
-                msg = f"Failed on deleting relations. {str(e)} – source: {source}, target: {target}, relation: {relation}"
+                msg = f"Failed on deleting relations. '{str(e)}' – source: {source}, target: {target}, relation: {relation}"
                 log.error(msg)
                 return {
                     "type": "error",

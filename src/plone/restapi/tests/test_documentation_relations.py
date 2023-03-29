@@ -431,7 +431,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             resp = response.json()
             self.assertEqual(resp["items_total"], {"comprisesComponentPart": 2})
 
-    # Uncomment with https://github.com/plone/plone.api/pull/502 merged
+    # # Uncomment with https://github.com/plone/plone.api/pull/502 merged
     # def test_documentation_DEL_relations_by_relationship(self):
     #     """
     #     Delete relations
@@ -459,7 +459,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
     #         resp = response.json()
     #         self.assertEqual(resp["items_total"], {})
 
-    # Uncomment with https://github.com/plone/plone.api/pull/502 merged
+    # # Uncomment with https://github.com/plone/plone.api/pull/502 merged
     # def test_documentation_DEL_relations_by_source_or_target(self):
     #     """
     #     Delete relations

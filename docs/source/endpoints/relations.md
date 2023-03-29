@@ -15,18 +15,15 @@ Plone's relations represent binary relationships between content objects.
 
 A single relation is defined by source, target and relation name.
 
-Relations are either defined by content type schema fields (`RelationChoice` or `RelationList`) or are of type `linkintegrity` or `working-copy`.
+Relations are either defined by content type schema fields (`RelationChoice` or `RelationList`) or are of type `isReferencing` or `iterate-working-copy`.
 
-Relations based on fields of a content type schema are editable by users.
-
-Relations `linkintegrity` (block text links to a Plone content object) and `working-copy` (working copy is enabled and the content object is a working copy) are not editable. They are created and deleted with links in text, respectively creating and deleting working copies.
+- Relations based on fields of a content type schema are editable by users.
+- Relations `isReferencing` (block text links to a Plone content object) and `iterate-working-copy` (working copy is enabled and the content object is a working copy) are not editable. They are created and deleted with links in text, respectively creating and deleting working copies.
 
 
 Relations can be created, queried, and deleted by interacting through the `@relations` endpoint on the site root.
-
-Querying relations with the `@relations` endpoint requires the `zope2.View` permission on the source object and target object.  
-Therefore results include relations if and only if source and target are accesible by the querying user.
-
+Querying relations with the `@relations` endpoint requires the `zope2.View` permission on the source object and target object.
+Therefore results include relations if and only if source and target are accessible by the querying user.
 Creating and deleting relations requires the respective permission on the content object.
 
 
@@ -213,9 +210,10 @@ by **UID**:
     :request: ../../../src/plone/restapi/tests/http-examples/relations_del_relationname.req
 ```
 
+<!-- Uncomment with https://github.com/plone/plone.api/pull/502 merged
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_del_relationname.resp
 :language: http
-```
+``` -->
 
 ### Delete relations by source
 
@@ -256,4 +254,3 @@ Delete relations by target UID or target path.
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_del_combi.resp
 :language: http
 ```
-
