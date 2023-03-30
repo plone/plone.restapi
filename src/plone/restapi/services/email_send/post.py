@@ -1,6 +1,5 @@
 from AccessControl import getSecurityManager
 from AccessControl.Permissions import use_mailhost_services
-from email.mime.text import MIMEText
 from plone.registry.interfaces import IRegistry
 from plone.restapi import _
 from plone.restapi.deserializer import json_body
@@ -14,6 +13,14 @@ from zope.component import getUtility
 from zope.interface import alsoProvides
 
 import plone
+
+try:
+    # Products.MailHost has a patch to fix quoted-printable soft line breaks.
+    # See https://github.com/zopefoundation/Products.MailHost/issues/35
+    from Products.MailHost.MailHost import message_from_string
+except ImportError:
+    # If the patch is ever removed, we fall back to the standard library.
+    from email import message_from_string
 
 
 class EmailSendPost(Service):
@@ -99,7 +106,7 @@ class EmailSendPost(Service):
 
         message = f"{message_intro} \n {message}"
 
-        message = MIMEText(message, "plain", encoding)
+        message = message_from_string(message)
         message["Reply-To"] = sender_from_address
         try:
             host.send(
