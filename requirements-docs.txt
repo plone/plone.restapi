@@ -13,3 +13,6 @@ sphinxcontrib.httpdomain
 sphinxcontrib.httpexample
 sphinxcontrib-spelling
 sphinxext-opengraph
+# pydata-sphinx-theme 0.13.2 breaks sphinx-book-theme
+# https://github.com/executablebooks/sphinx-book-theme/issues/711
+pydata-sphinx-theme<=0.13.1
