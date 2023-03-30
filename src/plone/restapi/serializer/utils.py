@@ -1,5 +1,4 @@
-from plone.app.uuid.utils import uuidToObject
-from plone.app.uuid.utils import uuidToURL
+from plone.app.uuid.utils import uuidToCatalogBrain
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from zope.component import queryMultiAdapter
 
@@ -10,6 +9,12 @@ RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
 
 
 def uid_to_url(path):
+    """turns a resolveuid url into a real url.
+
+    This uses the catalog first, but wake up the object to check if there is
+    an IObjectPrimaryFieldTarget on this object. If so, it will return the
+    target url instead of the object url.
+    """
     if not path:
         return ""
     match = RESOLVEUID_RE.match(path)
@@ -17,18 +22,19 @@ def uid_to_url(path):
         return path
 
     uid, suffix = match.groups()
-    href = uuidToURL(uid)
-    if href is None:
+    brain = uuidToCatalogBrain(uid)
+    if brain is None:
         return path
+    href = brain.getURL()
     if suffix:
-        href += "/" + suffix
-    else:
-        target_object = uuidToObject(uid)
-        if target_object:
-            adapter = queryMultiAdapter(
-                (target_object, target_object.REQUEST),
-                IObjectPrimaryFieldTarget,
-            )
-            if adapter and adapter():
-                href = adapter()
+        return href + "/" + suffix
+    target_object = brain._unrestrictedGetObject()
+    adapter = queryMultiAdapter(
+        (target_object, target_object.REQUEST),
+        IObjectPrimaryFieldTarget,
+    )
+    if adapter:
+        a_href = adapter()
+        if a_href:
+            return a_href
     return href
