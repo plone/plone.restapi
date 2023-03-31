@@ -15,7 +15,6 @@ from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
-from plone.restapi.serializer.working_copy import WorkingCopyInfo
 from plone.restapi.services.locking import lock_info
 from plone.restapi.serializer.utils import get_portal_type
 from plone.rfc822.interfaces import IPrimaryFieldInfo
@@ -30,6 +29,13 @@ from zope.interface import implementer
 from zope.interface import Interface
 from zope.schema import getFields
 from zope.security.interfaces import IPermission
+
+try:
+    # plone.app.iterate is by intend not part of Products.CMFPlone dependencies
+    # so we can not rely on having it
+    from plone.restapi.serializer.working_copy import WorkingCopyInfo
+except ImportError:
+    WorkingCopyInfo = None
 
 
 @implementer(ISerializeToJson)
@@ -80,8 +86,11 @@ class SerializeToJson:
         )
 
         # Insert working copy information
-        baseline, working_copy = WorkingCopyInfo(self.context).get_working_copy_info()
-        result.update({"working_copy": working_copy, "working_copy_of": baseline})
+        if WorkingCopyInfo is not None:
+            baseline, working_copy = WorkingCopyInfo(
+                self.context
+            ).get_working_copy_info()
+            result.update({"working_copy": working_copy, "working_copy_of": baseline})
 
         # Insert locking information
         result.update({"lock": lock_info(obj)})

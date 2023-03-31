@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "plone.restapi Glossary"
-  "property=og:description": "plone.restapi Glossary"
-  "property=og:title": "Glossary"
-  "keywords": "Plone, plone.restapi, REST, API, Glossary"
+myst:
+  html_meta:
+    "description": "plone.restapi Glossary"
+    "property=og:description": "plone.restapi Glossary"
+    "property=og:title": "Glossary"
+    "keywords": "Plone, plone.restapi, REST, API, Glossary"
 ---
 
 # Glossary
@@ -15,7 +16,7 @@ REST
     REST stands for [Representational State Transfer](https://en.wikipedia.org/wiki/Representational_state_transfer). It is a software architectural principle to create loosely coupled web APIs.
 
 workflow
-    A concept in Plone (and other CMS's) whereby a content object can be in a number of states (private, public, etcetera) and uses transitions to change between them (e.g. "publish", "approve", "reject", "retract"). See the [Plone docs on Workflow](https://docs.plone.org/working-with-content/collaboration-and-workflow/)
+    A concept in Plone (and other CMS's) whereby a content object can be in a number of states (private, public, etcetera) and uses transitions to change between them (e.g. "publish", "approve", "reject", "retract"). See the [Plone docs on Workflow](https://5.docs.plone.org/working-with-content/collaboration-and-workflow/)
 
 HTTP-Request
 HTTP Request
@@ -52,4 +53,11 @@ Authentication Method
 
 Basic Auth
     A simple {term}`Authentication Method` referenced in the {term}`Authorization Header` that needs to be provided by the server.
+
+content rule
+    A content rule will automatically perform an action when a certain event, known as a {term}`trigger`, takes place.
+
+trigger
+    A trigger is an event in Plone that causes the execution of defined actions.
+    Example triggers include object modified, user logged in, and workflow state changed.
 ```

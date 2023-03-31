@@ -32,7 +32,7 @@ copyright = "2014-%s, Plone Foundation" % thisyear
 # built documents.
 # TODO: There must be a way to import this from `setup.py` so we don't have to
 # update it manually for each release.
-version = "8.21.3.dev0"
+version = "8.24.2.dev0"
 release = version
 
 # -- General configuration ----------------------------------------------------
@@ -118,6 +118,7 @@ pygments_style = "sphinx"
 linkcheck_ignore = [
     r"https://coveralls.io/repos/github/plone/plone.restapi/badge.svg\?branch=master",  # plone.restapi
     r"https://github.com/plone/plone.restapi/blob/dde57b88e0f1b5f5e9f04e6a21865bc0dde55b1c/src/plone/restapi/services/content/add.py#L35-L61",  # plone.restapi
+    r"https://vhs-ehrenamtsportal.de/",  # cert fix in progress
 ]
 
 
@@ -134,9 +135,9 @@ linkcheck_ignore = [
 # https://www.sphinx-doc.org/en/master/usage/extensions/intersphinx.html
 #
 intersphinx_mapping = {
-    "plone": ("https://6.dev-docs.plone.org/", None),
+    "plone": ("https://6.docs.plone.org/", None),
     "python": ("https://docs.python.org/3/", None),
-    "training": ("https://training.plone.org/5/", None),
+    "training": ("https://training.plone.org/", None),
 }
 
 
@@ -144,7 +145,7 @@ intersphinx_mapping = {
 
 ogp_site_url = "https://plonerestapi.readthedocs.org/"
 ogp_description_length = 200
-ogp_image = "https://docs.plone.org/_static/Plone_logo_square.png"
+ogp_image = "https://6.docs.plone.org/_static/Plone_logo_square.png"
 ogp_site_name = "plone.restapi Documentation"
 ogp_type = "website"
 ogp_custom_meta_tags = [
@@ -172,7 +173,6 @@ html_css_files = ["custom.css", ("print.css", {"media": "print"})]
 todo_include_todos = True
 
 html_theme_options = {
-    "google_analytics_id": "G-P8NCTB796E",
     "path_to_docs": "docs",
     "repository_url": "https://github.com/plone/plone.restapi",
     "repository_branch": "master",
@@ -294,11 +294,11 @@ myst_enable_extensions = [
 ]
 
 myst_substitutions = {
-    "postman_basic_auth": "![](_static/img/postman_basic_auth.png)",
-    "postman_headers": "![](_static/img/postman_headers.png)",
-    "postman_request": "![](_static/img/postman_request.png)",
-    "postman_response": "![](_static/img/postman_response.png)",
-    "postman_retain_headers": "![](_static/img/postman_retain_headers.png)",
+    "postman_basic_auth": "![](../_static/img/postman_basic_auth.png)",
+    "postman_headers": "![](../_static/img/postman_headers.png)",
+    "postman_request": "![](../_static/img/postman_request.png)",
+    "postman_response": "![](../_static/img/postman_response.png)",
+    "postman_retain_headers": "![](../_static/img/postman_retain_headers.png)",
     "fawrench": '<span class="fa fa-wrench" style="font-size: 1.6em;"></span>',
 }
 

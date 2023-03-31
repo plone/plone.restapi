@@ -28,22 +28,21 @@ Getting started
 
 A live demo of Plone 6 with the latest ``plone.restapi`` release is available at:
 
-https://6.demo.plone.org/
+https://demo.plone.org/
 
 An example GET request on the portal root is the following.
 
 .. code-block:: shell
 
-    curl -i https://6.demo.plone.org/ -H "Accept: application/json"
+    curl -i https://demo.plone.org/++api++ -H "Accept: application/json"
 
 An example POST request to create a new document is the following.
 
 .. code-block:: shell
 
-    curl -i -X POST https://6.demo.plone.org/ \
+    curl -i -X POST https://demo.plone.org/++api++ \
         -H "Accept: application/json" \
         -H "Content-Type: application/json" \
-        -H "Authorization: Basic YOUR_BASIC_AUTH_TOKEN" \
         --data-raw '{"@type": "Document", "title": "My Document"}' \
         --user admin:admin
 

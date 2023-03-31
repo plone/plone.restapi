@@ -1,0 +1,67 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@controlpanels/content-rules/rule-3/action/6",
+    "@schema": {
+        "fieldsets": [
+            {
+                "behavior": "plone",
+                "fields": [
+                    "subject",
+                    "source",
+                    "recipients",
+                    "exclude_actor",
+                    "message"
+                ],
+                "id": "default",
+                "title": "Default"
+            }
+        ],
+        "properties": {
+            "exclude_actor": {
+                "description": "Do not send the email to the user that did the action.",
+                "factory": "Yes/No",
+                "title": "Exclude actor from recipients",
+                "type": "boolean"
+            },
+            "message": {
+                "description": "The message that you want to mail.",
+                "factory": "Text",
+                "title": "Message",
+                "type": "string",
+                "widget": "textarea"
+            },
+            "recipients": {
+                "description": "The email where you want to send this message. To send it to different email addresses, just separate them with ,",
+                "factory": "Text line (String)",
+                "title": "Email recipients",
+                "type": "string"
+            },
+            "source": {
+                "description": "The email address that sends the email. If no email is provided here, it will use the portal from address.",
+                "factory": "Text line (String)",
+                "title": "Email source",
+                "type": "string"
+            },
+            "subject": {
+                "description": "Subject of the message",
+                "factory": "Text line (String)",
+                "title": "Subject",
+                "type": "string"
+            }
+        },
+        "required": [
+            "subject",
+            "recipients",
+            "exclude_actor",
+            "message"
+        ],
+        "type": "object"
+    },
+    "exclude_actor": true,
+    "message": "And the message body",
+    "recipients": "test@somethingelse.com",
+    "source": "noreply@something.com",
+    "subject": "Email Subject"
+}

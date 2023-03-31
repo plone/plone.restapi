@@ -21,8 +21,9 @@ SPHINXAUTOBUILD = $(realpath bin/sphinx-autobuild)
 DOCS_DIR        = ./docs/source/
 BUILDDIR        = ../_build/
 ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(SPHINXOPTS) .
+VALEFILES       := $(shell find $(DOCS_DIR) -type f -name "*.md" -print)
 
-all: .installed.cfg
+all: build-plone-6.0
 
 # Add the following 'help' target to your Makefile
 # And add help text after each target name starting with '\#\#'
@@ -39,7 +40,6 @@ update: ## Update Make and Buildout
 	wget -O versions.cfg https://raw.githubusercontent.com/kitconcept/buildout/5.2/versions.cfg
 
 .installed.cfg: bin/buildout *.cfg
-	bin/buildout
 
 bin/buildout: bin/pip
 	bin/pip install --upgrade pip
@@ -76,6 +76,11 @@ build-plone-6.0-performance: .installed.cfg  ## Build Plone 6.0
 	bin/pip install -r requirements-6.0.txt
 	bin/buildout -c plone-6.0.x-performance.cfg
 
+.PHONY: start
+start: ## Start Plone Backend
+	@echo "$(GREEN)==> Start Plone Backend$(RESET)"
+	PYTHONWARNINGS=ignore bin/instance fg
+
 .PHONY: Test
 test:  ## Test
 	bin/test
@@ -92,14 +97,8 @@ test-performance-locust-querystring-search:
 test-performance-locust-querystring-search-ci:
 	bin/locust -f performance/querystring-search.py --host http://localhost:12345/Plone --users 100 --spawn-rate 5 --run-time 5m --headless --csv=example
 
-.PHONY: Code Analysis
-code-analysis:  ## Code Analysis
-	bin/code-analysis
-	if [ -f "bin/black" ]; then bin/black src/ --check ; fi
-
 .PHONY: Black
 black:  ## Black
-	bin/code-analysis
 	if [ -f "bin/black" ]; then bin/black src/ ; fi
 
 .PHONY: zpretty
@@ -137,17 +136,17 @@ docs-linkcheck: bin/python  ## Run linkcheck
 
 .PHONY: docs-linkcheckbroken
 docs-linkcheckbroken: bin/python  ## Run linkcheck and show only broken links
-	cd $(DOCS_DIR) && $(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck | GREP_COLORS='0;31' egrep -wi broken --color=auto || test $$? = 1
+	cd $(DOCS_DIR) && $(SPHINXBUILD) -b linkcheck $(ALLSPHINXOPTS) $(BUILDDIR)/linkcheck | GREP_COLORS='0;31' grep -wi "broken\|redirect" --color=auto  && if test $$? = 0; then exit 1; fi || test $$? = 1
 	@echo
 	@echo "Link check complete; look for any errors in the above output " \
 		"or in $(BUILDDIR)/linkcheck/ ."
 
-.PHONY: docs-spellcheck
-docs-spellcheck: bin/python  ## Run spellcheck
-	cd $(DOCS_DIR) && LANGUAGE=$* $(SPHINXBUILD) -b spelling -j 4 $(ALLSPHINXOPTS) $(BUILDDIR)/spellcheck/$*
+.PHONY: docs-vale
+docs-vale:  ## Run Vale style, grammar, and spell checks
+	vale sync
+	vale --no-wrap $(VALEFILES)
 	@echo
-	@echo "Spellcheck is finished; look for any errors in the above output " \
-		" or in $(BUILDDIR)/spellcheck/ ."
+	@echo "Vale is finished; look for any errors in the above output."
 
 .PHONY: netlify
 netlify:

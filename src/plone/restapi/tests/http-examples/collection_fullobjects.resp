@@ -6,6 +6,9 @@ Content-Type: application/json
         "actions": {
             "@id": "http://localhost:55001/plone/collection/@actions"
         },
+        "aliases": {
+            "@id": "http://localhost:55001/plone/collection/@aliases"
+        },
         "breadcrumbs": {
             "@id": "http://localhost:55001/plone/collection/@breadcrumbs"
         },
@@ -61,6 +64,9 @@ Content-Type: application/json
             "@components": {
                 "actions": {
                     "@id": "http://localhost:55001/plone/front-page/@actions"
+                },
+                "aliases": {
+                    "@id": "http://localhost:55001/plone/front-page/@aliases"
                 },
                 "breadcrumbs": {
                     "@id": "http://localhost:55001/plone/front-page/@breadcrumbs"
@@ -136,6 +142,9 @@ Content-Type: application/json
                 "actions": {
                     "@id": "http://localhost:55001/plone/doc1/@actions"
                 },
+                "aliases": {
+                    "@id": "http://localhost:55001/plone/doc1/@aliases"
+                },
                 "breadcrumbs": {
                     "@id": "http://localhost:55001/plone/doc1/@breadcrumbs"
                 },
@@ -209,6 +218,9 @@ Content-Type: application/json
             "@components": {
                 "actions": {
                     "@id": "http://localhost:55001/plone/doc2/@actions"
+                },
+                "aliases": {
+                    "@id": "http://localhost:55001/plone/doc2/@aliases"
                 },
                 "breadcrumbs": {
                     "@id": "http://localhost:55001/plone/doc2/@breadcrumbs"

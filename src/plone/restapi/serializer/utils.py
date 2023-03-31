@@ -29,7 +29,8 @@ def uid_to_url(path):
         target_object = uuidToObject(uid)
         if target_object:
             adapter = queryMultiAdapter(
-                (target_object, target_object.REQUEST), IObjectPrimaryFieldTarget
+                (target_object, target_object.REQUEST),
+                IObjectPrimaryFieldTarget,
             )
             if adapter and adapter():
                 href = adapter()

@@ -68,11 +68,14 @@ class ZCatalogCompatibleQueryAdapter:
     """
 
     global_query_params = {
-        "sort_on": str,
-        "sort_order": str,
         "sort_limit": int,
         "b_start": int,
         "b_size": int,
+    }
+
+    multiple_types_global_query_params = {
+        "sort_on": {list: list, tuple: list, str: str},
+        "sort_order": {list: list, tuple: list, str: str},
     }
 
     ignore_query_params = ["metadata_fields"]
@@ -89,11 +92,22 @@ class ZCatalogCompatibleQueryAdapter:
         _type = self.global_query_params[idx_name]
         return _type(idx_query)
 
+    def parse_multiple_types_param(self, idx_name, idx_query):
+        """these indexes can contain single str values or a list of strings"""
+        possible_values = self.multiple_types_global_query_params[idx_name]
+        for current_value, future_value in possible_values.items():
+            if isinstance(idx_query, current_value):
+                return future_value(idx_query)
+
     def __call__(self, query):
         for idx_name, idx_query in query.items():
             if idx_name in self.global_query_params:
-                # It's a query-wide parameter like 'sort_on'
+                # It's a query-wide parameter like 'sort_limit'
                 query[idx_name] = self.parse_query_param(idx_name, idx_query)
+                continue
+
+            if idx_name in self.multiple_types_global_query_params:
+                query[idx_name] = self.parse_multiple_types_param(idx_name, idx_query)
                 continue
 
             # Then check for each index present in the query if there is an

@@ -30,16 +30,18 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
         "plone.ownership": false,
         "plone.publication": false,
         "plone.relateditems": false,
-        "plone.restapi.tests.dxtypes.ITestAnnotationsBehavior": false,
-        "plone.restapi.tests.dxtypes.ITestBehavior": false,
         "plone.richtext": false,
         "plone.shortname": false,
         "plone.tableofcontents": false,
+        "plone.textindexer": false,
         "plone.thumb_icon": false,
         "plone.translatable": false,
         "plone.versioning": false,
+        "tests.restapi.test_annotations_behavior": false,
+        "tests.restapi.test_behavior": false,
         "title": "My Custom Content Type",
-        "volto.blocks": false
+        "volto.blocks": false,
+        "volto.blocks.editable.layout": false
     },
     "description": "A custom content-type",
     "group": "Content",
@@ -63,6 +65,7 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
                     "plone.allowdiscussion",
                     "plone.basic",
                     "volto.blocks",
+                    "volto.blocks.editable.layout",
                     "plone.categorization",
                     "plone.collection",
                     "plone.publication",
@@ -74,6 +77,7 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
                     "plone.eventrecurrence",
                     "plone.excludefromnavigation",
                     "plone.constraintypes",
+                    "plone.textindexer",
                     "plone.leadimage",
                     "plone.locking",
                     "plone.translatable",
@@ -87,8 +91,8 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
                     "plone.richtext",
                     "plone.shortname",
                     "plone.tableofcontents",
-                    "plone.restapi.tests.dxtypes.ITestAnnotationsBehavior",
-                    "plone.restapi.tests.dxtypes.ITestBehavior",
+                    "tests.restapi.test_annotations_behavior",
+                    "tests.restapi.test_behavior",
                     "plone.thumb_icon",
                     "plone.versioning"
                 ],
@@ -287,18 +291,6 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
                 "title": "Related items",
                 "type": "boolean"
             },
-            "plone.restapi.tests.dxtypes.ITestAnnotationsBehavior": {
-                "description": "Schema-only behavior using annotations",
-                "factory": "Yes/No",
-                "title": "Test Annotations Behavior",
-                "type": "boolean"
-            },
-            "plone.restapi.tests.dxtypes.ITestBehavior": {
-                "description": "Schema-only behavior using attributes",
-                "factory": "Yes/No",
-                "title": "Test Behavior",
-                "type": "boolean"
-            },
             "plone.richtext": {
                 "description": "Adds richtext behavior",
                 "factory": "Yes/No",
@@ -315,6 +307,12 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
                 "description": "Adds a table of contents",
                 "factory": "Yes/No",
                 "title": "Table of contents",
+                "type": "boolean"
+            },
+            "plone.textindexer": {
+                "description": "Enables the enhanced full-text indexing for a content type ('plone.textindexer'). If a field is marked 'searchable', its content gets added to the 'SearchableText' index in the catalog.",
+                "factory": "Yes/No",
+                "title": "Full-Text Indexing",
                 "type": "boolean"
             },
             "plone.thumb_icon": {
@@ -335,6 +333,18 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
                 "title": "Versioning",
                 "type": "boolean"
             },
+            "tests.restapi.test_annotations_behavior": {
+                "description": "Schema-only behavior using annotations",
+                "factory": "Yes/No",
+                "title": "Test Annotations Behavior",
+                "type": "boolean"
+            },
+            "tests.restapi.test_behavior": {
+                "description": "Schema-only behavior using attributes",
+                "factory": "Yes/No",
+                "title": "Test Behavior",
+                "type": "boolean"
+            },
             "title": {
                 "description": "",
                 "factory": "Text line (String)",
@@ -345,6 +355,12 @@ Location: http://localhost:55001/plone/@controlpanels/dexterity-types/my_custom_
                 "description": "Enables Volto Blocks support",
                 "factory": "Yes/No",
                 "title": "Blocks",
+                "type": "boolean"
+            },
+            "volto.blocks.editable.layout": {
+                "description": "Enables Volto Blocks (editable layout) support",
+                "factory": "Yes/No",
+                "title": "Blocks (Editable Layout)",
                 "type": "boolean"
             }
         },

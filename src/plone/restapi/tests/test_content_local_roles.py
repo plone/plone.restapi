@@ -332,7 +332,7 @@ class TestFolderCreate(unittest.TestCase):
         api.user.create(
             username="peter",
             email="peter@example.org",
-            password="secret",
+            password=TEST_USER_PASSWORD,
             roles=("Member",),
         )
 

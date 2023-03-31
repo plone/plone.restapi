@@ -5,6 +5,13 @@ Content-Type: application/json
     "@id": "http://localhost:55001/plone/@search",
     "items": [
         {
+            "@id": "http://localhost:55001/plone",
+            "@type": "Plone Site",
+            "description": "",
+            "review_state": null,
+            "title": "Plone site"
+        },
+        {
             "@id": "http://localhost:55001/plone/front-page",
             "@type": "Document",
             "description": "Congratulations! You have successfully installed Plone.",
@@ -12,5 +19,5 @@ Content-Type: application/json
             "title": "Welcome to Plone"
         }
     ],
-    "items_total": 1
+    "items_total": 2
 }

@@ -1,0 +1,39 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "@id": "http://localhost:55001/plone/@controlpanels/content-rules",
+    "data": {},
+    "group": "Content",
+    "items": [
+        [
+            {
+                "@id": "http://localhost:55001/plone/@controlpanels/content-rules/rule-1",
+                "assigned": true,
+                "description": "First rule added in the testing setup",
+                "enabled": true,
+                "id": "rule-1",
+                "row_class": "trigger-icommentaddedevent state-enabled assignment-assigned",
+                "title": "First test rule",
+                "trigger": "Comment added"
+            },
+            {
+                "@id": "http://localhost:55001/plone/@controlpanels/content-rules/rule-2",
+                "assigned": true,
+                "description": "Second rule added in the testing setup",
+                "enabled": true,
+                "id": "rule-2",
+                "row_class": "trigger-icommentaddedevent state-enabled assignment-assigned",
+                "title": "Second test rule",
+                "trigger": "Comment added"
+            }
+        ]
+    ],
+    "schema": {
+        "fieldsets": [],
+        "properties": {},
+        "required": [],
+        "type": "object"
+    },
+    "title": "Content Rules"
+}

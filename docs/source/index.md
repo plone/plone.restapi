@@ -1,9 +1,10 @@
 ---
-html_meta:
-  "description": "A RESTful API for Plone."
-  "property=og:description": "A RESTful API for Plone."
-  "property=og:title": "REST API"
-  "keywords": "Plone, plone.restapi, REST, API"
+myst:
+  html_meta:
+    "description": "A RESTful API for Plone."
+    "property=og:description": "A RESTful API for Plone."
+    "property=og:title": "REST API"
+    "keywords": "Plone, plone.restapi, REST, API"
 ---
 
 % plone.restapi documentation master file, created by
@@ -20,49 +21,10 @@ A RESTful API for Plone.
 :maxdepth: 2
 
 introduction
-authentication
-exploring
-content
-blocks
-history
-batching
-addons
-comments
-copymove
-expansion
-actions
-workflow
-workingcopy
-locking
-sharing
-registry
-types
-types-schema
-users
-groups
-principals
-roles
-breadcrumbs
-navigation
-contextnavigation
-serialization
-searching
-tusupload
-vocabularies
-controlpanels
-tiles
-querystring
-querystringsearch
-customization
-conventions
-translations
-email-send
-i18n
-email-notification
-system
-database
+usage/index
+endpoints/index
 upgrade-guide
-contributing
+contributing/index
 ```
 
 ```{eval-rst}
@@ -74,7 +36,7 @@ contributing
 
 ```{toctree}
 http-status-codes
-glossary
+/glossary
 ```
 
 

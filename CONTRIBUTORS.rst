@@ -37,4 +37,5 @@
 - Elio Schmutz
 - Gauthier Bastien
 - Katja Süss
+- Jon Pentland
   

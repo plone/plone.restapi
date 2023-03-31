@@ -55,6 +55,13 @@
       name="dexterity-types"
       />
 
+  <!-- Rules Controlpanel -->
+  <adapter
+      factory="plone.restapi.controlpanels.rules.ContentRulesControlpanel"
+      provides="plone.restapi.controlpanels.interfaces.IContentRulesControlpanel"
+      name="content-rules"
+      />
+
   <configure zcml:condition="have plone-5">
 
     <!-- General -->
