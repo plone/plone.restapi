@@ -11,4 +11,10 @@
       name="@site"
       />
 
+  <adapter
+      factory=".get.Site"
+      name="site"
+      />
+
+
 </configure>

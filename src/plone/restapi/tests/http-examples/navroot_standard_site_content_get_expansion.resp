@@ -23,6 +23,9 @@ Content-Type: application/json
             "title": "Plone site",
             "url": "http://localhost:55001/plone"
         },
+        "site": {
+            "@id": "http://localhost:55001/plone/front-page/@site"
+        },
         "types": {
             "@id": "http://localhost:55001/plone/front-page/@types"
         },
