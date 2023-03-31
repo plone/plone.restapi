@@ -16,7 +16,6 @@ HAS_PLONE_6 = getattr(
 
 
 class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -45,7 +44,6 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
 
 
 class TestSiteRootDeserializer(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):

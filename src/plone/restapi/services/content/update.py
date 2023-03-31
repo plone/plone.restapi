@@ -10,7 +10,6 @@ class ContentPatch(Service):
     """Updates an existing content object."""
 
     def reply(self):
-
         if is_locked(self.context, self.request):
             self.request.response.setStatus(403)
             return dict(error=dict(type="Forbidden", message="Resource is locked."))

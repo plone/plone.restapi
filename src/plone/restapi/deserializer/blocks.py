@@ -162,7 +162,6 @@ class HTMLBlockDeserializerBase:
         self.request = request
 
     def __call__(self, block):
-
         portal_transforms = api.portal.get_tool(name="portal_transforms")
         raw_html = block.get("html", "")
         data = portal_transforms.convertTo(
@@ -301,7 +300,6 @@ class SlateBlockDeserializerRoot(SlateBlockDeserializerBase):
 
 class SlateTableBlockTransformer(SlateBlockTransformer):
     def __call__(self, block):
-
         rows = block.get("table", {}).get("rows", [])
         for row in rows:
             cells = row.get("cells", [])

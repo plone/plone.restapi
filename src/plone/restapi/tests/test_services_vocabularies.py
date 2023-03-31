@@ -64,7 +64,6 @@ def test_context_vocabulary_factory(context):
 
 
 class TestVocabularyEndpoint(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     maxDiff = None

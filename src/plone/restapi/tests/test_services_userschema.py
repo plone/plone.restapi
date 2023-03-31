@@ -21,7 +21,6 @@ else:
 
 @unittest.skipIf(not PLONE5, "Just Plone 5 currently.")
 class TestUserSchemaEndpoint(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):

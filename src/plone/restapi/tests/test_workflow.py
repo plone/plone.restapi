@@ -18,7 +18,6 @@ from ZPublisher.pubevents import PubStart
 
 
 class TestWorkflowInfo(TestCase):
-
     layer = PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
 
     def setUp(self):
@@ -123,7 +122,6 @@ class TestWorkflowInfo(TestCase):
 
 
 class TestWorkflowTransition(TestCase):
-
     layer = PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING
 
     def setUp(self):

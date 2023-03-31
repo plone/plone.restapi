@@ -162,54 +162,63 @@ Content-Type: application/json
         "types": [
             {
                 "@id": "http://localhost:55001/plone/@types/Collection",
+                "@type": "Collection",
                 "addable": false,
                 "immediately_addable": false,
                 "title": "Collection"
             },
             {
                 "@id": "http://localhost:55001/plone/@types/DXTestDocument",
+                "@type": "DXTestDocument",
                 "addable": false,
                 "immediately_addable": false,
                 "title": "DX Test Document"
             },
             {
                 "@id": "http://localhost:55001/plone/@types/Event",
+                "@type": "Event",
                 "addable": false,
                 "immediately_addable": false,
                 "title": "Event"
             },
             {
                 "@id": "http://localhost:55001/plone/@types/File",
+                "@type": "File",
                 "addable": false,
                 "immediately_addable": false,
                 "title": "File"
             },
             {
                 "@id": "http://localhost:55001/plone/@types/Folder",
+                "@type": "Folder",
                 "addable": false,
                 "immediately_addable": false,
                 "title": "Folder"
             },
             {
                 "@id": "http://localhost:55001/plone/@types/Image",
+                "@type": "Image",
                 "addable": false,
                 "immediately_addable": false,
                 "title": "Image"
             },
             {
                 "@id": "http://localhost:55001/plone/@types/Link",
+                "@type": "Link",
                 "addable": false,
                 "immediately_addable": false,
                 "title": "Link"
             },
             {
                 "@id": "http://localhost:55001/plone/@types/News Item",
+                "@type": "News Item",
                 "addable": false,
                 "immediately_addable": false,
                 "title": "News Item"
             },
             {
                 "@id": "http://localhost:55001/plone/@types/Document",
+                "@type": "Document",
                 "addable": false,
                 "immediately_addable": false,
                 "title": "Page"
@@ -271,7 +280,8 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",
         "description": "",
-        "title": "Plone site"
+        "title": "Plone site",
+        "type_name": "Plone Site"
     },
     "previous_item": {},
     "relatedItems": [],
@@ -285,6 +295,7 @@ Content-Type: application/json
         "encoding": "utf-8"
     },
     "title": "Welcome to Plone",
+    "type_name": "Page",
     "version": "current",
     "versioning_enabled": true,
     "working_copy": null,

@@ -31,7 +31,6 @@ class GroupsDelete(Service):
         return portal_groups.getGroupById(group_id)
 
     def reply(self):
-
         portal_groups = getToolByName(self.context, "portal_groups")
         group = self._get_group(self._get_group_id)
 

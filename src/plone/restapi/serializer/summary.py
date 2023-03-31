@@ -141,7 +141,7 @@ class SiteRootJSONSummarySerializer:
             {
                 "@id": self.context.absolute_url(),
                 "@type": self.context.portal_type,
-                "type": get_portal_type(self.context.portal_type, self.request),
+                "type_name": get_portal_type(self.context.portal_type, self.request),
                 "title": self.context.title,
                 "description": self.context.description,
             }

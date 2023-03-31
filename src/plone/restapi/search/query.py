@@ -202,7 +202,6 @@ class BaseIndexQueryParser:
 @implementer(IIndexQueryParser)
 @adapter(ZCTextIndex, Interface, Interface)
 class ZCTextIndexQueryParser(BaseIndexQueryParser):
-
     query_value_type = str
     query_options = {}
 
@@ -210,7 +209,6 @@ class ZCTextIndexQueryParser(BaseIndexQueryParser):
 @implementer(IIndexQueryParser)
 @adapter(KeywordIndex, Interface, Interface)
 class KeywordIndexQueryParser(BaseIndexQueryParser):
-
     query_value_type = ANY_TYPE
     query_options = {"operator": str, "range": str}
 
@@ -218,7 +216,6 @@ class KeywordIndexQueryParser(BaseIndexQueryParser):
 @implementer(IIndexQueryParser)
 @adapter(BooleanIndex, Interface, Interface)
 class BooleanIndexQueryParser(BaseIndexQueryParser):
-
     query_value_type = bool
     query_options = {}
 
@@ -233,7 +230,6 @@ class BooleanIndexQueryParser(BaseIndexQueryParser):
 @implementer(IIndexQueryParser)
 @adapter(FieldIndex, Interface, Interface)
 class FieldIndexQueryParser(BaseIndexQueryParser):
-
     query_value_type = ANY_TYPE
     query_options = {"range": str}
 
@@ -241,7 +237,6 @@ class FieldIndexQueryParser(BaseIndexQueryParser):
 @implementer(IIndexQueryParser)
 @adapter(ExtendedPathIndex, Interface, Interface)
 class ExtendedPathIndexQueryParser(BaseIndexQueryParser):
-
     query_value_type = str
     query_options = {
         "level": int,
@@ -255,7 +250,6 @@ class ExtendedPathIndexQueryParser(BaseIndexQueryParser):
 @implementer(IIndexQueryParser)
 @adapter(DateIndex, Interface, Interface)
 class DateIndexQueryParser(BaseIndexQueryParser):
-
     query_value_type = DateTime
     query_options = {"range": str}
 
@@ -263,7 +257,6 @@ class DateIndexQueryParser(BaseIndexQueryParser):
 @implementer(IIndexQueryParser)
 @adapter(DateRangeIndex, Interface, Interface)
 class DateRangeIndexQueryParser(BaseIndexQueryParser):
-
     query_value_type = DateTime
     query_options = {}
 
@@ -271,6 +264,5 @@ class DateRangeIndexQueryParser(BaseIndexQueryParser):
 @implementer(IIndexQueryParser)
 @adapter(UUIDIndex, Interface, Interface)
 class UUIDIndexQueryParser(BaseIndexQueryParser):
-
     query_value_type = str
     query_options = {"range": str}

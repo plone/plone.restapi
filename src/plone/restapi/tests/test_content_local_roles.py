@@ -27,7 +27,6 @@ def sorted_roles(roles):
 
 
 class TestFolderCreate(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -227,7 +226,6 @@ class TestFolderCreate(unittest.TestCase):
         )
 
     def test_set_local_roles_for_user(self):
-
         pas = getToolByName(self.portal, "acl_users")
         self.assertEqual(
             pas.getLocalRolesForDisplay(self.portal.folder1),
@@ -446,7 +444,6 @@ class TestFolderCreate(unittest.TestCase):
         )
 
     def test_set_local_roles_on_site_root(self):
-
         pas = getToolByName(self.portal, "acl_users")
         self.assertEqual(
             pas.getLocalRolesForDisplay(self.portal),

@@ -5,7 +5,6 @@ import unittest
 
 
 class TestBooleanValue(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def test_true_bool(self):

@@ -9,7 +9,6 @@ import unittest
 
 
 class TestUpgradeOrdering(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):

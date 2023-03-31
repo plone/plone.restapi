@@ -73,7 +73,6 @@ class PrincipalsGet(Service):
     def _principal_search_results(
         self, search_for_principal, get_principal_by_id, principal_type, id_key
     ):
-
         hunter = getMultiAdapter((self.context, self.request), name="pas_search")
 
         principals = []

@@ -10,7 +10,6 @@ import unittest
 
 
 class TestQuerystringSearchEndpoint(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -110,7 +109,6 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertIn("effective", response.json()["items"][0])
 
     def test_querystringsearch_complex(self):
-
         for a in range(1, 10):
             self.portal.invokeFactory(
                 "Document", "testdocument" + str(a), title="Test Document " + str(a)

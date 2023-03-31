@@ -34,7 +34,6 @@ HAS_TZ_AWARE_COMMENTS = hasattr(comment, "localized_now")
 
 
 class TestStaticTime(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -287,7 +286,6 @@ class TestStaticTime(unittest.TestCase):
 
 
 class TestStaticTimeWorkingCopy(unittest.TestCase):
-
     layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 
     def setUp(self):

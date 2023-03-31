@@ -253,7 +253,6 @@ class TestBlocksLinkintegrity(TestCase):
 
 
 class TestLinkintegrityForBlocks(TestCase):
-
     layer = PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 
     def setUp(self):

@@ -78,7 +78,6 @@ class UsersGet(Service):
     def _principal_search_results(
         self, search_for_principal, get_principal_by_id, principal_type, id_key
     ):
-
         hunter = getMultiAdapter((self.context, self.request), name="pas_search")
 
         principals = []
@@ -203,7 +202,6 @@ class UsersGet(Service):
         if self.has_permission_to_access_user_info() or (
             current_user_id and current_user_id == self._get_user_id
         ):
-
             # we retrieve the user on the user id not the username
             user = self._get_user(self._get_user_id)
             if not user:

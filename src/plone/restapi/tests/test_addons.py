@@ -13,7 +13,6 @@ import unittest
 
 
 class TestAddons(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -76,7 +75,6 @@ class TestAddons(unittest.TestCase):
         self.assertEqual(_get_install_status(self), False)
 
     def test_install_uninstall_addon_with_representation(self):
-
         # Check to make sure the addon is currently shown as not installed
         response = self.api_session.get("/@addons/plone.session")
         result = response.json()

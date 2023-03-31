@@ -62,6 +62,7 @@ class SerializeToJson:
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary
         )()
+        parent_summary["type_name"] = get_portal_type(parent.portal_type, self.request)
 
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
@@ -103,7 +104,6 @@ class SerializeToJson:
             read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
-
                 if not self.check_permission(read_permissions.get(name), obj):
                     continue
 
@@ -205,7 +205,6 @@ class DexterityObjectPrimaryFieldTarget:
             read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
-
                 if not self.check_permission(read_permissions.get(name), self.context):
                     continue
 

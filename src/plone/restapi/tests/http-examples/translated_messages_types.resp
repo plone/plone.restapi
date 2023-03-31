@@ -4,54 +4,63 @@ Content-Type: application/json
 [
     {
         "@id": "http://localhost:55001/plone/@types/File",
+        "@type": "File",
         "addable": true,
         "immediately_addable": true,
         "title": "Archivo"
     },
     {
         "@id": "http://localhost:55001/plone/@types/Folder",
+        "@type": "Folder",
         "addable": true,
         "immediately_addable": true,
         "title": "Carpeta"
     },
     {
         "@id": "http://localhost:55001/plone/@types/Collection",
+        "@type": "Collection",
         "addable": true,
         "immediately_addable": true,
         "title": "Colecci\u00f3n"
     },
     {
         "@id": "http://localhost:55001/plone/@types/DXTestDocument",
+        "@type": "DXTestDocument",
         "addable": true,
         "immediately_addable": true,
         "title": "DX Test Document"
     },
     {
         "@id": "http://localhost:55001/plone/@types/Link",
+        "@type": "Link",
         "addable": true,
         "immediately_addable": true,
         "title": "Enlace"
     },
     {
         "@id": "http://localhost:55001/plone/@types/Event",
+        "@type": "Event",
         "addable": true,
         "immediately_addable": true,
         "title": "Evento"
     },
     {
         "@id": "http://localhost:55001/plone/@types/Image",
+        "@type": "Image",
         "addable": true,
         "immediately_addable": true,
         "title": "Imagen"
     },
     {
         "@id": "http://localhost:55001/plone/@types/News Item",
+        "@type": "News Item",
         "addable": true,
         "immediately_addable": true,
         "title": "Noticia"
     },
     {
         "@id": "http://localhost:55001/plone/@types/Document",
+        "@type": "Document",
         "addable": true,
         "immediately_addable": true,
         "title": "P\u00e1gina"

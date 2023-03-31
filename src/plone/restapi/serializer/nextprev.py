@@ -42,7 +42,7 @@ class NextPrevious:
         return {
             "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
-            "type": get_portal_type(data["portal_type"], self.request),
+            "type_name": get_portal_type(data["portal_type"], self.request),
             "title": data["title"],
             "description": data["description"],
         }
@@ -59,7 +59,7 @@ class NextPrevious:
         return {
             "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
-            "type": get_portal_type(data["portal_type"], self.request),
+            "type_name": get_portal_type(data["portal_type"], self.request),
             "title": data["title"],
             "description": data["description"],
         }

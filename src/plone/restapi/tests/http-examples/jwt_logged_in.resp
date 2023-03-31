@@ -64,5 +64,6 @@ Content-Type: application/json
     "subjects": [],
     "table_of_contents": null,
     "text": null,
-    "title": "Plone site"
+    "title": "Plone site",
+    "type_name": "Plone Site"
 }

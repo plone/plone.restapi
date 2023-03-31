@@ -24,7 +24,6 @@ class ISampleTile(Interface):
 
 
 class SampleTile(Tile):
-
     __name__ = "sample.tile"  # would normally be set by a ZCML handler
 
     def __call__(self):
@@ -32,7 +31,6 @@ class SampleTile(Tile):
 
 
 class TestServicesTiles(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):

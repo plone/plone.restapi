@@ -11,7 +11,6 @@ import unittest
 
 
 class TestQuerysourcesEndpoint(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     maxDiff = None

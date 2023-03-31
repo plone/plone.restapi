@@ -320,7 +320,6 @@ class TupleJsonSchemaProvider(SetJsonSchemaProvider):
 @adapter(IChoice, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
-
     # optionally prevent rendering all choices in the vocab,
     # ie relatedItems, which contains UUIDs for all content in the site.
     should_render_choices = True
@@ -396,7 +395,6 @@ class ChoiceJsonSchemaProvider(DefaultJsonSchemaProvider):
 @adapter(IObject, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class ObjectJsonSchemaProvider(DefaultJsonSchemaProvider):
-
     prefix = ""
 
     def get_type(self):
@@ -453,7 +451,6 @@ class DictJsonSchemaProvider(DefaultJsonSchemaProvider):
 @adapter(IRichText, Interface, Interface)
 @implementer(IJsonSchemaProvider)
 class RichTextJsonSchemaProvider(DefaultJsonSchemaProvider):
-
     prefix = ""
 
     def get_type(self):

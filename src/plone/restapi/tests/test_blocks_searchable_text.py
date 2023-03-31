@@ -20,7 +20,6 @@ import unittest
 
 
 class TestSearchTextInBlocks(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -117,7 +116,6 @@ class TestSearchTextInBlocks(unittest.TestCase):
                 self.request = request
 
             def __call__(self, value):
-
                 return "discovered: %s" % value["text"]
 
         provideAdapter(

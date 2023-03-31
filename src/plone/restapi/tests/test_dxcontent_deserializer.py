@@ -17,7 +17,6 @@ import unittest
 
 
 class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -231,7 +230,6 @@ class TestDXContentDeserializer(unittest.TestCase, OrderingMixin):
 
 
 class TestDXContentSerializerDeserializer(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):

@@ -26,7 +26,6 @@ def opts(**kw):
 
 
 class TestServicesContextNavigation(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
     maxDiff = None
 
@@ -461,7 +460,6 @@ class TestServicesContextNavigation(unittest.TestCase):
         self.assertEqual(tree["title"], "New navigation title")
 
     def testTopLevelTooDeep(self):
-
         view = self.renderer(self.portal, opts(topLevel=5))
         tree = view(expand=True)
 

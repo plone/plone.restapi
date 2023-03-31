@@ -9,7 +9,6 @@ import unittest
 
 
 class TestSerializeUserToJsonAdapter(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -81,7 +80,6 @@ class TestSerializeUserToJsonAdapter(unittest.TestCase):
 
 
 class TestSerializeUserCustomSchemaToJsonAdapter(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
