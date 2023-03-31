@@ -81,8 +81,8 @@ def add(container, obj, rename=True):
             obj._renameAfterCreation(check_auto_id=True)
         return obj
     else:
+        chooser = INameChooser(container)
         if rename:
-            chooser = INameChooser(container)
             # INameFromTitle adaptable objects should not get a name
             # suggestion. NameChooser would prefer the given name instead of
             # the one provided by the INameFromTitle adapter.
@@ -91,7 +91,9 @@ def add(container, obj, rename=True):
             if name_from_title is None:
                 suggestion = obj.Title()
             id_ = chooser.chooseName(suggestion, obj)
-            obj.id = id_
+        else:
+            id_ = chooser.chooseName(id_, obj)
+        obj.id = id_
         new_id = container._setObject(id_, obj)
         # _setObject triggers ObjectAddedEvent which can end up triggering a
         # content rule to move the item to a different container. In this case
