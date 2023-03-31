@@ -18,6 +18,9 @@ Content-Type: application/json
         "navigation": {
             "@id": "http://localhost:55001/plone/@navigation"
         },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/@navroot"
+        },
         "types": {
             "@id": "http://localhost:55001/plone/@types"
         },

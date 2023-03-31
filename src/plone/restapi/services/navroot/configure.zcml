@@ -14,4 +14,10 @@
       />
 
 
+  <adapter
+      factory=".get.Navroot"
+      name="navroot"
+      />
+
+
 </configure>

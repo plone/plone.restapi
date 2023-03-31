@@ -19,6 +19,9 @@ Location: http://localhost:55001/plone/de/mydocument
         "navigation": {
             "@id": "http://localhost:55001/plone/de/mydocument/@navigation"
         },
+        "navroot": {
+            "@id": "http://localhost:55001/plone/de/mydocument/@navroot"
+        },
         "translations": {
             "@id": "http://localhost:55001/plone/de/mydocument/@translations"
         },
