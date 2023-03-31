@@ -1,0 +1,3 @@
+CI: run the tests on Ubuntu 20.04, instead of latest.
+Python 2.7 and 3.6 are not available on latest.
+[maurits]
