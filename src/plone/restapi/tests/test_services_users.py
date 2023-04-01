@@ -853,8 +853,6 @@ class TestUsersEndpoint(unittest.TestCase):
         mtool = getToolByName(self.portal, "portal_membership")
         mtool.createMemberArea("noam")
 
-        transaction.commit()
-
         response = self.api_session.delete(
             "/@users/noam", data={"delete_memberareas": 0}
         )
@@ -876,7 +874,6 @@ class TestUsersEndpoint(unittest.TestCase):
             title="My Folder",
         )
         api.user.grant_roles(username="noam", roles=["Reviewer"], obj=self.folder)
-        transaction.commit()
 
         self.assertIn("Reviewer", api.user.get_roles(username="noam", obj=self.folder))
 
