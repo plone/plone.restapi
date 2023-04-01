@@ -1,9 +1,9 @@
 from contextlib import contextmanager
+from plone.restapi.services.addons.addons import Addons
 from plone.scale import storage
 from Products.CMFCore.utils import getToolByName
 from unittest.mock import patch
 from urllib.parse import urlparse
-from plone.restapi.services.addons.addons import Addons
 
 import quopri
 

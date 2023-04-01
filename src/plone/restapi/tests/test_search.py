@@ -708,7 +708,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(set(types), {"Folder", "DXTestDocument"})
 
         registry = getUtility(IRegistry)
-        from Products.CMFPlone.interfaces import ISearchSchema
+        from plone.restapi.bbb import ISearchSchema
 
         search_settings = registry.forInterface(ISearchSchema, prefix="plone")
         old = search_settings.types_not_searched

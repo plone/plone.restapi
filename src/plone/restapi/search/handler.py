@@ -1,11 +1,18 @@
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import ISearchSchema
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import IZCatalogCompatibleQuery
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.browser.navtree import getNavigationRoot
-from Products.CMFPlone.interfaces import ISearchSchema
 from zope.component import getMultiAdapter
 from zope.component import getUtility
+
+
+try:
+    from plone.base.navigationroot import get_navigation_root
+except ImportError:
+    from plone.app.layout.navigation.root import (
+        getNavigationRoot as get_navigation_root,
+    )
 
 
 class SearchHandler:
@@ -116,7 +123,7 @@ class SearchHandler:
 
         # respect navigation root
         if "path" not in query:
-            query["path"] = {"query": getNavigationRoot(self.context)}
+            query["path"] = {"query": get_navigation_root(self.context)}
 
             vhm_physical_path = self.request.get("VirtualRootPhysicalPath")
             # if vhm trick is applied, we should present a stripped path, as it will be

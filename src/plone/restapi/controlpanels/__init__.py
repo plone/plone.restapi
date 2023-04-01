@@ -1,7 +1,7 @@
-from zope.interface import implementer
-from zope.publisher.interfaces import NotFound
 from plone.restapi.controlpanels.interfaces import IControlpanel
 from Products.CMFCore.utils import getToolByName
+from zope.interface import implementer
+from zope.publisher.interfaces import NotFound
 
 
 @implementer(IControlpanel)

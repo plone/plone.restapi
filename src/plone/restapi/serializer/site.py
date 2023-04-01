@@ -3,6 +3,7 @@ from importlib import import_module
 from plone.autoform.interfaces import READ_PERMISSIONS_KEY
 from plone.dexterity.utils import iterSchemata
 from plone.restapi.batching import HypermediaBatch
+from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
@@ -12,7 +13,6 @@ from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.services.locking import lock_info
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import IPloneSiteRoot
 from zope.component import adapter
 from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
@@ -23,6 +23,7 @@ from zope.schema import getFields
 from zope.security.interfaces import IPermission
 
 import json
+
 
 HAS_PLONE_6 = getattr(
     import_module("Products.CMFPlone.factory"), "PLONE60MARKER", False

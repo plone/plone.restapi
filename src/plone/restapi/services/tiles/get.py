@@ -3,16 +3,16 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.services import Service
 from plone.tiles.interfaces import ITileType
-from zope.deprecation import deprecated
 from zope.component import getMultiAdapter
 from zope.component import getUtilitiesFor
 from zope.component import getUtility
+from zope.deprecation import deprecated
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
 
-import zope.deprecation
-import warnings
 import sys
+import warnings
+import zope.deprecation
 
 
 sys.modules["plone.restapi.services.tiles"] = deprecated(
