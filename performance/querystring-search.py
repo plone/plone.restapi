@@ -1,4 +1,5 @@
-from locust import HttpUser, task
+from locust import HttpUser
+from locust import task
 
 
 class QuerystringSearchAnonymousUser(HttpUser):

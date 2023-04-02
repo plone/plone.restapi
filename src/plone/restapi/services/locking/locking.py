@@ -1,13 +1,13 @@
-import warnings
-from zope.deprecation import deprecated
+from plone.restapi.services.locking import is_locked
 from plone.restapi.services.locking import lock_info
 from plone.restapi.services.locking import webdav_lock
-from plone.restapi.services.locking import is_locked
-
 from plone.restapi.services.locking.add import Lock as AddLock
-from plone.restapi.services.locking.get import Lock as GetLock
 from plone.restapi.services.locking.delete import Lock as DeleteLock
+from plone.restapi.services.locking.get import Lock as GetLock
 from plone.restapi.services.locking.update import Lock as UpdateLock
+from zope.deprecation import deprecated
+
+import warnings
 
 
 lock_info = deprecated(

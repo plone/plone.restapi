@@ -2,7 +2,6 @@ from base64 import b64encode
 from datetime import datetime
 from pkg_resources import resource_filename
 from plone import api
-from plone.uuid.interfaces import IUUID
 from plone.app.discussion.interfaces import ICommentAddedEvent
 from plone.app.discussion.interfaces import IConversation
 from plone.app.discussion.interfaces import IDiscussionSettings
@@ -23,9 +22,11 @@ from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 from plone.restapi.testing import PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from plone.restapi.tests.helpers import patch_scale_uuid, patch_addon_versions
+from plone.restapi.tests.helpers import patch_addon_versions
+from plone.restapi.tests.helpers import patch_scale_uuid
 from plone.restapi.tests.statictime import StaticTime
-from plone.testing.z2 import Browser
+from plone.testing.zope import Browser
+from plone.uuid.interfaces import IUUID
 from zope.component import createObject
 from zope.component import getMultiAdapter
 from zope.component import getUtility

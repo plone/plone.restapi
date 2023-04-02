@@ -1,0 +1,7 @@
+Fix a bunch of deprecation warnings in a Plone 5.2 compatible way.
+Applied propert isort.
+Fixed unclosed file issues in a test.
+Added Python 3.11 to test matrix.
+[jensens]
+
+

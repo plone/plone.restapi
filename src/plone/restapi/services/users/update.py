@@ -3,10 +3,10 @@ from Acquisition import aq_inner
 from io import BytesIO
 from OFS.Image import Image
 from plone.restapi import _
+from plone.restapi.bbb import ISecuritySchema
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.CMFPlone.utils import set_own_login_name
 from Products.PlonePAS.tools.membership import default_portrait
 from Products.PlonePAS.utils import scale_image
