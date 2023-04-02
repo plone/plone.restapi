@@ -1,12 +1,12 @@
 from plone.app.users.browser.userdatapanel import getUserDataSchema
 from plone.restapi.batching import HypermediaBatch
+from plone.restapi.bbb import safe_text
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.interfaces import ISerializeToJsonSummary
-from plone.restapi.services.users.get import getPortraitUrl
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.services.users.get import getPortraitUrl
 from Products.CMFCore.interfaces._tools import IMemberData
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_unicode
 from zope.component import adapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
@@ -48,7 +48,7 @@ class BaseSerializer:
                 if value == "":
                     value = None
                 if value:
-                    value = safe_unicode(value)
+                    value = safe_text(value)
             data[name] = json_compatible(value)
 
         return data

@@ -1,5 +1,5 @@
-from plone.restapi.services import Service
 from plone.app.multilingual.interfaces import ITranslationLocator
+from plone.restapi.services import Service
 
 
 class TranslationLocator(Service):

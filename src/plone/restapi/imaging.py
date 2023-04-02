@@ -89,7 +89,7 @@ def get_scale_infos():
     from plone.registry.interfaces import IRegistry
 
     registry = getUtility(IRegistry)
-    from Products.CMFPlone.interfaces import IImagingSchema
+    from plone.restapi.bbb import IImagingSchema
 
     imaging_settings = registry.forInterface(IImagingSchema, prefix="plone")
     allowed_sizes = imaging_settings.allowed_sizes

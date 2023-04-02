@@ -1,7 +1,6 @@
 from plone.memoize import view
+from plone.restapi.bbb import INonInstallable
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone import PloneMessageFactory as _
-from Products.CMFPlone.interfaces import INonInstallable
 from Products.GenericSetup import EXTENSION
 from Products.GenericSetup.tool import UNKNOWN
 from zope.component import getAllUtilitiesRegisteredFor
@@ -9,6 +8,12 @@ from zope.i18n import translate
 
 import logging
 import pkg_resources
+
+
+try:
+    from plone.base import PloneMessageFactory as _
+except ImportError:
+    from Products.CMFPlone import PloneMessageFactory as _
 
 
 logger = logging.getLogger("Plone")

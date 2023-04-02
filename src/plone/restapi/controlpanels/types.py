@@ -1,18 +1,19 @@
+from plone.i18n.normalizer import idnormalizer
+from plone.restapi.controlpanels import RegistryConfigletPanel
+from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
+from plone.restapi.deserializer import json_body
+from plone.restapi.interfaces import IDeserializeFromJson
+from plone.restapi.interfaces import IPloneRestapiLayer
+from plone.restapi.interfaces import ISerializeToJson
 from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import queryMultiAdapter
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import Interface
-from plone.i18n.normalizer import idnormalizer
-from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.interfaces import IDeserializeFromJson
-from plone.restapi.deserializer import json_body
-from plone.restapi.controlpanels import RegistryConfigletPanel
-from plone.restapi.controlpanels.interfaces import IDexterityTypesControlpanel
-import plone.protect.interfaces
 from zope.interface import noLongerProvides
-from plone.restapi.interfaces import IPloneRestapiLayer
+
+import plone.protect.interfaces
 
 
 @adapter(Interface, IPloneRestapiLayer)

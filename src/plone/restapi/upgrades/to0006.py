@@ -1,8 +1,9 @@
 from plone import api
-from zope.component import queryUtility
 from plone.dexterity.interfaces import IDexterityFTI
+from zope.component import queryUtility
 
 import logging
+
 
 logger = logging.getLogger(__name__)
 
