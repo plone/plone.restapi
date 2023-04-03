@@ -4,9 +4,9 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import INavigationSchema
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
-from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
 from zope.component import getUtility
 
 import transaction

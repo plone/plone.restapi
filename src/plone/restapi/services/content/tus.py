@@ -5,6 +5,8 @@ from base64 import b64decode
 from email.utils import formatdate
 from fnmatch import fnmatch
 from plone.rest.interfaces import ICORSPolicy
+from plone.restapi.bbb import base_hasattr
+from plone.restapi.bbb import safe_hasattr
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
 from plone.restapi.services import Service
@@ -12,8 +14,6 @@ from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import base_hasattr
-from Products.CMFPlone.utils import safe_hasattr
 from uuid import uuid4
 from zExceptions import Unauthorized
 from zope.component import queryMultiAdapter

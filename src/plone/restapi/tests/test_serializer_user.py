@@ -1,9 +1,9 @@
 from DateTime import DateTime
 from plone import api
+from plone.app.users.browser.schemaeditor import applySchema
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from zope.component import getMultiAdapter
-from plone.app.users.browser.schemaeditor import applySchema
 
 import unittest
 

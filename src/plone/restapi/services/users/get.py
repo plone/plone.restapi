@@ -7,8 +7,11 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import normalizeString
+from Products.PlonePAS.tools.memberdata import MemberData
 from Products.PlonePAS.tools.membership import default_portrait
 from Products.PlonePAS.utils import decleanId
+from typing import Iterable
+from typing import Sequence
 from urllib.parse import parse_qs
 from zExceptions import BadRequest
 from zope.component import getMultiAdapter
@@ -16,8 +19,7 @@ from zope.component import queryMultiAdapter
 from zope.component.hooks import getSite
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-from Products.PlonePAS.tools.memberdata import MemberData
-from typing import Sequence, Iterable
+
 
 DEFAULT_SEARCH_RESULTS_LIMIT = 25
 

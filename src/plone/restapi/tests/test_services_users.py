@@ -1,3 +1,4 @@
+from contextlib import contextmanager
 from DateTime import DateTime
 from plone import api
 from plone.app.testing import setRoles
@@ -5,12 +6,12 @@ from plone.app.testing import SITE_OWNER_NAME
 from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.app.testing import TEST_USER_PASSWORD
+from plone.restapi.bbb import ISecuritySchema
 from plone.restapi.services.users.get import UsersGet
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.MailHost.interfaces import IMailHost
 from zope.component import getAdapter
 from zope.component import getUtility
@@ -70,6 +71,7 @@ class TestUsersEndpoint(unittest.TestCase):
         self.api_session.close()
         self.anon_api_session.close()
 
+    @contextmanager
     def makeRealImage(self):
         from Products.PlonePAS.tests import dummy
 
@@ -77,9 +79,8 @@ class TestUsersEndpoint(unittest.TestCase):
 
         pas_path = os.path.dirname(ppas.__file__)
         path = os.path.join(pas_path, "tool.gif")
-        image = open(path, "rb")
-        image_upload = dummy.FileUpload(dummy.FieldStorage(image))
-        return image_upload
+        with open(path, "rb") as image:
+            yield dummy.FileUpload(dummy.FieldStorage(image))
 
     def test_list_users(self):
         response = self.api_session.get("/@users")
@@ -348,10 +349,10 @@ class TestUsersEndpoint(unittest.TestCase):
         noam_api_session.close()
 
     def test_get_user_with_portrait_set(self):
-        image = self.makeRealImage()
-        pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "noam")
-        transaction.commit()
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "noam")
+            transaction.commit()
 
         response = self.api_session.get("/@users/noam")
 
@@ -954,10 +955,10 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(1, len(response["roles"]))
 
     def test_get_own_user_portrait(self):
-        image = self.makeRealImage()
-        pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "noam")
-        transaction.commit()
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "noam")
+            transaction.commit()
 
         self.assertEqual("noam", pm.getPersonalPortrait("noam").getId())
 
@@ -988,10 +989,10 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(404, response.status_code)
 
     def test_get_user_portrait(self):
-        image = self.makeRealImage()
-        pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "noam")
-        transaction.commit()
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "noam")
+            transaction.commit()
 
         response = self.api_session.get(
             "/@portrait/noam",
@@ -1001,10 +1002,10 @@ class TestUsersEndpoint(unittest.TestCase):
         self.assertEqual(response.headers["Content-Type"], "image/gif")
 
     def test_get_user_portrait_anonymous(self):
-        image = self.makeRealImage()
-        pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "admin")
-        transaction.commit()
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "admin")
+            transaction.commit()
 
         response = self.anon_api_session.get(
             "/@portrait/admin",
@@ -1025,10 +1026,10 @@ class TestUsersEndpoint(unittest.TestCase):
         )
         transaction.commit()
 
-        image = self.makeRealImage()
-        pm = api.portal.get_tool("portal_membership")
-        pm.changeMemberPortrait(image, "howard.zinn@example.com")
-        transaction.commit()
+        with self.makeRealImage() as image:
+            pm = api.portal.get_tool("portal_membership")
+            pm.changeMemberPortrait(image, "howard.zinn@example.com")
+            transaction.commit()
 
         response = self.api_session.get("/@users/howard.zinn@example.com")
         self.assertEqual(200, response.status_code)

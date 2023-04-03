@@ -14,6 +14,7 @@ processed the same way they would for a server-rendered form.
 
 from collections import OrderedDict
 from copy import copy
+from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
 from plone.autoform.form import AutoExtensibleForm
 from plone.autoform.interfaces import IParameterizedWidget
 from plone.autoform.interfaces import WIDGETS_KEY
@@ -28,6 +29,7 @@ from plone.restapi.types.interfaces import IJsonSchemaProvider
 from plone.supermodel import serializeModel
 from plone.supermodel.interfaces import FIELDSETS_KEY
 from plone.supermodel.utils import mergedTaggedValueDict
+from plone.supermodel.utils import mergedTaggedValueList
 from plone.supermodel.utils import syncSchema
 from Products.CMFCore.utils import getToolByName
 from z3c.form import form as z3c_form
@@ -40,8 +42,7 @@ from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
-from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
-from plone.supermodel.utils import mergedTaggedValueList
+
 
 try:
     # Plone 5.1+
