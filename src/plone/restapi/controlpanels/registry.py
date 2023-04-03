@@ -1,20 +1,37 @@
 from importlib import import_module
+from plone.restapi.controlpanels import RegistryConfigletPanel
 from zope.component import adapter
+from zope.globalrequest import getRequest
 from zope.i18n import translate
 from zope.interface import Interface
-from zope.globalrequest import getRequest
-from Products.CMFPlone.interfaces.controlpanel import IDateAndTimeSchema
-from Products.CMFPlone.interfaces.controlpanel import IEditingSchema
-from Products.CMFPlone.interfaces.controlpanel import IImagingSchema
-from Products.CMFPlone.interfaces.controlpanel import IMailSchema
-from Products.CMFPlone.interfaces.controlpanel import IMarkupSchema
-from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
-from Products.CMFPlone.interfaces.controlpanel import ISearchSchema
-from Products.CMFPlone.interfaces.controlpanel import ISecuritySchema
-from Products.CMFPlone.interfaces.controlpanel import ISiteSchema
-from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
-from Products.CMFPlone.interfaces.controlpanel import IUserGroupsSettingsSchema
-from plone.restapi.controlpanels import RegistryConfigletPanel
+
+
+try:
+    from plone.base.interfaces.controlpanel import IDateAndTimeSchema
+    from plone.base.interfaces.controlpanel import IEditingSchema
+    from plone.base.interfaces.controlpanel import IImagingSchema
+    from plone.base.interfaces.controlpanel import IMailSchema
+    from plone.base.interfaces.controlpanel import IMarkupSchema
+    from plone.base.interfaces.controlpanel import INavigationSchema
+    from plone.base.interfaces.controlpanel import ISearchSchema
+    from plone.base.interfaces.controlpanel import ISecuritySchema
+    from plone.base.interfaces.controlpanel import ISiteSchema
+    from plone.base.interfaces.controlpanel import ISocialMediaSchema
+    from plone.base.interfaces.controlpanel import IUserGroupsSettingsSchema
+except ImportError:  # pragma: no cover
+    # Plone 5.2
+    from Products.CMFPlone.interfaces.controlpanel import IDateAndTimeSchema
+    from Products.CMFPlone.interfaces.controlpanel import IEditingSchema
+    from Products.CMFPlone.interfaces.controlpanel import IImagingSchema
+    from Products.CMFPlone.interfaces.controlpanel import IMailSchema
+    from Products.CMFPlone.interfaces.controlpanel import IMarkupSchema
+    from Products.CMFPlone.interfaces.controlpanel import INavigationSchema
+    from Products.CMFPlone.interfaces.controlpanel import ISearchSchema
+    from Products.CMFPlone.interfaces.controlpanel import ISecuritySchema
+    from Products.CMFPlone.interfaces.controlpanel import ISiteSchema
+    from Products.CMFPlone.interfaces.controlpanel import ISocialMediaSchema
+    from Products.CMFPlone.interfaces.controlpanel import IUserGroupsSettingsSchema
+
 
 try:
     from plone.i18n.interfaces import ILanguageSchema

@@ -5,9 +5,9 @@ from plone.restapi.interfaces import IJsonCompatible
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services.discussion.utils import can_delete
 from plone.restapi.services.discussion.utils import can_delete_own
-from plone.restapi.services.discussion.utils import can_view
 from plone.restapi.services.discussion.utils import can_edit
 from plone.restapi.services.discussion.utils import can_reply
+from plone.restapi.services.discussion.utils import can_view
 from plone.restapi.services.discussion.utils import delete_own_comment_allowed
 from plone.restapi.services.discussion.utils import edit_comment_allowed
 from plone.restapi.services.users.get import getPortraitUrl
