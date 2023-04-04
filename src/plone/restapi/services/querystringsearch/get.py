@@ -4,6 +4,7 @@ from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from urllib import parse
 from zope.component import getMultiAdapter
 
 import json
@@ -80,4 +81,6 @@ class QuerystringSearchGet(Service):
 
     def reply(self):
         querystring_search = QuerystringSearch(self.context, self.request)
-        return querystring_search(data=json.loads(self.request.form.get("query", "{}")))
+        return querystring_search(
+            data=json.loads(parse.unquote(self.request.form.get("query", "{}")))
+        )
