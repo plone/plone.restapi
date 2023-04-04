@@ -2,7 +2,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 
 {
-    "@id": "http://localhost:55001/plone/@querystring-search",
+    "@id": "http://localhost:55001/plone/@querystring-search?query=%257B%2522query%2522%253A%255B%257B%2522i%2522%253A%2522portal_type%2522%252C%2522o%2522%253A%2520%2522plone.app.querystring.operation.selection.any%2522%252C%2522v%2522%253A%255B%2522Document%2522%255D%257D%255D%257D",
     "items": [
         {
             "@id": "http://localhost:55001/plone/front-page",
