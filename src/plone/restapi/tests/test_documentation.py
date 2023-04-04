@@ -1686,6 +1686,15 @@ class TestDocumentation(TestDocumentationBase):
         )
         save_request_and_response_for_docs("querystringsearch_post", response)
 
+    def test_querystringsearch_get(self):
+        url = "/@querystring-search?query=%7B%22query%22%3A%5B%7B%22i%22%3A%22portal_type%22%2C%22o%22%3A%20%22plone.app.querystring.operation.selection.any%22%2C%22v%22%3A%5B%22Document%22%5D%7D%5D%7D"
+
+        self.portal.invokeFactory("Document", "testdocument", title="Test Document")
+        transaction.commit()
+
+        response = self.api_session.get(url)
+        save_request_and_response_for_docs("querystringsearch_get", response)
+
     def test_system_get(self):
         response = self.api_session.get("/@system")
         save_request_for_docs("system_get", response)

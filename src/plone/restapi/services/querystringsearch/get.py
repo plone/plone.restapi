@@ -6,6 +6,8 @@ from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from zope.component import getMultiAdapter
 
+import json
+
 
 zcatalog_version = get_distribution("Products.ZCatalog").version
 if parse_version(zcatalog_version) >= parse_version("5.1"):
@@ -14,11 +16,14 @@ else:
     SUPPORT_NOT_UUID_QUERIES = False
 
 
-class QuerystringSearchPost(Service):
+class QuerystringSearch:
     """Returns the querystring search results given a p.a.querystring data."""
 
-    def reply(self):
-        data = json_body(self.request)
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self, data):
         query = data.get("query", None)
         b_start = int(data.get("b_start", 0))
         b_size = int(data.get("b_size", 25))
@@ -60,3 +65,19 @@ class QuerystringSearchPost(Service):
             fullobjects=fullobjects
         )
         return results
+
+
+class QuerystringSearchPost(Service):
+    """Returns the querystring search results given a p.a.querystring data."""
+
+    def reply(self):
+        querystring_search = QuerystringSearch(self.context, self.request)
+        return querystring_search(data=json_body(self.request))
+
+
+class QuerystringSearchGet(Service):
+    """Returns the querystring search results given a p.a.querystring data."""
+
+    def reply(self):
+        querystring_search = QuerystringSearch(self.context, self.request)
+        return querystring_search(data=json.loads(self.request.form.get("query", "{}")))
