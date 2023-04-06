@@ -11,7 +11,9 @@ myst:
 
 The `@querystring-search` endpoint returns search results that can be filtered on search criteria.
 
-Call the `/@querystring-search` endpoint with a `POST` or a `GET`. When using the `POST` request you provide a query in the request body:
+Call the `/@querystring-search` endpoint with either a `POST` or `GET` request.
+
+When using the `POST` request, provide a query in the request body:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
