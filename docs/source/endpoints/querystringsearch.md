@@ -24,7 +24,7 @@ The server will respond with the results that are filtered based on the query yo
 :language: http
 ```
 
-When using the `GET` request you provide the query as a json urlencoded string as a parameter.
+When using the `GET` request, provide the query as a JSON URL-encoded string as a parameter.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
