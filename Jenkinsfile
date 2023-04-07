@@ -26,7 +26,7 @@ pipeline {
         checkout scm
         sh "python3 -m venv ."
         sh "bin/pip install -r requirements.txt"
-        sh "bin/buildout -c plone-5.2.x-performance.cfg"
+        sh "bin/buildout -c plone-6.0.x-performance.cfg"
         sh "bin/instance start"
         sh "sleep 20"
 

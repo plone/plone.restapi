@@ -3,6 +3,7 @@ from Acquisition import aq_base
 from Acquisition.interfaces import IAcquirer
 from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
 from plone.app.multilingual.interfaces import ITranslationManager
+from plone.restapi.bbb import safe_hasattr
 from plone.restapi.deserializer import json_body
 from plone.restapi.exceptions import DeserializationError
 from plone.restapi.interfaces import IDeserializeFromJson
@@ -12,14 +13,13 @@ from plone.restapi.services.content.utils import add
 from plone.restapi.services.content.utils import create
 from Products.CMFCore.permissions import ManagePortal
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.utils import safe_hasattr
 from zExceptions import BadRequest
 from zExceptions import Unauthorized
+from zope.component import getMultiAdapter
 from zope.component import queryMultiAdapter
 from zope.event import notify
 from zope.interface import alsoProvides
 from zope.lifecycleevent import ObjectCreatedEvent
-from zope.component import getMultiAdapter
 
 import plone.protect.interfaces
 

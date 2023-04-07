@@ -24,6 +24,7 @@ docs/.DS_Store
 /lib
 /lib64
 /local
+/venv
 /.mr.developer.cfg
 *.mo
 docs/_build

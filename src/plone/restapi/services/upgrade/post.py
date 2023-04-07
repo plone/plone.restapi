@@ -1,5 +1,5 @@
-from plone.restapi.services import Service
 from plone.restapi.deserializer import json_body
+from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.browser.admin import Upgrade
 from zope.interface import alsoProvides
