@@ -1,1 +1,1 @@
-Add querystring_search get method. @robgietema
+Add querystring_search get method. [robgietema]

@@ -1,1 +1,1 @@
-Add UID to relationvalue_converter summary. @ksuess
+Add UID to relationvalue_converter summary. [ksuess]
