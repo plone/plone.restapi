@@ -25,8 +25,8 @@ pipeline {
         deleteDir()
         checkout scm
         sh "python3 -m venv ."
-        sh "bin/pip install -r requirements-5.2.txt"
-        sh "bin/buildout -c plone-5.2.x-performance.cfg"
+        sh "bin/pip install -r requirements-6.0.txt"
+        sh "bin/buildout -c plone-6.0.x-performance.cfg"
         sh "bin/instance start"
         sh "sleep 20"
 
