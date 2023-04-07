@@ -1,4 +1,6 @@
-from locust import HttpUser, TaskSet, between
+from locust import between
+from locust import HttpUser
+from locust import TaskSet
 
 
 def image_01mb_get(self):

@@ -1,15 +1,16 @@
+from DateTime import DateTime
+from plone.app.redirector.interfaces import IRedirectionStorage
+from plone.restapi import _
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
+from Products.CMFPlone.controlpanel.browser.redirects import absolutize_path
+from zExceptions import BadRequest
+from zope.component import getMultiAdapter
+from zope.component import getUtility
 from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-from zope.component import getUtility
-from plone.app.redirector.interfaces import IRedirectionStorage
-from Products.CMFPlone.controlpanel.browser.redirects import absolutize_path
-from zope.component import getMultiAdapter
-from zExceptions import BadRequest
-from DateTime import DateTime
-from plone.restapi import _
+
 import plone.protect.interfaces
 
 
