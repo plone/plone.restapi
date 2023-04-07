@@ -2,7 +2,9 @@
 
 pipeline {
 
-  agent any
+  agent {
+    label 'jmeter'
+  }
 
   triggers{
     cron('H 23 * * *')
@@ -18,9 +20,7 @@ pipeline {
 
     // Performance Tests
     stage('Performance Tests') {
-      agent {
-        label 'jmeter'
-      }
+
       steps {
         deleteDir()
         checkout scm
