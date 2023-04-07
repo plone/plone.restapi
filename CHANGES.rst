@@ -8,6 +8,30 @@ Changelog
 
 .. towncrier release notes start
 
+8.36.0 (2023-04-07)
+-------------------
+
+New features:
+
+
+- Add UID to relationvalue_converter summary. [ksuess] (#1605)
+- Add querystring_search get method. [robgietema] (#1616)
+
+
+Bug fixes:
+
+
+- Fix a bunch of deprecation warnings in a Plone 5.2 compatible way.
+  Applied proper isort.
+  Fixed unclosed file issues in a test.
+  Added Python 3.11 to test matrix.
+  [jensens] (#1606)
+- No longer declare support for Python 3.6 (it was already not tested). [davisagli] (#1615)
+- Fixed encoding issue on Python 3 for some mail servers.
+  This could result in missing characters in an email body.
+  [maurits] (#3754)
+
+
 8.35.3 (2023-03-23)
 -------------------
 
