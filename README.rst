@@ -71,6 +71,19 @@ Install ``plone.restapi`` by adding it to your buildout.
 …and then running ``bin/buildout``.
 
 
+Python / Plone Compatibility
+============================
+
+plone.restapi 8 requires Python 3 and works with Plone 5.2 and Plone 6.x.
+
+plone.restapi 8 does not officially support Python 3.6.
+
+Python versions that reached there End-of-Live (EOL), like Python 3.6 might still work.
+Though, we do not guarantee this in any way.
+
+Use plone.restapi 7 if you are running Python 2.7 or Plone versions below 5.2.
+
+
 Contribute
 ==========
 
