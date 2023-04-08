@@ -54,6 +54,7 @@ pipeline {
       post {
         always {
           perfReport '**/performance-*.csv'
+          archiveArtifacts artifacts: '**/performance-*.csv', fingerprint: true, allowEmptyArchive: true
         }
       }
     }
