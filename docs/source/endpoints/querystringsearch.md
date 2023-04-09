@@ -11,9 +11,7 @@ myst:
 
 The `@querystring-search` endpoint returns search results that can be filtered on search criteria.
 
-Call the `/@querystring-search` endpoint with either a `POST` or `GET` request.
-
-When using the `POST` request, provide a query in the request body:
+Call the `/@querystring-search` endpoint with a `POST` request and a query in the request body:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -23,19 +21,6 @@ When using the `POST` request, provide a query in the request body:
 The server will respond with the results that are filtered based on the query you provided:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/querystringsearch_post.resp
-:language: http
-```
-
-When using the `GET` request, provide the query as a JSON URL-encoded string as a parameter.
-
-```{eval-rst}
-..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/querystringsearch_get.req
-```
-
-The server will respond with the results that are filtered based on the query you provided:
-
-```{literalinclude} ../../../src/plone/restapi/tests/http-examples/querystringsearch_get.resp
 :language: http
 ```
 
@@ -49,7 +34,9 @@ Parameters the endpoint will accept:
 - `limit` - integer, limits the number of returned results
 - `fullobjects` - boolean, if `true` then return the full objects instead of just the summary serialization
 
+
 ## Parameters
+
 
 ### Batch Start (`b_start`)
 
@@ -71,6 +58,7 @@ The `b_start` parameter defines the first item of the batch:
 The `b_size` parameter is optional.
 The default value is `0`.
 
+
 ### Batch Size (b_size)
 
 The `b_size` parameter defines the number of elements a single batch returns:
@@ -91,6 +79,7 @@ The `b_size` parameter defines the number of elements a single batch returns:
 The parameter is optional.
 The default value is `25`.
 
+
 ### Sort on
 
 The `sort_on` parameter defines the field that is used to sort the returned search results:
@@ -110,6 +99,7 @@ The `sort_on` parameter defines the field that is used to sort the returned sear
 
 The `sort_on` parameter is optional.
 The default value is `None`.
+
 
 ### Sort Order
 
@@ -136,6 +126,7 @@ The sort_order can be either `ascending` or `descending`.
 `ascending` means from A to Z for a text field.
 `reverse` is an alias equivalent to `descending`.
 
+
 ### Limit
 
 Querystring `query` with a `limit` parameter:
@@ -155,6 +146,7 @@ Querystring `query` with a `limit` parameter:
 
 The `limit` parameter is optional.
 The default value is `1000`.
+
 
 ### Query
 
@@ -184,7 +176,9 @@ The following types of filters are available:
 - Date filters
 - Text Filters
 
+
 #### Metadata Filters
+
 
 ##### Creator
 
@@ -218,6 +212,7 @@ You can either set the currently logged in user:
 }
 ```
 
+
 ##### Shortname
 
 `Shortname` is the ID of the object that is shown as the last part of the URL:
@@ -233,6 +228,7 @@ You can either set the currently logged in user:
   ]
 }
 ```
+
 
 ##### Location
 
@@ -309,6 +305,7 @@ The path can contain a depth parameter that is separated with `::`:
 }
 ```
 
+
 ##### Type
 
 Filter by portal type:
@@ -324,6 +321,7 @@ Filter by portal type:
   ]
 }
 ```
+
 
 ##### Review State
 
@@ -341,6 +339,7 @@ Filter results by review state:
 }
 ```
 
+
 ##### Show Inactive
 
 Show inactive will return content objects that is expired for a given role:
@@ -357,7 +356,9 @@ Show inactive will return content objects that is expired for a given role:
 }
 ```
 
+
 #### Text Filters
+
 
 ##### Description
 
@@ -375,6 +376,7 @@ Filter content that contains a term in the Description field:
 }
 ```
 
+
 ##### Searchable Text
 
 Filter content that contains a term in the SearchableText (all searchable fields in the catalog):
@@ -390,6 +392,7 @@ Filter content that contains a term in the SearchableText (all searchable fields
   ]
 }
 ```
+
 
 ##### Tag
 
@@ -407,6 +410,7 @@ Filter by a tag (subjects field):
 }
 ```
 
+
 ##### Title
 
 Filter by exact Title match:
@@ -421,7 +425,9 @@ Filter by exact Title match:
 ]
 ```
 
+
 #### Date Filters
+
 
 ##### Creation Date
 
@@ -438,6 +444,7 @@ Filter by creation date:
   ]
 }
 ```
+
 
 ##### Effective Date
 
@@ -456,6 +463,7 @@ Filter by effective date:
 }
 ```
 
+
 ##### Event end date
 
 Filter by event end date:
@@ -471,6 +479,7 @@ Filter by event end date:
   ]
 }
 ```
+
 
 ##### Event start date
 
@@ -488,6 +497,7 @@ Filter by event start date:
 }
 ```
 
+
 ##### Expiration date
 
 Filter by expiration date:
@@ -504,6 +514,7 @@ Filter by expiration date:
   ]
 }
 ```
+
 
 ##### Modification date
 
