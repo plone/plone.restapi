@@ -127,6 +127,7 @@ class TestContentGet(unittest.TestCase):
                 {
                     "@id": self.portal_url + "/folder1/folder2/doc2",
                     "@type": "Document",
+                    "UID": self.portal.folder1.folder2.doc2.UID(),
                     "description": "",
                     "review_state": "published",
                     "title": "My Document 2",
@@ -165,6 +166,7 @@ class TestContentGet(unittest.TestCase):
                 {
                     "@id": self.portal_url + "/imagewf",
                     "@type": "Image",
+                    "UID": self.portal.imagewf.UID(),
                     "description": "This is an image",
                     "review_state": None,
                     "title": "Image without workflow",
