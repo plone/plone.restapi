@@ -42,17 +42,16 @@ If you request the `@navroot` of a given content type in the site:
 
 The response will contain the navigation root information with the site:
 
-````{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_content_get.resp
 :language: http
-
+```
 
 In a multilingual site, the root of the site will work as usual:
-
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_site_get.req
-````
+```
 
 The response will contain the navigation root information of the root of the site:
 
@@ -148,14 +147,13 @@ The response will contain the navigation root information expanded:
 
 And also for contents inside the language root folders:
 
-``{eval-rst}
+```{eval-rst}
 .. http:example:: curl httpie python-requests
-:request: ../../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder_content.req
-
-````
+   :request: ../../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder_content.req
+```
 
 The response will include the expanded information pointing to the language root:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/site_get_expand_lang_folder_content.resp
 :language: http
-````
+```
