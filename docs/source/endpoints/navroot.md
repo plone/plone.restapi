@@ -33,7 +33,7 @@ The response will contain the navigation root information for the site:
 
 In a multilingual site where the language root folders are navigation root objects, the endpoint will work in a similar way.
 
-If you request the `@navroot` of a given content type in the site:
+If you request the `@navroot` of a given content type of the site:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
