@@ -119,7 +119,8 @@ The response will contain the information of that content type and navigation ro
 :language: http
 ```
 
-In a multilingual site, it will work similarly. This will be the request:
+In a multilingual site, it works the same.
+Use the request:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
