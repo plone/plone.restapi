@@ -8,7 +8,8 @@ html_meta:
 
 # Site
 
-The `@site` endpoint provides site-wide information, such as the site title, logo, and other information, which is useful to offer generic information about the Plone site.
+The `@site` endpoint provides general site-wide information, such as the site title, logo, and other information.
+It uses the `zope2.View` permission, which requires appropriate authorization.
 
 Send a `GET` request to the `@site` endpoint:
 
