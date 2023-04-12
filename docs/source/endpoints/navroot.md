@@ -53,7 +53,7 @@ In a multilingual site, the root of the site will work as usual:
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_site_get.req
 ```
 
-The response will contain the navigation root information of the root of the site:
+The response will contain the navigation root information of the root for the site:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_site_get.resp
 :language: http
