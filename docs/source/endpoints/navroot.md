@@ -18,7 +18,7 @@ For instance, in a default multilingual site when browsing the contents inside a
 In a non-multilingual site, the context is the root of the site such as `www.domain.com` and the navigation root will be `/`.
 
 To get the information about the navigation root, the REST API has a `@navroot` contextual endpoint.
-For instance, send a `GET` request to the `@navroot` endpoint in the root of the site:
+For instance, send a `GET` request to the `@navroot` endpoint at the root of the site:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
