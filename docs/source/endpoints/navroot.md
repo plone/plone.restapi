@@ -17,7 +17,7 @@ This navigation root information is different depending on the context of the re
 For instance, in a default multilingual site when browsing the contents inside a language folder such as `www.domain.com/en`, the context is `en` and its navigation root will be `/en/`.
 In a non-multilingual site, the context is the root of the site such as `www.domain.com` and the navigation root will be `/`.
 
-To get the information about the navigation root, the REST API has a `@navroot` contextual endpoint, which will return the correct information about it.
+To get the information about the navigation root, the REST API has a `@navroot` contextual endpoint.
 For instance, send a `GET` request to the `@navroot` endpoint in the root of the site:
 
 ```{eval-rst}
