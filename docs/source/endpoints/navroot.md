@@ -146,7 +146,7 @@ The response will contain the navigation root information expanded:
 :language: http
 ```
 
-And also for contents inside the language root folders:
+And also for content inside the language root folders:
 
 ```{eval-rst}
 .. http:example:: curl httpie python-requests
