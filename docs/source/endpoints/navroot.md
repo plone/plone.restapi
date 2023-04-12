@@ -25,7 +25,7 @@ For instance, send a `GET` request to the `@navroot` endpoint at the root of the
     :request: ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_get.req
 ```
 
-The response will contain the navigation root information with the site:
+The response will contain the navigation root information for the site:
 
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/navroot_standard_site_get.resp
 :language: http
