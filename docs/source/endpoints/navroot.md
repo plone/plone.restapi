@@ -133,7 +133,7 @@ And the response will contain the navigation root information pointing to the ro
 :language: http
 ```
 
-It will also work with language root folders (that are navigation roots):
+It will also work with language root folders that are navigation roots:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
