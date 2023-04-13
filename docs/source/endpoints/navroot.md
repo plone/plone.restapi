@@ -127,7 +127,7 @@ Use the request:
 
 And the response will contain the navigation root information pointing to the root of the site:
 
-```{literalinclude} ../../src/plone/restapi/tests/http-examples/site_get_expand_navroot.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/site_get_expand_navroot.resp
 :language: http
 ```
 
