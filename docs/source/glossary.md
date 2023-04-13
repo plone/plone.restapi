@@ -61,7 +61,6 @@ trigger
     A trigger is an event in Plone that causes the execution of defined actions.
     Example triggers include object modified, user logged in, and workflow state changed.
 
-Navigation Root
 navigation root
     An object marked as a navigation root provides a way to root catalog queries, searches, breadcrumbs, and so on, into that object.
 
