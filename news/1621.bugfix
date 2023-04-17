@@ -1,1 +1,0 @@
-Fix bugs in handling parameters when the `@querystringsearch` endpoint is called with the GET method. @davisagli
