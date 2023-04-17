@@ -4,6 +4,7 @@ from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
+from urllib import parse
 from zope.component import getMultiAdapter
 
 
@@ -14,10 +15,14 @@ else:
     SUPPORT_NOT_UUID_QUERIES = False
 
 
-class QuerystringSearchPost(Service):
+class QuerystringSearch:
     """Returns the querystring search results given a p.a.querystring data."""
 
-    def reply(self):
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
+
+    def __call__(self):
         data = json_body(self.request)
         query = data.get("query", None)
         b_start = int(data.get("b_start", 0))
@@ -60,3 +65,23 @@ class QuerystringSearchPost(Service):
             fullobjects=fullobjects
         )
         return results
+
+
+class QuerystringSearchPost(Service):
+    """Returns the querystring search results given a p.a.querystring data."""
+
+    def reply(self):
+        querystring_search = QuerystringSearch(self.context, self.request)
+        return querystring_search()
+
+
+class QuerystringSearchGet(Service):
+    """Returns the querystring search results given a p.a.querystring data."""
+
+    def reply(self):
+        # We need to copy the JSON query parameters from the querystring
+        # into the request body, because that's where other code expects to find them
+        self.request["BODY"] = parse.unquote(self.request.form.get("query", "{}"))
+
+        querystring_search = QuerystringSearch(self.context, self.request)
+        return querystring_search()
