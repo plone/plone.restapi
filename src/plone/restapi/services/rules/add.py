@@ -1,10 +1,11 @@
 from plone.restapi.services import Service
-import plone.protect.interfaces
 from zExceptions import BadRequest
-from zope.interface import implementer
-from zope.interface import alsoProvides
 from zope.component import queryMultiAdapter
+from zope.interface import alsoProvides
+from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
+
+import plone.protect.interfaces
 
 
 @implementer(IPublishTraverse)

@@ -1,12 +1,12 @@
-from DateTime import DateTime
 from datetime import datetime
+from DateTime import DateTime
 from plone.app.discussion.comment import Comment
 from plone.app.layout.viewlets.content import ContentHistoryViewlet
 from plone.dexterity.content import DexterityContent
 from plone.locking.lockable import TTWLockable
+from plone.restapi.serializer.working_copy import WorkingCopyInfo
 from Products.CMFCore.WorkflowTool import _marker
 from Products.CMFCore.WorkflowTool import WorkflowTool
-from plone.restapi.serializer.working_copy import WorkingCopyInfo
 
 
 _originals = {

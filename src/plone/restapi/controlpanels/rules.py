@@ -1,3 +1,10 @@
+from plone.restapi.controlpanels import RegistryConfigletPanel
+from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
+from plone.restapi.deserializer import json_body
+from plone.restapi.interfaces import IPloneRestapiLayer
+from plone.restapi.interfaces import ISerializeToJson
+from plone.restapi.serializer.controlpanels.rules import rule_schema_as_json
+from z3c.form import interfaces
 from zExceptions import BadRequest
 from zope.component import adapter
 from zope.component import queryMultiAdapter
@@ -5,13 +12,7 @@ from zope.interface import alsoProvides
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserPublisher
-from z3c.form import interfaces
-from plone.restapi.interfaces import ISerializeToJson
-from plone.restapi.interfaces import IPloneRestapiLayer
-from plone.restapi.controlpanels import RegistryConfigletPanel
-from plone.restapi.controlpanels.interfaces import IContentRulesControlpanel
-from plone.restapi.deserializer import json_body
-from plone.restapi.serializer.controlpanels.rules import rule_schema_as_json
+
 import plone.protect.interfaces
 
 

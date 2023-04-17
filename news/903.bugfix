@@ -1,2 +1,0 @@
-Fix missing `Decimal` field deserializer.
-[jensens]

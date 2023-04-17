@@ -1,8 +1,8 @@
-from plone.restapi.services import Service
-from zope.interface import alsoProvides
 from plone.app.iterate.interfaces import ICheckinCheckoutPolicy
-from zope.component import getMultiAdapter
+from plone.restapi.services import Service
 from Products.CMFCore.utils import getToolByName
+from zope.component import getMultiAdapter
+from zope.interface import alsoProvides
 
 import plone.protect.interfaces
 

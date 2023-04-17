@@ -1,11 +1,13 @@
 from plone.restapi.services import Service
 
+
 try:
     from Products.CMFPlone.controlpanel.browser.overview import OverviewControlPanel
 except ImportError:
     from plone.app.controlpanel.overview import OverviewControlPanel
 
 import pkg_resources
+
 
 plone_restapi_version = pkg_resources.require("plone.restapi")[0].version
 
