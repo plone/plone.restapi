@@ -8,6 +8,16 @@ Changelog
 
 .. towncrier release notes start
 
+8.37.0 (2023-04-19)
+-------------------
+
+New features:
+
+
+- Apply a cache ruleset to the /@querystring-search endpoint.
+  [ericof] (#1626)
+
+
 8.36.1 (2023-04-17)
 -------------------
 
