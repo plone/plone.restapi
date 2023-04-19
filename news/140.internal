@@ -1,4 +1,0 @@
-Tests: pin ``plone.schema`` to 1.4.0 in Plone 4.3.
-This is the latest version compatible with Python 2.
-On Plone 5.0 and higher this package is already pinned.
-[maurits]

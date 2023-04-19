@@ -8,6 +8,29 @@ Changelog
 
 .. towncrier release notes start
 
+7.8.2 (2023-04-19)
+------------------
+
+Bug fixes:
+
+
+- Fixed encoding issue on Python 3 for some mail servers.
+  This could result in missing characters in an email body.
+  [maurits] (#3754)
+
+
+Internal:
+
+
+- Tests: pin ``plone.schema`` to 1.4.0 in Plone 4.3.
+  This is the latest version compatible with Python 2.
+  On Plone 5.0 and higher this package is already pinned.
+  [maurits] (#140)
+- CI: run the tests on Ubuntu 20.04, instead of latest.
+  Python 2.7 and 3.6 are not available on latest.
+  [maurits] (#2004)
+
+
 7.8.1 (2022-10-28)
 ------------------
 
