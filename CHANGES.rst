@@ -8,6 +8,14 @@ Changelog
 
 .. towncrier release notes start
 
+8.24.1-eea.1 (2023-04-25)
+-------------------
+
+Bug fixes:
+
+
+- Fix ResolveUIDDeserializer. [valipod] (#2252)
+
 8.24.1 (2022-08-04)
 -------------------
 
