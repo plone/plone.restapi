@@ -112,6 +112,18 @@ class TestProfileWithCachingRestAPI(unittest.TestCase):
             response.headers["X-Cache-Operation"], "plone.app.caching.terseCaching"
         )
 
+    def test_restapi_querystring_search(self):
+        # plone.content.dynamic for
+        #  plone.restapi.services.querystringsearch.get.QuerystringSearchGet
+        response = self.api_session.get(
+            "/@querystring-search?query=%7B%22query%22%3A%20%5B%7B%22i%22%3A%20%22portal_type%22%2C%20%22o%22%3A%20%22plone.app.querystring.operation.selection.any%22%2C%20%22v%22%3A%20%5B%22Document%22%5D%7D%5D%2C%20%22b_size%22%3A%201%7D"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["X-Cache-Rule"], "plone.content.dynamic")
+        self.assertEqual(
+            response.headers["X-Cache-Operation"], "plone.app.caching.terseCaching"
+        )
+
     def test_restapi_search(self):
         # plone.content.dynamic for plone.restapi.services.search.get.SearchGet
         response = self.api_session.get("/@search")
@@ -216,6 +228,18 @@ class TestProfileWithoutCachingRestAPI(unittest.TestCase):
     def test_restapi_querystring(self):
         # plone.content.dynamic for plone.restapi.services.querystring.get.QueryStringGet
         response = self.api_session.get("/@querystring")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.headers["X-Cache-Rule"], "plone.content.dynamic")
+        self.assertEqual(
+            response.headers["X-Cache-Operation"], "plone.app.caching.terseCaching"
+        )
+
+    def test_restapi_querystring_search(self):
+        # plone.content.dynamic for
+        #  plone.restapi.services.querystringsearch.get.QuerystringSearchGet
+        response = self.api_session.get(
+            "/@querystring-search?query=%7B%22query%22%3A%20%5B%7B%22i%22%3A%20%22portal_type%22%2C%20%22o%22%3A%20%22plone.app.querystring.operation.selection.any%22%2C%20%22v%22%3A%20%5B%22Document%22%5D%7D%5D%2C%20%22b_size%22%3A%201%7D"
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.headers["X-Cache-Rule"], "plone.content.dynamic")
         self.assertEqual(
