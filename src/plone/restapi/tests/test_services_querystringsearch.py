@@ -129,7 +129,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         response = self.api_session.get(
             "/@querystring-search?query=%7B%22query%22%3A%20%5B%7B%22i%22%3A%20%22portal_type%22%2C%20%22o%22%3A%20%22plone.app.querystring.operation.selection.is%22%2C%20%22v%22%3A%20%5B%22Document%22%5D%7D%5D%7D"
         )
-        
+
         self.assertEqual(response.status_code, 200)
         self.assertIn("items", response.json())
         self.assertIn("items_total", response.json())
@@ -142,7 +142,6 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
 
         self.assertIn("effective", response.json()["items"][0])
 
-    
     def test_querystringsearch_complex(self):
 
         for a in range(1, 10):

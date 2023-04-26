@@ -84,7 +84,7 @@ class QuerystringSearchGet(Service):
         self.request["BODY"] = parse.unquote(
             self.request.form.get("query", "{}")
         ).encode(self.request.charset)
-        
+
         # unset the get parameters
         self.request.form = {}
         querystring_search = QuerystringSearch(self.context, self.request)
