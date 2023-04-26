@@ -302,7 +302,7 @@ class UsersPost(Service):
                 err = registration_tool.testPasswordValidity(new_password)
                 if err is not None:
                     return self._error(
-                        403,
+                        400,
                         "Invalid password",
                         _(err),
                     )
