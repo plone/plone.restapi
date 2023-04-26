@@ -266,6 +266,7 @@ class UsersPost(Service):
         pas = getToolByName(self.context, "acl_users")
         mt = getToolByName(self.context, "portal_membership")
         pwt = getToolByName(self.context, "portal_password_reset")
+        registration_tool = getToolByName(self.context, "portal_registration")
 
         if target_user is None:
             self.request.response.setStatus(404)
@@ -273,7 +274,6 @@ class UsersPost(Service):
 
         # Send password reset mail
         if list(data) == []:
-            registration_tool = getToolByName(self.context, "portal_registration")
             registration_tool.mailPassword(username, self.request)
             return
 
@@ -299,6 +299,13 @@ class UsersPost(Service):
         # Reset the password with a reset token
         if reset_token:
             try:
+                err = registration_tool.testPasswordValidity(new_password)
+                if err is not None:
+                    return self._error(
+                        403,
+                        "Invalid password",
+                        _(err),
+                    )
                 pwt.resetPassword(username, reset_token, new_password)
             except InvalidRequestError:
                 return self._error(
