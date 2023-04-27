@@ -724,6 +724,20 @@ class TestUsersEndpoint(unittest.TestCase):
         authed = self.portal.acl_users.authenticate("noam", "new_password", {})
         self.assertTrue(authed)
 
+    def test_reset_with_token_validates_password(self):
+        reset_tool = getToolByName(self.portal, "portal_password_reset")
+        reset_info = reset_tool.requestReset("noam")
+        token = reset_info["randomstring"]
+        transaction.commit()
+
+        payload = {"reset_token": token, "new_password": "foo"}
+        response = self.api_session.post("/@users/noam/reset-password", json=payload)
+        transaction.commit()
+
+        self.assertEqual(response.status_code, 400)
+        authed = self.portal.acl_users.authenticate("noam", "foo", {})
+        self.assertFalse(authed)
+
     def test_reset_with_uuid_as_userid_and_login_email_using_id(self):
         # enable use_email_as_login
         security_settings = getAdapter(self.portal, ISecuritySchema)
