@@ -5,13 +5,17 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.services import Service
 from plone.restapi.services.relations import api_relation_create
 from plone.restapi.services.relations import plone_api_content_get
+from Products.CMFCore.utils import getToolByName
+from zc.relation import catalog as zcr_catalog
 from zc.relation.interfaces import ICatalog
 from zExceptions import Unauthorized
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component import queryUtility
+from zope.component.hooks import getSite
 from zope.globalrequest import getRequest
 from zope.intid.interfaces import IIntIds
+from zope.intid.interfaces import IntIdMissingError
 from zope.interface import alsoProvides
 from zope.schema.interfaces import IVocabularyFactory
 
@@ -51,14 +55,15 @@ def make_summary(obj, request):
 
 
 def get_relations(
-    source=None,
-    target=None,
+    sources=None,
+    targets=None,
     relationship=None,
     request=None,
     unrestricted=False,
     onlyBroken=False,
     max=None,
 ):
+    """Get valid relations."""
     results = defaultdict(list)
     if request is None:
         request = getRequest()
@@ -68,10 +73,23 @@ def get_relations(
         return results
 
     query = {}
-    if source is not None:
-        query["from_id"] = intids.getId(source)
-    if target is not None:
-        query["to_id"] = intids.getId(target)
+    if sources is not None:
+        iids = []
+        for el in sources:
+            try:
+                iids.append(intids.getId(el))
+            except IntIdMissingError:
+                continue
+        query["from_id"] = zcr_catalog.any(*iids)
+
+    if targets is not None:
+        iids = []
+        for el in targets:
+            try:
+                iids.append(intids.getId(el))
+            except IntIdMissingError:
+                continue
+        query["to_id"] = zcr_catalog.any(*iids)
     if relationship is not None:
         query["from_attribute"] = relationship
 
@@ -176,6 +194,14 @@ class GetRelations(Service):
         rebuild = self.request.get("rebuild", False)
         max = self.request.get("max", False)
         onlyBroken = self.request.get("onlyBroken", False)
+        query_source = self.request.get("query_source", None)
+        query_target = self.request.get("query_target", None)
+
+        targets = None
+        sources = None
+
+        catalog = getToolByName(self.context, "portal_catalog")
+        portal = getSite()
 
         # Rebuild relations with or without regenerating intids
         if rebuild:
@@ -242,6 +268,8 @@ class GetRelations(Service):
                 source = plone_api_content_get(UID=source)
             if not source:
                 return self.reply_no_content(status=404)
+            else:
+                sources = [source]
 
         if target:
             if target[0:1] == "/":
@@ -250,10 +278,32 @@ class GetRelations(Service):
                 target = plone_api_content_get(UID=target)
             if not target:
                 return self.reply_no_content(status=404)
+            else:
+                targets = [target]
+
+        if query_source:
+            query_objects = {}
+            if query_source[0] == "/":
+                query_objects["path"] = {"query": f"{portal.id}/{query_source}"}
+            else:
+                query_objects["SearchableText"] = query_source
+            results = catalog.searchResults(**query_objects)
+            # TODO Maybe return warning if many results
+            sources = [el.getObject() for el in results]
+
+        if query_target:
+            query_objects = {}
+            if query_target[0] == "/":
+                query_objects["path"] = {"query": query_target}
+            else:
+                query_objects["SearchableText"] = query_target
+            results = catalog.searchResults(**query_objects)
+            # TODO Maybe return warning if many results
+            targets = [el.getObject() for el in results]
 
         data = get_relations(
-            source=source,
-            target=target,
+            sources=sources,
+            targets=targets,
             relationship=relationship,
             max=max,
             request=self.request,
@@ -264,6 +314,9 @@ class GetRelations(Service):
             "items": data,
             "items_total": dict([(el, len(data[el])) for el in data]),
         }
+        if relationship and not data:
+            result["items"] = {relationship: []}
+            result["items_total"] = {relationship: 0}
 
         if relationship:
             scvq = getStaticCatalogVocabularyQuery(relationship)
