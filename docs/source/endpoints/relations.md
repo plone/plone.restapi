@@ -1,10 +1,10 @@
 ---
 myst:
   html_meta:
-    "description": "Create, query, and delete relations between content items with the /@relations endpoint."
-    "property=og:description": "Create, query, and delete relations between content items with the /@relations endpoint."
-    "property=og:title": "Relations"
-    "keywords": "Plone, plone.restapi, REST, API, relations, service, endpoint"
+    'description': 'Create, query, and delete relations between content items with the /@relations endpoint.'
+    'property=og:description': 'Create, query, and delete relations between content items with the /@relations endpoint.'
+    'property=og:title': 'Relations'
+    'keywords': 'Plone, plone.restapi, REST, API, relations, service, endpoint'
 ---
 
 (restapi-relations-label)=
@@ -20,12 +20,10 @@ Relations are either defined by content type schema fields (`RelationChoice` or 
 - Relations based on fields of a content type schema are editable by users.
 - Relations `isReferencing` (block text links to a Plone content object) and `iterate-working-copy` (working copy is enabled and the content object is a working copy) are not editable. They are created and deleted with links in text, respectively creating and deleting working copies.
 
-
 Relations can be created, queried, and deleted by interacting through the `@relations` endpoint on the site root.
 Querying relations with the `@relations` endpoint requires the `zope2.View` permission on the source object and target object.
 Therefore results include relations if and only if source and target are accessible by the querying user.
 Creating and deleting relations requires the respective permission on the content object.
-
 
 (restapi-relations-getting-statistics-for-all-relations-label)=
 
@@ -38,11 +36,9 @@ The call without any parameters returns statistics on all existing relations the
     :request: ../../../src/plone/restapi/tests/http-examples/relations_catalog_get_stats.req
 ```
 
-
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_catalog_get_stats.resp
 :language: http
 ```
-
 
 (restapi-relations-querying-relations-label)=
 
@@ -114,7 +110,6 @@ Query relations to a **target**:
 :language: http
 ```
 
-
 (restapi-relations-creating-relations-label)=
 
 ## Creating relations
@@ -157,7 +152,6 @@ Add by **UID**:
 :language: http
 ```
 
-
 (restapi-relations-deleting-relations-label)=
 
 ## Deleting relations
@@ -193,7 +187,6 @@ by **UID**:
 
 **Failures** are listed in response:
 
-
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/relations_del_failure.req
@@ -228,7 +221,6 @@ by **UID**:
 
 Delete relations by source UID or source path.
 
-
 ### Delete relations by target
 
 ```{eval-rst}
@@ -241,8 +233,6 @@ Delete relations by source UID or source path.
 ```
 
 Delete relations by target UID or target path.
-
-
 
 ### Delete relations by combination of source/target and relation name
 

@@ -382,7 +382,9 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "/@relations?relation=comprisesComponentPart",
             )
             resp = response.json()
-            self.assertEqual(resp["items_total"], {})  # instead of 1 before deletion
+            self.assertEqual(
+                resp["items_total"], {"comprisesComponentPart": 0}
+            )  # instead of 1 before deletion
 
             # Failing deletion
             response = self.api_session.delete(
