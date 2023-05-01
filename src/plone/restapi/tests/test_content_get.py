@@ -18,7 +18,6 @@ import unittest
 
 
 class TestContentGet(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -134,6 +133,31 @@ class TestContentGet(unittest.TestCase):
                     "title": "My Document 2",
                 }
             ],
+            response.json()["relatedItems"],
+        )
+
+    def test_get_content_includes_related_items_filtered_by_view_permission(self):
+        intids = getUtility(IIntIds)
+        self.portal.folder1.doc1.relatedItems = [
+            RelationValue(intids.getId(self.portal.folder1.folder2.doc2)),
+        ]
+
+        # Remove view permission
+        self.portal.folder1.folder2.doc2.manage_permission(
+            "View", roles=[], acquire=False
+        )
+        self.portal.folder1.folder2.doc2.reindexObjectSecurity()
+        transaction.commit()
+
+        response = requests.get(
+            self.portal.folder1.doc1.absolute_url(),
+            headers={"Accept": "application/json"},
+            auth=(SITE_OWNER_NAME, SITE_OWNER_PASSWORD),
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(0, len(response.json()["relatedItems"]))
+        self.assertEqual(
+            [],
             response.json()["relatedItems"],
         )
 
