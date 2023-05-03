@@ -18,8 +18,12 @@ from zope.interface import Interface
 @adapter(IRelationValue)
 @implementer(IJsonCompatible)
 def relationvalue_converter(value):
-    mtool = api.portal.get_tool("portal_membership")
-    if value.to_object and mtool.checkPermission("View", value.to_object):
+    has_permission = api.user.has_permission(
+        "Access Contents Information",
+        obj=value.__parent__
+    )
+
+    if value.to_object and has_permission:
         request = getRequest()
         request.form["metadata_fields"] = ["UID"]
         summary = getMultiAdapter((value.to_object, request), ISerializeToJsonSummary)()

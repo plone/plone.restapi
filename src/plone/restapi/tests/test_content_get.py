@@ -8,6 +8,7 @@ from plone.namedfile.file import NamedBlobImage
 from plone.restapi.testing import PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 from Products.CMFCore.utils import getToolByName
 from z3c.relationfield import RelationValue
+from z3c.relationfield.event import updateRelations
 from zope.component import getUtility
 from zope.intid.interfaces import IIntIds
 
@@ -141,12 +142,11 @@ class TestContentGet(unittest.TestCase):
         self.portal.folder1.doc1.relatedItems = [
             RelationValue(intids.getId(self.portal.folder1.folder2.doc2)),
         ]
-
+        updateRelations(self.portal.folder1.doc1, None)
         # Remove view permission
-        self.portal.folder1.folder2.doc2.manage_permission(
-            "View", roles=[], acquire=False
+        self.portal.folder1.folder1.doc1.manage_permission(
+            "Access contents information", roles=[], acquire=False
         )
-        self.portal.folder1.folder2.doc2.reindexObjectSecurity()
         transaction.commit()
 
         response = requests.get(
