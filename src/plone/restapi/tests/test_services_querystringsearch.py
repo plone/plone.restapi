@@ -51,6 +51,21 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(len(response.json()["items"]), 1)
         self.assertNotIn("effective", response.json()["items"][0])
 
+    def test_querystringsearch_basic_get(self):
+        self.portal.invokeFactory("Document", "doc2", title="Test Document 2")
+        transaction.commit()
+
+        response = self.api_session.get(
+            "/@querystring-search?query=%7B%22query%22%3A%20%5B%7B%22i%22%3A%20%22portal_type%22%2C%20%22o%22%3A%20%22plone.app.querystring.operation.selection.any%22%2C%20%22v%22%3A%20%5B%22Document%22%5D%7D%5D%2C%20%22b_size%22%3A%201%7D"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("items", response.json())
+        self.assertIn("items_total", response.json())
+        self.assertEqual(response.json()["items_total"], 2)
+        self.assertEqual(len(response.json()["items"]), 1)
+        self.assertNotIn("effective", response.json()["items"][0])
+
     def test_querystringsearch_fullobjects(self):
         response = self.api_session.post(
             "/@querystring-search",
@@ -73,7 +88,7 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
         self.assertEqual(response.json()["items_total"], 1)
         self.assertEqual(len(response.json()["items"]), 1)
 
-    def test_querystringsearch_metadata_fields(self):
+    def test_querystringsearch_metadata_fields_post(self):
         response = self.api_session.post(
             "/@querystring-search",
             json={
@@ -104,6 +119,24 @@ class TestQuerystringSearchEndpoint(unittest.TestCase):
                 ],
                 "metadata_fields": ["effective"],
             },
+        )
+
+        self.assertIn("effective", response.json()["items"][0])
+
+    def test_querystringsearch_metadata_fields_get(self):
+
+        response = self.api_session.get(
+            "/@querystring-search?query=%7B%22query%22%3A%20%5B%7B%22i%22%3A%20%22portal_type%22%2C%20%22o%22%3A%20%22plone.app.querystring.operation.selection.is%22%2C%20%22v%22%3A%20%5B%22Document%22%5D%7D%5D%7D"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("items", response.json())
+        self.assertIn("items_total", response.json())
+        self.assertNotIn("effective", response.json()["items"][0])
+
+        # request with metadata_fields
+        response = self.api_session.get(
+            "/@querystring-search?query=%7B%22query%22%3A%20%5B%7B%22i%22%3A%20%22portal_type%22%2C%20%22o%22%3A%20%22plone.app.querystring.operation.selection.is%22%2C%20%22v%22%3A%20%5B%22Document%22%5D%7D%5D%2C%20%22metadata_fields%22%3A%20%5B%22effective%22%5D%7D"
         )
 
         self.assertIn("effective", response.json()["items"][0])
