@@ -1,4 +1,5 @@
 from plone.dexterity.interfaces import IDexterityContent
+from plone.dexterity.schema import lookup_fti
 from plone.restapi.bbb import IConstrainTypes
 from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import IPloneRestapiLayer

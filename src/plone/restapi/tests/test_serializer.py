@@ -117,6 +117,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "Document",
                     "description": "This is a document",
                     "title": "Document 1",
+                    "type_name": "Page",
                     "review_state": "private",
                 }
             ],
@@ -147,6 +148,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "Document",
                     "description": "Second doc",
                     "title": "Document 2",
+                    "type_name": "Page",
                     "review_state": "private",
                 },
                 {
@@ -154,6 +156,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "Document",
                     "description": "This is a document",
                     "title": "Document 1",
+                    "type_name": "Page",
                     "review_state": "private",
                 },
             ],
@@ -212,6 +215,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "DXTestDocument",
                     "description": "",
                     "title": "DX Test Document",
+                    "type_name": "DX Test Document",
                     "review_state": "private",
                 },
                 {
@@ -219,6 +223,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "Document",
                     "description": "",
                     "title": "Document 1",
+                    "type_name": "Page",
                     "review_state": "private",
                 },
             ],
@@ -348,6 +353,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "Document",
                     "description": "",
                     "title": "Document 1",
+                    "type_name": "Page",
                     "review_state": "private",
                 },
                 {
@@ -355,6 +361,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "Document",
                     "description": "",
                     "title": "Document 2",
+                    "type_name": "Page",
                     "review_state": "private",
                 },
             ],

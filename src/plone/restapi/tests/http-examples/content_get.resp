@@ -54,7 +54,8 @@ Content-Type: application/json
         "@type": "Folder",
         "description": "This is a folder with two documents",
         "review_state": "private",
-        "title": "My Folder"
+        "title": "My Folder",
+        "type_name": "Folder"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/folder/doc2",

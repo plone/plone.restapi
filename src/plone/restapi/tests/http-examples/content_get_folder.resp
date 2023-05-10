@@ -48,7 +48,8 @@ Content-Type: application/json
             "UID": "SomeUUID000000000000000000000003",
             "description": "",
             "review_state": "private",
-            "title": "A document within a folder"
+            "title": "A document within a folder",
+            "type_name": "Page"
         },
         {
             "@id": "http://localhost:55001/plone/folder/doc2",
@@ -57,7 +58,8 @@ Content-Type: application/json
             "UID": "SomeUUID000000000000000000000004",
             "description": "",
             "review_state": "private",
-            "title": "A document within a folder"
+            "title": "A document within a folder",
+            "type_name": "Page"
         },
         {
             "@id": "http://localhost:55001/plone/folder/my-document",
@@ -66,7 +68,8 @@ Content-Type: application/json
             "UID": "SomeUUID000000000000000000000005",
             "description": "",
             "review_state": "private",
-            "title": "My Document"
+            "title": "My Document",
+            "type_name": "Page"
         }
     ],
     "items_total": 3,

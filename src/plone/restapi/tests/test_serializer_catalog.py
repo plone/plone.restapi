@@ -125,6 +125,7 @@ class TestCatalogSerializers(unittest.TestCase):
                 "@id": "http://nohost/plone/my-folder/my-document",
                 "@type": "Document",
                 "title": "My Document",
+                "type_name": "Page",
                 "description": "",
                 "review_state": "private",
             },

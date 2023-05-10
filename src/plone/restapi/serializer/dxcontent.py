@@ -17,6 +17,7 @@ from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
 from plone.restapi.services.locking import lock_info
 from plone.restapi.serializer.utils import get_portal_type_title
+from plone.restapi.serializer.summary import SiteRootJSONSummarySerializer
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName

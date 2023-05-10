@@ -61,7 +61,8 @@ Location: http://localhost:55001/plone/de/mydocument
         "@type": "LRF",
         "description": "",
         "review_state": "published",
-        "title": "Deutsch"
+        "title": "Deutsch",
+        "type_name": "Basisordner einer Sprache"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/de/assets",
