@@ -43,7 +43,7 @@ def uid_to_url(path):
     return href
 
 
-def get_portal_type(portal_type, request=None):
+def get_portal_type_title(portal_type, request=None):
     fti = queryUtility(IDexterityFTI, name=portal_type)
     if request:
         return translate(getattr(fti, "Title", lambda: portal_type)(), context=request)

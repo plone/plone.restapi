@@ -3,8 +3,9 @@ from Acquisition import aq_inner
 from Acquisition import aq_parent
 from plone.app.dexterity.behaviors.nextprevious import NextPreviousBase
 from plone.registry.interfaces import IRegistry
-from plone.restapi.serializer.utils import get_portal_type
+from plone.restapi.serializer.utils import get_portal_type_title
 from zope.component import getUtility
+from zope.globalrequest import getRequest
 
 
 class NextPreviousFixed(NextPreviousBase):
@@ -24,9 +25,9 @@ class NextPreviousFixed(NextPreviousBase):
 class NextPrevious:
     """Facade with more pythonic interface"""
 
-    def __init__(self, context, request):
+    def __init__(self, context):
         self.context = context
-        self.request = request
+        self.request = getRequest()
         self.parent = aq_parent(aq_inner(context))
         self.nextprev = NextPreviousFixed(self.parent)
 
@@ -42,7 +43,7 @@ class NextPrevious:
         return {
             "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
-            "type_name": get_portal_type(data["portal_type"], self.request),
+            "type_name": get_portal_type_title(data["portal_type"], self.request),
             "title": data["title"],
             "description": data["description"],
         }
@@ -59,7 +60,7 @@ class NextPrevious:
         return {
             "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
-            "type_name": get_portal_type(data["portal_type"], self.request),
+            "type_name": get_portal_type_title(data["portal_type"], self.request),
             "title": data["title"],
             "description": data["description"],
         }

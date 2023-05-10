@@ -7,7 +7,7 @@ from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
-from plone.restapi.serializer.utils import get_portal_type
+from plone.restapi.serializer.utils import get_portal_type_title
 from plone.restapi.tests.helpers import patch_scale_uuid
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
@@ -168,7 +168,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             {
                 "@id": self.portal.absolute_url(),
                 "@type": self.portal.portal_type,
-                "type_name": get_portal_type(self.portal.portal_type),
+                "type_name": get_portal_type_title(self.portal.portal_type),
                 "title": self.portal.title,
                 "description": self.portal.description,
             },
@@ -185,7 +185,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             {
                 "@id": self.portal.absolute_url(),
                 "@type": self.portal.portal_type,
-                "type_name": get_portal_type(self.portal.portal_type),
+                "type_name": get_portal_type_title(self.portal.portal_type),
                 "title": self.portal.title,
                 "description": self.portal.description,
             },

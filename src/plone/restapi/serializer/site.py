@@ -11,7 +11,7 @@ from plone.restapi.serializer.blocks import apply_block_serialization_transforms
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.services.locking import lock_info
-from plone.restapi.serializer.utils import get_portal_type
+from plone.restapi.serializer.utils import get_portal_type_title
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
@@ -63,7 +63,7 @@ class SerializeSiteRootToJson:
             "@id": self.context.absolute_url(),
             "id": self.context.id,
             "@type": "Plone Site",
-            "type_name": get_portal_type("Plone Site", self.request),
+            "type_name": get_portal_type_title("Plone Site", self.request),
             "title": self.context.Title(),
             "parent": {},
             "is_folderish": True,

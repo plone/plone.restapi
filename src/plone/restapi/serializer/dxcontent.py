@@ -16,7 +16,7 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
 from plone.restapi.services.locking import lock_info
-from plone.restapi.serializer.utils import get_portal_type
+from plone.restapi.serializer.utils import get_portal_type_title
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
@@ -63,14 +63,13 @@ class SerializeToJson:
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary
         )()
-        parent_summary["type_name"] = get_portal_type(parent.portal_type, self.request)
 
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             "@id": obj.absolute_url(),
             "id": obj.id,
             "@type": obj.portal_type,
-            "type_name": get_portal_type(obj.portal_type, self.request),
+            "type_name": get_portal_type_title(obj.portal_type, self.request),
             "parent": parent_summary,
             "created": json_compatible(obj.created()),
             "modified": json_compatible(obj.modified()),
@@ -82,7 +81,7 @@ class SerializeToJson:
         }
 
         # Insert next/prev information
-        nextprevious = NextPrevious(obj, self.request)
+        nextprevious = NextPrevious(obj)
         result.update(
             {"previous_item": nextprevious.previous, "next_item": nextprevious.next}
         )

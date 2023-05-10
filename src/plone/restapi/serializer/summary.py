@@ -4,7 +4,7 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IJSONSummarySerializerMetadata
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
-from plone.restapi.serializer.utils import get_portal_type
+from plone.restapi.serializer.utils import get_portal_type_title
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import WorkflowException
 from zope.component import adapter
@@ -141,7 +141,9 @@ class SiteRootJSONSummarySerializer:
             {
                 "@id": self.context.absolute_url(),
                 "@type": self.context.portal_type,
-                "type_name": get_portal_type(self.context.portal_type, self.request),
+                "type_name": get_portal_type_title(
+                    self.context.portal_type, self.request
+                ),
                 "title": self.context.title,
                 "description": self.context.description,
             }

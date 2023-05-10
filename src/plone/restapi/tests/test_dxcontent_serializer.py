@@ -17,7 +17,7 @@ from plone.restapi.interfaces import IExpandableElement
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
 from plone.restapi.tests.test_expansion import ExpandableElementFoo
-from plone.restapi.serializer.utils import get_portal_type
+from plone.restapi.serializer.utils import get_portal_type_title
 from plone.uuid.interfaces import IMutableUUID
 from Products.CMFCore.utils import getToolByName
 from zope.component import getGlobalSiteManager
@@ -123,7 +123,7 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = self.serialize()
         self.assertIn("@type", obj)
         self.assertEqual(
-            get_portal_type(self.portal.doc1.portal_type), obj["type_name"]
+            get_portal_type_title(self.portal.doc1.portal_type), obj["type_name"]
         )
 
     def test_serializer_includes_review_state(self):

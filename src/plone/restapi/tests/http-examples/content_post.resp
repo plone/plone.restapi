@@ -55,8 +55,7 @@ Location: http://localhost:55001/plone/folder/my-document
         "@type": "Folder",
         "description": "This is a folder with two documents",
         "review_state": "private",
-        "title": "My Folder",
-        "type_name": "Folder"
+        "title": "My Folder"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/folder/doc2",
