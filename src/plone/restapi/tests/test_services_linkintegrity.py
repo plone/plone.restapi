@@ -5,10 +5,10 @@ from plone.app.testing import SITE_OWNER_PASSWORD
 from plone.app.testing import TEST_USER_ID
 from plone.dexterity.utils import createContentInContainer
 from plone.registry.interfaces import IRegistry
+from plone.restapi.bbb import IEditingSchema
 from plone.restapi.testing import PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 from plone.restapi.testing import RelativeSession
 from plone.uuid.interfaces import IUUID
-from Products.CMFPlone.interfaces import IEditingSchema
 from z3c.relationfield import RelationValue
 from zope.component import getUtility
 from zope.event import notify

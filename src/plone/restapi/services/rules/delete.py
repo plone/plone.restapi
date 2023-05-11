@@ -1,9 +1,10 @@
-from plone.restapi.services import Service
-import plone.protect.interfaces
-from zExceptions import BadRequest
-from zope.interface import alsoProvides
-from zope.component import queryMultiAdapter
 from plone.restapi.deserializer import json_body
+from plone.restapi.services import Service
+from zExceptions import BadRequest
+from zope.component import queryMultiAdapter
+from zope.interface import alsoProvides
+
+import plone.protect.interfaces
 
 
 class ContentRulesDelete(Service):

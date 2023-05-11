@@ -8,6 +8,83 @@ Changelog
 
 .. towncrier release notes start
 
+8.37.0 (2023-04-19)
+-------------------
+
+New features:
+
+
+- Apply a cache ruleset to the /@querystring-search endpoint.
+  [ericof] (#1626)
+
+
+8.36.1 (2023-04-17)
+-------------------
+
+Bug fixes:
+
+
+- Fix bugs in handling parameters when the `@querystringsearch` endpoint is called with the GET method. @davisagli (#1621)
+
+
+8.36.0 (2023-04-07)
+-------------------
+
+New features:
+
+
+- Add UID to relationvalue_converter summary. [ksuess] (#1605)
+- Add querystring_search get method. [robgietema] (#1616)
+
+
+Bug fixes:
+
+
+- Fix a bunch of deprecation warnings in a Plone 5.2 compatible way.
+  Applied proper isort.
+  Fixed unclosed file issues in a test.
+  Added Python 3.11 to test matrix.
+  [jensens] (#1606)
+- No longer declare support for Python 3.6 (it was already not tested). [davisagli] (#1615)
+- Fixed encoding issue on Python 3 for some mail servers.
+  This could result in missing characters in an email body.
+  [maurits] (#3754)
+
+
+8.35.3 (2023-03-23)
+-------------------
+
+Bug fixes:
+
+
+- Fix UnboundLocalError in RelationChoice deserializer. @davisagli (#1600)
+
+
+Internal:
+
+
+- Fixed tests in combination with newer ``plone.app.z3cform``.
+  [maurits] (#162)
+
+
+Documentation:
+
+
+- Update intersphinx_mapping for training @ksuess (#1596)
+
+
+8.35.2 (2023-03-10)
+-------------------
+
+Bug fixes:
+
+
+- Fix missing `Decimal` field deserializer.
+  [jensens] (#903)
+- Fix translation of the error message for a password that is too short while
+  adding a user. [davisagli] (#4395)
+
+
 8.35.1 (2023-03-02)
 -------------------
 

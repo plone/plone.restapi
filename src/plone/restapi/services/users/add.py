@@ -1,13 +1,13 @@
 from AccessControl import getSecurityManager
 from plone.app.users.schema import ICombinedRegisterSchema
 from plone.restapi import _
+from plone.restapi.bbb import ISecuritySchema
 from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.services import Service
 from Products.CMFCore.permissions import AddPortalMember
 from Products.CMFCore.permissions import SetOwnPassword
 from Products.CMFCore.utils import getToolByName
-from Products.CMFPlone.interfaces import ISecuritySchema
 from Products.CMFPlone.PasswordResetTool import ExpiredRequestError
 from Products.CMFPlone.PasswordResetTool import InvalidRequestError
 from Products.CMFPlone.RegistrationTool import get_member_by_login_name
@@ -266,6 +266,7 @@ class UsersPost(Service):
         pas = getToolByName(self.context, "acl_users")
         mt = getToolByName(self.context, "portal_membership")
         pwt = getToolByName(self.context, "portal_password_reset")
+        registration_tool = getToolByName(self.context, "portal_registration")
 
         if target_user is None:
             self.request.response.setStatus(404)
@@ -273,7 +274,6 @@ class UsersPost(Service):
 
         # Send password reset mail
         if list(data) == []:
-            registration_tool = getToolByName(self.context, "portal_registration")
             registration_tool.mailPassword(username, self.request)
             return
 
@@ -299,6 +299,13 @@ class UsersPost(Service):
         # Reset the password with a reset token
         if reset_token:
             try:
+                err = registration_tool.testPasswordValidity(new_password)
+                if err is not None:
+                    return self._error(
+                        400,
+                        "Invalid password",
+                        _(err),
+                    )
                 pwt.resetPassword(username, reset_token, new_password)
             except InvalidRequestError:
                 return self._error(

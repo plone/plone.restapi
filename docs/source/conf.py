@@ -10,13 +10,15 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
+import datetime
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # sys.path.insert(0, os.path.abspath("."))
 import os
 import sys
-import datetime
+
 
 sys.path.insert(0, os.path.abspath("../../"))
 
@@ -118,6 +120,7 @@ pygments_style = "sphinx"
 linkcheck_ignore = [
     r"https://coveralls.io/repos/github/plone/plone.restapi/badge.svg\?branch=master",  # plone.restapi
     r"https://github.com/plone/plone.restapi/blob/dde57b88e0f1b5f5e9f04e6a21865bc0dde55b1c/src/plone/restapi/services/content/add.py#L35-L61",  # plone.restapi
+    r"https://vhs-ehrenamtsportal.de/",  # cert fix in progress
 ]
 
 
@@ -136,7 +139,7 @@ linkcheck_ignore = [
 intersphinx_mapping = {
     "plone": ("https://6.docs.plone.org/", None),
     "python": ("https://docs.python.org/3/", None),
-    "training": ("https://training.plone.org/5/", None),
+    "training": ("https://training.plone.org/", None),
 }
 
 
