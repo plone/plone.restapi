@@ -4,6 +4,10 @@ from plone.restapi.services.relations import plone_api_content_get
 from plone.restapi.services.relations import api_relation_create
 from zope.interface import alsoProvides
 import plone.protect.interfaces
+import logging
+
+
+log = logging.getLogger(__name__)
 
 
 class PostRelations(Service):
@@ -39,7 +43,11 @@ class PostRelations(Service):
                     target=target_obj,
                     relationship=relationdata["relation"],
                 )
-            except Exception:
+            except Exception as e:
+                log.error(str(e))
+                log.error(
+                    f"Failed on creating relation. source:{source_obj}, target: {target_obj}"
+                )
                 failed_relations.append(relationdata)
                 continue
 
