@@ -13,8 +13,7 @@ When you create relations between content objects in Plone (for example, via rel
 The Plone user interface will use those stored relations to show a warning when you try to delete a content object that is still referenced elsewhere.
 Link integrity avoids broken links ("breaches") in the site.
 
-The `@linkintegrity` endpoint returns the list of reference breaches
-that would happen if some content items would be deleted.
+The `@linkintegrity` endpoint returns the list of reference breaches that would happen if some content items would be deleted.
 This information can be used to show the editor a confirmation dialog.
 
 This check includes content objects that are located within a content object ("folderish content").
