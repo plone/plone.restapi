@@ -31,11 +31,15 @@ from plone.restapi.tests.helpers import patch_scale_uuid
 from plone.restapi.tests.statictime import StaticTime
 from plone.testing.zope import Browser
 from plone.uuid.interfaces import IUUID
+from z3c.relationfield import RelationValue
 from zope.component import createObject
 from zope.component import getMultiAdapter
 from zope.component import getUtility
 from zope.component.hooks import getSite
+from zope.event import notify
 from zope.interface import alsoProvides
+from zope.intid.interfaces import IIntIds
+from zope.lifecycleevent import ObjectModifiedEvent
 
 import collections
 import json
@@ -2713,3 +2717,27 @@ class TestRules(TestDocumentationBase):
         url = "/@controlpanels/content-rules/rule-3"
         response = self.api_session.delete(url)
         save_request_and_response_for_docs("controlpanels_delete_rule", response)
+
+
+class TestLinkintegrity(TestDocumentationBase):
+
+    layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
+
+    def setUp(self):
+        super().setUp()
+
+        # Create one document with a reference to another
+        self.doc1 = createContentInContainer(
+            self.portal, "Document", id="doc-1", title="First document"
+        )
+        self.doc2 = createContentInContainer(
+            self.portal, "Document", id="doc-2", title="Second document"
+        )
+        intids = getUtility(IIntIds)
+        self.doc1.relatedItems = [RelationValue(intids.getId(self.doc2))]
+        notify(ObjectModifiedEvent(self.doc1))
+        transaction.commit()
+
+    def test_linkintegrity_get(self):
+        response = self.api_session.get("/@linkintegrity?uids=" + self.doc2.UID())
+        save_request_and_response_for_docs("linkintegrity_get", response)

@@ -13,17 +13,23 @@ When you create relations between content objects in Plone (for example, via rel
 The Plone user interface will use those stored relations to show a warning when you try to delete a content object that is still referenced elsewhere.
 Link integrity avoids broken links ("breaches") in the site.
 
+The `@linkintegrity` endpoint returns the list of reference breaches
+that would happen if some content items would be deleted.
+This information can be used to show the editor a confirmation dialog.
+
 This check includes content objects that are located within a content object ("folderish content").
 
-The `@linkintegrity` endpoint returns the list of reference breaches.
-If there are none, it will return an empty list (`[]`).
-
-You can call the `/@linkintegrity` endpoint on the site root with a `GET` request and a list of UIDs in the JSON body:
+You can call the `/@linkintegrity` endpoint on the site root with a `GET` request and a list of content UIDs in the JSON body:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
     :request: ../../../src/plone/restapi/tests/http-examples/linkintegrity_get.req
 ```
+
+The endpoint accepts a single parameter:
+
+`uids`
+: A list of object UIDs that you want to check.
 
 The server will respond with the result:
 
@@ -31,7 +37,11 @@ The server will respond with the result:
    :language: http
 ```
 
-The endpoint accepts a single parameter:
+The result includes a list of objects corresponding to the UIDs that were requested.
+Each result object includes:
 
-`uids`
-: A list of object UIDs that you want to check.
+`breaches`
+: A list of breaches (sources of relations that would be broken)
+
+`items_total`
+: Count of items contained inside the specified UIDs.
