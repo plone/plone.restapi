@@ -99,20 +99,18 @@ class ResolveUIDSerializerBase:
 
     def __call__(self, block):
         return self._process_data(block)
-    
+
     def _process_data(self, data, field=None):
         if isinstance(data, str) and field in self.fields:
             return uid_to_url(data)
         if isinstance(data, list):
             return [self._process_data(data=value, field=field) for value in data]
         if isinstance(data, dict):
-            if data.get('@type', None) == 'URL' and data.get('value', None):
-                data['value'] = uid_to_url(data["value"])
-            elif data.get('@id', None):
+            if data.get("@type", None) == "URL" and data.get("value", None):
+                data["value"] = uid_to_url(data["value"])
+            elif data.get("@id", None):
                 item_clone = deepcopy(data)
-                item_clone["@id"] = uid_to_url(
-                    item_clone["@id"]
-                )
+                item_clone["@id"] = uid_to_url(item_clone["@id"])
                 return {
                     field: self._process_data(data=value, field=field)
                     for field, value in item_clone.items()
