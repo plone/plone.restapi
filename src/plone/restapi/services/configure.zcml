@@ -25,6 +25,7 @@
   <include package=".history" />
   <include package=".linkintegrity" />
   <include package=".locking" />
+  <include package=".missingtranslations" />
   <include package=".principals" />
   <include package=".querysources" />
   <include package=".querystring" />
