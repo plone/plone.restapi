@@ -20,10 +20,10 @@ Relations are either defined by content type schema fields (`RelationChoice` or 
 - Relations based on fields of a content type schema are editable by users.
 - Relations `isReferencing` (block text links to a Plone content object) and `iterate-working-copy` (working copy is enabled and the content object is a working copy) are not editable. They are created and deleted with links in text, respectively creating and deleting working copies.
 
-Relations can be created, queried, and deleted by interacting through the `@relations` endpoint on the site root.
+Relations can be created, queried, and deleted by interacting through the `@relations` endpoint on the site root.  
 Querying relations with the `@relations` endpoint requires the `zope2.View` permission on the source object and target object.
-Therefore results include relations if and only if source and target are accessible by the querying user.
-Creating and deleting relations requires the respective permission on the content object.
+Therefore results include relations if and only if source and target are accessible by the querying user.  
+Creating and deleting relations requires `zope2.View` permission on the target object and `cmf.ModifyPortalContent` permission on the source object.
 
 (restapi-relations-getting-statistics-for-all-relations-label)=
 
