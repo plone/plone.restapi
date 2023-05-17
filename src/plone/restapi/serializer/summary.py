@@ -91,7 +91,7 @@ class DefaultJSONSummarySerializer:
                 continue
             accessor = self.field_accessors.get(field, field)
             if field == "type_title":
-                value = get_portal_type_title(self.context.portal_type, self.request)
+                value = get_portal_type_title(self.context.portal_type)
             else:
                 value = getattr(obj, accessor, None)
             try:
@@ -138,9 +138,7 @@ class SiteRootJSONSummarySerializer:
             {
                 "@id": self.context.absolute_url(),
                 "@type": self.context.portal_type,
-                "type_title": get_portal_type_title(
-                    self.context.portal_type, self.request
-                ),
+                "type_title": get_portal_type_title(self.context.portal_type),
                 "title": self.context.title,
                 "description": self.context.description,
             }
