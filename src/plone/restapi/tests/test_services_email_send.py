@@ -13,6 +13,7 @@ import unittest
 
 
 class EmailSendEndpoint(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):

@@ -13,6 +13,7 @@ import unittest
 
 
 class TestCreateContent(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -55,6 +56,7 @@ class TestCreateContent(unittest.TestCase):
 
 
 class TestAddContent(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):

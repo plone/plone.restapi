@@ -10,6 +10,7 @@ from ZPublisher.pubevents import PubStart
 
 
 class TestLogin(TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -106,6 +107,7 @@ class TestLogin(TestCase):
 
 
 class TestLogout(TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -156,6 +158,7 @@ class TestLogout(TestCase):
 
 
 class TestRenew(TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):

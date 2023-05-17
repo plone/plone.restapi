@@ -16,6 +16,7 @@ import unittest
 
 
 class TestCopyMove(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -60,6 +61,7 @@ class TestCopyMove(unittest.TestCase):
 
 
 class TestCopyMoveFunctional(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):

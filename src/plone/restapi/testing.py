@@ -114,6 +114,7 @@ DATE_TIME_FIXTURE = DateTimeFixture()
 
 
 class PloneRestApiDXLayer(PloneSandboxLayer):
+
     defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE)
 
     def setUpZope(self, app, configurationContext):
@@ -157,6 +158,7 @@ PLONE_RESTAPI_DX_FUNCTIONAL_TESTING = FunctionalTesting(
 
 
 class PloneRestApiTestWorkflowsLayer(PloneSandboxLayer):
+
     defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
 
     def setUpPloneSite(self, portal):
@@ -171,6 +173,7 @@ PLONE_RESTAPI_WORKFLOWS_INTEGRATION_TESTING = IntegrationTesting(
 
 
 class PloneRestApiDXPAMLayer(PloneSandboxLayer):
+
     defaultBases = (DATE_TIME_FIXTURE, PLONE_APP_CONTENTTYPES_FIXTURE)
 
     def setUpZope(self, app, configurationContext):
@@ -212,6 +215,7 @@ PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING = FunctionalTesting(
 if PloneAppCachingBase is not None:
     # condition and fallback can be removed in a Plone 6.0 only scenario
     class PloneRestApiCachingLayer(PloneAppCachingBase):
+
         defaultBases = [
             PLONE_RESTAPI_DX_PAM_FIXTURE,
         ]
@@ -234,6 +238,7 @@ else:
 
 
 class PloneRestApiDXIterateLayer(PloneSandboxLayer):
+
     defaultBases = (PLONEAPPITERATEDEX_FIXTURE,)
 
     def setUpZope(self, app, configurationContext):
@@ -257,6 +262,7 @@ PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING = FunctionalTesting(
 
 
 class PloneRestApIBlocksLayer(PloneSandboxLayer):
+
     defaultBases = (PLONE_RESTAPI_DX_FIXTURE,)
 
     def setUpPloneSite(self, portal):

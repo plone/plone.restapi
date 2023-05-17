@@ -10,6 +10,7 @@ import unittest
 
 
 class TestWorkingCopyEndpoint(unittest.TestCase):
+
     layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 
     def setUp(self):

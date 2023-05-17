@@ -20,6 +20,7 @@ import unittest
 
 
 class TestLinkIntegrity(unittest.TestCase):
+
     layer = PLONE_RESTAPI_BLOCKS_FUNCTIONAL_TESTING
 
     def setUp(self):

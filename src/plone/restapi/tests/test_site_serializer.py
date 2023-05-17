@@ -22,6 +22,7 @@ HAS_PLONE_6 = getattr(
 
 
 class TestSiteSerializer(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -100,6 +101,7 @@ class TestSiteSerializer(unittest.TestCase):
 
 
 class TestSiteSerializationFunctional(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):

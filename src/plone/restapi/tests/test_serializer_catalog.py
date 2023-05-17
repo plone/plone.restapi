@@ -18,6 +18,7 @@ HAS_PLONE_6 = parse_version(
 
 
 class TestCatalogSerializers(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):

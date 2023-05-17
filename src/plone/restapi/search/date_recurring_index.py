@@ -10,5 +10,6 @@ from zope.interface import Interface
 @implementer(IIndexQueryParser)
 @adapter(DateRecurringIndex, Interface, Interface)
 class DateRecurringIndexQueryParser(BaseIndexQueryParser):
+
     query_value_type = DateTime
     query_options = {"range": str}

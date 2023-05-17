@@ -19,6 +19,7 @@ LAYOUT_SCHEMA = json.dumps(
 
 @provider(IFormFieldProvider)
 class IBlocks(model.Schema):
+
     model.fieldset("layout", label=_("Layout"), fields=["blocks", "blocks_layout"])
 
     blocks = JSONField(

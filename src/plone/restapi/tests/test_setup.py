@@ -13,6 +13,7 @@ import unittest
 
 
 class TestInstall(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -29,6 +30,7 @@ class TestInstall(unittest.TestCase):
 
 
 class TestUninstall(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):

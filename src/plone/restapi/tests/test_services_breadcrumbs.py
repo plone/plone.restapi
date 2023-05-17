@@ -16,6 +16,7 @@ import unittest
 
 
 class TestServicesBreadcrumbs(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -61,6 +62,7 @@ class TestServicesBreadcrumbs(unittest.TestCase):
 
 
 class TestServicesMultilingualBreadcrumbs(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):

@@ -7,6 +7,7 @@ class ContentDelete(Service):
     """Deletes a content object."""
 
     def reply(self):
+
         parent = aq_parent(self.context)
         try:
             parent.manage_delObjects([self.context.getId()])

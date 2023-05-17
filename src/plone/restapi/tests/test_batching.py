@@ -15,6 +15,7 @@ import unittest
 
 
 class TestBatchingDXBase(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -40,6 +41,7 @@ class TestBatchingDXBase(unittest.TestCase):
 
 
 class TestBatchingSearch(TestBatchingDXBase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -113,6 +115,7 @@ class TestBatchingSearch(TestBatchingDXBase):
 
 
 class TestBatchingCollections(TestBatchingDXBase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -184,6 +187,7 @@ class TestBatchingCollections(TestBatchingDXBase):
 
 
 class TestBatchingDXFolders(TestBatchingDXBase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -262,6 +266,7 @@ class TestBatchingDXFolders(TestBatchingDXBase):
 
 
 class TestBatchingSiteRoot(TestBatchingDXBase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -318,6 +323,7 @@ class TestBatchingSiteRoot(TestBatchingDXBase):
 
 
 class TestHypermediaBatch(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):

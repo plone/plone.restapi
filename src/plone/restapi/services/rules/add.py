@@ -22,6 +22,7 @@ class ContentRulesAdd(Service):
         return self
 
     def reply(self):
+
         if not self.params:
             raise BadRequest("Missing parameter rule_id")
 

@@ -17,6 +17,7 @@ TEST_CATEGORY_ID = "testcategory"
 
 
 class TestActions(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def add_category(self, name):

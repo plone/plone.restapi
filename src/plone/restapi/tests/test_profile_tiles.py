@@ -10,6 +10,7 @@ import unittest
 
 
 class TestProfileBlocks(unittest.TestCase):
+
     layer = PLONE_RESTAPI_BLOCKS_INTEGRATION_TESTING
 
     def setUp(self):

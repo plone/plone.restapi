@@ -7,9 +7,11 @@ import unittest
 
 
 class TestJWTAuthenticationPlugin(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
+
         self.portal = self.layer["portal"]
         uf = getToolByName(self.portal, "acl_users")
         self.plugin = uf["jwt_auth"]

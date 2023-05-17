@@ -76,6 +76,7 @@ class JWTAuthenticationPlugin(BasePlugin):
     # Initiate a challenge to the user to provide credentials.
     @security.private
     def challenge(self, request, response, **kw):
+
         realm = response.realm
         if realm:
             response.setHeader("WWW-Authenticate", 'Bearer realm="%s"' % realm)

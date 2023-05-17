@@ -88,6 +88,7 @@ TABLE_BLOCK = {
 
 
 class TestSearchableTextIndexer(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):

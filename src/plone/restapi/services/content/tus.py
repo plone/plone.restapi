@@ -164,6 +164,7 @@ class UploadHead(UploadFileBase):
     """TUS upload endpoint for handling HEAD requests"""
 
     def reply(self):
+
         tus_upload = self.tus_upload()
         if tus_upload is None:
             return self.error("Not Found", "", 404)
@@ -187,6 +188,7 @@ class UploadPatch(UploadFileBase):
     """TUS upload endpoint for handling PATCH requests"""
 
     def reply(self):
+
         tus_upload = self.tus_upload()
         if tus_upload is None:
             return self.error("Not Found", "", 404)
@@ -283,6 +285,7 @@ class UploadPatch(UploadFileBase):
 
 
 class TUSUpload:
+
     file_prefix = "tus_upload_"
     expiration_period = 60 * 60
     finished = False

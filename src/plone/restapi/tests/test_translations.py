@@ -17,6 +17,7 @@ import unittest
 
 
 class TestTranslationInfo(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_PAM_INTEGRATION_TESTING
 
     def setUp(self):

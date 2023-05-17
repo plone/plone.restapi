@@ -215,6 +215,7 @@ class TestDocumentationBase(unittest.TestCase):
 
 
 class TestDocumentation(TestDocumentationBase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -1713,6 +1714,7 @@ class TestDocumentation(TestDocumentationBase):
 
 
 class TestDocumentationMessageTranslations(TestDocumentationBase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -1769,6 +1771,7 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
 
 
 class TestCommenting(TestDocumentationBase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -2037,6 +2040,7 @@ class TestCommenting(TestDocumentationBase):
 
 
 class TestControlPanelDocumentation(TestDocumentationBase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def test_controlpanels_get_listing(self):
@@ -2094,6 +2098,7 @@ class TestControlPanelDocumentation(TestDocumentationBase):
 
 
 class TestPAMDocumentation(TestDocumentationBase):
+
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -2182,6 +2187,7 @@ class TestPAMDocumentation(TestDocumentationBase):
 
 
 class TestIterateDocumentation(TestDocumentationBase):
+
     layer = PLONE_RESTAPI_ITERATE_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -2285,6 +2291,7 @@ class TestIterateDocumentation(TestDocumentationBase):
 
 
 class TestRules(TestDocumentationBase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):

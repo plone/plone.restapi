@@ -14,6 +14,7 @@ import unittest
 
 
 class TestHistoryEndpoint(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -125,6 +126,7 @@ class TestHistoryEndpoint(unittest.TestCase):
 
 
 class TestHistoryEndpointEmptyOrInacessibleHistory(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def _disable_auto_versioning(self, content_type):

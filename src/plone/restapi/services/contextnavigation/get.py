@@ -188,6 +188,7 @@ class ContextNavigation:
 
 class NavigationPortletRenderer:
     def __init__(self, context, request, data):
+
         self.context = context
         self.request = request
         self.data = data

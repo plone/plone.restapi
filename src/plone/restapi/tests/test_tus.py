@@ -51,6 +51,7 @@ def _prepare_metadata(filename, content_type):
 
 
 class TestTUS(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -567,6 +568,7 @@ class CORSTestPolicy(CORSPolicy):
 
 
 class TestTUSUploadWithCORS(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):

@@ -37,6 +37,7 @@ class DeserializeFromJson(OrderingMixin):
     def __call__(
         self, validate_all=False, data=None, create=False, mask_validation_errors=True
     ):  # noqa: ignore=C901
+
         if data is None:
             data = json_body(self.request)
 

@@ -23,6 +23,7 @@ import unittest
 
 
 class TestUsersEndpoint(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -110,6 +111,7 @@ class TestUsersEndpoint(unittest.TestCase):
         noam_api_session.close()
 
     def test_list_users_as_anonymous(self):
+
         response = self.anon_api_session.get("/@users")
         self.assertEqual(response.status_code, 401)
 

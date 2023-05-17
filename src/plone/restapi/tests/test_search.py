@@ -32,6 +32,7 @@ HAS_PLONE_6 = parse_version(
 
 
 class TestSearchFunctional(unittest.TestCase):
+
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -351,6 +352,7 @@ class TestSearchFunctional(unittest.TestCase):
         self.assertEqual(len(response.json()["items"]), 1)
 
     def test_search_orphan_brain(self):
+
         # prevent unindex when deleting self.doc
         old__unindexObject = self.doc.__class__.unindexObject
         self.doc.__class__.unindexObject = lambda *args: None
@@ -745,6 +747,7 @@ class TestSearchFunctional(unittest.TestCase):
         )
 
     def test_search_use_site_search_settings_with_navigation_root(self):
+
         alsoProvides(self.folder, INavigationRoot)
         transaction.commit()
 
@@ -758,6 +761,7 @@ class TestSearchFunctional(unittest.TestCase):
         transaction.commit()
 
     def test_search_use_site_search_settings_with_navigation_root_and_vhm(self):
+
         if "virtual_hosting" not in self.app.objectIds():
             # If ZopeLite was imported, we have no default virtual
             # host monster
@@ -783,6 +787,7 @@ class TestSearchFunctional(unittest.TestCase):
         transaction.commit()
 
     def test_search_use_site_search_settings_with_vhm(self):
+
         if "virtual_hosting" not in self.app.objectIds():
             # If ZopeLite was imported, we have no default virtual
             # host monster

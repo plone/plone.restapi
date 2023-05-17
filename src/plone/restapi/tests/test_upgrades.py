@@ -5,6 +5,7 @@ from unittest import TestCase
 
 
 class TestUpgrades(TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):

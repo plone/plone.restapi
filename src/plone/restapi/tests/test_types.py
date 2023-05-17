@@ -25,12 +25,14 @@ from zope.schema.vocabulary import SimpleVocabulary
 
 
 class IDummySchema(model.Schema):
+
     field1 = schema.Bool(title="Foo", description="")
 
     field2 = schema.TextLine(title="Bar", description="")
 
 
 class ITaggedValuesSchema(model.Schema):
+
     form.mode(field_mode_hidden="hidden")
     field_mode_hidden = schema.TextLine(title="ModeHidden", description="")
 
@@ -59,6 +61,7 @@ class ITaggedValuesSchema(model.Schema):
 
 
 class TestJsonSchemaUtils(TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -128,6 +131,7 @@ class TestJsonSchemaUtils(TestCase):
 
 
 class TestTaggedValuesJsonSchemaUtils(TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -211,6 +215,7 @@ class TestTaggedValuesJsonSchemaUtils(TestCase):
 
 
 class TestJsonSchemaProviders(TestCase):
+
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):

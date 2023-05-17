@@ -69,6 +69,7 @@ class TextBlockLinksRetriever(object):
 @adapter(IBlocks, IBrowserRequest)
 @implementer(IBlockFieldLinkIntegrityRetriever)
 class SlateBlockLinksRetriever:
+
     order = 100
     block_type = "slate"
     field = "value"

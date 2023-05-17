@@ -10,6 +10,7 @@ class ContentRulesUpdate(Service):
     """Update content rules"""
 
     def reply(self):
+
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
             alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
