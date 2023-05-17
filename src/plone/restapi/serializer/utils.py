@@ -3,6 +3,7 @@ from plone.app.uuid.utils import uuidToCatalogBrain
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
 from zope.component import queryMultiAdapter
 from zope.i18n import translate
+from zope.globalrequest import getRequest
 
 import re
 
@@ -42,8 +43,9 @@ def uid_to_url(path):
     return href
 
 
-def get_portal_type_title(portal_type, request=None):
+def get_portal_type_title(portal_type):
     fti = lookup_fti(portal_type)
+    request = getRequest()
     if request:
         return translate(getattr(fti, "Title", lambda: portal_type)(), context=request)
     return getattr(fti, "Title", lambda: portal_type)()

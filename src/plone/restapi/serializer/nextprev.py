@@ -5,7 +5,6 @@ from plone.app.dexterity.behaviors.nextprevious import NextPreviousBase
 from plone.registry.interfaces import IRegistry
 from plone.restapi.serializer.utils import get_portal_type_title
 from zope.component import getUtility
-from zope.globalrequest import getRequest
 
 
 class NextPreviousFixed(NextPreviousBase):
@@ -27,7 +26,6 @@ class NextPrevious:
 
     def __init__(self, context):
         self.context = context
-        self.request = getRequest()
         self.parent = aq_parent(aq_inner(context))
         self.nextprev = NextPreviousFixed(self.parent)
 
@@ -43,7 +41,7 @@ class NextPrevious:
         return {
             "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
-            "type_title": get_portal_type_title(data["portal_type"], self.request),
+            "type_title": get_portal_type_title(data.get("portal_type")),
             "title": data["title"],
             "description": data["description"],
         }
@@ -60,7 +58,7 @@ class NextPrevious:
         return {
             "@id": data["url"].lstrip("/view"),
             "@type": data["portal_type"],
-            "type_title": get_portal_type_title(data["portal_type"], self.request),
+            "type_title": get_portal_type_title(data.get("portal_type")),
             "title": data["title"],
             "description": data["description"],
         }
