@@ -81,7 +81,7 @@ class TestServicesTypes(unittest.TestCase):
         for item in response.json():
             self.assertEqual(
                 sorted(item),
-                sorted(["@id", "title", "addable", "immediately_addable", "@type"]),
+                sorted(["@id", "title", "addable", "immediately_addable", "id"]),
             )
 
     def test_get_types_document(self):
