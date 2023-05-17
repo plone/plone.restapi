@@ -46,7 +46,7 @@ Content-Type: application/json
             "description": "Congratulations! You have successfully installed Plone.",
             "review_state": "private",
             "title": "Welcome to Plone",
-            "type_name": "Page"
+            "type_title": "Page"
         }
     ],
     "items_total": 1,
@@ -66,5 +66,5 @@ Content-Type: application/json
     "table_of_contents": null,
     "text": null,
     "title": "Plone site",
-    "type_name": "Plone Site"
+    "type_title": "Plone Site"
 }

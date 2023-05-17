@@ -16,7 +16,7 @@ from zope.interface import Interface
 @implementer(IJSONSummarySerializerMetadata)
 class JSONSummarySerializerMetadata:
     def default_metadata_fields(self):
-        return {"@id", "@type", "description", "review_state", "title", "type_name"}
+        return {"@id", "@type", "description", "review_state", "title", "type_title"}
 
     def field_accessors(self):
         return {
@@ -90,7 +90,7 @@ class DefaultJSONSummarySerializer:
             if field.startswith("_") or field in self.blocklisted_attributes:
                 continue
             accessor = self.field_accessors.get(field, field)
-            if field == "type_name":
+            if field == "type_title":
                 value = get_portal_type_title(self.context.portal_type, self.request)
             else:
                 value = getattr(obj, accessor, None)
@@ -138,7 +138,7 @@ class SiteRootJSONSummarySerializer:
             {
                 "@id": self.context.absolute_url(),
                 "@type": self.context.portal_type,
-                "type_name": get_portal_type_title(
+                "type_title": get_portal_type_title(
                     self.context.portal_type, self.request
                 ),
                 "title": self.context.title,

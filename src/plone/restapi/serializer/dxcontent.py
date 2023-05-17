@@ -69,7 +69,7 @@ class SerializeToJson:
             "@id": obj.absolute_url(),
             "id": obj.id,
             "@type": obj.portal_type,
-            "type_name": get_portal_type_title(obj.portal_type, self.request),
+            "type_title": get_portal_type_title(obj.portal_type, self.request),
             "parent": parent_summary,
             "created": json_compatible(obj.created()),
             "modified": json_compatible(obj.modified()),

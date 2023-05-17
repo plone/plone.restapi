@@ -16,7 +16,7 @@ Content-Type: application/json
             "description": "",
             "review_state": "private",
             "title": "Folder",
-            "type_name": "Folder"
+            "type_title": "Folder"
         },
         {
             "@id": "http://localhost:55001/plone/folder/doc-1",
@@ -24,7 +24,7 @@ Content-Type: application/json
             "description": "",
             "review_state": "private",
             "title": "Document 1",
-            "type_name": "Page"
+            "type_title": "Page"
         },
         {
             "@id": "http://localhost:55001/plone/folder/doc-2",
@@ -32,7 +32,7 @@ Content-Type: application/json
             "description": "",
             "review_state": "private",
             "title": "Document 2",
-            "type_name": "Page"
+            "type_title": "Page"
         },
         {
             "@id": "http://localhost:55001/plone/folder/doc-3",
@@ -40,7 +40,7 @@ Content-Type: application/json
             "description": "",
             "review_state": "private",
             "title": "Document 3",
-            "type_name": "Page"
+            "type_title": "Page"
         },
         {
             "@id": "http://localhost:55001/plone/folder/doc-4",
@@ -48,7 +48,7 @@ Content-Type: application/json
             "description": "",
             "review_state": "private",
             "title": "Document 4",
-            "type_name": "Page"
+            "type_title": "Page"
         }
     ],
     "items_total": 8

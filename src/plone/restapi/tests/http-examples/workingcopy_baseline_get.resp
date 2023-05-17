@@ -60,14 +60,14 @@ Content-Type: application/json
         "@type": "Document",
         "description": "",
         "title": "Test document",
-        "type_name": "Page"
+        "type_title": "Page"
     },
     "parent": {
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",
         "description": "",
         "title": "Plone site",
-        "type_name": "Plone Site"
+        "type_title": "Plone Site"
     },
     "previous_item": {},
     "relatedItems": [],
@@ -77,7 +77,7 @@ Content-Type: application/json
     "table_of_contents": null,
     "text": null,
     "title": "Test document",
-    "type_name": "Page",
+    "type_title": "Page",
     "version": "current",
     "working_copy": {
         "@id": "http://localhost:55001/plone/copy_of_document",

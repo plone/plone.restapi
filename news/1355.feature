@@ -1,1 +1,1 @@
-Add portal_type title (`type_name`) to content response [razvanMiu]
+Add portal_type title (`type_title`) to content response [razvanMiu][nileshgulia1]

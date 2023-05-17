@@ -112,14 +112,14 @@ Content-Type: application/json
                 "@type": "Collection",
                 "description": "This is a collection with two documents",
                 "title": "My Collection",
-                "type_name": "Collection"
+                "type_title": "Collection"
             },
             "parent": {
                 "@id": "http://localhost:55001/plone",
                 "@type": "Plone Site",
                 "description": "",
                 "title": "Plone site",
-                "type_name": "Plone Site"
+                "type_title": "Plone Site"
             },
             "previous_item": {},
             "relatedItems": [],
@@ -133,7 +133,7 @@ Content-Type: application/json
                 "encoding": "utf-8"
             },
             "title": "Welcome to Plone",
-            "type_name": "Page",
+            "type_title": "Page",
             "version": "current",
             "versioning_enabled": true,
             "working_copy": null,
@@ -191,21 +191,21 @@ Content-Type: application/json
                 "@type": "Document",
                 "description": "",
                 "title": "Document 2",
-                "type_name": "Page"
+                "type_title": "Page"
             },
             "parent": {
                 "@id": "http://localhost:55001/plone",
                 "@type": "Plone Site",
                 "description": "",
                 "title": "Plone site",
-                "type_name": "Plone Site"
+                "type_title": "Plone Site"
             },
             "previous_item": {
                 "@id": "http://localhost:55001/plone/collection",
                 "@type": "Collection",
                 "description": "This is a collection with two documents",
                 "title": "My Collection",
-                "type_name": "Collection"
+                "type_title": "Collection"
             },
             "relatedItems": [],
             "review_state": "private",
@@ -214,7 +214,7 @@ Content-Type: application/json
             "table_of_contents": null,
             "text": null,
             "title": "Document 1",
-            "type_name": "Page",
+            "type_title": "Page",
             "version": "current",
             "versioning_enabled": true,
             "working_copy": null,
@@ -273,14 +273,14 @@ Content-Type: application/json
                 "@type": "Plone Site",
                 "description": "",
                 "title": "Plone site",
-                "type_name": "Plone Site"
+                "type_title": "Plone Site"
             },
             "previous_item": {
                 "@id": "http://localhost:55001/plone/doc1",
                 "@type": "Document",
                 "description": "",
                 "title": "Document 1",
-                "type_name": "Page"
+                "type_title": "Page"
             },
             "relatedItems": [],
             "review_state": "private",
@@ -289,7 +289,7 @@ Content-Type: application/json
             "table_of_contents": null,
             "text": null,
             "title": "Document 2",
-            "type_name": "Page",
+            "type_title": "Page",
             "version": "current",
             "versioning_enabled": true,
             "working_copy": null,
@@ -310,21 +310,21 @@ Content-Type: application/json
         "@type": "Document",
         "description": "",
         "title": "Document 1",
-        "type_name": "Page"
+        "type_title": "Page"
     },
     "parent": {
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",
         "description": "",
         "title": "Plone site",
-        "type_name": "Plone Site"
+        "type_title": "Plone Site"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/front-page",
         "@type": "Document",
         "description": "Congratulations! You have successfully installed Plone.",
         "title": "Welcome to Plone",
-        "type_name": "Page"
+        "type_title": "Page"
     },
     "query": [
         {
@@ -341,7 +341,7 @@ Content-Type: application/json
     "subjects": [],
     "text": null,
     "title": "My Collection",
-    "type_name": "Collection",
+    "type_title": "Collection",
     "version": "current",
     "working_copy": null,
     "working_copy_of": null

@@ -62,14 +62,14 @@ Location: http://localhost:55001/plone/de/mydocument
         "description": "",
         "review_state": "published",
         "title": "Deutsch",
-        "type_name": "Basisordner einer Sprache"
+        "type_title": "Basisordner einer Sprache"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/de/assets",
         "@type": "LIF",
         "description": "",
         "title": "Assets",
-        "type_name": "Sprachunabh\u00e4ngiger Ordner"
+        "type_title": "Sprachunabh\u00e4ngiger Ordner"
     },
     "relatedItems": [],
     "review_state": "private",
@@ -78,7 +78,7 @@ Location: http://localhost:55001/plone/de/mydocument
     "table_of_contents": null,
     "text": null,
     "title": "My German Document",
-    "type_name": "Seite",
+    "type_title": "Seite",
     "version": "current",
     "versioning_enabled": true,
     "working_copy": null,

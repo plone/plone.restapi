@@ -120,14 +120,14 @@ Content-Type: application/json
         "@type": "Plone Site",
         "description": "",
         "title": "Plone site",
-        "type_name": "Plone Site"
+        "type_title": "Plone Site"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/front-page",
         "@type": "Document",
         "description": "Congratulations! You have successfully installed Plone.",
         "title": "Welcome to Plone",
-        "type_name": "Page"
+        "type_title": "Page"
     },
     "relatedItems": [],
     "review_state": "private",
@@ -139,7 +139,7 @@ Content-Type: application/json
         "encoding": "utf-8"
     },
     "title": "My News Item",
-    "type_name": "News Item",
+    "type_title": "News Item",
     "version": "current",
     "versioning_enabled": true,
     "working_copy": null,

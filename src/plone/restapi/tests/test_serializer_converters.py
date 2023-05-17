@@ -203,7 +203,7 @@ class TestJsonCompatibleConverters(TestCase):
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "title": "Document 1",
-                "type_name": "DX Test Document",
+                "type_title": "DX Test Document",
                 "UID": doc1.UID(),
                 "description": "Description",
                 "review_state": "private",

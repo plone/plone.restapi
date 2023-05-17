@@ -54,7 +54,7 @@ Content-Type: application/json
         "@type": "Plone Site",
         "description": "",
         "title": "Plone site",
-        "type_name": "Plone Site"
+        "type_title": "Plone Site"
     },
     "previous_item": {},
     "relatedItems": [],
@@ -68,7 +68,7 @@ Content-Type: application/json
         "encoding": "utf-8"
     },
     "title": "Welcome to Plone",
-    "type_name": "Page",
+    "type_title": "Page",
     "version": "current",
     "versioning_enabled": true,
     "working_copy": null,

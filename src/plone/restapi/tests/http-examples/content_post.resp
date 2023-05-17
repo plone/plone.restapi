@@ -56,14 +56,14 @@ Location: http://localhost:55001/plone/folder/my-document
         "description": "This is a folder with two documents",
         "review_state": "private",
         "title": "My Folder",
-        "type_name": "Folder"
+        "type_title": "Folder"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/folder/doc2",
         "@type": "Document",
         "description": "",
         "title": "A document within a folder",
-        "type_name": "Page"
+        "type_title": "Page"
     },
     "relatedItems": [],
     "review_state": "private",
@@ -72,7 +72,7 @@ Location: http://localhost:55001/plone/folder/my-document
     "table_of_contents": null,
     "text": null,
     "title": "My Document",
-    "type_name": "Page",
+    "type_title": "Page",
     "version": "current",
     "versioning_enabled": true,
     "working_copy": null,

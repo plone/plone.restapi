@@ -130,7 +130,7 @@ class TestContentGet(unittest.TestCase):
                     "UID": self.portal.folder1.folder2.doc2.UID(),
                     "description": "",
                     "review_state": "published",
-                    "type_name": "Page",
+                    "type_title": "Page",
                     "title": "My Document 2",
                 }
             ],
@@ -171,7 +171,7 @@ class TestContentGet(unittest.TestCase):
                     "description": "This is an image",
                     "review_state": None,
                     "title": "Image without workflow",
-                    "type_name": "Image",
+                    "type_title": "Image",
                 }
             ],
             response.json()["relatedItems"],

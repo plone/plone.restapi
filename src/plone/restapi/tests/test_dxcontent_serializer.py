@@ -123,7 +123,7 @@ class TestDXContentSerializer(unittest.TestCase):
         obj = self.serialize()
         self.assertIn("@type", obj)
         self.assertEqual(
-            get_portal_type_title(self.portal.doc1.portal_type), obj["type_name"]
+            get_portal_type_title(self.portal.doc1.portal_type), obj["type_title"]
         )
 
     def test_serializer_includes_review_state(self):
@@ -236,7 +236,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/folder-with-items/item-1",
                 "@type": "Document",
-                "type_name": "Page",
+                "type_title": "Page",
                 "title": "Item 1",
                 "description": "Previous item",
             },
@@ -266,7 +266,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/folder-with-items/item-2",
                 "@type": "Document",
-                "type_name": "Page",
+                "type_title": "Page",
                 "title": "Item 2",
                 "description": "Next item",
             },
@@ -300,7 +300,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/folder-with-items/item-1",
                 "@type": "Document",
-                "type_name": "Page",
+                "type_title": "Page",
                 "title": "Item 1",
                 "description": "Previous item",
             },
@@ -310,7 +310,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/folder-with-items/item-3",
                 "@type": "Document",
-                "type_name": "Page",
+                "type_title": "Page",
                 "title": "Item 3",
                 "description": "Next item",
             },
@@ -334,7 +334,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
-                "type_name": "DX Test Document",
+                "type_title": "DX Test Document",
                 "title": "",
                 "description": "",
             },
@@ -355,7 +355,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/item-2",
                 "@type": "Document",
-                "type_name": "Page",
+                "type_title": "Page",
                 "title": "Item 2",
                 "description": "Next item",
             },
@@ -386,7 +386,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/item-1",
                 "@type": "Document",
-                "type_name": "Page",
+                "type_title": "Page",
                 "title": "Item 1",
                 "description": "Previous item",
             },
@@ -396,7 +396,7 @@ class TestDXContentSerializer(unittest.TestCase):
             {
                 "@id": "http://nohost/plone/item-3",
                 "@type": "Document",
-                "type_name": "Page",
+                "type_title": "Page",
                 "title": "Item 3",
                 "description": "Next item",
             },
