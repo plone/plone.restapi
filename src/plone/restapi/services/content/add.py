@@ -1,8 +1,7 @@
 from AccessControl import getSecurityManager
 from Acquisition import aq_base
 from Acquisition.interfaces import IAcquirer
-from plone.app.multilingual.interfaces import IPloneAppMultilingualInstalled
-from plone.app.multilingual.interfaces import ITranslationManager
+from plone.restapi import HAS_MULTILINGUAL
 from plone.restapi.bbb import safe_hasattr
 from plone.restapi.deserializer import json_body
 from plone.restapi.exceptions import DeserializationError
@@ -23,6 +22,12 @@ from zope.lifecycleevent import ObjectCreatedEvent
 
 import plone.protect.interfaces
 
+if HAS_MULTILINGUAL:
+    from plone.app.multilingual.interfaces import (
+        IPloneAppMultilingualInstalled,
+        ITranslationManager,
+    )
+
 
 class FolderPost(Service):
     """Creates a new content object."""
@@ -42,7 +47,9 @@ class FolderPost(Service):
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
+            alsoProvides(
+                self.request, plone.protect.interfaces.IDisableCSRFProtection
+            )
 
         sm = getSecurityManager()
         # ManagePortal is required to set the uid of an object during creation
@@ -68,18 +75,24 @@ class FolderPost(Service):
             temporarily_wrapped = True
 
         # Update fields
-        deserializer = queryMultiAdapter((obj, self.request), IDeserializeFromJson)
+        deserializer = queryMultiAdapter(
+            (obj, self.request), IDeserializeFromJson
+        )
         if deserializer is None:
             self.request.response.setStatus(501)
             return dict(
-                error=dict(message=f"Cannot deserialize type {obj.portal_type}")
+                error=dict(
+                    message=f"Cannot deserialize type {obj.portal_type}"
+                )
             )
 
         try:
             deserializer(validate_all=True, create=True)
         except DeserializationError as e:
             self.request.response.setStatus(400)
-            return dict(error=dict(type="DeserializationError", message=str(e)))
+            return dict(
+                error=dict(type="DeserializationError", message=str(e))
+            )
 
         if temporarily_wrapped:
             obj = aq_base(obj)
@@ -93,15 +106,16 @@ class FolderPost(Service):
         obj = add(self.context, obj, rename=not bool(id_))
 
         # Link translation given the translation_of property
-        if (
-            IPloneAppMultilingualInstalled.providedBy(self.request)
-            and translation_of
-            and language
-        ):
-            source = self.get_object(translation_of)
-            if source:
-                manager = ITranslationManager(source)
-                manager.register_translation(language, obj)
+        if HAS_MULTILINGUAL:
+            if (
+                IPloneAppMultilingualInstalled.providedBy(self.request)
+                and translation_of
+                and language
+            ):
+                source = self.get_object(translation_of)
+                if source:
+                    manager = ITranslationManager(source)
+                    manager.register_translation(language, obj)
 
         self.request.response.setStatus(201)
         self.request.response.setHeader("Location", obj.absolute_url())

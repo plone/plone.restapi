@@ -14,7 +14,6 @@ processed the same way they would for a server-rendered form.
 
 from collections import OrderedDict
 from copy import copy
-from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
 from plone.autoform.form import AutoExtensibleForm
 from plone.autoform.interfaces import IParameterizedWidget
 from plone.autoform.interfaces import WIDGETS_KEY
@@ -26,6 +25,7 @@ from plone.i18n.normalizer import idnormalizer
 from plone.restapi.interfaces import IFieldDeserializer
 from plone.restapi.serializer.converters import IJsonCompatible
 from plone.restapi.types.interfaces import IJsonSchemaProvider
+from plone.restapi import HAS_MULTILINGUAL
 from plone.supermodel import serializeModel
 from plone.supermodel.interfaces import FIELDSETS_KEY
 from plone.supermodel.utils import mergedTaggedValueDict
@@ -43,7 +43,6 @@ from zope.i18n import translate
 from zope.interface import implementer
 from zope.schema.interfaces import IVocabularyFactory
 
-
 try:
     # Plone 5.1+
     from plone.dexterity.schema import splitSchemaName
@@ -51,6 +50,8 @@ except ImportError:
     # Plone 4.3
     from plone.dexterity.utils import splitSchemaName
 
+if HAS_MULTILINGUAL:
+    from plone.app.multilingual.dx.interfaces import MULTILINGUAL_KEY
 
 _marker = []  # Create a new marker object.
 
@@ -203,17 +204,22 @@ def get_widget_params(schemas):
 
 
 def get_multilingual_directives(schemas):
-    params = {}
-    for schema in schemas:
-        if not schema:
-            continue
-        tagged_values = mergedTaggedValueList(schema, MULTILINGUAL_KEY)
-        result = {field_name: value for _, field_name, value in tagged_values}
+    if HAS_MULTILINGUAL:
+        params = {}
+        for schema in schemas:
+            if not schema:
+                continue
+            tagged_values = mergedTaggedValueList(schema, MULTILINGUAL_KEY)
+            result = {
+                field_name: value for _, field_name, value in tagged_values
+            }
 
-        for field_name, value in result.items():
-            params[field_name] = {}
-            params[field_name]["language_independent"] = value
-    return params
+            for field_name, value in result.items():
+                params[field_name] = {}
+                params[field_name]["language_independent"] = value
+        return params
+    else:
+        return {}
 
 
 def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
@@ -231,7 +237,9 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
         additional_schemata = ()
     else:
         additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-        fieldsets = get_fieldsets(context, request, schema, additional_schemata)
+        fieldsets = get_fieldsets(
+            context, request, schema, additional_schemata
+        )
 
     # Build JSON schema properties
     properties = get_jsonschema_properties(
@@ -251,9 +259,12 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
 
         # Include behavior
         if name in properties:
-            behavior = queryUtility(IBehavior, name=field.interface.__identifier__)
+            behavior = queryUtility(
+                IBehavior, name=field.interface.__identifier__
+            )
             properties[name]["behavior"] = (
-                getattr(behavior, "name", None) or field.interface.__identifier__
+                getattr(behavior, "name", None)
+                or field.interface.__identifier__
             )
 
     return {
@@ -266,7 +277,9 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     }
 
 
-def get_jsonschema_for_portal_type(portal_type, context, request, excluded_fields=None):
+def get_jsonschema_for_portal_type(
+    portal_type, context, request, excluded_fields=None
+):
     """Build a complete JSON schema for the given portal_type."""
     ttool = getToolByName(context, "portal_types")
     fti = ttool[portal_type]
@@ -289,7 +302,9 @@ def get_vocabulary_url(vocab_name, context, request):
 
 
 def get_querysource_url(field, context, request):
-    return get_vocab_like_url("@querysources", field.getName(), context, request)
+    return get_vocab_like_url(
+        "@querysources", field.getName(), context, request
+    )
 
 
 def get_source_url(field, context, request):
@@ -347,7 +362,9 @@ def get_info_for_type(context, request, name):
     # Update fieldset behavior
     for idx, tab in enumerate(schema.get("fieldsets", [])):
         if tab.get("id") in generated:
-            schema["fieldsets"][idx]["behavior"] = "plone.dexterity.schema.generated"
+            schema["fieldsets"][idx][
+                "behavior"
+            ] = "plone.dexterity.schema.generated"
 
     return schema
 
