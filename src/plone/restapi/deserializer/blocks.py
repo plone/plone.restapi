@@ -118,14 +118,11 @@ class ResolveUIDDeserializerBase:
             if data.get("@type", None) == "URL" and data.get("value", None):
                 data["value"] = path2uid(context=self.context, link=data["value"])
             elif data.get("@id", None):
-                item_clone = deepcopy(data)
-                item_clone["@id"] = path2uid(
-                    context=self.context, link=item_clone["@id"]
+                data = deepcopy(data)
+                data["@id"] = path2uid(
+                    context=self.context, link=data["@id"]
                 )
-                return {
-                    field: self._process_data(data=value, field=field)
-                    for field, value in item_clone.items()
-                }
+            data.pop("image_scales", None)
             return {
                 field: self._process_data(data=value, field=field)
                 for field, value in data.items()
@@ -187,7 +184,10 @@ class ImageBlockDeserializerBase:
 
     def __call__(self, block):
         url = block.get("url", "")
-        block["url"] = path2uid(context=self.context, link=url)
+        if isinstance(url, str):
+            block["url"] = path2uid(context=self.context, link=url)
+        elif isinstance(url, dict) and "@id" in url:
+            url["@id"] = path2uid(context=self.context, link=url["@id"])
         return block
 
 

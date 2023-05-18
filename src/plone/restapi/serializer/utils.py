@@ -1,6 +1,11 @@
+from plone.dexterity.schema import lookup_fti
 from plone.app.uuid.utils import uuidToCatalogBrain
 from plone.restapi.interfaces import IObjectPrimaryFieldTarget
+from Products.ZCatalog.CatalogBrains import AbstractCatalogBrain
+from typing import Optional, Tuple
 from zope.component import queryMultiAdapter
+from zope.i18n import translate
+from zope.globalrequest import getRequest
 
 import re
 
@@ -8,26 +13,28 @@ import re
 RESOLVEUID_RE = re.compile("^[./]*resolve[Uu]id/([^/]*)/?(.*)$")
 
 
-def uid_to_url(path):
-    """turns a resolveuid url into a real url.
+def resolve_uid(path: str) -> Tuple[str, Optional[AbstractCatalogBrain]]:
+    """Resolves a resolveuid URL into a tuple of absolute URL and catalog brain.
 
-    This uses the catalog first, but wake up the object to check if there is
-    an IObjectPrimaryFieldTarget on this object. If so, it will return the
-    target url instead of the object url.
+    If the original path is not found (including external URLs),
+    it will be returned unchanged and the brain will be None.
     """
     if not path:
-        return ""
-    match = RESOLVEUID_RE.match(path)
+        return "", None
+    try:
+        match = RESOLVEUID_RE.match(path)
+    except:
+        breakpoint()
     if match is None:
-        return path
+        return path, None
 
     uid, suffix = match.groups()
     brain = uuidToCatalogBrain(uid)
     if brain is None:
-        return path
+        return path, None
     href = brain.getURL()
     if suffix:
-        return href + "/" + suffix
+        return href + "/" + suffix, brain
     target_object = brain._unrestrictedGetObject()
     adapter = queryMultiAdapter(
         (target_object, target_object.REQUEST),
@@ -36,5 +43,18 @@ def uid_to_url(path):
     if adapter:
         a_href = adapter()
         if a_href:
-            return a_href
-    return href
+            return a_href, None
+    return href, brain
+
+
+def uid_to_url(path: str) -> str:
+    path, brain = resolve_uid(path)
+    return path
+
+
+def get_portal_type_title(portal_type):
+    fti = lookup_fti(portal_type)
+    request = getRequest()
+    if request:
+        return translate(getattr(fti, "Title", lambda: portal_type)(), context=request)
+    return getattr(fti, "Title", lambda: portal_type)()

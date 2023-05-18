@@ -8,8 +8,9 @@ from plone.restapi.interfaces import IBlockFieldSerializationTransformer
 from plone.restapi.interfaces import IFieldSerializer
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
-from plone.restapi.serializer.utils import uid_to_url
+from plone.restapi.serializer.utils import resolve_uid, uid_to_url
 from plone.schema import IJSONField
+from typing import Optional, Union
 from zope.component import adapter
 from zope.component import subscribers
 from zope.globalrequest import getRequest
@@ -87,6 +88,21 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
         return json_compatible(value)
 
 
+def _resolve_uid_with_image_scales(data: Union[str, dict], field: Optional[str]) -> Union[str, dict]:
+    if isinstance(data, str):
+        data, brain = resolve_uid(data)
+    elif isinstance(data, dict) and field in data:
+        data[field], brain = resolve_uid(data[field])
+    else:
+        return data
+    if brain is not None:
+        if brain.image_scales:
+            if isinstance(data, str):
+                data = {"@id": data}
+            data["image_scales"] = brain.image_scales
+    return data
+
+
 class ResolveUIDSerializerBase:
     order = 1
     block_type = None
@@ -102,19 +118,15 @@ class ResolveUIDSerializerBase:
 
     def _process_data(self, data, field=None):
         if isinstance(data, str) and field in self.fields:
-            return uid_to_url(data)
+            data = _resolve_uid_with_image_scales(data, field)
+            return data
         if isinstance(data, list):
             return [self._process_data(data=value, field=field) for value in data]
         if isinstance(data, dict):
             if data.get("@type", None) == "URL" and data.get("value", None):
-                data["value"] = uid_to_url(data["value"])
+                data = _resolve_uid_with_image_scales(data, "value")
             elif data.get("@id", None):
-                item_clone = deepcopy(data)
-                item_clone["@id"] = uid_to_url(item_clone["@id"])
-                return {
-                    field: self._process_data(data=value, field=field)
-                    for field, value in item_clone.items()
-                }
+                data = _resolve_uid_with_image_scales(data, "@id")
             return {
                 field: self._process_data(data=value, field=field)
                 for field, value in data.items()
@@ -139,8 +151,7 @@ class TextBlockSerializerBase:
         entity_map = value.get("text", {}).get("entityMap", {})
         for entity in entity_map.values():
             if entity.get("type") == "LINK":
-                url = entity.get("data", {}).get("url", "")
-                entity["data"]["url"] = uid_to_url(url)
+                entity["data"] = _resolve_uid_with_image_scales(entity["data"], "url")
         return value
 
 
