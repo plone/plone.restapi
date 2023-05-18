@@ -3,11 +3,14 @@ Content-Type: application/json
 
 {
     "failed": [
-        {
-            "relation": "comprisesComponentPart",
-            "source": "/document",
-            "target": "/document-does-not-exist"
-        }
+        [
+            {
+                "relation": "comprisesComponentPart",
+                "source": "/document",
+                "target": "/document-does-not-exist"
+            },
+            "Failed on creating a relation. Target not found."
+        ]
     ],
     "type": "error"
 }
