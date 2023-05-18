@@ -67,10 +67,10 @@ class DeleteRelations(Service):
                     target_obj = plone_api_content_get(path=relationdata["target"])
                 # Source or target not found by UID or path
                 if not source_obj or not target_obj:
-                    log.error(
-                        f"Failed on deleting relation. Source or target not found. source:{relationdata['source']}, target: {relationdata['target']}"
-                    )
-                    failed_relations.append(relationdata)
+                    msg = "Source and target not found." if not source_obj and not target_obj else "Source not found." if not source_obj else "Target not found."
+                    msg = f"Failed on deleting a relation. {msg}"
+                    log.error(f"{msg} {relationdata}")
+                    failed_relations.append((relationdata, msg))
                     continue
 
                 try:
@@ -80,11 +80,9 @@ class DeleteRelations(Service):
                         relationship=relationdata["relation"],
                     )
                 except Exception as e:
-                    log.error(str(e))
-                    log.error(
-                        f"Failed on deleting relation. source:{source_obj}, target: {target_obj}"
-                    )
-                    failed_relations.append(relationdata)
+                    msg = f"{type(e).__name__}: {str(e)}. Failed on deleting a relation. source:{source_obj}, target: {target_obj}"
+                    log.error(f"{msg} {relationdata}")
+                    failed_relations.append((relationdata, msg))
                     continue
 
             if len(failed_relations) > 0:

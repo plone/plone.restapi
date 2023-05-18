@@ -46,7 +46,7 @@ class PostRelations(Service):
                     relationship=relationdata["relation"],
                 )
             except Exception as e:
-                msg = f"{type(e).__name__}: {str(e)}. Failed on creating relation. source:{source_obj}, target: {target_obj}"
+                msg = f"{type(e).__name__}: {str(e)}. Failed on creating a relation. source:{source_obj}, target: {target_obj}"
                 log.error(f"{msg} {relationdata}")
                 failed_relations.append((relationdata, msg))
                 continue
