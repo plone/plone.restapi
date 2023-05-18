@@ -1,17 +1,27 @@
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
-from plone.restapi.services.querystringsearch.get import QuerystringSearch
 from Products.CMFCore.utils import getToolByName
 import json
 
+from plone.restapi.utils import get_query, searchResults
 
-class FacetCountGet(Service):
+
+class FacetCount(Service):
     """Returns facet count."""
+
+    def __init__(self, context, request):
+        self.context = context
+        self.request = request
 
     def reply(self):
         facet_count = {}
         ctool = getToolByName(self.context, "portal_catalog")
         body = json_body(self.request)
+
+        body["b_start"] = int(body.get("b_start", 0))
+        body["b_size"] = int(body.get("b_size", 25))
+        body["limit"] = int(body.get("limit", 1000))
+        body["rids"] = True
 
         facet = body.get("facet", None)
         query = body.get("query", None)
@@ -25,12 +35,8 @@ class FacetCountGet(Service):
             body["query"] = [qs for qs in query if qs["i"] != facet]
             self.request.set("BODY", json.dumps(body))
 
-        brains = QuerystringSearch(self.context, self.request).getResults()
-
-        brains_rids = set(brain.getRID() for brain in brains)
-        index_rids = [rid for rid in index.documentToKeyMap()] if index else []
-
-        rids = brains_rids.intersection(index_rids)
+        brains_rids = set(searchResults(get_query(self.context, **body)))
+        rids = brains_rids.intersection(index.documentToKeyMap())
 
         for rid in rids:
             for key in index.keyForDocument(rid):
@@ -52,3 +58,4 @@ class FacetCountGet(Service):
             if facet
             else {},
         }
+    
