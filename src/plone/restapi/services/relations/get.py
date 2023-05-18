@@ -145,7 +145,7 @@ def relation_stats():
         results = {"relations": rels, "broken": broken}
         return json_compatible(results)
     else:
-        raise ImportError
+        raise NotImplementedError("Not implemented in this version of Plone")
 
 
 def getBrokenRelationNames():
