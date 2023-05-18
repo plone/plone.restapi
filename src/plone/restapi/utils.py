@@ -23,6 +23,7 @@ _BAD_CHARS = ("?", "-", "+", "*", _MULTISPACE)
 
 security = ClassSecurityInfo()
 
+
 def _quote_chars(s):
     # We need to quote parentheses when searching text indices
     if "(" in s:
@@ -32,6 +33,7 @@ def _quote_chars(s):
     if _MULTISPACE in s:
         s = s.replace(_MULTISPACE, " ")
     return s
+
 
 def _quote(term):
     # The terms and, or and not must be wrapped in quotes to avoid
@@ -72,6 +74,7 @@ def filter_query(query):
         query["SearchableText"] = munge_search_term(text)
     return query
 
+
 def get_query(
     context,
     query=None,
@@ -82,16 +85,14 @@ def get_query(
     sort_order=None,
     limit=0,
     custom_query=None,
-    **kw
+    **kw,
 ):
     """Parse the (form)query and return using multi-adapter"""
     query_modifiers = getUtilitiesFor(IQueryModifier)
     for name, modifier in sorted(query_modifiers, key=itemgetter(0)):
         query = modifier(query)
 
-    parsedquery = queryparser.parseFormquery(
-        context, query, sort_on, sort_order
-    )
+    parsedquery = queryparser.parseFormquery(context, query, sort_on, sort_order)
 
     index_modifiers = getUtilitiesFor(IParsedQueryIndexModifier)
     for name, modifier in index_modifiers:
@@ -139,6 +140,7 @@ def get_query(
     parsedquery = filter_query(parsedquery)
     return parsedquery
 
+
 @security.protected(SearchZCatalog)
 def searchResults(query=None, **kw):
     # =================== CatalogTool
@@ -157,18 +159,18 @@ def searchResults(query=None, **kw):
     ctool = getUtility(ICatalogTool)
 
     kw = kw.copy()
-    show_inactive = kw.get('show_inactive', False)
+    show_inactive = kw.get("show_inactive", False)
     if isinstance(query, dict) and not show_inactive:
-        show_inactive = 'show_inactive' in query
+        show_inactive = "show_inactive" in query
 
     user = getSecurityManager().getUser()
-    kw['allowedRolesAndUsers'] = ctool._listAllowedRolesAndUsers(user)
+    kw["allowedRolesAndUsers"] = ctool._listAllowedRolesAndUsers(user)
 
     if not show_inactive and not ctool.allow_inactive(kw):
-        kw['effectiveRange'] = DateTime()
+        kw["effectiveRange"] = DateTime()
 
     # filter out invalid sort_on indexes
-    sort_on = kw.get('sort_on') or []
+    sort_on = kw.get("sort_on") or []
     if isinstance(sort_on, str):
         sort_on = [sort_on]
     valid_indexes = ctool.indexes()
@@ -178,9 +180,9 @@ def searchResults(query=None, **kw):
         # sort_on is not iterable
         sort_on = []
     if not sort_on:
-        kw.pop('sort_on', None)
+        kw.pop("sort_on", None)
     else:
-        kw['sort_on'] = sort_on
+        kw["sort_on"] = sort_on
     # ==================== Catalog searchresults
     # You should pass in a simple dictionary as the first argument,
     # which only contains the relevant query.
@@ -191,11 +193,11 @@ def searchResults(query=None, **kw):
         order = ctool._catalog._get_sort_attr("order", query)
         reverse = []
         if order is None:
-            order = ['']
+            order = [""]
         elif isinstance(order, str):
             order = [order]
         for o in order:
-            reverse.append(o.lower() in ('reverse', 'descending'))
+            reverse.append(o.lower() in ("reverse", "descending"))
         if len(reverse) == 1:
             # be nice and keep the old API intact for single sort_order
             reverse = reverse[0]

@@ -44,9 +44,9 @@ class QuerystringSearch:
             )
         else:
             results = self.getResults()
-            results = getMultiAdapter(
-                (results, self.request), ISerializeToJson
-            )(fullobjects=fullobjects)
+            results = getMultiAdapter((results, self.request), ISerializeToJson)(
+                fullobjects=fullobjects
+            )
         return results
 
     def setQuerybuilderParams(self):
@@ -62,9 +62,7 @@ class QuerystringSearch:
             raise Exception("No query supplied")
 
         if sort_order:
-            sort_order = (
-                "descending" if sort_order == "descending" else "ascending"
-            )
+            sort_order = "descending" if sort_order == "descending" else "ascending"
 
         self.querybuilder_params = dict(
             query=query,
@@ -83,10 +81,7 @@ class QuerystringSearch:
 
         # Exclude "self" content item from the results when ZCatalog supports NOT UUID
         # queries and it is called on a content object.
-        if (
-            not IPloneSiteRoot.providedBy(self.context)
-            and SUPPORT_NOT_UUID_QUERIES
-        ):
+        if not IPloneSiteRoot.providedBy(self.context) and SUPPORT_NOT_UUID_QUERIES:
             self.querybuilder_params.update(
                 dict(custom_query={"UID": {"not": self.context.UID()}})
             )
@@ -108,9 +103,7 @@ class QuerystringSearchPost(Service):
         return self
 
     def reply(self):
-        querystring_search = QuerystringSearch(
-            self.context, self.request, self.params
-        )
+        querystring_search = QuerystringSearch(self.context, self.request, self.params)
         return querystring_search()
 
 

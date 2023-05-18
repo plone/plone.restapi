@@ -1,7 +1,5 @@
-from plone.restapi.deserializer import json_body
 from zope.component import getUtility
 from Products.CMFCore.interfaces import ICatalogTool
-import json
 
 from plone.restapi.utils import get_query, searchResults
 
