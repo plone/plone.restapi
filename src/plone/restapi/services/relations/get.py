@@ -49,8 +49,6 @@ def make_summary(obj, request):
     request.form["metadata_fields"] = list(set(metadata_fields))
     summary = getMultiAdapter((obj, request), ISerializeToJsonSummary)()
     summary = json_compatible(summary)
-    ("image_scales" in summary) and summary.pop("image_scales", None)
-    ("image_field" in summary) and summary.pop("image_field", None)
     return summary
 
 
