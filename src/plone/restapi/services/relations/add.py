@@ -32,9 +32,11 @@ class PostRelations(Service):
             if not target_obj:
                 target_obj = plone_api_content_get(path=relationdata["target"])
 
-            # source or target not found by UID nor path
             if not source_obj or not target_obj:
-                failed_relations.append(relationdata)
+                msg = "Source and target not found." if not source_obj and not target_obj else "Source not found." if not source_obj else "Target not found."
+                msg = f"Failed on creating a relation. {msg}"
+                log.error(f"{msg} {relationdata}")
+                failed_relations.append((relationdata, msg))
                 continue
 
             try:
@@ -44,11 +46,9 @@ class PostRelations(Service):
                     relationship=relationdata["relation"],
                 )
             except Exception as e:
-                log.error(str(e))
-                log.error(
-                    f"Failed on creating relation. source:{source_obj}, target: {target_obj}"
-                )
-                failed_relations.append(relationdata)
+                msg = f"{type(e).__name__}: {str(e)}. Failed on creating relation. source:{source_obj}, target: {target_obj}"
+                log.error(f"{msg} {relationdata}")
+                failed_relations.append((relationdata, msg))
                 continue
 
         if len(failed_relations) > 0:
