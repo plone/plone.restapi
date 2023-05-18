@@ -34,9 +34,7 @@ class TestTranslationInfo(unittest.TestCase):
         self.es_content = createContentInContainer(
             self.portal["es"], "Document", title="Test document"
         )
-        ITranslationManager(self.en_content).register_translation(
-            "es", self.es_content
-        )
+        ITranslationManager(self.en_content).register_translation("es", self.es_content)
 
     def test_translation_info_includes_translations(self):
         tinfo = getMultiAdapter(
@@ -143,9 +141,7 @@ class TestLinkContentsAsTranslations(unittest.TestCase):
         self.assertEqual(400, response.status_code)
 
     def test_calling_with_an_already_translated_content_gives_400(self):
-        ITranslationManager(self.en_content).register_translation(
-            "es", self.es_content
-        )
+        ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()
         response = requests.post(
             f"{self.en_content.absolute_url()}/@translations",
@@ -187,9 +183,7 @@ class TestLinkContentsAsTranslations(unittest.TestCase):
     def test_link_translation_with_an_already_translated_content_returns_400(
         self,
     ):
-        ITranslationManager(self.en_content).register_translation(
-            "es", self.es_content
-        )
+        ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()
         response = requests.post(
             f"{self.en_content.absolute_url()}/@translations",
@@ -258,9 +252,7 @@ class TestUnLinkContentTranslations(unittest.TestCase):
         self.es_content = createContentInContainer(
             self.portal["es"], "Document", title="Test document"
         )
-        ITranslationManager(self.en_content).register_translation(
-            "es", self.es_content
-        )
+        ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()
 
     def test_translation_unlinking_succeeds(self):
@@ -347,9 +339,7 @@ class TestCreateContentsAsTranslations(unittest.TestCase):
         manager = ITranslationManager(self.es_content)
 
         self.assertTrue("de" in manager.get_translations())
-        self.assertEqual(
-            "My Document DE", manager.get_translations()["de"].title
-        )
+        self.assertEqual("My Document DE", manager.get_translations()["de"].title)
 
         self.assertEqual("Document", response.json().get("@type"))
         self.assertEqual("mydocument", response.json().get("id"))

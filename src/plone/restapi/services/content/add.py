@@ -47,9 +47,7 @@ class FolderPost(Service):
 
         # Disable CSRF protection
         if "IDisableCSRFProtection" in dir(plone.protect.interfaces):
-            alsoProvides(
-                self.request, plone.protect.interfaces.IDisableCSRFProtection
-            )
+            alsoProvides(self.request, plone.protect.interfaces.IDisableCSRFProtection)
 
         sm = getSecurityManager()
         # ManagePortal is required to set the uid of an object during creation
@@ -75,24 +73,18 @@ class FolderPost(Service):
             temporarily_wrapped = True
 
         # Update fields
-        deserializer = queryMultiAdapter(
-            (obj, self.request), IDeserializeFromJson
-        )
+        deserializer = queryMultiAdapter((obj, self.request), IDeserializeFromJson)
         if deserializer is None:
             self.request.response.setStatus(501)
             return dict(
-                error=dict(
-                    message=f"Cannot deserialize type {obj.portal_type}"
-                )
+                error=dict(message=f"Cannot deserialize type {obj.portal_type}")
             )
 
         try:
             deserializer(validate_all=True, create=True)
         except DeserializationError as e:
             self.request.response.setStatus(400)
-            return dict(
-                error=dict(type="DeserializationError", message=str(e))
-            )
+            return dict(error=dict(type="DeserializationError", message=str(e)))
 
         if temporarily_wrapped:
             obj = aq_base(obj)

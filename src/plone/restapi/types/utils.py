@@ -210,9 +210,7 @@ def get_multilingual_directives(schemas):
             if not schema:
                 continue
             tagged_values = mergedTaggedValueList(schema, MULTILINGUAL_KEY)
-            result = {
-                field_name: value for _, field_name, value in tagged_values
-            }
+            result = {field_name: value for _, field_name, value in tagged_values}
 
             for field_name, value in result.items():
                 params[field_name] = {}
@@ -237,9 +235,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
         additional_schemata = ()
     else:
         additional_schemata = tuple(getAdditionalSchemata(portal_type=fti.id))
-        fieldsets = get_fieldsets(
-            context, request, schema, additional_schemata
-        )
+        fieldsets = get_fieldsets(context, request, schema, additional_schemata)
 
     # Build JSON schema properties
     properties = get_jsonschema_properties(
@@ -259,12 +255,9 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
 
         # Include behavior
         if name in properties:
-            behavior = queryUtility(
-                IBehavior, name=field.interface.__identifier__
-            )
+            behavior = queryUtility(IBehavior, name=field.interface.__identifier__)
             properties[name]["behavior"] = (
-                getattr(behavior, "name", None)
-                or field.interface.__identifier__
+                getattr(behavior, "name", None) or field.interface.__identifier__
             )
 
     return {
@@ -277,9 +270,7 @@ def get_jsonschema_for_fti(fti, context, request, excluded_fields=None):
     }
 
 
-def get_jsonschema_for_portal_type(
-    portal_type, context, request, excluded_fields=None
-):
+def get_jsonschema_for_portal_type(portal_type, context, request, excluded_fields=None):
     """Build a complete JSON schema for the given portal_type."""
     ttool = getToolByName(context, "portal_types")
     fti = ttool[portal_type]
@@ -302,9 +293,7 @@ def get_vocabulary_url(vocab_name, context, request):
 
 
 def get_querysource_url(field, context, request):
-    return get_vocab_like_url(
-        "@querysources", field.getName(), context, request
-    )
+    return get_vocab_like_url("@querysources", field.getName(), context, request)
 
 
 def get_source_url(field, context, request):
@@ -362,9 +351,7 @@ def get_info_for_type(context, request, name):
     # Update fieldset behavior
     for idx, tab in enumerate(schema.get("fieldsets", [])):
         if tab.get("id") in generated:
-            schema["fieldsets"][idx][
-                "behavior"
-            ] = "plone.dexterity.schema.generated"
+            schema["fieldsets"][idx]["behavior"] = "plone.dexterity.schema.generated"
 
     return schema
 
