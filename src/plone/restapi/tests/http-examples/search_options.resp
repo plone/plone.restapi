@@ -9,7 +9,8 @@ Content-Type: application/json
             "@type": "Folder",
             "description": "",
             "review_state": "private",
-            "title": "Folder 2"
+            "title": "Folder 2",
+            "type_title": "Folder"
         }
     ],
     "items_total": 1

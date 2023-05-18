@@ -106,7 +106,6 @@ class TestExpansion(unittest.TestCase):
 
 
 class TestExpansionFunctional(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -357,54 +356,63 @@ class TestExpansionFunctional(unittest.TestCase):
                     "addable": True,
                     "immediately_addable": True,
                     "title": "Collection",
+                    "id": "Collection",
                 },
                 {
                     "@id": "/".join((base_url, "@types/DXTestDocument")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "DX Test Document",
+                    "id": "DXTestDocument",
                 },
                 {
                     "@id": "/".join((base_url, "@types/Event")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "Event",
+                    "id": "Event",
                 },
                 {
                     "@id": "/".join((base_url, "@types/File")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "File",
+                    "id": "File",
                 },
                 {
                     "@id": "/".join((base_url, "@types/Folder")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "Folder",
+                    "id": "Folder",
                 },
                 {
                     "@id": "/".join((base_url, "@types/Image")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "Image",
+                    "id": "Image",
                 },
                 {
                     "@id": "/".join((base_url, "@types/Link")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "Link",
+                    "id": "Link",
                 },
                 {
                     "@id": "/".join((base_url, "@types/News Item")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "News Item",
+                    "id": "News Item",
                 },
                 {
                     "@id": "/".join((base_url, "@types/Document")),
                     "addable": True,
                     "immediately_addable": True,
                     "title": "Page",
+                    "id": "Document",
                 },
             ],
             response.json().get("@components").get("types"),
@@ -412,7 +420,6 @@ class TestExpansionFunctional(unittest.TestCase):
 
 
 class TestTranslationExpansionFunctional(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_PAM_FUNCTIONAL_TESTING
 
     def setUp(self):

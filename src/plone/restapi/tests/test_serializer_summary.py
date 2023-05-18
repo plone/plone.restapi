@@ -15,7 +15,6 @@ import unittest
 
 
 class TestSummarySerializers(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -51,6 +50,7 @@ class TestSummarySerializers(unittest.TestCase):
             {
                 "@id": "http://nohost/plone",
                 "@type": "Plone Site",
+                "type_title": "Plone Site",
                 "title": "Plone site",
                 "description": "",
             },
@@ -66,6 +66,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "title": "Lorem Ipsum",
+                "type_title": "DX Test Document",
                 "description": "Description",
                 "review_state": "private",
             },
@@ -85,6 +86,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "title": "Lorem Ipsum",
+                "type_title": "DX Test Document",
                 "description": "Description",
                 "review_state": "private",
             },
@@ -102,6 +104,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "title": "Lorem Ipsum",
+                "type_title": "DX Test Document",
                 "description": None,
                 "review_state": "private",
             },
@@ -120,6 +123,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "UID": "c6dcbd55ab2746e199cd4ed458000001",
                 "Creator": "test_user_1_",
                 "title": "Lorem Ipsum",
+                "type_title": "DX Test Document",
                 "description": "Description",
                 "review_state": "private",
             },
@@ -193,6 +197,7 @@ class TestSummarySerializers(unittest.TestCase):
                 "@id": "http://nohost/plone/doc1",
                 "@type": "DXTestDocument",
                 "title": "Lorem Ipsum",
+                "type_title": "DX Test Document",
                 "description": "Description",
                 "review_state": "private",
             },

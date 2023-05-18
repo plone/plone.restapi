@@ -111,13 +111,15 @@ Content-Type: application/json
                 "@id": "http://localhost:55001/plone/collection",
                 "@type": "Collection",
                 "description": "This is a collection with two documents",
-                "title": "My Collection"
+                "title": "My Collection",
+                "type_title": "Collection"
             },
             "parent": {
                 "@id": "http://localhost:55001/plone",
                 "@type": "Plone Site",
                 "description": "",
-                "title": "Plone site"
+                "title": "Plone site",
+                "type_title": "Plone Site"
             },
             "previous_item": {},
             "relatedItems": [],
@@ -131,6 +133,7 @@ Content-Type: application/json
                 "encoding": "utf-8"
             },
             "title": "Welcome to Plone",
+            "type_title": "Page",
             "version": "current",
             "versioning_enabled": true,
             "working_copy": null,
@@ -187,19 +190,22 @@ Content-Type: application/json
                 "@id": "http://localhost:55001/plone/doc2",
                 "@type": "Document",
                 "description": "",
-                "title": "Document 2"
+                "title": "Document 2",
+                "type_title": "Page"
             },
             "parent": {
                 "@id": "http://localhost:55001/plone",
                 "@type": "Plone Site",
                 "description": "",
-                "title": "Plone site"
+                "title": "Plone site",
+                "type_title": "Plone Site"
             },
             "previous_item": {
                 "@id": "http://localhost:55001/plone/collection",
                 "@type": "Collection",
                 "description": "This is a collection with two documents",
-                "title": "My Collection"
+                "title": "My Collection",
+                "type_title": "Collection"
             },
             "relatedItems": [],
             "review_state": "private",
@@ -208,6 +214,7 @@ Content-Type: application/json
             "table_of_contents": null,
             "text": null,
             "title": "Document 1",
+            "type_title": "Page",
             "version": "current",
             "versioning_enabled": true,
             "working_copy": null,
@@ -265,13 +272,15 @@ Content-Type: application/json
                 "@id": "http://localhost:55001/plone",
                 "@type": "Plone Site",
                 "description": "",
-                "title": "Plone site"
+                "title": "Plone site",
+                "type_title": "Plone Site"
             },
             "previous_item": {
                 "@id": "http://localhost:55001/plone/doc1",
                 "@type": "Document",
                 "description": "",
-                "title": "Document 1"
+                "title": "Document 1",
+                "type_title": "Page"
             },
             "relatedItems": [],
             "review_state": "private",
@@ -280,6 +289,7 @@ Content-Type: application/json
             "table_of_contents": null,
             "text": null,
             "title": "Document 2",
+            "type_title": "Page",
             "version": "current",
             "versioning_enabled": true,
             "working_copy": null,
@@ -299,19 +309,22 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone/doc1",
         "@type": "Document",
         "description": "",
-        "title": "Document 1"
+        "title": "Document 1",
+        "type_title": "Page"
     },
     "parent": {
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",
         "description": "",
-        "title": "Plone site"
+        "title": "Plone site",
+        "type_title": "Plone Site"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/front-page",
         "@type": "Document",
         "description": "Congratulations! You have successfully installed Plone.",
-        "title": "Welcome to Plone"
+        "title": "Welcome to Plone",
+        "type_title": "Page"
     },
     "query": [
         {
@@ -328,6 +341,7 @@ Content-Type: application/json
     "subjects": [],
     "text": null,
     "title": "My Collection",
+    "type_title": "Collection",
     "version": "current",
     "working_copy": null,
     "working_copy_of": null

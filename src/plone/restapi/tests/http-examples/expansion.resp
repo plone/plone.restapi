@@ -53,7 +53,8 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",
         "description": "",
-        "title": "Plone site"
+        "title": "Plone site",
+        "type_title": "Plone Site"
     },
     "previous_item": {},
     "relatedItems": [],
@@ -67,6 +68,7 @@ Content-Type: application/json
         "encoding": "utf-8"
     },
     "title": "Welcome to Plone",
+    "type_title": "Page",
     "version": "current",
     "versioning_enabled": true,
     "working_copy": null,
