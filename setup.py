@@ -91,6 +91,7 @@ setup(
         "setuptools",
         "importlib-metadata; python_version<'3.8'",
         "python-dateutil",
+        "plone.app.multilingual",
         "plone.rest",  # json renderer moved to plone.restapi
         "plone.schema>=1.2.1",  # new/fixed json field
         "Products.CMFPlone>=5.2",
