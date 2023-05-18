@@ -110,6 +110,43 @@ Query relations to a **target**:
 :language: http
 ```
 
+### Refining
+
+Querying can be further refined by applying the `query_target` search parameter to restrict the source and / or target to 
+- contain a search string. Address the endpoint with for example `/@relations?relation=comprisesComponentPart&query_target=wheel` 
+- be located under a path. Address the endpoint with for example `/@relations?relation=comprisesComponentPart&query_target=/inside/garden` 
+
+### Limit the results
+
+Limit the number of results by `max` to for example at most 100 results by `/@relations?relation=comprisesComponentPart&source=/documents/doc-1&max=100`
+
+### Only broken relations
+
+Retrieve broken relations by querying with `onlyBroken`:
+
+`/@relations?onlyBroken=true`
+
+Which returns an Object like
+
+```json
+{
+  "@id": "http://localhost:55001/plone/@relations?onlyBroken=true", 
+  "items": {
+    "relatedItems": [
+      [
+        "http://localhost:55001/plone/document-2", 
+        ""
+      ]
+    ]
+  }, 
+  "items_total": {
+    "relatedItems": 1
+  }
+}
+```
+
+
+
 (restapi-relations-creating-relations-label)=
 
 ## Creating relations
@@ -244,3 +281,13 @@ Delete relations by target UID or target path.
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_del_combi.resp
 :language: http
 ```
+
+
+## Fix relations
+
+Relations can be fixed by releasing and re-indexing them.
+Rebuild relations by `@relations?rebuild=1`
+
+In rare cases flushing the `intIds` is needed.
+Rebuild relations with flushing the `intIds` by `@relations?rebuild=1&flush=1`
+Be careful and think well before flushing if your code relies on intIds.

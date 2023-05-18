@@ -170,8 +170,12 @@ class GetRelations(Service):
         source: UID of content item
         target: UID of content item
         relation: name of a relation
-        onlyBroken: boolean: dictionary with broken relations per relation type
         max: integer: maximum of results
+        onlyBroken: boolean: dictionary with broken relations per relation type
+        query_source: Restrict relations by path or SearchableText
+        query_target: Restrict relations by path or SearchableText
+        rebuild: Rebuild relations
+        flush: If rebuild, then this also flushes the intIds
 
     Returns:
         stats if no parameter, else relations
@@ -189,11 +193,11 @@ class GetRelations(Service):
         source = self.request.get("source", None)
         target = self.request.get("target", None)
         relationship = self.request.get("relation", None)
-        rebuild = self.request.get("rebuild", False)
         max = self.request.get("max", False)
         onlyBroken = self.request.get("onlyBroken", False)
         query_source = self.request.get("query_source", None)
         query_target = self.request.get("query_target", None)
+        rebuild = self.request.get("rebuild", False)
 
         targets = None
         sources = None
@@ -204,7 +208,7 @@ class GetRelations(Service):
         # Rebuild relations with or without regenerating intids
         if rebuild:
             if rebuild_relations:
-                flush = self.request.get("flush", False) and True
+                flush = True if self.request.get("flush", False) else False
                 try:
                     print("*** Now rebuild relations. flush:", flush)
                     rebuild_relations(flush_and_rebuild_intids=flush)
