@@ -54,13 +54,15 @@ Content-Type: application/json
         "@type": "Folder",
         "description": "This is a folder with two documents",
         "review_state": "private",
-        "title": "My Folder"
+        "title": "My Folder",
+        "type_title": "Folder"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/folder/doc2",
         "@type": "Document",
         "description": "",
-        "title": "A document within a folder"
+        "title": "A document within a folder",
+        "type_title": "Page"
     },
     "relatedItems": [],
     "review_state": "private",
@@ -69,6 +71,7 @@ Content-Type: application/json
     "table_of_contents": null,
     "text": null,
     "title": "My Document",
+    "type_title": "Page",
     "version": "current",
     "versioning_enabled": true,
     "working_copy": null,
