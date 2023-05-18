@@ -13,7 +13,7 @@ myst:
 
 Plone's relations represent binary relationships between content objects.
 
-A single relation is defined by source, target and relation name.
+A single relation is defined by source, target, and relation name.
 
 Relations are either defined by content type schema fields (`RelationChoice` or `RelationList`) or are of type `isReferencing` or `iterate-working-copy`.
 
@@ -21,7 +21,7 @@ Relations are either defined by content type schema fields (`RelationChoice` or 
 - Relations `isReferencing` (block text links to a Plone content object) and `iterate-working-copy` (working copy is enabled and the content object is a working copy) are not editable. They are created and deleted with links in text, respectively creating and deleting working copies.
 
 Relations can be created, queried, and deleted by interacting through the `@relations` endpoint on the site root.  
-Querying relations with the `@relations` endpoint requires the `zope2.View` permission on the source object and target object.
+Querying relations with the `@relations` endpoint requires the `zope2.View` permission on both the source and target objects.
 Therefore results include relations if and only if source and target are accessible by the querying user.  
 Creating and deleting relations requires `zope2.View` permission on the target object and `cmf.ModifyPortalContent` permission on the source object.
 
@@ -29,7 +29,7 @@ Creating and deleting relations requires `zope2.View` permission on the target o
 
 ## Getting statistics for all relations
 
-The call without any parameters returns statistics on all existing relations the user has access to.
+The call without any parameters returns statistics on all existing relations to which the user has access.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -46,7 +46,7 @@ The call without any parameters returns statistics on all existing relations the
 
 Relations can be queried by one single source, one single target or one single relation type.
 Combinations are allowed.  
-source and target are a UID or a path.
+The source and target must be either a UID or path.
 
 Queried relations require `View permission` on source and target.
 Therefore relations without permission to access by current user are omitted from the results.
