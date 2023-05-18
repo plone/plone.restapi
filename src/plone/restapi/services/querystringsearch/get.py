@@ -8,7 +8,7 @@ from urllib import parse
 from zope.component import getMultiAdapter
 from zope.interface import implementer
 from zope.publisher.interfaces import IPublishTraverse
-from facet_count import FacetCount
+from plone.restapi.services.querystringsearch.facet import Facet
 
 
 zcatalog_version = get_distribution("Products.ZCatalog").version
@@ -26,22 +26,30 @@ class QuerystringSearch:
         self.request = request
         self.params = params
 
-
     def __call__(self):
         data = json_body(self.request)
         fullobjects = data.get("fullobjects", False)
 
+        self.setQuerybuilderParams()
+
         if len(self.params) > 0:
-            return FacetCount(self.context, self.request).reply()
-
-        results = self.getResults()
-
-        results = getMultiAdapter((results, self.request), ISerializeToJson)(
-            fullobjects=fullobjects
-        )
+            results = Facet(
+                self.context,
+                name=self.params[0],
+                querybuilder_params=self.querybuilder_params,
+            ).reply()
+            results["@id"] = (
+                "%s/@querystring-search/%s"
+                % (self.context.absolute_url(), self.params[0]),
+            )
+        else:
+            results = self.getResults()
+            results = getMultiAdapter(
+                (results, self.request), ISerializeToJson
+            )(fullobjects=fullobjects)
         return results
-    
-    def getResults(self):
+
+    def setQuerybuilderParams(self):
         data = json_body(self.request)
         query = data.get("query", None)
         b_start = int(data.get("b_start", 0))
@@ -49,22 +57,18 @@ class QuerystringSearch:
         sort_on = data.get("sort_on", None)
         sort_order = data.get("sort_order", None)
         limit = int(data.get("limit", 1000))
-        rids = data.get("rids", False)
 
         if query is None:
             raise Exception("No query supplied")
 
         if sort_order:
-            sort_order = "descending" if sort_order == "descending" else "ascending"
+            sort_order = (
+                "descending" if sort_order == "descending" else "ascending"
+            )
 
-        querybuilder = getMultiAdapter(
-            (self.context, self.request), name="querybuilderresults"
-        )
-
-        querybuilder_parameters = dict(
+        self.querybuilder_params = dict(
             query=query,
             brains=True,
-            rids=rids,
             b_start=b_start,
             b_size=b_size,
             sort_on=sort_on,
@@ -72,14 +76,22 @@ class QuerystringSearch:
             limit=limit,
         )
 
+    def getResults(self):
+        querybuilder = getMultiAdapter(
+            (self.context, self.request), name="querybuilderresults"
+        )
+
         # Exclude "self" content item from the results when ZCatalog supports NOT UUID
         # queries and it is called on a content object.
-        if not IPloneSiteRoot.providedBy(self.context) and SUPPORT_NOT_UUID_QUERIES:
-            querybuilder_parameters.update(
+        if (
+            not IPloneSiteRoot.providedBy(self.context)
+            and SUPPORT_NOT_UUID_QUERIES
+        ):
+            self.querybuilder_params.update(
                 dict(custom_query={"UID": {"not": self.context.UID()}})
             )
 
-        return querybuilder(**querybuilder_parameters)
+        return querybuilder(**self.querybuilder_params)
 
 
 @implementer(IPublishTraverse)
@@ -96,7 +108,9 @@ class QuerystringSearchPost(Service):
         return self
 
     def reply(self):
-        querystring_search = QuerystringSearch(self.context, self.request, self.params)
+        querystring_search = QuerystringSearch(
+            self.context, self.request, self.params
+        )
         return querystring_search()
 
 
