@@ -48,10 +48,10 @@ Relations can be queried by one single source, one single target or one single r
 Combinations are allowed.  
 The source and target must be either a UID or path.
 
-Queried relations require `View permission` on source and target.
-Therefore relations without permission to access by current user are omitted from the results.
+Queried relations require `View` permission on source and target.
+If the user lacks permission to access these relations, then they are omitted from the query results.
 
-The relations are grouped by relation name, source and target are provided in summarizer format.
+The relations are grouped by relation name, source, and target, and are provided in a summarized format.
 
 ---
 
@@ -114,8 +114,8 @@ Query relations to a **target**:
 
 ## Creating relations
 
-Relations can be created by providing a list of: source, target, and name of the relation.  
-Source and target can be UID or path.
+Relations can be created by providing a list of the source, target, and name of the relation.
+The source and target must be either a UID or path.
 
 If the relation is based on a `RelationChoice` or `RelationList` field of the source object, the value of the field is created or updated accordingly.
 
@@ -156,7 +156,7 @@ Add by **UID**:
 
 ## Deleting relations
 
-Relations can be deleted: either by relation name, all relations of an object, or all relations to a target.  
+Relations can be deleted either by relation name, all relations of an object, or all relations to a target.
 Relations can also be deleted by providing a list of single relations.
 
 If a deleted relation is based on a `RelationChoice` or `RelationList` field, the value of the field is removed or updated accordingly on the source object.
