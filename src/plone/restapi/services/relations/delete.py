@@ -103,11 +103,11 @@ class DeleteRelations(Service):
                 api_relation_delete(
                     source=source_obj,
                     target=target_obj,
-                    relationship=relationdata["relation"],
+                    relationship=relation,
                 )
             except Exception as e:
                 msg = f"{type(e).__name__}: {str(e)}. Failed on deleting a relation. source:{source}, target: {target}"
-                log.error(f"{msg} {relationdata}")
+                log.error(f"{msg} {data}")
                 return {
                     "type": "error",
                     "failed": msg,
