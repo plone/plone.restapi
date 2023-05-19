@@ -1,2 +1,1 @@
-Added support for nested schemas with resolveuid deserializer.
-[JeffersonBledsoe]
+Added support for nested schemas with resolveuid deserializer @JeffersonBledsoe
