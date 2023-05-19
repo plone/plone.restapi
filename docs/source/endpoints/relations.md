@@ -286,8 +286,18 @@ Delete relations by target UID or target path.
 ## Fix relations
 
 Broken relations can be fixed by releasing and re-indexing them.
-Rebuild relations by `@relations?rebuild=1`
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/relations_rebuild.req
+```
 
 In rare cases flushing the `intIds` is needed.
-Rebuild relations with flushing the `intIds` by `@relations?rebuild=1&flush=1`.
+Rebuild relations with flushing the `intIds` by posting the following request.
 Be careful and think well before flushing if your code relies on `intIds`.
+
+
+```{eval-rst}
+..  http:example:: curl httpie python-requests
+    :request: ../../../src/plone/restapi/tests/http-examples/relations_rebuild_with_flush.req
+```

@@ -12,6 +12,14 @@ from zope.schema.interfaces import IVocabularyFactory
 
 import transaction
 
+try:
+    from Products.CMFPlone.relationhelper import rebuild_relations
+except ImportError:
+    try:
+        from collective.relationhelpers.api import rebuild_relations
+    except ImportError:
+        rebuild_relations = None
+
 
 def ExamplesVocabularyFactory(context=None):
     return StaticCatalogVocabulary(
@@ -531,3 +539,18 @@ class TestRelationsDocumentation(TestDocumentationBase):
             resp = response.json()
             self.assertEqual(resp["relations"]["comprisesComponentPart"], 2)
             self.assertNotIn("relatedItems", resp["relations"])
+
+    def test_documentation_POST_rebuild(self):
+        if rebuild_relations:
+            response = self.api_session.post(
+                "/@relations/rebuild"
+            )
+            save_request_and_response_for_docs("relations_rebuild", response)
+
+            response = self.api_session.post(
+                "/@relations/rebuild",
+                json={
+                    "flush": 1
+                },
+            )
+            save_request_and_response_for_docs("relations_rebuild_with_flush", response)

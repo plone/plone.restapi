@@ -183,7 +183,6 @@ class GetRelations(Service):
 
     def __init__(self, context, request):
         super().__init__(context, request)
-        self.sm = getSecurityManager()
 
     def reply(self):
         # Disable CSRF protection
@@ -197,38 +196,12 @@ class GetRelations(Service):
         onlyBroken = self.request.get("onlyBroken", False)
         query_source = self.request.get("query_source", None)
         query_target = self.request.get("query_target", None)
-        rebuild = self.request.get("rebuild", False)
 
         targets = None
         sources = None
 
         catalog = getToolByName(self.context, "portal_catalog")
         portal = getSite()
-
-        # Rebuild relations with or without regenerating intids
-        if rebuild:
-            if rebuild_relations:
-                flush = True if self.request.get("flush", False) else False
-                try:
-                    print("*** Now rebuild relations. flush:", flush)
-                    rebuild_relations(flush_and_rebuild_intids=flush)
-                    return self.reply_no_content()
-                except Exception as e:
-                    self.request.response.setStatus(500)
-                    return dict(
-                        error=dict(
-                            # type="ImportError",
-                            message=str(e),
-                        )
-                    )
-            else:
-                self.request.response.setStatus(501)
-                return dict(
-                    error=dict(
-                        type="ImportError",
-                        message="Relationhelpers not available. Install collective.relationhelpers or upgrade to Plone 6!",
-                    )
-                )
 
         # Get broken relations for all relation types
         if onlyBroken:

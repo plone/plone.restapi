@@ -1,17 +1,41 @@
+from AccessControl.SecurityManagement import getSecurityManager
+from plone import api
 from plone.restapi.deserializer import json_body
 from plone.restapi.services import Service
 from plone.restapi.services.relations import plone_api_content_get
 from plone.restapi.services.relations import api_relation_create
+from Products.CMFCore.permissions import ManagePortal
 from zope.interface import alsoProvides
+from zope.interface import implementer
+from zope.publisher.interfaces import IPublishTraverse
 import plone.protect.interfaces
 import logging
 
 
 log = logging.getLogger(__name__)
 
+try:
+    from Products.CMFPlone.relationhelper import rebuild_relations
+except ImportError:
+    try:
+        from collective.relationhelpers.api import rebuild_relations
+    except ImportError:
+        rebuild_relations = None
 
+
+@implementer(IPublishTraverse)
 class PostRelations(Service):
     """Create new relations."""
+
+    def __init__(self, context, request):
+        super().__init__(context, request)
+        self.params = []
+        self.sm = getSecurityManager()
+
+    def publishTraverse(self, request, name):
+        # Treat any path segments after /@relations as parameters
+        self.params.append(name)
+        return self
 
     def reply(self):
         # Disable CSRF protection
@@ -22,6 +46,35 @@ class PostRelations(Service):
             raise NotImplementedError()
 
         data = json_body(self.request)
+
+        # Rebuild relations with or without regenerating intIds
+        if "rebuild" in self.params:
+            if api.user.has_permission(ManagePortal):
+                if rebuild_relations:
+                    flush = True if data.get("flush", False) else False
+                    try:
+                        rebuild_relations(flush_and_rebuild_intids=flush)
+                        print("*** Relations rebuild. flush:", flush)
+                        return self.reply_no_content()
+                    except Exception as e:
+                        self.request.response.setStatus(500)
+                        return dict(
+                            error=dict(
+                                # type="ImportError",
+                                message=str(e),
+                            )
+                        )
+                else:
+                    self.request.response.setStatus(501)
+                    return dict(
+                        error=dict(
+                            type="ImportError",
+                            message="Relationhelpers not available. Install collective.relationhelpers or upgrade to Plone 6!",
+                        )
+                    )
+            else:
+                self.request.response.setStatus(403)
+                return dict(error=dict(type="Forbidden",))
 
         failed_relations = []
         for relationdata in data["items"]:
