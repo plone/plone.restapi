@@ -2,7 +2,7 @@
 myst:
   html_meta:
     "description": "Create, query, and delete relations between content items with the /@relations endpoint."
-    "property=og:description": "Create, query, and delete relations between content items with the /@relations endpoint."
+    "property=og:description": "Create, query, and delete relations between content items with the relations endpoint."
     "property=og:title": "Relations"
     "keywords": "Plone, plone.restapi, REST, API, relations, service, endpoint"
 ---
