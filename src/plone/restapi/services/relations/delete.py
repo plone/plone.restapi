@@ -10,36 +10,6 @@ import logging
 log = logging.getLogger(__name__)
 
 
-def _delete_relation(source, target, relationship):
-    # Cases could be handled by plone.api.relations.
-    if source and relationship:
-        api_relation_delete(
-            source=source,
-            relationship=relationship,
-        )
-    elif target and relationship:
-        api_relation_delete(
-            target=target,
-            relationship=relationship,
-        )
-    elif source:
-        api_relation_delete(
-            source=source,
-        )
-    elif target:
-        api_relation_delete(
-            target=target,
-        )
-    elif relationship:
-        api_relation_delete(
-            relationship=relationship,
-        )
-    else:
-        log.warning(
-            f"Do not call _delete_relation without source object or target object or relationship. source:{source}, target: {target}, relationship {relationship}"
-        )
-
-
 class DeleteRelations(Service):
     """Delete relations."""
 
@@ -130,15 +100,14 @@ class DeleteRelations(Service):
                     }
 
             try:
-                _delete_relation(
+                api_relation_delete(
                     source=source_obj,
                     target=target_obj,
-                    relationship=relation,
+                    relationship=relationdata["relation"],
                 )
             except Exception as e:
-                log.error(str(e))
-                msg = f"Failed on deleting relations. '{str(e)}' – source: {source}, target: {target}, relation: {relation}"
-                log.error(msg)
+                msg = f"{type(e).__name__}: {str(e)}. Failed on deleting a relation. source:{source}, target: {target}"
+                log.error(f"{msg} {relationdata}")
                 return {
                     "type": "error",
                     "failed": msg,
