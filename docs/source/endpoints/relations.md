@@ -22,7 +22,7 @@ Relations are either defined by content type schema fields (`RelationChoice` or 
 
 Relations can be created, queried, and deleted by interacting through the `@relations` endpoint on the site root.
 Querying relations with the `@relations` endpoint requires the `zope2.View` permission on both the source and target objects.
-Therefore results include relations if and only if source and target are accessible by the querying user.
+Therefore results include relations if and only if both the source and target are accessible by the querying user.
 Creating and deleting relations requires `zope2.View` permission on the target object and `cmf.ModifyPortalContent` permission on the source object.
 
 (restapi-relations-getting-statistics-for-all-relations-label)=
