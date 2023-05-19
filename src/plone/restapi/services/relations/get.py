@@ -142,7 +142,7 @@ def get_relations(
 def relation_stats():
     if get_relations_stats is not None:
         rels, broken = get_relations_stats()
-        results = {"relations": rels, "broken": broken}
+        results = {"stats": rels, "broken": broken}
         return json_compatible(results)
     else:
         raise NotImplementedError("Not implemented in this version of Plone")
