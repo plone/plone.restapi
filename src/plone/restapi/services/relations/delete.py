@@ -62,7 +62,12 @@ class DeleteRelations(Service):
                     continue
 
             if len(failed_relations) > 0:
-                return self._error(422, "Unprocessable Content", "Failed on deleting relations", failed_relations)
+                return self._error(
+                    422,
+                    "Unprocessable Content",
+                    "Failed on deleting relations",
+                    failed_relations,
+                )
 
         # Bunch of relations defined by source, target, relation name, or a combination of them
         else:

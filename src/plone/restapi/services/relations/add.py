@@ -74,7 +74,11 @@ class PostRelations(Service):
                     )
             else:
                 self.request.response.setStatus(403)
-                return dict(error=dict(type="Forbidden",))
+                return dict(
+                    error=dict(
+                        type="Forbidden",
+                    )
+                )
 
         failed_relations = []
         for relationdata in data["items"]:
