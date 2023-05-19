@@ -97,24 +97,29 @@ class ResolveUIDSerializerBase:
         self.context = context
         self.request = request
 
-    def __call__(self, value):
-        for field in self.fields:
-            if field in value.keys():
-                link = value.get(field, "")
-                if isinstance(link, str):
-                    value[field] = uid_to_url(link)
-                elif isinstance(link, list):
-                    if len(link) > 0 and isinstance(link[0], dict) and "@id" in link[0]:
-                        result = []
-                        for item in link:
-                            item_clone = deepcopy(item)
-                            item_clone["@id"] = uid_to_url(item_clone["@id"])
-                            result.append(item_clone)
+    def __call__(self, block):
+        return self._process_data(block)
 
-                        value[field] = result
-                    elif len(link) > 0 and isinstance(link[0], str):
-                        value[field] = [uid_to_url(item) for item in link]
-        return value
+    def _process_data(self, data, field=None):
+        if isinstance(data, str) and field in self.fields:
+            return uid_to_url(data)
+        if isinstance(data, list):
+            return [self._process_data(data=value, field=field) for value in data]
+        if isinstance(data, dict):
+            if data.get("@type", None) == "URL" and data.get("value", None):
+                data["value"] = uid_to_url(data["value"])
+            elif data.get("@id", None):
+                item_clone = deepcopy(data)
+                item_clone["@id"] = uid_to_url(item_clone["@id"])
+                return {
+                    field: self._process_data(data=value, field=field)
+                    for field, value in item_clone.items()
+                }
+            return {
+                field: self._process_data(data=value, field=field)
+                for field, value in data.items()
+            }
+        return data
 
 
 class TextBlockSerializerBase:

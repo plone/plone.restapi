@@ -188,7 +188,6 @@ class ContextNavigation:
 
 class NavigationPortletRenderer:
     def __init__(self, context, request, data):
-
         self.context = context
         self.request = request
         self.data = data
@@ -251,7 +250,7 @@ class NavigationPortletRenderer:
             # Go to the item /view we have chosen as root item
             return nav_root.absolute_url()
 
-    def root_type_name(self):
+    def root_type_title(self):
         root = self.getNavRoot()
         return queryUtility(IIDNormalizer).normalize(root.portal_type)
 

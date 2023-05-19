@@ -61,13 +61,15 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",
         "description": "",
-        "title": "Plone site"
+        "title": "Plone site",
+        "type_title": "Plone Site"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/front-page",
         "@type": "Document",
         "description": "Congratulations! You have successfully installed Plone.",
-        "title": "Welcome to Plone"
+        "title": "Welcome to Plone",
+        "type_title": "Page"
     },
     "recurrence": null,
     "relatedItems": [],
@@ -78,6 +80,7 @@ Content-Type: application/json
     "sync_uid": null,
     "text": null,
     "title": "Event",
+    "type_title": "Event",
     "version": "current",
     "versioning_enabled": true,
     "whole_day": false,
