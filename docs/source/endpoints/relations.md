@@ -130,17 +130,14 @@ Which returns an Object like
 
 ```json
 {
-  "@id": "http://localhost:55001/plone/@relations?onlyBroken=true", 
-  "items": {
-    "relatedItems": [
-      [
-        "http://localhost:55001/plone/document-2", 
-        ""
-      ]
-    ]
-  }, 
-  "items_total": {
-    "relatedItems": 1
+  "@id": "http://localhost:55001/plone/@relations?onlyBroken=true",
+  "relations": {
+    "relatedItems": {
+      "items": [
+        "http://localhost:55001/plone/document-2",
+      ],
+      "items_total": 1
+    }
   }
 }
 ```
