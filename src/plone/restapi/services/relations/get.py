@@ -313,16 +313,21 @@ class GetRelations(Service):
 
         result = {
             "@id": f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}',
-            "items": data,
-            "items_total": dict([(el, len(data[el])) for el in data]),
+            "relations": {}
         }
         if relationship and not data:
-            result["items"] = {relationship: []}
-            result["items_total"] = {relationship: 0}
-
+            result["relations"][relationship] = {
+                "items": [],
+                "items_total": 0
+            }
+        for key in data:
+            result["relations"][key] = {
+                "items": data[key],
+                "items_total": len(data[key])
+            }
         if relationship:
             scvq = getStaticCatalogVocabularyQuery(relationship)
-            result["staticCatalogVocabularyQuery"] = scvq
-            result["readonly"] = not api_relation_create
+            result["relations"][relationship]["staticCatalogVocabularyQuery"] = scvq
+            result["relations"][relationship]["readonly"] = not api_relation_create
 
         return result

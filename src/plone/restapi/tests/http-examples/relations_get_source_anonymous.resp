@@ -3,31 +3,31 @@ Content-Type: application/json
 
 {
     "@id": "http://localhost:55001/plone/@relations?source=/document",
-    "items": {
-        "comprisesComponentPart": [
-            {
-                "source": {
-                    "@id": "http://localhost:55001/plone/document",
-                    "@type": "Document",
-                    "UID": "SomeUUID000000000000000000000001",
-                    "description": "",
-                    "review_state": "published",
-                    "title": "Test document 1",
-                    "type_title": "Page"
-                },
-                "target": {
-                    "@id": "http://localhost:55001/plone/document-2",
-                    "@type": "Document",
-                    "UID": "SomeUUID000000000000000000000002",
-                    "description": "",
-                    "review_state": "published",
-                    "title": "Test document 2",
-                    "type_title": "Page"
+    "relations": {
+        "comprisesComponentPart": {
+            "items": [
+                {
+                    "source": {
+                        "@id": "http://localhost:55001/plone/document",
+                        "@type": "Document",
+                        "UID": "SomeUUID000000000000000000000001",
+                        "description": "",
+                        "review_state": "published",
+                        "title": "Test document 1",
+                        "type_title": "Page"
+                    },
+                    "target": {
+                        "@id": "http://localhost:55001/plone/document-2",
+                        "@type": "Document",
+                        "UID": "SomeUUID000000000000000000000002",
+                        "description": "",
+                        "review_state": "published",
+                        "title": "Test document 2",
+                        "type_title": "Page"
+                    }
                 }
-            }
-        ]
-    },
-    "items_total": {
-        "comprisesComponentPart": 1
+            ],
+            "items_total": 1
+        }
     }
 }

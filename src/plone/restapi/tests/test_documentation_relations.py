@@ -130,8 +130,8 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_get_relationname", response)
             resp = response.json()
-            self.assertEqual(resp["items_total"]["comprisesComponentPart"], 2)
-            self.assertIn("UID", resp["items"]["comprisesComponentPart"][0]["source"])
+            self.assertEqual(resp["relations"]["comprisesComponentPart"]["items_total"], 2)
+            self.assertIn("UID", resp["relations"]["comprisesComponentPart"]["items"][0]["source"])
 
             # relation name (sub set of relations for Anonymous)
             self.api_session.auth = None
@@ -143,7 +143,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             resp = response.json()
             self.assertEqual(
-                resp["items_total"]["comprisesComponentPart"], 1
+                resp["relations"]["comprisesComponentPart"]["items_total"], 1
             )  # not 2 as for admin
             self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
@@ -153,9 +153,8 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_get_source_by_path", response)
             resp = response.json()
-            self.assertEqual(
-                resp["items_total"], {"comprisesComponentPart": 2, "relatedItems": 1}
-            )
+            self.assertEqual(resp["relations"]["comprisesComponentPart"]["items_total"], 2)
+            self.assertEqual(resp["relations"]["relatedItems"]["items_total"], 1)
 
             # source by uid
             response = self.api_session.get(
@@ -172,10 +171,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "relations_get_source_anonymous", response
             )
             resp = response.json()
-            self.assertEqual(
-                resp["items_total"],
-                {"comprisesComponentPart": 1},  # subset of results for manager
-            )
+            self.assertEqual(resp["relations"]["comprisesComponentPart"]["items_total"], 1)  # subset of results for manager
             self.api_session.auth = (SITE_OWNER_NAME, SITE_OWNER_PASSWORD)
 
             # source and relation
@@ -192,7 +188,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_get_target", response)
             resp = response.json()
-            self.assertEqual(resp["items_total"], {"relatedItems": 1})
+            self.assertEqual(resp["relations"]["relatedItems"]["items_total"], 1)
 
     def test_documentation_GET_relations_vocabulary(self):
         if api_relation_create:
@@ -219,7 +215,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             # Is the vocabulary included in response?
             self.assertEqual(
-                resp["staticCatalogVocabularyQuery"],
+                resp["relations"]["comprisesComponentPart"]["staticCatalogVocabularyQuery"],
                 {
                     "portal_type": ["example"],
                     "review_state": "published",
@@ -238,7 +234,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "/@relations?relation=relatedItems",
             )
             resp = response.json()
-            self.assertEqual(resp["items_total"]["relatedItems"], 2)
+            self.assertEqual(resp["relations"]["relatedItems"]["items_total"], 2)
 
             response = self.api_session.post(
                 "/@relations",
@@ -263,7 +259,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "/@relations?relation=relatedItems",
             )
             resp = response.json()
-            self.assertEqual(resp["items_total"]["relatedItems"], 4)
+            self.assertEqual(resp["relations"]["relatedItems"]["items_total"], 4)
 
             # Failing addition
             response = self.api_session.post(
@@ -330,7 +326,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "/@relations?relation=comprisesComponentPart",
             )
             resp = response.json()
-            self.assertEqual(resp["items_total"], {"comprisesComponentPart": 2})
+            self.assertEqual(resp["relations"]["comprisesComponentPart"]["items_total"], 2)
 
     def test_documentation_DEL_relations_list(self):
         """
@@ -359,9 +355,8 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "/@relations?relation=comprisesComponentPart",
             )
             resp = response.json()
-            self.assertEqual(
-                resp["items_total"], {"comprisesComponentPart": 1}
-            )  # instead of 2 before deletion
+            
+            self.assertEqual(resp["relations"]["comprisesComponentPart"]["items_total"], 1) # instead of 2 before deletion
 
             # Delete list by UID
             response = self.api_session.delete(
@@ -383,7 +378,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             resp = response.json()
             self.assertEqual(
-                resp["items_total"], {"comprisesComponentPart": 0}
+                resp["relations"]["comprisesComponentPart"]["items_total"], 0
             )  # instead of 1 before deletion
 
             # Failing deletion
@@ -431,7 +426,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "/@relations?relation=comprisesComponentPart",
             )
             resp = response.json()
-            self.assertEqual(resp["items_total"], {"comprisesComponentPart": 2})
+            self.assertEqual(resp["relations"]["comprisesComponentPart"]["items_total"], 2)
 
     # # Uncomment with https://github.com/plone/plone.api/pull/502 merged
     # def test_documentation_DEL_relations_by_relationship(self):
