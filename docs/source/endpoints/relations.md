@@ -193,7 +193,7 @@ Add by **UID**:
 
 ## Deleting relations
 
-Relations can be deleted either by relation name, all relations of an object, or all relations to a target.
+Relations can be deleted by relation name, source object, target object, or a combination of these.
 Relations can also be deleted by providing a list of single relations.
 
 If a deleted relation is based on a `RelationChoice` or `RelationList` field, the value of the field is removed or updated accordingly on the source object.
@@ -285,9 +285,9 @@ Delete relations by target UID or target path.
 
 ## Fix relations
 
-Relations can be fixed by releasing and re-indexing them.
+Broken relations can be fixed by releasing and re-indexing them.
 Rebuild relations by `@relations?rebuild=1`
 
 In rare cases flushing the `intIds` is needed.
-Rebuild relations with flushing the `intIds` by `@relations?rebuild=1&flush=1`
-Be careful and think well before flushing if your code relies on intIds.
+Rebuild relations with flushing the `intIds` by `@relations?rebuild=1&flush=1`.
+Be careful and think well before flushing if your code relies on `intIds`.
