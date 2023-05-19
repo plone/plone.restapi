@@ -1,1 +1,0 @@
-Add portal_type title (`type_title`) to content response @razvanMiu @nileshgulia1
