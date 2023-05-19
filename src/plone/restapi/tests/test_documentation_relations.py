@@ -32,7 +32,6 @@ def ExamplesVocabularyFactory(context=None):
 
 
 class TestRelationsDocumentation(TestDocumentationBase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -124,9 +123,9 @@ class TestRelationsDocumentation(TestDocumentationBase):
 
             self.assertEqual(response.status_code, 200)
             resp = response.json()
-            self.assertIn("relations", resp)
+            self.assertIn("stats", resp)
             self.assertIn("broken", resp)
-            self.assertEqual(resp["relations"]["comprisesComponentPart"], 2)
+            self.assertEqual(resp["stats"]["comprisesComponentPart"], 2)
             self.assertEqual(resp["broken"], {})
 
             """
@@ -525,8 +524,8 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "/@relations",
             )
             resp = response.json()
-            self.assertEqual(resp["relations"]["comprisesComponentPart"], 2)
-            self.assertEqual(resp["relations"]["relatedItems"], 2)
+            self.assertEqual(resp["stats"]["comprisesComponentPart"], 2)
+            self.assertEqual(resp["stats"]["relatedItems"], 2)
 
             # Delete by combination of source and relation name
             response = self.api_session.delete(
@@ -539,8 +538,8 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "/@relations",
             )
             resp = response.json()
-            self.assertEqual(resp["relations"]["comprisesComponentPart"], 2)
-            self.assertEqual(resp["relations"]["relatedItems"], 1)
+            self.assertEqual(resp["stats"]["comprisesComponentPart"], 2)
+            self.assertEqual(resp["stats"]["relatedItems"], 1)
 
             # Delete by combination of target and relation name
             response = self.api_session.delete(
@@ -553,8 +552,8 @@ class TestRelationsDocumentation(TestDocumentationBase):
                 "/@relations",
             )
             resp = response.json()
-            self.assertEqual(resp["relations"]["comprisesComponentPart"], 2)
-            self.assertNotIn("relatedItems", resp["relations"])
+            self.assertEqual(resp["stats"]["comprisesComponentPart"], 2)
+            self.assertNotIn("relatedItems", resp["stats"])
 
     def test_documentation_POST_rebuild(self):
         if rebuild_relations:
