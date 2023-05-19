@@ -62,10 +62,7 @@ class DeleteRelations(Service):
                     continue
 
             if len(failed_relations) > 0:
-                return {
-                    "type": "error",
-                    "failed": failed_relations,
-                }
+                return self._error(422, "Unprocessable Content", "Failed on deleting relations", failed_relations)
 
         # Bunch of relations defined by source, target, relation name, or a combination of them
         else:
@@ -81,10 +78,7 @@ class DeleteRelations(Service):
                 if not source_obj:
                     msg = f"Failed on deleting relations. Source not found: {source}"
                     log.error(msg)
-                    return {
-                        "type": "error",
-                        "failed": msg,
-                    }
+                    return self._error(422, "Unprocessable Content", msg)
 
             target_obj = None
             if target:
@@ -94,10 +88,7 @@ class DeleteRelations(Service):
                 if not target_obj:
                     msg = f"Failed on deleting relations. Target not found: {target}"
                     log.error(msg)
-                    return {
-                        "type": "error",
-                        "failed": msg,
-                    }
+                    return self._error(422, "Unprocessable Content", msg)
 
             try:
                 api_relation_delete(
@@ -108,9 +99,10 @@ class DeleteRelations(Service):
             except Exception as e:
                 msg = f"{type(e).__name__}: {str(e)}. Failed on deleting a relation. source:{source}, target: {target}"
                 log.error(f"{msg} {data}")
-                return {
-                    "type": "error",
-                    "failed": msg,
-                }
+                return self._error(422, type(e).__name__, msg)
 
         return self.reply_no_content()
+
+    def _error(self, status, type, message, failed=[]):
+        self.request.response.setStatus(status)
+        return {"error": {"type": type, "message": message, "failed": failed}}

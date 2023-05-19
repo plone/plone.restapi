@@ -401,7 +401,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_del_failure", response)
             resp = response.json()
-            self.assertIn("failed", resp)
+            self.assertIn("error", resp)
 
     def test_documentation_DEL_relations_list_anonymous(self):
         """
