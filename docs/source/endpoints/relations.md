@@ -207,31 +207,20 @@ If either the source or target do not exist, then an attempt to create a relatio
 ## Deleting relations
 
 Relations can be deleted by relation name, source object, target object, or a combination of these.
-Relations can also be deleted by providing a list of single relations.
+Relations can also be deleted by providing a list of relations.
 
 If a deleted relation is based on a `RelationChoice` or `RelationList` field, the value of the field is removed or updated accordingly on the source object.
 
-### Delete a list of single relations
+### Delete a list of relations
 
-Delete a list of a single relation by **path**:
-
-```{eval-rst}
-..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/relations_del_path.req
-```
-
-```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_del_path.resp
-:language: http
-```
-
-Delete a list of a single relation by **UID**:
+You can delete relations by either UID or path.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
-    :request: ../../../src/plone/restapi/tests/http-examples/relations_del_uid.req
+    :request: ../../../src/plone/restapi/tests/http-examples/relations_del_path_uid.req
 ```
 
-```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_del_uid.resp
+```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_del_path_uid.resp
 :language: http
 ```
 
@@ -272,9 +261,11 @@ The following example shows how to delete a relation by source path.
 :language: http
 ```
 
-Delete relations by source UID or source path.
-
 ### Delete relations by target
+
+You can delete relations by either target UID or path.
+
+The following example shows how to delete a relation by target path.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -285,9 +276,10 @@ Delete relations by source UID or source path.
 :language: http
 ```
 
-Delete relations by target UID or target path.
+### Delete relations by combination of source, target and relation name
 
-### Delete relations by combination of source/target and relation name
+You can delete relations by their relation name and either a source or target.
+In the following example, you would delete a relation by its relation name and target.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests

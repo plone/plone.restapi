@@ -354,7 +354,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
         self.maxDiff = None
 
         if api_relation_create:
-            # Delete list by path
+            # Delete list by path and UID
             response = self.api_session.delete(
                 "/@relations",
                 json={
@@ -363,27 +363,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
                             "source": "/document",
                             "target": "/document-2",
                             "relation": "comprisesComponentPart",
-                        }
-                    ]
-                },
-            )
-            save_request_and_response_for_docs("relations_del_path", response)
-
-            # Get relations and test that deleted relation is removed.
-            response = self.api_session.get(
-                "/@relations?relation=comprisesComponentPart",
-            )
-            resp = response.json()
-
-            self.assertEqual(
-                resp["relations"]["comprisesComponentPart"]["items_total"], 1
-            )  # instead of 2 before deletion
-
-            # Delete list by UID
-            response = self.api_session.delete(
-                "/@relations",
-                json={
-                    "items": [
+                        },
                         {
                             "source": self.doc1.UID(),
                             "target": self.doc3.UID(),
@@ -392,15 +372,17 @@ class TestRelationsDocumentation(TestDocumentationBase):
                     ]
                 },
             )
-            save_request_and_response_for_docs("relations_del_uid", response)
+            save_request_and_response_for_docs("relations_del_path_uid", response)
 
+            # Get relations and test that the deleted relations are removed.
             response = self.api_session.get(
                 "/@relations?relation=comprisesComponentPart",
             )
             resp = response.json()
+
             self.assertEqual(
                 resp["relations"]["comprisesComponentPart"]["items_total"], 0
-            )  # instead of 1 before deletion
+            )  # instead of 2 before deletion
 
             # Failing deletion
             response = self.api_session.delete(

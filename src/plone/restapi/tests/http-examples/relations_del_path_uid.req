@@ -9,6 +9,11 @@ Content-Type: application/json
             "relation": "comprisesComponentPart",
             "source": "/document",
             "target": "/document-2"
+        },
+        {
+            "relation": "comprisesComponentPart",
+            "source": "SomeUUID000000000000000000000001",
+            "target": "SomeUUID000000000000000000000003"
         }
     ]
 }
