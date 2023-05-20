@@ -416,7 +416,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
                             "source": "/doc-does-not-exist",
                             "target": "/document",
                             "relation": "comprisesComponentPart",
-                        }
+                        },
                     ]
                 },
             )
