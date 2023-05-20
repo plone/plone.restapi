@@ -263,7 +263,6 @@ class GetRelations(Service):
             else:
                 query_objects["SearchableText"] = query_source
             results = catalog.searchResults(**query_objects)
-            # TODO Maybe return warning if many results
             sources = [el.getObject() for el in results]
 
         if query_target:
@@ -273,7 +272,6 @@ class GetRelations(Service):
             else:
                 query_objects["SearchableText"] = query_target
             results = catalog.searchResults(**query_objects)
-            # TODO Maybe return warning if many results
             targets = [el.getObject() for el in results]
 
         data = get_relations(

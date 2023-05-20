@@ -102,7 +102,7 @@ class DeleteRelations(Service):
                     relationship=relation,
                 )
             except Exception as e:
-                msg = f"{type(e).__name__}: {str(e)}. Failed on deleting a relation. source:{source}, target: {target}"
+                msg = f"{type(e).__name__}: {str(e)}. Failed on deleting a relation. source:{source}, target: {target}, relation: {relation}"
                 log.error(f"{msg} {data}")
                 return self._error(422, type(e).__name__, msg)
 

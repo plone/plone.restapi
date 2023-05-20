@@ -237,10 +237,9 @@ by **UID**:
     :request: ../../../src/plone/restapi/tests/http-examples/relations_del_relationname.req
 ```
 
-<!-- Uncomment with https://github.com/plone/plone.api/pull/502 merged
 ```{literalinclude} ../../../src/plone/restapi/tests/http-examples/relations_del_relationname.resp
 :language: http
-``` -->
+```
 
 ### Delete relations by source
 
