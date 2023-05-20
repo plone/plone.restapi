@@ -1,6 +1,7 @@
 from copy import deepcopy
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.behaviors import IBlocks
+from plone.restapi.blocks import visit_blocks, iter_block_transform_handlers
 from plone.restapi.deserializer.blocks import iterate_children
 from plone.restapi.deserializer.blocks import SlateBlockTransformer
 from plone.restapi.deserializer.blocks import transform_links
@@ -11,8 +12,6 @@ from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.serializer.utils import uid_to_url
 from plone.schema import IJSONField
 from zope.component import adapter
-from zope.component import subscribers
-from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IBrowserRequest
@@ -21,69 +20,22 @@ import copy
 import os
 
 
-def _transform(blocks, context):
-    for id, block_value in blocks.items():
-        handle_subblocks(block_value, context)
-        block_type = block_value.get("@type", "")
-        handlers = []
-        for h in subscribers(
-            (context, getRequest()),
-            IBlockFieldSerializationTransformer,
-        ):
-            if h.block_type == block_type or h.block_type is None:
-                h.blockid = id
-                handlers.append(h)
-
-        for handler in sorted(handlers, key=lambda h: h.order):
-            block_value = handler(block_value)
-
-        blocks[id] = block_value
-
-    return blocks
-
-
-def handle_subblocks(block_value, context):
-    if "data" in block_value:
-        if isinstance(block_value["data"], dict):
-            if "blocks" in block_value["data"]:
-                block_value["data"]["blocks"] = _transform(
-                    block_value["data"]["blocks"], context
-                )
-
-    if "blocks" in block_value:
-        block_value["blocks"] = _transform(block_value["blocks"], context)
-
-    return block_value
-
-
-def apply_block_serialization_transforms(block_value, context):
-    block_value = handle_subblocks(block_value, context)
-    block_type = block_value.get("@type", "")
-    handlers = []
-    for h in subscribers((context, getRequest()), IBlockFieldSerializationTransformer):
-        if h.block_type == block_type or h.block_type is None:
-            h.blockid = id
-            handlers.append(h)
-
-    for handler in sorted(handlers, key=lambda h: h.order):
-        if not getattr(handler, "disabled", False):
-            block_value = handler(block_value)
-
-    return block_value
-
-
 @adapter(IJSONField, IBlocks, Interface)
 @implementer(IFieldSerializer)
 class BlocksJSONFieldSerializer(DefaultFieldSerializer):
+
+    def _apply_serialization_transforms(self, block_value: dict):
+        new_block_value = block_value.copy()
+        for handler in iter_block_transform_handlers(self.context, block_value, IBlockFieldSerializationTransformer):
+            new_block_value = handler(new_block_value)
+        block_value.clear()
+        block_value.update(new_block_value)
+
     def __call__(self):
-        value = copy.deepcopy(self.get_value())
+        value: dict = copy.deepcopy(self.get_value())
 
         if self.field.getName() == "blocks":
-            for id, block_value in value.items():
-                value[id] = apply_block_serialization_transforms(
-                    block_value, self.context
-                )
-
+            visit_blocks(self.context, value, self._apply_serialization_transforms)
         return json_compatible(value)
 
 
