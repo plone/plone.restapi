@@ -119,9 +119,7 @@ class ResolveUIDDeserializerBase:
                 data["value"] = path2uid(context=self.context, link=data["value"])
             elif data.get("@id", None):
                 data = deepcopy(data)
-                data["@id"] = path2uid(
-                    context=self.context, link=data["@id"]
-                )
+                data["@id"] = path2uid(context=self.context, link=data["@id"])
             data.pop("image_scales", None)
             return {
                 field: self._process_data(data=value, field=field)

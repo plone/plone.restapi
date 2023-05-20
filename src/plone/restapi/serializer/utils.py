@@ -21,10 +21,7 @@ def resolve_uid(path: str) -> Tuple[str, Optional[AbstractCatalogBrain]]:
     """
     if not path:
         return "", None
-    try:
-        match = RESOLVEUID_RE.match(path)
-    except:
-        breakpoint()
+    match = RESOLVEUID_RE.match(path)
     if match is None:
         return path, None
 

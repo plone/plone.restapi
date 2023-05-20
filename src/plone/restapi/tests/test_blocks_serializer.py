@@ -20,9 +20,7 @@ import pathlib
 import unittest
 
 
-IMAGE_PATH = (
-    pathlib.Path(__file__).parent / "image.png"
-).resolve()
+IMAGE_PATH = (pathlib.Path(__file__).parent / "image.png").resolve()
 IMAGE_DATA = IMAGE_PATH.read_bytes()
 
 
@@ -394,5 +392,5 @@ class TestBlocksSerializer(unittest.TestCase):
             context=self.portal["doc1"],
             blocks={"123": {"@type": "image", "url": f"../resolveuid/{image_uid}"}},
         )
-        self.assertEqual(res["123"]["url"]["@id"], self.image.absolute_url())
-        self.assertIn("image_scales", res["123"]["url"])
+        self.assertEqual(res["123"]["url"], self.image.absolute_url())
+        self.assertIn("image_scales", res["123"])

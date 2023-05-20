@@ -1,4 +1,3 @@
-from copy import deepcopy
 from plone.restapi.bbb import IPloneSiteRoot
 from plone.restapi.behaviors import IBlocks
 from plone.restapi.deserializer.blocks import iterate_children
@@ -10,7 +9,6 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.dxfields import DefaultFieldSerializer
 from plone.restapi.serializer.utils import resolve_uid, uid_to_url
 from plone.schema import IJSONField
-from typing import Optional, Union
 from zope.component import adapter
 from zope.component import subscribers
 from zope.globalrequest import getRequest
@@ -88,21 +86,6 @@ class BlocksJSONFieldSerializer(DefaultFieldSerializer):
         return json_compatible(value)
 
 
-def _resolve_uid_with_image_scales(data: Union[str, dict], field: Optional[str]) -> Union[str, dict]:
-    if isinstance(data, str):
-        data, brain = resolve_uid(data)
-    elif isinstance(data, dict) and field in data:
-        data[field], brain = resolve_uid(data[field])
-    else:
-        return data
-    if brain is not None:
-        if brain.image_scales:
-            if isinstance(data, str):
-                data = {"@id": data}
-            data["image_scales"] = brain.image_scales
-    return data
-
-
 class ResolveUIDSerializerBase:
     order = 1
     block_type = None
@@ -118,19 +101,31 @@ class ResolveUIDSerializerBase:
 
     def _process_data(self, data, field=None):
         if isinstance(data, str) and field in self.fields:
-            data = _resolve_uid_with_image_scales(data, field)
-            return data
+            return uid_to_url(data)
         if isinstance(data, list):
             return [self._process_data(data=value, field=field) for value in data]
         if isinstance(data, dict):
-            if data.get("@type", None) == "URL" and data.get("value", None):
-                data = _resolve_uid_with_image_scales(data, "value")
-            elif data.get("@id", None):
-                data = _resolve_uid_with_image_scales(data, "@id")
-            return {
-                field: self._process_data(data=value, field=field)
+            fields = ["value"] if data.get("@type") == "URL" else []
+            fields.append("@id")
+            fields.extend(self.fields)
+            newdata = {}
+            for field in fields:
+                if field not in data or not isinstance(data[field], str):
+                    continue
+                newdata[field], brain = resolve_uid(data[field])
+                if brain is not None and "image_scales" not in newdata:
+                    newdata["image_scales"] = getattr(brain, "image_scales", None)
+            result = {
+                field: (
+                    newdata[field]
+                    if field in newdata
+                    else self._process_data(data=newdata.get(field, value), field=field)
+                )
                 for field, value in data.items()
             }
+            if newdata.get("image_scales"):
+                result["image_scales"] = newdata["image_scales"]
+            return result
         return data
 
 
@@ -151,7 +146,7 @@ class TextBlockSerializerBase:
         entity_map = value.get("text", {}).get("entityMap", {})
         for entity in entity_map.values():
             if entity.get("type") == "LINK":
-                entity["data"] = _resolve_uid_with_image_scales(entity["data"], "url")
+                entity["data"]["url"] = uid_to_url(entity["data"]["url"])
         return value
 
 
