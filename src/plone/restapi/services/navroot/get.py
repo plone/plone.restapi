@@ -15,9 +15,7 @@ class Navroot:
         self.request = request
 
     def __call__(self, expand=False):
-        result = {
-            "navroot": {"@id": f"{self.context.absolute_url()}/@navroot"}
-        }
+        result = {"navroot": {"@id": f"{self.context.absolute_url()}/@navroot"}}
         if not expand:
             return result
 
