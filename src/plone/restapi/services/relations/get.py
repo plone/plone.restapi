@@ -205,16 +205,20 @@ class GetRelations(Service):
 
         # Get broken relations for all relation types
         if onlyBroken:
-            data = {}
             relationNames = getBrokenRelationNames()
-            for relationName in relationNames:
-                foo = get_relations(relationship=relationName, onlyBroken=True)
-                data.update(foo)
-            return {
+            if len(relationNames) == 0:
+                return self.reply_no_content(status=204)
+            result = {
                 "@id": f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}',
-                "items": data,
-                "items_total": dict([(el, len(data[el])) for el in data]),
+                "relations": {}
             }
+            for relationName in relationNames:
+                rels = get_relations(relationship=relationName, onlyBroken=True)
+                result["relations"][relationName] = {
+                    "items": rels[relationName],
+                    "items_total": len(rels)
+                }
+            return result
 
         # Stats
         if not source and not target and not relationship:
