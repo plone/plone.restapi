@@ -122,7 +122,7 @@ Limit the number of results by `max` to for example at most 100 results by `/@re
 
 ### Only broken relations
 
-Retrieve broken relations by querying with `onlyBroken`:
+Retrieve items with broken relations by querying with `onlyBroken`:
 
 `/@relations?onlyBroken=true`
 
@@ -151,7 +151,7 @@ Which returns an Object like
 Relations can be created by providing a list of the source, target, and name of the relation.
 The source and target must be either a UID or path.
 
-If the relation is based on a `RelationChoice` or `RelationList` field of the source object, the value of the field is created or updated accordingly.
+If the relation is based on a `RelationChoice` or `RelationList` field of the source object, the value of the field is updated accordingly.
 
 Add by **path**:
 
