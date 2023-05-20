@@ -129,15 +129,21 @@ Path example:
 
 ### Limit the results
 
-Limit the number of results by `max` to for example at most 100 results by `/@relations?relation=comprisesComponentPart&source=/documents/doc-1&max=100`
+Limit the number of results by `max` to, for example, at most 100 results:
+
+```
+/@relations?relation=comprisesComponentPart&source=/documents/doc-1&max=100`
+```
 
 ### Only broken relations
 
 Retrieve items with broken relations by querying with `onlyBroken`:
 
-`/@relations?onlyBroken=true`
+```
+/@relations?onlyBroken=true
+```
 
-Which returns an Object like
+This returns a JSON object, for example:
 
 ```json
 {
@@ -154,17 +160,16 @@ Which returns an Object like
 ```
 
 
-
 (restapi-relations-creating-relations-label)=
 
 ## Creating relations
 
-Relations can be created by providing a list of the source, target, and name of the relation.
+You can create relations by providing a list of the source, target, and name of the relation.
 The source and target must be either a UID or path.
 
 If the relation is based on a `RelationChoice` or `RelationList` field of the source object, the value of the field is updated accordingly.
 
-Add by **path**:
+Create a relation by **path**:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -175,7 +180,7 @@ Add by **path**:
 :language: http
 ```
 
-Add by **UID**:
+Create a relation by **UID**:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -186,7 +191,7 @@ Add by **UID**:
 :language: http
 ```
 
-**Failure**:
+If either the source or target do not exist, then an attempt to create a relation will fail, and will return an error.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -208,7 +213,7 @@ If a deleted relation is based on a `RelationChoice` or `RelationList` field, th
 
 ### Delete a list of single relations
 
-by **path**:
+Delete a list of a single relation by **path**:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -219,7 +224,7 @@ by **path**:
 :language: http
 ```
 
-by **UID**:
+Delete a list of a single relation by **UID**:
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -230,7 +235,7 @@ by **UID**:
 :language: http
 ```
 
-**Failures** are listed in response:
+If either the source or target do not exist, then an attempt to delete a relation will fail, and will return a `422 Unprocessable Entity` response.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -253,6 +258,10 @@ by **UID**:
 ```
 
 ### Delete relations by source
+
+You can delete relations by either source UID or path.
+
+The following example shows how to delete a relation by source path.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -299,9 +308,12 @@ Broken relations can be fixed by releasing and re-indexing them.
     :request: ../../../src/plone/restapi/tests/http-examples/relations_rebuild.req
 ```
 
-In rare cases flushing the `intIds` is needed.
-Rebuild relations with flushing the `intIds` by posting the following request.
-Be careful and think well before flushing if your code relies on `intIds`.
+In rare cases, you may need to flush the `intIds`.
+You can rebuild relations by flushing the `intIds` with the following HTTP POST request.
+
+```{warning}
+If your code relies on `intIds`, you should take caution and think carefully before you flush them.
+```
 
 
 ```{eval-rst}
