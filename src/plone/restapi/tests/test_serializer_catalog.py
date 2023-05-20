@@ -18,7 +18,6 @@ HAS_PLONE_6 = parse_version(
 
 
 class TestCatalogSerializers(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -100,6 +99,7 @@ class TestCatalogSerializers(unittest.TestCase):
                 "parent": {
                     "@id": "http://nohost/plone/my-folder",
                     "@type": "Folder",
+                    "type_title": "Folder",
                     "description": "",
                     "review_state": "private",
                     "title": "My Folder",
@@ -125,6 +125,7 @@ class TestCatalogSerializers(unittest.TestCase):
                 "@id": "http://nohost/plone/my-folder/my-document",
                 "@type": "Document",
                 "title": "My Document",
+                "type_title": "Page",
                 "description": "",
                 "review_state": "private",
             },

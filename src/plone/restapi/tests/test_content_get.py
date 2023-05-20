@@ -18,7 +18,6 @@ import unittest
 
 
 class TestContentGet(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -131,6 +130,7 @@ class TestContentGet(unittest.TestCase):
                     "UID": self.portal.folder1.folder2.doc2.UID(),
                     "description": "",
                     "review_state": "published",
+                    "type_title": "Page",
                     "title": "My Document 2",
                 }
             ],
@@ -171,6 +171,7 @@ class TestContentGet(unittest.TestCase):
                     "description": "This is an image",
                     "review_state": None,
                     "title": "Image without workflow",
+                    "type_title": "Image",
                 }
             ],
             response.json()["relatedItems"],

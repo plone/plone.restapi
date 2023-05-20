@@ -288,7 +288,6 @@ Location: http://localhost:55001/plone/@controlpanels/content-rules/rule-3
                 "required": [
                     "subject",
                     "recipients",
-                    "exclude_actor",
                     "message"
                 ],
                 "type": "object"

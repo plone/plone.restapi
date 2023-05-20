@@ -81,7 +81,11 @@ class QuerystringSearchGet(Service):
     def reply(self):
         # We need to copy the JSON query parameters from the querystring
         # into the request body, because that's where other code expects to find them
-        self.request["BODY"] = parse.unquote(self.request.form.get("query", "{}"))
+        self.request["BODY"] = parse.unquote(
+            self.request.form.get("query", "{}")
+        ).encode(self.request.charset)
 
+        # unset the get parameters
+        self.request.form = {}
         querystring_search = QuerystringSearch(self.context, self.request)
         return querystring_search()
