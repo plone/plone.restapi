@@ -4,6 +4,7 @@ from plone.restapi.deserializer import json_body
 from plone.restapi.interfaces import IJSONSummarySerializerMetadata
 from plone.restapi.interfaces import ISerializeToJsonSummary
 from plone.restapi.serializer.converters import json_compatible
+from plone.restapi.serializer.utils import get_portal_type_title
 from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import WorkflowException
 from zope.component import adapter
@@ -15,13 +16,7 @@ from zope.interface import Interface
 @implementer(IJSONSummarySerializerMetadata)
 class JSONSummarySerializerMetadata:
     def default_metadata_fields(self):
-        return {
-            "@id",
-            "@type",
-            "description",
-            "review_state",
-            "title",
-        }
+        return {"@id", "@type", "description", "review_state", "title", "type_title"}
 
     def field_accessors(self):
         return {
@@ -95,7 +90,10 @@ class DefaultJSONSummarySerializer:
             if field.startswith("_") or field in self.blocklisted_attributes:
                 continue
             accessor = self.field_accessors.get(field, field)
-            value = getattr(obj, accessor, None)
+            if field == "type_title":
+                value = get_portal_type_title(self.context.portal_type)
+            else:
+                value = getattr(obj, accessor, None)
             try:
                 if callable(value):
                     value = value()
@@ -140,6 +138,7 @@ class SiteRootJSONSummarySerializer:
             {
                 "@id": self.context.absolute_url(),
                 "@type": self.context.portal_type,
+                "type_title": get_portal_type_title(self.context.portal_type),
                 "title": self.context.title,
                 "description": self.context.description,
             }
