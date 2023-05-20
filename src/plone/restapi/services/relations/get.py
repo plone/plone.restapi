@@ -210,13 +210,13 @@ class GetRelations(Service):
                 return self.reply_no_content(status=204)
             result = {
                 "@id": f'{self.request["SERVER_URL"]}{self.request.environ["REQUEST_URI"]}',
-                "relations": {}
+                "relations": {},
             }
             for relationName in relationNames:
                 rels = get_relations(relationship=relationName, onlyBroken=True)
                 result["relations"][relationName] = {
                     "items": rels[relationName],
-                    "items_total": len(rels)
+                    "items_total": len(rels),
                 }
             return result
 
