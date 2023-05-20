@@ -368,7 +368,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
                             "source": self.doc1.UID(),
                             "target": self.doc3.UID(),
                             "relation": "comprisesComponentPart",
-                        }
+                        },
                     ]
                 },
             )
