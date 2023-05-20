@@ -207,7 +207,7 @@ Content-Type: application/json+schema
                     "@id": "http://localhost:55001/plone/@vocabularies/plone.app.vocabularies.Catalog"
                 }
             },
-            "title": "Elementos relacionados",
+            "title": "Related Items",
             "type": "array",
             "uniqueItems": true,
             "widgetOptions": {

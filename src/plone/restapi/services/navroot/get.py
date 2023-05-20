@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from plone.restapi.interfaces import IExpandableElement
+from plone.restapi.interfaces import IExpandableElement, ISerializeToJson
 from plone.restapi.services import Service
 from zope.component import adapter
 from zope.component import getMultiAdapter
@@ -15,19 +15,22 @@ class Navroot:
         self.request = request
 
     def __call__(self, expand=False):
-        result = {"navroot": {"@id": f"{self.context.absolute_url()}/@navroot"}}
+        result = {
+            "navroot": {"@id": f"{self.context.absolute_url()}/@navroot"}
+        }
         if not expand:
             return result
 
         portal_state = getMultiAdapter(
             (self.context, self.request), name="plone_portal_state"
         )
-        result["navroot"].update(
-            {
-                "url": portal_state.navigation_root_url(),
-                "title": portal_state.navigation_root_title(),
-            }
-        )
+        # We need to unset expansion here, otherwise we get infinite recursion
+        self.request.form["expand"] = ""
+
+        result["navroot"]["navroot"] = getMultiAdapter(
+            (portal_state.navigation_root(), self.request),
+            ISerializeToJson,
+        )()
 
         return result
 
