@@ -115,9 +115,15 @@ class PostRelations(Service):
                 continue
 
         if len(failed_relations) > 0:
-            return {
-                "type": "error",
-                "failed": failed_relations,
-            }
+            return self._error(
+                422,
+                "Unprocessable Content",
+                "Failed on creating relations",
+                failed_relations,
+            )
 
         return self.reply_no_content()
+
+    def _error(self, status, type, message, failed=[]):
+        self.request.response.setStatus(status)
+        return {"error": {"type": type, "message": message, "failed": failed}}

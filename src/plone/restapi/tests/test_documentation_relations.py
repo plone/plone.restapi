@@ -293,7 +293,7 @@ class TestRelationsDocumentation(TestDocumentationBase):
             )
             save_request_and_response_for_docs("relations_post_failure", response)
             resp = response.json()
-            self.assertIn("failed", resp)
+            self.assertIn("failed", resp["error"])
 
             # Add by UID
             response = self.api_session.post(
