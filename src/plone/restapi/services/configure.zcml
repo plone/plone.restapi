@@ -47,9 +47,7 @@
       zcml:condition="installed plone.app.iterate"
       />
   <configure zcml:condition="installed plone.app.multilingual">
-    <include
-        package=".multilingual"
-        />
+    <include package=".multilingual" />
   </configure>
   <include
       package=".email_notification"
