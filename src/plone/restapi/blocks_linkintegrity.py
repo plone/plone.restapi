@@ -2,7 +2,7 @@
 from plone.app.linkintegrity.interfaces import IRetriever
 from plone.app.linkintegrity.retriever import DXGeneral
 from plone.restapi.behaviors import IBlocks
-from plone.restapi.blocks import iter_block_transform_handlers
+from plone.restapi.blocks import iter_block_transform_handlers, visit_blocks
 from plone.restapi.deserializer.blocks import iterate_children
 from plone.restapi.interfaces import IBlockFieldLinkIntegrityRetriever
 from typing import cast, Callable, Iterable, List
@@ -24,7 +24,7 @@ class BlocksRetriever(DXGeneral):
         blocks = getattr(self.context, "blocks", {})
         if not blocks:
             return links
-        for block in blocks.values():
+        for block in visit_blocks(self.context, blocks):
             for handler in iter_block_transform_handlers(self.context, block, IBlockFieldLinkIntegrityRetriever):
                 links |= set(handler(block))
         return links

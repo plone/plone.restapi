@@ -24,18 +24,16 @@ import os
 @implementer(IFieldSerializer)
 class BlocksJSONFieldSerializer(DefaultFieldSerializer):
 
-    def _apply_serialization_transforms(self, block_value: dict):
-        new_block_value = block_value.copy()
-        for handler in iter_block_transform_handlers(self.context, block_value, IBlockFieldSerializationTransformer):
-            new_block_value = handler(new_block_value)
-        block_value.clear()
-        block_value.update(new_block_value)
-
     def __call__(self):
         value: dict = copy.deepcopy(self.get_value())
 
         if self.field.getName() == "blocks":
-            visit_blocks(self.context, value, self._apply_serialization_transforms)
+            for block in visit_blocks(self.context, value):
+                new_block = block.copy()
+                for handler in iter_block_transform_handlers(self.context, block, IBlockFieldSerializationTransformer):
+                    new_block = handler(new_block)
+                block.clear()
+                block.update(new_block)
         return json_compatible(value)
 
 

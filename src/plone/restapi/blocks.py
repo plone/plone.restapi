@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Iterable
+from typing import Dict, Generator, List, Iterable
 from zope.component import adapter
 from zope.component import subscribers
 from zope.interface import implementer
@@ -8,7 +8,7 @@ from zope.publisher.interfaces.browser import IBrowserRequest
 from plone.restapi.interfaces import IBlockVisitor, IBlockTransformer
 
 
-def visit_blocks(context, blocks: Dict[str, dict], handle_block: Callable[[dict], None]) -> None:
+def visit_blocks(context, blocks: Dict[str, dict]) -> Generator[dict, None, None]:
     """Visit all blocks, including nested blocks.
 
     context: Content item where these blocks are stored.
@@ -21,7 +21,7 @@ def visit_blocks(context, blocks: Dict[str, dict], handle_block: Callable[[dict]
     for block in queue:
         for visitor in visitors:
             queue.extend(visitor(block))
-            handle_block(block)
+        yield block
 
 
 def iter_block_transform_handlers(context, block_value: dict, interface: IBlockTransformer) -> Iterable:

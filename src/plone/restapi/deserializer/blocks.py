@@ -34,16 +34,16 @@ def iterate_children(value):
 class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
 
     def _apply_deserialization_transforms(self, block_value: dict):
-        new_block_value = block_value.copy()
-        for handler in iter_block_transform_handlers(self.context, block_value, IBlockFieldDeserializationTransformer):
-            new_block_value = handler(new_block_value)
-        block_value.clear()
-        block_value.update(new_block_value)
 
     def __call__(self, value):
         value = super().__call__(value)
         if self.field.getName() == "blocks":
-            visit_blocks(self.context, value, self._apply_deserialization_transforms)
+            for block in visit_blocks(self.context, value):
+                new_block = block.copy()
+                for handler in iter_block_transform_handlers(self.context, block, IBlockFieldDeserializationTransformer):
+                    new_block_value = handler(new_block)
+                block.clear()
+                block.update(new_block)
         return value
 
 
