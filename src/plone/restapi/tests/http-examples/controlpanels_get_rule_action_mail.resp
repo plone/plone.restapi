@@ -54,6 +54,7 @@ Content-Type: application/json
         "required": [
             "subject",
             "recipients",
+            "exclude_actor",
             "message"
         ],
         "type": "object"

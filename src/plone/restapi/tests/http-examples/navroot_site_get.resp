@@ -53,28 +53,32 @@ Content-Type: application/json
                 "@type": "LRF",
                 "description": "",
                 "review_state": "published",
-                "title": "English"
+                "title": "English",
+                "type_title": "Language Root Folder"
             },
             {
                 "@id": "http://localhost:55001/plone/de",
                 "@type": "LRF",
                 "description": "",
                 "review_state": "published",
-                "title": "Deutsch"
+                "title": "Deutsch",
+                "type_title": "Language Root Folder"
             },
             {
                 "@id": "http://localhost:55001/plone/es",
                 "@type": "LRF",
                 "description": "",
                 "review_state": "published",
-                "title": "Espa\u00f1ol"
+                "title": "Espa\u00f1ol",
+                "type_title": "Language Root Folder"
             },
             {
                 "@id": "http://localhost:55001/plone/fr",
                 "@type": "LRF",
                 "description": "",
                 "review_state": null,
-                "title": "Fran\u00e7ais"
+                "title": "Fran\u00e7ais",
+                "type_title": "Language Root Folder"
             }
         ],
         "items_total": 4,
@@ -93,6 +97,7 @@ Content-Type: application/json
         "subjects": [],
         "table_of_contents": null,
         "text": null,
-        "title": "Plone site"
+        "title": "Plone site",
+        "type_title": "Plone Site"
     }
 }

@@ -55,7 +55,7 @@ Content-Type: application/json
                 },
                 "@id": "http://localhost:55001/plone/en",
                 "@type": "LRF",
-                "UID": "1e701d8247a749e3bbdfa144ba7edff4",
+                "UID": "6401f2316ac54e9b94e7fae29d4794f4",
                 "allow_discussion": false,
                 "contributors": [],
                 "created": "1995-07-31T13:45:00",
@@ -74,14 +74,16 @@ Content-Type: application/json
                         "@type": "LIF",
                         "description": "",
                         "review_state": "published",
-                        "title": "Assets"
+                        "title": "Assets",
+                        "type_title": "Language Independent Folder"
                     },
                     {
                         "@id": "http://localhost:55001/plone/en/test-document",
                         "@type": "Document",
                         "description": "",
                         "review_state": "private",
-                        "title": "Test document"
+                        "title": "Test document",
+                        "type_title": "Page"
                     }
                 ],
                 "items_total": 2,
@@ -96,19 +98,22 @@ Content-Type: application/json
                     "@id": "http://localhost:55001/plone/de",
                     "@type": "LRF",
                     "description": "",
-                    "title": "Deutsch"
+                    "title": "Deutsch",
+                    "type_title": "Language Root Folder"
                 },
                 "parent": {
                     "@id": "http://localhost:55001/plone",
                     "@type": "Plone Site",
                     "description": "",
-                    "title": "Plone site"
+                    "title": "Plone site",
+                    "type_title": "Plone Site"
                 },
                 "previous_item": {},
                 "review_state": "published",
                 "rights": "",
                 "subjects": [],
                 "title": "English",
+                "type_title": "Language Root Folder",
                 "version": "current",
                 "working_copy": null,
                 "working_copy_of": null
@@ -159,13 +164,15 @@ Content-Type: application/json
         "@type": "LRF",
         "description": "",
         "review_state": "published",
-        "title": "English"
+        "title": "English",
+        "type_title": "Language Root Folder"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/en/assets",
         "@type": "LIF",
         "description": "",
-        "title": "Assets"
+        "title": "Assets",
+        "type_title": "Language Independent Folder"
     },
     "relatedItems": [],
     "review_state": "private",
@@ -174,6 +181,7 @@ Content-Type: application/json
     "table_of_contents": null,
     "text": null,
     "title": "Test document",
+    "type_title": "Page",
     "version": "current",
     "versioning_enabled": true,
     "working_copy": null,
