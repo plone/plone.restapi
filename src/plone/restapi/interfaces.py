@@ -2,7 +2,7 @@
 # E0211: Method has no argument
 # W0221: Arguments number differs from overridden '__call__' method
 
-from typing import List, Dict
+from typing import Iterable, List
 from zope.interface import Attribute
 from zope.interface import Interface
 from zope.publisher.interfaces.browser import IDefaultBrowserLayer
@@ -239,5 +239,5 @@ class IBlockVisitor(Interface):
     Used by the visit_blocks utility.
     """
 
-    def __call__(self, block: dict) -> List[Dict]:
+    def __call__(self, block: dict) -> Iterable[dict]:
         """Return a list of sub-blocks found inside `block`."""
