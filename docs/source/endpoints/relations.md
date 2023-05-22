@@ -54,7 +54,6 @@ If the user lacks permission to access these relations, then they are omitted fr
 
 The relations are grouped by relation name, source, and target, and are provided in a summarized format.
 
----
 
 Query relations of a **relation type**:
 
@@ -132,7 +131,7 @@ Path example:
 Limit the number of results by `max` to, for example, at most 100 results:
 
 ```
-/@relations?relation=comprisesComponentPart&source=/documents/doc-1&max=100`
+/@relations?relation=comprisesComponentPart&source=/documents/doc-1&max=100
 ```
 
 ### Only broken relations
@@ -191,7 +190,7 @@ Create a relation by **UID**:
 :language: http
 ```
 
-If either the source or target do not exist, then an attempt to create a relation will fail, and will return an error.
+If either the source or target do not exist, then an attempt to create a relation will fail, and will return a `422 Unprocessable Entity` response.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
@@ -206,8 +205,8 @@ If either the source or target do not exist, then an attempt to create a relatio
 
 ## Deleting relations
 
-Relations can be deleted by relation name, source object, target object, or a combination of these.
-Relations can also be deleted by providing a list of relations.
+You can delete relations by relation name, source object, target object, or a combination of these.
+You can also delete relations by providing a list of relations.
 
 If a deleted relation is based on a `RelationChoice` or `RelationList` field, the value of the field is removed or updated accordingly on the source object.
 
@@ -276,9 +275,9 @@ The following example shows how to delete a relation by target path.
 :language: http
 ```
 
-### Delete relations by combination of source, target and relation name
+### Delete relations by a combination of source, target, and relation name
 
-You can delete relations by their relation name and either a source or target.
+You can delete relations by a combination of either any two of their relation name, source, and target, or a combination of all three.
 In the following example, you would delete a relation by its relation name and target.
 
 ```{eval-rst}
@@ -294,6 +293,7 @@ In the following example, you would delete a relation by its relation name and t
 ## Fix relations
 
 Broken relations can be fixed by releasing and re-indexing them.
+A successfully fixed relation will return a `204 No Content` response.
 
 ```{eval-rst}
 ..  http:example:: curl httpie python-requests
