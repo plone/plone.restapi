@@ -49,7 +49,6 @@
   <configure zcml:condition="installed plone.app.multilingual">
     <include
         package=".multilingual"
-        zcml:condition="have plone-5"
         />
   </configure>
   <include
