@@ -23,14 +23,15 @@ import os
 @adapter(IJSONField, IBlocks, Interface)
 @implementer(IFieldSerializer)
 class BlocksJSONFieldSerializer(DefaultFieldSerializer):
-
     def __call__(self):
         value: dict = copy.deepcopy(self.get_value())
 
         if self.field.getName() == "blocks":
             for block in visit_blocks(self.context, value):
                 new_block = block.copy()
-                for handler in iter_block_transform_handlers(self.context, block, IBlockFieldSerializationTransformer):
+                for handler in iter_block_transform_handlers(
+                    self.context, block, IBlockFieldSerializationTransformer
+                ):
                     new_block = handler(new_block)
                 block.clear()
                 block.update(new_block)

@@ -32,16 +32,15 @@ def iterate_children(value):
 @implementer(IFieldDeserializer)
 @adapter(IJSONField, IBlocks, IBrowserRequest)
 class BlocksJSONFieldDeserializer(DefaultFieldDeserializer):
-
-    def _apply_deserialization_transforms(self, block_value: dict):
-
     def __call__(self, value):
         value = super().__call__(value)
         if self.field.getName() == "blocks":
             for block in visit_blocks(self.context, value):
                 new_block = block.copy()
-                for handler in iter_block_transform_handlers(self.context, block, IBlockFieldDeserializationTransformer):
-                    new_block_value = handler(new_block)
+                for handler in iter_block_transform_handlers(
+                    self.context, block, IBlockFieldDeserializationTransformer
+                ):
+                    new_block = handler(new_block)
                 block.clear()
                 block.update(new_block)
         return value

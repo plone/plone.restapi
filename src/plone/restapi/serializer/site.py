@@ -142,7 +142,9 @@ class SerializeSiteRootToJson:
         blocks = json.loads(getattr(self.context, "blocks", "{}"))
         for block in visit_blocks(self.context, blocks):
             new_block = block.copy()
-            for handler in iter_block_transform_handlers(self.context, block, IBlockFieldSerializationTransformer):
+            for handler in iter_block_transform_handlers(
+                self.context, block, IBlockFieldSerializationTransformer
+            ):
                 new_block = handler(new_block)
             block.clear()
             block.update(new_block)

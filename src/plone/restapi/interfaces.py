@@ -93,6 +93,7 @@ class IBlockTransformer(Interface):
 
     Block transformers for specific use cases extend this interface.
     """
+
     block_type = Attribute(
         "A string with the type of block, the @type from the block value"
     )

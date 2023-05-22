@@ -25,7 +25,9 @@ class BlocksRetriever(DXGeneral):
         if not blocks:
             return links
         for block in visit_blocks(self.context, blocks):
-            for handler in iter_block_transform_handlers(self.context, block, IBlockFieldLinkIntegrityRetriever):
+            for handler in iter_block_transform_handlers(
+                self.context, block, IBlockFieldLinkIntegrityRetriever
+            ):
                 links |= set(handler(block))
         return links
 

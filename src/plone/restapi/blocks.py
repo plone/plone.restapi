@@ -24,7 +24,9 @@ def visit_blocks(context, blocks: Dict[str, dict]) -> Generator[dict, None, None
         yield block
 
 
-def iter_block_transform_handlers(context, block_value: dict, interface: IBlockTransformer) -> Iterable:
+def iter_block_transform_handlers(
+    context, block_value: dict, interface: IBlockTransformer
+) -> Iterable:
     """Find valid handlers for a particular block transformation.
 
     Looks for adapters of the context and request to this interface.
@@ -46,6 +48,7 @@ def iter_block_transform_handlers(context, block_value: dict, interface: IBlockT
 @adapter(Interface, IBrowserRequest)
 class NestedBlocksVisitor:
     """Visit nested blocks."""
+
     def __init__(self, context, request):
         pass
 
