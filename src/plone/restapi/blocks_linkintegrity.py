@@ -5,10 +5,7 @@ from plone.restapi.behaviors import IBlocks
 from plone.restapi.blocks import iter_block_transform_handlers, visit_blocks
 from plone.restapi.deserializer.blocks import iterate_children
 from plone.restapi.interfaces import IBlockFieldLinkIntegrityRetriever
-from typing import cast, Callable, Iterable, List
 from zope.component import adapter
-from zope.component import subscribers
-from zope.globalrequest import getRequest
 from zope.interface import implementer
 from zope.publisher.interfaces.browser import IBrowserRequest
 
