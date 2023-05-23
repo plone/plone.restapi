@@ -8,6 +8,38 @@ Changelog
 
 .. towncrier release notes start
 
+8.39.0 (2023-05-23)
+-------------------
+
+New features:
+
+
+- Create relations service. Query, add, delete. @ksuess (#1432)
+
+
+8.38.0 (2023-05-19)
+-------------------
+
+New features:
+
+
+- Add portal_type title (`type_title`) to content response @razvanMiu @nileshgulia1 (#1355)
+- Added support for nested schemas with resolveuid deserializer @JeffersonBledsoe (#1595)
+
+
+Bug fixes:
+
+
+- Fix missing metadata_fields in Response via GET Request to Endpoint /@querystring-search @1letter (#1628)
+- Respect Password Policy @tschorr (#1630)
+
+
+Internal:
+
+
+- Update buildout and requirements to Plone-6.0.4 @1letter (#1632)
+
+
 8.37.0 (2023-04-19)
 -------------------
 

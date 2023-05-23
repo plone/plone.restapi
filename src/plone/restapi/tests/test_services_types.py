@@ -14,7 +14,6 @@ import unittest
 
 
 class TestServicesTypes(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):
@@ -81,7 +80,8 @@ class TestServicesTypes(unittest.TestCase):
         )
         for item in response.json():
             self.assertEqual(
-                sorted(item), sorted(["@id", "title", "addable", "immediately_addable"])
+                sorted(item),
+                sorted(["@id", "title", "addable", "immediately_addable", "id"]),
             )
 
     def test_get_types_document(self):
@@ -571,7 +571,6 @@ class TestServicesTypes(unittest.TestCase):
 
 
 class TestServicesTypesTranslatedTitles(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_FUNCTIONAL_TESTING
 
     def setUp(self):

@@ -30,6 +30,7 @@
   <include package=".querystring" />
   <include package=".querystringsearch" />
   <include package=".registry" />
+  <include package=".relations" />
   <include package=".roles" />
   <include package=".rules" />
   <include package=".search" />

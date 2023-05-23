@@ -7,6 +7,7 @@ from plone.namedfile.file import NamedBlobImage
 from plone.namedfile.file import NamedFile
 from plone.restapi.interfaces import ISerializeToJson
 from plone.restapi.testing import PLONE_RESTAPI_DX_INTEGRATION_TESTING
+from plone.restapi.serializer.utils import get_portal_type_title
 from plone.restapi.tests.helpers import patch_scale_uuid
 from Products.CMFCore.utils import getToolByName
 from zope.component import getMultiAdapter
@@ -22,7 +23,6 @@ HAS_PLONE_6 = getattr(
 
 
 class TestSerializeToJsonAdapter(unittest.TestCase):
-
     layer = PLONE_RESTAPI_DX_INTEGRATION_TESTING
 
     def setUp(self):
@@ -117,6 +117,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "Document",
                     "description": "This is a document",
                     "title": "Document 1",
+                    "type_title": "Page",
                     "review_state": "private",
                 }
             ],
@@ -147,6 +148,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "Document",
                     "description": "Second doc",
                     "title": "Document 2",
+                    "type_title": "Page",
                     "review_state": "private",
                 },
                 {
@@ -154,6 +156,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "Document",
                     "description": "This is a document",
                     "title": "Document 1",
+                    "type_title": "Page",
                     "review_state": "private",
                 },
             ],
@@ -168,6 +171,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             {
                 "@id": self.portal.absolute_url(),
                 "@type": self.portal.portal_type,
+                "type_title": get_portal_type_title(self.portal.portal_type),
                 "title": self.portal.title,
                 "description": self.portal.description,
             },
@@ -184,6 +188,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
             {
                 "@id": self.portal.absolute_url(),
                 "@type": self.portal.portal_type,
+                "type_title": get_portal_type_title(self.portal.portal_type),
                 "title": self.portal.title,
                 "description": self.portal.description,
             },
@@ -210,6 +215,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "DXTestDocument",
                     "description": "",
                     "title": "DX Test Document",
+                    "type_title": "DX Test Document",
                     "review_state": "private",
                 },
                 {
@@ -217,6 +223,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "Document",
                     "description": "",
                     "title": "Document 1",
+                    "type_title": "Page",
                     "review_state": "private",
                 },
             ],
@@ -346,6 +353,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "Document",
                     "description": "",
                     "title": "Document 1",
+                    "type_title": "Page",
                     "review_state": "private",
                 },
                 {
@@ -353,6 +361,7 @@ class TestSerializeToJsonAdapter(unittest.TestCase):
                     "@type": "Document",
                     "description": "",
                     "title": "Document 2",
+                    "type_title": "Page",
                     "review_state": "private",
                 },
             ],

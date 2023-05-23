@@ -11,6 +11,7 @@ from plone.restapi.serializer.blocks import apply_block_serialization_transforms
 from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.services.locking import lock_info
+from plone.restapi.serializer.utils import get_portal_type_title
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
 from zope.component import adapter
@@ -62,6 +63,7 @@ class SerializeSiteRootToJson:
             "@id": self.context.absolute_url(),
             "id": self.context.id,
             "@type": "Plone Site",
+            "type_title": get_portal_type_title("Plone Site"),
             "title": self.context.Title(),
             "parent": {},
             "is_folderish": True,
@@ -81,7 +83,6 @@ class SerializeSiteRootToJson:
                 read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
                 for name, field in getFields(schema).items():
-
                     if not self.check_permission(
                         read_permissions.get(name), self.context
                     ):
