@@ -8,6 +8,15 @@ Changelog
 
 .. towncrier release notes start
 
+8.39.0 (2023-05-23)
+-------------------
+
+New features:
+
+
+- Create relations service. Query, add, delete. @ksuess (#1432)
+
+
 8.38.0 (2023-05-19)
 -------------------
 
