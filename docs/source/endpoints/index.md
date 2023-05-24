@@ -41,6 +41,7 @@ principals
 querystring
 querystringsearch
 registry
+relations
 roles
 searching
 system
