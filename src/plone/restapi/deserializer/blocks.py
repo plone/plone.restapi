@@ -107,27 +107,30 @@ class ResolveUIDDeserializerBase:
 
     def __call__(self, block):
         # Convert absolute links to resolveuid
-        for field in self.fields:
-            link = block.get(field, "")
-            if link and isinstance(link, str):
-                block[field] = path2uid(context=self.context, link=link)
-            elif link and isinstance(link, list):
-                # Detect if it has an object inside with an "@id" key (object_widget)
-                if len(link) > 0 and isinstance(link[0], dict) and "@id" in link[0]:
-                    result = []
-                    for item in link:
-                        item_clone = deepcopy(item)
-                        item_clone["@id"] = path2uid(
-                            context=self.context, link=item_clone["@id"]
-                        )
-                        result.append(item_clone)
+        return self._process_data(block)
 
-                    block[field] = result
-                elif len(link) > 0 and isinstance(link[0], str):
-                    block[field] = [
-                        path2uid(context=self.context, link=item) for item in link
-                    ]
-        return block
+    def _process_data(self, data, field=None):
+        if isinstance(data, str) and field in self.fields:
+            return path2uid(context=self.context, link=data)
+        if isinstance(data, list):
+            return [self._process_data(data=value, field=field) for value in data]
+        if isinstance(data, dict):
+            if data.get("@type", None) == "URL" and data.get("value", None):
+                data["value"] = path2uid(context=self.context, link=data["value"])
+            elif data.get("@id", None):
+                item_clone = deepcopy(data)
+                item_clone["@id"] = path2uid(
+                    context=self.context, link=item_clone["@id"]
+                )
+                return {
+                    field: self._process_data(data=value, field=field)
+                    for field, value in item_clone.items()
+                }
+            return {
+                field: self._process_data(data=value, field=field)
+                for field, value in data.items()
+            }
+        return data
 
 
 class TextBlockDeserializerBase:
@@ -162,7 +165,6 @@ class HTMLBlockDeserializerBase:
         self.request = request
 
     def __call__(self, block):
-
         portal_transforms = api.portal.get_tool(name="portal_transforms")
         raw_html = block.get("html", "")
         data = portal_transforms.convertTo(
@@ -301,7 +303,6 @@ class SlateBlockDeserializerRoot(SlateBlockDeserializerBase):
 
 class SlateTableBlockTransformer(SlateBlockTransformer):
     def __call__(self, block):
-
         rows = block.get("table", {}).get("rows", [])
         for row in rows:
             cells = row.get("cells", [])

@@ -48,7 +48,8 @@ Content-Type: application/json
             "UID": "SomeUUID000000000000000000000003",
             "description": "",
             "review_state": "private",
-            "title": "A document within a folder"
+            "title": "A document within a folder",
+            "type_title": "Page"
         },
         {
             "@id": "http://localhost:55001/plone/folder/doc2",
@@ -57,7 +58,8 @@ Content-Type: application/json
             "UID": "SomeUUID000000000000000000000004",
             "description": "",
             "review_state": "private",
-            "title": "A document within a folder"
+            "title": "A document within a folder",
+            "type_title": "Page"
         },
         {
             "@id": "http://localhost:55001/plone/folder/my-document",
@@ -66,7 +68,8 @@ Content-Type: application/json
             "UID": "SomeUUID000000000000000000000005",
             "description": "",
             "review_state": "private",
-            "title": "My Document"
+            "title": "My Document",
+            "type_title": "Page"
         }
     ],
     "items_total": 3,
@@ -80,19 +83,22 @@ Content-Type: application/json
         "@id": "http://localhost:55001/plone",
         "@type": "Plone Site",
         "description": "",
-        "title": "Plone site"
+        "title": "Plone site",
+        "type_title": "Plone Site"
     },
     "previous_item": {
         "@id": "http://localhost:55001/plone/front-page",
         "@type": "Document",
         "description": "Congratulations! You have successfully installed Plone.",
-        "title": "Welcome to Plone"
+        "title": "Welcome to Plone",
+        "type_title": "Page"
     },
     "relatedItems": [],
     "review_state": "private",
     "rights": "",
     "subjects": [],
     "title": "My Folder",
+    "type_title": "Folder",
     "version": "current",
     "working_copy": null,
     "working_copy_of": null

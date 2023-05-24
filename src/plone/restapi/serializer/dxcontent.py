@@ -16,6 +16,7 @@ from plone.restapi.serializer.converters import json_compatible
 from plone.restapi.serializer.expansion import expandable_elements
 from plone.restapi.serializer.nextprev import NextPrevious
 from plone.restapi.services.locking import lock_info
+from plone.restapi.serializer.utils import get_portal_type_title
 from plone.rfc822.interfaces import IPrimaryFieldInfo
 from plone.supermodel.utils import mergedTaggedValueDict
 from Products.CMFCore.utils import getToolByName
@@ -62,11 +63,13 @@ class SerializeToJson:
         parent_summary = getMultiAdapter(
             (parent, self.request), ISerializeToJsonSummary
         )()
+
         result = {
             # '@context': 'http://www.w3.org/ns/hydra/context.jsonld',
             "@id": obj.absolute_url(),
             "id": obj.id,
             "@type": obj.portal_type,
+            "type_title": get_portal_type_title(obj.portal_type),
             "parent": parent_summary,
             "created": json_compatible(obj.created()),
             "modified": json_compatible(obj.modified()),
@@ -101,7 +104,6 @@ class SerializeToJson:
             read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
-
                 if not self.check_permission(read_permissions.get(name), obj):
                     continue
 
@@ -203,7 +205,6 @@ class DexterityObjectPrimaryFieldTarget:
             read_permissions = mergedTaggedValueDict(schema, READ_PERMISSIONS_KEY)
 
             for name, field in getFields(schema).items():
-
                 if not self.check_permission(read_permissions.get(name), self.context):
                     continue
 
