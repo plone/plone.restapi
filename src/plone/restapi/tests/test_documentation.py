@@ -100,9 +100,7 @@ def pretty_json(data):
 def save_request_and_response_for_docs(
     name, response, response_text_override="", request_text_override=""
 ):
-    save_request_for_docs(
-        name, response, request_text_override=request_text_override
-    )
+    save_request_for_docs(name, response, request_text_override=request_text_override)
     filename = "{}/{}".format(base_path, "%s.resp" % name)
     with open(filename, "w", **open_kw) as resp:
         status = response.status_code
@@ -153,10 +151,7 @@ def save_request_for_docs(name, response, request_text_override=""):
             req.write("\n")
 
             # Pretty print JSON request body
-            if (
-                content_type == "application/json"
-                and not request_text_override
-            ):
+            if content_type == "application/json" and not request_text_override:
                 json_body = json.loads(response.request.body)
                 body = pretty_json(json_body)
                 # Make sure Content-Length gets updated, just in case we
@@ -234,9 +229,7 @@ class TestDocumentation(TestDocumentationBase):
         self.portal.invokeFactory("Document", id="front-page")
         document = self.portal["front-page"]
         document.title = "Welcome to Plone"
-        document.description = (
-            "Congratulations! You have successfully installed Plone."
-        )
+        document.description = "Congratulations! You have successfully installed Plone."
         document.text = RichTextValue(
             "If you're seeing this instead of the web site you were "
             + "expecting, the owner of this web site has just installed "
@@ -252,12 +245,8 @@ class TestDocumentation(TestDocumentationBase):
         folder = self.portal["folder"]
         folder.title = "My Folder"
         folder.description = "This is a folder with two documents"
-        folder.invokeFactory(
-            "Document", id="doc1", title="A document within a folder"
-        )
-        folder.invokeFactory(
-            "Document", id="doc2", title="A document within a folder"
-        )
+        folder.invokeFactory("Document", id="doc1", title="A document within a folder")
+        folder.invokeFactory("Document", id="doc2", title="A document within a folder")
         return folder
 
     def test_documentation_content_crud(self):
@@ -276,8 +265,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("content_get", response)
 
         response = self.api_session.get(
-            folder.absolute_url()
-            + "?metadata_fields=UID&metadata_fields=Creator"
+            folder.absolute_url() + "?metadata_fields=UID&metadata_fields=Creator"
         )
         save_request_and_response_for_docs("content_get_folder", response)
 
@@ -291,9 +279,7 @@ class TestDocumentation(TestDocumentationBase):
             headers={"Prefer": "return=representation"},
             json={"title": "My New Document Title"},
         )
-        save_request_and_response_for_docs(
-            "content_patch_representation", response
-        )
+        save_request_and_response_for_docs("content_patch_representation", response)
 
         transaction.commit()
         response = self.api_session.delete(document.absolute_url())
@@ -321,9 +307,7 @@ class TestDocumentation(TestDocumentationBase):
 
         scale_url_uuid = "uuid1"
         with patch_scale_uuid(scale_url_uuid):
-            response = self.api_session.get(
-                self.portal.newsitem.absolute_url()
-            )
+            response = self.api_session.get(self.portal.newsitem.absolute_url())
             save_request_and_response_for_docs("newsitem", response)
 
     def test_documentation_event(self):
@@ -384,9 +368,7 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_collection(self):
         self.portal.invokeFactory("Collection", id="collection")
         self.portal.collection.title = "My Collection"
-        self.portal.collection.description = (
-            "This is a collection with two documents"
-        )
+        self.portal.collection.description = "This is a collection with two documents"
         self.portal.collection.query = [
             {
                 "i": "portal_type",
@@ -403,9 +385,7 @@ class TestDocumentation(TestDocumentationBase):
     def test_documentation_collection_fullobjects(self):
         self.portal.invokeFactory("Collection", id="collection")
         self.portal.collection.title = "My Collection"
-        self.portal.collection.description = (
-            "This is a collection with two documents"
-        )
+        self.portal.collection.description = "This is a collection with two documents"
         self.portal.collection.query = [
             {
                 "i": "portal_type",
@@ -436,9 +416,7 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_search_options(self):
         self.portal.invokeFactory("Folder", id="folder1", title="Folder 1")
-        self.portal.folder1.invokeFactory(
-            "Folder", id="folder2", title="Folder 2"
-        )
+        self.portal.folder1.invokeFactory("Folder", id="folder2", title="Folder 2")
         transaction.commit()
         query = {
             "sort_on": "path",
@@ -450,13 +428,9 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_documentation_search_multiple_paths(self):
         self.portal.invokeFactory("Folder", id="folder1", title="Folder 1")
-        self.portal.folder1.invokeFactory(
-            "Document", id="doc1", title="Lorem Ipsum"
-        )
+        self.portal.folder1.invokeFactory("Document", id="doc1", title="Lorem Ipsum")
         self.portal.invokeFactory("Folder", id="folder2", title="Folder 2")
-        self.portal.folder2.invokeFactory(
-            "Document", id="doc2", title="Lorem Ipsum"
-        )
+        self.portal.folder2.invokeFactory("Document", id="doc2", title="Lorem Ipsum")
         transaction.commit()
         query = {
             "sort_on": "path",
@@ -476,9 +450,7 @@ class TestDocumentation(TestDocumentationBase):
             "sort_on": ["portal_type", "sortable_title"],
         }
         response = self.api_session.get("/@search", params=query)
-        save_request_and_response_for_docs(
-            "search_sort_multiple_indexes", response
-        )
+        save_request_and_response_for_docs("search_sort_multiple_indexes", response)
 
     def test_documentation_search_metadata_fields(self):
         self.portal.invokeFactory("Document", id="doc1", title="Lorem Ipsum")
@@ -498,9 +470,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("search_fullobjects", response)
 
     def test_documentation_workflow(self):
-        response = self.api_session.get(
-            f"{self.document.absolute_url()}/@workflow"
-        )
+        response = self.api_session.get(f"{self.document.absolute_url()}/@workflow")
         save_request_and_response_for_docs("workflow_get", response)
 
     def test_documentation_workflow_transition(self):
@@ -558,9 +528,7 @@ class TestDocumentation(TestDocumentationBase):
                 "description": "Contact information",
             },
         )
-        save_request_and_response_for_docs(
-            "types_document_post_fieldset", response
-        )
+        save_request_and_response_for_docs("types_document_post_fieldset", response)
 
         # Add field
         response = self.api_session.post(
@@ -580,7 +548,9 @@ class TestDocumentation(TestDocumentationBase):
         document_schema_re = re.compile(
             r"^plone.dexterity.schema.generated.plone_5_\d*_2_\d*_0_Document$"
         )
-        stable_behavior = "plone.dexterity.schema.generated.plone_5_1234567890_2_123456_0_Document"
+        stable_behavior = (
+            "plone.dexterity.schema.generated.plone_5_1234567890_2_123456_0_Document"
+        )
         json_response = response.json()
         response_text_override = ""
         behavior = json_response.get("behavior")
@@ -613,9 +583,7 @@ class TestDocumentation(TestDocumentationBase):
 
         # Get fieldset
         response = self.api_session.get("/@types/Document/contact_info")
-        save_request_and_response_for_docs(
-            "types_document_get_fieldset", response
-        )
+        save_request_and_response_for_docs("types_document_get_fieldset", response)
 
         # Get field
         response = self.api_session.get("/@types/Document/author_email")
@@ -646,9 +614,7 @@ class TestDocumentation(TestDocumentationBase):
                 }
             },
         )
-        save_request_and_response_for_docs(
-            "types_document_patch_properites", response
-        )
+        save_request_and_response_for_docs("types_document_patch_properites", response)
 
         # Change field tab / order
         response = self.api_session.patch(
@@ -663,9 +629,7 @@ class TestDocumentation(TestDocumentationBase):
                 ]
             },
         )
-        save_request_and_response_for_docs(
-            "types_document_patch_fieldsets", response
-        )
+        save_request_and_response_for_docs("types_document_patch_fieldsets", response)
 
         # Update fieldset settings
         response = self.api_session.patch(
@@ -676,9 +640,7 @@ class TestDocumentation(TestDocumentationBase):
                 "fields": ["author_email"],
             },
         )
-        save_request_and_response_for_docs(
-            "types_document_patch_fieldset", response
-        )
+        save_request_and_response_for_docs("types_document_patch_fieldset", response)
 
         # Update field settings
         response = self.api_session.patch(
@@ -691,9 +653,7 @@ class TestDocumentation(TestDocumentationBase):
                 "required": True,
             },
         )
-        save_request_and_response_for_docs(
-            "types_document_patch_field", response
-        )
+        save_request_and_response_for_docs("types_document_patch_field", response)
 
         doc_json["layouts"] = ["thumbnail_view", "table_view"]
         doc_json["fieldsets"] = [
@@ -748,17 +708,13 @@ class TestDocumentation(TestDocumentationBase):
         response = self.api_session.delete(
             "/@types/Document/author_email",
         )
-        save_request_and_response_for_docs(
-            "types_document_delete_field", response
-        )
+        save_request_and_response_for_docs("types_document_delete_field", response)
 
         # Remove fieldset
         response = self.api_session.delete(
             "/@types/Document/contact_info",
         )
-        save_request_and_response_for_docs(
-            "types_document_delete_fieldset", response
-        )
+        save_request_and_response_for_docs("types_document_delete_fieldset", response)
 
     def test_documentation_jwt_login(self):
         self.portal.acl_users.jwt_auth._secret = "secret"
@@ -837,9 +793,7 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
 
         query = {"sort_on": "path"}
-        response = self.api_session.get(
-            "/folder/@search?b_size=5", params=query
-        )
+        response = self.api_session.get("/folder/@search?b_size=5", params=query)
         save_request_and_response_for_docs("batching", response)
 
     def test_documentation_users(self):
@@ -1016,19 +970,13 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
         # filter by username
         response = self.api_session.get("@users", params={"query": "oam"})
-        save_request_and_response_for_docs(
-            "users_filtered_by_username", response
-        )
+        save_request_and_response_for_docs("users_filtered_by_username", response)
         # filter by groups
         response = self.api_session.get(
             "@users",
-            params={
-                "groups-filter:list": ["Reviewers", "Site Administrators"]
-            },
+            params={"groups-filter:list": ["Reviewers", "Site Administrators"]},
         )
-        save_request_and_response_for_docs(
-            "users_filtered_by_groups", response
-        )
+        save_request_and_response_for_docs("users_filtered_by_groups", response)
 
     def test_documentation_users_searched_get(self):
         properties = {
@@ -1121,9 +1069,7 @@ class TestDocumentation(TestDocumentationBase):
         response_get = self.api_session.get("/@users/noam", json=payload)
 
         save_request_and_response_for_docs("users_update_portrait", response)
-        save_request_and_response_for_docs(
-            "users_update_portrait_get", response_get
-        )
+        save_request_and_response_for_docs("users_update_portrait_get", response_get)
 
     def test_documentation_users_update_portrait_with_scale(self):
         payload = {
@@ -1139,9 +1085,7 @@ class TestDocumentation(TestDocumentationBase):
         transaction.commit()
         response = self.api_session.patch("/@users/noam", json=payload)
 
-        save_request_and_response_for_docs(
-            "users_update_portrait_scale", response
-        )
+        save_request_and_response_for_docs("users_update_portrait_scale", response)
 
     def test_documentation_users_delete(self):
         properties = {
@@ -1311,15 +1255,11 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("groups_delete", response)
 
     def test_documentation_breadcrumbs(self):
-        response = self.api_session.get(
-            f"{self.document.absolute_url()}/@breadcrumbs"
-        )
+        response = self.api_session.get(f"{self.document.absolute_url()}/@breadcrumbs")
         save_request_and_response_for_docs("breadcrumbs", response)
 
     def test_documentation_navigation(self):
-        response = self.api_session.get(
-            f"{self.document.absolute_url()}/@navigation"
-        )
+        response = self.api_session.get(f"{self.document.absolute_url()}/@navigation")
         save_request_and_response_for_docs("navigation", response)
 
     def test_documentation_navigation_tree(self):
@@ -1332,9 +1272,7 @@ class TestDocumentation(TestDocumentationBase):
         subfolder1 = createContentInContainer(
             folder, "Folder", id="subfolder1", title="SubFolder 1"
         )
-        createContentInContainer(
-            folder, "Folder", id="subfolder2", title="SubFolder 2"
-        )
+        createContentInContainer(folder, "Folder", id="subfolder2", title="SubFolder 2")
         thirdlevelfolder = createContentInContainer(
             subfolder1,
             "Folder",
@@ -1347,9 +1285,7 @@ class TestDocumentation(TestDocumentationBase):
             id="fourthlevelfolder",
             title="Fourth Level Folder",
         )
-        createContentInContainer(
-            folder, "Document", id="doc1", title="A document"
-        )
+        createContentInContainer(folder, "Document", id="doc1", title="A document")
         transaction.commit()
 
         response = self.api_session.get(
@@ -1368,9 +1304,7 @@ class TestDocumentation(TestDocumentationBase):
         subfolder1 = createContentInContainer(
             folder, "Folder", id="subfolder1", title="SubFolder 1"
         )
-        createContentInContainer(
-            folder, "Folder", id="subfolder2", title="SubFolder 2"
-        )
+        createContentInContainer(folder, "Folder", id="subfolder2", title="SubFolder 2")
         thirdlevelfolder = createContentInContainer(
             subfolder1,
             "Folder",
@@ -1383,9 +1317,7 @@ class TestDocumentation(TestDocumentationBase):
             id="fourthlevelfolder",
             title="Fourth Level Folder",
         )
-        createContentInContainer(
-            folder, "Document", id="doc1", title="A document"
-        )
+        createContentInContainer(folder, "Document", id="doc1", title="A document")
         transaction.commit()
         response = self.api_session.get(
             f"{self.portal.absolute_url()}/folder/@contextnavigation"
@@ -1408,9 +1340,7 @@ class TestDocumentation(TestDocumentationBase):
             description=properties["description"],
         )
         transaction.commit()
-        response = self.api_session.get(
-            "/@principals", params={"search": "ploneteam"}
-        )
+        response = self.api_session.get("/@principals", params={"search": "ploneteam"})
         save_request_and_response_for_docs("principals", response)
 
     def test_documentation_copy(self):
@@ -1420,9 +1350,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("copy", response)
 
     def test_documentation_copy_multiple(self):
-        newsitem = self.portal[
-            self.portal.invokeFactory("News Item", id="newsitem")
-        ]
+        newsitem = self.portal[self.portal.invokeFactory("News Item", id="newsitem")]
         newsitem.title = "My News Item"
         transaction.commit()
 
@@ -1484,9 +1412,7 @@ class TestDocumentation(TestDocumentationBase):
             title="DX Document",
         )
         transaction.commit()
-        response = self.api_session.get(
-            "/doc/@sources/test_choice_with_source"
-        )
+        response = self.api_session.get("/doc/@sources/test_choice_with_source")
         save_request_and_response_for_docs("sources_get", response)
 
     def test_documentation_sharing_folder_get(self):
@@ -1611,9 +1537,7 @@ class TestDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("tusupload_patch", response)
 
         # HEAD ask for much the server has
-        response = self.api_session.head(
-            upload_url, headers={"Tus-Resumable": "1.0.0"}
-        )
+        response = self.api_session.head(upload_url, headers={"Tus-Resumable": "1.0.0"})
         clean_upload_url(response)
         save_request_and_response_for_docs("tusupload_head", response)
 
@@ -1629,9 +1553,7 @@ class TestDocumentation(TestDocumentationBase):
         )
         clean_upload_url(response)
         clean_final_url(response)
-        save_request_and_response_for_docs(
-            "tusupload_patch_finalized", response
-        )
+        save_request_and_response_for_docs("tusupload_patch_finalized", response)
 
     def test_tusreplace_post_patch(self):
         self.portal.invokeFactory("File", id="myfile")
@@ -1697,9 +1619,7 @@ class TestDocumentation(TestDocumentationBase):
             b' "0.684672730996-0.25195226375-00105A989226:1477076400.000"',  # noqa
             response.content,
         )
-        save_request_and_response_for_docs(
-            "lock_nonstealable_timeout", response
-        )
+        save_request_and_response_for_docs("lock_nonstealable_timeout", response)
 
     def test_locking_unlock(self):
         url = f"{self.document.absolute_url()}/@lock"
@@ -1755,9 +1675,7 @@ class TestDocumentation(TestDocumentationBase):
     def test_querystringsearch_post(self):
         url = "/@querystring-search"
 
-        self.portal.invokeFactory(
-            "Document", "testdocument", title="Test Document"
-        )
+        self.portal.invokeFactory("Document", "testdocument", title="Test Document")
         transaction.commit()
 
         response = self.api_session.post(
@@ -1780,9 +1698,7 @@ class TestDocumentation(TestDocumentationBase):
         }
         url = "/@querystring-search"
 
-        self.portal.invokeFactory(
-            "Document", "testdocument", title="Test Document"
-        )
+        self.portal.invokeFactory("Document", "testdocument", title="Test Document")
         transaction.commit()
 
         response = self.api_session.get(url, params=query)
@@ -1804,9 +1720,7 @@ class TestDocumentation(TestDocumentationBase):
 
     def test_site_navroot_get(self):
         response = self.api_session.get("/@navroot")
-        save_request_and_response_for_docs(
-            "navroot_standard_site_get", response
-        )
+        save_request_and_response_for_docs("navroot_standard_site_get", response)
 
     def test_site_content_navroot_get(self):
         response = self.api_session.get("/front-page/@navroot")
@@ -1851,9 +1765,7 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
         self.portal.invokeFactory("Document", id="front-page")
         document = self.portal["front-page"]
         document.title = "Welcome to Plone"
-        document.description = (
-            "Congratulations! You have successfully installed Plone."
-        )
+        document.description = "Congratulations! You have successfully installed Plone."
         document.text = RichTextValue(
             "If you're seeing this instead of the web site you were "
             + "expecting, the owner of this web site has just installed "
@@ -1866,15 +1778,11 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
 
     def test_translate_messages_types(self):
         response = self.api_session.get("/@types")
-        save_request_and_response_for_docs(
-            "translated_messages_types", response
-        )
+        save_request_and_response_for_docs("translated_messages_types", response)
 
     def test_translate_messages_types_folder(self):
         response = self.api_session.get("/@types/Folder")
-        save_request_and_response_for_docs(
-            "translated_messages_types_folder", response
-        )
+        save_request_and_response_for_docs("translated_messages_types_folder", response)
 
     def test_translate_messages_object_workflow(self):
         response = self.api_session.get(f"{self.document.id}/@workflow")
@@ -1891,9 +1799,7 @@ class TestDocumentationMessageTranslations(TestDocumentationBase):
     def test_translate_messages_addons(self):
         with patch_addon_versions("1.2.3"):
             response = self.api_session.get("/@addons")
-            save_request_and_response_for_docs(
-                "translated_messages_addons", response
-            )
+            save_request_and_response_for_docs("translated_messages_addons", response)
 
 
 class TestCommenting(TestDocumentationBase):
@@ -1920,9 +1826,7 @@ class TestCommenting(TestDocumentationBase):
         document = self.portal["front-page"]
         document.allow_discussion = True
         document.title = "Welcome to Plone"
-        document.description = (
-            "Congratulations! You have successfully installed Plone."
-        )
+        document.description = "Congratulations! You have successfully installed Plone."
         document.text = RichTextValue(
             "If you're seeing this instead of the web site you were "
             + "expecting, the owner of this web site has just installed "
@@ -1965,9 +1869,7 @@ class TestCommenting(TestDocumentationBase):
 
         # and the body
         if response.request.body:
-            response.request.body = re.sub(
-                pattern_bytes, repl, response.request.body
-            )
+            response.request.body = re.sub(pattern_bytes, repl, response.request.body)
 
         # and the response
         if response.content:
@@ -2034,9 +1936,7 @@ class TestCommenting(TestDocumentationBase):
         save_request_and_response_for_docs("roles", response)
 
     def test_documentation_expansion(self):
-        response = self.api_session.get(
-            "/front-page?expand=breadcrumbs,workflow"
-        )
+        response = self.api_session.get("/front-page?expand=breadcrumbs,workflow")
         save_request_and_response_for_docs("expansion", response)
 
     def test_aliases_add(self):
@@ -2185,9 +2085,7 @@ class TestControlPanelDocumentation(TestDocumentationBase):
 
     def test_controlpanels_get_dexterity(self):
         response = self.api_session.get("/@controlpanels/dexterity-types")
-        save_request_and_response_for_docs(
-            "controlpanels_get_dexterity", response
-        )
+        save_request_and_response_for_docs("controlpanels_get_dexterity", response)
 
     def test_controlpanels_crud_dexterity(self):
         # POST
@@ -2206,9 +2104,7 @@ class TestControlPanelDocumentation(TestDocumentationBase):
         response = self.api_session.get(
             "/@controlpanels/dexterity-types/my_custom_content_type"
         )
-        save_request_and_response_for_docs(
-            "controlpanels_get_dexterity_item", response
-        )
+        save_request_and_response_for_docs("controlpanels_get_dexterity_item", response)
 
         # PATCH
         response = self.api_session.patch(
@@ -2246,18 +2142,10 @@ class TestPAMDocumentation(TestDocumentationBase):
         # When we have tried to apply it for LRFs we have had several
         # utility registration problems.
         #
-        setattr(
-            self.portal.en, "_plone.uuid", "00000000000000000000000000000001"
-        )
-        setattr(
-            self.portal.es, "_plone.uuid", "00000000000000000000000000000002"
-        )
-        setattr(
-            self.portal.fr, "_plone.uuid", "00000000000000000000000000000003"
-        )
-        setattr(
-            self.portal.de, "_plone.uuid", "00000000000000000000000000000004"
-        )
+        setattr(self.portal.en, "_plone.uuid", "00000000000000000000000000000001")
+        setattr(self.portal.es, "_plone.uuid", "00000000000000000000000000000002")
+        setattr(self.portal.fr, "_plone.uuid", "00000000000000000000000000000003")
+        setattr(self.portal.de, "_plone.uuid", "00000000000000000000000000000004")
 
         en_id = self.portal["en"].invokeFactory(
             "Document", id="test-document", title="Test document"
@@ -2279,11 +2167,7 @@ class TestPAMDocumentation(TestDocumentationBase):
     def test_documentation_translations_post_by_id(self):
         response = self.api_session.post(
             f"{self.en_content.absolute_url()}/@translations",
-            json={
-                "id": self.es_content.absolute_url().replace(
-                    self.portal_url, ""
-                )
-            },
+            json={"id": self.es_content.absolute_url().replace(self.portal_url, "")},
         )
         save_request_and_response_for_docs("translations_post_by_id", response)
 
@@ -2292,14 +2176,10 @@ class TestPAMDocumentation(TestDocumentationBase):
             f"{self.en_content.absolute_url()}/@translations",
             json={"id": self.es_content.UID()},
         )
-        save_request_and_response_for_docs(
-            "translations_post_by_uid", response
-        )
+        save_request_and_response_for_docs("translations_post_by_uid", response)
 
     def test_documentation_translations_get(self):
-        ITranslationManager(self.en_content).register_translation(
-            "es", self.es_content
-        )
+        ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()
 
         response = self.api_session.get(
@@ -2309,9 +2189,7 @@ class TestPAMDocumentation(TestDocumentationBase):
         save_request_and_response_for_docs("translations_get", response)
 
     def test_documentation_translations_delete(self):
-        ITranslationManager(self.en_content).register_translation(
-            "es", self.es_content
-        )
+        ITranslationManager(self.en_content).register_translation("es", self.es_content)
         transaction.commit()
         response = self.api_session.delete(
             f"{self.en_content.absolute_url()}/@translations",
@@ -2330,9 +2208,7 @@ class TestPAMDocumentation(TestDocumentationBase):
                 "language": "de",
             },
         )
-        save_request_and_response_for_docs(
-            "translations_link_on_post", response
-        )
+        save_request_and_response_for_docs("translations_link_on_post", response)
 
     def test_documentation_translation_locator(self):
         response = self.api_session.get(
@@ -2354,9 +2230,7 @@ class TestPAMDocumentation(TestDocumentationBase):
 
     def test_site_navroot_language_content_get(self):
         response = self.api_session.get("/en/test-document/@navroot")
-        save_request_and_response_for_docs(
-            "navroot_lang_content_get", response
-        )
+        save_request_and_response_for_docs("navroot_lang_content_get", response)
 
     def test_site_expansion_navroot(self):
         response = self.api_session.get("?expand=navroot")
@@ -2364,9 +2238,7 @@ class TestPAMDocumentation(TestDocumentationBase):
 
     def test_site_expansion_navroot_language_folder(self):
         response = self.api_session.get("/en?expand=navroot")
-        save_request_and_response_for_docs(
-            "site_get_expand_lang_folder", response
-        )
+        save_request_and_response_for_docs("site_get_expand_lang_folder", response)
 
     def test_site_expansion_navroot_language_folder_content(self):
         response = self.api_session.get("/en/test-document?expand=navroot")
@@ -2489,9 +2361,7 @@ class TestRules(TestDocumentationBase):
         # Create two test rules and assign them globally
 
         rules = getMultiAdapter((self.portal, self.request), name="+rule")
-        add_form = getMultiAdapter(
-            (rules, self.request), name="plone.ContentRule"
-        )
+        add_form = getMultiAdapter((rules, self.request), name="plone.ContentRule")
         add_form.update()
         data = {
             "title": "First test rule",
@@ -2503,9 +2373,7 @@ class TestRules(TestDocumentationBase):
         }
         rule = add_form.form_instance.create(data)
         rules.add(rule)
-        edit_form = getMultiAdapter(
-            (rule, self.request), name="manage-elements"
-        )
+        edit_form = getMultiAdapter((rule, self.request), name="manage-elements")
         edit_form.authorize = lambda: True
         edit_form.globally_assign()
         data = {
@@ -2518,9 +2386,7 @@ class TestRules(TestDocumentationBase):
         }
         rule = add_form.form_instance.create(data)
         rules.add(rule)
-        edit_form = getMultiAdapter(
-            (rule, self.request), name="manage-elements"
-        )
+        edit_form = getMultiAdapter((rule, self.request), name="manage-elements")
         edit_form.authorize = lambda: True
         edit_form.globally_assign()
 
@@ -2621,9 +2487,7 @@ class TestRules(TestDocumentationBase):
             "rule_ids": ["rule-1", "rule-2"],
         }
         response = self.api_session.patch(url, json=payload)
-        save_request_and_response_for_docs(
-            "rules_disable_apply_subfolders", response
-        )
+        save_request_and_response_for_docs("rules_disable_apply_subfolders", response)
 
     # Tests for the rules controlpanel
 
@@ -2631,9 +2495,7 @@ class TestRules(TestDocumentationBase):
         # Get rules defined in controlpanel
         url = "/@controlpanels/content-rules"
         response = self.api_session.get(url)
-        save_request_and_response_for_docs(
-            "controlpanels_get_contentrules", response
-        )
+        save_request_and_response_for_docs("controlpanels_get_contentrules", response)
 
     def test_controlpanels_crud_rules(self):
         # POST
@@ -2852,9 +2714,7 @@ class TestRules(TestDocumentationBase):
             "cascading": True,
         }
         response = self.api_session.patch(url, json=payload)
-        save_request_and_response_for_docs(
-            "controlpanels_patch_rule", response
-        )
+        save_request_and_response_for_docs("controlpanels_patch_rule", response)
 
         # Conditions
         url = "/@controlpanels/content-rules/rule-3/condition/0"
@@ -2931,6 +2791,4 @@ class TestRules(TestDocumentationBase):
 
         url = "/@controlpanels/content-rules/rule-3"
         response = self.api_session.delete(url)
-        save_request_and_response_for_docs(
-            "controlpanels_delete_rule", response
-        )
+        save_request_and_response_for_docs("controlpanels_delete_rule", response)
